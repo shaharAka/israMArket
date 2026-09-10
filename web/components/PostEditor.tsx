@@ -411,6 +411,7 @@ export function PostEditor({
 
     if (isReelOrStory) {
       return (
+        <div>
         <div className="overflow-hidden rounded-2xl border border-[#deddd8] bg-black text-white shadow-md">
           {/* Reel Top Info */}
           <div className="flex items-center justify-between px-3.5 py-2.5 text-xs text-white/90">
@@ -428,15 +429,15 @@ export function PostEditor({
             <div className="absolute bottom-16 left-3 flex flex-col items-center gap-4 text-white z-10">
               <div className="flex flex-col items-center gap-1">
                 <span className="text-xl">❤️</span>
-                <span className="text-[10px] font-bold">2.4K</span>
+                <span className="text-[10px] font-bold">—</span>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <span className="text-xl">💬</span>
-                <span className="text-[10px] font-bold">48</span>
+                <span className="text-[10px] font-bold">—</span>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <span className="text-xl">↗️</span>
-                <span className="text-[10px] font-bold">120</span>
+                <span className="text-[10px] font-bold">—</span>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <span className="text-xl">🔖</span>
@@ -469,6 +470,11 @@ export function PostEditor({
               </div>
             </div>
           </div>
+        </div>
+        {/* Numbers shown inside a phone frame would otherwise look like real metrics. */}
+        <p className="mt-1.5 text-[11px] text-[#8b8e84]">
+          תצוגת מבנה בלבד — מספרי מעורבות יוצגו רק לאחר חיבור חשבון אינסטגרם.
+        </p>
         </div>
       );
     }
@@ -735,19 +741,19 @@ export function PostEditor({
           <div className="absolute bottom-16 left-3 flex flex-col items-center gap-4 text-white z-10">
             <div className="flex flex-col items-center gap-0.5">
               <span className="text-xl">❤️</span>
-              <span className="text-[10px] font-bold">14.8K</span>
+              <span className="text-[10px] font-bold">—</span>
             </div>
             <div className="flex flex-col items-center gap-0.5">
               <span className="text-xl">💬</span>
-              <span className="text-[10px] font-bold">342</span>
+              <span className="text-[10px] font-bold">—</span>
             </div>
             <div className="flex flex-col items-center gap-0.5">
               <span className="text-xl">⭐️</span>
-              <span className="text-[10px] font-bold">890</span>
+              <span className="text-[10px] font-bold">—</span>
             </div>
             <div className="flex flex-col items-center gap-0.5">
               <span className="text-xl">↗️</span>
-              <span className="text-[10px] font-bold">155</span>
+              <span className="text-[10px] font-bold">—</span>
             </div>
             <div className="h-7 w-7 rounded-full border-2 border-white/80 bg-neutral-800 flex items-center justify-center text-[10px] animate-spin">
               🎵

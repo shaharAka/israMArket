@@ -81,8 +81,11 @@ def scan_business_site(
                 business_id, "source-photo", photo["bytes"], photo["mime"]
             )
             stored_photos.append({"url": photo.get("url", ""), "public_url": public_url})
-        if stored_photos:
-            scanned["real_photos"] = stored_photos
+        # Record that the photos were checked even when NONE survived the filter.
+        # Without this flag an empty list is indistinguishable from "never checked",
+        # and the generation path would re-fetch the rejected photos.
+        scanned["real_photos"] = stored_photos
+        scanned["photos_checked"] = True
     except Exception:
         # Storing source photos is an optimisation; never fail the scan over it.
         pass

@@ -137,6 +137,25 @@ def _local_photos(scraped: dict) -> list[dict]:
     return out
 
 
+def _candidate_photos(scraped: dict) -> list[dict]:
+    """The business's own usable photographs, or [] if there are none.
+
+    If the scan already ran the vision check, its verdict is final — an empty result
+    means "everything was rejected", NOT "we never looked". Re-fetching here used to
+    silently bypass the filter and put a supplier's promo banner (or a blurred
+    snapshot) on the customer's cards.
+    """
+    if scraped.get("photos_checked"):
+        return _local_photos(scraped)
+
+    # Older scans predate the flag: fetch, then apply the same check before use.
+    from app.services.brand import filter_usable_photos
+
+    return filter_usable_photos(
+        fetch_photo_candidates((scraped.get("raw") or {}).get("image_urls") or [])
+    )
+
+
 def _produce_post_image(
     business: Business,
     post: dict,
@@ -239,9 +258,7 @@ def _store_post_image(
 
     # The business's real photographs, used both as the card image and as style
     # references for generation. Fetched once per call.
-    scraped_photos = _local_photos(scraped) or fetch_photo_candidates(
-        (scraped.get("raw") or {}).get("image_urls") or []
-    )
+    scraped_photos = _candidate_photos(scraped)
 
     def provide(target_post: dict) -> str:
         return _produce_post_image(
