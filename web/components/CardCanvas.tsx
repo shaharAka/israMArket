@@ -109,11 +109,16 @@ function Photo({
   theme: CardTokens;
   objectPosition?: string;
 }) {
-  if (post.image_url) {
+  // A missing or broken image (deleted file, expired URL, unreachable host) must
+  // degrade to the placeholder rather than a browser broken-image icon — the card is
+  // exported as an image, so an icon would be baked into the customer's artwork.
+  const [failed, setFailed] = useState(false);
+  if (post.image_url && !failed) {
     return (
       <img
         src={post.image_url}
         alt=""
+        onError={() => setFailed(true)}
         style={{
           position: "absolute",
           inset: 0,
