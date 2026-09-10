@@ -28,9 +28,10 @@ _LEGACY_TEMPLATES = {
 # card looks accidental. Keep in sync with CardCanvas.tsx.
 _SAFE_ZONE = {
     "lower_editorial": (
-        "the BOTTOM THIRD will carry the headline over a dark gradient. Keep that band "
-        "visually quiet and on the darker side — no faces, hands, or key product detail "
-        "there. Let it fall off into shadow or empty table/surface."
+        "the BOTTOM THIRD will carry the headline over a dark gradient. That band must "
+        "still be part of the photograph — keep lighting the same surface, texture and "
+        "props into it — but quieter and darker, with no faces, hands or key product "
+        "detail. It must NOT be blank, blurred out, or an empty wash of colour."
     ),
     "split_panel": (
         "only the TOP ~72% of the frame survives — the bottom ~28% is replaced by a solid "
@@ -45,11 +46,13 @@ _SAFE_ZONE = {
     "cover_type": (
         "an oversized headline sits across the TOP THIRD, and a small brand line at the "
         "very bottom. Keep the top third low-contrast and quiet (sky, wall, soft shadow) "
-        "and leave the bottom edge uncluttered too."
+        "and keep the bottom edge uncluttered — but both areas must still be real parts "
+        "of the photograph, never blank or blurred-out filler."
     ),
     "promo_ribbon": (
         "a solid accent band covers the TOP edge and a dark panel covers the BOTTOM third. "
-        "Keep the subject in the MIDDLE band of the frame."
+        "Keep the subject in the MIDDLE band of the frame, and fill that band — it must "
+        "not be a thin strip of detail surrounded by emptiness."
     ),
     # Photo-free: no image is generated for this template at all (see needs_photo).
     "type_hero": "no photograph is used — this card is typography on a brand ground.",
@@ -145,6 +148,10 @@ COMPOSITION — this matters as much as the subject:
   thumbprints. Imperfection reads as honest; plastic perfection reads as stock.
 - Work the brand palette into props, surfaces and light, not into painted-on colour.
 - Shallow depth of field, with the subject sharp and the background falling away.
+- FILL THE FRAME. Every part of the picture must be real photographed content.
+  Never leave a large area blank, flat, blurred out or an empty wash of colour —
+  a quiet zone means calmer content, not absent content. A card whose photo is a
+  third empty space looks like a mistake, which is exactly what it is.
 
 STRICT RULES — never include any of these:
 {_NEVER}
