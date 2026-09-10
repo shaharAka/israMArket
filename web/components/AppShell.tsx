@@ -22,12 +22,23 @@ const NAV = [
   { href: "/integrations", label: "חיבורים", icon: IconLink },
 ];
 
+/** Routes that are part of first-run itself — redirecting from these would loop. */
+const FIRST_RUN_ROUTES = ["/onboarding", "/login", "/signup"];
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [demo, setDemo] = useState(false);
+  // Children must not render until we know whether this user finished first-run,
+  // otherwise every screen fires its own requests and logs "no business configured"
+  // before the redirect lands. Only the async *result* is state; whether this is a
+  // first-run route is derived during render, so nothing is set synchronously in the
+  // effect. In demo mode we do not gate at all.
+  const [checkedOnboarding, setCheckedOnboarding] = useState(false);
+  const onFirstRunRoute = FIRST_RUN_ROUTES.some((r) => pathname.startsWith(r));
+  const ready = onFirstRunRoute || checkedOnboarding || demo;
 
   useEffect(() => {
     const timer = window.setTimeout(() => setDemo(isDemo()), 0);
@@ -42,10 +53,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .business()
       .then((res) => {
         if (res.business?.name) setBusinessName(res.business.name);
+        // A signed-in user who has not finished the wizard has no business yet, so
+        // every other screen would fail with "no business configured" and show an
+        // error. Send them back to finish instead. Skipped on the wizard's own routes
+        // (AppShell wraps them too) or this would loop forever.
+        const incomplete = !res.business?.onboarding_complete;
+        if (incomplete && !onFirstRunRoute) {
+          router.replace("/onboarding");
+          return; // stay un-ready: render nothing rather than the wrong screen
+        }
+        setCheckedOnboarding(true);
       })
-      .catch(() => {});
+      .catch(() => setCheckedOnboarding(true));
     return () => window.clearTimeout(timer);
-  }, [router]);
+  }, [router, pathname, onFirstRunRoute]);
 
   const initials = name
     .split(" ")
@@ -53,6 +74,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     .slice(0, 2)
     .map((part) => part[0])
     .join("");
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4]">
+        <p className="text-sm text-[#8b8e84]">טוען…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f8f7f4] text-[#1e201d] flex flex-col md:flex-row">
