@@ -333,7 +333,15 @@ export function CardCanvas({
   const headline = (post.overlay_headline || post.overlay_text || "").trim();
   const badge = (post.overlay_badge || "").trim();
   const cta = shortCta(post.cta, headline);
-  const stat = (post.stat_highlight || "").trim();
+  // The model often puts the number in BOTH the headline and stat_highlight, which
+  // printed the same figure twice on one card. Show the stat only when it adds
+  // something the headline does not already say.
+  const statRaw = (post.stat_highlight || "").trim();
+  const _norm = (v: string) => v.replace(/[\s"'״׳.,:!?%₪-]+/g, "");
+  const stat =
+    statRaw && !_norm(headline).includes(_norm(statRaw)) && !_norm(statRaw).includes(_norm(headline))
+      ? statRaw
+      : "";
   const { w, h } = size;
 
   const root: React.CSSProperties = {
@@ -412,32 +420,28 @@ export function CardCanvas({
   const hSize = headlineSize(headline);
 
   if (template === "split_panel") {
-    // Photo-forward: the panel only needs to fit badge + headline + CTA, and the
-    // model now composes the subject inside this band, so give the art more room.
-    const photoH = Math.round(h * 0.72);
+    // The panel is sized by its CONTENT, not a fixed fraction. With a fixed 72/28 the
+    // panel overflowed as soon as a stat line was added, and the headline, stat and CTA
+    // ended up on top of each other. The photo simply takes whatever is left.
     return (
-      <div ref={canvasRef} style={root}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: photoH }}>
+      <div ref={canvasRef} style={{ ...root, display: "flex", flexDirection: "column" }}>
+        <div style={{ position: "relative", flex: 1, minHeight: 0 }}>
           <Photo post={post} theme={t} objectPosition="50% 42%" />
         </div>
         <div
           style={{
-            position: "absolute",
-            top: photoH,
-            left: 0,
-            right: 0,
-            bottom: 0,
+            position: "relative",
+            flexShrink: 0,
             background: t.background,
-            padding: PAD,
+            padding: Math.round(PAD * 0.86),
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
           }}
         >
           <Badge text={badge} bg={t.primary} fg={t.onPrimary} />
           <Headline text={headline} color={t.ink} size={Math.round(hSize * 0.92)} marginTop={18} />
-          <StatLine text={stat} color={t.primary} size={44} marginTop={16} />
-          <div style={{ marginTop: 30 }}>
+          <StatLine text={stat} color={t.primary} size={42} marginTop={14} />
+          <div style={{ marginTop: 26 }}>
             <CtaChip text={cta} bg={t.accent} fg={t.onAccent} />
           </div>
         </div>
