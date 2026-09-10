@@ -1,4 +1,5 @@
 import re
+import struct
 from collections import Counter
 from urllib.parse import urljoin, urlparse
 
@@ -306,10 +307,71 @@ def fetch_photo_candidates(urls: list[str], limit: int = 3) -> list[dict]:
                 data = response.content
                 if len(data) < _MIN_PHOTO_BYTES or len(data) > 1_200_000:
                     continue
+                if not _looks_like_a_photograph(data):
+                    continue
                 out.append({"url": str(response.url), "mime": mime, "bytes": data})
     except httpx.HTTPError:
         return out
     return out
+
+
+def _image_dimensions(data: bytes) -> tuple[int, int] | None:
+    """Width/height from the file header, without decoding the image.
+
+    Needed because CDN filenames are opaque hashes (`005c54_3c8aff44...%7Emv2.png`), so
+    there is no filename to tell a product photo from a wordmark. Shape is the signal.
+    """
+    try:
+        if data[:8] == b"\x89PNG\r\n\x1a\n":
+            return struct.unpack(">II", data[16:24])
+        if data[:3] == b"GIF":
+            return struct.unpack("<HH", data[6:10])
+        if data[:2] == b"\xff\xd8":  # JPEG: walk segments to the SOF marker
+            i = 2
+            while i < len(data) - 9:
+                if data[i] != 0xFF:
+                    i += 1
+                    continue
+                marker = data[i + 1]
+                if marker in {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB}:
+                    height, width = struct.unpack(">HH", data[i + 5 : i + 9])
+                    return width, height
+                if marker in {0xD8, 0xD9} or 0xD0 <= marker <= 0xD7:
+                    i += 2
+                    continue
+                i += 2 + struct.unpack(">H", data[i + 2 : i + 4])[0]
+        if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+            chunk = data[12:16]
+            if chunk == b"VP8X":
+                w = 1 + int.from_bytes(data[24:27], "little")
+                h = 1 + int.from_bytes(data[27:30], "little")
+                return w, h
+            if chunk == b"VP8 ":
+                w = int.from_bytes(data[26:28], "little") & 0x3FFF
+                h = int.from_bytes(data[28:30], "little") & 0x3FFF
+                return w, h
+            if chunk == b"VP8L":
+                bits = int.from_bytes(data[21:25], "little")
+                return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+    except (struct.error, IndexError, ValueError):
+        return None
+    return None
+
+
+def _looks_like_a_photograph(data: bytes) -> bool:
+    """Reject the shapes that wordmarks, logos and banners have.
+
+    A 998x480 asset is a lockup, not a photograph; used full-bleed on a 4:5 card it
+    looks broken. Both bounds are deliberately loose so ordinary photos always pass.
+    """
+    dims = _image_dimensions(data)
+    if not dims:
+        return True  # unknown format: don't punish it, the caller still has other checks
+    width, height = dims
+    if width < 500 or height < 300:
+        return False
+    ratio = width / height if height else 0
+    return 0.45 <= ratio <= 1.9
 
 
 def scrape_site(url: str) -> dict:

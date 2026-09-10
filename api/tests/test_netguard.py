@@ -125,3 +125,52 @@ class ScraperGuardTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PhotoShapeTest(unittest.TestCase):
+    """CDN filenames are opaque hashes, so shape — not the name — identifies a logo."""
+
+    def _png(self, w, h):
+        import struct, zlib
+
+        raw = b"".join(b"\x00" + bytes((200, 60, 30)) * w for _ in range(h))
+
+        def chunk(t, d):
+            c = t + d
+            return struct.pack(">I", len(d)) + c + struct.pack(">I", zlib.crc32(c) & 0xFFFFFFFF)
+
+        return (
+            b"\x89PNG\r\n\x1a\n"
+            + chunk(b"IHDR", struct.pack(">IIBBBBB", w, h, 8, 2, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(raw))
+            + chunk(b"IEND", b"")
+        )
+
+    def test_reads_png_dimensions(self):
+        from app.services.scraper import _image_dimensions
+
+        self.assertEqual(_image_dimensions(self._png(998, 480)), (998, 480))
+
+    def test_rejects_a_wordmark_shape(self):
+        """The real case: a 998x480 Wix logo passed the old byte-size filter and would
+        have been used full-bleed as the customer's card photo."""
+        from app.services.scraper import _looks_like_a_photograph
+
+        self.assertFalse(_looks_like_a_photograph(self._png(998, 480)))
+
+    def test_accepts_ordinary_photo_shapes(self):
+        from app.services.scraper import _looks_like_a_photograph
+
+        for w, h in ((1080, 1350), (1200, 1200), (1600, 1200), (800, 1000)):
+            with self.subTest(size=f"{w}x{h}"):
+                self.assertTrue(_looks_like_a_photograph(self._png(w, h)))
+
+    def test_rejects_tiny_assets(self):
+        from app.services.scraper import _looks_like_a_photograph
+
+        self.assertFalse(_looks_like_a_photograph(self._png(180, 180)))
+
+    def test_unknown_format_is_not_punished(self):
+        from app.services.scraper import _looks_like_a_photograph
+
+        self.assertTrue(_looks_like_a_photograph(b"\x00\x01\x02\x03 not an image"))
