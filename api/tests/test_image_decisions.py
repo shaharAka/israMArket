@@ -51,9 +51,21 @@ class PromptTest(unittest.TestCase):
 
     def test_composition_zone_follows_the_template(self):
         split = self._prompt(overlay_theme="split_panel")
-        self.assertIn("TOP ~72%", split)
+        self.assertIn("UPPER portion", split)
         lower = self._prompt(overlay_theme="lower_editorial")
         self.assertIn("BOTTOM THIRD", lower)
+
+    def test_zones_never_invite_an_empty_or_painted_band(self):
+        """Real cards came back with a flat brand-coloured band painted across the
+        bottom, because the zone text described the layout panel to the image model —
+        which then drew it — and the renderer covered it with another one."""
+        for theme in ("split_panel", "lower_editorial", "cover_type", "promo_ribbon"):
+            with self.subTest(theme=theme):
+                prompt = self._prompt(overlay_theme=theme)
+                self.assertNotIn("solid brand-colour panel", prompt)
+                self.assertNotIn("accent band covers", prompt)
+                self.assertNotIn("deliberate negative space", prompt)
+                self.assertIn("no panels, bands, bars", prompt)
 
     def test_orientation_follows_the_format(self):
         self.assertIn("9:16", self._prompt(format="reel"))

@@ -34,9 +34,10 @@ _SAFE_ZONE = {
         "detail. It must NOT be blank, blurred out, or an empty wash of colour."
     ),
     "split_panel": (
-        "only the TOP ~72% of the frame survives — the bottom ~28% is replaced by a solid "
-        "brand-colour panel. Compose the entire subject inside the upper 72% and keep the "
-        "top edge calm and uncluttered."
+        "compose everything the viewer needs to see in the UPPER portion of the frame. The "
+        "bottom of the picture is cropped away by the layout, so let it be plain, evenly "
+        "lit surface — the same surface continued, nothing else. Do not draw a panel, "
+        "band, block of flat colour, or any border."
     ),
     "framed_inset": (
         "the photo is shown as an inset frame on a flat brand-colour ground. Compose a "
@@ -50,9 +51,10 @@ _SAFE_ZONE = {
         "of the photograph, never blank or blurred-out filler."
     ),
     "promo_ribbon": (
-        "a solid accent band covers the TOP edge and a dark panel covers the BOTTOM third. "
-        "Keep the subject in the MIDDLE band of the frame, and fill that band — it must "
-        "not be a thin strip of detail surrounded by emptiness."
+        "compose the subject across the MIDDLE of the frame at a generous size, with the "
+        "surrounding surface filling the rest. The top and bottom edges are cropped by "
+        "the layout, so keep them plain — never a thin strip of detail surrounded by "
+        "emptiness, and never a painted band or block of flat colour."
     ),
     # Photo-free: no image is generated for this template at all (see needs_photo).
     "type_hero": "no photograph is used — this card is typography on a brand ground.",
@@ -118,8 +120,8 @@ def build_image_prompt(post: dict, brand: dict, business: dict) -> str:
         layout_rules = (
             f"Graphic text WILL be added on top of this photo. Composition constraint: "
             f"{_SAFE_ZONE[template]}\n"
-            f"Reserve that zone as deliberate negative space — a designer's breathing room, "
-            f"not an empty accident. Never place the main subject or a face inside it."
+            f"Keep the main subject and any face out of that area, but it must still be "
+            f"photographed content — surface, texture and light — not emptiness."
         )
 
     return f"""
@@ -149,6 +151,8 @@ COMPOSITION — this matters as much as the subject:
 - Work the brand palette into props, surfaces and light, not into painted-on colour.
 - Shallow depth of field, with the subject sharp and the background falling away.
 - FILL THE FRAME. Every part of the picture must be real photographed content.
+- Never draw layout furniture: no panels, bands, bars, blocks of flat colour,
+  borders or frames. The app adds those; anything like them in the photo is wrong.
   Never leave a large area blank, flat, blurred out or an empty wash of colour —
   a quiet zone means calmer content, not absent content. A card whose photo is a
   third empty space looks like a mistake, which is exactly what it is.
