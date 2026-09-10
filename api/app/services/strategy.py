@@ -15,6 +15,7 @@ from app.services.schemas_llm import (
     SITE_EXTRACT_SCHEMA,
     USP_SCHEMA,
 )
+from app.services.cost_model import plan_from_budget, prompt_block
 from app.services.month_loop import prior_prompt_block
 from app.services.scraper import scrape_site
 
@@ -193,6 +194,9 @@ USP: {usp}
 
 
 def build_roadmap(business: dict, usp: dict, events: list[dict], plan: dict, brand: dict, prior: dict | None = None) -> dict:
+    cost_block = prompt_block(
+        plan_from_budget(int(business.get('monthly_budget_ils') or 0), business.get('primary_goal') or 'sales')
+    )
     plan_prompt = f"""
 בנה את כיוון החודש לעסק ישראלי קטן. בלי לכתוב את הפוסטים עצמם.
 החודש הוא חודש אזרחי רגיל. חגים יהודיים וימי קניות ישראליים מופיעים כאירועים בתוך אותו חודש אזרחי.
@@ -201,6 +205,9 @@ def build_roadmap(business: dict, usp: dict, events: list[dict], plan: dict, bra
 עסק: {business}
 USP והשערת צמיחה: {usp}
 תמהיל פרסום: {plan}
+
+{cost_block}
+
 אירועי החודש בישראל: {events}
 
 חובה לבנות במדויק לפי הסכימה:

@@ -3,6 +3,8 @@ from datetime import date, timedelta
 
 from pyluach import dates, hebrewcal
 
+from app.services.cost_model import plan_from_budget
+
 GREGORIAN_MONTHS = [
     {"number": 1, "en": "January", "he": "ינואר"},
     {"number": 2, "en": "February", "he": "פברואר"},
@@ -140,45 +142,33 @@ def israeli_events_for_month(year: int, month: int) -> list[dict]:
 
 
 def posting_plan(monthly_budget_ils: int, primary_goal: str) -> dict:
-    if monthly_budget_ils < 2000:
-        weekly_posts = 3
-        reels = 1
-        carousels = 1
-        images = 1
-        ads = "אורגני בלבד. אין תקציב מודעות משמעותי."
-    elif monthly_budget_ils < 5000:
-        weekly_posts = 5
-        reels = 2
-        carousels = 2
-        images = 1
-        ads = "מודעות מטא קלות: 30–40% מהתקציב לרימרקטינג ולפוסט ממומן אחד בשבוע."
-    elif monthly_budget_ils < 15000:
-        weekly_posts = 7
-        reels = 4
-        carousels = 2
-        images = 1
-        ads = "מטא פעיל: קהלים קרים + רימרקטינג. 50–60% מהתקציב למודעות."
-    else:
-        weekly_posts = 10
-        reels = 5
-        carousels = 3
-        images = 2
-        ads = "נוכחות יומית + סטוריז. מטא מלא כולל קריאייטיב שבועי ואופטימיזציית תקציב."
+    """Content and spend plan for the month.
 
-    if primary_goal == "sales":
-        mix_note = "דגש על קרוסלות הצעה, רילס עם CTA ברור, וקישור לדף נחיתה או וואטסאפ."
-    else:
-        mix_note = "דגש על סיפור מותג, רילס מאחורי הקלעים, ואמון. CTA רך יותר."
-
+    Delegates to the Israeli cost model. This function used to hold invented budget
+    bands — "under 2,000 → 3 posts a week", "30-40% of budget to retargeting" — with no
+    source. A plan built on those is a plan for a business nobody has, so the bands were
+    replaced with published market ranges (see services/cost_model.py).
+    """
+    plan = plan_from_budget(monthly_budget_ils, primary_goal)
     return {
-        "weekly_posts": weekly_posts,
-        "format_mix": {
-            "reels": reels,
-            "carousels": carousels,
-            "image_posts": images,
-        },
-        "ads_guidance": ads,
-        "mix_note": mix_note,
-        "monthly_budget_ils": monthly_budget_ils,
+        # kept for existing callers
+        "weekly_posts": plan.posts_per_week,
+        "format_mix": {"formats": plan.recommended_formats},
+        "ads_guidance": " | ".join(plan.warnings) if plan.warnings else "תקציב בטווח סביר לפרסום ממומן.",
+        "mix_note": (
+            "דגש על קרוסלות הצעה, רילס עם CTA ברור, וקישור לדף נחיתה או וואטסאפ."
+            if primary_goal == "sales"
+            else "דגש על סיפור מותג, רילס מאחורי הקלעים, ואמון. CTA רך יותר."
+        ),
+        "monthly_budget_ils": plan.monthly_budget_ils,
         "primary_goal": primary_goal,
+        # new, grounded data the strategy prompt uses
+        "stage": plan.stage,
+        "realistic_roas": list(plan.realistic_roas),
+        "expected_impressions": list(plan.expected_impressions),
+        "expected_clicks": list(plan.expected_clicks),
+        "expected_purchases": list(plan.expected_purchases),
+        "warnings": plan.warnings,
+        "assumptions": plan.assumptions,
+        "source": plan.source,
     }

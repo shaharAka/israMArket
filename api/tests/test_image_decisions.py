@@ -107,3 +107,52 @@ class StoredImageTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CostModelTest(unittest.TestCase):
+    """The old budget bands were invented. These assert the model stays anchored to the
+    published Israeli ranges, and that it reports ranges rather than false precision."""
+
+    def test_stages_track_the_published_budget_floors(self):
+        from app.services.cost_model import plan_from_budget
+
+        self.assertEqual(plan_from_budget(1_000).stage, "below_viable")
+        self.assertEqual(plan_from_budget(3_000).stage, "validation")
+        self.assertEqual(plan_from_budget(7_000).stage, "growth")
+        self.assertEqual(plan_from_budget(15_000).stage, "scale")
+
+    def test_derived_numbers_are_ranges_not_single_values(self):
+        from app.services.cost_model import plan_from_budget
+
+        p = plan_from_budget(7_000)
+        for lo, hi in (p.expected_impressions, p.expected_clicks, p.expected_purchases):
+            self.assertLess(lo, hi)
+        self.assertLess(p.realistic_roas[0], p.realistic_roas[1])
+
+    def test_roas_stays_inside_the_published_range(self):
+        from app.services.cost_model import ROAS_COLD, plan_from_budget
+
+        for budget in (1_000, 3_000, 7_000, 15_000, 100_000):
+            with self.subTest(budget=budget):
+                self.assertEqual(tuple(plan_from_budget(budget).realistic_roas), ROAS_COLD)
+
+    def test_small_budgets_warn_instead_of_promising_results(self):
+        from app.services.cost_model import plan_from_budget
+
+        self.assertTrue(plan_from_budget(1_000).warnings)
+        self.assertTrue(plan_from_budget(3_000).warnings)  # under the 50-event floor
+
+    def test_every_plan_names_its_source_and_assumptions(self):
+        from app.services.cost_model import plan_from_budget
+
+        p = plan_from_budget(5_000)
+        self.assertTrue(p.source.startswith("http"))
+        self.assertTrue(any("CPM" in a for a in p.assumptions))
+        self.assertTrue(any("CPA" in a for a in p.assumptions))
+
+    def test_prompt_block_forbids_invented_targets(self):
+        from app.services.cost_model import plan_from_budget, prompt_block
+
+        block = prompt_block(plan_from_budget(5_000))
+        self.assertIn("אסור להמציא יעד", block)
+        self.assertIn("CPM", block)
