@@ -146,8 +146,20 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         .first()
     )
     if not snap:
-        raise HTTPException(status_code=404, detail="עדיין אין סנכרון ביצועים")
+        # 200 with an explicit flag instead of a 404: "no data yet" is a normal state,
+        # and a 404 here showed up as a console/error-tracking error on every page view.
+        return {
+            "available": False,
+            "id": None,
+            "period_start": "",
+            "period_end": "",
+            "ga4": {},
+            "meta": {},
+            "diagnostic": {},
+            "created_at": "",
+        }
     return {
+        "available": True,
         "id": snap.id,
         "period_start": snap.period_start,
         "period_end": snap.period_end,
@@ -196,6 +208,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         business.webhooks,
         "recommendations",
         {"business_id": business.id, "week_of": rec.week_of, "suggestions": suggestions},
+        db=db,
     )
     return {
         "performance": snap,

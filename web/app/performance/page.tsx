@@ -37,7 +37,13 @@ export default function PerformancePage() {
   useEffect(() => {
     endpoints
       .performance()
-      .then(setData)
+      .then((payload) => {
+        if (payload.available === false) {
+          setError("עדיין אין סנכרון ביצועים");
+          return;
+        }
+        setData(payload);
+      })
       .catch((err) => setError(err instanceof Error ? err.message : "עדיין אין נתונים להצגה"));
   }, []);
 

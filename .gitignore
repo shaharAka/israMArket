@@ -17,3 +17,11 @@ dist/
 .vercel
 next-env.d.ts
 *.tsbuildinfo
+
+# Design-review artifacts: local screenshots and exported card PNGs.
+.design-review/
+
+# Local-only fixtures for the internal /dev/cards preview page. Deliberately not
+# committed: real-photo.webp is a third party's photograph, and the AI plate is a
+# throwaway generation. Re-create them locally to use the preview page.
+web/public/dev-preview/

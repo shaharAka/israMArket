@@ -21,7 +21,13 @@ export default function RecommendationsPage() {
   useEffect(() => {
     endpoints
       .recommendations()
-      .then(setData)
+      .then((payload) => {
+        if (payload.available === false) {
+          setError("עדיין אין המלצות שבועיות");
+          return;
+        }
+        setData(payload);
+      })
       .catch((err) => setError(err instanceof Error ? err.message : "עדיין אין המלצות"));
   }, []);
 

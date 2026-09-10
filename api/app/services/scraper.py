@@ -5,6 +5,8 @@ from urllib.parse import urljoin, urlparse
 import httpx
 from bs4 import BeautifulSoup
 
+from app.services.netguard import UnsafeUrlError, safe_get
+
 USER_AGENT = "IsraMarketBot/1.0 (+https://isramarket.local; marketing research for the site owner)"
 MAX_CHARS = 14000
 HEX_RE = re.compile(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})\b")
@@ -35,10 +37,27 @@ SKIP_CSS = re.compile(
 )
 VAR_RE = re.compile(r"--([a-zA-Z0-9_-]+)\s*:\s*([^;]+)")
 BRAND_VAR = re.compile(r"brand|primary|accent|theme|main|bg|background|ink|text|color|cta", re.I)
+# CMS boilerplate that would otherwise masquerade as the brand palette. WordPress
+# ships `--wp--preset--color--vivid-red: #cf2e2e` & co. in an inline <style> on
+# essentially every block theme; because the name contains "color" it matched
+# BRAND_VAR and got 4x weight, so unrelated sites all reported the same defaults.
+SKIP_VAR = re.compile(
+    r"wp--preset|wp--style|wp--custom|wp-block|gutenberg|--e-global-typography",
+    re.I,
+)
+# The WordPress core palette by value, as a second line of defence for themes that
+# inline it under non-standard variable names.
+WP_DEFAULT_COLORS = {
+    "#cf2e2e", "#ff6900", "#fcb900", "#7bdcb5", "#00d084", "#8ed1fc",
+    "#0693e3", "#abb8c3", "#eb144c", "#f78da7", "#9900ef", "#ffffff", "#000000",
+}
 
 
 def _normalize_url(url: str) -> str:
     raw = url.strip()
+    # Reject an explicit foreign scheme instead of mangling it into a hostname.
+    if "://" in raw and not raw.startswith(("http://", "https://")):
+        raise ValueError("אפשר לסרוק רק כתובות http או https.")
     if not raw.startswith(("http://", "https://")):
         raw = "https://" + raw
     parsed = urlparse(raw)
@@ -96,11 +115,17 @@ def _extract_colors(html: str, soup: BeautifulSoup, stylesheets: list[str]) -> l
     css_blobs.extend(stylesheets)
     for blob in css_blobs:
         for match in VAR_RE.finditer(blob):
-            weight = 4 if BRAND_VAR.search(match.group(1)) else 1
+            name = match.group(1)
+            # CMS preset palettes are not the brand's colours.
+            if SKIP_VAR.search(name):
+                continue
+            weight = 4 if BRAND_VAR.search(name) else 1
             for color in _colors_in(match.group(2)):
                 found.extend([color] * weight)
         if len(blob) < 220_000:
-            found.extend(_colors_in(blob))
+            # Preset palettes are also inlined as raw values. Drop the known CMS
+            # constants here, but keep them if a brand variable vouched for them above.
+            found.extend(color for color in _colors_in(blob) if color not in WP_DEFAULT_COLORS)
     ranked = [color for color, _ in Counter(found).most_common(24) if _keep_color(color)]
     unique: list[str] = []
     for color in ranked:
@@ -163,8 +188,8 @@ def _fetch_stylesheets(client: httpx.Client, urls: list[str]) -> list[str]:
     sheets: list[str] = []
     for url in urls:
         try:
-            response = client.get(url, timeout=12.0)
-        except httpx.HTTPError:
+            response = safe_get(client, url, timeout=12.0)
+        except (httpx.HTTPError, UnsafeUrlError):
             continue
         if response.status_code >= 400:
             continue
@@ -221,8 +246,8 @@ def _download_images(client: httpx.Client, urls: list[str]) -> list[dict]:
         if len(images) >= 3:
             break
         try:
-            response = client.get(url, timeout=12.0)
-        except httpx.HTTPError:
+            response = safe_get(client, url, timeout=12.0)
+        except (httpx.HTTPError, UnsafeUrlError):
             continue
         if response.status_code >= 400:
             continue
@@ -237,11 +262,62 @@ def _download_images(client: httpx.Client, urls: list[str]) -> list[dict]:
     return images
 
 
+# URLs that are almost never a usable product photograph.
+_NOT_A_PHOTO = re.compile(
+    r"icon|favicon|logo|sprite|avatar|placeholder|badge|payment|visa|mastercard|"
+    r"whatsapp|facebook|instagram|twitter|linkedin|youtube|pixel|tracking|1x1|spacer",
+    re.I,
+)
+# A real photograph is comfortably larger than an icon or a logo lockup.
+_MIN_PHOTO_BYTES = 40_000
+
+
+def fetch_photo_candidates(urls: list[str], limit: int = 3) -> list[dict]:
+    """Download the business's OWN photographs from URLs found while scraping.
+
+    These are used two ways: fed back to the image model as style references, and as
+    the card photo itself under `real_photo_first`. Icons, logos and tracking pixels
+    are rejected, and anything too small to be a photograph is dropped.
+    """
+    picked: list[str] = []
+    for url in urls or []:
+        if not url or _NOT_A_PHOTO.search(url):
+            continue
+        if url not in picked:
+            picked.append(url)
+    if not picked:
+        return []
+
+    out: list[dict] = []
+    try:
+        with httpx.Client(follow_redirects=True, timeout=20.0, headers={"User-Agent": USER_AGENT}) as client:
+            for url in picked:
+                if len(out) >= limit:
+                    break
+                try:
+                    response = safe_get(client, url, timeout=15.0)
+                except (httpx.HTTPError, UnsafeUrlError):
+                    continue
+                if response.status_code >= 400:
+                    continue
+                mime = response.headers.get("content-type", "").split(";")[0].strip().lower()
+                if mime not in {"image/jpeg", "image/png", "image/webp"}:
+                    continue
+                data = response.content
+                if len(data) < _MIN_PHOTO_BYTES or len(data) > 1_200_000:
+                    continue
+                out.append({"url": str(response.url), "mime": mime, "bytes": data})
+    except httpx.HTTPError:
+        return out
+    return out
+
+
 def scrape_site(url: str) -> dict:
     target = _normalize_url(url)
     try:
-        with httpx.Client(follow_redirects=True, timeout=20.0, headers={"User-Agent": USER_AGENT}) as client:
-            response = client.get(target)
+        with httpx.Client(timeout=20.0, headers={"User-Agent": USER_AGENT}) as client:
+            # Validates scheme, host and every redirect hop against the SSRF guard.
+            response = safe_get(client, target)
             if response.status_code >= 400:
                 raise RuntimeError(f"האתר {target} החזיר סטטוס {response.status_code}")
 
@@ -256,6 +332,8 @@ def scrape_site(url: str) -> dict:
             stylesheets = _fetch_stylesheets(client, _stylesheet_urls(page_url, soup))
     except httpx.HTTPError as exc:
         raise RuntimeError(f"לא הצלחנו לטעון את האתר {target}: {exc}") from exc
+    except UnsafeUrlError as exc:
+        raise RuntimeError(str(exc)) from exc
 
     work = BeautifulSoup(response.text, "lxml")
     for tag in work(["script", "style", "noscript", "svg", "iframe"]):

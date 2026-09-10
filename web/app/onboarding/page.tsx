@@ -58,6 +58,14 @@ const STAGE_LABELS: Record<string, string> = {
   done: "התוכנית מוכנה",
 };
 
+const ROLE_LABELS: Record<string, string> = {
+  primary: "צבע ראשי",
+  accent: "צבע הדגשה",
+  background: "רקע",
+  ink: "טקסט",
+  secondary: "משני",
+};
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
@@ -76,6 +84,7 @@ export default function OnboardingPage() {
   const [instagramLink, setInstagramLink] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [brand, setBrand] = useState<BrandLanguage | null>(null);
+  const [paletteNote, setPaletteNote] = useState("");
 
   const [budget, setBudget] = useState(4500);
   const [goal, setGoal] = useState<"sales" | "brand_awareness">("sales");
@@ -115,6 +124,19 @@ export default function OnboardingPage() {
       });
   }, [router]);
 
+  async function updateSwatch(index: number, hex: string) {
+    if (!brand) return;
+    const next = brand.palette.map((s, i) => (i === index ? { ...s, hex } : s));
+    setBrand({ ...brand, palette: next });
+    try {
+      await endpoints.savePalette(next);
+      setPaletteNote("הצבעים נשמרו ✓");
+      window.setTimeout(() => setPaletteNote(""), 2500);
+    } catch {
+      setPaletteNote("שמירת הצבע נכשלה");
+    }
+  }
+
   async function handleScanWebsite() {
     if (!/^https?:\/\/.+/i.test(website.trim())) {
       setError("הזינו כתובת אתר מלאה שמתחילה ב-http:// או https://");
@@ -129,6 +151,10 @@ export default function OnboardingPage() {
       setBrand(nextBrand);
       if (nextBrand.business_name) setName(nextBrand.business_name);
       if (nextBrand.offers_seen?.length) setOfferings(nextBrand.offers_seen.join(", "));
+      // City / neighbourhood is extracted from the site too, so the user does not have
+      // to retype something we already read.
+      const extracted = result.scan.extracted as { location?: string } | undefined;
+      if (extracted?.location) setLocation(extracted.location);
       toast("שפת המותג נלמדה מהאתר");
     } catch (err) {
       setError(err instanceof Error ? err.message : "קריאת האתר נכשלה");
@@ -272,15 +298,32 @@ export default function OnboardingPage() {
                   <span className="text-xs font-bold text-[#2d3f32]">שפת המותג מהאתר</span>
                   <Badge tone="emerald">נלמד מהאתר</Badge>
                 </div>
-                <div className="flex items-center gap-2">
-                  {brand.palette.map((swatch) => (
-                    <span
-                      key={swatch.hex}
-                      title={`${swatch.name} ${swatch.hex}`}
-                      className="h-5 w-5 rounded-full border border-[#c7c4b8]"
-                      style={{ backgroundColor: swatch.hex }}
-                    />
-                  ))}
+                <div>
+                  <p className="mb-1.5 text-[11px] text-[#4a5b4c]">
+                    אפשר לתקן את הצבעים — הם קובעים איך ייראו כל הכרטיסים והפוסטים.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {brand.palette.map((swatch, i) => (
+                      <label
+                        key={`${swatch.role}-${i}`}
+                        className="flex items-center gap-1.5"
+                        title={swatch.role}
+                      >
+                        <input
+                          type="color"
+                          value={/^#[0-9a-fA-F]{6}$/.test(swatch.hex) ? swatch.hex : "#000000"}
+                          onChange={(e) => void updateSwatch(i, e.target.value)}
+                          className="h-7 w-7 cursor-pointer rounded-full border border-[#c7c4b8] bg-transparent p-0"
+                        />
+                        <span className="text-[10px] font-bold text-[#4a5b4c]">
+                          {ROLE_LABELS[swatch.role] || swatch.role}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  {paletteNote ? (
+                    <p className="mt-1.5 text-[11px] font-bold text-[#2d3f32]">{paletteNote}</p>
+                  ) : null}
                 </div>
                 <p className="text-xs text-[#2d3f32]">
                   <span className="font-bold">טון: </span>

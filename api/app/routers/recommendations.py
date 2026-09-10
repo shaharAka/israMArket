@@ -21,8 +21,16 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         .first()
     )
     if not rec:
-        raise HTTPException(status_code=404, detail="עדיין אין המלצות שבועיות")
+        # See performance.latest — an un-run weekly loop is a normal state, not an error.
+        return {
+            "available": False,
+            "id": None,
+            "week_of": "",
+            "suggestions": {},
+            "created_at": "",
+        }
     return {
+        "available": True,
         "id": rec.id,
         "week_of": rec.week_of,
         "suggestions": loads(rec.suggestions_json, {}),
@@ -38,8 +46,9 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         .order_by(PerformanceSnapshot.created_at.desc())
         .first()
     )
-    if not snap:
-        raise HTTPException(status_code=400, detail="סנכרנו קודם נתוני GA4 ומטא בעמוד הביצועים")
+    # A snapshot is NOT required. Most small businesses have no GA4 at all, and
+    # gating the weekly loop on it made half the product unreachable for them —
+    # the prompt already knows how to work from the plan alone and say so.
     strategy = _active_strategy(db, business)
 
     business_payload = {
@@ -53,9 +62,9 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         suggestions = recommend(
             business_payload,
             serialize_strategy(strategy),
-            loads(snap.diagnostic_json, {}),
-            loads(snap.ga4_json, {}),
-            loads(snap.meta_json, {}),
+            loads(snap.diagnostic_json, {}) if snap else {},
+            loads(snap.ga4_json, {}) if snap else {},
+            loads(snap.meta_json, {}) if snap else {},
         )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
@@ -72,6 +81,7 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         business.webhooks,
         "recommendations",
         {"business_id": business.id, "week_of": rec.week_of, "suggestions": suggestions},
+        db=db,
     )
     return {
         "id": rec.id,

@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   AppShell,
@@ -19,22 +17,32 @@ import {
   type IntegrationsPayload,
 } from "@/lib/api";
 import {
-  BrandMark,
   IconCheck,
   IconCopy,
   IconLink,
   IconSparkles,
-  IconWhatsApp,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 export default function IntegrationsPage() {
-  const router = useRouter();
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
-  const [demo, setDemo] = useState(false);
-  const [error, setError] = useState("");
-  const [successNote, setSuccessNote] = useState("");
+  const [demo, setDemo] = useState(() => typeof window !== "undefined" && isDemo());
+  const [error, setError] = useState(() => {
+    if (typeof window === "undefined") return "";
+    return new URLSearchParams(window.location.search).get("error") || "";
+  });
+  const [successNote, setSuccessNote] = useState(() => {
+    if (typeof window === "undefined") return "";
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("ga4") === "connected") {
+      return "חשבון Google Analytics אומת בהצלחה! בחרו את הנכס המתאים לסיום החיבור.";
+    }
+    if (params.get("meta") === "connected") {
+      return "חשבון Meta אומת בהצלחה! בחרו את הדף וחשבון האינסטגרם לסיום החיבור.";
+    }
+    return "";
+  });
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -58,39 +66,29 @@ export default function IntegrationsPage() {
   }
 
   async function reload(forceLive = false) {
-    try {
-      const integrationsRes = await endpoints.integrations(forceLive);
-      setData(integrationsRes);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "שגיאה בטעינת החיבורים");
-    }
+    await endpoints
+      .integrations(forceLive)
+      .then((integrationsRes) => {
+        setData(integrationsRes);
+      })
+      .catch((err: unknown) => {
+        setError(err instanceof Error ? err.message : "שגיאה בטעינת החיבורים");
+      });
 
-    try {
-      const bizRes = await endpoints.business();
-      if (bizRes.business) {
-        setBusiness(bizRes.business);
-        setWebsiteInput(bizRes.business.website_url || "");
-      }
-    } catch {
-      // Business not yet enrolled or non-blocking
-    }
+    await endpoints
+      .business()
+      .then((bizRes) => {
+        if (bizRes.business) {
+          setBusiness(bizRes.business);
+          setWebsiteInput(bizRes.business.website_url || "");
+        }
+      })
+      .catch(() => {
+        // Business not yet enrolled or non-blocking
+      });
   }
 
   useEffect(() => {
-    const isCurrentlyDemo = isDemo();
-    setDemo(isCurrentlyDemo);
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("error")) {
-      setError(params.get("error") || "");
-    }
-    if (params.get("ga4") === "connected") {
-      setSuccessNote("חשבון Google Analytics אומת בהצלחה! בחרו את הנכס המתאים לסיום החיבור.");
-    }
-    if (params.get("meta") === "connected") {
-      setSuccessNote("חשבון Meta אומת בהצלחה! בחרו את הדף וחשבון האינסטגרם לסיום החיבור.");
-    }
-
     reload().catch((err) =>
       setError(err instanceof Error ? err.message : "שגיאה בטעינת החיבורים")
     );
@@ -452,7 +450,7 @@ export default function IntegrationsPage() {
                   <strong>אין לכם אתר פעיל?</strong> זה בסדר גמור! אתם לא חייבים אתר כדי להשתמש במערכת. המערכת תבנה את שפת המותג לפי תיאור העסק שהזנתם, וחשבון האינסטגרם והפייסבוק שלכם.
                 </p>
                 <p>
-                  <strong>האתר סגור בסיסמה או בבנייה?</strong> השאירו את השדה ריק בינתיים. כשהאתר יעלה לאוויר לציבור, הזינו את כתובתו כאן ולחצו "סרוק ורענן מותג מהאתר".
+                  <strong>האתר סגור בסיסמה או בבנייה?</strong> השאירו את השדה ריק בינתיים. כשהאתר יעלה לאוויר לציבור, הזינו את כתובתו כאן ולחצו &quot;סרוק ורענן מותג מהאתר&quot;.
                 </p>
               </div>
             ) : null}
@@ -603,11 +601,11 @@ export default function IntegrationsPage() {
                 <div>
                   <h4 className="font-bold text-[#191b18] mb-1">1. מישהו אחר בנה או מנהל לכם את האתר?</h4>
                   <p className="mb-2">
-                    בקשו מבונה האתרים או מאיש הדיגיטל שלכם להוסיף את הג'ימייל שלכם כ-<strong>Viewer (צופה)</strong> בנכס ה-GA4. אין צורך בהרשאות ניהול (Admin).
+                    בקשו מבונה האתרים או מאיש הדיגיטל שלכם להוסיף את הג&#39;ימייל שלכם כ-<strong>Viewer (צופה)</strong> בנכס ה-GA4. אין צורך בהרשאות ניהול (Admin).
                   </p>
                   <div className="bg-white p-2.5 rounded border border-[#dedcd4] flex items-center justify-between gap-2">
                     <span className="font-mono text-[11px] text-[#191b18] truncate">
-                      "היי, תוכל בבקשה להוסיף את הג'ימייל שלי כ-Viewer ב-Google Analytics של האתר שלנו? תודה!"
+                      &quot;היי, תוכל בבקשה להוסיף את הג&#39;ימייל שלי כ-Viewer ב-Google Analytics של האתר שלנו? תודה!&quot;
                     </span>
                     <button
                       type="button"
@@ -787,7 +785,7 @@ export default function IntegrationsPage() {
                 <div>
                   <h4 className="font-bold text-[#191b18] mb-1">1. יש לכם חשבון אינסטגרם פרטי?</h4>
                   <p>
-                    מטא מאפשרת שליפת נתונים רק מחשבונות מקצועיים (חינם לגמרי). פתחו את אפליקציית אינסטגרם בטלפון &gt; פרופיל &gt; תפריט ☰ &gt; הגדרות ופרטיות &gt; סוג חשבון וכלים &gt; <strong>העבר לחשבון מקצועי</strong> &gt; בחרו 'עסק' או 'יוצר תוכן'.
+                    מטא מאפשרת שליפת נתונים רק מחשבונות מקצועיים (חינם לגמרי). פתחו את אפליקציית אינסטגרם בטלפון &gt; פרופיל &gt; תפריט ☰ &gt; הגדרות ופרטיות &gt; סוג חשבון וכלים &gt; <strong>העבר לחשבון מקצועי</strong> &gt; בחרו &#39;עסק&#39; או &#39;יוצר תוכן&#39;.
                   </p>
                 </div>
 
@@ -805,7 +803,7 @@ export default function IntegrationsPage() {
                   </p>
                   <div className="bg-white p-2.5 rounded border border-[#dedcd4] flex items-center justify-between gap-2">
                     <span className="font-mono text-[11px] text-[#191b18] truncate">
-                      "היי, תוכלו בבקשה לוודא שיש לי הרשאת מנהל או גישת משימות בדף הפייסבוק העסקי שלנו? תודה!"
+                      &quot;היי, תוכלו בבקשה לוודא שיש לי הרשאת מנהל או גישת משימות בדף הפייסבוק העסקי שלנו? תודה!&quot;
                     </span>
                     <button
                       type="button"
