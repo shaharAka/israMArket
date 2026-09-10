@@ -579,3 +579,34 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "overlay_theme",
     ],
 }
+
+
+PHOTO_USABILITY_SCHEMA = {
+    "type": "object",
+    "title": "PhotoUsability",
+    "description": "אילו מהתמונות נקיות ומתאימות לשמש כתמונת רקע לכרטיס",
+    "properties": {
+        "usable_indexes": {
+            "type": "array",
+            "description": (
+                "אינדקסים (מתחילים ב-0) של תמונות שהן צילום נקי שאפשר להניח עליו כיתוב. "
+                "פסול תמונה שיש בה טקסט צרוב, לוגו, סימן מים, מחיר, באנר מבצע מעוצב, "
+                "או מיתוג של ספק/מותג אחר."
+            ),
+            "items": {"type": "integer"},
+        },
+        "rejected": {
+            "type": "array",
+            "description": "תמונות שנפסלו והסיבה",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "index": {"type": "integer"},
+                    "reason": {"type": "string"},
+                },
+                "required": ["index", "reason"],
+            },
+        },
+    },
+    "required": ["usable_indexes", "rejected"],
+}

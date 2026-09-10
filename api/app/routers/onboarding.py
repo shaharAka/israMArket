@@ -7,6 +7,7 @@ from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
+from app.services.brand import filter_usable_photos
 from app.services.images import store_image_bytes
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
@@ -74,7 +75,8 @@ def scan_business_site(
         db.flush()
         business_id = business.id
         stored_photos = []
-        for photo in fetch_photo_candidates((scanned.get("raw") or {}).get("image_urls") or []):
+        candidates = fetch_photo_candidates((scanned.get("raw") or {}).get("image_urls") or [])
+        for photo in filter_usable_photos(candidates):
             public_url = store_image_bytes(
                 business_id, "source-photo", photo["bytes"], photo["mime"]
             )
