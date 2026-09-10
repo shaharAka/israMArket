@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  api:
+    name: API (tests + compile)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          # The app uses `datetime | None` and `str | None` syntax at runtime, which
+          # needs 3.10+. Anything older fails to import rather than failing a test.
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Compile every module
+        run: python -m compileall -q app
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+
+  web:
+    name: Web (typecheck + lint + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      # `next typegen` must precede tsc: layout/page props are generated types that do
+      # not exist in a fresh clone, so a bare `tsc --noEmit` fails before the first build.
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+        env:
+          # Build-time only; the real values are supplied at deploy time.
+          API_ORIGIN: http://127.0.0.1:8000
+
+  secrets:
+    name: No committed secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if an .env file is tracked
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then
+            echo "::error::A real .env file is tracked. Only .env.example may be committed."
+            exit 1
+          fi
+          echo "No tracked .env files."

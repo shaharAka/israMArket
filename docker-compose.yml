@@ -1,0 +1,49 @@
+# IsraMarket — single-host deployment.
+#
+# Only the web tier publishes a port. The API stays on the internal network, which is
+# what the rate limiter's TRUST_FORWARDED_FOR assumption and the (disabled) API docs
+# both depend on.
+#
+# Copy .env.example to .env and fill it in first. The API refuses to start with the
+# default JWT_SECRET when ENVIRONMENT=production.
+services:
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?set TOKEN_ENCRYPTION_KEY in .env}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
+      GEMINI_IMAGE_MODEL: ${GEMINI_IMAGE_MODEL:-gemini-3-pro-image}
+      GEMINI_IMAGE_SIZE: ${GEMINI_IMAGE_SIZE:-2K}
+      REAL_PHOTO_FIRST: ${REAL_PHOTO_FIRST:-true}
+      # The browser reaches the app on this origin, so OAuth redirects and the CSRF
+      # origin check must match it exactly (scheme included).
+      WEB_ORIGIN: ${WEB_ORIGIN:?set WEB_ORIGIN in .env}
+      API_ORIGIN: ${API_ORIGIN:-http://localhost:8000}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      META_APP_ID: ${META_APP_ID:-}
+      META_APP_SECRET: ${META_APP_SECRET:-}
+      DATABASE_URL: sqlite:////app/data/isramarket.db
+    volumes:
+      # The database AND every generated card image live here. Losing this volume loses
+      # customer data and artwork, so back it up.
+      - api-data:/app/data
+
+  web:
+    build: ./web
+    restart: unless-stopped
+    environment:
+      # Server-side only (the /backend proxy route reads it at request time), so it
+      # points at the compose service name, never at the browser.
+      API_ORIGIN: http://api:8000
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  api-data:
