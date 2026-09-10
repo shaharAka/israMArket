@@ -6,8 +6,10 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, User
-from app.schemas import BrandLanguageIn, OnboardingIn, WebsiteScanIn
+from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
+from app.services.images import store_image_bytes
 from app.services.jsonutil import dumps, loads
+from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
 from app.services.strategy import generate_monthly_strategy, propose_hypotheses, scan_website
 from app.services.webhooks import deliver
@@ -61,6 +63,28 @@ def scan_business_site(
     business.website_url = body.website_url
     if scanned["brand_language"].get("business_name") and not business.name:
         business.name = scanned["brand_language"]["business_name"]
+    extracted = scanned.get("extracted") or {}
+    if extracted.get("location") and not business.location:
+        business.location = extracted["location"]
+    # Keep the business's own photographs now, while we already have the page, so card
+    # generation can reuse them without hitting their site again on every request.
+    try:
+        # Flush FIRST: a business created moments ago in this request still has
+        # id=None, which stored the photos under a "None" folder nothing can serve.
+        db.flush()
+        business_id = business.id
+        stored_photos = []
+        for photo in fetch_photo_candidates((scanned.get("raw") or {}).get("image_urls") or []):
+            public_url = store_image_bytes(
+                business_id, "source-photo", photo["bytes"], photo["mime"]
+            )
+            stored_photos.append({"url": photo.get("url", ""), "public_url": public_url})
+        if stored_photos:
+            scanned["real_photos"] = stored_photos
+    except Exception:
+        # Storing source photos is an optimisation; never fail the scan over it.
+        pass
+
     business.scraped_profile_json = dumps(scanned)
     business.updated_at = datetime.utcnow()
     db.commit()
@@ -87,6 +111,33 @@ def save_brand_language(
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business), "scan": stored}
+
+
+@router.post("/palette")
+def save_palette(
+    body: PaletteIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Let the owner correct the colours we extracted.
+
+    The palette drives every card, badge and CTA, so a wrong extraction is not cosmetic
+    — and extraction genuinely gets it wrong (CMS preset palettes, social-icon colours).
+    Without this the user was stuck with whatever we guessed.
+    """
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    stored = loads(business.scraped_profile_json, {}) if business else {}
+    brand = stored.get("brand_language") if business else None
+    if not business or not brand:
+        raise HTTPException(status_code=400, detail="אין שפת מותג לשמור. סרקו את האתר קודם.")
+
+    brand["palette"] = [item.model_dump() for item in body.palette]
+    stored["brand_language"] = brand
+    business.scraped_profile_json = dumps(stored)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
 
 
 @router.post("/profile")
@@ -122,7 +173,13 @@ def save_profile(
 
 
 @router.post("/preview-scan")
-def preview_scan(body: WebsiteScanIn) -> dict:
+def preview_scan(
+    body: WebsiteScanIn,
+    user: User = Depends(get_current_user),
+) -> dict:
+    # Authenticated: this endpoint fetches a user-supplied URL AND spends Gemini
+    # quota, so leaving it open made the API a free SSRF pivot and a quota faucet.
+    _ = user
     try:
         scanned = scan_website(body.website_url)
     except Exception as exc:
@@ -236,6 +293,7 @@ def generate(
         business.webhooks,
         "strategy",
         {"business_id": business.id, "year": strategy.year, "month": strategy.month, "usp": generated["usp"]},
+        db=db,
     )
     return {
         "done": True,

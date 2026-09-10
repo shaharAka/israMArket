@@ -903,6 +903,8 @@ const LIVE_PATHS = new Set([
   "/integrations/meta/account",
   "/integrations/ga4",
   "/integrations/meta",
+  // Editing the real palette is only meaningful against the live API.
+  "/onboarding/palette",
 ]);
 
 export async function api<T>(
@@ -910,7 +912,6 @@ export async function api<T>(
   options: RequestInit = {},
   forceLiveParam = false
 ): Promise<T> {
-  const method = (options.method || "GET").toUpperCase();
   const forceLive = forceLiveParam || LIVE_PATHS.has(path);
   if (forceLive) exitDemo();
   if (isDemo() && !forceLive) return demoResolve<T>(path, options);
@@ -947,6 +948,11 @@ export const endpoints = {
   business: () => api<{ business: Business | null }>("/onboarding/me"),
   saveProfile: (body: OnboardingPayload) =>
     api<{ business: Business }>("/onboarding/profile", { method: "POST", body: JSON.stringify(body) }),
+  savePalette: (palette: BrandSwatch[]) =>
+    api<{ business: Business }>("/onboarding/palette", {
+      method: "POST",
+      body: JSON.stringify({ palette }),
+    }),
   scanWebsite: (website_url: string) =>
     api<{ business: Business; scan: ScanPayload }>("/onboarding/scan", {
       method: "POST",
@@ -968,7 +974,15 @@ export const endpoints = {
   strategy: () => api<StrategyPayload>("/strategy/current"),
   generatePostImage: (
     post_index: number,
-    options: { force?: boolean; vibe?: string; custom_prompt?: string } = {}
+    options: {
+      force?: boolean;
+      vibe?: string;
+      custom_prompt?: string;
+      /** False = reuse the business's own photo only; never spend a generation. */
+      allow_generation?: boolean;
+      /** "auto" prefers their own photo, "real" never generates, "ai" always does. */
+      image_preference?: "auto" | "real" | "ai";
+    } = {}
   ) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/image", {
       method: "POST",
@@ -1128,6 +1142,24 @@ export type WeeklyBreakdownItem = {
   media_distribution: string;
 };
 
+/**
+ * Card template. The first five are the legacy web-component themes still stored on
+ * existing strategies; the rest are real compositions (see components/CardCanvas.tsx),
+ * which the renderer maps the legacy values onto. `type_hero` draws no photograph.
+ */
+export type OverlayTheme =
+  | "paper_badge"
+  | "ink_pill"
+  | "accent_banner"
+  | "frosted_glass"
+  | "minimal_text"
+  | "lower_editorial"
+  | "split_panel"
+  | "framed_inset"
+  | "cover_type"
+  | "promo_ribbon"
+  | "type_hero";
+
 export type RoadmapPost = {
   week: number;
   date_hint: string;
@@ -1146,7 +1178,7 @@ export type RoadmapPost = {
   overlay_headline?: string;
   overlay_badge?: string;
   overlay_position?: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card";
-  overlay_theme?: "paper_badge" | "ink_pill" | "accent_banner" | "frosted_glass" | "minimal_text";
+  overlay_theme?: OverlayTheme;
   creative_concept?: string;
   visual_style?: string;
   scene_description?: string;
@@ -1164,6 +1196,11 @@ export type RoadmapPost = {
   primary_outlet?: "instagram" | "facebook" | "whatsapp" | "tiktok";
   outlets?: string[];
   metrics_to_watch?: string[];
+  /** A specific, verifiable number for the card ("100 חלות כל שישי"). Beats vague claims. */
+  stat_highlight?: string;
+  /** Where the card's image came from: their own photo, a generated one, or none. */
+  image_source?: "real_photo" | "generated" | "none";
+  image_source_url?: string;
   outlet_captions?: {
     instagram?: string;
     facebook?: string;
@@ -1309,6 +1346,8 @@ export type IntegrationsPayload = {
 };
 
 export type PerformancePayload = {
+  /** False when nothing has been synced yet — a normal state, not an error. */
+  available?: boolean;
   period_start: string;
   period_end: string;
   ga4: {
@@ -1328,6 +1367,8 @@ export type PerformancePayload = {
 };
 
 export type RecommendationPayload = {
+  /** False when no weekly loop has run yet — a normal state, not an error. */
+  available?: boolean;
   week_of: string;
   suggestions: {
     week_summary: string;

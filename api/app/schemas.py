@@ -54,7 +54,6 @@ class PostUpdateIn(BaseModel):
     has_overlay: bool = True
     overlay_headline: str = Field(default="", max_length=200)
     overlay_badge: str = Field(default="", max_length=100)
-    overlay_position: str = Field(default="bottom_pill", max_length=40)
     overlay_theme: str = Field(default="ink_pill", max_length=40)
     creative_concept: str = Field(default="", max_length=1000)
     visual_style: str = Field(default="", max_length=500)
@@ -84,7 +83,9 @@ class StrategyApproveIn(BaseModel):
 
 
 class BrandSwatchIn(BaseModel):
-    hex: str = Field(min_length=4, max_length=7)
+    # Length alone let "#zzz" through. The palette drives every card colour,
+    # so reject anything that is not a real hex before it reaches the renderer.
+    hex: str = Field(pattern=r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
     role: Literal["primary", "accent", "background", "ink", "secondary"]
     name: str = Field(min_length=1, max_length=80)
 
@@ -110,6 +111,13 @@ class BrandLanguageIn(BaseModel):
     logo_description: str = Field(default="", max_length=400)
 
 
+class PaletteIn(BaseModel):
+    """Palette-only edit. Deliberately narrower than BrandLanguageIn, which requires a
+    dozen fields a business owner has no way to supply."""
+
+    palette: list[BrandSwatchIn] = Field(min_length=1, max_length=8)
+
+
 class WebsiteScanIn(BaseModel):
     website_url: str = Field(min_length=8, max_length=500)
 
@@ -117,6 +125,12 @@ class WebsiteScanIn(BaseModel):
 class PostImageIn(BaseModel):
     post_index: int = Field(ge=0, le=50)
     force: bool = False
+    # Explicit user request ("create an image") = True. Automatic preparation while
+    # browsing = False, so merely clicking through the plan can never spend money.
+    allow_generation: bool = True
+    # Which source the user wants. "auto" prefers their own photo and falls back to
+    # generation; "real" never spends a generation; "ai" always generates.
+    image_preference: Literal["auto", "real", "ai"] = "auto"
     vibe: str = Field(default="", max_length=120)
     custom_prompt: str = Field(default="", max_length=1000)
 

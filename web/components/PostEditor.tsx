@@ -1,8 +1,18 @@
 "use client";
 
-import Image from "next/image";
-import { useMemo, useState } from "react";
-import { endpoints, type BrandLanguage, type RoadmapPost, type StrategyPayload } from "@/lib/api";
+import { useMemo, useRef, useState } from "react";
+import {
+  CardCanvas,
+  CardStage,
+  CARD_RATIOS,
+  CARD_TEMPLATES,
+  cardSize,
+  needsPhoto,
+  resolveTemplate,
+  type CardRatio,
+} from "@/components/CardCanvas";
+import { downloadCardPng } from "@/lib/cardExport";
+import { endpoints, type BrandLanguage, type OverlayTheme, type RoadmapPost, type StrategyPayload } from "@/lib/api";
 import { IconCheck, IconCopy, IconImage, IconLink, IconSparkles, IconWhatsApp } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
@@ -66,21 +76,29 @@ const DESIGN_PRESETS: { key: string; label: string; desc: string; icon: string }
   { key: "ink_pill", label: "תגית דיו מודרנית", desc: "תג צף שחור יוקרתי עם טיפוגרפיה חדה", icon: "✒️" },
 ];
 
-const POSITION_OPTIONS: { key: RoadmapPost["overlay_position"]; label: string }[] = [
-  { key: "top_right", label: "פינה ימנית" },
-  { key: "top_left", label: "פינה שמאלית" },
-  { key: "bottom_pill", label: "מרכז למטה" },
-  { key: "bottom_bar", label: "פס תחתון" },
-  { key: "center_card", label: "כרטיס במרכז" },
-];
+const IMAGE_SOURCE_LABELS: Record<string, { text: string; tone: string }> = {
+  real_photo: { text: "תמונה אמיתית מהאתר שלכם", tone: "bg-[#e4efe4] text-[#2d5b33] border-[#bcd6bc]" },
+  generated: { text: "תמונה שנוצרה ב-AI", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
+  pending: { text: "עדיין אין תמונה — אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
+  none: { text: "כרטיס טיפוגרפי — בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
+};
 
-const THEME_OPTIONS: { key: RoadmapPost["overlay_theme"]; label: string }[] = [
-  { key: "paper_badge", label: "מדבקת נייר" },
-  { key: "ink_pill", label: "תגית דיו" },
-  { key: "accent_banner", label: "פס מודגש" },
-  { key: "frosted_glass", label: "זכוכית מעודנת" },
-  { key: "minimal_text", label: "מינימליסטי" },
-];
+const THEME_OPTIONS: { key: OverlayTheme; label: string }[] = CARD_TEMPLATES.map((t) => ({
+  key: t.key,
+  label: t.label,
+}));
+
+/** Host shown in the Facebook/WhatsApp link-preview mockups, derived from the real
+ *  tracked URL. This used to be a hardcoded string, so every customer saw another
+ *  business's domain on their own post preview. */
+function previewHost(url?: string) {
+  if (!url) return "";
+  try {
+    return new URL(url).host.replace(/^www\./i, "");
+  } catch {
+    return "";
+  }
+}
 
 function captionFor(post: RoadmapPost, outlet: OutletKey) {
   if (outlet !== "tiktok" && post.outlet_captions?.[outlet]) {
@@ -119,6 +137,11 @@ export function PostEditor({
   const [designerBusy, setDesignerBusy] = useState(false);
   const [customDesignPrompt, setCustomDesignPrompt] = useState("");
   const [showDesignerSettings, setShowDesignerSettings] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportRatio, setExportRatio] = useState<CardRatio | "auto">("auto");
+  // Dedicated off-screen canvas at true export size, so the downloaded PNG never
+  // includes the mockup chrome (Instagram header, action rail, phone frame).
+  const exportRef = useRef<HTMLDivElement>(null);
 
   const currentPost = posts[selectedIndex];
   const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
@@ -147,16 +170,49 @@ export function PostEditor({
       : Boolean(currentPost.overlay_text && currentPost.overlay_text.trim());
   const overlayHeadline = currentPost.overlay_headline || currentPost.overlay_text || "";
   const overlayBadge = currentPost.overlay_badge || "";
-  const overlayPosition = currentPost.overlay_position || "bottom_pill";
   const overlayTheme = currentPost.overlay_theme || "ink_pill";
+  const activeTemplate = resolveTemplate(overlayTheme);
+  const exportSize = cardSize(
+    currentPost.format,
+    exportRatio === "auto" ? undefined : exportRatio,
+  );
 
-  async function prepareImage(index: number, force = false) {
+  async function handleExportCard() {
+    const node = exportRef.current;
+    if (!node) {
+      toast("הכרטיס עוד לא מוכן לייצוא.");
+      return;
+    }
+    if (!currentPost.image_url && needsPhoto(currentPost.overlay_theme)) {
+      toast("צרו קודם תמונה, ואז נוכל להוריד את הכרטיס.");
+      return;
+    }
+    setExporting(true);
+    const result = await downloadCardPng(node, {
+      width: exportSize.w,
+      height: exportSize.h,
+      title: currentPost.title,
+    });
+    setExporting(false);
+    toast(
+      result.ok
+        ? `הכרטיס הורד בגודל ${exportSize.w}×${exportSize.h}.`
+        : `ייצוא הכרטיס נכשל: ${result.error}`,
+    );
+  }
+
+  async function prepareImage(index: number, force = false, allowGeneration = true) {
     if (!force && posts[index]?.image_url) return;
     if (imageBusy !== null) return;
     setImageError("");
     setImageBusy(index);
     try {
-      const result = await endpoints.generatePostImage(index, { force });
+      const result = await endpoints.generatePostImage(index, {
+        force,
+        // Browsing the plan must never trigger a paid generation. Only an explicit
+        // click on "create image" sets this.
+        allow_generation: allowGeneration,
+      });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
       toast("התמונה נוצרה בהצלחה לפי שפת המותג.");
@@ -174,7 +230,30 @@ export function PostEditor({
     setImageError("");
     setPublishUrl(posts[index]?.published_url || "");
     setCustomDesignPrompt("");
-    void prepareImage(index);
+    // Reuse an existing photo (free) or the business's own scraped image. Passing
+    // allowGeneration=false means clicking through posts can never cost money.
+    void prepareImage(index, false, false);
+  }
+
+  /** Switch a card between the business's own photo and a generated one. */
+  async function chooseImageSource(source: "real" | "ai") {
+    if (imageBusy !== null || designerBusy) return;
+    setImageError("");
+    setImageBusy(selectedIndex);
+    try {
+      const result = await endpoints.generatePostImage(selectedIndex, {
+        force: true,
+        allow_generation: source === "ai",
+        image_preference: source,
+      });
+      setPosts(result.strategy.roadmap.posts);
+      onStrategyUpdated?.(result.strategy);
+      toast(source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
+    } catch (err) {
+      setImageError(err instanceof Error ? err.message : "החלפת התמונה נכשלה");
+    } finally {
+      setImageBusy(null);
+    }
   }
 
   async function markPublished() {
@@ -287,146 +366,42 @@ export function PostEditor({
   const isPreparingImage = imageBusy === selectedIndex;
   const currentOutletMeta = OUTLETS.find((item) => item.key === outlet) || OUTLETS[0];
 
-  function renderGraphicOverlay() {
-    const headline = overlayHeadline.trim();
-    if (!headline && !overlayBadge) return null;
 
-    let positionClasses = "";
-    if (overlayPosition === "top_right") {
-      positionClasses = "absolute top-3.5 right-3.5 max-w-[85%]";
-    } else if (overlayPosition === "top_left") {
-      positionClasses = "absolute top-3.5 left-3.5 max-w-[85%]";
-    } else if (overlayPosition === "bottom_bar") {
-      positionClasses = "absolute inset-x-0 bottom-0";
-    } else if (overlayPosition === "center_card") {
-      positionClasses = "absolute inset-0 flex items-center justify-center p-5 pointer-events-none";
-    } else {
-      positionClasses = "absolute bottom-3.5 inset-x-3 flex justify-center pointer-events-none";
-    }
-
-    if (overlayTheme === "paper_badge") {
+  // Visual Image Media Slot — the card itself renders inside CardStage.
+  function renderMediaSlot(fill = false) {
+    const photoFree = !needsPhoto(currentPost.overlay_theme);
+    if (!currentPost.image_url && !photoFree) {
       return (
-        <div className={positionClasses}>
-          <div className="rounded-xl border border-[#d8d5cb] bg-[#faf8f4]/95 p-3 text-right shadow-lg backdrop-blur-sm pointer-events-auto max-w-xs">
-            {overlayBadge ? (
-              <span className="mb-0.5 inline-block text-[10px] font-bold uppercase tracking-wider text-[#7d7a71]">
-                {overlayBadge}
-              </span>
-            ) : null}
-            <p className="text-sm font-black leading-tight tracking-tight text-[#191b18]">
-              {headline}
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    if (overlayTheme === "accent_banner") {
-      return (
-        <div className={positionClasses}>
-          <div className="w-full border-t border-white/10 bg-[#191b18]/92 p-3 text-center shadow-lg backdrop-blur-sm pointer-events-auto">
-            {overlayBadge ? (
-              <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-[#dedcd5]">
-                {overlayBadge}
-              </span>
-            ) : null}
-            <p className="text-sm font-black text-white">{headline}</p>
-          </div>
-        </div>
-      );
-    }
-
-    if (overlayTheme === "frosted_glass") {
-      return (
-        <div className={positionClasses}>
-          <div className="rounded-xl border border-white/60 bg-white/80 p-3.5 text-center shadow-xl backdrop-blur-md pointer-events-auto max-w-xs">
-            {overlayBadge ? (
-              <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-[#62635f]">
-                {overlayBadge}
-              </span>
-            ) : null}
-            <p className="text-sm font-black leading-snug text-[#191b18]">
-              {headline}
-            </p>
-          </div>
-        </div>
-      );
-    }
-
-    if (overlayTheme === "minimal_text") {
-      return (
-        <div className={positionClasses}>
-          <div className="p-2 text-center drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] pointer-events-auto">
-            {overlayBadge ? (
-              <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-wider text-white/90">
-                {overlayBadge}
-              </span>
-            ) : null}
-            <p className="text-base font-black text-white">{headline}</p>
-          </div>
-        </div>
-      );
-    }
-
-    // Default: ink_pill
-    return (
-      <div className={positionClasses}>
-        <div className="inline-flex max-w-[90%] flex-col items-center rounded-full border border-white/15 bg-[#191b18]/92 px-4 py-2 text-center shadow-xl backdrop-blur-sm pointer-events-auto">
-          {overlayBadge ? (
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#c7c5bd]">
-              {overlayBadge}
-            </span>
+        <div className="flex aspect-[4/5] w-full flex-col items-center justify-center gap-3 bg-[#f0efeb] px-6 text-center">
+          <IconImage className="h-6 w-6 text-[#898a85]" />
+          <p className="text-sm font-bold text-[#62635f]">
+            {isPreparingImage ? "אנחנו יוצרים את התמונה…" : "התמונה בהכנה"}
+          </p>
+          {imageError ? (
+            <>
+              <p className="text-xs leading-5 text-[#8d4539]">{imageError}</p>
+              <button
+                type="button"
+                onClick={() => void prepareImage(selectedIndex, true)}
+                className="text-xs font-bold text-[#20211f] underline underline-offset-4"
+              >
+                לנסות שוב
+              </button>
+            </>
           ) : null}
-          <span className="text-xs font-black leading-snug text-white">
-            {headline}
-          </span>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
-  // Visual Image Media Slot
-  function renderMediaSlot(aspectClass = "aspect-[4/5]") {
     return (
-      <div className={`relative ${aspectClass} w-full overflow-hidden bg-[#f0efeb]`}>
-        {currentPost.image_url ? (
-          <Image
-            src={currentPost.image_url}
-            alt={currentPost.title}
-            width={800}
-            height={1000}
-            unoptimized
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center">
-            <IconImage className="h-6 w-6 text-[#898a85]" />
-            <p className="text-sm font-bold text-[#62635f]">
-              {isPreparingImage ? "אנחנו יוצרים את התמונה…" : "התמונה בהכנה"}
-            </p>
-            {imageError ? (
-              <>
-                <p className="text-xs leading-5 text-[#8d4539]">{imageError}</p>
-                <button
-                  type="button"
-                  onClick={() => void prepareImage(selectedIndex, true)}
-                  className="text-xs font-bold text-[#20211f] underline underline-offset-4"
-                >
-                  לנסות שוב
-                </button>
-              </>
-            ) : null}
-          </div>
-        )}
-
-        {currentPost.image_url && hasOverlay ? (
-          renderGraphicOverlay()
-        ) : currentPost.image_url ? (
-          <div className="absolute bottom-2.5 left-2.5 rounded-full bg-[#191b18]/65 px-2.5 py-1 text-[10px] font-bold text-white/95 backdrop-blur-sm pointer-events-none">
-            צילום גיבור נקי
-          </div>
-        ) : null}
-      </div>
+      <CardStage
+        post={currentPost}
+        brand={brandLanguage}
+        businessName={businessName}
+        fill={fill}
+        rounded={!fill}
+        ratio={exportRatio === "auto" ? undefined : exportRatio}
+      />
     );
   }
 
@@ -447,7 +422,7 @@ export function PostEditor({
 
           {/* 9:16 Frame */}
           <div className="relative aspect-[9/16] w-full overflow-hidden bg-neutral-900">
-            {renderMediaSlot("h-full w-full")}
+            {renderMediaSlot(true)}
 
             {/* Right Side Action Rail */}
             <div className="absolute bottom-16 left-3 flex flex-col items-center gap-4 text-white z-10">
@@ -518,7 +493,7 @@ export function PostEditor({
         </div>
 
         {/* Media (Photo First) */}
-        {renderMediaSlot("aspect-[4/5]")}
+        {renderMediaSlot()}
 
         {/* Action Row */}
         <div className="px-3.5 pt-3 pb-2">
@@ -595,13 +570,13 @@ export function PostEditor({
         </div>
 
         {/* Media Container */}
-        {renderMediaSlot("aspect-[4/5] sm:aspect-square")}
+        {renderMediaSlot()}
 
         {/* Facebook Link Preview Snippet (OpenGraph Card) */}
         {currentPost.tracking_url || currentPost.cta ? (
           <div className="border-t border-[#ced0d4] bg-[#f0f2f5] p-3 text-right">
             <span className="block text-[10px] uppercase tracking-wider text-[#65676b] font-bold">
-              NECHAMAB.CO.IL
+              {previewHost(currentPost.tracking_url).toUpperCase()}
             </span>
             <p className="mt-0.5 text-xs font-bold text-[#050505] line-clamp-1">
               {currentPost.title}
@@ -681,7 +656,7 @@ export function PostEditor({
           <div className="mr-auto max-w-[92%] rounded-2xl rounded-tr-none bg-white p-2 text-right shadow-sm border border-[#e2dcd4]">
             {/* Nested Media inside Bubble */}
             <div className="overflow-hidden rounded-xl mb-2">
-              {renderMediaSlot("aspect-[4/3] sm:aspect-[4/5]")}
+              {renderMediaSlot()}
             </div>
 
             {/* Bubble Copy */}
@@ -702,7 +677,7 @@ export function PostEditor({
               {currentPost.tracking_url ? (
                 <div className="mt-2 rounded-lg border border-[#e9edef] bg-[#f0f2f5] p-2 text-right">
                   <span className="block text-[10px] font-bold text-[#008069]">
-                    nechamab.co.il
+                    {previewHost(currentPost.tracking_url)}
                   </span>
                   <span className="block text-[11px] font-medium text-[#111b21] truncate">
                     להזמנה ישירה ונעילת מקום לחג
@@ -735,7 +710,7 @@ export function PostEditor({
             העתק הודעה מעוצבת לוואטסאפ
           </button>
           <span className="text-[11px] text-[#667781]">
-            נשלח בצ'אט ישיר / בקבוצת שידור
+            נשלח בצ&apos;אט ישיר / בקבוצת שידור
           </span>
         </div>
       </div>
@@ -754,7 +729,7 @@ export function PostEditor({
         </div>
 
         <div className="relative aspect-[9/16] w-full overflow-hidden bg-neutral-900">
-          {renderMediaSlot("h-full w-full")}
+          {renderMediaSlot(true)}
 
           {/* Right Rail */}
           <div className="absolute bottom-16 left-3 flex flex-col items-center gap-4 text-white z-10">
@@ -925,7 +900,7 @@ export function PostEditor({
           </div>
 
           {/* Two-Column Workspace: Left/Center is the Native Platform Mockup, Right is Controls */}
-          <div className="grid items-start gap-6 md:grid-cols-[minmax(300px,1.15fr)_minmax(0,0.85fr)]">
+          <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-6 xl:grid-cols-[minmax(340px,1.15fr)_minmax(0,0.85fr)]">
             {/* Visual Column: NATIVE Channel Mockup + Designer AI Panel */}
             <div className="space-y-4">
               {/* Dynamic Platform Mockup */}
@@ -1069,38 +1044,16 @@ export function PostEditor({
 
                         <div>
                           <label className="block text-[11px] font-bold text-[#62635f] mb-1">
-                            מיקום הכיתוב
+                            תבנית הכרטיס
                           </label>
-                          <div className="grid grid-cols-3 gap-1">
-                            {POSITION_OPTIONS.map((pos) => (
-                              <button
-                                key={pos.key}
-                                type="button"
-                                onClick={() => void updateDesignField({ overlay_position: pos.key })}
-                                className={`rounded border px-2 py-1 text-[11px] font-bold ${
-                                  overlayPosition === pos.key
-                                    ? "border-[#20211f] bg-[#20211f] text-white"
-                                    : "border-[#dedcd4] bg-white text-[#62635f]"
-                                }`}
-                              >
-                                {pos.label}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-[11px] font-bold text-[#62635f] mb-1">
-                            סגנון גרפי
-                          </label>
-                          <div className="grid grid-cols-3 gap-1">
+                          <div className="grid grid-cols-2 gap-1">
                             {THEME_OPTIONS.map((theme) => (
                               <button
                                 key={theme.key}
                                 type="button"
                                 onClick={() => void updateDesignField({ overlay_theme: theme.key })}
-                                className={`rounded border px-2 py-1 text-[11px] font-bold ${
-                                  overlayTheme === theme.key
+                                className={`rounded border px-2 py-1.5 text-[11px] font-bold ${
+                                  activeTemplate === theme.key
                                     ? "border-[#20211f] bg-[#20211f] text-white"
                                     : "border-[#dedcd4] bg-white text-[#62635f]"
                                 }`}
@@ -1109,14 +1062,54 @@ export function PostEditor({
                               </button>
                             ))}
                           </div>
+                          <p className="mt-1.5 text-[10px] leading-4 text-[#898a85]">
+                            {CARD_TEMPLATES.find((t) => t.key === activeTemplate)?.desc}
+                          </p>
                         </div>
                       </>
                     ) : null}
                   </div>
                 ) : null}
 
-                {/* Regenerate Image Button */}
-                <div className="mt-3 pt-3 border-t border-[#e9e8e3]">
+                {/* Image provenance + source switch */}
+                <div className="mt-3 pt-3 border-t border-[#e9e8e3] space-y-2">
+                  {(() => {
+                    // Posts created before provenance tracking have no image_source.
+                    // Every legacy path generated its image, so "generated" is the
+                    // accurate label — not "no image yet", which was plainly wrong
+                    // for a card that visibly had one.
+                    const key =
+                      currentPost.image_source ||
+                      (currentPost.image_url ? "generated" : "pending");
+                    const meta = IMAGE_SOURCE_LABELS[key];
+                    if (!meta) return null;
+                    return (
+                      <div className={`rounded-md border px-2.5 py-1.5 text-[11px] font-bold ${meta.tone}`}>
+                        {meta.text}
+                      </div>
+                    );
+                  })()}
+                  {needsPhoto(currentPost.overlay_theme) ? (
+                    <div className="grid grid-cols-2 gap-1">
+                      <button
+                        type="button"
+                        disabled={imageBusy !== null || designerBusy}
+                        onClick={() => void chooseImageSource("real")}
+                        className="rounded border border-[#dedcd4] bg-white px-2 py-1.5 text-[11px] font-bold text-[#62635f] disabled:opacity-40"
+                      >
+                        התמונה שלי מהאתר
+                      </button>
+                      <button
+                        type="button"
+                        disabled={imageBusy !== null || designerBusy}
+                        onClick={() => void chooseImageSource("ai")}
+                        className="rounded border border-[#dedcd4] bg-white px-2 py-1.5 text-[11px] font-bold text-[#62635f] disabled:opacity-40"
+                      >
+                        ליצור תמונה ב-AI
+                      </button>
+                    </div>
+                  ) : null}
+
                   <button
                     type="button"
                     disabled={imageBusy !== null || designerBusy}
@@ -1125,6 +1118,40 @@ export function PostEditor({
                   >
                     <IconImage className="h-3.5 w-3.5" />
                     {isPreparingImage ? "יוצר תמונה חדשה ע״י AI…" : "יצירת תמונה חדשה לפי העיצוב"}
+                  </button>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-[#62635f] mb-1">
+                      יחס ייצוא
+                    </label>
+                    <div className="grid grid-cols-4 gap-1">
+                      {([{ key: "auto" as const, label: "לפי פורמט" }, ...CARD_RATIOS]).map((r) => (
+                        <button
+                          key={r.key}
+                          type="button"
+                          onClick={() => setExportRatio(r.key)}
+                          className={`rounded border px-2 py-1 text-[11px] font-bold ${
+                            exportRatio === r.key
+                              ? "border-[#20211f] bg-[#20211f] text-white"
+                              : "border-[#dedcd4] bg-white text-[#62635f]"
+                          }`}
+                        >
+                          {r.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={exporting || (!currentPost.image_url && needsPhoto(currentPost.overlay_theme))}
+                    onClick={() => void handleExportCard()}
+                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#20211f] bg-[#20211f] px-3 py-2 text-xs font-bold text-white hover:bg-[#33352f] disabled:opacity-40"
+                  >
+                    <IconImage className="h-3.5 w-3.5" />
+                    {exporting
+                      ? "מייצא כרטיס…"
+                      : `הורדת הכרטיס (${exportSize.w}×${exportSize.h})`}
                   </button>
                 </div>
               </section>
@@ -1259,6 +1286,34 @@ export function PostEditor({
             </section>
           </div>
         </main>
+      </div>
+
+      {/* Off-screen card at true export size, so the PNG matches the preview exactly.
+          It must NOT be display:none (that prevents rasterising) and must NOT be pushed
+          off-canvas with a negative offset or a translation — both enlarge the document's
+          scrollWidth and give the page thousands of pixels of phantom horizontal scroll
+          on touch devices. A zero-sized, overflow-hidden, fixed container clips it out of
+          the layout entirely while the node keeps its real 1080px box for html-to-image. */}
+      <div
+        aria-hidden
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          pointerEvents: "none",
+          opacity: 0,
+        }}
+      >
+        <CardCanvas
+          post={currentPost}
+          brand={brandLanguage}
+          businessName={businessName}
+          size={exportSize}
+          canvasRef={exportRef}
+        />
       </div>
     </div>
   );

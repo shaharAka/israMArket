@@ -109,17 +109,32 @@ def lite_json(
 def generate_image_bytes(
     prompt: str,
     aspect_ratio: str,
+    references: list[ImageBlob] | None = None,
 ) -> tuple[bytes, str]:
+    """Render one image.
+
+    `references` are the business's OWN photographs, scraped from their site. Feeding
+    them back in is the cheapest way to stop the model falling back to its default
+    look, and to keep a set of cards consistent with each other — see the "kill the
+    default look" / "keep the set consistent" rules this implements.
+    """
     settings = get_settings()
     client = _client()
+
+    contents: Any = prompt
+    if references:
+        parts: list[types.Part] = [types.Part.from_text(text=prompt)]
+        for data, mime in references:
+            parts.append(types.Part.from_bytes(data=data, mime_type=mime))
+        contents = parts
 
     def _run() -> tuple[bytes, str]:
         response = client.models.generate_content(
             model=settings.gemini_image_model,
-            contents=prompt,
+            contents=contents,
             config=types.GenerateContentConfig(
                 response_modalities=["IMAGE"],
-                image_config=types.ImageConfig(aspect_ratio=aspect_ratio, image_size="1K"),
+                image_config=types.ImageConfig(aspect_ratio=aspect_ratio, image_size=settings.gemini_image_size),
                 thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
             ),
         )

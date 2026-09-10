@@ -28,11 +28,11 @@ def plan_post_design(
     if vibe == "hero_clean":
         vibe_instruction = "הנחיית כיוון: תמונת גיבור נקייה לחלוטין. אל תשלב כיתוב בכלל (has_overlay=false). מקד את כל הכוח בצילום מרהיב, מעורר תיאבון ומקצועי של המוצר והאווירה."
     elif vibe == "announcement_card":
-        vibe_instruction = "הנחיית כיוון: כרטיס מודעה / הודעה מעוצבת. שלב כיתוב בולט (has_overlay=true), רצוי כרטיס מרכזי או תחתון מעודן (overlay_theme='paper_badge' או 'frosted_glass' או 'ink_pill')."
+        vibe_instruction = "הנחיית כיוון: כרטיס הודעה מעוצב עם כיתוב ברור. שלב כיתוב (has_overlay=true) בתבנית שמתאימה להודעה: 'framed_inset' או 'split_panel'."
     elif vibe == "corner_badge":
-        vibe_instruction = "הנחיית כיוון: צילום אווירה אותנטי עם מדבקת פינה עדינה וחגיגית (has_overlay=true, overlay_position='top_right', overlay_theme='paper_badge')."
+        vibe_instruction = "הנחיית כיוון: צילום אווירה אותנטי עם תגית עדינה. שלב כיתוב קצר (has_overlay=true) בתבנית 'lower_editorial' או 'framed_inset', והשאר את רוב הפריים לצילום עצמו."
     elif vibe == "ink_pill":
-        vibe_instruction = "הנחיית כיוון: תגית דיו שחורה יוקרתית ומודרנית (has_overlay=true, overlay_theme='ink_pill', overlay_position='bottom_pill')."
+        vibe_instruction = "הנחיית כיוון: כותרת גדולה ומודרנית בתחתית הפריים (has_overlay=true, overlay_theme='lower_editorial'), עם שליש תחתון כהה ושקט."
     elif vibe:
         vibe_instruction = f"הנחיית כיוון מבוקשת: {vibe}"
 
@@ -80,6 +80,7 @@ def plan_post_design(
 הנחיות מקצועיות לארט-דיירקטור:
 1. מה לייצר בתמונה (scene_description באנגלית מפורטת):
    - תאר בדיוק את נושא הצילום, הקומפוזיציה, זווית המצלמה (תקריב מאקרו 45 מעלות, צילום מגובה העיניים, פלאטליי מלמעלה), תאורה טבעית (אור בוקר חם רך, צללים עדינים), חומרים ומרקמים אמיתיים (קמח, עץ כפרי, מגשי נירוסטה, שולחן חג), שילוב גוונים מפלטת המותג.
+   - חובה לציין במפורש איפה יושב הנושא המרכזי בקומפוזיציה ואיזה אזור נשאר נקי ורגוע לטקסט. זו תמונה אנכית לכרטיס סושיאל, לא צילום רוחבי.
    - איסור מוחלט: אל תבקש טקסט, אותיות, לוגו, מים או כיתוב בתוך התמונה! התמונה היא צילום נקי.
 2. החלטת כיתוב (has_overlay):
    - מעצב אמיתי לא שם כיתוב על כל פוסט!
@@ -88,13 +89,18 @@ def plan_post_design(
 3. אם has_overlay הוא true:
    - overlay_headline: כותרת קצרה ומעוצבת בעברית בת 2 עד 5 מילים בלבד! (למשל: "החלות החמות של שישי", "סוגרים הזמנות לסוכות", "טרי מהתנור ב-07:00"). אל תחזור על כל כותרת הפוסט הארוכה.
    - overlay_badge: תגית עליונה של מילה-שתיים (למשל: "מהדורת חג", "בשישי בלבד", "חדש", "עד 13:00").
-   - overlay_position: המיקום הנכון ביותר בקומפוזיציה (top_right, top_left, bottom_pill, bottom_bar, center_card).
-   - overlay_theme: סגנון העיצוב (paper_badge, ink_pill, accent_banner, frosted_glass, minimal_text).
+   - overlay_theme: בחר את התבנית שמתאימה לפוסט. התבנית קובעת גם את הפריסה וגם איפה הטקסט יושב, ולכן היא חייבת להתאים לתיאור הסצנה:
+       * type_hero — בלי תמונה בכלל: רקע בצבע המותג, כותרת ענקית ו-CTA. הכי חזק לפוסטים של מסר או מבצע, וכשאין תמונה אמיתית טובה. אם בחרת בה, אין צורך להתייחס לתמונה ב-scene_description.
+       * lower_editorial — ברירת המחדל. כותרת גדולה בתחתית. הסצנה חייבת להשאיר את השליש התחתון שקט וכהה.
+       * split_panel — תמונה ב-72% העליונים ופאנל צבע למטה עם CTA. הקריא ביותר. מקם את הנושא כולו למעלה.
+       * framed_inset — תמונה ממוסגרת על רקע צבע המותג. לפוסטים עם פחות טקסט ותמונה חזקה.
+       * cover_type — כותרת ענקית למעלה. להכרזות ולעדכוני שעות. השאר את החלק העליון רגוע ודל-ניגודיות.
+       * promo_ribbon — פס מבצע למעלה ופאנל כהה למטה. למבצעים ולדדליינים. מקם את הנושא במרכז.
+   - חשוב: אם בחרת תבנית, תאר ב-scene_description קומפוזיציה שמתאימה לאזור הטקסט שלה. אי-התאמה בין השתיים הורסת את הכרטיס.
 4. אם has_overlay הוא false:
    - overlay_headline ריק ("").
    - overlay_badge ריק ("").
-   - overlay_position: "bottom_pill".
-   - overlay_theme: "ink_pill".
+   - overlay_theme: "lower_editorial".
 """
     creative = loads(strategy_json(prompt, DESIGNER_POST_CREATIVE_SCHEMA), {})
     if not creative.get("scene_description"):
@@ -106,8 +112,9 @@ def apply_creative_to_post(post: dict, creative: dict) -> dict:
     has_overlay = bool(creative.get("has_overlay"))
     headline = (creative.get("overlay_headline") or "").strip() if has_overlay else ""
     badge = (creative.get("overlay_badge") or "").strip() if has_overlay else ""
-    position = creative.get("overlay_position") or "bottom_pill"
-    theme = creative.get("overlay_theme") or "ink_pill"
+    # The card template now determines where the text sits, so the old free-floating
+    # overlay_position is no longer written. The card renderer ignores it either way.
+    theme = creative.get("overlay_theme") or "lower_editorial"
 
     post["creative_concept"] = creative.get("creative_concept", "")
     post["visual_style"] = creative.get("visual_style", "")
@@ -116,7 +123,6 @@ def apply_creative_to_post(post: dict, creative: dict) -> dict:
     post["has_overlay"] = has_overlay
     post["overlay_headline"] = headline
     post["overlay_badge"] = badge
-    post["overlay_position"] = position
     post["overlay_theme"] = theme
     post["overlay_text"] = headline
     post["design_creative"] = creative
@@ -131,18 +137,28 @@ def design_and_generate_post(
     vibe: str = "",
     custom_prompt: str = "",
     generate_image: bool = True,
+    image_provider=None,
 ) -> tuple[dict, str | None]:
+    """Plan the card creative, then obtain its image.
+
+    `image_provider` is injected by the router so it can choose between the business's
+    own photograph, a generated one, or none at all — a decision that can only be made
+    AFTER the designer has picked the card template. Defaults to straight generation.
+    """
     creative = plan_post_design(post, brand, business, vibe=vibe, custom_prompt=custom_prompt)
     apply_creative_to_post(post, creative)
 
     image_url = None
     if generate_image:
-        image_url = generate_and_store(
-            business_id,
-            post,
-            brand,
-            business,
-        )
+        if image_provider is not None:
+            image_url = image_provider(post)
+        else:
+            image_url = generate_and_store(
+                business_id,
+                post,
+                brand,
+                business,
+            )
         post["image_url"] = image_url
 
     return post, image_url

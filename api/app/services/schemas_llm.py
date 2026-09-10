@@ -4,6 +4,10 @@ SITE_EXTRACT_SCHEMA = {
     "description": "ערך שיווקי שחולץ מאתר העסק",
     "properties": {
         "business_name": {"type": "string", "description": "שם העסק כפי שעולה מהאתר"},
+        "location": {
+            "type": "string",
+            "description": "העיר, השכונה או האזור שמופיעים באתר (למשל 'יפו, תל אביב'). אם אין — החזר מחרוזת ריקה.",
+        },
         "value_propositions": {
             "type": "array",
             "description": "הצעות ערך מרכזיות",
@@ -208,7 +212,10 @@ ROADMAP_ITEM_SCHEMA = {
         "angle": {"type": "string", "description": "זווית המסר"},
         "hook": {"type": "string", "description": "משפט פתיחה"},
         "caption": {"type": "string", "description": "טיוטת כיתוב בעברית"},
-        "cta": {"type": "string"},
+        "cta": {
+            "type": "string",
+            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד — היא מודפסת על גבי הכרטיס הגרפי",
+        },
         "calendar_tie": {"type": "string", "description": "איזה אירוע בלוח השנה זה משרת, אם בכלל"},
         "goal_fit": {"type": "string", "description": "איך זה משרת מכירות או מודעות"},
         "why_now": {
@@ -237,6 +244,15 @@ ROADMAP_ITEM_SCHEMA = {
             "type": "array",
             "items": {"type": "string"},
             "description": "מה מודדים בפוסט הזה",
+        },
+        "stat_highlight": {
+            "type": "string",
+            "description": (
+                "מספר קונקרטי ואימותי אחד שיוצג גדול על הכרטיס הגרפי, למשל '100 חלות כל שישי', "
+                "'מהתנור ב-07:00', '3 דורות של אופים'. "
+                "קריטי: השתמש רק במספר שמופיע בחומר המקור (פרטי העסק, האתר, ההצעות). "
+                "אם אין מספר אמיתי — החזר מחרוזת ריקה. אל תמציא נתון, ואל תכתוב סיסמה שיווקית כללית."
+            ),
         },
         "outlet_captions": {
             "type": "object",
@@ -419,7 +435,10 @@ POST_REWRITE_SCHEMA = {
         "title": {"type": "string"},
         "hook": {"type": "string"},
         "caption": {"type": "string"},
-        "cta": {"type": "string"},
+        "cta": {
+            "type": "string",
+            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד — היא מודפסת על גבי הכרטיס הגרפי",
+        },
         "overlay_text": {"type": "string"},
         "outlet_captions": {
             "type": "object",
@@ -533,15 +552,21 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
             "title": "Overlay Badge",
             "description": "תגית קטנה או קיקר של מילה עד שתיים (למשל: 'מהדורת חג', 'בשישי בלבד', 'חדש', 'עד 13:00'). אם has_overlay הוא false, החזר מחרוזת ריקה.",
         },
-        "overlay_position": {
-            "type": "string",
-            "title": "Overlay Position",
-            "description": "מיקום הכיתוב על התמונה: top_right (פינה ימנית עליונה), top_left (פינה שמאלית), bottom_pill (תג צף במרכז למטה), bottom_bar (פס תחתון אלגנטי), center_card (כרטיס מרכזי להודעות ואירועים).",
-        },
         "overlay_theme": {
             "type": "string",
-            "title": "Overlay Theme",
-            "description": "הסגנון העיצובי של הכיתוב: paper_badge (מדבקת נייר חם עם מסגרת עדינה), ink_pill (תגית דיו שחורה יוקרתית), accent_banner (פס בצבע המותג), frosted_glass (זכוכית חלבית מטושטשת), minimal_text (טיפוגרפיה נקייה עם צל עדין).",
+            "title": "Card Template",
+            "description": (
+                "תבנית הכרטיס — היא קובעת גם את הפריסה וגם איפה התמונה חייבת להיות נקייה מכיתוב. "
+                "בחר לפי סוג הפוסט:\n"
+                "- lower_editorial: תמונה מלאה עם מעבר כהה בתחתית וכותרת גדולה. ברירת המחדל לפוסט רגיל, "
+                "ו-scene_description חייב להשאיר את השליש התחתון שקט וכהה.\n"
+                "- split_panel: תמונה למעלה (60% בלבד) ופאנל בצבע המותג למטה עם כותרת ו-CTA. "
+                "הקריא ביותר — מתאים כשרוצים שהמסר יעבור בוודאות.\n"
+                "- framed_inset: תמונה ממוסגרת על רקע צבע המותג והכותרת מתחתיה. "
+                "טוב כשיש פחות טקסט והתמונה עצמה חזקה.\n"
+                "- cover_type: כותרת ענקית על החלק העליון של התמונה. להכרזות ולעדכוני שעות.\n"
+                "- promo_ribbon: פס צבעוני למעלה עם המבצע ופאנל כהה למטה. למבצעים ולדדליינים."
+            ),
         },
     },
     "required": [
@@ -551,7 +576,6 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "has_overlay",
         "overlay_headline",
         "overlay_badge",
-        "overlay_position",
         "overlay_theme",
     ],
 }

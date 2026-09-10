@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.db import get_db
+from app.config import get_settings
 from app.deps import get_business
 from app.models import Business, PerformanceSnapshot, Recommendation, Strategy
 from app.schemas import (
@@ -17,9 +18,15 @@ from app.schemas import (
 )
 from app.services.calendar_il import gregorian_month_meta, israeli_events_for_month
 from app.services.designer import apply_creative_to_post, design_and_generate_post, plan_post_design
-from app.services.images import generate_and_store
+from app.services.images import (
+    generate_and_store,
+    needs_photo,
+    read_stored_bytes,
+    store_image_bytes,
+)
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
+from app.services.scraper import fetch_photo_candidates
 from app.services.strategy import generate_monthly_strategy, rewrite_post
 
 router = APIRouter(tags=["strategy"])
@@ -119,6 +126,82 @@ def _horizon_for(db: Session, business: Business, strategy: Strategy) -> dict:
     return horizon_payload(strategy.year, strategy.month, next_exists=bool(existing), next_stage=stage)
 
 
+def _local_photos(scraped: dict) -> list[dict]:
+    """Photos already stored during the scan, re-read from disk (no network)."""
+    out: list[dict] = []
+    for item in scraped.get("real_photos") or []:
+        loaded = read_stored_bytes(item.get("public_url", ""))
+        if loaded:
+            data, mime = loaded
+            out.append({"url": item.get("url", ""), "mime": mime, "bytes": data})
+    return out
+
+
+def _produce_post_image(
+    business: Business,
+    post: dict,
+    brand: dict,
+    biz_dict: dict,
+    scraped_photos: list[dict],
+    force: bool = False,
+    allow_generation: bool = True,
+    preference: str = "auto",
+) -> str:
+    """Decide where a card's image comes from.
+
+    `preference` is the user's explicit intent ("real" / "ai" / "auto"), kept separate
+    from `force` (which only means "redo the work"). Conflating the two made
+    "use my own photo" fall through to no image at all.
+    """
+    settings = get_settings()
+
+    if not needs_photo(post.get("overlay_theme")):
+        post["image_url"] = ""
+        post["image_source"] = "none"
+        return ""
+
+    def use_real_photo() -> str:
+        photo = scraped_photos[0]
+        url = store_image_bytes(
+            business.id,
+            post.get("title") or "post",
+            photo["bytes"],
+            photo["mime"],
+            post.get("week", 0),
+        )
+        post["image_source"] = "real_photo"
+        post["image_source_url"] = photo.get("url", "")
+        return url
+
+    def leave_without_image() -> str:
+        post["image_url"] = ""
+        post["image_source"] = "pending"
+        return ""
+
+    if preference == "real":
+        return use_real_photo() if scraped_photos else leave_without_image()
+
+    if preference == "ai":
+        if not allow_generation:
+            return leave_without_image()
+        references = [(p["bytes"], p["mime"]) for p in scraped_photos[:3]] or None
+        url = generate_and_store(business.id, post, brand, biz_dict, references=references)
+        post["image_source"] = "generated"
+        post["image_source_url"] = ""
+        return url
+
+    # auto: prefer the business's own photograph.
+    if settings.real_photo_first and scraped_photos and not force:
+        return use_real_photo()
+    if not allow_generation:
+        return leave_without_image()
+    references = [(p["bytes"], p["mime"]) for p in scraped_photos[:3]] or None
+    url = generate_and_store(business.id, post, brand, biz_dict, references=references)
+    post["image_source"] = "generated"
+    post["image_source_url"] = ""
+    return url
+
+
 def _store_post_image(
     business: Business,
     strategy: Strategy,
@@ -126,6 +209,8 @@ def _store_post_image(
     force: bool = False,
     vibe: str = "",
     custom_prompt: str = "",
+    allow_generation: bool = True,
+    preference: str = "auto",
 ) -> dict:
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
@@ -152,9 +237,26 @@ def _store_post_image(
         "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
     }
 
-    # If the post has no creative design, or force/vibe/prompt is passed, run Designer AI!
+    # The business's real photographs, used both as the card image and as style
+    # references for generation. Fetched once per call.
+    scraped_photos = _local_photos(scraped) or fetch_photo_candidates(
+        (scraped.get("raw") or {}).get("image_urls") or []
+    )
+
+    def provide(target_post: dict) -> str:
+        return _produce_post_image(
+            business,
+            target_post,
+            brand,
+            biz_dict,
+            scraped_photos,
+            force=force,
+            allow_generation=allow_generation,
+            preference=preference,
+        )
+
     if not target.get("design_creative") or force or vibe or custom_prompt:
-        target, image_url = design_and_generate_post(
+        target, _ = design_and_generate_post(
             business.id,
             target,
             brand,
@@ -162,15 +264,10 @@ def _store_post_image(
             vibe=vibe,
             custom_prompt=custom_prompt,
             generate_image=True,
+            image_provider=provide,
         )
     else:
-        image_url = generate_and_store(
-            business.id,
-            target,
-            brand,
-            biz_dict,
-        )
-        target["image_url"] = image_url
+        target["image_url"] = provide(target)
 
     posts[post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
@@ -210,6 +307,8 @@ def generate_post_image(
             force=body.force,
             vibe=body.vibe,
             custom_prompt=body.custom_prompt,
+            allow_generation=body.allow_generation,
+            preference=body.image_preference,
         )
     except HTTPException:
         raise
@@ -319,7 +418,6 @@ def save_post(
     headline = body.overlay_headline or (body.overlay_text if body.has_overlay else "")
     target["overlay_headline"] = headline
     target["overlay_badge"] = body.overlay_badge
-    target["overlay_position"] = body.overlay_position
     target["overlay_theme"] = body.overlay_theme
     target["overlay_text"] = headline if body.has_overlay else ""
     if body.creative_concept:
@@ -343,10 +441,6 @@ def save_post(
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
-    business.updated_at = datetime.utcnow()
-    db.commit()
-    db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
