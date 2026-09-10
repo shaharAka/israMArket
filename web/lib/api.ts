@@ -905,6 +905,7 @@ const LIVE_PATHS = new Set([
   "/integrations/meta",
   // Editing the real palette is only meaningful against the live API.
   "/onboarding/palette",
+  "/auth/password",
 ]);
 
 export async function api<T>(
@@ -941,6 +942,11 @@ export const endpoints = {
     enterDemo();
     return DEMO_USER;
   },
+  changePassword: (current_password: string, new_password: string) =>
+    api<{ ok: boolean }>("/auth/password", {
+      method: "POST",
+      body: JSON.stringify({ current_password, new_password }),
+    }),
   logout: async () => {
     exitDemo();
     return api("/auth/logout", { method: "POST" });

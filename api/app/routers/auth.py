@@ -5,7 +5,7 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import User
-from app.schemas import LoginRequest, RegisterRequest, UserOut
+from app.schemas import LoginRequest, PasswordChangeIn, RegisterRequest, UserOut
 from app.security import COOKIE_NAME, create_access_token, hash_password, verify_password
 from app.services.ratelimit import auth_rate_limit
 
@@ -70,6 +70,27 @@ def login(
 @router.post("/logout")
 def logout(response: Response) -> dict:
     response.delete_cookie(COOKIE_NAME, path="/")
+    return {"ok": True}
+
+
+@router.post("/password")
+def change_password(
+    body: PasswordChangeIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Change the signed-in user's password.
+
+    Requiring the current password means a stolen session cookie alone cannot lock the
+    real owner out. There was previously no way to change a password at all, so a
+    mistyped or stale one was unrecoverable.
+    """
+    if not verify_password(body.current_password, user.password_hash):
+        raise HTTPException(status_code=401, detail="הסיסמה הנוכחית שגויה")
+    if body.current_password == body.new_password:
+        raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לנוכחית")
+    user.password_hash = hash_password(body.new_password)
+    db.commit()
     return {"ok": True}
 
 

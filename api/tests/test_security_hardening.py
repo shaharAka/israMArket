@@ -97,3 +97,81 @@ class PaletteValidationTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PasswordChangeTest(unittest.TestCase):
+    """There was no way to change a password at all, so a stale or mistyped one was
+    unrecoverable — exactly how a real account got locked out.
+
+    These tests run against the configured database, so each one creates a uniquely
+    named user and deletes it again. Leaving rows behind would pollute real data.
+    """
+
+    def setUp(self):
+        import uuid
+
+        from fastapi.testclient import TestClient
+
+        from app.main import app
+
+        self.email = f"pwtest-{uuid.uuid4().hex[:12]}@example.com"
+        self.original = "original-pass-123"
+        self.client = TestClient(app)
+        self.client.post(
+            "/auth/register",
+            json={"email": self.email, "password": self.original, "full_name": "בדיקה"},
+        )
+
+    def tearDown(self):
+        from app.db import SessionLocal
+        from app.models import User
+
+        db = SessionLocal()
+        try:
+            user = db.query(User).filter(User.email == self.email).first()
+            if user:
+                db.delete(user)
+                db.commit()
+        finally:
+            db.close()
+
+    def _change(self, current, new):
+        return self.client.post(
+            "/auth/password", json={"current_password": current, "new_password": new}
+        )
+
+    def test_requires_the_current_password(self):
+        self.assertEqual(self._change("wrong", "brand-new-pass-1").status_code, 401)
+
+    def test_rejects_reusing_the_same_password(self):
+        self.assertEqual(self._change(self.original, self.original).status_code, 400)
+
+    def test_rejects_a_short_password(self):
+        self.assertEqual(self._change(self.original, "short").status_code, 422)
+
+    def test_requires_a_session(self):
+        from fastapi.testclient import TestClient
+
+        from app.main import app
+
+        r = TestClient(app).post(
+            "/auth/password", json={"current_password": "a", "new_password": "brand-new-pass-1"}
+        )
+        self.assertEqual(r.status_code, 401)
+
+    def test_changes_the_password_and_invalidates_the_old_one(self):
+        self.assertEqual(self._change(self.original, "brand-new-pass-1").status_code, 200)
+
+        from fastapi.testclient import TestClient
+
+        from app.main import app
+
+        fresh = TestClient(app)
+        self.assertEqual(
+            fresh.post("/auth/login", json={"email": self.email, "password": self.original}).status_code,
+            401,
+        )
+        self.assertEqual(
+            fresh.post("/auth/login", json={"email": self.email, "password": "brand-new-pass-1"}).status_code,
+            200,
+        )

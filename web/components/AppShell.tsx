@@ -11,6 +11,7 @@ import {
   IconImage,
   IconLink,
   IconRoute,
+  IconStore,
 } from "@/lib/icons";
 import { ToastHost } from "@/lib/ui";
 
@@ -20,6 +21,7 @@ const NAV = [
   { href: "/posts", label: "הפוסטים", icon: IconImage },
   { href: "/performance", label: "תוצאות", icon: IconChart },
   { href: "/integrations", label: "חיבורים", icon: IconLink },
+  { href: "/account", label: "החשבון", icon: IconStore },
 ];
 
 /** Routes that are part of first-run itself — redirecting from these would loop. */
