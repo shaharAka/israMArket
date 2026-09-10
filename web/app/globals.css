@@ -1,0 +1,317 @@
+@import "tailwindcss";
+
+:root {
+  --canvas: #f9f8f6;
+  --paper: #ffffff;
+  --ink: #191b18;
+  --ink-soft: #5e6159;
+  --ink-muted: #8b8e84;
+  --rule: #e5e3da;
+  --rule-dark: #c7c4b7;
+  --primary: #191b18;
+  --primary-dark: #2c2f29;
+  --primary-soft: #f0eee6;
+  --sage: #e8eee5;
+  --sage-dark: #2d3f32;
+  --sage-soft: #f3f7f1;
+  --sand: #f2eee5;
+  --sand-dark: #685f47;
+  --tomato: var(--primary);
+  --tomato-dark: var(--primary-dark);
+  --sun: #ede6d4;
+}
+
+@theme inline {
+  --font-sans: var(--font-heebo), Arial, sans-serif;
+  --color-app: var(--canvas);
+  --color-card: var(--paper);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-dark);
+}
+
+html,
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  min-height: 100%;
+  font-family: var(--font-heebo), Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #e8eee5;
+  color: #191b18;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.paper {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+
+.drawn-button {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  box-shadow: none;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+
+.drawn-button:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.drawn-button:active {
+  transform: none;
+  box-shadow: none;
+}
+
+.drawn-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+  transform: none;
+  box-shadow: none;
+}
+
+.drawn-card {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+}
+
+.rough-rule {
+  height: 1px;
+  background: var(--rule);
+}
+
+.label-mark {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.metric-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+}
+
+/* ---- Character: paper grid, drawn strokes, micro motion ---- */
+
+/* Faint notebook dot grid behind app content. */
+.dot-grid {
+  background-image: radial-gradient(rgba(25, 27, 24, 0.085) 1px, transparent 1.3px);
+  background-size: 22px 22px;
+  background-position: 11px 11px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.rise-stagger > * {
+  animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.rise-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.rise-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.rise-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.rise-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.rise-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.rise-stagger > *:nth-child(6) { animation-delay: 300ms; }
+.rise-stagger > *:nth-child(7) { animation-delay: 360ms; }
+.rise-stagger > *:nth-child(8) { animation-delay: 420ms; }
+
+/* Strokes that draw themselves. Paths must carry pathLength="1". */
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.draw path:not([data-static]) {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+.draw path:nth-child(2) { animation-delay: 120ms; }
+.draw path:nth-child(3) { animation-delay: 240ms; }
+.draw path:nth-child(4) { animation-delay: 360ms; }
+.draw path:nth-child(5) { animation-delay: 480ms; }
+.draw path:nth-child(6) { animation-delay: 600ms; }
+
+/* Loading mark: draws, holds, erases, repeats. */
+@keyframes draw-loop {
+  0% { stroke-dashoffset: 1; }
+  45% { stroke-dashoffset: 0; }
+  70% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+
+.draw-loop path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-loop 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+.draw-loop path:nth-child(2) { animation-delay: 90ms; }
+.draw-loop path:nth-child(3) { animation-delay: 180ms; }
+.draw-loop path:nth-child(4) { animation-delay: 270ms; }
+.draw-loop path:nth-child(5) { animation-delay: 360ms; }
+
+/* Vertical line growing down the plan timeline. */
+@keyframes grow-y {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+.grow-y {
+  transform-origin: top;
+  animation: grow-y 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+/* Soft pulse ring for "this is now". */
+@keyframes ring {
+  0% { transform: scale(1); opacity: 0.55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+.ring-pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid currentColor;
+  animation: ring 2.2s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+}
+
+/* Nav icons nudge on hover. */
+.nav-item .nav-icon {
+  transition: transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.nav-item:hover .nav-icon {
+  transform: translateY(-1px) rotate(-3deg);
+}
+
+@keyframes grow-x {
+  from { transform: scaleY(0.2); opacity: 0; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+.nav-active-bar {
+  animation: grow-x 0.28s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .rise-stagger > *,
+  .draw path:not([data-static]),
+  .draw-loop path,
+  .grow-y,
+  .ring-pulse::after,
+  .nav-active-bar {
+    animation: none !important;
+  }
+  .draw path:not([data-static]),
+  .draw-loop path {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+  }
+  .nav-item:hover .nav-icon {
+    transform: none;
+  }
+}
+
+/* Restrained palette color mapping for existing classes */
+.bg-white { background-color: var(--paper) !important; }
+.bg-slate-50,
+.bg-slate-50\/50,
+.bg-slate-50\/70,
+.bg-slate-50\/80 { background-color: var(--canvas) !important; }
+.bg-slate-100 { background-color: var(--sand) !important; }
+.bg-slate-200 { background-color: var(--rule) !important; }
+.bg-slate-800,
+.bg-slate-900 { background-color: var(--ink) !important; }
+.bg-blue-50,
+.bg-blue-50\/20,
+.bg-blue-50\/40,
+.bg-blue-50\/60,
+.bg-blue-50\/70 { background-color: var(--sage) !important; }
+.bg-blue-600,
+.bg-blue-700 { background-color: var(--primary) !important; }
+.bg-amber-50,
+.bg-amber-100 { background-color: var(--sand) !important; }
+.bg-emerald-50,
+.bg-emerald-100 { background-color: var(--sage) !important; }
+.bg-purple-50,
+.bg-purple-100 { background-color: var(--sand) !important; }
+.text-slate-900,
+.text-slate-800,
+.text-slate-700 { color: var(--ink) !important; }
+.text-slate-600,
+.text-slate-500,
+.text-slate-400 { color: var(--ink-soft) !important; }
+.text-blue-600,
+.text-blue-700,
+.text-blue-800,
+.text-blue-900,
+.text-blue-950 { color: var(--primary-dark) !important; }
+.text-emerald-600,
+.text-emerald-700,
+.text-emerald-800 { color: var(--sage-dark) !important; }
+.text-amber-600,
+.text-amber-700,
+.text-amber-800,
+.text-amber-900 { color: var(--sand-dark) !important; }
+.text-purple-600,
+.text-purple-700,
+.text-purple-800 { color: var(--ink) !important; }
+.border-slate-100,
+.border-slate-200,
+.border-slate-300 { border-color: var(--rule) !important; }
+.border-blue-100,
+.border-blue-200,
+.border-blue-300 { border-color: var(--rule-dark) !important; }
+.border-amber-100,
+.border-amber-200 { border-color: var(--rule-dark) !important; }
+.border-emerald-100,
+.border-emerald-200,
+.border-emerald-300 { border-color: var(--rule-dark) !important; }
+.ring-blue-600 { --tw-ring-color: var(--primary) !important; }
+.rounded-lg { border-radius: 6px !important; }
+.rounded-xl { border-radius: 8px !important; }
+.rounded-2xl,
+.rounded-3xl { border-radius: 10px !important; }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--rule-dark);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-soft);
+}
