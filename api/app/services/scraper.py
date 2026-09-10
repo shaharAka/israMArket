@@ -214,37 +214,94 @@ def _abs(base: str, src: str | None) -> str | None:
     return urljoin(base, cleaned)
 
 
-def _image_candidates(base: str, soup: BeautifulSoup) -> list[str]:
-    urls: list[str] = []
-    og = soup.find("meta", attrs={"property": "og:image"}) or soup.find("meta", attrs={"name": "og:image"})
-    if og:
-        urls.append(_abs(base, og.get("content")))
-    twitter = soup.find("meta", attrs={"name": "twitter:image"})
-    if twitter:
-        urls.append(_abs(base, twitter.get("content")))
+# Any absolute image URL in the document — including inside <script> JSON, where
+# JS-rendered sites (Wix, most Shopify themes, SPAs) keep their real product imagery.
+_IMG_URL_RE = re.compile(
+    r"https?://[^\s\"'\\)<>]+?\.(?:jpe?g|png|webp|avif)(?:[?#][^\s\"'\\)<>]*)?",
+    re.I,
+)
+_LOGO_HINT_RE = re.compile(r"logo|icon|favicon|sprite|badge|placeholder|avatar", re.I)
+# Wix-style transform segments let one asset appear at many sizes; the widest wins.
+_SIZE_RE = re.compile(r"[?&,/]w_(\d+)", re.I)
+_TRANSFORM_SPLIT_RE = re.compile(r"/v1/")
+# `/v1/fit/w_480,h_480/...` — ask for a card-sized variant instead of a thumbnail.
+_CDN_SIZE_RE = re.compile(r"(/v1/(?:fit|fill)/)w_\d+(?:,h_\d+)?", re.I)
+_TARGET_PHOTO_WIDTH = 1200
+
+
+def _larger_variant(url: str) -> str | None:
+    """Rewrite a CDN thumbnail URL to a larger size, or None if it has no size part."""
+    def swap(match: re.Match) -> str:
+        return f"{match.group(1)}w_{_TARGET_PHOTO_WIDTH},h_{_TARGET_PHOTO_WIDTH}"
+
+    if not _CDN_SIZE_RE.search(url):
+        return None
+    return _CDN_SIZE_RE.sub(swap, url, count=1)
+
+
+def _asset_key(url: str) -> str:
+    """Identity of the underlying asset, ignoring CDN resize transforms and query."""
+    return _TRANSFORM_SPLIT_RE.split(url.split("?")[0], 1)[0]
+
+
+def _variant_width(url: str) -> int:
+    match = _SIZE_RE.search(url)
+    return int(match.group(1)) if match else 0
+
+
+def _image_candidates(base: str, soup: BeautifulSoup, html: str = "") -> list[str]:
+    """Collect candidate images, best-first.
+
+    Two things this has to get right on a real store:
+
+    - **Script-embedded URLs.** The old version only looked at <img> tags and meta
+      tags, so on a Wix site it saw 3 usable images out of 91 and picked the logo.
+    - **Ordering.** It used to `insert(0, ...)` anything whose alt/class mentioned
+      "logo", then download only the first three — i.e. it preferentially fetched the
+      logo. Product imagery matters here; logos are still collected, but last, since
+      they remain useful for brand colours.
+    """
+    best: dict[str, tuple[int, str]] = {}
+    logos: list[str] = []
+
+    def offer(raw: str | None) -> None:
+        url = _abs(base, raw)
+        if not url:
+            return
+        if _LOGO_HINT_RE.search(url):
+            logos.append(url)
+            return
+        key = _asset_key(url)
+        width = _variant_width(url)
+        if key not in best or width > best[key][0]:
+            best[key] = (width, url)
+
+    for meta_attr in ({"property": "og:image"}, {"name": "og:image"}, {"name": "twitter:image"}):
+        node = soup.find("meta", attrs=meta_attr)
+        if node:
+            offer(node.get("content"))
+
+    for img in soup.find_all("img"):
+        offer(img.get("src") or img.get("data-src") or img.get("data-lazy-src"))
+
+    # Everything else in the document, scripts included.
+    for match in _IMG_URL_RE.finditer(html or ""):
+        offer(match.group(0))
+
+    # Icons last: useful for the palette, never a card photo.
     for rel in ("apple-touch-icon", "icon", "shortcut icon"):
         node = soup.find("link", rel=lambda value: value and rel in value.lower())
         if node:
-            urls.append(_abs(base, node.get("href")))
-    for img in soup.find_all("img"):
-        alt = (img.get("alt") or "").lower()
-        cls = " ".join(img.get("class") or []).lower()
-        src = _abs(base, img.get("src") or img.get("data-src"))
-        if src and ("logo" in alt or "logo" in cls or "hero" in cls or "banner" in cls):
-            urls.insert(0, src)
-        elif src:
-            urls.append(src)
-    unique: list[str] = []
-    for url in urls:
-        if url and url not in unique:
-            unique.append(url)
-    return unique[:8]
+            logos.append(_abs(base, node.get("href")) or "")
+
+    ordered = [url for _, url in sorted(best.values(), key=lambda item: -item[0])]
+    return ordered + [u for u in logos if u][:4]
 
 
 def _download_images(client: httpx.Client, urls: list[str]) -> list[dict]:
     images: list[dict] = []
     for url in urls:
-        if len(images) >= 3:
+        if len(images) >= 6:
             break
         try:
             response = safe_get(client, url, timeout=12.0)
@@ -270,7 +327,9 @@ _NOT_A_PHOTO = re.compile(
     re.I,
 )
 # A real photograph is comfortably larger than an icon or a logo lockup.
-_MIN_PHOTO_BYTES = 40_000
+# Real product thumbnails are commonly 20-35 KB. The old 40 KB floor threw away
+# legitimate photographs while still letting a 43 KB logo through.
+_MIN_PHOTO_BYTES = 12_000
 
 
 def fetch_photo_candidates(urls: list[str], limit: int = 3) -> list[dict]:
@@ -295,9 +354,19 @@ def fetch_photo_candidates(urls: list[str], limit: int = 3) -> list[dict]:
             for url in picked:
                 if len(out) >= limit:
                     break
-                try:
-                    response = safe_get(client, url, timeout=15.0)
-                except (httpx.HTTPError, UnsafeUrlError):
+                response = None
+                for candidate_url in (_larger_variant(url), url):
+                    if not candidate_url:
+                        continue
+                    try:
+                        response = safe_get(client, candidate_url, timeout=15.0)
+                    except (httpx.HTTPError, UnsafeUrlError):
+                        response = None
+                        continue
+                    if response.status_code < 400:
+                        break
+                    response = None
+                if response is None:
                     continue
                 if response.status_code >= 400:
                     continue
@@ -368,7 +437,7 @@ def _looks_like_a_photograph(data: bytes) -> bool:
     if not dims:
         return True  # unknown format: don't punish it, the caller still has other checks
     width, height = dims
-    if width < 500 or height < 300:
+    if width < 400 or height < 260:
         return False
     ratio = width / height if height else 0
     return 0.45 <= ratio <= 1.9
@@ -389,7 +458,7 @@ def scrape_site(url: str) -> dict:
 
             soup = BeautifulSoup(response.text, "lxml")
             page_url = str(response.url)
-            image_urls = _image_candidates(page_url, soup)
+            image_urls = _image_candidates(page_url, soup, response.text)
             downloaded = _download_images(client, image_urls)
             stylesheets = _fetch_stylesheets(client, _stylesheet_urls(page_url, soup))
     except httpx.HTTPError as exc:
