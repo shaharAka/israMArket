@@ -14,6 +14,7 @@ from app.schemas import Ga4PropertyIn, MetaAccountIn, WebhookIn
 from app.security import create_oauth_state, decode_oauth_state, decrypt_secret, encrypt_secret
 from app.services import ga4, meta
 from app.services.jsonutil import dumps, loads
+from app.services.netguard import UnsafeUrlError, assert_public_url
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
 
@@ -181,6 +182,10 @@ def create_webhook(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
 ) -> dict:
+    try:
+        assert_public_url(str(body.url))
+    except UnsafeUrlError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     hook = WebhookEndpoint(
         business_id=business.id,
         url=str(body.url),

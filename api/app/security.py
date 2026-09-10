@@ -3,21 +3,32 @@ from hashlib import sha256
 
 from cryptography.fernet import Fernet, InvalidToken
 from jose import JWTError, jwt
-from passlib.context import CryptContext
+import bcrypt
 
 from app.config import get_settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+DEFAULT_JWT_SECRET = "dev-only-change-me"
+
 ALGORITHM = "HS256"
 COOKIE_NAME = "isramarket_token"
 
 
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    """bcrypt directly, not via passlib.
+
+    passlib 1.7.4 (unmaintained) reads `bcrypt.__about__`, which bcrypt 4.x removed, so
+    every hash and verify printed a trapped AttributeError traceback into the logs.
+    The stored `$2b$` hashes are standard bcrypt, so no migration is needed.
+    """
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    return pwd_context.verify(password, password_hash)
+    try:
+        return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+    except (ValueError, TypeError):
+        # A malformed or non-bcrypt stored hash must read as "wrong password", not a 500.
+        return False
 
 
 def create_access_token(user_id: int) -> str:
@@ -55,8 +66,18 @@ def _fernet() -> Fernet:
     settings = get_settings()
     key = settings.token_encryption_key.strip()
     if not key:
+        # Deriving from jwt_secret is acceptable ONLY when that secret is a real one.
+        # With the shipped default it would mean every stored OAuth token is encrypted
+        # under a key that is public in the repository.
+        if settings.jwt_secret == DEFAULT_JWT_SECRET:
+            raise RuntimeError(
+                "חסר TOKEN_ENCRYPTION_KEY וה-JWT_SECRET הוא ברירת המחדל. "
+                "הגדירו JWT_SECRET אמיתי ו-TOKEN_ENCRYPTION_KEY לפני חיבור חשבונות."
+            )
+        import base64
+
         digest = sha256(settings.jwt_secret.encode("utf-8")).digest()
-        key = __import__("base64").urlsafe_b64encode(digest).decode()
+        key = base64.urlsafe_b64encode(digest).decode()
     return Fernet(key.encode("utf-8"))
 
 

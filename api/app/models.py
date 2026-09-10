@@ -85,6 +85,22 @@ class Integration(Base):
     __table_args__ = (UniqueConstraint("business_id", "provider", name="uq_integration_provider"),)
 
 
+class WebhookDelivery(Base):
+    """One row per delivery attempt, so a failing endpoint is diagnosable."""
+
+    __tablename__ = "webhook_deliveries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    endpoint_id: Mapped[int] = mapped_column(ForeignKey("webhook_endpoints.id"), index=True)
+    event: Mapped[str] = mapped_column(String(60), default="")
+    url: Mapped[str] = mapped_column(String(800), default="")
+    ok: Mapped[int] = mapped_column(Integer, default=0)
+    status_code: Mapped[int] = mapped_column(Integer, default=0)
+    attempts: Mapped[int] = mapped_column(Integer, default=1)
+    error: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class PerformanceSnapshot(Base):
     __tablename__ = "performance_snapshots"
 

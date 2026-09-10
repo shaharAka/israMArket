@@ -1,29 +1,43 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import User
 from app.schemas import LoginRequest, RegisterRequest, UserOut
 from app.security import COOKIE_NAME, create_access_token, hash_password, verify_password
+from app.services.ratelimit import auth_rate_limit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 def _set_cookie(response: Response, user_id: int) -> None:
+    settings = get_settings()
+    secure = (
+        settings.cookie_secure
+        if settings.cookie_secure is not None
+        else settings.web_origin.startswith("https://")
+    )
     response.set_cookie(
         key=COOKIE_NAME,
         value=create_access_token(user_id),
         httponly=True,
         samesite="lax",
-        secure=False,
+        secure=secure,
         max_age=60 * 60 * 24 * 7,
         path="/",
     )
 
 
 @router.post("/register", response_model=UserOut)
-def register(body: RegisterRequest, response: Response, db: Session = Depends(get_db)) -> User:
+def register(
+    body: RegisterRequest,
+    response: Response,
+    request: Request,
+    db: Session = Depends(get_db),
+    _: None = Depends(auth_rate_limit("register", by_email=False)),
+) -> User:
     if db.query(User).filter(User.email == body.email.lower()).first():
         raise HTTPException(status_code=409, detail="האימייל כבר רשום")
     user = User(
@@ -39,7 +53,13 @@ def register(body: RegisterRequest, response: Response, db: Session = Depends(ge
 
 
 @router.post("/login", response_model=UserOut)
-def login(body: LoginRequest, response: Response, db: Session = Depends(get_db)) -> User:
+def login(
+    body: LoginRequest,
+    response: Response,
+    request: Request,
+    db: Session = Depends(get_db),
+    _: None = Depends(auth_rate_limit("login", by_email=True)),
+) -> User:
     user = db.query(User).filter(User.email == body.email.lower()).first()
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="אימייל או סיסמה שגויים")

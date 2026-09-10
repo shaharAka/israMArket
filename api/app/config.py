@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     gemini_api_key: str = ""
     jwt_secret: str = "dev-only-change-me"
     token_encryption_key: str = ""
+    environment: str = "development"
     web_origin: str = "http://localhost:3000"
     api_origin: str = "http://localhost:8000"
     google_client_id: str = ""
@@ -20,7 +21,28 @@ class Settings(BaseSettings):
 
     gemini_strategy_model: str = "gemini-3.7-flash"
     gemini_lite_model: str = "gemini-3.5-flash-lite"
-    gemini_image_model: str = "gemini-3.1-flash-lite-image"
+    gemini_image_model: str = "gemini-3-pro-image"
+    # 1K returns ~928px wide for 4:5 — under Instagram's 1080px ideal, so an export
+    # would have to upscale. 2K gives real headroom. Set to "1K" to trade quality for speed.
+    gemini_image_size: str = "2K"
+
+    # Prefer the business's OWN scraped photographs over a generated one. Photoreal
+    # generated images of a product the business never shot are the exact case that
+    # triggers "is this real?" suspicion, and suspicion taxes the real photos too.
+    # Generation stays as the fallback when no usable photo is found.
+    real_photo_first: bool = True
+
+    # Session cookie hardening. None = derive from the web_origin scheme, so an
+    # https deployment gets Secure cookies automatically and local http dev does not.
+    cookie_secure: bool | None = None
+
+    # See services/ratelimit._client_ip. True is correct behind the Next.js proxy;
+    # set False if the API is reachable directly from the internet.
+    trust_forwarded_for: bool = True
+
+    # Rate limits (requests per window, seconds).
+    auth_rate_limit: int = 8
+    auth_rate_window_seconds: int = 300
 
 
 @lru_cache
