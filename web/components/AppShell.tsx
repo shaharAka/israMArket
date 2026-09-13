@@ -137,23 +137,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <aside
         className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
       >
-        <div className="px-5 py-4 border-b border-[#e6e4dc] flex items-center justify-between gap-2">
-          <Link href="/dashboard" className="flex items-center gap-3 min-w-0">
-            <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
-            <div className="min-w-0">
-              <span className="font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
-              <span className="text-[11px] text-[#63665e] block -mt-0.5">שיווק שעובד בישראל</span>
-            </div>
-          </Link>
-          <div className="flex shrink-0 items-center gap-2">
+        <div className="border-b border-[#e6e4dc]">
+          {/* Identity gets the whole first row. The brand trigger used to share it and
+              refused to shrink, which crushed the logo to a 7px column of wrapping text
+              that the trigger then sat on top of. */}
+          <div className="flex items-center justify-between gap-2 px-5 pt-4 pb-2.5">
+            <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
+              <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
+              <div className="min-w-0">
+                <span className="block font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
+                <span className="-mt-0.5 block text-[11px] text-[#63665e]">שיווק שעובד בישראל</span>
+              </div>
+            </Link>
             {demo ? (
               <span
-                className="rounded-full px-2 py-0.5 text-[10px] font-black"
+                className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black"
                 style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
               >
                 דמו
               </span>
             ) : null}
+          </div>
+          {/* The brand gets its own row, at the top, where it can be seen. */}
+          <div className="px-5 pb-3">
             <BrandPicker variant="sidebar" />
           </div>
         </div>

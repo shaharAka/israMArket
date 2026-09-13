@@ -112,6 +112,9 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [assetsLoaded, setAssetsLoaded] = useState(false);
   const [assetsError, setAssetsError] = useState("");
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const wrapper = useRef<HTMLDivElement>(null);
   const saveTimer = useRef<number | null>(null);
@@ -165,6 +168,27 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
       active = false;
     };
   }, [open, assetsLoaded]);
+
+  /** Upload straight from the panel. Sending the owner to another screen to add the
+   *  first photo is the friction this panel exists to remove. */
+  async function uploadFiles(files: FileList | null) {
+    if (!files?.length || uploading) return;
+    setUploadError("");
+    setUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        await endpoints.uploadAsset(file);
+      }
+      const res = await endpoints.assets();
+      setAssets(res.assets ?? []);
+      setAssetsLoaded(true);
+      toast(files.length === 1 ? "הקובץ נוסף למדיה" : `${files.length} קבצים נוספו למדיה`);
+    } catch (err) {
+      setUploadError(message(err, "העלאה נכשלה"));
+    } finally {
+      setUploading(false);
+    }
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -262,10 +286,10 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
         aria-controls={panelId}
         title="המותג: צבעים, קול ומדיה"
         className={`inline-flex cursor-pointer items-center rounded-md border border-[#dedcd4] bg-white transition-colors hover:bg-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f] ${
-          variant === "mobile" ? "gap-1 px-2 py-1.5" : "gap-2 px-2.5 py-1.5"
+          variant === "mobile" ? "gap-1 px-2 py-1.5" : "w-full justify-between gap-2 px-2.5 py-2"
         }`}
       >
-        <span aria-hidden className={variant === "mobile" ? "flex items-center gap-0.5" : "flex items-center gap-1"}>
+        <span aria-hidden className={variant === "mobile" ? "flex items-center gap-0.5" : "flex items-center gap-1.5"}>
           {dots.map((hex, index) => (
             <span
               key={`${hex}-${index}`}
@@ -274,21 +298,36 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
             />
           ))}
         </span>
-        {variant === "sidebar" ? <span className="text-xs font-bold text-[#191b18]">המותג</span> : null}
-        <svg
-          aria-hidden
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`shrink-0 text-[#8b8e84] transition-transform ${variant === "mobile" ? "h-3 w-3" : "h-3.5 w-3.5"} ${
-            open ? "rotate-180" : ""
-          }`}
-        >
-          <path d="M5.5 9L12 15.5L18.5 9" />
-        </svg>
+        {variant === "sidebar" ? (
+          <span className="flex items-center gap-1.5">
+            <span className="text-xs font-bold text-[#191b18]">המותג</span>
+            <svg
+              aria-hidden
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`h-3.5 w-3.5 shrink-0 text-[#8b8e84] transition-transform ${open ? "rotate-180" : ""}`}
+            >
+              <path d="M5.5 9L12 15.5L18.5 9" />
+            </svg>
+          </span>
+        ) : (
+          <svg
+            aria-hidden
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={`h-3 w-3 shrink-0 text-[#8b8e84] transition-transform ${open ? "rotate-180" : ""}`}
+          >
+            <path d="M5.5 9L12 15.5L18.5 9" />
+          </svg>
+        )}
       </button>
 
       {open ? (
@@ -471,12 +510,38 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
 
                 {/* 3. המדיה — a preview of the library, never a second library to manage. */}
                 <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-3">
-                  <div className="flex items-baseline justify-between gap-2">
+                  <div className="flex items-center justify-between gap-2">
                     <h3 className="text-xs font-bold text-[#191b18]">המדיה</h3>
-                    {assetsLoaded && !assetsError && assets.length ? (
-                      <span className="text-[11px] text-[#8b8e84]">{countLabel(assets.length, "נכס", "נכסים")}</span>
-                    ) : null}
+                    <div className="flex items-center gap-2">
+                      {assetsLoaded && !assetsError && assets.length ? (
+                        <span className="text-[11px] text-[#8b8e84]">{countLabel(assets.length, "נכס", "נכסים")}</span>
+                      ) : null}
+                      {/* Adding a file belongs here, not one screen away. */}
+                      <button
+                        type="button"
+                        onClick={() => fileInput.current?.click()}
+                        disabled={uploading}
+                        className="cursor-pointer rounded-md border border-[#dedcd4] bg-white px-2 py-1 text-[11px] font-bold text-[#191b18] hover:bg-[#f8f7f4] disabled:opacity-50"
+                      >
+                        {uploading ? "מעלים…" : "הוספת קובץ"}
+                      </button>
+                      <input
+                        ref={fileInput}
+                        type="file"
+                        accept="image/*,video/*"
+                        multiple
+                        className="hidden"
+                        onChange={(event) => {
+                          void uploadFiles(event.target.files);
+                          event.target.value = "";
+                        }}
+                      />
+                    </div>
                   </div>
+
+                  {uploadError ? (
+                    <p className="mt-1.5 text-xs leading-5 text-[#9f4330]">{uploadError}</p>
+                  ) : null}
 
                   {!assetsLoaded ? (
                     <p className="mt-1.5 text-xs text-[#8b8e84]">טוענים את הספרייה…</p>
@@ -528,7 +593,8 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                   ) : (
                     <>
                       <p className="mt-1.5 text-xs leading-5 text-[#5e6159]">
-                        הספרייה עוד ריקה. כאן יחיו התמונות והסרטונים של העסק — ומהם ייבנו הפוסטים במקום מתמונות כלליות.
+                        הספרייה עוד ריקה. אפשר להוסיף קובץ מכאן, או לעבור לספרייה כדי לייבא מקישור
+                        ולסרוק את האתר.
                       </p>
                       <Link
                         href="/assets"
@@ -536,7 +602,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                         className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#191b18] underline underline-offset-4"
                       >
                         <IconArrowLeft className="h-3.5 w-3.5" />
-                        להוספת קבצים למדיה
+                        לספרייה המלאה
                       </Link>
                     </>
                   )}
