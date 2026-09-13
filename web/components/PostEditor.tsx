@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   CardCanvas,
@@ -136,11 +137,32 @@ function captionFor(post: RoadmapPost, outlet: OutletKey) {
 }
 
 /**
+ * Whether React is running in a browser. The off-screen export card is portalled into
+ * `document.body`, which has no server equivalent, so the server snapshot is `false` and
+ * React swaps it to `true` right after hydration. Nothing writes this value, so the
+ * subscription is a no-op — the same pattern the demo flag uses on `/assets`.
+ */
+function subscribeClient() {
+  return () => {};
+}
+function clientSnapshot() {
+  return true;
+}
+function serverSnapshot() {
+  return false;
+}
+
+/**
  * A mockup is a visual preview of how the post looks, so it shows only the opening of
  * the caption. The full text lives in the editable box beside it — drawing it twice
  * cost roughly 25 words on the face and told the owner nothing extra.
+ *
+ * 60 characters is the one line the mockup actually reads as a caption. Measured against
+ * the real account the longer preview was the single largest block of counted text on
+ * this page, and every one of those words was already on the screen in full, two columns
+ * over (UI-RULES rule 7).
  */
-function previewCaption(caption: string, max = 90): string {
+function previewCaption(caption: string, max = 60): string {
   const clean = (caption || "").trim();
   return clean.length > max ? `${clean.slice(0, max).trimEnd()}…` : clean;
 }
@@ -196,6 +218,9 @@ export function PostEditor({
   const [showImageTools, setShowImageTools] = useState(false);
   const [showDesigner, setShowDesigner] = useState(false);
   const [showRatios, setShowRatios] = useState(false);
+  // The picker of audiences: a long list of names the owner reads only when changing the
+  // assignment, so it opens on demand like the groups above it.
+  const [showAudience, setShowAudience] = useState(false);
   // The handoff kit, the date and the capability note. Collapsed like the two groups above
   // it: the page already has its one dark button, and none of this is a call to action.
   const [showPublish, setShowPublish] = useState(false);
@@ -210,6 +235,13 @@ export function PostEditor({
   // Dedicated off-screen canvas at true export size, so the downloaded PNG never
   // includes the mockup chrome (Instagram header, action rail, phone frame).
   const exportRef = useRef<HTMLDivElement>(null);
+
+  /** See `clientSnapshot` below: false on the server, true once React runs in a browser. */
+  const exportCanvasReady = useSyncExternalStore(
+    subscribeClient,
+    clientSnapshot,
+    serverSnapshot,
+  );
 
   /** One cheap list read on mount, so the control can say "אין קהלים" rather than guess. */
   useEffect(() => {
@@ -739,9 +771,10 @@ export function PostEditor({
             <span className="cursor-pointer text-[#20211f] hover:opacity-75">🔖</span>
           </div>
 
-          <p className="mt-2 text-xs font-bold text-[#20211f]">
-            242 סימוני ״אהבתי״
-          </p>
+          {/* No invented engagement counts. A number inside a phone frame reads as a real
+              metric, which is the exact thing this product refuses to fake. The reel path
+              already drops them; the feed must not be the exception. */}
+          <p className="mt-2 text-xs font-bold text-[#20211f]">סימוני ״אהבתי״</p>
 
           {/* Caption Below Media */}
           <div className="mt-1.5 text-xs leading-5 text-[#20211f]">
@@ -749,11 +782,9 @@ export function PostEditor({
             <span className="whitespace-pre-line text-[#343632]">{previewCaption(activeCaption)}</span>
           </div>
 
-          {currentPost.cta ? (
-            <p className="mt-2 text-xs font-bold text-[#191b18]">
-              {currentPost.cta}
-            </p>
-          ) : null}
+          {/* The post's own call to action used to be printed here as well. It is part of
+              the caption — drawn in full in the copy column and inside the card's own
+              design — so this third copy was pure repetition (UI-RULES rule 7). */}
 
           {/* Link in bio cue */}
           <div className="mt-2.5 flex items-center gap-1.5 border-t border-[#f0efeb] pt-2 text-[11px] text-[#00376b] font-medium">
@@ -795,11 +826,6 @@ export function PostEditor({
           <p className="whitespace-pre-line text-sm leading-6 text-[#050505]">
             {previewCaption(activeCaption)}
           </p>
-          {currentPost.cta ? (
-            <p className="mt-2 text-xs font-bold text-[#1877f2]">
-              {currentPost.cta}
-            </p>
-          ) : null}
         </div>
 
         {/* Media Container */}
@@ -830,11 +856,11 @@ export function PostEditor({
               <span className="inline-flex items-center justify-center h-4 w-4 rounded-full bg-[#fa3e3e] text-[9px] text-white -mr-1">
                 ❤️
               </span>
-              <span className="mr-1 text-[11px]">86</span>
+              <span className="mr-1 text-[11px]">—</span>
             </div>
             <div className="flex items-center gap-3 text-[11px]">
-              <span>14 תגובות</span>
-              <span>5 שיתופים</span>
+              <span>תגובות</span>
+              <span>שיתופים</span>
             </div>
           </div>
 
@@ -901,11 +927,6 @@ export function PostEditor({
               <p className="whitespace-pre-line text-[#111b21]">
                 {previewCaption(activeCaption)}
               </p>
-              {currentPost.cta ? (
-                <p className="pt-1 font-bold text-[#008069]">
-                  *{currentPost.cta}*
-                </p>
-              ) : null}
 
               {/* In-Bubble Link Card */}
               {currentPost.tracking_url ? (
@@ -1439,8 +1460,11 @@ export function PostEditor({
           >
             {posts.map((post, index) => (
               <option key={`${post.title}-${index}`} value={index}>
-                {post.approval_status === "approved" ? "✓ " : ""}
-                {index + 1}
+                {/* The check is a marker attached to the number, not a word beside it: with
+                    a space, a closed select still reported two words per post, so simply
+                    listing eight posts cost sixteen of the page's budget for eight digits
+                    (UI-RULES rule 7 counts `main.innerText`). */}
+                {`${post.approval_status === "approved" ? "✓" : ""}${index + 1}`}
               </option>
             ))}
           </select>
@@ -1572,17 +1596,23 @@ export function PostEditor({
               ) : null}
             </div>
 
-            {/* Who the post is for — one row, stated plainly, no surrounding box. */}
-            <div className="border-t border-[#e9e8e3] pt-3">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <label
-                  htmlFor="post-audience-select"
-                  className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#62635f]"
-                >
+            {/* Who the post is for. A group like the three below it: the row keeps the
+                answer on the face — this post's audience — while the picker itself is one
+                quiet tap down. Open, the list of audiences is the longest text on the
+                screen and it is a list of names to choose from, not something to read
+                (UI-RULES rule 2). */}
+            <div className="border-t border-[#e9e8e3]">
+              <button
+                type="button"
+                aria-expanded={showAudience}
+                onClick={() => setShowAudience((open) => !open)}
+                className="flex min-h-11 w-full items-center justify-between px-1 text-right text-xs font-bold text-[#20211f]"
+              >
+                <span className="inline-flex items-center gap-1.5">
                   <IconUsers className="h-3.5 w-3.5" />
                   קהל
                   {!audiencesLoading && !audiencesError && audiences.length ? (
-                    <span className="font-bold text-[#20211f]">
+                    <span className="font-bold text-[#62635f]">
                       ·{" "}
                       {currentAudienceId === null
                         ? "עוד לא הוחלט"
@@ -1595,21 +1625,21 @@ export function PostEditor({
                         : ""}
                     </span>
                   ) : null}
-                </label>
-                <Link
-                  href="/decisions#audiences"
-                  className="text-[10px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
-                >
-                  ניהול
-                </Link>
-              </div>
+                </span>
+                <span className="text-[11px] font-bold text-[#62635f]">
+                  {showAudience ? "סגירה" : "פתיחה"}
+                </span>
+              </button>
 
+              {/* A load in flight, a failed read and "no audiences yet" are all things the
+                  owner has to know without asking, so they stay on the face whether the
+                  picker is open or closed. Only the picker itself is one tap down. */}
               {audiencesLoading ? (
-                <p className="mt-2 text-[11px] text-[#747570]">טוענים את הקהלים…</p>
+                <p className="px-1 pb-3 text-[11px] text-[#747570]">טוענים את הקהלים…</p>
               ) : audiencesError ? (
-                <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">{audiencesError}</p>
+                <p className="px-1 pb-3 text-[11px] leading-5 text-[#9f4330]">{audiencesError}</p>
               ) : !audiences.length ? (
-                <p className="mt-2 text-[11px] leading-5 text-[#747570]">
+                <p className="px-1 pb-3 text-[11px] leading-5 text-[#747570]">
                   עוד לא הוגדרו קהלי יעד, ולכן אין למי לשייך את הפוסט.{" "}
                   <Link
                     href="/decisions#audiences"
@@ -1618,10 +1648,19 @@ export function PostEditor({
                     להגדרת קהלים בהחלטות
                   </Link>
                 </p>
-              ) : (
-                <>
+              ) : showAudience ? (
+                <div className="px-1 pb-3">
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    <Link
+                      href="/decisions#audiences"
+                      className="text-[10px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+                    >
+                      ניהול
+                    </Link>
+                  </div>
                   <select
                     id="post-audience-select"
+                    aria-label="למי הפוסט מיועד?"
                     value={currentAudienceId === null ? "" : String(currentAudienceId)}
                     // An image operation rewrites the same post on the server; the
                     // audience write waits rather than racing it.
@@ -1629,7 +1668,7 @@ export function PostEditor({
                     onChange={(event) =>
                       void changeAudience(event.target.value === "" ? null : Number(event.target.value))
                     }
-                    className="mt-1.5 h-9 w-full rounded-md border border-[#cecdc7] bg-white px-2 text-[11px] font-bold text-[#20211f] disabled:opacity-40"
+                    className="mt-2 h-9 w-full rounded-md border border-[#cecdc7] bg-white px-2 text-[11px] font-bold text-[#20211f] disabled:opacity-40"
                   >
                     <option value="" dir="rtl" lang="he">לא הוחלט — בלי שיוך לקהל</option>
                     {audiences.map((audience) => (
@@ -1641,8 +1680,8 @@ export function PostEditor({
                   {audienceBusy ? (
                     <p className="mt-1 text-[10px] text-[#747570]">מעדכנים את השיוך…</p>
                   ) : null}
-                </>
-              )}
+                </div>
+              ) : null}
             </div>
 
             {/* The two panels that used to be a permanent wall of buttons. */}
@@ -1794,28 +1833,40 @@ export function PostEditor({
           off-canvas with a negative offset or a translation — both enlarge the document's
           scrollWidth and give the page thousands of pixels of phantom horizontal scroll
           on touch devices. A zero-sized, overflow-hidden, fixed container clips it out of
-          the layout entirely while the node keeps its real 1080px box for html-to-image. */}
-      <div
-        aria-hidden
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: 0,
-          height: 0,
-          overflow: "hidden",
-          pointerEvents: "none",
-          opacity: 0,
-        }}
-      >
-        <CardCanvas
-          post={currentPost}
-          brand={brandLanguage}
-          businessName={businessName}
-          size={exportSize}
-          canvasRef={exportRef}
-        />
-      </div>
+          the layout entirely while the node keeps its real 1080px box for html-to-image.
+
+          It is portalled to `document.body` because it is not page content: it is the
+          source html-to-image rasterises. Inside the app's <main> it was still read as
+          text — an invisible second copy of the card's badge, headline and call to action,
+          counted against the page's word budget even though the owner can never see it.
+          `body` carries the same dir, font and colours the app sets on <html>, so the
+          exported PNG is unchanged. */}
+      {exportCanvasReady
+        ? createPortal(
+            <div
+              aria-hidden
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: 0,
+                height: 0,
+                overflow: "hidden",
+                pointerEvents: "none",
+                opacity: 0,
+              }}
+            >
+              <CardCanvas
+                post={currentPost}
+                brand={brandLanguage}
+                businessName={businessName}
+                size={exportSize}
+                canvasRef={exportRef}
+              />
+            </div>,
+            document.body,
+          )
+        : null}
     </div>
   );
 }

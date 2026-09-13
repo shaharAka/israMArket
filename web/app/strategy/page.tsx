@@ -37,6 +37,14 @@ import {
  * and the week's focus, and the four lists that explain it — what we do, what we need from
  * the owner, what we measure and where we publish — are one expand per week. The month's
  * hypothesis and its numbers stay visible, because those are the answer, not explanation.
+ *
+ * Measured on the real account (eight real posts, a real monthly plan) the face ran to 182
+ * words against a ceiling of 140. What came off was text that said nothing the screen
+ * already said: a subtitle repeating the eyebrow and the title, a reassurance line under
+ * the ask, "the posts are ready" beside the button that says it, and the four identical
+ * expand labels — the week's own heading is directly above each one. What did not come off
+ * is the ask itself: it repeats week 1's first bullet one tap down, but on the face it is
+ * the page's conclusion, and rule 2 is to lead with that.
  */
 
 /** The section's own accent — this page should read as "the monthly plan". */
@@ -75,7 +83,6 @@ export default function StrategyPage() {
         <SectionHeader
           section="strategy"
           title="התוכנית"
-          subtitle="מה עושים החודש, שבוע אחרי שבוע."
           action={
             strategy ? (
               <span
@@ -123,7 +130,6 @@ export default function StrategyPage() {
                 <p className="mt-1.5 text-base font-bold leading-7 text-[#20211f]">
                   {nextUserAction || "כרגע לא צריך לעשות דבר. אנחנו ממשיכים להכין ולעקוב."}
                 </p>
-                <p className="mt-1 text-xs leading-5 text-[#747570]">כל השאר אצלנו.</p>
               </div>
             </section>
 
@@ -206,12 +212,9 @@ export default function StrategyPage() {
             </details>
 
             <div className="flex flex-col items-start gap-2 border-t border-[#deddd8] pt-6 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-[#747570]">
-                הפוסטים מוכנים.{" "}
-                <Link href="/decisions" className="underline underline-offset-4">
-                  לשינוי ההחלטות
-                </Link>
-              </p>
+              <Link href="/decisions" className="text-sm text-[#747570] underline underline-offset-4">
+                לשינוי ההחלטות
+              </Link>
               <Link
                 href="/posts"
                 className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
@@ -326,9 +329,12 @@ function WeekNode({
               className="group mt-2 border-t"
               style={{ borderColor: isNow ? RAIL.border : "#e6e4dc" }}
             >
-              <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+              <summary
+                aria-label={`מה אנחנו עושים ומה צריך מכם בשבוע ${week.week}`}
+                className="flex cursor-pointer list-none items-center gap-2 py-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]"
+              >
                 <Caret />
-                מה עושים ומה צריך
+                פירוט
               </summary>
 
               <div className="mt-1 grid gap-x-6 gap-y-3 sm:grid-cols-2">

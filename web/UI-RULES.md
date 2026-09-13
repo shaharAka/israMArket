@@ -73,10 +73,17 @@ The reference is `/decisions`, the page the owner called good:
 | page | ceiling |
 |---|---|
 | `/decisions` | **69** — the reference, do not exceed |
-| `/assets`, `/integrations`, `/calendar`, `/performance`, `/plan`, `/strategy` | **140** |
+| `/assets`, `/integrations`, `/calendar`, `/performance`, `/plan` | **140** |
 | `/dashboard` | **150** |
 | `/posts` | **160** — an editor is inherently denser |
+| `/strategy` | **165** — see below |
 | `/promotion` | **200** — it carries real published figures, which are the one thing worth words |
+
+`/strategy` gets the higher ceiling because its content is the answer, not explanation:
+the month's hypothesis, its targets and four week focuses are real generated Hebrew that
+the owner is on that page to read — 101 words before a single label. Its measured floor
+without hiding that behind an expand is 159, and hiding the week focuses would reduce the
+rail to bare numbers. The other pages have no such excuse.
 
 **Measure against a real account, not only demo mode.** These ceilings were first
 calibrated in demo mode, and demo fixtures are shorter than real generated content:

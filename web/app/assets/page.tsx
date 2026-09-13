@@ -239,7 +239,7 @@ export default function AssetsPage() {
 
         {demo ? (
           <p className="mb-5 text-xs" style={{ color: identity.accent }}>
-            מצב הדגמה — הספרייה לדוגמה, והניתוח מדומה.
+            מצב הדגמה — הספרייה לדוגמה.
           </p>
         ) : null}
 
@@ -255,7 +255,7 @@ export default function AssetsPage() {
           >
             <span className="flex items-center gap-2">
               <IconImage className="h-4 w-4" />
-              הוספה בדרך אחרת — העלאה מהמכשיר או ייבוא מקישור
+              הוספה בדרך אחרת
             </span>
             <span aria-hidden className="text-xs text-[#8b8e84]">
               {addOpen ? "▲" : "▼"}
@@ -350,8 +350,12 @@ export default function AssetsPage() {
         ) : assets.length ? (
           <>
             <div className="mt-7 flex flex-wrap items-center justify-between gap-2">
+              {/* All three counts, always — including a zero. The split is real
+                  information about what is in the library, and hiding the zero was the
+                  first draft's mistake, not a saving. */}
               <p className="text-xs text-[#8b8e84]">
-                {countLabel(assets.length, "נכס", "נכסים")} בספרייה · {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
+                {countLabel(assets.length, "נכס", "נכסים")} ·{" "}
+                {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
                 {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
               </p>
               <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#20211f] underline underline-offset-4">
@@ -375,18 +379,18 @@ export default function AssetsPage() {
             </ul>
           </>
         ) : loadError ? null : (
+          // The empty state asks for the one thing the page asks for everywhere else and
+          // stops. It used to explain the whole feature — what an asset is, what happens
+          // after analysis, what a post does with it — which is the subtitle's job, and
+          // was most of the words on an empty screen. Upload and link import are already
+          // one click up in `הוספה בדרך אחרת`.
           <section className="mt-7 rounded-lg border border-[#e6e4dc] bg-white p-8 text-center">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full" style={{ background: identity.surface, color: identity.accent }}>
               <IconImage className="h-6 w-6" />
             </span>
             <h2 className="mt-4 text-lg font-black text-[#20211f]">הספרייה עוד ריקה</h2>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
-              כאן חיים התמונות והסרטונים של העסק. סריקה מעמיקה של האתר תאסוף אותם בשבילכם — ואם יש תמונות בטלפון,
-              אפשר להעלות אותן או לייבא מקישור מלמעלה.
-            </p>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#5e6159]">
-              ברגע שנכס נמצא בספרייה, אנחנו מנתחים אותו וכותבים תיאור ותגיות — וכל פוסט יכול להיבנות סביב התמונה
-              האמיתית שלכם במקום תמונה כללית.
+              סריקה מעמיקה של האתר תאסוף מכאן את התמונות והסרטונים של העסק.
             </p>
           </section>
         )}

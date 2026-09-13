@@ -155,6 +155,46 @@ function MonthBoard({
   );
 }
 
+/**
+ * A month step. Icon-only on purpose: the month is already named in the heading next to
+ * it, so a text label only repeats the word "חודש" twice more. The control keeps its
+ * meaning in both an accessible label and a tooltip, which is what UI-RULES rule 6 asks
+ * of an icon button.
+ */
+function MonthStep({
+  dir,
+  label,
+  onClick,
+}: {
+  dir: "prev" | "next";
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-[#63665e] transition-colors hover:bg-[#f4f3ee] hover:text-[#20211f]"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        {/* In a right-to-left page "back" points right. */}
+        {dir === "prev" ? <path d="M14 6l6 6-6 6" /> : <path d="M10 6l-6 6 6 6" />}
+      </svg>
+    </button>
+  );
+}
+
 export default function CalendarPage() {
   const [year, setYear] = useState(CURRENT_YEAR);
   const [month, setMonth] = useState(CURRENT_MONTH);
@@ -188,52 +228,49 @@ export default function CalendarPage() {
   return (
     <AppShell>
       <PageHeader
-        title="לוח שנה שיווקי וישראלי"
-        subtitle="לוח חודשי לועזי עם חגי ישראל, ימי קניות והפוסטים"
+        title="לוח שנה לועזי"
+        subtitle="חגי ישראל, ימי קניות ופוסטים מתוכננים"
         action={
-          <div className="flex items-center gap-2">
-            <Button size="sm" variant="outline" onClick={() => move(-1)}>
-              החודש הקודם
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => move(1)}>
-              החודש הבא
-            </Button>
-            {/* The one dark button on this screen: the way back to the month the owner is
-                actually in, after browsing away from it. */}
-            <Button
-              size="sm"
-              tone="primary"
-              onClick={() => {
-                setYear(CURRENT_YEAR);
-                setMonth(CURRENT_MONTH);
-              }}
-            >
-              חזרה ל{monthLabel(CURRENT_YEAR, CURRENT_MONTH)}
-            </Button>
-          </div>
+          /* The one dark button on this screen: the way back to the month the owner is
+             actually in, after browsing away from it. */
+          <Button
+            size="sm"
+            tone="primary"
+            onClick={() => {
+              setYear(CURRENT_YEAR);
+              setMonth(CURRENT_MONTH);
+            }}
+          >
+            חזרה ל{monthLabel(CURRENT_YEAR, CURRENT_MONTH)}
+          </Button>
         }
       />
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <div className="flex items-baseline gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <h2 className="text-2xl font-black tracking-tight text-[#20211f]">
             {data ? `${data.month_name_he} ${data.year}` : monthLabel(year, month)}
           </h2>
+          {/* The steps sit next to the month they move, not in the page header. */}
+          <div className="flex items-center gap-0.5">
+            <MonthStep dir="prev" label="החודש הקודם" onClick={() => move(-1)} />
+            <MonthStep dir="next" label="החודש הבא" onClick={() => move(1)} />
+          </div>
           <span className="text-xs font-bold text-[#8b8e84]">
-            {data?.events.length ?? 0} אירועים וחגים
+            {data?.events.length ?? 0} אירועים
           </span>
         </div>
 
         {/* Legend */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#8b8e84]">
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> חג ישראלי
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> חג
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> יום קניות
+            <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> קניות
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-500" /> פוסט מתוכנן
+            <span className="h-2.5 w-2.5 rounded-full bg-blue-500" /> פוסט
           </span>
         </div>
       </div>
@@ -261,10 +298,12 @@ export default function CalendarPage() {
           <aside className="lg:col-span-4">
             <div className="overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
               <div className="p-4 sm:p-5">
-                <h2 className="text-sm font-black text-[#20211f]">היום הנבחר</h2>
-                <p className="mt-0.5 text-xs text-[#8b8e84]">
+                {/* The date is the heading: "היום הנבחר" over a date said the same thing
+                    twice. The note that explains an event is not repeated here — every
+                    event keeps its note, with its date, in the month list below. */}
+                <h2 className="text-sm font-black text-[#20211f]">
                   {selected ? formatDay(selected) : "בחרו יום בלוח"}
-                </p>
+                </h2>
 
                 {dayEvents.length === 0 && dayPosts.length === 0 ? (
                   <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
@@ -273,12 +312,12 @@ export default function CalendarPage() {
                 ) : (
                   <ul className="mt-2 divide-y divide-[#eeede8]">
                     {dayEvents.map((event) => (
-                      <li key={`${event.name}-${event.date}`} className="py-2.5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Badge tone={event.kind === "חג" ? "amber" : "purple"}>{event.kind}</Badge>
-                          <span className="text-xs font-bold text-[#20211f]">{event.name}</span>
-                        </div>
-                        <p className="mt-1 text-xs leading-5 text-[#63665e]">{event.note}</p>
+                      <li
+                        key={`${event.name}-${event.date}`}
+                        className="flex flex-wrap items-center gap-2 py-2.5"
+                      >
+                        <Badge tone={event.kind === "חג" ? "amber" : "purple"}>{event.kind}</Badge>
+                        <span className="text-xs font-bold text-[#20211f]">{event.name}</span>
                       </li>
                     ))}
 
@@ -313,11 +352,18 @@ export default function CalendarPage() {
                 <details className="group">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-black text-[#20211f] hover:text-[#3c3e3a] sm:p-5">
                     <span>כל אירועי {data.month_name_he}</span>
-                    <span
-                      aria-hidden
-                      className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90"
-                    >
-                      ‹
+                    <span className="shrink-0 text-[#8b8e84]" aria-hidden>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-3.5 w-3.5 transition-transform group-open:rotate-90"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 6l-6 6 6 6" />
+                      </svg>
                     </span>
                   </summary>
                   <div className="px-4 pb-4 sm:px-5 sm:pb-5">

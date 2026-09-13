@@ -240,7 +240,7 @@ export default function IntegrationsPage() {
     <AppShell>
       <PageHeader
         title="חיבורים"
-        subtitle="שלושה חיבורים: האתר, גוגל אנליטיקס ואינסטגרם. הם מה שהופך את התוכנית מניחושים למספרים אמיתיים."
+        subtitle="מה שהופך את התוכנית מניחושים למספרים אמיתיים."
       />
 
       {/* One quiet strip for demo/real mode instead of a box, and the switch is a link-weight
@@ -364,7 +364,7 @@ export default function IntegrationsPage() {
             title="האתר של העסק"
             status={business?.website_url ? "מחובר ומסונכרן" : "לא הוגדר"}
             tone={business?.website_url ? "emerald" : "slate"}
-            note="מכאן אנחנו למדים איך העסק נראה ונגמר — צבעים, סגנון צילום וניסוחים."
+            note="מכאן אנחנו למדים את הצבעים, הסגנון והניסוחים."
           />
 
           <div className="mt-4 flex flex-col gap-2 sm:flex-row">
@@ -412,7 +412,7 @@ export default function IntegrationsPage() {
             title="גוגל אנליטיקס"
             status={ga4Connected ? "מחובר" : ga4NeedsSelection ? "נשאר לבחור" : "לא מחובר"}
             tone={ga4Connected ? "emerald" : ga4NeedsSelection ? "amber" : "slate"}
-            note="המספרים של האתר: כמה אנשים נכנסו, מאיפה הגיעו ומה קנו."
+            note="המספרים של האתר: כמה נכנסו ומה קנו."
           />
 
           <div className="mt-4">
@@ -489,7 +489,7 @@ export default function IntegrationsPage() {
                   <span>חבר את גוגל אנליטיקס</span>
                 </Button>
                 <span className="text-xs text-[#8b8e84]">
-                  כניסה מאובטחת עם חשבון הגוגל שלכם, בלי סיסמה.
+                  כניסה עם חשבון הגוגל שלכם, בלי סיסמה.
                 </span>
               </div>
             )}
@@ -497,9 +497,11 @@ export default function IntegrationsPage() {
 
           <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
             <p>
-              בלעדיו שיווק ברשתות הוא ניחוש. המספרים מראים אילו פוסטים ונושאים באמת הביאו
-              לקוחות, ולפיהם אנחנו מחדדים את התוכנית של החודש הבא.
+              בלעדיו שיווק ברשתות הוא ניחוש. משם רואים כמה אנשים נכנסו לאתר, מאיפה הגיעו ומה
+              קנו, ואילו פוסטים ונושאים באמת הביאו לקוחות — ולפיהם אנחנו מחדדים את התוכנית של
+              החודש הבא.
             </p>
+            <p>החיבור עצמו הוא כניסה עם חשבון הגוגל שלכם, בלי סיסמה.</p>
             <div>
               <p className="font-bold text-[#191b18]">1. מישהו אחר בנה או מנהל לכם את האתר?</p>
               <p className="mt-1">
@@ -560,7 +562,7 @@ export default function IntegrationsPage() {
             title="אינסטגרם ופייסבוק"
             status={metaConnected ? "מחובר" : metaNeedsSelection ? "נשאר לבחור" : "לא מחובר"}
             tone={metaConnected ? "emerald" : metaNeedsSelection ? "amber" : "slate"}
-            note="מה שקורה בעמוד ובאינסטגרם: חשיפה, צפיות, שמירות ותגובות."
+            note="מה שקורה בעמוד ובאינסטגרם."
           />
 
           <div className="mt-4">
@@ -637,8 +639,7 @@ export default function IntegrationsPage() {
                   <span>חבר את אינסטגרם ופייסבוק</span>
                 </Button>
                 <span className="text-xs text-[#8b8e84]">
-                  הכניסה נעשית עם חשבון הפייסבוק שמנהל את הדף. פייסבוק ואינסטגרם שייכות לאותה
-                  חברה — מטא.
+                  הכניסה עם חשבון הפייסבוק שמנהל את הדף.
                 </span>
               </div>
             )}
@@ -646,8 +647,12 @@ export default function IntegrationsPage() {
 
           <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
             <p>
-              מכאן אנחנו לומדים מה הקהל באמת אוהב לראות — אילו חשיפות, צפיות ושמירות כל פוסט
-              הביא — ומשכפלים את מה שעבד בתוכנית של החודש הבא.
+              מכאן אנחנו לומדים מה הקהל באמת אוהב לראות — אילו חשיפות, צפיות, שמירות ותגובות
+              כל פוסט הביא — ומשכפלים את מה שעבד בתוכנית של החודש הבא.
+            </p>
+            <p>
+              החיבור נעשה עם חשבון הפייסבוק שמנהל את הדף. פייסבוק ואינסטגרם שייכות לאותה חברה,
+              מטא.
             </p>
             <div>
               <p className="font-bold text-[#191b18]">1. החשבון שלכם פרטי?</p>

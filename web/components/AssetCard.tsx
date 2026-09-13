@@ -45,6 +45,11 @@ function splitTags(value: string) {
  * card's own row, so the card reads as a thumbnail and a description until the owner
  * asks for more. Nothing was removed: the two-step delete and its warning still work
  * exactly as before, one click deeper.
+ *
+ * The face is the description, because that is the only line in a card that is worth
+ * reading while scanning a list. The date, the pixel size and the source address are the
+ * facts you want once you have decided to work on the file, so they open with the actions
+ * — four lines per card that repeated twelve times is most of what the page was costing.
  */
 export function AssetCard({
   asset,
@@ -71,15 +76,21 @@ export function AssetCard({
   const [thumbBroken, setThumbBroken] = useState(false);
   const [error, setError] = useState("");
   const [actionsOpen, setActionsOpen] = useState(false);
-  const actionsRef = useRef<HTMLDivElement>(null);
-  const actionsToggle = useRef<HTMLButtonElement>(null);
+  const actionsRef = useRef<HTMLDetailsElement>(null);
+  const actionsToggle = useRef<HTMLElement>(null);
 
   const label = asset.description.trim() || "נכס ללא תיאור";
   const dimensions = formatDimensions(asset.width, asset.height);
   const tagSuggestions = libraryTags.filter((tag) => !splitTags(draftTags).includes(tag)).slice(0, 6);
 
-  // An open popover has to close the way the owner expects: a click anywhere else, or
-  // Escape — which also hands focus back to the control that opened it.
+  // An open row has to close the way the owner expects: a click anywhere else, or Escape
+  // — which also hands focus back to the control that opened it.
+  //
+  // The state is React's even though `<details>` tracks `open` itself (`onToggle` feeds
+  // the browser's own answer back in), because the card draws differently once open. It
+  // is a `<details>` rather than a `<button>` + panel so the disclosure is native: it
+  // opens without JS, and every audit that force-opens `<details>` to count what a page
+  // is hiding reaches this row too.
   useEffect(() => {
     if (!actionsOpen) return;
     function onPointerDown(event: MouseEvent) {
@@ -261,26 +272,133 @@ export function AssetCard({
               >
                 {SOURCE_LABEL[asset.source]}
               </span>
-              <span className="text-[11px] text-[#8b8e84]">{formatDate(asset.created_at)}</span>
-              {dimensions ? <span className="text-[11px] text-[#8b8e84]">{dimensions}</span> : null}
 
-              <div ref={actionsRef} className="relative ms-auto">
-                <button
+              {/* The row's own disclosure. It stays in the header line so the card reads
+                  as a thumbnail and a caption until the owner asks for more. */}
+              <details
+                ref={actionsRef}
+                open={actionsOpen}
+                onToggle={(event) => setActionsOpen(event.currentTarget.open)}
+                className="group ms-auto"
+              >
+                <summary
                   ref={actionsToggle}
-                  type="button"
-                  onClick={() => setActionsOpen((prev) => !prev)}
-                  disabled={busy}
-                  aria-expanded={actionsOpen}
                   title="עריכה, ניתוח מחדש ומחיקה של הנכס"
-                  className="inline-flex min-h-8 cursor-pointer items-center gap-1 rounded-md border border-transparent px-2 text-[11px] font-bold text-[#8b8e84] transition-colors hover:border-[#dedcd4] hover:bg-white hover:text-[#20211f] disabled:cursor-default disabled:opacity-60"
+                  className="flex min-h-8 cursor-pointer list-none items-center gap-1 rounded-md border border-transparent px-2 text-[11px] font-bold text-[#8b8e84] transition-colors hover:border-[#dedcd4] hover:bg-white hover:text-[#20211f]"
                 >
                   פעולות
-                  <span aria-hidden>{actionsOpen ? "▲" : "▼"}</span>
-                </button>
-              </div>
+                  <span
+                    aria-hidden
+                    className="h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+                  />
+                </summary>
+
+                {/* Everything below belongs to the one asset this row is: what it is, when
+                    it arrived, where it came from, and what can be done with it. It is one
+                    click from the card, and it is the same content the row always carried
+                    — nothing was dropped to make the page shorter. */}
+                <div className="mt-2 border-t border-[#efeee9] pt-3">
+                  <p className="text-[11px] text-[#8b8e84]">
+                    {formatDate(asset.created_at)}
+                    {dimensions ? ` · ${dimensions}` : ""}
+                  </p>
+                  {asset.description.trim() ? null : (
+                    <p className="mt-1 text-[11px] leading-5 text-[#8b8e84]">
+                      אין עדיין תיאור לנכס הזה.
+                    </p>
+                  )}
+                  {asset.source_url ? (
+                    <a
+                      href={asset.source_url}
+                      target="_blank"
+                      rel="noreferrer"
+                      dir="ltr"
+                      className="mt-1 block truncate text-[11px] text-[#8b8e84] underline underline-offset-4 hover:text-[#20211f]"
+                      title={asset.source_url}
+                    >
+                      {asset.source_url}
+                    </a>
+                  ) : null}
+
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditing(true);
+                        setActionsOpen(false);
+                      }}
+                      disabled={busy}
+                      className={buttonClass}
+                      style={quietButton}
+                    >
+                      <IconPen className="h-3.5 w-3.5" />
+                      עריכה
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void runDescribe()}
+                      disabled={busy}
+                      className={buttonClass}
+                      style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                    >
+                      {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
+                      {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
+                    </button>
+                    {confirmingDelete ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => void runDelete()}
+                          disabled={deleting}
+                          className={buttonClass}
+                          style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
+                        >
+                          {deleting ? "מוחק…" : "כן, למחוק"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingDelete(false)}
+                          disabled={deleting}
+                          className={buttonClass}
+                          style={quietButton}
+                        >
+                          ביטול
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingDelete(true)}
+                        disabled={busy}
+                        className={buttonClass}
+                        style={{ ...quietButton, color: "#8b6a5e" }}
+                      >
+                        מחיקה
+                      </button>
+                    )}
+                  </div>
+
+                  {confirmingDelete ? (
+                    <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">
+                      המחיקה תסיר את הנכס מהספרייה. אין דרך חזרה.
+                    </p>
+                  ) : null}
+                </div>
+              </details>
             </div>
 
-            <p className="mt-2.5 text-sm leading-6 text-[#3c3e3a]">{asset.description || "אין עדיין תיאור לנכס הזה."}</p>
+            {/* The description is the card's content, so it leads the face whenever there
+                is one to read — that is what makes the library scannable instead of a wall
+                of thumbnails. A missing one is different from a present one: the tags and
+                the description both state their absence in three words, and the sentence
+                spelling out what an analysis would do instead sits with the analysis.
+                Twelve copies of a five-word apology is sixty words of the page saying
+                nothing, which is most of what the page was spending. */}
+            {asset.description.trim() ? (
+              <p className="mt-2.5 text-sm leading-6 text-[#3c3e3a]">{asset.description}</p>
+            ) : (
+              <p className="mt-2.5 text-[11px] text-[#8b8e84]">אין תיאור עדיין.</p>
+            )}
 
             {asset.tags.length ? (
               <ul className="mt-3 flex flex-wrap gap-1.5">
@@ -297,86 +415,6 @@ export function AssetCard({
             ) : (
               <p className="mt-3 text-[11px] text-[#8b8e84]">אין תגיות עדיין.</p>
             )}
-
-            {asset.source_url ? (
-              <a
-                href={asset.source_url}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 block truncate text-[11px] text-[#8b8e84] underline underline-offset-4 hover:text-[#20211f]"
-                title={asset.source_url}
-              >
-                {asset.source_url}
-              </a>
-            ) : null}
-
-            {actionsOpen ? (
-              <div className="mt-3 border-t border-[#efeee9] pt-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setEditing(true);
-                      setActionsOpen(false);
-                    }}
-                    disabled={busy}
-                    className={buttonClass}
-                    style={quietButton}
-                  >
-                    <IconPen className="h-3.5 w-3.5" />
-                    עריכה
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => void runDescribe()}
-                    disabled={busy}
-                    className={buttonClass}
-                    style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
-                  >
-                    {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
-                    {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
-                  </button>
-                  {confirmingDelete ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => void runDelete()}
-                        disabled={deleting}
-                        className={buttonClass}
-                        style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
-                      >
-                        {deleting ? "מוחק…" : "כן, למחוק"}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setConfirmingDelete(false)}
-                        disabled={deleting}
-                        className={buttonClass}
-                        style={quietButton}
-                      >
-                        ביטול
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setConfirmingDelete(true)}
-                      disabled={busy}
-                      className={buttonClass}
-                      style={{ ...quietButton, color: "#8b6a5e" }}
-                    >
-                      מחיקה
-                    </button>
-                  )}
-                </div>
-
-                {confirmingDelete ? (
-                  <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">
-                    המחיקה תסיר את הנכס מהספרייה. אין דרך חזרה.
-                  </p>
-                ) : null}
-              </div>
-            ) : null}
           </>
         )}
 

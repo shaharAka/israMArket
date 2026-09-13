@@ -42,11 +42,18 @@ function demoServerSnapshot() {
  * button, and every block below it is one container with hairline dividers instead of a
  * box per idea.
  *
- * The face now carries only the answer (UI-RULES rule 7): the quarter's hypothesis, the
- * ranked targets and the three months. Everything that explains it — each month's
- * checkpoint and the whole management/checkpoints block — sits behind an expand, so the
- * prose the owner has to read in one pass is a fraction of what is stored, and nothing
- * is dropped: the payload's own text is what the expands reveal.
+ * The face carries the answer (UI-RULES rule 7): the quarter's hypothesis — which is the
+ * answer, not an explanation of one — the first of the three ranked targets, and the three
+ * months as a sequence of headings.
+ *
+ * Everything below that is real generated prose, and there is a lot of it: three targets
+ * of 10-15 words, three month_labels of 8-10, three milestones of 20-22 and three
+ * checkpoints of 15-19, because the model writes sentences where the face only has room
+ * for a line. So the detail is staged rather than deleted — targets 2 and 3 are one line
+ * each over their full text, and each month opens onto its own milestone and checkpoint.
+ * Nothing is dropped: every string the payload holds is what an expand reveals, and the
+ * quarter still reads as a plan because the ranking digits, the hypothesis and the three
+ * month headings all stay on the face.
  */
 export default function PlanPage() {
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
@@ -128,34 +135,49 @@ export default function PlanPage() {
                 </span>
                 היעדים
               </h2>
+              {/* All three ranked targets, at two levels of detail: #1 — the one the
+                  quarter is built around — in full, the other two as one line each. The
+                  full text of both is one tap away, so nothing is lost by the staging;
+                  the ordering is still legible on the face from the first target's number. */}
               <ol className="mt-2.5 space-y-1.5">
-                {plan.targets.map((target, index) => (
-                  <li key={`${target}-${index}`} className="flex items-start gap-2.5">
-                    <span
-                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
-                      style={
-                        index === 0
-                          ? { background: identity.accent, color: "#fff" }
-                          : { border: "1px solid #dedcd4", color: "#5e6159" }
-                      }
-                    >
-                      {index + 1}
-                    </span>
-                    <span
-                      className={`text-sm leading-6 ${
-                        index === 0 ? "font-bold text-[#20211f]" : "text-[#3c3e3a]"
-                      }`}
-                    >
-                      {target}
-                    </span>
-                  </li>
-                ))}
+                {plan.targets.map((target, index) => {
+                  const first = index === 0;
+                  return (
+                    <li key={`${target}-${index}`} className="flex items-start gap-2.5">
+                      <span
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
+                        style={
+                          first
+                            ? { background: identity.accent, color: "#fff" }
+                            : { border: "1px solid #dedcd4", color: "#5e6159" }
+                        }
+                      >
+                        {index + 1}
+                      </span>
+                      {first ? (
+                        <span className="text-sm leading-6 font-bold text-[#20211f]">{target}</span>
+                      ) : (
+                        <details className="group min-w-0 flex-1">
+                          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-sm leading-6 text-[#5e6159] hover:text-[#20211f]">
+                            <Caret />
+                            יעד {index + 1}
+                          </summary>
+                          <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{target}</p>
+                        </details>
+                      )}
+                    </li>
+                  );
+                })}
               </ol>
             </section>
 
-            {/* The stages, read left to right as a track rather than down a stack. The month
-                and its milestone stay on the face; the checkpoint — the prose — is one tap
-                down, so the track reads as three lines instead of three paragraphs. */}
+            {/* The stages, read left to right as a track. The month_label is the month's
+                heading and its disclosure in one: at 8-10 words it is the most scannable
+                line the payload has, and it is already the thing a reader would click. The
+                milestone (20-22 words) and the checkpoint (15-19) sit inside it, because
+                three of each is a screen of prose on a page that was 208 words of exactly
+                that. Month 1 opens by default — it is the month the owner is living in
+                now — so the track still reads as a plan rather than three closed doors. */}
             <section className="p-4 sm:p-5">
               <h2 className="text-sm font-black text-[#20211f]">החודשים</h2>
 
@@ -167,27 +189,16 @@ export default function PlanPage() {
                 />
                 {plan.milestones.map((milestone, index) => (
                   <li key={`${milestone.month_label}-${index}`} className="relative flex gap-3 sm:block">
-                    <span
-                      className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                      style={{ background: identity.accent }}
-                    >
-                      {index + 1}
-                    </span>
-                    <div className="min-w-0 flex-1 sm:mt-3">
-                      <span className="text-[11px] font-bold text-[#8b8e84]">{milestone.month_label}</span>
-                      <span className="mt-0.5 block text-sm leading-6 font-bold text-[#20211f]">
+                    <MonthDot index={index} accent={identity.accent} />
+                    <details className="group min-w-0 flex-1 sm:mt-3" open={index === 0}>
+                      <summary className="cursor-pointer list-none text-[11px] leading-5 font-bold text-[#8b8e84] hover:text-[#20211f]">
+                        {milestone.month_label}
+                      </summary>
+                      <span className="mt-1 block text-sm leading-6 font-bold text-[#20211f]">
                         {milestone.milestone}
                       </span>
-                      {milestone.checkpoint ? (
-                        <details className="group mt-1.5">
-                          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
-                            <Caret />
-                            נקודת בקרה
-                          </summary>
-                          <p className="mt-1 text-xs leading-5 text-[#3c3e3a]">{milestone.checkpoint}</p>
-                        </details>
-                      ) : null}
-                    </div>
+                      {milestone.checkpoint ? <Checkpoint text={milestone.checkpoint} /> : null}
+                    </details>
                   </li>
                 ))}
               </ol>
@@ -267,6 +278,41 @@ export default function PlanPage() {
         ) : null}
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * The stage number on the month track. Shared so the three stages of the quarter stay
+ * identical whether the month beside it is spelled out or staged behind its heading.
+ */
+function MonthDot({ index, accent }: { index: number; accent: string }) {
+  return (
+    <span
+      className="relative z-10 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+      style={{ background: accent }}
+    >
+      {index + 1}
+    </span>
+  );
+}
+
+/**
+ * A month's checkpoint — the number that tells the owner whether the month worked.
+ *
+ * The summary is the two-word label rather than the text itself, because a `summary` is
+ * painted inside `main.innerText` whether or not the expand is open (rule 7), and fifteen
+ * to nineteen words of checkpoint per month is exactly the wall the page is being cut
+ * back from.
+ */
+function Checkpoint({ text }: { text: string }) {
+  return (
+    <details className="group mt-1.5">
+      <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+        <Caret />
+        נקודת בקרה
+      </summary>
+      <p className="mt-1 text-xs leading-5 text-[#3c3e3a]">{text}</p>
+    </details>
   );
 }
 
