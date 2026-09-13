@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -10,15 +10,43 @@ import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconFlag } from "@/lib/icons";
 
 /**
+ * The demo flag lives in localStorage, so it may only be read on the client — a server
+ * render would disagree and hydration would warn. `useSyncExternalStore` is the sanctioned
+ * way to read a client-only value during render: the server snapshot is `false`, the
+ * client snapshot is the real flag, and React reconciles the two after hydration.
+ * Nothing writes it while the page is open, so the subscription is a no-op that still
+ * keeps the value live if another tab flips it.
+ */
+function subscribeDemo(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+function demoSnapshot() {
+  return isDemo();
+}
+function demoServerSnapshot() {
+  return false;
+}
+
+/**
  * The quarterly plan.
  *
  * This lived in the payload from the start but was never rendered anywhere, so the owner
  * only ever saw a month. The layout is a three-column track because the point of the
  * screen is that the months are stages in sequence — a stack of cards hid that.
+ *
+ * What the page did not have was an ask: five headings, eight bordered boxes and no
+ * button, so it read as reference material the owner had to decide what to do with. The
+ * one ask is the monthly plan — this page is the quarter, and the quarter is only
+ * actionable month by month — so `התוכנית של ספטמבר — מה עושים החודש` is the single dark
+ * button, and every block below it is one container with hairline dividers instead of a
+ * box per idea. Nothing was cut: the hypothesis, the ranked targets, the stage track and
+ * the management/checkpoints block all still carry the same content.
  */
 export default function PlanPage() {
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
+  const demo = useSyncExternalStore(subscribeDemo, demoSnapshot, demoServerSnapshot);
   const identity = SECTIONS.plan;
 
   useEffect(() => {
@@ -34,11 +62,22 @@ export default function PlanPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-4xl">
         <SectionHeader
           section="plan"
           title="לאן אנחנו הולכים"
-          subtitle={`${plan?.horizon || "הרבעון הקרוב"} — הרבעון הוא הכיוון. כל חודש הוא אבן דרך אחת בדרך אליו, וכל פוסט משרת את החודש.`}
+          subtitle={`${plan?.horizon || "הרבעון הקרוב"} — הרבעון הוא הכיוון. כל חודש הוא אבן דרך אחת בדרך אליו.`}
+          action={
+            strategy ? (
+              <Link
+                href="/strategy"
+                className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#20211f] px-4 text-sm font-bold text-white transition-colors hover:bg-[#343632]"
+              >
+                התוכנית של {strategy.month_name_he} — מה עושים החודש
+                <IconArrowLeft className="h-4 w-4" />
+              </Link>
+            ) : undefined
+          }
         />
 
         {error ? (
@@ -47,11 +86,7 @@ export default function PlanPage() {
           </p>
         ) : null}
 
-        {isDemo() && strategy ? (
-          <p className="mb-5 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-4 py-2 text-xs text-[#685f47]">
-            מצב הדגמה — הנתונים לדוגמה.
-          </p>
-        ) : null}
+        {demo ? <p className="mb-5 text-xs text-[#685f47]">מצב הדגמה — הנתונים לדוגמה.</p> : null}
 
         {!strategy && !error ? <LoadingMark /> : null}
 
@@ -70,16 +105,18 @@ export default function PlanPage() {
         ) : null}
 
         {plan ? (
-          <div className="space-y-7">
+          // One container, hairline dividers between ideas: the quarter is a single
+          // statement, not four equal-weight rectangles.
+          <div className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white">
             {/* The bet the whole quarter rests on. */}
-            <section className="rounded-lg border p-6" style={{ borderColor: identity.border, background: identity.surface }}>
-              <span className="text-[11px] font-bold" style={{ color: identity.accent }}>
+            <section className="p-4 sm:p-5">
+              <p className="text-[11px] font-bold" style={{ color: identity.accent }}>
                 ההשערה שמחזיקה את הרבעון
-              </span>
-              <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">{plan.hypothesis}</h2>
+              </p>
+              <h2 className="mt-1.5 text-lg leading-7 font-black text-[#20211f]">{plan.hypothesis}</h2>
             </section>
 
-            <section>
+            <section className="p-4 sm:p-5">
               <h2 className="flex items-center gap-2 text-sm font-black text-[#20211f]">
                 <span style={{ color: identity.accent }}>
                   <IconFlag className="h-4 w-4" />
@@ -89,15 +126,11 @@ export default function PlanPage() {
               <p className="mt-1 text-xs text-[#8b8e84]">
                 הסדר הזה נקבע על ידכם. היעד הראשון הוא המוביל, והתוכניות נבנות סביבו.
               </p>
-              <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+              <ol className="mt-2.5 space-y-1.5">
                 {plan.targets.map((target, index) => (
-                  <li
-                    key={`${target}-${index}`}
-                    className="rounded-lg border bg-white p-4"
-                    style={index === 0 ? { borderColor: identity.accent } : { borderColor: "#e6e4dc" }}
-                  >
+                  <li key={`${target}-${index}`} className="flex items-start gap-2.5">
                     <span
-                      className="flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold"
+                      className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold"
                       style={
                         index === 0
                           ? { background: identity.accent, color: "#fff" }
@@ -107,7 +140,7 @@ export default function PlanPage() {
                       {index + 1}
                     </span>
                     <span
-                      className={`mt-3 block text-sm leading-6 ${
+                      className={`text-sm leading-6 ${
                         index === 0 ? "font-bold text-[#20211f]" : "text-[#3c3e3a]"
                       }`}
                     >
@@ -119,16 +152,16 @@ export default function PlanPage() {
             </section>
 
             {/* The stages, read left to right as a track rather than down a stack. */}
-            <section>
+            <section className="p-4 sm:p-5">
               <h2 className="text-sm font-black text-[#20211f]">השלבים — חודש אחר חודש</h2>
               <p className="mt-1 text-xs text-[#8b8e84]">
                 כל חודש נסגר בנקודת בקרה. אם משהו לא עובד — מתקנים לפני החודש הבא.
               </p>
 
-              <ol className="relative mt-5 grid gap-6 sm:grid-cols-3 sm:gap-4">
+              <ol className="relative mt-4 grid gap-5 sm:grid-cols-3 sm:gap-4">
                 <span
                   aria-hidden
-                  className="absolute right-0 left-0 top-3 hidden h-px sm:block"
+                  className="absolute top-3 right-0 left-0 hidden h-px sm:block"
                   style={{ background: identity.border }}
                 />
                 {plan.milestones.map((milestone, index) => (
@@ -139,15 +172,12 @@ export default function PlanPage() {
                     >
                       {index + 1}
                     </span>
-                    <div className="min-w-0 flex-1 sm:mt-4">
+                    <div className="min-w-0 flex-1 sm:mt-3">
                       <span className="text-[11px] font-bold text-[#8b8e84]">{milestone.month_label}</span>
-                      <span className="mt-1 block text-sm font-bold leading-6 text-[#20211f]">
+                      <span className="mt-0.5 block text-sm leading-6 font-bold text-[#20211f]">
                         {milestone.milestone}
                       </span>
-                      <span
-                        className="mt-2 block rounded-md border px-3 py-2 text-xs leading-5 text-[#5e6159]"
-                        style={{ borderColor: identity.border, background: identity.surface }}
-                      >
+                      <span className="mt-1 block text-xs leading-5 text-[#5e6159]">
                         <span className="font-bold text-[#3c3e3a]">נקודת בקרה: </span>
                         {milestone.checkpoint}
                       </span>
@@ -158,7 +188,7 @@ export default function PlanPage() {
             </section>
 
             {management ? (
-              <section className="rounded-lg border border-[#e6e4dc] bg-white p-6">
+              <section className="p-4 sm:p-5">
                 <h2 className="flex items-center gap-2 text-sm font-black text-[#20211f]">
                   <span style={{ color: identity.accent }}>
                     <IconBell className="h-4 w-4" />
@@ -166,20 +196,22 @@ export default function PlanPage() {
                   מה אנחנו עושים, ומתי נצטרך אתכם
                 </h2>
                 {management.how_we_help ? (
-                  <p className="mt-3 text-sm leading-6 text-[#3c3e3a]">{management.how_we_help}</p>
+                  <p className="mt-1.5 text-sm leading-6 text-[#3c3e3a]">{management.how_we_help}</p>
                 ) : null}
 
-                <div className="mt-5 grid gap-6 sm:grid-cols-2">
+                {/* Two columns, tight rows: four reminders and four checkpoint windows used to
+                    cost far more height for what is a list of short lines. */}
+                <div className="mt-3 grid gap-x-8 gap-y-4 border-t border-[#efeee9] pt-3 sm:grid-cols-2">
                   {management.when_we_need_user?.length ? (
                     <div>
                       <span className="text-[11px] font-bold text-[#8b8e84]">נצטרך מכם</span>
-                      <ul className="mt-2 space-y-1.5">
+                      <ul className="mt-2 space-y-1">
                         {management.when_we_need_user.map((item, index) => (
                           <li
                             key={`${item}-${index}`}
-                            className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]"
+                            className="flex items-start gap-2 text-xs leading-5 text-[#3c3e3a]"
                           >
-                            <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                            <span aria-hidden className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
                             {item}
                           </li>
                         ))}
@@ -192,16 +224,14 @@ export default function PlanPage() {
                       <span className="text-[11px] font-bold text-[#8b8e84]">נקודות בקרה</span>
                       <ul className="mt-2 space-y-2">
                         {management.checkpoints.map((checkpoint, index) => (
-                          <li
-                            key={`${checkpoint.timing}-${index}`}
-                            className="rounded-md border border-[#e6e4dc] bg-[#f8f7f4] p-3"
-                          >
-                            <span className="text-xs font-bold text-[#20211f]">{checkpoint.timing}</span>
-                            <span className="mt-1 block text-xs leading-5 text-[#5e6159]">
+                          <li key={`${checkpoint.timing}-${index}`} className="text-xs leading-5">
+                            <span className="font-bold text-[#20211f]">{checkpoint.timing}</span>
+                            <span className="text-[#5e6159]">
+                              {" — "}
                               {checkpoint.purpose}
                             </span>
                             {checkpoint.user_action ? (
-                              <span className="mt-1 block text-xs leading-5 text-[#3c3e3a]">
+                              <span className="block text-[#3c3e3a]">
                                 <span className="font-bold">מה שצריך מכם: </span>
                                 {checkpoint.user_action}
                               </span>
@@ -214,20 +244,15 @@ export default function PlanPage() {
                 </div>
               </section>
             ) : null}
-
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[#deddd8] pt-5">
-              <Link
-                href="/strategy"
-                className="inline-flex items-center gap-2 text-sm font-bold text-[#20211f] underline underline-offset-4"
-              >
-                <IconArrowLeft className="h-4 w-4" />
-                לתוכנית של {strategy?.month_name_he} — מה עושים החודש
-              </Link>
-              <Link href="/decisions" className="text-sm font-bold text-[#5e6159] underline underline-offset-4">
-                לשינוי היעדים, התקציב והאבחון
-              </Link>
-            </div>
           </div>
+        ) : null}
+
+        {plan ? (
+          <p className="mt-5 border-t border-[#deddd8] pt-4">
+            <Link href="/decisions" className="text-sm font-bold text-[#5e6159] underline underline-offset-4">
+              לשינוי היעדים, התקציב והאבחון
+            </Link>
+          </p>
         ) : null}
       </div>
     </AppShell>

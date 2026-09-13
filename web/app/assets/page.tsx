@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { AssetCard } from "@/components/AssetCard";
@@ -12,6 +12,25 @@ import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
 
 const identity = SECTIONS.assets;
+
+/**
+ * The demo flag lives in localStorage, so it may only be read on the client — a server
+ * render would disagree and hydration would warn. `useSyncExternalStore` is the sanctioned
+ * way to read a client-only value during render: the server snapshot is `false`, the
+ * client snapshot is the real flag, and React reconciles the two after hydration.
+ * Nothing writes it while the page is open, so the subscription is a no-op that still
+ * keeps the value live if another tab flips it.
+ */
+function subscribeDemo(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  return () => window.removeEventListener("storage", onChange);
+}
+function demoSnapshot() {
+  return isDemo();
+}
+function demoServerSnapshot() {
+  return false;
+}
 
 /** Hebrew needs the verb to agree with the count, and "1 נכסים" reads as broken. */
 function countLabel(count: number, singular: string, plural: string) {
@@ -37,6 +56,15 @@ function mergeAssets(current: Asset[], incoming: Asset[]) {
  * written around whatever the model invented. This screen is the supply side: upload from
  * the phone, pull a picture from a link, or let the deep scan walk their own website, and
  * the AI pass writes the description and tags that the post editor then works from.
+ *
+ * The page has ONE ask: the deep site scan. It is the only one of the three ways in that
+ * the owner cannot do anywhere else in the app — and it is the only one that fills the
+ * whole library at once, from their own site, without them hunting for files. So it is the
+ * dark button in the header, on an empty library as much as a full one.
+ *
+ * Uploading and importing a link stay fully available, but they are the *other* ways in,
+ * not a second ask: both live behind the one `הוספה בדרך אחרת` disclosure. Nothing is
+ * hidden from the audit — the page simply opens on the library instead of on a toolbar.
  */
 export default function AssetsPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
@@ -49,7 +77,9 @@ export default function AssetsPage() {
   const [importing, setImporting] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState("");
+  const [addOpen, setAddOpen] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const demo = useSyncExternalStore(subscribeDemo, demoSnapshot, demoServerSnapshot);
 
   useEffect(() => {
     // Only the async result is state — nothing is set synchronously in the effect, so a
@@ -104,6 +134,8 @@ export default function AssetsPage() {
     } else {
       // Keep a failed file's row on screen so its "נכשל" label stays next to the reason.
       setPending({});
+      // Everything landed: fold the disclosure away and give the library back its page.
+      setAddOpen(false);
     }
   }
 
@@ -122,7 +154,10 @@ export default function AssetsPage() {
           ? `${countLabel(res.assets.length, "נכס יובא", "נכסים יובאו")} מהקישור, ו-${res.skipped} דולגו (כבר קיימים או לא נתמכים).`
           : `${countLabel(res.assets.length, "נכס יובא", "נכסים יובאו")} מהקישור.`
       );
-      if (res.assets.length) setUrl("");
+      if (res.assets.length) {
+        setUrl("");
+        setAddOpen(false);
+      }
     } catch (err) {
       setLoadError(message(err, "הייבוא מהקישור נכשל"));
     } finally {
@@ -180,9 +215,7 @@ export default function AssetsPage() {
     () => Array.from(new Set(assets.flatMap((asset) => asset.tags))).sort((a, b) => a.localeCompare(b, "he")),
     [assets]
   );
-  // Same client-side demo read the plan screen does: it only ever changes the note above
-  // the grid, never which data the screen is allowed to show.
-  const demo = isDemo();
+  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלה…" : "העלאת קובץ מהמכשיר";
 
   return (
     <AppShell>
@@ -190,107 +223,127 @@ export default function AssetsPage() {
         <SectionHeader
           section="assets"
           title="הנכסים שלי"
-          subtitle="התמונות והסרטונים שלכם — מהטלפון, מקישור או ישר מהאתר. על כל נכס אנחנו כותבים תיאור ותגיות, ומשם הפוסטים נבנים."
-        />
-
-        {demo ? (
-          <p className="mb-5 rounded-md border px-4 py-2 text-xs" style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}>
-            מצב הדגמה — הספרייה לדוגמה, והניתוח מדומה.
-          </p>
-        ) : null}
-
-        {loadError ? (
-          <p className="mb-5 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{loadError}</p>
-        ) : null}
-
-        <section className="rounded-lg border border-[#e6e4dc] bg-white p-5">
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <input
-                ref={fileInput}
-                type="file"
-                accept="image/*,video/*"
-                multiple
-                onChange={(event) => void handleFiles(event)}
-                className="sr-only"
-              />
-              <button
-                type="button"
-                onClick={() => fileInput.current?.click()}
-                disabled={busy}
-                className="inline-flex min-h-11 items-center gap-2 rounded-md px-4 text-sm font-bold text-white transition-colors disabled:cursor-default disabled:opacity-60"
-                style={{ background: identity.accent }}
-              >
-                <IconImage className="h-4 w-4" />
-                {Object.values(pending).includes("uploading") ? "מעלה…" : "העלאת תמונות או סרטונים"}
-              </button>
-              <span className="text-xs text-[#8b8e84]">אפשר לבחור כמה קבצים בבת אחת</span>
-            </div>
-
-            <span aria-hidden className="hidden h-8 w-px bg-[#e6e4dc] sm:block" />
-
-            <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
-              <input
-                type="url"
-                value={url}
-                onChange={(event) => setUrl(event.target.value)}
-                placeholder="https://..."
-                dir="ltr"
-                className="min-h-11 w-64 rounded-md border border-[#dedcd4] bg-white px-3 text-sm text-[#20211f] outline-none focus:border-[#7d4436]"
-              />
-              <button
-                type="submit"
-                disabled={importing || busy || !url.trim()}
-                className="inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-bold transition-colors disabled:cursor-default disabled:opacity-50"
-                style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
-              >
-                <IconLink className="h-4 w-4" />
-                {importing ? "מייבא…" : "ייבוא מקישור"}
-              </button>
-            </form>
-
-            <span aria-hidden className="hidden h-8 w-px bg-[#e6e4dc] sm:block" />
-
+          subtitle="התמונות והסרטונים שלכם. על כל נכס אנחנו כותבים תיאור ותגיות, ומשם הפוסטים נבנים."
+          action={
             <button
               type="button"
               onClick={() => void handleScan()}
               disabled={scanning || busy}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#20211f] transition-colors hover:bg-[#f8f7f4] disabled:cursor-default disabled:opacity-50"
+              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#20211f] px-4 text-sm font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-default disabled:opacity-60"
             >
               <IconEye className="h-4 w-4" />
               {scanning ? "סורק את האתר…" : "סריקה מעמיקה של האתר"}
             </button>
-          </div>
+          }
+        />
 
-          {scanning ? (
-            <p className="mt-4 rounded-md border px-3 py-2 text-xs leading-5" style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}>
-              הסריקה עוברת על דפי האתר ומאתרת תמונות. היא יכולה לקחת כמה דקות — אפשר להשאיר את החלון פתוח.
-            </p>
+        {demo ? (
+          <p className="mb-5 text-xs" style={{ color: identity.accent }}>
+            מצב הדגמה — הספרייה לדוגמה, והניתוח מדומה.
+          </p>
+        ) : null}
+
+        {/* One disclosure holds the two other ways in. Closed by default, so the page opens
+            on the library rather than on a toolbar; open by one click for anyone who came
+            here to upload or to paste a link. */}
+        <section className="rounded-lg border border-[#e6e4dc] bg-white">
+          <button
+            type="button"
+            onClick={() => setAddOpen((prev) => !prev)}
+            aria-expanded={addOpen}
+            className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 px-5 text-sm font-bold text-[#5e6159] transition-colors hover:text-[#20211f]"
+          >
+            <span className="flex items-center gap-2">
+              <IconImage className="h-4 w-4" />
+              הוספה בדרך אחרת — העלאה מהמכשיר או ייבוא מקישור
+            </span>
+            <span aria-hidden className="text-xs text-[#8b8e84]">
+              {addOpen ? "▲" : "▼"}
+            </span>
+          </button>
+
+          {addOpen ? (
+            <div className="space-y-4 border-t border-[#e6e4dc] px-5 py-4">
+              <div className="flex flex-wrap items-center gap-3">
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept="image/*,video/*"
+                  multiple
+                  onChange={(event) => void handleFiles(event)}
+                  className="sr-only"
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInput.current?.click()}
+                  disabled={busy}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-bold transition-colors disabled:cursor-default disabled:opacity-50"
+                  style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                >
+                  <IconImage className="h-4 w-4" />
+                  {uploadLabel}
+                </button>
+                <span className="text-xs text-[#8b8e84]">אפשר לבחור כמה קבצים בבת אחת</span>
+              </div>
+
+              <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
+                <label className="sr-only" htmlFor="asset-import-url">
+                  כתובת הקישור לייבוא
+                </label>
+                <input
+                  id="asset-import-url"
+                  type="url"
+                  value={url}
+                  onChange={(event) => setUrl(event.target.value)}
+                  placeholder="https://..."
+                  dir="ltr"
+                  className="min-h-11 w-64 rounded-md border border-[#dedcd4] bg-white px-3 text-sm text-[#20211f] outline-none focus:border-[#7d4436]"
+                />
+                <button
+                  type="submit"
+                  disabled={importing || busy || !url.trim()}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-bold transition-colors disabled:cursor-default disabled:opacity-50"
+                  style={{ borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" }}
+                >
+                  <IconLink className="h-4 w-4" />
+                  {importing ? "מייבא…" : "ייבוא מקישור"}
+                </button>
+                <span className="text-xs text-[#8b8e84]">קישור לתמונה בודדת מהרשת.</span>
+              </form>
+            </div>
           ) : null}
-
-          {scanResult ? <p className="mt-4 text-sm leading-6 text-[#3c3e3a]">{scanResult}</p> : null}
-          {notice ? <p className="mt-3 text-sm leading-6 text-[#3c3e3a]">{notice}</p> : null}
-
-          {Object.keys(pending).length ? (
-            <ul className="mt-4 space-y-1.5">
-              {Object.entries(pending).map(([name, state]) => (
-                <li key={name} className="flex items-center gap-2 text-xs text-[#5e6159]">
-                  {state === "uploading" ? (
-                    <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
-                  ) : (
-                    <IconSparkles className="h-3.5 w-3.5" />
-                  )}
-                  <span className="truncate">{name}</span>
-                  <span className="text-[#8b8e84]">
-                    {state === "uploading" ? "מעלה ומנתח…" : state === "done" ? "נוסף" : "נכשל"}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-
-          {fileError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{fileError}</p> : null}
         </section>
+
+        {/* Everything the scan and the import have to say, in one place under the button
+            that starts them. */}
+        {scanning ? (
+          <p className="mt-4 text-xs leading-5" style={{ color: identity.accent }}>
+            הסריקה עוברת על דפי האתר ומאתרת תמונות. היא יכולה לקחת כמה דקות — אפשר להשאיר את החלון פתוח.
+          </p>
+        ) : null}
+        {scanResult ? <p className="mt-4 text-sm leading-6 text-[#3c3e3a]">{scanResult}</p> : null}
+        {notice ? <p className="mt-3 text-sm leading-6 text-[#3c3e3a]">{notice}</p> : null}
+        {loadError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{loadError}</p> : null}
+
+        {Object.keys(pending).length ? (
+          <ul className="mt-4 space-y-1.5">
+            {Object.entries(pending).map(([name, state]) => (
+              <li key={name} className="flex items-center gap-2 text-xs text-[#5e6159]">
+                {state === "uploading" ? (
+                  <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
+                ) : (
+                  <IconSparkles className="h-3.5 w-3.5" />
+                )}
+                <span className="truncate">{name}</span>
+                <span className="text-[#8b8e84]">
+                  {state === "uploading" ? "מעלה ומנתח…" : state === "done" ? "נוסף" : "נכשל"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        {fileError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{fileError}</p> : null}
 
         {loading ? (
           <LoadingMark label="טוען את הנכסים…" />
@@ -328,14 +381,13 @@ export default function AssetsPage() {
             </span>
             <h2 className="mt-4 text-lg font-black text-[#20211f]">הספרייה עוד ריקה</h2>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
-              כאן חיים התמונות והסרטונים של העסק. ברגע שנכס נמצא בספרייה, אנחנו מנתחים אותו וכותבים תיאור ותגיות — וכל
-              פוסט יכול להיבנות סביב התמונה האמיתית שלכם במקום תמונה כללית.
+              כאן חיים התמונות והסרטונים של העסק. סריקה מעמיקה של האתר תאסוף אותם בשבילכם — ואם יש תמונות בטלפון,
+              אפשר להעלות אותן או לייבא מקישור מלמעלה.
             </p>
-            <ul className="mx-auto mt-4 max-w-xl space-y-1.5 text-right text-sm leading-6 text-[#3c3e3a]">
-              <li>· העלו תמונות וסרטונים מהטלפון או מהמחשב</li>
-              <li>· ייבאו תמונה מקישור אחד בודד</li>
-              <li>· או הריצו סריקה מעמיקה שתאסוף תמונות מהאתר שלכם</li>
-            </ul>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#5e6159]">
+              ברגע שנכס נמצא בספרייה, אנחנו מנתחים אותו וכותבים תיאור ותגיות — וכל פוסט יכול להיבנות סביב התמונה
+              האמיתית שלכם במקום תמונה כללית.
+            </p>
           </section>
         )}
       </div>

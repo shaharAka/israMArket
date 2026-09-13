@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { Asset, AssetSource } from "@/lib/api";
 import { IconCheck, IconEye, IconImage, IconPen, IconSparkles } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
@@ -38,6 +38,13 @@ function splitTags(value: string) {
  * file — putting them on the screen would make every card flip into edit mode at once.
  * Delete is deliberately two-step: the first click replaces the row with a confirmation,
  * so a stray click can never destroy a file the owner uploaded.
+ *
+ * Edit, re-describe and delete used to sit on every card as three permanently visible
+ * buttons — twelve standing controls for a four-asset library, all of them the same
+ * weight as the library's real ask. They now live behind one labelled control in the
+ * card's own row, so the card reads as a thumbnail and a description until the owner
+ * asks for more. Nothing was removed: the two-step delete and its warning still work
+ * exactly as before, one click deeper.
  */
 export function AssetCard({
   asset,
@@ -63,10 +70,34 @@ export function AssetCard({
   const [busy, setBusy] = useState(false);
   const [thumbBroken, setThumbBroken] = useState(false);
   const [error, setError] = useState("");
+  const [actionsOpen, setActionsOpen] = useState(false);
+  const actionsRef = useRef<HTMLDivElement>(null);
+  const actionsToggle = useRef<HTMLButtonElement>(null);
 
   const label = asset.description.trim() || "נכס ללא תיאור";
   const dimensions = formatDimensions(asset.width, asset.height);
   const tagSuggestions = libraryTags.filter((tag) => !splitTags(draftTags).includes(tag)).slice(0, 6);
+
+  // An open popover has to close the way the owner expects: a click anywhere else, or
+  // Escape — which also hands focus back to the control that opened it.
+  useEffect(() => {
+    if (!actionsOpen) return;
+    function onPointerDown(event: MouseEvent) {
+      if (!actionsRef.current?.contains(event.target as Node)) setActionsOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActionsOpen(false);
+        actionsToggle.current?.focus();
+      }
+    }
+    document.addEventListener("mousedown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [actionsOpen]);
 
   async function runDescribe() {
     setDescribing(true);
@@ -232,6 +263,21 @@ export function AssetCard({
               </span>
               <span className="text-[11px] text-[#8b8e84]">{formatDate(asset.created_at)}</span>
               {dimensions ? <span className="text-[11px] text-[#8b8e84]">{dimensions}</span> : null}
+
+              <div ref={actionsRef} className="relative ms-auto">
+                <button
+                  ref={actionsToggle}
+                  type="button"
+                  onClick={() => setActionsOpen((prev) => !prev)}
+                  disabled={busy}
+                  aria-expanded={actionsOpen}
+                  title="עריכה, ניתוח מחדש ומחיקה של הנכס"
+                  className="inline-flex min-h-8 cursor-pointer items-center gap-1 rounded-md border border-transparent px-2 text-[11px] font-bold text-[#8b8e84] transition-colors hover:border-[#dedcd4] hover:bg-white hover:text-[#20211f] disabled:cursor-default disabled:opacity-60"
+                >
+                  פעולות
+                  <span aria-hidden>{actionsOpen ? "▲" : "▼"}</span>
+                </button>
+              </div>
             </div>
 
             <p className="mt-2.5 text-sm leading-6 text-[#3c3e3a]">{asset.description || "אין עדיין תיאור לנכס הזה."}</p>
@@ -264,59 +310,72 @@ export function AssetCard({
               </a>
             ) : null}
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
-              <button type="button" onClick={() => setEditing(true)} disabled={busy} className={buttonClass} style={quietButton}>
-                <IconPen className="h-3.5 w-3.5" />
-                עריכה
-              </button>
-              <button
-                type="button"
-                onClick={() => void runDescribe()}
-                disabled={busy}
-                className={buttonClass}
-                style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
-              >
-                {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
-                {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
-              </button>
-              {confirmingDelete ? (
-                <>
+            {actionsOpen ? (
+              <div className="mt-3 border-t border-[#efeee9] pt-3">
+                <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
-                    onClick={() => void runDelete()}
-                    disabled={deleting}
-                    className={buttonClass}
-                    style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
-                  >
-                    {deleting ? "מוחק…" : "כן, למחוק"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmingDelete(false)}
-                    disabled={deleting}
+                    onClick={() => {
+                      setEditing(true);
+                      setActionsOpen(false);
+                    }}
+                    disabled={busy}
                     className={buttonClass}
                     style={quietButton}
                   >
-                    ביטול
+                    <IconPen className="h-3.5 w-3.5" />
+                    עריכה
                   </button>
-                </>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setConfirmingDelete(true)}
-                  disabled={busy}
-                  className={buttonClass}
-                  style={{ ...quietButton, color: "#8b6a5e" }}
-                >
-                  מחיקה
-                </button>
-              )}
-            </div>
+                  <button
+                    type="button"
+                    onClick={() => void runDescribe()}
+                    disabled={busy}
+                    className={buttonClass}
+                    style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                  >
+                    {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
+                    {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
+                  </button>
+                  {confirmingDelete ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => void runDelete()}
+                        disabled={deleting}
+                        className={buttonClass}
+                        style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
+                      >
+                        {deleting ? "מוחק…" : "כן, למחוק"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingDelete(false)}
+                        disabled={deleting}
+                        className={buttonClass}
+                        style={quietButton}
+                      >
+                        ביטול
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingDelete(true)}
+                      disabled={busy}
+                      className={buttonClass}
+                      style={{ ...quietButton, color: "#8b6a5e" }}
+                    >
+                      מחיקה
+                    </button>
+                  )}
+                </div>
 
-            {confirmingDelete ? (
-              <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">
-                המחיקה תסיר את הנכס מהספרייה. אין דרך חזרה.
-              </p>
+                {confirmingDelete ? (
+                  <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">
+                    המחיקה תסיר את הנכס מהספרייה. אין דרך חזרה.
+                  </p>
+                ) : null}
+              </div>
             ) : null}
           </>
         )}
