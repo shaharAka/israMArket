@@ -31,6 +31,8 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
+from app.services.business_model import CONVERSION_UNIT, normalise_model
+
 SOURCE_URL = (
     "https://kanmedia.co.il/%d7%9b%d7%9e%d7%94-%d7%a2%d7%95%d7%9c%d7%94-%d7%a4%d7%a8%d7%a1%d7%95%d7%9d-"
     "%d7%91-meta-ads-%d7%9c%d7%97%d7%a0%d7%95%d7%aa-%d7%90%d7%99%d7%a7%d7%95%d7%9e%d7%a8%d7%a1-"
@@ -70,6 +72,10 @@ class BudgetPlan:
     warnings: list[str]
     assumptions: list[str]
     source: str
+    # What the spend is meant to produce. "רכישה" for a shop, "פנייה (ליד)" for a service
+    # business — the published CPA/ROAS figures are ecommerce purchase figures and are
+    # deliberately not reused as lead costs.
+    conversion_unit: str = "רכישה"
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -97,7 +103,13 @@ def _allocate(media: int) -> dict[str, float]:
     return {"cold": 0.60, "retargeting": 0.30, "retention": 0.10}
 
 
-def plan_from_budget(monthly_budget_ils: int, primary_goal: str = "sales") -> BudgetPlan:
+def plan_from_budget(
+    monthly_budget_ils: int,
+    primary_goal: str = "sales",
+    business_model: str = "products",
+) -> BudgetPlan:
+    model = normalise_model(business_model)
+    sells_products = model in {"products", "both"}
     budget = max(int(monthly_budget_ils or 0), 0)
     stage = _stage_for(budget)
     warnings: list[str] = []
@@ -125,14 +137,25 @@ def plan_from_budget(monthly_budget_ils: int, primary_goal: str = "sales") -> Bu
         int(media / CPC_NIS[0]) if media else 0,
     )
     purchases = (
-        int(media / CPA_NIS[1]) if media else 0,
-        int(media / CPA_NIS[0]) if media else 0,
+        int(media / CPA_NIS[1]) if media and sells_products else 0,
+        int(media / CPA_NIS[0]) if media and sells_products else 0,
     )
 
-    if purchases[1] < MIN_PURCHASE_EVENTS_FOR_OPTIMISATION and media:
+    if sells_products and purchases[1] < MIN_PURCHASE_EVENTS_FOR_OPTIMISATION and media:
         warnings.append(
             f"בתקציב הזה צפויים פחות מ-{MIN_PURCHASE_EVENTS_FOR_OPTIMISATION} אירועי רכישה "
             "בחודש, ומטא מתקשה ללמוד ולאפטם. בשלב הזה המטרה היא איסוף נתונים, לא ROAS."
+        )
+
+    if not sells_products:
+        # The published CPA and ROAS figures come from e-commerce campaigns, where the
+        # conversion is a purchase. Reusing them as a cost per lead would be exactly the
+        # invented number this module exists to avoid, so we report reach and clicks and
+        # say plainly what we cannot know.
+        warnings.append(
+            "העסק מוכר שירותים, ולכן אין כאן אומדן לעלות פנייה: מחירי ה-CPA שפורסמו "
+            "מתייחסים לרכישות באיקומרס, ולא ניתן לגזור מהם עלות ליד. מספר הפניות תלוי "
+            "באתר ובשיחה שלכם, ורק אתם יכולים למדוד אותו."
         )
 
     # Posting cadence follows the budget stage rather than an invented band table:
@@ -150,11 +173,26 @@ def plan_from_budget(monthly_budget_ils: int, primary_goal: str = "sales") -> Bu
         posts_per_week = 6
         formats = ["reel", "single_image", "catalog", "collection"]
 
-    if primary_goal != "sales":
+    if sells_products and primary_goal != "sales":
         warnings.append(
             "המטרה שנבחרה אינה מכירות, ולכן יעדי ההחזר למטה הם למדידה כללית בלבד "
             "ואין להשוות אותם ל-ROAS של קמפיין מכירות."
         )
+
+    assumptions = [
+        f"CPM בישראל {CPM_NIS[0]:.0f}-{CPM_NIS[1]:.0f} ₪ לאלף חשיפות",
+        f"CPC בישראל {CPC_NIS[0]}-{CPC_NIS[1]} ₪",
+    ]
+    if sells_products:
+        assumptions += [
+            f"CPA בישראל {CPA_NIS[0]:.0f}-{CPA_NIS[1]:.0f} ₪",
+            f"ROAS סביר ל-Cold Traffic {ROAS_COLD[0]}-{ROAS_COLD[1]} "
+            f"(רימרקטינג {ROAS_RETARGETING[0]}-{ROAS_RETARGETING[1]})",
+        ]
+    assumptions += [
+        f"חלוקה מומלצת לפאנל: {split}",
+        "התקציב הוא תקציב כולל; אין בו עלות ניהול קמפיינים או הפקת קרייאטיב",
+    ]
 
     return BudgetPlan(
         monthly_budget_ils=budget,
@@ -165,33 +203,36 @@ def plan_from_budget(monthly_budget_ils: int, primary_goal: str = "sales") -> Bu
         expected_impressions=impressions,
         expected_clicks=clicks,
         expected_purchases=purchases,
-        realistic_roas=ROAS_COLD if primary_goal == "sales" else (0.0, 0.0),
+        realistic_roas=ROAS_COLD if (sells_products and primary_goal == "sales") else (0.0, 0.0),
         warnings=warnings,
-        assumptions=[
-            f"CPM בישראל {CPM_NIS[0]:.0f}-{CPM_NIS[1]:.0f} ₪ לאלף חשיפות",
-            f"CPC בישראל {CPC_NIS[0]}-{CPC_NIS[1]} ₪",
-            f"CPA בישראל {CPA_NIS[0]:.0f}-{CPA_NIS[1]:.0f} ₪",
-            f"ROAS סביר ל-Cold Traffic {ROAS_COLD[0]}-{ROAS_COLD[1]} "
-            f"(רימרקטינג {ROAS_RETARGETING[0]}-{ROAS_RETARGETING[1]})",
-            f"חלוקה מומלצת לפאנל: {split}",
-            "התקציב הוא תקציב כולל; אין בו עלות ניהול קמפיינים או הפקת קרייאטיב",
-        ],
+        assumptions=assumptions,
         source=SOURCE_URL,
+        conversion_unit=CONVERSION_UNIT[model],
     )
 
 
 def prompt_block(plan: BudgetPlan) -> str:
     """The plan rendered for the strategy model, so its targets are anchored to these
     ranges instead of being invented."""
+    is_purchase = plan.conversion_unit == "רכישה"
+    volume_lines = f"טווח קליקים: {plan.expected_clicks[0]:,}-{plan.expected_clicks[1]:,}\n"
+    if is_purchase:
+        volume_lines += (
+            f"טווח רכישות: {plan.expected_purchases[0]:,}-{plan.expected_purchases[1]:,}\n"
+            f"ROAS ריאלי לחם: {plan.realistic_roas[0]}-{plan.realistic_roas[1]}\n"
+        )
+    else:
+        volume_lines += (
+            f"יחידת ההמרה בעסק הזה: {plan.conversion_unit} — אין אומדן עלות לפנייה, "
+            "ואל תמציא אחד. השתמש בטווח הקליקים כגבול העליון של מה שכסף יכול לקנות.\n"
+        )
     return (
         "נתוני עלות אמיתיים לשוק הישראלי (טווחים שפורסמו, לא הערכות):\n"
         + "\n".join(f"- {a}" for a in plan.assumptions)
         + f"\n\nתקציב חודשי שהוגדר על ידי בעל העסק: {plan.monthly_budget_ils:,} ₪ "
         f"(שלב: {plan.stage})\n"
         f"טווח חשיפות חודשי צפוי: {plan.expected_impressions[0]:,}-{plan.expected_impressions[1]:,}\n"
-        f"טווח קליקים: {plan.expected_clicks[0]:,}-{plan.expected_clicks[1]:,}\n"
-        f"טווח רכישות: {plan.expected_purchases[0]:,}-{plan.expected_purchases[1]:,}\n"
-        f"ROAS ריאלי לחם: {plan.realistic_roas[0]}-{plan.realistic_roas[1]}\n"
+        + volume_lines
         + (
             "\nאזהרות שחייבות להופיע בתוכנית:\n" + "\n".join(f"- {w}" for w in plan.warnings)
             if plan.warnings

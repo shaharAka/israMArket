@@ -141,7 +141,7 @@ def israeli_events_for_month(year: int, month: int) -> list[dict]:
     return events
 
 
-def posting_plan(monthly_budget_ils: int, primary_goal: str) -> dict:
+def posting_plan(monthly_budget_ils: int, primary_goal: str, business_model: str = "products") -> dict:
     """Content and spend plan for the month.
 
     Delegates to the Israeli cost model. This function used to hold invented budget
@@ -149,19 +149,30 @@ def posting_plan(monthly_budget_ils: int, primary_goal: str) -> dict:
     source. A plan built on those is a plan for a business nobody has, so the bands were
     replaced with published market ranges (see services/cost_model.py).
     """
-    plan = plan_from_budget(monthly_budget_ils, primary_goal)
+    plan = plan_from_budget(monthly_budget_ils, primary_goal, business_model)
+    if plan.conversion_unit == "רכישה":
+        mix_note = (
+            "דגש על קרוסלות הצעה, רילס עם CTA ברור, וקישור לדף נחיתה או וואטסאפ."
+            if primary_goal == "sales"
+            else "דגש על סיפור מותג, רילס מאחורי הקלעים, ואמון. CTA רך יותר."
+        )
+    else:
+        # A service business is not selling a basket. Its content has to prove the work
+        # is good and make the inquiry feel low-risk.
+        mix_note = (
+            "דגש על מקרי ביקורת, תהליך העבודה, לפני ואחרי ועמדה מקצועית. "
+            "CTA לפנייה או שיחת ייעוץ — לא לרכישה ולא לקופון."
+        )
     return {
         # kept for existing callers
         "weekly_posts": plan.posts_per_week,
         "format_mix": {"formats": plan.recommended_formats},
         "ads_guidance": " | ".join(plan.warnings) if plan.warnings else "תקציב בטווח סביר לפרסום ממומן.",
-        "mix_note": (
-            "דגש על קרוסלות הצעה, רילס עם CTA ברור, וקישור לדף נחיתה או וואטסאפ."
-            if primary_goal == "sales"
-            else "דגש על סיפור מותג, רילס מאחורי הקלעים, ואמון. CTA רך יותר."
-        ),
+        "mix_note": mix_note,
         "monthly_budget_ils": plan.monthly_budget_ils,
         "primary_goal": primary_goal,
+        "conversion_unit": plan.conversion_unit,
+        "business_model": business_model,
         # new, grounded data the strategy prompt uses
         "stage": plan.stage,
         "realistic_roas": list(plan.realistic_roas),

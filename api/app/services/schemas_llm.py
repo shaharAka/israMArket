@@ -141,6 +141,68 @@ HYPOTHESES_SCHEMA = {
     "required": ["hypotheses"],
 }
 
+TARGETS_SCHEMA = {
+    "type": "object",
+    "title": "GrowthTargetCandidates",
+    "description": "יעדי צמיחה מוצעים, שבעל העסק ידרג בעצמו",
+    "properties": {
+        "targets": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 8,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string"},
+                    "category": {
+                        "type": "string",
+                        "description": "אחת מ: מכירות, קהל, נאמנות, תפעול, נוכחות דיגיטלית",
+                    },
+                    "target": {
+                        "type": "string",
+                        "description": "יעד מדיד אחד במשפט, עם מספר וטווח זמן",
+                    },
+                    "why_this": {"type": "string", "description": "למה זה ריאלי דווקא לעסק הזה"},
+                    "recommended_rank": {
+                        "type": "integer",
+                        "description": (
+                            "1 עד 3 עבור שלושת היעדים שאתה ממליץ עליהם ביותר, "
+                            "0 לכל יעד אחר. חייבים להיות בדיוק שלושה מדורגים."
+                        ),
+                    },
+                },
+                "required": ["id", "category", "target", "why_this", "recommended_rank"],
+            },
+        }
+    },
+    "required": ["targets"],
+}
+
+# Shared by the roadmap and the standalone quarterly plan. Defined once so the month
+# plan the model writes can never drift from the quarter plan the user approved.
+LONG_HORIZON_PLAN_SCHEMA = {
+    "type": "object",
+    "description": "השערת טווח ארוך ואבני דרך",
+    "properties": {
+        "horizon": {"type": "string"},
+        "hypothesis": {"type": "string"},
+        "targets": {"type": "array", "items": {"type": "string"}},
+        "milestones": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "month_label": {"type": "string"},
+                    "milestone": {"type": "string"},
+                    "checkpoint": {"type": "string"},
+                },
+                "required": ["month_label", "milestone", "checkpoint"],
+            },
+        },
+    },
+    "required": ["horizon", "hypothesis", "targets", "milestones"],
+}
+
 BRAND_LANGUAGE_SCHEMA = {
     "type": "object",
     "title": "BrandLanguage",
@@ -306,28 +368,7 @@ ROADMAP_SCHEMA = {
                 "required": ["date", "name", "business_relevance", "relevance_tier"],
             },
         },
-        "long_horizon_plan": {
-            "type": "object",
-            "description": "השערת טווח ארוך ואבני דרך",
-            "properties": {
-                "horizon": {"type": "string"},
-                "hypothesis": {"type": "string"},
-                "targets": {"type": "array", "items": {"type": "string"}},
-                "milestones": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "month_label": {"type": "string"},
-                            "milestone": {"type": "string"},
-                            "checkpoint": {"type": "string"},
-                        },
-                        "required": ["month_label", "milestone", "checkpoint"],
-                    },
-                },
-            },
-            "required": ["horizon", "hypothesis", "targets", "milestones"],
-        },
+        "long_horizon_plan": LONG_HORIZON_PLAN_SCHEMA,
         "monthly_horizon_plan": {
             "type": "object",
             "description": "השערת החודש הקרוב ויעדים",
@@ -609,4 +650,88 @@ PHOTO_USABILITY_SCHEMA = {
         },
     },
     "required": ["usable_indexes", "rejected"],
+}
+
+
+# Tags that actually help match a photo to a post theme in this product: what the thing
+# is, where it was shot, and what it is good for. Given as a menu so tags stay
+# consistent between images instead of drifting into free-form synonyms.
+ASSET_TAG_MENU = [
+    "מוצר",
+    "מנה",
+    "חומר-גלם",
+    "חנות",
+    "חלל-פנים",
+    "חוץ",
+    "צוות",
+    "בעל-העסק",
+    "לקוח",
+    "תהליך-עבודה",
+    "ידיים",
+    "לפני-אחרי",
+    "טקסטורה",
+    "אווירה",
+    "תאורה",
+    "חג",
+    "מבצע",
+    "אריזה",
+    "שילוט",
+    "פרט-קרוב",
+]
+
+ASSET_DESCRIPTION_SCHEMA = {
+    "type": "object",
+    "title": "AssetDescription",
+    "description": "תיאור ותגיות לתמונה שהעסק העלה לספריית הנכסים",
+    "properties": {
+        "description": {
+            "type": "string",
+            "description": (
+                "משפט או שניים בעברית שמתארים מה שרואים בתמונה עצמה: הנושא, הסביבה, "
+                "האווירה והצבעים. בלי סיסמאות שיווקיות, בלי להמציא מוצר, שם או מספר "
+                "שלא מופיעים בתמונה. אם התמונה מטושטשת או ריקה — כתוב זאת בפשטות."
+            ),
+        },
+        "tags": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 10,
+            "description": (
+                "5 עד 10 תגיות בעברית שמתאימות לתמונה ויעזרו לשייך אותה לפוסט מתאים. "
+                "העדף תגיות מהרשימה הקבועה, והוסף תגית חופשית רק אם היא הכרחית."
+            ),
+            "items": {"type": "string"},
+        },
+    },
+    "required": ["description", "tags"],
+}
+
+ASSET_SUGGEST_SCHEMA = {
+    "type": "object",
+    "title": "AssetSuggestions",
+    "description": "התאמת נכסים מהספרייה לפוסט, מדורגת מהמתאים ביותר",
+    "properties": {
+        "suggestions": {
+            "type": "array",
+            "maxItems": 6,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "asset_id": {
+                        "type": "integer",
+                        "description": (
+                            "מזהה נכס מרשימת הנכסים שסופקה בלבד. "
+                            "אסור בהחלט להחזיר מזהה שלא הופיע ברשימה."
+                        ),
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "משפט קצר בעברית שמסביר למה הנכס מתאים לפוסט הזה.",
+                    },
+                },
+                "required": ["asset_id", "reason"],
+            },
+        }
+    },
+    "required": ["suggestions"],
 }

@@ -10,6 +10,11 @@ from app.config import get_settings
 
 GA4_SCOPES = [
     "https://www.googleapis.com/auth/analytics.readonly",
+    # Search Console is what lets the promotion endpoints show the queries the site
+    # already ranks for, with real clicks and impressions. `include_granted_scopes` in
+    # authorization_url means an existing connection re-consents incrementally instead
+    # of losing the Analytics grant it already has.
+    "https://www.googleapis.com/auth/webmasters.readonly",
     "openid",
     "email",
 ]
@@ -63,6 +68,9 @@ def exchange_code(code: str) -> dict:
         "access_token": payload["access_token"],
         "refresh_token": payload["refresh_token"],
         "expires_at": expires,
+        # What Google actually granted, which is not always what was asked for. Stored so
+        # Search Console can be reported as "not granted" instead of failing silently.
+        "scopes": [scope for scope in (payload.get("scope") or "").split(" ") if scope],
     }
 
 
@@ -80,6 +88,15 @@ def _credentials(access_token: str, refresh_token: str, expires_at: datetime | N
     if not creds.valid:
         creds.refresh(Request())
     return creds
+
+
+def fresh_access_token(access_token: str, refresh_token: str, expires_at: datetime | None) -> str:
+    """A currently valid access token, for any Google API this connection was granted.
+
+    Refreshes only when the stored token has expired, so the Search Console calls in
+    `keywords.py` can reuse the same stored connection as the GA4 reports.
+    """
+    return _credentials(access_token, refresh_token, expires_at).token
 
 
 def list_properties(access_token: str, refresh_token: str, expires_at: datetime | None) -> list[dict]:

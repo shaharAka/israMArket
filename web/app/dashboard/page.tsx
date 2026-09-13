@@ -4,11 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
-import { LoadingMark, Scribble } from "@/components/Doodles";
+import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
+import { SectionHeader } from "@/components/SectionHeader";
 import { endpoints, type Business, type RecommendationPayload, type StrategyPayload } from "@/lib/api";
+import { formatNis, stageFor } from "@/lib/budget";
+import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconCheck, IconImage } from "@/lib/icons";
 
+/** Which plan week today falls in, or null when today is outside the plan's month. */
+function currentWeekOf(strategy: StrategyPayload): number | null {
+  const now = new Date();
+  if (now.getFullYear() !== strategy.year || now.getMonth() + 1 !== strategy.month) return null;
+  return Math.min(4, Math.ceil(now.getDate() / 7));
+}
+
+/**
+ * The cockpit.
+ *
+ * This page is the one screen the owner opens without being asked to do something, so it
+ * leads with the single pending decision and keeps everything else as scannable tiles
+ * rather than another column of prose.
+ */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
@@ -31,61 +48,61 @@ export default function DashboardPage() {
   const weeks = strategy?.weekly_breakdown || strategy?.roadmap?.weekly_breakdown || [];
   const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
   const allApproved = posts.length > 0 && approvedCount === posts.length;
+  const currentWeek = strategy ? currentWeekOf(strategy) : null;
+
+  const quarterPlan = strategy?.long_horizon_plan || strategy?.roadmap?.long_horizon_plan;
+  const leadingTarget = quarterPlan?.targets?.[0];
+  const budget = business?.monthly_budget_ils ?? 0;
+  const budgetStage = stageFor(budget);
+  const identity = SECTIONS.dashboard;
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-4xl">
-        <header className="border-b border-[#deddd8] pb-6">
-          <p className="text-xs font-bold text-[#747570]">
-            {business?.name ? `${business.name} · ` : ""}
-            {strategy ? `${strategy.month_name_he} ${strategy.year}` : "החודש הנוכחי"}
-          </p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-[#20211f]">החודש שלך</h1>
-          <Scribble className="mt-2" />
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#62635f]">
-            אנחנו מנהלים את השיווק. כאן תראו רק מה מתקדם ומה באמת דורש החלטה שלכם.
-          </p>
-        </header>
+      <div className="mx-auto max-w-6xl">
+        <SectionHeader
+          section="dashboard"
+          title="החודש שלך"
+          subtitle={`${business?.name ? `${business.name} · ` : ""}${
+            strategy ? `${strategy.month_name_he} ${strategy.year}` : "החודש הנוכחי"
+          } — אנחנו מנהלים את השיווק. כאן תראו רק מה מתקדם ומה דורש החלטה שלכם.`}
+        />
 
         {strategy ? (
-          <div className="rise-stagger space-y-9 py-7">
-            <section>
-              <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
-              <h2 className="mt-2 max-w-3xl text-xl font-black leading-8 text-[#20211f] sm:text-2xl">
-                {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
-              </h2>
-            </section>
-
-            <section className="rounded-lg border border-[#cecdc7] bg-white">
-              <div className="border-b border-[#e9e8e3] px-5 py-4">
+          <div className="rise-stagger space-y-6">
+            {/* The single pending decision leads the page. */}
+            <section className="overflow-hidden rounded-lg border border-[#cecdc7] bg-white">
+              <div className="flex items-center justify-between border-b border-[#e9e8e3] px-5 py-3">
                 <p className="text-xs font-bold text-[#747570]">
                   {allApproved ? "הכול אושר" : "הדבר היחיד שצריך מכם עכשיו"}
                 </p>
+                {posts.length ? (
+                  <span className="text-[11px] font-bold text-[#8b8e84]">
+                    {approvedCount}/{posts.length} אושרו
+                  </span>
+                ) : null}
               </div>
 
               {allApproved ? (
-                <div className="flex flex-col items-start gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-                  <div className="flex items-start gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#343632] text-white">
-                      <IconCheck className="h-4 w-4" />
-                    </span>
-                    <div>
-                      <h2 className="text-lg font-black text-[#20211f]">הפוסטים של החודש אושרו</h2>
-                      <p className="mt-1 text-sm leading-6 text-[#62635f]">
-                        אנחנו ממשיכים לעקוב אחרי הביצועים ולהתאים את ההמשך.
-                      </p>
-                    </div>
+                <div className="flex items-start gap-3 p-5 sm:items-center sm:p-6">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#343632] text-white">
+                    <IconCheck className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <h2 className="text-lg font-black text-[#20211f]">הפוסטים של החודש אושרו</h2>
+                    <p className="mt-1 text-sm leading-6 text-[#62635f]">
+                      אנחנו ממשיכים לעקוב אחרי הביצועים ולהתאים את ההמשך.
+                    </p>
                   </div>
                 </div>
               ) : nextPost ? (
-                <div className="grid gap-5 p-5 sm:p-6 md:grid-cols-[112px_1fr_auto] md:items-center">
+                <div className="grid gap-5 p-5 sm:p-6 md:grid-cols-[128px_1fr_auto] md:items-center">
                   <div className="relative aspect-square overflow-hidden rounded-md bg-[#f0efeb]">
                     {nextPost.image_url ? (
                       <Image
                         src={nextPost.image_url}
                         alt={nextPost.title}
-                        width={224}
-                        height={224}
+                        width={256}
+                        height={256}
                         unoptimized
                         className="h-full w-full object-cover"
                       />
@@ -95,7 +112,7 @@ export default function DashboardPage() {
                       </span>
                     )}
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs font-bold text-[#747570]">
                       פוסט {reviewIndex + 1} מתוך {posts.length} · {nextPost.date_hint}
                     </p>
@@ -115,21 +132,106 @@ export default function DashboardPage() {
               )}
             </section>
 
-            <MonthAhead horizon={strategy.horizon} onReady={setStrategy} />
+            {/* At-a-glance tiles: each one links to the place that owns that decision. */}
+            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <Tile label="מצב החודש" href="/posts" accent={identity.accent}>
+                <span className="text-2xl font-black text-[#20211f]">
+                  {approvedCount}
+                  <span className="text-base font-bold text-[#8b8e84]">/{posts.length}</span>
+                </span>
+                <span className="mt-1 block text-xs text-[#747570]">פוסטים אושרו</span>
+                <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-[#e1e0db]">
+                  <span
+                    className="block h-full rounded-full transition-[width] duration-700 ease-out"
+                    style={{
+                      width: `${posts.length ? (approvedCount / posts.length) * 100 : 0}%`,
+                      background: identity.accent,
+                    }}
+                  />
+                </span>
+              </Tile>
 
-            {recommendation?.suggestions?.suggestions?.[0] ? (
-              <section className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] px-5 py-4">
-                <p className="text-xs font-bold text-[#685f47]">הדבר האחד השבוע</p>
-                <h2 className="mt-1 text-lg font-black text-[#191b18]">
-                  {recommendation.suggestions.suggestions[0].title}
+              <Tile label="היעד המוביל ברבעון" href="/plan" accent={SECTIONS.plan.accent}>
+                {leadingTarget ? (
+                  <span className="block text-sm font-bold leading-6 text-[#20211f]">{leadingTarget}</span>
+                ) : (
+                  <span className="block text-sm text-[#8b8e84]">עוד לא נבחרו יעדים</span>
+                )}
+              </Tile>
+
+              <Tile label="תקציב חודשי" href="/decisions" accent={SECTIONS.decisions.accent}>
+                <span className="text-2xl font-black text-[#20211f]">{formatNis(budget)}</span>
+                <span className="mt-1 block text-xs text-[#747570]">{budgetStage.title}</span>
+              </Tile>
+
+              <Tile label="הדבר האחד השבוע" href="/recommendations" accent={SECTIONS.strategy.accent}>
+                {recommendation?.suggestions?.suggestions?.[0] ? (
+                  <>
+                    <span className="block text-sm font-bold leading-6 text-[#20211f]">
+                      {recommendation.suggestions.suggestions[0].title}
+                    </span>
+                    <span className="mt-1 line-clamp-2 block text-xs leading-5 text-[#747570]">
+                      {recommendation.suggestions.suggestions[0].action}
+                    </span>
+                  </>
+                ) : (
+                  <span className="block text-sm text-[#8b8e84]">נעדכן אחרי איסוף הנתונים</span>
+                )}
+              </Tile>
+            </section>
+
+            <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+              <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
+                <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
+                <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
+                  {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
                 </h2>
-                <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                  {recommendation.suggestions.suggestions[0].action}
-                </p>
+                {monthly?.targets?.length ? (
+                  <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
+                    {monthly.targets.slice(0, 3).map((target, index) => (
+                      <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
+                        <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                        {target}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </section>
-            ) : null}
 
-            <section className="grid gap-8 border-y border-[#deddd8] py-7 sm:grid-cols-2">
+              <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
+                <p className="text-xs font-bold text-[#747570]">השבועות</p>
+                <ol className="mt-3 space-y-2.5">
+                  {[1, 2, 3, 4].map((week) => {
+                    const item = weeks.find((entry) => entry.week === week);
+                    const isNow = currentWeek === week;
+                    return (
+                      <li key={week} className="flex items-start gap-3">
+                        <span
+                          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                            isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
+                          }`}
+                          style={isNow ? { background: identity.accent } : undefined}
+                        >
+                          {week}
+                        </span>
+                        <span className="min-w-0 flex-1 text-sm leading-6">
+                          <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
+                            {item?.focus || "—"}
+                          </span>
+                          {isNow ? (
+                            <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
+                              השבוע
+                            </span>
+                          ) : null}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </section>
+            </div>
+
+            <section className="grid gap-6 border-y border-[#deddd8] py-6 sm:grid-cols-2">
               <div>
                 <h2 className="text-sm font-black text-[#20211f]">אנחנו מטפלים עכשיו</h2>
                 <ul className="mt-4 space-y-3">
@@ -149,27 +251,38 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <section>
-              <div className="flex items-end justify-between gap-4">
-                <div>
-                  <h2 className="text-lg font-black text-[#20211f]">מצב החודש</h2>
-                  <p className="mt-1 text-sm text-[#747570]">אישור התוכן לפני שהמערכת ממשיכה.</p>
-                </div>
-                <p className="text-sm font-bold text-[#20211f]">{approvedCount}/{posts.length}</p>
-              </div>
-              <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#e1e0db]">
-                <div
-                  className="h-full rounded-full bg-[#343632] transition-[width] duration-700 ease-out"
-                  style={{ width: `${posts.length ? (approvedCount / posts.length) * 100 : 0}%` }}
-                />
-              </div>
-            </section>
+            <MonthAhead horizon={strategy.horizon} onReady={setStrategy} />
           </div>
         ) : (
           <LoadingMark label="אנחנו טוענים את מצב החודש…" />
         )}
       </div>
     </AppShell>
+  );
+}
+
+function Tile({
+  label,
+  href,
+  accent,
+  children,
+}: {
+  label: string;
+  href: string;
+  accent: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-lg border border-[#e6e4dc] bg-white p-4 transition-colors hover:border-[#c9c6ba]"
+    >
+      <span className="flex items-center gap-2">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
+        <span className="text-[11px] font-bold text-[#747570]">{label}</span>
+      </span>
+      <span className="mt-3 flex-1">{children}</span>
+    </Link>
   );
 }
 

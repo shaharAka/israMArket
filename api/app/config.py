@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -43,6 +43,19 @@ class Settings(BaseSettings):
     # Rate limits (requests per window, seconds).
     auth_rate_limit: int = 8
     auth_rate_window_seconds: int = 300
+
+    @field_validator("cookie_secure", mode="before")
+    @classmethod
+    def _blank_bool_is_none(cls, value: object) -> object:
+        # `.env.example` ships `COOKIE_SECURE=` with the comment "leave blank to derive
+        # from WEB_ORIGIN's scheme". An empty string is not a bool, and pydantic-settings
+        # feeds the empty value through validation rather than falling back to the
+        # default, so a verbatim copy of the example crashed the API at first request.
+        # Treat blank as unset (None => derive) instead of failing to parse. Deployment
+        # platforms that export `COOKIE_SECURE=""` hit the same path.
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
 
 
 @lru_cache

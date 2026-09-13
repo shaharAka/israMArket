@@ -56,6 +56,7 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         "business_type": business.business_type,
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
     }
     try:

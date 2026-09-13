@@ -39,6 +39,9 @@ def migrate_db():
             ("presence_type", "VARCHAR(40) DEFAULT 'brick_and_mortar'"),
             ("social_links_json", "TEXT DEFAULT '{}'"),
             ("generate_state_json", "TEXT DEFAULT ''"),
+            # Businesses that existed before the products/services fork are shops as far
+            # as anyone knows, so they keep the old behaviour rather than being re-asked.
+            ("business_model", "VARCHAR(20) DEFAULT 'products'"),
         ]
         for col, col_type in new_cols:
             if col not in existing:

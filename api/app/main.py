@@ -9,7 +9,16 @@ from app.config import get_settings
 from app.db import Base, engine, get_db, migrate_db
 from app.deps import get_current_user
 from app.models import Business, User
-from app.routers import auth, integrations, onboarding, performance, recommendations, strategy
+from app.routers import (
+    assets,
+    auth,
+    integrations,
+    onboarding,
+    performance,
+    promotion,
+    recommendations,
+    strategy,
+)
 from app.security import DEFAULT_JWT_SECRET
 
 Base.metadata.create_all(bind=engine)
@@ -43,10 +52,12 @@ app.add_middleware(
 
 app.include_router(auth.router)
 app.include_router(onboarding.router)
+app.include_router(assets.router)
 app.include_router(strategy.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
 app.include_router(recommendations.router)
+app.include_router(promotion.router)
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.

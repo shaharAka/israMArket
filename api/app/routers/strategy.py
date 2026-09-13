@@ -6,20 +6,27 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.config import get_settings
 from app.deps import get_business
-from app.models import Business, PerformanceSnapshot, Recommendation, Strategy
+from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy
 from app.schemas import (
     PostApprovalIn,
+    PostAssetIn,
     PostDesignIn,
     PostImageIn,
     PostPublishIn,
     PostRewriteIn,
+    PostSuggestAssetsIn,
     PostUpdateIn,
     StrategyApproveIn,
+)
+from app.services.assets import (
+    asset_catalogue,
+    suggest_assets,
 )
 from app.services.calendar_il import gregorian_month_meta, israeli_events_for_month
 from app.services.designer import apply_creative_to_post, design_and_generate_post, plan_post_design
 from app.services.images import (
     generate_and_store,
+    image_public_url,
     needs_photo,
     read_stored_bytes,
     store_image_bytes,
@@ -175,8 +182,11 @@ def _produce_post_image(
     settings = get_settings()
 
     if not needs_photo(post.get("overlay_theme")):
+        # Typographic cards carry no photograph on purpose. Say so, rather than
+        # silently emptying the image and leaving the owner to guess why nothing came.
         post["image_url"] = ""
         post["image_source"] = "none"
+        post["image_action"] = "no_photo_theme"
         return ""
 
     def use_real_photo() -> str:
@@ -190,11 +200,13 @@ def _produce_post_image(
         )
         post["image_source"] = "real_photo"
         post["image_source_url"] = photo.get("url", "")
+        post["image_action"] = "real_photo"
         return url
 
     def leave_without_image() -> str:
         post["image_url"] = ""
         post["image_source"] = "pending"
+        post["image_action"] = "pending"
         return ""
 
     if preference == "real":
@@ -207,6 +219,7 @@ def _produce_post_image(
         url = generate_and_store(business.id, post, brand, biz_dict, references=references)
         post["image_source"] = "generated"
         post["image_source_url"] = ""
+        post["image_action"] = "generated"
         return url
 
     # auto: prefer the business's own photograph.
@@ -217,6 +230,7 @@ def _produce_post_image(
     references = [(p["bytes"], p["mime"]) for p in scraped_photos[:3]] or None
     url = generate_and_store(business.id, post, brand, biz_dict, references=references)
     post["image_source"] = "generated"
+    post["image_action"] = "generated"
     post["image_source_url"] = ""
     return url
 
@@ -237,6 +251,10 @@ def _store_post_image(
     if post_index >= len(posts):
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
     if not force and posts[post_index].get("image_url") and not vibe and not custom_prompt:
+        # Nothing to do — but the caller must be able to tell "we generated something"
+        # apart from "we kept what was already there". Without this the UI showed a
+        # success toast for work that never happened, which reads as a broken button.
+        posts[post_index]["image_action"] = "kept_existing"
         return posts[post_index]
 
     scraped = loads(business.scraped_profile_json, {}) or {}
@@ -253,6 +271,7 @@ def _store_post_image(
         "location": business.location,
         "presence_type": business.presence_type,
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
     }
 
@@ -364,6 +383,7 @@ def design_post_endpoint(
         "location": business.location,
         "presence_type": business.presence_type,
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
     }
     try:
@@ -386,6 +406,84 @@ def design_post_endpoint(
     db.commit()
     db.refresh(strategy)
     return {"post": target, "strategy": serialize_strategy(strategy, business)}
+
+
+@router.post("/strategy/posts/asset")
+def attach_post_asset(
+    body: PostAssetIn,
+    business: Business = Depends(get_business),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Point a post's image at one of the business's own assets.
+
+    Ownership is checked against the caller's business, so an id from another account
+    404s rather than exposing somebody else's media URL.
+    """
+    strategy = _active_strategy(db, business)
+    asset = (
+        db.query(Asset)
+        .filter(Asset.id == body.asset_id, Asset.business_id == business.id)
+        .first()
+    )
+    if not asset:
+        raise HTTPException(status_code=404, detail="הנכס לא נמצא")
+
+    extra = loads(strategy.roadmap_json, {})
+    roadmap = extra.get("roadmap") or {}
+    posts = list(roadmap.get("posts") or [])
+    if body.post_index >= len(posts):
+        raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
+
+    target = posts[body.post_index]
+    target["image_url"] = image_public_url(asset.business_id, asset.filename)
+    target["image_source"] = "asset"
+    target["image_asset_id"] = asset.id
+    target["image_action"] = "asset"
+    target["image_source_url"] = asset.source_url or ""
+    posts[body.post_index] = target
+    extra["roadmap"] = {**roadmap, "posts": posts}
+    strategy.roadmap_json = dumps(extra)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(strategy)
+    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+
+
+@router.post("/strategy/posts/suggest-assets")
+def suggest_post_assets(
+    body: PostSuggestAssetsIn,
+    business: Business = Depends(get_business),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Which of the business's own assets best fit this post, and why.
+
+    A real model call over the post's copy and the library's descriptions/tags. The
+    result is filtered against the ids that actually exist before it is returned, so a
+    hallucinated id can never reach the client.
+    """
+    strategy = _active_strategy(db, business)
+    extra = loads(strategy.roadmap_json, {})
+    posts = list((extra.get("roadmap") or {}).get("posts") or [])
+    if body.post_index >= len(posts):
+        raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
+
+    assets = (
+        db.query(Asset)
+        .filter(Asset.business_id == business.id)
+        .order_by(Asset.created_at.desc(), Asset.id.desc())
+        .all()
+    )
+    if not assets:
+        # No library, no call — an empty list is the honest answer.
+        return {"suggestions": []}
+
+    try:
+        suggestions = suggest_assets(
+            posts[body.post_index], business.name or "", asset_catalogue(assets)
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=f"התאמת הנכסים נכשלה: {exc}") from exc
+    return {"suggestions": suggestions}
 
 
 @router.post("/strategy/posts/images")
@@ -605,6 +703,7 @@ def generate_next_month(
         "monthly_budget_ils": business.monthly_budget_ils,
         "competitors": loads(business.competitors_json, []),
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "growth_hypothesis": prior.get("growth_hypothesis") or "",
         "growth_targets": (prior.get("long_horizon") or {}).get("targets") or [],
     }

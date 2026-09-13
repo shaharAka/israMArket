@@ -331,6 +331,78 @@ _NOT_A_PHOTO = re.compile(
 # legitimate photographs while still letting a 43 KB logo through.
 _MIN_PHOTO_BYTES = 12_000
 
+# Background images are only ever referenced through CSS url(...). The URL may be bare
+# or wrapped in quotes, so the closing paren is excluded and quotes are trimmed by the
+# caller rather than being swallowed into the captured URL.
+CSS_URL_RE = re.compile(r"url\(\s*(?P<quote>['\"]?)(?P<url>.*?)(?P=quote)\s*\)", re.I)
+
+
+def collect_image_references(base: str, soup: BeautifulSoup, html: str = "") -> list[str]:
+    """Every image the page references, including the places a deep scan has to look.
+
+    `scrape_site` only needs a handful of candidates for palette and style work. The
+    assets library does the opposite job: the owner asked us to pull THEIR imagery, so
+    it has to see lazy-loaded `srcset` variants (a plain <img> often carries a 1px
+    placeholder, so only the srcset holds the real photograph), `og:image`, <source>
+    tags, and images painted by CSS — inline `style="background-image:url(...)"` and
+    <style> blocks.
+
+    Icon-sized assets are dropped: the logo is not what a post needs. Each srcset
+    contributes only its widest candidate — otherwise one hero image would consume a
+    third of the caller's cap at three different resolutions — and the result is
+    de-duplicated in document order.
+    """
+    seen: list[str] = []
+
+    def offer(raw: str | None) -> None:
+        url = _abs(base, raw)
+        if not url or not url.lower().startswith(("http://", "https://")):
+            return
+        if _NOT_A_PHOTO.search(url):
+            return
+        if url not in seen:
+            seen.append(url)
+
+    def offer_srcset(value: str | None) -> None:
+        """Offer only the widest candidate in a srcset — the real photograph."""
+        best: tuple[int, str] | None = None
+        for candidate in str(value or "").split(","):
+            parts = candidate.strip().split()
+            if not parts:
+                continue
+            descriptor = parts[1].lower() if len(parts) > 1 else "1x"
+            digits = descriptor.rstrip("wx")
+            weight = int(digits) if digits.isdigit() else 1
+            if best is None or weight > best[0]:
+                best = (weight, parts[0])
+        if best:
+            offer(best[1])
+
+    # Head first, matching document order: og:image is the page's own hero.
+    for node in soup.find_all("meta"):
+        key = f"{node.get('property') or ''} {node.get('name') or ''}".lower()
+        if "image" in key:
+            offer(node.get("content"))
+
+    # srcset matters more than src: a lazy loader often leaves a placeholder in src.
+    for node in soup.find_all(["img", "source"]):
+        for value in (node.get("srcset"), node.get("data-srcset"), node.get("data-lazy-srcset")):
+            offer_srcset(value)
+        offer(node.get("src") or node.get("data-src") or node.get("data-lazy-src"))
+
+    for node in soup.find_all("style"):
+        for match in CSS_URL_RE.finditer(node.get_text(" ", strip=True)):
+            offer(match.group("url"))
+    for node in soup.find_all(attrs={"style": True}):
+        for match in CSS_URL_RE.finditer(str(node.get("style") or "")):
+            offer(match.group("url"))
+
+    # Absolute URLs hiding inside inline scripts (Wix/Shopify/SPA galleries).
+    for match in _IMG_URL_RE.finditer(html or ""):
+        offer(match.group(0))
+
+    return seen
+
 
 def fetch_photo_candidates(urls: list[str], limit: int = 3) -> list[dict]:
     """Download the business's OWN photographs from URLs found while scraping.

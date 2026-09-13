@@ -29,6 +29,10 @@ class Business(Base):
     offerings: Mapped[str] = mapped_column(Text, default="")
     location: Mapped[str] = mapped_column(String(255), default="")
     presence_type: Mapped[str] = mapped_column(String(40), default="brick_and_mortar")
+    # "products" | "services" | "both". This forks the diagnostics, the goals and the
+    # whole plan engine, so it earns a real column rather than another key in the
+    # scraped-profile blob. Existing rows default to "products" (see migrate_db).
+    business_model: Mapped[str] = mapped_column(String(20), default="products")
     social_links_json: Mapped[str] = mapped_column(Text, default="{}")
     monthly_budget_ils: Mapped[int] = mapped_column(Integer, default=0)
     competitors_json: Mapped[str] = mapped_column(Text, default="[]")
@@ -45,6 +49,7 @@ class Business(Base):
     snapshots: Mapped[list["PerformanceSnapshot"]] = relationship(back_populates="business")
     recommendations: Mapped[list["Recommendation"]] = relationship(back_populates="business")
     webhooks: Mapped[list["WebhookEndpoint"]] = relationship(back_populates="business")
+    assets: Mapped[list["Asset"]] = relationship(back_populates="business")
 
 
 class Strategy(Base):
@@ -126,6 +131,34 @@ class Recommendation(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="recommendations")
+
+
+class Asset(Base):
+    """A photo or short video the business supplied, ready to be matched to a post.
+
+    Files live in the same per-business media folder as generated cards — so the
+    existing auth-gated /media/{business_id}/{filename} route serves them unchanged —
+    and are prefixed `asset-` so a card and a source photo are distinguishable on disk.
+    """
+
+    __tablename__ = "assets"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    filename: Mapped[str] = mapped_column(String(255))
+    # "image" | "video"
+    kind: Mapped[str] = mapped_column(String(20), default="image")
+    mime: Mapped[str] = mapped_column(String(120), default="")
+    # "upload" | "url" | "site"
+    source: Mapped[str] = mapped_column(String(20), default="upload")
+    source_url: Mapped[str] = mapped_column(String(1000), default="")
+    description: Mapped[str] = mapped_column(Text, default="")
+    tags_json: Mapped[str] = mapped_column(Text, default="[]")
+    width: Mapped[int] = mapped_column(Integer, default=0)
+    height: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    business: Mapped[Business] = relationship(back_populates="assets")
 
 
 class WebhookEndpoint(Base):

@@ -1,6 +1,8 @@
-from typing import Literal
+from typing import Literal, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, model_validator
+
+from app.services.business_model import goals_for
 
 
 class RegisterRequest(BaseModel):
@@ -30,6 +32,29 @@ class CompetitorIn(BaseModel):
     website_url: str = Field(default="", max_length=500)
 
 
+class DiagnosticsIn(BaseModel):
+    """Answers that shape priorities, split by business model.
+
+    Shop questions (customer club, repeat vs new) are meaningless for a designer, and
+    lead-source questions are meaningless for a bakery, so which fields apply depends on
+    `business_model` — see services/business_model.py.
+
+    `has_customer_club` remains a prioritisation signal only — there is no loyalty/CRM
+    integration and none is implied.
+    """
+
+    # Both / products
+    has_customer_club: Literal["yes", "no", "unsure"] | None = None
+    repeat_vs_new: Literal["mostly_repeat", "mostly_new", "balanced"] | None = None
+    priority_channel: Literal["online", "physical", "balanced"] | None = None
+    # Services / both
+    lead_source: Literal["referrals", "social", "search", "mixed", "none"] | None = None
+    has_portfolio: Literal["yes", "partial", "no"] | None = None
+    brand_owner: Literal["personal", "studio", "unsure"] | None = None
+    # Shared
+    capacity_constraint: str = Field(default="", max_length=500)
+
+
 class OnboardingIn(BaseModel):
     name: str = Field(min_length=2, max_length=160)
     website_url: str = Field(default="", max_length=500)
@@ -37,12 +62,34 @@ class OnboardingIn(BaseModel):
     offerings: str = Field(min_length=2, max_length=2000)
     location: str = Field(default="", max_length=255)
     presence_type: Literal["brick_and_mortar", "online_only", "hybrid"] = "brick_and_mortar"
+    # Forks diagnostics, goals and the whole plan engine. Defaults to the historic
+    # behaviour so older clients and pre-fork rows keep working.
+    business_model: Literal["products", "services", "both"] = "products"
     social_links: dict[str, str] = Field(default_factory=dict)
     monthly_budget_ils: int = Field(ge=0, le=10_000_000)
     competitors: list[CompetitorIn] = Field(default_factory=list, max_length=5)
-    primary_goal: Literal["sales", "brand_awareness"]
+    primary_goal: Literal["sales", "brand_awareness", "leads", "personal_brand"]
     growth_hypothesis: str = Field(default="", max_length=2000)
-    growth_targets: list[str] = Field(default_factory=list)
+    # A quarter with more than three priorities has none, so the cap is enforced at the
+    # API boundary rather than trusted to the UI alone.
+    growth_targets: list[str] = Field(default_factory=list, max_length=3)
+    diagnostics: DiagnosticsIn | None = None
+    # The quarterly plan the user reviewed and approved in step 5. Sent back on
+    # confirmation so the month plan is built inside it rather than inventing a rival.
+    long_horizon_plan: dict | None = None
+
+    @model_validator(mode="after")
+    def _goal_must_match_model(self) -> "OnboardingIn":
+        """A purchase goal on a service business is a contradiction, and it would be
+        passed straight to the planner. Rejected at the boundary rather than trusted to
+        the UI, the same way the three-priority cap is."""
+        allowed = goals_for(self.business_model)
+        if self.primary_goal not in allowed:
+            raise ValueError(
+                f"המטרה '{self.primary_goal}' אינה מתאימה לעסק מסוג '{self.business_model}'. "
+                f"אפשרויות: {', '.join(allowed)}"
+            )
+        return self
 
 
 class PostUpdateIn(BaseModel):
@@ -160,3 +207,46 @@ class MetaAccountIn(BaseModel):
     instagram_id: str = Field(default="", max_length=40)
     ad_account_id: str = Field(default="", max_length=40)
     display_name: str = Field(default="", max_length=160)
+
+
+# --- Assets library ---------------------------------------------------------------
+# The shape every /assets endpoint returns. `tags` is a real list here even though it
+# is stored as JSON text, so the client never has to parse a column.
+class AssetOut(TypedDict):
+    id: int
+    kind: str
+    mime: str
+    source: str
+    source_url: str
+    description: str
+    tags: list[str]
+    url: str
+    width: int
+    height: int
+    created_at: str
+
+
+class AssetSuggestion(TypedDict):
+    asset_id: int
+    reason: str
+
+
+class AssetImportUrlIn(BaseModel):
+    url: str = Field(min_length=8, max_length=1000)
+
+
+class AssetUpdateIn(BaseModel):
+    """Partial edit. `description=None` means "leave it", so an owner can retag an
+    asset without wiping a description the vision model already wrote."""
+
+    description: str | None = Field(default=None, max_length=2000)
+    tags: list[str] | None = Field(default=None, max_length=30)
+
+
+class PostAssetIn(BaseModel):
+    post_index: int = Field(ge=0, le=50)
+    asset_id: int = Field(ge=1)
+
+
+class PostSuggestAssetsIn(BaseModel):
+    post_index: int = Field(ge=0, le=50)

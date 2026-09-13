@@ -3,16 +3,20 @@ from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 import re
 
 from app.services.brand import extract_brand_language, public_scan
+from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import lite_json, strategy_json
+from app.services import google_cost
 from app.services.jsonutil import loads
 from app.services.schemas_llm import (
     COMPETITOR_EXTRACT_SCHEMA,
     HYPOTHESES_SCHEMA,
+    LONG_HORIZON_PLAN_SCHEMA,
     MONTHLY_POSTS_SCHEMA,
     PLAN_CORE_SCHEMA,
     POST_REWRITE_SCHEMA,
     SITE_EXTRACT_SCHEMA,
+    TARGETS_SCHEMA,
     USP_SCHEMA,
 )
 from app.services.cost_model import plan_from_budget, prompt_block
@@ -60,15 +64,33 @@ def scan_website(url: str) -> dict:
     return public_scan(own, profile, brand)
 
 
-def propose_hypotheses(business: dict, brand: dict, profile: dict) -> list[dict]:
+def propose_hypotheses(
+    business: dict,
+    brand: dict,
+    profile: dict,
+    diagnostics: dict | None = None,
+    long_horizon: dict | None = None,
+) -> list[dict]:
+    context_block = ""
+    if long_horizon:
+        context_block = f"""
+התוכנית הרבעונית שכבר אושרה על ידי בעל העסק:
+{long_horizon}
+
+כל השערה חייבת להיות צעד אפשרי *בתוך* התוכנית הרבעונית הזו. אל תציע כיוונים שמתחרים בה.
+"""
     prompt = f"""
+{model_framing(business.get("business_model"))}
+
 הצע בדיוק שלוש השערות צמיחה שונות לבעל עסק ישראלי קטן.
 כל השערה חייבת להיות משפט אחד: אם נעשה X נשיג Y בתוך זמן Z.
 אל תבקש מהעסק לכתוב אסטרטגיה. תן לו לבחור כיוון.
-
+התחשב באבחון (קלאב לקוחות, לקוחות חוזרים, ערוץ מועדף, תקרת תפעול) — הוא מגביל מה ריאלי.
+{context_block}
 עסק: {business}
 שפת מותג: {brand}
 פרופיל מהאתר: {profile}
+אבחון: {diagnostics or {}}
 """
     parsed = loads(strategy_json(prompt, HYPOTHESES_SCHEMA), {})
     items = parsed.get("hypotheses") or []
@@ -77,8 +99,75 @@ def propose_hypotheses(business: dict, brand: dict, profile: dict) -> list[dict]
     return items
 
 
+def propose_targets(
+    business: dict,
+    brand: dict,
+    profile: dict,
+    diagnostics: dict | None = None,
+) -> list[dict]:
+    prompt = f"""
+{model_framing(business.get("business_model"))}
+
+הצע 5 עד 8 יעדי צמיחה אפשריים לבעל עסק ישראלי קטן, כדי שהוא ידרג אותם בעצמו.
+כל יעד חייב להיות מדיד: מספר וטווח זמן. אם אין נתון אמיתי — נסח יעד שאפשר למדוד, ואל תמציא מדד קיים.
+האבחון של העסק (קלאב לקוחות, לקוחות חוזרים, ערוץ מועדף, תקרת תפעול) הוא הקשר מחייב:
+אם אין קלאב לקוחות — מותר להציע יעד שמתחיל אחד כזה.
+
+חשוב: רבעון מכיל שלוש עדיפויות בלבד. בחר בדיוק שלושה יעדים שאתה ממליץ עליהם
+ביותר לעסק הזה מתוך כל מה שהצעת, ודרג אותם 1, 2, 3 ב-recommended_rank
+(1 = ההמלצה הראשונה). כל שאר היעדים מקבלים 0. הסבר כל המלצה ב-why_this.
+
+החזר יעדים מסוגים שונים (מכירות, קהל, נאמנות, תפעול, נוכחות דיגיטלית) כדי שתהיה בחירה אמיתית.
+אל תדרג את השאר — הסדר הסופי ייקבע על ידי בעל העסק.
+
+עסק: {business}
+שפת מותג: {brand}
+פרופיל מהאתר: {profile}
+אבחון: {diagnostics or {}}
+"""
+    parsed = loads(strategy_json(prompt, TARGETS_SCHEMA), {})
+    items = parsed.get("targets") or []
+    if len(items) < 5:
+        raise RuntimeError("Gemini לא החזיר מספיק יעדי צמיחה לדירוג.")
+    return items
+
+
+def build_long_horizon_plan(
+    business: dict,
+    brand: dict,
+    profile: dict,
+    ranked_targets: list[str],
+    diagnostics: dict | None = None,
+) -> dict:
+    prompt = f"""
+בנה את התוכנית הרבעונית לעסק ישראלי קטן. זו התוכנית שמסבירה לאן הולכים ומה יקרה בכל חודש.
+זו אינה התוכנית החודשית ואין לכתוב פוסטים.
+
+בעל העסק דירג את יעדי הצמיחה מהחשוב לפחות חשוב. התוכנית חייבת לכבד את הסדר הזה —
+היעד הראשון הוא המרכזי, והשאר נתמכים או נדחים לשלבים הבאים:
+{ranked_targets}
+
+מותר להציע יעד שהעסק עוד לא הציב, אבל רק אם הוא נובע ישירות מהאבחון (למשל אין קלאב לקוחות).
+אל תמציא נתוני ביצוע, תקציב או מתחרים שלא נמסרו.
+
+עסק: {business}
+שפת מותג: {brand}
+פרופיל מהאתר: {profile}
+אבחון: {diagnostics or {}}
+
+החזר הורייזון (למשל "שלושת החודשים הקרובים"), השערת צמיחה רבעונית אחת,
+2 עד 4 יעדים מדידים, ושלוש אבני דרך — אחת לכל חודש, כל אחת עם נקודת בקרה.
+"""
+    plan = loads(strategy_json(prompt, LONG_HORIZON_PLAN_SCHEMA), {})
+    if not plan.get("hypothesis") or not plan.get("milestones"):
+        raise RuntimeError("Gemini לא החזיר תוכנית רבעונית מלאה.")
+    return plan
+
+
 def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dict, prior: dict | None = None) -> dict:
     prompt = f"""
+{model_framing(business.get("business_model"))}
+
 בנה אסטרטגיה עסקית, בידול (USP), השערת צמיחה ושיטות עבודה מוכחות (BKMs) לעסק ישראלי.
 שפת המותג והמסרים חייבים לצאת מהאתר והנכסים האמיתיים של העסק, לא משפת סוכנות.
 
@@ -160,6 +249,8 @@ def _write_posts_for_weeks(
 ) -> list[dict]:
     week_text = " ו".join(str(week) for week in weeks)
     prompt = f"""
+{model_framing(business.get("business_model"))}
+
 כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד.
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
 
@@ -193,11 +284,33 @@ USP: {usp}
     return items
 
 
-def build_roadmap(business: dict, usp: dict, events: list[dict], plan: dict, brand: dict, prior: dict | None = None) -> dict:
+def build_roadmap(
+    business: dict,
+    usp: dict,
+    events: list[dict],
+    plan: dict,
+    brand: dict,
+    prior: dict | None = None,
+    long_horizon: dict | None = None,
+) -> dict:
     cost_block = prompt_block(
         plan_from_budget(int(business.get('monthly_budget_ils') or 0), business.get('primary_goal') or 'sales')
     )
+    # Search is offered as a real option, with the published Google ranges and the same
+    # refusal to invent numbers. It stays small: enough to let the month plan decide
+    # whether search suits this business, not a second strategy document.
+    google_block = google_cost.prompt_block(google_cost.plan_for_business(business))
+    approved_block = ""
+    if long_horizon:
+        approved_block = f"""
+התוכנית הרבעונית שכבר אושרה על ידי בעל העסק. אסור לשנות אותה או להציע לה תחליף:
+{long_horizon}
+
+כתוב את monthly_horizon_plan כצעד החודשי הראשון בתוך התוכנית הרבעונית הזו, לא כתוכנית נפרדת.
+"""
     plan_prompt = f"""
+{model_framing(business.get("business_model"))}
+
 בנה את כיוון החודש לעסק ישראלי קטן. בלי לכתוב את הפוסטים עצמם.
 החודש הוא חודש אזרחי רגיל. חגים יהודיים וימי קניות ישראליים מופיעים כאירועים בתוך אותו חודש אזרחי.
 
@@ -208,6 +321,8 @@ USP והשערת צמיחה: {usp}
 
 {cost_block}
 
+{google_block}
+
 אירועי החודש בישראל: {events}
 
 חובה לבנות במדויק לפי הסכימה:
@@ -216,11 +331,15 @@ USP והשערת צמיחה: {usp}
 3. monthly_horizon_plan: השערת החודש ויעדים לחודש.
 4. management_and_checkpoints: איך המערכת מנהלת, ומתי צריך את בעל העסק.
 5. weekly_breakdown לשבועות 1 עד 4: מיקוד, מה אנחנו עושים, מה צריך מהעסק, מה מודדים, ואיפה מפרסמים.
-{prior_prompt_block(prior)}
+{approved_block}{prior_prompt_block(prior)}
 """
     core = loads(strategy_json(plan_prompt, PLAN_CORE_SCHEMA), {})
     if not core.get("theme") or not core.get("weekly_breakdown"):
         raise RuntimeError("Gemini לא החזיר תוכנית חודשית מלאה.")
+    if long_horizon:
+        # The quarter plan is what the user read and approved during onboarding. The
+        # month plan is generated afterwards and must never silently rewrite it.
+        core["long_horizon_plan"] = long_horizon
     return core
 
 
@@ -327,7 +446,11 @@ def generate_monthly_strategy(
             competitor_profiles.append(extract_competitor(scraped, competitor["name"]))
         usp = build_usp(profile, competitor_profiles, business, brand, prior=prior)
         events = israeli_events_for_month(year, month)
-        plan = posting_plan(int(business["monthly_budget_ils"]), business["primary_goal"])
+        plan = posting_plan(
+            int(business["monthly_budget_ils"]),
+            business["primary_goal"],
+            business.get("business_model", "products"),
+        )
         mark(
             "plan",
             usp=usp,
@@ -341,10 +464,22 @@ def generate_monthly_strategy(
         competitor_profiles = state.get("competitors") or []
         usp = state.get("usp") or {}
         events = state.get("calendar") or israeli_events_for_month(year, month)
-        plan = state.get("posting_plan") or posting_plan(int(business["monthly_budget_ils"]), business["primary_goal"])
+        plan = state.get("posting_plan") or posting_plan(
+            int(business["monthly_budget_ils"]),
+            business["primary_goal"],
+            business.get("business_model", "products"),
+        )
 
     if stage == "plan" or (stage in {"scan", "usp"} and not one_stage):
-        core = build_roadmap(business, usp, events, plan, brand, prior=prior)
+        core = build_roadmap(
+            business,
+            usp,
+            events,
+            plan,
+            brand,
+            prior=prior,
+            long_horizon=business.get("long_horizon_plan") or None,
+        )
         mark("posts", roadmap_core=core)
         if one_stage:
             return pack(complete=False, core=core, items=[], usp=usp, competitors=competitor_profiles, events=events, plan=plan)

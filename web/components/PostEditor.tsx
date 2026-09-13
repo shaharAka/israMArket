@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import {
   CardCanvas,
   CardStage,
@@ -12,7 +13,16 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
-import { endpoints, type BrandLanguage, type OverlayTheme, type RoadmapPost, type StrategyPayload } from "@/lib/api";
+import {
+  endpoints,
+  type Asset,
+  type AssetSource,
+  type AssetSuggestion,
+  type BrandLanguage,
+  type OverlayTheme,
+  type RoadmapPost,
+  type StrategyPayload,
+} from "@/lib/api";
 import { IconCheck, IconCopy, IconImage, IconLink, IconSparkles, IconWhatsApp } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
@@ -79,9 +89,57 @@ const DESIGN_PRESETS: { key: string; label: string; desc: string; icon: string }
 const IMAGE_SOURCE_LABELS: Record<string, { text: string; tone: string }> = {
   real_photo: { text: "תמונה אמיתית מהאתר שלכם", tone: "bg-[#e4efe4] text-[#2d5b33] border-[#bcd6bc]" },
   generated: { text: "תמונה שנוצרה ב-AI", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
+  asset: { text: "תמונה מהספרייה שלכם", tone: "bg-[#fbf4f0] text-[#7d4436] border-[#e3cec4]" },
   pending: { text: "עדיין אין תמונה — אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
   none: { text: "כרטיס טיפוגרפי — בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
 };
+
+/** Where each library file came from, in the owner's words — same wording as AssetCard. */
+const ASSET_SOURCE_LABELS: Record<AssetSource, string> = {
+  upload: "הועלה",
+  url: "מקישור",
+  site: "מהאתר",
+};
+
+/** One thumbnail in the picker. Mirrors AssetCard: the owner's own clip shows a
+ *  metadata-only frame, and a file the browser cannot render falls back to a placeholder
+ *  rather than a broken-image icon. */
+function AssetPickerThumb({ asset, className }: { asset: Asset; className: string }) {
+  const [broken, setBroken] = useState(false);
+  if (!asset.url || broken) {
+    return (
+      <span className={`flex items-center justify-center bg-[#f4f3ee] text-[#b3b0a5] ${className}`}>
+        <IconImage className="h-4 w-4" />
+      </span>
+    );
+  }
+  if (asset.kind === "video") {
+    return (
+      <video
+        src={asset.url}
+        muted
+        playsInline
+        preload="metadata"
+        onError={() => setBroken(true)}
+        // Some browsers only paint metadata-loaded video once told to seek.
+        onLoadedMetadata={(event) => {
+          event.currentTarget.currentTime = 0.1;
+        }}
+        className={`bg-[#f4f3ee] object-cover ${className}`}
+      />
+    );
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- same-origin proxy path, not an optimizable remote URL
+    <img
+      src={asset.url}
+      alt={asset.description || "נכס מהספרייה"}
+      loading="lazy"
+      onError={() => setBroken(true)}
+      className={`bg-[#f4f3ee] object-cover ${className}`}
+    />
+  );
+}
 
 const THEME_OPTIONS: { key: OverlayTheme; label: string }[] = CARD_TEMPLATES.map((t) => ({
   key: t.key,
@@ -133,6 +191,18 @@ export function PostEditor({
   const [publishUrl, setPublishUrl] = useState(() => initialPosts[initialIndex]?.published_url || "");
   const [publishing, setPublishing] = useState(false);
 
+  // The owner's own library. Loaded when the picker opens, never on render — and never
+  // automatically for the ranking, which is a real model call.
+  const [showAssets, setShowAssets] = useState(false);
+  const [assets, setAssets] = useState<Asset[] | null>(null);
+  const [assetsLoading, setAssetsLoading] = useState(false);
+  const [assetsError, setAssetsError] = useState("");
+  const [attachError, setAttachError] = useState("");
+  const [assetBusyId, setAssetBusyId] = useState<number | null>(null);
+  const [suggesting, setSuggesting] = useState(false);
+  const [suggestions, setSuggestions] = useState<AssetSuggestion[] | null>(null);
+  const [suggestError, setSuggestError] = useState("");
+
   // Designer AI State
   const [designerBusy, setDesignerBusy] = useState(false);
   const [customDesignPrompt, setCustomDesignPrompt] = useState("");
@@ -142,6 +212,10 @@ export function PostEditor({
   // Dedicated off-screen canvas at true export size, so the downloaded PNG never
   // includes the mockup chrome (Instagram header, action rail, phone frame).
   const exportRef = useRef<HTMLDivElement>(null);
+
+  /** True while any image operation is in flight. Every image control checks this, so a
+   *  library pick, an AI generation and a source switch can never overlap. */
+  const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null;
 
   const currentPost = posts[selectedIndex];
   const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
@@ -203,7 +277,7 @@ export function PostEditor({
 
   async function prepareImage(index: number, force = false, allowGeneration = true) {
     if (!force && posts[index]?.image_url) return;
-    if (imageBusy !== null) return;
+    if (imageLocked) return;
     setImageError("");
     setImageBusy(index);
     try {
@@ -215,7 +289,25 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast("התמונה נוצרה בהצלחה לפי שפת המותג.");
+      // Report what actually happened. The old code always claimed success, so a
+      // typographic card (which carries no photo by design) or a skipped regeneration
+      // looked like a broken button.
+      switch (result.post.image_action) {
+        case "no_photo_theme":
+          toast("הכרטיס הזה טיפוגרפי — הוא נבנה בלי תמונה, וזה מכוון.");
+          break;
+        case "kept_existing":
+          toast("כבר יש תמונה לפוסט הזה, ולכן לא נוצרה חדשה.");
+          break;
+        case "real_photo":
+          toast("השתמשנו בתמונה שנסרקה מהאתר שלכם.");
+          break;
+        case "pending":
+          toast("לא נוצרה תמונה. אפשר ליצור ב-AI או לבחור תמונה משלכם.");
+          break;
+        default:
+          toast("התמונה נוצרה בהצלחה לפי שפת המותג.");
+      }
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "יצירת התמונה נכשלה");
     } finally {
@@ -230,6 +322,9 @@ export function PostEditor({
     setImageError("");
     setPublishUrl(posts[index]?.published_url || "");
     setCustomDesignPrompt("");
+    // A ranked answer belongs to the post it was asked about, so it never carries over.
+    setSuggestions(null);
+    setSuggestError("");
     // Reuse an existing photo (free) or the business's own scraped image. Passing
     // allowGeneration=false means clicking through posts can never cost money.
     void prepareImage(index, false, false);
@@ -237,7 +332,7 @@ export function PostEditor({
 
   /** Switch a card between the business's own photo and a generated one. */
   async function chooseImageSource(source: "real" | "ai") {
-    if (imageBusy !== null || designerBusy) return;
+    if (imageLocked) return;
     setImageError("");
     setImageBusy(selectedIndex);
     try {
@@ -253,6 +348,74 @@ export function PostEditor({
       setImageError(err instanceof Error ? err.message : "החלפת התמונה נכשלה");
     } finally {
       setImageBusy(null);
+    }
+  }
+
+  /** Fetch the library. Cheap, but it only happens when the picker is opened, so a fresh
+   *  upload on /assets shows up here the next time the panel is opened. */
+  async function loadAssets() {
+    setAssetsLoading(true);
+    setAssetsError("");
+    try {
+      const result = await endpoints.assets();
+      setAssets(result.assets);
+    } catch (err) {
+      setAssetsError(err instanceof Error ? err.message : "טעינת הנכסים נכשלה");
+    } finally {
+      setAssetsLoading(false);
+    }
+  }
+
+  function toggleAssetPicker() {
+    const opening = !showAssets;
+    setShowAssets(opening);
+    setSuggestError("");
+    setAttachError("");
+    if (!opening) {
+      // The ranked answer is per-post and per-mode — reopening should start clean.
+      setSuggestions(null);
+      return;
+    }
+    void loadAssets();
+  }
+
+  /** Attach one library file to the post being edited, exactly the way preparation does:
+   *  the server owns the post, so we take the strategy it sends back. */
+  async function attachAsset(asset: Asset) {
+    if (imageLocked) return;
+    setImageError("");
+    setAttachError("");
+    setAssetBusyId(asset.id);
+    try {
+      const result = await endpoints.attachPostAsset(selectedIndex, asset.id);
+      setPosts(result.strategy.roadmap.posts);
+      onStrategyUpdated?.(result.strategy);
+      setShowAssets(false);
+      setSuggestions(null);
+      toast("התמונה מהספרייה שלכם שובצה בפוסט.");
+    } catch (err) {
+      // Kept apart from `assetsError`: a failed attach must not blank out the grid the
+      // owner is choosing from.
+      setAttachError(err instanceof Error ? err.message : "בחירת הנכס נכשלה");
+    } finally {
+      setAssetBusyId(null);
+    }
+  }
+
+  /** Real model call over the post and the library — several seconds, so it only ever
+   *  runs from an explicit click and always shows a busy state. */
+  async function suggestAssetsForPost() {
+    if (suggesting || imageLocked) return;
+    setSuggesting(true);
+    setSuggestError("");
+    setSuggestions(null);
+    try {
+      const result = await endpoints.suggestPostAssets(selectedIndex);
+      setSuggestions(result.suggestions);
+    } catch (err) {
+      setSuggestError(err instanceof Error ? err.message : "התאמת הנכסים נכשלה");
+    } finally {
+      setSuggesting(false);
     }
   }
 
@@ -310,6 +473,9 @@ export function PostEditor({
   }
 
   async function handleApplyDesignPreset(vibe: string, generateImage = false) {
+    // The buttons are disabled while an image operation runs; this is the same rule for
+    // any path that reaches here without going through one of them.
+    if (imageLocked) return;
     setDesignerBusy(true);
     setImageError("");
     try {
@@ -365,6 +531,28 @@ export function PostEditor({
   const isApproved = currentPost.approval_status === "approved";
   const isPreparingImage = imageBusy === selectedIndex;
   const currentOutletMeta = OUTLETS.find((item) => item.key === outlet) || OUTLETS[0];
+  const cardNeedsPhoto = needsPhoto(currentPost.overlay_theme);
+  // Posts created before provenance tracking have no image_source. Every legacy path
+  // generated its image, so "generated" is the accurate label — not "no image yet", which
+  // was plainly wrong for a card that visibly had one. A photo-free card is the exception:
+  // it draws no photograph at all, so no image provenance may be claimed for it.
+  const imageSourceKey = !cardNeedsPhoto
+    ? "none"
+    : currentPost.image_source || (currentPost.image_url ? "generated" : "pending");
+  // The library entry behind the current image, once the library has been opened — it
+  // turns the provenance badge into something the owner can actually recognise. Keyed on
+  // the label above too: switching to an AI image leaves the old `image_asset_id` behind,
+  // and a stale id must never label a generated picture as the owner's own.
+  const currentAssetId = imageSourceKey === "asset" ? currentPost.image_asset_id ?? null : null;
+  const currentAsset = currentAssetId
+    ? (assets ?? []).find((asset) => asset.id === currentAssetId) ?? null
+    : null;
+  const libraryEmpty = assets !== null && assets.length === 0;
+  // Ranked answers arrive as ids; the picker shows them with their thumbnail and tags.
+  const rankedSuggestions = (suggestions ?? []).flatMap((suggestion) => {
+    const asset = (assets ?? []).find((item) => item.id === suggestion.asset_id);
+    return asset ? [{ suggestion, asset }] : [];
+  });
 
 
   // Visual Image Media Slot — the card itself renders inside CardStage.
@@ -804,7 +992,7 @@ export function PostEditor({
         <select
           id="mobile-post-select"
           value={selectedIndex}
-          disabled={imageBusy !== null || designerBusy}
+          disabled={imageLocked}
           onChange={(event) => selectPost(Number(event.target.value))}
           className="h-11 w-full rounded-md border border-[#cecdc7] bg-white px-3 text-sm font-bold text-[#20211f]"
         >
@@ -825,7 +1013,7 @@ export function PostEditor({
             <button
               key={`${post.title}-${index}`}
               type="button"
-              disabled={imageBusy !== null || designerBusy}
+              disabled={imageLocked}
               onClick={() => selectPost(index)}
               className={`flex w-full items-start gap-2.5 rounded-md px-3 py-2.5 text-right transition-colors ${
                 selectedIndex === index ? "bg-[#e9e8e3] text-[#20211f]" : "text-[#62635f] hover:bg-white"
@@ -964,7 +1152,7 @@ export function PostEditor({
                       <button
                         key={preset.key}
                         type="button"
-                        disabled={designerBusy || isPreparingImage}
+                        disabled={imageLocked}
                         onClick={() => void handleApplyDesignPreset(preset.key, false)}
                         className="rounded-md border border-[#cecdc7] bg-[#faf8f5] p-2 text-right transition-colors hover:bg-white hover:border-[#191b18] disabled:opacity-50"
                       >
@@ -987,12 +1175,12 @@ export function PostEditor({
                       value={customDesignPrompt}
                       onChange={(e) => setCustomDesignPrompt(e.target.value)}
                       placeholder="למשל: תקריב על הידיים לשות בצק, שולחן חג עשיר..."
-                      disabled={designerBusy || isPreparingImage}
+                      disabled={imageLocked}
                       className="flex-1 rounded-md border border-[#dedcd4] px-2.5 py-1.5 text-xs text-[#20211f]"
                     />
                     <button
                       type="button"
-                      disabled={designerBusy || isPreparingImage || !customDesignPrompt.trim()}
+                      disabled={imageLocked || !customDesignPrompt.trim()}
                       onClick={() => void handleApplyDesignPreset("custom", false)}
                       className="rounded-md border border-[#20211f] bg-[#20211f] px-3 py-1.5 text-xs font-bold text-white disabled:opacity-40"
                     >
@@ -1080,14 +1268,7 @@ export function PostEditor({
                 {/* Image provenance + source switch */}
                 <div className="mt-3 pt-3 border-t border-[#e9e8e3] space-y-2">
                   {(() => {
-                    // Posts created before provenance tracking have no image_source.
-                    // Every legacy path generated its image, so "generated" is the
-                    // accurate label — not "no image yet", which was plainly wrong
-                    // for a card that visibly had one.
-                    const key =
-                      currentPost.image_source ||
-                      (currentPost.image_url ? "generated" : "pending");
-                    const meta = IMAGE_SOURCE_LABELS[key];
+                    const meta = IMAGE_SOURCE_LABELS[imageSourceKey];
                     if (!meta) return null;
                     return (
                       <div className={`rounded-md border px-2.5 py-1.5 text-[11px] font-bold ${meta.tone}`}>
@@ -1095,11 +1276,18 @@ export function PostEditor({
                       </div>
                     );
                   })()}
+                  {currentAssetId ? (
+                    <p className="rounded-md border border-[#e3cec4] bg-[#fbf4f0] px-2.5 py-1.5 text-[10px] leading-4 text-[#7d4436]">
+                      {currentAsset
+                        ? `מהספרייה שלכם: ${currentAsset.description || "נכס ללא תיאור"}`
+                        : "התמונה הזו נבחרה מהספרייה שלכם."}
+                    </p>
+                  ) : null}
                   {needsPhoto(currentPost.overlay_theme) ? (
                     <div className="grid grid-cols-2 gap-1">
                       <button
                         type="button"
-                        disabled={imageBusy !== null || designerBusy}
+                        disabled={imageLocked}
                         onClick={() => void chooseImageSource("real")}
                         className="rounded border border-[#dedcd4] bg-white px-2 py-1.5 text-[11px] font-bold text-[#62635f] disabled:opacity-40"
                       >
@@ -1107,7 +1295,7 @@ export function PostEditor({
                       </button>
                       <button
                         type="button"
-                        disabled={imageBusy !== null || designerBusy}
+                        disabled={imageLocked}
                         onClick={() => void chooseImageSource("ai")}
                         className="rounded border border-[#dedcd4] bg-white px-2 py-1.5 text-[11px] font-bold text-[#62635f] disabled:opacity-40"
                       >
@@ -1118,13 +1306,210 @@ export function PostEditor({
 
                   <button
                     type="button"
-                    disabled={imageBusy !== null || designerBusy}
+                    disabled={imageLocked}
                     onClick={() => void prepareImage(selectedIndex, true)}
                     className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#191b18] bg-[#faf8f5] px-3 py-2 text-xs font-bold text-[#191b18] hover:bg-white disabled:opacity-40"
                   >
                     <IconImage className="h-3.5 w-3.5" />
                     {isPreparingImage ? "יוצר תמונה חדשה ע״י AI…" : "יצירת תמונה חדשה לפי העיצוב"}
                   </button>
+
+                  {/* The owner's own photographs — the fastest route to a real picture of
+                      the business instead of another generated one. */}
+                  <button
+                    type="button"
+                    disabled={imageLocked}
+                    onClick={toggleAssetPicker}
+                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#e3cec4] bg-[#fbf4f0] px-3 py-2 text-xs font-bold text-[#7d4436] hover:bg-white disabled:opacity-40"
+                  >
+                    <IconImage className="h-3.5 w-3.5" />
+                    {showAssets ? "סגירת הספרייה" : "בחירה מהנכסים שלי"}
+                  </button>
+
+                  {showAssets ? (
+                    <div className="rounded-md border border-[#e3cec4] bg-[#fdfbf9] p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[11px] font-bold text-[#7d4436]">
+                          הנכסים שלי{assets ? ` · ${assets.length}` : ""}
+                        </p>
+                        <span className="flex items-center gap-2 text-[10px]">
+                          <button
+                            type="button"
+                            disabled={assetsLoading || imageLocked}
+                            onClick={() => void loadAssets()}
+                            className="font-bold text-[#747570] underline underline-offset-2 hover:text-[#20211f] disabled:opacity-40"
+                          >
+                            רענון
+                          </button>
+                          <Link
+                            href="/assets"
+                            className="font-bold text-[#7d4436] underline underline-offset-2"
+                          >
+                            ניהול הספרייה
+                          </Link>
+                        </span>
+                      </div>
+
+                      {attachError ? (
+                        <p className="mt-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[11px] leading-5 text-[#9f4330]">
+                          {attachError}
+                        </p>
+                      ) : null}
+
+                      {!cardNeedsPhoto ? (
+                        <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-2.5 py-1.5 text-[11px] leading-5 text-[#6b6961]">
+                          הכרטיס הזה טיפוגרפי ובלי תמונה, אז הנכס שתבחרו לא יוצג עליו. אפשר לבחור
+                          תבנית אחרת ב״התאמה ידנית״ כדי שהתמונה תופיע.
+                        </p>
+                      ) : null}
+
+                      {assetsLoading && !assets ? (
+                        <p className="mt-3 text-[11px] text-[#747570]">טוענים את הספרייה…</p>
+                      ) : assetsError ? (
+                        <p className="mt-3 text-[11px] leading-5 text-[#9f4330]">{assetsError}</p>
+                      ) : libraryEmpty ? (
+                        <div className="mt-3 rounded-md border border-[#e3cec4] bg-white px-3 py-4 text-center">
+                          <p className="text-[11px] font-bold text-[#20211f]">הספרייה שלכם עוד ריקה</p>
+                          <p className="mx-auto mt-1 max-w-xs text-[11px] leading-5 text-[#747570]">
+                            כדי לשבץ תמונה משלכם צריך קודם שיהיה מה לבחור: מעלים תמונה או סרטון,
+                            מייבאים מקישור, או מריצים סריקה של האתר.
+                          </p>
+                          <Link
+                            href="/assets"
+                            className="mt-2.5 inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md bg-[#7d4436] px-3 text-[11px] font-bold text-white"
+                          >
+                            <IconImage className="h-3.5 w-3.5" />
+                            להוספת נכסים לספרייה
+                          </Link>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="mt-3 rounded-md border border-[#e3cec4] bg-white p-2.5">
+                            <button
+                              type="button"
+                              disabled={suggesting || imageLocked}
+                              onClick={() => void suggestAssetsForPost()}
+                              className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#7d4436] bg-[#fbf4f0] px-3 py-2 text-[11px] font-bold text-[#7d4436] hover:bg-white disabled:opacity-50"
+                            >
+                              <IconSparkles className="h-3.5 w-3.5" />
+                              {suggesting ? "מחפשים מה מתאים…" : "מה מתאים לפוסט הזה?"}
+                            </button>
+
+                            {suggesting ? (
+                              <p className="mt-2 text-[11px] leading-5 text-[#747570]">
+                                ה-AI עובר על הנכסים שלכם ומשווה אותם לנושא הפוסט. זה יכול לקחת כמה
+                                שניות — אפשר להשאיר את החלון פתוח.
+                              </p>
+                            ) : null}
+
+                            {!suggesting && suggestError ? (
+                              <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">{suggestError}</p>
+                            ) : null}
+
+                            {!suggesting && suggestions && !rankedSuggestions.length ? (
+                              <p className="mt-2 text-[11px] leading-5 text-[#747570]">
+                                ה-AI לא מצא נכס שמתאים לפוסט הזה, ולכן הוא לא מציע אחד בכוח. אפשר לבחור
+                                ידנית מהספרייה שלמטה.
+                              </p>
+                            ) : null}
+
+                            {rankedSuggestions.length ? (
+                              <>
+                                <p className="mt-2.5 text-[10px] font-bold text-[#747570]">
+                                  הכי מתאים לפוסט הזה, לפי סדר:
+                                </p>
+                                <ul className="mt-1.5 space-y-1.5">
+                                  {rankedSuggestions.map(({ suggestion, asset }, rank) => (
+                                    <li key={asset.id}>
+                                      <button
+                                        type="button"
+                                        disabled={imageLocked}
+                                        onClick={() => void attachAsset(asset)}
+                                        className="flex w-full items-start gap-2 rounded-md border border-[#e3cec4] bg-[#fdfbf9] p-2 text-right hover:border-[#7d4436] disabled:opacity-50"
+                                      >
+                                        <AssetPickerThumb asset={asset} className="h-11 w-11 shrink-0 rounded" />
+                                        <span className="min-w-0 flex-1">
+                                          <span className="flex items-start gap-1.5">
+                                            <span className="mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#7d4436] text-[9px] font-bold text-white">
+                                              {rank + 1}
+                                            </span>
+                                            <span className="line-clamp-2 text-[11px] font-bold leading-4 text-[#20211f]">
+                                              {asset.description || "נכס ללא תיאור"}
+                                            </span>
+                                          </span>
+                                          <span className="mt-1 block text-[11px] leading-5 text-[#7d4436]">
+                                            {suggestion.reason}
+                                          </span>
+                                          <span className="mt-0.5 block text-[10px] font-bold text-[#747570]">
+                                            {assetBusyId === asset.id
+                                              ? "משבצים בפוסט…"
+                                              : "לחצו כדי לשבץ את הנכס בפוסט"}
+                                          </span>
+                                        </span>
+                                      </button>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </>
+                            ) : null}
+                          </div>
+
+                          <p className="mt-3 text-[10px] font-bold text-[#747570]">
+                            כל הנכסים בספרייה — לחיצה משבצת את הנכס בפוסט:
+                          </p>
+                          <ul className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                            {(assets ?? []).map((asset) => {
+                              const inPost = currentAssetId === asset.id;
+                              return (
+                                <li key={asset.id}>
+                                  <button
+                                    type="button"
+                                    disabled={imageLocked}
+                                    onClick={() => void attachAsset(asset)}
+                                    className={`flex w-full flex-col overflow-hidden rounded-md border bg-white text-right disabled:opacity-50 ${
+                                      inPost ? "border-[#7d4436]" : "border-[#dedcd4] hover:border-[#7d4436]"
+                                    }`}
+                                  >
+                                    <AssetPickerThumb asset={asset} className="h-20 w-full" />
+                                    <span className="block w-full p-1.5">
+                                      <span className="line-clamp-2 block text-[10px] leading-4 text-[#3c3e3a]">
+                                        {asset.description || "נכס ללא תיאור"}
+                                      </span>
+                                      {asset.tags.length ? (
+                                        <span className="mt-1 flex flex-wrap gap-1">
+                                          {asset.tags.slice(0, 2).map((tag) => (
+                                            <span
+                                              key={tag}
+                                              className="rounded-full border border-[#e3cec4] bg-[#fbf4f0] px-1.5 text-[9px] text-[#7d4436]"
+                                            >
+                                              {tag}
+                                            </span>
+                                          ))}
+                                        </span>
+                                      ) : null}
+                                      <span className="mt-1 flex items-center justify-between gap-1 text-[9px] text-[#8b8e84]">
+                                        <span>
+                                          {ASSET_SOURCE_LABELS[asset.source]}
+                                          {asset.kind === "video" ? " · וידאו" : ""}
+                                        </span>
+                                        <span className="font-bold text-[#7d4436]">
+                                          {assetBusyId === asset.id
+                                            ? "משבצים…"
+                                            : inPost
+                                              ? "בפוסט הזה ✓"
+                                              : "שיבוץ"}
+                                        </span>
+                                      </span>
+                                    </span>
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </>
+                      )}
+                    </div>
+                  ) : null}
 
                   <div>
                     <label className="block text-[11px] font-bold text-[#62635f] mb-1">
@@ -1278,8 +1663,7 @@ export function PostEditor({
                     approving ||
                     isApproved ||
                     !currentPost.image_url ||
-                    isPreparingImage ||
-                    designerBusy ||
+                    imageLocked ||
                     Boolean(imageError)
                   }
                   onClick={() => void approveCurrentPost()}

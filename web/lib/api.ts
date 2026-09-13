@@ -29,6 +29,9 @@ export function isDemo(): boolean {
 
 export function enterDemo() {
   window.localStorage.setItem(DEMO_FLAG, "1");
+  // A fresh demo session gets a fresh library — otherwise a deletion from a previous
+  // visit looked permanent.
+  DEMO_ASSETS = DEMO_ASSETS_SEED.map((asset) => ({ ...asset, tags: [...asset.tags] }));
 }
 
 export function exitDemo() {
@@ -103,6 +106,7 @@ export const DEMO_BUSINESS: Business = {
     { name: "מאפיית בר-קמח", website_url: "https://bar-kemach.example.co.il" },
   ],
   primary_goal: "sales",
+  business_model: "products",
   onboarding_complete: true,
   scraped_profile: {
     raw: { url: "https://lechem-tom.example.co.il", colors: ["#3B2A22", "#C45C26", "#F3E6D4"] },
@@ -110,7 +114,62 @@ export const DEMO_BUSINESS: Business = {
     brand_language: DEMO_BRAND,
   },
   brand_language: DEMO_BRAND,
+  diagnostics: {
+    has_customer_club: "no",
+    repeat_vs_new: "mostly_repeat",
+    priority_channel: "physical",
+    capacity_constraint: "תנור אחד, אפייה לילה אחת",
+  },
+  growth_targets: [],
 };
+
+/** Candidates offered for ranking in onboarding step 5. Deliberately spread across
+ *  categories so the ranking actually changes the plan. The three ranked candidates are
+ *  the agent's recommendation, surfaced by the "let the agent decide" control. */
+const DEMO_TARGET_CANDIDATES: GrowthTargetCandidate[] = [
+  {
+    id: "t1",
+    category: "נאמנות",
+    target: "להקים קלאב לקוחות עם 300 חברים עד סוף הרבעון",
+    why_this: "אין קלאב היום, ולחם נקנה שוב ושוב — זה הקהל הזול ביותר לחזור אליו",
+    recommended_rank: 1,
+  },
+  {
+    id: "t2",
+    category: "מכירות",
+    target: "להעלות מכירות חלות שישי ב-25% בתוך שלושה חודשים",
+    why_this: "החלות כבר נמכרות, והביקוש מרוכז ביום אחד שאפשר להגדיל",
+    recommended_rank: 0,
+  },
+  {
+    id: "t3",
+    category: "תפעול",
+    target: "לצמצם בלאי מאפים בסוף יום מ-12% ל-5%",
+    why_this: "בלאי הוא כסף ישר מהשורה התחתונה, בלי להוסיף תנועה",
+    recommended_rank: 0,
+  },
+  {
+    id: "t4",
+    category: "קהל",
+    target: "להביא 120 לקוחות חדשים מהשכונה בכל חודש",
+    why_this: "יש תנועה פיזית קבועה בשוק שאפשר ללכוד",
+    recommended_rank: 2,
+  },
+  {
+    id: "t5",
+    category: "נוכחות דיגיטלית",
+    target: "להגיע ל-1,000 עוקבים מקומיים באינסטגרם",
+    why_this: "הערוץ כבר פעיל אבל קטן ביחס לתנועה שיש בחנות",
+    recommended_rank: 0,
+  },
+  {
+    id: "t6",
+    category: "מכירות",
+    target: "להשיק מארזי חג בהזמנה מוקדמת ולהגיע ל-150 הזמנות",
+    why_this: "חגי תשרי הם שיא הביקוש, והזמנה מוקדמת מחליקה את העומס",
+    recommended_rank: 3,
+  },
+];
 
 const DEMO_IMAGES = [
   "/demo/post-1.svg",
@@ -121,6 +180,117 @@ const DEMO_IMAGES = [
   "/demo/post-6.svg",
   "/demo/post-7.svg",
 ];
+
+/** Their own library of photos and clips — the raw material for post images. */
+export type Asset = {
+  id: number;
+  kind: "image" | "video";
+  mime: string;
+  source: AssetSource;
+  source_url: string;
+  description: string;
+  tags: string[];
+  /** Already a servable path — safe to drop straight into an `<img src>`. */
+  url: string;
+  width: number;
+  height: number;
+  created_at: string;
+};
+
+export type AssetPatch = { description?: string; tags?: string[] };
+
+export type AssetSource = "upload" | "url" | "site";
+
+/** One library asset the model ranked against a post, with its short Hebrew reason. */
+export type AssetSuggestion = { asset_id: number; reason: string };
+
+/**
+ * Demo-mode asset library. Descriptions and tags stand in for the AI pass so the screen
+ * exercises every state it has — three sources, both kinds, and a clip with no thumbnail.
+ */
+let DEMO_ASSETS: Asset[] = [
+  {
+    id: 1,
+    kind: "image",
+    mime: "image/jpeg",
+    source: "upload",
+    source_url: "",
+    description: "חלות קלועות טריות על שולחן הקמח, ממש אחרי שיצאו מהתנור בתאורת בוקר.",
+    tags: ["חלות", "מחמצת", "תנור", "שישי"],
+    url: "/demo/post-1.svg",
+    width: 1200,
+    height: 900,
+    created_at: "2026-09-01T06:20:00Z",
+  },
+  {
+    id: 2,
+    kind: "image",
+    mime: "image/png",
+    source: "site",
+    source_url: "https://lechem-tom.example.co.il/gallery",
+    description: "חזית המאפייה ברחוב, עם השלט הישן ותיבת החלות ליד הדלת.",
+    tags: ["חזית החנות", "יפו", "מיתוג"],
+    url: "/demo/post-2.svg",
+    width: 1000,
+    height: 1000,
+    created_at: "2026-09-02T09:05:00Z",
+  },
+  {
+    id: 3,
+    kind: "image",
+    mime: "image/jpeg",
+    source: "url",
+    source_url: "https://instagram.com/p/CxYzLechemTom",
+    description: "מארז ראש השנה: חלה עגולה, עוגת דבש וריבת תאנים על נייר קראפט.",
+    tags: ["ראש השנה", "מארז", "מתנה", "חג"],
+    url: "/demo/post-5.svg",
+    width: 1080,
+    height: 1350,
+    created_at: "2026-09-03T14:40:00Z",
+  },
+  {
+    id: 4,
+    kind: "video",
+    mime: "video/mp4",
+    source: "upload",
+    source_url: "",
+    description: "קליפ קצר של לישת הבצק ב-05:00 בבוקר, בלי סאונד.",
+    tags: ["מאחורי הקלעים", "בצק", "וידאו"],
+    // Deliberately a `.svg`: the demo ships no real clip, so the card exercises the
+    // "no thumbnail" path (kind badge still shows) instead of faking a video frame.
+    url: "/demo/post-4.svg",
+    width: 1080,
+    height: 1920,
+    created_at: "2026-09-04T05:10:00Z",
+  },
+];
+
+/** Mirrors the fixture so a demo session starts clean every time it is entered. */
+const DEMO_ASSETS_SEED: Asset[] = DEMO_ASSETS.map((asset) => ({ ...asset, tags: [...asset.tags] }));
+
+let demoAssetId = 100;
+
+function demoAssetFromFile(file: File, name: string, mime: string): Asset {
+  demoAssetId += 1;
+  const kind: Asset["kind"] = mime.startsWith("video/") ? "video" : "image";
+  const isVideo = kind === "video";
+  return {
+    id: demoAssetId,
+    kind,
+    mime,
+    source: "upload",
+    source_url: "",
+    description: isVideo
+      ? `סרטון שהועלה מהמכשיר (${name}) — בדמו אין ניתוח וידאו, אבל באמת נכתוב כאן תיאור ותגיות מהתוכן.`
+      : `תמונה שהועלתה מהמכשיר (${name}) — בדמו אין ניתוח אמיתי, אבל באמת נכתוב כאן תיאור לפי מה שרואים בתמונה.`,
+    tags: isVideo ? ["וידאו", "הועלה"] : ["הועלה", "מהמכשיר"],
+    // A blob URL so the thumbnail in the grid is really the file that was picked.
+    url: typeof URL !== "undefined" && URL.createObjectURL ? URL.createObjectURL(file) : "",
+    width: 0,
+    height: 0,
+    created_at: new Date().toISOString(),
+  };
+}
 
 const POSTS: RoadmapPost[] = [
   {
@@ -510,6 +680,322 @@ const DEMO_RECS: RecommendationPayload = {
   },
 };
 
+/**
+ * What Google would cost this business, and what the free local surface looks like.
+ *
+ * Not hand-written: this is the output of the real services for the demo business —
+ * `app/services/google_cost.py` and `app/services/keywords.py`, fed the same profile
+ * `DEMO_BUSINESS` carries (long lists trimmed to a representative subset). Regenerate it
+ * the same way rather than editing the numbers by hand, because a fixture that drifts
+ * from the backend teaches the screen the wrong shape, and these figures are published
+ * Israeli market ranges, not invention.
+ *
+ * The three facts the screen exists to keep straight are all visible here: the budget
+ * (4,500 ₪) is *below* the published floor for the sector (5,000-8,000 ₪); the expected
+ * conversions straddle the 30-a-month line Google needs to leave its learning phase; and
+ * the click range is what the budget can buy, never how many people search.
+ */
+const DEMO_GOOGLE_PROMOTION: GooglePromotionPayload = {
+  plan: {
+    monthly_budget_ils: 4500,
+    industry_key: "food",
+    industry_label: "מזון ומשקאות",
+    industry_tier: "low",
+    matched_keywords: ["מאפייה", "קפה", "בית קפה"],
+    sector_key: "local_services",
+    sector_label: "שירותים מקומיים",
+    cpc_range: [3.5, 5.5],
+    expected_clicks: [818, 1285],
+    conversion_rate_range: [0.03, 0.05],
+    expected_conversions: [24, 64],
+    cost_per_conversion: [70, 183],
+    minimum_viable_budget: [5000, 8000],
+    management_fee: {
+      percent_range: [0.15, 0.2],
+      percent_label: "15%-20% מתקציב המדיה",
+      percent_amount_ils: [675, 900],
+      flat_range_ils: [2000, 8000],
+      note: "המקור מצטט ניהול בשתי צורות חלופיות — אחוז מתקציב המדיה או תשלום חודשי קבוע. שתי הצורות מוצגות כאן, ואנחנו לא בוחרים עבורכם.",
+    },
+    setup_fee: [1500, 4000],
+    total_monthly_ils: [5175, 12500],
+    first_month_total_ils: [6675, 16500],
+    warnings: [
+      "התקציב החודשי (4,500 ₪) נמוך מהמינימום שפורסם למגזר 'שירותים מקומיים' (5,000-8,000 ₪). מתחת למינימום הזה המקור מתאר מלכודת: אין מספיק דאטה → האלגוריתם של גוגל לא לומד → הביצועים גרועים → התקציב נשרף מהר → נשאר אפילו פחות דאטה. עדיף להמתין לתקציב הולם, או להשקיע את הסכום הזה בערוצים חלופיים (SEO, תוכן, רשתות חברתיות) שבהם הכסף לא תלוי בלמידה של אלגוריתם.",
+      "טווח ההמרות הצפוי (24-64 בחודש) חוצה את סף 30 ההמרות שגוגל צריך כדי ללמוד: בתרחיש השמרני עדיין אין מספיק דאטה והקמפיין נשאר בשלב למידה. תכננו את החודש כאיסוף נתונים, לא כ-ROAS.",
+    ],
+    assumptions: [
+      "CPC לתחום 'מזון ומשקאות': 3.5-5.5 ₪ לקליק (רצועת low של המקור)",
+      "שיעור המרה (פנייה) במגזר 'שירותים מקומיים': 3.0%-5.0% — השיעור שפורסם למגזר הזה, לא מדידה של העסק",
+      "גוגל צריך 30-50 המרות בחודש כדי ללמוד ולאפטם; מתחת לזה אין אופטימיזציה אמיתית",
+      "ניהול: 15%-20% מתקציב המדיה או 2,000-8,000 ₪ בחודש; הקמה חד-פעמית 1,500-4,000 ₪",
+      "התקציב שהוזן הוא תקציב מדיה בלבד; עלות הניהול וההקמה מפורטות בנפרד ולכן העלות החודשית האמיתית גבוהה ממנו",
+      "אין לנו גישה ל-Keyword Planner ואין לנו נפחי חיפוש. מספר הקליקים הוא הגבול העליון של מה שהתקציב יכול לקנות — לא תחזית של כמה אנשים מחפשים",
+    ],
+    source: "https://www.rulers.co.il/blog/how-much-does-a-successful-google-ads-campaign-really-cost-in-israel/",
+    source_title: "רולרס — כמה באמת עולה קמפיין Google Ads מוצלח בישראל?",
+    conversion_unit: "פנייה (ליד)",
+    channel_comparison: {
+      google: {
+        label: "Google Ads",
+        intent: "כוונת רכישה גבוהה — אנשים מחפשים בדיוק את מה שאתם מציעים",
+        downside: "CPC יקר יותר ממטא",
+        timing: "תוצאות מיידיות",
+      },
+      meta: {
+        label: "Facebook / Instagram",
+        cpc_ils: [1.5, 8.0],
+        intent: "כוונת רכישה נמוכה יותר — שיווק בהפרעה",
+        upside: "CPC נמוך יותר ומיקוד מדויק לפי דמוגרפיה ותחומי עניין",
+      },
+      recommendation:
+        "המקור ממליץ על מיקס: גוגל לכוונת קנייה גבוהה, מטא/אינסטגרם למודעות ולרימרקטינג. לא לשים את כל התקציב בערוץ אחד.",
+    },
+  },
+  business_profile: {
+    title: "פרופיל עסק בגוגל (Google Business Profile)",
+    summary:
+      "לפני שמשלמים לגוגל על קליקים, כדאי לסדר את המשטח החינמי: הפרופיל העסקי בגוגל. הוא מה שמופיע כשמחפשים את שם העסק, והוא מה שמאפשר לבקש ביקורות.",
+    free: true,
+    is_local: true,
+    suggested_category_hint: "מזון ומשקאות",
+    steps: [
+      {
+        id: "claim",
+        title: "לתבוע את הפרופיל",
+        priority: "critical",
+        why: "בלי פרופיל מגובה, גוגל עלולה להציג על לחם תום מידע שאף אחד לא עדכן — או לא להציג אותו בכלל כשמחפשים אתכם.",
+        how: [
+          "חפשו את 'לחם תום' בגוגל מפות ובגוגל Search.",
+          "אם הפרופיל קיים ולא שלכם — לחצו 'בעלים של העסק הזה?' והתחילו תהליך תביעה.",
+          "אם אין פרופיל — פתחו אחד עם חשבון הגוגל של העסק (לא חשבון אישי של עובד).",
+        ],
+      },
+      {
+        id: "verify",
+        title: "לאמת את הפרופיל",
+        priority: "critical",
+        why: "פרופיל לא מאומת לא מופיע כמו פרופיל מאומת, ולא ניתן לעדכן בו חלק מהשדות.",
+        how: [
+          "בחרו את שיטת האימות שגוגל מציעה (סרטון, טלפון או גלויה).",
+          "אמתו מיד — האימות הוא מה שהופך את הפרופיל לנכס שלכם.",
+          "רשמו למי בחשבון יש הרשאה, והוסיפו בעלים נוסף כדי לא לאבד גישה.",
+        ],
+      },
+      {
+        id: "categories",
+        title: "קטגוריה ראשית וקטגוריות משנה",
+        priority: "critical",
+        why: "הקטגוריה הראשית היא מה שקובע לאילו חיפושים הפרופיל בכלל רלוונטי.",
+        how: [
+          "בחרו קטגוריה ראשית שמתאימה לתחום שזוהה: מזון ומשקאות.",
+          "היכנסו לרשימת הקטגוריות של גוגל ובחרו את המדויק ביותר — לא את הרחב.",
+          "הוסיפו 2-4 קטגוריות משנה של השירותים שאתם באמת נותנים.",
+        ],
+      },
+      {
+        id: "hours",
+        title: "שעות פעילות",
+        priority: "high",
+        why: "שעות חסרות שולחות לקוחות לכתובת סגורה, ואלה בדיוק הלקוחות שכבר החליטו לבוא.",
+        how: [
+          "מלאו שעות לכל יום, כולל הפסקות.",
+          "הוסיפו שעות מיוחדות לחגים ולמועדים ישראליים לפני שהם מגיעים.",
+          "עדכנו שעות חריגות (חופשה, סגירה זמנית) באותו יום, לא אחריו.",
+        ],
+      },
+      {
+        id: "photos",
+        title: "תמונות אמיתיות",
+        priority: "high",
+        why: "התמונות הן מה שהמחפש רואה לפני שהוא מחליט אם להתקשר. תמונות אמת של העסק עובדות טוב יותר מתמונות מלאי שלא קשורות אליו.",
+        how: [
+          "העלו תמונות של המקום מבחוץ ומבפנים, של הצוות ושל העבודה עצמה.",
+          "השתמשו בתמונות שצילמתם — לא בתמונות מהאינטרנט.",
+          "הוסיפו תמונות חדשות מדי חודש; פרופיל שלא מתעדכן נראה סגור.",
+        ],
+      },
+      {
+        id: "reviews",
+        title: "ביקורות",
+        priority: "critical",
+        why: "הביקורות הן מה שרוב המחפשים קוראים לפני שהם יוצרים קשר. הן גם אות אמיתי לגוגל על העסק.",
+        how: [
+          "בקשו ביקורת מיד אחרי רגע טוב — סוף תיקון, סוף טיפול, מסירה.",
+          "בקשו בפנים או בוואטסאפ עם קישור ישיר לטופס הביקורת של הפרופיל.",
+          "אל תכתבו ביקורות בעצמכם ואל תקנו ביקורות — גוגל מסננת אותן, והנזק גדול מהתועלת.",
+        ],
+      },
+    ],
+    notes: [
+      "הפרופיל העסקי בגוגל הוא משטח חינמי: אין עלות מדיה, אין מכרז, ואין תשלום לגוגל.",
+      "אין לנו גישה לפרופיל שלכם, ואנחנו לא יודעים אם הוא קיים או מאומת. זו רשימת פעולות, לא דוח מצב.",
+      "אם הפרופיל כבר קיים ומאומת — התחילו מהקטגוריה, השעות, התמונות והביקורות; אלה מה שמשפיע ישירות על מי שמגיע אליכם.",
+    ],
+  },
+};
+
+/**
+ * The terms worth targeting, split by what we actually know about them.
+ *
+ * Only Search Console rows carry numbers, because those come from the site's own
+ * performance in Google. Autocomplete rows carry none: Google does not publish search
+ * volumes, and `sources.search_volumes` says so out loud. The fixture keeps all three
+ * source values honest — plain autocomplete, plain Search Console, and the one phrase
+ * found in both (`autocomplete+search_console`), which is the only autocomplete phrase
+ * allowed to show numbers.
+ */
+const DEMO_KEYWORDS: KeywordsPayload = {
+  keywords: [
+    {
+      term: "לחם תום יפו",
+      intent: "branded",
+      intent_label: "מיתוג (שם העסק)",
+      source: "autocomplete+search_console",
+      matched: ["לחם תום"],
+      clicks: 41,
+      impressions: 470,
+      ctr: 0.0872,
+      position: 2.1,
+    },
+    {
+      term: "לחם תום שעות פתיחה",
+      intent: "branded",
+      intent_label: "מיתוג (שם העסק)",
+      source: "autocomplete",
+      matched: ["לחם תום"],
+    },
+    {
+      term: "מאפייה שכונתית ביפו",
+      intent: "general",
+      intent_label: "כללי",
+      source: "autocomplete",
+      matched: [],
+    },
+    {
+      term: "מאפייה הכי טובה",
+      intent: "commercial",
+      intent_label: "בחינה והשוואה",
+      source: "autocomplete",
+      matched: ["הכי טוב"],
+    },
+    {
+      term: "איך מכינים מחמצת",
+      intent: "informational",
+      intent_label: "מידע",
+      source: "autocomplete",
+      matched: ["איך"],
+    },
+    { term: "מחמצת ביתית מתכון", intent: "general", intent_label: "כללי", source: "autocomplete", matched: [] },
+    { term: "חלות לשישי", intent: "general", intent_label: "כללי", source: "autocomplete", matched: [] },
+    {
+      term: "חלות שישי משלוח",
+      intent: "transactional",
+      intent_label: "כוונת קנייה",
+      source: "autocomplete",
+      matched: ["משלוח"],
+    },
+    { term: "מארזי חג לשולחן", intent: "general", intent_label: "כללי", source: "autocomplete", matched: [] },
+    {
+      term: "מאפייה פתוחה בשבת יפו",
+      intent: "local",
+      intent_label: "מקומי",
+      source: "search_console",
+      matched: ["יפו"],
+      clicks: 12,
+      impressions: 240,
+      ctr: 0.05,
+      position: 14.2,
+    },
+    {
+      term: "מחיר חלות",
+      intent: "transactional",
+      intent_label: "כוונת קנייה",
+      source: "search_console",
+      matched: ["מחיר"],
+      clicks: 3,
+      impressions: 118,
+      ctr: 0.0254,
+      position: 11.6,
+    },
+    {
+      term: "מאפייה מומלצת",
+      intent: "commercial",
+      intent_label: "בחינה והשוואה",
+      source: "search_console",
+      matched: ["מומלצת"],
+      clicks: 6,
+      impressions: 143,
+      ctr: 0.042,
+      position: 12.8,
+    },
+    {
+      term: "מארזי חג ראש השנה",
+      intent: "general",
+      intent_label: "כללי",
+      source: "search_console",
+      matched: [],
+      clicks: 5,
+      impressions: 63,
+      ctr: 0.0794,
+      position: 22.7,
+    },
+  ],
+  quick_wins: [
+    {
+      query: "מאפייה פתוחה בשבת יפו",
+      clicks: 12,
+      impressions: 240,
+      ctr: 0.05,
+      position: 14.2,
+      why: "מקום 14.2 עם 240 חשיפות — קרוב לעמוד הראשון. שיפור הכותרת, הדף או התוכן יכול להזיז אותו בלי לשלם על קליק.",
+    },
+    {
+      query: "מאפייה מומלצת",
+      clicks: 6,
+      impressions: 143,
+      ctr: 0.042,
+      position: 12.8,
+      why: "מקום 12.8 עם 143 חשיפות — קרוב לעמוד הראשון. שיפור הכותרת, הדף או התוכן יכול להזיז אותו בלי לשלם על קליק.",
+    },
+    {
+      query: "מחיר חלות",
+      clicks: 3,
+      impressions: 118,
+      ctr: 0.0254,
+      position: 11.6,
+      why: "מקום 11.6 עם 118 חשיפות — קרוב לעמוד הראשון. שיפור הכותרת, הדף או התוכן יכול להזיז אותו בלי לשלם על קליק.",
+    },
+  ],
+  search_console_connected: true,
+  seeds: [
+    "לחם תום",
+    "מאפייה שכונתית / בית קפה",
+    "שוק הפשפשים, יפו (עולי ציון 12)",
+    "לחמי מחמצת באפייה יומית",
+    "חלות שישי",
+    "מאפי בוקר ומארזי חג לשולחן",
+  ],
+  sources: {
+    autocomplete: {
+      available: true,
+      endpoint: "https://suggestqueries.google.com/complete/search",
+      note: "השלמות החיפוש של גוגל: ביטויים אמיתיים שאנשים מקלידים. אלה ביטויים, לא נפחים — אין כאן מספר חיפושים.",
+    },
+    search_console: {
+      connected: true,
+      site_url: "https://lechem-tom.example.co.il/",
+      period: { start: "2026-08-16", end: "2026-09-12", days: 28 },
+      note: "מחובר: אלה שאילתות אמיתיות שהאתר כבר מופיע בהן, עם קליקים, חשיפות ומיקום אמיתיים מגוגל.",
+    },
+    search_volumes: {
+      available: false,
+      note: "אין לנו גישה ל-Google Keyword Planner, ולכן אין במערכת נפח חיפוש חודשי. כל מספר כזה היה מומצא. מה שכן יש: ביטויים אמיתיים שאנשים מקלידים, ונתוני Search Console אם החשבון מחובר.",
+    },
+  },
+  thresholds: { quick_win_position: [5.0, 20.0], quick_win_min_impressions: 50 },
+};
+
 function demoCalendar(year: number, month: number): CalendarPayload {
   const prefix = `${year}-${String(month).padStart(2, "0")}`;
   const days = new Date(year, month, 0).getDate();
@@ -596,7 +1082,64 @@ function cloneDemoStrategy(): StrategyPayload {
   };
 }
 
-function demoResolve<T>(path: string, options: RequestInit = {}): T {
+/** Words too common to mean anything when matching a post against the library. */
+const DEMO_SUGGEST_STOPWORDS = new Set([
+  "של", "על", "עם", "את", "זה", "זו", "כל", "לא", "כן", "או", "גם", "כי", "מה", "מי",
+  "יש", "אין", "כמו", "אחרי", "לפני", "אתם", "אנחנו", "הוא", "היא", "הם", "בלי", "יותר",
+  "רק", "איך", "מתי", "אפשר", "צריך", "כדי", "עוד", "כאן", "היום", "the", "and",
+]);
+
+function demoKeywords(text: string): string[] {
+  return text
+    .toLowerCase()
+    .split(/[^0-9a-z\u0590-\u05ff]+/)
+    .filter((word) => word.length >= 3 && !DEMO_SUGGEST_STOPWORDS.has(word));
+}
+
+/**
+ * Stands in for the model call behind `/strategy/posts/suggest-assets`.
+ *
+ * The real ranking is a model pass over the post's copy and the library's descriptions
+ * and tags (see api/app/services/assets.py). This is a deterministic keyword overlap with
+ * the same contract — ranked ids, a Hebrew reason each, and an empty list rather than a
+ * forced match — so the picker's ranked and empty states can both be exercised offline.
+ */
+function demoAssetSuggestions(post: RoadmapPost): AssetSuggestion[] {
+  const postWords = demoKeywords(
+    [post.title, post.hook, post.caption, post.angle, post.overlay_text, post.calendar_tie, post.goal_fit]
+      .filter(Boolean)
+      .join(" ")
+  );
+  return DEMO_ASSETS.map((asset) => {
+    const assetWords = Array.from(
+      new Set([...demoKeywords(asset.description), ...asset.tags.flatMap((tag) => demoKeywords(tag))])
+    );
+    // Either direction counts: the library says "חלות" and the post says "החלות".
+    const hits = assetWords.filter((word) =>
+      postWords.some((candidate) => candidate.includes(word) || word.includes(candidate))
+    );
+    return { asset, hits };
+  })
+    .filter((entry) => entry.hits.length > 0)
+    .sort((a, b) => b.hits.length - a.hits.length || a.asset.id - b.asset.id)
+    .slice(0, 4)
+    .map(({ asset, hits }) => ({
+      asset_id: asset.id,
+      reason:
+        hits.length > 1
+          ? `הנכס מכוון לאותם נושאים שהפוסט הזה מעלה: ${hits.slice(0, 3).join(", ")}.`
+          : `הנכס מכוון לאותו נושא כמו הפוסט: ${hits[0]}.`,
+    }));
+}
+
+/**
+ * Resolves a request against the in-memory demo fixtures.
+ *
+ * Async because a few demo routes (the site scan, re-describing an asset) have to feel
+ * like the real work they stand in for — an instantly-resolved list would hide every
+ * loading state the screens are supposed to prove. Callers already await `api()`.
+ */
+async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {
   const method = (options.method || "GET").toUpperCase();
   if (path === "/auth/me") return DEMO_USER as T;
   if (path === "/auth/logout" && method === "POST") {
@@ -604,7 +1147,43 @@ function demoResolve<T>(path: string, options: RequestInit = {}): T {
     return { ok: true } as T;
   }
   if (path === "/onboarding/me") return { business: DEMO_BUSINESS } as T;
-  if (path === "/onboarding/profile" && method === "POST") return { business: DEMO_BUSINESS } as T;
+  if (path === "/onboarding/profile" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as OnboardingPayload;
+    if (body.growth_targets) DEMO_BUSINESS.growth_targets = body.growth_targets;
+    if (body.diagnostics) DEMO_BUSINESS.diagnostics = body.diagnostics;
+    if (body.long_horizon_plan) DEMO_BUSINESS.long_horizon_plan = body.long_horizon_plan;
+    if (typeof body.monthly_budget_ils === "number") {
+      DEMO_BUSINESS.monthly_budget_ils = body.monthly_budget_ils;
+    }
+    return { business: DEMO_BUSINESS } as T;
+  }
+  if (path === "/onboarding/palette" && method === "POST") {
+    // The brand picker now exposes palette editing in demo mode too. This path used to
+    // be live-only, so a demo user editing a swatch silently dropped out of demo and
+    // got a 401 — the edit looked like a failure for no visible reason.
+    const body = JSON.parse(String(options.body || "{}")) as { palette?: BrandLanguage["palette"] };
+    if (body.palette) {
+      DEMO_BRAND.palette = body.palette;
+      DEMO_BUSINESS.brand_language = DEMO_BRAND;
+    }
+    return { business: DEMO_BUSINESS } as T;
+  }
+  if (path === "/onboarding/targets" && method === "POST") {
+    return { targets: DEMO_TARGET_CANDIDATES.map((item) => ({ ...item })) } as T;
+  }
+  if (path === "/onboarding/plan" && method === "POST") {
+    const ranked = DEMO_BUSINESS.growth_targets || [];
+    const base = DEMO_STRATEGY.long_horizon_plan;
+    if (!base) throw new ApiError("תוכנית רבעונית חסרה בדמו.", 500);
+    // Echo the owner's ranking back so step 4 demonstrably changes the quarter plan.
+    return {
+      long_horizon_plan: {
+        ...base,
+        targets: ranked.length ? ranked : [...base.targets],
+        milestones: base.milestones.map((m) => ({ ...m })),
+      },
+    } as T;
+  }
   if (path === "/onboarding/scan" && method === "POST") {
     return {
       business: DEMO_BUSINESS,
@@ -625,13 +1204,62 @@ function demoResolve<T>(path: string, options: RequestInit = {}): T {
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
   }
+  if (path === "/strategy/posts/images" && method === "POST") {
+    // The Posts screen calls this on mount for every post still missing an image. It
+    // had no demo route, so demo mode showed "no demo route" and 0 of 7 posts.
+    POSTS.forEach((post, index) => {
+      if (!post.image_url) {
+        POSTS[index] = { ...post, image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0] };
+      }
+    });
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    return { strategy: cloneDemoStrategy(), errors: [] } as T;
+  }
   if (path === "/strategy/posts/image" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as { post_index?: number };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
-    POSTS[index] = { ...POSTS[index], image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0] };
+    const generated: RoadmapPost = {
+      ...POSTS[index],
+      image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0],
+      // Same as the real route: a regenerated image is no longer the owner's own library
+      // file, so the asset it replaced must not stay attached to the post.
+      image_source: "generated",
+      image_source_url: "",
+      image_action: "generated",
+    };
+    delete generated.image_asset_id;
+    POSTS[index] = generated;
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+  }
+  if (path === "/strategy/posts/asset" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; asset_id?: number };
+    const index = body.post_index ?? 0;
+    if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    const asset = DEMO_ASSETS.find((item) => item.id === body.asset_id);
+    if (!asset) throw new ApiError("הנכס לא נמצא", 404);
+    POSTS[index] = {
+      ...POSTS[index],
+      image_url: asset.url,
+      image_source: "asset",
+      image_asset_id: asset.id,
+      image_source_url: asset.source_url || "",
+      image_action: "asset",
+    };
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+  }
+  if (path === "/strategy/posts/suggest-assets" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number };
+    const index = body.post_index ?? 0;
+    if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    // An empty library answers instantly in the real route too — no model call is made.
+    if (!DEMO_ASSETS.length) return { suggestions: [] } as T;
+    // Slower on purpose: this stands in for a real model call, so the picker has to prove
+    // its busy state rather than flashing an answer that took no work.
+    await new Promise((resolve) => window.setTimeout(resolve, 1200));
+    return { suggestions: demoAssetSuggestions(POSTS[index]) } as T;
   }
   if (path === "/strategy/posts/design" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as {
@@ -888,6 +1516,120 @@ function demoResolve<T>(path: string, options: RequestInit = {}): T {
   if (path.includes("/ga4/start") || path.includes("/meta/start")) {
     throw new ApiError("במצב דמו אין OAuth אמיתי. זה תצוגה בלבד.", 400);
   }
+  if (path === "/assets" && method === "GET") {
+    return { assets: DEMO_ASSETS.map((asset) => ({ ...asset, tags: [...asset.tags] })) } as T;
+  }
+  if (path === "/assets/upload" && method === "POST") {
+    // The real endpoint takes multipart `file`; demo gets the same request object and
+    // reads the File straight out of the FormData.
+    const file = options.body instanceof FormData ? options.body.get("file") : null;
+    if (!(file instanceof File)) throw new ApiError("לא נבחר קובץ להעלאה.", 400);
+    const name = file.name || "asset";
+    const asset = demoAssetFromFile(file, name, file.type || "image/jpeg");
+    DEMO_ASSETS = [asset, ...DEMO_ASSETS];
+    return { asset } as T;
+  }
+  if (path === "/assets/import-url" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as { url?: string };
+    const url = (body.url || "").trim();
+    if (!url) throw new ApiError("צריך קישור כדי לייבא תמונה.", 400);
+    const host = (() => {
+      try {
+        return new URL(url).hostname;
+      } catch {
+        return "הקישור";
+      }
+    })();
+    const added: Asset[] = [0, 1].map((offset) => ({
+      id: (demoAssetId += 1),
+      kind: "image",
+      mime: "image/jpeg",
+      source: "url",
+      source_url: url,
+      description: `תמונה שיובאה מ-${host} — בדמו אין הורדה אמיתית, אבל באמת נשמור אותה בספרייה ונתאר מה רואים.`,
+      tags: ["מיובא", host.split(".")[0] || "קישור"],
+      url: DEMO_IMAGES[(offset + 2) % DEMO_IMAGES.length],
+      width: 1080,
+      height: 1080,
+      created_at: new Date().toISOString(),
+    }));
+    DEMO_ASSETS = [...added, ...DEMO_ASSETS];
+    return { assets: added, skipped: 2 } as T;
+  }
+  if (path === "/assets/scan-site" && method === "POST") {
+    // Slower on purpose: the real scan crawls their site, and the screen has to prove
+    // its busy state is real rather than instant.
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
+    const found: Asset[] = [
+      {
+        id: (demoAssetId += 1),
+        kind: "image",
+        mime: "image/jpeg",
+        source: "site",
+        source_url: "https://lechem-tom.example.co.il/",
+        description: "תמונת המאפייה מדף הבית, עם החלות על השיש והשלט מעל הדלפק.",
+        tags: ["דף הבית", "מאפייה", "אתר"],
+        url: DEMO_IMAGES[0],
+        width: 1200,
+        height: 800,
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: (demoAssetId += 1),
+        kind: "image",
+        mime: "image/png",
+        source: "site",
+        source_url: "https://lechem-tom.example.co.il/gallery",
+        description: "תמונה מגלריית האתר: שולחן עץ עם לחמים ופוקצ׳ה אחרי האפייה.",
+        tags: ["גלריה", "לחמים", "אתר"],
+        url: DEMO_IMAGES[5],
+        width: 1400,
+        height: 1050,
+        created_at: new Date().toISOString(),
+      },
+    ];
+    DEMO_ASSETS = [...found, ...DEMO_ASSETS];
+    return { assets: found, skipped: 6 } as T;
+  }
+  if (path.startsWith("/assets/") && method === "PATCH") {
+    const id = Number(path.slice("/assets/".length));
+    const current = DEMO_ASSETS.find((asset) => asset.id === id);
+    if (!current) throw new ApiError("הנכס לא נמצא", 404);
+    const body = JSON.parse(String(options.body || "{}")) as AssetPatch;
+    const updated: Asset = {
+      ...current,
+      description: body.description !== undefined ? body.description : current.description,
+      tags: body.tags !== undefined ? [...body.tags] : current.tags,
+    };
+    DEMO_ASSETS = DEMO_ASSETS.map((asset) => (asset.id === id ? updated : asset));
+    return { asset: { ...updated, tags: [...updated.tags] } } as T;
+  }
+  if (path.startsWith("/assets/") && method === "DELETE") {
+    const id = Number(path.slice("/assets/".length));
+    if (!DEMO_ASSETS.some((asset) => asset.id === id)) throw new ApiError("הנכס לא נמצא", 404);
+    DEMO_ASSETS = DEMO_ASSETS.filter((asset) => asset.id !== id);
+    return { ok: true } as T;
+  }
+  if (path.endsWith("/describe") && path.startsWith("/assets/") && method === "POST") {
+    const id = Number(path.slice("/assets/".length, -"/describe".length));
+    const current = DEMO_ASSETS.find((asset) => asset.id === id);
+    if (!current) throw new ApiError("הנכס לא נמצא", 404);
+    // Deterministic per id, so re-running on the same asset visibly changes something
+    // without pretending a second AI pass happened.
+    const pass = (current.tags.filter((tag) => tag.startsWith("ניתוח ")).length || 0) + 1;
+    const updated: Asset = {
+      ...current,
+      description: `${current.description} (ניתוח ${pass}: הודגשו הטקסטורה, התאורה וההקשר העונתי.)`,
+      tags: [...current.tags.filter((tag) => !tag.startsWith("ניתוח ")), `ניתוח ${pass}`],
+    };
+    DEMO_ASSETS = DEMO_ASSETS.map((asset) => (asset.id === id ? updated : asset));
+    return { asset: { ...updated, tags: [...updated.tags] } } as T;
+  }
+  // The promotion payloads are deep enough that a hand-written clone would be a
+  // liability; they are plain JSON, so a round-trip is simpler and total. Cloning keeps
+  // a screen that mutates what it renders from poisoning the demo for the next visit.
+  if (path === "/promotion/google") return JSON.parse(JSON.stringify(DEMO_GOOGLE_PROMOTION)) as T;
+  if (path === "/promotion/keywords") return JSON.parse(JSON.stringify(DEMO_KEYWORDS)) as T;
   throw new ApiError(`אין נתיב דמו עבור ${path}`, 404);
 }
 
@@ -903,8 +1645,6 @@ const LIVE_PATHS = new Set([
   "/integrations/meta/account",
   "/integrations/ga4",
   "/integrations/meta",
-  // Editing the real palette is only meaningful against the live API.
-  "/onboarding/palette",
   "/auth/password",
 ]);
 
@@ -917,7 +1657,10 @@ export async function api<T>(
   if (forceLive) exitDemo();
   if (isDemo() && !forceLive) return demoResolve<T>(path, options);
   const headers = new Headers(options.headers);
-  if (options.body && !headers.has("Content-Type")) {
+  // A FormData body must keep the browser-generated multipart boundary, so the only
+  // safe Content-Type is the one fetch sets itself. Everything else stays JSON.
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  if (options.body && !isFormData && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
   const res = await fetch(`${API}${path}`, {
@@ -975,6 +1718,9 @@ export const endpoints = {
       body: JSON.stringify({ website_url }),
     }),
   hypotheses: () => api<{ hypotheses: GrowthHypothesis[] }>("/onboarding/hypotheses", { method: "POST" }),
+  targets: () => api<{ targets: GrowthTargetCandidate[] }>("/onboarding/targets", { method: "POST" }),
+  longHorizonPlan: () =>
+    api<{ long_horizon_plan: LongHorizonPlan }>("/onboarding/plan", { method: "POST" }),
   generate: () => api<GenerateResult>("/onboarding/generate", { method: "POST" }),
   generateNextMonth: () => api<GenerateResult>("/strategy/next-month", { method: "POST" }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
@@ -993,6 +1739,19 @@ export const endpoints = {
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/image", {
       method: "POST",
       body: JSON.stringify({ post_index, ...options }),
+    }),
+  /** Point a post's image at one of the owner's own library assets. */
+  attachPostAsset: (post_index: number, asset_id: number) =>
+    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/asset", {
+      method: "POST",
+      body: JSON.stringify({ post_index, asset_id }),
+    }),
+  /** Which library assets fit this post, ranked with a Hebrew reason each. A real model
+   *  call — several seconds, and an empty list when the library is empty. */
+  suggestPostAssets: (post_index: number) =>
+    api<{ suggestions: AssetSuggestion[] }>("/strategy/posts/suggest-assets", {
+      method: "POST",
+      body: JSON.stringify({ post_index }),
     }),
   designPost: (
     post_index: number,
@@ -1054,6 +1813,28 @@ export const endpoints = {
     }),
   recommendations: () => api<RecommendationPayload>("/recommendations/latest"),
   generateRecommendations: () => api<RecommendationPayload>("/recommendations/generate", { method: "POST" }),
+  /** What Google would cost this business, plus the free Business Profile checklist. */
+  googlePromotion: () => api<GooglePromotionPayload>("/promotion/google"),
+  /** Terms worth targeting. Only Search Console rows carry real numbers. */
+  keywords: () => api<KeywordsPayload>("/promotion/keywords"),
+  assets: () => api<{ assets: Asset[] }>("/assets"),
+  /** Multipart: the File goes in as `file` and `api()` leaves Content-Type to fetch. */
+  uploadAsset: (file: File) => {
+    const body = new FormData();
+    body.append("file", file);
+    return api<{ asset: Asset }>("/assets/upload", { method: "POST", body });
+  },
+  importAssetsFromUrl: (url: string) =>
+    api<{ assets: Asset[]; skipped: number }>("/assets/import-url", {
+      method: "POST",
+      body: JSON.stringify({ url }),
+    }),
+  scanSiteForAssets: () =>
+    api<{ assets: Asset[]; skipped: number }>("/assets/scan-site", { method: "POST" }),
+  updateAsset: (id: number, patch: AssetPatch) =>
+    api<{ asset: Asset }>(`/assets/${id}`, { method: "PATCH", body: JSON.stringify(patch) }),
+  deleteAsset: (id: number) => api<{ ok: true }>(`/assets/${id}`, { method: "DELETE" }),
+  describeAsset: (id: number) => api<{ asset: Asset }>(`/assets/${id}/describe`, { method: "POST" }),
 };
 
 export type Competitor = { name: string; website_url: string };
@@ -1066,13 +1847,17 @@ export type Business = {
   offerings: string;
   location?: string;
   presence_type?: "brick_and_mortar" | "online_only" | "hybrid";
+  business_model?: BusinessModel;
   social_links?: Record<string, string>;
   monthly_budget_ils: number;
   competitors: Competitor[];
-  primary_goal: "sales" | "brand_awareness" | "";
+  primary_goal: PrimaryGoal | "";
   onboarding_complete: boolean;
   scraped_profile: unknown;
   brand_language?: BrandLanguage | null;
+  growth_targets?: string[];
+  diagnostics?: Diagnostics | null;
+  long_horizon_plan?: LongHorizonPlan | null;
   generate_state?: { stage?: string; error?: string };
 };
 
@@ -1083,12 +1868,15 @@ export type OnboardingPayload = {
   offerings: string;
   location?: string;
   presence_type?: "brick_and_mortar" | "online_only" | "hybrid";
+  business_model?: BusinessModel;
   social_links?: Record<string, string>;
   monthly_budget_ils: number;
   competitors: Competitor[];
-  primary_goal: "sales" | "brand_awareness";
+  primary_goal: PrimaryGoal;
   growth_hypothesis?: string;
   growth_targets?: string[];
+  diagnostics?: Diagnostics;
+  long_horizon_plan?: LongHorizonPlan;
 };
 
 export type CalendarEvent = {
@@ -1179,6 +1967,10 @@ export type RoadmapPost = {
   goal_fit: string;
   why_now?: string;
   image_prompt?: string;
+  /** What the last image request actually did, so the UI never reports success for
+   *  work that was skipped: "generated" | "real_photo" | "asset" | "kept_existing" |
+   *  "no_photo_theme" | "pending". */
+  image_action?: "generated" | "real_photo" | "asset" | "kept_existing" | "no_photo_theme" | "pending";
   overlay_text?: string;
   has_overlay?: boolean;
   overlay_headline?: string;
@@ -1204,9 +1996,13 @@ export type RoadmapPost = {
   metrics_to_watch?: string[];
   /** A specific, verifiable number for the card ("100 חלות כל שישי"). Beats vague claims. */
   stat_highlight?: string;
-  /** Where the card's image came from: their own photo, a generated one, or none. */
-  image_source?: "real_photo" | "generated" | "none";
+  /** Where the card's image came from: their own photo, a generated one, a file from
+   *  their asset library, or none ("none" = a typographic card, which carries no
+   *  photograph by design). */
+  image_source?: "real_photo" | "generated" | "asset" | "none" | "pending";
   image_source_url?: string;
+  /** Which library asset the current image came from, when `image_source` is "asset". */
+  image_asset_id?: number;
   outlet_captions?: {
     instagram?: string;
     facebook?: string;
@@ -1230,6 +2026,38 @@ export type GrowthHypothesis = {
   title: string;
   hypothesis: string;
   why_this: string;
+};
+
+export type GrowthTargetCandidate = {
+  id: string;
+  category: string;
+  target: string;
+  why_this: string;
+  /** 1–3 for the agent's three recommended priorities, 0 for everything else. */
+  recommended_rank?: number;
+};
+
+/** Forks diagnostics, goals and the whole plan engine — see lib/businessModel.ts. */
+export type BusinessModel = "products" | "services" | "both";
+
+/** `sales`/`brand_awareness` are purchase goals; `leads`/`personal_brand` are service
+ *  goals. The API rejects a goal that does not match the business model. */
+export type PrimaryGoal = "sales" | "brand_awareness" | "leads" | "personal_brand";
+
+/** Priorities from the onboarding diagnostics step, split by business model.
+ *  `has_customer_club` is a prioritisation signal only — no loyalty/CRM integration
+ *  exists or is implied. */
+export type Diagnostics = {
+  // products / both
+  has_customer_club?: "yes" | "no" | "unsure" | null;
+  repeat_vs_new?: "mostly_repeat" | "mostly_new" | "balanced" | null;
+  priority_channel?: "online" | "physical" | "balanced" | null;
+  // services / both
+  lead_source?: "referrals" | "social" | "search" | "mixed" | "none" | null;
+  has_portfolio?: "yes" | "partial" | "no" | null;
+  brand_owner?: "personal" | "studio" | "unsure" | null;
+  // shared
+  capacity_constraint?: string;
 };
 
 export type StrategyPayload = {
@@ -1387,6 +2215,160 @@ export type RecommendationPayload = {
     }[];
   };
   webhook_deliveries?: { url: string; ok: boolean; error?: string }[];
+};
+
+/**
+ * Promotion (קידום) — what Google would cost, and what is free.
+ *
+ * Modelled on `api/app/routers/promotion.py`. Every money figure arrives as a range:
+ * the backend refuses to collapse a campaign that has never run into one confident
+ * number, and the screen must not collapse it either.
+ */
+export type PromotionRange = [number, number];
+
+export type PromotionManagementFee = {
+  percent_range: PromotionRange;
+  /** Ready-made Hebrew label, e.g. "15%-20% מתקציב המדיה". */
+  percent_label: string;
+  /** The percentage applied to this business's budget. */
+  percent_amount_ils: PromotionRange;
+  /** The alternative flat monthly fee — note the `_ils`, this is not `flat_range`. */
+  flat_range_ils: PromotionRange;
+  note: string;
+};
+
+/** `null` on any range means the published source does not have that figure. */
+export type GooglePromotionPlan = {
+  monthly_budget_ils: number;
+  industry_key: string;
+  /** The matched Hebrew industry bucket, e.g. "מזון ומשקאות". */
+  industry_label: string;
+  industry_tier: string;
+  /** The words in the business profile that matched the industry — why this bucket. */
+  matched_keywords: string[];
+  sector_key: string | null;
+  /** The sector whose published conversion rate was used. */
+  sector_label: string | null;
+  cpc_range: PromotionRange | null;
+  expected_clicks: PromotionRange | null;
+  /** Fractions, e.g. 0.03 — rendered as percentages. */
+  conversion_rate_range: PromotionRange | null;
+  expected_conversions: PromotionRange | null;
+  cost_per_conversion: PromotionRange | null;
+  minimum_viable_budget: PromotionRange | null;
+  management_fee: PromotionManagementFee;
+  setup_fee: PromotionRange | null;
+  /** Media + management for one month. */
+  total_monthly_ils: PromotionRange | null;
+  /** The first month, setup included. */
+  first_month_total_ils: PromotionRange | null;
+  warnings: string[];
+  assumptions: string[];
+  /** Where the market ranges came from. */
+  source: string;
+  source_title: string;
+  /** What a "conversion" means for this business, e.g. "פנייה (ליד)". */
+  conversion_unit: string;
+  channel_comparison: PromotionChannelComparison;
+};
+
+export type PromotionChannelComparison = {
+  google?: { label?: string; intent?: string; downside?: string; timing?: string };
+  meta?: { label?: string; cpc_ils?: PromotionRange; intent?: string; upside?: string };
+  recommendation?: string;
+};
+
+export type BusinessProfileStep = {
+  id: string;
+  title: string;
+  /** "critical" | "high" | "medium" — how much it moves the needle. */
+  priority: string;
+  /** Why this matters for a local business. */
+  why: string;
+  /** The concrete actions, one per line. */
+  how: string[];
+};
+
+export type GoogleBusinessProfile = {
+  title: string;
+  summary: string;
+  free: boolean;
+  is_local: boolean;
+  /** The industry the profile's main category should match. */
+  suggested_category_hint: string;
+  steps: BusinessProfileStep[];
+  notes: string[];
+};
+
+export type GooglePromotionPayload = {
+  plan: GooglePromotionPlan;
+  business_profile: GoogleBusinessProfile;
+};
+
+export type KeywordIntent =
+  | "branded"
+  | "local"
+  | "transactional"
+  | "commercial"
+  | "informational"
+  | "general";
+
+/**
+ * Where the term came from — and therefore whether any numbers exist for it.
+ * `autocomplete+search_console` means the same phrase was found in both, and it is the
+ * only case where an autocomplete phrase also carries real Search Console numbers.
+ */
+export type KeywordSource = "autocomplete" | "search_console" | "autocomplete+search_console";
+
+export type PromotionKeyword = {
+  term: string;
+  intent: KeywordIntent;
+  /** The backend's Hebrew label for the intent. */
+  intent_label?: string;
+  source: KeywordSource;
+  /** The words that triggered the intent classification. */
+  matched?: string[];
+  /** Search Console rows only. Autocomplete rows never carry these. */
+  clicks?: number;
+  impressions?: number;
+  ctr?: number;
+  position?: number;
+};
+
+/** A query that already ranks just off page one — with the backend's own explanation. */
+export type PromotionQuickWin = {
+  query: string;
+  clicks?: number;
+  impressions?: number;
+  ctr?: number;
+  position?: number;
+  why?: string;
+};
+
+/**
+ * What actually contributed, each with the backend's own Hebrew note. `search_volumes`
+ * is always `available: false` — Google does not publish them and nothing here guesses.
+ */
+export type PromotionKeywordSources = {
+  autocomplete: { available: boolean; endpoint: string; note: string };
+  search_console: {
+    connected: boolean;
+    site_url: string;
+    period: { start?: string; end?: string; days?: number };
+    note: string;
+  };
+  search_volumes: { available: boolean; note: string };
+};
+
+export type KeywordsPayload = {
+  keywords: PromotionKeyword[];
+  quick_wins: PromotionQuickWin[];
+  search_console_connected: boolean;
+  /** The phrases we asked Google about, built from the business profile. */
+  seeds: string[];
+  sources: PromotionKeywordSources;
+  thresholds: { quick_win_position: PromotionRange; quick_win_min_impressions: number };
+  cached?: boolean;
 };
 
 export type GenerateResult = {

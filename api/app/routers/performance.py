@@ -108,6 +108,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "business_type": business.business_type,
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
     }
     try:
@@ -184,6 +185,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         "business_type": business.business_type,
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
     }
     try:

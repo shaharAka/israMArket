@@ -7,25 +7,50 @@ import { ApiError, endpoints, isDemo } from "@/lib/api";
 import {
   BrandMark,
   IconChart,
+  IconCompass,
+  IconFlag,
   IconHome,
   IconImage,
   IconLink,
+  IconMegaphone,
   IconRoute,
   IconStore,
 } from "@/lib/icons";
+import { BrandPicker } from "@/components/BrandPicker";
 import { ToastHost } from "@/lib/ui";
 
-const NAV = [
+/**
+ * The owner's daily loop. Deliberately five: the mobile bar is a five-column grid, and
+ * this list had grown to ten, so it was silently wrapping into two rows.
+ */
+const PRIMARY_NAV = [
   { href: "/dashboard", label: "החודש שלך", icon: IconHome },
   { href: "/strategy", label: "התוכנית", icon: IconRoute },
   { href: "/posts", label: "הפוסטים", icon: IconImage },
+  { href: "/promotion", label: "קידום בגוגל", icon: IconMegaphone },
   { href: "/performance", label: "תוצאות", icon: IconChart },
+];
+
+/**
+ * Reached less often, so it sits under its own heading in the sidebar only. The media
+ * library is not here at all — it lives in the brand picker at the top of the shell.
+ */
+const SECONDARY_NAV = [
+  { href: "/plan", label: "התוכנית הרבעונית", icon: IconCompass },
+  { href: "/decisions", label: "ההחלטות שלי", icon: IconFlag },
   { href: "/integrations", label: "חיבורים", icon: IconLink },
   { href: "/account", label: "החשבון", icon: IconStore },
 ];
 
-/** Routes that are part of first-run itself — redirecting from these would loop. */
-const FIRST_RUN_ROUTES = ["/onboarding", "/login", "/signup"];
+/**
+ * Routes reachable before first-run is finished. The wizard's own routes must be here
+ * or the redirect below would loop forever.
+ *
+ * `/decisions` is here too: the wizard links to it from its last step ("לשינוי התקציב"),
+ * and gating it meant that link silently bounced the owner back to step 1 of the wizard
+ * with no explanation. It renders a safe empty state when there is no business yet.
+ */
+const FIRST_RUN_ROUTES = ["/onboarding", "/login", "/signup", "/decisions"];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -95,49 +120,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {businessName ? <span className="mr-2 text-xs text-[#747570]">/ {businessName}</span> : null}
           </div>
         </div>
-        {demo ? <span className="text-[11px] font-bold text-[#747570]">מצב הדגמה</span> : null}
+        <div className="flex items-center gap-2">
+          {demo ? <span className="text-[11px] font-bold text-[#747570]">מצב הדגמה</span> : null}
+          <BrandPicker variant="mobile" />
+        </div>
       </div>
 
       <aside
         className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
       >
-        <div className="px-5 py-5 border-b border-[#e6e4dc] flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-3">
-            <BrandMark className="h-9 w-9 text-[#20211f]" />
-            <div>
+        <div className="px-5 py-4 border-b border-[#e6e4dc] flex items-center justify-between gap-2">
+          <Link href="/dashboard" className="flex items-center gap-3 min-w-0">
+            <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
+            <div className="min-w-0">
               <span className="font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
               <span className="text-[11px] text-[#63665e] block -mt-0.5">שיווק שעובד בישראל</span>
             </div>
           </Link>
-          {demo ? (
-            <span className="label-mark text-[#63665e] bg-[#f8f7f4]">
-              דמו
-            </span>
-          ) : null}
+          <div className="flex shrink-0 items-center gap-2">
+            {demo ? <span className="label-mark text-[#63665e] bg-[#f8f7f4]">דמו</span> : null}
+            <BrandPicker variant="sidebar" />
+          </div>
         </div>
 
-        <nav className="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
-          {NAV.map((item) => {
-            const active = pathname === item.href;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`nav-item relative flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm transition-colors ${
-                  active
-                    ? "bg-[#e9e8e3] text-[#20211f] font-black"
-                    : "text-[#63665e] hover:text-[#1e201d] hover:bg-[#f8f7f4]"
-                }`}
-              >
-                {active ? (
-                  <span className="nav-active-bar absolute right-0 top-2 bottom-2 w-[3px] rounded-r bg-[#343632]" />
-                ) : null}
-                <Icon className={`nav-icon w-5 h-5 ${active ? "text-[#20211f]" : "text-[#63665e]"}`} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        <nav className="flex-1 px-3 py-6 overflow-y-auto">
+          <div className="space-y-1">
+            {PRIMARY_NAV.map((item) => (
+              <NavLink key={item.href} item={item} active={pathname === item.href} />
+            ))}
+          </div>
+
+          <p className="mt-7 mb-2 px-3.5 text-[10px] font-black tracking-wide text-[#b3b0a5]">
+            ניהול
+          </p>
+          <div className="space-y-1">
+            {SECONDARY_NAV.map((item) => (
+              <NavLink key={item.href} item={item} active={pathname === item.href} />
+            ))}
+          </div>
         </nav>
 
         <div className="p-3 border-t border-[#e6e4dc] flex items-center justify-between bg-[#faf9f7]">
@@ -170,7 +190,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#cecdc7] bg-white px-1 pb-[max(6px,env(safe-area-inset-bottom))] pt-1 md:hidden">
-        {NAV.map((item) => {
+        {PRIMARY_NAV.map((item) => {
           const active = pathname === item.href;
           const Icon = item.icon;
           return (
@@ -190,6 +210,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <ToastHost />
     </div>
+  );
+}
+
+/** Sidebar row. Shared by both nav groups so they cannot drift apart. */
+function NavLink({
+  item,
+  active,
+}: {
+  item: { href: string; label: string; icon: (props: { className?: string }) => React.ReactElement };
+  active: boolean;
+}) {
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      className={`nav-item relative flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm transition-colors ${
+        active
+          ? "bg-[#e9e8e3] text-[#20211f] font-black"
+          : "text-[#63665e] hover:text-[#1e201d] hover:bg-[#f8f7f4]"
+      }`}
+    >
+      {active ? (
+        <span className="nav-active-bar absolute right-0 top-2 bottom-2 w-[3px] rounded-r bg-[#343632]" />
+      ) : null}
+      <Icon className={`nav-icon w-5 h-5 ${active ? "text-[#20211f]" : "text-[#63665e]"}`} />
+      <span>{item.label}</span>
+    </Link>
   );
 }
 

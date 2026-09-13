@@ -12,13 +12,20 @@ from app.services.images import store_image_bytes
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
-from app.services.strategy import generate_monthly_strategy, propose_hypotheses, scan_website
+from app.services.strategy import (
+    build_long_horizon_plan,
+    generate_monthly_strategy,
+    propose_hypotheses,
+    propose_targets,
+    scan_website,
+)
 from app.services.webhooks import deliver
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
 
 
 def _business_payload(business: Business) -> dict:
+    stored = loads(business.scraped_profile_json, {}) or {}
     return {
         "id": business.id,
         "name": business.name,
@@ -27,13 +34,17 @@ def _business_payload(business: Business) -> dict:
         "offerings": business.offerings,
         "location": business.location or "",
         "presence_type": business.presence_type or "brick_and_mortar",
+        "business_model": business.business_model or "products",
         "social_links": loads(business.social_links_json, {}),
         "monthly_budget_ils": business.monthly_budget_ils,
         "competitors": loads(business.competitors_json, []),
         "primary_goal": business.primary_goal,
         "onboarding_complete": bool(business.onboarding_complete),
         "scraped_profile": loads(business.scraped_profile_json, None),
-        "brand_language": (loads(business.scraped_profile_json, {}) or {}).get("brand_language"),
+        "brand_language": stored.get("brand_language"),
+        "growth_targets": stored.get("growth_targets", []),
+        "diagnostics": stored.get("diagnostics"),
+        "long_horizon_plan": stored.get("long_horizon_plan"),
         "generate_state": loads(business.generate_state_json, {}),
     }
 
@@ -161,6 +172,7 @@ def save_profile(
     business.offerings = body.offerings
     business.location = body.location
     business.presence_type = body.presence_type
+    business.business_model = body.business_model
     business.social_links_json = dumps(body.social_links)
     business.monthly_budget_ils = body.monthly_budget_ils
     business.competitors_json = dumps([item.model_dump() for item in body.competitors])
@@ -170,6 +182,10 @@ def save_profile(
         stored["growth_hypothesis"] = body.growth_hypothesis
     if body.growth_targets:
         stored["growth_targets"] = body.growth_targets
+    if body.diagnostics is not None:
+        stored["diagnostics"] = body.diagnostics.model_dump()
+    if body.long_horizon_plan:
+        stored["long_horizon_plan"] = body.long_horizon_plan
     business.scraped_profile_json = dumps(stored)
     business.updated_at = datetime.utcnow()
     db.commit()
@@ -197,22 +213,17 @@ def hypotheses(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
-    stored = loads(business.scraped_profile_json, {}) if business else {}
-    brand = stored.get("brand_language")
-    if not business or not brand:
-        raise HTTPException(status_code=400, detail="סרקו קודם את האתר כדי להציע כיוון צמיחה.")
-    payload = {
-        "name": business.name,
-        "business_type": business.business_type,
-        "offerings": business.offerings,
-        "location": business.location,
-        "presence_type": business.presence_type,
-        "primary_goal": business.primary_goal,
-        "monthly_budget_ils": business.monthly_budget_ils,
-    }
+    business, stored = _require_business(db, user)
+    brand = stored.get("brand_language") or {}
+    payload = _wizard_payload(business, stored)
     try:
-        items = propose_hypotheses(payload, brand, stored.get("extracted") or {})
+        items = propose_hypotheses(
+            payload,
+            brand,
+            stored.get("extracted") or {},
+            stored.get("diagnostics"),
+            stored.get("long_horizon_plan"),
+        )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     stored["hypotheses"] = items
@@ -220,6 +231,87 @@ def hypotheses(
     business.updated_at = datetime.utcnow()
     db.commit()
     return {"hypotheses": items}
+
+
+def _require_business(db: Session, user: User) -> tuple[Business, dict]:
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business or not business.name or not business.business_type:
+        raise HTTPException(status_code=400, detail="יש למלא את פרטי העסק לפני השלב הזה.")
+    return business, loads(business.scraped_profile_json, {}) or {}
+
+
+def _wizard_payload(business: Business, stored: dict) -> dict:
+    return {
+        "name": business.name,
+        "business_type": business.business_type,
+        "offerings": business.offerings,
+        "location": business.location,
+        "presence_type": business.presence_type,
+        "business_model": business.business_model or "products",
+        "primary_goal": business.primary_goal,
+        "monthly_budget_ils": business.monthly_budget_ils,
+        "diagnostics": stored.get("diagnostics") or {},
+    }
+
+
+@router.post("/targets")
+def targets(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Candidate growth targets for the owner to choose from and rank.
+
+    A website scan is optional here: the diagnostics and profile are enough to propose
+    real targets, so a business with no site can still complete the wizard.
+    """
+    business, stored = _require_business(db, user)
+    try:
+        items = propose_targets(
+            _wizard_payload(business, stored),
+            stored.get("brand_language") or {},
+            stored.get("extracted") or {},
+            stored.get("diagnostics"),
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    stored["target_candidates"] = items
+    business.scraped_profile_json = dumps(stored)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    return {"targets": items}
+
+
+@router.post("/plan")
+def long_horizon_plan(
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """The quarterly plan, built from the ranked targets *before* the monthly direction
+    is chosen, so the month gets context instead of appearing from nowhere."""
+    business, stored = _require_business(db, user)
+    # A quarter carries three priorities. Rows saved before the cap existed may hold
+    # more, so trim to the top three rather than fail the build.
+    ranked = [str(item).strip() for item in (stored.get("growth_targets") or []) if str(item).strip()][:3]
+    if not ranked:
+        raise HTTPException(
+            status_code=400,
+            detail="בחרו ודרגו יעדי צמיחה לפני בניית התוכנית הרבעונית.",
+        )
+    try:
+        plan = build_long_horizon_plan(
+            _wizard_payload(business, stored),
+            stored.get("brand_language") or {},
+            stored.get("extracted") or {},
+            ranked,
+            stored.get("diagnostics"),
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    stored["long_horizon_plan"] = plan
+    business.scraped_profile_json = dumps(stored)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    return {"long_horizon_plan": plan}
 
 
 @router.post("/generate")
@@ -251,8 +343,11 @@ def generate(
         "monthly_budget_ils": business.monthly_budget_ils,
         "competitors": loads(business.competitors_json, []),
         "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
         "growth_hypothesis": stored.get("growth_hypothesis", ""),
         "growth_targets": stored.get("growth_targets", []),
+        "diagnostics": stored.get("diagnostics") or {},
+        "long_horizon_plan": stored.get("long_horizon_plan") or None,
     }
     scan = stored if stored.get("brand_language") else None
     state = loads(business.generate_state_json, {}) or {}

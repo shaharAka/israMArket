@@ -25,3 +25,8 @@ next-env.d.ts
 # committed: real-photo.webp is a third party's photograph, and the AI plate is a
 # throwaway generation. Re-create them locally to use the preview page.
 web/public/dev-preview/
+
+# Local dev runtime: a self-contained Python install and a workspace-local npm cache,
+# plus browser-verification scripts and screenshots. None of it belongs in the repo.
+.runtime/
+.npm-cache/

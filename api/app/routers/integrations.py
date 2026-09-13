@@ -29,7 +29,22 @@ def _public_integration(item: Integration) -> dict:
         "connected": item.status == "connected" and bool(item.access_token_enc),
         "properties": extra.get("properties"),
         "pages": extra.get("pages"),
+        # What Google actually granted on this connection. Search Console lives on the
+        # same grant, so the UI can tell the owner to reconnect rather than showing an
+        # empty panel with no explanation.
+        "scopes": extra.get("scopes") or [],
     }
+
+
+def _invalidate_promotion_cache(business_id: int) -> None:
+    """Drop the cached keyword payload when the Google grant changes.
+
+    Imported inside the function on purpose: `promotion` imports `tokens_for` from this
+    module, so a top-level import here would be circular.
+    """
+    from app.routers import promotion
+
+    promotion.cache_clear(business_id)
 
 
 def _upsert(db: Session, business_id: int, provider: str) -> Integration:
@@ -83,9 +98,10 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         item.token_expires_at = tokens["expires_at"]
         item.status = "select_property"
         properties = ga4.list_properties(tokens["access_token"], tokens["refresh_token"], tokens["expires_at"])
-        item.extra_json = dumps({"properties": properties})
+        item.extra_json = dumps({"properties": properties, "scopes": tokens.get("scopes") or []})
         item.updated_at = datetime.utcnow()
         db.commit()
+        _invalidate_promotion_cache(claims["business_id"])
     except Exception as exc:
         return RedirectResponse(f"{dest}?{urlencode({'error': str(exc)})}")
     return RedirectResponse(f"{dest}?ga4=connected")
@@ -220,6 +236,9 @@ def delete_integration(
     if item:
         db.delete(item)
         db.commit()
+    if provider == "ga4":
+        # Search Console data lives on the Google grant that was just revoked.
+        _invalidate_promotion_cache(business.id)
     return {"ok": True}
 
 
