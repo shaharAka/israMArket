@@ -46,9 +46,6 @@ function PostsWorkspace() {
           {strategy ? `${strategy.month_name_he} ${strategy.year}` : "טוען..."}
         </p>
         <h1 className="mt-1 text-3xl font-black tracking-tight text-[#20211f]">הפוסטים שהכנו</h1>
-        <p className="mt-1 max-w-2xl text-sm leading-6 text-[#62635f]">
-          אנחנו כבר כתבנו, עיצבנו והתאמנו אותם לכל ערוץ. עברו עליהם ואשרו שהפרטים נכונים.
-        </p>
       </header>
 
       {error ? (

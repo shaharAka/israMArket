@@ -40,8 +40,13 @@ function demoServerSnapshot() {
  * one ask is the monthly plan — this page is the quarter, and the quarter is only
  * actionable month by month — so `התוכנית של ספטמבר — מה עושים החודש` is the single dark
  * button, and every block below it is one container with hairline dividers instead of a
- * box per idea. Nothing was cut: the hypothesis, the ranked targets, the stage track and
- * the management/checkpoints block all still carry the same content.
+ * box per idea.
+ *
+ * The face now carries only the answer (UI-RULES rule 7): the quarter's hypothesis, the
+ * ranked targets and the three months. Everything that explains it — each month's
+ * checkpoint and the whole management/checkpoints block — sits behind an expand, so the
+ * prose the owner has to read in one pass is a fraction of what is stored, and nothing
+ * is dropped: the payload's own text is what the expands reveal.
  */
 export default function PlanPage() {
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
@@ -66,7 +71,7 @@ export default function PlanPage() {
         <SectionHeader
           section="plan"
           title="לאן אנחנו הולכים"
-          subtitle={`${plan?.horizon || "הרבעון הקרוב"} — הרבעון הוא הכיוון. כל חודש הוא אבן דרך אחת בדרך אליו.`}
+          subtitle={plan?.horizon || "הרבעון הקרוב"}
           action={
             strategy ? (
               <Link
@@ -111,7 +116,7 @@ export default function PlanPage() {
             {/* The bet the whole quarter rests on. */}
             <section className="p-4 sm:p-5">
               <p className="text-[11px] font-bold" style={{ color: identity.accent }}>
-                ההשערה שמחזיקה את הרבעון
+                ההשערה
               </p>
               <h2 className="mt-1.5 text-lg leading-7 font-black text-[#20211f]">{plan.hypothesis}</h2>
             </section>
@@ -121,11 +126,8 @@ export default function PlanPage() {
                 <span style={{ color: identity.accent }}>
                   <IconFlag className="h-4 w-4" />
                 </span>
-                היעדים, לפי סדר החשיבות
+                היעדים
               </h2>
-              <p className="mt-1 text-xs text-[#8b8e84]">
-                הסדר הזה נקבע על ידכם. היעד הראשון הוא המוביל, והתוכניות נבנות סביבו.
-              </p>
               <ol className="mt-2.5 space-y-1.5">
                 {plan.targets.map((target, index) => (
                   <li key={`${target}-${index}`} className="flex items-start gap-2.5">
@@ -151,12 +153,11 @@ export default function PlanPage() {
               </ol>
             </section>
 
-            {/* The stages, read left to right as a track rather than down a stack. */}
+            {/* The stages, read left to right as a track rather than down a stack. The month
+                and its milestone stay on the face; the checkpoint — the prose — is one tap
+                down, so the track reads as three lines instead of three paragraphs. */}
             <section className="p-4 sm:p-5">
-              <h2 className="text-sm font-black text-[#20211f]">השלבים — חודש אחר חודש</h2>
-              <p className="mt-1 text-xs text-[#8b8e84]">
-                כל חודש נסגר בנקודת בקרה. אם משהו לא עובד — מתקנים לפני החודש הבא.
-              </p>
+              <h2 className="text-sm font-black text-[#20211f]">החודשים</h2>
 
               <ol className="relative mt-4 grid gap-5 sm:grid-cols-3 sm:gap-4">
                 <span
@@ -177,10 +178,15 @@ export default function PlanPage() {
                       <span className="mt-0.5 block text-sm leading-6 font-bold text-[#20211f]">
                         {milestone.milestone}
                       </span>
-                      <span className="mt-1 block text-xs leading-5 text-[#5e6159]">
-                        <span className="font-bold text-[#3c3e3a]">נקודת בקרה: </span>
-                        {milestone.checkpoint}
-                      </span>
+                      {milestone.checkpoint ? (
+                        <details className="group mt-1.5">
+                          <summary className="flex cursor-pointer list-none items-center gap-1.5 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+                            <Caret />
+                            נקודת בקרה
+                          </summary>
+                          <p className="mt-1 text-xs leading-5 text-[#3c3e3a]">{milestone.checkpoint}</p>
+                        </details>
+                      ) : null}
                     </div>
                   </li>
                 ))}
@@ -188,13 +194,18 @@ export default function PlanPage() {
             </section>
 
             {management ? (
-              <section className="p-4 sm:p-5">
-                <h2 className="flex items-center gap-2 text-sm font-black text-[#20211f]">
+              // The page's largest block of prose — how we help, what we need from the
+              // owner and the four checkpoint windows — is the method, not the answer, so
+              // it is the block that most belongs one tap down.
+              <details className="group p-4 sm:p-5">
+                <summary className="flex cursor-pointer list-none items-center gap-2 text-sm font-black text-[#20211f]">
                   <span style={{ color: identity.accent }}>
                     <IconBell className="h-4 w-4" />
                   </span>
                   מה אנחנו עושים, ומתי נצטרך אתכם
-                </h2>
+                  <Caret />
+                </summary>
+
                 {management.how_we_help ? (
                   <p className="mt-1.5 text-sm leading-6 text-[#3c3e3a]">{management.how_we_help}</p>
                 ) : null}
@@ -242,7 +253,7 @@ export default function PlanPage() {
                     </div>
                   ) : null}
                 </div>
-              </section>
+              </details>
             ) : null}
           </div>
         ) : null}
@@ -256,5 +267,18 @@ export default function PlanPage() {
         ) : null}
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * The disclosure caret, drawn as a CSS triangle rather than a "▾" glyph: rule 7 counts
+ * `main.innerText`, and a text glyph would be counted as a word on every closed expand.
+ */
+function Caret() {
+  return (
+    <span
+      aria-hidden
+      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+    />
   );
 }

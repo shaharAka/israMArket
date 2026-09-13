@@ -60,3 +60,31 @@ that answers the owner's question; the rest belongs one level down.
 
 No icon-only buttons without an accessible label and a tooltip. No "המשך" without a
 subject. A button the owner has to guess at is a button they will not press.
+
+## 7. Word budget per page
+
+Height and box count are not enough. A page can be one screen tall and still be a wall of
+prose — `/plan` was cut from 1.5 screens to 1.1 and stayed at 300 words, and the owner
+still called it overwhelming.
+
+Measured as `main.innerText`, which already excludes anything inside a collapsed expand.
+The reference is `/decisions`, the page the owner called good:
+
+| page | ceiling |
+|---|---|
+| `/decisions` | **69** — the reference, do not exceed |
+| `/assets`, `/integrations`, `/calendar`, `/performance`, `/plan`, `/strategy` | **140** |
+| `/dashboard` | **150** |
+| `/posts` | **160** — an editor is inherently denser |
+| `/promotion` | **200** — it carries real published figures, which are the one thing worth words |
+
+When a page is over budget the answer is almost never to delete information. It is:
+
+1. Move the explanation behind the expand that already exists.
+2. Cut the sentence that restates what the control next to it already says.
+3. Shorten labels — a row called `תקציב חודשי` does not need a note explaining that it is
+   the monthly budget.
+4. Delete the "why this matters" line when the item itself is self-evident.
+
+What is never allowed: dropping a caveat, a warning, a source, or a "we cannot measure
+this" statement to hit the number. Those are the product's honesty and they stay visible.

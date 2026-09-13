@@ -30,41 +30,16 @@ import { toast } from "@/lib/ui";
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
 type RewriteTone = "direct" | "neighborhood" | "punchy";
 
-const OUTLETS: {
-  key: OutletKey;
-  label: string;
-  badge: string;
-  icon: string;
-  specs: string;
-}[] = [
-  {
-    key: "instagram",
-    label: "אינסטגרם",
-    badge: "פיד / רילס (4:5 / 9:16)",
-    icon: "📸",
-    specs: "תמונה/וידאו בראש הפוסט · קישור בביו · פורמט ויזואלי מוביל",
-  },
-  {
-    key: "facebook",
-    label: "פייסבוק",
-    badge: "פוסט פיד עם קישור",
-    icon: "📘",
-    specs: "טקסט בראש הפוסט מעל התמונה · כרטיס קישור לחיץ ישירות · תגובות ושיתופים",
-  },
-  {
-    key: "whatsapp",
-    label: "וואטסאפ",
-    badge: "הודעת צ'אט / שידור",
-    icon: "💬",
-    specs: "בועת שיחה אישית/קבוצתית · טקסט מודגש ב-*כוכביות* · קישור מיידי לחיץ",
-  },
-  {
-    key: "tiktok",
-    label: "טיקטוק",
-    badge: "וידאו 9:16 מסך מלא",
-    icon: "🎵",
-    specs: "מסך מלא 9:16 אנכי · כפתורי מעורבות בצד · סאונד וטקסט קצר",
-  },
+/**
+ * The outlet control is a picker of channels: its options are the icon alone, and the
+ * mockup below is the format spec that each old badge and spec line used to repeat.
+ * `label` is still what the copy column and the publish row call the outlet.
+ */
+const OUTLETS: { key: OutletKey; label: string; icon: string }[] = [
+  { key: "instagram", label: "אינסטגרם", icon: "📸" },
+  { key: "facebook", label: "פייסבוק", icon: "📘" },
+  { key: "whatsapp", label: "וואטסאפ", icon: "💬" },
+  { key: "tiktok", label: "טיקטוק", icon: "🎵" },
 ];
 
 const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[] = [
@@ -72,13 +47,6 @@ const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[]
   { key: "neighborhood", label: "פחות מכירתי", description: "ננסח בטון טבעי וחם יותר" },
   { key: "direct", label: "ברור יותר", description: "נחדד מה הלקוח צריך לעשות" },
 ];
-
-const FORMAT_LABELS: Record<RoadmapPost["format"], string> = {
-  reel: "וידאו קצר (Reel)",
-  carousel: "קרוסלה",
-  image: "תמונה",
-  story: "סטורי",
-};
 
 const DESIGN_PRESETS: { key: string; label: string; desc: string; icon: string }[] = [
   { key: "hero_clean", label: "תמונת גיבור נקייה", desc: "ללא כיתוב כלל, מיקוד במוצר ובמרקם", icon: "📸" },
@@ -669,14 +637,6 @@ export function PostEditor({
       return (
         <div>
         <div className="overflow-hidden rounded-2xl border border-[#deddd8] bg-black text-white shadow-md">
-          {/* Reel Top Info */}
-          <div className="flex items-center justify-between px-3.5 py-2.5 text-xs text-white/90">
-            <span className="font-bold flex items-center gap-1.5">
-              <span>▶</span> Reel
-            </span>
-            <span className="text-white/60 text-[11px]">אינסטגרם רילס</span>
-          </div>
-
           {/* 9:16 Frame */}
           <div className="relative aspect-[9/16] w-full overflow-hidden bg-neutral-900">
             {renderMediaSlot(true)}
@@ -710,20 +670,10 @@ export function PostEditor({
                   {businessName[0]}
                 </span>
                 <span className="text-xs font-bold text-white">{businessName}</span>
-                <span
-                  aria-hidden
-                  className="rounded-full border border-white/60 px-2 py-0.5 text-[10px] font-bold text-white"
-                >
-                  מעקב +
-                </span>
               </div>
               <p className="line-clamp-2 text-xs leading-5 text-white/95">
                 {activeCaption}
               </p>
-              <div className="mt-2 flex items-center gap-1.5 text-[10px] text-white/80">
-                <span>🎵</span>
-                <span className="truncate">צליל מקורי · {businessName}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -984,13 +934,6 @@ export function PostEditor({
   function renderTikTokMockup() {
     return (
       <div className="overflow-hidden rounded-2xl border border-[#deddd8] bg-black text-white shadow-md">
-        <div className="flex items-center justify-between px-3.5 py-2 text-xs text-white/90">
-          <span className="font-bold flex items-center gap-1.5">
-            <span>🎵</span> TikTok
-          </span>
-          <span className="text-white/60 text-[11px]">וידאו 9:16 אנכי</span>
-        </div>
-
         <div className="relative aspect-[9/16] w-full overflow-hidden bg-neutral-900">
           {renderMediaSlot(true)}
 
@@ -1462,8 +1405,10 @@ export function PostEditor({
             />
           </div>
         </div>
+        {/* The picker lists posts, so the option text is the number only: the title of the
+            selected post is already the heading right below it, at full size. */}
         <label className="text-xs font-bold text-[#62635f] sm:min-w-64">
-          <span className="mb-1.5 block">איזה פוסט בודקים?</span>
+          <span className="mb-1.5 block">פוסט</span>
           <select
             aria-label="איזה פוסט בודקים?"
             value={selectedIndex}
@@ -1474,7 +1419,7 @@ export function PostEditor({
             {posts.map((post, index) => (
               <option key={`${post.title}-${index}`} value={index}>
                 {post.approval_status === "approved" ? "✓ " : ""}
-                פוסט {index + 1}: {post.title}
+                {index + 1}
               </option>
             ))}
           </select>
@@ -1486,9 +1431,7 @@ export function PostEditor({
             asking for. Everything else on this screen is a control or a utility. */}
         <div className="mb-5 flex flex-col gap-4 border-b border-[#e9e8e3] pb-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
-            <p className="text-xs font-bold text-[#747570]">
-              פוסט {selectedIndex + 1} · {currentPost.date_hint} · {FORMAT_LABELS[currentPost.format]}
-            </p>
+            <p className="text-xs font-bold text-[#747570]">{currentPost.date_hint}</p>
             <h1 className="mt-1 text-2xl font-black leading-tight text-[#20211f]">{currentPost.title}</h1>
             {currentPost.why_now ? (
               <details className="mt-2 max-w-2xl">
@@ -1525,17 +1468,16 @@ export function PostEditor({
               <IconCheck className="h-4 w-4" />
               {approving ? "מאשרים…" : isApproved ? "הפוסט אושר" : "מאשרים וממשיכים"}
             </button>
-            <p className="mt-1.5 text-[11px] leading-5 text-[#747570]">
-              אישור מעביר אתכם לפוסט הבא שממתין. שום דבר לא מתפרסם מכאן בלי שתפרסמו אותו.
-            </p>
           </div>
         </div>
 
-        {/* CHANNEL SELECTOR — a control, not a call to action: one select, no filled tabs */}
+        {/* CHANNEL SELECTOR — a control, not a call to action: one select, no filled tabs.
+            Options carry the channel's name as well as its glyph: an emoji standing in for
+            a brand is a guess for a non-technical owner, and the mockup below is the spec. */}
         <div className="mb-5">
           <div className="flex flex-wrap items-end gap-3">
             <label className="text-xs font-bold text-[#747570]">
-              <span className="mb-1.5 block">לאיזה ערוץ להסתכל?</span>
+              <span className="mb-1.5 block">ערוץ</span>
               <select
                 aria-label="לאיזה ערוץ להסתכל?"
                 value={outlet}
@@ -1545,15 +1487,11 @@ export function PostEditor({
               >
                 {availableOutlets.map((item) => (
                   <option key={item.key} value={item.key}>
-                    {item.icon} {item.label} · {item.badge}
+                    {item.icon} {item.label}
                   </option>
                 ))}
               </select>
             </label>
-            <p className="pb-2 text-xs leading-5 text-[#5e6159]">
-              <span className="font-bold text-[#191b18]">פורמט {currentOutletMeta.label}: </span>
-              {currentOutletMeta.specs}
-            </p>
           </div>
         </div>
 
@@ -1581,7 +1519,7 @@ export function PostEditor({
                   className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
                 >
                   <IconImage className="h-3.5 w-3.5" />
-                  {exporting ? "מייצא כרטיס…" : `הורדת הכרטיס (${exportSize.w}×${exportSize.h})`}
+                  {exporting ? "מייצא כרטיס…" : "הורדת הכרטיס"}
                 </button>
                 <button
                   type="button"
@@ -1589,7 +1527,7 @@ export function PostEditor({
                   onClick={() => setShowRatios((open) => !open)}
                   className="min-h-10 px-2 text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
                 >
-                  {showRatios ? "סגירת יחס הייצוא" : `יחס הייצוא: ${exportRatio === "auto" ? "לפי פורמט" : exportRatio}`}
+                  {showRatios ? "סגירה" : "יחס"}
                 </button>
               </div>
               {showRatios ? (
@@ -1621,7 +1559,7 @@ export function PostEditor({
                   className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#62635f]"
                 >
                   <IconUsers className="h-3.5 w-3.5" />
-                  קהל היעד של הפוסט
+                  קהל
                   {!audiencesLoading && !audiencesError && audiences.length ? (
                     <span className="font-bold text-[#20211f]">
                       ·{" "}
@@ -1641,7 +1579,7 @@ export function PostEditor({
                   href="/decisions#audiences"
                   className="text-[10px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
                 >
-                  ניהול הקהלים
+                  ניהול
                 </Link>
               </div>
 
@@ -1676,7 +1614,6 @@ export function PostEditor({
                     {audiences.map((audience) => (
                       <option key={audience.id} value={audience.id} dir="rtl" lang="he">
                         {audience.name}
-                        {audience.is_primary ? " · הקהל המוביל" : ""}
                       </option>
                     ))}
                   </select>
@@ -1697,9 +1634,9 @@ export function PostEditor({
                   onClick={() => setShowImageTools((open) => !open)}
                   className="flex min-h-11 w-full items-center justify-between px-1 text-right text-xs font-bold text-[#20211f] disabled:opacity-40"
                 >
-                  <span>תמונה: {IMAGE_SOURCE_LABELS[imageSourceKey]?.text}</span>
+                  <span>תמונה</span>
                   <span className="text-[11px] font-bold text-[#62635f]">
-                    {showImageTools ? "סגירה" : "שינוי התמונה ▾"}
+                    {showImageTools ? "סגירה" : "פתיחה"}
                   </span>
                 </button>
                 {showImageTools ? renderImageTools() : null}
@@ -1714,10 +1651,10 @@ export function PostEditor({
                 >
                   <span className="inline-flex items-center gap-1.5">
                     <IconSparkles className="h-3.5 w-3.5" />
-                    מעצב ה-AI — כיוון עיצובי והתאמה ידנית
+                    מעצב ה-AI
                   </span>
                   <span className="text-[11px] font-bold text-[#62635f]">
-                    {showDesigner ? "סגירה" : "פתיחה ▾"}
+                    {showDesigner ? "סגירה" : "פתיחה"}
                   </span>
                 </button>
                 {showDesigner ? renderDesignerPanel() : null}
@@ -1729,9 +1666,7 @@ export function PostEditor({
           <section className="min-w-0 space-y-4">
             <div className="rounded-lg border border-[#deddd8] bg-white p-5 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-[#e9e8e3]">
-                <span className="text-xs font-bold text-[#747570]">
-                  נוסח מותאם ל-{currentOutletMeta.label}
-                </span>
+                <span className="text-xs font-bold text-[#747570]">הנוסח</span>
                 <span className="flex items-center gap-3">
                   <button
                     type="button"
@@ -1813,9 +1748,7 @@ export function PostEditor({
 
               <div className="py-3">
                 <p className="font-bold text-[#191b18]">אחרי שפרסמתם ב-{currentOutletMeta.label}</p>
-                <p className="mt-1 text-[#5e6159]">
-                  הדביקו את קישור הפוסט החי כדי שנמדוד אותו בתוצאות.
-                </p>
+                <p className="mt-1 text-[#5e6159]">כדי שנמדוד אותו בתוצאות.</p>
                 <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                   <input
                     aria-label="קישור הפוסט שפורסם"

@@ -32,6 +32,11 @@ import {
  * share one tinted panel above it, the weeks themselves draw no boxes at all, and the
  * only bordered object left is the next-month card. One button here is dark —
  * `לבדוק את הפוסט הבא`, the forward step — while building next month is a quiet outline.
+ *
+ * The rail also carries the word budget (UI-RULES rule 7): the face keeps the week marker
+ * and the week's focus, and the four lists that explain it — what we do, what we need from
+ * the owner, what we measure and where we publish — are one expand per week. The month's
+ * hypothesis and its numbers stay visible, because those are the answer, not explanation.
  */
 
 /** The section's own accent — this page should read as "the monthly plan". */
@@ -70,7 +75,7 @@ export default function StrategyPage() {
         <SectionHeader
           section="strategy"
           title="התוכנית"
-          subtitle="מה עושים החודש, שבוע אחרי שבוע — ומה צריך מכם בכל שבוע."
+          subtitle="מה עושים החודש, שבוע אחרי שבוע."
           action={
             strategy ? (
               <span
@@ -96,7 +101,7 @@ export default function StrategyPage() {
                 share one tinted panel instead of two bordered ones. */}
             <section className="rounded-lg p-5 sm:p-6" style={{ background: RAIL.surface }}>
               <SectionLabel icon={<IconFlag className="h-4 w-4" />} tone="sand">
-                המטרה שלנו החודש
+                המטרה
               </SectionLabel>
               <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f] sm:text-2xl">
                 {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
@@ -113,22 +118,22 @@ export default function StrategyPage() {
 
               <div className="mt-5 border-t pt-4" style={{ borderColor: RAIL.border }}>
                 <SectionLabel icon={<IconBell className="h-3.5 w-3.5" />} tone="sand">
-                  מה צריך מכם עכשיו
+                  מה צריך מכם
                 </SectionLabel>
                 <p className="mt-1.5 text-base font-bold leading-7 text-[#20211f]">
                   {nextUserAction || "כרגע לא צריך לעשות דבר. אנחנו ממשיכים להכין ולעקוב."}
                 </p>
-                <p className="mt-1 text-xs leading-5 text-[#747570]">
-                  כל שאר העבודה — כתיבה, תמונות, התאמה לערוצים ומדידה — אצלנו.
-                </p>
+                <p className="mt-1 text-xs leading-5 text-[#747570]">כל השאר אצלנו.</p>
               </div>
             </section>
 
             <section>
-              <div className="mb-5">
-                <SectionLabel icon={<IconRoute className="h-4 w-4" />}>איך החודש מתקדם</SectionLabel>
-                <h2 className="mt-1 text-lg font-black text-[#20211f]">שבוע אחרי שבוע</h2>
-              </div>
+              <h2 className="mb-5 flex items-center gap-2 text-lg font-black text-[#20211f]">
+                <span style={{ color: RAIL.accent }}>
+                  <IconRoute className="h-4 w-4" />
+                </span>
+                השבועות
+              </h2>
 
               {weeks.length ? (
                 <ol>
@@ -171,7 +176,7 @@ export default function StrategyPage() {
             <details className="group border-b border-[#deddd8] pb-5">
               <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#62635f] hover:text-[#20211f]">
                 <IconCompass className="h-4 w-4 transition-transform duration-300 group-open:rotate-45" />
-                למה בחרנו בכיוון הזה
+                למה בכיוון הזה
               </summary>
               <div className="mt-3 space-y-6 text-sm leading-6 text-[#62635f]">
                 <div>
@@ -202,7 +207,7 @@ export default function StrategyPage() {
 
             <div className="flex flex-col items-start gap-2 border-t border-[#deddd8] pt-6 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-[#747570]">
-                הפוסטים כבר מוכנים לבדיקה.{" "}
+                הפוסטים מוכנים.{" "}
                 <Link href="/decisions" className="underline underline-offset-4">
                   לשינוי ההחלטות
                 </Link>
@@ -244,6 +249,12 @@ function WeekNode({
 }) {
   const isNow = currentWeek === week.week;
   const isPast = currentWeek !== null && week.week < currentWeek;
+  const hasDetails = Boolean(
+    week.what_we_do?.length ||
+      week.what_user_does?.length ||
+      week.metrics_target?.length ||
+      week.media_distribution
+  );
 
   return (
     <li
@@ -287,10 +298,16 @@ function WeekNode({
           className="rounded-lg px-4 py-4 sm:px-5"
           style={isNow ? { background: RAIL.surface } : undefined}
         >
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-black tracking-wide" style={{ color: RAIL.accent }}>
-              שבוע {week.week}
-            </span>
+          {/* The numbered marker on the rail is the week's only label: "שבוע 2" beside the
+              circle said the same thing twice, and rule 7 counts both. The aria-label puts
+              the number back for a screen reader without printing it twice. */}
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <h3
+              className="text-base font-black leading-7 text-[#20211f]"
+              aria-label={`שבוע ${week.week}: ${week.focus}`}
+            >
+              {week.focus}
+            </h3>
             {isNow ? (
               <span
                 className="label-mark text-white"
@@ -301,79 +318,95 @@ function WeekNode({
             ) : null}
           </div>
 
-          <h3 className="mt-1 text-base font-black leading-7 text-[#20211f]">{week.focus}</h3>
-
-          <div className="mt-3 grid gap-x-6 gap-y-3 sm:grid-cols-2">
-            {week.what_we_do?.length ? (
-              <div>
-                <p className="text-[11px] font-bold text-[#8b8e84]">מה אנחנו עושים</p>
-                <ul className="mt-1.5 space-y-1">
-                  {week.what_we_do.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]">
-                      <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-
-            {week.what_user_does?.length ? (
-              <div>
-                <p className="text-[11px] font-bold" style={{ color: RAIL.accent }}>
-                  מה צריך מכם
-                </p>
-                <ul className="mt-1.5 space-y-1">
-                  {week.what_user_does.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]">
-                      <span
-                        aria-hidden
-                        className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                        style={{ background: RAIL.accent }}
-                      />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </div>
-
-          {/* The week's focus and the owner's own part lead; how we measure it is method,
-              so it sits one tap down instead of adding a fourth band to every week. */}
-          {week.metrics_target?.length || week.media_distribution ? (
-            <details className="group mt-3 border-t pt-3" style={{ borderColor: isNow ? RAIL.border : "#e6e4dc" }}>
-              <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
-                <span aria-hidden className="transition-transform duration-200 group-open:rotate-180">
-                  ▾
-                </span>
-                מה מודדים ואיפה מפרסמים
+          {/* The marker and the focus are the rail; the four lists that explain the week —
+              what we do, what we need from the owner, what we measure and where we publish —
+              are one tap down, so four weeks stay scannable instead of forty lines. */}
+          {hasDetails ? (
+            <details
+              className="group mt-2 border-t"
+              style={{ borderColor: isNow ? RAIL.border : "#e6e4dc" }}
+            >
+              <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+                <Caret />
+                מה עושים ומה צריך
               </summary>
-              <div className="mt-2 flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:gap-x-6">
-                {week.metrics_target?.length ? (
-                  <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                    <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
-                    <span>
-                      <span className="font-bold text-[#3c3e3a]">מה מודדים: </span>
-                      {week.metrics_target.join(" · ")}
-                    </span>
-                  </p>
+
+              <div className="mt-1 grid gap-x-6 gap-y-3 sm:grid-cols-2">
+                {week.what_we_do?.length ? (
+                  <div>
+                    <p className="text-[11px] font-bold text-[#8b8e84]">מה אנחנו עושים</p>
+                    <ul className="mt-1.5 space-y-1">
+                      {week.what_we_do.map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]">
+                          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
-                {week.media_distribution ? (
-                  <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                    <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
-                    <span>
-                      <span className="font-bold text-[#3c3e3a]">איפה מפרסמים: </span>
-                      {week.media_distribution}
-                    </span>
-                  </p>
+
+                {week.what_user_does?.length ? (
+                  <div>
+                    <p className="text-[11px] font-bold" style={{ color: RAIL.accent }}>
+                      מה צריך מכם
+                    </p>
+                    <ul className="mt-1.5 space-y-1">
+                      {week.what_user_does.map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]">
+                          <span
+                            aria-hidden
+                            className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                            style={{ background: RAIL.accent }}
+                          />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 ) : null}
               </div>
+
+              {week.metrics_target?.length || week.media_distribution ? (
+                <div className="mt-2 flex flex-col gap-1.5 border-t pt-2 sm:flex-row sm:flex-wrap sm:gap-x-6" style={{ borderColor: "#e6e4dc" }}>
+                  {week.metrics_target?.length ? (
+                    <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
+                      <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                      <span>
+                        <span className="font-bold text-[#3c3e3a]">מה מודדים: </span>
+                        {week.metrics_target.join(" · ")}
+                      </span>
+                    </p>
+                  ) : null}
+                  {week.media_distribution ? (
+                    <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
+                      <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                      <span>
+                        <span className="font-bold text-[#3c3e3a]">איפה מפרסמים: </span>
+                        {week.media_distribution}
+                      </span>
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
             </details>
           ) : null}
         </div>
       </div>
     </li>
+  );
+}
+
+/**
+ * The disclosure caret, drawn as a CSS triangle rather than a "▾" glyph: rule 7 counts
+ * `main.innerText`, and a text glyph would be counted as a word on every closed expand.
+ */
+function Caret() {
+  return (
+    <span
+      aria-hidden
+      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+    />
   );
 }
 

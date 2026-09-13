@@ -233,11 +233,12 @@ function FeeRow({
   );
 }
 
-function Metrics({ children }: { children: ReactNode }) {
-  return <dl className="mt-3 flex flex-wrap gap-x-7 gap-y-2">{children}</dl>;
-}
-
-function Metric({
+/**
+ * One figure with the label inline in front of it, for rows that repeat the same four
+ * labels: a short line reads faster than four stacked label/value pairs, and it says the
+ * same thing. A missing figure still says so rather than disappearing.
+ */
+function MetricCell({
   label,
   value,
   suffix,
@@ -247,19 +248,35 @@ function Metric({
   suffix?: string;
 }) {
   return (
-    <div>
-      <dt className="text-[11px] text-[#8b8e84]">{label}</dt>
-      <dd className="mt-0.5 text-sm font-bold text-[#20211f]">
-        {typeof value === "number" && Number.isFinite(value) ? (
+    <span>
+      <span className="text-[#8b8e84]">{label} </span>
+      {typeof value === "number" && Number.isFinite(value) ? (
+        <span className="font-bold text-[#20211f]">
           <Figure>
             {oneDecimal.format(value)}
             {suffix || ""}
           </Figure>
-        ) : (
-          <span className="text-[#8b8e84]">לא נמסר</span>
-        )}
-      </dd>
-    </div>
+        </span>
+      ) : (
+        <span className="font-bold text-[#8b8e84]">לא נמסר</span>
+      )}
+    </span>
+  );
+}
+
+function MetricLine({ impressions, clicks, position, ctr }: {
+  impressions: number | undefined;
+  clicks: number | undefined;
+  position: number | undefined;
+  ctr: number | undefined;
+}) {
+  return (
+    <p className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+      <MetricCell label="חשיפות" value={impressions} />
+      <MetricCell label="קליקים" value={clicks} />
+      <MetricCell label="מיקום" value={position} />
+      <MetricCell label="הקלקה" value={singlePercent(ctr)} suffix="%" />
+    </p>
   );
 }
 
@@ -412,13 +429,13 @@ export default function PromotionPage() {
       ? budget < floor[0]
         ? {
             label: "התקציב מתחת לרצפה",
-            text: "מתחת לרצפה שפורסמה למגזר אין מספיק דאטה כדי שגוגל תלמד — המקור מתאר מעגל שבו התקציב נשרף בלי להשאיר נתונים. עדיף לחכות לתקציב הולם, או להשקיע אותו בערוץ בלי אלגוריתם.",
+            text: "מתחת לרצפה אין מספיק דאטה כדי שגוגל תלמד — המקור מתאר מעגל שבו התקציב נשרף בלי להשאיר נתונים.",
             className: "text-[#9f4330]",
           }
         : budget < floor[1]
           ? {
               label: "בחלק התחתון של הרצפה",
-              text: "אפשר להתחיל, אבל זו נקודת פתיחה צרה: פחות מקום לטעויות ופחות דאטה ללמידה.",
+              text: "אפשר להתחיל, אבל זו נקודת פתיחה צרה: פחות מקום לטעויות.",
               className: "text-[#685f47]",
             }
           : {
@@ -459,11 +476,7 @@ export default function PromotionPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl">
-        <SectionHeader
-          section="promotion"
-          title="קידום בגוגל"
-          subtitle="מה גוגל תעלה, ואיך יודעים אם התקציב מספיק."
-        />
+        <SectionHeader section="promotion" title="קידום בגוגל" />
 
         {demo ? (
           <p
@@ -522,12 +535,11 @@ export default function PromotionPage() {
                   <>
                     {"קליק עולה "}
                     <Figure>{cpcFigure}</Figure>
-                    {", "}
+                    {". "}
                   </>
                 ) : (
                   "המקור לא מפרסם מחיר לקליק בתחום הזה, ולכן אין כאן מספר. "
                 )}
-                המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד.
               </p>
 
               {floorStatus ? (
@@ -565,7 +577,6 @@ export default function PromotionPage() {
                   </Link>
                 ) : null}
                 <p className="text-xs leading-5 text-[#5e6159]">
-                  זו הפעולה הבאה ששווה לעשות — היא מה שהופך את הביטויים בקטע שלמטה למספרים אמיתיים.{" "}
                   <Link href="/decisions" className="font-bold underline underline-offset-4">
                     לשינוי התקציב שממנו החישוב נבנה
                   </Link>
@@ -583,22 +594,15 @@ export default function PromotionPage() {
                 <IconChart className="h-4 w-4" />
               </span>
               <h2 id="cost-heading" className="text-sm font-black text-[#20211f]">
-                כל המספרים, ואיך הגענו אליהם
+                כל המספרים
               </h2>
             </div>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-[#5e6159]">
-              כל מספר כאן הוא טווח מהמקור שפורסם, לא הבטחה. שאר הטווחים, העמלות, ההנחות והמקור — מאחורי השורה
-              למטה.
-            </p>
 
             {(plan.assumptions?.length ||
               plan.warnings?.length ||
               plan.channel_comparison?.recommendation ||
               plan.source) ? (
-              <Expand
-                title="איך חושבה העלות, ומה עוד נגבה"
-                hint="הטווחים, העמלות, ההנחות והמקור שמאחורי התשובה שלמעלה."
-              >
+              <Expand title="איך חושבה העלות" hint="הטווחים, העמלות, ההנחות והמקור.">
                 <div className="space-y-5">
                   <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
                     <h3 className="text-sm font-black text-[#20211f]">הטווחים, כל אחד עם החישוב שלו</h3>
@@ -802,29 +806,19 @@ export default function PromotionPage() {
             <div>
               {quickWins.length ? (
                 <div className="mt-3">
-                  <p className="max-w-3xl text-sm leading-6 text-[#5e6159]">
-                    אלה שאילתות שהאתר שלכם כבר מופיע בהן, קרוב לעמוד הראשון.
-                    {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
-                    הכותרת או התוכן יכול להזיז אותן בלי לשלם על קליק.
-                    {isRange(positionRange) && typeof minImpressions === "number" ? (
-                      <>
-                        {" "}
-                        לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
-                        ולפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות.
-                      </>
-                    ) : null}
-                  </p>
-                  <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                  {/* The face names the opportunity and its figures. What the opportunity
+                      is, why it is one and how it was picked out of Search Console is
+                      one expand down — the list is the same list. */}
+                  <ul className="divide-y divide-[#e6e4dc]">
                     {topQuickWins.map((win: PromotionQuickWin, index) => (
                       <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
                         <span className="text-sm font-bold text-[#20211f]">{win.query}</span>
-                        {win.why ? <p className="mt-1 text-xs leading-5 text-[#5e6159]">{win.why}</p> : null}
-                        <Metrics>
-                          <Metric label="חשיפות" value={win.impressions} />
-                          <Metric label="קליקים" value={win.clicks} />
-                          <Metric label="מיקום ממוצע" value={win.position} />
-                          <Metric label="אחוז הקלקה" value={singlePercent(win.ctr)} suffix="%" />
-                        </Metrics>
+                        <MetricLine
+                          impressions={win.impressions}
+                          clicks={win.clicks}
+                          position={win.position}
+                          ctr={win.ctr}
+                        />
                       </li>
                     ))}
                   </ul>
@@ -838,9 +832,21 @@ export default function PromotionPage() {
               <div className="mt-4 border-t border-[#e6e4dc]">
                 <Expand
                   title="כל המילים, ומאיפה כל אחת באה"
-                  hint={`${moreTerms} מילים נוספות, ומה ידוע ומה לא ידוע על כל אחת.`}
+                  hint={`${moreTerms} מילים נוספות בפירוט מלא.`}
                 >
                   <div className="space-y-6">
+                    <p className="max-w-3xl text-sm leading-6 text-[#5e6159]">
+                      אלה שאילתות שהאתר שלכם כבר מופיע בהן, קרוב לעמוד הראשון.
+                      {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
+                      הכותרת או התוכן יכול להזיז אותן בלי לשלם על קליק.
+                      {isRange(positionRange) && typeof minImpressions === "number" ? (
+                        <>
+                          {" "}
+                          לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
+                          ולפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות.
+                        </>
+                      ) : null}
+                    </p>
                     <ul className="divide-y divide-[#e6e4dc]">
                       <SourceLine
                         title="Search Console"
@@ -902,12 +908,12 @@ export default function PromotionPage() {
                                     <span className="text-[11px] text-[#8b8e84]">נמצאה גם בהשלמות החיפוש</span>
                                   ) : null}
                                 </div>
-                                <Metrics>
-                                  <Metric label="חשיפות" value={row.impressions} />
-                                  <Metric label="קליקים" value={row.clicks} />
-                                  <Metric label="מיקום ממוצע" value={row.position} />
-                                  <Metric label="אחוז הקלקה" value={singlePercent(row.ctr)} suffix="%" />
-                                </Metrics>
+                                <MetricLine
+                                  impressions={row.impressions}
+                                  clicks={row.clicks}
+                                  position={row.position}
+                                  ctr={row.ctr}
+                                />
                               </li>
                             );
                           })}
@@ -925,12 +931,12 @@ export default function PromotionPage() {
                             <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
                               <span className="text-sm font-bold text-[#20211f]">{win.query}</span>
                               {win.why ? <p className="mt-1 text-xs leading-5 text-[#5e6159]">{win.why}</p> : null}
-                              <Metrics>
-                                <Metric label="חשיפות" value={win.impressions} />
-                                <Metric label="קליקים" value={win.clicks} />
-                                <Metric label="מיקום ממוצע" value={win.position} />
-                                <Metric label="אחוז הקלקה" value={singlePercent(win.ctr)} suffix="%" />
-                              </Metrics>
+                              <MetricLine
+                                impressions={win.impressions}
+                                clicks={win.clicks}
+                                position={win.position}
+                                ctr={win.ctr}
+                              />
                             </li>
                           ))}
                         </ul>
@@ -1042,16 +1048,6 @@ export default function PromotionPage() {
               <span className="label-mark border-[#c7dad7] bg-[#f0f6f5] text-[#2f5d57]">בחינם</span>
             ) : null}
           </div>
-          <p className="mt-1 max-w-3xl text-xs leading-5 text-[#8b8e84]">
-            {profile?.summary ||
-              "המשטח היחיד בגוגל שהוא בחינם: הפרופיל שמופיע כשמחפשים את שם העסק, והוא מה שמאפשר לבקש ביקורות."}
-          </p>
-          {profile?.suggested_category_hint ? (
-            <p className="mt-2 text-xs text-[#5e6159]">
-              הקטגוריה הראשית שכדאי לבחור: <span className="font-black">{profile.suggested_category_hint}</span>
-            </p>
-          ) : null}
-
           {profile?.steps?.length ? (
             <div className="mt-2">
               <ul className="mt-1 divide-y divide-[#e6e4dc]">
@@ -1078,15 +1074,26 @@ export default function PromotionPage() {
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#5e6159] hover:text-[#20211f]">
                   <span>
                     {restSteps.length
-                      ? `עוד ${restSteps.length} שלבים — וכל הצ׳קליסט`
-                      : "כל הצ׳קליסט"}
+                      ? `עוד ${restSteps.length} שלבים, ומה שחשוב לדעת`
+                      : "ההסבר וכל הצ׳קליסט"}
                   </span>
                   <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90">
                     ‹
                   </span>
                 </summary>
                 <div className="pb-3 pt-1">
-                  <ol className="divide-y divide-[#e6e4dc]">
+                  {/* What the profile is, and which category to pick, explain the list —
+                      so they sit with the list rather than above it. */}
+                  <p className="max-w-3xl text-xs leading-5 text-[#8b8e84]">
+                    {profile?.summary || "המשטח היחיד בגוגל שהוא בחינם, ומה שמאפשר לבקש ביקורות."}
+                  </p>
+                  {profile?.suggested_category_hint ? (
+                    <p className="mt-2 text-xs text-[#5e6159]">
+                      הקטגוריה הראשית שכדאי לבחור:{" "}
+                      <span className="font-black">{profile.suggested_category_hint}</span>
+                    </p>
+                  ) : null}
+                  <ol className="mt-3 divide-y divide-[#e6e4dc]">
                     {(restSteps.length ? restSteps : topSteps).map((step, index) => {
                       const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
                       const number = restSteps.length ? index + TOP_STEPS + 1 : index + 1;

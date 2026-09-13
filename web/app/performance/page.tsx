@@ -134,6 +134,9 @@ function MetricCell({ value }: { value: number | undefined }) {
  * The owner opens this screen to find out whether the marketing is working, so the lead is
  * the diagnostic headline plus the two numbers behind it. Everything else on the page is
  * supporting detail below this block. No border: this is the page's voice, not another box.
+ *
+ * Each number is its plain-Hebrew label and the value — the note that used to sit under it
+ * said the same thing again, and the full list below carries the notes for every metric.
  */
 function WeeklyAnswer({ payload }: { payload: PerformancePayload }) {
   const overview = payload.ga4?.overview ?? {};
@@ -142,7 +145,6 @@ function WeeklyAnswer({ payload }: { payload: PerformancePayload }) {
   const lead = LEAD_METRICS.filter((key) => overview[key] !== undefined).map((key) => ({
     key,
     label: METRIC_LABELS[key]?.label ?? key,
-    note: METRIC_LABELS[key]?.note ?? "",
     value: formatMetricValue(key, overview[key]),
   }));
 
@@ -165,7 +167,6 @@ function WeeklyAnswer({ payload }: { payload: PerformancePayload }) {
             <div key={item.key}>
               <dt className="text-xs font-bold text-[#685f47]">{item.label}</dt>
               <dd className="metric-number mt-1 text-3xl font-black text-[#191b18]">{item.value}</dd>
-              {item.note ? <p className="mt-0.5 text-[11px] text-[#8b8e84]">{item.note}</p> : null}
             </div>
           ))}
         </dl>
@@ -182,7 +183,7 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
   return (
     <Expand
       title="כל נתוני התנועה באתר"
-      hint="מתוך גוגל אנליטיקס — התוכנה החינמית של גוגל שמודדת מה קורה באתר"
+      hint="מגוגל אנליטיקס — התוכנה שמודדת מה קורה באתר"
     >
       <dl className="divide-y divide-[#e6e4dc]">
         {entries.map(([key, value]) => {
@@ -281,6 +282,9 @@ function Friction({ payload }: { payload: PerformancePayload }) {
  * measured stays `אין מדידה`, the posts column is the sample size and travels with every
  * row, the `לא משויך` bucket is shown as its own row, and the backend's own `explanation`
  * is printed when a source is not connected.
+ *
+ * What the columns mean, and the sample-size caveat behind the posts column, are definitions
+ * rather than findings — they sit in the method expand under the table, with the glossary.
  */
 function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
   const data = payload.audiences as AudiencePerformance;
@@ -292,7 +296,6 @@ function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
     !connected.ga4 ? "גוגל אנליטיקס" : "",
     !connected.meta ? "אינסטגרם" : "",
   ].filter(Boolean);
-  const period = formatPeriod(payload.period_start, payload.period_end);
 
   // Only the buckets somebody actually carries become columns.
   const columns = METRIC_COLUMNS.filter((column) =>
@@ -304,16 +307,9 @@ function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
 
   return (
     <section aria-labelledby="audience-heading" className="mt-8 border-t border-[#e6e4dc] pt-6">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h2 id="audience-heading" className="text-base font-black text-[#20211f]">
-          מה עבד לכל קהל
-        </h2>
-        {period ? <span className="text-[11px] text-[#8b8e84]">תקופה: {period}</span> : null}
-      </div>
-      <p className="mt-1 max-w-3xl text-xs leading-5 text-[#8b8e84]">
-        הסכום של מה שכבר שויך לכל פוסט, לפי הקהל שהפוסט משרת. עמודת הפוסטים היא גודל המדגם —
-        קהל עם פוסט אחד הוא כיוון, לא מגמה.
-      </p>
+      <h2 id="audience-heading" className="text-base font-black text-[#20211f]">
+        מה עבד לכל קהל
+      </h2>
 
       {!rows.length ? (
         <p className="mt-4 text-sm text-[#8b8e84]">אין עדיין פוסטים בתוכנית, ולכן אין מה לפרק לפי קהל.</p>
@@ -371,11 +367,12 @@ function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
                           />
                         </span>
                         <span className="text-[10px] leading-4 text-[#8b8e84]">
-                          {unassigned
-                            ? "פוסטים שעוד לא שויכו לקהל"
-                            : row.posts && measured < row.posts
-                              ? `נמדדו ${measured} מתוך ${row.posts} פוסטים`
-                              : ""}
+                          {/* The `לא משויך` row is explained by the note under the table.
+                              A partly-measured audience is the one case that needs the
+                              sample size spelled out next to its own row. */}
+                          {!unassigned && row.posts && measured < row.posts
+                            ? `נמדדו ${measured} מתוך ${row.posts} פוסטים`
+                            : ""}
                         </span>
                       </span>
                     </td>
@@ -426,10 +423,14 @@ function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
         </p>
       ) : null}
 
-      <Expand title="איך חישבנו את המספרים" hint="השיטה, ומה כל עמודה בטבלה אומרת">
+      <Expand title="איך חישבנו" hint="השיטה ומה כל עמודה אומרת">
         {data.method ? (
           <p className="text-xs leading-6 text-[#63665e]">{data.method}</p>
         ) : null}
+        <p className="mt-2 text-xs leading-6 text-[#63665e]">
+          הסכום של מה שכבר שויך לכל פוסט, לפי הקהל שהפוסט משרת. עמודת הפוסטים היא גודל המדגם —
+          קהל עם פוסט אחד הוא כיוון, לא מגמה.
+        </p>
         <dl className="mt-3 divide-y divide-[#e6e4dc]">
           {columns.map((column) => (
             <div key={column.key} className="py-2.5">
@@ -503,7 +504,6 @@ export default function PerformancePage() {
     <AppShell>
       <PageHeader
         title="תוצאות וביצועים"
-        subtitle="כמה אנשים הגיעו, איזה תוכן עבד הכי טוב, ואיפה כדאי להשתפר"
         action={
           <Button onClick={sync} disabled={pending} tone="primary" size="sm">
             <IconChart className="w-4 h-4" />
@@ -516,12 +516,17 @@ export default function PerformancePage() {
 
       {available && data ? (
         <div className="space-y-8">
-          {/* The answer, then one level down: the rest of the numbers, and the content
-              verdict behind them. */}
+          {/* The answer, then one level down: the rest of the numbers, and the diagnosis
+              behind them. The two verdict lists and the friction list are detail — each
+              keeps its own heading inside the one expand that opens them. */}
           <WeeklyAnswer payload={data} />
           <TrafficMetrics payload={data} />
-          <ContentVerdict payload={data} />
-          <Friction payload={data} />
+          <Expand title="האבחון המלא" hint="מה עבד ומה לשפר">
+            <div className="space-y-8 pt-1">
+              <ContentVerdict payload={data} />
+              <Friction payload={data} />
+            </div>
+          </Expand>
         </div>
       ) : data ? (
         <NoSnapshotYet />

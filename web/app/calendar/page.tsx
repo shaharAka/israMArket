@@ -189,7 +189,7 @@ export default function CalendarPage() {
     <AppShell>
       <PageHeader
         title="לוח שנה שיווקי וישראלי"
-        subtitle="לוח חודשי לועזי (ינואר–דצמבר) עם חגי ישראל, ימי קניות והפוסטים שלכם"
+        subtitle="לוח חודשי לועזי עם חגי ישראל, ימי קניות והפוסטים"
         action={
           <div className="flex items-center gap-2">
             <Button size="sm" variant="outline" onClick={() => move(-1)}>
@@ -230,7 +230,7 @@ export default function CalendarPage() {
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> חג ישראלי
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> יום קניות / מבצעים
+            <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> יום קניות
           </span>
           <span className="flex items-center gap-1.5">
             <span className="h-2.5 w-2.5 rounded-full bg-blue-500" /> פוסט מתוכנן
@@ -261,7 +261,7 @@ export default function CalendarPage() {
           <aside className="lg:col-span-4">
             <div className="overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
               <div className="p-4 sm:p-5">
-                <h2 className="text-sm font-black text-[#20211f]">מה קורה ביום הנבחר</h2>
+                <h2 className="text-sm font-black text-[#20211f]">היום הנבחר</h2>
                 <p className="mt-0.5 text-xs text-[#8b8e84]">
                   {selected ? formatDay(selected) : "בחרו יום בלוח"}
                 </p>
@@ -306,35 +306,48 @@ export default function CalendarPage() {
                 )}
               </div>
 
-              <div className="border-t border-[#e6e4dc] p-4 sm:p-5">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h2 className="text-sm font-black text-[#20211f]">כל אירועי {data.month_name_he}</h2>
-                  <span className="text-[11px] text-[#8b8e84]">לחיצה מעבירה ליום</span>
-                </div>
-                <ul className="mt-2 max-h-[320px] divide-y divide-[#eeede8] overflow-y-auto">
-                  {data.events.map((event) => (
-                    <li key={`${event.name}-${event.date}`}>
-                      <button
-                        onClick={() => setSelected(event.date)}
-                        className={`flex w-full cursor-pointer items-center justify-between gap-3 py-2 text-right transition ${
-                          selected === event.date
-                            ? "text-[#20211f]"
-                            : "text-[#5e6159] hover:text-[#20211f]"
-                        }`}
-                      >
-                        <span className="min-w-0">
-                          <span className="block truncate text-xs font-bold">{event.name}</span>
-                          <span className="mt-0.5 block truncate text-[11px] text-[#8b8e84]">
-                            {event.note}
-                          </span>
-                        </span>
-                        <span className="shrink-0 text-xs font-bold text-[#8b8e84]">
-                          {event.date.split("-").slice(1).reverse().join(".")}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+              {/* The whole month's list repeats what the grid already shows above it, so
+                  it folds away: the days, the holidays and every event stay exactly where
+                  they were, one click down. */}
+              <div className="border-t border-[#e6e4dc]">
+                <details className="group">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-black text-[#20211f] hover:text-[#3c3e3a] sm:p-5">
+                    <span>כל אירועי {data.month_name_he}</span>
+                    <span
+                      aria-hidden
+                      className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90"
+                    >
+                      ‹
+                    </span>
+                  </summary>
+                  <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                    <p className="text-[11px] text-[#8b8e84]">לחיצה מעבירה ליום</p>
+                    <ul className="mt-2 max-h-[320px] divide-y divide-[#eeede8] overflow-y-auto">
+                      {data.events.map((event) => (
+                        <li key={`${event.name}-${event.date}`}>
+                          <button
+                            onClick={() => setSelected(event.date)}
+                            className={`flex w-full cursor-pointer items-center justify-between gap-3 py-2 text-right transition ${
+                              selected === event.date
+                                ? "text-[#20211f]"
+                                : "text-[#5e6159] hover:text-[#20211f]"
+                            }`}
+                          >
+                            <span className="min-w-0">
+                              <span className="block truncate text-xs font-bold">{event.name}</span>
+                              <span className="mt-0.5 block truncate text-[11px] text-[#8b8e84]">
+                                {event.note}
+                              </span>
+                            </span>
+                            <span className="shrink-0 text-xs font-bold text-[#8b8e84]">
+                              {event.date.split("-").slice(1).reverse().join(".")}
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </details>
               </div>
             </div>
           </aside>

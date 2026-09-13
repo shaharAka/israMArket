@@ -28,6 +28,9 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
  * rather than another column of prose. Exactly one button here is dark — `לבדוק ולאשר` —
  * because the flow is waiting on that post. The setup card is guidance and the next-month
  * card is context, so both are outline; neither is what this page is asking for.
+ *
+ * The month's hypothesis, its targets and the four weeks are detail: they answer "why",
+ * while the tiles answer "what", so they live behind one expand.
  */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
@@ -62,12 +65,13 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl">
+        {/* The eyebrow already says "החודש שלך", so the title carries the one fact the
+            eyebrow cannot: which month. The sentence that used to sit under it described
+            the page instead of showing it, and the tiles below say the same thing in
+            fewer words. */}
         <SectionHeader
           section="dashboard"
-          title="החודש שלך"
-          subtitle={`${business?.name ? `${business.name} · ` : ""}${
-            strategy ? `${strategy.month_name_he} ${strategy.year}` : "החודש הנוכחי"
-          } — אנחנו מנהלים את השיווק. כאן תראו רק מה מתקדם ומה דורש החלטה שלכם.`}
+          title={strategy ? `${strategy.month_name_he} ${strategy.year}` : "החודש הנוכחי"}
         />
 
         {strategy ? (
@@ -138,12 +142,11 @@ export default function DashboardPage() {
             {/* At-a-glance tiles: each one links to the place that owns that decision. One
                 container with hairline dividers rather than four equal-weight boxes. */}
             <section className="grid gap-px overflow-hidden rounded-lg border border-[#e6e4dc] bg-[#e6e4dc] sm:grid-cols-2 lg:grid-cols-4">
-              <Tile label="מצב החודש" href="/posts" accent={identity.accent}>
+              <Tile label="פוסטים מאושרים" href="/posts" accent={identity.accent}>
                 <span className="text-2xl font-black text-[#20211f]">
                   {approvedCount}
                   <span className="text-base font-bold text-[#8b8e84]">/{posts.length}</span>
                 </span>
-                <span className="mt-1 block text-xs text-[#747570]">פוסטים אושרו</span>
                 <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-[#e1e0db]">
                   <span
                     className="block h-full rounded-full transition-[width] duration-700 ease-out"
@@ -170,14 +173,9 @@ export default function DashboardPage() {
 
               <Tile label="הדבר האחד השבוע" href="/recommendations" accent={SECTIONS.strategy.accent}>
                 {recommendation?.suggestions?.suggestions?.[0] ? (
-                  <>
-                    <span className="block text-sm font-bold leading-6 text-[#20211f]">
-                      {recommendation.suggestions.suggestions[0].title}
-                    </span>
-                    <span className="mt-1 line-clamp-2 block text-xs leading-5 text-[#747570]">
-                      {recommendation.suggestions.suggestions[0].action}
-                    </span>
-                  </>
+                  <span className="block text-sm font-bold leading-6 text-[#20211f]">
+                    {recommendation.suggestions.suggestions[0].title}
+                  </span>
                 ) : (
                   <span className="block text-sm text-[#8b8e84]">נעדכן אחרי איסוף הנתונים</span>
                 )}
@@ -189,79 +187,85 @@ export default function DashboardPage() {
                 later — so it sits under both, still on the first screen. */}
             <SetupChecklist />
 
-            {/* The month's reasoning and its weeks are one object, so they share one box and
-                a hairline between them instead of two equal-weight rectangles. */}
-            <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
-              <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:gap-0">
-                <div>
-                  <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
-                  <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
-                    {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
-                  </h2>
-                  {monthly?.targets?.length ? (
-                    <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
-                      {monthly.targets.slice(0, 3).map((target, index) => (
-                        <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
-                          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
-                          {target}
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </div>
+            {/* The month's reasoning and its weeks are context for the tiles above, not
+                the page's ask, so they sit behind one expand. Nothing was dropped: the
+                hypothesis, the targets and all four weeks are one click away. */}
+            <section className="rounded-lg border border-[#e6e4dc] bg-white">
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-bold text-[#5e6159] hover:text-[#20211f] sm:px-6">
+                  <span>הכיוון החודשי והשבועות</span>
+                  <span
+                    aria-hidden
+                    className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90"
+                  >
+                    ‹
+                  </span>
+                </summary>
 
-                <div className="border-t border-[#e9e8e3] pt-5 lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0">
-                  <p className="text-xs font-bold text-[#747570]">השבועות</p>
-                  <ol className="mt-3 space-y-2.5">
-                    {[1, 2, 3, 4].map((week) => {
-                      const item = weeks.find((entry) => entry.week === week);
-                      const isNow = currentWeek === week;
-                      return (
-                        <li key={week} className="flex items-start gap-3">
-                          <span
-                            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
-                              isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
-                            }`}
-                            style={isNow ? { background: identity.accent } : undefined}
-                          >
-                            {week}
-                          </span>
-                          <span className="min-w-0 flex-1 text-sm leading-6">
-                            <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
-                              {item?.focus || "—"}
+                <div className="grid gap-6 px-5 pb-5 sm:px-6 sm:pb-6 lg:grid-cols-[1.6fr_1fr] lg:gap-0">
+                  <div>
+                    <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
+                    <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
+                      {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
+                    </h2>
+                    {monthly?.targets?.length ? (
+                      <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
+                        {monthly.targets.slice(0, 3).map((target, index) => (
+                          <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
+                            <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                            {target}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </div>
+
+                  <div className="border-t border-[#e9e8e3] pt-5 lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0">
+                    <p className="text-xs font-bold text-[#747570]">השבועות</p>
+                    <ol className="mt-3 space-y-2.5">
+                      {[1, 2, 3, 4].map((week) => {
+                        const item = weeks.find((entry) => entry.week === week);
+                        const isNow = currentWeek === week;
+                        return (
+                          <li key={week} className="flex items-start gap-3">
+                            <span
+                              className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                                isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
+                              }`}
+                              style={isNow ? { background: identity.accent } : undefined}
+                            >
+                              {week}
                             </span>
-                            {isNow ? (
-                              <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
-                                השבוע
+                            <span className="min-w-0 flex-1 text-sm leading-6">
+                              <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
+                                {item?.focus || "—"}
                               </span>
-                            ) : null}
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ol>
+                              {isNow ? (
+                                <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
+                                  השבוע
+                                </span>
+                              ) : null}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  </div>
                 </div>
-              </div>
+              </details>
             </section>
 
-            <section className="grid gap-6 border-y border-[#deddd8] py-6 sm:grid-cols-2">
-              <div>
-                <h2 className="text-sm font-black text-[#20211f]">אנחנו מטפלים עכשיו</h2>
-                <ul className="mt-4 space-y-3">
-                  <StatusRow text={`${posts.length} פוסטים נכתבו והותאמו לערוצים`} />
-                  <StatusRow text="התוצאות נאספות ונבדקות לאורך החודש" />
-                  <StatusRow text="התוכנית הבאה תותאם לפי מה שעובד" />
-                </ul>
-              </div>
-              <div>
-                <h2 className="text-sm font-black text-[#20211f]">צריך מכם</h2>
-                <p className="mt-4 text-sm font-bold leading-7 text-[#20211f]">
-                  {nextUserAction || "כרגע לא צריך לעשות דבר."}
-                </p>
-                <p className="mt-1 text-xs leading-5 text-[#747570]">
-                  נבקש מכם משהו רק כשנדרש מידע שאי אפשר להסיק מהנתונים.
-                </p>
-              </div>
+            {/* One line: what the plan is waiting on from the owner. The column that used
+                to sit beside it listed what we are already doing, which the tiles above
+                and the pending post already say. */}
+            <section className="border-t border-[#deddd8] pt-5">
+              <h2 className="text-sm font-black text-[#20211f]">צריך מכם</h2>
+              <p className="mt-3 text-sm font-bold leading-7 text-[#20211f]">
+                {nextUserAction || "כרגע לא צריך לעשות דבר."}
+              </p>
+              <p className="mt-1 text-xs leading-5 text-[#747570]">
+                נבקש מכם משהו רק כשנדרש מידע שאי אפשר להסיק מהנתונים.
+              </p>
             </section>
 
             {/* Next month is context while this month is unapproved, so its build button
@@ -300,14 +304,5 @@ function Tile({
       </span>
       <span className="mt-3 flex-1">{children}</span>
     </Link>
-  );
-}
-
-function StatusRow({ text }: { text: string }) {
-  return (
-    <li className="flex items-start gap-2.5 text-sm leading-6 text-[#62635f]">
-      <IconCheck className="mt-1 h-4 w-4 shrink-0 text-[#343632]" />
-      <span>{text}</span>
-    </li>
   );
 }
