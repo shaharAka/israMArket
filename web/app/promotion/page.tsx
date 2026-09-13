@@ -16,15 +16,7 @@ import {
   type PromotionQuickWin,
 } from "@/lib/api";
 import { formatNis } from "@/lib/budget";
-import {
-  IconBell,
-  IconChart,
-  IconCheck,
-  IconEye,
-  IconLightbulb,
-  IconLink,
-  IconStore,
-} from "@/lib/icons";
+import { IconBell, IconChart, IconCheck, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 
 const identity = SECTIONS.promotion;
@@ -158,52 +150,55 @@ function IntentChip({ intent, label }: { intent: KeywordIntent; label?: string }
   );
 }
 
-/** One range, with the reasoning that produced it underneath. */
-function RangeCard({
-  label,
-  value,
-  basis,
+/**
+ * Detail on demand — the whole restructuring of this page rests on this one control.
+ *
+ * The answer, the budget warning and the one thing we are asking for stay on the face;
+ * the evidence behind them (the rest of the ranges, the fee lines, the method, the full
+ * keyword lists and the checklist) opens from here. It is a native `<details>`, so the
+ * closed content is out of the reading order and out of the measured page height while
+ * staying one click — and one screen reader — away.
+ */
+function Expand({
+  title,
+  hint,
   children,
 }: {
-  label: string;
-  value: string | null;
-  basis: string;
-  children?: ReactNode;
+  title: string;
+  hint?: string;
+  children: ReactNode;
 }) {
   return (
-    <div className="flex flex-col rounded-lg border border-[#e6e4dc] bg-white p-4">
-      <span className="text-[11px] font-bold text-[#8b8e84]">{label}</span>
-      {value ? (
-        <p className="mt-1 text-2xl font-black tracking-tight text-[#20211f]">
-          <Figure>{value}</Figure>
-        </p>
-      ) : (
-        <p className="mt-1 text-sm font-bold text-[#8b8e84]">המקור לא מפרסם את הנתון הזה</p>
-      )}
-      <p className="mt-2 text-xs leading-5 text-[#63665e]">{basis}</p>
-      {children ? <div className="mt-3">{children}</div> : null}
-    </div>
+    <details className="group">
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#5e6159] hover:text-[#20211f]">
+        <span className="min-w-0">
+          {title}
+          {hint ? <span className="block text-xs font-normal text-[#8b8e84]">{hint}</span> : null}
+        </span>
+        <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90">
+          ‹
+        </span>
+      </summary>
+      <div className="pb-5 pt-1">{children}</div>
+    </details>
   );
 }
 
-function Metrics({ children }: { children: ReactNode }) {
-  return <dl className="mt-3 flex flex-wrap gap-x-7 gap-y-2">{children}</dl>;
-}
-
-function Metric({ label, value, suffix }: { label: string; value: number | undefined; suffix?: string }) {
+/** One range in the cost break-down, with the reasoning that produced it underneath. */
+function CostRow({ label, value, basis }: { label: string; value: string | null; basis: string }) {
   return (
-    <div>
-      <dt className="text-[11px] text-[#8b8e84]">{label}</dt>
-      <dd className="mt-0.5 text-sm font-bold text-[#20211f]">
-        {typeof value === "number" && Number.isFinite(value) ? (
-          <Figure>
-            {oneDecimal.format(value)}
-            {suffix || ""}
-          </Figure>
+    <div className="py-4 first:pt-0 last:pb-0">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <span className="text-sm font-bold text-[#20211f]">{label}</span>
+        {value ? (
+          <span className="text-lg font-black tabular-nums text-[#20211f]">
+            <Figure>{value}</Figure>
+          </span>
         ) : (
-          <span className="text-[#8b8e84]">לא נמסר</span>
+          <span className="text-xs font-bold text-[#8b8e84]">המקור לא מפרסם את הנתון הזה</span>
         )}
-      </dd>
+      </div>
+      <p className="mt-1 text-xs leading-5 text-[#63665e]">{basis}</p>
     </div>
   );
 }
@@ -238,6 +233,36 @@ function FeeRow({
   );
 }
 
+function Metrics({ children }: { children: ReactNode }) {
+  return <dl className="mt-3 flex flex-wrap gap-x-7 gap-y-2">{children}</dl>;
+}
+
+function Metric({
+  label,
+  value,
+  suffix,
+}: {
+  label: string;
+  value: number | undefined;
+  suffix?: string;
+}) {
+  return (
+    <div>
+      <dt className="text-[11px] text-[#8b8e84]">{label}</dt>
+      <dd className="mt-0.5 text-sm font-bold text-[#20211f]">
+        {typeof value === "number" && Number.isFinite(value) ? (
+          <Figure>
+            {oneDecimal.format(value)}
+            {suffix || ""}
+          </Figure>
+        ) : (
+          <span className="text-[#8b8e84]">לא נמסר</span>
+        )}
+      </dd>
+    </div>
+  );
+}
+
 function RetryButton({ onClick, label = "לנסות שוב" }: { onClick: () => void; label?: string }) {
   return (
     <button
@@ -259,31 +284,23 @@ function ErrorPanel({ message, onRetry }: { message: string; onRetry: () => void
   );
 }
 
-function SourceCard({
+function SourceLine({
   title,
   active,
   statusLabel,
   note,
   detail,
-  tone = "accent",
 }: {
   title: string;
   active: boolean;
   statusLabel: string;
   note: string;
   detail?: ReactNode;
-  tone?: "accent" | "warning";
 }) {
-  const activeColor = tone === "warning" ? "#685f47" : identity.accent;
-  const style = active
-    ? tone === "warning"
-      ? { borderColor: "#e2d7c3", background: "#fcf9f2" }
-      : { borderColor: identity.border, background: identity.surface }
-    : { borderColor: "#e6e4dc", background: "#ffffff" };
   return (
-    <div className="rounded-lg border p-4" style={style}>
+    <li className="py-3 first:pt-0 last:pb-0">
       <div className="flex flex-wrap items-center gap-2">
-        <span style={{ color: active ? activeColor : "#b3b0a5" }}>
+        <span style={{ color: active ? identity.accent : "#b3b0a5" }}>
           {active ? <IconCheck className="h-4 w-4" /> : <span aria-hidden>·</span>}
         </span>
         <span className="text-sm font-black text-[#20211f]">{title}</span>
@@ -291,19 +308,20 @@ function SourceCard({
       </div>
       <p className="mt-2 text-xs leading-5 text-[#63665e]">{note}</p>
       {detail ? <p className="mt-2 text-[11px] text-[#8b8e84]">{detail}</p> : null}
-    </div>
+    </li>
   );
 }
 
 /**
- * Promotion (קידום) — the Google side of the plan, which the product never had.
+ * Promotion (קידום) — the Google side of the plan, restructured around the one question
+ * the owner actually asks: what would Google cost me, and is my budget enough?
  *
- * Two rules shape this screen. First, no invented numbers: Google search volumes are not
- * available to us, every cost is a range, a range the backend sent as `null` stays a
- * sentence, and no column anywhere implies a volume we do not have. Second, the owner
- * must be able to see where each range comes from — every figure carries the reasoning
- * that produced it, and the assumptions and the published source sit at the bottom of
- * the section rather than in a footnote.
+ * That answer, the budget warning and the single ask stay on the face. Everything that
+ * proves it — the rest of the ranges, the fee lines, the method and the source, the full
+ * keyword lists and the eleven-step profile checklist — sits behind an expand. Nothing
+ * was removed to make room: no invented numbers, ranges stay ranges, a range the backend
+ * sent as `null` stays a sentence, the autocomplete phrases never grow a volume column,
+ * and the source link is still one click away.
  */
 export default function PromotionPage() {
   const [promotion, setPromotion] = useState<GooglePromotionPayload | null>(null);
@@ -393,26 +411,50 @@ export default function PromotionPage() {
     typeof budget === "number" && isRange(floor)
       ? budget < floor[0]
         ? {
-            label: "מתחת לרצפה",
-            text: "התקציב נמוך מהרצפה שפורסמה למגזר. מתחתיה אין מספיק דאטה כדי שגוגל תלמד, והמקור מתאר מעגל שבו התקציב נשרף בלי להשאיר נתונים.",
-            className: "border-[#eed1c9] bg-[#fbf2ef] text-[#9f4330]",
+            label: "התקציב מתחת לרצפה",
+            text: "מתחת לרצפה שפורסמה למגזר אין מספיק דאטה כדי שגוגל תלמד — המקור מתאר מעגל שבו התקציב נשרף בלי להשאיר נתונים. עדיף לחכות לתקציב הולם, או להשקיע אותו בערוץ בלי אלגוריתם.",
+            className: "text-[#9f4330]",
           }
         : budget < floor[1]
           ? {
               label: "בחלק התחתון של הרצפה",
               text: "אפשר להתחיל, אבל זו נקודת פתיחה צרה: פחות מקום לטעויות ופחות דאטה ללמידה.",
-              className: "border-[#e2d7c3] bg-[#fcf9f2] text-[#685f47]",
+              className: "text-[#685f47]",
             }
           : {
               label: "מעל הרצפה",
               text: "התקציב מעל הרצפה שפורסמה למגזר, ולכן יש מקום גם ללמוד וגם לטעות.",
-              className: "border-[#c7dad7] bg-[#f0f6f5] text-[#2f5d57]",
+              className: "text-[#2f5d57]",
             }
       : null;
+
+  const budgetFigure = typeof budget === "number" ? `${whole.format(Math.round(budget))} ₪` : null;
+  const cpcFigure = nisRangePrecise(plan?.cpc_range);
+  const floorFigure = nisRange(floor);
+  const firstMonthFigure = nisRange(plan?.first_month_total_ils);
+  // The budget verdict is already a line of its own, so the warning line shows the first
+  // warning that says something new. All of them, in the backend's order, are one expand
+  // below — nothing is dropped.
+  const warnings = plan?.warnings ?? [];
+  const extraWarning =
+    warnings.find((warning, index) => index > 0 && !warning.includes("נמוך מהמינימום")) ??
+    warnings.find((warning) => !warning.includes("נמוך מהמינימום")) ??
+    null;
 
   const positionRange = thresholds?.quick_win_position;
   const minImpressions = thresholds?.quick_win_min_impressions;
   const periodDays = kwSources?.search_console?.period?.days;
+
+  // The face shows the actionable part only; the long lists open from one expand.
+  const TOP_QUICK_WINS = 3;
+  const TOP_STEPS = 3;
+  const topQuickWins = quickWins.slice(0, TOP_QUICK_WINS);
+  const restQuickWins = quickWins.slice(TOP_QUICK_WINS);
+  const topSteps = profile?.steps?.slice(0, TOP_STEPS) ?? [];
+  const restSteps = profile?.steps?.slice(TOP_STEPS) ?? [];
+  const moreTerms = rowsWithNumbers.length + phraseRows.length;
+
+  const keywordsReady = Boolean(keywords) && !keywordsError;
 
   return (
     <AppShell>
@@ -420,7 +462,7 @@ export default function PromotionPage() {
         <SectionHeader
           section="promotion"
           title="קידום בגוגל"
-          subtitle="מה גוגל הייתה עולה לעסק הזה, על אילו מילים כדאי להופיע, ואיך מנצלים את מה שבחינם — הפרופיל העסקי בגוגל ובמפות."
+          subtitle="מה גוגל תעלה, ואיך יודעים אם התקציב מספיק."
         />
 
         {demo ? (
@@ -432,16 +474,15 @@ export default function PromotionPage() {
           </p>
         ) : null}
 
-        {/* ---------- what Google would cost ---------- */}
-        <section aria-labelledby="cost-heading">
-          <div className="flex items-center gap-2">
-            <span style={{ color: identity.accent }}>
-              <IconChart className="h-4 w-4" />
-            </span>
-            <h2 id="cost-heading" className="text-sm font-black text-[#20211f]">
-              כמה גוגל תעלה
-            </h2>
-          </div>
+        {/* ---------- the answer, the warning, and the one ask ---------- */}
+        <section
+          aria-labelledby="answer-heading"
+          className="rounded-lg border p-5 sm:p-6"
+          style={{ borderColor: identity.border, background: identity.surface }}
+        >
+          <h2 id="answer-heading" className="text-sm font-black text-[#20211f]">
+            התשובה בקצרה
+          </h2>
 
           {promotionLoading ? <LoadingMark label="מחשבים מה גוגל תעלה לעסק הזה…" /> : null}
 
@@ -459,131 +500,260 @@ export default function PromotionPage() {
           ) : null}
 
           {!promotionLoading && !promotionError && !plan ? (
-            <p className="mt-4 rounded-lg border border-[#e6e4dc] bg-white p-6 text-sm text-[#5e6159]">
+            <p className="mt-3 text-sm text-[#5e6159]">
               השרת לא החזיר תוכנית קידום. אין כאן מספרים שנמציא במקומה — אפשר לנסות שוב.
             </p>
           ) : null}
 
           {plan ? (
-            <div className="mt-4 space-y-5">
-              <div
-                className="flex flex-wrap items-end justify-between gap-4 rounded-lg border p-5"
-                style={{ borderColor: identity.border, background: identity.surface }}
-              >
-                <div className="min-w-0">
-                  <span className="text-[11px] font-bold" style={{ color: identity.accent }}>
-                    התחום שהותאם לעסק
-                  </span>
-                  <p className="mt-1 text-xl font-black text-[#20211f]">{plan.industry_label}</p>
-                  {plan.matched_keywords?.length ? (
-                    <p className="mt-2 flex flex-wrap items-center gap-1.5 text-[11px] text-[#5e6159]">
-                      <span className="font-bold">זוהה לפי:</span>
-                      {plan.matched_keywords.map((word) => (
-                        <span key={word} className="label-mark border-[#c7dad7] bg-white">
-                          {word}
-                        </span>
-                      ))}
-                    </p>
-                  ) : null}
-                  {plan.sector_label ? (
-                    <p className="mt-2 text-[11px] text-[#5e6159]">
-                      שיעור ההמרה נלקח מהמגזר: <span className="font-bold">{plan.sector_label}</span>
-                    </p>
-                  ) : null}
-                </div>
-                <div className="text-left">
-                  <span className="text-[11px] font-bold text-[#63665e]">תקציב המדיה החודשי</span>
-                  <p className="mt-1 text-xl font-black text-[#20211f]">
-                    {typeof budget === "number" ? (
-                      <Figure>{formatNis(budget)}</Figure>
-                    ) : (
-                      <span className="text-sm font-bold text-[#8b8e84]">לא נמסר</span>
-                    )}
-                  </p>
-                </div>
-              </div>
+            <div className="mt-3">
+              <p className="text-base font-bold leading-7 text-[#20211f]">
+                {plan.industry_label}
+                {budgetFigure ? (
+                  <>
+                    {": "}
+                    <Figure>{budgetFigure}</Figure>
+                    {" בחודש מדיה. "}
+                  </>
+                ) : (
+                  ". "
+                )}
+                {cpcFigure ? (
+                  <>
+                    {"קליק עולה "}
+                    <Figure>{cpcFigure}</Figure>
+                    {", "}
+                  </>
+                ) : (
+                  "המקור לא מפרסם מחיר לקליק בתחום הזה, ולכן אין כאן מספר. "
+                )}
+                המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד.
+              </p>
 
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                <RangeCard
-                  label="מחיר לקליק (CPC)"
-                  value={nisRangePrecise(plan.cpc_range)}
-                  basis="מה שמשלמים על כל קליק בתום המכרז. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד."
-                />
-                <RangeCard
-                  label="קליקים בחודש"
-                  value={countRange(plan.expected_clicks)}
-                  basis="הגבול העליון של מה שתקציב המדיה יכול לקנות, חלקי טווח מחירי הקליק. זו לא תחזית של כמה אנשים מחפשים."
-                />
-                <RangeCard
-                  label="שיעור המרה"
-                  value={percentRange(plan.conversion_rate_range)}
-                  basis="מהקליק לפנייה או להזמנה. הטווח נלקח מהשיעור שפורסם למגזר שלכם — הוא לא נמדד באתר שלכם."
-                />
-                <RangeCard
-                  label={plan.conversion_unit ? `המרות בחודש — ${plan.conversion_unit}` : "המרות בחודש"}
-                  value={countRange(plan.expected_conversions)}
-                  basis="קליקים כפול שיעור ההמרה. זו תחזית שנבנתה מטווחים, לא הבטחה."
-                />
-                <RangeCard
-                  label="עלות להמרה"
-                  value={nisRange(plan.cost_per_conversion)}
-                  basis="מחיר הקליק חלקי שיעור ההמרה. אם המספר הזה גבוה מהרווח שלכם על מכירה — גוגל לא משתלמת, וכדאי לדעת את זה מראש."
-                />
-                <RangeCard
-                  label="רצפת תקציב למגזר"
-                  value={nisRange(plan.minimum_viable_budget)}
-                  basis="תקציב המדיה המינימלי שפורסם למגזר. מתחתיו אין מספיק דאטה כדי שגוגל תלמד ותאפטם."
-                >
-                  {floorStatus ? (
-                    <div className={`rounded-md border px-3 py-2 ${floorStatus.className}`}>
-                      <span className="text-[11px] font-black">{floorStatus.label}</span>
-                      <span className="mt-0.5 block text-[11px] leading-5">{floorStatus.text}</span>
-                    </div>
+              {floorStatus ? (
+                <p className={`mt-3 text-sm leading-6 ${floorStatus.className}`}>
+                  <span className="font-black">{floorStatus.label}: </span>
+                  {floorFigure ? (
+                    <>
+                      {"הרצפה שפורסמה למגזר היא "}
+                      <Figure>{floorFigure}</Figure>
+                      {" בחודש מדיה. "}
+                    </>
                   ) : null}
-                </RangeCard>
-              </div>
-
-              <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
-                <h3 className="text-sm font-black text-[#20211f]">מה עוד נגבה, מעבר לתקציב המדיה</h3>
-                <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                  תקציב המדיה הולך לגוגל עצמה. אלה העלויות של העבודה סביבו, מופרדות כדי שתראו את העלות האמיתית של
-                  החודש — ולא רק את המספר שנשמע טוב.
+                  {floorStatus.text}
                 </p>
-                <ul className="mt-3 divide-y divide-[#e6e4dc]">
-                  <FeeRow label="עמלת ניהול, חודשית" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
-                    {plan.management_fee?.percent_label ? (
-                      <span className="block">
-                        <Figure>{plan.management_fee.percent_label}</Figure>
-                        {nisRange(plan.management_fee?.flat_range_ils) ? (
-                          <>
-                            {" "}
-                            או תשלום חודשי קבוע של{" "}
-                            <Figure>{nisRange(plan.management_fee?.flat_range_ils)}</Figure>
-                          </>
-                        ) : null}
-                      </span>
-                    ) : null}
-                    {plan.management_fee?.note ? <span className="mt-1 block">{plan.management_fee.note}</span> : null}
-                  </FeeRow>
-                  <FeeRow label="הקמה חד־פעמית" amount={nisRange(plan.setup_fee)}>
-                    העבודה שלפני שהקמפיין עולה לאוויר. נגבית פעם אחת, ולא חוזרת בכל חודש.
-                  </FeeRow>
-                  <FeeRow label="עלות חודשית כוללת (מדיה + ניהול)" amount={nisRange(plan.total_monthly_ils)} emphasis>
-                    זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל.
-                  </FeeRow>
-                  <FeeRow label="החודש הראשון (כולל הקמה)" amount={nisRange(plan.first_month_total_ils)} emphasis>
-                    החודש הראשון תמיד היקר ביותר. אם הוא לא נכנס לתזרים, עדיף לדחות את ההתחלה.
-                  </FeeRow>
-                </ul>
-              </div>
+              ) : null}
 
-              {plan.warnings?.length ? (
-                <div className="rounded-lg border border-[#eed1c9] bg-[#fbf2ef] p-5">
-                  <h3 className="flex items-center gap-2 text-sm font-black text-[#9f4330]">
+              {extraWarning ? (
+                <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-[#7a3a2a]">
+                  <span aria-hidden className="mt-1 shrink-0 text-[#9f4330]">
                     <IconBell className="h-4 w-4" />
-                    <span id="warnings-heading">אזהרות שקוראים לפני שמתחילים</span>
-                  </h3>
-                  <ul aria-labelledby="warnings-heading" className="mt-3 space-y-3">
+                  </span>
+                  {extraWarning}
+                </p>
+              ) : null}
+
+              <div className="mt-5 flex flex-col items-start gap-2">
+                {!keywordsLoading && !keywordsError ? (
+                  <Link
+                    href="/integrations"
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#20211f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+                  >
+                    {searchConsoleConnected
+                      ? "חברו את Google Analytics — לראות מה קורה אחרי הקליק"
+                      : "חברו את Search Console — לראות על אילו שאילתות אתם כבר מופיעים"}
+                  </Link>
+                ) : null}
+                <p className="text-xs leading-5 text-[#5e6159]">
+                  זו הפעולה הבאה ששווה לעשות — היא מה שהופך את הביטויים בקטע שלמטה למספרים אמיתיים.{" "}
+                  <Link href="/decisions" className="font-bold underline underline-offset-4">
+                    לשינוי התקציב שממנו החישוב נבנה
+                  </Link>
+                </p>
+              </div>
+            </div>
+          ) : null}
+        </section>
+
+        {/* ---------- what Google would cost: every range, one level down ---------- */}
+        {plan ? (
+          <section aria-labelledby="cost-heading" className="mt-8">
+            <div className="flex items-center gap-2">
+              <span style={{ color: identity.accent }}>
+                <IconChart className="h-4 w-4" />
+              </span>
+              <h2 id="cost-heading" className="text-sm font-black text-[#20211f]">
+                כל המספרים, ואיך הגענו אליהם
+              </h2>
+            </div>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-[#5e6159]">
+              כל מספר כאן הוא טווח מהמקור שפורסם, לא הבטחה. שאר הטווחים, העמלות, ההנחות והמקור — מאחורי השורה
+              למטה.
+            </p>
+
+            {(plan.assumptions?.length ||
+              plan.warnings?.length ||
+              plan.channel_comparison?.recommendation ||
+              plan.source) ? (
+              <Expand
+                title="איך חושבה העלות, ומה עוד נגבה"
+                hint="הטווחים, העמלות, ההנחות והמקור שמאחורי התשובה שלמעלה."
+              >
+                <div className="space-y-5">
+                  <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
+                    <h3 className="text-sm font-black text-[#20211f]">הטווחים, כל אחד עם החישוב שלו</h3>
+                    <div className="mt-3 divide-y divide-[#e6e4dc]">
+                      <CostRow
+                        label="כמה קליק אחד עולה"
+                        value={cpcFigure}
+                        basis="מה שמשלמים על כל קליק בתום המכרז. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד."
+                      />
+                      <CostRow
+                        label="קליקים בחודש"
+                        value={countRange(plan.expected_clicks)}
+                        basis="הגבול העליון של מה שתקציב המדיה יכול לקנות, חלקי טווח מחירי הקליק. זו לא תחזית של כמה אנשים מחפשים."
+                      />
+                      <CostRow
+                        label="שיעור המרה"
+                        value={percentRange(plan.conversion_rate_range)}
+                        basis={
+                          plan.sector_label
+                            ? `מהקליק לפנייה או להזמנה. הטווח נלקח מהשיעור שפורסם למגזר "${plan.sector_label}" — הוא לא נמדד באתר שלכם.`
+                            : "מהקליק לפנייה או להזמנה. הטווח נלקח מהשיעור שפורסם למגזר שלכם — הוא לא נמדד באתר שלכם."
+                        }
+                      />
+                      <CostRow
+                        label={plan.conversion_unit ? `המרות בחודש — ${plan.conversion_unit}` : "המרות בחודש"}
+                        value={countRange(plan.expected_conversions)}
+                        basis="קליקים כפול שיעור ההמרה. זו תחזית שנבנתה מטווחים, לא הבטחה."
+                      />
+                      <CostRow
+                        label="עלות להמרה"
+                        value={nisRange(plan.cost_per_conversion)}
+                        basis="מחיר הקליק חלקי שיעור ההמרה. אם המספר הזה גבוה מהרווח שלכם על מכירה — גוגל לא משתלמת, וכדאי לדעת את זה מראש."
+                      />
+                      <CostRow
+                        label="רצפת תקציב למגזר"
+                        value={floorFigure}
+                        basis="תקציב המדיה המינימלי שפורסם למגזר. מתחתיו אין מספיק דאטה כדי שגוגל תלמד ותאפטם."
+                      />
+                    </div>
+                    {plan.matched_keywords?.length ? (
+                      <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-[#5e6159]">
+                        <span className="font-bold">התחום זוהה לפי:</span>
+                        {plan.matched_keywords.map((word) => (
+                          <span key={word} className="label-mark border-[#c7dad7] bg-white">
+                            {word}
+                          </span>
+                        ))}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
+                    <h3 className="text-sm font-black text-[#20211f]">מה עוד נגבה, מעבר לתקציב המדיה</h3>
+                    <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+                      תקציב המדיה הולך לגוגל עצמה. אלה העלויות של העבודה סביבו, מופרדות כדי שתראו את העלות
+                      האמיתית של החודש — ולא רק את המספר שנשמע טוב.
+                    </p>
+                    <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                      <FeeRow label="עמלת ניהול, חודשית" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
+                        {plan.management_fee?.percent_label ? (
+                          <span className="block">
+                            <Figure>{plan.management_fee.percent_label}</Figure>
+                            {nisRange(plan.management_fee?.flat_range_ils) ? (
+                              <>
+                                {" "}
+                                או תשלום חודשי קבוע של{" "}
+                                <Figure>{nisRange(plan.management_fee?.flat_range_ils)}</Figure>
+                              </>
+                            ) : null}
+                          </span>
+                        ) : null}
+                        {plan.management_fee?.note ? (
+                          <span className="mt-1 block">{plan.management_fee.note}</span>
+                        ) : null}
+                      </FeeRow>
+                      <FeeRow label="הקמה חד־פעמית" amount={nisRange(plan.setup_fee)}>
+                        העבודה שלפני שהקמפיין עולה לאוויר. נגבית פעם אחת, ולא חוזרת בכל חודש.
+                      </FeeRow>
+                      <FeeRow
+                        label="עלות חודשית כוללת (מדיה + ניהול)"
+                        amount={nisRange(plan.total_monthly_ils)}
+                        emphasis
+                      >
+                        זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל.
+                      </FeeRow>
+                      <FeeRow label="החודש הראשון (כולל הקמה)" amount={firstMonthFigure} emphasis>
+                        החודש הראשון תמיד היקר ביותר. אם הוא לא נכנס לתזרים, עדיף לדחות את ההתחלה.
+                      </FeeRow>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
+                    <h3 className="flex items-center gap-2 text-sm font-black text-[#20211f]">
+                      <span style={{ color: identity.accent }}>
+                        <IconLightbulb className="h-4 w-4" />
+                      </span>
+                      מה עומד מאחורי המספרים
+                    </h3>
+
+                    {plan.assumptions?.length ? (
+                      <ul className="mt-3 space-y-2">
+                        {plan.assumptions.map((assumption, index) => (
+                          <li
+                            key={`${assumption.slice(0, 24)}-${index}`}
+                            className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]"
+                          >
+                            <span
+                              aria-hidden
+                              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                              style={{ background: identity.accent }}
+                            />
+                            {assumption}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mt-3 text-sm leading-6 text-[#63665e]">
+                        השרת לא צירף את ההנחות שמאחורי החישוב. בלי הן, אי אפשר לדעת מה הטווח מכסה.
+                      </p>
+                    )}
+
+                    {plan.channel_comparison?.recommendation ? (
+                      <p className="mt-4 rounded-md border border-[#e6e4dc] bg-white px-4 py-3 text-xs leading-6 text-[#3c3e3a]">
+                        <span className="font-black">ולא רק גוגל: </span>
+                        {plan.channel_comparison.recommendation}
+                      </p>
+                    ) : null}
+
+                    {plan.source ? (
+                      <a
+                        href={plan.source}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4"
+                        style={{ color: identity.accent }}
+                      >
+                        <IconLink className="h-4 w-4" />
+                        {plan.source_title || "המקור שממנו נלקחו טווחי המחירים"}
+                      </a>
+                    ) : null}
+                  </div>
+                </div>
+              </Expand>
+            ) : null}
+
+            {plan.warnings?.length ? (
+              <div className="mt-1 border-t border-[#e6e4dc]">
+                <Expand
+                  title={
+                    plan.warnings.length === 1
+                      ? "האזהרה שקוראים לפני שמתחילים"
+                      : `${plan.warnings.length} אזהרות שקוראים לפני שמתחילים`
+                  }
+                >
+                  <ul aria-label="אזהרות לפני שמתחילים" className="space-y-3">
                     {plan.warnings.map((warning, index) => (
                       <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3">
                         <span
@@ -596,65 +766,14 @@ export default function PromotionPage() {
                       </li>
                     ))}
                   </ul>
-                </div>
-              ) : null}
-
-              <div className="rounded-lg border p-5" style={{ borderColor: identity.border, background: identity.surface }}>
-                <h3 className="flex items-center gap-2 text-sm font-black text-[#20211f]">
-                  <span style={{ color: identity.accent }}>
-                    <IconLightbulb className="h-4 w-4" />
-                  </span>
-                  מה עומד מאחורי המספרים
-                </h3>
-
-                {plan.assumptions?.length ? (
-                  <ul className="mt-3 space-y-2">
-                    {plan.assumptions.map((assumption, index) => (
-                      <li
-                        key={`${assumption.slice(0, 24)}-${index}`}
-                        className="flex items-start gap-2 text-sm leading-6 text-[#3c3e3a]"
-                      >
-                        <span
-                          aria-hidden
-                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                          style={{ background: identity.accent }}
-                        />
-                        {assumption}
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="mt-3 text-sm leading-6 text-[#63665e]">
-                    השרת לא צירף את ההנחות שמאחורי החישוב. בלי הן, אי אפשר לדעת מה הטווח מכסה.
-                  </p>
-                )}
-
-                {plan.channel_comparison?.recommendation ? (
-                  <p className="mt-4 rounded-md border border-[#e6e4dc] bg-white px-4 py-3 text-xs leading-6 text-[#3c3e3a]">
-                    <span className="font-black">ולא רק גוגל: </span>
-                    {plan.channel_comparison.recommendation}
-                  </p>
-                ) : null}
-
-                {plan.source ? (
-                  <a
-                    href={plan.source}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-4 inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4"
-                    style={{ color: identity.accent }}
-                  >
-                    <IconLink className="h-4 w-4" />
-                    {plan.source_title || "המקור שממנו נלקחו טווחי המחירים"}
-                  </a>
-                ) : null}
+                </Expand>
               </div>
-            </div>
-          ) : null}
-        </section>
+            ) : null}
+          </section>
+        ) : null}
 
         {/* ---------- the terms worth targeting ---------- */}
-        <section aria-labelledby="keywords-heading" className="mt-9">
+        <section aria-labelledby="keywords-heading" className="mt-8 border-t border-[#e6e4dc] pt-6">
           <div className="flex items-center gap-2">
             <span style={{ color: identity.accent }}>
               <IconEye className="h-4 w-4" />
@@ -663,10 +782,6 @@ export default function PromotionPage() {
               על אילו מילים כדאי להופיע
             </h2>
           </div>
-          <p className="mt-1 max-w-3xl text-xs leading-5 text-[#8b8e84]">
-            כל מילה כאן מגיעה ממקור אמיתי, וכתוב לידה מאיזה. מילים שהאתר שלכם כבר מופיע עליהן מגיעות עם חשיפות,
-            קליקים ומיקום; מילים מהשלמת החיפוש של גוגל מגיעות בלי שום מספר — כי גוגל לא מפרסמת אותם.
-          </p>
 
           {keywordsLoading ? <LoadingMark label="אוספים את המילים…" /> : null}
 
@@ -683,78 +798,25 @@ export default function PromotionPage() {
             </div>
           ) : null}
 
-          {keywords && !keywordsError ? (
-            <div className="mt-4 space-y-5">
-              <div className="grid gap-3 sm:grid-cols-2">
-                <SourceCard
-                  title="Search Console"
-                  active={searchConsoleConnected}
-                  statusLabel={searchConsoleConnected ? "מחובר" : "לא מחובר"}
-                  note={kwSources?.search_console?.note || "השאילתות שהאתר שלכם כבר מופיע עליהן, עם מספרים אמיתיים."}
-                  detail={
-                    searchConsoleConnected && kwSources?.search_console?.site_url ? (
-                      <>
-                        הנכס בגוגל: <Figure>{kwSources.search_console.site_url}</Figure>
-                      </>
-                    ) : null
-                  }
-                />
-                <SourceCard
-                  title="השלמת החיפוש של גוגל"
-                  active={kwSources?.autocomplete?.available === true}
-                  statusLabel={kwSources?.autocomplete?.available ? "פעיל" : "לא זמין כרגע"}
-                  note={kwSources?.autocomplete?.note || "מה שאנשים מקלידים בפועל. ביטויים, לא נפחים."}
-                />
-              </div>
-
-              {/* The house rule, in the backend's own words: no volume column, anywhere.
-                  This is the software explaining a limitation, so it wears the system
-                  tone rather than a business surface. */}
-              <SystemNote variant="panel" title="למה אין כאן נפח חיפוש">
-                {kwSources?.search_volumes?.note ||
-                  "אין לנו גישה לנפחי החיפוש של גוגל, ולכן אין כאן מספר חיפושים לאף מילה."}
-              </SystemNote>
-
-              {!searchConsoleConnected ? (
-                <div className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] p-5">
-                  <h3 className="text-sm font-black text-[#685f47]">מה היה מוסיף החיבור ל-Search Console</h3>
-                  <p className="mt-2 text-sm leading-6 text-[#5e5340]">
-                    Search Console הוא הכלי החינמי של גוגל שמראה על אילו שאילתות האתר שלכם כבר מופיע — עם חשיפות,
-                    קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים שאפשר להשיג על הביקוש בגוגל, ובלעדיהם נשארים
-                    רק הביטויים.
-                  </p>
-                  <Link
-                    href="/integrations"
-                    className="mt-3 inline-flex min-h-9 items-center rounded-md border border-[#e2d7c3] bg-white px-3 text-xs font-bold text-[#685f47]"
-                  >
-                    למסך החיבורים
-                  </Link>
-                </div>
-              ) : null}
-
+          {keywordsReady ? (
+            <div>
               {quickWins.length ? (
-                <div
-                  className="rounded-lg border p-5"
-                  style={{ borderColor: identity.border, background: identity.surface }}
-                >
-                  <h3 className="text-sm font-black text-[#20211f]">הזדמנויות מהירות — לפני שמוציאים שקל</h3>
-                  <p className="mt-1 text-xs leading-5 text-[#5e6159]">
+                <div className="mt-3">
+                  <p className="max-w-3xl text-sm leading-6 text-[#5e6159]">
+                    אלה שאילתות שהאתר שלכם כבר מופיע בהן, קרוב לעמוד הראשון.
+                    {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
+                    הכותרת או התוכן יכול להזיז אותן בלי לשלם על קליק.
                     {isRange(positionRange) && typeof minImpressions === "number" ? (
                       <>
-                        שאילתות במיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
-                        עם לפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות: האתר כבר קרוב לעמוד הראשון,
-                        ושיפור הכותרת או התוכן יכול להזיז אותו בלי לשלם על קליק.
+                        {" "}
+                        לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
+                        ולפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות.
                       </>
-                    ) : (
-                      "שאילתות שהאתר כבר כמעט מדורג בהן: שיפור הכותרת או התוכן יכול להזיז אותן בלי לשלם על קליק."
-                    )}
+                    ) : null}
                   </p>
-                  <ul className="mt-3 space-y-3">
-                    {quickWins.map((win: PromotionQuickWin, index) => (
-                      <li
-                        key={`${win.query}-${index}`}
-                        className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3"
-                      >
+                  <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                    {topQuickWins.map((win: PromotionQuickWin, index) => (
+                      <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
                         <span className="text-sm font-bold text-[#20211f]">{win.query}</span>
                         {win.why ? <p className="mt-1 text-xs leading-5 text-[#5e6159]">{win.why}</p> : null}
                         <Metrics>
@@ -767,133 +829,208 @@ export default function PromotionPage() {
                     ))}
                   </ul>
                 </div>
-              ) : null}
+              ) : (
+                <p className="mt-2 text-sm leading-6 text-[#5e6159]">
+                  עוד אין שאילתות שהאתר כמעט מדורג בהן. זה משתנה ככל שגוגל סורקת את האתר.
+                </p>
+              )}
 
-              {rows.length ? (
-                <div className="space-y-6">
-                  {rowsWithNumbers.length ? (
-                    <div>
-                      <h3 className="text-sm font-black text-[#20211f]">
-                        מילים עם מספרים אמיתיים — מ-Search Console
-                      </h3>
-                      <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                        אלה שאילתות שהאתר שלכם כבר הופיע עליהן
-                        {typeof periodDays === "number" ? ` ב-${periodDays} הימים האחרונים` : ""}. המספרים מגוגל,
-                        ולא מהערכה שלנו.
-                      </p>
-                      <ul className="mt-3 space-y-3">
-                        {rowsWithNumbers.map((row: PromotionKeyword, index) => {
-                          const quick = quickWinTerms.has(row.term);
-                          return (
-                            <li
-                              key={`${row.term}-${index}`}
-                              className="rounded-lg border p-4"
-                              style={
-                                quick
-                                  ? { borderColor: identity.border, background: identity.surface }
-                                  : { borderColor: "#e6e4dc", background: "#ffffff" }
-                              }
-                            >
-                              <div className="flex flex-wrap items-center gap-2">
-                                <span className="text-sm font-bold text-[#20211f]">{row.term}</span>
-                                <IntentChip intent={row.intent} label={row.intent_label} />
-                                {quick ? (
-                                  <span
-                                    className="label-mark border-[#c7dad7] bg-white"
-                                    style={{ color: identity.accent }}
-                                  >
-                                    הזדמנות מהירה
-                                  </span>
-                                ) : null}
-                                {row.source === "autocomplete+search_console" ? (
-                                  <span className="text-[11px] text-[#8b8e84]">נמצאה גם בהשלמות החיפוש</span>
-                                ) : null}
-                              </div>
+              <div className="mt-4 border-t border-[#e6e4dc]">
+                <Expand
+                  title="כל המילים, ומאיפה כל אחת באה"
+                  hint={`${moreTerms} מילים נוספות, ומה ידוע ומה לא ידוע על כל אחת.`}
+                >
+                  <div className="space-y-6">
+                    <ul className="divide-y divide-[#e6e4dc]">
+                      <SourceLine
+                        title="Search Console"
+                        active={searchConsoleConnected}
+                        statusLabel={searchConsoleConnected ? "מחובר" : "לא מחובר"}
+                        note={
+                          kwSources?.search_console?.note ||
+                          "השאילתות שהאתר שלכם כבר מופיע עליהן, עם מספרים אמיתיים."
+                        }
+                        detail={
+                          searchConsoleConnected && kwSources?.search_console?.site_url ? (
+                            <>
+                              הנכס בגוגל: <Figure>{kwSources.search_console.site_url}</Figure>
+                            </>
+                          ) : null
+                        }
+                      />
+                      <SourceLine
+                        title="השלמת החיפוש של גוגל"
+                        active={kwSources?.autocomplete?.available === true}
+                        statusLabel={kwSources?.autocomplete?.available ? "פעיל" : "לא זמין כרגע"}
+                        note={kwSources?.autocomplete?.note || "מה שאנשים מקלידים בפועל. ביטויים, לא נפחים."}
+                      />
+                    </ul>
+
+                    {/* The house rule, in the backend's own words: no volume column, anywhere. */}
+                    <SystemNote variant="panel" title="למה אין כאן נפח חיפוש">
+                      {kwSources?.search_volumes?.note ||
+                        "אין לנו גישה לנפחי החיפוש של גוגל, ולכן אין כאן מספר חיפושים לאף מילה."}
+                    </SystemNote>
+
+                    {rowsWithNumbers.length ? (
+                      <div>
+                        <h3 className="text-sm font-black text-[#20211f]">
+                          מילים עם מספרים אמיתיים — מ-Search Console
+                        </h3>
+                        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+                          שאילתות שהאתר שלכם כבר הופיע עליהן
+                          {typeof periodDays === "number" ? ` ב-${periodDays} הימים האחרונים` : ""}. המספרים
+                          מגוגל, ולא מהערכה שלנו.
+                        </p>
+                        <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                          {rowsWithNumbers.map((row: PromotionKeyword, index) => {
+                            const quick = quickWinTerms.has(row.term);
+                            return (
+                              <li key={`${row.term}-${index}`} className="py-4 first:pt-3 last:pb-0">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="text-sm font-bold text-[#20211f]">{row.term}</span>
+                                  <IntentChip intent={row.intent} label={row.intent_label} />
+                                  {quick ? (
+                                    <span
+                                      className="label-mark border-[#c7dad7] bg-white"
+                                      style={{ color: identity.accent }}
+                                    >
+                                      הזדמנות מהירה
+                                    </span>
+                                  ) : null}
+                                  {row.source === "autocomplete+search_console" ? (
+                                    <span className="text-[11px] text-[#8b8e84]">נמצאה גם בהשלמות החיפוש</span>
+                                  ) : null}
+                                </div>
+                                <Metrics>
+                                  <Metric label="חשיפות" value={row.impressions} />
+                                  <Metric label="קליקים" value={row.clicks} />
+                                  <Metric label="מיקום ממוצע" value={row.position} />
+                                  <Metric label="אחוז הקלקה" value={singlePercent(row.ctr)} suffix="%" />
+                                </Metrics>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    ) : null}
+
+                    {restQuickWins.length ? (
+                      <div>
+                        <h3 className="text-sm font-black text-[#20211f]">
+                          עוד {restQuickWins.length} הזדמנויות מהירות
+                        </h3>
+                        <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                          {restQuickWins.map((win: PromotionQuickWin, index) => (
+                            <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
+                              <span className="text-sm font-bold text-[#20211f]">{win.query}</span>
+                              {win.why ? <p className="mt-1 text-xs leading-5 text-[#5e6159]">{win.why}</p> : null}
                               <Metrics>
-                                <Metric label="חשיפות" value={row.impressions} />
-                                <Metric label="קליקים" value={row.clicks} />
-                                <Metric label="מיקום ממוצע" value={row.position} />
-                                <Metric label="אחוז הקלקה" value={singlePercent(row.ctr)} suffix="%" />
+                                <Metric label="חשיפות" value={win.impressions} />
+                                <Metric label="קליקים" value={win.clicks} />
+                                <Metric label="מיקום ממוצע" value={win.position} />
+                                <Metric label="אחוז הקלקה" value={singlePercent(win.ctr)} suffix="%" />
                               </Metrics>
                             </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  ) : null}
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
 
-                  {phraseRows.length ? (
-                    <div>
-                      <h3 className="text-sm font-black text-[#20211f]">
-                        ביטויים מהשלמת החיפוש של גוגל — בלי נתוני נפח
-                      </h3>
-                      <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                        מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה בזמן הקלדה. אין להן חשיפות, קליקים או מיקום,
-                        ואין כאן עמודה שמעמידה פנים שיש.
+                    {phraseRows.length ? (
+                      <div>
+                        <h3 className="text-sm font-black text-[#20211f]">
+                          ביטויים מהשלמת החיפוש של גוגל — בלי נתוני נפח
+                        </h3>
+                        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+                          מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה בזמן הקלדה. אין להן חשיפות, קליקים
+                          או מיקום, ואין כאן עמודה שמעמידה פנים שיש.
+                        </p>
+                        <ul className="mt-3 divide-y divide-[#e6e4dc]">
+                          {phraseRows.map((row: PromotionKeyword, index) => (
+                            <li
+                              key={`${row.term}-${index}`}
+                              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-2"
+                            >
+                              <span className="text-sm text-[#20211f]">{row.term}</span>
+                              <span className="flex items-center gap-2">
+                                <IntentChip intent={row.intent} label={row.intent_label} />
+                                <span className="text-[11px] text-[#8b8e84]">אין נתוני נפח</span>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+
+                    {legend.length ? (
+                      <div className="rounded-lg border border-[#e6e4dc] bg-white p-4">
+                        <span className="text-[11px] font-bold text-[#8b8e84]">איך לקרוא את הכוונות</span>
+                        <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+                          {legend.map((item) => (
+                            <li key={item.intent} className="flex items-start gap-2">
+                              <IntentChip intent={item.intent} label={item.label} />
+                              <span className="text-xs leading-5 text-[#63665e]">
+                                {(INTENT_META[item.intent] ?? FALLBACK_INTENT).why}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+
+                    {keywords?.seeds?.length ? (
+                      <p className="text-[11px] leading-5 text-[#8b8e84]">
+                        השלמות החיפוש נשאלו לפי מה שכתוב בפרופיל העסק:{" "}
+                        <span className="text-[#63665e]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
+                        {keywords.seeds.length > 4 ? ` ועוד ${keywords.seeds.length - 4}` : ""}
                       </p>
-                      <ul className="mt-3 divide-y divide-[#e6e4dc] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
-                        {phraseRows.map((row: PromotionKeyword, index) => (
-                          <li
-                            key={`${row.term}-${index}`}
-                            className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-3"
-                          >
-                            <span className="text-sm text-[#20211f]">{row.term}</span>
-                            <span className="flex items-center gap-2">
-                              <IntentChip intent={row.intent} label={row.intent_label} />
-                              <span className="text-[11px] text-[#8b8e84]">אין נתוני נפח</span>
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
+                    ) : null}
 
-                  {legend.length ? (
-                    <div className="rounded-lg border border-[#e6e4dc] bg-white p-4">
-                      <span className="text-[11px] font-bold text-[#8b8e84]">איך לקרוא את הכוונות</span>
-                      <ul className="mt-2 grid gap-2 sm:grid-cols-2">
-                        {legend.map((item) => (
-                          <li key={item.intent} className="flex items-start gap-2">
-                            <IntentChip intent={item.intent} label={item.label} />
-                            <span className="text-xs leading-5 text-[#63665e]">
-                              {(INTENT_META[item.intent] ?? FALLBACK_INTENT).why}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
+                    {!searchConsoleConnected ? (
+                      <div className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] p-5">
+                        <h3 className="text-sm font-black text-[#685f47]">
+                          מה היה מוסיף החיבור ל-Search Console
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-[#5e5340]">
+                          Search Console הוא הכלי החינמי של גוגל שמראה על אילו שאילתות האתר שלכם כבר מופיע — עם
+                          חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים שאפשר להשיג על הביקוש בגוגל,
+                          ובלעדיהם נשארים רק הביטויים.
+                        </p>
+                        <Link
+                          href="/integrations"
+                          className="mt-3 inline-flex min-h-9 items-center rounded-md border border-[#e2d7c3] bg-white px-3 text-xs font-bold text-[#685f47]"
+                        >
+                          למסך החיבורים
+                        </Link>
+                      </div>
+                    ) : null}
+                  </div>
+                </Expand>
+              </div>
+            </div>
+          ) : null}
 
-                  {keywords.seeds?.length ? (
-                    <p className="text-[11px] leading-5 text-[#8b8e84]">
-                      השלמות החיפוש נשאלו לפי מה שכתוב בפרופיל העסק:{" "}
-                      <span className="text-[#63665e]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
-                      {keywords.seeds.length > 4 ? ` ועוד ${keywords.seeds.length - 4}` : ""}
-                    </p>
-                  ) : null}
-                </div>
-              ) : (
-                <div className="rounded-lg border border-[#e6e4dc] bg-white p-8 text-center">
-                  <span
-                    className="inline-flex h-12 w-12 items-center justify-center rounded-full"
-                    style={{ background: identity.surface, color: identity.accent }}
-                  >
-                    <IconEye className="h-6 w-6" />
-                  </span>
-                  <h3 className="mt-4 text-lg font-black text-[#20211f]">עוד אין מילים לאסוף</h3>
-                  <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
-                    {searchConsoleConnected
-                      ? "Search Console מחובר, אבל האתר עוד לא הופיע על שאילתות שאפשר לבנות עליהן תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
-                      : "כשנחבר את Search Console נוכל להראות על אילו שאילתות האתר שלכם כבר מופיע, עם קליקים ומיקום — בלי לנחש נפחים."}
-                  </p>
-                </div>
-              )}
+          {keywords && !keywordsError && !rows.length ? (
+            <div className="mt-4 rounded-lg border border-[#e6e4dc] bg-white p-6 text-center">
+              <span
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full"
+                style={{ background: identity.surface, color: identity.accent }}
+              >
+                <IconEye className="h-6 w-6" />
+              </span>
+              <h3 className="mt-4 text-lg font-black text-[#20211f]">עוד אין מילים לאסוף</h3>
+              <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
+                {searchConsoleConnected
+                  ? "Search Console מחובר, אבל האתר עוד לא הופיע על שאילתות שאפשר לבנות עליהן תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
+                  : "כשנחבר את Search Console נוכל להראות על אילו שאילתות האתר שלכם כבר מופיע, עם קליקים ומיקום — בלי לנחש נפחים."}
+              </p>
             </div>
           ) : null}
         </section>
 
         {/* ---------- what is free ---------- */}
-        <section aria-labelledby="profile-heading" className="mt-9">
+        <section aria-labelledby="profile-heading" className="mt-8 border-t border-[#e6e4dc] pt-6">
           <div className="flex flex-wrap items-center gap-2">
             <span style={{ color: identity.accent }}>
               <IconStore className="h-4 w-4" />
@@ -916,75 +1053,103 @@ export default function PromotionPage() {
           ) : null}
 
           {profile?.steps?.length ? (
-            <ol className="mt-4 grid gap-3 sm:grid-cols-2">
-              {profile.steps.map((step, index) => {
-                const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
-                return (
-                  <li
-                    key={step.id || `${step.title}-${index}`}
-                    className="flex flex-col rounded-lg border border-[#e6e4dc] bg-white p-4"
-                  >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
-                        style={{ background: identity.accent }}
-                      >
-                        {index + 1}
-                      </span>
-                      <h3 className="text-sm font-black text-[#20211f]">{step.title}</h3>
-                      <span className={`label-mark ${priority.className}`}>{priority.label}</span>
-                    </div>
-                    <p className="mt-3 text-xs leading-5 text-[#3c3e3a]">
-                      <span className="font-black text-[#20211f]">למה זה חשוב: </span>
-                      {step.why}
-                    </p>
-                    {step.how?.length ? (
-                      <div className="mt-2">
-                        <span className="text-xs font-black text-[#20211f]">איך עושים:</span>
-                        <ul className="mt-1 space-y-1">
-                          {step.how.map((line, lineIndex) => (
-                            <li
-                              key={`${line.slice(0, 20)}-${lineIndex}`}
-                              className="flex items-start gap-2 text-xs leading-5 text-[#3c3e3a]"
-                            >
-                              <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#b3b0a5]" />
-                              {line}
-                            </li>
-                          ))}
-                        </ul>
+            <div className="mt-2">
+              <ul className="mt-1 divide-y divide-[#e6e4dc]">
+                {topSteps.map((step, index) => {
+                  const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
+                  return (
+                    <li key={step.id || `${step.title}-${index}`} className="py-2.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
+                          style={{ background: identity.accent }}
+                        >
+                          {index + 1}
+                        </span>
+                        <span className="text-sm font-bold text-[#20211f]">{step.title}</span>
+                        <span className={`label-mark ${priority.className}`}>{priority.label}</span>
                       </div>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ol>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <details className="group mt-1">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#5e6159] hover:text-[#20211f]">
+                  <span>
+                    {restSteps.length
+                      ? `עוד ${restSteps.length} שלבים — וכל הצ׳קליסט`
+                      : "כל הצ׳קליסט"}
+                  </span>
+                  <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90">
+                    ‹
+                  </span>
+                </summary>
+                <div className="pb-3 pt-1">
+                  <ol className="divide-y divide-[#e6e4dc]">
+                    {(restSteps.length ? restSteps : topSteps).map((step, index) => {
+                      const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
+                      const number = restSteps.length ? index + TOP_STEPS + 1 : index + 1;
+                      return (
+                        <li key={step.id || `${step.title}-${index}`} className="py-4 first:pt-1 last:pb-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
+                              style={{ background: identity.accent }}
+                            >
+                              {number}
+                            </span>
+                            <h3 className="text-sm font-black text-[#20211f]">{step.title}</h3>
+                            <span className={`label-mark ${priority.className}`}>{priority.label}</span>
+                          </div>
+                          <p className="mt-3 text-xs leading-5 text-[#3c3e3a]">
+                            <span className="font-black text-[#20211f]">למה זה חשוב: </span>
+                            {step.why}
+                          </p>
+                          {step.how?.length ? (
+                            <div className="mt-2">
+                              <span className="text-xs font-black text-[#20211f]">איך עושים:</span>
+                              <ul className="mt-1 space-y-1">
+                                {step.how.map((line, lineIndex) => (
+                                  <li
+                                    key={`${line.slice(0, 20)}-${lineIndex}`}
+                                    className="flex items-start gap-2 text-xs leading-5 text-[#3c3e3a]"
+                                  >
+                                    <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#b3b0a5]" />
+                                    {line}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : null}
+                        </li>
+                      );
+                    })}
+                  </ol>
+
+                  {profile.notes?.length ? (
+                    <ul className="mt-4 space-y-1.5">
+                      {profile.notes.map((note, index) => (
+                        <li
+                          key={`${note.slice(0, 24)}-${index}`}
+                          className="flex items-start gap-2 text-xs leading-5 text-[#8b8e84]"
+                        >
+                          <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#c7c4b8]" />
+                          {note}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+              </details>
+            </div>
           ) : (
-            <p className="mt-4 rounded-lg border border-[#e6e4dc] bg-white p-6 text-sm text-[#5e6159]">
-              הצ׳קליסט של הפרופיל העסקי לא התקבל מהשרת. אפשר לנסות שוב מאוחר יותר — עד אז, הפרופיל עצמו נמצא בחיפוש
-              בגוגל תחת שם העסק.
+            <p className="mt-3 text-sm text-[#5e6159]">
+              הצ׳קליסט של הפרופיל העסקי לא התקבל מהשרת. אפשר לנסות שוב מאוחר יותר — עד אז, הפרופיל עצמו נמצא
+              בחיפוש בגוגל תחת שם העסק.
             </p>
           )}
-
-          {profile?.notes?.length ? (
-            <ul className="mt-3 space-y-1.5">
-              {profile.notes.map((note, index) => (
-                <li key={`${note.slice(0, 24)}-${index}`} className="flex items-start gap-2 text-xs leading-5 text-[#8b8e84]">
-                  <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#c7c4b8]" />
-                  {note}
-                </li>
-              ))}
-            </ul>
-          ) : null}
         </section>
-
-        <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[#deddd8] pt-5">
-          <Link href="/integrations" className="text-sm font-bold text-[#20211f] underline underline-offset-4">
-            לחיבור Search Console ולערוצים אחרים
-          </Link>
-          <Link href="/decisions" className="text-sm font-bold text-[#5e6159] underline underline-offset-4">
-            לשינוי התקציב שממנו החישוב נבנה
-          </Link>
-        </div>
       </div>
     </AppShell>
   );

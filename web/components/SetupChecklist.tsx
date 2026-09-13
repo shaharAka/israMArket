@@ -140,9 +140,13 @@ export function SetupChecklist() {
           <p className="text-xs font-bold text-[#747570]">הדבר הבא</p>
           <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">{setup.next.title}</p>
           {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[#62635f]">{nextWhy}</p> : null}
+          {/* Guidance, not the page's ask. The dashboard's one dark button belongs to the
+              pending post, so the next setup step is a quiet outline even though it is the
+              next step *here*. The step itself, and the fact that it drives the label and
+              the href, is unchanged. */}
           <Link
             href={setup.next.action_href}
-            className="group mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+            className="group mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-[#c7c4b8] bg-transparent px-5 text-sm font-bold text-[#20211f] transition-colors hover:bg-[#f4f3ee] sm:w-auto"
           >
             {setup.next.action_label}
             <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />

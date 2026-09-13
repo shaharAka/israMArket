@@ -25,7 +25,9 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
  *
  * This page is the one screen the owner opens without being asked to do something, so it
  * leads with the single pending decision and keeps everything else as scannable tiles
- * rather than another column of prose.
+ * rather than another column of prose. Exactly one button here is dark — `לבדוק ולאשר` —
+ * because the flow is waiting on that post. The setup card is guidance and the next-month
+ * card is context, so both are outline; neither is what this page is asking for.
  */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
@@ -133,12 +135,9 @@ export default function DashboardPage() {
               )}
             </section>
 
-            {/* What is still missing, under the decision that leads the page and above the
-                tiles: the pending post is what to do now, this is what else there is. */}
-            <SetupChecklist />
-
-            {/* At-a-glance tiles: each one links to the place that owns that decision. */}
-            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {/* At-a-glance tiles: each one links to the place that owns that decision. One
+                container with hairline dividers rather than four equal-weight boxes. */}
+            <section className="grid gap-px overflow-hidden rounded-lg border border-[#e6e4dc] bg-[#e6e4dc] sm:grid-cols-2 lg:grid-cols-4">
               <Tile label="מצב החודש" href="/posts" accent={identity.accent}>
                 <span className="text-2xl font-black text-[#20211f]">
                   {approvedCount}
@@ -185,56 +184,65 @@ export default function DashboardPage() {
               </Tile>
             </section>
 
-            <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-              <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
-                <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
-                <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
-                  {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
-                </h2>
-                {monthly?.targets?.length ? (
-                  <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
-                    {monthly.targets.slice(0, 3).map((target, index) => (
-                      <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
-                        <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
-                        {target}
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </section>
+            {/* What is still missing. Below the tiles on purpose: the pending post is the
+                page's ask, the tiles are what is already true, and this is guidance for
+                later — so it sits under both, still on the first screen. */}
+            <SetupChecklist />
 
-              <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
-                <p className="text-xs font-bold text-[#747570]">השבועות</p>
-                <ol className="mt-3 space-y-2.5">
-                  {[1, 2, 3, 4].map((week) => {
-                    const item = weeks.find((entry) => entry.week === week);
-                    const isNow = currentWeek === week;
-                    return (
-                      <li key={week} className="flex items-start gap-3">
-                        <span
-                          className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
-                            isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
-                          }`}
-                          style={isNow ? { background: identity.accent } : undefined}
-                        >
-                          {week}
-                        </span>
-                        <span className="min-w-0 flex-1 text-sm leading-6">
-                          <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
-                            {item?.focus || "—"}
+            {/* The month's reasoning and its weeks are one object, so they share one box and
+                a hairline between them instead of two equal-weight rectangles. */}
+            <section className="rounded-lg border border-[#e6e4dc] bg-white p-5 sm:p-6">
+              <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr] lg:gap-0">
+                <div>
+                  <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
+                  <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
+                    {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
+                  </h2>
+                  {monthly?.targets?.length ? (
+                    <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
+                      {monthly.targets.slice(0, 3).map((target, index) => (
+                        <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
+                          <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                          {target}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </div>
+
+                <div className="border-t border-[#e9e8e3] pt-5 lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0">
+                  <p className="text-xs font-bold text-[#747570]">השבועות</p>
+                  <ol className="mt-3 space-y-2.5">
+                    {[1, 2, 3, 4].map((week) => {
+                      const item = weeks.find((entry) => entry.week === week);
+                      const isNow = currentWeek === week;
+                      return (
+                        <li key={week} className="flex items-start gap-3">
+                          <span
+                            className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+                              isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
+                            }`}
+                            style={isNow ? { background: identity.accent } : undefined}
+                          >
+                            {week}
                           </span>
-                          {isNow ? (
-                            <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
-                              השבוע
+                          <span className="min-w-0 flex-1 text-sm leading-6">
+                            <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
+                              {item?.focus || "—"}
                             </span>
-                          ) : null}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </section>
-            </div>
+                            {isNow ? (
+                              <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
+                                השבוע
+                              </span>
+                            ) : null}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </div>
+              </div>
+            </section>
 
             <section className="grid gap-6 border-y border-[#deddd8] py-6 sm:grid-cols-2">
               <div>
@@ -256,7 +264,9 @@ export default function DashboardPage() {
               </div>
             </section>
 
-            <MonthAhead horizon={strategy.horizon} onReady={setStrategy} />
+            {/* Next month is context while this month is unapproved, so its build button
+                is an outline rather than competing with `לבדוק ולאשר`. */}
+            <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" />
           </div>
         ) : (
           <LoadingMark label="אנחנו טוענים את מצב החודש…" />
@@ -266,6 +276,8 @@ export default function DashboardPage() {
   );
 }
 
+/** One cell of the at-a-glance row. The dividers come from the container's 1px gap, so a
+ *  tile draws no border of its own. */
 function Tile({
   label,
   href,
@@ -280,7 +292,7 @@ function Tile({
   return (
     <Link
       href={href}
-      className="group flex flex-col rounded-lg border border-[#e6e4dc] bg-white p-4 transition-colors hover:border-[#c9c6ba]"
+      className="group flex flex-col bg-white p-4 transition-colors hover:bg-[#faf9f7]"
     >
       <span className="flex items-center gap-2">
         <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />

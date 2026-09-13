@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppShell, Badge, Button, Card, ErrorNote, PageHeader } from "@/components/AppShell";
+import { AppShell, Badge, ErrorNote, PageHeader } from "@/components/AppShell";
 import { endpoints, type RecommendationPayload } from "@/lib/api";
 import { IconCheck, IconLightbulb } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -44,113 +44,127 @@ export default function RecommendationsPage() {
     }
   }
 
+  const suggestions = data?.suggestions.suggestions ?? [];
+  // One primary action per page (UI-RULES rule 1). Adopting is the point of this screen, so
+  // the dark filled button is the ONE recommendation waiting to be adopted — the first one
+  // still open, which is the actual next step. Every other row gets a quiet outline button,
+  // and "הפק המלצות חדשות" (a regeneration, not a step forward) is an outline button too.
+  const nextIndex = suggestions.findIndex((item) => !accepted[item.title]);
+
   return (
     <AppShell>
       <PageHeader
-        title="המלצות מעשיות לשבוע הקרוב"
-        subtitle="ה-AI ניתח את התוצאות והכין לכם רשימת פעולות קונקרטיות לשיפור המכירות והמעורבות"
+        title="המלצות לשבוע הקרוב"
+        subtitle="מה כדאי לעשות השבוע, לפי מה שעבד בפועל"
         action={
-          <Button onClick={generate} disabled={pending} size="sm" tone="primary">
+          <button
+            type="button"
+            onClick={generate}
+            disabled={pending}
+            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
+          >
             <IconLightbulb className="w-4 h-4" />
             <span>{pending ? "מנתח נתונים ומפיק..." : "הפק המלצות חדשות"}</span>
-          </Button>
+          </button>
         }
       />
 
       <ErrorNote message={error} />
 
       {data ? (
-        <div className="space-y-6">
-          {/* Summary Box */}
-          <div className="bg-gradient-to-l from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-semibold text-blue-300 uppercase tracking-wider block mb-1">
-                מיקוד שבועי
-              </span>
-              <h2 className="text-lg sm:text-xl font-bold leading-relaxed">
-                {data.suggestions.week_summary}
-              </h2>
-            </div>
-            <div className="shrink-0">
-              <Badge tone="blue">שבוע {data.week_of}</Badge>
-            </div>
+        <div className="space-y-5">
+          {/* The week's focus in one line — no heavy banner competing with the button. */}
+          <div className="border-b border-[#e9e8e3] pb-4">
+            <p className="text-xs font-bold text-[#747570]">המיקוד של השבוע</p>
+            <p className="mt-1 max-w-3xl text-lg font-bold leading-relaxed text-[#20211f]">
+              {data.suggestions.week_summary}
+            </p>
+            <p className="mt-1.5">
+              <Badge tone="slate">שבוע {data.week_of}</Badge>
+            </p>
           </div>
 
-          {/* List of recommendations */}
-          <div className="space-y-4">
-            {data.suggestions.suggestions.map((item) => {
+          {/* One container with hairline dividers, not a stack of equal-weight boxes. */}
+          <ul className="divide-y divide-[#e9e8e3] border-y border-[#e9e8e3]">
+            {suggestions.map((item, index) => {
               const priority = PRIORITY_MAP[item.priority] || PRIORITY_MAP.medium;
               const isDone = !!accepted[item.title];
+              const isNext = index === nextIndex;
 
               return (
-                <Card
-                  key={item.title}
-                  className={`transition ${
-                    isDone
-                      ? "border-emerald-300 bg-emerald-50/30"
-                      : "hover:border-slate-300"
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                    <div className="flex items-center gap-2">
-                      <Badge tone={priority.tone}>{priority.label}</Badge>
-                      <span className="text-xs text-slate-500 font-medium">יעד: {item.target}</span>
-                    </div>
-
-                    {isDone ? (
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                        <IconCheck className="w-3.5 h-3.5" />
-                        <span>אומץ ובוצע</span>
-                      </span>
+                <li key={item.title} className="py-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge tone={priority.tone}>{priority.label}</Badge>
+                    <span className="text-xs text-slate-500 font-medium">יעד: {item.target}</span>
+                    {isNext ? (
+                      <span className="text-xs font-bold text-[#20211f]">· הצעד הבא</span>
                     ) : null}
                   </div>
 
-                  <div className="mt-4">
-                    <h3 className="text-lg font-bold text-slate-900">{item.title}</h3>
-                    <p className="mt-2 text-sm text-slate-700 leading-relaxed font-medium">
-                      {item.action}
-                    </p>
+                  <h3 className={`mt-2 text-lg font-bold ${isDone ? "text-slate-500" : "text-slate-900"}`}>
+                    {item.title}
+                  </h3>
+                  <p className="mt-1.5 max-w-3xl text-sm font-medium leading-relaxed text-slate-700">
+                    {item.action}
+                  </p>
+
+                  {/* The reasoning is method, not the conclusion — it waits behind an expand. */}
+                  <details className="mt-2 max-w-3xl">
+                    <summary className="cursor-pointer text-xs font-bold text-[#62635f]">
+                      על בסיס מה ההמלצה (הנתונים שמאחוריה)
+                    </summary>
+                    <p className="mt-1.5 text-xs leading-6 text-slate-600">{item.evidence}</p>
+                  </details>
+
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    {isDone ? (
+                      <>
+                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
+                          <IconCheck className="w-3.5 h-3.5" />
+                          סומן כמבוצע
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAccepted((prev) => ({ ...prev, [item.title]: false }));
+                            toast("ההמלצה הוחזרה למצב פתוח");
+                          }}
+                          className="text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+                        >
+                          החזרה למצב פתוח
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAccepted((prev) => ({ ...prev, [item.title]: true }));
+                            toast("מעולה! ההמלצה סומנה כמבוצעת ✓");
+                          }}
+                          className={
+                            isNext
+                              ? "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-[#20211f] px-4 text-xs font-bold text-white hover:bg-[#343632]"
+                              : "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
+                          }
+                        >
+                          <IconCheck className="w-3.5 h-3.5" />
+                          <span>{isNext ? "אמץ את ההמלצה" : "אמץ"}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => toast("נשמר לרשימת המעקב")}
+                          className="text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+                        >
+                          שמור לאחר כך
+                        </button>
+                      </>
+                    )}
                   </div>
-
-                  <div className="mt-4 rounded-xl bg-slate-50 border border-slate-100 p-3 text-xs text-slate-600">
-                    <span className="font-bold text-slate-700 block mb-0.5">על בסיס מה ההמלצה:</span>
-                    {item.evidence}
-                  </div>
-
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        size="sm"
-                        tone={isDone ? "success" : "primary"}
-                        onClick={() => {
-                          const nextState = !isDone;
-                          setAccepted((prev) => ({ ...prev, [item.title]: nextState }));
-                          toast(
-                            nextState
-                              ? "מעולה! ההמלצה סומנה כמבוצעת ✓"
-                              : "ההמלצה הוחזרה למצב פתוח"
-                          );
-                        }}
-                      >
-                        <IconCheck className="w-3.5 h-3.5" />
-                        <span>{isDone ? "אומץ בהצלחה ✓" : "אמץ המלצה זו"}</span>
-                      </Button>
-
-                      <Button
-                        size="sm"
-                        tone="ghost"
-                        onClick={() => toast("נשמר לרשימת המעקב")}
-                      >
-                        שמור לאחר כך
-                      </Button>
-                    </div>
-
-                    <span className="text-xs text-slate-400">המלצת AI מותאמת אישית</span>
-                  </div>
-                </Card>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       ) : null}
     </AppShell>

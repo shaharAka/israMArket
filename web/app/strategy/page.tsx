@@ -27,6 +27,11 @@ import {
  * marker per week, the week you are in filled and tinted, and the supporting material
  * (the goal, what we need from you, the reasoning) grouped around the rail rather than
  * stacked next to it.
+ *
+ * The rail is the page's structure, so it carries the page: the goal and the week's ask
+ * share one tinted panel above it, the weeks themselves draw no boxes at all, and the
+ * only bordered object left is the next-month card. One button here is dark —
+ * `לבדוק את הפוסט הבא`, the forward step — while building next month is a quiet outline.
  */
 
 /** The section's own accent — this page should read as "the monthly plan". */
@@ -86,11 +91,10 @@ export default function StrategyPage() {
         ) : null}
 
         {strategy ? (
-          <div className="rise-stagger space-y-8 pb-2">
-            <section
-              className="rounded-lg border p-5 sm:p-6"
-              style={{ background: RAIL.surface, borderColor: RAIL.border }}
-            >
+          <div className="rise-stagger space-y-6 pb-2">
+            {/* The month's goal and what it asks of the owner are the same statement, so they
+                share one tinted panel instead of two bordered ones. */}
+            <section className="rounded-lg p-5 sm:p-6" style={{ background: RAIL.surface }}>
               <SectionLabel icon={<IconFlag className="h-4 w-4" />} tone="sand">
                 המטרה שלנו החודש
               </SectionLabel>
@@ -106,13 +110,24 @@ export default function StrategyPage() {
                   ))}
                 </ul>
               ) : null}
+
+              <div className="mt-5 border-t pt-4" style={{ borderColor: RAIL.border }}>
+                <SectionLabel icon={<IconBell className="h-3.5 w-3.5" />} tone="sand">
+                  מה צריך מכם עכשיו
+                </SectionLabel>
+                <p className="mt-1.5 text-base font-bold leading-7 text-[#20211f]">
+                  {nextUserAction || "כרגע לא צריך לעשות דבר. אנחנו ממשיכים להכין ולעקוב."}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#747570]">
+                  כל שאר העבודה — כתיבה, תמונות, התאמה לערוצים ומדידה — אצלנו.
+                </p>
+              </div>
             </section>
 
             <section>
-              <div className="mb-6">
+              <div className="mb-5">
                 <SectionLabel icon={<IconRoute className="h-4 w-4" />}>איך החודש מתקדם</SectionLabel>
                 <h2 className="mt-1 text-lg font-black text-[#20211f]">שבוע אחרי שבוע</h2>
-                <p className="mt-1 text-sm text-[#747570]">המערכת מטפלת בכל שבוע בשלב הבא.</p>
               </div>
 
               {weeks.length ? (
@@ -141,7 +156,7 @@ export default function StrategyPage() {
                         </span>
                       </div>
                       <div className="min-w-0 pb-2">
-                        <MonthAhead horizon={strategy.horizon} onReady={setStrategy} />
+                        <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" />
                       </div>
                     </li>
                   ) : null}
@@ -151,21 +166,6 @@ export default function StrategyPage() {
                   אין עדיין חלוקה שבועית לתוכנית הזו.
                 </p>
               )}
-            </section>
-
-            <section
-              className="rounded-lg border p-5 sm:p-6"
-              style={{ background: RAIL.surface, borderColor: RAIL.border }}
-            >
-              <SectionLabel icon={<IconBell className="h-4 w-4" />} tone="sand">
-                מה צריך מכם עכשיו
-              </SectionLabel>
-              <p className="mt-2 text-base font-bold leading-7 text-[#20211f]">
-                {nextUserAction || "כרגע לא צריך לעשות דבר. אנחנו ממשיכים להכין ולעקוב."}
-              </p>
-              <p className="mt-2 text-sm leading-6 text-[#747570]">
-                כל שאר העבודה — כתיבה, תמונות, התאמה לערוצים ומדידה — אצלנו.
-              </p>
             </section>
 
             <details className="group border-b border-[#deddd8] pb-5">
@@ -281,13 +281,11 @@ function WeekNode({
       </div>
 
       <div className="min-w-0 pb-6">
+        {/* Only the week you are in is marked, with the section's tint rather than a border:
+            the rail already says where you are, so a box around every week is noise. */}
         <div
-          className="rounded-lg border px-4 py-4 sm:px-5"
-          style={
-            isNow
-              ? { background: RAIL.surface, borderColor: RAIL.border }
-              : { borderColor: "transparent" }
-          }
+          className="rounded-lg px-4 py-4 sm:px-5"
+          style={isNow ? { background: RAIL.surface } : undefined}
         >
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[11px] font-black tracking-wide" style={{ color: RAIL.accent }}>
@@ -341,30 +339,37 @@ function WeekNode({
             ) : null}
           </div>
 
+          {/* The week's focus and the owner's own part lead; how we measure it is method,
+              so it sits one tap down instead of adding a fourth band to every week. */}
           {week.metrics_target?.length || week.media_distribution ? (
-            <div
-              className="mt-3 flex flex-col gap-1.5 border-t pt-3 sm:flex-row sm:flex-wrap sm:gap-x-6"
-              style={{ borderColor: isNow ? RAIL.border : "#e6e4dc" }}
-            >
-              {week.metrics_target?.length ? (
-                <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                  <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
-                  <span>
-                    <span className="font-bold text-[#3c3e3a]">מה מודדים: </span>
-                    {week.metrics_target.join(" · ")}
-                  </span>
-                </p>
-              ) : null}
-              {week.media_distribution ? (
-                <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                  <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
-                  <span>
-                    <span className="font-bold text-[#3c3e3a]">איפה מפרסמים: </span>
-                    {week.media_distribution}
-                  </span>
-                </p>
-              ) : null}
-            </div>
+            <details className="group mt-3 border-t pt-3" style={{ borderColor: isNow ? RAIL.border : "#e6e4dc" }}>
+              <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+                <span aria-hidden className="transition-transform duration-200 group-open:rotate-180">
+                  ▾
+                </span>
+                מה מודדים ואיפה מפרסמים
+              </summary>
+              <div className="mt-2 flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:gap-x-6">
+                {week.metrics_target?.length ? (
+                  <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
+                    <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                    <span>
+                      <span className="font-bold text-[#3c3e3a]">מה מודדים: </span>
+                      {week.metrics_target.join(" · ")}
+                    </span>
+                  </p>
+                ) : null}
+                {week.media_distribution ? (
+                  <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
+                    <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                    <span>
+                      <span className="font-bold text-[#3c3e3a]">איפה מפרסמים: </span>
+                      {week.media_distribution}
+                    </span>
+                  </p>
+                ) : null}
+              </div>
+            </details>
           ) : null}
         </div>
       </div>

@@ -15,9 +15,18 @@ const STAGE_LABELS: Record<string, string> = {
 export function MonthAhead({
   horizon,
   onReady,
+  tone = "primary",
 }: {
   horizon?: MonthHorizon;
   onReady: (strategy: StrategyPayload) => void;
+  /**
+   * "quiet" renders the build button as an outline. Both pages that mount this already
+   * have their own primary action — checking the pending post — and building next month
+   * is not what the owner should do while this month is unapproved. Declared here rather
+   * than overridden from outside with a descendant selector, which would quietly restyle
+   * any button added to this component later.
+   */
+  tone?: "primary" | "quiet";
 }) {
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState("");
@@ -78,7 +87,11 @@ export function MonthAhead({
         <button
           type="button"
           onClick={() => void buildNext()}
-          className="mt-3 inline-flex min-h-11 items-center rounded-md bg-[#20211f] px-4 text-sm font-bold text-white hover:bg-[#343632]"
+          className={`mt-3 inline-flex min-h-11 items-center rounded-md px-4 text-sm font-bold ${
+            tone === "quiet"
+              ? "border border-[#c7c4b8] bg-transparent text-[#20211f] hover:bg-[#f4f3ee]"
+              : "bg-[#20211f] text-white hover:bg-[#343632]"
+          }`}
         >
           {next.next_in_progress ? "להמשיך את הבנייה" : `לבנות את ${next.next_month_name_he}`}
         </button>
