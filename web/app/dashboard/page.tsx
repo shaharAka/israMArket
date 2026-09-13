@@ -7,6 +7,7 @@ import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SetupChecklist } from "@/components/SetupChecklist";
 import { endpoints, type Business, type RecommendationPayload, type StrategyPayload } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
 import { SECTIONS } from "@/lib/sections";
@@ -131,6 +132,10 @@ export default function DashboardPage() {
                 <p className="p-6 text-sm text-[#62635f]">אנחנו עדיין מכינים את התוכן לחודש.</p>
               )}
             </section>
+
+            {/* What is still missing, under the decision that leads the page and above the
+                tiles: the pending post is what to do now, this is what else there is. */}
+            <SetupChecklist />
 
             {/* At-a-glance tiles: each one links to the place that owns that decision. */}
             <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

@@ -18,6 +18,7 @@ from app.routers import (
     performance,
     promotion,
     recommendations,
+    setup,
     strategy,
 )
 from app.security import DEFAULT_JWT_SECRET
@@ -59,6 +60,7 @@ app.include_router(strategy.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
 app.include_router(recommendations.router)
+app.include_router(setup.router)
 app.include_router(promotion.router)
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):

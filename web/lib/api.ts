@@ -930,6 +930,215 @@ const DEMO_RECS: RecommendationPayload = {
   },
 };
 
+export type SetupItem = {
+  key: string;
+  title: string;
+  /** Why this step changes the plan, in the owner's words. */
+  why: string;
+  done: boolean;
+  action_href: string;
+  action_label: string;
+};
+
+/** The one step to do next. A subset of the item it points at, so the card cannot offer
+ *  an action the grouped list does not also carry. */
+export type SetupNext = {
+  key: string;
+  title: string;
+  action_href: string;
+  action_label: string;
+};
+
+export type SetupGroup = {
+  key: "setup" | "running";
+  title: string;
+  items: SetupItem[];
+};
+
+export type SetupPayload = {
+  completed: number;
+  total: number;
+  next: SetupNext | null;
+  groups: SetupGroup[];
+};
+
+/**
+ * The order `next` walks, copied from `NEXT_ORDER` in `api/app/routers/setup.py`.
+ *
+ * The backend ranks the next step by what the owner gets out of doing it now, so it is
+ * not necessarily the first open item in the order the groups are read.
+ */
+const SETUP_NEXT_ORDER = [
+  "scan",
+  "diagnostics",
+  "priorities",
+  "quarter",
+  "audiences",
+  "media",
+  "google",
+  "instagram",
+  "plan",
+  "approve",
+  "publish",
+];
+
+/** Mirrors the backend's `_rank`: a key it does not know ranks last, never first. */
+function setupRank(key: string): number {
+  const index = SETUP_NEXT_ORDER.indexOf(key);
+  return index === -1 ? SETUP_NEXT_ORDER.length : index;
+}
+
+/** Mirrors the backend's `_filled`: a blank string or an empty container is not an answer,
+ *  because the wizard stores untouched fields as `None`, `""` or `[]`. */
+function filled(value: unknown): boolean {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === "object") return Object.keys(value as object).length > 0;
+  return Boolean(value);
+}
+
+/**
+ * The demo's checklist, derived from the demo's own state the way the backend derives it
+ * from real rows — so the card can never claim a step is missing while `/assets` or
+ * `/decisions` is showing that same step done.
+ *
+ * Mirrors `api/app/routers/setup.py` throughout: the same keys, group keys and titles,
+ * item titles, `why` lines, action hrefs, action labels and `next` ranking.
+ *
+ * The demo business happens to sit at five of the eleven — the site reading, the
+ * diagnostics, the audience segments, the media library and the month's posts are in
+ * place; the ranked targets, the quarter plan, both connections, approval and publishing
+ * are not. That is what makes the card worth demoing: a real mix of done and open, a real
+ * next step, and progress the owner can see rather than a list that is already finished.
+ */
+function demoSetup(): SetupPayload {
+  const diagnostics = DEMO_BUSINESS.diagnostics;
+  const posts = POSTS;
+  const groups: SetupGroup[] = [
+    {
+      key: "setup",
+      title: "הגדרה חד-פעמית",
+      items: [
+        {
+          key: "scan",
+          title: "קריאת האתר",
+          why: "בלעדיה אין זהות מותג, צבעים ותמונות — והתוכן נוצר בלי החומרים שלכם.",
+          done: filled(DEMO_BUSINESS.brand_language),
+          action_href: "/decisions",
+          action_label: "לסריקת האתר",
+        },
+        {
+          key: "diagnostics",
+          title: "אבחון העסק",
+          why: "התשובות קובעות אילו יעדים ופוסטים מתאימים לעסק שלכם.",
+          done: diagnostics ? Object.values(diagnostics).some(filled) : false,
+          action_href: "/decisions",
+          action_label: "למילוי האבחון",
+        },
+        {
+          key: "priorities",
+          title: "יעדי צמיחה",
+          why: "היעדים שבחרתם הם מה שהתוכנית החודשית מכוונת אליו.",
+          done: (DEMO_BUSINESS.growth_targets || []).length > 0,
+          action_href: "/decisions",
+          action_label: "לבחירת יעדים",
+        },
+        {
+          key: "quarter",
+          title: "תוכנית רבעונית",
+          why: "התוכנית נותנת לחודש הקרוב הקשר של יעד גדול, לא רק רשימת פוסטים.",
+          done: filled(DEMO_BUSINESS.long_horizon_plan),
+          action_href: "/plan",
+          action_label: "לבניית התוכנית",
+        },
+        {
+          key: "audiences",
+          title: "קהלי יעד",
+          why: "כל פוסט ידע למי הוא מדבר, והתוצאות יוצגו לפי קהל.",
+          done: DEMO_AUDIENCES.length > 0,
+          action_href: "/decisions#audiences",
+          action_label: "להגדרת קהלים",
+        },
+        {
+          key: "media",
+          title: "ספריית מדיה",
+          why: "התמונות שלכם ישמשו בכל עיצוב, במקום תמונות מלאי גנריות.",
+          done: DEMO_ASSETS.length > 0,
+          action_href: "/assets",
+          action_label: "להעלאת תמונות",
+        },
+        {
+          key: "google",
+          title: "חיבור Google Analytics",
+          why: "רק כך רואים אילו פוסטים וערוצים באמת הביאו תנועה והמרות.",
+          // The demo's integrations payload reports both providers as null.
+          done: false,
+          action_href: "/integrations",
+          action_label: "לחיבור GA4",
+        },
+        {
+          key: "instagram",
+          title: "חיבור אינסטגרם",
+          why: "מאפשר לפרסם ולמדוד את הפוסטים בלי להעתיק אותם ידנית.",
+          done: false,
+          action_href: "/integrations",
+          action_label: "לחיבור אינסטגרם",
+        },
+      ],
+    },
+    {
+      key: "running",
+      title: "הרצה שוטפת",
+      items: [
+        {
+          key: "plan",
+          title: "תוכנית החודש",
+          why: "התוכנית היא מה שהופך את האסטרטגיה לפוסטים מוכנים לעבודה.",
+          done: posts.length > 0,
+          action_href: "/strategy",
+          action_label: "ליצירת התוכנית",
+        },
+        {
+          key: "approve",
+          title: "אישור הפוסטים",
+          why: "רק פוסטים מאושרים נכנסים לפרסום ולמדידה.",
+          // The same rule as `_all_approved`: no posts is not "all approved".
+          done: posts.length > 0 && posts.every((post) => post.approval_status === "approved"),
+          action_href: "/posts",
+          action_label: "לאישור הפוסטים",
+        },
+        {
+          key: "publish",
+          title: "פרסום וסימון קישור",
+          why: "סימון הקישור שפורסם הוא מה שמחבר בין הפוסט לתוצאות שלו.",
+          done: posts.some((post) => filled(post.published_url)),
+          action_href: "/posts",
+          action_label: "לסימון פרסום",
+        },
+      ],
+    },
+  ];
+
+  const items = groups.flatMap((group) => group.items);
+  const firstOpen = [...items]
+    .sort((a, b) => setupRank(a.key) - setupRank(b.key))
+    .find((item) => !item.done);
+  return {
+    completed: items.filter((item) => item.done).length,
+    total: items.length,
+    next: firstOpen
+      ? {
+          key: firstOpen.key,
+          title: firstOpen.title,
+          action_href: firstOpen.action_href,
+          action_label: firstOpen.action_label,
+        }
+      : null,
+    groups,
+  };
+}
+
 /**
  * What Google would cost this business, and what the free local surface looks like.
  *
@@ -2054,6 +2263,9 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     DEMO_ASSETS = DEMO_ASSETS.map((asset) => (asset.id === id ? updated : asset));
     return { asset: { ...updated, tags: [...updated.tags] } } as T;
   }
+  // Computed per call from the live demo state, not a frozen fixture: a demo user who
+  // approves a post or deletes an audience should see the checklist agree with it.
+  if (path === "/setup") return demoSetup() as T;
   // The promotion payloads are deep enough that a hand-written clone would be a
   // liability; they are plain JSON, so a round-trip is simpler and total. Cloning keeps
   // a screen that mutates what it renders from poisoning the demo for the next visit.
@@ -2242,6 +2454,8 @@ export const endpoints = {
     }),
   recommendations: () => api<RecommendationPayload>("/recommendations/latest"),
   generateRecommendations: () => api<RecommendationPayload>("/recommendations/generate", { method: "POST" }),
+  /** What the owner has not set up yet, grouped, plus the single next step to take. */
+  setup: () => api<SetupPayload>("/setup"),
   /** What Google would cost this business, plus the free Business Profile checklist. */
   googlePromotion: () => api<GooglePromotionPayload>("/promotion/google"),
   /** Terms worth targeting. Only Search Console rows carry real numbers. */
