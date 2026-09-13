@@ -518,6 +518,12 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["דפדופים בקרוסלה", "קליקים לקישור"],
+    // The demo month is a real month part-way through: one post is already approved and
+    // dated (so the publishing queue has something genuinely due), one is approved with no
+    // date, and the rest are still waiting for the owner. A demo where every post sits in
+    // the same state cannot show what the queue is for.
+    approval_status: "approved",
+    scheduled_for: "2026-09-09",
     outlet_captions: {
       instagram: "מה שמים על השולחן כשהאורחים כבר בדרך? מארז ראש השנה מיפו — דפדפו לראות מה בפנים.",
       facebook: "מארז ראש השנה המלא של לחם תום זמין להזמנה מוקדמת. כל הפרטים בתמונות.",
@@ -586,6 +592,9 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["מעורבות חיובית"],
+    // Approved, but the owner has not decided which day it goes out — the `unscheduled`
+    // bucket the queue has to be able to show.
+    approval_status: "approved",
     outlet_captions: {
       instagram: "מכבים את התנורים ליום כיפור. שקט, גמר חתימה טובה.",
       facebook: "סגורים בערב כיפור וביום כיפור. צום קל ומועיל למי שצם.",
@@ -807,6 +816,42 @@ const DEMO_STRATEGY: StrategyPayload = {
   competitors: [],
   brand_language: DEMO_BRAND,
 };
+
+/**
+ * Mirrors `attach_tracking` in `api/app/services/strategy.py`.
+ *
+ * Every post the product generates carries the UTM link the owner should publish with,
+ * because the link is how a click is later tied back to the post that earned it. The link
+ * is empty in exactly one case — the business has no website on file — and the publishing
+ * panel says that out loud instead of showing a control with nothing behind it.
+ */
+function demoTrackingSlug(value: string) {
+  return (
+    (value || "")
+      .replace(/[^\p{L}\p{N}_]+/gu, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 32)
+      .toLowerCase() || "post"
+  );
+}
+
+const DEMO_UTM_CAMPAIGN = `isramarket-${DEMO_STRATEGY.year}-${String(DEMO_STRATEGY.month).padStart(2, "0")}`;
+
+POSTS.forEach((post, index) => {
+  if (post.tracking_url) return;
+  const utm = {
+    utm_source: post.primary_outlet || "instagram",
+    utm_medium: "organic",
+    utm_campaign: DEMO_UTM_CAMPAIGN,
+    utm_content: `p${index + 1}-${demoTrackingSlug(post.title)}`,
+  };
+  POSTS[index] = {
+    ...post,
+    utm,
+    tracking_url: `${DEMO_BUSINESS.website_url}?${new URLSearchParams(utm).toString()}`,
+  };
+});
+DEMO_STRATEGY.roadmap.posts = POSTS;
 
 const DEMO_PERFORMANCE: PerformancePayload = {
   period_start: "2026-08-08",
@@ -1591,6 +1636,392 @@ function demoAssetSuggestions(post: RoadmapPost): AssetSuggestion[] {
     }));
 }
 
+// --- the publishing handoff, in demo --------------------------------------------------
+
+/**
+ * The capability note the demo shows, word for word the same as the real one.
+ *
+ * Copied verbatim from `APPROVAL_HE` / `MANUAL_HE` / `NO_META_HE` in
+ * `api/app/services/publish.py` rather than paraphrased: the demo has no Meta connection
+ * either, so the honest answer is identical, and a fixture that softened it would be the
+ * one place the product told a different story than the API.
+ */
+const DEMO_PUBLISH_CAPABILITY: PublishCapability = {
+  auto_publish: false,
+  can_schedule: true,
+  reasons: [
+    "חשבון מטא (פייסבוק ואינסטגרם) לא מחובר, ולכן אין למערכת גישה לדפים שלכם.",
+    "פרסום אוטומטי לאינסטגרם ולפייסבוק דורש אישור של מטא לאפליקציה הזאת. " +
+      "מטא בודקת אפליקציות ומאשרת הרשאת פרסום רק בסוף הבדיקה שלה, וזה לא תלוי בנו ולא בהגדרה במערכת. " +
+      "עד שהאישור הזה יתקבל, למערכת אין אפשרות טכנית לפרסם בשמכם לשום רשת.",
+    "בינתיים מפרסמים ידנית: כל פוסט כאן מוכן עם כיתוב, תמונה וקישור עם מעקב, " +
+      "ואפשר להעתיק אותו לאפליקציה של פייסבוק או אינסטגרם ולפרסם משם.",
+  ],
+  missing: ["instagram_content_publish", "pages_manage_posts"],
+  connected: { meta: false, ga4: false },
+};
+
+/** The permission names in the owner's words — `SCOPE_LABELS_HE` in the API. */
+export const PUBLISH_SCOPE_LABELS: Record<string, string> = {
+  instagram_content_publish: "פרסום תוכן בחשבון האינסטגרם העסקי",
+  pages_manage_posts: "פרסום בעמוד הפייסבוק",
+};
+
+/** Outlet keys in Hebrew — `OUTLET_LABELS_HE` in the API. */
+export const PUBLISH_OUTLET_LABELS: Record<string, string> = {
+  instagram: "אינסטגרם",
+  facebook: "פייסבוק",
+  whatsapp: "וואטסאפ",
+  tiktok: "טיקטוק",
+};
+
+function demoPostBrief(index: number, post: RoadmapPost): PostBrief {
+  return {
+    index,
+    title: post.title || "",
+    format: post.format || "",
+    primary_outlet: post.primary_outlet || "",
+    outlets: [...(post.outlets || [])],
+    date_hint: post.date_hint || "",
+    scheduled_for: post.scheduled_for || "",
+    approval_status: post.approval_status || "review",
+    published_url: post.published_url || "",
+    published_at: post.published_at || null,
+    has_image: Boolean(post.image_url),
+    tracking_url: post.tracking_url || "",
+  };
+}
+
+/** `YYYY-MM-DD` to a real day, or null. A value nothing can read is not a date. */
+function demoStoredDay(value: string | undefined): number | null {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value.trim())) return null;
+  const parsed = Date.parse(`${value.trim()}T00:00:00`);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+/**
+ * Mirrors `split_queue` in `api/app/services/publish.py`, including the three rules that
+ * matter: a published post appears nowhere else, an unapproved post is never due, and a
+ * date that cannot be read is treated as no date at all.
+ *
+ * Computed from the live demo posts rather than frozen, so a post the owner schedules,
+ * approves or marks as published in the demo moves between buckets exactly as it would
+ * against the API.
+ */
+function demoSplitQueue(): Omit<PublishQueue, "year" | "month" | "month_name_he" | "capability"> {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const buckets: Record<string, PostBrief[]> = {
+    due: [],
+    upcoming: [],
+    unscheduled: [],
+    awaiting_approval: [],
+    published: [],
+  };
+  const dated: Record<string, { day: number; brief: PostBrief }[]> = { due: [], upcoming: [] };
+
+  POSTS.forEach((post, index) => {
+    const brief = demoPostBrief(index, post);
+    if (brief.published_url) {
+      buckets.published.push(brief);
+      return;
+    }
+    if (brief.approval_status !== "approved") {
+      buckets.awaiting_approval.push(brief);
+      return;
+    }
+    const day = demoStoredDay(post.scheduled_for);
+    if (day === null) {
+      buckets.unscheduled.push(brief);
+      return;
+    }
+    dated[day <= today.getTime() ? "due" : "upcoming"].push({ day, brief });
+  });
+
+  for (const key of ["due", "upcoming"] as const) {
+    buckets[key] = dated[key]
+      .sort((a, b) => a.day - b.day || a.brief.index - b.brief.index)
+      .map((entry) => entry.brief);
+  }
+
+  const counts = {
+    due: buckets.due.length,
+    upcoming: buckets.upcoming.length,
+    unscheduled: buckets.unscheduled.length,
+    awaiting_approval: buckets.awaiting_approval.length,
+    published: buckets.published.length,
+    total: POSTS.length,
+  };
+  return { ...buckets, counts } as Omit<
+    PublishQueue,
+    "year" | "month" | "month_name_he" | "capability"
+  >;
+}
+
+function demoPublishQueue(): PublishQueue {
+  return {
+    year: DEMO_STRATEGY.year,
+    month: DEMO_STRATEGY.month,
+    month_name_he: DEMO_STRATEGY.month_name_he,
+    ...demoSplitQueue(),
+    capability: DEMO_PUBLISH_CAPABILITY,
+  };
+}
+
+/** The brief's allocation labels — `ALLOCATION_LABELS` in the API. */
+const DEMO_ALLOCATION_LABELS: [string, string][] = [
+  ["meta_ads_share_pct", "פרסום ממומן במטא"],
+  ["organic_production_share_pct", "הפקת תוכן אורגני"],
+  ["local_promotion_share_pct", "קידום מקומי"],
+];
+
+function demoBriefMoney(value: number) {
+  return `${value.toLocaleString("en-US")} ₪`;
+}
+
+function demoBriefPostsLabel(count: number) {
+  return count === 1 ? "פוסט אחד" : `${count} פוסטים`;
+}
+
+function demoBriefCounts(pair: { min: number; max: number }) {
+  return `${pair.min.toLocaleString("en-US")}-${pair.max.toLocaleString("en-US")}`;
+}
+
+/** Mirrors `render_brief`: built line by line, and every line conditional. */
+function renderDemoBrief(data: Omit<PublishBrief, "text">): string {
+  let heading = "בריף קמפיין";
+  if (data.business_name) heading += ` — ${data.business_name}`;
+  if (data.month_name_he && data.year) heading += ` — ${data.month_name_he} ${data.year}`;
+
+  const lines: string[] = [heading];
+  let hasFigures = false;
+  const section = (title: string) => lines.push("", title);
+  const sentence = (text: string) => lines.push(text);
+
+  if (data.goal) {
+    section("מטרת החודש");
+    sentence(data.goal);
+  }
+  if (data.theme) {
+    section("נושא החודש");
+    sentence(data.theme);
+  }
+
+  if (data.budget?.monthly_budget_ils) {
+    hasFigures = true;
+    section("תקציב");
+    let line = `תקציב חודשי: ${demoBriefMoney(data.budget.monthly_budget_ils)}`;
+    if (data.budget.stage_label) line += ` (${data.budget.stage_label})`;
+    sentence(line);
+    if (data.allocation.length) {
+      sentence("חלוקה מוצעת:");
+      data.allocation.forEach((row) => {
+        let rowLine = `- ${row.label}: ${row.share_pct}%`;
+        if (row.amount_ils) rowLine += ` (${demoBriefMoney(row.amount_ils)})`;
+        sentence(rowLine);
+      });
+    }
+    if (data.allocation_guidance) sentence(`הנחיות: ${data.allocation_guidance}`);
+  }
+
+  if (data.cadence.posts_per_week || data.cadence.formats?.length) {
+    hasFigures = true;
+    section("קצב ופורמטים");
+    if (data.cadence.posts_per_week) {
+      sentence(`קצב פרסום: ${demoBriefPostsLabel(data.cadence.posts_per_week)} בשבוע`);
+    }
+    if (data.cadence.formats?.length) sentence(`פורמטים: ${data.cadence.formats.join(", ")}`);
+  }
+
+  if (data.channels.length) {
+    hasFigures = true;
+    section("תמהיל ערוצים בתוכנית");
+    data.channels.forEach((row) => sentence(`- ${row.label}: ${demoBriefPostsLabel(row.posts)}`));
+    if (data.channel_note) sentence(data.channel_note);
+  }
+
+  if (data.audiences.length) {
+    hasFigures = true;
+    section("קהלים");
+    data.audiences.forEach((item) => {
+      let line = `- ${item.name}`;
+      if (item.is_primary) line += " (הקהל הראשי)";
+      if (item.summary) line += `: ${item.summary}`;
+      sentence(line);
+      const targeting = item.targeting as Record<string, unknown>;
+      const focus: string[] = [];
+      if (targeting.geo) focus.push(`אזור: ${targeting.geo}`);
+      if (targeting.age_range) focus.push(`גיל: ${targeting.age_range}`);
+      if (targeting.gender) focus.push(`מגדר: ${targeting.gender}`);
+      if (Array.isArray(targeting.interests) && targeting.interests.length) {
+        focus.push(`תחומי עניין: ${(targeting.interests as string[]).join(", ")}`);
+      }
+      if (Array.isArray(targeting.keywords) && targeting.keywords.length) {
+        focus.push(`נושאי חיפוש: ${(targeting.keywords as string[]).join(", ")}`);
+      }
+      if (focus.length) sentence(`  מיקוד: ${focus.join(" | ")}`);
+      if (item.needs.length) sentence(`  מה הם מחפשים: ${item.needs.join(", ")}`);
+      if (item.where.length) sentence(`  איפה הם נמצאים: ${item.where.join(", ")}`);
+    });
+  }
+
+  if (data.priorities.length) {
+    hasFigures = true;
+    section("סדרי עדיפויות (מהחשוב לפחות)");
+    data.priorities.forEach((item, index) => sentence(`${index + 1}. ${item}`));
+  }
+
+  const expectationLines: string[] = [];
+  const expected = data.expectations;
+  if (expected.expected_impressions) {
+    expectationLines.push(`חשיפות בחודש: ${demoBriefCounts(expected.expected_impressions)}`);
+  }
+  if (expected.expected_clicks) {
+    expectationLines.push(`קליקים בחודש: ${demoBriefCounts(expected.expected_clicks)}`);
+  }
+  if (expected.expected_purchases) {
+    const unit = expected.conversion_unit === "רכישה" ? "רכישות" : "פניות";
+    expectationLines.push(`${unit} בחודש: ${demoBriefCounts(expected.expected_purchases)}`);
+  }
+  if (expected.realistic_roas) {
+    expectationLines.push(
+      `ROAS ריאלי: ${expected.realistic_roas.min}-${expected.realistic_roas.max}`
+    );
+  }
+  if (expectationLines.length) {
+    hasFigures = true;
+    section("מה אפשר לצפות (טווחים מהתוכנית, לא הבטחה)");
+    expectationLines.forEach((line) => sentence(`- ${line}`));
+  }
+
+  const tracking = data.tracking;
+  if (tracking.available && tracking.utm_campaign) {
+    hasFigures = true;
+    section("מעקב");
+    sentence(tracking.note);
+    if (tracking.utm_source.length) sentence(`utm_source: ${tracking.utm_source.join(", ")}`);
+    sentence(`utm_medium: ${tracking.utm_medium}`);
+    sentence(`utm_campaign: ${tracking.utm_campaign}`);
+    if (tracking.utm_content_example) {
+      sentence(`utm_content (דוגמה מהתוכנית): ${tracking.utm_content_example}`);
+    }
+    if (tracking.example_url) sentence(`קישור לדוגמה: ${tracking.example_url}`);
+  }
+
+  if (data.warnings.length) {
+    section("מה חשוב לדעת");
+    data.warnings.forEach((item) => sentence(`- ${item}`));
+  }
+  if (data.assumptions.length) {
+    section("המספרים מבוססים על");
+    data.assumptions.forEach((item) => sentence(`- ${item}`));
+  }
+
+  if (!hasFigures) {
+    lines.push(
+      "",
+      "התוכנית השמורה לא כוללת עדיין תקציב, קהלים או יעדים, " +
+        "ולכן אין כאן נתונים שאפשר להעביר למפרסם."
+    );
+  }
+  return lines.join("\n");
+}
+
+/**
+ * The demo brief, assembled from the demo's own state the way `campaign_brief` assembles
+ * it from the stored plan — so a demo user who changes the budget sees the brief agree.
+ */
+function demoCampaignBrief(): PublishBrief {
+  const usp = DEMO_STRATEGY.usp;
+  const allocation = usp.budget_allocation;
+  // Read as a plain string-keyed map: the demo plan may not carry an allocation at all,
+  // and a share the plan does not have produces no line rather than a zero.
+  const shares: Record<string, unknown> = allocation ? { ...allocation } : {};
+  const budget = DEMO_BUSINESS.monthly_budget_ils;
+  const allocationRows = DEMO_ALLOCATION_LABELS.flatMap(([key, label]) => {
+    const share = Number(shares[key]) || 0;
+    if (share <= 0) return [];
+    return [
+      { key, label, share_pct: share, amount_ils: budget ? Math.round((budget * share) / 100) : undefined },
+    ];
+  });
+
+  const outletCounts = new Map<string, number>();
+  POSTS.forEach((post) => {
+    const outlet = post.primary_outlet || "";
+    if (outlet) outletCounts.set(outlet, (outletCounts.get(outlet) || 0) + 1);
+  });
+  const channels = [...outletCounts.entries()]
+    .map(([outlet, posts]) => ({
+      outlet,
+      label: PUBLISH_OUTLET_LABELS[outlet] || outlet,
+      posts,
+    }))
+    .sort((a, b) => b.posts - a.posts || a.outlet.localeCompare(b.outlet));
+
+  // Taken from the posts themselves, exactly as the API does it: a convention only real
+  // posts already carry is worth printing.
+  const utmSources: string[] = [];
+  let exampleUrl = "";
+  let exampleContent = "";
+  POSTS.forEach((post) => {
+    const source = post.utm?.utm_source || "";
+    if (source && !utmSources.includes(source)) utmSources.push(source);
+    if (!exampleUrl && post.tracking_url) exampleUrl = post.tracking_url;
+    if (!exampleContent && post.utm?.utm_content) exampleContent = post.utm.utm_content;
+  });
+
+  const formats: string[] = [];
+  POSTS.forEach((post) => {
+    if (post.format && !formats.includes(post.format)) formats.push(post.format);
+  });
+
+  const payload: Omit<PublishBrief, "text"> = {
+    year: DEMO_STRATEGY.year,
+    month: DEMO_STRATEGY.month,
+    month_name_he: DEMO_STRATEGY.month_name_he,
+    business_name: DEMO_BUSINESS.name,
+    goal: DEMO_STRATEGY.monthly_horizon_plan?.hypothesis || usp.growth_hypothesis || "",
+    theme: DEMO_STRATEGY.roadmap.theme || "",
+    // The demo plan stores no stage, so no stage line is printed — the same rule the API
+    // follows for a figure the plan does not carry.
+    budget: budget ? { monthly_budget_ils: budget, stage: "", stage_label: "" } : null,
+    allocation: allocationRows,
+    allocation_guidance: allocation?.guidance || "",
+    cadence: {
+      ...(DEMO_STRATEGY.posting_plan?.weekly_posts
+        ? { posts_per_week: DEMO_STRATEGY.posting_plan.weekly_posts }
+        : {}),
+      ...(formats.length ? { formats } : {}),
+    },
+    channels,
+    audiences: DEMO_AUDIENCES.map((audience) => ({
+      name: audience.name,
+      summary: audience.summary,
+      is_primary: audience.is_primary,
+      needs: [...audience.needs],
+      where: [...audience.where],
+      targeting: { ...audience.targeting },
+    })),
+    priorities: [...(usp.growth_targets || [])].slice(0, 3),
+    expectations: {},
+    tracking: {
+      available: Boolean(utmSources.length || exampleUrl || exampleContent),
+      website: DEMO_BUSINESS.website_url,
+      utm_source: utmSources,
+      utm_medium: "organic",
+      utm_campaign: DEMO_UTM_CAMPAIGN,
+      utm_content_example: exampleContent,
+      example_url: exampleUrl,
+      note: "כל פוסט מפורסם עם הקישור שלו, כדי שאפשר יהיה לשייך לחיצות ופניות לפוסט שהביא אותן.",
+    },
+    warnings: [],
+    assumptions: [],
+    channel_note: DEMO_STRATEGY.posting_plan?.mix_note || "",
+  };
+  return { ...payload, text: renderDemoBrief(payload) };
+}
+
 /**
  * Resolves a request against the in-memory demo fixtures.
  *
@@ -1598,8 +2029,7 @@ function demoAssetSuggestions(post: RoadmapPost): AssetSuggestion[] {
  * like the real work they stand in for — an instantly-resolved list would hide every
  * loading state the screens are supposed to prove. Callers already await `api()`.
  */
-async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const method = (options.method || "GET").toUpperCase();
+async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {  const method = (options.method || "GET").toUpperCase();
   if (path === "/auth/me") return DEMO_USER as T;
   if (path === "/auth/logout" && method === "POST") {
     exitDemo();
@@ -2266,6 +2696,52 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   // Computed per call from the live demo state, not a frozen fixture: a demo user who
   // approves a post or deletes an audience should see the checklist agree with it.
   if (path === "/setup") return demoSetup() as T;
+  // Same reason: scheduling, approving or publishing a post moves it between the queue's
+  // buckets, so the queue is derived from the demo posts on every read.
+  if (path === "/publish/queue") return demoPublishQueue() as T;
+  if (path === "/publish/capability") return { ...DEMO_PUBLISH_CAPABILITY } as T;
+  if (path === "/publish/brief") return demoCampaignBrief() as T;
+  if (path === "/strategy/posts/publish" && method === "POST") {
+    // This route had no demo branch at all, so marking a post as published failed in the
+    // demo with "no demo path for /strategy/posts/publish" — a dead end the owner only
+    // meets after they have already posted by hand. Same contract as the API: the URL is
+    // written as given and the post moves into the queue's published bucket.
+    const body = JSON.parse(String(options.body || "{}")) as {
+      post_index?: number;
+      published_url?: string;
+    };
+    const index = body.post_index ?? 0;
+    if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא בתוכנית", 404);
+    const url = (body.published_url || "").trim();
+    if (!url) throw new ApiError("צריך קישור לפוסט שפורסם.", 422);
+    POSTS[index] = { ...POSTS[index], published_url: url, published_at: new Date().toISOString() };
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+  }
+  if (path === "/strategy/posts/schedule" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as {
+      post_index?: number;
+      scheduled_for?: string;
+    };
+    const index = body.post_index ?? 0;
+    if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא בתוכנית", 404);
+    const raw = (body.scheduled_for || "").trim();
+    // The same strict reader the API uses, with the same Hebrew sentence: a date nothing
+    // can order never reaches the roadmap, in the demo no more than in production.
+    if (raw && !/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+      throw new ApiError("תאריך לא תקין. הזינו תאריך בפורמט YYYY-MM-DD, למשל 2026-03-15.", 400);
+    }
+    if (raw && Number.isNaN(Date.parse(`${raw}T00:00:00`))) {
+      throw new ApiError("תאריך לא תקין. הזינו תאריך בפורמט YYYY-MM-DD, למשל 2026-03-15.", 400);
+    }
+    POSTS[index] = {
+      ...POSTS[index],
+      scheduled_for: raw,
+      scheduled_at: raw ? new Date().toISOString() : null,
+    };
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+  }
   // The promotion payloads are deep enough that a hand-written clone would be a
   // liability; they are plain JSON, so a round-trip is simpler and total. Cloning keeps
   // a screen that mutates what it renders from poisoning the demo for the next visit.
@@ -2517,6 +2993,18 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ post_index, audience_id }),
     }),
+  /** Set (or clear) the day a post goes out. `""` clears it. */
+  schedulePost: (post_index: number, scheduled_for: string) =>
+    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/schedule", {
+      method: "POST",
+      body: JSON.stringify({ post_index, scheduled_for }),
+    }),
+  /** The month's posts grouped by what the owner has to do about them. */
+  publishQueue: () => api<PublishQueue>("/publish/queue"),
+  /** What this product can and cannot do for this business today. */
+  publishCapability: () => api<PublishCapability>("/publish/capability"),
+  /** The month's plan as one copyable Hebrew brief. */
+  publishBrief: () => api<PublishBrief>("/publish/brief"),
 };
 
 export type Competitor = { name: string; website_url: string };
@@ -2697,6 +3185,11 @@ export type RoadmapPost = {
     utm_content: string;
   };
   tracking_url?: string;
+  /** The day the owner set for this post, `YYYY-MM-DD`, or "" when it has no date yet.
+   *  It is what the publishing queue sorts on, so the panel binds its date input to it. */
+  scheduled_for?: string;
+  /** When the date was set — not when the post goes out. */
+  scheduled_at?: string | null;
   published_url?: string;
   published_at?: string | null;
   approval_status?: "review" | "approved";
@@ -2705,6 +3198,134 @@ export type RoadmapPost = {
    *  until the owner (or the plan) decides — an unassigned post is a normal state. */
   audience_id?: number;
   audience_name?: string;
+};
+
+/**
+ * One post as the publishing queue shows it. Mirrors `post_brief` in
+ * `api/app/services/publish.py`: identity, timing, approval and what already exists.
+ * Deliberately not the copy — the queue is a list of what to do, not an editor.
+ */
+export type PostBrief = {
+  index: number;
+  title: string;
+  format: string;
+  primary_outlet: string;
+  outlets: string[];
+  date_hint: string;
+  /** `YYYY-MM-DD`, or "" when the post has no date yet. */
+  scheduled_for: string;
+  approval_status: string;
+  published_url: string;
+  published_at: string | null;
+  has_image: boolean;
+  tracking_url: string;
+};
+
+/**
+ * What this product is actually permitted to do, read from the permissions Meta granted
+ * on the stored connection — never from the list we wish we had.
+ *
+ * `auto_publish` is false for every business today: posting to an Instagram business
+ * account or a Facebook Page needs `instagram_content_publish` and `pages_manage_posts`,
+ * and Meta only grants those after it reviews the app. No flag, environment variable or
+ * setting turns this on — which is why the publishing panel hands over a kit instead of
+ * showing a publish button.
+ */
+export type PublishCapability = {
+  auto_publish: boolean;
+  can_schedule: boolean;
+  /** Plain-Hebrew sentences, shown to the owner verbatim. */
+  reasons: string[];
+  /** The permission names still missing, for whoever handles the Meta side. */
+  missing: string[];
+  connected: { meta: boolean; ga4: boolean };
+};
+
+/** The month's posts, grouped by what the owner has to do about them. */
+export type PublishQueue = {
+  year: number;
+  month: number;
+  month_name_he: string;
+  due: PostBrief[];
+  upcoming: PostBrief[];
+  unscheduled: PostBrief[];
+  awaiting_approval: PostBrief[];
+  published: PostBrief[];
+  counts: {
+    due: number;
+    upcoming: number;
+    unscheduled: number;
+    awaiting_approval: number;
+    published: number;
+    total: number;
+  };
+  capability: PublishCapability;
+};
+
+export type PublishBriefAllocation = {
+  key: string;
+  label: string;
+  share_pct: number;
+  amount_ils?: number;
+};
+
+export type PublishBriefChannel = { outlet: string; label: string; posts: number };
+
+export type PublishBriefAudience = {
+  name: string;
+  summary: string;
+  is_primary: boolean;
+  needs: string[];
+  where: string[];
+  targeting: Record<string, unknown>;
+};
+
+export type PublishBriefTracking = {
+  available: boolean;
+  website: string;
+  utm_source: string[];
+  utm_medium: string;
+  utm_campaign: string;
+  utm_content_example: string;
+  example_url: string;
+  note: string;
+};
+
+/**
+ * The month's plan assembled into something a person can act on. Mirrors `campaign_brief`
+ * in `api/app/services/publish.py`.
+ *
+ * Every figure comes from the stored plan; a figure the plan does not carry is an empty
+ * field rather than a guess, and `text` is built line by line with the same rule — so a
+ * section the plan has nothing for produces no line at all.
+ */
+export type PublishBrief = {
+  year: number;
+  month: number;
+  month_name_he: string;
+  business_name: string;
+  goal: string;
+  theme: string;
+  budget: { monthly_budget_ils: number; stage: string; stage_label: string } | null;
+  allocation: PublishBriefAllocation[];
+  allocation_guidance: string;
+  cadence: { posts_per_week?: number; formats?: string[] };
+  channels: PublishBriefChannel[];
+  audiences: PublishBriefAudience[];
+  priorities: string[];
+  expectations: {
+    expected_impressions?: { min: number; max: number };
+    expected_clicks?: { min: number; max: number };
+    expected_purchases?: { min: number; max: number };
+    realistic_roas?: { min: number; max: number };
+    conversion_unit?: string;
+  };
+  tracking: PublishBriefTracking;
+  warnings: string[];
+  assumptions: string[];
+  channel_note: string;
+  /** The whole brief as one plain-Hebrew block, ready to copy. */
+  text: string;
 };
 
 export type GrowthHypothesis = {

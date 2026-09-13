@@ -6,6 +6,12 @@ import httpx
 from app.config import get_settings
 
 GRAPH = "https://graph.facebook.com/v21.0"
+# Read-only permissions, and deliberately nothing more. Posting to an Instagram business
+# account or to a Facebook Page needs `instagram_content_publish` and `pages_manage_posts`,
+# and Meta only lets an app *ask* for those after it has reviewed and approved the app.
+# Requesting an unapproved permission here fails the whole login, so it is not requested;
+# the publishing screen reports what is missing and why instead
+# (see `services.publish.PUBLISH_SCOPES`).
 META_SCOPES = [
     "pages_show_list",
     "pages_read_engagement",
@@ -73,7 +79,37 @@ def exchange_code(code: str) -> dict:
         "access_token": payload["access_token"],
         "refresh_token": payload["access_token"],
         "expires_at": expires,
+        # What Meta actually granted, which is not always what was asked for. The
+        # publishing capability is read from this and never from META_SCOPES.
+        "scopes": granted_scopes(payload["access_token"]),
     }
+
+
+def granted_scopes(access_token: str) -> list[str]:
+    """The permissions Meta actually attached to this token.
+
+    `META_SCOPES` is what we ask for; Meta decides what it hands back, and the two differ
+    the moment a permission is declined or not yet approved for the app. Recording Meta's
+    own answer is what lets the publishing screen report the truth instead of a wish list.
+
+    Best effort on purpose: a failure to read permissions must never break connecting an
+    account, and an empty list is the honest "we do not know of any grant".
+    """
+    try:
+        response = httpx.get(
+            f"{GRAPH}/me/permissions",
+            params={"access_token": access_token},
+            timeout=20.0,
+        )
+        if response.status_code >= 400:
+            return []
+        return [
+            item["permission"]
+            for item in response.json().get("data", [])
+            if item.get("status") == "granted" and item.get("permission")
+        ]
+    except Exception:
+        return []
 
 
 def list_pages(access_token: str) -> list[dict]:

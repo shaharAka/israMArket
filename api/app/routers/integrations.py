@@ -155,7 +155,7 @@ def meta_callback(code: str = "", state: str = "", error: str = "", db: Session 
         item.token_expires_at = tokens["expires_at"]
         item.status = "select_page"
         pages = meta.list_pages(tokens["access_token"])
-        item.extra_json = dumps({"pages": [{k: v for k, v in page.items() if k != "page_access_token"} | {"has_token": True} for page in pages], "page_tokens": {p["page_id"]: p["page_access_token"] for p in pages}})
+        item.extra_json = dumps({"pages": [{k: v for k, v in page.items() if k != "page_access_token"} | {"has_token": True} for page in pages], "page_tokens": {p["page_id"]: p["page_access_token"] for p in pages}, "scopes": tokens.get("scopes") or []})
         item.updated_at = datetime.utcnow()
         db.commit()
     except Exception as exc:

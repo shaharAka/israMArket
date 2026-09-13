@@ -14,10 +14,12 @@ import {
   type KeywordsPayload,
   type PromotionKeyword,
   type PromotionQuickWin,
+  type PublishBrief,
 } from "@/lib/api";
 import { formatNis } from "@/lib/budget";
-import { IconBell, IconChart, IconCheck, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
+import { IconBell, IconChart, IconCheck, IconCopy, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
+import { copyText } from "@/lib/ui";
 
 const identity = SECTIONS.promotion;
 
@@ -347,6 +349,9 @@ export default function PromotionPage() {
   const [keywords, setKeywords] = useState<KeywordsPayload | null>(null);
   const [keywordsError, setKeywordsError] = useState("");
   const [keywordsAttempt, setKeywordsAttempt] = useState(0);
+  const [brief, setBrief] = useState<PublishBrief | null>(null);
+  const [briefError, setBriefError] = useState("");
+  const [briefAttempt, setBriefAttempt] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -382,9 +387,28 @@ export default function PromotionPage() {
     };
   }, [keywordsAttempt]);
 
+  // The month's plan, assembled by the server into one block the owner can hand over. It
+  // is a read of what is already stored, not a new figure — which is why it can be built
+  // on load and not only from a click.
+  useEffect(() => {
+    let active = true;
+    endpoints
+      .publishBrief()
+      .then((payload) => {
+        if (!active) return;
+        setBrief(payload);
+        setBriefError("");
+      })
+      .catch((err) => {
+        if (active) setBriefError(messageOf(err, "טעינת הבריף נכשלה"));
+      });
+    return () => {
+      active = false;
+    };
+  }, [briefAttempt]);
+
   const plan = promotion?.plan ?? null;
-  const profile = promotion?.business_profile ?? null;
-  const kwSources = keywords?.sources;
+  const profile = promotion?.business_profile ?? null;  const kwSources = keywords?.sources;
   const searchConsoleConnected = keywords?.search_console_connected === true;
   const rows = keywords?.keywords ?? [];
   const quickWins = keywords?.quick_wins ?? [];
@@ -1156,6 +1180,48 @@ export default function PromotionPage() {
               בחיפוש בגוגל תחת שם העסק.
             </p>
           )}
+        </section>
+
+        {/* ---------- the month's brief, ready to hand over ---------- */}
+        {/* The one block on this page that is not a figure we looked up: it is the whole
+            month's plan — budget, audiences, cadence, the tracked-link convention —
+            assembled into text the owner can paste to whoever runs the ads. It sits last
+            because it is the hand-off, not the answer, and it is an Expand because the
+            page's word budget belongs to the answer above it. */}
+        <section className="mt-8 border-t border-[#e6e4dc] pt-1">
+          <Expand
+            title="בריף קמפיין"
+            hint={brief ? `${brief.month_name_he} ${brief.year}` : undefined}
+          >
+            {briefError ? (
+              <div>
+                <p className="text-sm text-[#9f4330]">{briefError}</p>
+                <RetryButton onClick={() => setBriefAttempt((attempt) => attempt + 1)} />
+              </div>
+            ) : !brief ? (
+              <p className="text-sm text-[#5e6159]">מכינים את הבריף…</p>
+            ) : (
+              <>
+                <p className="max-w-3xl text-xs leading-5 text-[#8b8e84]">
+                  מה שבתוכנית החודש — המטרה, התקציב והחלוקה שלו, הקהלים, קצב הפרסום
+                  והקישור עם המעקב — כבלוק אחד להעתקה ולשליחה.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void copyText(brief.text, "הבריף הועתק.")}
+                  className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-md border border-[#c7c4b8] bg-white px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
+                >
+                  <IconCopy className="h-3.5 w-3.5" />
+                  העתקת הבריף
+                </button>
+                {/* The text itself, exactly what the button copies, and scrollable so a
+                    long month cannot push the page's real content off the screen. */}
+                <pre className="mt-3 max-h-96 overflow-auto rounded-md border border-[#e6e4dc] bg-white p-4 text-xs leading-6 whitespace-pre-wrap text-[#3c3e3a]">
+                  {brief.text}
+                </pre>
+              </>
+            )}
+          </Expand>
         </section>
       </div>
     </AppShell>

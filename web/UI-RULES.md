@@ -78,6 +78,13 @@ The reference is `/decisions`, the page the owner called good:
 | `/posts` | **160** — an editor is inherently denser |
 | `/promotion` | **200** — it carries real published figures, which are the one thing worth words |
 
+**Measure against a real account, not only demo mode.** These ceilings were first
+calibrated in demo mode, and demo fixtures are shorter than real generated content:
+`/posts` measured 149 in demo and **194 on a real account with eight real posts**, so a
+page can look on-budget while the owner is reading something twice as long. Demo mode is
+also the reason a stale backend went unnoticed for a whole session — it serves fixtures
+client-side and never touches the API. Worth checking both.
+
 When a page is over budget the answer is almost never to delete information. It is:
 
 1. Move the explanation behind the expand that already exists.

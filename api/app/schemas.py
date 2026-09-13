@@ -192,6 +192,18 @@ class PostPublishIn(BaseModel):
     published_url: str = Field(min_length=8, max_length=800)
 
 
+class PostScheduleIn(BaseModel):
+    """When a post should go out.
+
+    `scheduled_for=""` clears the date. The value is validated in the router rather than
+    by a pattern here, so a bad date produces the Hebrew sentence the owner reads instead
+    of a pydantic error.
+    """
+
+    post_index: int = Field(ge=0, le=50)
+    scheduled_for: str = Field(default="", max_length=40)
+
+
 class WebhookIn(BaseModel):
     url: HttpUrl
     events: str = "recommendations,strategy"

@@ -14,6 +14,7 @@ from app.schemas import (
     PostImageIn,
     PostPublishIn,
     PostRewriteIn,
+    PostScheduleIn,
     PostSuggestAssetsIn,
     PostUpdateIn,
     StrategyApproveIn,
@@ -34,6 +35,7 @@ from app.services.images import (
 )
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
+from app.services.publish import parse_scheduled_for
 from app.services.scraper import fetch_photo_candidates
 from app.services.strategy import generate_monthly_strategy, rewrite_post
 
@@ -618,6 +620,42 @@ def approve_post(
     target = posts[body.post_index]
     target["approval_status"] = "approved" if body.approved else "review"
     target["approved_at"] = datetime.utcnow().isoformat() if body.approved else None
+    posts[body.post_index] = target
+    extra["roadmap"] = {**roadmap, "posts": posts}
+    strategy.roadmap_json = dumps(extra)
+    business.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(strategy)
+    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+
+
+@router.post("/strategy/posts/schedule")
+def schedule_post(
+    body: PostScheduleIn,
+    business: Business = Depends(get_business),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Set (or clear) the day a post should go out.
+
+    The date is what the publishing queue sorts on, so it is validated strictly: a value
+    that cannot be read back is rejected with a Hebrew message rather than stored.
+    `scheduled_at` records when the owner set it, not when the post will go out.
+    """
+    strategy = _active_strategy(db, business)
+    extra = loads(strategy.roadmap_json, {})
+    roadmap = extra.get("roadmap") or {}
+    posts = list(roadmap.get("posts") or [])
+    if body.post_index >= len(posts):
+        raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
+
+    try:
+        scheduled_for = parse_scheduled_for(body.scheduled_for)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    target = posts[body.post_index]
+    target["scheduled_for"] = scheduled_for
+    target["scheduled_at"] = datetime.utcnow().isoformat() if scheduled_for else None
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)

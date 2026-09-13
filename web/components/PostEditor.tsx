@@ -13,6 +13,7 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
+import { PublishPanel } from "@/components/PublishPanel";
 import {
   endpoints,
   type Asset,
@@ -134,6 +135,16 @@ function captionFor(post: RoadmapPost, outlet: OutletKey) {
   return post.caption;
 }
 
+/**
+ * A mockup is a visual preview of how the post looks, so it shows only the opening of
+ * the caption. The full text lives in the editable box beside it — drawing it twice
+ * cost roughly 25 words on the face and told the owner nothing extra.
+ */
+function previewCaption(caption: string, max = 90): string {
+  const clean = (caption || "").trim();
+  return clean.length > max ? `${clean.slice(0, max).trimEnd()}…` : clean;
+}
+
 export function PostEditor({
   posts: initialPosts,
   brandLanguage,
@@ -185,6 +196,9 @@ export function PostEditor({
   const [showImageTools, setShowImageTools] = useState(false);
   const [showDesigner, setShowDesigner] = useState(false);
   const [showRatios, setShowRatios] = useState(false);
+  // The handoff kit, the date and the capability note. Collapsed like the two groups above
+  // it: the page already has its one dark button, and none of this is a call to action.
+  const [showPublish, setShowPublish] = useState(false);
 
   // Who the post is for. The picker is an ordinary list read; the write is only ever a
   // deliberate change of the selection.
@@ -444,6 +458,13 @@ export function PostEditor({
     }
   }
 
+  /** Every write returns the whole strategy, so the editor takes the server's version of
+   *  the month rather than patching its own copy — the same rule the handlers below follow. */
+  function applyStrategy(strategy: StrategyPayload) {
+    setPosts(strategy.roadmap.posts);
+    onStrategyUpdated?.(strategy);
+  }
+
   async function markPublished() {
     if (!publishUrl.trim()) {
       toast("הדביקו את קישור הפוסט באינסטגרם או בפייסבוק");
@@ -672,7 +693,7 @@ export function PostEditor({
                 <span className="text-xs font-bold text-white">{businessName}</span>
               </div>
               <p className="line-clamp-2 text-xs leading-5 text-white/95">
-                {activeCaption}
+                {previewCaption(activeCaption)}
               </p>
             </div>
           </div>
@@ -725,7 +746,7 @@ export function PostEditor({
           {/* Caption Below Media */}
           <div className="mt-1.5 text-xs leading-5 text-[#20211f]">
             <span className="font-bold ml-1.5">{businessName}</span>
-            <span className="whitespace-pre-line text-[#343632]">{activeCaption}</span>
+            <span className="whitespace-pre-line text-[#343632]">{previewCaption(activeCaption)}</span>
           </div>
 
           {currentPost.cta ? (
@@ -772,7 +793,7 @@ export function PostEditor({
         {/* Facebook Copy IS ON TOP OF MEDIA */}
         <div className="px-3.5 pb-3">
           <p className="whitespace-pre-line text-sm leading-6 text-[#050505]">
-            {activeCaption}
+            {previewCaption(activeCaption)}
           </p>
           {currentPost.cta ? (
             <p className="mt-2 text-xs font-bold text-[#1877f2]">
@@ -878,7 +899,7 @@ export function PostEditor({
                 *{currentPost.title}*
               </p>
               <p className="whitespace-pre-line text-[#111b21]">
-                {activeCaption}
+                {previewCaption(activeCaption)}
               </p>
               {currentPost.cta ? (
                 <p className="pt-1 font-bold text-[#008069]">
@@ -966,7 +987,7 @@ export function PostEditor({
               @{businessName.replace(/\s+/g, "_")}
             </p>
             <p className="line-clamp-2 text-xs leading-5 text-white/90">
-              {activeCaption}
+              {previewCaption(activeCaption)}
             </p>
             <div className="mt-2 flex items-center gap-1.5 text-[10px] text-white/80">
               <span>🎵</span>
@@ -1659,6 +1680,41 @@ export function PostEditor({
                 </button>
                 {showDesigner ? renderDesignerPanel() : null}
               </div>
+              <div className="border-t border-[#f0efeb]">
+                <button
+                  type="button"
+                  aria-expanded={showPublish}
+                  disabled={imageLocked}
+                  onClick={() => setShowPublish((open) => !open)}
+                  className="flex min-h-11 w-full items-center justify-between px-1 text-right text-xs font-bold text-[#20211f] disabled:opacity-40"
+                >
+                  {/* "ידני" is the honest one-word answer to "can this publish for me?".
+                      It is a state, not a promise, and the panel behind it says why. */}
+                  <span>פרסום · ידני</span>
+                  <span className="text-[11px] font-bold text-[#62635f]">
+                    {showPublish ? "סגירה" : "פתיחה"}
+                  </span>
+                </button>
+                {showPublish ? (
+                  <PublishPanel
+                    key={selectedIndex}
+                    post={currentPost}
+                    postIndex={selectedIndex}
+                    outlet={outlet}
+                    outletLabel={currentOutletMeta.label}
+                    caption={activeCaption}
+                    imageLocked={imageLocked}
+                    onStrategy={applyStrategy}
+                    onExportCard={() => void handleExportCard()}
+                    exporting={exporting}
+                    exportDisabled={downloadDisabled}
+                    publishUrl={publishUrl}
+                    onPublishUrlChange={setPublishUrl}
+                    publishing={publishing}
+                    onMarkPublished={() => void markPublished()}
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -1726,48 +1782,9 @@ export function PostEditor({
               </div>
             ) : null}
 
-            {/* Tracking link + the live URL, in one plain block with hairline rows. */}
-            <div className="divide-y divide-[#e9e8e3] border-y border-[#e9e8e3] text-xs">
-              {currentPost.tracking_url ? (
-                <div className="py-3">
-                  <p className="font-bold text-[#191b18]">קישור מעקב לקמפיין</p>
-                  <p className="mt-1 break-all font-mono text-[#5e6159]">{currentPost.tracking_url}</p>
-                  <button
-                    type="button"
-                    className="mt-2 font-bold text-[#191b18] underline inline-flex items-center gap-1"
-                    onClick={() => {
-                      void navigator.clipboard.writeText(currentPost.tracking_url || "");
-                      toast("הקישור הועתק.");
-                    }}
-                  >
-                    <IconLink className="h-3 w-3" />
-                    העתיקו קישור
-                  </button>
-                </div>
-              ) : null}
-
-              <div className="py-3">
-                <p className="font-bold text-[#191b18]">אחרי שפרסמתם ב-{currentOutletMeta.label}</p>
-                <p className="mt-1 text-[#5e6159]">כדי שנמדוד אותו בתוצאות.</p>
-                <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                  <input
-                    aria-label="קישור הפוסט שפורסם"
-                    value={publishUrl}
-                    onChange={(event) => setPublishUrl(event.target.value)}
-                    placeholder="https://..."
-                    className="flex-1 rounded-md border border-[#dedcd4] px-3 py-2 text-xs"
-                  />
-                  <button
-                    type="button"
-                    disabled={publishing}
-                    onClick={() => void markPublished()}
-                    className="min-h-10 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
-                  >
-                    {currentPost.published_url ? "עדכון קישור" : "סימון כפורסם"}
-                  </button>
-                </div>
-              </div>
-            </div>
+            {/* The tracked link and the "after you posted" flow used to sit here as two
+                always-visible rows. Both are the publishing handoff, so they moved into
+                the collapsed publishing group — one tap away, and off the page's face. */}
           </section>
         </div>
       </main>

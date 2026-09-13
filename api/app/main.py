@@ -17,6 +17,7 @@ from app.routers import (
     onboarding,
     performance,
     promotion,
+    publish,
     recommendations,
     setup,
     strategy,
@@ -57,6 +58,7 @@ app.include_router(onboarding.router)
 app.include_router(assets.router)
 app.include_router(audiences.router)
 app.include_router(strategy.router)
+app.include_router(publish.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
 app.include_router(recommendations.router)
