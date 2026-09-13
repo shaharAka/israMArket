@@ -3,8 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, Badge, Button, Card, ErrorNote, PageHeader } from "@/components/AppShell";
-import { endpoints, type PerformancePayload } from "@/lib/api";
-import { IconChart } from "@/lib/icons";
+import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/lib/api";
+import { IconChart, IconUsers } from "@/lib/icons";
 
 const METRIC_LABELS: Record<string, { label: string; unit?: string; note: string }> = {
   sessions: { label: "כניסות לאתר", note: "סך כל הביקורים באתר" },
@@ -29,6 +29,203 @@ function formatMetricValue(key: string, val: string) {
   return val;
 }
 
+/**
+ * The metric columns to show, derived from what the rows actually carry.
+ *
+ * Nothing here is a fixed promise: if the sync summed sessions and conversions but no Meta
+ * insights, the table shows two columns and no empty ones. The order is the order a reader
+ * wants them in, and a bucket that exists for nobody never appears.
+ */
+const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] = [
+  { key: "sessions", label: "כניסות לאתר", source: "ga4" },
+  { key: "conversions", label: "פניות והזמנות", source: "ga4" },
+  { key: "engaged_sessions", label: "ביקורים מעורבים", source: "ga4" },
+  { key: "likes", label: "לייקים", source: "meta" },
+  { key: "comments", label: "תגובות", source: "meta" },
+  { key: "impressions", label: "חשיפות", source: "meta" },
+  { key: "reach", label: "אנשים שהגיעו", source: "meta" },
+  { key: "saves", label: "שמירות", source: "meta" },
+  { key: "shares", label: "שיתופים", source: "meta" },
+];
+
+/** The label the backend gives the untagged bucket. A row with a null id is the same thing. */
+const UNASSIGNED_NAME = "לא משויך";
+
+/**
+ * One cell. A metric that was not measured is `אין מדידה` — never `0`, which would claim a
+ * measured result of nothing. The two are different facts and the table keeps them apart.
+ */
+function MetricCell({ value }: { value: number | undefined }) {
+  if (value === undefined || value === null) {
+    return <span className="text-[11px] text-[#8b8e84]">אין מדידה</span>;
+  }
+  return (
+    <span className="metric-number font-bold text-[#191b18]">{value.toLocaleString("he-IL")}</span>
+  );
+}
+
+/** Results broken down by the audience each post serves. */
+function AudienceBreakdown({ payload }: { payload: PerformancePayload }) {
+  const data = payload.audiences as AudiencePerformance;
+  const rows = data.rows ?? [];
+  const maxPosts = rows.reduce((max, row) => Math.max(max, row.posts || 0), 0);
+  const connected = data.connected ?? {};
+  const anyConnected = Boolean(connected.ga4 || connected.meta);
+  const offline = [
+    !connected.ga4 ? "Google Analytics 4" : "",
+    !connected.meta ? "אינסטגרם" : "",
+  ].filter(Boolean);
+
+  // Only the buckets somebody actually carries become columns.
+  const columns = METRIC_COLUMNS.filter((column) =>
+    rows.some((row) => {
+      const bucket = column.source === "ga4" ? row.ga4 : row.meta;
+      return bucket != null && bucket[column.key as keyof typeof bucket] !== undefined;
+    }),
+  );
+
+  return (
+    <Card>
+      <div className="flex flex-wrap items-start justify-between gap-3 pb-3 border-b border-slate-100">
+        <div>
+          <h3 className="inline-flex items-center gap-2 text-sm font-bold text-slate-900">
+            <IconUsers className="h-4 w-4" />
+            מה עבד לכל קהל
+          </h3>
+          <p className="mt-1 max-w-2xl text-xs leading-5 text-slate-500">
+            הסכום של מה שכבר שויך לכל פוסט, לפי הקהל שהפוסט משרת. עמודת הפוסטים היא גודל
+            המדגם — קהל עם פוסט אחד הוא כיוון, לא מגמה.
+          </p>
+        </div>
+        <span className="text-[11px] text-slate-500">
+          {payload.period_start && payload.period_end
+            ? `תקופה: ${payload.period_start} עד ${payload.period_end}`
+            : ""}
+        </span>
+      </div>
+
+      {!rows.length ? (
+        <p className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+          אין עדיין פוסטים בתוכנית, ולכן אין מה לפרק לפי קהל.
+        </p>
+      ) : (
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[560px] border-collapse text-right">
+            <thead>
+              <tr className="text-[11px] text-slate-500">
+                <th scope="col" className="py-2 pl-2 font-bold">קהל</th>
+                <th scope="col" className="py-2 px-2 font-bold text-center">פוסטים</th>
+                {columns.map((column) => (
+                  <th key={column.key} scope="col" className="py-2 px-2 font-bold text-center">
+                    {column.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row, index) => {
+                const unassigned = row.audience_id === null || row.name === UNASSIGNED_NAME;
+                const measured = row.measured_posts ?? 0;
+                return (
+                  <tr
+                    key={row.audience_id === null ? "unassigned" : row.audience_id}
+                    className={`border-t border-slate-100 align-top ${
+                      unassigned ? "bg-slate-50" : index % 2 ? "bg-slate-50/40" : ""
+                    }`}
+                  >
+                    <td className="py-2.5 pl-2">
+                      <span
+                        className={`block text-xs ${
+                          unassigned ? "font-bold text-slate-500" : "font-bold text-slate-900"
+                        }`}
+                      >
+                        {row.name || UNASSIGNED_NAME}
+                        {row.is_primary ? (
+                          <span className="ms-2 rounded-full bg-[#f3f4f7] px-2 py-0.5 text-[10px] font-bold text-[#3f4a5c]">
+                            הקהל המוביל
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="mt-1 flex items-center gap-2">
+                        {/* The sample size also draws the bar, so a one-post row cannot
+                            read as a trend at a glance. */}
+                        <span className="block h-1 w-16 shrink-0 overflow-hidden rounded-full bg-slate-200/70">
+                          <span
+                            className={`block h-full rounded-full ${
+                              unassigned ? "bg-slate-400" : "bg-[#3f4a5c]"
+                            }`}
+                            style={{
+                              width: `${
+                                maxPosts ? Math.max(8, ((row.posts || 0) / maxPosts) * 100) : 0
+                              }%`,
+                            }}
+                          />
+                        </span>
+                        <span className="text-[10px] leading-4 text-slate-400">
+                          {unassigned
+                            ? "פוסטים שעוד לא שויכו לקהל"
+                            : row.posts && measured < row.posts
+                              ? `נמדדו ${measured} מתוך ${row.posts} פוסטים`
+                              : ""}
+                        </span>
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-2 text-center">
+                      <span className="metric-number font-bold text-slate-900">
+                        {(row.posts || 0).toLocaleString("he-IL")}
+                      </span>
+                      {row.posts === 1 ? (
+                        <span className="mt-0.5 block text-[10px] text-amber-700">פוסט אחד</span>
+                      ) : null}
+                    </td>
+                    {columns.map((column) => {
+                      const bucket = column.source === "ga4" ? row.ga4 : row.meta;
+                      const value =
+                        bucket == null
+                          ? undefined
+                          : (bucket[column.key as keyof typeof bucket] as number | undefined);
+                      return (
+                        <td key={column.key} className="py-2.5 px-2 text-center">
+                          <MetricCell value={value} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {!anyConnected ? (
+        <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3 text-xs leading-6 text-slate-700">
+          {data.explanation ||
+            "אין נתוני מדידה לפי קהל. חברו את Google Analytics 4 או את אינסטגרם, ואז נסכום לכל קהל את מה שכבר שויך לפוסטים שלו."}{" "}
+          <Link href="/integrations" className="font-bold text-slate-900 underline underline-offset-4">
+            לחיבור החשבונות
+          </Link>
+        </p>
+      ) : data.explanation ? (
+        <p className="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs leading-6 text-slate-600">
+          {data.explanation}
+        </p>
+      ) : null}
+
+      {anyConnected && offline.length ? (
+        <p className="mt-2 text-[11px] leading-5 text-slate-500">
+          אין כרגע חיבור פעיל ל{offline.join(" ול")}
+          {data.synced_at ? ` — המספרים כאן מהסנכרון האחרון (${data.synced_at}).` : "."}
+        </p>
+      ) : null}
+
+      {data.method ? (
+        <p className="mt-2 text-[11px] leading-5 text-slate-400">{data.method}</p>
+      ) : null}
+    </Card>
+  );
+}
+
 export default function PerformancePage() {
   const [data, setData] = useState<PerformancePayload | null>(null);
   const [error, setError] = useState("");
@@ -37,13 +234,9 @@ export default function PerformancePage() {
   useEffect(() => {
     endpoints
       .performance()
-      .then((payload) => {
-        if (payload.available === false) {
-          setError("עדיין אין סנכרון ביצועים");
-          return;
-        }
-        setData(payload);
-      })
+      // "No sync yet" is not an error: the endpoint still answers with the per-audience
+      // sample (how many posts each segment has). Only a real failure sets the error.
+      .then((payload) => setData(payload))
       .catch((err) => setError(err instanceof Error ? err.message : "עדיין אין נתונים להצגה"));
   }, []);
 
@@ -75,7 +268,15 @@ export default function PerformancePage() {
 
       <ErrorNote message={error} />
 
-      {data ? (
+      {/* The audience sample exists before the first sync, so it is shown either way:
+          how many posts each segment has, and why the numbers are missing. */}
+      {data?.audiences ? (
+        <div className="mb-6">
+          <AudienceBreakdown payload={data} />
+        </div>
+      ) : null}
+
+      {data && data.available !== false ? (
         <div className="space-y-6">
           {/* Executive Summary Card */}
           <div className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] p-6">
@@ -170,7 +371,7 @@ export default function PerformancePage() {
             </Card>
           ) : null}
         </div>
-      ) : (
+      ) : data ? (
         <Card className="text-center py-12 px-6">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f2eee5] text-[#191b18] mb-4">
             <IconChart className="w-7 h-7" />
@@ -189,7 +390,7 @@ export default function PerformancePage() {
             </Link>
           </div>
         </Card>
-      )}
+      ) : null}
     </AppShell>
   );
 }

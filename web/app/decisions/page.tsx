@@ -10,6 +10,8 @@ import { AGENT_NAME } from "@/lib/agent";
 import {
   endpoints,
   isDemo,
+  type Audience,
+  type AudiencePayload,
   type Business,
   type BusinessModel,
   type Diagnostics,
@@ -36,6 +38,7 @@ import {
   IconRoute,
   IconSparkles,
   IconStore,
+  IconUsers,
 } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
@@ -49,11 +52,64 @@ import { toast } from "@/lib/ui";
  */
 type DiagnosticField = DiagnosticQuestion["field"];
 
+/**
+ * The editable half of an audience, as the form holds it.
+ *
+ * `needs` and `where` are typed as one comma-separated line each: the owner writes
+ * "חלה טרייה, מארז חג" the way they would say it, and `parseList` turns that into the
+ * array the API stores. Parsing on save (not on every keystroke) keeps a half-typed
+ * comma from deleting a chip under the cursor.
+ */
+type AudienceForm = {
+  name: string;
+  summary: string;
+  description: string;
+  needs: string;
+  where: string;
+};
+
+const EMPTY_AUDIENCE_FORM: AudienceForm = {
+  name: "",
+  summary: "",
+  description: "",
+  needs: "",
+  where: "",
+};
+
+/** "חלה, מארז חג, " → ["חלה", "מארז חג"]. Split on commas in either script. */
+function parseList(value: string): string[] {
+  return value
+    .split(/[,،]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formFromAudience(audience: Audience): AudienceForm {
+  return {
+    name: audience.name,
+    summary: audience.summary,
+    description: audience.description,
+    needs: (audience.needs ?? []).join(", "),
+    where: (audience.where ?? []).join(", "),
+  };
+}
+
+function payloadFromForm(form: AudienceForm): AudiencePayload {
+  return {
+    name: form.name.trim(),
+    summary: form.summary.trim(),
+    description: form.description.trim(),
+    needs: parseList(form.needs),
+    where: parseList(form.where),
+  };
+}
+
 /** The rail's groups — same ids the anchors and the scroll-spy use. */
 const GROUPS = [
   { id: "model", label: "מודל העסק", hint: "מה העסק מוכר — מוצרים, שירותים או שניהם" },
   { id: "budget", label: "תקציב", hint: "כמה כסף עומד לרשות החודש" },
   { id: "diagnostics", label: "אבחון", hint: "מה שחוזר מהלקוחות שלכם" },
+  { id: "audiences", label: "קהלי היעד", hint: "למי התוכנית והפוסטים מיועדים" },
   { id: "targets", label: "עדיפויות", hint: "מה שהתוכנית נבנית סביבו" },
 ] as const;
 
@@ -110,6 +166,25 @@ export default function DecisionsPage() {
   const [loadingCandidates, setLoadingCandidates] = useState(false);
   const [capNote, setCapNote] = useState("");
 
+  /**
+   * Audience segments. They look like part of the decisions, but they live on their own
+   * endpoints — a segment is created, renamed, promoted and deleted on its own, and a
+   * pending edit here must never travel in the profile payload the save button sends.
+   */
+  const [audiences, setAudiences] = useState<Audience[]>([]);
+  const [audiencesLoading, setAudiencesLoading] = useState(true);
+  const [audiencesError, setAudiencesError] = useState("");
+  const [audiencesNotice, setAudiencesNotice] = useState("");
+  const [generatingAudiences, setGeneratingAudiences] = useState(false);
+  const [audienceBusy, setAudienceBusy] = useState("");
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  /** Which segment's edit form is open; the draft lives in the object below. */
+  const [editingAudienceId, setEditingAudienceId] = useState<number | null>(null);
+  const [audienceDraft, setAudienceDraft] = useState<AudienceForm>(EMPTY_AUDIENCE_FORM);
+  /** The manual-add form, folded away until asked for. */
+  const [showAddAudience, setShowAddAudience] = useState(false);
+  const [newAudience, setNewAudience] = useState<AudienceForm>(EMPTY_AUDIENCE_FORM);
+
   /** Which group the rail highlights. Purely presentational — nothing depends on it. */
   const [activeGroup, setActiveGroup] = useState<string>(GROUPS[0].id);
 
@@ -158,6 +233,39 @@ export default function DecisionsPage() {
     return () => window.clearTimeout(timer);
   }, []);
 
+  /**
+   * Segments load in their own request, and only once there is a business to scope them
+   * to. A failure here must not blank the rest of the screen: the groups above and below
+   * are independent of the audience list, so the error is kept next to that group.
+   *
+   * The loading flag starts true and nothing is set synchronously in the effect body —
+   * this fetch runs once, when a business appears, and its own state is all it touches.
+   * It is keyed on the profile existing rather than on the object, so saving an unrelated
+   * decision does not refetch the segments.
+   */
+  const hasBusiness = business !== null;
+  useEffect(() => {
+    if (!hasBusiness) return;
+    let cancelled = false;
+    endpoints
+      .audiences()
+      .then((res) => {
+        if (cancelled) return;
+        setAudiences(res.audiences ?? []);
+        setAudiencesError("");
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setAudiencesError(err instanceof Error ? err.message : "טעינת קהלי היעד נכשלה");
+      })
+      .finally(() => {
+        if (!cancelled) setAudiencesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [hasBusiness]);
+
   // Scroll-spy for the rail: the last group whose top passed the sticky header wins.
   // Reading positions on scroll keeps it dependency-free; every failure mode is a no-op.
   useEffect(() => {
@@ -194,6 +302,9 @@ export default function DecisionsPage() {
     BUSINESS_MODEL_OPTIONS.find((option) => option.key === businessModel)?.title ?? businessModel;
   const capacityFields = capacityCopy(businessModel);
   const leadTarget = rankedTargets[0] ?? "";
+  /** The one segment the plan leads with, for the rail's summary line. */
+  const leadAudience =
+    audiences.find((audience) => audience.is_primary)?.name ?? audiences[0]?.name ?? "";
 
   /** Any edit invalidates the "saved" confirmation and the previous error. */
   function markChanged() {
@@ -347,6 +458,135 @@ export default function DecisionsPage() {
     }
   }
 
+  /**
+   * Every audience call is a real write on its own endpoint, so each one reports where it
+   * stands: `audienceBusy` names the one in flight ("new", "3", "3:primary", "3:delete")
+   * and disables only that card's controls rather than the whole screen.
+   */
+  function audienceNotice(message: string) {
+    setAudiencesNotice(message);
+    setAudiencesError("");
+  }
+
+  /** Real model call: several seconds, and only ever from this click. */
+  async function generateAudiences() {
+    setGeneratingAudiences(true);
+    setAudiencesError("");
+    setAudiencesNotice("");
+    try {
+      const result = await endpoints.generateAudiences();
+      const list = result.audiences ?? [];
+      setAudiences(list);
+      setEditingAudienceId(null);
+      setConfirmDeleteId(null);
+      // The route answers with the full list and its own account of what it replaced and
+      // what it kept, so the owner is told what actually happened rather than what the
+      // screen assumed happened.
+      audienceNotice(
+        result.note
+          ? result.note
+          : list.length
+            ? `הצעת הקהלים נשמרה — ${list.length} קהלים. אפשר לערוך כל אחד מהם.`
+            : "ההצעה חזרה בלי קהלים. אפשר להוסיף קהל ידנית.",
+      );
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "הצעת הקהלים נכשלה");
+    } finally {
+      setGeneratingAudiences(false);
+    }
+  }
+
+  function startEditAudience(audience: Audience) {
+    setEditingAudienceId(audience.id);
+    setAudienceDraft(formFromAudience(audience));
+    setConfirmDeleteId(null);
+    setAudiencesNotice("");
+  }
+
+  /** Edit is inline: the fields replace the card's text until saved or cancelled. */
+  async function saveAudience(id: number) {
+    if (!audienceDraft.name.trim()) {
+      setAudiencesError("לקהל צריך להיות שם — בלעדיו אי אפשר לשייך אליו פוסט.");
+      return;
+    }
+    setAudienceBusy(String(id));
+    setAudiencesError("");
+    try {
+      const result = await endpoints.updateAudience(id, payloadFromForm(audienceDraft));
+      setAudiences((current) =>
+        current.map((audience) => (audience.id === id ? result.audience : audience)),
+      );
+      setEditingAudienceId(null);
+      audienceNotice("הקהל עודכן.");
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "עדכון הקהל נכשל");
+    } finally {
+      setAudienceBusy("");
+    }
+  }
+
+  async function addAudience() {
+    if (!newAudience.name.trim()) {
+      setAudiencesError("לקהל צריך להיות שם — בלעדיו אי אפשר לשייך אליו פוסט.");
+      return;
+    }
+    setAudienceBusy("new");
+    setAudiencesError("");
+    try {
+      const result = await endpoints.createAudience(payloadFromForm(newAudience));
+      setAudiences((current) => [...current, result.audience]);
+      setNewAudience(EMPTY_AUDIENCE_FORM);
+      setShowAddAudience(false);
+      audienceNotice("הקהל נוסף. אפשר לסמן אותו כקהל המוביל.");
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "הוספת הקהל נכשלה");
+    } finally {
+      setAudienceBusy("");
+    }
+  }
+
+  /** The API keeps exactly one primary, so the whole list is replaced with its answer. */
+  async function makePrimary(id: number) {
+    setAudienceBusy(`${id}:primary`);
+    setAudiencesError("");
+    try {
+      const result = await endpoints.setPrimaryAudience(id);
+      setAudiences(result.audiences ?? []);
+      audienceNotice("הקהל המוביל עודכן. הפוסטים הבאים ייבנו סביבו.");
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "סימון הקהל המוביל נכשל");
+    } finally {
+      setAudienceBusy("");
+    }
+  }
+
+  /** Two steps: the first click only opens the confirmation. */
+  async function deleteAudience(id: number) {
+    setAudienceBusy(`${id}:delete`);
+    setAudiencesError("");
+    try {
+      const result = await endpoints.deleteAudience(id);
+      setConfirmDeleteId(null);
+      if (editingAudienceId === id) setEditingAudienceId(null);
+      // Deleting the primary promotes the next segment on the server, so the list is
+      // re-read instead of being patched locally with a guess.
+      if (result.promoted_audience) {
+        const refreshed = await endpoints.audiences();
+        setAudiences(refreshed.audiences ?? []);
+      } else {
+        setAudiences((current) => current.filter((audience) => audience.id !== id));
+      }
+      audienceNotice(
+        result.message ||
+          "הקהל נמחק. פוסטים שהיו משויכים אליו נשארו בלי שיוך ויופיעו כ׳לא משויך׳.",
+      );
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "מחיקת הקהל נכשלה");
+    } finally {
+      setAudienceBusy("");
+    }
+  }
+
   function handleRankedChange(next: string[]) {
     markChanged();
     if (next.length > MAX_TARGETS) {
@@ -403,6 +643,15 @@ export default function DecisionsPage() {
     },
     {
       ...GROUPS[3],
+      state: audiencesLoading
+        ? "טוענים…"
+        : audiences.length
+          ? `${audiences.length} קהלים · מוביל: ${leadAudience}`
+          : "לא הוגדרו",
+      done: audiences.length > 0,
+    },
+    {
+      ...GROUPS[4],
       state: rankedTargets.length ? `${rankedTargets.length} מתוך ${MAX_TARGETS}` : "לא נבחרו",
       done: rankedTargets.length > 0,
     },
@@ -731,6 +980,261 @@ export default function DecisionsPage() {
               </SettingsGroup>
 
               <SettingsGroup
+                id="audiences"
+                icon={<IconUsers className="h-4 w-4" />}
+                label="קהלי היעד"
+                title="למי התוכנית מיועדת"
+                note={`התוכנית וכל פוסט נבנים סביב מי שאתם מגדירים כאן — מה שהקהל צריך ואיפה הוא נמצא. ההצעה היא קריאה אמיתית של ${AGENT_NAME}, ולכן היא רצה רק כשמבקשים.`}
+                badge={
+                  audiences.length
+                    ? `${audiences.length} קהלים${leadAudience ? ` · מוביל: ${leadAudience}` : ""}`
+                    : "עוד לא הוגדרו"
+                }
+              >
+                {/* One line for the whole group: why this is not a label for its own sake. */}
+                <p className="mb-4 rounded-md border px-3 py-2 text-xs leading-5 text-[#5c6472]"
+                  style={{ background: SURFACE, borderColor: ACCENT_BORDER }}
+                >
+                  בלי שם לקהל, הפוסטים מדברים לכולם ולכן לא ממש משכנעים אף אחד. כל פוסט מקבל כאן
+                  שיוך לקהל, ובעמוד התוצאות רואים מה עבד לכל קהל בנפרד.
+                </p>
+
+                {audiencesNotice ? (
+                  <p className="mb-3 rounded-md border border-[#c7d6c2] bg-[#f3f7f1] px-3 py-2 text-xs leading-5 text-[#374b3d]">
+                    {audiencesNotice}
+                  </p>
+                ) : null}
+
+                {audiencesError ? (
+                  <p className="mb-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs leading-5 text-[#9f4330]">
+                    {audiencesError}
+                  </p>
+                ) : null}
+
+                {audiencesLoading && !audiences.length ? (
+                  <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+                    טוענים את הקהלים…
+                  </p>
+                ) : null}
+
+                {!audiencesLoading && !audiences.length ? (
+                  <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+                    עוד לא הוגדרו קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד ידנית
+                    ולחזור אליו אחר כך.
+                  </p>
+                ) : null}
+
+                {audiences.length ? (
+                  <ul className="space-y-3">
+                    {audiences.map((audience) => {
+                      const editing = editingAudienceId === audience.id;
+                      const busy = audienceBusy.startsWith(String(audience.id));
+                      const primaryBusy = audienceBusy === `${audience.id}:primary`;
+                      const deleteBusy = audienceBusy === `${audience.id}:delete`;
+                      const confirming = confirmDeleteId === audience.id;
+                      return (
+                        <li
+                          key={audience.id}
+                          className={`rounded-lg border bg-white p-4 ${
+                            audience.is_primary ? "border-[#191b18]" : "border-[#e6e4dc]"
+                          }`}
+                        >
+                          {editing ? (
+                            <AudienceFormFields
+                              form={audienceDraft}
+                              onChange={setAudienceDraft}
+                              idPrefix={`audience-${audience.id}`}
+                            />
+                          ) : (
+                            <>
+                              <div className="flex flex-wrap items-start justify-between gap-2">
+                                <div className="min-w-0">
+                                  <h3 className="flex flex-wrap items-center gap-2 text-sm font-black text-[#191b18]">
+                                    {audience.name}
+                                    {audience.is_primary ? (
+                                      <span
+                                        className="rounded-full border px-2 py-0.5 text-[10px] font-bold"
+                                        style={{
+                                          background: SURFACE,
+                                          borderColor: ACCENT_BORDER,
+                                          color: ACCENT,
+                                        }}
+                                      >
+                                        הקהל המוביל
+                                      </span>
+                                    ) : null}
+                                  </h3>
+                                  {audience.summary ? (
+                                    <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
+                                      {audience.summary}
+                                    </p>
+                                  ) : null}
+                                </div>
+                                <span className="shrink-0 text-[10px] font-bold text-[#8b8e84]">
+                                  {audience.source === "generated" ? "הוצע ע״י AI" : "נכתב ידנית"}
+                                </span>
+                              </div>
+
+                              {audience.needs.length ? (
+                                <ChipRow label="מה הקהל צריך" items={audience.needs} />
+                              ) : null}
+                              {audience.where.length ? (
+                                <ChipRow label="איפה פוגשים אותו" items={audience.where} />
+                              ) : null}
+
+                              {audience.description ? (
+                                <p className="mt-3 text-xs leading-5 text-[#5e6159]">
+                                  {audience.description}
+                                </p>
+                              ) : null}
+                            </>
+                          )}
+
+                          <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#e6e4dc] pt-3">
+                            {editing ? (
+                              <>
+                                <Button
+                                  size="sm"
+                                  onClick={() => void saveAudience(audience.id)}
+                                  disabled={busy}
+                                >
+                                  {busy ? "שומרים…" : "שמירה"}
+                                </Button>
+                                <button
+                                  type="button"
+                                  onClick={() => setEditingAudienceId(null)}
+                                  disabled={busy}
+                                  className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                                >
+                                  ביטול
+                                </button>
+                              </>
+                            ) : (
+                              <>
+                                <button
+                                  type="button"
+                                  onClick={() => startEditAudience(audience)}
+                                  className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18]"
+                                >
+                                  עריכה
+                                </button>
+                                {audience.is_primary ? null : (
+                                  <button
+                                    type="button"
+                                    onClick={() => void makePrimary(audience.id)}
+                                    disabled={busy}
+                                    className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18] disabled:opacity-40"
+                                  >
+                                    {primaryBusy ? "מסמנים…" : "סמנו כקהל המוביל"}
+                                  </button>
+                                )}
+                                {confirming ? (
+                                  <>
+                                    <span className="text-xs font-bold text-[#9f4330]">
+                                      למחוק את הקהל?
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => void deleteAudience(audience.id)}
+                                      disabled={deleteBusy}
+                                      className="min-h-9 rounded-md border border-[#9f4330] px-3 text-xs font-bold text-[#9f4330] disabled:opacity-40"
+                                    >
+                                      {deleteBusy ? "מוחקים…" : "כן, למחוק"}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => setConfirmDeleteId(null)}
+                                      disabled={deleteBusy}
+                                      className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                                    >
+                                      לא
+                                    </button>
+                                  </>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => setConfirmDeleteId(audience.id)}
+                                    className="min-h-9 px-2 text-xs font-bold text-[#8b8e84] underline underline-offset-4 hover:text-[#9f4330]"
+                                  >
+                                    מחיקה
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+
+                <div className="mt-4 flex flex-col gap-3 border-t border-[#e6e4dc] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
+                  <Button onClick={() => void generateAudiences()} disabled={generatingAudiences}>
+                    {generatingAudiences ? "מציעים קהלים…" : "הצעת קהלים"}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAddAudience((open) => !open);
+                      setAudiencesError("");
+                    }}
+                    className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#191b18] hover:border-[#191b18]"
+                  >
+                    {showAddAudience ? "סגירת הטופס" : "הוסף קהל ידנית"}
+                  </button>
+                  <span className="text-xs leading-5 text-[#8b8e84]">
+                    {generatingAudiences
+                      ? "ההצעה קוראת את העסק והאבחון — זה לוקח כמה שניות."
+                      : "ההצעה רצה רק בלחיצה. היא לא נטענת מעצמה ולא דורסת קהל שכתבתם."}
+                  </span>
+                </div>
+
+                {showAddAudience ? (
+                  <div className="mt-4 rounded-lg border border-[#dedcd4] bg-[#f8f7f4] p-4">
+                    <h3 className="text-sm font-black text-[#191b18]">קהל חדש</h3>
+                    <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+                      מה שתכתבו כאן ישמש את הפוסטים ואת המדידה. הקהל הראשון שתוסיפו הופך לקהל
+                      המוביל, ואחריו הסימון הוא בחירה מפורשת.
+                    </p>
+                    <div className="mt-3">
+                      <AudienceFormFields
+                        form={newAudience}
+                        onChange={setNewAudience}
+                        idPrefix="new-audience"
+                      />
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <Button size="sm" onClick={() => void addAudience()} disabled={audienceBusy === "new"}>
+                        {audienceBusy === "new" ? "מוסיפים…" : "הוספת הקהל"}
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewAudience(EMPTY_AUDIENCE_FORM);
+                          setShowAddAudience(false);
+                        }}
+                        disabled={audienceBusy === "new"}
+                        className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                      >
+                        ביטול
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {audiencesError ? null : (
+                  <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
+                    את מי שכל פוסט משרת אפשר לשנות בעורך הפוסטים, ואת התוצאות לכל קהל רואים
+                    ב
+                    <Link href="/performance" className="font-bold text-[#191b18] underline underline-offset-4">
+                      עמוד התוצאות
+                    </Link>
+                    .
+                  </p>
+                )}
+              </SettingsGroup>
+
+              <SettingsGroup
                 id="targets"
                 icon={<IconFlag className="h-4 w-4" />}
                 label="עדיפויות"
@@ -937,6 +1441,106 @@ export default function DecisionsPage() {
         ) : null}
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * One audience segment's editable fields — the same four the manual form asks for, so a
+ * generated segment and a hand-written one are edited in exactly the same way.
+ */
+function AudienceFormFields({
+  form,
+  onChange,
+  idPrefix,
+}: {
+  form: AudienceForm;
+  onChange: (next: AudienceForm) => void;
+  idPrefix: string;
+}) {
+  return (
+    <div className="grid gap-3">
+      <div>
+        <label htmlFor={`${idPrefix}-name`} className="mb-1 block text-xs font-bold text-[#191b18]">
+          שם הקהל
+        </label>
+        <input
+          id={`${idPrefix}-name`}
+          value={form.name}
+          onChange={(event) => onChange({ ...form, name: event.target.value })}
+          placeholder="משפחות מיפו שקונות לשישי"
+          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-summary`} className="mb-1 block text-xs font-bold text-[#191b18]">
+          שורה אחת על מי זה
+        </label>
+        <input
+          id={`${idPrefix}-summary`}
+          value={form.summary}
+          onChange={(event) => onChange({ ...form, summary: event.target.value })}
+          placeholder="מי שקונה לשולחן של שישי וחוזר כל שבוע"
+          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-needs`} className="mb-1 block text-xs font-bold text-[#191b18]">
+          מה הקהל צריך (מופרד בפסיקים)
+        </label>
+        <input
+          id={`${idPrefix}-needs`}
+          value={form.needs}
+          onChange={(event) => onChange({ ...form, needs: event.target.value })}
+          placeholder="חלה טרייה לשישי, מארז חג, שעות פתיחה מדויקות"
+          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-where`} className="mb-1 block text-xs font-bold text-[#191b18]">
+          איפה פוגשים אותו (מופרד בפסיקים)
+        </label>
+        <input
+          id={`${idPrefix}-where`}
+          value={form.where}
+          onChange={(event) => onChange({ ...form, where: event.target.value })}
+          placeholder="שוק הפשפשים, קבוצות השכונה, אינסטגרם"
+          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+        />
+      </div>
+      <div>
+        <label htmlFor={`${idPrefix}-description`} className="mb-1 block text-xs font-bold text-[#191b18]">
+          תיאור מלא (לא חובה)
+        </label>
+        <textarea
+          id={`${idPrefix}-description`}
+          rows={3}
+          value={form.description}
+          onChange={(event) => onChange({ ...form, description: event.target.value })}
+          placeholder="מי הם, מה חשוב להם, ומה גורם להם לחזור"
+          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm leading-6"
+        />
+      </div>
+    </div>
+  );
+}
+
+/** A row of chips with its own label — needs and "where" read the same way on every card. */
+function ChipRow({ label, items }: { label: string; items: string[] }) {
+  return (
+    <div className="mt-2.5">
+      <p className="text-[10px] font-bold text-[#8b8e84]">{label}</p>
+      <ul className="mt-1 flex flex-wrap gap-1.5">
+        {items.map((item) => (
+          <li
+            key={item}
+            className="rounded-full border px-2.5 py-0.5 text-[11px] font-bold"
+            style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}
+          >
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

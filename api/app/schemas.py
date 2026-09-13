@@ -250,3 +250,61 @@ class PostAssetIn(BaseModel):
 
 class PostSuggestAssetsIn(BaseModel):
     post_index: int = Field(ge=0, le=50)
+
+
+# --- Target audiences --------------------------------------------------------------
+# The shape every /audiences endpoint returns. JSON columns (`needs`, `where`,
+# `targeting`) come back as real lists and objects so no client has to parse a column.
+class AudienceOut(TypedDict):
+    id: int
+    name: str
+    summary: str
+    description: str
+    needs: list[str]
+    where: list[str]
+    targeting: dict
+    priority: str
+    source: str
+    is_primary: bool
+    created_at: str
+
+
+class AudienceTargetingIn(BaseModel):
+    """The advertising layer of a segment. Every field is optional on purpose: a small
+    business often knows who its customers are without knowing an age range, and an
+    invented range is worse than an empty one."""
+
+    interests: list[str] = Field(default_factory=list, max_length=12)
+    keywords: list[str] = Field(default_factory=list, max_length=12)
+    age_range: str = Field(default="", max_length=40)
+    gender: str = Field(default="", max_length=40)
+    geo: str = Field(default="", max_length=120)
+
+
+class AudienceIn(BaseModel):
+    name: str = Field(min_length=1, max_length=160)
+    summary: str = Field(default="", max_length=300)
+    description: str = Field(default="", max_length=2000)
+    needs: list[str] = Field(default_factory=list, max_length=12)
+    where: list[str] = Field(default_factory=list, max_length=12)
+    targeting: AudienceTargetingIn = Field(default_factory=AudienceTargetingIn)
+    priority: Literal["primary", "secondary"] = "secondary"
+
+
+class AudienceUpdateIn(BaseModel):
+    """Partial edit: `None` means "leave it", so renaming a segment never wipes the
+    description or the targeting that came with it."""
+
+    name: str | None = Field(default=None, min_length=1, max_length=160)
+    summary: str | None = Field(default=None, max_length=300)
+    description: str | None = Field(default=None, max_length=2000)
+    needs: list[str] | None = Field(default=None, max_length=12)
+    where: list[str] | None = Field(default=None, max_length=12)
+    targeting: AudienceTargetingIn | None = None
+    priority: Literal["primary", "secondary"] | None = None
+
+
+class PostAudienceIn(BaseModel):
+    post_index: int = Field(ge=0, le=50)
+    # null clears the tag; the post then reports under "לא משויך" instead of being lost.
+    audience_id: int | None = Field(default=None, ge=1)

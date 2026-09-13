@@ -50,6 +50,7 @@ class Business(Base):
     recommendations: Mapped[list["Recommendation"]] = relationship(back_populates="business")
     webhooks: Mapped[list["WebhookEndpoint"]] = relationship(back_populates="business")
     assets: Mapped[list["Asset"]] = relationship(back_populates="business")
+    audiences: Mapped[list["Audience"]] = relationship(back_populates="business")
 
 
 class Strategy(Base):
@@ -159,6 +160,43 @@ class Asset(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="assets")
+
+
+class Audience(Base):
+    """One audience segment the business defines once and reuses everywhere.
+
+    A plan that never names *who* it is for produces content addressed to nobody, and a
+    post that cannot say who it targets cannot be measured per audience. So the segment
+    lives here — with the shape a shop needs (buyer segments) and a service business
+    needs (client types) — and each planned post carries `audience_id`/`audience_name`
+    into the roadmap JSON, where the per-post GA4/Meta attribution already lives.
+
+    `is_primary` is an int because SQLite has no boolean and existing tables use 0/1;
+    exactly one row per business may carry it (enforced by the router).
+    """
+
+    __tablename__ = "audiences"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    name: Mapped[str] = mapped_column(String(255), default="")
+    # One line the owner reads in a list; `description` carries the longer reasoning.
+    summary: Mapped[str] = mapped_column(String(500), default="")
+    description: Mapped[str] = mapped_column(Text, default="")
+    # JSON lists: what they want / why they buy, and where they spend time or how they
+    # find the business. Stored as text, parsed in services/audiences.py.
+    needs_json: Mapped[str] = mapped_column(Text, default="[]")
+    where_json: Mapped[str] = mapped_column(Text, default="[]")
+    # JSON object: interests, keyword themes, age range, gender, geo.
+    targeting_json: Mapped[str] = mapped_column(Text, default="{}")
+    # "primary" | "secondary" — the label. `is_primary` is the enforced single flag.
+    priority: Mapped[str] = mapped_column(String(20), default="secondary")
+    # "generated" | "manual". Regeneration replaces the generated set and never a manual.
+    source: Mapped[str] = mapped_column(String(20), default="manual")
+    is_primary: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    business: Mapped[Business] = relationship(back_populates="audiences")
 
 
 class WebhookEndpoint(Base):

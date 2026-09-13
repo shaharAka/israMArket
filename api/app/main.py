@@ -11,6 +11,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.routers import (
     assets,
+    audiences,
     auth,
     integrations,
     onboarding,
@@ -53,6 +54,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(onboarding.router)
 app.include_router(assets.router)
+app.include_router(audiences.router)
 app.include_router(strategy.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)

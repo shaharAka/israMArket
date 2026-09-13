@@ -113,6 +113,17 @@ export function IconFlag({ className }: IconProps) {
   return <Sketch className={className}><path d="M5.5 21V3.5M5.5 4.5h11.8l-1.8 3.6 1.8 3.6H5.5" /></Sketch>;
 }
 
+/** Audience segments — who the plan and the posts are built for. */
+export function IconUsers({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M9 20.5v-1.8c0-2 1.6-3.6 3.6-3.6h3.3c2 0 3.6 1.6 3.6 3.6v1.8" />
+      <path d="M12.7 15.1a3.4 3.4 0 100-6.8 3.4 3.4 0 000 6.8z" />
+      <path d="M4.4 20.5v-1.6c0-1.7 1.2-3.1 2.8-3.4M6.6 14.4a2.9 2.9 0 100-5.8 2.9 2.9 0 000 5.8z" />
+    </Sketch>
+  );
+}
+
 /** Why we chose this direction. */
 export function IconCompass({ className }: IconProps) {
   return (

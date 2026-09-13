@@ -63,6 +63,36 @@ def diagnostics_for(business_model: str | None) -> tuple[str, ...]:
     return VALID_DIAGNOSTIC_KEYS[normalise_model(business_model)]
 
 
+def audience_framing(business_model: str | None) -> str:
+    """What a "target audience" means for this business model.
+
+    A shop's segment is a kind of buyer; a designer's segment is a kind of client and the
+    situation that makes them pick up the phone. Naming a service business's audience in
+    shop language ("קוני מוצר") produces segments nobody can target and content that
+    misses, so the fork is stated once here rather than re-invented per prompt.
+    """
+    model = normalise_model(business_model)
+    if model == "services":
+        return """
+סוג העסק: נותן שירותים. קהל היעד כאן הוא סוג לקוח — מי מזמין את השירות, ובאיזו סיטואציה.
+כל קהל חייב להיות מוגדר לפי הצורך שמוביל לפנייה: למשל לקוח פרטי בשלב חיים מסוים,
+עסק קטן שצריך ספק קבוע, או מי שמגיע בהמלצה של לקוח קודם.
+אל תגדיר קהלים לפי "כל מי שאוהב את התחום" — זו אינה הגדרה שאפשר לפנות אליה או לפרסם מולה.
+אין כאן רכישה אונליין, ולכן אין "סל נטישה" ואין קהלים לפי התנהגות רכישה באתר.
+"""
+    if model == "both":
+        return """
+סוג העסק: גם מוצרים וגם שירותים. יש לקוחות שקונים מוצר ולקוחות שמזמינים שירות,
+ולכן צריך גם מקטעי קונים וגם סוגי לקוחות שירות — ואין לערבב ביניהם באותו קהל.
+"""
+    return """
+סוג העסק: מוכר מוצרים. קהל היעד כאן הוא מקטע קונים — מי קונה, בשביל מה, ובאיזו סיטואציה.
+כל קהל חייב להיות מוגדר לפי הצורך וההזדמנות שמובילים לקנייה: למשל מי שקונה לעצמו באמצע השבוע
+מול מי שקונה כמתנה, או מי שמחפש את הזול מול מי שמחפש את הטרי.
+אל תגדיר קהלים לפי "כל מי שאוהב את המוצר" — זו אינה הגדרה שאפשר לפנות אליה או לפרסם מולה.
+"""
+
+
 def model_framing(business_model: str | None) -> str:
     """The Hebrew block injected into every generation prompt.
 

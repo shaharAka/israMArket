@@ -8,6 +8,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
 from app.services.brand import filter_usable_photos
+from app.services.audiences import catalogue_for
 from app.services.images import store_image_bytes
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
@@ -348,6 +349,9 @@ def generate(
         "growth_targets": stored.get("growth_targets", []),
         "diagnostics": stored.get("diagnostics") or {},
         "long_horizon_plan": stored.get("long_horizon_plan") or None,
+        # Who the content is for. Empty list = the business never defined a segment, and
+        # then the plan and the posts are generated without one.
+        "audiences": catalogue_for(db, business),
     }
     scan = stored if stored.get("brand_language") else None
     state = loads(business.generate_state_json, {}) or {}

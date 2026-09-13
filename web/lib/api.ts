@@ -32,6 +32,14 @@ export function enterDemo() {
   // A fresh demo session gets a fresh library — otherwise a deletion from a previous
   // visit looked permanent.
   DEMO_ASSETS = DEMO_ASSETS_SEED.map((asset) => ({ ...asset, tags: [...asset.tags] }));
+  // Same reason for the audience segments: a demo that generated or deleted them should
+  // not hand the next visit a set nobody meant to keep.
+  DEMO_AUDIENCES = DEMO_AUDIENCES_SEED.map((audience) => ({
+    ...audience,
+    needs: [...audience.needs],
+    where: [...audience.where],
+    targeting: { ...audience.targeting },
+  }));
 }
 
 export function exitDemo() {
@@ -171,6 +179,183 @@ const DEMO_TARGET_CANDIDATES: GrowthTargetCandidate[] = [
   },
 ];
 
+/**
+ * Audience segments — who the plan and every post are actually for.
+ *
+ * Mirrors `AudienceOut` in `api/app/routers/audiences.py`. `priority` says how the segment
+ * ranks in the whole set; `is_primary` marks the single segment the plan leads with, and
+ * the API guarantees exactly one. `source` records whether the agent proposed it or the
+ * owner wrote it, which is why a generated list is never assumed to be final.
+ */
+/** The advertising layer of a segment. Shaped after `AudienceTargetingIn` in
+ *  `api/app/schemas.py` — every field optional, because a small business often knows who
+ *  its customers are without knowing an age range. */
+export type AudienceTargeting = {
+  interests?: string[];
+  keywords?: string[];
+  age_range?: string;
+  gender?: string;
+  geo?: string;
+};
+
+export type Audience = {
+  id: number;
+  name: string;
+  /** One line the cards can show without opening the segment. */
+  summary: string;
+  description: string;
+  needs: string[];
+  where: string[];
+  /** Channel-agnostic targeting hints; the API always answers with the five keys above. */
+  targeting: AudienceTargeting;
+  priority: "primary" | "secondary";
+  source: "generated" | "manual";
+  is_primary: boolean;
+  created_at: string;
+};
+
+export type AudiencePayload = {
+  name: string;
+  summary?: string;
+  description?: string;
+  needs?: string[];
+  where?: string[];
+  targeting?: AudienceTargeting;
+  priority?: "primary" | "secondary";
+};
+
+/**
+ * Demo segments for the bakery. Three deliberately different shapes: the primary one
+ * (locally rooted, repeat buyer), a secondary one the plan can still serve, and a
+ * manually-written one with no generation behind it — so the screen exercises the
+ * primary marker, both `source` values and a segment that is neither.
+ */
+let DEMO_AUDIENCES: Audience[] = [
+  {
+    id: 1,
+    name: "משפחות מיפו והשכונות הסמוכות",
+    summary: "מי שקונה לשולחן של שישי ולחגים, וחוזר כל שבוע לאותו מקום.",
+    description:
+      "תושבי יפו, נווה צדק ופלורנטין, בעיקר זוגות עם ילדים בגיל בית ספר. קונים פעם-פעמיים בשבוע, מכירים את הדלפק בשם, ומתכננים את השישי מראש. הרגישות שלהם היא למחיר של מארז שלם, לא ללחם בודד.",
+    needs: ["חלה טרייה לשישי", "מארז חג מוכן לאירוח", "שעות פתיחה מדויקות", "איסוף מהיר בלי תור"],
+    where: ["שוק הפשפשים", "קבוצות השכונה בפייסבוק", "וואטסאפ של המאפייה", "גוגל מפות"],
+    targeting: {
+      interests: ["אוכל מקומי", "אפייה ביתית"],
+      keywords: ["מאפייה ביפו", "חלות לשישי"],
+      age_range: "30-50",
+      gender: "",
+      geo: "יפו ונווה צדק, רדיוס 3 ק״מ",
+    },
+    priority: "primary",
+    source: "generated",
+    is_primary: true,
+    created_at: "2026-08-30T08:15:00Z",
+  },
+  {
+    id: 2,
+    name: "מזמיני חג חד-פעמיים",
+    summary: "מזמינים מארז לחג או לאירוח, בלי להיות לקוח קבוע של המאפייה.",
+    description:
+      "מגיעים דרך המלצה או חיפוש בגוגל לקראת ראש השנה וסוכות, קונים מארז גדול פעם-פעמיים בשנה. הצורך שלהם הוא לתפוס מקום בהזמנה מוקדמת לפני שנגמר, ולקבל ודאות על שעת האיסוף.",
+    needs: ["ודאות שההזמנה מחכה", "מארז שמתאים לשולחן החג", "הזמנה מראש בוואטסאפ"],
+    where: ["חיפוש בגוגל", "אינסטגרם", "המלצות בקבוצות"],
+    targeting: {
+      interests: ["אירוח וחגים"],
+      keywords: ["מארז ראש השנה", "הזמנת חלות לחג"],
+      age_range: "28-55",
+      gender: "",
+      geo: "",
+    },
+    priority: "secondary",
+    source: "generated",
+    is_primary: false,
+    created_at: "2026-08-30T08:15:00Z",
+  },
+  {
+    id: 3,
+    name: "שולחי מתנות לעמיתים",
+    summary: "מזמינים מארז מתנה לעבודה, בלי קשר אישי למאפייה.",
+    description:
+      "אנשי משרדים בתל אביב שמחפשים מתנה קטנה ומכובדת ללקוח או לעמית. הצורך הוא משלוח או איסוף מסודר בתאריך מדויק, וחשבונית מסודרת.",
+    needs: ["מארז שנראה כמו מתנה", "אפשרות לשלוח לכתובת אחרת", "חשבונית"],
+    where: ["לינקדאין", "המלצות של לקוחות עסקיים"],
+    targeting: {
+      interests: [],
+      keywords: ["משלוחי מתנה לעסקים"],
+      age_range: "",
+      gender: "",
+      geo: "תל אביב",
+    },
+    priority: "secondary",
+    source: "manual",
+    is_primary: false,
+    created_at: "2026-09-02T11:40:00Z",
+  },
+];
+
+/** Mirrors the fixture so re-entering demo mode starts from the same three segments. */
+const DEMO_AUDIENCES_SEED: Audience[] = DEMO_AUDIENCES.map((audience) => ({
+  ...audience,
+  needs: [...audience.needs],
+  where: [...audience.where],
+  targeting: { ...audience.targeting },
+}));
+
+let demoAudienceId = 100;
+
+/** The three segments the generator returns in demo mode — same ids, fresh names. */
+function demoGeneratedAudiences(): Audience[] {
+  const drafts: Omit<Audience, "id" | "created_at">[] = [
+    {
+      name: "שכנים שאופים בבית בסוף שבוע",
+      summary: "קונים מחמצת ולחם יום-יומי, ומושכים גם לקפה ומאפה בבוקר.",
+      description:
+        "תושבי הסביבה שעובדים מהבית וחוזרים ברגל מהשוק. קונים לחם פעמיים-שלוש בשבוע, מגיבים לתוכן על התהליך עצמו ולא למבצעים.",
+      needs: ["לחם מחמצת טרי כל יום", "מאפה בוקר וקפה", "ידיעה מה נגמר ומה נשאר"],
+      where: ["הליכה ברחוב", "אינסטגרם", "סטורי של המאפייה"],
+      targeting: { interests: ["לחם מחמצת"], keywords: [], age_range: "25-45", gender: "", geo: "יפו, רדיוס 1.5 ק״מ" },
+      priority: "primary",
+      source: "generated",
+      is_primary: true,
+    },
+    {
+      name: "הורים שקונים לדרך לבית הספר",
+      summary: "קונים כריכים ומאפים בבוקר, בקנייה מהירה וקבועה.",
+      description:
+        "הורים בדרך לבתי הספר בסביבה, בין 07:00 ל-08:15. הצורך הוא מהירות וודאות שהמאפה קיים, לא מבחר גדול.",
+      needs: ["מאפה טרי בשעה מוקדמת", "קנייה מהר בלי תור", "משהו שהילד יאכל"],
+      where: ["פייסבוק", "קבוצת ההורים של בית הספר", "הדלת הפיזית"],
+      targeting: { interests: [], keywords: ["כריך לבית ספר"], age_range: "30-45", gender: "", geo: "" },
+      priority: "secondary",
+      source: "generated",
+      is_primary: false,
+    },
+    {
+      name: "מי שמחפש מארז מתנה לחג",
+      summary: "קונים מארז אחד מושקע, לרוב להענקה ולא לעצמם.",
+      description:
+        "לקראת חגים מחפשים משהו שנראה מכובד להביא לארוחה או לשלוח. רגישים לאריזה ולמועד האספקה יותר מאשר למחיר.",
+      needs: ["אריזה שמתאימה להענקה", "אספקה עד תאריך מסוים", "מארז במחיר צפוי"],
+      where: ["חיפוש בגוגל", "אינסטגרם", "וואטסאפ"],
+      targeting: { interests: ["מתנות", "אירוח"], keywords: ["מארז מתנה לחג"], age_range: "", gender: "", geo: "" },
+      priority: "secondary",
+      source: "generated",
+      is_primary: false,
+    },
+  ];
+  // The generator answers with a whole set: the first one leads.
+  return drafts.map((draft, index) => {
+    demoAudienceId += 1;
+    return {
+      ...draft,
+      id: demoAudienceId,
+      is_primary: index === 0,
+      priority: index === 0 ? "primary" : "secondary",
+      created_at: new Date().toISOString(),
+    };
+  });
+}
+
 const DEMO_IMAGES = [
   "/demo/post-1.svg",
   "/demo/post-2.svg",
@@ -309,6 +494,8 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["פניות בוואטסאפ", "שמירות פוסט"],
+    audience_id: 1,
+    audience_name: "משפחות מיפו והשכונות הסמוכות",
     outlet_captions: {
       instagram: "אם אתם מגיעים אחרי 11:00 בשישי — אל תתבאסו. פותחים הזמנות חג בוואטסאפ בביו 🥖",
       facebook: "פותחים הזמנות לחגי תשרי ביפו! כדי שלא תעמדו בתור של שישי, סוגרים מראש בוואטסאפ.",
@@ -353,6 +540,8 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "facebook",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["שמירות פוסט", "שיתופים"],
+    audience_id: 1,
+    audience_name: "משפחות מיפו והשכונות הסמוכות",
     outlet_captions: {
       instagram: "מתי פתוחים בראש השנה? שמרו את הפוסט כדי לא להגיע לדלת סגורה 📌",
       facebook: "שעות פתיחה וסגירה לחגי תשרי אצלנו בלחם תום. ממליצים להגיע מוקדם לאיסופים.",
@@ -419,6 +608,8 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["שמירות פוסט", "הזמנות מארז"],
+    audience_id: 3,
+    audience_name: "שולחי מתנות לעמיתים",
     outlet_captions: {
       instagram: "יוצאים לסוכה? קחו איתכם פוקצ׳ה שרק יצאה מהתנור. פרטים בקרוסלה.",
       facebook: "מארזי סוכות ופיקניק ביפו זמינים לאיסוף כל חול המועד.",
@@ -441,6 +632,8 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["זמן צפייה ממוצע", "שיתופים"],
+    audience_id: 2,
+    audience_name: "מזמיני חג חד-פעמיים",
     outlet_captions: {
       instagram: "05:00 בבוקר ביפו, כשהעיר עוד ישנה. ככה נראית משמרת סוכות 🥖✨",
       facebook: "הבצק תופח, התנור לוהט. מוזמנים לקפה ומאפה חם כל הבוקר.",
@@ -647,6 +840,63 @@ const DEMO_PERFORMANCE: PerformancePayload = {
     bottom_content: [{ label: "דף /rosh-hashana ממודעות", why: "תנועה גבוהה, נטישה 52%." }],
     funnel_issues: ["ה-CTA במודעה שולח לדף בלי כפתור וואטסאפ מעל הקיפול."],
     metric_highlights: ["63 המרות ב-28 יום", "רילס מוביל בלייקים"],
+  },
+  // Measured per audience segment, in the shape `rollup()` returns.
+  //
+  // Both sources are connected here, but three of the seven planned posts have not been
+  // matched to a report yet: that is why the third segment and the "לא משויך" bucket carry
+  // `ga4: null, meta: null` instead of a zero. A row with no bucket is "not measured", and
+  // the screen has to say so rather than claim the audience brought nobody.
+  audiences: {
+    available: true,
+    connected: { ga4: true, meta: true },
+    period_start: "2026-08-08",
+    period_end: "2026-09-04",
+    synced_at: "2026-09-04T07:10:00Z",
+    sample_posts: 7,
+    unassigned_posts: 1,
+    method:
+      "המדידה היא סכום של השיוך הקיים ברמת הפוסט — סשנים והמרות מ-GA4 ומעורבות ממטא — לפי הקהל שאליו הפוסט משויך בתוכנית.",
+    explanation:
+      "פוסט אחד בתוכנית עוד לא משויך לקהל, והוא נספר בנפרד ב׳לא משויך׳.",
+    rows: [
+      {
+        audience_id: 1,
+        name: "משפחות מיפו והשכונות הסמוכות",
+        is_primary: true,
+        posts: 3,
+        measured_posts: 3,
+        ga4: { sessions: 742, conversions: 31, engaged_sessions: 401 },
+        meta: { likes: 486, comments: 38 },
+      },
+      {
+        audience_id: 2,
+        name: "מזמיני חג חד-פעמיים",
+        is_primary: false,
+        posts: 2,
+        measured_posts: 2,
+        ga4: { sessions: 318, conversions: 11, engaged_sessions: 168 },
+        meta: { likes: 204, comments: 17 },
+      },
+      {
+        audience_id: 3,
+        name: "שולחי מתנות לעמיתים",
+        is_primary: false,
+        posts: 1,
+        measured_posts: 0,
+        ga4: null,
+        meta: null,
+      },
+      {
+        audience_id: null,
+        name: "לא משויך",
+        is_primary: false,
+        posts: 1,
+        measured_posts: 0,
+        ga4: null,
+        meta: null,
+      },
+    ],
   },
 };
 
@@ -1250,6 +1500,30 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
   }
+  if (path === "/strategy/posts/audience" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as {
+      post_index?: number;
+      audience_id?: number | null;
+    };
+    const index = body.post_index ?? 0;
+    if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    const audienceId = body.audience_id ?? null;
+    const audience = audienceId === null ? null : DEMO_AUDIENCES.find((item) => item.id === audienceId);
+    if (audienceId !== null && !audience) throw new ApiError("הקהל לא נמצא", 404);
+    const updated: RoadmapPost = { ...POSTS[index] };
+    if (audience) {
+      updated.audience_id = audience.id;
+      updated.audience_name = audience.name;
+    } else {
+      // Clearing is a real answer ("עוד לא הוחלט"), so the fields are removed rather
+      // than left pointing at a segment this post no longer serves.
+      delete updated.audience_id;
+      delete updated.audience_name;
+    }
+    POSTS[index] = updated;
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+  }
   if (path === "/strategy/posts/suggest-assets" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as { post_index?: number };
     const index = body.post_index ?? 0;
@@ -1474,6 +1748,161 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
         status: "active",
         what_we_measure: "מעקב פניות בוואטסאפ, המרות מדפי נחיתה ואיסוף חלות בימי שישי",
       },
+    } as T;
+  }
+  if (path === "/audiences" && method === "GET") {
+    return {
+      audiences: DEMO_AUDIENCES.map((audience) => ({
+        ...audience,
+        needs: [...audience.needs],
+        where: [...audience.where],
+        targeting: { ...audience.targeting },
+      })),
+    } as T;
+  }
+  if (path === "/audiences/generate" && method === "POST") {
+    // A real model call behind the button, so the demo waits like one. The busy state it
+    // proves is the whole reason the copy says this takes a few seconds.
+    await new Promise((resolve) => window.setTimeout(resolve, 2600));
+    // Regeneration replaces what the generator wrote before and never a segment the owner
+    // wrote by hand — the same promise the screen makes in its own words.
+    const manual = DEMO_AUDIENCES.filter((audience) => audience.source === "manual");
+    const replaced = DEMO_AUDIENCES.length - manual.length;
+    const generated = demoGeneratedAudiences();
+    const manualLeads = manual.some((audience) => audience.is_primary);
+    // Posts keep a real segment: a post whose segment is being replaced is re-pointed by
+    // name, and one the new set does not carry falls back to the lead segment rather than
+    // being left with a name nothing points at.
+    const byName = new Map(generated.map((audience) => [audience.name, audience]));
+    const fallback = generated[0];
+    POSTS.forEach((post, index) => {
+      if (post.audience_id === undefined || post.audience_id === null) return;
+      const match = byName.get(post.audience_name || "");
+      if (match) {
+        POSTS[index] = { ...post, audience_id: match.id, audience_name: match.name };
+      } else if (fallback) {
+        POSTS[index] = { ...post, audience_id: fallback.id, audience_name: fallback.name };
+      }
+    });
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    DEMO_AUDIENCES = [
+      ...manual,
+      ...generated.map((audience, index) => ({
+        ...audience,
+        // The lead of the generated set is the plan's lead only while no manual segment
+        // holds that flag. Exactly one segment stays primary either way.
+        is_primary: !manualLeads && index === 0,
+        priority: index === 0 ? ("primary" as const) : ("secondary" as const),
+      })),
+    ];
+    return {
+      audiences: DEMO_AUDIENCES.map((audience) => ({ ...audience })),
+      generated: generated.length,
+      replaced,
+      kept_manual: manual.length,
+      detached_posts: 0,
+      note: !manual.length
+        ? `נוצרו ${generated.length} קהלי יעד — יצירה חוזרת לא יוצרת כפילויות.`
+        : manual.length === 1
+          ? `נוצרו ${generated.length} קהלי יעד, והקהל היחיד שהוגדר ידנית נשמר ללא שינוי.`
+          : `נוצרו ${generated.length} קהלי יעד, ו-${manual.length} קהלים שהוגדרו ידנית נשמרו ללא שינוי.`,
+    } as T;
+  }
+  if (path === "/audiences" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as AudiencePayload;
+    const name = (body.name || "").trim();
+    if (!name) throw new ApiError("צריך שם לקהל.", 400);
+    demoAudienceId += 1;
+    // The first segment a business defines is its primary one — the plan needs a fallback
+    // for a post whose audience the model could not name (routers/audiences.py does the
+    // same). After that, a manual segment never steals the slot: that is an explicit choice.
+    const first = DEMO_AUDIENCES.length === 0;
+    const created: Audience = {
+      id: demoAudienceId,
+      name,
+      summary: (body.summary || "").trim(),
+      description: (body.description || "").trim(),
+      needs: (body.needs || []).map((item) => item.trim()).filter(Boolean),
+      where: (body.where || []).map((item) => item.trim()).filter(Boolean),
+      targeting: body.targeting || {},
+      priority: first ? "primary" : "secondary",
+      source: "manual",
+      is_primary: first,
+      created_at: new Date().toISOString(),
+    };
+    DEMO_AUDIENCES = [...DEMO_AUDIENCES, created];
+    return { audience: { ...created } } as T;
+  }
+  if (path.startsWith("/audiences/") && path.endsWith("/primary") && method === "POST") {
+    const id = Number(path.slice("/audiences/".length, -"/primary".length));
+    const target = DEMO_AUDIENCES.find((audience) => audience.id === id);
+    if (!target) throw new ApiError("הקהל לא נמצא", 404);
+    DEMO_AUDIENCES = DEMO_AUDIENCES.map((audience) => ({
+      ...audience,
+      is_primary: audience.id === id,
+      priority: audience.id === id ? "primary" : "secondary",
+    }));
+    return { audiences: DEMO_AUDIENCES.map((audience) => ({ ...audience })) } as T;
+  }
+  if (path.startsWith("/audiences/") && method === "PATCH") {
+    const id = Number(path.slice("/audiences/".length));
+    const current = DEMO_AUDIENCES.find((audience) => audience.id === id);
+    if (!current) throw new ApiError("הקהל לא נמצא", 404);
+    const body = JSON.parse(String(options.body || "{}")) as AudiencePayload;
+    const updated: Audience = {
+      ...current,
+      name: body.name !== undefined ? body.name.trim() || current.name : current.name,
+      summary: body.summary !== undefined ? body.summary.trim() : current.summary,
+      description: body.description !== undefined ? body.description.trim() : current.description,
+      needs: body.needs !== undefined ? body.needs.map((item) => item.trim()).filter(Boolean) : current.needs,
+      where: body.where !== undefined ? body.where.map((item) => item.trim()).filter(Boolean) : current.where,
+      targeting: body.targeting !== undefined ? body.targeting : current.targeting,
+    };
+    DEMO_AUDIENCES = DEMO_AUDIENCES.map((audience) => (audience.id === id ? updated : audience));
+    // A rename must not leave posts showing a name that no longer exists anywhere — the
+    // real route re-points them, so the demo does too.
+    if (updated.name !== current.name) {
+      POSTS.forEach((post, index) => {
+        if (post.audience_id === id) {
+          POSTS[index] = { ...post, audience_id: id, audience_name: updated.name };
+        }
+      });
+      DEMO_STRATEGY.roadmap.posts = POSTS;
+    }
+    return { audience: { ...updated } } as T;
+  }
+  if (path.startsWith("/audiences/") && method === "DELETE") {
+    const id = Number(path.slice("/audiences/".length));
+    const target = DEMO_AUDIENCES.find((audience) => audience.id === id);
+    if (!target) throw new ApiError("הקהל לא נמצא", 404);
+    const detached = POSTS.filter((post) => post.audience_id === id).length;
+    DEMO_AUDIENCES = DEMO_AUDIENCES.filter((audience) => audience.id !== id);
+    // The posts that pointed at it are cleared, never left dangling — and the role moves
+    // to the next segment so the plan always has a fallback.
+    POSTS.forEach((post, index) => {
+      if (post.audience_id === id) {
+        POSTS[index] = { ...post };
+        delete POSTS[index].audience_id;
+        delete POSTS[index].audience_name;
+      }
+    });
+    DEMO_STRATEGY.roadmap.posts = POSTS;
+    let promoted: Audience | null = null;
+    if (target.is_primary && DEMO_AUDIENCES.length) {
+      promoted = { ...DEMO_AUDIENCES[0], is_primary: true, priority: "primary" };
+      DEMO_AUDIENCES = DEMO_AUDIENCES.map((audience, index) => ({
+        ...audience,
+        is_primary: index === 0,
+        priority: index === 0 ? ("primary" as const) : ("secondary" as const),
+      }));
+    }
+    return {
+      ok: true,
+      detached_posts: detached,
+      promoted_audience: promoted,
+      message: promoted
+        ? `הקהל '${target.name}' נמחק. '${promoted.name}' הוגדר כקהל הראשי.`
+        : `הקהל '${target.name}' נמחק.`,
     } as T;
   }
   if (path.startsWith("/calendar")) {
@@ -1835,6 +2264,45 @@ export const endpoints = {
     api<{ asset: Asset }>(`/assets/${id}`, { method: "PATCH", body: JSON.stringify(patch) }),
   deleteAsset: (id: number) => api<{ ok: true }>(`/assets/${id}`, { method: "DELETE" }),
   describeAsset: (id: number) => api<{ asset: Asset }>(`/assets/${id}/describe`, { method: "POST" }),
+  /** The business's audience segments. Exactly one of them is primary. */
+  audiences: () => api<{ audiences: Audience[] }>("/audiences"),
+  /** A real model call that takes several seconds — explicit click only, never on render.
+   *  Regeneration replaces the generated set and never a segment the owner wrote by hand,
+   *  which is why the route answers with counts and its own note. */
+  generateAudiences: () =>
+    api<{
+      audiences: Audience[];
+      generated?: number;
+      replaced?: number;
+      kept_manual?: number;
+      detached_posts?: number;
+      note?: string;
+    }>("/audiences/generate", { method: "POST" }),
+  createAudience: (body: AudiencePayload) =>
+    api<{ audience: Audience }>("/audiences", { method: "POST", body: JSON.stringify(body) }),
+  updateAudience: (id: number, patch: Partial<AudiencePayload>) =>
+    api<{ audience: Audience; message?: string }>(`/audiences/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(patch),
+    }),
+  /** Deleting clears the tag from every post that pointed at the segment and, when it was
+   *  the primary one, promotes the next segment — the response reports both. */
+  deleteAudience: (id: number) =>
+    api<{
+      ok: true;
+      detached_posts?: number;
+      promoted_audience?: Audience | null;
+      message?: string;
+    }>(`/audiences/${id}`, { method: "DELETE" }),
+  /** Moves the primary marker; the server keeps exactly one. */
+  setPrimaryAudience: (id: number) =>
+    api<{ audiences: Audience[] }>(`/audiences/${id}/primary`, { method: "POST" }),
+  /** Point a post at the segment it serves. `null` clears it. */
+  setPostAudience: (post_index: number, audience_id: number | null) =>
+    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/audience", {
+      method: "POST",
+      body: JSON.stringify({ post_index, audience_id }),
+    }),
 };
 
 export type Competitor = { name: string; website_url: string };
@@ -2019,6 +2487,10 @@ export type RoadmapPost = {
   published_at?: string | null;
   approval_status?: "review" | "approved";
   approved_at?: string | null;
+  /** Which audience segment this post serves, and its name for display. Both are absent
+   *  until the owner (or the plan) decides — an unassigned post is a normal state. */
+  audience_id?: number;
+  audience_name?: string;
 };
 
 export type GrowthHypothesis = {
@@ -2198,6 +2670,58 @@ export type PerformancePayload = {
     funnel_issues: string[];
     metric_highlights: string[];
   };
+  /**
+   * Results broken down by audience segment.
+   *
+   * Modelled on `rollup()` in `api/app/services/audiences.py`, which builds this section.
+   * Every number is a sum of the per-post attribution the sync already produced: GA4 and
+   * Meta report no per-audience rate, so the screen must not compute one either.
+   */
+  audiences?: AudiencePerformance | null;
+};
+
+/** The metric buckets a row can carry. A bucket is absent (`null`) when nothing was
+ *  measured for it — which is a different fact from a measured zero. */
+export type AudienceMetricSums = {
+  sessions?: number;
+  conversions?: number;
+  engaged_sessions?: number;
+  likes?: number;
+  comments?: number;
+  impressions?: number;
+  reach?: number;
+  saves?: number;
+  shares?: number;
+};
+
+export type AudiencePerformanceRow = {
+  /** `null` is the "לא משויך" bucket, not a missing row. */
+  audience_id: number | null;
+  name: string;
+  is_primary?: boolean;
+  /** The sample size: how many planned posts this row covers. Always present. */
+  posts: number;
+  /** How many of those posts actually had a result to sum — often fewer than `posts`. */
+  measured_posts?: number;
+  ga4?: AudienceMetricSums | null;
+  meta?: AudienceMetricSums | null;
+};
+
+export type AudiencePerformance = {
+  /** False when no post had any attribution matched — usually "not connected / not synced". */
+  available?: boolean;
+  /** Per source: one of the two can be connected while the other is not. */
+  connected?: { ga4?: boolean; meta?: boolean };
+  period_start?: string;
+  period_end?: string;
+  synced_at?: string;
+  sample_posts?: number;
+  unassigned_posts?: number;
+  /** The backend's own account of how these numbers were produced. */
+  method?: string;
+  /** The backend's Hebrew explanation of what is missing. Rendered as-is. */
+  explanation?: string;
+  rows: AudiencePerformanceRow[];
 };
 
 export type RecommendationPayload = {

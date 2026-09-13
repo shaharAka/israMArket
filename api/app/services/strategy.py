@@ -3,6 +3,11 @@ from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 import re
 
 from app.services.brand import extract_brand_language, public_scan
+from app.services.audiences import (
+    attach_audiences,
+    post_audience_rule,
+    prompt_block as audience_prompt_block,
+)
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import lite_json, strategy_json
@@ -22,6 +27,26 @@ from app.services.schemas_llm import (
 from app.services.cost_model import plan_from_budget, prompt_block
 from app.services.month_loop import prior_prompt_block
 from app.services.scraper import scrape_site
+
+
+def _business_brief(business: dict) -> dict:
+    """The business dict without the audience catalogue.
+
+    Audiences are injected as their own compact Hebrew block (see services/audiences.py).
+    Leaving them inside the raw dict as well would print the same information twice and
+    quietly grow every prompt.
+    """
+    if not business.get("audiences"):
+        return business
+    return {key: value for key, value in business.items() if key != "audiences"}
+
+
+def _audience_block(business: dict, note: str = "") -> str:
+    """The audience block plus the one instruction that applies to this prompt."""
+    block = audience_prompt_block(business.get("audiences") or [])
+    if not block:
+        return ""
+    return f"{block}\n{note}" if note else block
 
 
 def extract_site_profile(scraped: dict) -> dict:
@@ -167,6 +192,7 @@ def build_long_horizon_plan(
 def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dict, prior: dict | None = None) -> dict:
     prompt = f"""
 {model_framing(business.get("business_model"))}
+{_audience_block(business, "הבידול, המסרים ונקודות ההוכחה צריכים לעבוד עבור הקהל הראשי, ולתת מענה גם לשאר — בלי מסר שמדבר לכולם ולכן לאף אחד.")}
 
 בנה אסטרטגיה עסקית, בידול (USP), השערת צמיחה ושיטות עבודה מוכחות (BKMs) לעסק ישראלי.
 שפת המותג והמסרים חייבים לצאת מהאתר והנכסים האמיתיים של העסק, לא משפת סוכנות.
@@ -248,13 +274,18 @@ def _write_posts_for_weeks(
     prior: dict | None = None,
 ) -> list[dict]:
     week_text = " ו".join(str(week) for week in weeks)
+    audience_note = (
+        "כל פוסט משרת קהל אחד מהרשימה שלמעלה, והבחירה חייבת להשפיע על הזווית, ההוק והכיתוב — "
+        "לא רק על התיוג. אל תמציא קהל שלא מופיע ברשימה."
+    )
     prompt = f"""
 {model_framing(business.get("business_model"))}
+{_audience_block(business, audience_note)}
 
 כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד.
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
 
-עסק: {business}
+עסק: {_business_brief(business)}
 שפת מותג: {brand}
 USP: {usp}
 תוכנית החודש: {core}
@@ -266,6 +297,7 @@ USP: {usp}
 - title, angle, hook, caption, cta בעברית חדה
 - cta חייב להיות קצר: 2 עד 4 מילים. הוא מודפס על הכרטיס הגרפי, לא בקפשן.
 - why_now: משפט אחד לבעל העסק למה הפוסט הזה עכשיו
+{post_audience_rule(business.get("audiences") or [])}
 - image_prompt באנגלית לפי שפת העיצוב של האתר. בלי טקסט עברי בתוך התמונה.
 - overlay_text עד 6 מילים בעברית — לכיתוב מעל התמונה באפליקציה, לא בתוך הפיקסלים
 - primary_outlet, outlets, metrics_to_watch
@@ -281,7 +313,10 @@ USP: {usp}
     items = posts.get("posts") or []
     if len(items) < 2:
         raise RuntimeError(f"Gemini החזיר פחות מדי פוסטים לשבועות {week_text}.")
-    return items
+    # The model names a segment; only real segments exist. An unknown (or missing) name
+    # falls back to the primary audience here, so a stored post can never carry a dangling
+    # audience id — and a business with no audiences gets an empty field, not an invention.
+    return attach_audiences(items, business.get("audiences") or [])
 
 
 def build_roadmap(
@@ -310,12 +345,13 @@ def build_roadmap(
 """
     plan_prompt = f"""
 {model_framing(business.get("business_model"))}
+{_audience_block(business, "כיוון החודש, האירועים והפוסטים צריכים לשרת את הקהלים האלה, עם דגש על הקהל הראשי. אל תמציא קהלים חדשים.")}
 
 בנה את כיוון החודש לעסק ישראלי קטן. בלי לכתוב את הפוסטים עצמם.
 החודש הוא חודש אזרחי רגיל. חגים יהודיים וימי קניות ישראליים מופיעים כאירועים בתוך אותו חודש אזרחי.
 
 פרטי העסק והאסטרטגיה:
-עסק: {business}
+עסק: {_business_brief(business)}
 USP והשערת צמיחה: {usp}
 תמהיל פרסום: {plan}
 
@@ -500,14 +536,19 @@ def generate_monthly_strategy(
         if stage == "posts_late" and len(early) < 2:
             raise RuntimeError("חסרים פוסטים לשבועות 1–2. יש לייצר את התוכנית מחדש.")
         late = _write_posts_for_weeks(business, usp, core, brand, [3, 4], prior=prior)
-        items = attach_tracking(early + late, business, year, month)
+        # Re-attached here as well as at write time: on a resumed run the early posts come
+        # back from the saved generation state, and the audience list may have changed
+        # since. Whatever ends up stored points at a segment that exists right now.
+        items = attach_audiences(
+            attach_tracking(early + late, business, year, month), business.get("audiences") or []
+        )
         if len(items) < 4:
             raise RuntimeError("Gemini החזיר פחות מדי פוסטים לחודש. יש לייצר שוב את התוכנית.")
         mark("done", posts=items)
         return pack(complete=True, core=core, items=items, usp=usp, competitors=competitor_profiles, events=events, plan=plan)
 
     if stage == "done" and state.get("posts"):
-        items = state["posts"]
+        items = attach_audiences(state["posts"], business.get("audiences") or [])
         return pack(complete=True, core=core, items=items, usp=usp, competitors=competitor_profiles, events=events, plan=plan)
 
     raise RuntimeError(f"מצב יצירה לא מוכר: {stage}")

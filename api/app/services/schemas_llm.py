@@ -325,6 +325,13 @@ ROADMAP_ITEM_SCHEMA = {
             },
             "required": ["instagram", "facebook", "whatsapp"],
         },
+        "audience_name": {
+            "type": "string",
+            "description": (
+                "שם מדויק של קהל יעד מתוך רשימת קהלי היעד שסופקה. אסור להמציא קהל. "
+                "אם העסק עוד לא הגדיר קהלי יעד — החזר מחרוזת ריקה."
+            ),
+        },
     },
     "required": [
         "week",
@@ -344,6 +351,7 @@ ROADMAP_ITEM_SCHEMA = {
         "outlets",
         "metrics_to_watch",
         "outlet_captions",
+        "audience_name",
     ],
 }
 
@@ -437,6 +445,97 @@ ROADMAP_SCHEMA = {
         "weekly_breakdown",
         "posts",
     ],
+}
+
+AUDIENCE_PROPOSAL_SCHEMA = {
+    "type": "object",
+    "title": "AudienceSegments",
+    "description": "קהלי יעד מוצעים לעסק: מי הלקוחות, למה הם קונים ואיך מפרסמים מולם",
+    "properties": {
+        "audiences": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 5,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "שם קצר וקונקרטי לקהל בעברית (2 עד 5 מילים), למשל 'זוגות צעירים לפני חתונה'",
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "משפט אחד שאומר מי הקהל הזה ומה הוא מחפש",
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": (
+                            "שני עד שלושה משפטים: מה המצב שמוביל אותם לקנות או לפנות, "
+                            "ומה חשוב להם בתהליך. בלי נתוני שוק, בלי גודל קהל ובלי אחוזים."
+                        ),
+                    },
+                    "needs": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 5,
+                        "items": {"type": "string"},
+                        "description": "מה הם רוצים ולמה הם קונים — צרכים, לא סלוגנים",
+                    },
+                    "where": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 5,
+                        "items": {"type": "string"},
+                        "description": "איפה הם מבלים זמן ואיך הם מגיעים לעסק (למשל קבוצות שכונתיות, חיפוש בגוגל, המלצות)",
+                    },
+                    "targeting": {
+                        "type": "object",
+                        "description": "כיווני פרסום לקהל הזה. רק מה שנובע מהמידע שסופק.",
+                        "properties": {
+                            "interests": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "תחומי עניין למיקוד מודעות",
+                            },
+                            "keywords": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "מילות מפתח או נושאי חיפוש שהקהל מחפש",
+                            },
+                            "age_range": {
+                                "type": "string",
+                                "description": "טווח גילאים מוצע, למשל '25-40'. אם אין בסיס לכך — מחרוזת ריקה.",
+                            },
+                            "gender": {
+                                "type": "string",
+                                "description": "אחד מ: נשים, גברים, הכל. אם אין בסיס — 'הכל'.",
+                            },
+                            "geo": {
+                                "type": "string",
+                                "description": "אזור גיאוגרפי מבוסס מיקום העסק. אם אין — מחרוזת ריקה.",
+                            },
+                        },
+                        "required": ["interests", "keywords", "age_range", "gender", "geo"],
+                    },
+                    "priority": {
+                        "type": "string",
+                        "enum": ["primary", "secondary"],
+                        "description": "בדיוק קהל אחד מסומן primary — החשוב ביותר לעסק הזה.",
+                    },
+                },
+                "required": [
+                    "name",
+                    "summary",
+                    "description",
+                    "needs",
+                    "where",
+                    "targeting",
+                    "priority",
+                ],
+            },
+        }
+    },
+    "required": ["audiences"],
 }
 
 PLAN_CORE_SCHEMA = {

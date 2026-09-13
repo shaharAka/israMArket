@@ -22,6 +22,7 @@ from app.services.assets import (
     asset_catalogue,
     suggest_assets,
 )
+from app.services.audiences import catalogue_for
 from app.services.calendar_il import gregorian_month_meta, israeli_events_for_month
 from app.services.designer import apply_creative_to_post, design_and_generate_post, plan_post_design
 from app.services.images import (
@@ -706,6 +707,8 @@ def generate_next_month(
         "business_model": business.business_model or "products",
         "growth_hypothesis": prior.get("growth_hypothesis") or "",
         "growth_targets": (prior.get("long_horizon") or {}).get("targets") or [],
+        # The segments the next month is planned for. Empty when none were defined.
+        "audiences": catalogue_for(db, business),
     }
 
     def persist_stage(next_state: dict) -> None:

@@ -5,10 +5,11 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.deps import get_business
-from app.models import Business, Integration, PerformanceSnapshot, Recommendation
+from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
 from app.services import ga4, meta
+from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
@@ -65,11 +66,46 @@ def _attribute(posts: list[dict], ga4_data: dict, meta_data: dict) -> list[dict]
                 "title": post.get("title"),
                 "utm_content": utm.get("utm_content"),
                 "published_url": post.get("published_url") or "",
+                # Carried on the attributed row so a per-audience rollup groups the very
+                # same numbers — no second attribution path, and no per-audience metric
+                # that GA4 cannot support.
+                "audience_id": post.get("audience_id"),
+                "audience_name": post.get("audience_name") or "",
                 "ga4": campaign_hits,
                 "meta": media_hit,
             }
         )
     return rows
+
+
+def _audience_payload(
+    business: Business, db: Session, posts: list[dict], snap: PerformanceSnapshot | None
+) -> dict:
+    """One row per audience, summed from the results already attributed to each post.
+
+    The input is `ga4.post_attribution` as the sync stored it: the per-post GA4 campaign
+    rows and the matched Meta post. A post with no audience is its own "לא משויך" bucket,
+    and when neither provider is connected the rows come back with no metrics at all plus
+    an explanation of what connecting would enable — never zeros dressed up as results.
+    """
+    rows = (
+        db.query(Audience)
+        .filter(Audience.business_id == business.id)
+        .order_by(Audience.is_primary.desc(), Audience.created_at.asc(), Audience.id.asc())
+        .all()
+    )
+    stored = loads(snap.ga4_json, {}) if snap else {}
+    attributions = (stored or {}).get("post_attribution") or []
+    return audiences_service.rollup(
+        audiences=[audiences_service.serialize_audience(row) for row in rows],
+        posts=posts,
+        attributions=attributions,
+        ga4_connected=_optional(business, "ga4") is not None,
+        meta_connected=_optional(business, "meta") is not None,
+        period_start=snap.period_start if snap else "",
+        period_end=snap.period_end if snap else "",
+        synced_at=snap.created_at.isoformat() if snap else "",
+    )
 
 
 def _sync_payload(business: Business, db: Session) -> dict:
@@ -146,6 +182,10 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         .order_by(PerformanceSnapshot.created_at.desc())
         .first()
     )
+    posts = _posts(business, db)
+    # Built in both branches: "no sync yet" still has audiences and posts, and the owner
+    # should still see how many posts each segment has — just without invented numbers.
+    audience_payload = _audience_payload(business, db, posts, snap)
     if not snap:
         # 200 with an explicit flag instead of a 404: "no data yet" is a normal state,
         # and a 404 here showed up as a console/error-tracking error on every page view.
@@ -158,6 +198,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
             "meta": {},
             "diagnostic": {},
             "created_at": "",
+            "audiences": audience_payload,
         }
     return {
         "available": True,
@@ -168,6 +209,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         "meta": loads(snap.meta_json, {}),
         "diagnostic": loads(snap.diagnostic_json, {}),
         "created_at": snap.created_at.isoformat(),
+        "audiences": audience_payload,
     }
 
 

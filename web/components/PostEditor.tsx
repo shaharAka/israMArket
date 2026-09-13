@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
   CardCanvas,
@@ -18,12 +18,13 @@ import {
   type Asset,
   type AssetSource,
   type AssetSuggestion,
+  type Audience,
   type BrandLanguage,
   type OverlayTheme,
   type RoadmapPost,
   type StrategyPayload,
 } from "@/lib/api";
-import { IconCheck, IconCopy, IconImage, IconLink, IconSparkles, IconWhatsApp } from "@/lib/icons";
+import { IconCheck, IconCopy, IconImage, IconLink, IconSparkles, IconUsers, IconWhatsApp } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
@@ -209,9 +210,39 @@ export function PostEditor({
   const [showDesignerSettings, setShowDesignerSettings] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportRatio, setExportRatio] = useState<CardRatio | "auto">("auto");
+
+  // Who the post is for. The picker is an ordinary list read; the write is only ever a
+  // deliberate change of the selection.
+  const [audiences, setAudiences] = useState<Audience[]>([]);
+  const [audiencesLoading, setAudiencesLoading] = useState(true);
+  const [audiencesError, setAudiencesError] = useState("");
+  const [audienceBusy, setAudienceBusy] = useState(false);
+
   // Dedicated off-screen canvas at true export size, so the downloaded PNG never
   // includes the mockup chrome (Instagram header, action rail, phone frame).
   const exportRef = useRef<HTMLDivElement>(null);
+
+  /** One cheap list read on mount, so the control can say "אין קהלים" rather than guess. */
+  useEffect(() => {
+    let cancelled = false;
+    endpoints
+      .audiences()
+      .then((res) => {
+        if (cancelled) return;
+        setAudiences(res.audiences ?? []);
+        setAudiencesError("");
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setAudiencesError(err instanceof Error ? err.message : "טעינת הקהלים נכשלה");
+      })
+      .finally(() => {
+        if (!cancelled) setAudiencesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   /** True while any image operation is in flight. Every image control checks this, so a
    *  library pick, an AI generation and a source switch can never overlap. */
@@ -419,6 +450,25 @@ export function PostEditor({
     }
   }
 
+  /** Point the post at the segment it serves. Same plumbing as attaching an asset: the
+   *  server owns the post, so the whole strategy it returns is taken as the truth. */
+  async function changeAudience(audienceId: number | null) {
+    if (audienceBusy) return;
+    setAudienceBusy(true);
+    setAudiencesError("");
+    try {
+      const result = await endpoints.setPostAudience(selectedIndex, audienceId);
+      setPosts(result.strategy.roadmap.posts);
+      onStrategyUpdated?.(result.strategy);
+      const name = audienceId === null ? "" : audiences.find((item) => item.id === audienceId)?.name || "";
+      toast(name ? `הפוסט משויך עכשיו לקהל: ${name}.` : "השיוך לקהל הוסר מהפוסט.");
+    } catch (err) {
+      setAudiencesError(err instanceof Error ? err.message : "שיוך הקהל נכשל");
+    } finally {
+      setAudienceBusy(false);
+    }
+  }
+
   async function markPublished() {
     if (!publishUrl.trim()) {
       toast("הדביקו את קישור הפוסט באינסטגרם או בפייסבוק");
@@ -548,6 +598,14 @@ export function PostEditor({
     ? (assets ?? []).find((asset) => asset.id === currentAssetId) ?? null
     : null;
   const libraryEmpty = assets !== null && assets.length === 0;
+  // The post carries the audience it serves. `audience_name` is what the plan wrote;
+  // when a post arrived without one, the loaded list still knows the name of the id, so
+  // the control never shows a raw number.
+  const currentAudienceId = currentPost.audience_id ?? null;
+  const currentAudienceName =
+    currentPost.audience_name ||
+    audiences.find((audience) => audience.id === currentAudienceId)?.name ||
+    "";
   // Ranked answers arrive as ids; the picker shows them with their thumbnail and tags.
   const rankedSuggestions = (suggestions ?? []).flatMap((suggestion) => {
     const asset = (assets ?? []).find((item) => item.id === suggestion.asset_id);
@@ -1510,6 +1568,78 @@ export function PostEditor({
                       )}
                     </div>
                   ) : null}
+
+                  {/* Who this post is for. A post with no segment is a normal state, not an
+                      error — but it is stated, not left blank. */}
+                  <div className="rounded-md border border-[#e6e4dc] bg-[#faf8f5] p-2.5">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#62635f]">
+                        <IconUsers className="h-3.5 w-3.5" />
+                        קהל היעד של הפוסט
+                      </span>
+                      <Link
+                        href="/decisions#audiences"
+                        className="text-[10px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+                      >
+                        ניהול הקהלים
+                      </Link>
+                    </div>
+
+                    {audiencesLoading ? (
+                      <p className="mt-2 text-[11px] text-[#747570]">טוענים את הקהלים…</p>
+                    ) : audiencesError ? (
+                      <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">{audiencesError}</p>
+                    ) : !audiences.length ? (
+                      <p className="mt-2 text-[11px] leading-5 text-[#747570]">
+                        עוד לא הוגדרו קהלי יעד, ולכן אין למי לשייך את הפוסט.{" "}
+                        <Link
+                          href="/decisions#audiences"
+                          className="font-bold text-[#7d4436] underline underline-offset-2"
+                        >
+                          להגדרת קהלים בהחלטות
+                        </Link>
+                      </p>
+                    ) : (
+                      <>
+                        <p className="mt-1 text-[11px] leading-5 text-[#20211f]">
+                          {currentAudienceId === null ? (
+                            <span className="font-bold text-[#8b8e84]">עוד לא הוחלט למי הפוסט מיועד</span>
+                          ) : (
+                            <>
+                              <span className="font-bold">{currentAudienceName || "קהל שהוגדר קודם"}</span>
+                              {audiences.find(
+                                (audience) => audience.id === currentAudienceId && audience.is_primary,
+                              ) ? (
+                                <span className="text-[#8b8e84]"> · הקהל המוביל</span>
+                              ) : null}
+                            </>
+                          )}
+                        </p>
+                        <select
+                          aria-label="שיוך הפוסט לקהל"
+                          value={currentAudienceId === null ? "" : String(currentAudienceId)}
+                          // An image operation rewrites the same post on the server; the
+                          // audience write waits rather than racing it.
+                          disabled={imageLocked || audienceBusy}
+                          onChange={(event) =>
+                            void changeAudience(event.target.value === "" ? null : Number(event.target.value))
+                          }
+                          className="mt-1.5 h-9 w-full rounded-md border border-[#cecdc7] bg-white px-2 text-[11px] font-bold text-[#20211f] disabled:opacity-40"
+                        >
+                          <option value="" dir="rtl" lang="he">לא הוחלט — בלי שיוך לקהל</option>
+                          {audiences.map((audience) => (
+                            <option key={audience.id} value={audience.id} dir="rtl" lang="he">
+                              {audience.name}
+                              {audience.is_primary ? " · הקהל המוביל" : ""}
+                            </option>
+                          ))}
+                        </select>
+                        {audienceBusy ? (
+                          <p className="mt-1 text-[10px] text-[#747570]">מעדכנים את השיוך…</p>
+                        ) : null}
+                      </>
+                    )}
+                  </div>
 
                   <div>
                     <label className="block text-[11px] font-bold text-[#62635f] mb-1">
