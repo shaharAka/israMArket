@@ -5,6 +5,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
+import { SystemNote } from "@/components/SystemNote";
 import {
   endpoints,
   isDemo,
@@ -22,7 +23,6 @@ import {
   IconEye,
   IconLightbulb,
   IconLink,
-  IconSparkles,
   IconStore,
 } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
@@ -707,19 +707,13 @@ export default function PromotionPage() {
                 />
               </div>
 
-              {/* The house rule, in the backend's own words: no volume column, anywhere. */}
-              <div className="rounded-lg border border-[#e6e4dc] bg-white p-4">
-                <h3 className="flex items-center gap-2 text-xs font-black text-[#20211f]">
-                  <span style={{ color: identity.accent }}>
-                    <IconSparkles className="h-4 w-4" />
-                  </span>
-                  למה אין כאן נפח חיפוש
-                </h3>
-                <p className="mt-2 text-xs leading-6 text-[#5e6159]">
-                  {kwSources?.search_volumes?.note ||
-                    "אין לנו גישה לנפחי החיפוש של גוגל, ולכן אין כאן מספר חיפושים לאף מילה."}
-                </p>
-              </div>
+              {/* The house rule, in the backend's own words: no volume column, anywhere.
+                  This is the software explaining a limitation, so it wears the system
+                  tone rather than a business surface. */}
+              <SystemNote variant="panel" title="למה אין כאן נפח חיפוש">
+                {kwSources?.search_volumes?.note ||
+                  "אין לנו גישה לנפחי החיפוש של גוגל, ולכן אין כאן מספר חיפושים לאף מילה."}
+              </SystemNote>
 
               {!searchConsoleConnected ? (
                 <div className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] p-5">

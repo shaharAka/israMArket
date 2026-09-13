@@ -17,6 +17,7 @@ import {
   IconStore,
 } from "@/lib/icons";
 import { BrandPicker } from "@/components/BrandPicker";
+import { SYSTEM_TONE } from "@/lib/tone";
 import { ToastHost } from "@/lib/ui";
 
 /**
@@ -121,7 +122,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {demo ? <span className="text-[11px] font-bold text-[#747570]">מצב הדגמה</span> : null}
+          {demo ? (
+            <span
+              className="rounded-full px-2 py-0.5 text-[10px] font-black"
+              style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
+            >
+              מצב הדגמה
+            </span>
+          ) : null}
           <BrandPicker variant="mobile" />
         </div>
       </div>
@@ -138,7 +146,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </Link>
           <div className="flex shrink-0 items-center gap-2">
-            {demo ? <span className="label-mark text-[#63665e] bg-[#f8f7f4]">דמו</span> : null}
+            {demo ? (
+              <span
+                className="rounded-full px-2 py-0.5 text-[10px] font-black"
+                style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
+              >
+                דמו
+              </span>
+            ) : null}
             <BrandPicker variant="sidebar" />
           </div>
         </div>
