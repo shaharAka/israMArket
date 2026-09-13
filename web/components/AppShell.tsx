@@ -113,7 +113,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-[#f8f7f4] text-[#1e201d] flex flex-col md:flex-row">
-      <div className="sticky top-0 z-30 flex items-center justify-between border-b border-[#deddd8] bg-white px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-[#deddd8] bg-white px-4 py-3 md:hidden">
         <div className="flex items-center gap-2">
           <BrandMark className="h-7 w-7 text-[#20211f]" />
           <div>
@@ -135,7 +135,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </div>
 
       <aside
-        className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
+        className="sticky top-0 z-40 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
       >
         <div className="border-b border-[#e6e4dc]">
           {/* Identity gets the whole first row. The brand trigger used to share it and
