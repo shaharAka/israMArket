@@ -1,12 +1,25 @@
 /**
- * Per-section visual identity.
+ * Section tokens.
  *
- * Every page used to share one template — eyebrow, h1, subtitle, stack of bordered
- * boxes — so navigating never felt like arriving anywhere. Each section now carries its
- * own accent, and more importantly its own layout grammar (see each page). These tokens
- * are the part that must stay consistent across the set.
+ * Every section used to carry its own accent (ink, sand, sage, slate, clay, teal), which
+ * made each screen feel like a different product. There is now one system: a neutral
+ * page and a single accent — the sage the badges and success states already use. A page
+ * says where you are through its eyebrow and the active tab, not through colour.
+ *
+ * The export shape is unchanged so pages that read `SECTIONS.x.accent` keep working;
+ * they simply all get the same values now.
+ *
+ * Contrast: white on `accent` and `accent` on `surface` both clear AA for small text, so
+ * the accent is safe as a filled background and as a label colour.
  */
-export type SectionKey = "dashboard" | "strategy" | "plan" | "decisions" | "assets" | "promotion";
+export type SectionKey =
+  | "dashboard"
+  | "strategy"
+  | "plan"
+  | "decisions"
+  | "assets"
+  | "promotion"
+  | "business";
 
 export type SectionIdentity = {
   /** Where you are, in the owner's words. */
@@ -21,49 +34,47 @@ export type SectionIdentity = {
   purpose: string;
 };
 
+/** The app's one accent. Everything section-coloured reads from here. */
+export const ACCENT = {
+  accent: "#374b3d",
+  surface: "#f3f6f1",
+  border: "#d3ddcf",
+} as const;
+
 export const SECTIONS: Record<SectionKey, SectionIdentity> = {
   dashboard: {
-    eyebrow: "החודש שלך",
-    accent: "#20211f",
-    surface: "#f4f3ee",
-    border: "#dedcd4",
+    ...ACCENT,
+    eyebrow: "היום",
     purpose: "מה מתקדם, ומה צריך מכם עכשיו",
   },
   strategy: {
+    ...ACCENT,
     eyebrow: "התוכנית החודשית",
-    accent: "#685f47",
-    surface: "#fcf9f2",
-    border: "#e2d7c3",
     purpose: "מה עושים החודש, שבוע אחר שבוע",
   },
   plan: {
+    ...ACCENT,
     eyebrow: "התוכנית הרבעונית",
-    accent: "#374b3d",
-    surface: "#f3f7f1",
-    border: "#c7d6c2",
     purpose: "לאן הולכים, ומה אבן הדרך בכל חודש",
   },
   decisions: {
+    ...ACCENT,
     eyebrow: "ההחלטות שלי",
-    accent: "#3f4a5c",
-    surface: "#f3f4f7",
-    border: "#ccd2dd",
     purpose: "התקציב, האבחון והעדיפויות שמהם נבנות התוכניות",
   },
   assets: {
-    eyebrow: "הנכסים שלי",
-    accent: "#7d4436",
-    surface: "#fbf4f0",
-    border: "#e3cec4",
+    ...ACCENT,
+    eyebrow: "התמונות שלי",
     purpose: "התמונות והסרטונים שלכם, עם תיאור ותגיות שהמערכת כותבת לבד",
   },
-  // A muted teal: the one cool hue left that does not read as the sage of the quarterly
-  // plan or the slate of the decisions screen, so "Google" is recognisable at a glance.
   promotion: {
+    ...ACCENT,
     eyebrow: "הקידום בגוגל",
-    accent: "#2f5d57",
-    surface: "#f0f6f5",
-    border: "#c7dad7",
     purpose: "מה גוגל הייתה עולה לעסק הזה, על אילו מילים, ומה אפשר להשיג שם בחינם",
+  },
+  business: {
+    ...ACCENT,
+    eyebrow: "העסק",
+    purpose: "התוכניות, התמונות וההגדרות במקום אחד",
   },
 };

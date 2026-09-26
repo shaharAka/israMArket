@@ -286,7 +286,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
         aria-controls={panelId}
         title="המותג: צבעים, קול ומדיה"
         className={`inline-flex cursor-pointer items-center rounded-md border border-[#dedcd4] bg-white transition-colors hover:bg-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f] ${
-          variant === "mobile" ? "gap-1 px-2 py-1.5" : "w-full justify-between gap-2 px-2.5 py-2"
+          variant === "mobile" ? "min-h-11 min-w-11 justify-center gap-1 px-2.5" : "w-full justify-between gap-2 px-2.5 py-2"
         }`}
       >
         <span aria-hidden className={variant === "mobile" ? "flex items-center gap-0.5" : "flex items-center gap-1.5"}>

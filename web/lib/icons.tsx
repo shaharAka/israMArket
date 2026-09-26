@@ -155,3 +155,44 @@ export function IconEye({ className }: IconProps) {
     </Sketch>
   );
 }
+
+/** "Go into this row". Points left because the app is RTL: forward is leftward. */
+export function IconChevron({ className }: IconProps) {
+  return <Sketch className={className}><path d="M14.5 6L8.5 12l6 6" /></Sketch>;
+}
+
+/** "Back". Points right because the app is RTL: back is rightward. */
+export function IconArrowRight({ className }: IconProps) {
+  return <Sketch className={className}><path d="M4 12h16M14.7 6.7L20 12l-5.3 5.3" /></Sketch>;
+}
+
+/** A single person — the owner's account. */
+export function IconUser({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M12 12.2a3.9 3.9 0 100-7.8 3.9 3.9 0 000 7.8z" />
+      <path d="M4.8 20.5v-1.2c0-2.6 2.1-4.6 4.6-4.6h5.2c2.6 0 4.6 2.1 4.6 4.6v1.2" />
+    </Sketch>
+  );
+}
+
+/** Two stacked photos — the owner's media library. */
+export function IconPhotos({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M7 7.5h13.5v12H7z" />
+      <path d="M4 16.5v-12h13" />
+      <path d="M7.3 16.6l3.6-3.6 2.6 2.5 2-2.1 5 3.9" />
+    </Sketch>
+  );
+}
+
+/** Leave: a door with an arrow heading out of it. */
+export function IconLogout({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M13.5 4H20v16h-6.5" />
+      <path d="M15 12H3.5M7.8 7.7L3.5 12l4.3 4.3" />
+    </Sketch>
+  );
+}
