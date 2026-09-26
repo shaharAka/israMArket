@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     instagram_hashtag_search: bool = False
     database_url: str = Field(default="sqlite:///./data/isramarket.db")
 
-    gemini_strategy_model: str = "gemini-3.7-flash"
+    gemini_strategy_model: str = "gemini-3.8-flash"
     gemini_lite_model: str = "gemini-3.5-flash-lite"
     gemini_image_model: str = "gemini-3-pro-image"
     # 1K returns ~928px wide for 4:5 — under Instagram's 1080px ideal, so an export
