@@ -477,12 +477,335 @@ function demoAssetFromFile(file: File, name: string, mime: string): Asset {
   };
 }
 
+/* ------------------------------------------------------------------ *
+ * Instagram signal (demo). A small Jaffa bakery with ~3,000 followers: *
+ * its own four best posts with the numbers Meta returns for a business *
+ * account (views, reach, saves, shares), and two other accounts the    *
+ * owner follows, for which Meta shows only public likes and comments.  *
+ * Shapes mirror `own_post_dict` / `_compact_source` / `serialize_brief` *
+ * in api/app/services/instagram_signal.py.                             *
+ * ------------------------------------------------------------------ */
+
+/** Set to "off" to see the demo as an owner who has not connected Instagram yet. */
+export const DEMO_INSTAGRAM_FLAG = "isramarket_demo_instagram";
+
+function demoInstagramConnected(): boolean {
+  try {
+    return typeof window === "undefined" || window.localStorage.getItem(DEMO_INSTAGRAM_FLAG) !== "off";
+  } catch {
+    return true;
+  }
+}
+
+function demoSource(source: Omit<InspirationSource, "hashtag" | "caption_length"> & { caption_length?: number }): InspirationSource {
+  return { hashtag: "", caption_length: 0, ...source };
+}
+
+const DEMO_IG_OWN: InstagramOwnPost[] = [
+  {
+    ...demoSource({
+      ref: "O1",
+      kind: "own",
+      handle: "",
+      format: "reel",
+      format_he: "רילס",
+      hook: "ככה נראית חלה עגולה ב-05:30",
+      permalink: "https://www.instagram.com/reel/C9aLtTm05/",
+      posted_at: "2026-08-12T03:10:00+0000",
+      when_he: "יום רביעי 06:00",
+      caption_length: 142,
+      metrics: { views: 1240, reach: 860, saved: 38, shares: 21, likes: 96, comments: 14 },
+    }),
+    media_id: "demo-o1",
+    caption: "ככה נראית חלה עגולה ב-05:30\nשלוש קליעות, ביצה, שומשום, ותנור שכבר חם מ-4.",
+    thumbnail_url: DEMO_IMAGES[0],
+    media_url: "",
+    score: 0.0686,
+    score_basis_he: "שמירות ושיתופים ביחס לאנשים שהגיעו",
+  },
+  {
+    ...demoSource({
+      ref: "O2",
+      kind: "own",
+      handle: "",
+      format: "carousel",
+      format_he: "קרוסלה",
+      hook: "3 לחמים שמחזיקים שבוע (ואחד שלא)",
+      permalink: "https://www.instagram.com/p/C9kPtTm21/",
+      posted_at: "2026-08-21T05:40:00+0000",
+      when_he: "יום שישי 08:00",
+      caption_length: 318,
+      metrics: { views: 980, reach: 640, saved: 29, shares: 5, likes: 71, comments: 9 },
+    }),
+    media_id: "demo-o2",
+    caption: "3 לחמים שמחזיקים שבוע (ואחד שלא)\nדפדפו: מחמצת כפרית, שיפון, כוסמין — והבגט, שכדאי לאכול היום.",
+    thumbnail_url: DEMO_IMAGES[1],
+    media_url: "",
+    score: 0.0531,
+    score_basis_he: "שמירות ושיתופים ביחס לאנשים שהגיעו",
+  },
+  {
+    ...demoSource({
+      ref: "O3",
+      kind: "own",
+      handle: "",
+      format: "reel",
+      format_he: "רילס",
+      hook: "מה קורה לבצק שנשכח במקרר לילה שלם",
+      permalink: "https://www.instagram.com/reel/C9vBtTm02/",
+      posted_at: "2026-09-02T04:20:00+0000",
+      when_he: "יום רביעי 07:00",
+      caption_length: 96,
+      metrics: { views: 890, reach: 620, saved: 11, shares: 5, likes: 64, comments: 7 },
+    }),
+    media_id: "demo-o3",
+    caption: "מה קורה לבצק שנשכח במקרר לילה שלם\nספוילר: הלחם הכי טוב של השבוע.",
+    thumbnail_url: DEMO_IMAGES[3],
+    media_url: "",
+    score: 0.0258,
+    score_basis_he: "שמירות ושיתופים ביחס לאנשים שהגיעו",
+  },
+  {
+    ...demoSource({
+      ref: "O4",
+      kind: "own",
+      handle: "",
+      format: "image",
+      format_he: "תמונה",
+      hook: "שאלה לשישי: עם שומשום או בלי?",
+      permalink: "https://www.instagram.com/p/C9fQtTm31/",
+      posted_at: "2026-07-31T05:15:00+0000",
+      when_he: "יום שישי 08:00",
+      caption_length: 64,
+      metrics: { views: 610, reach: 480, saved: 6, shares: 3, likes: 58, comments: 31 },
+    }),
+    media_id: "demo-o4",
+    caption: "שאלה לשישי: עם שומשום או בלי?\nכתבו בתגובות, נאפה לפי הרוב.",
+    thumbnail_url: DEMO_IMAGES[2],
+    media_url: "",
+    score: 0.0188,
+    score_basis_he: "שמירות ושיתופים ביחס לאנשים שהגיעו",
+  },
+];
+
+const DEMO_IG_COMPETITOR_POSTS: Record<string, InspirationSource[]> = {
+  kemah_vemelach: [
+    demoSource({
+      ref: "C1",
+      kind: "competitor",
+      handle: "kemah_vemelach",
+      format: "reel",
+      format_he: "רילס",
+      hook: "3 טעויות שכולם עושים עם מחמצת",
+      permalink: "https://www.instagram.com/reel/C9mKmV01/",
+      posted_at: "2026-08-18T15:00:00+0000",
+      when_he: "יום שלישי 18:00",
+      caption_length: 410,
+      metrics: { likes: 412, comments: 38 },
+    }),
+    demoSource({
+      ref: "C2",
+      kind: "competitor",
+      handle: "kemah_vemelach",
+      format: "carousel",
+      format_he: "קרוסלה",
+      hook: "המחירון של שישי, בלי הפתעות",
+      permalink: "https://www.instagram.com/p/C9rKmV02/",
+      posted_at: "2026-08-28T04:30:00+0000",
+      when_he: "יום שישי 07:00",
+      caption_length: 220,
+      metrics: { likes: 188, comments: 22 },
+    }),
+  ],
+  "shira.ofa.bayit": [
+    demoSource({
+      ref: "C3",
+      kind: "competitor",
+      handle: "shira.ofa.bayit",
+      format: "reel",
+      format_he: "רילס",
+      hook: "מה אני אופה כשהחנות סגורה",
+      permalink: "https://www.instagram.com/reel/C9wShR03/",
+      posted_at: "2026-09-04T17:00:00+0000",
+      when_he: "יום שישי 20:00",
+      caption_length: 180,
+      metrics: { likes: 265, comments: 41 },
+    }),
+  ],
+};
+
+const DEMO_IG_FOLLOWERS: Record<string, number> = { kemah_vemelach: 12400, "shira.ofa.bayit": 5800 };
+
+function demoIgRef(ref: string): InspirationSource {
+  const own = DEMO_IG_OWN.find((post) => post.ref === ref);
+  if (own) return demoSource({
+    ref: own.ref,
+    kind: own.kind,
+    handle: own.handle,
+    format: own.format,
+    format_he: own.format_he,
+    hook: own.hook,
+    permalink: own.permalink,
+    posted_at: own.posted_at,
+    when_he: own.when_he,
+    caption_length: own.caption_length,
+    metrics: own.metrics,
+  });
+  const other = Object.values(DEMO_IG_COMPETITOR_POSTS)
+    .flat()
+    .find((post) => post.ref === ref);
+  if (!other) throw new Error(`Unknown demo Instagram ref ${ref}`);
+  return other;
+}
+
+function demoPattern(
+  category: InspirationPattern["category"],
+  category_he: string,
+  pattern: string,
+  evidence: string,
+  refs: string[],
+  strength: InspirationPattern["strength"]
+): InspirationPattern {
+  return { category, category_he, pattern, evidence, strength, source_refs: refs, sources: refs.map(demoIgRef) };
+}
+
+const DEMO_IG_BRIEF: InspirationBrief = {
+  id: 1,
+  year: 2026,
+  month: 9,
+  summary: "מה שעובד לכם: רילס קצר מהמשמרת וטיפ שאנשים שומרים. החודש כדאי לפתוח בטיפ, לא בשאלה.",
+  patterns: [
+    demoPattern(
+      "format",
+      "פורמט",
+      "רילס קצר מהמשמרת של הבוקר",
+      "שני הרילסים מהמאפייה נשמרו ושותפו יותר מכל פוסט אחר שלכם (59 ו-16 ביחס ל-860 ו-620 שהגיעו).",
+      ["O1", "O3"],
+      "strong"
+    ),
+    demoPattern(
+      "hook",
+      "הוק",
+      "הוק שמבטיח טיפ שימושי נשמר יותר",
+      "הקרוסלה '3 לחמים שמחזיקים שבוע' נשמרה 29 פעמים; אצל @kemah_vemelach רילס טיפים קיבל הכי הרבה תגובות.",
+      ["O2", "C1"],
+      "strong"
+    ),
+    demoPattern(
+      "cta",
+      "קריאה לפעולה",
+      "שאלה בסוף מביאה תגובות, לא שמירות",
+      "פוסט אחד בלבד: 31 תגובות אבל 6 שמירות.",
+      ["O4"],
+      "weak"
+    ),
+    demoPattern(
+      "timing",
+      "ימים ושעות",
+      "שישי בבוקר, לפני הקניות",
+      "שני פוסטים של שישי בבוקר הגיעו לאנשים רבים יחסית; אצל חשבון אחר רואים רק לייקים.",
+      ["O2", "C2"],
+      "weak"
+    ),
+    demoPattern(
+      "topic",
+      "נושא",
+      "מאחורי הקלעים כשהחנות סגורה",
+      "רק מחשבון אחר (@shira.ofa.bayit), לפי לייקים ותגובות.",
+      ["C3"],
+      "weak"
+    ),
+  ],
+  caveats: ["אצל חשבונות אחרים רואים רק לייקים ותגובות.", "יש רק 4 פוסטים שלכם עם נתונים."],
+  created_at: "2026-09-03T06:12:00",
+  updated_at: "2026-09-03T06:12:00",
+  sources: {
+    own: DEMO_IG_OWN.map((post) => demoIgRef(post.ref)),
+    competitors: Object.entries(DEMO_IG_COMPETITOR_POSTS).map(([handle, posts]) => ({
+      handle,
+      ok: true,
+      error_he: "",
+      profile: { username: handle, name: "", followers_count: DEMO_IG_FOLLOWERS[handle] ?? null, media_count: null },
+      posts_seen: 25,
+      posts,
+    })),
+    hashtags: [],
+  },
+};
+
+let DEMO_IG_HANDLES: string[] = ["kemah_vemelach", "shira.ofa.bayit"];
+
+/** The same rules as `normalize_handle` on the server, so the demo refuses what it would. */
+const DEMO_HANDLE_RE = /^(?!\.)(?!.*\.\.)(?!.*\.$)[a-z0-9._]{1,30}$/;
+const DEMO_IG_HOSTS = new Set(["instagram.com", "www.instagram.com", "m.instagram.com", "instagr.am"]);
+const DEMO_IG_RESERVED = new Set(["p", "reel", "reels", "stories", "explore", "tv", "accounts"]);
+
+function demoNormalizeHandle(raw: string): string {
+  let value = (raw || "").trim();
+  if (!value) throw new ApiError("שם משתמש ריק.", 422);
+  try {
+    const url = new URL(value.includes("://") ? value : `https://${value}`);
+    if (DEMO_IG_HOSTS.has(url.hostname.toLowerCase())) {
+      const segments = url.pathname.split("/").filter(Boolean);
+      if (!segments.length || DEMO_IG_RESERVED.has(segments[0].toLowerCase())) {
+        throw new ApiError(`'${value}' הוא קישור לפוסט ולא לפרופיל. הדביקו שם משתמש או קישור לפרופיל.`, 422);
+      }
+      value = segments[0];
+    }
+  } catch (err) {
+    if (err instanceof ApiError) throw err;
+  }
+  value = value.replace(/^@+/, "").trim().toLowerCase();
+  if (!DEMO_HANDLE_RE.test(value)) {
+    throw new ApiError(
+      `'${raw.trim()}' אינו שם משתמש תקין באינסטגרם: עד 30 תווים, רק אותיות באנגלית, ספרות, נקודה וקו תחתון, בלי נקודה בהתחלה או בסוף.`,
+      422
+    );
+  }
+  return value;
+}
+
+function demoInstagramBrief(): InstagramBriefPayload {
+  const connected = demoInstagramConnected();
+  const handles = [...DEMO_IG_HANDLES];
+  const base = {
+    year: 2026,
+    month: 9,
+    meta_ready: true,
+    handles,
+    max_handles: 5,
+    hashtag_search: { enabled: false, used_7d: 0, limit: 30 },
+  };
+  if (!connected) {
+    return {
+      ...base,
+      meta_connected: false,
+      own_posts_synced: 0,
+      own_top_posts: [],
+      brief: null,
+      empty_reason: "אינסטגרם לא מחובר. חברו את מטא בעמוד החיבורים כדי שהפוסטים ילמדו מהפוסטים שלכם שהכי עבדו.",
+    };
+  }
+  const brief: InspirationBrief = JSON.parse(JSON.stringify(DEMO_IG_BRIEF));
+  // A handle the owner removed is no longer read on the next refresh; the stored brief
+  // still cites what it was built from, the same as on the server.
+  return {
+    ...base,
+    meta_connected: true,
+    own_posts_synced: 18,
+    own_top_posts: JSON.parse(JSON.stringify(DEMO_IG_OWN)),
+    brief,
+    empty_reason: "",
+  };
+}
+
 const POSTS: RoadmapPost[] = [
   {
     week: 1,
     date_hint: "2026-09-07",
     format: "reel",
     title: "החלות נגמרות לפני הצהריים",
+    inspiration: { note: "רילס קצר מהתנור בבוקר, כמו הריל שלכם שנשמר הכי הרבה.", sources: [demoIgRef("O1")] },
     angle: "תחושת דחיפות לפני ראש השנה",
     hook: "אם אתם מגיעים אחרי 11:00 בשישי — אל תתבאסו",
     caption: "פותחים הזמנות לחגי תשרי. שריינו חלה עגולה ושולחן חג לפני שניסגר.",
@@ -507,6 +830,10 @@ const POSTS: RoadmapPost[] = [
     date_hint: "2026-09-09",
     format: "carousel",
     title: "מארז ראש השנה לשישי",
+    inspiration: {
+      note: "קרוסלה שמפרטת מה בפנים, בשישי בבוקר — כמו הפוסטים שנשמרו אצלכם ואצל @kemah_vemelach.",
+      sources: [demoIgRef("O2"), demoIgRef("C2")],
+    },
     angle: "חלה, ריבה, ומשהו מלוח לשולחן",
     hook: "מה שמים על השולחן כשהאורחים כבר בדרך",
     caption: "קרוסלה: מה בפנים, מחיר, ואיסוף מיפו. מארז מוקפד עם יצרני בוטיק שכנים.",
@@ -559,6 +886,7 @@ const POSTS: RoadmapPost[] = [
     date_hint: "2026-09-16",
     format: "reel",
     title: "אחרי החג: הלחם היומי חוזר",
+    inspiration: { note: "רילס מהמשמרת של הבוקר — הפורמט שהכי עובד לכם.", sources: [demoIgRef("O3")] },
     angle: "חזרה לשגרה",
     hook: "יום ראשון אחרי ראש השנה — התור חוזר",
     caption: "מחמצת של יום חול וכריך קממבר. חזרנו לשגרה שקטה ביפו.",
@@ -630,6 +958,10 @@ const POSTS: RoadmapPost[] = [
     date_hint: "2026-09-28",
     format: "reel",
     title: "מאחורי התנור בסוכות",
+    inspiration: {
+      note: "מאחורי הקלעים של המאפייה, כמו הריל שלכם מהבוקר והריל של @shira.ofa.bayit.",
+      sources: [demoIgRef("O1"), demoIgRef("C3")],
+    },
     angle: "מותג ואותנטיות, לא רק מבצע",
     hook: "איך נראית משמרת כשהעיר בחופש",
     caption: "30 שניות מהלילה: הלישה, הקמח, והריח של יפו ב-05:00 בבוקר.",
@@ -2597,6 +2929,52 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
         : `הקהל '${target.name}' נמחק.`,
     } as T;
   }
+  if (path.startsWith("/instagram/brief") && method === "GET") return demoInstagramBrief() as T;
+  if (path === "/instagram/handles" && method === "PUT") {
+    const body = JSON.parse(String(options.body || "{}")) as { handles?: string[] };
+    const handles: string[] = [];
+    for (const raw of body.handles || []) {
+      if (typeof raw !== "string" || !raw.trim()) continue;
+      const handle = demoNormalizeHandle(raw);
+      if (!handles.includes(handle)) handles.push(handle);
+    }
+    if (handles.length > 5) {
+      throw new ApiError(`אפשר לשמור עד 5 חשבונות אינסטגרם להשראה. נשלחו ${handles.length}.`, 422);
+    }
+    DEMO_IG_HANDLES = handles;
+    return { handles, max_handles: 5 } as T;
+  }
+  if (path === "/instagram/brief/refresh" && method === "POST") {
+    // A real refresh is a Meta read plus one model call; the pause keeps the loading
+    // state honest in the demo rather than flashing past.
+    await new Promise((resolve) => setTimeout(resolve, 1400));
+    const payload = demoInstagramBrief();
+    if (!payload.meta_connected) {
+      return {
+        ...payload,
+        refresh: {
+          status: "empty",
+          reason_he: "אינסטגרם לא מחובר, ולכן אין פוסטים לנתח. חברו את מטא בעמוד החיבורים וסנכרנו ביצועים.",
+          competitors: payload.handles.map((handle) => ({
+            handle,
+            ok: false,
+            error_he: `@${handle} לא נקרא: אינסטגרם לא מחובר. חברו את מטא בעמוד החיבורים.`,
+            posts_seen: 0,
+          })),
+          hashtags: null,
+        },
+      } as T;
+    }
+    return {
+      ...payload,
+      refresh: {
+        status: "created",
+        reason_he: "",
+        competitors: payload.handles.map((handle) => ({ handle, ok: true, error_he: "", posts_seen: 25 })),
+        hashtags: null,
+      },
+    } as T;
+  }
   if (path.startsWith("/calendar")) {
     const url = new URL(path, "http://local");
     return demoCalendar(Number(url.searchParams.get("year") || 2026), Number(url.searchParams.get("month") || 9)) as T;
@@ -3058,6 +3436,133 @@ export const endpoints = {
   publishCapability: () => api<PublishCapability>("/publish/capability"),
   /** The month's plan as one copyable Hebrew brief. */
   publishBrief: () => api<PublishBrief>("/publish/brief"),
+  /** What the post writer learned from Instagram: the month's brief (else the newest
+   *  earlier one), the business's own best posts and the saved competitor handles. Not
+   *  connected is a 200 with `empty_reason`, never an error. */
+  instagramBrief: (year?: number, month?: number) => {
+    const query = new URLSearchParams();
+    if (year) query.set("year", String(year));
+    if (month) query.set("month", String(month));
+    const suffix = query.toString();
+    return api<InstagramBriefPayload>(`/instagram/brief${suffix ? `?${suffix}` : ""}`);
+  },
+  /** Replace the competitor / peer usernames (at most `max_handles`). "@name" and pasted
+   *  profile links are accepted; a bad one is a 422 with a Hebrew message. */
+  saveInstagramHandles: (handles: string[]) =>
+    api<{ handles: string[]; max_handles: number }>("/instagram/handles", {
+      method: "PUT",
+      body: JSON.stringify({ handles }),
+    }),
+  /** Re-read Instagram and rebuild the brief — a Meta read plus a model call, so seconds.
+   *  `refresh.status === "empty"` means there was nothing to learn from, with a reason. */
+  refreshInstagramBrief: (body: { year?: number; month?: number; hashtags?: string[] } = {}) =>
+    api<InstagramRefreshPayload>("/instagram/brief/refresh", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+};
+
+/* --------------------------- Instagram signal --------------------------- */
+
+/** A metric Meta did not return is missing (null / absent), never zero. */
+export type InstagramMetrics = {
+  views?: number | null;
+  reach?: number | null;
+  saved?: number | null;
+  shares?: number | null;
+  likes?: number | null;
+  comments?: number | null;
+};
+
+/** One real post a pattern or a written post cites (`_compact_source` on the server). */
+export type InspirationSource = {
+  /** O1.. = the business's own post, C1.. = another account's, H1.. = a hashtag's. */
+  ref: string;
+  kind: "own" | "competitor" | "hashtag";
+  handle: string;
+  hashtag: string;
+  format: string;
+  format_he: string;
+  hook: string;
+  permalink: string;
+  posted_at: string;
+  /** Day and Israel hour it went out, e.g. "יום רביעי 06:00"; "" when unknown. */
+  when_he: string;
+  caption_length: number;
+  metrics: InstagramMetrics;
+};
+
+/** Why a generated post looks the way it does, resolved to real posts. */
+export type PostInspiration = { note: string; sources: InspirationSource[] };
+
+/** One of the business's own best posts (`own_post_dict` + the ranking fields). */
+export type InstagramOwnPost = InspirationSource & {
+  media_id: string;
+  caption: string;
+  media_url: string;
+  thumbnail_url: string;
+  score?: number;
+  score_basis?: string;
+  score_basis_he?: string;
+};
+
+export type InspirationPattern = {
+  category: "format" | "hook" | "caption_length" | "cta" | "timing" | "topic";
+  category_he: string;
+  pattern: string;
+  evidence: string;
+  source_refs: string[];
+  /** "strong" only when it repeats across posts or rests on the business's own saves. */
+  strength: "strong" | "weak";
+  sources: InspirationSource[];
+};
+
+export type InspirationBrief = {
+  id: number;
+  year: number;
+  month: number;
+  summary: string;
+  patterns: InspirationPattern[];
+  caveats: string[];
+  created_at: string;
+  updated_at: string;
+  sources: {
+    own: InspirationSource[];
+    competitors: {
+      handle: string;
+      ok: boolean;
+      error_he: string;
+      profile: { username: string; name: string; followers_count: number | null; media_count: number | null } | null;
+      posts_seen: number;
+      posts: InspirationSource[];
+    }[];
+    hashtags: InspirationSource[];
+  };
+};
+
+export type InstagramBriefPayload = {
+  year: number;
+  month: number;
+  /** False when the Meta app itself is not configured on this server. */
+  meta_ready: boolean;
+  meta_connected: boolean;
+  handles: string[];
+  max_handles: number;
+  hashtag_search: { enabled: boolean; used_7d: number; limit: number };
+  own_posts_synced: number;
+  own_top_posts: InstagramOwnPost[];
+  brief: InspirationBrief | null;
+  /** Hebrew, "" when there is something to show. */
+  empty_reason: string;
+};
+
+export type InstagramRefreshPayload = InstagramBriefPayload & {
+  refresh: {
+    status: "created" | "empty";
+    reason_he: string;
+    competitors: { handle: string; ok: boolean; error_he: string; posts_seen: number }[];
+    hashtags: unknown;
+  };
 };
 
 export type Competitor = { name: string; website_url: string };
@@ -3251,6 +3756,9 @@ export type RoadmapPost = {
    *  until the owner (or the plan) decides — an unassigned post is a normal state. */
   audience_id?: number;
   audience_name?: string;
+  /** Which real Instagram post(s) this post follows and why, or null when the writer had
+   *  no Instagram signal to lean on. Absent on posts written before the signal existed. */
+  inspiration?: PostInspiration | null;
 };
 
 /**

@@ -16,6 +16,7 @@ import {
 import { downloadCardPng } from "@/lib/cardExport";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
+import { InspirationLine } from "@/components/posts/InspirationLine";
 import {
   STATUS_LABEL,
   STATUS_TONE,
@@ -809,9 +810,15 @@ export function PostEditor({
     );
     return (
       <div
-        className="mx-auto [--reserve:476px] md:[--reserve:380px]"
+        className={`mx-auto ${
+          currentPost.inspiration?.sources?.length
+            ? "[--reserve:518px] md:[--reserve:422px]"
+            : "[--reserve:476px] md:[--reserve:380px]"
+        }`}
         style={{
-          width: `min(100%, max(200px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
+          // The floor gives a little when the "why this post" line is shown, so a 9:16 reel
+          // does not push the approve row under the tab bar on a 390x844 phone.
+          width: `min(100%, max(${currentPost.inspiration?.sources?.length ? 176 : 200}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
         }}
       >
         <div className="overflow-hidden rounded-xl border border-[#deddd8] bg-white shadow-sm">
@@ -1611,6 +1618,10 @@ export function PostEditor({
           ) : null}
 
           {renderPreview()}
+
+          {/* Which real Instagram post this one follows. Its height is in the preview's
+              --reserve, so the approve button stays on the first screen. */}
+          <InspirationLine inspiration={currentPost.inspiration} />
 
           <div className="mt-3">{renderPrimary()}</div>
 

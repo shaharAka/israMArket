@@ -6,12 +6,14 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
+import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SetupChecklist } from "@/components/SetupChecklist";
 import { postDay, postHref, postState, STATE_LABEL, type PostState } from "@/components/today/posts";
 import {
   endpoints,
   type Business,
+  type InstagramBriefPayload,
   type RecommendationPayload,
   type RoadmapPost,
   type StrategyPayload,
@@ -59,6 +61,7 @@ export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [recommendation, setRecommendation] = useState<RecommendationPayload | null>(null);
+  const [instagram, setInstagram] = useState<InstagramBriefPayload | null>(null);
 
   useEffect(() => {
     Promise.all([endpoints.business(), endpoints.strategy()]).then(([businessResult, strategyResult]) => {
@@ -66,6 +69,8 @@ export default function DashboardPage() {
       setStrategy(strategyResult);
     });
     endpoints.recommendations().then(setRecommendation).catch(() => {});
+    // Guidance only: a failed call just means no nudge.
+    endpoints.instagramBrief().then(setInstagram).catch(() => {});
   }, []);
 
   if (!strategy) {
@@ -168,6 +173,7 @@ export default function DashboardPage() {
 
           {/* Everything else: quiet rows in one container. */}
           <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
+            {instagram && needsInstagram(instagram) ? <InstagramNudge connected={instagram.meta_connected} /> : null}
             <SetupChecklist />
             {nearlyDone && !allApproved ? (
               <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
@@ -186,6 +192,33 @@ export default function DashboardPage() {
         </div>
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * Instagram is not connected, or is connected with nothing synced: the posts are being
+ * written without it. Not offered when the server has no Meta app at all — the owner
+ * could not act on it.
+ */
+function needsInstagram(payload: InstagramBriefPayload) {
+  return payload.meta_ready && (!payload.meta_connected || payload.own_posts_synced === 0);
+}
+
+/** One quiet row, not a second ask: the dark button on this page belongs to the post. */
+function InstagramNudge({ connected }: { connected: boolean }) {
+  return (
+    <Link
+      href="/instagram"
+      className="flex min-h-12 items-center gap-3 py-3 text-sm leading-6 text-[#3c3e3a] transition-colors hover:text-[#20211f]"
+    >
+      <IconCamera className="h-4 w-4 shrink-0 text-[#62635f]" />
+      <span className="min-w-0 flex-1">
+        {connected
+          ? "עוד לא סונכרנו פוסטים מהאינסטגרם, אז הפוסטים לא לומדים ממה שכבר עובד לכם"
+          : "חברו את האינסטגרם כדי שהפוסטים ילמדו ממה שכבר עובד לכם"}
+      </span>
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+    </Link>
   );
 }
 

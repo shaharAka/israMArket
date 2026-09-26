@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, useLogOut } from "@/components/AppShell";
+import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { endpoints } from "@/lib/api";
 import {
@@ -46,6 +47,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
     title: "התמונות והקידום",
     rows: [
       { href: "/assets", title: "התמונות שלי", hint: "התמונות והסרטונים של העסק", icon: IconPhotos },
+      { href: "/instagram", title: "מה עובד באינסטגרם", hint: "ממה הפוסטים שלכם לומדים", icon: IconCamera },
       { href: "/promotion", title: "קידום בגוגל", hint: "כמה עולה להופיע בחיפוש", icon: IconMegaphone },
     ],
   },
