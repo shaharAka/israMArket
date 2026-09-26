@@ -47,6 +47,18 @@ class Settings(BaseSettings):
     # set False if the API is reachable directly from the internet.
     trust_forwarded_for: bool = True
 
+    # Stream H experiment: Meta's Muse Spark as an alternative post writer. Off unless
+    # POST_MODEL=muse-spark. Never point META_POST_MODEL at a `-contributor` model —
+    # services/meta_model.py refuses them, because their inputs train Meta's products.
+    meta_model_api_key: str = ""
+    meta_model_base_url: str = "https://api.meta.ai/v1"
+    meta_post_model: str = "muse-spark-1.3"
+    # "gemini" (default) | "muse-spark". See services/post_model_router.py.
+    post_model: str = "gemini"
+    # With POST_MODEL=muse-spark, fall back to Gemini when the Meta call fails, so an
+    # experiment can never leave a user without posts.
+    post_model_fallback: bool = True
+
     # Rate limits (requests per window, seconds).
     auth_rate_limit: int = 8
     auth_rate_window_seconds: int = 300
