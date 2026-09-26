@@ -9,7 +9,7 @@ const identity = SECTIONS.assets;
 
 /** Where each file came from, in the owner's words. */
 const SOURCE_LABEL: Record<AssetSource, string> = {
-  upload: "הועלה מהמכשיר",
+  upload: "העליתם בעצמכם",
   url: "מקישור",
   site: "מהאתר",
 };
@@ -77,7 +77,7 @@ function VideoPoster() {
 /** The thumbnail, shared by the grid tile and the sheet's preview. */
 function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
   const [broken, setBroken] = useState(false);
-  const label = asset.description.trim() || `${kindWord(asset)} ללא תיאור`;
+  const label = asset.description.trim() || `${kindWord(asset)} בלי תיאור`;
   const fit = mode === "tile" ? "object-cover" : "object-contain";
 
   if (asset.kind === "video") {
@@ -141,7 +141,7 @@ export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void 
     <button
       type="button"
       onClick={onOpen}
-      aria-label={`${kindWord(asset)}: ${asset.description.trim() || "ללא תיאור"}. לפרטים ולפעולות`}
+      aria-label={`${kindWord(asset)}: ${asset.description.trim() || "בלי תיאור"}. לפתוח את הפרטים`}
       title={asset.description.trim() || undefined}
       className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-lg border bg-[#f4f3ee] transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f]"
       style={{ borderColor: identity.border }}
@@ -214,7 +214,7 @@ export function AssetSheet({
     try {
       await onRedescribe(asset.id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "התיאור לא התעדכן");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לעדכן את התיאור");
     } finally {
       setDescribing(false);
       setBusy(false);
@@ -230,7 +230,7 @@ export function AssetSheet({
       await onSave(asset.id, { description: draftDescription.trim(), tags });
       setEditing(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "השמירה נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור");
     } finally {
       setSaving(false);
       setBusy(false);
@@ -244,7 +244,7 @@ export function AssetSheet({
       await onDelete(asset.id);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "המחיקה נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו למחוק");
       setDeleting(false);
       setConfirmingDelete(false);
     }
@@ -272,8 +272,8 @@ export function AssetSheet({
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
-          aria-label="סגירה"
-          title="סגירה"
+          aria-label="לסגור"
+          title="לסגור"
           className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[#5e6159] hover:bg-[#f4f3ee] hover:text-[#20211f]"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -300,7 +300,7 @@ export function AssetSheet({
             </label>
             <label className="block">
               <span className="text-xs font-bold text-[#20211f]">תגיות</span>
-              <span className="mt-0.5 block text-[11px] text-[#8b8e84]">מופרדות בפסיק</span>
+              <span className="mt-0.5 block text-[11px] text-[#8b8e84]">הפרידו בפסיק</span>
               <input
                 value={draftTags}
                 onChange={(event) => setDraftTags(event.target.value)}
@@ -332,7 +332,7 @@ export function AssetSheet({
                 style={{ borderColor: identity.accent, background: identity.accent, color: "#fff" }}
               >
                 <IconCheck className="h-3.5 w-3.5" />
-                {saving ? "שומר…" : "שמירה"}
+                {saving ? "שומרים…" : "לשמור"}
               </button>
               <button
                 type="button"
@@ -346,7 +346,7 @@ export function AssetSheet({
                 className={buttonClass}
                 style={quietButton}
               >
-                ביטול
+                לבטל
               </button>
             </div>
           </div>
@@ -356,7 +356,7 @@ export function AssetSheet({
               <p className="text-sm leading-6 text-[#3c3e3a]">{asset.description}</p>
             ) : (
               <p className="text-sm leading-6 text-[#8b8e84]">
-                אין עדיין תיאור. ״ניתוח מחדש״ יכתוב תיאור ותגיות מהתמונה עצמה.
+                עדיין אין תיאור. לחצו ״לכתוב תיאור מחדש״, ונכתוב תיאור ותגיות לפי מה שרואים בתמונה.
               </p>
             )}
 
@@ -373,7 +373,7 @@ export function AssetSheet({
                 ))}
               </ul>
             ) : (
-              <p className="text-[11px] text-[#8b8e84]">אין תגיות עדיין.</p>
+              <p className="text-[11px] text-[#8b8e84]">עדיין אין תגיות.</p>
             )}
 
             <p className="text-[11px] text-[#8b8e84]">
@@ -409,7 +409,7 @@ export function AssetSheet({
                 style={quietButton}
               >
                 <IconPen className="h-3.5 w-3.5" />
-                עריכה
+                לערוך
               </button>
               <button
                 type="button"
@@ -419,7 +419,7 @@ export function AssetSheet({
                 style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
               >
                 {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
-                {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
+                {describing ? "כותבים תיאור…" : "לכתוב תיאור מחדש"}
               </button>
               {confirmingDelete ? (
                 <>
@@ -430,7 +430,7 @@ export function AssetSheet({
                     className={buttonClass}
                     style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
                   >
-                    {deleting ? "מוחק…" : "כן, למחוק"}
+                    {deleting ? "מוחקים…" : "כן, למחוק"}
                   </button>
                   <button
                     type="button"
@@ -439,7 +439,7 @@ export function AssetSheet({
                     className={buttonClass}
                     style={quietButton}
                   >
-                    ביטול
+                    לא, להשאיר
                   </button>
                 </>
               ) : (
@@ -450,14 +450,14 @@ export function AssetSheet({
                   className={`${buttonClass} ms-auto`}
                   style={{ ...quietButton, color: "#9f4330" }}
                 >
-                  מחיקה
+                  למחוק
                 </button>
               )}
             </div>
 
             {confirmingDelete ? (
               <p className="text-[11px] leading-5 text-[#9f4330]">
-                המחיקה תסיר את ה{kindWord(asset)} מהספרייה. אין דרך חזרה.
+                {asset.kind === "video" ? "הסרטון יימחק" : "התמונה תימחק"}, ולא יהיה אפשר לשחזר.
               </p>
             ) : null}
           </>

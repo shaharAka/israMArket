@@ -143,7 +143,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4]">
-        <p className="text-sm text-[#63665e]">טוען…</p>
+        <p className="text-sm text-[#63665e]">טוענים…</p>
       </div>
     );
   }
@@ -175,7 +175,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="rounded-full px-2 py-0.5 text-[11px] font-black"
               style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
             >
-              מצב הדגמה
+              דמו
             </span>
           ) : null}
           {inSetup ? (
@@ -204,7 +204,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
               <div className="min-w-0">
                 <span className="block font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
-                <span className="-mt-0.5 block text-xs text-[#63665e]">שיווק שעובד בישראל</span>
+                <span className="-mt-0.5 block text-xs text-[#63665e]">שיווק לעסקים קטנים</span>
               </div>
             </Link>
             {demo ? (
@@ -243,8 +243,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               {initials || "ע"}
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-xs font-bold text-[#1e201d]">{name || "משתמש"}</span>
-              <span className="block truncate text-xs text-[#63665e]">{businessName || "עסק ישראלי"}</span>
+              <span className="block truncate text-xs font-bold text-[#1e201d]">{name || "החשבון שלי"}</span>
+              <span className="block truncate text-xs text-[#63665e]">{businessName || "העסק שלי"}</span>
             </span>
           </Link>
           <button

@@ -53,7 +53,7 @@ export default function StrategyPage() {
     endpoints
       .strategy()
       .then(setStrategy)
-      .catch((err) => setError(err instanceof Error ? err.message : "שגיאה בטעינת התוכנית"));
+      .catch((err) => setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התוכנית."));
   }, []);
 
   // `/plan` and the hub link land on `#quarter`, but the section only exists once the
@@ -116,7 +116,7 @@ export default function StrategyPage() {
                 </span>
                 <p className="text-[15px] font-bold leading-6 text-[#20211f]">
                   <span style={{ color: TONE.accent }}>מה צריך מכם: </span>
-                  {nextUserAction || "כרגע לא צריך לעשות דבר. אנחנו ממשיכים להכין ולעקוב."}
+                  {nextUserAction || "כרגע כלום. אנחנו ממשיכים לעבוד."}
                 </p>
               </div>
             </section>
@@ -138,7 +138,7 @@ export default function StrategyPage() {
                 </ol>
               ) : (
                 <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
-                  אין עדיין חלוקה שבועית לתוכנית הזו.
+                  עדיין אין לתוכנית הזו חלוקה לשבועות.
                 </p>
               )}
             </section>
@@ -169,7 +169,7 @@ export default function StrategyPage() {
                 </>
               ) : (
                 <p className="mt-2 text-sm leading-6 text-[#5e6159]">
-                  אין עדיין תוכנית לרבעון.{" "}
+                  עדיין אין תוכנית לרבעון.{" "}
                   <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
                     לבנות אותה
                   </Link>
@@ -185,11 +185,11 @@ export default function StrategyPage() {
               <details className="group min-w-0 flex-1">
                 <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#62635f] hover:text-[#20211f]">
                   <Caret />
-                  למה בכיוון הזה, ומתי נצטרך אתכם
+                  למה ככה, ומתי נצטרך אתכם
                 </summary>
                 <div className="space-y-4 pt-1 pb-2 text-sm leading-6 text-[#62635f]">
                   <div>
-                    <p className="text-[11px] font-bold text-[#8b8e84]">המסר שמוביל את התוכן</p>
+                    <p className="text-[11px] font-bold text-[#8b8e84]">המסר המרכזי בפוסטים</p>
                     <p className="mt-1 text-[#3c3e3a]">{strategy.usp.usp_one_liner}</p>
                   </div>
                   {events.length ? (
@@ -204,7 +204,7 @@ export default function StrategyPage() {
                             <span className="font-bold text-[#20211f]">
                               {event.date} · {event.name}
                             </span>
-                            {" — "}
+                            {": "}
                             {event.business_relevance}
                           </li>
                         ))}
@@ -215,12 +215,12 @@ export default function StrategyPage() {
                 </div>
               </details>
               <Link href="/decisions" className="shrink-0 py-2 text-sm text-[#747570] underline underline-offset-4">
-                לשינוי ההחלטות
+                לשנות את ההחלטות
               </Link>
             </div>
           </div>
         ) : !error ? (
-          <LoadingMark label="אנחנו טוענים את התוכנית…" />
+          <LoadingMark label="טוענים את התוכנית…" />
         ) : null}
       </div>
     </AppShell>
@@ -260,7 +260,7 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
       </span>
       {isNow ? (
         <span className="label-mark shrink-0 text-white" style={{ background: TONE.accent, borderColor: TONE.accent }}>
-          עכשיו
+          השבוע
         </span>
       ) : null}
     </>
@@ -382,7 +382,7 @@ function MonthRow({ milestone, index }: { milestone: LongHorizonMilestone; index
           {hiddenMilestone ? <p className="font-bold text-[#20211f]">{milestone.milestone}</p> : null}
           {milestone.checkpoint ? (
             <p className="text-[#5e6159]">
-              <span className="font-bold text-[#3c3e3a]">איך נדע שהצליח: </span>
+              <span className="font-bold text-[#3c3e3a]">איך נדע שהצלחנו: </span>
               {milestone.checkpoint}
             </p>
           ) : null}
@@ -441,18 +441,18 @@ function QuarterDetails({
           ) : null}
           {management?.checkpoints?.length ? (
             <div>
-              <p className="text-[11px] font-bold text-[#8b8e84]">נקודות בקרה</p>
+              <p className="text-[11px] font-bold text-[#8b8e84]">מתי בודקים</p>
               <ul className="mt-1.5 space-y-2">
                 {management.checkpoints.map((checkpoint, index) => (
                   <li key={`${checkpoint.timing}-${index}`} className="text-xs leading-5">
                     <span className="font-bold text-[#20211f]">{checkpoint.timing}</span>
                     <span className="text-[#5e6159]">
-                      {" — "}
+                      {": "}
                       {checkpoint.purpose}
                     </span>
                     {checkpoint.user_action ? (
                       <span className="block">
-                        <span className="font-bold">מה שצריך מכם: </span>
+                        <span className="font-bold">מה צריך מכם: </span>
                         {checkpoint.user_action}
                       </span>
                     ) : null}

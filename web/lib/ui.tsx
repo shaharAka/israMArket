@@ -31,7 +31,7 @@ export function ToastHost() {
   );
 }
 
-export async function copyText(text: string, success = "הועתק ללוח") {
+export async function copyText(text: string, success = "הועתק") {
   await navigator.clipboard.writeText(text);
   toast(success);
 }
