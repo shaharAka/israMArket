@@ -47,9 +47,25 @@ app = FastAPI(
     redoc_url="/redoc" if _expose_docs else None,
     openapi_url="/openapi.json" if _expose_docs else None,
 )
+def _with_loopback_twins(origins: list[str]) -> set[str]:
+    """`localhost` and `127.0.0.1` are the same machine, and the web app is configured to
+    be opened on either (see web/next.config.ts). The Next proxy forwards the browser's
+    Origin, so a page opened on http://127.0.0.1:3000 had every POST — the landing
+    page's preview included — refused as a foreign origin."""
+    out = set(origins)
+    for origin in origins:
+        if "://localhost" in origin:
+            out.add(origin.replace("://localhost", "://127.0.0.1", 1))
+        elif "://127.0.0.1" in origin:
+            out.add(origin.replace("://127.0.0.1", "://localhost", 1))
+    return out
+
+
+ALLOWED_ORIGINS = _with_loopback_twins([settings.web_origin, "http://localhost:3000"])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.web_origin, "http://localhost:3000"],
+    allow_origins=sorted(ALLOWED_ORIGINS),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -80,8 +96,7 @@ async def csrf_origin_check(request: Request, call_next):
     if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
         origin = request.headers.get("origin")
         if origin:
-            allowed = {settings.web_origin, "http://localhost:3000"}
-            if origin not in allowed:
+            if origin not in ALLOWED_ORIGINS:
                 return JSONResponse(status_code=403, content={"detail": "בקשה ממקור לא מורשה."})
     return await call_next(request)
 

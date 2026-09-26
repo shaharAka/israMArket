@@ -12,7 +12,7 @@ import {
   savePreview,
   type SitePreview,
 } from "@/components/onboarding/preview";
-import { SamplePostCard, Swatches } from "@/components/onboarding/SitePreviewView";
+import { PreviewLogo, SamplePostCard, Swatches } from "@/components/onboarding/SitePreviewView";
 
 /** What the wait is spent on, in the order it happens. Rotated while the scan runs. */
 const READING_STEPS = ["קוראים את האתר…", "מזהים את הצבעים והסגנון…", "כותבים פוסט לדוגמה…"];
@@ -110,6 +110,7 @@ export default function Home() {
             <section className="max-w-xl space-y-4">
               <div>
                 <p className="text-xs font-bold text-[#2d3f32]">זה מה שראינו באתר שלכם</p>
+                <PreviewLogo preview={preview} className="mt-3" />
                 <h1 className="mt-1 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
                   {preview.business_name || "העסק שלכם"}
                 </h1>

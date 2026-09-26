@@ -64,6 +64,8 @@ export type BrandLanguage = {
   offers_seen: string[];
   audience: string;
   logo_description: string;
+  /** The logo found on the business's site (absolute URL on their host), when any. */
+  logo_url?: string;
 };
 
 export type ScanPayload = {

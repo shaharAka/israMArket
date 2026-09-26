@@ -1,5 +1,6 @@
-from typing import Any
+import re
 import time
+from typing import Any
 
 from google import genai
 from google.genai import types
@@ -34,9 +35,18 @@ def _client() -> genai.Client:
     return genai.Client(api_key=settings.gemini_api_key)
 
 
+# A prepaid account that ran out of credit answers 402 RESOURCE_EXHAUSTED. That is not
+# load: waiting will not fix it, and retrying it held the public preview for over a
+# minute (4+8+16+32s of backoff) before the visitor saw an error.
+# ("billing" alone is not a signal: a per-minute 429 also says "check your plan and
+# billing details", and that one does clear up.)
+_NOT_RETRYABLE = ("limit: 0", "prepayment", "credits are depleted")
+_PAYMENT_REQUIRED = re.compile(r"\b402\b")
+
+
 def _is_retryable(exc: Exception) -> bool:
     text = str(exc)
-    if "limit: 0" in text:
+    if any(token in text for token in _NOT_RETRYABLE) or _PAYMENT_REQUIRED.search(text):
         return False
     return any(token in text for token in _RETRYABLE)
 
@@ -99,6 +109,28 @@ def lite_json(
     settings = get_settings()
     return generate_json(
         model=settings.gemini_lite_model,
+        prompt=prompt,
+        schema=schema,
+        thinking_level=thinking_level,
+        images=images,
+    )
+
+
+def extract_json(
+    prompt: str,
+    schema: dict[str, Any],
+    images: list[ImageBlob] | None = None,
+    thinking_level: str = "MEDIUM",
+) -> str:
+    """Reading a business off its own site: brand, site profile, the preview's sample post.
+
+    A stronger model than `lite_json`: these outputs are the first thing an owner sees,
+    and the lite model followed instructions too literally (platform-default CSS colours,
+    a caption copied from the meta description).
+    """
+    settings = get_settings()
+    return generate_json(
+        model=settings.gemini_extract_model,
         prompt=prompt,
         schema=schema,
         thinking_level=thinking_level,

@@ -220,9 +220,18 @@ BRAND_LANGUAGE_SCHEMA = {
                         "enum": ["primary", "accent", "background", "ink", "secondary"],
                     },
                     "name": {"type": "string", "description": "שם צבע בעברית"},
+                    "seen_in": {
+                        "type": "string",
+                        "enum": ["screenshot", "logo", "photos", "css"],
+                        "description": "איפה הצבע הזה נראה: צילום המסך, הלוגו, התמונות, או רק ב-CSS",
+                    },
                 },
                 "required": ["hex", "role", "name"],
             },
+        },
+        "card_photo_index": {
+            "type": "integer",
+            "description": "המספר של תמונת אתר נקייה (בלי טקסט ובלי לוגו) שאפשר להניח עליה כותרת, או -1 אם אין",
         },
         "typography": {
             "type": "object",
