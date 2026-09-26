@@ -97,7 +97,7 @@ export default function AssetsPage() {
         setAssets(mergeAssets([], res.assets));
         setLoadError("");
       } catch (err) {
-        if (active) setLoadError(message(err, "טעינת התמונות נכשלה"));
+        if (active) setLoadError(message(err, "לא הצלחנו לטעון את התמונות"));
       } finally {
         if (active) setLoading(false);
       }
@@ -125,14 +125,14 @@ export default function AssetsPage() {
         added.push(res.asset);
         setPending((prev) => ({ ...prev, [file.name]: "done" }));
       } catch (err) {
-        failures.push(`${file.name}: ${message(err, "ההעלאה נכשלה")}`);
+        failures.push(`${file.name}: ${message(err, "לא הצלחנו להעלות")}`);
         setPending((prev) => ({ ...prev, [file.name]: "error" }));
       }
     }
 
     if (added.length) {
       setAssets((prev) => mergeAssets(prev, added));
-      toast(countLabel(added.length, "קובץ נוסף לספרייה", "קבצים נוספו לספרייה"));
+      toast(countLabel(added.length, "קובץ נוסף לתמונות שלכם", "קבצים נוספו לתמונות שלכם"));
     }
     if (failures.length) {
       setFileError(failures.join(" · "));
@@ -156,15 +156,15 @@ export default function AssetsPage() {
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setNotice(
         res.skipped
-          ? `${countLabel(res.assets.length, "קובץ יובא", "קבצים יובאו")} מהקישור, ו-${res.skipped} דולגו (כבר קיימים או לא נתמכים).`
-          : `${countLabel(res.assets.length, "קובץ יובא", "קבצים יובאו")} מהקישור.`
+          ? `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור. ${res.skipped} לא נוספו, כי כבר היו כאן או שאי אפשר להשתמש בהם.`
+          : `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור.`
       );
       if (res.assets.length) {
         setUrl("");
         setAddOpen(false);
       }
     } catch (err) {
-      setLoadError(message(err, "הייבוא מהקישור נכשל"));
+      setLoadError(message(err, "לא הצלחנו להביא את הקובץ מהקישור"));
     } finally {
       setImporting(false);
     }
@@ -179,16 +179,16 @@ export default function AssetsPage() {
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setScanResult(
         res.assets.length
-          ? `הסריקה מצאה ${countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות")} באתר.${
-              res.skipped ? ` ${countLabel(res.skipped, "תמונה דולגה", "תמונות דולגו")} — כבר היו בספרייה.` : ""
+          ? `מצאנו באתר ${countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות")}.${
+              res.skipped ? ` ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}, ולא הוספנו אותן שוב.` : ""
             }`
           : res.skipped
-            ? `לא נמצאו תמונות חדשות. ${countLabel(res.skipped, "תמונה שכבר יש", "תמונות שכבר יש")} בספרייה.`
-            : "לא נמצאו תמונות באתר."
+            ? `לא מצאנו תמונות חדשות. ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}.`
+            : "לא מצאנו תמונות באתר."
       );
-      toast("הסריקה הסתיימה");
+      toast("סיימנו לעבור על האתר");
     } catch (err) {
-      setLoadError(message(err, "סריקת האתר נכשלה"));
+      setLoadError(message(err, "לא הצלחנו לעבור על האתר"));
     } finally {
       setScanning(false);
     }
@@ -209,7 +209,7 @@ export default function AssetsPage() {
   async function handleDelete(id: number) {
     await endpoints.deleteAsset(id);
     setAssets((prev) => prev.filter((asset) => asset.id !== id));
-    toast("נמחק מהספרייה");
+    toast("נמחק");
   }
 
   const imageCount = assets.filter((asset) => asset.kind === "image").length;
@@ -220,7 +220,7 @@ export default function AssetsPage() {
     () => Array.from(new Set(assets.flatMap((asset) => asset.tags))).sort((a, b) => a.localeCompare(b, "he")),
     [assets]
   );
-  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלה…" : "העלאת קובץ מהמכשיר";
+  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלים…" : "להעלות קבצים";
 
   const openAsset = openId === null ? null : assets.find((asset) => asset.id === openId) ?? null;
 
@@ -230,7 +230,7 @@ export default function AssetsPage() {
         <SectionHeader
           section="business"
           title="התמונות שלי"
-          subtitle="על כל תמונה אנחנו כותבים תיאור ותגיות, ומהם נבנים הפוסטים."
+          subtitle="אנחנו כותבים תיאור ותגיות לכל תמונה, ולפיהם בונים את הפוסטים."
           action={
             <button
               type="button"
@@ -246,7 +246,7 @@ export default function AssetsPage() {
 
         {demo ? (
           <p className="-mt-3 mb-3 text-xs" style={{ color: identity.accent }}>
-            מצב הדגמה — הספרייה לדוגמה.
+            דמו: אלה תמונות לדוגמה.
           </p>
         ) : null}
 
@@ -298,7 +298,7 @@ export default function AssetsPage() {
 
               <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
                 <label className="sr-only" htmlFor="asset-import-url">
-                  כתובת הקישור לייבוא
+                  קישור לתמונה
                 </label>
                 <input
                   id="asset-import-url"
@@ -317,9 +317,9 @@ export default function AssetsPage() {
                   style={{ borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" }}
                 >
                   <IconLink className="h-4 w-4" />
-                  {importing ? "מייבא…" : "ייבוא מקישור"}
+                  {importing ? "מביאים…" : "להוסיף מקישור"}
                 </button>
-                <span className="text-xs text-[#8b8e84]">קישור לתמונה בודדת מהרשת.</span>
+                <span className="text-xs text-[#8b8e84]">קישור לתמונה אחת ברשת.</span>
               </form>
             </div>
           ) : null}
@@ -329,7 +329,7 @@ export default function AssetsPage() {
             that starts them. */}
         {scanning ? (
           <p className="mt-4 text-xs leading-5" style={{ color: identity.accent }}>
-            עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות — אפשר להשאיר את החלון פתוח.
+            עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח.
           </p>
         ) : null}
         {scanResult ? <p className="mt-4 text-sm leading-6 text-[#3c3e3a]">{scanResult}</p> : null}
@@ -347,7 +347,7 @@ export default function AssetsPage() {
                 )}
                 <span className="truncate">{name}</span>
                 <span className="text-[#8b8e84]">
-                  {state === "uploading" ? "מעלה ומנתח…" : state === "done" ? "נוסף" : "נכשל"}
+                  {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
                 </span>
               </li>
             ))}
@@ -369,7 +369,7 @@ export default function AssetsPage() {
               </p>
               <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#20211f] underline underline-offset-4">
                 <IconArrowLeft className="h-4 w-4" />
-                לפוסטים שנבנים מהן
+                לפוסטים שבנינו מהן
               </Link>
             </div>
 
@@ -402,7 +402,7 @@ export default function AssetsPage() {
             </span>
             <h2 className="mt-4 text-lg font-black text-[#20211f]">עוד אין כאן תמונות</h2>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
-              ״לאסוף את התמונות מהאתר״ יביא לכאן את התמונות והסרטונים של העסק.
+              לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
           </section>
         )}

@@ -219,7 +219,7 @@ export default function DecisionsPage() {
         setRankedTargets((loaded.growth_targets ?? []).slice(0, MAX_TARGETS));
       })
       .catch((err) => {
-        setLoadError(err instanceof Error ? err.message : "שגיאה בטעינת ההחלטות");
+        setLoadError(err instanceof Error ? err.message : "לא הצלחנו לטעון את ההחלטות.");
       })
       .finally(() => setLoading(false));
 
@@ -249,7 +249,7 @@ export default function DecisionsPage() {
       })
       .catch((err) => {
         if (cancelled) return;
-        setAudiencesError(err instanceof Error ? err.message : "טעינת קהלי היעד נכשלה");
+        setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הקהלים.");
       })
       .finally(() => {
         if (!cancelled) setAudiencesLoading(false);
@@ -317,7 +317,7 @@ export default function DecisionsPage() {
   const audiencesSummary = audiencesLoading
     ? "טוענים…"
     : audiences.length
-      ? `${audiences.length} קהלים${leadAudience ? ` · המוביל: ${leadAudience}` : ""}`
+      ? `${audiences.length} קהלים${leadAudience ? ` · העיקרי: ${leadAudience}` : ""}`
       : "לא הוגדרו";
   const targetsSummary = rankedTargets.length
     ? `${rankedTargets.length} מתוך ${MAX_TARGETS} · הראשונה: ${leadTarget}`
@@ -407,7 +407,7 @@ export default function DecisionsPage() {
     setCandidatesError("");
     setCapNote("");
     setModelNotice(
-      "העדיפויות שנשמרו והתוכנית הרבעונית נבנו למודל הקודם — הן נשארו כאן כמו שהן, אבל כדי שיתאימו למודל החדש כדאי לבנות אותן מחדש באשף.",
+      "העדיפויות והתוכנית לרבעון נבנו לסוג העסק הקודם. הן נשארות כמו שהן, אבל כדאי לבנות אותן מחדש באשף כדי שיתאימו.",
     );
     markChanged();
   }
@@ -417,11 +417,11 @@ export default function DecisionsPage() {
     setSaveError("");
     setSaved(false);
     if (budgetInvalid) {
-      setSaveError("התקציב החודשי חייב להיות מספר תקין בש״ח.");
+      setSaveError("הזינו את התקציב החודשי במספרים, בשקלים.");
       return;
     }
     if (rankedTargets.length > MAX_TARGETS) {
-      setSaveError(`אפשר לשמור עד ${MAX_TARGETS} עדיפויות. הסירו יעד אחד ונסו שוב.`);
+      setSaveError(`אפשר לשמור עד ${MAX_TARGETS} עדיפויות. הסירו אחת ונסו שוב.`);
       return;
     }
 
@@ -456,7 +456,7 @@ export default function DecisionsPage() {
       setSaved(true);
       toast("ההחלטות נשמרו");
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "שמירת ההחלטות נכשלה");
+      setSaveError(err instanceof Error ? err.message : "לא הצלחנו לשמור את ההחלטות");
     } finally {
       setSaving(false);
     }
@@ -470,10 +470,10 @@ export default function DecisionsPage() {
       const result = await endpoints.targets();
       setCandidates(result.targets);
       if (!result.targets.length) {
-        setCandidatesError("לא התקבלו הצעות חדשות כרגע. אפשר לנסות שוב, או לשמור את מה שכבר יש.");
+        setCandidatesError("כרגע אין הצעות חדשות. אפשר לנסות שוב, או לשמור את מה שכבר יש.");
       }
     } catch (err) {
-      setCandidatesError(err instanceof Error ? err.message : "טעינת ההצעות נכשלה");
+      setCandidatesError(err instanceof Error ? err.message : "לא הצלחנו לקבל הצעות");
     } finally {
       setLoadingCandidates(false);
     }
@@ -507,11 +507,11 @@ export default function DecisionsPage() {
         result.note
           ? result.note
           : list.length
-            ? `הצעת הקהלים נשמרה — ${list.length} קהלים. אפשר לערוך כל אחד מהם.`
-            : "ההצעה חזרה בלי קהלים. אפשר להוסיף קהל ידנית.",
+            ? `${list.length === 1 ? "שמרנו קהל אחד" : `שמרנו ${list.length} קהלים`}. אפשר לערוך כל אחד מהם.`
+            : "לא מצאנו קהלים להציע. אפשר להוסיף קהל בעצמכם.",
       );
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "הצעת הקהלים נכשלה");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו להציע קהלים");
     } finally {
       setGeneratingAudiences(false);
     }
@@ -527,7 +527,7 @@ export default function DecisionsPage() {
   /** Edit is inline: the fields replace the card's text until saved or cancelled. */
   async function saveAudience(id: number) {
     if (!audienceDraft.name.trim()) {
-      setAudiencesError("לקהל צריך להיות שם — בלעדיו אי אפשר לשייך אליו פוסט.");
+      setAudiencesError("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים.");
       return;
     }
     setAudienceBusy(String(id));
@@ -540,7 +540,7 @@ export default function DecisionsPage() {
       setEditingAudienceId(null);
       audienceNotice("הקהל עודכן.");
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "עדכון הקהל נכשל");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לעדכן את הקהל");
     } finally {
       setAudienceBusy("");
     }
@@ -548,7 +548,7 @@ export default function DecisionsPage() {
 
   async function addAudience() {
     if (!newAudience.name.trim()) {
-      setAudiencesError("לקהל צריך להיות שם — בלעדיו אי אפשר לשייך אליו פוסט.");
+      setAudiencesError("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים.");
       return;
     }
     setAudienceBusy("new");
@@ -558,9 +558,9 @@ export default function DecisionsPage() {
       setAudiences((current) => [...current, result.audience]);
       setNewAudience(EMPTY_AUDIENCE_FORM);
       setShowAddAudience(false);
-      audienceNotice("הקהל נוסף. אפשר לסמן אותו כקהל המוביל.");
+      audienceNotice("הקהל נוסף. אפשר לסמן אותו כקהל העיקרי.");
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "הוספת הקהל נכשלה");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו להוסיף את הקהל");
     } finally {
       setAudienceBusy("");
     }
@@ -573,9 +573,9 @@ export default function DecisionsPage() {
     try {
       const result = await endpoints.setPrimaryAudience(id);
       setAudiences(result.audiences ?? []);
-      audienceNotice("הקהל המוביל עודכן. הפוסטים הבאים ייבנו סביבו.");
+      audienceNotice("הקהל העיקרי עודכן. הפוסטים הבאים ייכתבו בשבילו.");
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "סימון הקהל המוביל נכשל");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לסמן את הקהל העיקרי");
     } finally {
       setAudienceBusy("");
     }
@@ -599,10 +599,10 @@ export default function DecisionsPage() {
       }
       audienceNotice(
         result.message ||
-          "הקהל נמחק. פוסטים שהיו משויכים אליו נשארו בלי שיוך ויופיעו כ׳לא משויך׳.",
+          "הקהל נמחק. הפוסטים שהיו שלו נשארו בלי קהל, ויופיעו כ״לא משויך״.",
       );
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "מחיקת הקהל נכשלה");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו למחוק את הקהל");
     } finally {
       setAudienceBusy("");
     }
@@ -612,7 +612,7 @@ export default function DecisionsPage() {
     markChanged();
     if (next.length > MAX_TARGETS) {
       setRankedTargets(next.slice(0, MAX_TARGETS));
-      setCapNote(`אפשר לבחור עד ${MAX_TARGETS} עדיפויות לרבעון — היעד הנוסף לא נכנס.`);
+      setCapNote(`אפשר לבחור עד ${MAX_TARGETS} עדיפויות לרבעון, ולכן היעד האחרון לא נוסף.`);
       return;
     }
     setCapNote("");
@@ -652,12 +652,12 @@ export default function DecisionsPage() {
         <SectionHeader
           section="business"
           title="ההחלטות שלי"
-          subtitle={`מה שקבעתם עם ${AGENT_NAME} — אפשר לשנות כאן בכל רגע.`}
+          subtitle={`מה שקבעתם עם ${AGENT_NAME}. אפשר לשנות בכל רגע.`}
         />
 
         {demo ? (
           <SystemNote variant="inline" className="mb-5">
-            מצב הדגמה — הנתונים לדוגמה. אפשר לשנות כאן בחופשיות, זה לא נוגע בעסק אמיתי.
+            דמו: הנתונים לדוגמה. מה שתשנו כאן לא משפיע על עסק אמיתי.
           </SystemNote>
         ) : null}
 
@@ -673,14 +673,14 @@ export default function DecisionsPage() {
           <section className="rounded-lg border border-[#e6e4dc] bg-white p-6 text-center">
             <h2 className="text-sm font-black text-[#191b18]">עוד אין עסק מקושר לחשבון הזה</h2>
             <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-              התקציב, האבחון והעדיפויות נשמרים על העסק. אפשר למלא אותם באשף, ומכאן לשנות אותם
-              בכל רגע.
+              התקציב, האבחון והעדיפויות שייכים לעסק. ממלאים אותם באשף, ואחר כך אפשר לשנות אותם
+              כאן.
             </p>
             <Link
               href="/onboarding"
               className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[#20211f] px-4 text-sm font-bold text-white hover:bg-[#343632]"
             >
-              לאשף הבנייה
+              לפתוח את האשף
             </Link>
           </section>
         ) : null}
@@ -703,7 +703,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("model")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  סוג העסק קובע מה התוכנית מנסה להביא — מכירות בחנות או פניות.
+                  סוג העסק קובע מה התוכנית מנסה להביא: מכירות בחנות או פניות.
                 </p>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
                   {BUSINESS_MODEL_OPTIONS.map((option) => (
@@ -734,7 +734,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("budget")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  התקציב הוא הגבול של מה שהתוכנית יכולה לבצע החודש.
+                  התקציב קובע כמה התוכנית יכולה לעשות החודש.
                 </p>
 
                 <div className="mt-4 grid gap-2 sm:grid-cols-2">
@@ -793,7 +793,7 @@ export default function DecisionsPage() {
                 <div className="mt-4 rounded-md border px-4 py-3" style={{ background: SURFACE, borderColor: ACCENT_BORDER }}>
                   {budgetInvalid ? (
                     <p className="text-sm leading-6 text-[#9f4330]">
-                      הזינו תקציב חודשי במספרים, כדי שנדע מה הוא קונה.
+                      הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו.
                     </p>
                   ) : (
                     <>
@@ -820,7 +820,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("diagnostics")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  התשובות קובעות מה {AGENT_NAME} תציע לחזק קודם, והן מתחלפות עם מודל העסק.
+                  התשובות קובעות מה {AGENT_NAME} תציע לשפר קודם. השאלות משתנות לפי סוג העסק.
                 </p>
 
                 <div className="mt-4 space-y-6">
@@ -885,7 +885,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("audiences")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  התוכנית וכל פוסט נבנים סביב מי שמוגדר כאן — מה שהקהל צריך ואיפה הוא נמצא.
+                  את התוכנית ואת כל פוסט אנחנו בונים לפי הקהל שכאן: מה הוא צריך ואיפה הוא נמצא.
                 </p>
 
                 <div className="mt-4">
@@ -909,8 +909,8 @@ export default function DecisionsPage() {
 
                   {!audiencesLoading && !audiences.length ? (
                     <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
-                      עוד לא הוגדרו קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד ידנית
-                      ולחזור אליו אחר כך.
+                      עוד אין קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד בעצמכם ולחזור
+                      אליו אחר כך.
                     </p>
                   ) : null}
 
@@ -950,7 +950,7 @@ export default function DecisionsPage() {
                                             color: ACCENT,
                                           }}
                                         >
-                                          הקהל המוביל
+                                          הקהל העיקרי
                                         </span>
                                       ) : null}
                                     </h3>
@@ -961,7 +961,7 @@ export default function DecisionsPage() {
                                     ) : null}
                                   </div>
                                   <span className="shrink-0 text-[10px] font-bold text-[#8b8e84]">
-                                    {audience.source === "generated" ? "הוצע ע״י AI" : "נכתב ידנית"}
+                                    {audience.source === "generated" ? `הצעה של ${AGENT_NAME}` : "כתבתם בעצמכם"}
                                   </span>
                                 </div>
 
@@ -988,7 +988,7 @@ export default function DecisionsPage() {
                                     onClick={() => void saveAudience(audience.id)}
                                     disabled={busy}
                                   >
-                                    {busy ? "שומרים…" : "שמירה"}
+                                    {busy ? "שומרים…" : "לשמור"}
                                   </Button>
                                   <button
                                     type="button"
@@ -996,7 +996,7 @@ export default function DecisionsPage() {
                                     disabled={busy}
                                     className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
                                   >
-                                    ביטול
+                                    לבטל
                                   </button>
                                 </>
                               ) : (
@@ -1006,7 +1006,7 @@ export default function DecisionsPage() {
                                     onClick={() => startEditAudience(audience)}
                                     className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18]"
                                   >
-                                    עריכה
+                                    לערוך
                                   </button>
                                   {audience.is_primary ? null : (
                                     <button
@@ -1015,7 +1015,7 @@ export default function DecisionsPage() {
                                       disabled={busy}
                                       className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18] disabled:opacity-40"
                                     >
-                                      {primaryBusy ? "מסמנים…" : "סמנו כקהל המוביל"}
+                                      {primaryBusy ? "מסמנים…" : "לסמן כקהל העיקרי"}
                                     </button>
                                   )}
                                   {confirming ? (
@@ -1046,7 +1046,7 @@ export default function DecisionsPage() {
                                       onClick={() => setConfirmDeleteId(audience.id)}
                                       className="min-h-9 px-2 text-xs font-bold text-[#8b8e84] underline underline-offset-4 hover:text-[#9f4330]"
                                     >
-                                      מחיקה
+                                      למחוק
                                     </button>
                                   )}
                                 </>
@@ -1060,7 +1060,7 @@ export default function DecisionsPage() {
 
                   <div className="mt-4 flex flex-col gap-3 border-t border-[#e6e4dc] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button onClick={() => void generateAudiences()} disabled={generatingAudiences}>
-                      {generatingAudiences ? "מציעים קהלים…" : "הצעת קהלים"}
+                      {generatingAudiences ? "מציעים קהלים…" : "להציע קהלים"}
                     </Button>
                     <button
                       type="button"
@@ -1070,12 +1070,12 @@ export default function DecisionsPage() {
                       }}
                       className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#191b18] hover:border-[#191b18]"
                     >
-                      {showAddAudience ? "סגירת הטופס" : "הוסף קהל ידנית"}
+                      {showAddAudience ? "לסגור את הטופס" : "להוסיף קהל בעצמכם"}
                     </button>
                     <span className="text-xs leading-5 text-[#8b8e84]">
                       {generatingAudiences
-                        ? "ההצעה קוראת את העסק והאבחון — זה לוקח כמה שניות."
-                        : "ההצעה רצה רק בלחיצה."}
+                        ? "קוראים את פרטי העסק והאבחון. זה לוקח כמה שניות."
+                        : `${AGENT_NAME} תציע קהלים רק כשתלחצו.`}
                     </span>
                   </div>
 
@@ -1083,8 +1083,8 @@ export default function DecisionsPage() {
                     <div className="mt-4 rounded-lg border border-[#dedcd4] bg-[#f8f7f4] p-4">
                       <h3 className="text-sm font-black text-[#191b18]">קהל חדש</h3>
                       <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                        מה שתכתבו כאן ישמש את הפוסטים ואת המדידה. הקהל הראשון שתוסיפו הופך לקהל
-                        המוביל.
+                        לפי מה שתכתבו כאן נכתוב את הפוסטים ונמדוד את התוצאות. הקהל הראשון שתוסיפו יהיה
+                        הקהל העיקרי.
                       </p>
                       <div className="mt-3">
                         <AudienceFormFields
@@ -1095,7 +1095,7 @@ export default function DecisionsPage() {
                       </div>
                       <div className="mt-3 flex flex-wrap items-center gap-2">
                         <Button size="sm" onClick={() => void addAudience()} disabled={audienceBusy === "new"}>
-                          {audienceBusy === "new" ? "מוסיפים…" : "הוספת הקהל"}
+                          {audienceBusy === "new" ? "מוסיפים…" : "להוסיף את הקהל"}
                         </Button>
                         <button
                           type="button"
@@ -1106,7 +1106,7 @@ export default function DecisionsPage() {
                           disabled={audienceBusy === "new"}
                           className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
                         >
-                          ביטול
+                          לבטל
                         </button>
                       </div>
                     </div>
@@ -1114,7 +1114,7 @@ export default function DecisionsPage() {
 
                   {audiencesError ? null : (
                     <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
-                      את מי שכל פוסט משרת אפשר לשנות בעורך הפוסטים, ואת התוצאות לכל קהל רואים ב
+                      לאיזה קהל שייך כל פוסט אפשר לשנות בעורך הפוסטים. את התוצאות של כל קהל רואים ב
                       <Link href="/performance" className="font-bold text-[#191b18] underline underline-offset-4">
                         עמוד התוצאות
                       </Link>
@@ -1133,7 +1133,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("targets")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  עד שלושה יעדים לפי סדר החשיבות — הראשון הוא זה שהתוכנית נבנית סביבו.
+                  עד 3 יעדים לפי סדר החשיבות. את התוכנית בונים סביב הראשון.
                 </p>
 
                 <div className="mt-4">
@@ -1155,7 +1155,7 @@ export default function DecisionsPage() {
                               type="button"
                               onClick={() => moveTarget(index, index - 1)}
                               disabled={index === 0}
-                              aria-label="העבר למעלה"
+                              aria-label="להזיז למעלה"
                               className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
                             >
                               ↑
@@ -1164,7 +1164,7 @@ export default function DecisionsPage() {
                               type="button"
                               onClick={() => moveTarget(index, index + 1)}
                               disabled={index === rankedTargets.length - 1}
-                              aria-label="העבר למטה"
+                              aria-label="להזיז למטה"
                               className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
                             >
                               ↓
@@ -1172,7 +1172,7 @@ export default function DecisionsPage() {
                             <button
                               type="button"
                               onClick={() => removeTarget(target)}
-                              aria-label="הסר יעד"
+                              aria-label="להסיר את היעד"
                               className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] hover:bg-[#f8f7f4]"
                             >
                               ✕
@@ -1195,13 +1195,13 @@ export default function DecisionsPage() {
 
                   {!candidates.length && !rankedTargets.length ? (
                     <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
-                      עוד לא נבחרו עדיפויות. טענו הצעות של {AGENT_NAME} ובחרו מהן.
+                      עוד לא בחרתם עדיפויות. קבלו הצעות מ{AGENT_NAME} ובחרו מהן.
                     </p>
                   ) : null}
 
                   {candidates.length && rankedTargets.length ? (
                     <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
-                      אפשר לסדר מחדש או להסיר כאן. כדי להוסיף יעד — טענו הצעות חדשות.
+                      כאן אפשר לשנות את הסדר או להסיר. כדי להוסיף יעד, קבלו הצעות חדשות.
                     </p>
                   ) : null}
 
@@ -1219,10 +1219,10 @@ export default function DecisionsPage() {
 
                   <div className="mt-4 flex flex-col gap-3 border-t border-[#e6e4dc] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button onClick={() => void loadCandidates()} disabled={loadingCandidates}>
-                      {loadingCandidates ? "טוענים הצעות…" : "טען הצעות חדשות"}
+                      {loadingCandidates ? "מביאים הצעות…" : "לקבל הצעות חדשות"}
                     </Button>
                     <span className="text-xs leading-5 text-[#8b8e84]">
-                      ההצעות נבנות מהעסק, מהאתר ומהאבחון — רק בלחיצה.
+                      {AGENT_NAME} מציעה לפי העסק, האתר והאבחון, רק כשתלחצו.
                     </span>
                   </div>
                 </div>
@@ -1231,11 +1231,11 @@ export default function DecisionsPage() {
 
             {/* Where the decisions are read. One quiet line instead of a card of its own. */}
             <p className="text-xs leading-5 text-[#8b8e84]">
-              ההחלטות מזינות את{" "}
+              מההחלטות האלה נבנית{" "}
               <Link href="/strategy" className="font-bold text-[#191b18] underline underline-offset-4">
                 התוכנית
               </Link>{" "}
-              — החודש והרבעון.
+              לחודש ולרבעון.
             </p>
           </div>
         ) : null}
@@ -1259,7 +1259,7 @@ export default function DecisionsPage() {
               {saveState}
             </span>
             <Button size="sm" onClick={() => void save()} disabled={saving}>
-              {saving ? "שומרים…" : "שמירת ההחלטות"}
+              {saving ? "שומרים…" : "לשמור את ההחלטות"}
             </Button>
           </div>
           {saveError ? (
@@ -1326,7 +1326,7 @@ function DecisionRow({
             className="shrink-0 text-[11px] font-bold"
             style={{ color: open ? "#8b8e84" : ACCENT }}
           >
-            {open ? "סגירה" : "עריכה"}
+            {open ? "לסגור" : "לשנות"}
           </span>
         </button>
       </h2>
@@ -1366,7 +1366,7 @@ function AudienceFormFields({
       </div>
       <div>
         <label htmlFor={`${idPrefix}-summary`} className="mb-1 block text-xs font-bold text-[#191b18]">
-          שורה אחת על מי זה
+          במשפט אחד: מי הם?
         </label>
         <input
           id={`${idPrefix}-summary`}
@@ -1378,7 +1378,7 @@ function AudienceFormFields({
       </div>
       <div>
         <label htmlFor={`${idPrefix}-needs`} className="mb-1 block text-xs font-bold text-[#191b18]">
-          מה הקהל צריך (מופרד בפסיקים)
+          מה הקהל צריך (מפרידים בפסיק)
         </label>
         <input
           id={`${idPrefix}-needs`}
@@ -1390,7 +1390,7 @@ function AudienceFormFields({
       </div>
       <div>
         <label htmlFor={`${idPrefix}-where`} className="mb-1 block text-xs font-bold text-[#191b18]">
-          איפה פוגשים אותו (מופרד בפסיקים)
+          איפה פוגשים אותו (מפרידים בפסיק)
         </label>
         <input
           id={`${idPrefix}-where`}
@@ -1458,7 +1458,7 @@ function QuestionBlock({
             onClick={onClear}
             className="shrink-0 text-[11px] text-[#5e6159] underline underline-offset-4"
           >
-            בטל בחירה
+            לבטל את הבחירה
           </button>
         ) : null}
       </div>

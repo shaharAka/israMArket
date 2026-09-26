@@ -104,18 +104,18 @@ const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: 
   },
   local: {
     label: "מקומי",
-    why: "מחפשים מקום בסביבה. על אלה עונים הכרטיס בגוגל ותוצאות המפות — בחינם.",
+    why: "מחפשים עסק באזור. אליהם מגיעים דרך הכרטיס בגוגל והמפות, בחינם.",
     accent: true,
     className: "",
   },
   commercial: {
     label: "בחינה והשוואה",
-    why: "משווים אפשרויות לפני החלטה. מתאים לתוכן שמסביר למה דווקא אתם.",
+    why: "משווים אפשרויות לפני שמחליטים. מתאים לפוסט או לעמוד באתר שמסביר למה דווקא אתם.",
     className: "border-[#dedcd4] bg-white text-[#3c3e3a]",
   },
   branded: {
-    label: "מיתוג",
-    why: "מחפשים אתכם בשם. את אלה כמעט אין צורך לקנות — הכרטיס והאתר כבר עונים.",
+    label: "חיפוש לפי שם",
+    why: "מחפשים אתכם בשם. על אלה כמעט לא צריך לשלם, כי הכרטיס והאתר כבר מופיעים.",
     className: "border-[#dedcd4] bg-[#f4f3ee] text-[#3c3e3a]",
   },
   informational: {
@@ -125,7 +125,7 @@ const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: 
   },
   general: {
     label: "כללי",
-    why: "לא זוהתה כוונה מובהקת מהמילים. אפשר לבנות מהן תוכן, אבל לא קמפיין.",
+    why: "לא ברור מה המחפשים רוצים. אפשר לכתוב על זה פוסטים, אבל לא לשלם על זה במודעות.",
     className: "border-[#e6e4dc] bg-[#f8f7f4] text-[#63665e]",
   },
 };
@@ -141,7 +141,7 @@ const INTENT_ORDER: KeywordIntent[] = [
 
 const FALLBACK_INTENT: { label: string; why: string; accent?: boolean; className: string } = {
   label: "כללי",
-  why: "לא זוהתה כוונה מובהקת מהמילים.",
+  why: "לא ברור מה המחפשים רוצים.",
   className: "border-[#e6e4dc] bg-[#f8f7f4] text-[#63665e]",
 };
 
@@ -178,6 +178,11 @@ function IntentChip({ intent, label }: { intent: KeywordIntent; label?: string }
  */
 const PLAIN_TERMS: [RegExp, string][] = [
   [/לא כ-ROAS/g, "לא כחודש שצריך להחזיר את ההוצאה"],
+  [/אומדן המרות או עלות להמרה/g, "הערכה של מספר הפניות וההזמנות או של העלות לפנייה"],
+  [/רצועת ה-CPC/g, "רצועת מחירים"],
+  [/רצועת CPC/g, "רצועת מחירים"],
+  [/CPC ממוצע/g, "מחיר ממוצע לקליק"],
+  [/ה-CPC/g, "המחיר לקליק"],
   [/ROAS/g, "ההחזר על ההוצאה"],
   [/CPC לתחום/g, "מחיר לקליק בתחום"],
   [/CPC/g, "המחיר לקליק"],
@@ -191,9 +196,18 @@ const PLAIN_TERMS: [RegExp, string][] = [
   [/לאפטם/g, "להשתפר"],
   [/ותאפטם/g, "ותשתפר"],
   [/אופטימיזציה אמיתית/g, "שיפור אמיתי"],
-  [/האלגוריתם של גוגל/g, "המערכת של גוגל"],
+  // "האלגוריתם ... לא לומד" is masculine; "המערכת" broke the agreement, Google does not.
+  [/האלגוריתם של גוגל/g, "גוגל"],
+  [/בלמידה של אלגוריתם/g, "בלמידה של גוגל"],
+  [/על מיקס:/g, "על שילוב:"],
+  [/מטא\/אינסטגרם/g, "אינסטגרם ופייסבוק"],
+  [/איקומרס/g, "חנויות אונליין"],
+  [/נשאר אפילו פחות דאטה/g, "נשארים אפילו פחות נתונים"],
   [/דאטה/g, "נתונים"],
   [/טווח ההמרות הצפוי/g, "מספר הפניות וההזמנות הצפוי מהמודעות"],
+  [/עלות להמרה/g, "עלות לפנייה"],
+  [/שיעור ההמרה/g, "שיעור הפונים"],
+  [/טווח ההמרה/g, "טווח שיעור הפונים"],
   [/שיעור המרה/g, "שיעור הפונים"],
   [/ההמרות/g, "הפניות וההזמנות"],
   [/המרות/g, "פניות או הזמנות"],
@@ -342,7 +356,7 @@ function MetricLine({ impressions, clicks, position, ctr }: {
       <MetricCell label="חשיפות" value={impressions} />
       <MetricCell label="קליקים" value={clicks} />
       <MetricCell label="מיקום" value={position} />
-      <MetricCell label="הקלקה" value={singlePercent(ctr)} suffix="%" />
+      <MetricCell label="אחוז הקלקה" value={singlePercent(ctr)} suffix="%" />
     </p>
   );
 }
@@ -428,7 +442,7 @@ export default function PromotionPage() {
         setPromotionError("");
       })
       .catch((err) => {
-        if (active) setPromotionError(messageOf(err, "טעינת עלות הקידום בגוגל נכשלה"));
+        if (active) setPromotionError(messageOf(err, "לא הצלחנו לחשב כמה עולה לפרסם בגוגל"));
       });
     return () => {
       active = false;
@@ -445,7 +459,7 @@ export default function PromotionPage() {
         setKeywordsError("");
       })
       .catch((err) => {
-        if (active) setKeywordsError(messageOf(err, "טעינת המילים לקידום נכשלה"));
+        if (active) setKeywordsError(messageOf(err, "לא הצלחנו לטעון את המילים"));
       });
     return () => {
       active = false;
@@ -465,7 +479,7 @@ export default function PromotionPage() {
         setBriefError("");
       })
       .catch((err) => {
-        if (active) setBriefError(messageOf(err, "טעינת הבריף נכשלה"));
+        if (active) setBriefError(messageOf(err, "לא הצלחנו להכין את הסיכום"));
       });
     return () => {
       active = false;
@@ -528,7 +542,7 @@ export default function PromotionPage() {
         : budget < floor[1]
           ? {
               verdict: "אפשר להתחיל לפרסם בגוגל, אבל בזהירות.",
-              reason: "אתם בתחתית שלו: אפשר להתחיל, אבל יש פחות מקום לטעויות.",
+              reason: "אתם בתחתית הטווח. אפשר להתחיל, אבל יש פחות מקום לטעויות.",
               tone: "neutral" as const,
             }
           : {
@@ -570,7 +584,7 @@ export default function PromotionPage() {
       <div className="mx-auto max-w-5xl">
         <SectionHeader section="business" title="קידום בגוגל" />
 
-        {demo ? <p className="-mt-3 mb-4 text-xs text-[#63665e]">בהדגמה המחירים והמילים לדוגמה.</p> : null}
+        {demo ? <p className="-mt-3 mb-4 text-xs text-[#63665e]">בדמו המחירים והמילים לדוגמה.</p> : null}
 
         {/* ---------- the answer, its reason, and the one ask ---------- */}
         <section
@@ -578,7 +592,7 @@ export default function PromotionPage() {
           className="rounded-lg p-4 sm:p-6"
           style={{ background: identity.surface }}
         >
-          {promotionLoading ? <LoadingMark label="מחשבים מה גוגל תעלה לעסק הזה…" /> : null}
+          {promotionLoading ? <LoadingMark label="מחשבים כמה יעלה לפרסם בגוגל…" /> : null}
 
           {promotionError ? (
             <ErrorPanel
@@ -593,7 +607,7 @@ export default function PromotionPage() {
 
           {!promotionLoading && !promotionError && !plan ? (
             <p className="text-sm text-[#5e6159]">
-              השרת לא החזיר תוכנית קידום. אין כאן מספרים שנמציא במקומה — אפשר לנסות שוב.
+              לא קיבלנו תוכנית קידום מהשרת, ולא נמציא מספרים במקומה. אפשר לנסות שוב.
             </p>
           ) : null}
 
@@ -607,7 +621,7 @@ export default function PromotionPage() {
                     {" בחודש, "}
                   </>
                 ) : null}
-                {floorStatus ? floorStatus.verdict : `כך נראית עלות הפרסום בגוגל ל${plan.industry_label}.`}
+                {floorStatus ? floorStatus.verdict : `זו עלות הפרסום בגוגל בתחום ${plan.industry_label}.`}
               </p>
 
               <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">
@@ -630,7 +644,7 @@ export default function PromotionPage() {
                   "המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר."
                 )}{" "}
                 <Link href="/decisions" className="font-bold whitespace-nowrap text-[#5e6159] underline underline-offset-4">
-                  לשינוי התקציב
+                  לשנות את התקציב
                 </Link>
               </p>
 
@@ -664,8 +678,8 @@ export default function PromotionPage() {
                     className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#20211f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
                   >
                     {searchConsoleConnected
-                      ? "לחבר את נתוני האתר — מה קורה אחרי הקליק"
-                      : "לחבר את גוגל — באילו חיפושים אתם כבר מופיעים"}
+                      ? "לחבר את נתוני האתר: מה קורה אחרי הקליק"
+                      : "לחבר את גוגל: באילו חיפושים אתם כבר מופיעים"}
                   </Link>
                 ) : null}
               </div>
@@ -680,7 +694,7 @@ export default function PromotionPage() {
               plan.warnings?.length ||
               plan.channel_comparison?.recommendation ||
               plan.source) ? (
-              <Expand title="כל המספרים, ואיך חושבו">
+              <Expand title="כל המספרים והחישובים">
                 <div className="space-y-5">
                   <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
                     <h3 className="text-sm font-black text-[#20211f]">הטווחים, כל אחד עם החישוב שלו</h3>
@@ -693,26 +707,26 @@ export default function PromotionPage() {
                       <CostRow
                         label="כניסות בחודש"
                         value={countRange(plan.expected_clicks)}
-                        basis="הגבול העליון של מה שהתקציב יכול לקנות, חלקי טווח המחיר לכניסה. זו לא תחזית של כמה אנשים מחפשים."
+                        basis="התקציב חלקי המחיר לכניסה. זה הגבול העליון של מה שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים."
                       />
                       <CostRow
                         label="כמה מהנכנסים פונים או מזמינים"
                         value={percentRange(plan.conversion_rate_range)}
                         basis={
                           plan.sector_label
-                            ? `הטווח נלקח מהשיעור שפורסם למגזר "${plan.sector_label}" — הוא לא נמדד באתר שלכם.`
-                            : "הטווח נלקח מהשיעור שפורסם למגזר שלכם — הוא לא נמדד באתר שלכם."
+                            ? `זה השיעור שפורסם למגזר ״${plan.sector_label}״. הוא לא נמדד באתר שלכם.`
+                            : "זה השיעור שפורסם למגזר שלכם. הוא לא נמדד באתר שלכם."
                         }
                       />
                       <CostRow
-                        label={plan.conversion_unit ? `פניות או הזמנות בחודש — ${plan.conversion_unit}` : "פניות או הזמנות בחודש"}
+                        label={plan.conversion_unit ? `פניות או הזמנות בחודש (${plan.conversion_unit})` : "פניות או הזמנות בחודש"}
                         value={countRange(plan.expected_conversions)}
-                        basis="כניסות כפול השיעור שפונה. זו תחזית שנבנתה מטווחים, לא הבטחה. בשפת המקצוע: המרות."
+                        basis="הכניסות כפול שיעור הפונים. זו הערכה לפי טווחים, לא הבטחה. בשפת המקצוע: המרות."
                       />
                       <CostRow
                         label="כמה עולה להביא פנייה אחת"
                         value={nisRange(plan.cost_per_conversion)}
-                        basis="המחיר לכניסה חלקי השיעור שפונה. אם המספר הזה גבוה מהרווח שלכם על מכירה — גוגל לא משתלמת, וכדאי לדעת את זה מראש."
+                        basis="המחיר לכניסה חלקי שיעור הפונים. אם זה יותר ממה שאתם מרוויחים על מכירה, גוגל לא משתלמת, וכדאי לדעת את זה מראש."
                       />
                       <CostRow
                         label="המינימום שפורסם למגזר"
@@ -722,7 +736,7 @@ export default function PromotionPage() {
                     </div>
                     {plan.matched_keywords?.length ? (
                       <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-[#5e6159]">
-                        <span className="font-bold">התחום זוהה לפי:</span>
+                        <span className="font-bold">זיהינו את התחום לפי:</span>
                         {plan.matched_keywords.map((word) => (
                           <span key={word} className="label-mark bg-white" style={{ borderColor: identity.border }}>
                             {word}
@@ -732,13 +746,13 @@ export default function PromotionPage() {
                     ) : null}
                   </div>
                   <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
-                    <h3 className="text-sm font-black text-[#20211f]">מה עוד נגבה, מעבר לתקציב המדיה</h3>
+                    <h3 className="text-sm font-black text-[#20211f]">מה עוד משלמים, חוץ מתקציב המדיה</h3>
                     <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                      תקציב המדיה הולך לגוגל עצמה. אלה העלויות של העבודה סביבו, מופרדות כדי שתראו את העלות
-                      האמיתית של החודש — ולא רק את המספר שנשמע טוב.
+                      תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש
+                      עולה באמת ולא רק את המספר שנשמע טוב.
                     </p>
                     <ul className="mt-3 divide-y divide-[#e6e4dc]">
-                      <FeeRow label="עמלת ניהול, חודשית" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
+                      <FeeRow label="דמי ניהול בחודש" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
                         {plan.management_fee?.percent_label ? (
                           <span className="block">
                             <Figure>{plan.management_fee.percent_label}</Figure>
@@ -756,7 +770,7 @@ export default function PromotionPage() {
                         ) : null}
                       </FeeRow>
                       <FeeRow label="הקמה חד־פעמית" amount={nisRange(plan.setup_fee)}>
-                        העבודה שלפני שהקמפיין עולה לאוויר. נגבית פעם אחת, ולא חוזרת בכל חודש.
+                        העבודה עד שהמודעות עולות לאוויר. משלמים עליה פעם אחת, לא כל חודש.
                       </FeeRow>
                       <FeeRow
                         label="עלות חודשית כוללת (מדיה + ניהול)"
@@ -766,7 +780,7 @@ export default function PromotionPage() {
                         זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל.
                       </FeeRow>
                       <FeeRow label="החודש הראשון (כולל הקמה)" amount={firstMonthFigure} emphasis>
-                        החודש הראשון תמיד היקר ביותר. אם הוא לא נכנס לתזרים, עדיף לדחות את ההתחלה.
+                        החודש הראשון הוא תמיד היקר ביותר. אם הוא לא מסתדר לכם בתזרים, עדיף לדחות את ההתחלה.
                       </FeeRow>
                     </ul>
                   </div>
@@ -797,7 +811,7 @@ export default function PromotionPage() {
                       </ul>
                     ) : (
                       <p className="mt-3 text-sm leading-6 text-[#63665e]">
-                        השרת לא צירף את ההנחות שמאחורי החישוב. בלי הן, אי אפשר לדעת מה הטווח מכסה.
+                        לא קיבלנו מהשרת את ההנחות שמאחורי החישוב. בלעדיהן אי אפשר לדעת מה הטווח כולל.
                       </p>
                     )}
 
@@ -829,8 +843,8 @@ export default function PromotionPage() {
               <Expand
                 title={
                   plan.warnings.length === 1
-                    ? "האזהרה שקוראים לפני שמתחילים"
-                    : `${plan.warnings.length} אזהרות שקוראים לפני שמתחילים`
+                    ? "אזהרה לקרוא לפני שמתחילים"
+                    : `${plan.warnings.length} אזהרות לקרוא לפני שמתחילים`
                 }
               >
                 <ul aria-label="אזהרות לפני שמתחילים" className="space-y-3">
@@ -919,7 +933,7 @@ export default function PromotionPage() {
                 </div>
               ) : (
                 <p className="mt-2 text-sm leading-6 text-[#5e6159]">
-                  עוד אין שאילתות שהאתר כמעט מדורג בהן. זה משתנה ככל שגוגל סורקת את האתר.
+                  עוד אין חיפושים שבהם האתר קרוב לעמוד הראשון. זה משתנה ככל שגוגל סורקת את האתר.
                 </p>
               )}
 
@@ -927,13 +941,13 @@ export default function PromotionPage() {
                 <Expand title={`כל ${moreTerms} המילים, ומאיפה כל אחת באה`}>
                   <div className="space-y-6">
                     <p className="max-w-3xl text-sm leading-6 text-[#5e6159]">
-                      אלה שאילתות שהאתר שלכם כבר מופיע בהן, קרוב לעמוד הראשון.
+                      אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון.
                       {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
-                      הכותרת או התוכן יכול להזיז אותן בלי לשלם על קליק.
+                      הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק.
                       {isRange(positionRange) && typeof minImpressions === "number" ? (
                         <>
                           {" "}
-                          לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
+                          בחרנו לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
                           ולפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות.
                         </>
                       ) : null}
@@ -945,28 +959,28 @@ export default function PromotionPage() {
                         statusLabel={searchConsoleConnected ? "מחובר" : "לא מחובר"}
                         note={
                           kwSources?.search_console?.note ||
-                          "השאילתות שהאתר שלכם כבר מופיע עליהן, עם מספרים אמיתיים."
+                          "החיפושים שבהם האתר שלכם כבר מופיע, עם מספרים אמיתיים."
                         }
                         detail={
                           searchConsoleConnected && kwSources?.search_console?.site_url ? (
                             <>
-                              הנכס בגוגל: <Figure>{kwSources.search_console.site_url}</Figure>
+                              האתר בגוגל: <Figure>{kwSources.search_console.site_url}</Figure>
                             </>
                           ) : null
                         }
                       />
                       <SourceLine
-                        title="השלמת החיפוש של גוגל"
+                        title="ההשלמה האוטומטית של גוגל"
                         active={kwSources?.autocomplete?.available === true}
                         statusLabel={kwSources?.autocomplete?.available ? "פעיל" : "לא זמין כרגע"}
-                        note={kwSources?.autocomplete?.note || "מה שאנשים מקלידים בפועל. ביטויים, לא נפחים."}
+                        note={kwSources?.autocomplete?.note || "מה שאנשים מקלידים בפועל. רק ביטויים, בלי מספר חיפושים."}
                       />
                     </ul>
 
                     {/* The house rule, in the backend's own words: no volume column, anywhere. */}
-                    <SystemNote variant="panel" title="למה אין כאן נפח חיפוש">
+                    <SystemNote variant="panel" title="למה אין כאן מספר חיפושים">
                       {kwSources?.search_volumes?.note ||
-                        "אין לנו גישה לנפחי החיפוש של גוגל, ולכן אין כאן מספר חיפושים לאף מילה."}
+                        "אין לנו גישה לנתון של גוגל על כמה מחפשים כל מילה, ולכן לא תמצאו כאן מספר חיפושים."}
                     </SystemNote>
 
                     {rowsWithNumbers.length ? (
@@ -975,9 +989,9 @@ export default function PromotionPage() {
                           מילים עם מספרים אמיתיים מגוגל
                         </h3>
                         <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                          שאילתות שהאתר שלכם כבר הופיע עליהן
+                          חיפושים שבהם האתר שלכם הופיע
                           {typeof periodDays === "number" ? ` ב-${periodDays} הימים האחרונים` : ""}. המספרים
-                          מגוגל, ולא מהערכה שלנו.
+                          מגוגל, לא הערכה שלנו.
                         </p>
                         <ul className="mt-3 divide-y divide-[#e6e4dc]">
                           {rowsWithNumbers.map((row: PromotionKeyword, index) => {
@@ -993,7 +1007,7 @@ export default function PromotionPage() {
                                     </span>
                                   ) : null}
                                   {row.source === "autocomplete+search_console" ? (
-                                    <span className="text-[11px] text-[#8b8e84]">נמצאה גם בהשלמות החיפוש</span>
+                                    <span className="text-[11px] text-[#8b8e84]">מופיעה גם בהשלמה האוטומטית</span>
                                   ) : null}
                                 </div>
                                 <MetricLine
@@ -1034,11 +1048,11 @@ export default function PromotionPage() {
                     {phraseRows.length ? (
                       <div>
                         <h3 className="text-sm font-black text-[#20211f]">
-                          ביטויים מהשלמת החיפוש של גוגל — בלי נתוני נפח
+                          ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים
                         </h3>
                         <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                          מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה בזמן הקלדה. אין להן חשיפות, קליקים
-                          או מיקום, ואין כאן עמודה שמעמידה פנים שיש.
+                          מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה תוך כדי הקלדה. אין עליהן נתונים של
+                          חשיפות, קליקים או מיקום, ולא נעמיד פנים שיש.
                         </p>
                         <ul className="mt-3 divide-y divide-[#e6e4dc]">
                           {phraseRows.map((row: PromotionKeyword, index) => (
@@ -1049,7 +1063,7 @@ export default function PromotionPage() {
                               <span className="text-sm text-[#20211f]">{row.term}</span>
                               <span className="flex items-center gap-2">
                                 <IntentChip intent={row.intent} label={row.intent_label} />
-                                <span className="text-[11px] text-[#8b8e84]">אין נתוני נפח</span>
+                                <span className="text-[11px] text-[#8b8e84]">אין מספרים</span>
                               </span>
                             </li>
                           ))}
@@ -1059,7 +1073,7 @@ export default function PromotionPage() {
 
                     {legend.length ? (
                       <div className="rounded-lg border border-[#e6e4dc] bg-white p-4">
-                        <span className="text-[11px] font-bold text-[#8b8e84]">איך לקרוא את הכוונות</span>
+                        <span className="text-[11px] font-bold text-[#8b8e84]">מה כל תווית אומרת</span>
                         <ul className="mt-2 grid gap-2 sm:grid-cols-2">
                           {legend.map((item) => (
                             <li key={item.intent} className="flex items-start gap-2">
@@ -1075,7 +1089,7 @@ export default function PromotionPage() {
 
                     {keywords?.seeds?.length ? (
                       <p className="text-[11px] leading-5 text-[#8b8e84]">
-                        השלמות החיפוש נשאלו לפי מה שכתוב בפרופיל העסק:{" "}
+                        חיפשנו השלמות לפי מה שכתוב בפרופיל העסק:{" "}
                         <span className="text-[#63665e]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
                         {keywords.seeds.length > 4 ? ` ועוד ${keywords.seeds.length - 4}` : ""}
                       </p>
@@ -1087,19 +1101,19 @@ export default function PromotionPage() {
                         style={{ borderColor: identity.border, background: identity.surface }}
                       >
                         <h3 className="text-sm font-black" style={{ color: identity.accent }}>
-                          מה היה מוסיף החיבור לנתוני החיפוש של גוגל
+                          מה תרוויחו מחיבור נתוני החיפוש של גוגל
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">
-                          זה הכלי החינמי של גוגל (Search Console) שמראה על אילו חיפושים האתר שלכם כבר מופיע — עם
-                          חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים שאפשר להשיג על הביקוש בגוגל,
-                          ובלעדיהם נשארים רק הביטויים.
+                          זה כלי חינמי של גוגל (Search Console) שמראה באילו חיפושים האתר שלכם כבר מופיע, עם
+                          חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים על מה שמחפשים בגוגל.
+                          בלעדיהם יש לנו רק את הביטויים.
                         </p>
                         <Link
                           href="/integrations"
                           className="mt-3 inline-flex min-h-9 items-center rounded-md border bg-white px-3 text-xs font-bold"
                           style={{ borderColor: identity.border, color: identity.accent }}
                         >
-                          למסך החיבורים
+                          לעמוד החיבורים
                         </Link>
                       </div>
                     ) : null}
@@ -1117,11 +1131,11 @@ export default function PromotionPage() {
               >
                 <IconEye className="h-6 w-6" />
               </span>
-              <h3 className="mt-4 text-lg font-black text-[#20211f]">עוד אין מילים לאסוף</h3>
+              <h3 className="mt-4 text-lg font-black text-[#20211f]">עוד אין מילים להציג</h3>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
                 {searchConsoleConnected
                   ? "נתוני החיפוש של גוגל מחוברים, אבל האתר עוד לא הופיע בחיפושים שאפשר לבנות עליהם תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
-                  : "כשנחבר את נתוני החיפוש של גוגל נוכל להראות באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום — בלי לנחש כמה מחפשים."}
+                  : "אחרי שתחברו את נתוני החיפוש של גוגל, נראה לכם באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום. בלי לנחש כמה מחפשים."}
               </p>
             </div>
           ) : null}
@@ -1159,7 +1173,7 @@ export default function PromotionPage() {
                   {/* What the profile is, and which category to pick, explain the list —
                       so they sit with the list rather than above it. */}
                   <p className="max-w-3xl text-xs leading-5 text-[#8b8e84]">
-                    {profile?.summary || "המשטח היחיד בגוגל שהוא בחינם, ומה שמאפשר לבקש ביקורות."}
+                    {profile?.summary || "המקום היחיד בגוגל שבו מופיעים בחינם, ודרכו אפשר לבקש ביקורות."}
                   </p>
                   {profile?.suggested_category_hint ? (
                     <p className="mt-2 text-xs text-[#5e6159]">
@@ -1226,8 +1240,8 @@ export default function PromotionPage() {
             </div>
           ) : (
             <p className="mt-3 text-sm text-[#5e6159]">
-              הצ׳קליסט של הפרופיל העסקי לא התקבל מהשרת. אפשר לנסות שוב מאוחר יותר — עד אז, הפרופיל עצמו נמצא
-              בחיפוש בגוגל תחת שם העסק.
+              לא קיבלנו מהשרת את רשימת הצעדים לכרטיס בגוגל. נסו שוב מאוחר יותר. בינתיים, את הכרטיס עצמו
+              מוצאים כשמחפשים בגוגל את שם העסק.
             </p>
           )}
         </section>
@@ -1239,7 +1253,7 @@ export default function PromotionPage() {
             because it is the hand-off, not the answer, and it is an Expand because the
             page's word budget belongs to the answer above it. */}
         <section className="border-t border-[#e6e4dc]">
-          <Expand title={brief ? `סיכום ${brief.month_name_he} לשליחה למי שמפרסם` : "סיכום החודש לשליחה למי שמפרסם"}>
+          <Expand title={brief ? `סיכום ${brief.month_name_he} למי שמפרסם בשבילכם` : "סיכום החודש למי שמפרסם בשבילכם"}>
             {briefError ? (
               <div>
                 <p className="text-sm text-[#9f4330]">{briefError}</p>
@@ -1250,8 +1264,8 @@ export default function PromotionPage() {
             ) : (
               <>
                 <p className="max-w-3xl text-xs leading-5 text-[#8b8e84]">
-                  מה שבתוכנית החודש — המטרה, התקציב והחלוקה שלו, הקהלים, קצב הפרסום
-                  והקישור עם המעקב — כבלוק אחד להעתקה ולשליחה.
+                  כל התוכנית של החודש בטקסט אחד להעתקה ולשליחה: המטרה, התקציב ואיך מחלקים אותו, הקהלים,
+                  כמה מפרסמים והקישור למעקב.
                 </p>
                 <button
                   type="button"
@@ -1259,7 +1273,7 @@ export default function PromotionPage() {
                   className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-md border border-[#c7c4b8] bg-white px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
                 >
                   <IconCopy className="h-3.5 w-3.5" />
-                  העתקת הסיכום
+                  להעתיק את הסיכום
                 </button>
                 {/* The text itself, exactly what the button copies, and scrollable so a
                     long month cannot push the page's real content off the screen. */}
