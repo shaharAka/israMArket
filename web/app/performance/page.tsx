@@ -7,12 +7,12 @@ import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/
 import { IconChart } from "@/lib/icons";
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
-  sessions: { label: "כניסות לאתר", note: "סך כל הביקורים באתר" },
-  engagedSessions: { label: "ביקורים מעורבים", note: "ביקורים שנמשכו מעל 10 שניות" },
-  conversions: { label: "פניות והזמנות", note: "רכישות או לחיצות לוואטסאפ" },
-  bounceRate: { label: "אחוז נטישה מיידי", note: "עזבו בלי לבצע שום פעולה" },
-  screenPageViews: { label: "סך צפיות בעמודים", note: "דפים שנצפו בסך הכל" },
-  averageSessionDuration: { label: "זמן שהייה ממוצע", note: "זמן ממוצע של לקוח באתר" },
+  sessions: { label: "כניסות לאתר", note: "כמה פעמים נכנסו לאתר" },
+  engagedSessions: { label: "נשארו באתר", note: "כניסות של יותר מ-10 שניות" },
+  conversions: { label: "פניות והזמנות", note: "רכישות באתר או לחיצות על וואטסאפ" },
+  bounceRate: { label: "יצאו מיד", note: "אחוז הנכנסים שיצאו בלי לעשות כלום" },
+  screenPageViews: { label: "צפיות בעמודים", note: "כמה עמודים נפתחו בסך הכול" },
+  averageSessionDuration: { label: "זמן ממוצע באתר", note: "כמה זמן נשארים באתר, בממוצע" },
 };
 
 function formatMetricValue(key: string, val: string) {
@@ -100,7 +100,7 @@ function postResults(payload: PerformancePayload): PostResult[] | null {
     const comments = row.meta ? toNumber(row.meta.comments_count) : undefined;
     return {
       key: row.utm_content || `${row.title}-${index}`,
-      title: row.title || "פוסט ללא שם",
+      title: row.title || "פוסט בלי שם",
       audience: row.audience_name || "",
       sessions,
       conversions,
@@ -121,7 +121,7 @@ function byResult(a: PostResult, b: PostResult) {
 }
 
 function ResultFigures({ result }: { result: PostResult }) {
-  if (!result.measured) return <span className="text-xs text-[#747570]">אין מדידה</span>;
+  if (!result.measured) return <span className="text-xs text-[#747570]">לא נמדד</span>;
   const parts = [
     result.conversions !== undefined ? `${result.conversions.toLocaleString("he-IL")} פניות` : "",
     result.sessions !== undefined ? `${result.sessions.toLocaleString("he-IL")} כניסות` : "",
@@ -168,7 +168,7 @@ function PostResults({ results }: { results: PostResult[] }) {
   return (
     <section aria-labelledby="posts-heading">
       <h2 id="posts-heading" className="text-base font-black text-[#20211f]">
-        אילו פוסטים עבדו
+        אילו פוסטים הצליחו
       </h2>
       {visible.length ? (
         <ul className="mt-3 divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
@@ -177,18 +177,19 @@ function PostResults({ results }: { results: PostResult[] }) {
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-[#62635f]">עוד אין פוסט שהצלחנו לקשר לתוצאות.</p>
+        <p className="mt-3 text-sm text-[#62635f]">עוד לא מדדנו תוצאות לאף פוסט.</p>
       )}
       {unmeasured.length ? (
         <p className="mt-2 text-xs leading-5 text-[#62635f]">
-          {unmeasured.length === 1 ? "פוסט אחד עוד לא נמדד" : `${unmeasured.length} פוסטים עוד לא נמדדו`} — אין
-          להם תוצאות, וזה לא אפס.
+          {unmeasured.length === 1
+            ? "פוסט אחד עוד לא נמדד. זה לא אומר שהוא הביא אפס."
+            : `${unmeasured.length} פוסטים עוד לא נמדדו. זה לא אומר שהם הביאו אפס.`}
         </p>
       ) : null}
       {rest.length ? (
         <details className="group mt-1">
           <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
-            עוד {rest.length} פוסטים
+            {rest.length === 1 ? "עוד פוסט אחד" : `עוד ${rest.length} פוסטים`}
             <span aria-hidden className="transition-transform group-open:-rotate-90">‹</span>
           </summary>
           <ul className="divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
@@ -218,8 +219,8 @@ function Answer({ payload }: { payload: PerformancePayload }) {
   const sentence =
     payload.diagnostic?.headline ||
     (conversions !== undefined && sessions !== undefined
-      ? `הגיעו ${formatMetricValue("sessions", sessions)} כניסות לאתר, ומהן ${formatMetricValue("conversions", conversions)} פניות.`
-      : "עוד אין לנו מספיק נתונים כדי לומר אם זה עובד.");
+      ? `היו ${formatMetricValue("sessions", sessions)} כניסות לאתר, ומתוכן ${formatMetricValue("conversions", conversions)} פניות.`
+      : "עוד אין מספיק נתונים כדי לדעת אם השיווק מביא פניות.");
 
   return (
     <section>
@@ -232,7 +233,7 @@ function Answer({ payload }: { payload: PerformancePayload }) {
         <BigNumber label="כניסות לאתר" value={sessions !== undefined ? formatMetricValue("sessions", sessions) : undefined} />
       </dl>
       {conversions !== undefined ? (
-        <p className="mt-2 text-xs text-[#62635f]">פנייה = רכישה או לחיצה לוואטסאפ מהאתר.</p>
+        <p className="mt-2 text-xs text-[#62635f]">פנייה: רכישה באתר או לחיצה על וואטסאפ.</p>
       ) : null}
     </section>
   );
@@ -245,7 +246,7 @@ function BigNumber({ label, value }: { label: string; value?: string }) {
       {value !== undefined ? (
         <dd className="metric-number mt-1 text-4xl font-black text-[#191b18]">{value}</dd>
       ) : (
-        <dd className="mt-2 text-sm font-bold text-[#747570]">אין מדידה</dd>
+        <dd className="mt-2 text-sm font-bold text-[#747570]">לא נמדד</dd>
       )}
     </div>
   );
@@ -261,18 +262,18 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
   const connected = data?.connected;
   if (!connected) return null;
   const anyConnected = Boolean(connected.ga4 || connected.meta);
-  const offline = [!connected.ga4 ? "גוגל אנליטיקס" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
+  const offline = [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
   if (!offline.length) return null;
 
   return (
     <p className="rounded-lg bg-[#f5efe3] px-4 py-3 text-xs leading-6 text-[#5e5340]">
       {anyConnected
-        ? `אין כרגע חיבור פעיל ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים${
-            data?.synced_at ? " — מה שמופיע כאן מהרענון האחרון" : ""
-          }.`
-        : data?.explanation || "אין חיבור לגוגל אנליטיקס או לאינסטגרם, ולכן אין לנו מה למדוד."}{" "}
+        ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
+            data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
+          }`
+        : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
       <Link href="/integrations" className="font-bold text-[#20211f] underline underline-offset-4">
-        לחיבור
+        לחבר
       </Link>
     </p>
   );
@@ -289,7 +290,7 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
   return (
     <Expand title="כל המספרים מהאתר">
       <p className="text-xs leading-5 text-[#62635f]">
-        נמדד בגוגל אנליטיקס — התוכנה שסופרת מה קורה באתר.
+        המספרים מגוגל אנליטיקס, הכלי שסופר מה קורה באתר.
       </p>
       <dl className="mt-2 divide-y divide-[#e6e4dc]">
         {entries.map(([key, value]) => {
@@ -312,7 +313,7 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
 /** The verdict on the content: what worked, and what is worth another attempt. */
 function ContentVerdict({ payload }: { payload: PerformancePayload }) {
   const groups = [
-    { id: "worked", title: "מה עבד מצוין", items: payload.diagnostic?.top_content ?? [], mark: "bg-[#b9ccb0]" },
+    { id: "worked", title: "מה הצליח", items: payload.diagnostic?.top_content ?? [], mark: "bg-[#b9ccb0]" },
     { id: "improve", title: "מה כדאי לשפר", items: payload.diagnostic?.bottom_content ?? [], mark: "bg-[#e0cfa9]" },
   ].filter((group) => group.items.length);
   if (!groups.length) return null;
@@ -369,29 +370,29 @@ function Friction({ payload }: { payload: PerformancePayload }) {
 const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] = [
   { key: "sessions", label: "כניסות לאתר", source: "ga4" },
   { key: "conversions", label: "פניות והזמנות", source: "ga4" },
-  { key: "engaged_sessions", label: "ביקורים מעורבים", source: "ga4" },
+  { key: "engaged_sessions", label: "נשארו באתר", source: "ga4" },
   { key: "likes", label: "לייקים", source: "meta" },
   { key: "comments", label: "תגובות", source: "meta" },
   { key: "views", label: "צפיות", source: "meta" },
   // Older snapshots only — Meta retired this metric in favour of `views`.
   { key: "impressions", label: "חשיפות", source: "meta" },
-  { key: "reach", label: "אנשים שהגיעו", source: "meta" },
+  { key: "reach", label: "אנשים שראו", source: "meta" },
   { key: "saves", label: "שמירות", source: "meta" },
   { key: "shares", label: "שיתופים", source: "meta" },
 ];
 
 /** What each column means, in the owner's words. No acronym has to be looked up. */
 const METRIC_NOTES: Record<string, string> = {
-  sessions: "כמה ביקורים הגיעו לאתר מהפוסטים של הקהל הזה.",
-  conversions: "כמה רכשו או לחצו לוואטסאפ אחרי אותם פוסטים.",
-  engaged_sessions: "ביקורים שנמשכו מעל 10 שניות — כלומר מישהו באמת הסתכל.",
-  likes: "כמה סימנו לייק על הפוסטים של הקהל הזה.",
-  comments: "כמה הגיבו עליהם.",
-  views: "כמה פעמים הפוסטים נצפו — גם אותם אנשים יותר מפעם אחת.",
-  impressions: "כמה פעמים הפוסטים הוצגו — גם לאותם אנשים יותר מפעם אחת.",
-  reach: "כמה אנשים שונים ראו אותם, בלי לספור פעמיים.",
-  saves: "כמה שמרו אותם לעצמם כדי לחזור אליהם.",
-  shares: "כמה העבירו אותם הלאה.",
+  sessions: "כמה פעמים נכנסו לאתר מהפוסטים של כל קהל.",
+  conversions: "כמה קנו באתר או לחצו על וואטסאפ אחרי הפוסטים האלה.",
+  engaged_sessions: "כניסות של יותר מ-10 שניות. כלומר, מישהו באמת הסתכל.",
+  likes: "כמה לייקים קיבלו הפוסטים.",
+  comments: "כמה תגובות קיבלו הפוסטים.",
+  views: "כמה פעמים צפו בפוסטים. אותו אדם יכול להיספר יותר מפעם אחת.",
+  impressions: "כמה פעמים הפוסטים הופיעו למישהו. אותו אדם יכול להיספר יותר מפעם אחת.",
+  reach: "כמה אנשים שונים ראו את הפוסטים. כל אדם נספר פעם אחת.",
+  saves: "כמה שמרו את הפוסט כדי לחזור אליו.",
+  shares: "כמה שלחו את הפוסט הלאה.",
 };
 
 /** The label the backend gives the untagged bucket. A row with a null id is the same thing. */
@@ -408,17 +409,17 @@ function columnsFor(data: AudiencePerformance) {
 }
 
 /**
- * A metric that was not measured is `אין מדידה` — never `0`, which would claim a measured
+ * A metric that was not measured is `לא נמדד` — never `0`, which would claim a measured
  * result of nothing. The two are different facts and the table keeps them apart.
  */
 function MetricCell({ value }: { value: number | undefined }) {
-  if (value === undefined || value === null) return <span className="text-[11px] text-[#747570]">אין מדידה</span>;
+  if (value === undefined || value === null) return <span className="text-[11px] text-[#747570]">לא נמדד</span>;
   return <span className="metric-number font-bold text-[#191b18]">{value.toLocaleString("he-IL")}</span>;
 }
 
 /**
  * Results broken down by the audience each post serves. Every honesty rule stays: an
- * unmeasured bucket is `אין מדידה`, the posts column is the sample size on every row, the
+ * unmeasured bucket is `לא נמדד`, the posts column is the sample size on every row, the
  * `לא משויך` bucket is its own row, and the backend's own explanation is printed.
  */
 function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
@@ -429,7 +430,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
   return (
     <Expand title="לפי קהל">
       {!rows.length ? (
-        <p className="text-sm text-[#62635f]">אין עדיין פוסטים בתוכנית, ולכן אין מה לפרק לפי קהל.</p>
+        <p className="text-sm text-[#62635f]">עוד אין פוסטים בתוכנית, אז אין מה להראות לפי קהל.</p>
       ) : (
         <div className="overflow-x-auto rounded-lg border border-[#e6e4dc] bg-white">
           <table className="w-full min-w-[560px] border-collapse text-right">
@@ -475,7 +476,11 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                         </span>
                         <span className="text-[10px] leading-4 text-[#62635f]">
                           {!unassigned && row.posts && measured < row.posts
-                            ? `נמדדו ${measured} מתוך ${row.posts} פוסטים`
+                            ? measured === 0
+                              ? row.posts === 1
+                                ? "עוד לא נמדד"
+                                : "עוד לא נמדדו"
+                              : `נמדדו ${measured} מתוך ${row.posts} פוסטים`
                             : ""}
                         </span>
                       </span>
@@ -484,7 +489,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                       <span className="metric-number font-bold text-[#191b18]">
                         {(row.posts || 0).toLocaleString("he-IL")}
                       </span>
-                      {row.posts === 1 ? <span className="mt-0.5 block text-[10px] text-[#9f4330]">פוסט אחד</span> : null}
+                      {row.posts === 1 ? <span className="mt-0.5 block whitespace-nowrap text-[10px] text-[#9f4330]">רק פוסט אחד</span> : null}
                     </td>
                     {columns.map((column) => {
                       const bucket = column.source === "ga4" ? row.ga4 : row.meta;
@@ -517,9 +522,9 @@ function Method({ data }: { data?: AudiencePerformance | null }) {
     <Expand title="איך חישבנו">
       {data?.method ? <p className="text-xs leading-6 text-[#62635f]">{data.method}</p> : null}
       <p className="mt-2 text-xs leading-6 text-[#62635f]">
-        לכל פוסט יש קישור מסומן משלו, וכך אנחנו יודעים אילו כניסות ופניות הגיעו ממנו. פוסט
-        בלי התאמה מסומן &quot;אין מדידה&quot;. מספר הפוסטים הוא גודל המדגם — קהל עם פוסט אחד
-        הוא כיוון, לא מגמה.
+        לכל פוסט יש קישור מיוחד משלו, וכך אנחנו יודעים אילו כניסות ופניות הגיעו ממנו. פוסט
+        שלא הצלחנו לקשר לתוצאות מסומן &quot;לא נמדד&quot;. ככל שיש לקהל יותר פוסטים, המספרים
+        שלו אמינים יותר. קהל עם פוסט אחד נותן כיוון, לא מגמה.
       </p>
       {columns.length ? (
         <dl className="mt-3 divide-y divide-[#e6e4dc]">
@@ -542,16 +547,16 @@ function NoSnapshotYet() {
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#f2eee5] text-[#191b18]">
         <IconChart className="h-6 w-6" />
       </div>
-      <h2 className="mt-4 text-lg font-black text-[#191b18]">עוד אין תוצאות להראות</h2>
+      <h2 className="mt-4 text-lg font-black text-[#191b18]">עוד אין תוצאות</h2>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#5e6159]">
-        כדי לראות כמה נכנסו לאתר, כמה פנו ומה קרה באינסטגרם, צריך לחבר את גוגל אנליטיקס
-        ואת האינסטגרם.
+        כדי לראות כמה נכנסו לאתר, כמה פנו ומה קרה באינסטגרם, חברו את נתוני האתר ואת
+        האינסטגרם.
       </p>
       <Link
         href="/integrations"
         className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-[#c7c4b8] bg-white px-4 text-sm font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
       >
-        לחיבור גוגל ואינסטגרם
+        לחבר את גוגל ואינסטגרם
         <span aria-hidden>←</span>
       </Link>
     </section>
@@ -578,7 +583,7 @@ export default function PerformancePage() {
       // "No sync yet" is not an error: the endpoint still answers with the per-audience
       // sample (how many posts each segment has). Only a real failure sets the error.
       .then((payload) => setData(payload))
-      .catch((err) => setError(err instanceof Error ? err.message : "עדיין אין נתונים להצגה"));
+      .catch((err) => setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התוצאות"));
   }, []);
 
   async function sync() {
@@ -588,7 +593,7 @@ export default function PerformancePage() {
       const weekly = await endpoints.weeklyLoop();
       setData(weekly.performance);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לרענן את הנתונים מגוגל ומאינסטגרם");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לרענן את הנתונים מגוגל ומאינסטגרם. נסו שוב בעוד כמה דקות.");
     } finally {
       setPending(false);
     }
@@ -631,7 +636,7 @@ export default function PerformancePage() {
 
             <div className="divide-y divide-[#e6e4dc] border-y border-[#e6e4dc]">
               {available && results && (hasVerdict || hasFriction) ? (
-                <Expand title="מה עבד ומה לשפר">
+                <Expand title="מה הצליח ומה לשפר">
                   <div className="space-y-6">
                     <ContentVerdict payload={data} />
                     <Friction payload={data} />

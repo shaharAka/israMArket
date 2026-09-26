@@ -31,7 +31,7 @@ function PatternRow({ item }: { item: InspirationPattern }) {
           {item.pattern}
           {strong ? null : (
             <span
-              title="נשען על מעט נתונים. כדאי לנסות ולבדוק."
+              title="יש על זה מעט נתונים. שווה לנסות ולראות."
               className="mr-2 inline-block rounded-full bg-[#f4f3ee] px-2 align-middle text-[11px] font-bold leading-5 text-[#6b6c66]"
             >
               לבדיקה
@@ -39,7 +39,7 @@ function PatternRow({ item }: { item: InspirationPattern }) {
           )}
         </p>
         <p className="mt-0.5 text-xs leading-5 text-[#6b6c66]">
-          מתוך:{" "}
+          לפי:{" "}
           {item.sources.map((source, index) => (
             <span key={source.ref}>
               {index > 0 ? ", " : null}
@@ -71,7 +71,7 @@ export function LearnedList({ brief }: { brief: InspirationBrief }) {
             <li>
               <details className="group">
                 <summary className="flex min-h-11 cursor-pointer list-none items-center gap-1 py-2 text-sm font-bold text-[#3c3e3a]">
-                  {more.length === 1 ? "עוד דפוס אחד" : `עוד ${more.length} דפוסים`}
+                  {more.length === 1 ? "עוד דבר אחד" : `עוד ${more.length} דברים`}
                   <span aria-hidden className="text-[#8b8e84] transition-transform group-open:-rotate-90">
                     ‹
                   </span>
@@ -95,7 +95,7 @@ export function LearnedList({ brief }: { brief: InspirationBrief }) {
       {patterns.some((item) => item.evidence) ? (
         <details className="group mt-1">
           <summary className="inline-flex min-h-10 cursor-pointer list-none items-center gap-1 text-xs font-bold text-[#5e6159]">
-            על מה זה מבוסס
+            איך הגענו לזה
             <span aria-hidden className="transition-transform group-open:-rotate-90">
               ‹
             </span>

@@ -49,7 +49,7 @@ export default function InstagramPage() {
       if (outcome.status === "empty") setRefreshNote(outcome.reason_he);
       else toast("למדנו מחדש מהאינסטגרם");
     } catch (err) {
-      setRefreshNote(err instanceof Error ? err.message : "הלמידה נכשלה. נסו שוב בעוד כמה דקות.");
+      setRefreshNote(err instanceof Error ? err.message : "לא הצלחנו ללמוד מהאינסטגרם. נסו שוב בעוד כמה דקות.");
     } finally {
       setRefreshing(false);
     }
@@ -115,7 +115,7 @@ export default function InstagramPage() {
               {data.meta_ready ? (
                 <>
                   <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
-                    אחרי החיבור הפוסטים ילמדו ממה שכבר עבד לכם ומהחשבונות שתבחרו.
+                    אחרי החיבור נלמד ממה שכבר הצליח לכם ומהחשבונות שתבחרו.
                   </p>
                   <Link
                     href="/integrations"

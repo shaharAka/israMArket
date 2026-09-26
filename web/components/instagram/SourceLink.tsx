@@ -23,7 +23,7 @@ export function SourceLink({
       href={source.permalink}
       target="_blank"
       rel="noopener noreferrer"
-      title={source.hook ? `“${source.hook}” — נפתח באינסטגרם` : "נפתח באינסטגרם"}
+      title={source.hook ? `“${source.hook}”: לפתוח באינסטגרם` : "לפתוח באינסטגרם"}
       className={`underline decoration-[#c9c7bf] underline-offset-2 hover:text-[#20211f] hover:decoration-current ${className}`}
     >
       {text}

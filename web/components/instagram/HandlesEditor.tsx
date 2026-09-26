@@ -33,7 +33,7 @@ export function HandlesEditor({
       onSaved(result.handles);
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "השמירה נכשלה. נסו שוב.");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור. נסו שוב.");
       return false;
     } finally {
       setBusy(false);
@@ -117,7 +117,7 @@ export function HandlesEditor({
             disabled={busy || !draft.trim()}
             className="min-h-11 shrink-0 rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-40"
           >
-            {busy ? "שומרים…" : "הוספה"}
+            {busy ? "שומרים…" : "להוסיף"}
           </button>
         </form>
       )}
