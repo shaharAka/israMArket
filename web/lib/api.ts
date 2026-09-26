@@ -3082,6 +3082,11 @@ export type Business = {
   diagnostics?: Diagnostics | null;
   long_horizon_plan?: LongHorizonPlan | null;
   generate_state?: { stage?: string; error?: string };
+  /** Competitor / peer Instagram usernames, normalised (no "@"). */
+  instagram_handles?: string[];
+  /** First-run decisions not made yet (diagnostics, growth_targets, long_horizon_plan,
+   *  growth_hypothesis): the month was built without them and they can be set later. */
+  deferred_decisions?: string[];
 };
 
 export type OnboardingPayload = {

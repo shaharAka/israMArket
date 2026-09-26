@@ -18,6 +18,7 @@ from app.routers import (
     onboarding,
     performance,
     promotion,
+    public,
     publish,
     recommendations,
     setup,
@@ -66,6 +67,8 @@ app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)
 app.include_router(instagram.router)
+# Anonymous on purpose (the landing-page preview); it carries its own rate limits.
+app.include_router(public.router)
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.
