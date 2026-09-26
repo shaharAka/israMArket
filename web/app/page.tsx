@@ -1,26 +1,48 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { BrandMark, IconCheck } from "@/lib/icons";
 import { endpoints, type BrandLanguage } from "@/lib/api";
 
+/**
+ * `myshop.co.il` is what an owner types. The scanner needs a scheme, so we add it rather
+ * than sending them back to type `https://` — a rule nobody outside the trade knows.
+ */
+function normalizeWebsite(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "";
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 export default function Home() {
+  const router = useRouter();
   const [website, setWebsite] = useState("");
   const [brand, setBrand] = useState<BrandLanguage | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [openingDemo, setOpeningDemo] = useState(false);
+
+  /** Straight into the demo. It used to link to /login, where the demo was a second click. */
+  async function openDemo() {
+    setOpeningDemo(true);
+    await endpoints.enterDemo();
+    router.push("/dashboard");
+  }
 
   async function onScan(event: FormEvent) {
     event.preventDefault();
     setError("");
-    if (!/^https?:\/\/.+/i.test(website.trim())) {
-      setError("הזינו כתובת אתר מלאה, כולל https://");
+    const url = normalizeWebsite(website);
+    if (!/^https?:\/\/[^\s.]+\.[^\s]+/i.test(url)) {
+      setError("הזינו את כתובת האתר, למשל myshop.co.il");
       return;
     }
+    setWebsite(url);
     setPending(true);
     try {
-      const result = await endpoints.previewScan(website.trim());
+      const result = await endpoints.previewScan(url);
       setBrand(result.scan.brand_language);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לקרוא את האתר");
@@ -40,13 +62,21 @@ export default function Home() {
               <span className="-mt-1 block text-[11px] text-[#5e6159]">שיווק שעובד בישראל</span>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-bold text-[#191b18] underline-offset-4 hover:underline">
+          <div className="flex items-center gap-1">
+            <Link
+              href="/login"
+              className="inline-flex min-h-11 items-center px-2 text-sm font-bold text-[#191b18] underline-offset-4 hover:underline"
+            >
               כניסה
             </Link>
-            <Link href="/login" className="text-sm font-bold text-[#5e6159] underline-offset-4 hover:underline">
+            <button
+              type="button"
+              onClick={() => void openDemo()}
+              disabled={openingDemo}
+              className="inline-flex min-h-11 items-center px-2 text-sm font-bold text-[#5e6159] underline-offset-4 hover:underline disabled:opacity-60"
+            >
               דמו
-            </Link>
+            </button>
           </div>
         </div>
       </header>
@@ -65,19 +95,29 @@ export default function Home() {
             </p>
 
             <form onSubmit={onScan} className="mt-8 space-y-3">
-              <label className="block text-xs font-bold text-[#191b18]">כתובת האתר של העסק</label>
+              <label htmlFor="website" className="block text-sm font-bold text-[#191b18]">
+                כתובת האתר של העסק
+              </label>
               <div className="flex flex-col gap-2 sm:flex-row">
+                {/* `text`, not `url`: the browser's own url check rejects `myshop.co.il`
+                    before our code can add the https:// for them. */}
                 <input
-                  type="url"
+                  id="website"
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  dir="ltr"
                   value={website}
                   onChange={(event) => setWebsite(event.target.value)}
-                  placeholder="https://myshop.co.il"
-                  className="flex-1 rounded-md border border-[#dedcd4] bg-white px-3 py-3 text-sm"
+                  placeholder="myshop.co.il"
+                  className="min-h-12 flex-1 rounded-md border border-[#dedcd4] bg-white px-3 py-3 text-base sm:text-sm"
                 />
                 <button
                   type="submit"
                   disabled={pending}
-                  className="drawn-button inline-flex items-center justify-center bg-[#191b18] px-5 py-3 text-sm font-bold text-white hover:bg-[#2c2f29] disabled:opacity-50"
+                  className="drawn-button inline-flex min-h-12 items-center justify-center bg-[#191b18] px-5 py-3 text-sm font-bold text-white hover:bg-[#2c2f29] disabled:opacity-50"
                 >
                   {pending ? "קוראים את האתר…" : "הציגו את המותג"}
                 </button>
@@ -85,11 +125,16 @@ export default function Home() {
               {error ? <p className="text-sm text-[#7c4036]">{error}</p> : null}
             </form>
 
-            <p className="mt-4 text-xs text-[#8b8e84]">
-              רוצים רק להסתכל?{" "}
-              <Link href="/login" className="font-bold text-[#191b18] underline underline-offset-4">
-                פתחו את הדמו של מאפיית לחם תום
-              </Link>
+            <p className="mt-3 flex flex-wrap items-center gap-x-1 text-sm text-[#5e6159]">
+              רוצים רק להסתכל?
+              <button
+                type="button"
+                onClick={() => void openDemo()}
+                disabled={openingDemo}
+                className="inline-flex min-h-11 items-center font-bold text-[#191b18] underline underline-offset-4 disabled:opacity-60"
+              >
+                {openingDemo ? "פותחים את הדמו…" : "פתחו את הדמו של מאפיית לחם תום"}
+              </button>
             </p>
           </section>
 
@@ -141,7 +186,7 @@ export default function Home() {
                   <PreviewRow text="מציעים שלושה כיוונים לחודש — אתם בוחרים אחד" />
                   <PreviewRow text="מכינים פוסטים ותמונות. אתם רק מאשרים" />
                 </ul>
-                <p className="mt-6 text-xs text-[#8b8e84]">אין כאן אחוזי פניות מומצאים. מספרים יופיעו רק אחרי חיבור אנליטיקס.</p>
+                <p className="mt-6 text-xs leading-5 text-[#62635f]">אין כאן אחוזי פניות מומצאים. מספרים יופיעו רק אחרי שתחברו את גוגל אנליטיקס.</p>
               </div>
             )}
           </section>
