@@ -24,6 +24,26 @@ export type SamplePost = {
   overlay_headline: string;
 };
 
+/** The business's own accounts, linked from its site. */
+export type SocialLinks = { instagram?: string; facebook?: string; tiktok?: string };
+
+/**
+ * The brand half of a preview — what `POST /public/brand` returns, and a subset of
+ * `SitePreview`, so every brand component takes either.
+ */
+export type SiteBrand = {
+  url: string;
+  business_name: string;
+  offerings: string[];
+  location: string;
+  palette: BrandSwatch[];
+  voice: string;
+  logo_url?: string;
+  social_links?: SocialLinks;
+  brand_language: SitePreview["brand_language"];
+  cached?: boolean;
+};
+
 export type SitePreview = {
   url: string;
   business_name: string;
@@ -37,6 +57,7 @@ export type SitePreview = {
   voice: string;
   /** The business's logo as found on their site; "" when none was found. */
   logo_url?: string;
+  social_links?: SocialLinks;
   brand_language: {
     business_name: string;
     palette: BrandSwatch[];
@@ -81,6 +102,15 @@ export function fetchSitePreview(url: string) {
   return api<SitePreview>("/public/preview", { method: "POST", body: JSON.stringify({ url }) }, true);
 }
 
+/**
+ * The brand only (palette, voice, logo, name, offerings, social links), one model call
+ * sooner than the full preview — for a flow that reads the site in the background. Same
+ * cache and rate limit as `fetchSitePreview`; a later full preview reuses this scan.
+ */
+export function fetchSiteBrand(url: string) {
+  return api<SiteBrand>("/public/brand", { method: "POST", body: JSON.stringify({ url }) }, true);
+}
+
 export function savePreview(preview: SitePreview, typedUrl: string) {
   try {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ typedUrl, preview }));
@@ -113,7 +143,7 @@ export function siteFromLocation(): string {
 }
 
 /** A BrandLanguage the card renderer accepts. It paints from the palette only. */
-export function previewBrand(preview: SitePreview): BrandLanguage {
+export function previewBrand(preview: SiteBrand): BrandLanguage {
   return {
     business_name: preview.business_name,
     palette: preview.palette,
@@ -133,7 +163,7 @@ export function previewBrand(preview: SitePreview): BrandLanguage {
 }
 
 /** The logo to draw, from either place the API puts it. */
-export function previewLogo(preview: SitePreview): string {
+export function previewLogo(preview: Pick<SiteBrand, "logo_url" | "brand_language">): string {
   return preview.logo_url || preview.brand_language?.logo_url || "";
 }
 

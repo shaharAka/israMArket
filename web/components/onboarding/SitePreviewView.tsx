@@ -1,47 +1,11 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
-
 import { useEffect, useState } from "react";
 import { CardStage } from "@/components/CardCanvas";
-import { previewBrand, previewCardPost, previewLogo, type SitePreview } from "./preview";
+import { previewBrand, previewCardPost, previewLogo, type SamplePost, type SiteBrand } from "./preview";
 
-/** The palette as a row of swatches. Read-only: colours are corrected after signup. */
-export function Swatches({ preview, size = "md" }: { preview: SitePreview; size?: "sm" | "md" }) {
-  const dot = size === "sm" ? "h-5 w-5" : "h-8 w-8";
-  return (
-    <ul className="flex flex-wrap items-center gap-2" aria-label="הצבעים מהאתר">
-      {preview.palette.slice(0, 6).map((swatch, index) => (
-        <li key={`${swatch.hex}-${index}`} title={swatch.name || swatch.hex}>
-          <span
-            className={`block ${dot} rounded-full border border-black/10`}
-            style={{ backgroundColor: swatch.hex }}
-          />
-          <span className="sr-only">{swatch.name || swatch.hex}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-/**
- * The logo we found on the site, shown beside the business name so the owner can see at
- * a glance that we read *their* brand. Hidden (not a broken image) if it fails to load.
- */
-export function PreviewLogo({ preview, className = "" }: { preview: SitePreview; className?: string }) {
-  const url = previewLogo(preview);
-  const [failed, setFailed] = useState(false);
-  if (!url || failed) return null;
-  return (
-    <img
-      src={url}
-      alt={`הלוגו של ${preview.business_name || "העסק"}`}
-      referrerPolicy="no-referrer"
-      onError={() => setFailed(true)}
-      className={`block h-12 w-auto max-w-[220px] object-contain sm:h-16 sm:max-w-[300px] ${className}`}
-    />
-  );
-}
+// The brand block lives in BrandCard.tsx; re-exported so existing imports keep working.
+export { BrandCard, BrandLogo, Swatches } from "./BrandCard";
 
 /** Resolves to the URL once the image has loaded, or "" if it cannot. */
 function useLoadable(url: string | undefined): { ready: boolean; url: string } {
@@ -75,7 +39,15 @@ function useLoadable(url: string | undefined): { ready: boolean; url: string } {
  * card chooses its layout, so a blocked or broken image can never leave a grey
  * placeholder where the post should be.
  */
-export function SamplePostCard({ preview }: { preview: SitePreview }) {
+export function SamplePostCard({
+  preview,
+  showCaption = true,
+}: {
+  /** A full preview, or the brand plus a sample post from elsewhere. */
+  preview: SiteBrand & { sample_post: SamplePost | null };
+  /** The hook and two lines of caption under the card. */
+  showCaption?: boolean;
+}) {
   const sample = preview.sample_post;
   const photo = useLoadable(sample?.photo_url);
   if (!sample) return null;
@@ -92,10 +64,12 @@ export function SamplePostCard({ preview }: { preview: SitePreview }) {
       ) : (
         <div className="aspect-[4/5] w-full animate-pulse bg-[#eceae4]" aria-hidden />
       )}
-      <figcaption className="space-y-1 px-4 py-3 text-sm leading-6 text-[#191b18]">
-        <p className="font-bold">{sample.hook}</p>
-        <p className="line-clamp-2 text-[#4f524b]">{sample.caption}</p>
-      </figcaption>
+      {showCaption ? (
+        <figcaption className="space-y-1 px-4 py-3 text-sm leading-6 text-[#191b18]">
+          <p className="font-bold">{sample.hook}</p>
+          <p className="line-clamp-2 text-[#4f524b]">{sample.caption}</p>
+        </figcaption>
+      ) : null}
     </figure>
   );
 }

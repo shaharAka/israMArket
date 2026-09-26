@@ -159,6 +159,7 @@ URL: {scraped.get("url")}
 כותרות: {scraped.get("headings")}
 כפתורים וקישורים: {scraped.get("buttons")}
 פונטים שחולצו: {scraped.get("fonts")}
+חשבונות ברשתות שהאתר מקשר אליהם (עוזרים לאמת את שם העסק): {scraped.get("social_links") or "אין"}
 
 טקסט מהאתר:
 {scraped.get("text")}
@@ -189,6 +190,7 @@ URL: {scraped.get("url")}
     if not brand.get("business_name") or not brand.get("palette") or not brand.get("voice"):
         raise RuntimeError("לא הצלחנו לקרוא מהאתר את הצבעים והסגנון של העסק. בדקו שהאתר פתוח לכולם ושיש בו טקסט ותמונות.")
     brand["logo_url"] = scraped.get("logo_url") or ""
+    brand["social_links"] = dict(scraped.get("social_links") or {})
     photos = scraped.get("images") or []
     index = brand.pop("card_photo_index", -1)
     brand["card_photo_url"] = ""

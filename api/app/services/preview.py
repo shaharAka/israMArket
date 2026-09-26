@@ -144,12 +144,13 @@ def reset_cache() -> None:
 
 
 def cached_preview(url: str) -> dict | None:
-    """The public preview for this site if it was built recently, else None."""
+    """The full public preview (with the sample post) if built recently, else None.
+    A brand-only entry (`build_brand_preview`) does not count: it has no post yet."""
     try:
         entry = _cache_get(cache_key(url))
     except ValueError:
         return None
-    return entry["preview"] if entry else None
+    return entry["preview"] if entry and entry.get("post_done", True) else None
 
 
 def cached_scan(url: str) -> dict | None:
@@ -338,6 +339,11 @@ def _public_payload(scan: dict, guess: dict) -> dict:
             "photo_url": _public_image_url(brand.get("card_photo_url")),
         }
     logo_url = _public_image_url(brand.get("logo_url") or raw.get("logo_url"))
+    social = {
+        network: _public_image_url(link)
+        for network, link in (brand.get("social_links") or raw.get("social_links") or {}).items()
+        if network in {"instagram", "facebook", "tiktok"} and _public_image_url(link)
+    }
 
     return {
         "url": _clip(raw.get("url"), 500),
@@ -351,6 +357,8 @@ def _public_payload(scan: dict, guess: dict) -> dict:
         "palette": palette,
         "voice": _clip(brand.get("voice"), 400),
         "logo_url": logo_url,
+        # The business's own accounts, linked from its site (footer / JSON-LD sameAs).
+        "social_links": social,
         # A trimmed BrandLanguage for the card renderer (it paints from the palette).
         # Model-derived fields only; nothing here is page text.
         "brand_language": {
@@ -375,16 +383,34 @@ def _public_image_url(value) -> str:
     return url if url.startswith(("https://", "http://")) else ""
 
 
-def build_preview(url: str) -> dict:
-    """Scan, extract, write one post, cache. Returns the public payload.
+# What `build_brand_preview` returns: the brand half of the public payload.
+BRAND_FIELDS = (
+    "url", "business_name", "offerings", "location", "palette", "voice", "logo_url",
+    "social_links", "brand_language",
+)
+
+
+def brand_part(preview: dict) -> dict:
+    """The brand half of a public preview (no business guess, no sample post)."""
+    return {field: copy.deepcopy(preview.get(field)) for field in BRAND_FIELDS}
+
+
+def cached_brand_preview(url: str) -> dict | None:
+    """The brand for this site if a brand or full preview was built recently, else None."""
+    try:
+        entry = _cache_get(cache_key(url))
+    except ValueError:
+        return None
+    return brand_part(entry["preview"]) if entry else None
+
+
+def _scan_brand(url: str, started: float, marks: dict[str, float]) -> dict:
+    """Scrape (+ screenshot), read the brand and the site profile. Returns the scan.
 
     Raises PreviewError with a visitor-safe Hebrew message. Anything else (a Gemini
     outage, a bug) is left to the router, which answers with a generic message rather
     than leaking a provider error to an anonymous caller.
     """
-    key = cache_key(url)
-    started = time.monotonic()
-    marks: dict[str, float] = {}
     pool = ThreadPoolExecutor(max_workers=2)
     try:
         # The rendered screenshot needs only the (netguard-checked) URL, so Chrome starts
@@ -414,7 +440,64 @@ def build_preview(url: str) -> dict:
         pool.shutdown(wait=False)
     if not profile.get("business_name") and brand.get("business_name"):
         profile["business_name"] = brand["business_name"]
-    scan = public_scan(scraped, profile, brand)
+    marks["screenshot_used"] = 1.0 if scraped.get("screenshot") else 0.0
+    marks["logo_found"] = 1.0 if scraped.get("logo") else 0.0
+    return public_scan(scraped, profile, brand)
+
+
+def _log(kind: str, key: str, marks: dict[str, float]) -> None:
+    timings = " ".join(f"{k}={v:.1f}s" for k, v in marks.items() if not k.endswith(("_used", "_found")))
+    logger.info(
+        "%s %s: %s (screenshot %s, logo %s)",
+        kind,
+        key,
+        timings,
+        "yes" if marks.get("screenshot_used") else "no",
+        "yes" if marks.get("logo_found") else "no",
+    )
+
+
+def build_brand_preview(url: str) -> dict:
+    """The brand only — palette, voice, logo, name, offerings, social links — without the
+    business guess or the sample post, so it answers one model call sooner.
+
+    Shares the cache with `build_preview`: a full preview built earlier answers this
+    for free, and a brand scan stored here is reused by a later `build_preview` (which
+    then only writes the post) and by `/onboarding/scan` via `cached_scan`.
+    Returns `brand_part(...)` of the public payload. Raises like `build_preview`.
+    """
+    cached = cached_brand_preview(url)
+    if cached is not None:
+        return cached
+    key = cache_key(url)
+    started = time.monotonic()
+    marks: dict[str, float] = {}
+    scan = _scan_brand(url, started, marks)
+    preview = _public_payload(scan, {})
+    _cache_put(key, {"scan": scan, "preview": preview, "post_done": False})
+    _log("brand preview", key, marks)
+    return brand_part(preview)
+
+
+def build_preview(url: str) -> dict:
+    """Scan, extract, write one post, cache. Returns the public payload.
+
+    When a brand-only scan of this site is cached (`build_brand_preview`), the site is
+    not read again: only the business guess and the sample post are written.
+    Raises PreviewError with a visitor-safe Hebrew message; see `_scan_brand`.
+    """
+    key = cache_key(url)
+    started = time.monotonic()
+    marks: dict[str, float] = {}
+    entry = _cache_get(key)
+    if entry and entry.get("post_done", True):
+        return entry["preview"]
+    scan = entry["scan"] if entry else _scan_brand(url, started, marks)
+    # The stored scan keeps everything the post needs (title, meta, headings, buttons,
+    # text); only image bytes were dropped, and the post does not use them.
+    scraped = scan.get("raw") or {}
+    profile = scan.get("extracted") or {}
+    brand = scan.get("brand_language") or {}
 
     try:
         guess = _sample_post(scraped, profile, brand, started)
@@ -424,12 +507,6 @@ def build_preview(url: str) -> dict:
     marks["post"] = time.monotonic() - started
 
     preview = _public_payload(scan, guess)
-    _cache_put(key, {"scan": scan, "preview": preview})
-    logger.info(
-        "preview %s: %s (screenshot %s, logo %s)",
-        key,
-        " ".join(f"{name}={value:.1f}s" for name, value in marks.items()),
-        "yes" if scraped.get("screenshot") else "no",
-        "yes" if scraped.get("logo") else "no",
-    )
+    _cache_put(key, {"scan": scan, "preview": preview, "post_done": True})
+    _log("preview", key, marks)
     return preview

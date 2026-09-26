@@ -20,7 +20,10 @@ import httpx
 from bs4 import BeautifulSoup
 from PIL import Image
 
-from app.main import _with_loopback_twins
+from fastapi.testclient import TestClient
+
+from app.main import _with_loopback_twins, app
+from app.routers import public as public_router
 from app.services import brand as brand_service
 from app.services import colors
 from app.services import gemini
@@ -55,6 +58,11 @@ WIX_HTML = f"""<!doctype html><html lang="he"><head>
 <img src="https://static.wixstatic.com/media/4f0f37_photo1~mv2.jpg/v1/fit/w_960,h_700/p1.jpg" alt="">
 <img src="https://static.wixstatic.com/media/4f0f37_photo2~mv2.jpg/v1/fit/w_900,h_700/p2.jpg" alt="">
 <a href="/cart">לחצי לרכישה</a><a href="/login">התחברי</a>
+<footer><a href="https://www.facebook.com/sharer/sharer.php?u=https://www.tazizi.example">שתפי</a>
+<a href="https://www.instagram.com/p/C8xyz/">פוסט</a>
+<a href="https://www.instagram.com/tazizi_pnima/?hl=he">אינסטגרם</a>
+<a href="//www.facebook.com/tazizipnima">פייסבוק</a>
+<a href="https://www.tiktok.com/@tazizi.pnima">טיקטוק</a></footer>
 </body></html>"""
 
 SHOPIFY_HTML = """<!doctype html><html lang="he"><head>
@@ -437,6 +445,70 @@ class PreviewPayloadTest(ScanTestCase):
     def test_no_retry_when_the_post_is_fine(self):
         preview_service.build_preview("https://www.tazizi.example/")
         self.assertEqual(self.titles().count("PreviewGuess"), 1)
+
+
+class BrandPreviewTest(ScanTestCase):
+    def test_brand_only_skips_the_post_and_carries_social_links(self):
+        body = preview_service.build_brand_preview("https://www.tazizi.example/")
+        self.assertEqual(set(body), set(preview_service.BRAND_FIELDS))
+        self.assertNotIn("PreviewGuess", self.titles())
+        self.assertEqual(body["logo_url"], WIX_LOGO.format(w=752, h=170))
+        self.assertEqual(
+            body["social_links"],
+            {
+                "instagram": "https://www.instagram.com/tazizi_pnima/",
+                "facebook": "https://www.facebook.com/tazizipnima",
+                "tiktok": "https://www.tiktok.com/@tazizi.pnima",
+            },
+        )
+        # A brand-only entry is not a full preview…
+        self.assertIsNone(preview_service.cached_preview("tazizi.example"))
+        # …but the onboarding can already reuse its scan.
+        self.assertEqual(preview_service.cached_scan("tazizi.example")["brand_language"]["business_name"], "ת'ציצי פנימה")
+
+    def test_full_preview_after_brand_only_writes_the_post(self):
+        preview_service.build_brand_preview("https://www.tazizi.example/")
+        before = self.titles()
+        body = preview_service.build_preview("https://tazizi.example")
+        self.assertEqual(self.titles()[len(before):], ["PreviewGuess"])
+        self.assertEqual(body["sample_post"]["product"], GOOD_POST["product"])
+        self.assertEqual(body["social_links"]["instagram"], "https://www.instagram.com/tazizi_pnima/")
+        # And now the brand comes from the full entry, for free.
+        calls = len(self.calls)
+        self.assertEqual(preview_service.build_brand_preview("tazizi.example")["business_name"], "ת'ציצי פנימה")
+        self.assertEqual(len(self.calls), calls)
+
+    def test_brand_endpoint_shares_the_cache_and_the_budget(self):
+        client = TestClient(app)
+        headers = {"X-Forwarded-For": "203.0.113.50"}
+        first = client.post("/public/brand", json={"url": "tazizi.example"}, headers=headers)
+        self.assertEqual(first.status_code, 200, first.text)
+        self.assertFalse(first.json()["cached"])
+        self.assertNotIn("sample_post", first.json())
+        again = client.post("/public/brand", json={"url": "https://www.tazizi.example/"}, headers=headers)
+        self.assertTrue(again.json()["cached"])
+        full = client.post("/public/preview", json={"url": "tazizi.example"}, headers=headers)
+        self.assertEqual(full.status_code, 200, full.text)
+        self.assertEqual(full.json()["sample_post"]["product"], GOOD_POST["product"])
+        self.assertEqual(self.titles().count("BrandLanguage"), 1)
+        with mock.patch.object(public_router, "PREVIEW_PER_IP", 1):
+            ratelimit.reset()
+            self.assertEqual(client.post("/public/brand", json={"url": "other.example"}, headers=headers).status_code, 200)
+            self.assertEqual(client.post("/public/brand", json={"url": "third.example"}, headers=headers).status_code, 429)
+        self.assertEqual(client.post("/public/brand", json={"url": "http://127.0.0.1/"}).status_code, 400)
+
+
+class SocialLinksTest(unittest.TestCase):
+    def test_accounts_not_share_buttons_or_posts(self):
+        soup = BeautifulSoup(WIX_HTML, "lxml")
+        self.assertEqual(scraper.social_links(soup)["instagram"], "https://www.instagram.com/tazizi_pnima/")
+
+    def test_jsonld_same_as_and_nothing_found(self):
+        html = '<script type="application/ld+json">{"@type":"Organization","sameAs":["https://instagram.com/shop.il","https://facebook.com/profile.php?id=123"]}</script>'
+        found = scraper.social_links(BeautifulSoup(html, "lxml"))
+        self.assertEqual(found["instagram"], "https://www.instagram.com/shop.il/")
+        self.assertEqual(found["facebook"], "https://www.facebook.com/profile.php?id=123")
+        self.assertEqual(scraper.social_links(BeautifulSoup("<a href='https://www.facebook.com/sharer.php'>x</a>", "lxml")), {})
 
 
 class NoChromeTest(ScanTestCase):

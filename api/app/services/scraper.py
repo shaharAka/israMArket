@@ -520,6 +520,54 @@ def logo_candidates(base: str, soup: BeautifulSoup) -> list[dict]:
     return sorted(found.values(), key=lambda item: -item["score"])
 
 
+# --- Social links ----------------------------------------------------------------------
+
+_SOCIAL_PATTERNS = {
+    "instagram": re.compile(r"^https?://(?:www\.|m\.)?instagram\.com/([A-Za-z0-9._]{1,30})/?(?:[?#].*)?$", re.I),
+    "facebook": re.compile(
+        r"^https?://(?:www\.|m\.|he-il\.)?(?:facebook|fb)\.com/((?:profile\.php\?id=\d+)|[A-Za-z0-9.\-]{2,80})/?(?:[?#].*)?$",
+        re.I,
+    ),
+    "tiktok": re.compile(r"^https?://(?:www\.|m\.)?tiktok\.com/@([A-Za-z0-9._]{2,24})/?(?:[?#].*)?$", re.I),
+}
+# Paths on those hosts that are not an account: share buttons, posts, the network's own pages.
+_NOT_AN_ACCOUNT = {
+    "p", "reel", "reels", "explore", "stories", "accounts", "tv", "share", "sharer", "sharer.php",
+    "dialog", "plugins", "tr", "login", "login.php", "home.php", "groups", "events", "watch",
+    "hashtag", "policies", "privacy", "help", "business", "pages", "intent", "wix", "shopify",
+}
+
+
+def social_links(soup: BeautifulSoup) -> dict[str, str]:
+    """The business's own Instagram / Facebook / TikTok, from links on its page (usually
+    the footer) and JSON-LD `sameAs`. Public HTML only — the networks are never fetched.
+    `{}` when none; one URL per network, the first seen."""
+    hrefs = [str(a.get("href") or "").strip() for a in soup.find_all("a")]
+    for node in _jsonld_nodes(soup):
+        same = node.get("sameAs")
+        hrefs.extend([same] if isinstance(same, str) else [s for s in same or [] if isinstance(s, str)])
+    found: dict[str, str] = {}
+    for href in hrefs:
+        if href.startswith("//"):
+            href = "https:" + href
+        for network, pattern in _SOCIAL_PATTERNS.items():
+            if network in found:
+                continue
+            match = pattern.match(href)
+            if not match:
+                continue
+            account = match.group(1)
+            if account.lower().rstrip("/") in _NOT_AN_ACCOUNT:
+                continue
+            if network == "instagram":
+                found[network] = f"https://www.instagram.com/{account}/"
+            elif network == "tiktok":
+                found[network] = f"https://www.tiktok.com/@{account}"
+            else:
+                found[network] = f"https://www.facebook.com/{account}"
+    return found
+
+
 def _download_logo(
     client: httpx.Client, candidates: list[dict], fetch=None, attempts: int = 3
 ) -> dict | None:
@@ -1014,4 +1062,5 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
         "logo": logo,
         "logo_url": logo["url"] if logo else "",
         "color_evidence": build_color_evidence(logo, downloaded, colors),
+        "social_links": social_links(soup),
     }
