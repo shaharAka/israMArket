@@ -102,3 +102,23 @@ existing budget step and month generation follow unchanged.
    `chosen_direction` and seeds the first month's strategy with it.
 3. **Landing** tells a research → strategy → execution story; carousel examples show
    "מה גילינו" → "הכיוון לחודש" → a (smaller) example post.
+
+## Revision 3 — the consultant interview
+
+Owner: "think about this as the interview a business owner would do with a promoter to
+decide if they are good for their business … build the plan together." `/start` is three
+short chapters — **העסק** (name, what you do, what makes you different) → **הלקוחות**
+(audiences, busy/slow seasons) → **איך אתם משווקים היום** (where to find you + how active
+per network, what you've tried and what worked, competitors, goal) — then **מה למדנו ואיך
+מתקדמים**. Most questions skippable. After each answer a one-line consultant reflection
+(templated client-side) shows we listened. Draft adds `differentiator`, `seasons`,
+`activity`, `tried`, `competitors`; `from-draft` persists all of it where the month
+generation reads it.
+
+## Next phase — strategy-first product (owner-approved direction)
+
+- **Today** opens with this month's direction, what we learned this week, and the next
+  decision; posts to approve come second, as execution.
+- **Ongoing research** feeds the plan: competitors, search demand in Israel, calendar &
+  seasons, the business's own results — plus the platforms the business uses and its site.
+  Each finding is sourced and dated, and the plan says what it changed.
