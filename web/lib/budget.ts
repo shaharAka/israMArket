@@ -25,7 +25,7 @@ export type BudgetStage = {
 export const BUDGET_STAGES: BudgetStage[] = [
   {
     key: "below_viable",
-    title: "רימרקטינג בלבד",
+    title: "רק למי שכבר מכיר אתכם",
     range: `עד ${RETARGETING_ONLY_BELOW_NIS.toLocaleString("he-IL")} ₪`,
     buys: "מתחת לרף הזה לא כדאי לנסות לגייס לקוחות חדשים בכסף. עדיף להשקיע במי שכבר מכיר אתכם.",
     suggestion: 1_800,

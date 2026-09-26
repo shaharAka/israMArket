@@ -222,7 +222,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
         ),
         _item(
             "media",
-            title="ספריית מדיה",
+            title="התמונות שלי",
             why="התמונות שלכם ישמשו בכל עיצוב, במקום תמונות מלאי גנריות.",
             action_href="/assets",
             action_label="להעלאת תמונות",

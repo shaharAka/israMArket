@@ -1484,7 +1484,7 @@ function demoSetup(): SetupPayload {
         },
         {
           key: "media",
-          title: "ספריית מדיה",
+          title: "התמונות שלי",
           why: "התמונות שלכם ישמשו בכל עיצוב, במקום תמונות מלאי גנריות.",
           done: DEMO_ASSETS.length > 0,
           action_href: "/assets",
