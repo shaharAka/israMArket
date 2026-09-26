@@ -87,3 +87,18 @@ existing budget step and month generation follow unchanged.
 | Conversation flow (web) | `web/app/start/*`, `web/components/start/*`, `web/lib/draft.ts`, `web/app/signup` (draft hand-off), redirects from `/onboarding` first-run to `/start` where appropriate |
 | Onboarding API | `api/app/routers/public_onboarding.py` (new), `api/app/services/onboarding_draft.py` (new), `routers/onboarding.py` (`from-draft` only), `main.py` registration, tests |
 | Preview fix (already running) | `services/scraper.py`, `services/brand.py`, `services/preview.py`, `routers/public.py`, `web/components/onboarding/*` |
+
+## Revision 2 (owner feedback, same day) — supersedes the above where they conflict
+
+1. **Social links.** Step 3 is "איפה אפשר למצוא אתכם?": אתר / אינסטגרם / פייסבוק / טיקטוק /
+   עוד לא (multi-select). Draft: `links: {website?, instagram?, facebook?, tiktok?}` +
+   `has_none?`. The business's own links are stored in `businesses.social_links_json` — not in
+   `instagram_handles_json`, which holds competitor/peer accounts.
+2. **Strategy is the heart, not post design.** Step 6 is "מה למדנו ואיך מתקדמים":
+   (a) 3–4 research insights, each with an honest source; (b) exactly 2 strategic directions
+   for the first month — the owner picks one (the main decision); (c) 3 post ideas for the
+   picked direction, each with "למה הפוסט הזה". Endpoint `POST /public/plan-preview` →
+   `{insights, directions, ideas (with direction_index), brand}`. `from-draft` takes
+   `chosen_direction` and seeds the first month's strategy with it.
+3. **Landing** tells a research → strategy → execution story; carousel examples show
+   "מה גילינו" → "הכיוון לחודש" → a (smaller) example post.
