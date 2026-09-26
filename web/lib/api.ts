@@ -853,6 +853,50 @@ POSTS.forEach((post, index) => {
 });
 DEMO_STRATEGY.roadmap.posts = POSTS;
 
+/**
+ * Per-post results in the shape `_attribute()` in `api/app/routers/performance.py` stores
+ * under `ga4.post_attribution`: the post's GA4 campaign rows (string metrics, as GA4 sends
+ * them) and its matched Instagram media, or `null` when nothing was matched.
+ *
+ * The numbers sum exactly to the per-audience rows below, and the last two posts carry no
+ * match at all — so the results screen has to show "not measured" rather than a zero.
+ */
+const DEMO_POST_RESULTS: Record<number, { audience: [number, string] | null; ga4?: [number, number, number]; meta?: [number, number] }> = {
+  0: { audience: [1, "משפחות מיפו והשכונות הסמוכות"], ga4: [412, 19, 221], meta: [318, 24] },
+  1: { audience: [2, "מזמיני חג חד-פעמיים"], ga4: [251, 9, 131], meta: [158, 13] },
+  2: { audience: [1, "משפחות מיפו והשכונות הסמוכות"], ga4: [96, 2, 54], meta: [71, 5] },
+  3: { audience: [1, "משפחות מיפו והשכונות הסמוכות"], ga4: [234, 10, 126], meta: [97, 9] },
+  4: { audience: [2, "מזמיני חג חד-פעמיים"], ga4: [67, 2, 37], meta: [46, 4] },
+  5: { audience: [3, "שולחי מתנות לעמיתים"] },
+  6: { audience: null },
+};
+
+const DEMO_POST_ATTRIBUTION: Record<string, unknown>[] = POSTS.map((post, index) => {
+  const result = DEMO_POST_RESULTS[index] || { audience: null };
+  return {
+    title: post.title,
+    utm_content: post.utm?.utm_content || "",
+    published_url: post.published_url || "",
+    audience_id: result.audience?.[0] ?? null,
+    audience_name: result.audience?.[1] ?? "",
+    ga4: result.ga4
+      ? [
+          {
+            sessionCampaignName: post.utm?.utm_campaign || "",
+            sessionSource: post.utm?.utm_source || "instagram",
+            sessionManualAdContent: post.utm?.utm_content || "",
+            sessions: String(result.ga4[0]),
+            conversions: String(result.ga4[1]),
+            engagedSessions: String(result.ga4[2]),
+          },
+        ]
+      : [],
+    meta: result.meta
+      ? { id: `demo-${index + 1}`, caption: post.caption, like_count: result.meta[0], comments_count: result.meta[1], insights: {} }
+      : null,
+  };
+});
+
 const DEMO_PERFORMANCE: PerformancePayload = {
   period_start: "2026-08-08",
   period_end: "2026-09-04",
@@ -874,6 +918,7 @@ const DEMO_PERFORMANCE: PerformancePayload = {
         bounceRate: "0.52",
       },
     ],
+    post_attribution: DEMO_POST_ATTRIBUTION,
   },
   meta: {
     page: { name: "לחם תום", fan_count: 4120 },

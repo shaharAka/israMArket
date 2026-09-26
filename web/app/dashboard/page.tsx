@@ -2,15 +2,21 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SetupChecklist } from "@/components/SetupChecklist";
-import { endpoints, type Business, type RecommendationPayload, type StrategyPayload } from "@/lib/api";
+import { postDay, postHref, postState, STATE_LABEL, type PostState } from "@/components/today/posts";
+import {
+  endpoints,
+  type Business,
+  type RecommendationPayload,
+  type RoadmapPost,
+  type StrategyPayload,
+} from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
-import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconCheck, IconImage } from "@/lib/icons";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
@@ -21,16 +27,33 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
 }
 
 /**
- * The cockpit.
+ * Whether next month is the natural next step: this month is fully approved, it is in its
+ * last week, or it is already over. Before that, building next month is a distraction from
+ * approving this one, so it waits inside "עוד על החודש".
+ */
+function monthNearlyDone(strategy: StrategyPayload, allApproved: boolean): boolean {
+  if (allApproved) return true;
+  const now = new Date();
+  const planStart = new Date(strategy.year, strategy.month - 1, 1);
+  const planEnd = new Date(strategy.year, strategy.month, 0);
+  if (now < planStart) return false;
+  if (now > planEnd) return true;
+  return planEnd.getDate() - now.getDate() < 7;
+}
+
+/**
+ * Today.
  *
- * This page is the one screen the owner opens without being asked to do something, so it
- * leads with the single pending decision and keeps everything else as scannable tiles
- * rather than another column of prose. Exactly one button here is dark — `לבדוק ולאשר` —
- * because the flow is waiting on that post. The setup card is guidance and the next-month
- * card is context, so both are outline; neither is what this page is asking for.
+ * The one screen the owner opens without being asked to do something, read on a phone
+ * between customers. So it answers three questions in order and stops:
  *
- * The month's hypothesis, its targets and the four weeks are detail: they answer "why",
- * while the tiles answer "what", so they live behind one expand.
+ * 1. What do you need from me now? — one card, one dark button.
+ * 2. What is going out this week? — a short list, each post tappable.
+ * 3. How far along is the month? — one line.
+ *
+ * Everything else that used to compete for the first screen — setup, budget, the leading
+ * target, the week's one recommendation, the month's reasoning, next month — is still
+ * here, one tap down in a single quiet list. Nothing was dropped.
  */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
@@ -45,264 +68,306 @@ export default function DashboardPage() {
     endpoints.recommendations().then(setRecommendation).catch(() => {});
   }, []);
 
-  const posts = strategy?.roadmap?.posts || [];
-  const nextIndex = posts.findIndex((post) => post.approval_status !== "approved");
-  const reviewIndex = nextIndex >= 0 ? nextIndex : 0;
-  const nextPost = posts[reviewIndex];
-  const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
-  const monthly = strategy?.monthly_horizon_plan || strategy?.roadmap?.monthly_horizon_plan;
-  const weeks = strategy?.weekly_breakdown || strategy?.roadmap?.weekly_breakdown || [];
-  const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
-  const allApproved = posts.length > 0 && approvedCount === posts.length;
-  const currentWeek = strategy ? currentWeekOf(strategy) : null;
+  if (!strategy) {
+    return (
+      <AppShell>
+        <div className="mx-auto max-w-3xl">
+          <SectionHeader section="dashboard" title="היום" />
+          <LoadingMark label="אנחנו טוענים את מצב החודש…" />
+        </div>
+      </AppShell>
+    );
+  }
 
-  const quarterPlan = strategy?.long_horizon_plan || strategy?.roadmap?.long_horizon_plan;
-  const leadingTarget = quarterPlan?.targets?.[0];
-  const budget = business?.monthly_budget_ils ?? 0;
-  const budgetStage = stageFor(budget);
-  const identity = SECTIONS.dashboard;
+  const posts = strategy.roadmap?.posts || [];
+  const nextIndex = posts.findIndex((post) => post.approval_status !== "approved");
+  const nextPost = nextIndex >= 0 ? posts[nextIndex] : undefined;
+  const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
+  const allApproved = posts.length > 0 && approvedCount === posts.length;
+  const currentWeek = currentWeekOf(strategy);
+  const nearlyDone = monthNearlyDone(strategy, allApproved);
+
+  // "This week" is the plan week today falls in. Outside the plan's month there is no
+  // "this week", so the list shows the week of the post that is waiting instead.
+  const shownWeek = currentWeek ?? nextPost?.week ?? posts[0]?.week ?? 1;
+  const weekPosts = posts
+    .map((post, index) => ({ post, index }))
+    .filter(({ post }) => post.week === shownWeek);
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-6xl">
-        {/* The eyebrow already says "החודש שלך", so the title carries the one fact the
-            eyebrow cannot: which month. The sentence that used to sit under it described
-            the page instead of showing it, and the tiles below say the same thing in
-            fewer words. */}
-        <SectionHeader
-          section="dashboard"
-          title={strategy ? `${strategy.month_name_he} ${strategy.year}` : "החודש הנוכחי"}
-        />
+      <div className="mx-auto max-w-3xl">
+        <SectionHeader section="dashboard" title={`${strategy.month_name_he} ${strategy.year}`} />
 
-        {strategy ? (
-          <div className="rise-stagger space-y-6">
-            {/* The single pending decision leads the page. */}
-            <section className="overflow-hidden rounded-lg border border-[#cecdc7] bg-white">
-              <div className="flex items-center justify-between border-b border-[#e9e8e3] px-5 py-3">
-                <p className="text-xs font-bold text-[#747570]">
-                  {allApproved ? "הכול אושר" : "הדבר היחיד שצריך מכם עכשיו"}
-                </p>
-                {posts.length ? (
-                  <span className="text-[11px] font-bold text-[#8b8e84]">
-                    {approvedCount}/{posts.length} אושרו
-                  </span>
-                ) : null}
-              </div>
-
-              {allApproved ? (
-                <div className="flex items-start gap-3 p-5 sm:items-center sm:p-6">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#343632] text-white">
-                    <IconCheck className="h-4 w-4" />
-                  </span>
-                  <div>
-                    <h2 className="text-lg font-black text-[#20211f]">הפוסטים של החודש אושרו</h2>
-                    <p className="mt-1 text-sm leading-6 text-[#62635f]">
-                      אנחנו ממשיכים לעקוב אחרי הביצועים ולהתאים את ההמשך.
-                    </p>
-                  </div>
-                </div>
-              ) : nextPost ? (
-                <div className="grid gap-5 p-5 sm:p-6 md:grid-cols-[128px_1fr_auto] md:items-center">
-                  <div className="relative aspect-square overflow-hidden rounded-md bg-[#f0efeb]">
-                    {nextPost.image_url ? (
-                      <Image
-                        src={nextPost.image_url}
-                        alt={nextPost.title}
-                        width={256}
-                        height={256}
-                        unoptimized
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <span className="flex h-full items-center justify-center text-[#898a85]">
-                        <IconImage className="h-6 w-6" />
-                      </span>
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold text-[#747570]">
-                      פוסט {reviewIndex + 1} מתוך {posts.length} · {nextPost.date_hint}
-                    </p>
-                    <h2 className="mt-1 text-lg font-black text-[#20211f]">{nextPost.title}</h2>
-                    <p className="mt-1 line-clamp-2 text-sm leading-6 text-[#62635f]">{nextPost.caption}</p>
-                  </div>
-                  <Link
-                    href={`/posts?i=${reviewIndex}`}
-                    className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#343632] md:w-auto"
-                  >
-                    לבדוק ולאשר
-                    <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
-                  </Link>
-                </div>
+        <div className="rise-stagger space-y-7">
+          {/* 1. The one thing. */}
+          {nextPost ? (
+            <NextPostCard post={nextPost} index={nextIndex} total={posts.length} />
+          ) : allApproved ? (
+            <section className="rounded-lg border border-[#cecdc7] bg-white px-4 pt-4 sm:px-5">
+              <p className="flex items-center gap-2 text-base font-black text-[#20211f]">
+                <IconCheck className="h-4 w-4 shrink-0" />
+                כל הפוסטים של {strategy.month_name_he} אושרו
+              </p>
+              {/* With the month approved, next month *is* the ask — so here, and only
+                  here, its build button is the page's dark one. */}
+              {strategy.horizon ? (
+                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="primary" variant="row" />
               ) : (
-                <p className="p-6 text-sm text-[#62635f]">אנחנו עדיין מכינים את התוכן לחודש.</p>
+                <p className="py-3 text-sm text-[#62635f]">אנחנו ממשיכים לעקוב אחרי התוצאות.</p>
               )}
             </section>
+          ) : (
+            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
+              <p className="text-sm text-[#62635f]">אנחנו עדיין מכינים את הפוסטים לחודש.</p>
+            </section>
+          )}
 
-            {/* At-a-glance tiles: each one links to the place that owns that decision. One
-                container with hairline dividers rather than four equal-weight boxes. */}
-            <section className="grid gap-px overflow-hidden rounded-lg border border-[#e6e4dc] bg-[#e6e4dc] sm:grid-cols-2 lg:grid-cols-4">
-              <Tile label="פוסטים מאושרים" href="/posts" accent={identity.accent}>
-                <span className="text-2xl font-black text-[#20211f]">
-                  {approvedCount}
-                  <span className="text-base font-bold text-[#8b8e84]">/{posts.length}</span>
-                </span>
-                <span className="mt-3 block h-1.5 overflow-hidden rounded-full bg-[#e1e0db]">
+          {/* 2. This week, and 3. how far along the month is. */}
+          {posts.length ? (
+            <section aria-labelledby="week-heading">
+              <div className="flex items-baseline justify-between gap-3">
+                <h2 id="week-heading" className="text-base font-black text-[#20211f]">
+                  {currentWeek ? "השבוע" : `שבוע ${shownWeek}`}
+                </h2>
+                <Link href="/posts" className="text-xs font-bold text-[#5e6159] underline-offset-4 hover:underline">
+                  כל הפוסטים
+                </Link>
+              </div>
+
+              {weekPosts.length ? (
+                <ul className="mt-3 divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+                  {weekPosts.map(({ post, index }) => (
+                    <WeekRow key={index} post={post} index={index} />
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-3 text-sm text-[#62635f]">אין פוסטים מתוכננים לשבוע הזה.</p>
+              )}
+
+              <div className="mt-3 flex items-center gap-3">
+                <span
+                  role="progressbar"
+                  aria-valuemin={0}
+                  aria-valuemax={posts.length}
+                  aria-valuenow={approvedCount}
+                  aria-label="פוסטים שאושרו החודש"
+                  className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[#e1e0db]"
+                >
                   <span
-                    className="block h-full rounded-full transition-[width] duration-700 ease-out"
-                    style={{
-                      width: `${posts.length ? (approvedCount / posts.length) * 100 : 0}%`,
-                      background: identity.accent,
-                    }}
+                    className="block h-full rounded-full bg-[#343632] transition-[width] duration-700 ease-out"
+                    style={{ width: `${(approvedCount / posts.length) * 100}%` }}
                   />
                 </span>
-              </Tile>
-
-              <Tile label="היעד המוביל ברבעון" href="/plan" accent={SECTIONS.plan.accent}>
-                {leadingTarget ? (
-                  <span className="block text-sm font-bold leading-6 text-[#20211f]">{leadingTarget}</span>
-                ) : (
-                  <span className="block text-sm text-[#8b8e84]">עוד לא נבחרו יעדים</span>
-                )}
-              </Tile>
-
-              <Tile label="תקציב חודשי" href="/decisions" accent={SECTIONS.decisions.accent}>
-                <span className="text-2xl font-black text-[#20211f]">{formatNis(budget)}</span>
-                <span className="mt-1 block text-xs text-[#747570]">{budgetStage.title}</span>
-              </Tile>
-
-              <Tile label="הדבר האחד השבוע" href="/recommendations" accent={SECTIONS.strategy.accent}>
-                {recommendation?.suggestions?.suggestions?.[0] ? (
-                  <span className="block text-sm font-bold leading-6 text-[#20211f]">
-                    {recommendation.suggestions.suggestions[0].title}
-                  </span>
-                ) : (
-                  <span className="block text-sm text-[#8b8e84]">נעדכן אחרי איסוף הנתונים</span>
-                )}
-              </Tile>
+                <p className="text-sm text-[#5e6159]">
+                  {approvedCount} מתוך {posts.length} פוסטים אושרו החודש
+                </p>
+              </div>
             </section>
+          ) : null}
 
-            {/* What is still missing. Below the tiles on purpose: the pending post is the
-                page's ask, the tiles are what is already true, and this is guidance for
-                later — so it sits under both, still on the first screen. */}
+          {/* Everything else: quiet rows in one container. */}
+          <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
             <SetupChecklist />
-
-            {/* The month's reasoning and its weeks are context for the tiles above, not
-                the page's ask, so they sit behind one expand. Nothing was dropped: the
-                hypothesis, the targets and all four weeks are one click away. */}
-            <section className="rounded-lg border border-[#e6e4dc] bg-white">
-              <details className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 text-sm font-bold text-[#5e6159] hover:text-[#20211f] sm:px-6">
-                  <span>הכיוון החודשי והשבועות</span>
-                  <span
-                    aria-hidden
-                    className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90"
-                  >
-                    ‹
-                  </span>
-                </summary>
-
-                <div className="grid gap-6 px-5 pb-5 sm:px-6 sm:pb-6 lg:grid-cols-[1.6fr_1fr] lg:gap-0">
-                  <div>
-                    <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
-                    <h2 className="mt-2 text-xl font-black leading-8 text-[#20211f]">
-                      {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
-                    </h2>
-                    {monthly?.targets?.length ? (
-                      <ul className="mt-4 space-y-2 border-t border-[#e9e8e3] pt-4">
-                        {monthly.targets.slice(0, 3).map((target, index) => (
-                          <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
-                            <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
-                            {target}
-                          </li>
-                        ))}
-                      </ul>
-                    ) : null}
-                  </div>
-
-                  <div className="border-t border-[#e9e8e3] pt-5 lg:border-s lg:border-t-0 lg:ps-6 lg:pt-0">
-                    <p className="text-xs font-bold text-[#747570]">השבועות</p>
-                    <ol className="mt-3 space-y-2.5">
-                      {[1, 2, 3, 4].map((week) => {
-                        const item = weeks.find((entry) => entry.week === week);
-                        const isNow = currentWeek === week;
-                        return (
-                          <li key={week} className="flex items-start gap-3">
-                            <span
-                              className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
-                                isNow ? "text-white" : "border border-[#dedcd4] text-[#8b8e84]"
-                              }`}
-                              style={isNow ? { background: identity.accent } : undefined}
-                            >
-                              {week}
-                            </span>
-                            <span className="min-w-0 flex-1 text-sm leading-6">
-                              <span className={isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}>
-                                {item?.focus || "—"}
-                              </span>
-                              {isNow ? (
-                                <span className="mr-2 rounded-full px-2 py-0.5 text-[10px] font-bold" style={{ background: identity.surface, color: identity.accent }}>
-                                  השבוע
-                                </span>
-                              ) : null}
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  </div>
-                </div>
-              </details>
-            </section>
-
-            {/* One line: what the plan is waiting on from the owner. The column that used
-                to sit beside it listed what we are already doing, which the tiles above
-                and the pending post already say. */}
-            <section className="border-t border-[#deddd8] pt-5">
-              <h2 className="text-sm font-black text-[#20211f]">צריך מכם</h2>
-              <p className="mt-3 text-sm font-bold leading-7 text-[#20211f]">
-                {nextUserAction || "כרגע לא צריך לעשות דבר."}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-[#747570]">
-                נבקש מכם משהו רק כשנדרש מידע שאי אפשר להסיק מהנתונים.
-              </p>
-            </section>
-
-            {/* Next month is context while this month is unapproved, so its build button
-                is an outline rather than competing with `לבדוק ולאשר`. */}
-            <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" />
-          </div>
-        ) : (
-          <LoadingMark label="אנחנו טוענים את מצב החודש…" />
-        )}
+            {nearlyDone && !allApproved ? (
+              <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
+            ) : null}
+            <MoreAboutMonth
+              strategy={strategy}
+              business={business}
+              recommendation={recommendation}
+              currentWeek={currentWeek}
+            >
+              {nearlyDone ? null : (
+                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
+              )}
+            </MoreAboutMonth>
+          </section>
+        </div>
       </div>
     </AppShell>
   );
 }
 
-/** One cell of the at-a-glance row. The dividers come from the container's 1px gap, so a
- *  tile draws no border of its own. */
-function Tile({
-  label,
-  href,
-  accent,
+/** The single ask: the next post waiting for the owner. The only dark button on the page. */
+function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
+  return (
+    <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
+      <p className="text-xs font-bold text-[#747570]">מחכה לאישור שלך</p>
+      <div className="mt-3 flex items-center gap-4">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f0efeb] sm:h-20 sm:w-20">
+          {post.image_url ? (
+            <Image
+              src={post.image_url}
+              alt=""
+              width={160}
+              height={160}
+              unoptimized
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span className="flex h-full items-center justify-center text-[#898a85]">
+              <IconImage className="h-5 w-5" />
+            </span>
+          )}
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-lg font-black leading-7 text-[#20211f]">{post.title}</h2>
+          <p className="mt-0.5 text-xs text-[#62635f]">
+            {postDay(post)} · פוסט {index + 1} מתוך {total}
+          </p>
+        </div>
+      </div>
+      <Link
+        href={postHref(index)}
+        className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+      >
+        לבדוק ולאשר
+        <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+      </Link>
+    </section>
+  );
+}
+
+const STATE_STYLE: Record<PostState, string> = {
+  published: "bg-[#eaf0e6] text-[#374b3d]",
+  approved: "bg-[#eaf0e6] text-[#374b3d]",
+  waiting: "bg-[#f5efe3] text-[#6b5530]",
+};
+
+/** One post of the week: day, title, status. The whole row is the link. */
+function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
+  const state = postState(post);
+  return (
+    <li>
+      <Link
+        href={postHref(index)}
+        className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-[#faf9f7]"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-bold text-[#20211f]">{post.title}</span>
+          <span className="mt-0.5 block text-xs text-[#62635f]">{postDay(post)}</span>
+        </span>
+        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATE_STYLE[state]}`}>
+          {STATE_LABEL[state]}
+        </span>
+        <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+      </Link>
+    </li>
+  );
+}
+
+/**
+ * The rest of the month, one tap down: budget, the leading target, the week's one
+ * recommendation, what the plan needs from the owner, the monthly direction and its
+ * weeks. Each row links to the page that owns that decision.
+ */
+function MoreAboutMonth({
+  strategy,
+  business,
+  recommendation,
+  currentWeek,
   children,
 }: {
-  label: string;
-  href: string;
-  accent: string;
-  children: React.ReactNode;
+  strategy: StrategyPayload;
+  business: Business | null;
+  recommendation: RecommendationPayload | null;
+  currentWeek: number | null;
+  children?: ReactNode;
 }) {
+  const monthly = strategy.monthly_horizon_plan || strategy.roadmap?.monthly_horizon_plan;
+  const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
+  const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
+  const quarterPlan = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  const leadingTarget = quarterPlan?.targets?.[0];
+  const budget = business?.monthly_budget_ils ?? 0;
+  const oneThing = recommendation?.suggestions?.suggestions?.[0]?.title;
+
   return (
-    <Link
-      href={href}
-      className="group flex flex-col bg-white p-4 transition-colors hover:bg-[#faf9f7]"
-    >
-      <span className="flex items-center gap-2">
-        <span aria-hidden className="h-1.5 w-1.5 rounded-full" style={{ background: accent }} />
-        <span className="text-[11px] font-bold text-[#747570]">{label}</span>
+    <details className="group">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#20211f]">
+        <span>עוד על החודש</span>
+        <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:-rotate-90">
+          ‹
+        </span>
+      </summary>
+
+      <div className="divide-y divide-[#e9e8e3] border-t border-[#e9e8e3]">
+        <InfoRow label="צריך מכם" href={null}>
+          {nextUserAction || "כרגע כלום. נבקש רק מה שאי אפשר להסיק מהנתונים."}
+        </InfoRow>
+        <InfoRow label="הדבר האחד השבוע" href="/recommendations">
+          {oneThing || "נעדכן אחרי שייאספו נתונים"}
+        </InfoRow>
+        <InfoRow label="היעד המוביל ברבעון" href="/plan">
+          {leadingTarget || "עוד לא נבחרו יעדים"}
+        </InfoRow>
+        <InfoRow label="תקציב חודשי" href="/decisions">
+          {formatNis(budget)} · {stageFor(budget).title}
+        </InfoRow>
+
+        <div className="py-3">
+          <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
+          <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">
+            {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
+          </p>
+          {monthly?.targets?.length ? (
+            <ul className="mt-2 space-y-1">
+              {monthly.targets.slice(0, 3).map((target, index) => (
+                <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
+                  <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                  {target}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        <div className="py-3">
+          <p className="text-xs font-bold text-[#747570]">השבועות</p>
+          <ol className="mt-2 space-y-2">
+            {[1, 2, 3, 4].map((week) => {
+              const item = weeks.find((entry) => entry.week === week);
+              const isNow = currentWeek === week;
+              return (
+                <li key={week} className="flex items-start gap-3">
+                  <span
+                    className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                      isNow ? "bg-[#20211f] text-white" : "border border-[#dedcd4] text-[#62635f]"
+                    }`}
+                  >
+                    {week}
+                  </span>
+                  <span className={`min-w-0 flex-1 text-sm leading-6 ${isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}`}>
+                    {item?.focus || "—"}
+                    {isNow ? <span className="mr-2 text-xs font-bold text-[#62635f]">(השבוע)</span> : null}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+
+        {children}
+      </div>
+    </details>
+  );
+}
+
+function InfoRow({ label, href, children }: { label: string; href: string | null; children: ReactNode }) {
+  const body = (
+    <>
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs font-bold text-[#747570]">{label}</span>
+        <span className="mt-0.5 block text-sm font-bold leading-6 text-[#20211f]">{children}</span>
       </span>
-      <span className="mt-3 flex-1">{children}</span>
+      {href ? <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" /> : null}
+    </>
+  );
+  if (!href) return <div className="flex items-center gap-3 py-3">{body}</div>;
+  return (
+    <Link href={href} className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
+      {body}
     </Link>
   );
 }
