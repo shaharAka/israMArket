@@ -11,6 +11,8 @@ from app.services.audiences import (
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import lite_json, strategy_json
+from app.config import get_settings
+from app.services.post_model_router import post_json
 from app.services import google_cost
 from app.services.jsonutil import loads
 from app.services.schemas_llm import (
@@ -317,7 +319,10 @@ USP: {usp}
 
 {instagram_prompt_block(instagram)}
 """
-    posts = loads(strategy_json(prompt, MONTHLY_POSTS_SCHEMA), {})
+    # POST_MODEL=gemini (the default) keeps the direct call, so nothing changes unless the
+    # Muse Spark experiment is switched on (see services/post_model_router.py).
+    writer = strategy_json if (get_settings().post_model or "gemini") == "gemini" else post_json
+    posts = loads(writer(prompt, MONTHLY_POSTS_SCHEMA), {})
     items = posts.get("posts") or []
     if len(items) < 2:
         raise RuntimeError(f"Gemini החזיר פחות מדי פוסטים לשבועות {week_text}.")

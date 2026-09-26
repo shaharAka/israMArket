@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Heebo } from "next/font/google";
 import "./globals.css";
 
@@ -10,6 +10,11 @@ const heebo = Heebo({
 export const metadata: Metadata = {
   title: "ישראמארקט — שיווק לעסקים קטנים",
   description: "אסטרטגיית תוכן מקומית ואופטימיזציית ביצועים לעסקים קטנים בישראל",
+};
+
+/** `cover` lets the shell's safe-area insets reach under the iPhone notch and home bar. */
+export const viewport: Viewport = {
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

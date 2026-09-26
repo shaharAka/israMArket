@@ -5,11 +5,10 @@ import type { RoadmapPost } from "@/lib/api";
  *
  * `post` is the deep-link parameter the posts feed reads. A roadmap post has no id of its
  * own — its position in the month is its identity everywhere else in the app — so the
- * value is the index. `i` is the older spelling of the same thing, kept so the link still
- * lands on the right post on a posts page that has not learned `post` yet.
+ * value is the index.
  */
 export function postHref(index: number): string {
-  return `/posts?post=${index}&i=${index}`;
+  return `/posts?post=${index}`;
 }
 
 const WEEKDAYS = ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳", "ש׳"];

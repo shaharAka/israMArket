@@ -372,6 +372,8 @@ const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] =
   { key: "engaged_sessions", label: "ביקורים מעורבים", source: "ga4" },
   { key: "likes", label: "לייקים", source: "meta" },
   { key: "comments", label: "תגובות", source: "meta" },
+  { key: "views", label: "צפיות", source: "meta" },
+  // Older snapshots only — Meta retired this metric in favour of `views`.
   { key: "impressions", label: "חשיפות", source: "meta" },
   { key: "reach", label: "אנשים שהגיעו", source: "meta" },
   { key: "saves", label: "שמירות", source: "meta" },
@@ -385,6 +387,7 @@ const METRIC_NOTES: Record<string, string> = {
   engaged_sessions: "ביקורים שנמשכו מעל 10 שניות — כלומר מישהו באמת הסתכל.",
   likes: "כמה סימנו לייק על הפוסטים של הקהל הזה.",
   comments: "כמה הגיבו עליהם.",
+  views: "כמה פעמים הפוסטים נצפו — גם אותם אנשים יותר מפעם אחת.",
   impressions: "כמה פעמים הפוסטים הוצגו — גם לאותם אנשים יותר מפעם אחת.",
   reach: "כמה אנשים שונים ראו אותם, בלי לספור פעמיים.",
   saves: "כמה שמרו אותם לעצמם כדי לחזור אליהם.",
