@@ -320,3 +320,25 @@ class PostAudienceIn(BaseModel):
     post_index: int = Field(ge=0, le=50)
     # null clears the tag; the post then reports under "לא משויך" instead of being lost.
     audience_id: int | None = Field(default=None, ge=1)
+
+
+class InstagramHandlesIn(BaseModel):
+    """Competitor / peer Instagram usernames for the inspiration brief.
+
+    Raw input on purpose ("@Name", a pasted profile link): normalisation and the Hebrew
+    error for a bad name live in services/instagram_signal.normalize_handles, and the
+    five-account cap is checked there, after de-duplication.
+    """
+
+    handles: list[str] = Field(default_factory=list, max_length=20)
+
+
+class InspirationRefreshIn(BaseModel):
+    """Which month to (re)build the brief for; defaults to the current civil month.
+
+    `hashtags` is used only when INSTAGRAM_HASHTAG_SEARCH is on (Meta caps Hashtag Search
+    at 30 unique hashtags per 7 days per Instagram account)."""
+
+    year: int | None = Field(default=None, ge=2020, le=2100)
+    month: int | None = Field(default=None, ge=1, le=12)
+    hashtags: list[str] = Field(default_factory=list, max_length=5)

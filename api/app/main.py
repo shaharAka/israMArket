@@ -13,6 +13,7 @@ from app.routers import (
     assets,
     audiences,
     auth,
+    instagram,
     integrations,
     onboarding,
     performance,
@@ -64,6 +65,7 @@ app.include_router(performance.router)
 app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)
+app.include_router(instagram.router)
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.

@@ -33,6 +33,7 @@ from app.services.images import (
     read_stored_bytes,
     store_image_bytes,
 )
+from app.services.instagram_signal import signal_for
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
 from app.services.publish import parse_scheduled_for
@@ -581,7 +582,9 @@ def rewrite_post_endpoint(
     brand = extra.get("brand_language") or (loads(business.scraped_profile_json, {}) or {}).get("brand_language") or {}
     target = posts[body.post_index]
     try:
-        rewritten = rewrite_post(target, body.tone, brand)
+        rewritten = rewrite_post(
+            target, body.tone, brand, instagram=signal_for(db, business, strategy.year, strategy.month)
+        )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"שגיאה בשכתוב הפוסט: {exc}") from exc
 
@@ -592,6 +595,8 @@ def rewrite_post_endpoint(
     target["overlay_text"] = rewritten.get("overlay_text") or target["overlay_text"]
     if rewritten.get("outlet_captions"):
         target["outlet_captions"] = rewritten["outlet_captions"]
+    if "inspiration" in rewritten:
+        target["inspiration"] = rewritten["inspiration"]
     target["approval_status"] = "review"
     target["approved_at"] = None
 
@@ -747,6 +752,8 @@ def generate_next_month(
         "growth_targets": (prior.get("long_horizon") or {}).get("targets") or [],
         # The segments the next month is planned for. Empty when none were defined.
         "audiences": catalogue_for(db, business),
+        # Own top Instagram posts + the month's inspiration brief (or an honest "none").
+        "instagram_signal": signal_for(db, business, year, month),
     }
 
     def persist_stage(next_state: dict) -> None:

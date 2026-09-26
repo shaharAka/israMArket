@@ -401,6 +401,9 @@ GA4_SUMS = (
 )
 META_SUMS = (("likes", "like_count"), ("comments", "comments_count"))
 META_INSIGHT_SUMS = (
+    # `views` replaced the retired `impressions` media metric (services/meta.py). Older
+    # snapshots still carry `impressions`, so both are summed where they exist.
+    ("views", "views"),
     ("impressions", "impressions"),
     ("reach", "reach"),
     ("saves", "saved"),

@@ -36,6 +36,10 @@ class Business(Base):
     social_links_json: Mapped[str] = mapped_column(Text, default="{}")
     monthly_budget_ils: Mapped[int] = mapped_column(Integer, default=0)
     competitors_json: Mapped[str] = mapped_column(Text, default="[]")
+    # Up to five other Instagram usernames (competitors or peers) whose public posts feed
+    # the monthly inspiration brief via Business Discovery. Normalised in
+    # services/instagram_signal.normalize_handles: no "@", lowercase, IG charset.
+    instagram_handles_json: Mapped[str] = mapped_column(Text, default="[]")
     primary_goal: Mapped[str] = mapped_column(String(40), default="")
     scraped_profile_json: Mapped[str] = mapped_column(Text, default="")
     generate_state_json: Mapped[str] = mapped_column(Text, default="")
@@ -120,6 +124,81 @@ class PerformanceSnapshot(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="snapshots")
+
+
+class InstagramPost(Base):
+    """One of the business's own Instagram posts, with the latest numbers Meta gave us.
+
+    Upserted on every performance sync (keyed by Meta's media id), so ranking can look
+    across more than the last 20 posts and a post keeps its numbers after it scrolls out
+    of the sync window. A metric Meta did not return is NULL — never 0 — and the reason
+    is in `metric_errors_json`.
+    """
+
+    __tablename__ = "instagram_posts"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    media_id: Mapped[str] = mapped_column(String(64))
+    caption: Mapped[str] = mapped_column(Text, default="")
+    # IMAGE | VIDEO | CAROUSEL_ALBUM
+    media_type: Mapped[str] = mapped_column(String(40), default="")
+    # FEED | REELS | STORY | AD ("" when Meta did not say)
+    media_product_type: Mapped[str] = mapped_column(String(40), default="")
+    permalink: Mapped[str] = mapped_column(String(500), default="")
+    media_url: Mapped[str] = mapped_column(Text, default="")
+    thumbnail_url: Mapped[str] = mapped_column(Text, default="")
+    posted_at: Mapped[str] = mapped_column(String(40), default="")
+    like_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    comments_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    views: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    reach: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    saved: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    shares: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    metric_errors_json: Mapped[str] = mapped_column(Text, default="{}")
+    synced_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("business_id", "media_id", name="uq_instagram_post_media"),)
+
+
+class InspirationBrief(Base):
+    """The monthly pattern brief distilled from own-top and competitor-top posts.
+
+    `brief_json` is the model's output (see INSPIRATION_BRIEF_SCHEMA); `sources_json` is
+    exactly what it was given — own posts, competitor posts and per-handle errors — so
+    every pattern it cites can be traced back to a real post.
+    """
+
+    __tablename__ = "inspiration_briefs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    year: Mapped[int] = mapped_column(Integer)
+    month: Mapped[int] = mapped_column(Integer)
+    brief_json: Mapped[str] = mapped_column(Text, default="{}")
+    sources_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("business_id", "year", "month", name="uq_inspiration_brief_month"),)
+
+
+class HashtagQuery(Base):
+    """One Hashtag Search lookup, kept to respect Meta's 30-unique-tags-per-7-days cap.
+
+    The cap is per Instagram account, so rows are keyed by `instagram_id` (the connected
+    IG user), not only by business.
+    """
+
+    __tablename__ = "hashtag_queries"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    instagram_id: Mapped[str] = mapped_column(String(64), index=True)
+    hashtag: Mapped[str] = mapped_column(String(120))
+    hashtag_id: Mapped[str] = mapped_column(String(64), default="")
+    queried_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class Recommendation(Base):
