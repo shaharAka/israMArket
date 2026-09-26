@@ -44,7 +44,7 @@ import {
  * missing, and they stay editable from /decisions and /plan. The goal defaults from the
  * business model (a shop is planned for sales, a service business for inquiries).
  */
-const STEPS = ["העסק", "התקציב", "מתחרים"] as const;
+const STEPS = ["העסק", "התקציב", "המתחרים"] as const;
 
 const MAX_COMPETITORS = 3;
 const MAX_HANDLES = 5;
@@ -115,7 +115,7 @@ export default function OnboardingPage() {
       applyPreview(stored);
       return;
     }
-    setPreviewNote("קוראים את האתר וממלאים בשבילכם…");
+    setPreviewNote("קוראים את האתר וממלאים את הפרטים…");
     fetchSitePreview(normalized)
       .then((preview) => {
         savePreview(preview, normalized);
@@ -245,7 +245,7 @@ export default function OnboardingPage() {
   async function saveBusiness() {
     setError("");
     if (!looksLikeWebsite(website)) {
-      setError("צריך את כתובת האתר כדי ללמוד ממנו את המותג, למשל myshop.co.il");
+      setError("מהאתר נלמד את הצבעים והסגנון. הזינו את הכתובת, למשל myshop.co.il");
       return;
     }
     if (name.trim().length < 2) {
@@ -267,7 +267,7 @@ export default function OnboardingPage() {
       }
       goTo(1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שמירת הפרטים נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את הפרטים. נסו שוב.");
     } finally {
       setBusy(false);
     }
@@ -276,7 +276,7 @@ export default function OnboardingPage() {
   async function saveBudget() {
     setError("");
     if (!Number.isFinite(budget) || budget < 0) {
-      setError("התקציב צריך להיות מספר בשקלים.");
+      setError("הזינו סכום בשקלים, במספרים.");
       return;
     }
     setBusy(true);
@@ -284,7 +284,7 @@ export default function OnboardingPage() {
       await endpoints.saveProfile(profilePayload());
       goTo(2);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שמירת התקציב נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התקציב. נסו שוב.");
     } finally {
       setBusy(false);
     }
@@ -294,7 +294,7 @@ export default function OnboardingPage() {
     setError("");
     const handles = splitHandles(handlesText);
     if (handles.length > MAX_HANDLES) {
-      setError(`אפשר עד ${MAX_HANDLES} חשבונות אינסטגרם.`);
+      setError(`אפשר להוסיף עד ${MAX_HANDLES} חשבונות אינסטגרם.`);
       return;
     }
     setBusy(true);
@@ -305,7 +305,7 @@ export default function OnboardingPage() {
         setSavedHandles(saved.handles);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "השמירה נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור. נסו שוב.");
       setBusy(false);
       return;
     }
@@ -342,7 +342,7 @@ export default function OnboardingPage() {
       toast("החודש מוכן");
       router.replace("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "בניית החודש נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לבנות את החודש. נסו שוב.");
       setGenerating(false);
     } finally {
       window.clearInterval(poll);
@@ -451,7 +451,7 @@ export default function OnboardingPage() {
 
             {error ? <ErrorNote message={error} /> : null}
             <Button onClick={() => void saveBusiness()} disabled={busy} className="min-h-12 w-full justify-center">
-              {busy ? "שומרים…" : "נכון, הלאה"}
+              {busy ? "שומרים…" : "להמשיך לתקציב"}
             </Button>
           </section>
         ) : null}
@@ -509,7 +509,7 @@ export default function OnboardingPage() {
 
             {error ? <ErrorNote message={error} /> : null}
             <Button onClick={() => void saveBudget()} disabled={busy} className="min-h-12 w-full justify-center">
-              {busy ? "שומרים…" : "הלאה"}
+              {busy ? "שומרים…" : "להמשיך למתחרים"}
             </Button>
           </section>
         ) : null}
@@ -518,7 +518,7 @@ export default function OnboardingPage() {
           <section className="space-y-4">
             <div>
               <h1 className="text-2xl font-black leading-tight text-[#191b18]">מי המתחרים שלכם?</h1>
-              <p className="mt-1 text-sm text-[#5e6159]">לא חובה. נלמד מה עובד אצלם, ונכתוב אחרת.</p>
+              <p className="mt-1 text-sm text-[#5e6159]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
             </div>
 
             <fieldset className="space-y-2">
@@ -526,14 +526,14 @@ export default function OnboardingPage() {
               {competitors.map((item, index) => (
                 <div key={index} className="grid grid-cols-2 gap-2">
                   <input
-                    aria-label={`שם מתחרה ${index + 1}`}
+                    aria-label={`מתחרה ${index + 1}: שם`}
                     value={item.name}
                     onChange={(event) => updateCompetitor(index, { name: event.target.value })}
                     placeholder="שם"
                     className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
                   />
                   <input
-                    aria-label={`אתר מתחרה ${index + 1}`}
+                    aria-label={`מתחרה ${index + 1}: אתר`}
                     value={item.website_url}
                     onChange={(event) => updateCompetitor(index, { website_url: event.target.value })}
                     placeholder="אתר (לא חובה)"

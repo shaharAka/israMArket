@@ -25,14 +25,14 @@ export default function LoginPage() {
       const { business } = await endpoints.business();
       router.replace(business?.onboarding_complete ? "/dashboard" : "/onboarding");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "פרטי ההתחברות אינם נכונים");
+      setError(err instanceof Error ? err.message : "האימייל או הסיסמה לא נכונים");
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <AuthCard title="כניסה למערכת">
+    <AuthCard title="כניסה לחשבון">
       {/* 1-Click Demo Login Button */}
       <button
         type="button"
@@ -49,25 +49,25 @@ export default function LoginPage() {
             <IconSparkles className="w-5 h-5 text-[#191b18]" />
           </div>
           <div className="min-w-0">
-            <span className="block font-bold text-sm text-[#191b18]">להסתכל על הדמו</span>
+            <span className="block font-bold text-sm text-[#191b18]">לראות את הדמו</span>
             <span className="block text-xs text-[#5e6159]">מאפיית לחם תום, בלי הרשמה</span>
           </div>
         </div>
         <span className="shrink-0 whitespace-nowrap text-xs font-bold text-[#191b18] underline underline-offset-4">
-          פתיחה ←
+          לפתוח ←
         </span>
       </button>
 
       <div className="relative mb-6 flex items-center py-2">
         <div className="flex-grow border-t border-[#e6e4dc]"></div>
-        <span className="mx-4 flex-shrink text-xs text-[#63665e]">או התחברות עם חשבון</span>
+        <span className="mx-4 flex-shrink text-xs text-[#63665e]">או עם החשבון שלכם</span>
         <div className="flex-grow border-t border-[#e6e4dc]"></div>
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">
         <Field
           name="email"
-          label="כתובת אימייל"
+          label="אימייל"
           type="email"
           placeholder="name@business.co.il"
           dir="ltr"
@@ -83,14 +83,14 @@ export default function LoginPage() {
         />
         <ErrorNote message={error} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="min-h-12 w-full">
-          {pending ? "מתחבר..." : "כניסה לחשבון"}
+          {pending ? "נכנסים…" : "להיכנס"}
         </Button>
       </form>
 
       <p className="mt-6 text-center text-xs text-[#63665e]">
         עדיין אין לכם חשבון?{" "}
         <Link href="/signup" className="font-bold text-[#191b18] hover:underline underline-offset-4">
-          פתחו חשבון עכשיו
+          לפתוח חשבון
         </Link>
       </p>
     </AuthCard>
@@ -105,7 +105,7 @@ export function AuthCard({ title, children }: { title: string; children: React.R
           <BrandMark className="h-9 w-9 text-[#191b18]" />
           <div>
             <span className="font-black text-base text-[#1e201d]">ישראמארקט</span>
-            <span className="-mt-0.5 block text-[11px] text-[#63665e]">שיווק שעובד בישראל</span>
+            <span className="-mt-0.5 block text-[11px] text-[#63665e]">שיווק לעסקים קטנים</span>
           </div>
         </Link>
 

@@ -16,11 +16,11 @@ export default function AccountPage() {
     event.preventDefault();
     setError("");
     if (next !== confirm) {
-      setError("הסיסמה החדשה והאימות אינם זהים.");
+      setError("הסיסמה החדשה לא זהה בשני השדות.");
       return;
     }
     if (next.length < 8) {
-      setError("הסיסמה החדשה חייבת להיות באורך 8 תווים לפחות.");
+      setError("הסיסמה החדשה קצרה מדי. צריך לפחות 8 תווים.");
       return;
     }
     setPending(true);
@@ -29,9 +29,9 @@ export default function AccountPage() {
       setCurrent("");
       setNext("");
       setConfirm("");
-      toast("הסיסמה עודכנה.");
+      toast("הסיסמה החדשה נשמרה");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "עדכון הסיסמה נכשל");
+      setError(err instanceof Error ? err.message : "לא הצלחנו להחליף את הסיסמה. נסו שוב.");
     } finally {
       setPending(false);
     }
@@ -42,14 +42,13 @@ export default function AccountPage() {
       <div className="mx-auto max-w-lg">
         <header className="border-b border-[#deddd8] pb-5">
           <h1 className="text-2xl font-black tracking-tight text-[#20211f]">החשבון</h1>
-          <p className="mt-1 text-sm text-[#62635f]">שינוי הסיסמה להתחברות.</p>
         </header>
 
         <form onSubmit={submit} className="mt-6 space-y-4 rounded-lg border border-[#deddd8] bg-white p-5">
           {[
             { label: "הסיסמה הנוכחית", value: current, set: setCurrent },
             { label: "סיסמה חדשה", value: next, set: setNext },
-            { label: "אימות הסיסמה החדשה", value: confirm, set: setConfirm },
+            { label: "הקלידו שוב את הסיסמה החדשה", value: confirm, set: setConfirm },
           ].map((field) => (
             <div key={field.label}>
               <label className="mb-1 block text-xs font-bold text-[#191b18]">{field.label}</label>
@@ -74,7 +73,7 @@ export default function AccountPage() {
             disabled={pending || !current || !next}
             className="w-full rounded-md bg-[#20211f] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
           >
-            {pending ? "מעדכנים…" : "עדכון סיסמה"}
+            {pending ? "שומרים…" : "להחליף סיסמה"}
           </button>
         </form>
       </div>
