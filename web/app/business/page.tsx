@@ -8,7 +8,6 @@ import { endpoints } from "@/lib/api";
 import {
   IconCalendar,
   IconChevron,
-  IconCompass,
   IconFlag,
   IconLightbulb,
   IconLink,
@@ -34,10 +33,9 @@ type Row = {
  */
 const GROUPS: { title: string; rows: Row[] }[] = [
   {
-    title: "התוכנית",
+    title: "התכנון",
     rows: [
-      { href: "/strategy", title: "התוכנית החודשית", hint: "מה עושים החודש, שבוע אחר שבוע", icon: IconRoute },
-      { href: "/plan", title: "התוכנית הרבעונית", hint: "לאן הולכים בשלושת החודשים הקרובים", icon: IconCompass },
+      { href: "/strategy", title: "התוכנית", hint: "החודש שבוע אחר שבוע, והרבעון", icon: IconRoute },
       { href: "/calendar", title: "לוח שנה", hint: "חגים, ימי קניות ופוסטים", icon: IconCalendar },
       { href: "/recommendations", title: "המלצות לשבוע", hint: "מה כדאי לעשות השבוע", icon: IconLightbulb },
     ],

@@ -9,7 +9,7 @@ const identity = SECTIONS.assets;
 
 /** Where each file came from, in the owner's words. */
 const SOURCE_LABEL: Record<AssetSource, string> = {
-  upload: "הועלה",
+  upload: "הועלה מהמכשיר",
   url: "מקישור",
   site: "מהאתר",
 };
@@ -31,29 +31,147 @@ function splitTags(value: string) {
     .filter(Boolean);
 }
 
+function kindWord(asset: Asset) {
+  return asset.kind === "video" ? "סרטון" : "תמונה";
+}
+
 /**
- * One asset in the library.
- *
- * The card owns its own edit/confirm/busy state because those states belong to a single
- * file — putting them on the screen would make every card flip into edit mode at once.
- * Delete is deliberately two-step: the first click replaces the row with a confirmation,
- * so a stray click can never destroy a file the owner uploaded.
- *
- * Edit, re-describe and delete used to sit on every card as three permanently visible
- * buttons — twelve standing controls for a four-asset library, all of them the same
- * weight as the library's real ask. They now live behind one labelled control in the
- * card's own row, so the card reads as a thumbnail and a description until the owner
- * asks for more. Nothing was removed: the two-step delete and its warning still work
- * exactly as before, one click deeper.
- *
- * The face is the description, because that is the only line in a card that is worth
- * reading while scanning a list. The date, the pixel size and the source address are the
- * facts you want once you have decided to work on the file, so they open with the actions
- * — four lines per card that repeated twelve times is most of what the page was costing.
+ * The play mark every clip wears. Drawn here rather than borrowed from the icon set because
+ * it is a thumbnail overlay, not a control: a filled triangle in a translucent disc, legible
+ * on a photo and on the empty placeholder alike.
  */
-export function AssetCard({
+function PlayMark({ size = "md" }: { size?: "md" | "lg" }) {
+  const box = size === "lg" ? "h-14 w-14" : "h-10 w-10";
+  const glyph = size === "lg" ? "h-6 w-6" : "h-4 w-4";
+  return (
+    <span
+      aria-hidden
+      className={`pointer-events-none absolute inset-0 m-auto flex ${box} items-center justify-center rounded-full bg-[#20211f]/70 text-white shadow-sm`}
+    >
+      <svg viewBox="0 0 24 24" className={`${glyph} translate-x-[-1px]`} fill="currentColor">
+        {/* Pointing right in an RTL page too: a play symbol is not text, it does not mirror. */}
+        <path d="M8 5.5v13a1 1 0 0 0 1.53.85l10.2-6.5a1 1 0 0 0 0-1.7L9.53 4.65A1 1 0 0 0 8 5.5Z" />
+      </svg>
+    </span>
+  );
+}
+
+/**
+ * What sits under a clip before — or instead of — its first frame.
+ *
+ * A `<video preload="metadata">` paints nothing on iOS until it plays, and a clip whose file
+ * cannot be read paints nothing anywhere, so a video tile used to be a blank grey square.
+ * The placeholder is always underneath: the frame covers it when there is one, and when
+ * there is not the owner still sees a tinted poster with a play mark rather than a hole.
+ */
+function VideoPoster() {
+  return (
+    <span
+      aria-hidden
+      className="absolute inset-0"
+      style={{ background: `linear-gradient(160deg, ${identity.surface}, ${identity.border})` }}
+    />
+  );
+}
+
+/** The thumbnail, shared by the grid tile and the sheet's preview. */
+function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
+  const [broken, setBroken] = useState(false);
+  const label = asset.description.trim() || `${kindWord(asset)} ללא תיאור`;
+  const fit = mode === "tile" ? "object-cover" : "object-contain";
+
+  if (asset.kind === "video") {
+    return (
+      <>
+        <VideoPoster />
+        {asset.url && !broken ? (
+          <video
+            src={asset.url}
+            muted
+            playsInline
+            controls={mode === "sheet"}
+            preload="metadata"
+            onError={() => setBroken(true)}
+            className={`relative h-full w-full ${fit}`}
+            // Some browsers only paint a metadata-loaded frame once told to seek.
+            onLoadedMetadata={(event) => {
+              event.currentTarget.currentTime = 0.1;
+            }}
+          />
+        ) : null}
+        {/* The sheet's own player draws its controls; the play mark is for the tile, and
+            for a clip that cannot be played at all. */}
+        {mode === "tile" || broken || !asset.url ? <PlayMark size={mode === "sheet" ? "lg" : "md"} /> : null}
+        {mode === "sheet" && (broken || !asset.url) ? (
+          <span className="absolute inset-x-0 bottom-3 text-center text-xs text-[#5e6159]">
+            אי אפשר להציג את הסרטון כאן
+          </span>
+        ) : null}
+      </>
+    );
+  }
+
+  return asset.url && !broken ? (
+    // eslint-disable-next-line @next/next/no-img-element -- same-origin proxy path, not an optimizable remote URL
+    <img
+      src={asset.url}
+      alt={mode === "sheet" ? label : ""}
+      loading="lazy"
+      onError={() => setBroken(true)}
+      className={`h-full w-full ${fit}`}
+    />
+  ) : (
+    <span className="flex h-full w-full items-center justify-center text-[#b3b0a5]" title="אין תצוגה מקדימה">
+      <IconImage className="h-8 w-8" />
+    </span>
+  );
+}
+
+/**
+ * One asset in the grid: a thumbnail and nothing else.
+ *
+ * The library used to be one full-width card per file — thumbnail, description, tags and
+ * an actions row — so four photos cost more than two screens on a phone. A photo library
+ * is scanned by eye, so the face is now the pictures, two across on a phone, and a tap
+ * opens everything about one of them in a sheet (`AssetSheet`).
+ */
+export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void }) {
+  const described = Boolean(asset.description.trim());
+  return (
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={`${kindWord(asset)}: ${asset.description.trim() || "ללא תיאור"}. לפרטים ולפעולות`}
+      title={asset.description.trim() || undefined}
+      className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-lg border bg-[#f4f3ee] transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f]"
+      style={{ borderColor: identity.border }}
+    >
+      <Preview asset={asset} mode="tile" />
+      {/* The one status worth seeing from the grid: a file the posts cannot use yet. */}
+      {described ? null : (
+        <span className="absolute right-1.5 bottom-1.5 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[#5e6159]">
+          בלי תיאור
+        </span>
+      )}
+    </button>
+  );
+}
+
+/**
+ * Everything about one asset, in a sheet over the grid.
+ *
+ * A native `<dialog>` opened modally: it brings its own focus trap, Escape and top layer
+ * (so it sits above the bottom tab bar), and a tap on the backdrop closes it. On a phone it
+ * docks to the bottom edge as a sheet; from `sm` up it is a centred panel.
+ *
+ * The sheet owns its edit/confirm/busy state because those states belong to a single file.
+ * Delete is deliberately two-step: the first tap replaces the button with a confirmation,
+ * so a stray tap can never destroy a file the owner uploaded.
+ */
+export function AssetSheet({
   asset,
   libraryTags,
+  onClose,
   onSave,
   onDelete,
   onRedescribe,
@@ -61,10 +179,12 @@ export function AssetCard({
   asset: Asset;
   /** Every tag already used anywhere in the library, for one-tap suggestions. */
   libraryTags: string[];
+  onClose: () => void;
   onSave: (id: number, patch: { description: string; tags: string[] }) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
   onRedescribe: (id: number) => Promise<void>;
 }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [editing, setEditing] = useState(false);
   const [draftDescription, setDraftDescription] = useState(asset.description);
   const [draftTags, setDraftTags] = useState(asset.tags.join(", "));
@@ -73,42 +193,19 @@ export function AssetCard({
   const [deleting, setDeleting] = useState(false);
   const [describing, setDescribing] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [thumbBroken, setThumbBroken] = useState(false);
   const [error, setError] = useState("");
-  const [actionsOpen, setActionsOpen] = useState(false);
-  const actionsRef = useRef<HTMLDetailsElement>(null);
-  const actionsToggle = useRef<HTMLElement>(null);
 
-  const label = asset.description.trim() || "נכס ללא תיאור";
   const dimensions = formatDimensions(asset.width, asset.height);
   const tagSuggestions = libraryTags.filter((tag) => !splitTags(draftTags).includes(tag)).slice(0, 6);
 
-  // An open row has to close the way the owner expects: a click anywhere else, or Escape
-  // — which also hands focus back to the control that opened it.
-  //
-  // The state is React's even though `<details>` tracks `open` itself (`onToggle` feeds
-  // the browser's own answer back in), because the card draws differently once open. It
-  // is a `<details>` rather than a `<button>` + panel so the disclosure is native: it
-  // opens without JS, and every audit that force-opens `<details>` to count what a page
-  // is hiding reaches this row too.
+  // Opened once on mount. There is deliberately no cleanup that closes it: closing fires
+  // the dialog's `close` event, which is `onClose`, which unmounts the sheet — so under
+  // React's development double-run of effects a cleanup `close()` would dismiss the sheet
+  // the instant it opened. Unmounting removes the element, and an open dialog goes with it.
   useEffect(() => {
-    if (!actionsOpen) return;
-    function onPointerDown(event: MouseEvent) {
-      if (!actionsRef.current?.contains(event.target as Node)) setActionsOpen(false);
-    }
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setActionsOpen(false);
-        actionsToggle.current?.focus();
-      }
-    }
-    document.addEventListener("mousedown", onPointerDown);
-    document.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.removeEventListener("mousedown", onPointerDown);
-      document.removeEventListener("keydown", onKeyDown);
-    };
-  }, [actionsOpen]);
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) dialog.showModal();
+  }, []);
 
   async function runDescribe() {
     setDescribing(true);
@@ -145,6 +242,7 @@ export function AssetCard({
     setError("");
     try {
       await onDelete(asset.id);
+      onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : "המחיקה נכשלה");
       setDeleting(false);
@@ -153,53 +251,42 @@ export function AssetCard({
   }
 
   const buttonClass =
-    "inline-flex min-h-9 items-center gap-1.5 rounded-md border px-3 text-xs font-bold transition-colors disabled:cursor-default disabled:opacity-50";
+    "inline-flex min-h-10 items-center gap-1.5 rounded-md border px-3 text-xs font-bold transition-colors disabled:cursor-default disabled:opacity-50";
   const quietButton: CSSProperties = { borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" };
+  const inputClass =
+    "mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-2.5 py-2 text-sm text-[#20211f] outline-none focus:border-[#20211f]";
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-lg border bg-white sm:flex-row" style={{ borderColor: identity.border }}>
-      <div className="relative h-44 w-full shrink-0 bg-[#f4f3ee] sm:h-auto sm:w-40">
-        {asset.url && !thumbBroken ? (
-          asset.kind === "video" ? (
-            // The owner's own clip, muted and metadata-only: this is a thumbnail, not a player.
-            <video
-              src={asset.url}
-              muted
-              playsInline
-              preload="metadata"
-              onError={() => setThumbBroken(true)}
-              className="h-full w-full object-cover"
-              // Some browsers only paint metadata-loaded video once told to seek.
-              onLoadedMetadata={(event) => {
-                event.currentTarget.currentTime = 0.1;
-              }}
-            />
-          ) : (
-            // eslint-disable-next-line @next/next/no-img-element -- same-origin proxy path, not an optimizable remote URL
-            <img
-              src={asset.url}
-              alt={label}
-              loading="lazy"
-              onError={() => setThumbBroken(true)}
-              className="h-full w-full object-cover"
-            />
-          )
-        ) : (
-          <span className="flex h-full w-full items-center justify-center text-[#b3b0a5]" title="אין תצוגה מקדימה">
-            <IconImage className="h-8 w-8" />
-          </span>
-        )}
-        {asset.kind === "video" ? (
-          <span
-            className="absolute top-2 right-2 rounded px-1.5 py-0.5 text-[10px] font-bold text-white"
-            style={{ background: "#20211fcc" }}
-          >
-            וידאו
-          </span>
-        ) : null}
+    <dialog
+      ref={dialogRef}
+      aria-label={`פרטי ה${kindWord(asset)}`}
+      onClose={onClose}
+      onClick={(event) => {
+        // The backdrop is the dialog element itself; a tap on the sheet lands on a child.
+        if (event.target === event.currentTarget) event.currentTarget.close();
+      }}
+      className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-2xl bg-white p-0 text-right backdrop:bg-[#20211f]/45 sm:m-auto sm:max-w-lg sm:rounded-2xl"
+    >
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#efeee9] bg-white px-4 py-2.5">
+        <p className="text-sm font-black text-[#20211f]">פרטי ה{kindWord(asset)}</p>
+        <button
+          type="button"
+          onClick={() => dialogRef.current?.close()}
+          aria-label="סגירה"
+          title="סגירה"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[#5e6159] hover:bg-[#f4f3ee] hover:text-[#20211f]"
+        >
+          <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
       </div>
 
-      <div className="min-w-0 flex-1 p-4">
+      <div className="relative h-56 w-full bg-[#f4f3ee] sm:h-72">
+        <Preview asset={asset} mode="sheet" />
+      </div>
+
+      <div className="space-y-3 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
         {editing ? (
           <div className="space-y-3">
             <label className="block">
@@ -208,7 +295,7 @@ export function AssetCard({
                 value={draftDescription}
                 onChange={(event) => setDraftDescription(event.target.value)}
                 rows={3}
-                className="mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-2.5 py-2 text-sm leading-6 text-[#20211f] outline-none focus:border-[#7d4436]"
+                className={`${inputClass} leading-6`}
               />
             </label>
             <label className="block">
@@ -218,18 +305,18 @@ export function AssetCard({
                 value={draftTags}
                 onChange={(event) => setDraftTags(event.target.value)}
                 placeholder="חלות, מחמצת, שישי"
-                className="mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-2.5 py-2 text-sm text-[#20211f] outline-none focus:border-[#7d4436]"
+                className={inputClass}
               />
             </label>
             {tagSuggestions.length ? (
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-[#8b8e84]">תגיות שכבר יש במאגר:</span>
+                <span className="text-[11px] text-[#8b8e84]">תגיות שכבר יש:</span>
                 {tagSuggestions.map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     onClick={() => setDraftTags((prev) => (prev.trim() ? `${prev.replace(/,\s*$/, "")}, ${tag}` : tag))}
-                    className="rounded-full border border-[#dedcd4] bg-[#f8f7f4] px-2 py-0.5 text-[11px] text-[#5e6159] hover:border-[#7d4436]"
+                    className="rounded-full border border-[#dedcd4] bg-[#f8f7f4] px-2 py-0.5 text-[11px] text-[#5e6159] hover:border-[#8b8e84]"
                   >
                     {tag}
                   </button>
@@ -265,143 +352,16 @@ export function AssetCard({
           </div>
         ) : (
           <>
-            <div className="flex flex-wrap items-center gap-2">
-              <span
-                className="rounded px-1.5 py-0.5 text-[10px] font-bold"
-                style={{ background: identity.surface, color: identity.accent }}
-              >
-                {SOURCE_LABEL[asset.source]}
-              </span>
-
-              {/* The row's own disclosure. It stays in the header line so the card reads
-                  as a thumbnail and a caption until the owner asks for more. */}
-              <details
-                ref={actionsRef}
-                open={actionsOpen}
-                onToggle={(event) => setActionsOpen(event.currentTarget.open)}
-                className="group ms-auto"
-              >
-                <summary
-                  ref={actionsToggle}
-                  title="עריכה, ניתוח מחדש ומחיקה של הנכס"
-                  className="flex min-h-8 cursor-pointer list-none items-center gap-1 rounded-md border border-transparent px-2 text-[11px] font-bold text-[#8b8e84] transition-colors hover:border-[#dedcd4] hover:bg-white hover:text-[#20211f]"
-                >
-                  פעולות
-                  <span
-                    aria-hidden
-                    className="h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
-                  />
-                </summary>
-
-                {/* Everything below belongs to the one asset this row is: what it is, when
-                    it arrived, where it came from, and what can be done with it. It is one
-                    click from the card, and it is the same content the row always carried
-                    — nothing was dropped to make the page shorter. */}
-                <div className="mt-2 border-t border-[#efeee9] pt-3">
-                  <p className="text-[11px] text-[#8b8e84]">
-                    {formatDate(asset.created_at)}
-                    {dimensions ? ` · ${dimensions}` : ""}
-                  </p>
-                  {asset.description.trim() ? null : (
-                    <p className="mt-1 text-[11px] leading-5 text-[#8b8e84]">
-                      אין עדיין תיאור לנכס הזה.
-                    </p>
-                  )}
-                  {asset.source_url ? (
-                    <a
-                      href={asset.source_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      dir="ltr"
-                      className="mt-1 block truncate text-[11px] text-[#8b8e84] underline underline-offset-4 hover:text-[#20211f]"
-                      title={asset.source_url}
-                    >
-                      {asset.source_url}
-                    </a>
-                  ) : null}
-
-                  <div className="mt-2 flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditing(true);
-                        setActionsOpen(false);
-                      }}
-                      disabled={busy}
-                      className={buttonClass}
-                      style={quietButton}
-                    >
-                      <IconPen className="h-3.5 w-3.5" />
-                      עריכה
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void runDescribe()}
-                      disabled={busy}
-                      className={buttonClass}
-                      style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
-                    >
-                      {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
-                      {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
-                    </button>
-                    {confirmingDelete ? (
-                      <>
-                        <button
-                          type="button"
-                          onClick={() => void runDelete()}
-                          disabled={deleting}
-                          className={buttonClass}
-                          style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
-                        >
-                          {deleting ? "מוחק…" : "כן, למחוק"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setConfirmingDelete(false)}
-                          disabled={deleting}
-                          className={buttonClass}
-                          style={quietButton}
-                        >
-                          ביטול
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmingDelete(true)}
-                        disabled={busy}
-                        className={buttonClass}
-                        style={{ ...quietButton, color: "#8b6a5e" }}
-                      >
-                        מחיקה
-                      </button>
-                    )}
-                  </div>
-
-                  {confirmingDelete ? (
-                    <p className="mt-2 text-[11px] leading-5 text-[#9f4330]">
-                      המחיקה תסיר את הנכס מהספרייה. אין דרך חזרה.
-                    </p>
-                  ) : null}
-                </div>
-              </details>
-            </div>
-
-            {/* The description is the card's content, so it leads the face whenever there
-                is one to read — that is what makes the library scannable instead of a wall
-                of thumbnails. A missing one is different from a present one: the tags and
-                the description both state their absence in three words, and the sentence
-                spelling out what an analysis would do instead sits with the analysis.
-                Twelve copies of a five-word apology is sixty words of the page saying
-                nothing, which is most of what the page was spending. */}
             {asset.description.trim() ? (
-              <p className="mt-2.5 text-sm leading-6 text-[#3c3e3a]">{asset.description}</p>
+              <p className="text-sm leading-6 text-[#3c3e3a]">{asset.description}</p>
             ) : (
-              <p className="mt-2.5 text-[11px] text-[#8b8e84]">אין תיאור עדיין.</p>
+              <p className="text-sm leading-6 text-[#8b8e84]">
+                אין עדיין תיאור. ״ניתוח מחדש״ יכתוב תיאור ותגיות מהתמונה עצמה.
+              </p>
             )}
 
             {asset.tags.length ? (
-              <ul className="mt-3 flex flex-wrap gap-1.5">
+              <ul className="flex flex-wrap gap-1.5">
                 {asset.tags.map((tag) => (
                   <li
                     key={tag}
@@ -413,13 +373,98 @@ export function AssetCard({
                 ))}
               </ul>
             ) : (
-              <p className="mt-3 text-[11px] text-[#8b8e84]">אין תגיות עדיין.</p>
+              <p className="text-[11px] text-[#8b8e84]">אין תגיות עדיין.</p>
             )}
+
+            <p className="text-[11px] text-[#8b8e84]">
+              {SOURCE_LABEL[asset.source]}
+              {formatDate(asset.created_at) ? ` · ${formatDate(asset.created_at)}` : ""}
+              {dimensions ? (
+                <>
+                  {" · "}
+                  {/* width×height reads left to right; unisolated, RTL shows it swapped. */}
+                  <bdi dir="ltr">{dimensions}</bdi>
+                </>
+              ) : null}
+            </p>
+            {asset.source_url ? (
+              <a
+                href={asset.source_url}
+                target="_blank"
+                rel="noreferrer"
+                dir="ltr"
+                className="block truncate text-[11px] text-[#8b8e84] underline underline-offset-4 hover:text-[#20211f]"
+                title={asset.source_url}
+              >
+                {asset.source_url}
+              </a>
+            ) : null}
+
+            <div className="flex flex-wrap items-center gap-2 border-t border-[#efeee9] pt-3">
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                disabled={busy}
+                className={buttonClass}
+                style={quietButton}
+              >
+                <IconPen className="h-3.5 w-3.5" />
+                עריכה
+              </button>
+              <button
+                type="button"
+                onClick={() => void runDescribe()}
+                disabled={busy}
+                className={buttonClass}
+                style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+              >
+                {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
+                {describing ? "מנתח מחדש…" : "ניתוח מחדש"}
+              </button>
+              {confirmingDelete ? (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => void runDelete()}
+                    disabled={deleting}
+                    className={buttonClass}
+                    style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
+                  >
+                    {deleting ? "מוחק…" : "כן, למחוק"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmingDelete(false)}
+                    disabled={deleting}
+                    className={buttonClass}
+                    style={quietButton}
+                  >
+                    ביטול
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmingDelete(true)}
+                  disabled={busy}
+                  className={`${buttonClass} ms-auto`}
+                  style={{ ...quietButton, color: "#9f4330" }}
+                >
+                  מחיקה
+                </button>
+              )}
+            </div>
+
+            {confirmingDelete ? (
+              <p className="text-[11px] leading-5 text-[#9f4330]">
+                המחיקה תסיר את ה{kindWord(asset)} מהספרייה. אין דרך חזרה.
+              </p>
+            ) : null}
           </>
         )}
 
-        {error ? <p className="mt-3 text-[11px] leading-5 text-[#9f4330]">{error}</p> : null}
+        {error ? <p className="text-[11px] leading-5 text-[#9f4330]">{error}</p> : null}
       </div>
-    </article>
+    </dialog>
   );
 }

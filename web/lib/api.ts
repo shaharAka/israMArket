@@ -1160,12 +1160,12 @@ function demoSetup(): SetupPayload {
         },
         {
           key: "google",
-          title: "חיבור Google Analytics",
-          why: "רק כך רואים אילו פוסטים וערוצים באמת הביאו תנועה והמרות.",
+          title: "חיבור נתוני האתר",
+          why: "רק כך רואים אילו פוסטים באמת הביאו אנשים לאתר, ומה הם עשו שם.",
           // The demo's integrations payload reports both providers as null.
           done: false,
           action_href: "/integrations",
-          action_label: "לחיבור GA4",
+          action_label: "לחבר את נתוני האתר",
         },
         {
           key: "instagram",

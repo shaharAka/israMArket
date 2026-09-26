@@ -312,7 +312,7 @@ export default function DecisionsPage() {
   const modelSummary = modelTitle;
   const budgetSummary = budgetInvalid
     ? "לא הוזן"
-    : `${formatNis(budgetValue)} · ${currentStage.title}`;
+    : `${formatNis(budgetValue)} · שלב ${currentStage.title}`;
   const diagnosticsSummary = `${diagnosticsAnswered} מתוך ${diagnosticQuestions.length} תשובות`;
   const audiencesSummary = audiencesLoading
     ? "טוענים…"
@@ -650,7 +650,7 @@ export default function DecisionsPage() {
     <AppShell>
       <div className="mx-auto max-w-3xl">
         <SectionHeader
-          section="decisions"
+          section="business"
           title="ההחלטות שלי"
           subtitle={`מה שקבעתם עם ${AGENT_NAME} — אפשר לשנות כאן בכל רגע.`}
         />
@@ -696,14 +696,14 @@ export default function DecisionsPage() {
             >
               <DecisionRow
                 id="model"
-                label="מודל העסק"
+                label="סוג העסק"
                 value={modelSummary}
                 done
                 open={openGroup === "model"}
                 onToggle={() => toggleGroup("model")}
               >
                 <p className="text-xs leading-5 text-[#63665e]">
-                  המודל קובע מה התוכנית מנסה לייצר — מכירות בחנות או פניות.
+                  סוג העסק קובע מה התוכנית מנסה להביא — מכירות בחנות או פניות.
                 </p>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
                   {BUSINESS_MODEL_OPTIONS.map((option) => (
@@ -718,7 +718,7 @@ export default function DecisionsPage() {
                 </div>
 
                 {modelNotice ? (
-                  <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-3 py-2 text-xs leading-5 text-[#685f47]">
+                  <p className="mt-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
                     {modelNotice}
                   </p>
                 ) : null}
@@ -790,7 +790,7 @@ export default function DecisionsPage() {
                   />
                 </div>
 
-                <div className="mt-4 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-4 py-3">
+                <div className="mt-4 rounded-md border px-4 py-3" style={{ background: SURFACE, borderColor: ACCENT_BORDER }}>
                   {budgetInvalid ? (
                     <p className="text-sm leading-6 text-[#9f4330]">
                       הזינו תקציב חודשי במספרים, כדי שנדע מה הוא קונה.
@@ -798,10 +798,10 @@ export default function DecisionsPage() {
                   ) : (
                     <>
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="metric-number text-xs font-bold text-[#685f47]">
+                        <span className="metric-number text-xs font-bold" style={{ color: ACCENT }}>
                           {formatNis(budgetValue)} בחודש
                         </span>
-                        <span className="text-[11px] font-bold text-[#685f47]">
+                        <span className="text-[11px] font-bold" style={{ color: ACCENT }}>
                           שלב: {currentStage.title} · {currentStage.range}
                         </span>
                       </div>
@@ -878,7 +878,7 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="audiences"
-                label="קהלי יעד"
+                label="למי פונים"
                 value={audiencesSummary}
                 done={audiences.length > 0}
                 open={openGroup === "audiences"}
@@ -890,7 +890,7 @@ export default function DecisionsPage() {
 
                 <div className="mt-4">
                   {audiencesNotice ? (
-                    <p className="mb-3 rounded-md border border-[#c7d6c2] bg-[#f3f7f1] px-3 py-2 text-xs leading-5 text-[#374b3d]">
+                    <p className="mb-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
                       {audiencesNotice}
                     </p>
                   ) : null}
@@ -1206,7 +1206,7 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {capNote ? (
-                    <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-3 py-2 text-xs leading-5 text-[#685f47]">
+                    <p className="mt-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
                       {capNote}
                     </p>
                   ) : null}
@@ -1232,14 +1232,10 @@ export default function DecisionsPage() {
             {/* Where the decisions are read. One quiet line instead of a card of its own. */}
             <p className="text-xs leading-5 text-[#8b8e84]">
               ההחלטות מזינות את{" "}
-              <Link href="/plan" className="font-bold text-[#191b18] underline underline-offset-4">
-                התוכנית הרבעונית
-              </Link>{" "}
-              ואת{" "}
               <Link href="/strategy" className="font-bold text-[#191b18] underline underline-offset-4">
-                התוכנית החודשית
-              </Link>
-              .
+                התוכנית
+              </Link>{" "}
+              — החודש והרבעון.
             </p>
           </div>
         ) : null}
@@ -1318,7 +1314,7 @@ function DecisionRow({
           <span
             aria-hidden
             className="h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{ background: done ? ACCENT : "#ccd2dd" }}
+            style={{ background: done ? ACCENT : "#d7d5cc" }}
           />
           <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
             <span className="shrink-0 text-sm font-black text-[#191b18] sm:w-32">{label}</span>
