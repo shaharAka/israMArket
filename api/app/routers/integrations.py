@@ -119,7 +119,7 @@ def ga4_property(
         .first()
     )
     if not item or not item.access_token_enc:
-        raise HTTPException(status_code=400, detail="יש לחבר קודם חשבון Google Analytics")
+        raise HTTPException(status_code=400, detail="חברו קודם את נתוני האתר (גוגל אנליטיקס)")
     extra = loads(item.extra_json, {})
     extra["selected_property_id"] = body.property_id
     item.external_id = body.property_id
@@ -175,11 +175,11 @@ def meta_account(
         .first()
     )
     if not item or not item.access_token_enc:
-        raise HTTPException(status_code=400, detail="יש לחבר קודם חשבון מטא")
+        raise HTTPException(status_code=400, detail="חברו קודם את פייסבוק ואינסטגרם")
     extra = loads(item.extra_json, {})
     page_tokens = extra.get("page_tokens") or {}
     if body.page_id not in page_tokens:
-        raise HTTPException(status_code=400, detail="הדף שנבחר לא נמצא בחשבון שחובר")
+        raise HTTPException(status_code=400, detail="הדף שבחרתם לא נמצא בחשבון שחיברתם")
     extra["selected_page_id"] = body.page_id
     extra["selected_instagram_id"] = body.instagram_id
     extra["selected_ad_account_id"] = body.ad_account_id
@@ -227,7 +227,7 @@ def delete_integration(
     db: Session = Depends(get_db),
 ) -> dict:
     if provider not in ("ga4", "meta"):
-        raise HTTPException(status_code=400, detail="ספק לא חוקי")
+        raise HTTPException(status_code=400, detail="אין חיבור כזה")
     item = (
         db.query(Integration)
         .filter(Integration.business_id == business.id, Integration.provider == provider)

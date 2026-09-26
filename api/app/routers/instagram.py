@@ -29,17 +29,17 @@ def _empty_reason(*, connected: bool, synced: int, own: list, brief: dict | None
     if brief or own:
         return ""
     if not meta.meta_configured():
-        return "החיבור לאינסטגרם עוד לא הופעל במערכת. עד אז הפוסטים נכתבים בלי נתוני אינסטגרם — ולא טוענים מה עבד."
+        return "החיבור לאינסטגרם עוד לא הופעל במערכת. עד אז אנחנו כותבים את הפוסטים בלי נתוני אינסטגרם, ולא טוענים מה עבד."
     if not connected:
-        return "אינסטגרם לא מחובר. חברו את מטא בעמוד החיבורים כדי שהפוסטים ילמדו מהפוסטים שלכם שהכי עבדו."
+        return "אינסטגרם לא מחובר. חברו אותו בעמוד החיבורים, ונכתוב את הפוסטים לפי מה שהכי הצליח לכם."
     if not synced:
-        return "אינסטגרם מחובר, אבל עוד לא סונכרנו ביצועים. סנכרנו בעמוד הביצועים ואז בנו ניתוח השראה."
+        return "אינסטגרם מחובר, אבל עוד לא משכנו את הנתונים של הפוסטים. רעננו את הנתונים בעמוד הביצועים, ואז לחצו על 'ללמוד מהאינסטגרם'."
     if not handles:
         return (
-            "אין עדיין פוסט שלכם עם שמירות, שיתופים או תגובות שאפשר ללמוד ממנו. "
-            "הוסיפו עד 5 חשבונות השראה ובנו ניתוח."
+            "עוד אין פוסט שלכם עם שמירות, שיתופים או תגובות שאפשר ללמוד ממנו. "
+            "הוסיפו עד 5 חשבונות להשראה, ואז לחצו על 'ללמוד מהאינסטגרם'."
         )
-    return "עדיין אין ניתוח השראה לחודש הזה. לחצו על 'בנו ניתוח' כדי ליצור אותו."
+    return "עוד לא למדנו מהאינסטגרם לחודש הזה. לחצו על 'ללמוד מהאינסטגרם'."
 
 
 def _payload(db: Session, business: Business, year: int, month: int) -> dict:
@@ -106,7 +106,7 @@ def refresh_brief(
         result = instagram_signal.refresh_brief(db, business, year, month, hashtags=body.hashtags)
     except Exception as exc:
         db.rollback()
-        raise HTTPException(status_code=502, detail=f"בניית ניתוח ההשראה נכשלה: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו ללמוד מהאינסטגרם: {exc}") from exc
     db.refresh(business)
     return {
         **_payload(db, business, year, month),

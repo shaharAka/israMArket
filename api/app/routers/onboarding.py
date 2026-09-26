@@ -155,7 +155,7 @@ def save_brand_language(
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     stored = loads(business.scraped_profile_json, {}) if business else {}
     if not business or not stored.get("brand_language"):
-        raise HTTPException(status_code=400, detail="קודם קוראים את האתר. אין שפת מותג לשמור לפני הסריקה.")
+        raise HTTPException(status_code=400, detail="קודם צריך לקרוא את האתר. עד אז אין סגנון לשמור.")
     brand = body.model_dump()
     stored["brand_language"] = brand
     business.scraped_profile_json = dumps(stored)
@@ -183,7 +183,7 @@ def save_palette(
     stored = loads(business.scraped_profile_json, {}) if business else {}
     brand = stored.get("brand_language") if business else None
     if not business or not brand:
-        raise HTTPException(status_code=400, detail="אין שפת מותג לשמור. סרקו את האתר קודם.")
+        raise HTTPException(status_code=400, detail="אין עדיין צבעים לשמור. קראו קודם את האתר.")
 
     brand["palette"] = [item.model_dump() for item in body.palette]
     stored["brand_language"] = brand
@@ -274,7 +274,7 @@ def hypotheses(
 def _require_business(db: Session, user: User) -> tuple[Business, dict]:
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     if not business or not business.name or not business.business_type:
-        raise HTTPException(status_code=400, detail="יש למלא את פרטי העסק לפני השלב הזה.")
+        raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
     return business, loads(business.scraped_profile_json, {}) or {}
 
 
@@ -333,7 +333,7 @@ def long_horizon_plan(
     if not ranked:
         raise HTTPException(
             status_code=400,
-            detail="בחרו ודרגו יעדי צמיחה לפני בניית התוכנית הרבעונית.",
+            detail="בחרו את היעדים וסדרו אותם לפי החשיבות, ואז נבנה את התוכנית של הרבעון.",
         )
     try:
         plan = build_long_horizon_plan(
@@ -361,14 +361,14 @@ def generate(
     if not business or not business.business_type or not business.name:
         raise HTTPException(
             status_code=400,
-            detail="יש להגדיר את פרטי העסק לפני יצירת התוכנית",
+            detail="מלאו קודם את פרטי העסק, ואז נבנה את התוכנית.",
         )
 
     stored = loads(business.scraped_profile_json, {}) or {}
     if not stored.get("brand_language") and not business.website_url:
         raise HTTPException(
             status_code=400,
-            detail="סרקו אתר ציבורי או הזינו כתובת לפני יצירת התוכנית",
+            detail="הזינו את כתובת האתר של העסק, ואז נבנה את התוכנית.",
         )
     # Minimal first-run defaults. Everything else the old wizard asked for (diagnostics,
     # ranked targets, the quarter, the month's direction) is optional input here: the

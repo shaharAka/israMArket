@@ -23,6 +23,7 @@ from urllib.parse import urlparse
 
 from app.services.brand import extract_brand_language, public_scan
 from app.services.gemini import lite_json
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.scraper import PREVIEW_LIMITS, _normalize_url, scrape_site
 from app.services.strategy import extract_site_profile
@@ -178,6 +179,8 @@ def _sample_post(scraped: dict, profile: dict, brand: dict) -> dict:
 כותרות: {scraped.get("headings")}
 טקסט מהאתר (מקוצר):
 {_clip(scraped.get("text"), 5000)}
+
+{HEBREW_STYLE}
 """
     return loads(lite_json(prompt, SAMPLE_POST_SCHEMA, thinking_level="LOW"), {}) or {}
 

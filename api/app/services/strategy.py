@@ -14,6 +14,7 @@ from app.services.gemini import lite_json, strategy_json
 from app.config import get_settings
 from app.services.post_model_router import post_json
 from app.services import google_cost
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.schemas_llm import (
     COMPETITOR_EXTRACT_SCHEMA,
@@ -120,11 +121,13 @@ def propose_hypotheses(
 שפת מותג: {brand}
 פרופיל מהאתר: {profile}
 אבחון: {diagnostics or {}}
+
+{HEBREW_STYLE}
 """
     parsed = loads(strategy_json(prompt, HYPOTHESES_SCHEMA), {})
     items = parsed.get("hypotheses") or []
     if len(items) != 3:
-        raise RuntimeError("Gemini לא החזיר שלוש השערות צמיחה לבחירה.")
+        raise RuntimeError("לא קיבלנו שלוש השערות לבחירה. נסו שוב.")
     return items
 
 
@@ -153,11 +156,13 @@ def propose_targets(
 שפת מותג: {brand}
 פרופיל מהאתר: {profile}
 אבחון: {diagnostics or {}}
+
+{HEBREW_STYLE}
 """
     parsed = loads(strategy_json(prompt, TARGETS_SCHEMA), {})
     items = parsed.get("targets") or []
     if len(items) < 5:
-        raise RuntimeError("Gemini לא החזיר מספיק יעדי צמיחה לדירוג.")
+        raise RuntimeError("לא קיבלנו מספיק יעדים לבחירה. נסו שוב.")
     return items
 
 
@@ -186,10 +191,12 @@ def build_long_horizon_plan(
 
 החזר הורייזון (למשל "שלושת החודשים הקרובים"), השערת צמיחה רבעונית אחת,
 2 עד 4 יעדים מדידים, ושלוש אבני דרך — אחת לכל חודש, כל אחת עם נקודת בקרה.
+
+{HEBREW_STYLE}
 """
     plan = loads(strategy_json(prompt, LONG_HORIZON_PLAN_SCHEMA), {})
     if not plan.get("hypothesis") or not plan.get("milestones"):
-        raise RuntimeError("Gemini לא החזיר תוכנית רבעונית מלאה.")
+        raise RuntimeError("לא קיבלנו תוכנית רבעונית מלאה. נסו שוב.")
     return plan
 
 
@@ -230,6 +237,8 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
 7. אל תשתמש במילים שהאתר נמנע מהן: {brand.get("dont_say")}.
 8. {prior_prompt_block(prior)}
 9. אם יש אופק ארוך מהחודש הקודם — קדם את אבן הדרך של החודש החדש, אל תתחיל סיפור אחר.
+
+{HEBREW_STYLE}
 """
     return loads(strategy_json(prompt, USP_SCHEMA), {})
 
@@ -317,6 +326,8 @@ USP: {usp}
 {prior_prompt_block(prior)}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
 
+{HEBREW_STYLE}
+
 {instagram_prompt_block(instagram)}
 """
     # POST_MODEL=gemini (the default) keeps the direct call, so nothing changes unless the
@@ -325,7 +336,7 @@ USP: {usp}
     posts = loads(writer(prompt, MONTHLY_POSTS_SCHEMA), {})
     items = posts.get("posts") or []
     if len(items) < 2:
-        raise RuntimeError(f"Gemini החזיר פחות מדי פוסטים לשבועות {week_text}.")
+        raise RuntimeError(f"קיבלנו פחות מדי פוסטים לשבועות {week_text}. נסו שוב.")
     # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
     # post with no real source carries `inspiration: None` rather than a made-up reason.
     items = attach_inspiration(items, instagram)
@@ -384,10 +395,12 @@ USP והשערת צמיחה: {usp}
 4. management_and_checkpoints: איך המערכת מנהלת, ומתי צריך את בעל העסק.
 5. weekly_breakdown לשבועות 1 עד 4: מיקוד, מה אנחנו עושים, מה צריך מהעסק, מה מודדים, ואיפה מפרסמים.
 {approved_block}{prior_prompt_block(prior)}
+
+{HEBREW_STYLE}
 """
     core = loads(strategy_json(plan_prompt, PLAN_CORE_SCHEMA), {})
     if not core.get("theme") or not core.get("weekly_breakdown"):
-        raise RuntimeError("Gemini לא החזיר תוכנית חודשית מלאה.")
+        raise RuntimeError("לא קיבלנו תוכנית חודשית מלאה. נסו שוב.")
     if long_horizon:
         # The quarter plan is what the user read and approved during onboarding. The
         # month plan is generated afterwards and must never silently rewrite it.
@@ -400,7 +413,7 @@ def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prio
     late = _write_posts_for_weeks(business, usp, core, brand, [3, 4], prior=prior)
     items = early + late
     if len(items) < 4:
-        raise RuntimeError("Gemini החזיר פחות מדי פוסטים לחודש. יש לייצר שוב את התוכנית.")
+        raise RuntimeError("קיבלנו פחות מדי פוסטים לחודש. בנו את התוכנית שוב.")
     return items
 
 
@@ -433,6 +446,8 @@ def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = No
 
 ספק כותרת, Hook, כיתוב מלא (caption), CTA חד, טקסט קצרצר על התמונה (overlay_text), וגרסאות מותאמות לאינסטגרם, פייסבוק ווואטסאפ (outlet_captions).
 שמור על הפורמט המקורי ({post.get("format")}). inspiration_refs ו-inspiration_note לפי בלוק האינסטגרם בלבד.
+
+{HEBREW_STYLE}
 
 {instagram_prompt_block(instagram, rewrite=True)}
 """
@@ -490,7 +505,7 @@ def generate_monthly_strategy(
         profile = scraped_profile["extracted"]
         brand = scraped_profile["brand_language"]
     else:
-        raise RuntimeError("אין סריקת אתר שמורה ואין כתובת אתר. סרקו אתר או הזינו כתובת לפני בניית התוכנית.")
+        raise RuntimeError("עוד לא קראנו את האתר, ואין כתובת אתר. הזינו את כתובת האתר לפני שבונים את התוכנית.")
 
     if not business.get("name") and (profile.get("business_name") or brand.get("business_name")):
         business["name"] = profile.get("business_name") or brand.get("business_name")
@@ -548,7 +563,7 @@ def generate_monthly_strategy(
     else:
         core = state.get("roadmap_core") or {}
         if stage not in {"scan", "usp"} and not core.get("theme"):
-            raise RuntimeError("חסרה תוכנית חודשית שמורה. יש לייצר את התוכנית מחדש.")
+            raise RuntimeError("לא מצאנו את התוכנית של החודש. בנו אותה מחדש.")
 
     if stage == "posts" or (stage in {"scan", "usp", "plan"} and not one_stage):
         early = _write_posts_for_weeks(business, usp, core, brand, [1, 2], prior=prior)
@@ -560,7 +575,7 @@ def generate_monthly_strategy(
 
     if stage == "posts_late" or (stage in {"scan", "usp", "plan", "posts"} and not one_stage):
         if stage == "posts_late" and len(early) < 2:
-            raise RuntimeError("חסרים פוסטים לשבועות 1–2. יש לייצר את התוכנית מחדש.")
+            raise RuntimeError("חסרים הפוסטים של השבועיים הראשונים. בנו את התוכנית מחדש.")
         late = _write_posts_for_weeks(business, usp, core, brand, [3, 4], prior=prior)
         # Re-attached here as well as at write time: on a resumed run the early posts come
         # back from the saved generation state, and the audience list may have changed
@@ -569,7 +584,7 @@ def generate_monthly_strategy(
             attach_tracking(early + late, business, year, month), business.get("audiences") or []
         )
         if len(items) < 4:
-            raise RuntimeError("Gemini החזיר פחות מדי פוסטים לחודש. יש לייצר שוב את התוכנית.")
+            raise RuntimeError("קיבלנו פחות מדי פוסטים לחודש. בנו את התוכנית שוב.")
         mark("done", posts=items)
         return pack(complete=True, core=core, items=items, usp=usp, competitors=competitor_profiles, events=events, plan=plan)
 

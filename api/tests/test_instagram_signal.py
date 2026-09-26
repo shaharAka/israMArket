@@ -695,7 +695,7 @@ class EndpointTest(DbCase):
         self.assertEqual(loads(self.business.instagram_handles_json, []), ["rival", "peer.one"])
         bad = self.client.put("/instagram/handles", json={"handles": ["שם בעברית"]})
         self.assertEqual(bad.status_code, 422)
-        self.assertIn("אינו שם משתמש תקין", bad.json()["detail"])
+        self.assertIn("הוא לא שם משתמש תקין", bad.json()["detail"])
         too_many = self.client.put("/instagram/handles", json={"handles": list("abcdef")})
         self.assertEqual(too_many.status_code, 422)
         self.assertEqual(self.client.get("/instagram/brief").json()["handles"], ["rival", "peer.one"])

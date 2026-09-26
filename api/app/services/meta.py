@@ -62,7 +62,7 @@ def exchange_code(code: str) -> dict:
         timeout=20.0,
     )
     if short.status_code >= 400:
-        raise RuntimeError(f"החלפת קוד מטא נכשלה: {short.text}")
+        raise RuntimeError(f"לא הצלחנו להשלים את החיבור לפייסבוק: {short.text}")
     short_token = short.json()["access_token"]
 
     long_lived = httpx.get(
@@ -76,7 +76,7 @@ def exchange_code(code: str) -> dict:
         timeout=20.0,
     )
     if long_lived.status_code >= 400:
-        raise RuntimeError(f"הארכת טוקן מטא נכשלה: {long_lived.text}")
+        raise RuntimeError(f"לא הצלחנו להאריך את החיבור לפייסבוק: {long_lived.text}")
     payload = long_lived.json()
     expires = datetime.now(timezone.utc) + timedelta(seconds=int(payload.get("expires_in", 60 * 60 * 24 * 60)))
     return {
@@ -123,7 +123,7 @@ def list_pages(access_token: str) -> list[dict]:
         timeout=20.0,
     )
     if response.status_code >= 400:
-        raise RuntimeError(f"שליפת דפי מטא נכשלה: {response.text}")
+        raise RuntimeError(f"לא הצלחנו לקבל מפייסבוק את הדפים שלכם: {response.text}")
     pages = []
     for page in response.json().get("data", []):
         ig = (page.get("instagram_business_account") or {}).get("id", "")
@@ -136,7 +136,7 @@ def list_pages(access_token: str) -> list[dict]:
             }
         )
     if not pages:
-        raise RuntimeError("לא נמצאו דפי פייסבוק בחשבון שחובר.")
+        raise RuntimeError("לא מצאנו דפי פייסבוק בחשבון שחיברתם.")
     return pages
 
 
@@ -216,13 +216,13 @@ def graph_get(path: str, params: dict, access_token: str, timeout: float = 20.0)
             timeout=timeout,
         )
     except httpx.HTTPError as exc:
-        raise GraphError(f"אין תקשורת עם מטא ({exc.__class__.__name__})", kind="unavailable") from exc
+        raise GraphError(f"לא הצלחנו להתחבר לאינסטגרם ולפייסבוק ({exc.__class__.__name__})", kind="unavailable") from exc
     if response.status_code >= 400:
         raise graph_error(response)
     try:
         payload = response.json()
     except ValueError as exc:
-        raise GraphError("מטא החזירה תשובה שאינה JSON", status=response.status_code) from exc
+        raise GraphError("קיבלנו תשובה לא תקינה מאינסטגרם ופייסבוק", status=response.status_code) from exc
     return payload if isinstance(payload, dict) else {}
 
 
@@ -246,7 +246,7 @@ INSIGHT_METRICS = ("views", "reach", "saved", "shares")
 CAPTION_MAX = 2200
 # What the snapshot (and so the diagnostic prompt) keeps, unchanged from before.
 CAPTION_SNAPSHOT = 280
-MISSING_METRIC_HE = "מטא לא החזירה את המדד"
+MISSING_METRIC_HE = "אינסטגרם לא החזיר את המספר הזה"
 
 
 def _metric_value(metric: dict):
@@ -321,12 +321,12 @@ def _list_media(instagram_id: str, access_token: str, limit: int) -> list[dict]:
 
 def fetch_insights(page_access_token: str, instagram_id: str, page_id: str) -> dict:
     if not instagram_id:
-        raise RuntimeError("לדף שנבחר אין חשבון Instagram Business מחובר. חברו IG עסקי בדף ואז סנכרנו שוב.")
+        raise RuntimeError("לדף הפייסבוק שבחרתם לא מקושר חשבון אינסטגרם עסקי. קשרו חשבון עסקי לדף, ואז רעננו את הנתונים.")
 
     try:
         media = _list_media(instagram_id, page_access_token, 20)
     except GraphError as exc:
-        raise RuntimeError(f"שליפת מדיה מאינסטגרם נכשלה: {exc}") from exc
+        raise RuntimeError(f"לא הצלחנו לקבל את הפוסטים מאינסטגרם: {exc}") from exc
 
     posts = []
     failed_metrics: dict[str, int] = {}
@@ -363,7 +363,7 @@ def fetch_insights(page_access_token: str, instagram_id: str, page_id: str) -> d
         timeout=20.0,
     )
     if page.status_code >= 400:
-        raise RuntimeError(f"שליפת נתוני דף נכשלה: {page.text}")
+        raise RuntimeError(f"לא הצלחנו לקבל מפייסבוק את נתוני הדף: {page.text}")
 
     return {
         "page": page.json(),
@@ -423,7 +423,7 @@ def business_discovery(instagram_id: str, access_token: str, username: str, medi
         payload = ask(DISCOVERY_MEDIA_FIELDS_BASIC)
     found = payload.get("business_discovery")
     if not isinstance(found, dict):
-        raise GraphError("מטא לא החזירה פרופיל", kind="not_found")
+        raise GraphError("אינסטגרם לא החזיר את הפרופיל", kind="not_found")
     return found
 
 
@@ -434,7 +434,7 @@ def hashtag_id(instagram_id: str, access_token: str, tag: str) -> str:
     payload = graph_get("ig_hashtag_search", {"user_id": instagram_id, "q": tag}, access_token)
     data = payload.get("data") or []
     if not data or not isinstance(data[0], dict) or not data[0].get("id"):
-        raise GraphError(f"לא נמצא האשטאג #{tag}", kind="not_found")
+        raise GraphError(f"לא מצאנו את ההאשטאג #{tag}", kind="not_found")
     return str(data[0]["id"])
 
 

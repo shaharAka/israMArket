@@ -482,7 +482,7 @@ class PublishTestCase(unittest.TestCase):
     def test_the_brief_names_the_audiences_and_the_tracking_convention(self):
         text = self.client.get("/publish/brief").json()["text"]
         self.assertIn("זוגות צעירים", text)
-        self.assertIn("הקהל הראשי", text)
+        self.assertIn("הקהל העיקרי", text)
         self.assertIn("אזור: תל אביב", text)
         self.assertIn("גיל: 25-40", text)
         self.assertIn("תחומי עניין: אפייה ביתית", text)

@@ -86,8 +86,8 @@ class OnboardingIn(BaseModel):
         allowed = goals_for(self.business_model)
         if self.primary_goal not in allowed:
             raise ValueError(
-                f"המטרה '{self.primary_goal}' אינה מתאימה לעסק מסוג '{self.business_model}'. "
-                f"אפשרויות: {', '.join(allowed)}"
+                f"המטרה '{self.primary_goal}' לא מתאימה לעסק מסוג '{self.business_model}'. "
+                f"אפשר לבחור: {', '.join(allowed)}"
             )
         return self
 

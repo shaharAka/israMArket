@@ -47,8 +47,8 @@ _slots = threading.BoundedSemaphore(PREVIEW_CONCURRENCY)
 _inflight: dict[str, Future] = {}
 _inflight_lock = threading.Lock()
 
-GENERIC_FAILURE = "לא הצלחנו ללמוד את המותג מהאתר הזה כרגע. נסו שוב בעוד דקה, או פתחו חשבון והמשיכו בלי תצוגה מקדימה."
-SLOW_SITE = "האתר נקרא לאט. נסו שוב בעוד דקה — מה שכבר קראנו יישמר."
+GENERIC_FAILURE = "לא הצלחנו לקרוא את האתר הזה כרגע. נסו שוב בעוד דקה, או הירשמו והמשיכו בלי הדוגמה."
+SLOW_SITE = "האתר נטען לאט. נסו שוב בעוד דקה, ומה שכבר קראנו יישמר."
 
 
 class PreviewIn(BaseModel):
@@ -93,15 +93,15 @@ def site_preview(body: PreviewIn, request: Request) -> dict:
         if not ratelimit.allow(f"preview:ip:{ip}", PREVIEW_PER_IP, PREVIEW_WINDOW_SECONDS):
             raise HTTPException(
                 status_code=429,
-                detail="כבר בדקנו כמה אתרים מהכתובת הזו בשעה האחרונה. נסו שוב מאוחר יותר, או פתחו חשבון והמשיכו משם.",
+                detail="כבר קראנו מכאן כמה אתרים בשעה האחרונה. נסו שוב מאוחר יותר, או הירשמו והמשיכו משם.",
             )
         if not ratelimit.allow("preview:global", PREVIEW_GLOBAL, PREVIEW_WINDOW_SECONDS):
             raise HTTPException(
                 status_code=429,
-                detail="יש עומס של בדיקות אתרים כרגע. נסו שוב בעוד כמה דקות.",
+                detail="יש עומס כרגע. נסו שוב בעוד כמה דקות.",
             )
         if not _slots.acquire(blocking=False):
-            raise HTTPException(status_code=503, detail="יש עומס של בדיקות אתרים כרגע. נסו שוב בעוד דקה.")
+            raise HTTPException(status_code=503, detail="יש עומס כרגע. נסו שוב בעוד דקה.")
         with _inflight_lock:
             future = _inflight.get(key)
             if future is None:

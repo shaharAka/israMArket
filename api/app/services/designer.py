@@ -104,7 +104,7 @@ def plan_post_design(
 """
     creative = loads(strategy_json(prompt, DESIGNER_POST_CREATIVE_SCHEMA), {})
     if not creative.get("scene_description"):
-        raise RuntimeError("Gemini לא החזיר תוכנית עיצוב מלאה לפוסט.")
+        raise RuntimeError("לא הצלחנו לעצב את הפוסט. נסו שוב.")
     return creative
 
 

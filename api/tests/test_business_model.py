@@ -63,7 +63,7 @@ class ServiceCostModelTest(unittest.TestCase):
         plan = plan_from_budget(4500, "leads", "services")
         self.assertEqual(plan.expected_purchases, (0, 0))
         self.assertEqual(plan.realistic_roas, (0.0, 0.0))
-        self.assertEqual(plan.conversion_unit, "פנייה (ליד)")
+        self.assertEqual(plan.conversion_unit, "פנייה")
 
     def test_services_still_get_reach_and_clicks(self):
         plan = plan_from_budget(4500, "leads", "services")
@@ -72,15 +72,15 @@ class ServiceCostModelTest(unittest.TestCase):
 
     def test_services_are_told_why_there_is_no_lead_cost(self):
         plan = plan_from_budget(4500, "leads", "services")
-        self.assertTrue(any("אין כאן אומדן לעלות פנייה" in w for w in plan.warnings))
-        self.assertFalse(any("CPA בישראל" in a for a in plan.assumptions))
-        self.assertFalse(any("ROAS סביר" in a for a in plan.assumptions))
+        self.assertTrue(any("אין כאן הערכה של כמה עולה כל פנייה" in w for w in plan.warnings))
+        self.assertFalse(any("להביא קונה" in a for a in plan.assumptions))
+        self.assertFalse(any("על כל שקל בפרסום" in a for a in plan.assumptions))
 
     def test_products_keep_their_purchase_numbers(self):
         plan = plan_from_budget(4500, "sales", "products")
         self.assertGreater(plan.expected_purchases[1], 0)
         self.assertNotEqual(plan.realistic_roas, (0.0, 0.0))
-        self.assertTrue(any("CPA בישראל" in a for a in plan.assumptions))
+        self.assertTrue(any("להביא קונה" in a for a in plan.assumptions))
 
     def test_prompt_block_never_offers_roas_to_a_service_business(self):
         block = prompt_block(plan_from_budget(4500, "leads", "services"))
