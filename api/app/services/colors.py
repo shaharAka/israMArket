@@ -34,7 +34,8 @@ import re
 #   Wix sites (tazizi, artisan1991, amramstudio); none of them uses any as a brand colour.
 # Shopify Dawn: the default colour schemes in Dawn's `config/settings_data.json`
 #   (text/accent #121212, accent-2 #334FB4, background-2 #F3F3F3, scheme-3 #242833) plus
-#   the Shop Pay button purple (#5A31F4) that Shopify injects on product pages.
+#   the Shop Pay button purple (#5A31F4) that Shopify injects on product pages, and the
+#   Polaris green/critical-red (#008060, #D72C0D) its storefront widgets inline.
 # WordPress core: the block editor's preset palette (`--wp--preset--color--*`), which
 #   every block theme inlines.
 # Elementor: the four default Global Colours of a new site kit (Primary #6EC1E4,
@@ -62,7 +63,7 @@ PLATFORM_DEFAULT_COLORS: dict[str, frozenset[str]] = {
             "#116dff", "#166aea", "#20303c", "#eff1f2",
         }
     ),
-    "shopify": frozenset({"#121212", "#334fb4", "#f3f3f3", "#242833", "#5a31f4"}),
+    "shopify": frozenset({"#121212", "#334fb4", "#f3f3f3", "#242833", "#5a31f4", "#008060", "#d72c0d"}),
     "wordpress": frozenset(
         {
             "#cf2e2e", "#ff6900", "#fcb900", "#7bdcb5", "#00d084", "#8ed1fc",
