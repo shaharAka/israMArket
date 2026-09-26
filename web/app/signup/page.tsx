@@ -9,6 +9,11 @@ import { loadPreview, siteFromLocation, type SitePreview } from "@/components/on
 import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
 
+/** "ל" joins a Hebrew name directly (למאפיית תום) and takes a maqaf before a Latin one (ל־Tom's). */
+function forName(name: string): string {
+  return /^[֐-׿]/.test(name) ? `ל${name}` : `ל־${name}`;
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [error, setError] = useState("");
@@ -40,14 +45,14 @@ export default function SignupPage() {
       });
       router.replace(site ? `/onboarding?site=${encodeURIComponent(site)}` : "/onboarding");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "ההרשמה נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לפתוח את החשבון. נסו שוב.");
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <AuthCard title={preview?.business_name ? `חשבון ל${preview.business_name}` : "פתיחת חשבון"}>
+    <AuthCard title={preview?.business_name ? `חשבון ${forName(preview.business_name)}` : "פתיחת חשבון"}>
       {preview ? (
         <div className="-mt-3 mb-5 flex items-center justify-between gap-3">
           <p className="text-sm text-[#5e6159]">אחרי זה נבנה את החודש הראשון.</p>
@@ -74,7 +79,7 @@ export default function SignupPage() {
         />
         <ErrorNote message={error} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="min-h-12 w-full">
-          {pending ? "פותחים חשבון…" : "פתיחת חשבון"}
+          {pending ? "פותחים חשבון…" : "לפתוח חשבון"}
         </Button>
       </form>
       <p className="mt-6 text-center text-xs text-[#63665e]">
@@ -83,7 +88,7 @@ export default function SignupPage() {
           href="/login"
           className="font-bold text-[#191b18] underline-offset-4 hover:underline"
         >
-          התחברו כאן
+          להיכנס
         </Link>
       </p>
     </AuthCard>

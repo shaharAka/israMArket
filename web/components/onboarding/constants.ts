@@ -21,7 +21,7 @@ export const BUSINESS_TYPES = [
 
 /** How customers reach the business, worded for a shop and a service provider alike. */
 export const PRESENCE_MODELS: { key: PresenceType; title: string }[] = [
-  { key: "brick_and_mortar", title: "מגיעים אליי" },
+  { key: "brick_and_mortar", title: "מגיעים אלינו" },
   { key: "online_only", title: "רק אונליין" },
   { key: "hybrid", title: "גם וגם" },
 ];

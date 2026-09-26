@@ -17,7 +17,7 @@ export function GenerationProgress({ stage, businessName }: { stage: string; bus
     <div className="space-y-5" role="status" aria-live="polite">
       <div>
         <h2 className="text-2xl font-black text-[#191b18]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
-        <p className="mt-1 text-sm text-[#5e6159]">כדקה או שתיים. אפשר להשאיר את המסך פתוח.</p>
+        <p className="mt-1 text-sm text-[#5e6159]">דקה או שתיים. השאירו את המסך פתוח.</p>
       </div>
       <ol className="divide-y divide-[#e6e4dc] rounded-lg border border-[#e6e4dc] bg-white">
         {GENERATE_STAGES.map((item, index) => {

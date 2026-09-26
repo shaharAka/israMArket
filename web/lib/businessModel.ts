@@ -14,12 +14,12 @@ export const BUSINESS_MODEL_OPTIONS: { key: BusinessModel; title: string; desc: 
   {
     key: "products",
     title: "מוצרים",
-    desc: "חנות פיזית, אונליין, או מאפייה ומסעדה — משהו שנמכר",
+    desc: "חנות רגילה או אונליין, מאפייה, מסעדה",
   },
   {
     key: "services",
     title: "שירותים",
-    desc: "עצמאי, סטודיו או בעל מקצוע — עיצוב, ייעוץ, קליניקה, הדרכה",
+    desc: "עצמאים, סטודיו או בעלי מקצוע: עיצוב, ייעוץ, קליניקה, הדרכה",
   },
   {
     key: "both",
@@ -31,12 +31,12 @@ export const BUSINESS_MODEL_OPTIONS: { key: BusinessModel; title: string; desc: 
 type GoalOption = { key: PrimaryGoal; title: string; desc: string };
 
 const PRODUCT_GOALS: GoalOption[] = [
-  { key: "sales", title: "מכירות", desc: "עוד רכישות של מה שאתם מוכרים" },
+  { key: "sales", title: "מכירות", desc: "שיותר אנשים יקנו מכם" },
   { key: "brand_awareness", title: "חשיפה", desc: "שיותר אנשים יכירו את העסק" },
 ];
 
 const SERVICE_GOALS: GoalOption[] = [
-  { key: "leads", title: "לידים ופניות", desc: "שיותר אנשים יפנו אליכם וישאלו" },
+  { key: "leads", title: "פניות", desc: "שיותר אנשים יפנו אליכם וישאלו" },
   { key: "personal_brand", title: "מיתוג אישי", desc: "שיכירו אתכם כמומחים בתחום" },
 ];
 
@@ -76,12 +76,12 @@ export type DiagnosticQuestion = {
 
 export const CLUB_QUESTION: DiagnosticQuestion = {
   field: "has_customer_club",
-  title: "יש לכם קלאב לקוחות או רשימת תפוצה?",
-  note: "זו שאלת עדיפות בלבד — אין חיבור למערכת קלאבים או CRM, ואנחנו לא קוראים נתונים על הלקוחות שלכם.",
+  title: "יש לכם מועדון לקוחות או רשימת תפוצה?",
+  note: "זה רק כדי לדעת במה להתמקד. אנחנו לא מתחברים למערכת הלקוחות שלכם ולא רואים נתונים עליהם.",
   options: [
-    { key: "yes", title: "כן, יש", desc: "קלאב או רשימת תפוצה שפונים אליה" },
+    { key: "yes", title: "כן, יש", desc: "מועדון או רשימה ששולחים אליה הודעות" },
     { key: "no", title: "אין", desc: "אין דרך מסודרת לפנות שוב ללקוחות" },
-    { key: "unsure", title: "לא בטוח", desc: "יש משהו, אבל לא מסודר" },
+    { key: "unsure", title: "לא ממש", desc: "יש משהו, אבל לא מסודר" },
   ],
 };
 
@@ -90,19 +90,19 @@ export const REPEAT_QUESTION: DiagnosticQuestion = {
   title: "רוב הלקוחות שלכם חוזרים או חדשים?",
   options: [
     { key: "mostly_repeat", title: "בעיקר חוזרים", desc: "הלקוחות כבר מכירים אתכם" },
-    { key: "balanced", title: "בערך חצי־חצי", desc: "תמהיל של קבועים וחדשים" },
-    { key: "mostly_new", title: "בעיקר חדשים", desc: "רוב התנועה היא פעם ראשונה" },
+    { key: "balanced", title: "בערך חצי־חצי", desc: "גם קבועים וגם חדשים" },
+    { key: "mostly_new", title: "בעיקר חדשים", desc: "רובם מגיעים בפעם הראשונה" },
   ],
 };
 
 export const CHANNEL_QUESTION: DiagnosticQuestion = {
   field: "priority_channel",
   title: "מה חשוב יותר לחזק עכשיו?",
-  note: "זו העדפה, לא התחייבות — אפשר לשנות אותה בכל חודש.",
+  note: "זו העדפה, לא התחייבות. אפשר לשנות אותה בכל חודש.",
   options: [
-    { key: "physical", title: "החנות הפיזית", desc: "להביא עוד אנשים לסניף" },
-    { key: "online", title: "האונליין", desc: "עוד הזמנות מהאתר או וואטסאפ" },
-    { key: "balanced", title: "את שניהם יחד", desc: "לחזק את שניהם במקביל" },
+    { key: "physical", title: "החנות הפיזית", desc: "להביא עוד אנשים לחנות" },
+    { key: "online", title: "המכירות אונליין", desc: "עוד הזמנות מהאתר או מהוואטסאפ" },
+    { key: "balanced", title: "את שניהם", desc: "גם את החנות וגם את האונליין" },
   ],
 };
 
@@ -111,33 +111,33 @@ export const LEAD_SOURCE_QUESTION: DiagnosticQuestion = {
   title: "מאיפה מגיעות אליכם פניות היום?",
   note: "זה קובע אם נחזק את מה שכבר עובד או נפתח ערוץ חדש.",
   options: [
-    { key: "referrals", title: "המלצות", desc: "לקוחות מרוצים מספרים הלאה" },
+    { key: "referrals", title: "המלצות", desc: "לקוחות מרוצים ממליצים עליכם" },
     { key: "social", title: "אינסטגרם / פייסבוק", desc: "פונים אחרי שרואים אתכם שם" },
     { key: "search", title: "גוגל", desc: "מחפשים ומוצאים אתכם" },
-    { key: "mixed", title: "מכמה מקומות", desc: "אין ערוץ אחד דומיננטי" },
+    { key: "mixed", title: "מכמה מקומות", desc: "אין מקור אחד עיקרי" },
     { key: "none", title: "כמעט אין פניות", desc: "צריך לבנות את זה מאפס" },
   ],
 };
 
 export const PORTFOLIO_QUESTION: DiagnosticQuestion = {
   field: "has_portfolio",
-  title: "יש לכם תיק עבודות או מקרי ביקורת מסודרים?",
-  note: "לעסק שירותים זה הכלי שסוגר לקוח — אם אין, זה לרוב הצעד הראשון.",
+  title: "יש לכם תיק עבודות או סיפורי לקוחות מסודרים?",
+  note: "בעסק של שירותים, זה מה שסוגר לקוחות. אם אין, בדרך כלל מתחילים מזה.",
   options: [
-    { key: "yes", title: "כן, מסודר", desc: "אפשר להפנות אליו פניות" },
-    { key: "partial", title: "יש חלקית", desc: "יש עבודות אבל לא מסודר להצגה" },
-    { key: "no", title: "אין", desc: "העבודות קיימות, אבל לא במקום שאפשר להראות" },
+    { key: "yes", title: "כן, מסודר", desc: "אפשר לשלוח אליו מי שפונה" },
+    { key: "partial", title: "חלקית", desc: "יש עבודות, אבל הן לא מסודרות להצגה" },
+    { key: "no", title: "אין", desc: "יש עבודות, אבל אין איפה להראות אותן" },
   ],
 };
 
 export const BRAND_OWNER_QUESTION: DiagnosticQuestion = {
   field: "brand_owner",
-  title: "השם שאתם בונים הוא שלכם או של הסטודיו?",
+  title: "מי הפנים של העסק: אתם או שם הסטודיו?",
   note: "בשירותים אנשים קונים מאדם. זה משנה מה נשים בחזית.",
   options: [
-    { key: "personal", title: "שלי, אישי", desc: "אני הפנים של העסק" },
-    { key: "studio", title: "של הסטודיו", desc: "שם מותג נפרד ממני" },
-    { key: "unsure", title: "עוד לא החלטתי", desc: "אפשר לבחון את זה יחד" },
+    { key: "personal", title: "אני", desc: "הלקוחות מכירים אותי בשם" },
+    { key: "studio", title: "שם הסטודיו", desc: "לעסק יש שם משלו, נפרד ממני" },
+    { key: "unsure", title: "עוד לא החלטתי", desc: "אפשר לבדוק את זה יחד" },
   ],
 };
 
@@ -156,14 +156,14 @@ export function capacityCopy(model: BusinessModel): { title: string; note: strin
   if (model === "services") {
     return {
       title: "כמה פרויקטים או לקוחות אתם יכולים לקחת במקביל?",
-      note: "זו לא שאלת תפעול — היא קובעת אם התוכנית תחפש עוד פניות, או תעדיף לסגור טוב יותר את מה שכבר הגיע. לא חובה.",
-      placeholder: "לדוגמה: עובדת לבד, עד שלושה פרויקטים במקביל.",
+      note: "לא חובה. התשובה קובעת אם התוכנית תחפש עוד פניות, או תעזור לסגור יותר מהפניות שכבר מגיעות.",
+      placeholder: "למשל: עובדת לבד, עד 3 פרויקטים במקביל.",
     };
   }
   return {
-    title: "מה יקרה אם הביקוש יכפיל את עצמו?",
-    note: "זו לא שאלת תפעול — היא קובעת אם התוכנית תחפש עוד לקוחות, או תעדיף להפנות את הביקוש הקיים לימים שקטים ולסל גדול יותר. לא חובה.",
-    placeholder: "לדוגמה: אני לבד בעסק, או שאין קיבולת ליותר מ־X לקוחות ביום.",
+    title: "אם יגיעו פי שניים לקוחות, תעמדו בזה?",
+    note: "לא חובה. התשובה קובעת אם התוכנית תחפש עוד לקוחות, או תעזור להזיז לקוחות לימים השקטים ולמכור להם יותר בכל ביקור.",
+    placeholder: "למשל: אני לבד בעסק, ולא אעמוד ביותר מ־30 לקוחות ביום.",
   };
 }
 
