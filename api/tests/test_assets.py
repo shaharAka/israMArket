@@ -4,6 +4,7 @@ Hermetic: a throwaway SQLite file per test, a temporary media root, and no netwo
 Anything that would talk to the web or to Gemini is either refused by the SSRF guard
 before a socket is opened, or mocked.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil

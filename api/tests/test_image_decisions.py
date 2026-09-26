@@ -1,4 +1,5 @@
 """Tests for the card-image decision logic — who gets a photo, and who pays for one."""
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import unittest
 

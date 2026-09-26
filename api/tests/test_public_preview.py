@@ -4,6 +4,7 @@ Hermetic: DNS is faked (so the SSRF guard sees public addresses without a networ
 HTTP request goes to an in-process MockTransport, and each Gemini entry point is replaced
 by a fake that answers by schema title. No real site and no real model is ever called.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import tempfile

@@ -5,6 +5,7 @@ Nothing about the checklist itself is mocked — every assertion is made against
 profile fields this test wrote, because the whole point of the endpoint is that `done`
 means something really exists.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import re
 import shutil

@@ -1,3 +1,4 @@
+import _test_env  # noqa: F401  (must come before any `app` import)
 import unittest
 
 from app.services.month_loop import next_civil_month, prior_month_review

@@ -8,6 +8,7 @@ The one thing these tests deliberately do not assert is that anything gets publi
 this product cannot post to Instagram or Facebook, and the suite pins that down as data
 (`capability["auto_publish"] is False`) instead of pretending otherwise.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import shutil
 import tempfile

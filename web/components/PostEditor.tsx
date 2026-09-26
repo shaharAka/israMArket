@@ -109,7 +109,7 @@ const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: string }[
 
 const IMAGE_SOURCE_LABELS: Record<string, { text: string; tone: string }> = {
   real_photo: { text: "תמונה אמיתית מהאתר שלכם", tone: "bg-[#e4efe4] text-[#2d5b33] border-[#bcd6bc]" },
-  generated: { text: "תמונה שנוצרה בבינה מלאכותית", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
+  generated: { text: "תמונה שנוצרה ב-AI", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
   asset: { text: "אחת מהתמונות שלכם", tone: "bg-[#fbf4f0] text-[#7d4436] border-[#e3cec4]" },
   pending: { text: "עוד אין תמונה. אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
   none: { text: "כרטיס של טקסט בלבד, בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
@@ -443,7 +443,7 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(source === "ai" ? "ניצור תמונה חדשה בבינה מלאכותית." : "נשתמש בתמונה מהאתר שלכם.");
+      toast(source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "לא הצלחנו להחליף את התמונה");
     } finally {
@@ -862,7 +862,7 @@ export function PostEditor({
               onClick={() => void chooseImageSource("ai")}
               className="min-h-9 rounded-md border border-[#cecdc7] bg-white px-3 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
             >
-              ליצור בבינה מלאכותית
+              ליצור ב-AI
             </button>
           </div>
         ) : null}

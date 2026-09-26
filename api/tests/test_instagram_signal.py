@@ -4,6 +4,7 @@ Hermetic: a throwaway SQLite file per test, every Graph call goes through a mock
 `httpx.get` (or a mocked `meta.*` helper), and Gemini is never called — `strategy_json`
 is patched wherever a prompt would be sent. META_APP_ID/SECRET are not needed.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil

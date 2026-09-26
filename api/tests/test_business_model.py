@@ -1,3 +1,4 @@
+import _test_env  # noqa: F401  (must come before any `app` import)
 import unittest
 
 from pydantic import ValidationError

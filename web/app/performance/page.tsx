@@ -461,7 +461,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                         {row.name || UNASSIGNED_NAME}
                         {row.is_primary ? (
                           <span className="ms-2 rounded-full bg-[#eaf0e6] px-2 py-0.5 text-[10px] font-bold text-[#374b3d]">
-                            הקהל המוביל
+                            הקהל העיקרי
                           </span>
                         ) : null}
                       </span>

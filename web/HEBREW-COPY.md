@@ -66,8 +66,29 @@ Use these consistently. A term changes only if it changes everywhere.
 | cost to get one customer | כמה עולה להביא לקוח | CPA, CAC |
 | brand voice | הסגנון, איך אתם מדברים | הטון (ok as a label), הקול |
 | connect an account | לחבר | לסנכרן, לאנטגרט |
+| refresh data from a source | לרענן, עדכון הנתונים | סנכרון |
+| a number we don't have | לא נמדד | אין מדידה, 0 |
+| engaged visits / bounce | נשארו באתר / יצאו מיד | ביקורים מעורבים, נטישה |
+| reach / impressions | אנשים שראו / חשיפות | ריץ׳, אימפרשנס |
+| click-through rate / cost per click | אחוז הקלקה / המחיר לקליק | CTR, CPC |
+| a heading that "worked" | הצליח | עבד, עובד |
+| the main audience / target | הקהל העיקרי / היעד העיקרי | המוביל, הראשי |
+| status of a post | מחכה לאישור / אושר / פורסם | ממתין, מאושר |
+| an error | לא הצלחנו + verb (+ נסו שוב) | …נכשל, שגיאה ב… |
+| a video | סרטון | וידאו, קליפ |
+| a reel | ריל (one), רילס (many) | |
+| customer club | מועדון לקוחות | קלאב |
+| case studies | סיפורי לקוחות | מקרי ביקורת, קייס סטאדי |
+| funnel stages | קהל חדש / מי שכבר מכיר אתכם / לקוחות קבועים | משפך, קרים, חמים |
+| Google Business Profile | הכרטיס של העסק בגוגל | פרופיל עסק, לתבוע את הפרופיל |
+| media budget / management fee | תקציב המדיה / דמי ניהול | |
+| call to action | קריאה לפעולה | CTA |
+| sold out | נגמר, נמכר הכול | סולד אאוט |
+| the assistant | מאיה (e.g. `הצעה של מאיה`) | המערכת, האלגוריתם |
 
 English brand names in Hebrew letters: גוגל, אינסטגרם, פייסבוק, וואטסאפ.
+Google is grammatically masculine (`גוגל לומד`). Say אינסטגרם or פייסבוק, not מטא — מטא only
+when naming the company that approves the app. The business speaks as `אנחנו`, never `אני`.
 Acronyms (ROAS, CPC, CTR, SEO, UTM, OAuth, API) never appear in owner-facing copy.
 **Exception: "AI"** — Israelis say it, so write `AI` (e.g. `תמונה שנוצרה ב-AI`, `ליצור ב-AI`), not `בינה מלאכותית`.
 
@@ -75,7 +96,7 @@ Acronyms (ROAS, CPC, CTR, SEO, UTM, OAuth, API) never appear in owner-facing cop
 
 | Before | After |
 |---|---|
-| תנו לנו את האתר. נראה איך העסק שלכם נשמע. | הכניסו את האתר. נחזיר לכם פוסט ראשון. |
+| תנו לנו את האתר. נראה איך העסק שלכם נשמע. | הכניסו את האתר. נכתוב את הפוסט הראשון. |
 | שיווק שעובד בישראל | שיווק לעסקים קטנים |
 | הציגו את המותג | לקרוא את האתר |
 | פוסט אחד לדוגמה, כתוב בקול שלכם | פוסט לדוגמה, בסגנון שלכם |

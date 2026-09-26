@@ -55,7 +55,7 @@ export default function InstagramPage() {
     }
   }
 
-  const header = <SectionHeader section="business" title="מה עובד באינסטגרם" />;
+  const header = <SectionHeader section="business" title="מה מצליח באינסטגרם" />;
 
   if (!data) {
     return (

@@ -1,4 +1,5 @@
 """The genericness checks in scripts/compare_post_models.py (pure functions, no model calls)."""
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import sys
 import unittest

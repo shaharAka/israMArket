@@ -4,6 +4,7 @@ Hermetic: no network anywhere. Autocomplete and Search Console are exercised thr
 mocked `httpx` calls or through their parsing helpers; the endpoints run against a
 throwaway SQLite file, the same pattern as the assets suite.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil

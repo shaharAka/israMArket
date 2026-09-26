@@ -5,6 +5,7 @@ calls in the product (`propose_audiences` and the post writer) are mocked, while
 measurement tests build their GA4/Meta payload through the real `performance._attribute`
 — so the rollup is exercised against the attribution the product actually stores.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil
