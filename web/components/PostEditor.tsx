@@ -803,7 +803,7 @@ export function PostEditor({
         className="block w-full px-3 py-2.5 text-right text-[13px] leading-5 text-[#343632] transition-colors hover:bg-[#faf9f6]"
       >
         <span className="line-clamp-2">
-          <span className="ml-1.5 font-bold text-[#20211f]">{businessName}</span>
+          <span className="ml-1.5 font-bold text-[#20211f]">{businessName}</span>{" "}
           {previewCaption(activeCaption)}
         </span>
       </button>
