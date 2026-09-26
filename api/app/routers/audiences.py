@@ -29,7 +29,7 @@ from app.services.jsonutil import dumps, loads
 
 router = APIRouter(tags=["audiences"])
 
-NOT_FOUND = "קהל היעד לא נמצא"
+NOT_FOUND = "לא מצאנו את הקהל הזה"
 
 
 def _owned(db: Session, business: Business, audience_id: int) -> Audience:
@@ -168,7 +168,7 @@ def generate_audiences(
     if not (business.name or business.business_type or business.offerings):
         raise HTTPException(
             status_code=400,
-            detail="אין מספיק פרטים על העסק כדי להציע קהלי יעד. השלימו את פרטי העסק קודם.",
+            detail="אין לנו מספיק פרטים על העסק כדי להציע קהלי יעד. השלימו קודם את פרטי העסק.",
         )
 
     existing = _list(db, business)
@@ -185,7 +185,7 @@ def generate_audiences(
     except HTTPException:
         raise
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"יצירת קהלי היעד נכשלה: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו להציע קהלים: {exc}") from exc
 
     previous = [audience for audience in existing if (audience.source or "") == "generated"]
     # A generated name that comes back unchanged should keep pointing at its posts, so the
@@ -238,20 +238,20 @@ def generate_audiences(
     for audience in created:
         db.refresh(audience)
 
-    note = f"נוצרו {len(created)} קהלי יעד"
+    note = f"הצענו {len(created)} קהלים"
     if previous:
-        note += f", והסט הקודם שנוצר אוטומטית ({len(previous)}) הוחלף"
-    note += " — יצירה חוזרת לא יוצרת כפילויות."
+        note += f", במקום {len(previous)} שהצענו קודם"
+    note += ". לא נוצרו כפילויות."
     if manual:
-        note += f" {len(manual)} קהלים שהוגדרו ידנית נשמרו ללא שינוי."
+        note += f" הקהלים שהגדרתם ידנית ({len(manual)}) נשארו כמו שהם."
     if kept_primary:
         current = next((a for a in _list(db, business) if a.is_primary), None)
         if current is not None:
-            note += f" הקהל הראשי נשאר '{current.name}'."
+            note += f" הקהל העיקרי נשאר '{current.name}'."
     elif created:
         current = next((a for a in _list(db, business) if a.is_primary), None)
         if current is not None:
-            note += f" הקהל הראשי הוא '{current.name}'."
+            note += f" הקהל העיקרי הוא '{current.name}'."
 
     return {
         "audiences": [serialize_audience(audience) for audience in _list(db, business)],
@@ -271,7 +271,7 @@ def create_audience(
 ) -> dict:
     name = body.name.strip()
     if not name:
-        raise HTTPException(status_code=400, detail="לקהל היעד חייב להיות שם.")
+        raise HTTPException(status_code=400, detail="תנו לקהל שם.")
     audience = Audience(
         business_id=business.id,
         name=name,
@@ -309,7 +309,7 @@ def update_audience(
     if body.name is not None:
         name = body.name.strip()
         if not name:
-            raise HTTPException(status_code=400, detail="לקהל היעד חייב להיות שם.")
+            raise HTTPException(status_code=400, detail="תנו לקהל שם.")
         audience.name = name
     if body.summary is not None:
         audience.summary = body.summary.strip()
@@ -332,7 +332,7 @@ def update_audience(
             if remaining:
                 _make_primary(db, business, remaining[0])
             else:
-                message = "זהו קהל היעד היחיד בעסק, ולכן הוא נשאר הקהל הראשי."
+                message = "זה הקהל היחיד שלכם, ולכן הוא נשאר הקהל העיקרי."
 
     # A rename must not leave posts showing a name that no longer exists anywhere.
     if body.name is not None:
@@ -373,13 +373,15 @@ def delete_audience(
     db.commit()
 
     message = f"הקהל '{name}' נמחק."
-    if detached:
+    if detached == 1:
+        message += " פוסט אחד נכתב אליו, ועכשיו הוא מופיע תחת 'לא משויך' עד שתבחרו לו קהל אחר."
+    elif detached:
         message += (
-            f" {detached} פוסטים היו משויכים אליו והשיוך שלהם בוטל — "
-            "הם יופיעו כ'לא משויך' עד שתשויכו אותם לקהל אחר."
+            f" {detached} פוסטים נכתבו אליו, ועכשיו הם מופיעים תחת 'לא משויך' "
+            "עד שתבחרו להם קהל אחר."
         )
     if promoted is not None:
-        message += f" '{promoted.name}' הוגדר כקהל הראשי."
+        message += f" עכשיו '{promoted.name}' הוא הקהל העיקרי."
     return {
         "ok": True,
         "detached_posts": detached,

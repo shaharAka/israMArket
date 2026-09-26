@@ -335,7 +335,7 @@ def parse_suggestions(raw, allowed_ids: set[int], limit: int = 6) -> list[dict]:
             continue
         reason = item.get("reason") or item.get("why") or ""
         if not isinstance(reason, str) or not reason.strip():
-            reason = "הנכס מתאים לפוסט הזה."
+            reason = "התמונה מתאימה לפוסט הזה."
         seen.add(asset_id)
         out.append({"asset_id": asset_id, "reason": _TAG_WS.sub(" ", reason).strip()[:300]})
         if len(out) >= limit:
@@ -515,7 +515,7 @@ def import_from_url(url: str, business_id: int, cap: int = IMPORT_CAP) -> tuple[
     with httpx.Client(follow_redirects=False, timeout=20.0, headers=_fetch_headers(target)) as client:
         response = safe_get(client, target, timeout=20.0)
         if response.status_code >= 400:
-            raise RuntimeError(f"הכתובת החזירה סטטוס {response.status_code}.")
+            raise RuntimeError(f"לא הצלחנו לפתוח את הכתובת (קוד {response.status_code}).")
 
         content_type = normalize_mime(response.headers.get("content-type", ""))
         # The user pasted a direct image link: there is no page to parse.
@@ -530,7 +530,7 @@ def import_from_url(url: str, business_id: int, cap: int = IMPORT_CAP) -> tuple[
             return [_store_download(business_id, "url", item)], 0
 
         if "html" not in content_type and not response.text.lstrip().startswith("<"):
-            raise RuntimeError("הכתובת הזו אינה עמוד HTML ואינה תמונה שאפשר לשמור.")
+            raise RuntimeError("בכתובת הזו אין עמוד או תמונה שאפשר לשמור.")
 
         page_url = str(response.url)
         soup = BeautifulSoup(response.text, "lxml")
@@ -538,8 +538,8 @@ def import_from_url(url: str, business_id: int, cap: int = IMPORT_CAP) -> tuple[
         stored, skipped = _harvest(client, candidates, business_id, "url", cap)
         if not stored:
             raise RuntimeError(
-                "לא נמצאו תמונות שאפשר לשמור בכתובת הזו. "
-                "נסו קישור ישיר לתמונה או עמוד עם תמונות בכתובת ציבורית."
+                "לא מצאנו בכתובת הזו תמונות שאפשר לשמור. "
+                "נסו קישור ישיר לתמונה, או עמוד עם תמונות שפתוח לכולם."
             )
         return stored, skipped
 
@@ -548,15 +548,15 @@ def scan_site_images(website_url: str, business_id: int, cap: int = IMPORT_CAP) 
     """Deep-scan the business's OWN website for images, CSS backgrounds included."""
     base = website_url.strip()
     if not base:
-        raise RuntimeError("לא הוגדרה כתובת אתר לעסק. עדכנו את כתובת האתר ואז סרקו שוב.")
+        raise RuntimeError("לא הוגדרה כתובת אתר לעסק. הוסיפו את כתובת האתר ונסו שוב.")
     target = assert_public_url(base)
     with httpx.Client(follow_redirects=False, timeout=20.0, headers=_fetch_headers(target)) as client:
         response = safe_get(client, target, timeout=20.0)
         if response.status_code >= 400:
-            raise RuntimeError(f"האתר החזיר סטטוס {response.status_code}.")
+            raise RuntimeError(f"לא הצלחנו לפתוח את האתר (קוד {response.status_code}).")
         content_type = normalize_mime(response.headers.get("content-type", ""))
         if "html" not in content_type and not response.text.lstrip().startswith("<"):
-            raise RuntimeError("כתובת האתר לא החזירה עמוד HTML שאפשר לסרוק.")
+            raise RuntimeError("לא הצלחנו לקרוא את העמוד בכתובת הזו.")
 
         page_url = str(response.url)
         soup = BeautifulSoup(response.text, "lxml")
@@ -567,7 +567,7 @@ def scan_site_images(website_url: str, business_id: int, cap: int = IMPORT_CAP) 
         stored, skipped = _harvest(client, candidates[:MAX_CANDIDATES], business_id, "site", cap)
         if not stored:
             raise RuntimeError(
-                "לא נמצאו תמונות באתר. ייתכן שהאתר חסום לסריקה או שהתמונות נטענות רק בדפדפן."
+                "לא מצאנו תמונות באתר. אולי האתר חוסם קריאה אוטומטית, או שהתמונות נטענות רק בדפדפן."
             )
         return stored, skipped
 

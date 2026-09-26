@@ -120,8 +120,8 @@ def plan_from_budget(
     if stage == "below_viable":
         media = budget
         warnings.append(
-            f"תקציב מתחת ל-{RETARGETING_ONLY_BELOW_NIS:,} ₪ בחודש: לפי נתוני השוק "
-            "עדיף להשתמש בו לרימרקטינג בלבד, ולא לנסות לסקייל רכישה חדשה."
+            f"בתקציב של פחות מ-{RETARGETING_ONLY_BELOW_NIS:,} ₪ בחודש, לפי נתוני השוק עדיף "
+            "לפרסם רק למי שכבר מכיר אתכם (ביקר באתר או בעמוד), ולא לנסות להביא הרבה קונים חדשים."
         )
     else:
         media = budget  # agencies bill management separately; do not double-count here
@@ -143,8 +143,9 @@ def plan_from_budget(
 
     if sells_products and purchases[1] < MIN_PURCHASE_EVENTS_FOR_OPTIMISATION and media:
         warnings.append(
-            f"בתקציב הזה צפויים פחות מ-{MIN_PURCHASE_EVENTS_FOR_OPTIMISATION} אירועי רכישה "
-            "בחודש, ומטא מתקשה ללמוד ולאפטם. בשלב הזה המטרה היא איסוף נתונים, לא ROAS."
+            f"בתקציב הזה צפויות פחות מ-{MIN_PURCHASE_EVENTS_FOR_OPTIMISATION} רכישות בחודש, "
+            "ולמערכת המודעות של פייסבוק ואינסטגרם קשה ללמוד ולהשתפר עם כל כך מעט. בשלב הזה המטרה היא איסוף נתונים, "
+            "לא החזר על ההוצאה."
         )
 
     if not sells_products:
@@ -153,8 +154,8 @@ def plan_from_budget(
         # invented number this module exists to avoid, so we report reach and clicks and
         # say plainly what we cannot know.
         warnings.append(
-            "העסק מוכר שירותים, ולכן אין כאן אומדן לעלות פנייה: מחירי ה-CPA שפורסמו "
-            "מתייחסים לרכישות באיקומרס, ולא ניתן לגזור מהם עלות ליד. מספר הפניות תלוי "
+            "העסק מוכר שירותים, ולכן אין כאן הערכה של כמה עולה כל פנייה: המחירים שפורסמו "
+            "הם לרכישות בחנויות אונליין, ואי אפשר לגזור מהם מחיר לפנייה. מספר הפניות תלוי "
             "באתר ובשיחה שלכם, ורק אתם יכולים למדוד אותו."
         )
 
@@ -175,23 +176,26 @@ def plan_from_budget(
 
     if sells_products and primary_goal != "sales":
         warnings.append(
-            "המטרה שנבחרה אינה מכירות, ולכן יעדי ההחזר למטה הם למדידה כללית בלבד "
-            "ואין להשוות אותם ל-ROAS של קמפיין מכירות."
+            "המטרה שבחרתם היא לא מכירות, ולכן יעדי ההחזר למטה הם רק כיוון כללי. "
+            "אל תשוו אותם להחזר של קמפיין שנועד למכור."
         )
 
     assumptions = [
-        f"CPM בישראל {CPM_NIS[0]:.0f}-{CPM_NIS[1]:.0f} ₪ לאלף חשיפות",
-        f"CPC בישראל {CPC_NIS[0]}-{CPC_NIS[1]} ₪",
+        f"מחיר לאלף חשיפות בישראל: {CPM_NIS[0]:.0f}-{CPM_NIS[1]:.0f} ₪",
+        f"מחיר לקליק בישראל: {CPC_NIS[0]}-{CPC_NIS[1]} ₪",
     ]
     if sells_products:
         assumptions += [
-            f"CPA בישראל {CPA_NIS[0]:.0f}-{CPA_NIS[1]:.0f} ₪",
-            f"ROAS סביר ל-Cold Traffic {ROAS_COLD[0]}-{ROAS_COLD[1]} "
-            f"(רימרקטינג {ROAS_RETARGETING[0]}-{ROAS_RETARGETING[1]})",
+            f"כמה עולה להביא קונה בישראל: {CPA_NIS[0]:.0f}-{CPA_NIS[1]:.0f} ₪",
+            f"על כל שקל בפרסום לקהל חדש חוזרים בדרך כלל {ROAS_COLD[0]}-{ROAS_COLD[1]} ₪ במכירות "
+            f"(ממי שכבר מכיר אתכם: {ROAS_RETARGETING[0]}-{ROAS_RETARGETING[1]} ₪)",
         ]
     assumptions += [
-        f"חלוקה מומלצת לפאנל: {split}",
-        "התקציב הוא תקציב כולל; אין בו עלות ניהול קמפיינים או הפקת קרייאטיב",
+        "חלוקה מומלצת: "
+        f"{split['cold'] * 100:.0f}% לקהל חדש, "
+        f"{split['retargeting'] * 100:.0f}% למי שכבר מכיר אתכם, "
+        f"{split['retention'] * 100:.0f}% ללקוחות קיימים",
+        "התקציב הוא הסכום הכולל. הוא לא כולל ניהול קמפיינים או הפקת תמונות וסרטונים",
     ]
 
     return BudgetPlan(
@@ -219,7 +223,7 @@ def prompt_block(plan: BudgetPlan) -> str:
     if is_purchase:
         volume_lines += (
             f"טווח רכישות: {plan.expected_purchases[0]:,}-{plan.expected_purchases[1]:,}\n"
-            f"ROAS ריאלי לחם: {plan.realistic_roas[0]}-{plan.realistic_roas[1]}\n"
+            f"ROAS ריאלי: {plan.realistic_roas[0]}-{plan.realistic_roas[1]}\n"
         )
     else:
         volume_lines += (
@@ -238,6 +242,6 @@ def prompt_block(plan: BudgetPlan) -> str:
             if plan.warnings
             else ""
         )
-        + "\n\nחובה: כל יעד عددי בתוכנית חייב להיות בתוך הטווחים האלה. "
+        + "\n\nחובה: כל יעד מספרי בתוכנית חייב להיות בתוך הטווחים האלה. "
         "אסור להמציא יעד שאינו נגזר מהם, ואסור להבטיח ROAS גבוה מהטווח."
     )

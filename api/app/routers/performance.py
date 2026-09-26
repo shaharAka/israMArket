@@ -114,7 +114,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
     if not ga4_item and not meta_item:
         raise HTTPException(
             status_code=400,
-            detail="חברו לפחות את גוגל אנליטיקס או את אינסטגרם בעמוד החיבורים לפני סנכרון.",
+            detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
         )
 
     end = date.today()
@@ -131,7 +131,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
             page_tokens = extra_meta.get("page_tokens") or {}
             page_token = page_tokens.get(meta_item.external_id)
             if not page_token:
-                raise RuntimeError("חסר טוקן לדף המטא שנבחר. חברו את מטא מחדש.")
+                raise RuntimeError("החיבור לדף הפייסבוק שבחרתם לא שלם. חברו את אינסטגרם מחדש בעמוד החיבורים.")
             meta_data = meta.fetch_insights(page_token, instagram_id, meta_item.external_id)
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc

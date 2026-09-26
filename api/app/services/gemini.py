@@ -51,7 +51,7 @@ def _call_with_retry(fn, *, attempts: int = 5):
             if attempt >= attempts - 1 or not _is_retryable(exc):
                 raise
             time.sleep(4 * (2 ** attempt))
-    raise last_error or RuntimeError("קריאת Gemini נכשלה")
+    raise last_error or RuntimeError("לא קיבלנו תשובה מה-AI. נסו שוב בעוד כמה דקות.")
 
 
 def generate_json(
@@ -84,7 +84,7 @@ def generate_json(
             config=config,
         )
         if not response.text:
-            raise RuntimeError("Gemini החזיר תשובה ריקה")
+            raise RuntimeError("קיבלנו תשובה ריקה מה-AI. נסו שוב.")
         return response.text
 
     return _call_with_retry(_run)
@@ -145,14 +145,14 @@ def generate_image_bytes(
             parts = content.parts if content else []
             finish = getattr(candidate, "finish_reason", None)
             if finish and str(finish) not in {"STOP", "FinishReason.STOP", "1"} and not parts:
-                raise RuntimeError(f"Gemini לא החזיר תמונה ({finish}).")
+                raise RuntimeError(f"לא הצלחנו ליצור תמונה ({finish}). נסו שוב.")
         for part in parts:
             if getattr(part, "thought", False):
                 continue
             inline = getattr(part, "inline_data", None)
             if inline and inline.data:
                 return bytes(inline.data), inline.mime_type or "image/png"
-        raise RuntimeError("Gemini לא החזיר תמונה. בדקו את מודל התמונות ואת המפתח.")
+        raise RuntimeError("לא הצלחנו ליצור תמונה. בדקו את מודל התמונות ואת המפתח.")
 
     try:
         return _call_with_retry(_run, attempts=2)
@@ -165,7 +165,7 @@ def generate_image_bytes(
                     f"למודל {model} אין מכסה במפתח הזה (limit 0). "
                     "צריך תוכנית בתשלום ב-Google AI Studio."
                 ) from exc
-            raise RuntimeError(f"נגמרה מכסת התמונות למודל {model}.") from exc
+            raise RuntimeError(f"נגמרה מכסת התמונות של {model}. נסו שוב מאוחר יותר.") from exc
         raise
 
 

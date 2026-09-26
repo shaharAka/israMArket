@@ -1,4 +1,5 @@
 from app.services.gemini import lite_json
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.schemas_llm import BRAND_LANGUAGE_SCHEMA, PHOTO_USABILITY_SCHEMA
 
@@ -26,13 +27,16 @@ URL: {scraped.get("url")}
 - voice ו-voice_examples חייבים להישמע כמו האתר, לא כמו סוכנות פרסום.
 - do_say / dont_say הם מילים שהאתר כן/לא משתמש בהן.
 - photography ו-visual_style מתארים מה רואים בתמונות ובפריסה.
+- voice_examples מצוטטים מהאתר כמו שהם. כללי הכתיבה שלמטה חלים על כל מה שאתה מנסח בעצמך בעברית.
+
+{HEBREW_STYLE}
 """
     brand = loads(
         lite_json(prompt, BRAND_LANGUAGE_SCHEMA, images=images or None, thinking_level="MEDIUM"),
         {},
     )
     if not brand.get("business_name") or not brand.get("palette") or not brand.get("voice"):
-        raise RuntimeError("Gemini לא החזיר שפת מותג מלאה מהאתר. בדקו שהאתר ציבורי ושיש בו טקסט ותמונות.")
+        raise RuntimeError("לא הצלחנו לקרוא מהאתר את הצבעים והסגנון של העסק. בדקו שהאתר פתוח לכולם ושיש בו טקסט ותמונות.")
     return brand
 
 

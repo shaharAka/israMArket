@@ -39,7 +39,7 @@ def register(
     _: None = Depends(auth_rate_limit("register", by_email=False)),
 ) -> User:
     if db.query(User).filter(User.email == body.email.lower()).first():
-        raise HTTPException(status_code=409, detail="האימייל כבר רשום")
+        raise HTTPException(status_code=409, detail="כבר יש חשבון עם האימייל הזה")
     user = User(
         email=body.email.lower(),
         password_hash=hash_password(body.password),
@@ -62,7 +62,7 @@ def login(
 ) -> User:
     user = db.query(User).filter(User.email == body.email.lower()).first()
     if not user or not verify_password(body.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="אימייל או סיסמה שגויים")
+        raise HTTPException(status_code=401, detail="האימייל או הסיסמה לא נכונים")
     _set_cookie(response, user.id)
     return user
 
@@ -86,9 +86,9 @@ def change_password(
     mistyped or stale one was unrecoverable.
     """
     if not verify_password(body.current_password, user.password_hash):
-        raise HTTPException(status_code=401, detail="הסיסמה הנוכחית שגויה")
+        raise HTTPException(status_code=401, detail="הסיסמה הנוכחית לא נכונה")
     if body.current_password == body.new_password:
-        raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לנוכחית")
+        raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לישנה")
     user.password_hash = hash_password(body.new_password)
     db.commit()
     return {"ok": True}

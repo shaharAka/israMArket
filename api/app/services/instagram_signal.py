@@ -31,6 +31,7 @@ from app.models import Business, HashtagQuery, InspirationBrief, InstagramPost, 
 from app.security import decrypt_secret
 from app.services import meta
 from app.services.gemini import strategy_json
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import dumps, loads
 from app.services.schemas_llm import INSPIRATION_BRIEF_SCHEMA
 
@@ -57,7 +58,7 @@ class HandleError(ValueError):
 def normalize_handle(raw: str) -> str:
     value = (raw or "").strip()
     if not value:
-        raise HandleError("שם משתמש ריק.")
+        raise HandleError("לא הוזן שם משתמש.")
     # A pasted profile link is the most common input; take the username out of it.
     candidate = value if "://" in value else f"https://{value}"
     parsed = urlparse(candidate)
@@ -69,8 +70,8 @@ def normalize_handle(raw: str) -> str:
     value = value.lstrip("@").strip().lower()
     if not _HANDLE_RE.match(value):
         raise HandleError(
-            f"'{raw.strip()}' אינו שם משתמש תקין באינסטגרם: עד 30 תווים, רק אותיות באנגלית, "
-            "ספרות, נקודה וקו תחתון, בלי נקודה בהתחלה או בסוף."
+            f"'{raw.strip()}' הוא לא שם משתמש תקין באינסטגרם. שם משתמש הוא עד 30 תווים: אותיות באנגלית, "
+            "ספרות, נקודה וקו תחתון, ולא מתחיל או נגמר בנקודה."
         )
     return value
 
@@ -84,7 +85,7 @@ def normalize_handles(raw: list[str] | None) -> list[str]:
         if handle not in handles:
             handles.append(handle)
     if len(handles) > MAX_HANDLES:
-        raise HandleError(f"אפשר לשמור עד {MAX_HANDLES} חשבונות אינסטגרם להשראה. נשלחו {len(handles)}.")
+        raise HandleError(f"אפשר לשמור עד {MAX_HANDLES} חשבונות אינסטגרם להשראה, והוספתם {len(handles)}.")
     return handles
 
 
@@ -99,7 +100,7 @@ FORMAT_HE = {
     "reel": "רילס",
     "carousel": "קרוסלה",
     "image": "תמונה",
-    "video": "וידאו",
+    "video": "סרטון",
     "story": "סטורי",
     "unknown": "לא ידוע",
 }
@@ -252,11 +253,11 @@ def own_post_dict(row: InstagramPost) -> dict:
 MIN_REACH = 20
 
 SCORE_BASIS_HE = {
-    "saves_shares_per_reach": "שמירות ושיתופים ביחס לאנשים שהגיעו",
-    "engagement_per_reach": "לייקים ותגובות ביחס לאנשים שהגיעו (אין נתוני שמירות ושיתופים)",
-    "saves_shares_per_view": "שמירות ושיתופים ביחס לצפיות (אין נתון הגעה)",
-    "engagement_per_view": "לייקים ותגובות ביחס לצפיות (אין נתוני הגעה, שמירות ושיתופים)",
-    "raw_engagement": "לייקים ותגובות בלבד (אין נתוני חשיפה)",
+    "saves_shares_per_reach": "שמירות ושיתופים, ביחס למספר האנשים שראו את הפוסט",
+    "engagement_per_reach": "לייקים ותגובות, ביחס למספר האנשים שראו את הפוסט (אין נתונים על שמירות ושיתופים)",
+    "saves_shares_per_view": "שמירות ושיתופים, ביחס למספר הצפיות (אין נתון על כמה אנשים ראו)",
+    "engagement_per_view": "לייקים ותגובות, ביחס למספר הצפיות (אין נתונים על כמה אנשים ראו, שמירות ושיתופים)",
+    "raw_engagement": "לייקים ותגובות בלבד (אין נתון על כמה אנשים ראו)",
 }
 # Lower tier = more trustworthy basis. A post is only compared on the best basis it has.
 _TIERS = {name: index for index, name in enumerate(SCORE_BASIS_HE)}
@@ -369,15 +370,15 @@ def meta_context(business: Business) -> dict | None:
 
 _DISCOVERY_NOTES_HE = {
     "not_found": (
-        "לא מצאנו את @{handle}. Meta מחזירה רק חשבונות עסקיים או יוצרים ציבוריים — ייתכן שהחשבון "
-        "פרטי, אישי, או שהשם שגוי."
+        "לא מצאנו את @{handle}. אפשר לקרוא רק חשבונות עסקיים או של יוצרים, שפתוחים לכולם. "
+        "אולי החשבון פרטי או אישי, או שיש טעות בשם."
     ),
-    "permission": "לאפליקציה עדיין אין הרשאה לקרוא חשבונות אחרים (דורש אישור של Meta). @{handle} לא נקרא.",
-    "rate_limited": "Meta הגבילה זמנית את מספר הבקשות, ולכן @{handle} לא נקרא. נסו שוב בעוד שעה.",
-    "token": "החיבור לאינסטגרם פג תוקף, ולכן @{handle} לא נקרא. חברו את מטא מחדש.",
-    "invalid": "Meta דחתה את הבקשה לחשבון @{handle}.",
-    "unavailable": "Meta לא זמינה כרגע, ולכן @{handle} לא נקרא. נסו שוב מאוחר יותר.",
-    "other": "לא הצלחנו לקרוא את @{handle} כרגע.",
+    "permission": "עוד אין לנו אישור מאינסטגרם לקרוא חשבונות של אחרים, ולכן לא קראנו את @{handle}.",
+    "rate_limited": "אינסטגרם הגביל לזמן קצר את מספר הבקשות, ולכן לא קראנו את @{handle}. נסו שוב בעוד שעה.",
+    "token": "החיבור לאינסטגרם פג, ולכן לא קראנו את @{handle}. חברו את אינסטגרם מחדש בעמוד החיבורים.",
+    "invalid": "אינסטגרם דחה את הבקשה לקרוא את @{handle}.",
+    "unavailable": "אינסטגרם לא עונה כרגע, ולכן לא קראנו את @{handle}. נסו שוב בעוד כמה דקות.",
+    "other": "לא הצלחנו לקרוא את @{handle}. נסו שוב בעוד כמה דקות.",
 }
 # After one of these, every further handle would fail the same way: stop asking.
 _STOP_KINDS = {"permission", "rate_limited", "token"}
@@ -539,7 +540,7 @@ def hashtag_top_posts(
         return {
             **base,
             "used_7d": len(hashtag_usage(db, instagram_id, now)),
-            "note_he": "חיפוש האשטאגים כבוי. הוא דורש אישור Instagram Public Content Access מ-Meta.",
+            "note_he": "החיפוש לפי האשטאג כבוי. כדי להפעיל אותו צריך אישור מיוחד מאינסטגרם (Instagram Public Content Access).",
         }
     now = now or datetime.utcnow()
     used = hashtag_usage(db, instagram_id, now)
@@ -559,7 +560,7 @@ def hashtag_top_posts(
                 {
                     "tag": tag,
                     "ok": False,
-                    "error_he": f"הגענו למכסה של Meta: {HASHTAG_WEEKLY_LIMIT} האשטאגים שונים בשבוע. #{tag} לא נבדק.",
+                    "error_he": f"הגענו למכסה של אינסטגרם: עד {HASHTAG_WEEKLY_LIMIT} האשטאגים שונים בשבוע. לא בדקנו את #{tag}.",
                     "posts": [],
                 }
             )
@@ -607,8 +608,8 @@ def hashtag_top_posts(
 
 CATEGORY_HE = {
     "format": "פורמט",
-    "hook": "הוק",
-    "caption_length": "אורך כיתוב",
+    "hook": "משפט פתיחה",
+    "caption_length": "אורך הכיתוב",
     "cta": "קריאה לפעולה",
     "timing": "ימים ושעות",
     "topic": "נושא",
@@ -683,6 +684,8 @@ def brief_prompt(business: dict, own: list[dict], competitors: list[dict], hasht
 5. ימים ושעות: רק אם יש לפחות שני פוסטים שמראים אותו דבר; אחרת אל תחזיר דפוס timing.
 6. ב-caveats כתוב במפורש כמה פוסטים נותחו ומה חסר (למשל אין פוסטים של העסק, חשבון שלא נמצא, מעט נתונים).
 7. summary: עד שלושה משפטים בעברית פשוטה לבעל העסק, בלי מונחים כמו engagement או reach.
+
+{HEBREW_STYLE}
 """
 
 
@@ -1061,7 +1064,7 @@ def refresh_brief(
             {
                 **_failed_handle(handle, "other"),
                 "error_kind": "not_connected",
-                "error_he": f"@{handle} לא נקרא: אינסטגרם לא מחובר. חברו את מטא בעמוד החיבורים.",
+                "error_he": f"לא קראנו את @{handle}, כי אינסטגרם לא מחובר. חברו אותו בעמוד החיבורים.",
             }
             for handle in handles
         ]
@@ -1072,14 +1075,14 @@ def refresh_brief(
     has_tag_posts = any(result.get("posts") for result in (tag_result or {}).get("results") or [])
     if not own and not has_competitor_posts and not has_tag_posts:
         if not ctx:
-            reason = "אינסטגרם לא מחובר, ולכן אין פוסטים לנתח. חברו את מטא בעמוד החיבורים וסנכרנו ביצועים."
+            reason = "אינסטגרם לא מחובר, ולכן אין פוסטים לבדוק. חברו אותו בעמוד החיבורים, ואז רעננו את הנתונים בעמוד הביצועים."
         elif not handles:
             reason = (
-                "אין עדיין פוסטים של העסק עם מדדים (סנכרנו ביצועים), ולא הוגדרו חשבונות השראה. "
-                "הוסיפו עד 5 חשבונות אינסטגרם של מתחרים או עסקים שאתם אוהבים."
+                "עוד אין פוסטים שלכם עם נתונים (רעננו אותם בעמוד הביצועים), ולא בחרתם חשבונות להשראה. "
+                "הוסיפו עד 5 חשבונות אינסטגרם של מתחרים או של עסקים שאתם אוהבים."
             )
         else:
-            reason = "לא נמצאו פוסטים לנתח: אין פוסטים של העסק עם מדדים, והחשבונות שהוגדרו לא החזירו פוסטים."
+            reason = "לא מצאנו פוסטים לבדוק. עוד אין פוסטים שלכם עם נתונים, ומהחשבונות שבחרתם לא הגיעו פוסטים."
         db.commit()
         return {"status": "empty", "reason_he": reason, "competitors": competitors, "hashtags": tag_result}
 

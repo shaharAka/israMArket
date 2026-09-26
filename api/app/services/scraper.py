@@ -65,7 +65,7 @@ def _normalize_url(url: str) -> str:
     raw = url.strip()
     # Reject an explicit foreign scheme instead of mangling it into a hostname.
     if "://" in raw and not raw.startswith(("http://", "https://")):
-        raise ValueError("אפשר לסרוק רק כתובות http או https.")
+        raise ValueError("אפשר לקרוא רק כתובות אתר רגילות (שמתחילות ב-http או https).")
     if not raw.startswith(("http://", "https://")):
         raw = "https://" + raw
     parsed = urlparse(raw)
@@ -607,7 +607,7 @@ def capped_get(
                 content=bytes(body),
                 request=response.request,
             )
-    raise UnsafeUrlError("יותר מדי הפניות בכתובת הזו.")
+    raise UnsafeUrlError("הכתובת הזו מעבירה יותר מדי פעמים לכתובות אחרות.")
 
 
 def _limited_fetchers(limits: ScrapeLimits):
@@ -649,11 +649,11 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
             # Validates scheme, host and every redirect hop against the SSRF guard.
             response = fetch_page(client, target)
             if response.status_code >= 400:
-                raise RuntimeError(f"האתר {target} החזיר סטטוס {response.status_code}")
+                raise RuntimeError(f"לא הצלחנו לקרוא את האתר {target} (קוד {response.status_code}).")
 
             content_type = response.headers.get("content-type", "")
             if "html" not in content_type and not response.text.lstrip().startswith("<"):
-                raise RuntimeError(f"האתר {target} לא החזיר HTML ציבורי שאפשר לנתח")
+                raise RuntimeError(f"לא הצלחנו לקרוא את האתר {target}. ודאו שהוא פתוח לכולם.")
 
             soup = BeautifulSoup(response.text, "lxml")
             page_url = str(response.url)
@@ -689,15 +689,15 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
     text = " ".join(text.split())
     if len(text) < 80:
         raise RuntimeError(
-            f"האתר {target} כמעט ריק אחרי החילוץ. ייתכן שהוא בנוי כולו ב-JavaScript בלי תוכן HTML."
+            f"כמעט לא מצאנו טקסט באתר {target}. אולי הוא נטען רק בדפדפן, ואנחנו לא יכולים לקרוא אותו."
         )
 
     colors = _extract_colors(response.text, soup, stylesheets)
     fonts = _extract_fonts(soup, stylesheets)
     if not colors and not downloaded:
         raise RuntimeError(
-            f"האתר {target} לא חשף צבעים או תמונות שאפשר לקרוא. "
-            "מעצב האסטרטגיה צריך HTML ציבורי עם עיצוב ותמונות — לא עמוד ריק או אפליקציית JavaScript בלבד."
+            f"לא מצאנו באתר {target} צבעים או תמונות שאפשר לקרוא. "
+            "כדי לבנות תוכנית אנחנו צריכים אתר פתוח לכולם, עם עיצוב ותמונות."
         )
 
     return {

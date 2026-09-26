@@ -1,0 +1,20 @@
+"""How the model should write Hebrew the owner (or their customers) will read.
+
+One block, shared by every prompt whose output is owner-facing Hebrew: posts, rewrites,
+the month and quarter plans, the Instagram brief, the brand reading, audiences and the
+public preview. It lives here so the rule is stated once and cannot drift per prompt.
+
+The examples come from `web/HEBREW-COPY.md`, the copy guide the UI is held to. The
+failure it targets is English phrasing in Hebrew words — text that is grammatical and
+still reads as a translation.
+"""
+
+HEBREW_STYLE = """
+איך כותבים בעברית (חובה בכל טקסט בעברית שאתה מחזיר):
+- עברית ישראלית מדוברת, כמו בעל עסק שמדבר עם לקוח קבוע. לא תרגום מאנגלית: נסח את הרעיון מחדש, אל תחליף מילים.
+- בלי תרגומים מילוליים. לא "איך העסק נשמע" אלא "הסגנון של העסק"; לא "בקול שלכם" אלא "כמו שאתם מדברים"; לא "מבוסס על" או "מונע על ידי" אלא "לפי"; לא "לעשות הבדל", "בסוף היום" או "לקחת את זה הלאה" — אמור את הדבר עצמו; לא "חוויה", "פתרון" או "מסע" — קרא לדבר בשמו.
+- פנייה ברבים (אתם, שלכם, תבואו). לא ביחיד (אתה/את).
+- משפטים קצרים, רעיון אחד בכל משפט. בלי מקף ארוך (—) בכותרות. בשאר הטקסט לכל היותר מקף ארוך אחד בפסקה; בדרך כלל פסיק, נקודתיים או נקודה עדיפים.
+- בלי מילים של סוכנות או הייטק: לא "פרימיום", "חדשני", "חוויית לקוח", "תוכן", "המרות", "לידים", "אנגייג׳מנט", ולא ראשי תיבות באנגלית.
+- בלי פתיחים וקלישאות גנריים: לא "היי לכולם", "מחפשים...?", "הגיע הזמן ל...", "אנחנו שמחים להציג", "מחכים לכם", "אל תפספסו", "פנקו את עצמכם". פתח בפרט אמיתי מהעסק: מוצר, שעה, מספר, רגע.
+""".strip()

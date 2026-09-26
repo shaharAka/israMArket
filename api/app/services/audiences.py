@@ -24,6 +24,7 @@ import re
 from app.models import Audience
 from app.services.business_model import audience_framing, model_framing
 from app.services.gemini import strategy_json
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.schemas_llm import AUDIENCE_PROPOSAL_SCHEMA
 
@@ -43,21 +44,20 @@ LIST_LIMIT = 8
 UNTAGGED_LABEL = "לא משויך"
 
 METHOD_HE = (
-    "המדידה היא סכום של השיוך הקיים ברמת הפוסט — סשנים והמרות מ-GA4 ומעורבות ממטא — "
-    "לפי הקהל שאליו הפוסט משויך בתוכנית. אין כאן מדד חדש, שיעור או שיוך שאין לו כיסוי בנתונים."
+    "לכל קהל אנחנו סוכמים את התוצאות של הפוסטים שנכתבו אליו: כניסות לאתר ופניות מנתוני "
+    "האתר, ולייקים ותגובות מאינסטגרם. אין כאן מדד חדש, אחוז או שיוך שאין לו בסיס בנתונים."
 )
 CONNECT_EXPLANATION_HE = (
-    "אין נתוני מדידה לפי קהל. חברו את Google Analytics 4 או את אינסטגרם בעמוד החיבורים — "
-    "ואז נסכום לכל קהל את הסשנים וההמרות של הפוסטים שמשויכים אליו, לפי אותו שיוך UTM שכבר קיים. "
+    "אין כרגע חיבור לנתוני האתר או לאינסטגרם, ולכן אין מספרים לפי קהל. "
     "בלי חיבור אין מספרים, ואנחנו לא ממציאים אותם."
 )
 SYNC_EXPLANATION_HE = (
-    "אין עדיין סנכרון נתונים. הריצו סנכרון בעמוד הביצועים — ואז כל שורה כאן תציג את "
-    "הסשנים וההמרות של הפוסטים שמשויכים לאותו קהל."
+    "עוד לא משכנו נתונים. רעננו את הנתונים בעמוד הביצועים, ואז כל שורה כאן תציג את "
+    "הכניסות והפניות של הפוסטים שנכתבו לאותו קהל."
 )
 ATTRIBUTION_EXPLANATION_HE = (
-    "הסנכרון האחרון לא החזיר תוצאות לאף פוסט בתוכנית. ודאו שהפוסטים פורסמו עם קישור "
-    "ה-UTM שנוצר בתוכנית, ואז סנכרנו שוב."
+    "הרענון האחרון לא החזיר תוצאות לאף פוסט בתוכנית. ודאו שפרסמתם את הפוסטים עם הקישור "
+    "שיצרנו בתוכנית, ואז רעננו שוב."
 )
 
 _WS = re.compile(r"\s+")
@@ -318,6 +318,8 @@ def proposal_prompt(
 פרופיל מהאתר: {profile}
 אבחון: {diagnostics or {}}
 מתחרים: {competitors or []}
+
+{HEBREW_STYLE}
 """
 
 
@@ -597,18 +599,20 @@ def _explanation(
     notes: list[str] = []
     offline = []
     if not ga4_connected:
-        offline.append("Google Analytics 4")
+        offline.append("נתוני האתר")
     if not meta_connected:
         offline.append("אינסטגרם")
     if offline:
         notes.append(
-            "אין כרגע חיבור פעיל ל: "
-            + ", ".join(offline)
-            + ". המספרים כאן הם מהסנכרון האחרון"
+            "אין כרגע חיבור ל"
+            + " ול".join(offline)
+            + ", ולכן חלק מהמספרים חסרים. מה שמופיע כאן מהרענון האחרון"
             + (f" ({synced_at})." if synced_at else ".")
         )
-    if unassigned_posts:
+    if unassigned_posts == 1:
+        notes.append("פוסט אחד בתוכנית בלי קהל, והוא נספר בנפרד תחת 'לא משויך'.")
+    elif unassigned_posts:
         notes.append(
-            f"{unassigned_posts} פוסטים בתוכנית לא משויכים לקהל, והם נספרים בנפרד ב'לא משויך'."
+            f"{unassigned_posts} פוסטים בתוכנית בלי קהל, והם נספרים בנפרד תחת 'לא משויך'."
         )
     return " ".join(notes)
