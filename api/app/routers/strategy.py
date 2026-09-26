@@ -754,6 +754,9 @@ def generate_next_month(
         "audiences": catalogue_for(db, business),
         # Own top Instagram posts + the month's inspiration brief (or an honest "none").
         "instagram_signal": signal_for(db, business, year, month),
+        # What the owner told us at /start (seasons, what they tried...). Absent for
+        # businesses onboarded before v2. The first-month seed deliberately stays out.
+        "owner_context": stored.get("owner_context") or None,
     }
 
     def persist_stage(next_state: dict) -> None:

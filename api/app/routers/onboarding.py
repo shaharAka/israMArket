@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -12,6 +13,7 @@ from app.services.audiences import catalogue_for
 from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
 from app.services.instagram_signal import handles_for, signal_for
+from app.services.onboarding_draft import DirectionIn, IdeaIn, OnboardingDraft, apply_draft, seed_from_stored
 from app.services.preview import cached_scan
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
@@ -80,6 +82,11 @@ def _business_payload(business: Business) -> dict:
         "generate_state": loads(business.generate_state_json, {}),
         "instagram_handles": handles_for(business),
         "deferred_decisions": _deferred(stored),
+        # Onboarding v2 (additive): the first-meeting answers, where the brand came from
+        # ("preset" when it is a style preset, not a scan) and the chosen first-month seed.
+        "owner_context": stored.get("owner_context"),
+        "brand_source": stored.get("brand_source") or ("scan" if stored.get("brand_language") else None),
+        "first_month_seed": seed_from_stored(stored),
     }
 
 
@@ -88,6 +95,42 @@ def current_business(user: User = Depends(get_current_user), db: Session = Depen
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     if not business:
         return {"business": None}
+    return {"business": _business_payload(business)}
+
+
+class FromDraftIn(BaseModel):
+    draft: OnboardingDraft
+    # Expected from the web flow; optional so a signup never fails because the plan
+    # preview could not be shown. Without it the first month is planned as before.
+    chosen_direction: DirectionIn | None = None
+    chosen_idea: IdeaIn | None = None
+
+
+@router.post("/from-draft")
+def from_draft(
+    body: FromDraftIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Turn the pre-signup draft (/start) into the owner's business. Idempotent.
+
+    Same response as /onboarding/me. The budget step and /onboarding/generate follow
+    unchanged; generation reads the brand this stores (the cached site scan, or the
+    style preset) and the chosen direction/idea (see onboarding_draft.apply_draft).
+    """
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        business = Business(user_id=user.id)
+        db.add(business)
+    apply_draft(
+        db,
+        business,
+        body.draft,
+        body.chosen_direction.model_dump() if body.chosen_direction else None,
+        body.chosen_idea.model_dump() if body.chosen_idea else None,
+    )
+    db.commit()
+    db.refresh(business)
     return {"business": _business_payload(business)}
 
 
@@ -398,6 +441,10 @@ def generate(
         "audiences": catalogue_for(db, business),
         # Usually empty at onboarding, and then the post prompt says so explicitly.
         "instagram_signal": signal_for(db, business),
+        # From /onboarding/from-draft (absent otherwise): the first-meeting answers, and
+        # the direction + idea the owner chose, which only the first month is built on.
+        "owner_context": stored.get("owner_context") or None,
+        "first_month_seed": seed_from_stored(stored),
     }
     scan = stored if stored.get("brand_language") else None
     state = loads(business.generate_state_json, {}) or {}
