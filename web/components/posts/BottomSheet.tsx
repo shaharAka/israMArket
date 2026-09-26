@@ -67,7 +67,7 @@ export function BottomSheet({
     <div className="fixed inset-0 z-[60]" dir="rtl">
       <button
         type="button"
-        aria-label="סגירה"
+        aria-label="לסגור"
         onClick={onClose}
         className="absolute inset-0 h-full w-full cursor-default bg-black/35"
       />
@@ -89,7 +89,7 @@ export function BottomSheet({
             onClick={onClose}
             className="min-h-11 px-2 text-sm font-bold text-[#62635f] underline underline-offset-4"
           >
-            סגירה
+            לסגור
           </button>
         </div>
         <div className="overflow-y-auto overscroll-contain px-4 pb-[max(20px,env(safe-area-inset-bottom))] pt-3">

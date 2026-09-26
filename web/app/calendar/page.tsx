@@ -49,7 +49,7 @@ export default function CalendarPage() {
       <header className="mb-5 flex items-end justify-between gap-4 border-b border-[#e6e4dc] pb-4">
         <h1 className="text-2xl font-black tracking-tight text-[#1e201d] sm:text-3xl">לוח שנה</h1>
         <Link href="/posts" className="min-h-11 content-center text-sm font-bold text-[#20211f] underline underline-offset-4">
-          לרשימת הפוסטים
+          לכל הפוסטים
         </Link>
       </header>
       {ready ? (

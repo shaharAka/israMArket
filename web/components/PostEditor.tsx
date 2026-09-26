@@ -65,7 +65,7 @@ const OUTLETS: { key: OutletKey; label: string; icon: string }[] = [
 const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[] = [
   { key: "punchy", label: "קצר יותר", description: "נשמור את המסר ונקצר אותו" },
   { key: "neighborhood", label: "פחות מכירתי", description: "ננסח בטון טבעי וחם יותר" },
-  { key: "direct", label: "ברור יותר", description: "נחדד מה הלקוח צריך לעשות" },
+  { key: "direct", label: "ברור יותר", description: "נגיד ללקוח בדיוק מה לעשות" },
 ];
 
 /**
@@ -97,22 +97,22 @@ const SECTIONS: { key: Section; label: string; title: string; Icon: (props: { cl
   { key: "tone", label: "טון", title: "לשנות את הטון", Icon: IconSparkles },
   { key: "photo", label: "תמונה", title: "התמונה והעיצוב", Icon: IconImage },
   { key: "download", label: "הורדה", title: "הורדת הכרטיס", Icon: IconDownload },
-  { key: "publish", label: "פרסום", title: "פרסום · ידני", Icon: IconMegaphone },
+  { key: "publish", label: "פרסום", title: "פרסום ידני", Icon: IconMegaphone },
 ];
 
 const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: string }[] = [
-  { key: "hero_clean", label: "תמונת גיבור נקייה", desc: "ללא כיתוב כלל, מיקוד במוצר ובמרקם", icon: "📸" },
-  { key: "corner_badge", label: "מדבקת פינה מעוצבת", desc: "תגית איכות עדינה בפינה העליונה", icon: "🏷️" },
-  { key: "announcement_card", label: "כרטיס הודעה אלגנטי", desc: "כרטיס נייר חם במרכז או בתחתית", icon: "📜" },
-  { key: "ink_pill", label: "תגית דיו מודרנית", desc: "תג צף שחור יוקרתי עם טיפוגרפיה חדה", icon: "✒️" },
+  { key: "hero_clean", label: "צילום נקי", desc: "בלי שום כיתוב, רק המוצר והמרקם", icon: "📸" },
+  { key: "corner_badge", label: "מדבקה בפינה", desc: "תגית קטנה ועדינה בפינה העליונה", icon: "🏷️" },
+  { key: "announcement_card", label: "כרטיס הודעה", desc: "כרטיס נייר חם, באמצע או למטה", icon: "📜" },
+  { key: "ink_pill", label: "תגית שחורה", desc: "תגית שחורה צפה, עם אותיות חדות", icon: "✒️" },
 ];
 
 const IMAGE_SOURCE_LABELS: Record<string, { text: string; tone: string }> = {
   real_photo: { text: "תמונה אמיתית מהאתר שלכם", tone: "bg-[#e4efe4] text-[#2d5b33] border-[#bcd6bc]" },
-  generated: { text: "תמונה שנוצרה ב-AI", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
-  asset: { text: "תמונה מהספרייה שלכם", tone: "bg-[#fbf4f0] text-[#7d4436] border-[#e3cec4]" },
-  pending: { text: "עדיין אין תמונה — אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
-  none: { text: "כרטיס טיפוגרפי — בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
+  generated: { text: "תמונה שנוצרה בבינה מלאכותית", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
+  asset: { text: "אחת מהתמונות שלכם", tone: "bg-[#fbf4f0] text-[#7d4436] border-[#e3cec4]" },
+  pending: { text: "עוד אין תמונה. אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
+  none: { text: "כרטיס של טקסט בלבד, בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
 };
 
 /** Where each library file came from, in the owner's words — same wording as AssetCard. */
@@ -154,7 +154,7 @@ function AssetPickerThumb({ asset, className }: { asset: Asset; className: strin
     // eslint-disable-next-line @next/next/no-img-element -- same-origin proxy path, not an optimizable remote URL
     <img
       src={asset.url}
-      alt={asset.description || "נכס מהספרייה"}
+      alt={asset.description || "אחת מהתמונות שלכם"}
       loading="lazy"
       onError={() => setBroken(true)}
       className={`bg-[#f4f3ee] object-cover ${className}`}
@@ -303,7 +303,7 @@ export function PostEditor({
       })
       .catch((err) => {
         if (cancelled) return;
-        setAudiencesError(err instanceof Error ? err.message : "טעינת הקהלים נכשלה");
+        setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הקהלים");
       })
       .finally(() => {
         if (!cancelled) setAudiencesLoading(false);
@@ -331,7 +331,7 @@ export function PostEditor({
   if (!currentPost) {
     return (
       <div className="rounded-lg border border-[#deddd8] bg-white px-6 py-14 text-center text-sm text-[#62635f]">
-        אנחנו עדיין מכינים את הפוסטים לחודש הזה.
+        עוד מכינים את הפוסטים של החודש.
       </div>
     );
   }
@@ -353,7 +353,7 @@ export function PostEditor({
   async function handleExportCard() {
     const node = exportRef.current;
     if (!node) {
-      toast("הכרטיס עוד לא מוכן לייצוא.");
+      toast("הכרטיס עוד לא מוכן להורדה.");
       return;
     }
     if (!currentPost.image_url && needsPhoto(currentPost.overlay_theme)) {
@@ -370,7 +370,7 @@ export function PostEditor({
     toast(
       result.ok
         ? `הכרטיס הורד בגודל ${exportSize.w}×${exportSize.h}.`
-        : `ייצוא הכרטיס נכשל: ${result.error}`,
+        : `לא הצלחנו להוריד את הכרטיס: ${result.error}`,
     );
   }
 
@@ -393,22 +393,22 @@ export function PostEditor({
       // looked like a broken button.
       switch (result.post.image_action) {
         case "no_photo_theme":
-          toast("הכרטיס הזה טיפוגרפי — הוא נבנה בלי תמונה, וזה מכוון.");
+          toast("הכרטיס הזה בנוי מטקסט בלבד, בלי תמונה. ככה תכננו אותו.");
           break;
         case "kept_existing":
-          toast("כבר יש תמונה לפוסט הזה, ולכן לא נוצרה חדשה.");
+          toast("לפוסט הזה כבר יש תמונה, אז לא יצרנו חדשה.");
           break;
         case "real_photo":
-          toast("השתמשנו בתמונה שנסרקה מהאתר שלכם.");
+          toast("לקחנו תמונה מהאתר שלכם.");
           break;
         case "pending":
-          toast("לא נוצרה תמונה. אפשר ליצור ב-AI או לבחור תמונה משלכם.");
+          toast("לא נוצרה תמונה. אפשר ליצור תמונה חדשה או לבחור אחת מהתמונות שלכם.");
           break;
         default:
-          toast("התמונה נוצרה בהצלחה לפי שפת המותג.");
+          toast("התמונה מוכנה, בצבעים ובסגנון של העסק.");
       }
     } catch (err) {
-      setImageError(err instanceof Error ? err.message : "יצירת התמונה נכשלה");
+      setImageError(err instanceof Error ? err.message : "לא הצלחנו ליצור את התמונה");
     } finally {
       setImageBusy(null);
     }
@@ -443,9 +443,9 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
+      toast(source === "ai" ? "ניצור תמונה חדשה בבינה מלאכותית." : "נשתמש בתמונה מהאתר שלכם.");
     } catch (err) {
-      setImageError(err instanceof Error ? err.message : "החלפת התמונה נכשלה");
+      setImageError(err instanceof Error ? err.message : "לא הצלחנו להחליף את התמונה");
     } finally {
       setImageBusy(null);
     }
@@ -460,7 +460,7 @@ export function PostEditor({
       const result = await endpoints.assets();
       setAssets(result.assets);
     } catch (err) {
-      setAssetsError(err instanceof Error ? err.message : "טעינת הנכסים נכשלה");
+      setAssetsError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התמונות שלכם");
     } finally {
       setAssetsLoading(false);
     }
@@ -492,11 +492,11 @@ export function PostEditor({
       onStrategyUpdated?.(result.strategy);
       setShowAssets(false);
       setSuggestions(null);
-      toast("התמונה מהספרייה שלכם שובצה בפוסט.");
+      toast("התמונה שלכם נכנסה לפוסט.");
     } catch (err) {
       // Kept apart from `assetsError`: a failed attach must not blank out the grid the
       // owner is choosing from.
-      setAttachError(err instanceof Error ? err.message : "בחירת הנכס נכשלה");
+      setAttachError(err instanceof Error ? err.message : "לא הצלחנו להכניס את התמונה לפוסט");
     } finally {
       setAssetBusyId(null);
     }
@@ -513,7 +513,7 @@ export function PostEditor({
       const result = await endpoints.suggestPostAssets(selectedIndex);
       setSuggestions(result.suggestions);
     } catch (err) {
-      setSuggestError(err instanceof Error ? err.message : "התאמת הנכסים נכשלה");
+      setSuggestError(err instanceof Error ? err.message : "לא הצלחנו לבדוק אילו תמונות מתאימות");
     } finally {
       setSuggesting(false);
     }
@@ -530,9 +530,9 @@ export function PostEditor({
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
       const name = audienceId === null ? "" : audiences.find((item) => item.id === audienceId)?.name || "";
-      toast(name ? `הפוסט משויך עכשיו לקהל: ${name}.` : "השיוך לקהל הוסר מהפוסט.");
+      toast(name ? `הפוסט מיועד עכשיו לקהל: ${name}.` : "הפוסט כבר לא מיועד לקהל מסוים.");
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "שיוך הקהל נכשל");
+      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לשמור את הקהל");
     } finally {
       setAudienceBusy(false);
     }
@@ -547,7 +547,7 @@ export function PostEditor({
 
   async function markPublished() {
     if (!publishUrl.trim()) {
-      toast("הדביקו את קישור הפוסט באינסטגרם או בפייסבוק");
+      toast("הדביקו את הקישור לפוסט באינסטגרם או בפייסבוק");
       return;
     }
     setPublishing(true);
@@ -555,9 +555,9 @@ export function PostEditor({
       const result = await endpoints.publishPost(selectedIndex, publishUrl.trim());
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast("סימנו את הפוסט כפורסם. נמדוד אותו בסנכרון הבא.");
+      toast("סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא.");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "שמירת הקישור נכשלה");
+      toast(err instanceof Error ? err.message : "לא הצלחנו לשמור את הקישור");
     } finally {
       setPublishing(false);
     }
@@ -577,11 +577,11 @@ export function PostEditor({
         toast("הפוסט אושר. הנה הבא בתור.");
         goTo(nextIndex);
       } else {
-        toast("הפוסט אושר. כל הפוסטים של החודש מאושרים.");
+        toast("הפוסט אושר. כל הפוסטים של החודש אושרו.");
         onClose?.();
       }
     } catch (err) {
-      toast(err instanceof Error ? err.message : "אישור הפוסט נכשל");
+      toast(err instanceof Error ? err.message : "לא הצלחנו לאשר את הפוסט");
     } finally {
       setApproving(false);
     }
@@ -596,9 +596,9 @@ export function PostEditor({
       // Show the new version: the side panel's text on a desktop, the preview on a phone.
       setActive(isDesktop ? "text" : null);
       setCaptionDraft(null);
-      toast("הכנו גרסה חדשה לבדיקה");
+      toast("הכנו גרסה חדשה");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "הכנת הגרסה החדשה נכשלה");
+      toast(err instanceof Error ? err.message : "לא הצלחנו להכין גרסה חדשה");
     } finally {
       setRewriting(null);
     }
@@ -618,9 +618,9 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(generateImage ? "המעצב תכנן מחדש ויצר תמונה חדשה!" : "כיוון העיצוב עודכן בהצלחה.");
+      toast(generateImage ? "עיצבנו מחדש ויצרנו תמונה חדשה." : "העיצוב עודכן.");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "עיצוב הפוסט נכשל");
+      toast(err instanceof Error ? err.message : "לא הצלחנו לעצב את הפוסט");
     } finally {
       setDesignerBusy(false);
     }
@@ -681,7 +681,7 @@ export function PostEditor({
       setCaptionDraft(null);
       toast(wasApproved ? "הנוסח נשמר. צריך לאשר את הפוסט שוב." : "הנוסח נשמר.");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "שמירת הנוסח נכשלה");
+      toast(err instanceof Error ? err.message : "לא הצלחנו לשמור את הנוסח");
     } finally {
       setSavingCaption(false);
     }
@@ -751,7 +751,7 @@ export function PostEditor({
         >
           <IconImage className="h-6 w-6 text-[#898a85]" />
           <p className="text-sm font-bold text-[#62635f]">
-            {isPreparingImage ? "אנחנו יוצרים את התמונה…" : "התמונה בהכנה"}
+            {isPreparingImage ? "יוצרים את התמונה…" : "התמונה בהכנה"}
           </p>
           {imageError ? (
             <>
@@ -799,7 +799,7 @@ export function PostEditor({
       <button
         type="button"
         onClick={() => setActive("text")}
-        aria-label="לטקסט המלא"
+        aria-label="לקרוא את הטקסט המלא"
         className="block w-full px-3 py-2.5 text-right text-[13px] leading-5 text-[#343632] transition-colors hover:bg-[#faf9f6]"
       >
         <span className="line-clamp-2">
@@ -843,7 +843,7 @@ export function PostEditor({
       <div>
         <p className="text-sm leading-6 text-[#62635f]">
           {IMAGE_SOURCE_LABELS[imageSourceKey]?.text}
-          {currentAsset ? ` · ${currentAsset.description || "נכס ללא תיאור"}` : ""}
+          {currentAsset ? ` · ${currentAsset.description || "תמונה בלי תיאור"}` : ""}
         </p>
 
         {needsPhoto(currentPost.overlay_theme) ? (
@@ -854,7 +854,7 @@ export function PostEditor({
               onClick={() => void chooseImageSource("real")}
               className="min-h-9 rounded-md border border-[#cecdc7] bg-white px-3 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
             >
-              התמונה שלי מהאתר
+              להשתמש בתמונה מהאתר
             </button>
             <button
               type="button"
@@ -862,7 +862,7 @@ export function PostEditor({
               onClick={() => void chooseImageSource("ai")}
               className="min-h-9 rounded-md border border-[#cecdc7] bg-white px-3 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
             >
-              ליצור תמונה ב-AI
+              ליצור בבינה מלאכותית
             </button>
           </div>
         ) : null}
@@ -876,10 +876,10 @@ export function PostEditor({
           >
             <IconImage className="h-3.5 w-3.5" />
             {isPreparingImage
-              ? "יוצר תמונה חדשה ע״י AI…"
+              ? "יוצרים תמונה חדשה…"
               : currentPost.image_url
-                ? "יצירת תמונה חדשה לפי העיצוב"
-                : "יצירת תמונה לפוסט"}
+                ? "ליצור תמונה חדשה לפי העיצוב"
+                : "ליצור תמונה לפוסט"}
           </button>
           <button
             type="button"
@@ -888,7 +888,7 @@ export function PostEditor({
             className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
           >
             <IconImage className="h-3.5 w-3.5" />
-            {showAssets ? "סגירת הספרייה" : "בחירה מהנכסים שלי"}
+            {showAssets ? "לסגור את התמונות שלי" : "לבחור מהתמונות שלי"}
           </button>
         </div>
 
@@ -896,7 +896,7 @@ export function PostEditor({
           <div className="mt-3 rounded-md border border-[#e3cec4] bg-[#fdfbf9] p-3">
             <div className="flex items-center justify-between gap-2">
               <p className="text-[13px] font-bold text-[#7d4436]">
-                הנכסים שלי{assets ? ` · ${assets.length}` : ""}
+                התמונות שלי{assets ? ` · ${assets.length}` : ""}
               </p>
               <span className="flex items-center gap-2 text-xs">
                 <button
@@ -905,13 +905,13 @@ export function PostEditor({
                   onClick={() => void loadAssets()}
                   className="font-bold text-[#747570] underline underline-offset-2 hover:text-[#20211f] disabled:opacity-40"
                 >
-                  רענון
+                  לרענן
                 </button>
                 <Link
                   href="/assets"
                   className="font-bold text-[#7d4436] underline underline-offset-2"
                 >
-                  ניהול הספרייה
+                  לכל התמונות
                 </Link>
               </span>
             </div>
@@ -924,28 +924,28 @@ export function PostEditor({
 
             {!cardNeedsPhoto ? (
               <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-2.5 py-1.5 text-[13px] leading-5 text-[#6b6961]">
-                הכרטיס הזה טיפוגרפי ובלי תמונה, אז הנכס שתבחרו לא יוצג עליו. אפשר לבחור תבנית
-                אחרת ב״התאמה ידנית״ כדי שהתמונה תופיע.
+                הכרטיס הזה בנוי מטקסט בלבד, אז התמונה שתבחרו לא תופיע עליו. כדי שתופיע, בחרו
+                תבנית אחרת ב״התאמה ידנית״.
               </p>
             ) : null}
 
             {assetsLoading && !assets ? (
-              <p className="mt-3 text-[13px] text-[#747570]">טוענים את הספרייה…</p>
+              <p className="mt-3 text-[13px] text-[#747570]">טוענים את התמונות…</p>
             ) : assetsError ? (
               <p className="mt-3 text-[13px] leading-5 text-[#9f4330]">{assetsError}</p>
             ) : libraryEmpty ? (
               <div className="mt-3 rounded-md border border-[#e3cec4] bg-white px-3 py-4 text-center">
-                <p className="text-[13px] font-bold text-[#20211f]">הספרייה שלכם עוד ריקה</p>
+                <p className="text-[13px] font-bold text-[#20211f]">עוד אין לכם כאן תמונות</p>
                 <p className="mx-auto mt-1 max-w-xs text-[13px] leading-5 text-[#747570]">
-                  כדי לשבץ תמונה משלכם צריך קודם שיהיה מה לבחור: מעלים תמונה או סרטון, מייבאים
-                  מקישור, או מריצים סריקה של האתר.
+                  כדי לבחור תמונה משלכם, קודם הוסיפו אותה: העלו תמונה או סרטון, הוסיפו מקישור,
+                  או תנו לנו לקרוא את האתר.
                 </p>
                 <Link
                   href="/assets"
                   className="mt-2.5 inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-[13px] font-bold text-[#1e201d]"
                 >
                   <IconImage className="h-3.5 w-3.5" />
-                  להוספת נכסים לספרייה
+                  להוסיף תמונות
                 </Link>
               </div>
             ) : (
@@ -958,13 +958,13 @@ export function PostEditor({
                     className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 py-2 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-50"
                   >
                     <IconSparkles className="h-3.5 w-3.5" />
-                    {suggesting ? "מחפשים מה מתאים…" : "מה מתאים לפוסט הזה?"}
+                    {suggesting ? "מחפשים מה מתאים…" : "למצוא תמונה שמתאימה לפוסט"}
                   </button>
 
                   {suggesting ? (
                     <p className="mt-2 text-[13px] leading-5 text-[#747570]">
-                      ה-AI עובר על הנכסים שלכם ומשווה אותם לנושא הפוסט. זה יכול לקחת כמה שניות —
-                      אפשר להשאיר את החלון פתוח.
+                      עוברים על התמונות שלכם ובודקים מה מתאים לנושא הפוסט. זה לוקח כמה שניות,
+                      השאירו את החלון פתוח.
                     </p>
                   ) : null}
 
@@ -974,15 +974,15 @@ export function PostEditor({
 
                   {!suggesting && suggestions && !rankedSuggestions.length ? (
                     <p className="mt-2 text-[13px] leading-5 text-[#747570]">
-                      ה-AI לא מצא נכס שמתאים לפוסט הזה, ולכן הוא לא מציע אחד בכוח. אפשר לבחור ידנית
-                      מהספרייה שלמטה.
+                      לא מצאנו תמונה שמתאימה לפוסט הזה, ולא נציע אחת בכוח. אפשר לבחור בעצמכם
+                      מהתמונות למטה.
                     </p>
                   ) : null}
 
                   {rankedSuggestions.length ? (
                     <>
                       <p className="mt-2.5 text-xs font-bold text-[#747570]">
-                        הכי מתאים לפוסט הזה, לפי סדר:
+                        מה הכי מתאים, לפי הסדר:
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
                         {rankedSuggestions.map(({ suggestion, asset }, rank) => (
@@ -1000,7 +1000,7 @@ export function PostEditor({
                                     {rank + 1}
                                   </span>
                                   <span className="line-clamp-2 text-[13px] font-bold leading-4 text-[#20211f]">
-                                    {asset.description || "נכס ללא תיאור"}
+                                    {asset.description || "תמונה בלי תיאור"}
                                   </span>
                                 </span>
                                 <span className="mt-1 block text-[13px] leading-5 text-[#7d4436]">
@@ -1008,8 +1008,8 @@ export function PostEditor({
                                 </span>
                                 <span className="mt-0.5 block text-xs font-bold text-[#747570]">
                                   {assetBusyId === asset.id
-                                    ? "משבצים בפוסט…"
-                                    : "לחצו כדי לשבץ את הנכס בפוסט"}
+                                    ? "מכניסים לפוסט…"
+                                    : "לחצו כדי להכניס לפוסט"}
                                 </span>
                               </span>
                             </button>
@@ -1021,7 +1021,7 @@ export function PostEditor({
                 </div>
 
                 <p className="mt-3 text-xs font-bold text-[#747570]">
-                  כל הנכסים בספרייה — לחיצה משבצת את הנכס בפוסט:
+                  כל התמונות שלכם. לחיצה מכניסה את התמונה לפוסט:
                 </p>
                 <ul className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {(assets ?? []).map((asset) => {
@@ -1039,7 +1039,7 @@ export function PostEditor({
                           <AssetPickerThumb asset={asset} className="h-20 w-full" />
                           <span className="block w-full p-1.5">
                             <span className="line-clamp-2 block text-xs leading-4 text-[#3c3e3a]">
-                              {asset.description || "נכס ללא תיאור"}
+                              {asset.description || "תמונה בלי תיאור"}
                             </span>
                             {asset.tags.length ? (
                               <span className="mt-1 flex flex-wrap gap-1">
@@ -1056,14 +1056,14 @@ export function PostEditor({
                             <span className="mt-1 flex items-center justify-between gap-1 text-[11px] text-[#8b8e84]">
                               <span>
                                 {ASSET_SOURCE_LABELS[asset.source]}
-                                {asset.kind === "video" ? " · וידאו" : ""}
+                                {asset.kind === "video" ? " · סרטון" : ""}
                               </span>
                               <span className="font-bold text-[#7d4436]">
                                 {assetBusyId === asset.id
-                                  ? "משבצים…"
+                                  ? "מכניסים…"
                                   : inPost
                                     ? "בפוסט הזה ✓"
-                                    : "שיבוץ"}
+                                    : "לבחור"}
                               </span>
                             </span>
                           </span>
@@ -1089,20 +1089,20 @@ export function PostEditor({
           <div className="rounded-md border border-[#e2d7c3] bg-[#fcf9f2] p-2.5 text-xs text-[#191b18]">
             {currentPost.creative_concept ? (
               <p className="leading-5">
-                <span className="font-bold">קונספט המעצב: </span>
+                <span className="font-bold">הרעיון: </span>
                 {currentPost.creative_concept}
               </p>
             ) : null}
             {currentPost.visual_style ? (
               <p className="mt-1 text-[13px] text-[#6b6961]">
-                <span className="font-bold">סגנון ארט: </span>
+                <span className="font-bold">הסגנון: </span>
                 {currentPost.visual_style}
               </p>
             ) : null}
           </div>
         ) : null}
 
-        <p className="mt-3 text-[13px] font-bold text-[#747570]">כיוון עיצובי מהיר בלחיצה:</p>
+        <p className="mt-3 text-[13px] font-bold text-[#747570]">עיצוב מהיר, בלחיצה אחת:</p>
         <div className="mt-2 grid grid-cols-2 gap-2">
           {DESIGN_PRESETS.map((preset) => (
             <button
@@ -1125,14 +1125,14 @@ export function PostEditor({
             htmlFor="custom-design-prompt"
             className="mb-1.5 block text-[13px] font-bold text-[#747570]"
           >
-            הנחיה חופשית למעצב ה-AI:
+            או תארו במילים שלכם:
           </label>
           <div className="flex gap-1.5">
             <input
               id="custom-design-prompt"
               value={customDesignPrompt}
               onChange={(e) => setCustomDesignPrompt(e.target.value)}
-              placeholder="למשל: תקריב על הידיים לשות בצק, שולחן חג עשיר..."
+              placeholder="למשל: ידיים לשות בצק מקרוב, שולחן חג עמוס"
               disabled={imageLocked}
               className="flex-1 rounded-md border border-[#dedcd4] px-2.5 py-1.5 text-xs text-[#20211f]"
             />
@@ -1145,7 +1145,7 @@ export function PostEditor({
                 onClick={() => void handleApplyDesignPreset("custom", false)}
                 className="rounded-md border border-[#cecdc7] bg-white px-3 py-1.5 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
               >
-                {designerBusy ? "מתכנן…" : "החלת ההנחיה"}
+                {designerBusy ? "מעצבים…" : "לעצב לפי זה"}
               </button>
             ) : null}
           </div>
@@ -1156,13 +1156,13 @@ export function PostEditor({
           onClick={() => setShowDesignerSettings((open) => !open)}
           className="mt-3 text-[13px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
         >
-          {showDesignerSettings ? "סגור התאמה ידנית" : "התאמה ידנית"}
+          {showDesignerSettings ? "לסגור את ההתאמה הידנית" : "התאמה ידנית"}
         </button>
 
         {showDesignerSettings ? (
           <div className="mt-3 space-y-3 rounded-md border border-[#dedcd4] bg-[#f9f8f6] p-3 text-xs">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-[#20211f]">שילוב כיתוב מעוצב על התמונה</span>
+              <span className="font-bold text-[#20211f]">כיתוב על התמונה</span>
               <button
                 type="button"
                 onClick={() => void updateDesignField({ has_overlay: !hasOverlay })}
@@ -1174,7 +1174,7 @@ export function PostEditor({
                     : "border-[#cecdc7] bg-white text-[#62635f]"
                 }`}
               >
-                {hasOverlay ? "כן, שלב כיתוב" : "לא, צילום נקי"}
+                {hasOverlay ? "כן, עם כיתוב" : "לא, צילום נקי"}
               </button>
             </div>
 
@@ -1251,7 +1251,7 @@ export function PostEditor({
               className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-[#20211f] underline underline-offset-4"
             >
               <IconCopy className="h-3.5 w-3.5" />
-              העתקה
+              להעתיק
             </button>
           </div>
           {editable ? (
@@ -1276,7 +1276,7 @@ export function PostEditor({
                 onClick={() => void saveCaption()}
                 className="min-h-11 rounded-lg border border-[#20211f] bg-white px-4 text-sm font-bold text-[#20211f] disabled:opacity-50"
               >
-                {savingCaption ? "שומרים…" : "שמירת הנוסח"}
+                {savingCaption ? "שומרים…" : "לשמור את הנוסח"}
               </button>
               <button
                 type="button"
@@ -1284,12 +1284,12 @@ export function PostEditor({
                 onClick={() => setCaptionDraft(null)}
                 className="min-h-11 text-sm font-bold text-[#62635f] underline underline-offset-4"
               >
-                ביטול
+                לבטל
               </button>
             </div>
           ) : null}
           {!editable && primaryOutletLabel ? (
-            <p className="mt-1 text-xs text-[#6b6c66]">עריכה אפשרית בנוסח ל{primaryOutletLabel}.</p>
+            <p className="mt-1 text-xs text-[#6b6c66]">אפשר לערוך רק את הנוסח ל{primaryOutletLabel}.</p>
           ) : null}
         </div>
 
@@ -1326,7 +1326,7 @@ export function PostEditor({
                 value={overlayBadge}
                 onChange={(e) => void updateDesignField({ overlay_badge: e.target.value })}
                 className="h-11 w-full rounded-lg border border-[#cecdc7] bg-white px-3 text-sm"
-                placeholder="מהדורת חג / בשישי בלבד…"
+                placeholder="למשל: מיוחד לחג / רק בשישי"
               />
             </div>
           </div>
@@ -1355,7 +1355,7 @@ export function PostEditor({
   function renderToneSection() {
     return (
       <div className="space-y-2">
-        <p className="text-sm text-[#62635f]">בחרו כיוון ואנחנו נכין גרסה חדשה.</p>
+        <p className="text-sm text-[#62635f]">בחרו כיוון, ונכין גרסה חדשה.</p>
         {CHANGE_OPTIONS.map((option) => (
           <button
             key={option.key}
@@ -1388,9 +1388,9 @@ export function PostEditor({
           >
             <span className="inline-flex items-center gap-1.5">
               <IconSparkles className="h-4 w-4" />
-              מעצב ה-AI
+              לשנות עיצוב
             </span>
-            <span className="text-xs font-bold text-[#62635f]">{showDesigner ? "סגירה" : "פתיחה"}</span>
+            <span className="text-xs font-bold text-[#62635f]">{showDesigner ? "לסגור" : "לפתוח"}</span>
           </button>
           {showDesigner ? renderDesignerPanel() : null}
         </div>
@@ -1403,7 +1403,7 @@ export function PostEditor({
       <div className="space-y-3">
         <p className="text-sm font-bold text-[#20211f]">גודל</p>
         <div className="grid grid-cols-2 gap-2">
-          {([{ key: "auto" as const, label: "לפי פורמט" }, ...CARD_RATIOS]).map((r) => (
+          {([{ key: "auto" as const, label: "אוטומטי" }, ...CARD_RATIOS]).map((r) => (
             <button
               key={r.key}
               type="button"
@@ -1426,7 +1426,7 @@ export function PostEditor({
           className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#20211f] bg-white px-4 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-40"
         >
           <IconDownload className="h-4 w-4" />
-          {exporting ? "מייצא כרטיס…" : `הורדת הכרטיס · ${exportSize.w}×${exportSize.h}`}
+          {exporting ? "מורידים את הכרטיס…" : `להוריד את הכרטיס · ${exportSize.w}×${exportSize.h}`}
         </button>
       </div>
     );
@@ -1445,7 +1445,7 @@ export function PostEditor({
             href="/decisions#audiences"
             className="min-h-11 content-center text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
           >
-            ניהול קהלים
+            לכל הקהלים
           </Link>
         </div>
         {/* A load in flight, a failed read and "no audiences yet" are all things the owner
@@ -1456,7 +1456,7 @@ export function PostEditor({
           <p className="text-xs leading-5 text-[#9f4330]">{audiencesError}</p>
         ) : !audiences.length ? (
           <p className="text-xs leading-5 text-[#747570]">
-            עוד לא הוגדרו קהלי יעד, ולכן אין למי לשייך את הפוסט.
+            עוד לא הגדרתם קהלים, אז אי אפשר לבחור למי הפוסט פונה.
           </p>
         ) : (
           <>
@@ -1472,16 +1472,16 @@ export function PostEditor({
               className="h-11 w-full rounded-lg border border-[#cecdc7] bg-white px-2 text-sm font-bold text-[#20211f] disabled:opacity-40"
             >
               <option value="" dir="rtl" lang="he">
-                {currentAudienceId !== null && !currentAudienceName ? "קהל שהוגדר קודם" : "לא הוחלט — בלי שיוך לקהל"}
+                {currentAudienceId !== null && !currentAudienceName ? "קהל שהוגדר קודם" : "לא נבחר קהל"}
               </option>
               {audiences.map((audience) => (
                 <option key={audience.id} value={audience.id} dir="rtl" lang="he">
                   {audience.name}
-                  {audience.is_primary ? " (הקהל המוביל)" : ""}
+                  {audience.is_primary ? " (הקהל העיקרי)" : ""}
                 </option>
               ))}
             </select>
-            {audienceBusy ? <p className="mt-1 text-xs text-[#747570]">מעדכנים את השיוך…</p> : null}
+            {audienceBusy ? <p className="mt-1 text-xs text-[#747570]">שומרים…</p> : null}
           </>
         )}
       </div>
@@ -1542,21 +1542,21 @@ export function PostEditor({
           className={primaryClass}
         >
           <IconCheck className="h-5 w-5" />
-          {approving ? "מאשרים…" : "מאשרים וממשיכים"}
+          {approving ? "מאשרים…" : "לאשר ולהמשיך"}
         </button>
       );
     }
     if (nextPending >= 0) {
       return (
         <button type="button" onClick={() => goTo(nextPending)} className={primaryClass}>
-          לפוסט הבא לאישור
+          לעבור לפוסט הבא
         </button>
       );
     }
     if (onClose) {
       return (
         <button type="button" onClick={onClose} className={primaryClass}>
-          חזרה לכל הפוסטים
+          לחזור לכל הפוסטים
         </button>
       );
     }

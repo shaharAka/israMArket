@@ -136,7 +136,7 @@ function MonthBoard({
                         event.stopPropagation();
                         onOpenPost(postIndex);
                       }}
-                      title={`פתיחת הפוסט: ${post.title}`}
+                      title={`לפתוח את הפוסט: ${post.title}`}
                       className="block w-full truncate rounded bg-blue-50 px-1.5 py-0.5 text-right text-[11px] font-bold text-blue-800 hover:bg-blue-100"
                     >
                       {post.title}
@@ -314,7 +314,7 @@ export function CalendarView({
         setSelected(payload.events[0]?.date ?? isoFor(year, month, 1));
       })
       .catch((err) => {
-        if (active) setError(err instanceof Error ? err.message : "שגיאה בטעינת הלוח");
+        if (active) setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הלוח");
       });
     return () => {
       active = false;
@@ -358,7 +358,7 @@ export function CalendarView({
             }}
             className="min-h-11 text-sm font-bold text-[#20211f] underline underline-offset-4"
           >
-            חזרה ל{monthLabel(initialYear, initialMonth)}
+            לחזור ל{monthLabel(initialYear, initialMonth)}
           </button>
         ) : null}
         {/* The grid's colours need a key; the phone's agenda writes every item out. */}
@@ -439,16 +439,16 @@ export function CalendarView({
                               onClick={() => openPost(index)}
                               className="text-xs font-bold text-[#20211f] underline underline-offset-4"
                             >
-                              פתיחת הפוסט
+                              לפתוח את הפוסט
                             </button>
                           ) : null}
                           <button
                             type="button"
-                            onClick={() => void copyText(post.hook + "\n\n" + post.caption, "הטקסט הועתק!")}
+                            onClick={() => void copyText(post.hook + "\n\n" + post.caption, "הטקסט הועתק")}
                             className="inline-flex items-center gap-1 text-xs font-bold text-[#3f4a5c] underline underline-offset-4 hover:text-[#20211f]"
                           >
                             <IconCopy className="h-3.5 w-3.5" />
-                            העתקת התוכן
+                            להעתיק את הטקסט
                           </button>
                         </div>
                       </li>

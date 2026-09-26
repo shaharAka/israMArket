@@ -10,6 +10,7 @@ import {
 } from "@/lib/api";
 import { IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
+import { shortDay } from "@/components/posts/postMeta";
 
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
 
@@ -99,7 +100,7 @@ export function PublishPanel({
       })
       .catch((err) => {
         if (active) {
-          setCapabilityError(err instanceof Error ? err.message : "בדיקת הרשאות הפרסום נכשלה");
+          setCapabilityError(err instanceof Error ? err.message : "לא הצלחנו לבדוק אם אפשר לפרסם אוטומטית");
         }
       });
     return () => {
@@ -130,7 +131,7 @@ export function PublishPanel({
       onStrategy(result.strategy);
       toast(value ? "התאריך נשמר. הפוסט יופיע בתור לפרסום." : "התאריך הוסר מהפוסט.");
     } catch (err) {
-      setScheduleError(err instanceof Error ? err.message : "שמירת התאריך נכשלה");
+      setScheduleError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התאריך");
       setScheduleDate(storedDate);
     } finally {
       setSavingSchedule(false);
@@ -158,7 +159,7 @@ export function PublishPanel({
       {/* ---- what the owner needs in hand to post by hand ---- */}
       <p className="text-[13px] font-bold text-[#62635f]">מה צריך כדי לפרסם</p>
       <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
-        {storedDate ? `מיועד ל-${storedDate}` : "עוד לא נקבע תאריך"}
+        {storedDate ? `מתוכנן ליום ${shortDay(storedDate)}` : "עוד לא נקבע תאריך"}
         {published ? " · סומן כפורסם" : ""}
       </p>
 
@@ -170,7 +171,7 @@ export function PublishPanel({
           className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
         >
           <IconImage className="h-3.5 w-3.5" />
-          {exporting ? "מייצא כרטיס…" : "הורדת הכרטיס"}
+          {exporting ? "מורידים את הכרטיס…" : "להוריד את הכרטיס"}
         </button>
         <a
           href={whatsappShareUrl(whatsappText)}
@@ -179,7 +180,7 @@ export function PublishPanel({
           className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#25d366] bg-white px-3 text-xs font-bold text-[#0b7a3d] hover:bg-[#f1fbf5]"
         >
           <IconWhatsApp className="h-4 w-4" />
-          שליחה בוואטסאפ
+          לשלוח בוואטסאפ
         </a>
         {composers.map((composer) => (
           <a
@@ -195,8 +196,8 @@ export function PublishPanel({
         ))}
       </div>
       <p className="mt-1.5 text-xs leading-5 text-[#8b8e84]">
-        הוואטסאפ נפתח עם הכיתוב והקישור מוכנים לשליחה. אינסטגרם ופייסבוק לא מאפשרות למלא
-        כיתוב מבחוץ — שם פותחים את האפליקציה ומדביקים.
+        וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה. באינסטגרם ובפייסבוק אי אפשר למלא
+        כיתוב מבחוץ, אז פותחים את האפליקציה ומדביקים.
       </p>
 
       {/* The caption for the channel being looked at, ready to paste. The text itself is
@@ -210,7 +211,7 @@ export function PublishPanel({
           className="inline-flex min-h-11 items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
         >
           <IconCopy className="h-3.5 w-3.5" />
-          העתקת הכיתוב
+          להעתיק את הכיתוב
         </button>
       </div>
 
@@ -230,16 +231,16 @@ export function PublishPanel({
               className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
             >
               <IconLink className="h-3 w-3" />
-              העתקת הקישור
+              להעתיק את הקישור
             </button>
             <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-              פרסום עם הקישור הזה הוא מה שמאפשר לשייך אחר כך לחיצות ופניות לפוסט הזה.
+              כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט.
             </p>
           </>
         ) : (
           <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
-            לפוסט הזה אין קישור עם מעקב, כי לא רשום אתר לעסק. אפשר להוסיף את האתר בהחלטות,
-            ואז הקישור ייווצר לפוסטים.
+            לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״,
+            וניצור קישור לכל פוסט.
           </p>
         )}
       </div>
@@ -247,7 +248,7 @@ export function PublishPanel({
       {/* ---- when it goes out ---- */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
         <label htmlFor="post-scheduled-for" className="block text-[13px] font-bold text-[#62635f]">
-          תאריך לפרסום
+          מתי לפרסם
         </label>
         <div className="mt-1.5 flex flex-wrap items-center gap-2">
           <input
@@ -265,7 +266,7 @@ export function PublishPanel({
               onClick={() => void saveSchedule("")}
               className="min-h-10 px-1 text-[13px] font-bold text-[#62635f] underline underline-offset-2 disabled:opacity-40"
             >
-              הסרת התאריך
+              להסיר את התאריך
             </button>
           ) : null}
           {savingSchedule ? (
@@ -273,7 +274,7 @@ export function PublishPanel({
           ) : null}
         </div>
         <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-          {storedDate ? "" : "בלי תאריך הפוסט לא ייכנס לרשימת מה שממתין לפרסום."}
+          {storedDate ? "" : "בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום."}
         </p>
         {scheduleError ? (
           <p className="mt-1 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
@@ -286,11 +287,11 @@ export function PublishPanel({
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
         <p className="text-[13px] font-bold text-[#62635f]">אחרי שפרסמתם ב{outletLabel}</p>
         <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-          מדביקים כאן את הקישור לפוסט שפורסם, כדי שנמדוד אותו בתוצאות.
+          הדביקו כאן את הקישור לפוסט שפורסם, ונמדוד אותו בתוצאות.
         </p>
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
           <input
-            aria-label="קישור הפוסט שפורסם"
+            aria-label="הקישור לפוסט שפורסם"
             value={publishUrl}
             onChange={(event) => onPublishUrlChange(event.target.value)}
             placeholder="https://..."
@@ -302,7 +303,7 @@ export function PublishPanel({
             onClick={onMarkPublished}
             className="min-h-10 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
           >
-            {published ? "עדכון קישור" : "סימון כפורסם"}
+            {published ? "לעדכן את הקישור" : "לסמן שפורסם"}
           </button>
         </div>
       </div>
@@ -311,8 +312,8 @@ export function PublishPanel({
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
         <p className="text-[13px] font-bold text-[#62635f]">
           {capability?.auto_publish
-            ? "הרשאות פרסום"
-            : "פרסום אוטומטי לאינסטגרם ולפייסבוק — אין הרשאה ממטא"}
+            ? "יש הרשאה לפרסום אוטומטי"
+            : "אין לנו הרשאה ממטא לפרסם אוטומטית באינסטגרם ובפייסבוק"}
         </p>
 
         {capabilityError ? (
@@ -320,7 +321,7 @@ export function PublishPanel({
             {capabilityError}
           </p>
         ) : !capability ? (
-          <p className="mt-1.5 text-[13px] text-[#747570]">בודקים מה מותר למערכת לעשות…</p>
+          <p className="mt-1.5 text-[13px] text-[#747570]">בודקים מה מותר לנו לפרסם…</p>
         ) : (
           // The conclusion is the heading above and stays on the face; the API's reasons are
           // the explanation of it, one tap down (UI-RULES rule 2 and 7).
@@ -342,7 +343,7 @@ export function PublishPanel({
             {capability.missing.length ? (
               <details className="mt-2">
                 <summary className="cursor-pointer text-[13px] font-bold text-[#62635f] underline underline-offset-2">
-                  מה בדיוק חסר לאישור (למי שמטפל במטא)
+                  מה בדיוק חסר (למי שמנהל את החשבון במטא)
                 </summary>
                 <ul className="mt-1.5 space-y-1">
                   {capability.missing.map((scope) => (
