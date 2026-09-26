@@ -40,7 +40,7 @@ import hashlib
 import re
 import time
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from urllib.parse import urlparse
 
 import httpx
@@ -1668,7 +1668,8 @@ def run_research(
     previous_findings = loads(previous.findings_json, {}) if previous else {}
     ctx = {
         "now": now,
-        "today": now.date(),
+        # The owner's calendar day: after 21:00 UTC it is already tomorrow in Israel.
+        "today": now.replace(tzinfo=timezone.utc).astimezone(instagram_signal.ISRAEL_TZ).date(),
         "previous_state": (previous_findings or {}).get("state") or {},
     }
     findings: list[dict] = []
