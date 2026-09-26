@@ -69,6 +69,7 @@ Use these consistently. A term changes only if it changes everywhere.
 
 English brand names in Hebrew letters: גוגל, אינסטגרם, פייסבוק, וואטסאפ.
 Acronyms (ROAS, CPC, CTR, SEO, UTM, OAuth, API) never appear in owner-facing copy.
+**Exception: "AI"** — Israelis say it, so write `AI` (e.g. `תמונה שנוצרה ב-AI`, `ליצור ב-AI`), not `בינה מלאכותית`.
 
 ## 6. Before / after (from the landing page)
 
