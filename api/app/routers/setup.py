@@ -230,10 +230,10 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
         ),
         _item(
             "google",
-            title="חיבור Google Analytics",
-            why="רק כך רואים אילו פוסטים וערוצים באמת הביאו תנועה והמרות.",
+            title="חיבור נתוני האתר",
+            why="רק כך רואים אילו פוסטים באמת הביאו אנשים לאתר, ומה הם עשו שם.",
             action_href="/integrations",
-            action_label="לחיבור GA4",
+            action_label="לחבר את נתוני האתר",
             done="ga4" in connected,
         ),
         _item(

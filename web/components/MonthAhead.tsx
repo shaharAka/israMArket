@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { endpoints, generateUntilDone, isDemo, type MonthHorizon, type StrategyPayload } from "@/lib/api";
 import { IconCalendar, IconRoute } from "@/lib/icons";
+import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
+
+/** The card variant's colours come from the one section system, not its own hexes. */
+const TONE = SECTIONS.strategy;
 
 const STAGE_LABELS: Record<string, string> = {
   usp: "מחדדים את הכיוון מהחודש שעבר…",
@@ -33,8 +37,12 @@ export function MonthAhead({
    * button, for a place that already provides the container — a row in Today's list, or
    * the body of Today's top card once the month is approved. The honesty note stays in
    * both; the row only says it shorter.
+   *
+   * "line" is the row with the button kept beside the text on a phone as well — for the
+   * last row of a compact list (the weeks on התוכנית), where a full-width button would be
+   * the tallest thing in the list.
    */
-  variant?: "card" | "row";
+  variant?: "card" | "row" | "line";
 }) {
   const [busy, setBusy] = useState(false);
   const [stage, setStage] = useState("");
@@ -65,6 +73,46 @@ export function MonthAhead({
       : "bg-[#20211f] text-white hover:bg-[#343632]"
   }`;
   const buttonLabel = next.next_in_progress ? "להמשיך את הבנייה" : `לבנות את ${next.next_month_name_he}`;
+
+  if (variant === "line") {
+    if (next.next_exists) {
+      return (
+        <p className="flex min-h-12 items-center gap-3 text-sm font-bold text-[#20211f]">
+          <span className="shrink-0" style={{ color: TONE.accent }}>
+            <IconCalendar className="h-4 w-4" />
+          </span>
+          {next.next_month_name_he} כבר בנוי, ויתחיל ב־1 לחודש.
+        </p>
+      );
+    }
+    return (
+      <div className="flex items-center justify-between gap-3 py-2.5">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-[#20211f]">
+            החודש הבא: {next.next_month_name_he}
+            {next.next_in_progress ? " — נעצר באמצע" : ""}
+          </p>
+          <p className="text-xs leading-5 text-[#747570]">
+            {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאושר, בלי להמציא מספרים."}
+          </p>
+          {error ? <p className="mt-1 text-sm text-[#9f4330]">{error}</p> : null}
+        </div>
+        {busy ? (
+          <p className="max-w-[45%] text-xs leading-5" style={{ color: TONE.accent }}>
+            {STAGE_LABELS[stage] || "בונים את החודש הבא…"}
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={() => void buildNext()}
+            className={`${buttonClass} shrink-0`}
+          >
+            {buttonLabel}
+          </button>
+        )}
+      </div>
+    );
+  }
 
   if (variant === "row") {
     if (next.next_exists) {
@@ -102,8 +150,11 @@ export function MonthAhead({
 
   if (next.next_exists) {
     return (
-      <section className="rounded-lg border border-[#c7d6c2] bg-[#f3f7f1] px-5 py-4">
-        <p className="flex items-center gap-2 text-xs font-bold text-[#374b3d]">
+      <section
+        className="rounded-lg border px-5 py-4"
+        style={{ background: TONE.surface, borderColor: TONE.border }}
+      >
+        <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
           <IconCalendar className="h-4 w-4" />
           החודש הבא מוכן
         </p>
@@ -115,8 +166,8 @@ export function MonthAhead({
   }
 
   return (
-    <section className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] px-5 py-4">
-      <p className="flex items-center gap-2 text-xs font-bold text-[#685f47]">
+    <section className="rounded-lg border border-[#e6e4dc] bg-white px-5 py-4">
+      <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
         <IconRoute className="h-4 w-4" />
         החודש הבא
       </p>
@@ -131,7 +182,7 @@ export function MonthAhead({
       </p>
       {error ? <p className="mt-2 text-sm text-[#9f4330]">{error}</p> : null}
       {busy ? (
-        <p className="mt-3 text-sm text-[#685f47]">{STAGE_LABELS[stage] || "בונים את החודש הבא…"}</p>
+        <p className="mt-3 text-sm" style={{ color: TONE.accent }}>{STAGE_LABELS[stage] || "בונים את החודש הבא…"}</p>
       ) : (
         <button type="button" onClick={() => void buildNext()} className={`mt-3 ${buttonClass}`}>
           {buttonLabel}

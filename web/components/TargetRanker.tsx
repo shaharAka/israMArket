@@ -4,6 +4,11 @@ import { useState } from "react";
 import type { GrowthTargetCandidate } from "@/lib/api";
 import { AGENT_NAME } from "@/lib/agent";
 import { IconCheck, IconSparkles } from "@/lib/icons";
+import { SECTIONS } from "@/lib/sections";
+
+/** The one section colour system, instead of this component's own sand and sage. */
+const TONE = SECTIONS.decisions;
+const TINT = { background: TONE.surface, borderColor: TONE.border, color: TONE.accent };
 
 /** A quarter carries three priorities. Four is a list, not a focus. */
 export const MAX_TARGETS = 3;
@@ -157,9 +162,12 @@ export function TargetRanker({
         )}
 
         {agentCanDecide ? (
-          <div className="mt-3 flex flex-col gap-2 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-3 flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
+            style={{ background: TONE.surface, borderColor: TONE.border }}
+          >
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-xs font-bold text-[#685f47]">
+              <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
                 <IconSparkles className="h-3.5 w-3.5" />
                 יש המלצה מוכנה
               </p>
@@ -172,7 +180,7 @@ export function TargetRanker({
               // looked broken: the owner's manual picks usually *are* her three (she is
               // listed first), so the natural click landed on a dead control with no
               // explanation of why. An explicit confirmation says what actually happened.
-              <p className="flex shrink-0 items-center gap-2 rounded-md border border-[#c7d6c2] bg-[#f3f7f1] px-3 py-2 text-xs font-bold text-[#374b3d]">
+              <p className="flex shrink-0 items-center gap-2 rounded-md border bg-white px-3 py-2 text-xs font-bold" style={{ borderColor: TONE.border, color: TONE.accent }}>
                 <IconCheck className="h-3.5 w-3.5" />
                 הבחירה שלכם זהה להמלצה של {AGENT_NAME}
               </p>
@@ -217,7 +225,7 @@ export function TargetRanker({
                       <span className="mb-1 flex items-center gap-2">
                         <span className="text-[10px] font-bold text-[#8b8e84]">{item.category}</span>
                         {isRecommended ? (
-                          <span className="rounded-full bg-[#fcf9f2] px-2 py-0.5 text-[10px] font-bold text-[#685f47]">
+                          <span className="rounded-full border px-2 py-0.5 text-[10px] font-bold" style={TINT}>
                             {AGENT_NAME} ממליצה · {item.recommended_rank}
                           </span>
                         ) : null}
@@ -232,7 +240,7 @@ export function TargetRanker({
           </ul>
         </section>
       ) : value.length ? (
-        <p className="flex items-center gap-2 text-xs font-bold text-[#2d3f32]">
+        <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
           <IconCheck className="h-4 w-4" />
           כל היעדים המוצעים נבחרו. סדרו אותם לפי סדר החשיבות.
         </p>

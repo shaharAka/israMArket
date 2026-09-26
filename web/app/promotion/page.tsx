@@ -17,7 +17,7 @@ import {
   type PublishBrief,
 } from "@/lib/api";
 import { formatNis } from "@/lib/budget";
-import { IconBell, IconChart, IconCheck, IconCopy, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
+import { IconBell, IconCheck, IconCopy, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { copyText } from "@/lib/ui";
 
@@ -88,22 +88,30 @@ function Figure({ children }: { children: ReactNode }) {
   );
 }
 
-/** The Hebrew labels come from the backend; only the colour and the why are ours. */
-const INTENT_META: Record<KeywordIntent, { label: string; why: string; className: string }> = {
+/**
+ * The Hebrew labels come from the backend; only the emphasis and the why are ours.
+ *
+ * The two intents that are worth money or free local reach carry the app's one accent;
+ * the rest are neutral. They used to carry a colour each (sage, teal, sand), which read as
+ * five different products on one line.
+ */
+const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: boolean; className: string }> = {
   transactional: {
     label: "כוונת קנייה",
     why: "מחפשים לקנות או להזמין עכשיו. אלה המילים ששוות כסף בפרסום.",
-    className: "border-[#c7d6c2] bg-[#eaf0e6] text-[#374b3d]",
+    accent: true,
+    className: "",
   },
   local: {
     label: "מקומי",
     why: "מחפשים מקום בסביבה. על אלה עונים הכרטיס בגוגל ותוצאות המפות — בחינם.",
-    className: "border-[#c7dad7] bg-[#f0f6f5] text-[#2f5d57]",
+    accent: true,
+    className: "",
   },
   commercial: {
     label: "בחינה והשוואה",
     why: "משווים אפשרויות לפני החלטה. מתאים לתוכן שמסביר למה דווקא אתם.",
-    className: "border-[#e2d7c3] bg-[#fcf9f2] text-[#685f47]",
+    className: "border-[#dedcd4] bg-white text-[#3c3e3a]",
   },
   branded: {
     label: "מיתוג",
@@ -131,24 +139,83 @@ const INTENT_ORDER: KeywordIntent[] = [
   "general",
 ];
 
-const FALLBACK_INTENT = {
+const FALLBACK_INTENT: { label: string; why: string; accent?: boolean; className: string } = {
   label: "כללי",
   why: "לא זוהתה כוונה מובהקת מהמילים.",
   className: "border-[#e6e4dc] bg-[#f8f7f4] text-[#63665e]",
 };
 
+/** Red stays red: "critical" is a warning, not a section colour. */
 const PRIORITY_META: Record<string, { label: string; className: string }> = {
-  critical: { label: "קריטי", className: "border-[#eed1c9] bg-[#fbf2ef] text-[#9f4330]" },
-  high: { label: "חשוב", className: "border-[#e2d7c3] bg-[#fcf9f2] text-[#685f47]" },
+  critical: { label: "דחוף", className: "border-[#eed1c9] bg-[#fbf2ef] text-[#9f4330]" },
+  high: { label: "חשוב", className: "border-[#dedcd4] bg-[#f4f3ee] text-[#3c3e3a]" },
   medium: { label: "כדאי", className: "border-[#e6e4dc] bg-[#f8f7f4] text-[#63665e]" },
 };
+
+const ACCENT_CHIP = { background: identity.surface, borderColor: identity.border, color: identity.accent };
 
 function IntentChip({ intent, label }: { intent: KeywordIntent; label?: string }) {
   const meta = INTENT_META[intent] ?? FALLBACK_INTENT;
   return (
-    <span className={`label-mark ${meta.className}`} title={meta.why}>
+    <span
+      className={`label-mark ${meta.className}`}
+      style={meta.accent ? ACCENT_CHIP : undefined}
+      title={meta.why}
+    >
       {label || meta.label}
     </span>
+  );
+}
+
+/**
+ * Plain Hebrew for the backend's own sentences.
+ *
+ * The warnings and assumptions are written by `google_cost.py` and still carry the
+ * trade's shorthand — ROAS, CPC, SEO, "דאטה", "לאפטם". Nothing here changes a figure or
+ * drops a clause: each term is swapped for the plain words it stands for (UI-RULES rule
+ * 4), so the caveat reaches an owner who has never heard the acronym. Ordered longest
+ * first, so a phrase is rewritten before the bare term inside it.
+ */
+const PLAIN_TERMS: [RegExp, string][] = [
+  [/לא כ-ROAS/g, "לא כחודש שצריך להחזיר את ההוצאה"],
+  [/ROAS/g, "ההחזר על ההוצאה"],
+  [/CPC לתחום/g, "מחיר לקליק בתחום"],
+  [/CPC/g, "המחיר לקליק"],
+  [/\(SEO, /g, "(קידום האתר בחיפוש בלי לשלם, "],
+  [/SEO/g, "קידום האתר בחיפוש בלי לשלם"],
+  [/ל-Keyword Planner/g, "לכלי תכנון המילים של גוגל"],
+  [/Keyword Planner/g, "כלי תכנון המילים של גוגל"],
+  [/ולרימרקטינג/g, "ולפנייה חוזרת למי שכבר ביקר"],
+  [/רימרקטינג/g, "פנייה חוזרת למי שכבר ביקר"],
+  [/ולאפטם/g, "ולהשתפר"],
+  [/לאפטם/g, "להשתפר"],
+  [/ותאפטם/g, "ותשתפר"],
+  [/אופטימיזציה אמיתית/g, "שיפור אמיתי"],
+  [/האלגוריתם של גוגל/g, "המערכת של גוגל"],
+  [/דאטה/g, "נתונים"],
+  [/טווח ההמרות הצפוי/g, "מספר הפניות וההזמנות הצפוי מהמודעות"],
+  [/שיעור המרה/g, "שיעור הפונים"],
+  [/ההמרות/g, "הפניות וההזמנות"],
+  [/המרות/g, "פניות או הזמנות"],
+  // A range like "24-64" inside a Hebrew sentence flips its brackets and dash; isolating
+  // it left-to-right keeps the digits in the order they were written.
+  [/(\d[\d,.]*)-(\d[\d,.]*)/g, "\u2066$1–$2\u2069"],
+];
+
+function plain(text: string): string {
+  return PLAIN_TERMS.reduce((out, [pattern, words]) => out.replace(pattern, words), text);
+}
+
+/**
+ * The disclosure caret, drawn as a CSS triangle rather than a "‹" glyph: rule 7 counts
+ * `main.innerText`, and a text glyph is counted as a word on every closed expand.
+ */
+function Caret() {
+  return (
+    <span
+      aria-hidden
+      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+    />
   );
 }
 
@@ -177,9 +244,7 @@ function Expand({
           {title}
           {hint ? <span className="block text-xs font-normal text-[#8b8e84]">{hint}</span> : null}
         </span>
-        <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90">
-          ‹
-        </span>
+        <Caret />
       </summary>
       <div className="pb-5 pt-1">{children}</div>
     </details>
@@ -448,30 +513,35 @@ export default function PromotionPage() {
   // Comparing the owner's budget with the floor the backend names is arithmetic on two
   // published figures, not a new figure — and it is the one comparison that decides
   // whether this campaign can run at all.
+  // The page's one answer, in words: is Google worth it at this budget. It is the same
+  // comparison as before — the budget against the published floor — said as a sentence
+  // an owner can act on, with the reason (the floor itself) directly under it.
+  const floorFigureText = nisRange(floor);
   const floorStatus =
     typeof budget === "number" && isRange(floor)
       ? budget < floor[0]
         ? {
-            label: "התקציב מתחת לרצפה",
-            text: "מתחת לרצפה אין מספיק דאטה כדי שגוגל תלמד — המקור מתאר מעגל שבו התקציב נשרף בלי להשאיר נתונים.",
-            className: "text-[#9f4330]",
+            verdict: "עוד לא כדאי לפרסם בגוגל.",
+            reason: "בפחות מזה, לפי המקור, לגוגל אין מספיק נתונים כדי ללמוד, והכסף נגמר בלי תוצאות.",
+            tone: "warn" as const,
           }
         : budget < floor[1]
           ? {
-              label: "בחלק התחתון של הרצפה",
-              text: "אפשר להתחיל, אבל זו נקודת פתיחה צרה: פחות מקום לטעויות.",
-              className: "text-[#685f47]",
+              verdict: "אפשר להתחיל לפרסם בגוגל, אבל בזהירות.",
+              reason: "אתם בתחתית שלו: אפשר להתחיל, אבל יש פחות מקום לטעויות.",
+              tone: "neutral" as const,
             }
           : {
-              label: "מעל הרצפה",
-              text: "התקציב מעל הרצפה שפורסמה למגזר, ולכן יש מקום גם ללמוד וגם לטעות.",
-              className: "text-[#2f5d57]",
+              verdict: "יש מקום לנסות פרסום בגוגל.",
+              reason: "התקציב שלכם מעליו, ולכן יש מקום גם ללמוד וגם לטעות.",
+              tone: "good" as const,
             }
       : null;
 
   const budgetFigure = typeof budget === "number" ? `${whole.format(Math.round(budget))} ₪` : null;
   const cpcFigure = nisRangePrecise(plan?.cpc_range);
-  const floorFigure = nisRange(floor);
+  const floorFigure = floorFigureText;
+  const totalFigure = nisRange(plan?.total_monthly_ils);
   const firstMonthFigure = nisRange(plan?.first_month_total_ils);
   // The budget verdict is already a line of its own, so the warning line shows the first
   // warning that says something new. All of them, in the backend's order, are one expand
@@ -488,11 +558,9 @@ export default function PromotionPage() {
 
   // The face shows the actionable part only; the long lists open from one expand.
   const TOP_QUICK_WINS = 3;
-  const TOP_STEPS = 3;
   const topQuickWins = quickWins.slice(0, TOP_QUICK_WINS);
   const restQuickWins = quickWins.slice(TOP_QUICK_WINS);
-  const topSteps = profile?.steps?.slice(0, TOP_STEPS) ?? [];
-  const restSteps = profile?.steps?.slice(TOP_STEPS) ?? [];
+  const criticalSteps = profile?.steps?.filter((step) => step.priority === "critical").length ?? 0;
   const moreTerms = rowsWithNumbers.length + phraseRows.length;
 
   const keywordsReady = Boolean(keywords) && !keywordsError;
@@ -500,184 +568,169 @@ export default function PromotionPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl">
-        <SectionHeader section="promotion" title="קידום בגוגל" />
+        <SectionHeader section="business" title="קידום בגוגל" />
 
-        {demo ? (
-          <p
-            className="mb-5 rounded-md border px-4 py-2 text-xs"
-            style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
-          >
-            מצב הדגמה — המחירים והמילים לדוגמה.
-          </p>
-        ) : null}
+        {demo ? <p className="-mt-3 mb-4 text-xs text-[#63665e]">בהדגמה המחירים והמילים לדוגמה.</p> : null}
 
-        {/* ---------- the answer, the warning, and the one ask ---------- */}
+        {/* ---------- the answer, its reason, and the one ask ---------- */}
         <section
-          aria-labelledby="answer-heading"
-          className="rounded-lg border p-5 sm:p-6"
-          style={{ borderColor: identity.border, background: identity.surface }}
+          aria-label="התשובה בקצרה"
+          className="rounded-lg p-4 sm:p-6"
+          style={{ background: identity.surface }}
         >
-          <h2 id="answer-heading" className="text-sm font-black text-[#20211f]">
-            התשובה בקצרה
-          </h2>
-
           {promotionLoading ? <LoadingMark label="מחשבים מה גוגל תעלה לעסק הזה…" /> : null}
 
           {promotionError ? (
-            <div className="mt-4">
-              <ErrorPanel
-                message={promotionError}
-                onRetry={() => {
-                  setPromotion(null);
-                  setPromotionError("");
-                  setPromotionAttempt((attempt) => attempt + 1);
-                }}
-              />
-            </div>
+            <ErrorPanel
+              message={promotionError}
+              onRetry={() => {
+                setPromotion(null);
+                setPromotionError("");
+                setPromotionAttempt((attempt) => attempt + 1);
+              }}
+            />
           ) : null}
 
           {!promotionLoading && !promotionError && !plan ? (
-            <p className="mt-3 text-sm text-[#5e6159]">
+            <p className="text-sm text-[#5e6159]">
               השרת לא החזיר תוכנית קידום. אין כאן מספרים שנמציא במקומה — אפשר לנסות שוב.
             </p>
           ) : null}
 
           {plan ? (
-            <div className="mt-3">
-              <p className="text-base font-bold leading-7 text-[#20211f]">
-                {plan.industry_label}
+            <div>
+              <p className="text-lg font-black leading-7 text-[#20211f]">
                 {budgetFigure ? (
                   <>
-                    {": "}
+                    {"בתקציב של "}
                     <Figure>{budgetFigure}</Figure>
-                    {" בחודש מדיה. "}
+                    {" בחודש, "}
+                  </>
+                ) : null}
+                {floorStatus ? floorStatus.verdict : `כך נראית עלות הפרסום בגוגל ל${plan.industry_label}.`}
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">
+                {totalFigure ? (
+                  <>
+                    {"בפועל זה "}
+                    <Figure>{totalFigure}</Figure>
+                    {" בחודש, עם דמי הניהול. "}
                   </>
                 ) : (
-                  ". "
+                  "המקור לא מפרסם עלות חודשית כוללת. "
                 )}
                 {cpcFigure ? (
                   <>
-                    {"קליק עולה "}
+                    {"כל כניסה לאתר מהמודעה עולה "}
                     <Figure>{cpcFigure}</Figure>
-                    {". "}
+                    {"."}
                   </>
                 ) : (
-                  "המקור לא מפרסם מחיר לקליק בתחום הזה, ולכן אין כאן מספר. "
-                )}
+                  "המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר."
+                )}{" "}
+                <Link href="/decisions" className="font-bold whitespace-nowrap text-[#5e6159] underline underline-offset-4">
+                  לשינוי התקציב
+                </Link>
               </p>
 
               {floorStatus ? (
-                <p className={`mt-3 text-sm leading-6 ${floorStatus.className}`}>
-                  <span className="font-black">{floorStatus.label}: </span>
-                  {floorFigure ? (
-                    <>
-                      {"הרצפה שפורסמה למגזר היא "}
-                      <Figure>{floorFigure}</Figure>
-                      {" בחודש מדיה. "}
-                    </>
-                  ) : null}
-                  {floorStatus.text}
+                <p
+                  className={`mt-2 text-sm leading-6 ${floorStatus.tone === "warn" ? "text-[#9f4330]" : "text-[#3c3e3a]"}`}
+                  style={floorStatus.tone === "good" ? { color: identity.accent } : undefined}
+                >
+                  <span className="font-black">
+                    {"המינימום שפורסם לתחום: "}
+                    {floorFigure ? <Figure>{floorFigure}</Figure> : null}
+                    {" בחודש. "}
+                  </span>
+                  {floorStatus.reason}
                 </p>
               ) : null}
 
               {extraWarning ? (
-                <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-[#7a3a2a]">
+                <p className="mt-3 flex items-start gap-2 text-sm leading-6 text-[#7a3a2a]">
                   <span aria-hidden className="mt-1 shrink-0 text-[#9f4330]">
                     <IconBell className="h-4 w-4" />
                   </span>
-                  {extraWarning}
+                  {plain(extraWarning)}
                 </p>
               ) : null}
 
-              <div className="mt-5 flex flex-col items-start gap-2">
+              <div className="mt-4">
                 {!keywordsLoading && !keywordsError ? (
                   <Link
                     href="/integrations"
                     className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[#20211f] px-5 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
                   >
                     {searchConsoleConnected
-                      ? "חברו את Google Analytics — לראות מה קורה אחרי הקליק"
-                      : "חברו את Search Console — לראות על אילו שאילתות אתם כבר מופיעים"}
+                      ? "לחבר את נתוני האתר — מה קורה אחרי הקליק"
+                      : "לחבר את גוגל — באילו חיפושים אתם כבר מופיעים"}
                   </Link>
                 ) : null}
-                <p className="text-xs leading-5 text-[#5e6159]">
-                  <Link href="/decisions" className="font-bold underline underline-offset-4">
-                    לשינוי התקציב שממנו החישוב נבנה
-                  </Link>
-                </p>
               </div>
             </div>
           ) : null}
         </section>
 
-        {/* ---------- what Google would cost: every range, one level down ---------- */}
+        {/* ---------- every figure and every warning, one level down ---------- */}
         {plan ? (
-          <section aria-labelledby="cost-heading" className="mt-8">
-            <div className="flex items-center gap-2">
-              <span style={{ color: identity.accent }}>
-                <IconChart className="h-4 w-4" />
-              </span>
-              <h2 id="cost-heading" className="text-sm font-black text-[#20211f]">
-                כל המספרים
-              </h2>
-            </div>
-
+          <section aria-label="כל המספרים והאזהרות" className="mt-2 divide-y divide-[#e6e4dc]">
             {(plan.assumptions?.length ||
               plan.warnings?.length ||
               plan.channel_comparison?.recommendation ||
               plan.source) ? (
-              <Expand title="איך חושבה העלות" hint="הטווחים, העמלות, ההנחות והמקור.">
+              <Expand title="כל המספרים, ואיך חושבו">
                 <div className="space-y-5">
                   <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
                     <h3 className="text-sm font-black text-[#20211f]">הטווחים, כל אחד עם החישוב שלו</h3>
                     <div className="mt-3 divide-y divide-[#e6e4dc]">
                       <CostRow
-                        label="כמה קליק אחד עולה"
+                        label="כמה עולה כל כניסה מהמודעה (קליק)"
                         value={cpcFigure}
-                        basis="מה שמשלמים על כל קליק בתום המכרז. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד."
+                        basis="מה שמשלמים לגוגל על כל אדם שלוחץ על המודעה ונכנס. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד."
                       />
                       <CostRow
-                        label="קליקים בחודש"
+                        label="כניסות בחודש"
                         value={countRange(plan.expected_clicks)}
-                        basis="הגבול העליון של מה שתקציב המדיה יכול לקנות, חלקי טווח מחירי הקליק. זו לא תחזית של כמה אנשים מחפשים."
+                        basis="הגבול העליון של מה שהתקציב יכול לקנות, חלקי טווח המחיר לכניסה. זו לא תחזית של כמה אנשים מחפשים."
                       />
                       <CostRow
-                        label="שיעור המרה"
+                        label="כמה מהנכנסים פונים או מזמינים"
                         value={percentRange(plan.conversion_rate_range)}
                         basis={
                           plan.sector_label
-                            ? `מהקליק לפנייה או להזמנה. הטווח נלקח מהשיעור שפורסם למגזר "${plan.sector_label}" — הוא לא נמדד באתר שלכם.`
-                            : "מהקליק לפנייה או להזמנה. הטווח נלקח מהשיעור שפורסם למגזר שלכם — הוא לא נמדד באתר שלכם."
+                            ? `הטווח נלקח מהשיעור שפורסם למגזר "${plan.sector_label}" — הוא לא נמדד באתר שלכם.`
+                            : "הטווח נלקח מהשיעור שפורסם למגזר שלכם — הוא לא נמדד באתר שלכם."
                         }
                       />
                       <CostRow
-                        label={plan.conversion_unit ? `המרות בחודש — ${plan.conversion_unit}` : "המרות בחודש"}
+                        label={plan.conversion_unit ? `פניות או הזמנות בחודש — ${plan.conversion_unit}` : "פניות או הזמנות בחודש"}
                         value={countRange(plan.expected_conversions)}
-                        basis="קליקים כפול שיעור ההמרה. זו תחזית שנבנתה מטווחים, לא הבטחה."
+                        basis="כניסות כפול השיעור שפונה. זו תחזית שנבנתה מטווחים, לא הבטחה. בשפת המקצוע: המרות."
                       />
                       <CostRow
-                        label="עלות להמרה"
+                        label="כמה עולה להביא פנייה אחת"
                         value={nisRange(plan.cost_per_conversion)}
-                        basis="מחיר הקליק חלקי שיעור ההמרה. אם המספר הזה גבוה מהרווח שלכם על מכירה — גוגל לא משתלמת, וכדאי לדעת את זה מראש."
+                        basis="המחיר לכניסה חלקי השיעור שפונה. אם המספר הזה גבוה מהרווח שלכם על מכירה — גוגל לא משתלמת, וכדאי לדעת את זה מראש."
                       />
                       <CostRow
-                        label="רצפת תקציב למגזר"
+                        label="המינימום שפורסם למגזר"
                         value={floorFigure}
-                        basis="תקציב המדיה המינימלי שפורסם למגזר. מתחתיו אין מספיק דאטה כדי שגוגל תלמד ותאפטם."
+                        basis="תקציב המינימום שפורסם למגזר. מתחתיו אין לגוגל מספיק נתונים כדי ללמוד ולהשתפר."
                       />
                     </div>
                     {plan.matched_keywords?.length ? (
                       <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-[#5e6159]">
                         <span className="font-bold">התחום זוהה לפי:</span>
                         {plan.matched_keywords.map((word) => (
-                          <span key={word} className="label-mark border-[#c7dad7] bg-white">
+                          <span key={word} className="label-mark bg-white" style={{ borderColor: identity.border }}>
                             {word}
                           </span>
                         ))}
                       </p>
                     ) : null}
                   </div>
-
                   <div className="rounded-lg border border-[#e6e4dc] bg-white p-5">
                     <h3 className="text-sm font-black text-[#20211f]">מה עוד נגבה, מעבר לתקציב המדיה</h3>
                     <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
@@ -738,7 +791,7 @@ export default function PromotionPage() {
                               className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
                               style={{ background: identity.accent }}
                             />
-                            {assumption}
+                            {plain(assumption)}
                           </li>
                         ))}
                       </ul>
@@ -751,7 +804,7 @@ export default function PromotionPage() {
                     {plan.channel_comparison?.recommendation ? (
                       <p className="mt-4 rounded-md border border-[#e6e4dc] bg-white px-4 py-3 text-xs leading-6 text-[#3c3e3a]">
                         <span className="font-black">ולא רק גוגל: </span>
-                        {plan.channel_comparison.recommendation}
+                        {plain(plan.channel_comparison.recommendation)}
                       </p>
                     ) : null}
 
@@ -773,41 +826,39 @@ export default function PromotionPage() {
             ) : null}
 
             {plan.warnings?.length ? (
-              <div className="mt-1 border-t border-[#e6e4dc]">
-                <Expand
-                  title={
-                    plan.warnings.length === 1
-                      ? "האזהרה שקוראים לפני שמתחילים"
-                      : `${plan.warnings.length} אזהרות שקוראים לפני שמתחילים`
-                  }
-                >
-                  <ul aria-label="אזהרות לפני שמתחילים" className="space-y-3">
-                    {plan.warnings.map((warning, index) => (
-                      <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3">
-                        <span
-                          aria-hidden
-                          className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#9f4330] text-[11px] font-black text-white"
-                        >
-                          {index + 1}
-                        </span>
-                        <span className="text-sm leading-6 text-[#7a3a2a]">{warning}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </Expand>
-              </div>
+              <Expand
+                title={
+                  plan.warnings.length === 1
+                    ? "האזהרה שקוראים לפני שמתחילים"
+                    : `${plan.warnings.length} אזהרות שקוראים לפני שמתחילים`
+                }
+              >
+                <ul aria-label="אזהרות לפני שמתחילים" className="space-y-3">
+                  {plan.warnings.map((warning, index) => (
+                    <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3">
+                      <span
+                        aria-hidden
+                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#9f4330] text-[11px] font-black text-white"
+                      >
+                        {index + 1}
+                      </span>
+                      <span className="text-sm leading-6 text-[#7a3a2a]">{plain(warning)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Expand>
             ) : null}
           </section>
         ) : null}
 
         {/* ---------- the terms worth targeting ---------- */}
-        <section aria-labelledby="keywords-heading" className="mt-8 border-t border-[#e6e4dc] pt-6">
+        <section aria-labelledby="keywords-heading" className="mt-4 border-t border-[#e6e4dc] pt-5">
           <div className="flex items-center gap-2">
             <span style={{ color: identity.accent }}>
               <IconEye className="h-4 w-4" />
             </span>
             <h2 id="keywords-heading" className="text-sm font-black text-[#20211f]">
-              על אילו מילים כדאי להופיע
+              חיפושים שבהם אתם כמעט בעמוד הראשון
             </h2>
           </div>
 
@@ -833,16 +884,35 @@ export default function PromotionPage() {
                   {/* The face names the opportunity and its figures. What the opportunity
                       is, why it is one and how it was picked out of Search Console is
                       one expand down — the list is the same list. */}
-                  <ul className="divide-y divide-[#e6e4dc]">
+                  {/* One line per opportunity: the phrase, where the site already ranks and
+                      how many came in. Views and the click-through share are in the full
+                      list one expand down — the same rows, all four figures. */}
+                  <ul className="divide-y divide-[#eeede8]">
                     {topQuickWins.map((win: PromotionQuickWin, index) => (
-                      <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
-                        <span className="text-sm font-bold text-[#20211f]">{win.query}</span>
-                        <MetricLine
-                          impressions={win.impressions}
-                          clicks={win.clicks}
-                          position={win.position}
-                          ctr={win.ctr}
-                        />
+                      <li
+                        key={`${win.query}-${index}`}
+                        className="flex items-baseline justify-between gap-3 py-2.5 first:pt-1"
+                      >
+                        <span className="min-w-0 text-sm font-bold text-[#20211f]">{win.query}</span>
+                        <span className="shrink-0 text-xs text-[#63665e]">
+                          {typeof win.position === "number" ? (
+                            <>
+                              {"מקום "}
+                              <Figure>{oneDecimal.format(win.position)}</Figure>
+                            </>
+                          ) : (
+                            "מקום לא נמסר"
+                          )}
+                          {" · "}
+                          {typeof win.clicks === "number" ? (
+                            <>
+                              <Figure>{whole.format(win.clicks)}</Figure>
+                              {" נכנסו"}
+                            </>
+                          ) : (
+                            "כניסות לא נמסרו"
+                          )}
+                        </span>
                       </li>
                     ))}
                   </ul>
@@ -853,11 +923,8 @@ export default function PromotionPage() {
                 </p>
               )}
 
-              <div className="mt-4 border-t border-[#e6e4dc]">
-                <Expand
-                  title="כל המילים, ומאיפה כל אחת באה"
-                  hint={`${moreTerms} מילים נוספות בפירוט מלא.`}
-                >
+              <div className="mt-1 border-t border-[#e6e4dc]">
+                <Expand title={`כל ${moreTerms} המילים, ומאיפה כל אחת באה`}>
                   <div className="space-y-6">
                     <p className="max-w-3xl text-sm leading-6 text-[#5e6159]">
                       אלה שאילתות שהאתר שלכם כבר מופיע בהן, קרוב לעמוד הראשון.
@@ -873,7 +940,7 @@ export default function PromotionPage() {
                     </p>
                     <ul className="divide-y divide-[#e6e4dc]">
                       <SourceLine
-                        title="Search Console"
+                        title="נתוני החיפוש של גוגל (Search Console)"
                         active={searchConsoleConnected}
                         statusLabel={searchConsoleConnected ? "מחובר" : "לא מחובר"}
                         note={
@@ -905,7 +972,7 @@ export default function PromotionPage() {
                     {rowsWithNumbers.length ? (
                       <div>
                         <h3 className="text-sm font-black text-[#20211f]">
-                          מילים עם מספרים אמיתיים — מ-Search Console
+                          מילים עם מספרים אמיתיים מגוגל
                         </h3>
                         <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
                           שאילתות שהאתר שלכם כבר הופיע עליהן
@@ -921,10 +988,7 @@ export default function PromotionPage() {
                                   <span className="text-sm font-bold text-[#20211f]">{row.term}</span>
                                   <IntentChip intent={row.intent} label={row.intent_label} />
                                   {quick ? (
-                                    <span
-                                      className="label-mark border-[#c7dad7] bg-white"
-                                      style={{ color: identity.accent }}
-                                    >
+                                    <span className="label-mark" style={ACCENT_CHIP}>
                                       הזדמנות מהירה
                                     </span>
                                   ) : null}
@@ -1018,18 +1082,22 @@ export default function PromotionPage() {
                     ) : null}
 
                     {!searchConsoleConnected ? (
-                      <div className="rounded-lg border border-[#e2d7c3] bg-[#fcf9f2] p-5">
-                        <h3 className="text-sm font-black text-[#685f47]">
-                          מה היה מוסיף החיבור ל-Search Console
+                      <div
+                        className="rounded-lg border p-5"
+                        style={{ borderColor: identity.border, background: identity.surface }}
+                      >
+                        <h3 className="text-sm font-black" style={{ color: identity.accent }}>
+                          מה היה מוסיף החיבור לנתוני החיפוש של גוגל
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-[#5e5340]">
-                          Search Console הוא הכלי החינמי של גוגל שמראה על אילו שאילתות האתר שלכם כבר מופיע — עם
+                        <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">
+                          זה הכלי החינמי של גוגל (Search Console) שמראה על אילו חיפושים האתר שלכם כבר מופיע — עם
                           חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים שאפשר להשיג על הביקוש בגוגל,
                           ובלעדיהם נשארים רק הביטויים.
                         </p>
                         <Link
                           href="/integrations"
-                          className="mt-3 inline-flex min-h-9 items-center rounded-md border border-[#e2d7c3] bg-white px-3 text-xs font-bold text-[#685f47]"
+                          className="mt-3 inline-flex min-h-9 items-center rounded-md border bg-white px-3 text-xs font-bold"
+                          style={{ borderColor: identity.border, color: identity.accent }}
                         >
                           למסך החיבורים
                         </Link>
@@ -1052,58 +1120,40 @@ export default function PromotionPage() {
               <h3 className="mt-4 text-lg font-black text-[#20211f]">עוד אין מילים לאסוף</h3>
               <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
                 {searchConsoleConnected
-                  ? "Search Console מחובר, אבל האתר עוד לא הופיע על שאילתות שאפשר לבנות עליהן תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
-                  : "כשנחבר את Search Console נוכל להראות על אילו שאילתות האתר שלכם כבר מופיע, עם קליקים ומיקום — בלי לנחש נפחים."}
+                  ? "נתוני החיפוש של גוגל מחוברים, אבל האתר עוד לא הופיע בחיפושים שאפשר לבנות עליהם תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
+                  : "כשנחבר את נתוני החיפוש של גוגל נוכל להראות באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום — בלי לנחש כמה מחפשים."}
               </p>
             </div>
           ) : null}
         </section>
 
         {/* ---------- what is free ---------- */}
-        <section aria-labelledby="profile-heading" className="mt-8 border-t border-[#e6e4dc] pt-6">
+        <section aria-labelledby="profile-heading" className="mt-4 border-t border-[#e6e4dc] pt-5">
           <div className="flex flex-wrap items-center gap-2">
             <span style={{ color: identity.accent }}>
               <IconStore className="h-4 w-4" />
             </span>
+            {/* Our own Hebrew name: the backend's title carries "(Google Business Profile)". */}
             <h2 id="profile-heading" className="text-sm font-black text-[#20211f]">
-              {profile?.title || "הפרופיל העסקי בגוגל"}
+              הכרטיס של העסק בגוגל
             </h2>
             {profile?.free ? (
-              <span className="label-mark border-[#c7dad7] bg-[#f0f6f5] text-[#2f5d57]">בחינם</span>
+              <span className="label-mark" style={ACCENT_CHIP}>
+                בחינם
+              </span>
             ) : null}
           </div>
           {profile?.steps?.length ? (
-            <div className="mt-2">
-              <ul className="mt-1 divide-y divide-[#e6e4dc]">
-                {topSteps.map((step, index) => {
-                  const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
-                  return (
-                    <li key={step.id || `${step.title}-${index}`} className="py-2.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
-                          style={{ background: identity.accent }}
-                        >
-                          {index + 1}
-                        </span>
-                        <span className="text-sm font-bold text-[#20211f]">{step.title}</span>
-                        <span className={`label-mark ${priority.className}`}>{priority.label}</span>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
+            <div className="mt-1">
+              <p className="text-sm leading-6 text-[#3c3e3a]">
+                {profile.steps.length} צעדים
+                {criticalSteps ? `, ${criticalSteps} מהם דחופים` : ""}. הראשון: {profile.steps[0].title}.
+              </p>
 
-              <details className="group mt-1">
+              <details className="group mt-1 border-t border-[#e6e4dc]">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#5e6159] hover:text-[#20211f]">
-                  <span>
-                    {restSteps.length
-                      ? `עוד ${restSteps.length} שלבים, ומה שחשוב לדעת`
-                      : "ההסבר וכל הצ׳קליסט"}
-                  </span>
-                  <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:rotate-90">
-                    ‹
-                  </span>
+                  <span>כל הצעדים, ומה שחשוב לדעת</span>
+                  <Caret />
                 </summary>
                 <div className="pb-3 pt-1">
                   {/* What the profile is, and which category to pick, explain the list —
@@ -1118,9 +1168,9 @@ export default function PromotionPage() {
                     </p>
                   ) : null}
                   <ol className="mt-3 divide-y divide-[#e6e4dc]">
-                    {(restSteps.length ? restSteps : topSteps).map((step, index) => {
+                    {profile.steps.map((step, index) => {
                       const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
-                      const number = restSteps.length ? index + TOP_STEPS + 1 : index + 1;
+                      const number = index + 1;
                       return (
                         <li key={step.id || `${step.title}-${index}`} className="py-4 first:pt-1 last:pb-0">
                           <div className="flex flex-wrap items-center gap-2">
@@ -1188,18 +1238,15 @@ export default function PromotionPage() {
             assembled into text the owner can paste to whoever runs the ads. It sits last
             because it is the hand-off, not the answer, and it is an Expand because the
             page's word budget belongs to the answer above it. */}
-        <section className="mt-8 border-t border-[#e6e4dc] pt-1">
-          <Expand
-            title="בריף קמפיין"
-            hint={brief ? `${brief.month_name_he} ${brief.year}` : undefined}
-          >
+        <section className="border-t border-[#e6e4dc]">
+          <Expand title={brief ? `סיכום ${brief.month_name_he} לשליחה למי שמפרסם` : "סיכום החודש לשליחה למי שמפרסם"}>
             {briefError ? (
               <div>
                 <p className="text-sm text-[#9f4330]">{briefError}</p>
                 <RetryButton onClick={() => setBriefAttempt((attempt) => attempt + 1)} />
               </div>
             ) : !brief ? (
-              <p className="text-sm text-[#5e6159]">מכינים את הבריף…</p>
+              <p className="text-sm text-[#5e6159]">מכינים את הסיכום…</p>
             ) : (
               <>
                 <p className="max-w-3xl text-xs leading-5 text-[#8b8e84]">
@@ -1208,11 +1255,11 @@ export default function PromotionPage() {
                 </p>
                 <button
                   type="button"
-                  onClick={() => void copyText(brief.text, "הבריף הועתק.")}
+                  onClick={() => void copyText(brief.text, "הסיכום הועתק.")}
                   className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-md border border-[#c7c4b8] bg-white px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
                 >
                   <IconCopy className="h-3.5 w-3.5" />
-                  העתקת הבריף
+                  העתקת הסיכום
                 </button>
                 {/* The text itself, exactly what the button copies, and scrollable so a
                     long month cannot push the page's real content off the screen. */}
