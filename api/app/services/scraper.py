@@ -1,12 +1,19 @@
 import re
 import struct
+import time
 from collections import Counter
+from dataclasses import dataclass
 from urllib.parse import urljoin, urlparse
 
 import httpx
 from bs4 import BeautifulSoup
 
-from app.services.netguard import UnsafeUrlError, safe_get
+from app.services.netguard import UnsafeUrlError, assert_public_url, safe_get
+
+
+class ScrapeBudgetExceeded(RuntimeError):
+    """The scrape ran out of its wall-clock budget (only raised under ScrapeLimits)."""
+
 
 USER_AGENT = "IsraMarketBot/1.0 (+https://isramarket.local; marketing research for the site owner)"
 MAX_CHARS = 14000
@@ -185,11 +192,16 @@ def _stylesheet_urls(base: str, soup: BeautifulSoup) -> list[str]:
     return unique[:5]
 
 
-def _fetch_stylesheets(client: httpx.Client, urls: list[str]) -> list[str]:
+def _fetch_stylesheets(
+    client: httpx.Client, urls: list[str], fetch=None, max_sheets: int = 4
+) -> list[str]:
+    fetch = fetch or safe_get
     sheets: list[str] = []
     for url in urls:
         try:
-            response = safe_get(client, url, timeout=12.0)
+            response = fetch(client, url, timeout=12.0)
+        except ScrapeBudgetExceeded:
+            break
         except (httpx.HTTPError, UnsafeUrlError):
             continue
         if response.status_code >= 400:
@@ -200,7 +212,7 @@ def _fetch_stylesheets(client: httpx.Client, urls: list[str]) -> list[str]:
         text = response.text[:400_000]
         if text.strip():
             sheets.append(text)
-        if len(sheets) >= 4:
+        if len(sheets) >= max_sheets:
             break
     return sheets
 
@@ -298,13 +310,18 @@ def _image_candidates(base: str, soup: BeautifulSoup, html: str = "") -> list[st
     return ordered + [u for u in logos if u][:4]
 
 
-def _download_images(client: httpx.Client, urls: list[str]) -> list[dict]:
+def _download_images(
+    client: httpx.Client, urls: list[str], fetch=None, max_images: int = 6
+) -> list[dict]:
+    fetch = fetch or safe_get
     images: list[dict] = []
     for url in urls:
-        if len(images) >= 6:
+        if len(images) >= max_images:
             break
         try:
-            response = safe_get(client, url, timeout=12.0)
+            response = fetch(client, url, timeout=12.0)
+        except ScrapeBudgetExceeded:
+            break
         except (httpx.HTTPError, UnsafeUrlError):
             continue
         if response.status_code >= 400:
@@ -515,12 +532,122 @@ def _looks_like_a_photograph(data: bytes) -> bool:
     return 0.45 <= ratio <= 1.9
 
 
-def scrape_site(url: str) -> dict:
+@dataclass(frozen=True)
+class ScrapeLimits:
+    """Hard caps for a scrape nobody has paid for yet — the public pre-signup preview.
+
+    httpx's `timeout` bounds each network *operation*, not a request: a server that
+    drips one byte every few seconds never trips it, and a response body has no size
+    limit at all. Under limits every fetch is streamed, cut at a byte cap, and abandoned
+    once the whole scrape's deadline has passed.
+    """
+
+    deadline_seconds: float = 20.0
+    request_timeout: float = 8.0
+    max_html_bytes: int = 2_000_000
+    max_stylesheet_bytes: int = 400_000
+    max_image_bytes: int = 900_000
+    max_images: int = 3
+    max_stylesheets: int = 3
+
+
+PREVIEW_LIMITS = ScrapeLimits()
+
+_REDIRECT_CODES = {301, 302, 303, 307, 308}
+# The body is re-wrapped already decoded, so these would make httpx decode it twice or
+# expect bytes that were cut off.
+_DROP_HEADERS = {"content-encoding", "content-length", "transfer-encoding"}
+
+
+def capped_get(
+    client: httpx.Client,
+    url: str,
+    *,
+    max_bytes: int,
+    deadline: float,
+    request_timeout: float = 8.0,
+    max_redirects: int = 5,
+    **_ignored,
+) -> httpx.Response:
+    """`netguard.safe_get` with a byte cap and a wall-clock deadline.
+
+    Same SSRF discipline — every redirect hop is re-validated — but the body is streamed
+    and cut at `max_bytes + 1` (so a caller can still tell "too big" from "exactly the
+    cap"), and the request is abandoned once `deadline` (a `time.monotonic()` value) has
+    passed. Decoded bytes are counted, so a gzip bomb hits the cap too.
+    """
+    current = assert_public_url(url)
+    for _ in range(max_redirects + 1):
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise ScrapeBudgetExceeded("קריאת האתר לקחה יותר מדי זמן.")
+        with client.stream(
+            "GET", current, follow_redirects=False, timeout=min(request_timeout, remaining)
+        ) as response:
+            location = response.headers.get("location")
+            if response.status_code in _REDIRECT_CODES and location:
+                current = assert_public_url(str(httpx.URL(current).join(location)))
+                continue
+            body = bytearray()
+            for chunk in response.iter_bytes():
+                body.extend(chunk)
+                if len(body) > max_bytes:
+                    del body[max_bytes + 1 :]
+                    break
+                if time.monotonic() > deadline:
+                    raise ScrapeBudgetExceeded("קריאת האתר לקחה יותר מדי זמן.")
+            headers = [
+                (key, value)
+                for key, value in response.headers.multi_items()
+                if key.lower() not in _DROP_HEADERS
+            ]
+            return httpx.Response(
+                response.status_code,
+                headers=headers,
+                content=bytes(body),
+                request=response.request,
+            )
+    raise UnsafeUrlError("יותר מדי הפניות בכתובת הזו.")
+
+
+def _limited_fetchers(limits: ScrapeLimits):
+    """Page / stylesheet / image fetchers that share one deadline."""
+    deadline = time.monotonic() + limits.deadline_seconds
+
+    def make(max_bytes: int):
+        def fetch(client: httpx.Client, url: str, **_kwargs) -> httpx.Response:
+            return capped_get(
+                client,
+                url,
+                max_bytes=max_bytes,
+                deadline=deadline,
+                request_timeout=limits.request_timeout,
+            )
+
+        return fetch
+
+    return make(limits.max_html_bytes), make(limits.max_stylesheet_bytes), make(limits.max_image_bytes)
+
+
+def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
+    """Read one public page: text, colours, fonts and a few images.
+
+    `limits=None` is the historic behaviour. Passing `ScrapeLimits` (the public preview
+    does) streams every fetch under a byte cap and one shared deadline.
+    """
     target = _normalize_url(url)
+    if limits:
+        fetch_page, fetch_css, fetch_image = _limited_fetchers(limits)
+        max_images, max_sheets = limits.max_images, limits.max_stylesheets
+        client_timeout = limits.request_timeout
+    else:
+        fetch_page, fetch_css, fetch_image = safe_get, safe_get, safe_get
+        max_images, max_sheets = 6, 4
+        client_timeout = 20.0
     try:
-        with httpx.Client(timeout=20.0, headers={"User-Agent": USER_AGENT}) as client:
+        with httpx.Client(timeout=client_timeout, headers={"User-Agent": USER_AGENT}) as client:
             # Validates scheme, host and every redirect hop against the SSRF guard.
-            response = safe_get(client, target)
+            response = fetch_page(client, target)
             if response.status_code >= 400:
                 raise RuntimeError(f"האתר {target} החזיר סטטוס {response.status_code}")
 
@@ -531,8 +658,12 @@ def scrape_site(url: str) -> dict:
             soup = BeautifulSoup(response.text, "lxml")
             page_url = str(response.url)
             image_urls = _image_candidates(page_url, soup, response.text)
-            downloaded = _download_images(client, image_urls)
-            stylesheets = _fetch_stylesheets(client, _stylesheet_urls(page_url, soup))
+            downloaded = _download_images(client, image_urls, fetch=fetch_image, max_images=max_images)
+            stylesheets = _fetch_stylesheets(
+                client, _stylesheet_urls(page_url, soup), fetch=fetch_css, max_sheets=max_sheets
+            )
+    except ScrapeBudgetExceeded as exc:
+        raise RuntimeError(f"האתר {target} איטי מדי לקריאה כרגע. נסו שוב בעוד דקה.") from exc
     except httpx.HTTPError as exc:
         raise RuntimeError(f"לא הצלחנו לטעון את האתר {target}: {exc}") from exc
     except UnsafeUrlError as exc:

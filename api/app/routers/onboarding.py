@@ -9,8 +9,10 @@ from app.models import Business, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
 from app.services.brand import filter_usable_photos
 from app.services.audiences import catalogue_for
+from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
-from app.services.instagram_signal import signal_for
+from app.services.instagram_signal import handles_for, signal_for
+from app.services.preview import cached_scan
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -24,6 +26,34 @@ from app.services.strategy import (
 from app.services.webhooks import deliver
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
+
+# First run asks three things: the business, the budget, the competitors. These four
+# decisions used to be wizard steps and now wait until the owner wants them — generation
+# runs without them (the model proposes a quarter and a direction itself), and they stay
+# editable from /decisions and /plan. Listed so a screen can say what is still open.
+DEFERRED_DECISIONS = ("diagnostics", "growth_targets", "long_horizon_plan", "growth_hypothesis")
+
+
+def _deferred(stored: dict) -> list[str]:
+    def filled(value) -> bool:
+        if isinstance(value, dict):
+            return any(str(item or "").strip() for item in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(str(item or "").strip() for item in value)
+        return bool(str(value or "").strip())
+
+    return [key for key in DEFERRED_DECISIONS if not filled(stored.get(key))]
+
+
+def default_goal(business_model: str | None, current: str | None) -> str:
+    """The stored goal when it fits the model, else the model's first goal.
+
+    First run no longer asks for a goal: a shop is planned for sales and a service
+    business for inquiries, which is what the owner would pick nine times out of ten,
+    and /decisions changes it.
+    """
+    allowed = goals_for(business_model)
+    return current if current in allowed else allowed[0]
 
 
 def _business_payload(business: Business) -> dict:
@@ -48,6 +78,8 @@ def _business_payload(business: Business) -> dict:
         "diagnostics": stored.get("diagnostics"),
         "long_horizon_plan": stored.get("long_horizon_plan"),
         "generate_state": loads(business.generate_state_json, {}),
+        "instagram_handles": handles_for(business),
+        "deferred_decisions": _deferred(stored),
     }
 
 
@@ -65,10 +97,14 @@ def scan_business_site(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    try:
-        scanned = scan_website(body.website_url)
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    # Right after signup the landing page has usually just read this site for the public
+    # preview; reuse that scan instead of reading the site (and paying Gemini) twice.
+    scanned = cached_scan(body.website_url)
+    if scanned is None:
+        try:
+            scanned = scan_website(body.website_url)
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
 
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     if not business:
@@ -334,6 +370,13 @@ def generate(
             status_code=400,
             detail="סרקו אתר ציבורי או הזינו כתובת לפני יצירת התוכנית",
         )
+    # Minimal first-run defaults. Everything else the old wizard asked for (diagnostics,
+    # ranked targets, the quarter, the month's direction) is optional input here: the
+    # planner proposes its own when it is missing — see DEFERRED_DECISIONS.
+    business.business_model = normalise_model(business.business_model)
+    business.primary_goal = default_goal(business.business_model, business.primary_goal)
+    if business.monthly_budget_ils is None or business.monthly_budget_ils < 0:
+        business.monthly_budget_ils = 0
     payload = {
         "name": business.name,
         "website_url": business.website_url,
@@ -364,19 +407,41 @@ def generate(
         business.updated_at = datetime.utcnow()
         db.commit()
 
-    try:
-        generated = generate_monthly_strategy(
+    def run() -> dict:
+        return generate_monthly_strategy(
             payload,
             scan=scan,
             state=state,
             on_stage=persist_stage,
             one_stage=True,
         )
+
+    try:
+        generated = run()
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        # First run now asks for competitor sites, and the first stage reads each one.
+        # One unreachable competitor must not block the owner's month: retry that stage
+        # once with the names only (the planner handles a site-less competitor already).
+        first_stage = (state.get("stage") or "scan") in {"scan", "usp"}
+        with_sites = [item for item in payload["competitors"] or [] if (item or {}).get("website_url")]
+        if not (first_stage and with_sites):
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        payload["competitors"] = [
+            {"name": (item or {}).get("name") or "", "website_url": ""} for item in payload["competitors"]
+        ]
+        try:
+            generated = run()
+        except Exception as retry_exc:
+            raise HTTPException(status_code=502, detail=str(retry_exc)) from retry_exc
+
+    # Without a saved scan the planner reads the site itself and hands back a fresh scan
+    # dict. Merge it over what was stored, or the owner's saved decisions would be wiped.
+    scraped_profile = generated["scraped_profile"]
+    if scan is None:
+        scraped_profile = {**stored, **(scraped_profile or {})}
 
     if not generated.get("complete"):
-        business.scraped_profile_json = dumps(generated["scraped_profile"])
+        business.scraped_profile_json = dumps(scraped_profile)
         db.commit()
         db.refresh(business)
         return {
@@ -385,7 +450,7 @@ def generate(
             "generate_state": generated["generate_state"],
         }
 
-    business.scraped_profile_json = dumps(generated["scraped_profile"])
+    business.scraped_profile_json = dumps(scraped_profile)
     business.generate_state_json = ""
     business.onboarding_complete = 1
     business.updated_at = datetime.utcnow()
