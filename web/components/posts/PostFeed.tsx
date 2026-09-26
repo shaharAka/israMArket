@@ -59,7 +59,7 @@ export function PostFeed({
 }) {
   if (!posts.length) {
     return (
-      <p className="py-10 text-center text-sm text-[#62635f]">אנחנו עדיין מכינים את הפוסטים לחודש הזה.</p>
+      <p className="py-10 text-center text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
     );
   }
   return (

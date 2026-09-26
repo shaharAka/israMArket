@@ -105,7 +105,7 @@ function PostsWorkspace() {
           }
         }
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : "טעינת הפוסטים נכשלה");
+        if (active) setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
       }
     }
     void loadPosts();
@@ -232,7 +232,7 @@ function PostsWorkspace() {
             onClick={() => openPost(due.index)}
             className="min-h-11 text-sm font-bold text-[#9f4330] underline underline-offset-4"
           >
-            {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים ממתינים לפרסום` : "פוסט אחד ממתין לפרסום"}
+            {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
           </button>
         ) : null}
       </header>
@@ -249,7 +249,7 @@ function PostsWorkspace() {
             onClick={() => openPost(firstPending)}
             className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
           >
-            {doneCount ? "לאישור הפוסט הבא" : "להתחיל לאשר"}
+            {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
           </button>
         ) : due ? (
           <button
@@ -257,13 +257,13 @@ function PostsWorkspace() {
             onClick={() => openPost(due.index)}
             className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
           >
-            לפרסום הפוסט של היום
+            לפרסם את הפוסט של היום
           </button>
         ) : null
       ) : null}
 
       {!strategy ? (
-        !error ? <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש...</p> : null
+        !error ? <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש…</p> : null
       ) : location.calendar ? (
         <CalendarView
           initialYear={strategy.year}
@@ -284,7 +284,7 @@ export default function PostsPage() {
     <AppShell>
       {/* The workspace reads the URL, which a prerender does not have (Next's rule for
           useSearchParams), so it renders inside its own Suspense boundary. */}
-      <Suspense fallback={<p className="text-sm text-[#63665e]">טוענים את הפוסטים...</p>}>
+      <Suspense fallback={<p className="text-sm text-[#63665e]">טוענים את הפוסטים…</p>}>
         <PostsWorkspace />
       </Suspense>
     </AppShell>

@@ -118,7 +118,7 @@ export function SetupChecklist() {
         className="flex min-h-12 w-full items-center justify-between gap-3 py-3 text-right"
       >
         <span className="min-w-0 text-sm font-bold text-[#20211f]">
-          {left === 1 ? "נשאר עוד דבר אחד להגדרה" : `נשארו עוד ${left} דברים להגדרה`}
+          {left === 1 ? "נשאר עוד דבר אחד להגדיר" : `נשארו עוד ${left} דברים להגדיר`}
         </span>
         <span className="flex shrink-0 items-center gap-3">
           <span
@@ -126,7 +126,7 @@ export function SetupChecklist() {
             aria-valuemin={0}
             aria-valuemax={setup.total}
             aria-valuenow={setup.completed}
-            aria-label={`${setup.completed} מתוך ${setup.total} הוגדרו`}
+            aria-label={`הוגדרו ${setup.completed} מתוך ${setup.total}`}
             className="block h-1.5 w-14 overflow-hidden rounded-full bg-[#e1e0db]"
           >
             <span className="block h-full rounded-full" style={{ width: `${percent}%`, background: accent }} />
@@ -141,7 +141,7 @@ export function SetupChecklist() {
         <div className="space-y-5 pb-4">
           {setup.next ? (
             <div>
-              <p className="text-xs font-bold text-[#747570]">הדבר הבא</p>
+              <p className="text-xs font-bold text-[#747570]">מה עכשיו</p>
               <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">{setup.next.title}</p>
               {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[#62635f]">{nextWhy}</p> : null}
               {/* Guidance, not the page's ask: an outline, never the dark button. */}
@@ -209,14 +209,14 @@ function CompleteLine({ onDismiss }: { onDismiss: () => void }) {
     <div className="flex min-h-12 items-center justify-between gap-3 py-2">
       <p className="flex min-w-0 items-center gap-2.5 text-sm font-bold text-[#62635f]">
         <IconCheck className="h-4 w-4 shrink-0 text-[#343632]" />
-        <span>הכול מוגדר.</span>
+        <span>הכול מוגדר</span>
       </p>
       <button
         type="button"
         onClick={onDismiss}
         className="min-h-11 shrink-0 px-2 text-xs font-bold text-[#747570] transition-colors hover:text-[#20211f]"
       >
-        הסתרה
+        להסתיר
       </button>
     </div>
   );

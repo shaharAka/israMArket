@@ -78,7 +78,7 @@ export default function DashboardPage() {
       <AppShell>
         <div className="mx-auto max-w-3xl">
           <SectionHeader section="dashboard" title="היום" />
-          <LoadingMark label="אנחנו טוענים את מצב החודש…" />
+          <LoadingMark label="טוענים את החודש…" />
         </div>
       </AppShell>
     );
@@ -119,12 +119,12 @@ export default function DashboardPage() {
               {strategy.horizon ? (
                 <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="primary" variant="row" />
               ) : (
-                <p className="py-3 text-sm text-[#62635f]">אנחנו ממשיכים לעקוב אחרי התוצאות.</p>
+                <p className="py-3 text-sm text-[#62635f]">ממשיכים לעקוב אחרי התוצאות.</p>
               )}
             </section>
           ) : (
             <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-sm text-[#62635f]">אנחנו עדיין מכינים את הפוסטים לחודש.</p>
+              <p className="text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
             </section>
           )}
 
@@ -147,7 +147,7 @@ export default function DashboardPage() {
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-sm text-[#62635f]">אין פוסטים מתוכננים לשבוע הזה.</p>
+                <p className="mt-3 text-sm text-[#62635f]">אין פוסטים בשבוע הזה.</p>
               )}
 
               <div className="mt-3 flex items-center gap-3">
@@ -214,8 +214,8 @@ function InstagramNudge({ connected }: { connected: boolean }) {
       <IconCamera className="h-4 w-4 shrink-0 text-[#62635f]" />
       <span className="min-w-0 flex-1">
         {connected
-          ? "עוד לא סונכרנו פוסטים מהאינסטגרם, אז הפוסטים לא לומדים ממה שכבר עובד לכם"
-          : "חברו את האינסטגרם כדי שהפוסטים ילמדו ממה שכבר עובד לכם"}
+          ? "עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם"
+          : "לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם"}
       </span>
       <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
     </Link>
@@ -226,7 +226,7 @@ function InstagramNudge({ connected }: { connected: boolean }) {
 function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
   return (
     <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-      <p className="text-xs font-bold text-[#747570]">מחכה לאישור שלך</p>
+      <p className="text-xs font-bold text-[#747570]">מחכה לאישור שלכם</p>
       <div className="mt-3 flex items-center gap-4">
         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f0efeb] sm:h-20 sm:w-20">
           {post.image_url ? (
@@ -327,20 +327,20 @@ function MoreAboutMonth({
 
       <div className="divide-y divide-[#e9e8e3] border-t border-[#e9e8e3]">
         <InfoRow label="צריך מכם" href={null}>
-          {nextUserAction || "כרגע כלום. נבקש רק מה שאי אפשר להסיק מהנתונים."}
+          {nextUserAction || "כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים."}
         </InfoRow>
-        <InfoRow label="הדבר האחד השבוע" href="/recommendations">
-          {oneThing || "נעדכן אחרי שייאספו נתונים"}
+        <InfoRow label="הכי חשוב השבוע" href="/recommendations">
+          {oneThing || "נעדכן כשיהיו נתונים"}
         </InfoRow>
-        <InfoRow label="היעד המוביל ברבעון" href="/plan">
-          {leadingTarget || "עוד לא נבחרו יעדים"}
+        <InfoRow label="היעד העיקרי ברבעון" href="/plan">
+          {leadingTarget || "עוד לא בחרנו יעדים"}
         </InfoRow>
         <InfoRow label="תקציב חודשי" href="/decisions">
           {formatNis(budget)} · {stageFor(budget).title}
         </InfoRow>
 
         <div className="py-3">
-          <p className="text-xs font-bold text-[#747570]">הכיוון החודשי</p>
+          <p className="text-xs font-bold text-[#747570]">כיוון החודש</p>
           <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">
             {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
           </p>

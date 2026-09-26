@@ -10,7 +10,7 @@ import { toast } from "@/lib/ui";
 const TONE = SECTIONS.strategy;
 
 const STAGE_LABELS: Record<string, string> = {
-  usp: "מחדדים את הכיוון מהחודש שעבר…",
+  usp: "לומדים מהחודש שעבר…",
   plan: "בונים את החודש הבא…",
   posts: "כותבים את הפוסטים לשבועות 1–2…",
   posts_late: "כותבים את הפוסטים לשבועות 3–4…",
@@ -60,7 +60,7 @@ export function MonthAhead({
       toast(`התוכנית ל${next.next_month_name_he} מוכנה`);
       onReady(await endpoints.strategy());
     } catch (err) {
-      setError(err instanceof Error ? err.message : "בניית החודש הבא נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לבנות את החודש הבא");
     } finally {
       setBusy(false);
       setStage("");
@@ -72,7 +72,7 @@ export function MonthAhead({
       ? "border border-[#c7c4b8] bg-transparent text-[#20211f] hover:bg-[#f4f3ee]"
       : "bg-[#20211f] text-white hover:bg-[#343632]"
   }`;
-  const buttonLabel = next.next_in_progress ? "להמשיך את הבנייה" : `לבנות את ${next.next_month_name_he}`;
+  const buttonLabel = next.next_in_progress ? "להמשיך לבנות" : `לבנות את ${next.next_month_name_he}`;
 
   if (variant === "line") {
     if (next.next_exists) {
@@ -81,7 +81,7 @@ export function MonthAhead({
           <span className="shrink-0" style={{ color: TONE.accent }}>
             <IconCalendar className="h-4 w-4" />
           </span>
-          {next.next_month_name_he} כבר בנוי, ויתחיל ב־1 לחודש.
+          {next.next_month_name_he} כבר מוכן, ויתחיל ב־1 לחודש.
         </p>
       );
     }
@@ -90,10 +90,10 @@ export function MonthAhead({
         <div className="min-w-0">
           <p className="text-sm font-bold text-[#20211f]">
             החודש הבא: {next.next_month_name_he}
-            {next.next_in_progress ? " — נעצר באמצע" : ""}
+            {next.next_in_progress ? " · נעצר באמצע" : ""}
           </p>
           <p className="text-xs leading-5 text-[#747570]">
-            {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאושר, בלי להמציא מספרים."}
+            {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאישרתם, בלי להמציא מספרים."}
           </p>
           {error ? <p className="mt-1 text-sm text-[#9f4330]">{error}</p> : null}
         </div>
@@ -120,7 +120,7 @@ export function MonthAhead({
         <div className="flex items-center gap-3 py-3">
           <IconCalendar className="h-4 w-4 shrink-0 text-[#374b3d]" />
           <p className="text-sm font-bold text-[#20211f]">
-            {next.next_month_name_he} כבר בנוי, ויתחיל ב־1 לחודש.
+            {next.next_month_name_he} כבר מוכן, ויתחיל ב־1 לחודש.
           </p>
         </div>
       );
@@ -130,10 +130,10 @@ export function MonthAhead({
         <div className="min-w-0">
           <p className="text-sm font-bold text-[#20211f]">
             החודש הבא: {next.next_month_name_he}
-            {next.next_in_progress ? " — הבנייה נעצרה באמצע" : ""}
+            {next.next_in_progress ? " · נעצר באמצע" : ""}
           </p>
           <p className="mt-0.5 text-xs leading-5 text-[#747570]">
-            {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאושר, בלי להמציא מספרים."}
+            {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאישרתם, בלי להמציא מספרים."}
           </p>
           {error ? <p className="mt-1 text-sm text-[#9f4330]">{error}</p> : null}
         </div>
@@ -159,7 +159,7 @@ export function MonthAhead({
           החודש הבא מוכן
         </p>
         <p className="mt-1 text-sm font-bold text-[#20211f]">
-          תוכנית {next.next_month_name_he} כבר בנויה. היא תיכנס ב־1 לחודש.
+          התוכנית ל{next.next_month_name_he} כבר מוכנה, ותתחיל ב־1 לחודש.
         </p>
       </section>
     );
@@ -172,13 +172,13 @@ export function MonthAhead({
         החודש הבא
       </p>
       <p className="mt-1 text-sm font-bold text-[#20211f]">
-        לבנות את {next.next_month_name_he} ממה שאושר החודש
-        {next.next_in_progress ? " — ממשיכים מהשלב שנשמר" : ""}
+        לבנות את {next.next_month_name_he} לפי מה שאישרתם החודש
+        {next.next_in_progress ? ". נמשיך מאיפה שעצרנו" : ""}
       </p>
       <p className="mt-1 text-sm leading-6 text-[#5e6159]">
         {isDemo()
-          ? "בדמו עובדים על חודש אחד. בחשבון אמיתי זה נבנה מהפוסטים שאושרו ומנתוני הביצוע אם יש."
-          : "בלי להמציא מדדים. אם אין חיבור לגוגל או מטא — נמשיך מהאופק וממה שאושר."}
+          ? "בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה אותו מהפוסטים שאישרתם, ומהתוצאות אם יש."
+          : "בלי להמציא מספרים. אם גוגל או מטא לא מחוברים, נבנה לפי התוכנית של הרבעון ומה שאישרתם."}
       </p>
       {error ? <p className="mt-2 text-sm text-[#9f4330]">{error}</p> : null}
       {busy ? (

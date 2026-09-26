@@ -17,8 +17,8 @@ export function postStatus(post: RoadmapPost): PostStatus {
 }
 
 export const STATUS_LABEL: Record<PostStatus, string> = {
-  review: "ממתין לאישור",
-  approved: "מאושר",
+  review: "מחכה לאישור",
+  approved: "אושר",
   published: "פורסם",
 };
 

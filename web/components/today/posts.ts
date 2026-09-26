@@ -33,5 +33,5 @@ export function postState(post: RoadmapPost): PostState {
 export const STATE_LABEL: Record<PostState, string> = {
   published: "פורסם",
   approved: "אושר",
-  waiting: "מחכה לך",
+  waiting: "מחכה לאישור",
 };

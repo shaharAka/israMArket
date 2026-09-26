@@ -27,12 +27,12 @@ export type CardTemplate =
 
 /** Template metadata for the editor's picker. */
 export const CARD_TEMPLATES: { key: CardTemplate; label: string; desc: string }[] = [
-  { key: "type_hero", label: "טיפוגרפיה בלבד", desc: "בלי תמונה: רקע המותג, כותרת ענקית ו-CTA" },
-  { key: "lower_editorial", label: "פתיח תחתון", desc: "תמונה מלאה עם מעבר כהה וכותרת גדולה" },
-  { key: "split_panel", label: "פאנל מפוצל", desc: "תמונה למעלה, כותרת על רקע המותג" },
-  { key: "framed_inset", label: "מסגרת מעוצבת", desc: "תמונה ממוסגרת על רקע המותג" },
+  { key: "type_hero", label: "טקסט בלבד", desc: "בלי תמונה: צבע העסק, כותרת ענקית וקריאה לפעולה" },
+  { key: "lower_editorial", label: "כותרת למטה", desc: "תמונה מלאה, הצללה כהה וכותרת גדולה" },
+  { key: "split_panel", label: "חצי־חצי", desc: "תמונה למעלה, כותרת על צבע העסק" },
+  { key: "framed_inset", label: "מסגרת", desc: "תמונה במסגרת, על צבע העסק" },
   { key: "cover_type", label: "שער מגזין", desc: "כותרת ענקית מעל התמונה" },
-  { key: "promo_ribbon", label: "סרט מבצע", desc: "פס צבעוני עם המבצע ופס תחתון" },
+  { key: "promo_ribbon", label: "פס מבצע", desc: "פס צבעוני עם המבצע, ופס נוסף למטה" },
 ];
 
 /**
