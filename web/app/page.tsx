@@ -15,7 +15,7 @@ import {
 import { SamplePostCard, Swatches } from "@/components/onboarding/SitePreviewView";
 
 /** What the wait is spent on, in the order it happens. Rotated while the scan runs. */
-const READING_STEPS = ["קוראים את האתר…", "לומדים את הצבעים והטון…", "כותבים פוסט לדוגמה…"];
+const READING_STEPS = ["קוראים את האתר…", "מזהים את הצבעים והסגנון…", "כותבים פוסט לדוגמה…"];
 
 export default function Home() {
   const router = useRouter();
@@ -82,7 +82,7 @@ export default function Home() {
             <BrandMark className="h-9 w-9 text-[#191b18]" />
             <div>
               <span className="block text-lg font-black tracking-tight">ישראמארקט</span>
-              <span className="-mt-1 block text-[11px] text-[#5e6159]">שיווק שעובד בישראל</span>
+              <span className="-mt-1 block text-[11px] text-[#5e6159]">שיווק לעסקים קטנים</span>
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -109,7 +109,7 @@ export default function Home() {
           <div ref={resultRef} className="grid items-start gap-6 lg:grid-cols-[1fr_1fr] lg:gap-12">
             <section className="max-w-xl space-y-4">
               <div>
-                <p className="text-xs font-bold text-[#2d3f32]">ככה העסק שלכם נשמע</p>
+                <p className="text-xs font-bold text-[#2d3f32]">זה מה שראינו באתר שלכם</p>
                 <h1 className="mt-1 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
                   {preview.business_name || "העסק שלכם"}
                 </h1>
@@ -117,13 +117,13 @@ export default function Home() {
               <Swatches preview={preview} />
               {preview.voice ? (
                 <p className="text-sm leading-6 text-[#4f524b] sm:text-base sm:leading-7">
-                  <span className="font-bold text-[#191b18]">הטון: </span>
+                  <span className="font-bold text-[#191b18]">הסגנון: </span>
                   {preview.voice}
                 </p>
               ) : null}
               {preview.offerings.length ? (
                 <p className="hidden text-sm leading-6 text-[#4f524b] sm:block">
-                  <span className="font-bold text-[#191b18]">מה ראינו באתר: </span>
+                  <span className="font-bold text-[#191b18]">מה אתם מוכרים: </span>
                   {preview.offerings.slice(0, 4).join(" · ")}
                 </p>
               ) : null}
@@ -145,13 +145,13 @@ export default function Home() {
                   לבנות את החודש שלי
                 </Link>
                 <p className="text-center text-xs text-[#5e6159] sm:text-right">
-                  חשבון חינם, ואז שלוש שאלות קצרות.{" "}
+                  הרשמה בחינם ושלוש שאלות קצרות.{" "}
                   <button
                     type="button"
                     onClick={startOver}
                     className="inline-flex min-h-11 items-center font-bold text-[#191b18] underline underline-offset-4"
                   >
-                    אתר אחר
+                    לנסות אתר אחר
                   </button>
                 </p>
               </div>
@@ -161,7 +161,7 @@ export default function Home() {
               <div className="mx-auto max-w-[380px]">
                 {preview.sample_post ? (
                   <>
-                    <p className="mb-2 text-xs font-bold text-[#5e6159]">פוסט לדוגמה, בצבעים ובטון שלכם</p>
+                    <p className="mb-2 text-xs font-bold text-[#5e6159]">פוסט לדוגמה, בצבעים ובסגנון שלכם</p>
                     <SamplePostCard preview={preview} />
                   </>
                 ) : (
@@ -173,14 +173,14 @@ export default function Home() {
         ) : (
           <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
             <section className="max-w-xl">
-              <p className="mb-4 text-xs font-bold tracking-wider text-[#2d3f32]">תוכנית אחת לחודש. בלי ללמוד שיווק.</p>
+              <p className="mb-4 text-xs font-bold tracking-wider text-[#2d3f32]">תוכנית שיווק לכל חודש, בלי ללמוד שיווק</p>
               <h1 className="text-4xl font-black leading-[1.08] tracking-tight sm:text-5xl">
-                תנו לנו את האתר.
+                הכניסו את האתר.
                 <br />
-                נראה איך העסק שלכם נשמע.
+                נכתוב את הפוסט הראשון.
               </h1>
               <p className="mt-5 max-w-md text-base leading-7 text-[#5e6159]">
-                קוראים את האתר, לומדים את הצבעים והטון, וכותבים לכם פוסט לדוגמה — עוד לפני שנרשמתם.
+                נקרא את האתר, נלמד את הצבעים והסגנון של העסק ונכתוב לכם פוסט לדוגמה, עוד לפני שנרשמתם.
               </p>
 
               <form onSubmit={onScan} className="mt-8 space-y-3">
@@ -209,7 +209,7 @@ export default function Home() {
                     disabled={pending}
                     className="drawn-button inline-flex min-h-12 items-center justify-center bg-[#191b18] px-5 py-3 text-sm font-bold text-white hover:bg-[#2c2f29] disabled:opacity-60"
                   >
-                    {pending ? "קוראים את האתר…" : "הציגו את המותג"}
+                    {pending ? "קוראים את האתר…" : "לקרוא את האתר"}
                   </button>
                 </div>
                 {pending ? (
@@ -228,7 +228,7 @@ export default function Home() {
                   disabled={openingDemo}
                   className="inline-flex min-h-11 items-center font-bold text-[#191b18] underline underline-offset-4 disabled:opacity-60"
                 >
-                  {openingDemo ? "פותחים את הדמו…" : "פתחו את הדמו של מאפיית לחם תום"}
+                  {openingDemo ? "פותחים את הדמו…" : "לראות את הדמו של מאפיית לחם תום"}
                 </button>
               </p>
             </section>
@@ -238,13 +238,13 @@ export default function Home() {
                 <ReadingSkeleton step={readingStep} />
               ) : (
                 <div className="p-6 sm:p-8">
-                  <p className="text-xs font-bold text-[#5e6159]">מה תראו אחרי הקריאה</p>
+                  <p className="text-xs font-bold text-[#5e6159]">מה תקבלו תוך חצי דקה</p>
                   <ul className="mt-4 space-y-3 text-sm leading-6 text-[#5e6159]">
-                    <PreviewRow text="הצבעים והטון של העסק, כמו שהם באתר" />
-                    <PreviewRow text="פוסט אחד לדוגמה, כתוב בקול שלכם" />
-                    <PreviewRow text="אחרי הרשמה: חודש שלם של פוסטים לאישור" />
+                    <PreviewRow text="הצבעים והסגנון של העסק, כמו באתר" />
+                    <PreviewRow text="פוסט לדוגמה, בסגנון שלכם" />
+                    <PreviewRow text="אחרי ההרשמה: חודש שלם של פוסטים, מוכנים לאישור" />
                   </ul>
-                  <p className="mt-6 text-xs leading-5 text-[#62635f]">אין כאן אחוזי פניות מומצאים. מספרים יופיעו רק אחרי שתחברו את גוגל אנליטיקס.</p>
+                  <p className="mt-6 text-xs leading-5 text-[#62635f]">לא נמציא לכם מספרים. נתונים על פניות ומכירות יופיעו רק אחרי שתחברו את נתוני האתר.</p>
                 </div>
               )}
             </section>
@@ -258,7 +258,7 @@ export default function Home() {
 function NoSamplePost() {
   return (
     <p className="rounded-lg border border-[#e6e4dc] bg-white p-4 text-sm leading-6 text-[#5e6159]">
-      את הצבעים והטון קראנו. פוסט לדוגמה לא הצלחנו לכתוב הפעם — את החודש המלא נכתוב אחרי ההרשמה.
+      את הצבעים והסגנון כבר קראנו, אבל הפעם לא הצלחנו לכתוב פוסט לדוגמה. את החודש המלא נכתוב אחרי ההרשמה.
     </p>
   );
 }
