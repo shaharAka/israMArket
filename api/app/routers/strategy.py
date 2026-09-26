@@ -737,6 +737,8 @@ def generate_next_month(
         {"suggestions": loads(rec.suggestions_json, {})} if rec else None,
     )
     payload = {
+        # Lets services/research.research_prompt_block find this business's latest research.
+        "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
         "business_type": business.business_type,

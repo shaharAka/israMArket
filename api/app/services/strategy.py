@@ -362,6 +362,14 @@ def build_roadmap(
     # refusal to invent numbers. It stays small: enough to let the month plan decide
     # whether search suits this business, not a second strategy document.
     google_block = google_cost.prompt_block(google_cost.plan_for_business(business))
+    # --- research hook (services/research.py) -------------------------------------------
+    # The latest "what we learned" insights, each with its source and what it should
+    # change. "" when the business has no recent research (or the payload has no "id"),
+    # so the prompt is unchanged for them. Never raises.
+    from app.services.research import research_prompt_block
+
+    research_block = research_prompt_block(business)
+    # --- end research hook ----------------------------------------------------------------
     approved_block = ""
     if long_horizon:
         approved_block = f"""
@@ -385,6 +393,8 @@ USP והשערת צמיחה: {usp}
 {cost_block}
 
 {google_block}
+
+{research_block}
 
 אירועי החודש בישראל: {events}
 

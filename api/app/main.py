@@ -21,6 +21,7 @@ from app.routers import (
     public,
     publish,
     recommendations,
+    research,
     setup,
     strategy,
 )
@@ -67,6 +68,7 @@ app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)
 app.include_router(instagram.router)
+app.include_router(research.router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
 app.include_router(public.router)
 @app.middleware("http")

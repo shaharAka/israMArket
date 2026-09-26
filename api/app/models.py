@@ -289,3 +289,31 @@ class WebhookEndpoint(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="webhooks")
+
+
+class ResearchRun(Base):
+    """One run of the ongoing research engine for one business (services/research.py).
+
+    `findings_json` is everything the sources returned, each finding sourced and dated;
+    `insights_json` is what the strategy model concluded from exactly those findings
+    (every insight cites finding ids that exist in the same row); `sources_json` is the
+    per-source status — ok / empty / not connected / error — with what would unlock it.
+    Kept per run rather than upserted, so the next run can diff competitor sites and
+    search phrases against the previous one, and the history shows what changed when.
+    """
+
+    __tablename__ = "research_runs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    # ISO week the run belongs to, e.g. "2026-W39" (the weekly job runs once per week).
+    period: Mapped[str] = mapped_column(String(20), default="")
+    # "manual" (the owner pressed the button; rate-limited) | "scheduled" (weekly job).
+    trigger: Mapped[str] = mapped_column(String(20), default="manual")
+    # "done" | "insights_failed" (findings stored, the model call failed or was skipped).
+    status: Mapped[str] = mapped_column(String(30), default="done")
+    findings_json: Mapped[str] = mapped_column(Text, default="{}")
+    insights_json: Mapped[str] = mapped_column(Text, default="[]")
+    sources_json: Mapped[str] = mapped_column(Text, default="{}")
+    model: Mapped[str] = mapped_column(String(80), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
