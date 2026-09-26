@@ -42,6 +42,8 @@ def migrate_db():
             # Businesses that existed before the products/services fork are shops as far
             # as anyone knows, so they keep the old behaviour rather than being re-asked.
             ("business_model", "VARCHAR(20) DEFAULT 'products'"),
+            # Competitor / peer Instagram usernames for the inspiration brief.
+            ("instagram_handles_json", "TEXT DEFAULT '[]'"),
         ]
         for col, col_type in new_cols:
             if col not in existing:

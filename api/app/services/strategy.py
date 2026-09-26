@@ -25,6 +25,7 @@ from app.services.schemas_llm import (
     USP_SCHEMA,
 )
 from app.services.cost_model import plan_from_budget, prompt_block
+from app.services.instagram_signal import attach_inspiration, prompt_block as instagram_prompt_block
 from app.services.month_loop import prior_prompt_block
 from app.services.scraper import scrape_site
 
@@ -32,13 +33,14 @@ from app.services.scraper import scrape_site
 def _business_brief(business: dict) -> dict:
     """The business dict without the audience catalogue.
 
-    Audiences are injected as their own compact Hebrew block (see services/audiences.py).
-    Leaving them inside the raw dict as well would print the same information twice and
-    quietly grow every prompt.
+    Audiences are injected as their own compact Hebrew block (see services/audiences.py),
+    and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
+    raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    if not business.get("audiences"):
+    own_blocks = {"audiences", "instagram_signal"}
+    if not any(key in business for key in own_blocks):
         return business
-    return {key: value for key, value in business.items() if key != "audiences"}
+    return {key: value for key, value in business.items() if key not in own_blocks}
 
 
 def _audience_block(business: dict, note: str = "") -> str:
@@ -278,6 +280,9 @@ def _write_posts_for_weeks(
         "כל פוסט משרת קהל אחד מהרשימה שלמעלה, והבחירה חייבת להשפיע על הזווית, ההוק והכיתוב — "
         "לא רק על התיוג. אל תמציא קהל שלא מופיע ברשימה."
     )
+    # What Instagram actually showed for this business: own top posts, the month's
+    # pattern brief, or an explicit "no data, claim nothing". Built by the router.
+    instagram = business.get("instagram_signal")
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
@@ -306,13 +311,19 @@ USP: {usp}
 - טון האתר: {brand.get("voice")}
 - מילים לשימוש: {brand.get("do_say")}
 - מילים שאסור: {brand.get("dont_say")}
+- inspiration_refs ו-inspiration_note: לפי בלוק האינסטגרם שלמטה בלבד
 {prior_prompt_block(prior)}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
+
+{instagram_prompt_block(instagram)}
 """
     posts = loads(strategy_json(prompt, MONTHLY_POSTS_SCHEMA), {})
     items = posts.get("posts") or []
     if len(items) < 2:
         raise RuntimeError(f"Gemini החזיר פחות מדי פוסטים לשבועות {week_text}.")
+    # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
+    # post with no real source carries `inspiration: None` rather than a made-up reason.
+    items = attach_inspiration(items, instagram)
     # The model names a segment; only real segments exist. An unknown (or missing) name
     # falls back to the primary audience here, so a stored post can never carry a dangling
     # audience id — and a business with no audiences gets an empty field, not an invention.
@@ -388,7 +399,11 @@ def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prio
     return items
 
 
-def rewrite_post(post: dict, tone: str, brand: dict) -> dict:
+def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = None) -> dict:
+    """Rewrite one post in a tone. `instagram` is `instagram_signal.signal_for(...)`.
+
+    The result carries `inspiration` (resolved sources, or None) instead of the raw refs.
+    """
     tones_he = {
         "direct": "ישיר, חד, מכירתי, קורא לפעולה מיידית בוואטסאפ או באתר",
         "neighborhood": "שכונתי, חם, אישי, כאילו כתוב בפתק בכתב יד על הדלפק",
@@ -412,8 +427,14 @@ def rewrite_post(post: dict, tone: str, brand: dict) -> dict:
 טקסט על התמונה: {post.get("overlay_text")}
 
 ספק כותרת, Hook, כיתוב מלא (caption), CTA חד, טקסט קצרצר על התמונה (overlay_text), וגרסאות מותאמות לאינסטגרם, פייסבוק ווואטסאפ (outlet_captions).
+שמור על הפורמט המקורי ({post.get("format")}). inspiration_refs ו-inspiration_note לפי בלוק האינסטגרם בלבד.
+
+{instagram_prompt_block(instagram, rewrite=True)}
 """
-    return loads(lite_json(prompt, POST_REWRITE_SCHEMA, thinking_level="LOW"), {})
+    rewritten = loads(lite_json(prompt, POST_REWRITE_SCHEMA, thinking_level="LOW"), {})
+    if not isinstance(rewritten, dict):
+        return {}
+    return attach_inspiration([rewritten], instagram)[0]
 
 
 def generate_monthly_strategy(

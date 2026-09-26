@@ -17,6 +17,13 @@ class Settings(BaseSettings):
     google_client_secret: str = ""
     meta_app_id: str = ""
     meta_app_secret: str = ""
+    # Graph API version for every Meta call (OAuth dialog included). v25.0 is supported
+    # until July 2028 per Meta's version table; bump here, not in code.
+    meta_graph_version: str = "v25.0"
+    # Hashtag Search needs the "Instagram Public Content Access" feature (Advanced Access
+    # via app review) and is capped by Meta at 30 unique hashtags per 7 days per IG
+    # account. Off until the app is approved.
+    instagram_hashtag_search: bool = False
     database_url: str = Field(default="sqlite:///./data/isramarket.db")
 
     gemini_strategy_model: str = "gemini-3.7-flash"
