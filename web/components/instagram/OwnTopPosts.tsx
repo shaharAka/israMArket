@@ -16,7 +16,7 @@ export function OwnTopPosts({ posts }: { posts: InstagramOwnPost[] }) {
   return (
     <section aria-labelledby="own-heading">
       <h2 id="own-heading" className="text-base font-black text-[#20211f]">
-        הפוסטים שלכם שהכי עבדו
+        הפוסטים שלכם שהכי הצליחו
       </h2>
       <ul className="mt-3 divide-y divide-[#eeede8] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
         {posts.slice(0, SHOWN).map((post) => {
@@ -45,7 +45,7 @@ export function OwnTopPosts({ posts }: { posts: InstagramOwnPost[] }) {
                   href={post.permalink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="נפתח באינסטגרם"
+                  title="לפתוח באינסטגרם"
                   className="flex min-h-16 items-center gap-3 px-3 py-2 transition-colors hover:bg-[#faf9f7]"
                 >
                   {body}
