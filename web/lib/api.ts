@@ -2241,6 +2241,14 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       format: body.format || POSTS[index].format,
       hook: body.hook !== undefined ? body.hook : POSTS[index].hook,
       caption: body.caption !== undefined ? body.caption : POSTS[index].caption,
+      // Mirrors the API's save_post: the saved caption is also the primary outlet's own.
+      outlet_captions:
+        body.caption !== undefined
+          ? {
+              ...POSTS[index].outlet_captions,
+              [body.primary_outlet || POSTS[index].primary_outlet || "instagram"]: body.caption,
+            }
+          : POSTS[index].outlet_captions,
       cta: body.cta !== undefined ? body.cta : POSTS[index].cta,
       has_overlay,
       overlay_headline: headline,

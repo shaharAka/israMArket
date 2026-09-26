@@ -153,10 +153,11 @@ export function PublishPanel({
   }
 
   return (
-    <div className="mt-3 border-t border-[#e9e8e3] pt-3">
+    // No border of its own: it lives inside the editor's sheet or side panel, which is the box.
+    <div>
       {/* ---- what the owner needs in hand to post by hand ---- */}
-      <p className="text-[11px] font-bold text-[#62635f]">מה צריך כדי לפרסם</p>
-      <p className="mt-1 text-[11px] leading-5 text-[#62635f]">
+      <p className="text-[13px] font-bold text-[#62635f]">מה צריך כדי לפרסם</p>
+      <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
         {storedDate ? `מיועד ל-${storedDate}` : "עוד לא נקבע תאריך"}
         {published ? " · סומן כפורסם" : ""}
       </p>
@@ -193,51 +194,50 @@ export function PublishPanel({
           </a>
         ))}
       </div>
-      <p className="mt-1.5 text-[10px] leading-5 text-[#8b8e84]">
+      <p className="mt-1.5 text-xs leading-5 text-[#8b8e84]">
         הוואטסאפ נפתח עם הכיתוב והקישור מוכנים לשליחה. אינסטגרם ופייסבוק לא מאפשרות למלא
         כיתוב מבחוץ — שם פותחים את האפליקציה ומדביקים.
       </p>
 
-      {/* The caption for the channel being looked at, ready to paste. */}
-      <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[11px] font-bold text-[#62635f]">הכיתוב ל{outletLabel}</p>
-          <button
-            type="button"
-            onClick={() => void copyText(caption, "הכיתוב הועתק.")}
-            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#191b18] underline underline-offset-2"
-          >
-            <IconCopy className="h-3 w-3" />
-            העתקת הכיתוב
-          </button>
-        </div>
-        <p className="mt-1.5 max-h-32 overflow-y-auto whitespace-pre-line rounded-md border border-[#e9e8e3] bg-[#faf9f6] px-2.5 py-2 text-[11px] leading-5 text-[#3c3e3a]">
-          {caption}
-        </p>
+      {/* The caption for the channel being looked at, ready to paste. The text itself is
+          under the preview and in the editor's "טקסט" section; a third full copy here only
+          made the panel longer. */}
+      <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#f0efeb] pt-3">
+        <p className="text-[13px] font-bold text-[#62635f]">הכיתוב ל{outletLabel}</p>
+        <button
+          type="button"
+          onClick={() => void copyText(caption, "הכיתוב הועתק.")}
+          className="inline-flex min-h-11 items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
+        >
+          <IconCopy className="h-3.5 w-3.5" />
+          העתקת הכיתוב
+        </button>
       </div>
 
       {/* The tracked link — or the reason there is none, never a dead button. */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[11px] font-bold text-[#62635f]">קישור עם מעקב</p>
+        <p className="text-[13px] font-bold text-[#62635f]">קישור עם מעקב</p>
         {trackingUrl ? (
           <>
-            <p className="mt-1 break-all font-mono text-[10px] leading-4 text-[#5e6159]">
+            {/* A tracked URL is long and unreadable; two lines show it is there, the copy
+                button hands over all of it, and the tooltip carries the rest. */}
+            <p title={trackingUrl} className="mt-1 line-clamp-2 break-all font-mono text-xs leading-4 text-[#5e6159]" dir="ltr">
               {trackingUrl}
             </p>
             <button
               type="button"
               onClick={() => void copyText(trackingUrl, "הקישור הועתק.")}
-              className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-bold text-[#191b18] underline underline-offset-2"
+              className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
             >
               <IconLink className="h-3 w-3" />
               העתקת הקישור
             </button>
-            <p className="mt-1 text-[10px] leading-5 text-[#8b8e84]">
+            <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
               פרסום עם הקישור הזה הוא מה שמאפשר לשייך אחר כך לחיצות ופניות לפוסט הזה.
             </p>
           </>
         ) : (
-          <p className="mt-1 text-[11px] leading-5 text-[#62635f]">
+          <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
             לפוסט הזה אין קישור עם מעקב, כי לא רשום אתר לעסק. אפשר להוסיף את האתר בהחלטות,
             ואז הקישור ייווצר לפוסטים.
           </p>
@@ -246,7 +246,7 @@ export function PublishPanel({
 
       {/* ---- when it goes out ---- */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <label htmlFor="post-scheduled-for" className="block text-[11px] font-bold text-[#62635f]">
+        <label htmlFor="post-scheduled-for" className="block text-[13px] font-bold text-[#62635f]">
           תאריך לפרסום
         </label>
         <div className="mt-1.5 flex flex-wrap items-center gap-2">
@@ -263,20 +263,20 @@ export function PublishPanel({
               type="button"
               disabled={imageLocked || savingSchedule}
               onClick={() => void saveSchedule("")}
-              className="min-h-10 px-1 text-[11px] font-bold text-[#62635f] underline underline-offset-2 disabled:opacity-40"
+              className="min-h-10 px-1 text-[13px] font-bold text-[#62635f] underline underline-offset-2 disabled:opacity-40"
             >
               הסרת התאריך
             </button>
           ) : null}
           {savingSchedule ? (
-            <span className="text-[11px] text-[#747570]">שומרים…</span>
+            <span className="text-[13px] text-[#747570]">שומרים…</span>
           ) : null}
         </div>
-        <p className="mt-1 text-[10px] leading-5 text-[#8b8e84]">
+        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
           {storedDate ? "" : "בלי תאריך הפוסט לא ייכנס לרשימת מה שממתין לפרסום."}
         </p>
         {scheduleError ? (
-          <p className="mt-1 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[11px] leading-5 text-[#9f4330]">
+          <p className="mt-1 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
             {scheduleError}
           </p>
         ) : null}
@@ -284,8 +284,8 @@ export function PublishPanel({
 
       {/* ---- closing the loop after posting by hand ---- */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[11px] font-bold text-[#62635f]">אחרי שפרסמתם ב{outletLabel}</p>
-        <p className="mt-1 text-[10px] leading-5 text-[#8b8e84]">
+        <p className="text-[13px] font-bold text-[#62635f]">אחרי שפרסמתם ב{outletLabel}</p>
+        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
           מדביקים כאן את הקישור לפוסט שפורסם, כדי שנמדוד אותו בתוצאות.
         </p>
         <div className="mt-2 flex flex-col gap-2 sm:flex-row">
@@ -309,26 +309,31 @@ export function PublishPanel({
 
       {/* ---- why there is no publish button ---- */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[11px] font-bold text-[#62635f]">
+        <p className="text-[13px] font-bold text-[#62635f]">
           {capability?.auto_publish
             ? "הרשאות פרסום"
             : "פרסום אוטומטי לאינסטגרם ולפייסבוק — אין הרשאה ממטא"}
         </p>
 
         {capabilityError ? (
-          <p className="mt-1.5 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[11px] leading-5 text-[#9f4330]">
+          <p className="mt-1.5 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
             {capabilityError}
           </p>
         ) : !capability ? (
-          <p className="mt-1.5 text-[11px] text-[#747570]">בודקים מה מותר למערכת לעשות…</p>
+          <p className="mt-1.5 text-[13px] text-[#747570]">בודקים מה מותר למערכת לעשות…</p>
         ) : (
-          <>
+          // The conclusion is the heading above and stays on the face; the API's reasons are
+          // the explanation of it, one tap down (UI-RULES rule 2 and 7).
+          <details className="mt-1">
+            <summary className="min-h-11 cursor-pointer content-center text-[13px] font-bold text-[#62635f] underline underline-offset-2">
+              למה
+            </summary>
             {/* The API's own sentences, shown as written. Paraphrasing them into
                 "permissions" and "scopes" would be the jargon this panel exists to avoid,
                 and softening them would be a promise nobody can keep. */}
             <ul className="mt-1.5 space-y-1">
               {capability.reasons.map((reason, index) => (
-                <li key={index} className="flex items-start gap-2 text-[11px] leading-5 text-[#5e6159]">
+                <li key={index} className="flex items-start gap-2 text-[13px] leading-5 text-[#5e6159]">
                   <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#b3b0a5]" />
                   <span>{reason}</span>
                 </li>
@@ -336,20 +341,20 @@ export function PublishPanel({
             </ul>
             {capability.missing.length ? (
               <details className="mt-2">
-                <summary className="cursor-pointer text-[11px] font-bold text-[#62635f] underline underline-offset-2">
+                <summary className="cursor-pointer text-[13px] font-bold text-[#62635f] underline underline-offset-2">
                   מה בדיוק חסר לאישור (למי שמטפל במטא)
                 </summary>
                 <ul className="mt-1.5 space-y-1">
                   {capability.missing.map((scope) => (
-                    <li key={scope} className="text-[11px] leading-5 text-[#5e6159]">
+                    <li key={scope} className="text-[13px] leading-5 text-[#5e6159]">
                       {PUBLISH_SCOPE_LABELS[scope] || scope}{" "}
-                      <span className="font-mono text-[10px] text-[#8b8e84]">({scope})</span>
+                      <span className="font-mono text-xs text-[#8b8e84]">({scope})</span>
                     </li>
                   ))}
                 </ul>
               </details>
             ) : null}
-          </>
+          </details>
         )}
       </div>
     </div>
