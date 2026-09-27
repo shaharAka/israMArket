@@ -449,17 +449,6 @@ class BrandTest(DraftTestCase):
         self.assertEqual(body["status"], "ready")
         self.assertEqual(body["brand"], flat)
 
-    def test_falls_back_to_the_full_preview(self):
-        payload = {"business_name": "תזיזי", "palette": [{"hex": "#111111", "role": "ink", "name": "שחור"}],
-                   "voice": "ישיר", "offerings": ["חזיות"], "sample_post": {"hook": "x"}}
-        # Simulate a preview module without `build_brand_preview` (today's main).
-        with mock.patch.object(public_router.preview_service, "build_preview", return_value=payload), \
-                mock.patch.object(public_router, "getattr", create=True, side_effect=lambda o, n, d=None: d):
-            body = self.post("/public/brand", {"url": "shop.example"}).json()
-        self.assertEqual(body["status"], "ready")
-        self.assertEqual(set(body["brand"]), {"business_name", "palette", "voice", "logo_url", "offerings"})
-        self.assertNotIn("sample_post", body["brand"])
-
     def test_cached_scan_answers_without_scanning(self):
         preview_service._cache_put(preview_service.cache_key("https://bakery.example"), {"scan": SCAN, "preview": {}})
         with mock.patch.object(preview_service, "build_preview") as full:
@@ -469,7 +458,7 @@ class BrandTest(DraftTestCase):
         self.assertEqual(body["brand"]["offerings"], ["חלות", "לחם מחמצת"])
 
     def test_failures_are_a_status_not_an_error(self):
-        with mock.patch.object(preview_service, "build_preview", side_effect=preview_service.PreviewError("לא נפתח")):
+        with mock.patch.object(preview_service, "build_brand_preview", side_effect=preview_service.PreviewError("לא נפתח")):
             body = self.post("/public/brand", {"url": "shop.example"}).json()
         self.assertEqual(body, {"status": "failed", "brand": None, "reason_he": "לא נפתח"})
         self.assertEqual(self.post("/public/brand", {"url": "not a url"}).json()["status"], "failed")
@@ -550,7 +539,7 @@ class ProviderUnavailableTest(DraftTestCase):
         wrapped = RuntimeError("scan failed")
         wrapped.__cause__ = self.DEPLETED
         with mock.patch.object(public_router, "assert_public_url", return_value=None), \
-                mock.patch.object(preview_service, "build_preview", side_effect=wrapped):
+                mock.patch.object(preview_service, "build_brand_preview", side_effect=wrapped):
             body = self.post("/public/brand", {"url": "shop.example"}).json()
         self.assertEqual(body["reason_he"], "השירות לא זמין כרגע, נסו שוב מאוחר יותר.")
 
@@ -720,3 +709,35 @@ class FromDraftTest(DraftTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class RescanKeepsOwnerDecisionsTest(unittest.TestCase):
+    """`/onboarding/scan` after `/start` must not wipe the owner's answers or seed."""
+
+    def test_rescan_merges_into_the_stored_profile(self):
+        from unittest import mock
+
+        from app.routers import onboarding as onboarding_router
+
+        business = mock.Mock()
+        business.scraped_profile_json = json.dumps(
+            {"owner_context": {"differentiator": "x"}, "first_month_seed": {"direction": {"title": "t"}},
+             "growth_hypothesis": "h", "brand_language": {"business_name": "old"}}
+        )
+        business.name = "n"
+        business.location = "l"
+        scanned = {"brand_language": {"business_name": "new"}, "raw": {"image_urls": []}, "extracted": {}}
+        db = mock.Mock()
+        db.query.return_value.filter.return_value.order_by.return_value.first.return_value = business
+        with mock.patch.object(onboarding_router, "cached_scan", return_value=scanned), \
+             mock.patch.object(onboarding_router, "fetch_photo_candidates", return_value=[]), \
+             mock.patch.object(onboarding_router, "filter_usable_photos", return_value=[]), \
+             mock.patch.object(onboarding_router, "_business_payload", return_value={}):
+            onboarding_router.scan_business_site(
+                onboarding_router.WebsiteScanIn(website_url="https://shop.example"), user=mock.Mock(id=1), db=db
+            )
+        stored = json.loads(business.scraped_profile_json)
+        self.assertEqual(stored["owner_context"], {"differentiator": "x"})
+        self.assertEqual(stored["first_month_seed"], {"direction": {"title": "t"}})
+        self.assertEqual(stored["growth_hypothesis"], "h")
+        self.assertEqual(stored["brand_language"]["business_name"], "new")

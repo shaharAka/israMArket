@@ -479,23 +479,29 @@ class BrandPreviewTest(ScanTestCase):
         self.assertEqual(len(self.calls), calls)
 
     def test_brand_endpoint_shares_the_cache_and_the_budget(self):
+        # `POST /public/brand` is served by routers/public_onboarding.py in the
+        # `{status, brand, cached}` shape; it builds with `build_brand_preview`, so a later
+        # full preview reuses the same scan.
+        from app.routers import public_onboarding
+
         client = TestClient(app)
         headers = {"X-Forwarded-For": "203.0.113.50"}
         first = client.post("/public/brand", json={"url": "tazizi.example"}, headers=headers)
         self.assertEqual(first.status_code, 200, first.text)
-        self.assertFalse(first.json()["cached"])
-        self.assertNotIn("sample_post", first.json())
+        self.assertEqual(first.json()["status"], "ready", first.text)
+        self.assertNotIn("sample_post", first.json()["brand"])
         again = client.post("/public/brand", json={"url": "https://www.tazizi.example/"}, headers=headers)
         self.assertTrue(again.json()["cached"])
         full = client.post("/public/preview", json={"url": "tazizi.example"}, headers=headers)
         self.assertEqual(full.status_code, 200, full.text)
         self.assertEqual(full.json()["sample_post"]["product"], GOOD_POST["product"])
         self.assertEqual(self.titles().count("BrandLanguage"), 1)
-        with mock.patch.object(public_router, "PREVIEW_PER_IP", 1):
+        with mock.patch.object(public_onboarding, "BRAND_PER_IP", 1):
             ratelimit.reset()
             self.assertEqual(client.post("/public/brand", json={"url": "other.example"}, headers=headers).status_code, 200)
             self.assertEqual(client.post("/public/brand", json={"url": "third.example"}, headers=headers).status_code, 429)
-        self.assertEqual(client.post("/public/brand", json={"url": "http://127.0.0.1/"}).status_code, 400)
+        internal = client.post("/public/brand", json={"url": "http://127.0.0.1/"})
+        self.assertEqual(internal.json()["status"], "failed")
 
 
 class SocialLinksTest(unittest.TestCase):

@@ -102,15 +102,6 @@ export function fetchSitePreview(url: string) {
   return api<SitePreview>("/public/preview", { method: "POST", body: JSON.stringify({ url }) }, true);
 }
 
-/**
- * The brand only (palette, voice, logo, name, offerings, social links), one model call
- * sooner than the full preview — for a flow that reads the site in the background. Same
- * cache and rate limit as `fetchSitePreview`; a later full preview reuses this scan.
- */
-export function fetchSiteBrand(url: string) {
-  return api<SiteBrand>("/public/brand", { method: "POST", body: JSON.stringify({ url }) }, true);
-}
-
 export function savePreview(preview: SitePreview, typedUrl: string) {
   try {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ typedUrl, preview }));

@@ -233,10 +233,8 @@ def cached_brand(url: str) -> dict | None:
 
 
 def _scan_brand(url: str) -> dict | None:
-    # MERGE NOTE: `build_brand_preview` is being added to services/preview.py in
-    # parallel (brand only, same cache). Until it lands, the full preview does the job.
-    builder = getattr(preview_service, "build_brand_preview", None) or preview_service.build_preview
-    return brand_view(builder(url))
+    # Brand only (no sample post), sharing the public preview's scan cache.
+    return brand_view(preview_service.build_brand_preview(url))
 
 
 class BrandIn(BaseModel):

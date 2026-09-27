@@ -159,11 +159,7 @@ def site_preview(body: PreviewIn, request: Request) -> dict:
     return _serve(body.url, request, FULL)
 
 
-@router.post("/brand")
-def site_brand(body: PreviewIn, request: Request) -> dict:
-    """The brand only (palette, voice, logo, name, offerings, social links), one model
-    call sooner than `/public/preview`, for a flow that reads the site in the background.
-    Same limits and the same cache as `/public/preview`.
-    """
-    return _serve(body.url, request, BRAND)
+# `POST /public/brand` lives in routers/public_onboarding.py: it wraps
+# `preview.build_brand_preview` (same scan cache) in the `{status, brand}` shape the
+# `/start` flow polls in the background.
 

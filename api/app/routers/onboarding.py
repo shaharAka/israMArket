@@ -182,7 +182,11 @@ def scan_business_site(
         # Storing source photos is an optimisation; never fail the scan over it.
         pass
 
-    business.scraped_profile_json = dumps(scanned)
+    # The stored profile also carries the owner's own decisions (growth hypothesis,
+    # targets, diagnostics, the /start answers and the first-month seed). A re-scan
+    # refreshes only what the scan produces; replacing the whole blob wiped them.
+    previous = loads(business.scraped_profile_json, {}) or {}
+    business.scraped_profile_json = dumps({**previous, **scanned})
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
@@ -421,6 +425,8 @@ def generate(
     if business.monthly_budget_ils is None or business.monthly_budget_ils < 0:
         business.monthly_budget_ils = 0
     payload = {
+        # The research hook in strategy.build_roadmap looks the business up by id.
+        "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
         "business_type": business.business_type,
