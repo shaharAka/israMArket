@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { HowToFind } from "@/components/help/HowToFind";
+import type { HelpTopic } from "@/components/help/guides";
 import { BrandMark } from "@/lib/icons";
 import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
@@ -215,8 +217,8 @@ export function TextInput({
   note?: React.ReactNode;
   maxLength?: number;
   prefix?: string;
-  /** Wired at merge to <HowToFind topic={helpTopic} /> ("איך מוצאים את זה?"). */
-  helpTopic?: string;
+  /** Adds an "איך מוצאים את זה?" link that opens the matching guide. */
+  helpTopic?: HelpTopic;
 }) {
   return (
     <div data-help-topic={helpTopic}>
@@ -224,7 +226,7 @@ export function TextInput({
         <label htmlFor={id} className="text-sm font-bold text-[#191b18]">
           {label}
         </label>
-        {/* HowToFind slot: {helpTopic ? <HowToFind topic={helpTopic} /> : null} */}
+        {helpTopic ? <HowToFind topic={helpTopic} /> : null}
       </div>
       <div className="flex min-h-12 items-center rounded-lg border border-[#dedcd4] bg-white focus-within:border-[#191b18] focus-within:ring-1 focus-within:ring-[#191b18]">
         {prefix ? (

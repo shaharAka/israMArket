@@ -10,12 +10,12 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
  * Save: an account (email + password, the same rules as /signup), then the draft becomes
- * the business. The API's register asks for a name; the business name stands in for it.
+ * the business. No personal name is asked: the owner has already told us about the business.
  */
 export function StepSave(
   props: StepProps & { loggedIn: boolean; saving: boolean; saveError: string; onSave: () => Promise<void> },
 ) {
-  const { flow, loggedIn, saving, saveError, onSave } = props;
+  const { loggedIn, saving, saveError, onSave } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -35,7 +35,6 @@ export function StepSave(
     setPending(true);
     try {
       await endpoints.register({
-        full_name: flow.draft.business_name.trim() || email.split("@")[0],
         email: email.trim(),
         password,
       });

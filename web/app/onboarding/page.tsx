@@ -295,6 +295,12 @@ export default function OnboardingPage() {
     setBusy(true);
     try {
       await endpoints.saveProfile(profilePayload());
+      // From /start the competitors were already asked, so the budget is the last step.
+      if (fromDraft) {
+        setBusy(false);
+        await buildMonth();
+        return;
+      }
       goTo(2);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התקציב. נסו שוב.");
@@ -392,6 +398,7 @@ export default function OnboardingPage() {
       <div className="mx-auto max-w-xl space-y-4">
         <StepHeader
           step={step}
+          lastStep={fromDraft}
           // From /start, step 0 would ask again for what was just answered (and require a site).
           onBack={step > 0 && !(fromDraft && step === 1) ? () => goTo(step - 1) : undefined}
         />
@@ -528,7 +535,7 @@ export default function OnboardingPage() {
 
             {error ? <ErrorNote message={error} /> : null}
             <Button onClick={() => void saveBudget()} disabled={busy} className="min-h-12 w-full justify-center">
-              {busy ? "שומרים…" : "להמשיך למתחרים"}
+              {busy ? "שומרים…" : fromDraft ? "לבנות את החודש הראשון" : "להמשיך למתחרים"}
             </Button>
           </section>
         ) : null}
@@ -586,12 +593,15 @@ export default function OnboardingPage() {
   );
 }
 
-function StepHeader({ step, onBack }: { step: number; onBack?: () => void }) {
+function StepHeader({ step, onBack, lastStep }: { step: number; onBack?: () => void; lastStep?: boolean }) {
+  // From /start only the budget is left, so "step 2 of 3" would be wrong.
+  const label = lastStep ? `צעד אחרון · ${STEPS[step]}` : `שלב ${step + 1} מתוך ${STEPS.length} · ${STEPS[step]}`;
+  const progress = lastStep ? 100 : ((step + 1) / STEPS.length) * 100;
   return (
     <div>
       <div className="flex min-h-11 items-center justify-between">
         <p className="text-xs font-bold text-[#5e6159]">
-          שלב {step + 1} מתוך {STEPS.length} · {STEPS[step]}
+          {label}
         </p>
         {onBack ? (
           <button
@@ -604,7 +614,7 @@ function StepHeader({ step, onBack }: { step: number; onBack?: () => void }) {
         ) : null}
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-[#e6e4dc]">
-        <div className="h-full bg-[#191b18] transition-all" style={{ width: `${((step + 1) / STEPS.length) * 100}%` }} />
+        <div className="h-full bg-[#191b18] transition-all" style={{ width: `${progress}%` }} />
       </div>
     </div>
   );

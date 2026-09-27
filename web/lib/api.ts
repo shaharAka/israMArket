@@ -3229,7 +3229,7 @@ export async function api<T>(
 
 export const endpoints = {
   me: () => api<{ id: number; email: string; full_name: string }>("/auth/me"),
-  register: (body: { email: string; password: string; full_name: string }) =>
+  register: (body: { email: string; password: string; full_name?: string }) =>
     api("/auth/register", { method: "POST", body: JSON.stringify(body) }),
   login: (body: { email: string; password: string }) =>
     api("/auth/login", { method: "POST", body: JSON.stringify(body) }),
