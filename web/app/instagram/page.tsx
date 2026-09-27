@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
+import { HowToFind } from "@/components/help/HowToFind";
 import { HandlesEditor } from "@/components/instagram/HandlesEditor";
 import { LearnedList } from "@/components/instagram/LearnedList";
 import { OwnTopPosts } from "@/components/instagram/OwnTopPosts";
@@ -124,6 +125,9 @@ export default function InstagramPage() {
                     לחבר את האינסטגרם
                     <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
                   </Link>
+                  <div className="mt-1">
+                    <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
+                  </div>
                 </>
               ) : (
                 <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>

@@ -7,6 +7,9 @@ import {
   Button,
   ErrorNote,
 } from "@/components/AppShell";
+import { GUIDES } from "@/components/help/guides";
+import { HowToFind } from "@/components/help/HowToFind";
+import { SendToHelper } from "@/components/help/SendToHelper";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
   endpoints,
@@ -17,7 +20,6 @@ import {
 } from "@/lib/api";
 import {
   IconCheck,
-  IconCopy,
   IconLink,
 } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
@@ -231,11 +233,6 @@ export default function IntegrationsPage() {
     }
   }
 
-  function copyText(text: string, msg: string) {
-    navigator.clipboard.writeText(text);
-    toast(msg);
-  }
-
   // The page's one dark button belongs to the first channel that still needs something,
   // in the order the rows appear. When everything is connected (the demo, or a finished
   // setup) the page is asking for nothing, so nothing competes: the actions that remain —
@@ -316,6 +313,13 @@ export default function IntegrationsPage() {
         {error ? (
           <div className="mb-6">
             <ErrorNote message={error} />
+            {/* A failed Google or Facebook sign-in is almost always the wrong account or a
+                missing link between accounts, and the guide is exactly that answer. */}
+            {errorHelp(error) === "google_analytics" ? (
+              <HowToFind topic="google_analytics" label="איך מוצאים את החשבון הנכון?" />
+            ) : errorHelp(error) === "instagram_business" ? (
+              <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
+            ) : null}
           </div>
         ) : null}
 
@@ -410,6 +414,7 @@ export default function IntegrationsPage() {
                 {scanningWebsite ? "קוראים את האתר…" : business?.website_url ? "לקרוא שוב את האתר" : "לקרוא את האתר"}
               </Button>
             </div>
+            <HowToFind topic="website" className="mt-1" />
 
             <RowDetails summary="מה זה נותן, ומה אם אין לי אתר?">
               <p>
@@ -515,6 +520,7 @@ export default function IntegrationsPage() {
                 </div>
               )}
             </div>
+            {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
 
             <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
               <p>
@@ -529,23 +535,12 @@ export default function IntegrationsPage() {
                   בקשו ממנו להוסיף את הג׳ימייל שלכם כ<strong>צופה</strong> בנתוני האתר בגוגל
                   (שם ההרשאה באנגלית: Viewer). לא צריך הרשאות ניהול.
                 </p>
-                <div className="mt-2 flex items-center justify-between gap-2 rounded border border-[#dedcd4] bg-white p-2.5">
-                  <span className="truncate font-mono text-[11px] text-[#191b18]">
-                    &quot;היי, אפשר בבקשה להוסיף את הג׳ימייל שלי כצופה בגוגל אנליטיקס של האתר? תודה!&quot;
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      copyText(
-                        "היי, אפשר בבקשה להוסיף את הג׳ימייל שלי כצופה בגוגל אנליטיקס של האתר? תודה!",
-                        "ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר"
-                      )
-                    }
-                    className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-[#191b18] hover:underline"
-                  >
-                    <IconCopy className="h-3.5 w-3.5" />
-                    <span>להעתיק את ההודעה</span>
-                  </button>
+                <div className="mt-2">
+                  <SendToHelper
+                    title="ההודעה למי שבנה את האתר"
+                    message={GUIDES.google_analytics.stuck.message}
+                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר"
+                  />
                 </div>
               </div>
               <div className="border-t border-[#e5e3da] pt-3">
@@ -665,6 +660,9 @@ export default function IntegrationsPage() {
                 </div>
               )}
             </div>
+            {metaConnected ? null : (
+              <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" className="mt-1" />
+            )}
 
             <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
               <p>
@@ -679,7 +677,7 @@ export default function IntegrationsPage() {
                 <p className="font-bold text-[#191b18]">1. החשבון שלכם פרטי?</p>
                 <p className="mt-1">
                   פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל ›
-                  תפריט › הגדרות ופרטיות › סוג חשבון וכלים › <strong>העבר לחשבון מקצועי</strong> ›
+                  תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים › <strong>מעבר לחשבון מקצועי</strong> ›
                   עסק או יוצר תוכן.
                 </p>
               </div>
@@ -695,23 +693,12 @@ export default function IntegrationsPage() {
                 <p className="mt-1">
                   בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף.
                 </p>
-                <div className="mt-2 flex items-center justify-between gap-2 rounded border border-[#dedcd4] bg-white p-2.5">
-                  <span className="truncate font-mono text-[11px] text-[#191b18]">
-                    &quot;היי, אפשר בבקשה לוודא שיש לי הרשאת מנהל או גישת משימות בדף הפייסבוק של העסק? תודה!&quot;
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      copyText(
-                        "היי, אפשר בבקשה לוודא שיש לי הרשאת מנהל או גישת משימות בדף הפייסבוק של העסק? תודה!",
-                        "ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
-                      )
-                    }
-                    className="inline-flex shrink-0 items-center gap-1 text-xs font-bold text-[#191b18] hover:underline"
-                  >
-                    <IconCopy className="h-3.5 w-3.5" />
-                    <span>להעתיק את ההודעה</span>
-                  </button>
+                <div className="mt-2">
+                  <SendToHelper
+                    title="ההודעה למי שמנהל את הדף"
+                    message={GUIDES.instagram_business.stuck.message}
+                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
+                  />
                 </div>
               </div>
             </RowDetails>
@@ -798,6 +785,17 @@ export default function IntegrationsPage() {
       </div>
     </AppShell>
   );
+}
+
+/**
+ * Which guide answers a failed connection. Only sign-in failures get one: "the server is not
+ * set up" (`בשרת`) is for whoever runs the server, and no owner guide fixes it.
+ */
+function errorHelp(error: string): "google_analytics" | "instagram_business" | null {
+  if (!error || /בשרת/.test(error)) return null;
+  if (/גוגל/.test(error)) return "google_analytics";
+  if (/פייסבוק|אינסטגרם/.test(error)) return "instagram_business";
+  return null;
 }
 
 /**

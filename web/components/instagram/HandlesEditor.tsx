@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { HowToFind } from "@/components/help/HowToFind";
 import { endpoints } from "@/lib/api";
 
 /**
@@ -55,7 +56,10 @@ export function HandlesEditor({
       <h2 id="handles-heading" className="text-base font-black text-[#20211f]">
         חשבונות להשראה
       </h2>
-      <p className="mt-0.5 text-sm text-[#62635f]">עסקים שאתם אוהבים, עד {max}.</p>
+      <div className="mt-0.5 flex flex-wrap items-center justify-between gap-x-3">
+        <p className="text-sm text-[#62635f]">עסקים שאתם אוהבים, עד {max}.</p>
+        <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
+      </div>
 
       {handles.length ? (
         <ul className="mt-3 flex flex-wrap gap-2" aria-label="החשבונות שנשמרו">

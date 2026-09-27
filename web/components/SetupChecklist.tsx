@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
+import { HowToFind } from "@/components/help/HowToFind";
+import type { HelpTopic } from "@/components/help/guides";
 import { endpoints, type SetupItem, type SetupPayload } from "@/lib/api";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconCheck } from "@/lib/icons";
@@ -51,6 +53,22 @@ function dismissForSession() {
     // Storage is the memory, not the behaviour: the row still goes away for this render.
   }
   DISMISS_LISTENERS.forEach((listener) => listener());
+}
+
+/**
+ * The steps that need something from outside the app — a site address, a Google account
+ * with access, an Instagram that is a professional account — and the guide for each.
+ * Keys from `api/app/routers/setup.py`.
+ */
+const HELP_FOR: Partial<Record<string, HelpTopic>> = {
+  scan: "website",
+  google: "google_analytics",
+  instagram: "instagram_business",
+};
+
+function HelpLink({ itemKey, className }: { itemKey: string; className?: string }) {
+  const topic = HELP_FOR[itemKey];
+  return topic ? <HowToFind topic={topic} className={className} /> : null;
 }
 
 /**
@@ -144,6 +162,7 @@ export function SetupChecklist() {
               <p className="text-xs font-bold text-[#747570]">מה עכשיו</p>
               <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">{setup.next.title}</p>
               {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[#62635f]">{nextWhy}</p> : null}
+              <HelpLink itemKey={setup.next.key} />
               {/* Guidance, not the page's ask: an outline, never the dark button. */}
               <Link
                 href={setup.next.action_href}
@@ -190,6 +209,7 @@ function ItemRow({ item }: { item: SetupItem }) {
         <p className={`mt-0.5 text-xs leading-5 ${item.done ? "text-[#8b8e84]" : "text-[#62635f]"}`}>
           {item.why}
         </p>
+        {item.done ? null : <HelpLink itemKey={item.key} className="-my-1" />}
       </div>
       {item.done ? null : (
         <Link
