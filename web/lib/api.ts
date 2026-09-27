@@ -1,3 +1,5 @@
+import type { OnboardingDraft } from "./draft";
+
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/backend";
 const DEMO_FLAG = "isramarket_demo";
 
@@ -3460,6 +3462,101 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  /* ---- Onboarding v2 (/start). Anonymous except from-draft. See docs/onboarding-v2.md.
+     Callers go through `web/lib/draft.ts`, which falls back to fixtures on 404. ---- */
+  /** Fast brand read of a public site, started in the background at the links step. */
+  publicBrand: (url: string) =>
+    api<PublicBrandResult>("/public/brand", { method: "POST", body: JSON.stringify({ url }) }),
+  /** Three suggested audiences, each with the reason we suggest it. */
+  publicAudiences: (draft: OnboardingDraft) =>
+    api<{ audiences: SuggestedAudience[] }>("/public/audiences", {
+      method: "POST",
+      body: JSON.stringify({ draft }),
+    }),
+  /** The reveal: what we learned, two directions for the first month, and ideas for each. */
+  publicPlanPreview: (draft: OnboardingDraft) =>
+    api<PlanPreview>("/public/plan-preview", { method: "POST", body: JSON.stringify({ draft }) }),
+  /** Check the links step as the owner types: normalised links, and a Hebrew error per field. */
+  publicLinks: (links: OnboardingDraft["links"]) =>
+    api<PublicLinksResult>("/public/links", { method: "POST", body: JSON.stringify({ links }) }),
+  /** The looks an owner without a site picks from. */
+  publicStylePresets: () => api<{ presets: PublicStylePreset[] }>("/public/style-presets"),
+  /** Create or update the business from the draft. Idempotent; answers like /onboarding/me. */
+  onboardingFromDraft: (body: {
+    draft: OnboardingDraft;
+    chosen_direction: PlanDirection | null;
+    chosen_idea?: PostIdea | null;
+  }) =>
+    api<{ business: Business | null }>("/onboarding/from-draft", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+};
+
+/* ------------------------------ Onboarding v2 ------------------------------ */
+
+export type PublicBrand = {
+  business_name: string;
+  palette: BrandSwatch[];
+  voice: string;
+  logo_url: string | null;
+  offerings: string[];
+};
+
+export type PublicBrandResult = {
+  status: "ready" | "failed";
+  brand: PublicBrand | null;
+  reason_he?: string;
+  cached?: boolean;
+};
+
+export type PublicLinksResult = {
+  links: {
+    website?: string;
+    instagram?: { url: string; handle: string };
+    facebook?: { url: string; handle: string };
+    tiktok?: { url: string; handle: string };
+  };
+  errors: Partial<Record<"website" | "instagram" | "facebook" | "tiktok", string>>;
+};
+
+export type PublicStylePreset = { key: string; name_he: string; description_he: string; palette: BrandSwatch[] };
+
+export type SuggestedAudience = { name: string; description: string; why_he: string };
+
+/** Where an insight came from. The API may also send a ready Hebrew label. */
+export type PlanInsightSource = "site" | "answers" | "calendar" | "category" | "social";
+
+export type PlanInsight = { text_he: string; source: PlanInsightSource | string; detail_he?: string };
+
+export type PlanDirection = {
+  title: string;
+  approach_he: string;
+  audience: string;
+  goal_he: string;
+  why_he: string;
+  first_steps: string[];
+};
+
+export type PostIdea = {
+  title: string;
+  format: "reel" | "carousel" | "image" | "story";
+  hook: string;
+  caption: string;
+  cta: string;
+  overlay_headline: string;
+  why: { audience: string; goal_he: string; timing_he: string; reason_he: string };
+  /** Which of the two directions this idea belongs to. */
+  direction_index?: number;
+};
+
+export type PlanPreview = {
+  insights: PlanInsight[];
+  directions: PlanDirection[];
+  ideas: PostIdea[];
+  brand: PublicBrand | null;
+  cached?: boolean;
 };
 
 /* --------------------------- Instagram signal --------------------------- */
@@ -3589,6 +3686,10 @@ export type Business = {
   generate_state?: { stage?: string; error?: string };
   /** Competitor / peer Instagram usernames, normalised (no "@"). */
   instagram_handles?: string[];
+  /** Set by /onboarding/from-draft: what the /start conversation learned. */
+  owner_context?: Record<string, unknown> | null;
+  brand_source?: string | null;
+  first_month_seed?: Record<string, unknown> | null;
   /** First-run decisions not made yet (diagnostics, growth_targets, long_horizon_plan,
    *  growth_hypothesis): the month was built without them and they can be set later. */
   deferred_decisions?: string[];

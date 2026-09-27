@@ -63,6 +63,8 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  /** Arrived from /start: the business was built there, so this page starts at the budget. */
+  const [fromDraft, setFromDraft] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generateStage, setGenerateStage] = useState("usp");
 
@@ -163,6 +165,17 @@ export default function OnboardingPage() {
         if (business?.onboarding_complete) {
           router.replace("/dashboard");
           return;
+        }
+        // First run with no business yet: the conversation at /start builds it.
+        if (!business) {
+          router.replace(site ? `/start?site=${encodeURIComponent(site)}` : "/start");
+          return;
+        }
+        // Built by /start (from-draft): skip the old business step, which needs a website.
+        const builtFromDraft = Boolean(business.owner_context || business.first_month_seed);
+        if ((builtFromDraft || new URLSearchParams(window.location.search).get("from") === "start") && business.name) {
+          setFromDraft(true);
+          setStep(1);
         }
         // What the owner already saved wins over any guess from the site.
         if (stored) applyPreview(stored);
@@ -311,7 +324,9 @@ export default function OnboardingPage() {
     }
 
     // The month is written from the brand, so the site has to have been read first.
-    if (!hasBrand) {
+    // A business from /start already has its brand (from the site or the picked style), and
+    // /onboarding/scan would overwrite the profile and the first month's seed.
+    if (!hasBrand && !fromDraft && looksLikeWebsite(website)) {
       const url = normalizeWebsite(website);
       let ok = await startScan(url);
       if (!ok) {
@@ -375,7 +390,11 @@ export default function OnboardingPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-xl space-y-4">
-        <StepHeader step={step} onBack={step > 0 ? () => goTo(step - 1) : undefined} />
+        <StepHeader
+          step={step}
+          // From /start, step 0 would ask again for what was just answered (and require a site).
+          onBack={step > 0 && !(fromDraft && step === 1) ? () => goTo(step - 1) : undefined}
+        />
 
         {step === 0 ? (
           <section className="space-y-4">

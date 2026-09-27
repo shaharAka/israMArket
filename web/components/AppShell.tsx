@@ -56,7 +56,7 @@ export function tabFor(pathname: string): Tab | null {
  * and gating it meant that link silently bounced the owner back to step 1 of the wizard
  * with no explanation. It renders a safe empty state when there is no business yet.
  */
-const FIRST_RUN_ROUTES = ["/onboarding", "/login", "/signup", "/decisions"];
+const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
@@ -111,7 +111,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         const incomplete = !res.business?.onboarding_complete;
         setSetupIncomplete(incomplete);
         if (incomplete && !onFirstRunRoute) {
-          router.replace("/onboarding");
+          // No business at all: the /start conversation builds it. A started one finishes
+          // in /onboarding (budget and the first month).
+          router.replace(res.business ? "/onboarding" : "/start");
           return; // stay un-ready: render nothing rather than the wrong screen
         }
         setCheckedOnboarding(true);

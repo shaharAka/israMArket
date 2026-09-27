@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
 import { endpoints } from "@/lib/api";
+import { clearFlow, draftForApi, hasSavableDraft, loadFlow, saveDraftToAccount, type FlowState } from "@/lib/draft";
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
@@ -20,6 +21,8 @@ export default function SignupPage() {
   const [pending, setPending] = useState(false);
   const [site, setSite] = useState("");
   const [preview, setPreview] = useState<SitePreview | null>(null);
+  /** What the owner built at /start, if anything: signing up here keeps it. */
+  const [draft, setDraft] = useState<FlowState | null>(null);
 
   // Read after mount: the URL and sessionStorage only exist in the browser.
   useEffect(() => {
@@ -28,6 +31,8 @@ export default function SignupPage() {
       const stored = loadPreview(fromUrl || undefined);
       setSite(fromUrl || stored?.url || "");
       setPreview(stored);
+      const flow = loadFlow();
+      setDraft(hasSavableDraft(flow) ? flow : null);
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
@@ -43,6 +48,19 @@ export default function SignupPage() {
         email: String(form.get("email")),
         password: String(form.get("password")),
       });
+      if (draft) {
+        try {
+          const chosen = draft.plan && draft.chosenDirection != null ? draft.plan.directions[draft.chosenDirection] : null;
+          const idea = draft.plan && draft.chosenIdea != null ? draft.plan.ideas[draft.chosenIdea] : null;
+          await saveDraftToAccount(draftForApi(draft), chosen ?? null, idea ?? null);
+          clearFlow();
+          router.replace("/onboarding?from=start");
+        } catch {
+          // The account exists; /start still holds the draft and saves it from there.
+          router.replace("/start");
+        }
+        return;
+      }
       router.replace(site ? `/onboarding?site=${encodeURIComponent(site)}` : "/onboarding");
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לפתוח את החשבון. נסו שוב.");
@@ -52,8 +70,18 @@ export default function SignupPage() {
   }
 
   return (
-    <AuthCard title={preview?.business_name ? `חשבון ${forName(preview.business_name)}` : "פתיחת חשבון"}>
-      {preview ? (
+    <AuthCard
+      title={
+        draft
+          ? `חשבון ${forName(draft.draft.business_name.trim())}`
+          : preview?.business_name
+            ? `חשבון ${forName(preview.business_name)}`
+            : "פתיחת חשבון"
+      }
+    >
+      {draft ? (
+        <p className="-mt-3 mb-5 text-sm text-[#5e6159]">נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
+      ) : preview ? (
         <div className="-mt-3 mb-5 flex items-center justify-between gap-3">
           <p className="text-sm text-[#5e6159]">אחרי זה נבנה את החודש הראשון.</p>
           <Swatches preview={preview} size="sm" />
