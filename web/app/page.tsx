@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { BrandMark } from "@/lib/icons";
 import { DemoLink } from "@/components/landing/DemoLink";
-import { ExamplesCarousel } from "@/components/landing/ExamplesCarousel";
+import { PostWall } from "@/components/landing/PostWall";
+import { Showcase } from "@/components/landing/Showcase";
+import "@/components/landing/landing.css";
 
 /**
  * The landing page. Calm on purpose: it says what we do in one breath, asks for one
@@ -79,25 +81,20 @@ export default function Home() {
           </ol>
         </section>
 
-        <section aria-labelledby="examples-title" className="border-t border-[#e6e4dc] bg-[#f3f1ec] pb-12 pt-10 sm:pb-16 sm:pt-14">
-          <div className="mx-auto max-w-7xl">
-            <div className="px-4 sm:px-8">
-              <h2 id="examples-title" className="text-2xl font-black tracking-tight sm:text-3xl">
-                ככה זה נראה
-              </h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5e6159] sm:text-base sm:leading-7">
-                מחקר, כיוון ופוסט לחודש אחד, בעסקים לדוגמה. העסקים בדויים.
-              </p>
-            </div>
-            <div className="mt-6">
-              <ExamplesCarousel />
-            </div>
-            <div className="mt-8 max-w-2xl space-y-1 px-4 text-sm leading-6 text-[#5e6159] sm:px-8">
-              <p>
-                ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
-              </p>
-              <p>את האתר אנחנו קוראים לבד. נתונים מאינסטגרם, רק אחרי שתחברו אותו. לא נמציא לכם מספרים.</p>
-            </div>
+        <section aria-labelledby="examples-title" className="border-t border-[#e6e4dc]">
+          <Showcase />
+        </section>
+
+        <PostWall />
+
+        <section aria-label="להתחיל" className="border-t border-[#ebe8e0] bg-[#f9f8f6]">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-12">
+            <p className="max-w-xl text-base leading-7 text-[#34372f] sm:text-lg">
+              ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
+            </p>
+            <Link href="/start" className={`${QUIET_LINK} text-lg`}>
+              להתחיל עם העסק שלכם
+            </Link>
           </div>
         </section>
       </main>

@@ -1,0 +1,235 @@
+/*
+ * Landing page motion: the showcase (tabs, staggered plan reveal, phone cross-fade) and
+ * the wall of posts (two marquee rows). CSS only, no animation library. Everything
+ * here stops under prefers-reduced-motion, and the wall turns into a static grid.
+ */
+
+/* The business's accent, animated between businesses (the gradient behind the stage
+   follows it). Registered so the colour itself can transition. */
+@property --lp-accent {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #6b3f24;
+}
+
+.lp-showcase {
+  overflow-x: clip;
+  transition: --lp-accent 700ms ease;
+  background:
+    radial-gradient(60% 55% at 85% 20%, color-mix(in oklab, var(--lp-accent) 22%, transparent), transparent 70%),
+    radial-gradient(50% 50% at 10% 75%, color-mix(in oklab, var(--lp-accent) 14%, transparent), transparent 70%),
+    radial-gradient(40% 40% at 50% 100%, rgba(224, 164, 43, 0.1), transparent 70%),
+    #f7f5f0;
+}
+
+/* --- tabs ------------------------------------------------------------------------ */
+
+.lp-pills {
+  scrollbar-width: none;
+  mask-image: linear-gradient(to left, transparent 0, #000 16px, #000 calc(100% - 28px), transparent 100%);
+}
+.lp-pills::-webkit-scrollbar {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .lp-pills {
+    mask-image: none;
+  }
+}
+
+@keyframes lp-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* RTL: the bar fills from the start (right) edge. */
+.lp-progress {
+  transform-origin: right;
+  animation: lp-progress var(--lp-duration, 7000ms) linear forwards;
+}
+.lp-progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+
+/* --- the plan panel ---------------------------------------------------------------- */
+
+@keyframes lp-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Every business's panel is stacked in one grid cell, so the stage is always as tall as
+   the tallest one and switching never moves the page. Only the current one is shown. */
+.lp-stack {
+  display: grid;
+  /* minmax(0, …): a card canvas is laid out at 1080px and only scaled down visually, so
+     an auto track would grow to 1080px and the card would never scale. */
+  grid-template-columns: minmax(0, 1fr);
+}
+.lp-stack > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.lp-slide {
+  visibility: hidden;
+  opacity: 0;
+}
+.lp-slide[data-current="true"] {
+  visibility: visible;
+  opacity: 1;
+}
+.lp-slide[data-reveal="true"] .lp-reveal {
+  animation: lp-reveal 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+/* The phone screens cross-fade instead of cutting. The outgoing screen leaves fast and
+   the incoming one waits a beat, so two captions are never legible on top of each other. */
+.lp-screen {
+  opacity: 0;
+  transform: scale(1.02);
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease,
+    visibility 0s linear 220ms;
+  visibility: hidden;
+}
+.lp-screen[data-current="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity 600ms ease 140ms,
+    transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 140ms,
+    visibility 0s;
+}
+
+/* Floating notes beside the phone. */
+@keyframes lp-float-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.lp-note[data-current="true"] {
+  animation: lp-float-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 250ms);
+}
+
+/* --- the wall of posts ----------------------------------------------------------- */
+
+.lp-row {
+  overflow: hidden;
+  mask-image: linear-gradient(to left, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+@keyframes lp-marquee-a {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(50%);
+  }
+}
+@keyframes lp-marquee-b {
+  from {
+    transform: translateX(50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Two identical copies side by side; moving by exactly one copy's width loops seamlessly.
+   Each copy carries its own trailing gap (padding) so 50% is exactly one copy. */
+.lp-track {
+  display: flex;
+  width: max-content;
+  animation: lp-marquee-a var(--lp-speed, 70s) linear infinite;
+  will-change: transform;
+}
+.lp-track[data-direction="b"] {
+  animation-name: lp-marquee-b;
+}
+.lp-copy {
+  display: flex;
+  gap: 16px;
+  padding-inline-end: 16px;
+  padding-block: 14px 22px;
+}
+
+.lp-wall:hover .lp-track,
+.lp-wall:focus-within .lp-track,
+.lp-wall[data-paused="true"] .lp-track {
+  animation-play-state: paused;
+}
+
+.lp-card {
+  transition:
+    transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+    box-shadow 260ms ease;
+}
+.lp-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 40px -22px rgba(25, 27, 24, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-showcase {
+    transition: none;
+  }
+  .lp-progress {
+    animation: none;
+    transform: scaleX(0);
+  }
+  .lp-slide[data-reveal="true"] .lp-reveal {
+    animation: none;
+  }
+  .lp-screen,
+  .lp-screen[data-current="true"] {
+    transition: none;
+    transform: none;
+  }
+  .lp-note[data-current="true"] {
+    animation: none;
+  }
+  .lp-card,
+  .lp-card:hover {
+    transition: none;
+    transform: none;
+  }
+
+  /* The wall becomes a plain grid: no motion, no duplicate copy, no fade masks. */
+  .lp-row {
+    overflow: visible;
+    mask-image: none;
+  }
+  .lp-track {
+    animation: none;
+    width: auto;
+  }
+  .lp-copy {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: 16px;
+  }
+  .lp-copy[aria-hidden="true"],
+  .lp-motion-toggle {
+    display: none;
+  }
+}

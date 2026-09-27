@@ -13,7 +13,8 @@
  * a designed card.
  */
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
 import { alpha, cardTokens, contrastRatio, readableOn, type CardTokens } from "@/lib/cardTokens";
 
@@ -100,6 +101,13 @@ function headlineSize(text: string, base = 88): number {
   return Math.round(base * 0.6);
 }
 
+/**
+ * Set by CardStage's `photoSizes`: the photo is then drawn with next/image (responsive,
+ * lazy) instead of a plain <img>. Only the landing page opts in; the editor and the PNG
+ * export keep the plain <img>, which html-to-image inlines as-is.
+ */
+const PhotoSizesContext = createContext<string | undefined>(undefined);
+
 function Photo({
   post,
   theme,
@@ -113,6 +121,19 @@ function Photo({
   // degrade to the placeholder rather than a browser broken-image icon — the card is
   // exported as an image, so an icon would be baked into the customer's artwork.
   const [failed, setFailed] = useState(false);
+  const sizes = useContext(PhotoSizesContext);
+  if (post.image_url && !failed && sizes) {
+    return (
+      <Image
+        src={post.image_url}
+        alt=""
+        fill
+        sizes={sizes}
+        onError={() => setFailed(true)}
+        style={{ objectFit: "cover", objectPosition }}
+      />
+    );
+  }
   if (post.image_url && !failed) {
     return (
       <img
@@ -682,6 +703,7 @@ export function CardStage({
   fill = false,
   ratio,
   logoUrl,
+  photoSizes,
 }: {
   post: RoadmapPost;
   brand?: BrandLanguage | null;
@@ -695,6 +717,11 @@ export function CardStage({
   ratio?: CardRatio;
   /** See CardCanvas: only the landing preview passes one today. */
   logoUrl?: string;
+  /**
+   * The rendered width of the stage as a `sizes` attribute (e.g. "280px"). When set, the
+   * photo is served by next/image at that width rather than the 1080px original.
+   */
+  photoSizes?: string;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
@@ -748,14 +775,16 @@ export function CardStage({
             transformOrigin: "top right",
           }}
         >
-          <CardCanvas
-            post={post}
-            brand={brand}
-            businessName={businessName}
-            size={size}
-            canvasRef={canvasRef}
-            logoUrl={logoUrl}
-          />
+          <PhotoSizesContext.Provider value={photoSizes}>
+            <CardCanvas
+              post={post}
+              brand={brand}
+              businessName={businessName}
+              size={size}
+              canvasRef={canvasRef}
+              logoUrl={logoUrl}
+            />
+          </PhotoSizesContext.Provider>
         </div>
       ) : null}
     </div>
