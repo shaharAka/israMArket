@@ -48,7 +48,28 @@ def _is_retryable(exc: Exception) -> bool:
     text = str(exc)
     if any(token in text for token in _NOT_RETRYABLE) or _PAYMENT_REQUIRED.search(text):
         return False
+    # Depleted prepaid credits come back as "402 RESOURCE_EXHAUSTED". Retrying cannot
+    # fix billing and only makes the caller wait a minute for the same error.
+    if text.startswith("402") or "credits are depleted" in text:
+        return False
     return any(token in text for token in _RETRYABLE)
+
+
+_UNAVAILABLE = ("402", "credits are depleted", "RESOURCE_EXHAUSTED", "limit: 0", "חסר GEMINI_API_KEY")
+
+
+def is_provider_unavailable(exc: BaseException | None) -> bool:
+    """True when the model provider cannot serve us at all right now (billing, quota,
+    missing key), as opposed to a bad answer. Walks the cause chain, because callers
+    usually see the provider error wrapped in their own."""
+    seen = 0
+    while exc is not None and seen < 5:
+        text = str(exc)
+        if any(token in text for token in _UNAVAILABLE):
+            return True
+        exc = exc.__cause__ or exc.__context__
+        seen += 1
+    return False
 
 
 def _call_with_retry(fn, *, attempts: int = 5):

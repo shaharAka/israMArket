@@ -42,10 +42,27 @@ def _business_brief(business: dict) -> dict:
     and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
     raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    own_blocks = {"audiences", "instagram_signal"}
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed"}
     if not any(key in business for key in own_blocks):
         return business
     return {key: value for key, value in business.items() if key not in own_blocks}
+
+
+def _owner_block(business: dict, include_idea: bool = False) -> str:
+    """What the owner told us at /start, and the direction (and idea) they chose.
+
+    Both keys are optional and additive: a business that never went through the v2
+    onboarding has neither, and then this is an empty string and the prompt is unchanged.
+    `first_month_seed` is only put in the payload by /onboarding/generate, so the chosen
+    direction steers the first month and nothing after it.
+    """
+    if not business.get("owner_context") and not business.get("first_month_seed"):
+        return ""
+    from app.services.onboarding_draft import owner_context_block  # avoids an import cycle
+
+    return owner_context_block(
+        business.get("owner_context"), business.get("first_month_seed"), include_idea=include_idea
+    )
 
 
 def _audience_block(business: dict, note: str = "") -> str:
@@ -215,6 +232,7 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, "הבידול, המסרים ונקודות ההוכחה צריכים לעבוד עבור הקהל הראשי, ולתת מענה גם לשאר — בלי מסר שמדבר לכולם ולכן לאף אחד.")}
+{_owner_block(business)}
 
 בנה אסטרטגיה עסקית, בידול (USP), השערת צמיחה ושיטות עבודה מוכחות (BKMs) לעסק ישראלי.
 שפת המותג והמסרים חייבים לצאת מהאתר והנכסים האמיתיים של העסק, לא משפת סוכנות.
@@ -308,6 +326,7 @@ def _write_posts_for_weeks(
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
+{_owner_block(business, include_idea=1 in weeks)}
 
 כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד.
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
@@ -384,6 +403,7 @@ def build_roadmap(
     plan_prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, "כיוון החודש, האירועים והפוסטים צריכים לשרת את הקהלים האלה, עם דגש על הקהל הראשי. אל תמציא קהלים חדשים.")}
+{_owner_block(business)}
 
 בנה את כיוון החודש לעסק ישראלי קטן. בלי לכתוב את הפוסטים עצמם.
 החודש הוא חודש אזרחי רגיל. חגים יהודיים וימי קניות ישראליים מופיעים כאירועים בתוך אותו חודש אזרחי.
