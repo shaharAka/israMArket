@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
+import { HowToFind } from "@/components/help/HowToFind";
 import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/lib/api";
 import { IconChart } from "@/lib/icons";
 
@@ -266,16 +267,23 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
   if (!offline.length) return null;
 
   return (
-    <p className="rounded-lg bg-[#f5efe3] px-4 py-3 text-xs leading-6 text-[#5e5340]">
-      {anyConnected
-        ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
-            data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
-          }`
-        : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
-      <Link href="/integrations" className="font-bold text-[#20211f] underline underline-offset-4">
-        לחבר
-      </Link>
-    </p>
+    <div className="rounded-lg bg-[#f5efe3] px-4 py-3 text-xs leading-6 text-[#5e5340]">
+      <p>
+        {anyConnected
+          ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
+              data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
+            }`
+          : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
+        <Link href="/integrations" className="font-bold text-[#20211f] underline underline-offset-4">
+          לחבר
+        </Link>
+      </p>
+      {/* The site's numbers are the ones owners most often cannot find: whether there is a
+          Google Analytics at all, and which Google account can see it. */}
+      {!connected.ga4 ? (
+        <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" className="-mb-2" />
+      ) : null}
+    </div>
   );
 }
 
@@ -559,6 +567,9 @@ function NoSnapshotYet() {
         לחבר את גוגל ואינסטגרם
         <span aria-hidden>←</span>
       </Link>
+      <div className="mt-2">
+        <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
+      </div>
     </section>
   );
 }

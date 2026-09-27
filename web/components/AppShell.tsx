@@ -35,7 +35,7 @@ export const TABS: Tab[] = [
     href: "/business",
     label: "העסק",
     icon: IconStore,
-    owns: ["/business", "/strategy", "/plan", "/decisions", "/assets", "/promotion", "/instagram", "/integrations", "/account"],
+    owns: ["/business", "/strategy", "/plan", "/decisions", "/assets", "/promotion", "/instagram", "/integrations", "/account", "/help"],
   },
 ];
 
