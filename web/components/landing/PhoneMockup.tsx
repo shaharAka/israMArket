@@ -31,11 +31,12 @@ export function PhoneMockup({ examples, current }: { examples: LandingExample[];
         </div>
       </div>
 
-      {/* Who the post is for and why now, floating beside the device on wide screens. */}
+      {/* Who the post is for and why now, floating beside the device on wide screens. Both sit
+          over the photo, never over the caption. */}
       {examples.map((example, index) => (
         <div key={example.slug} aria-hidden={index !== current}>
           <Note current={index === current} label="למי" value={example.why.audience} className="-left-28 top-12" delay={260} />
-          <Note current={index === current} label="מתי" value={example.why.timing} className="-left-28 bottom-8" delay={380} />
+          <Note current={index === current} label="מתי" value={example.why.timing} className="-left-28 top-[46%]" delay={380} />
         </div>
       ))}
     </div>
