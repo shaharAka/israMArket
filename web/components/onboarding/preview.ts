@@ -13,11 +13,35 @@ export type PresenceType = "brick_and_mortar" | "online_only" | "hybrid";
 
 export type SamplePost = {
   format: "image";
+  /** The one product or offer on the site the post is about. */
+  product?: string;
+  /** A clean photograph from the site for the card, when the brand reading found one. */
+  photo_url?: string;
   title: string;
   hook: string;
   caption: string;
   cta: string;
   overlay_headline: string;
+};
+
+/** The business's own accounts, linked from its site. */
+export type SocialLinks = { instagram?: string; facebook?: string; tiktok?: string };
+
+/**
+ * The brand half of a preview — what `POST /public/brand` returns, and a subset of
+ * `SitePreview`, so every brand component takes either.
+ */
+export type SiteBrand = {
+  url: string;
+  business_name: string;
+  offerings: string[];
+  location: string;
+  palette: BrandSwatch[];
+  voice: string;
+  logo_url?: string;
+  social_links?: SocialLinks;
+  brand_language: SitePreview["brand_language"];
+  cached?: boolean;
 };
 
 export type SitePreview = {
@@ -31,12 +55,17 @@ export type SitePreview = {
   location: string;
   palette: BrandSwatch[];
   voice: string;
+  /** The business's logo as found on their site; "" when none was found. */
+  logo_url?: string;
+  social_links?: SocialLinks;
   brand_language: {
     business_name: string;
     palette: BrandSwatch[];
     voice: string;
     typography: { primary: string; mood: string };
     offers_seen: string[];
+    logo_url?: string;
+    logo_description?: string;
   };
   sample_post: SamplePost | null;
   cached: boolean;
@@ -73,6 +102,15 @@ export function fetchSitePreview(url: string) {
   return api<SitePreview>("/public/preview", { method: "POST", body: JSON.stringify({ url }) }, true);
 }
 
+/**
+ * The brand only (palette, voice, logo, name, offerings, social links), one model call
+ * sooner than the full preview — for a flow that reads the site in the background. Same
+ * cache and rate limit as `fetchSitePreview`; a later full preview reuses this scan.
+ */
+export function fetchSiteBrand(url: string) {
+  return api<SiteBrand>("/public/brand", { method: "POST", body: JSON.stringify({ url }) }, true);
+}
+
 export function savePreview(preview: SitePreview, typedUrl: string) {
   try {
     window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify({ typedUrl, preview }));
@@ -105,7 +143,7 @@ export function siteFromLocation(): string {
 }
 
 /** A BrandLanguage the card renderer accepts. It paints from the palette only. */
-export function previewBrand(preview: SitePreview): BrandLanguage {
+export function previewBrand(preview: SiteBrand): BrandLanguage {
   return {
     business_name: preview.business_name,
     palette: preview.palette,
@@ -119,12 +157,22 @@ export function previewBrand(preview: SitePreview): BrandLanguage {
     messaging: [],
     offers_seen: preview.offerings,
     audience: "",
-    logo_description: "",
+    logo_description: preview.brand_language?.logo_description ?? "",
+    logo_url: previewLogo(preview),
   };
 }
 
-/** The sample post in the shape CardStage draws: a photo-free brand card. */
-export function previewCardPost(sample: SamplePost): RoadmapPost {
+/** The logo to draw, from either place the API puts it. */
+export function previewLogo(preview: Pick<SiteBrand, "logo_url" | "brand_language">): string {
+  return preview.logo_url || preview.brand_language?.logo_url || "";
+}
+
+/**
+ * The sample post in the shape CardStage draws. With a photo that is known to load it
+ * is the split card (photo on top, headline on the brand colour); otherwise the
+ * typographic card in the brand's colours — never a grey "image coming" placeholder.
+ */
+export function previewCardPost(sample: SamplePost, photoUrl = ""): RoadmapPost {
   return {
     week: 1,
     date_hint: "",
@@ -136,7 +184,8 @@ export function previewCardPost(sample: SamplePost): RoadmapPost {
     cta: sample.cta,
     calendar_tie: "",
     goal_fit: "",
-    overlay_theme: "type_hero",
+    overlay_theme: photoUrl ? "split_panel" : "type_hero",
+    image_url: photoUrl || undefined,
     has_overlay: true,
     overlay_headline: sample.overlay_headline || sample.title,
   };

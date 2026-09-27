@@ -28,6 +28,11 @@ class Settings(BaseSettings):
 
     gemini_strategy_model: str = "gemini-3.8-flash"
     gemini_lite_model: str = "gemini-3.5-flash-lite"
+    # Reading a business off its site: the brand (colours, logo, voice), the site profile
+    # and the public preview's sample post. The lite model obeyed "palette from the CSS"
+    # literally and returned Wix's navy defaults for a beige-and-pink shop, and copied the
+    # meta description into the sample caption. Cheap checks (photo usability) stay lite.
+    gemini_extract_model: str = "gemini-3.8-flash"
     gemini_image_model: str = "gemini-3-pro-image"
     # 1K returns ~928px wide for 4:5 — under Instagram's 1080px ideal, so an export
     # would have to upscale. 2K gives real headroom. Set to "1K" to trade quality for speed.
@@ -38,6 +43,17 @@ class Settings(BaseSettings):
     # triggers "is this real?" suspicion, and suspicion taxes the real photos too.
     # Generation stays as the fallback when no usable photo is found.
     real_photo_first: bool = True
+
+    # Headless Chrome for one rendered screenshot of the site during a brand scan — the
+    # best single signal of what the customer actually sees. Empty = look for Chrome in
+    # the usual places; if none is found the screenshot is skipped silently. Chrome is
+    # routed through a local netguard proxy, so every hop it makes is SSRF-checked.
+    site_screenshot: bool = True
+    chrome_path: str = ""
+    # Containers running as a user without namespaces need Chrome's sandbox off.
+    chrome_no_sandbox: bool = False
+    # Wall-clock cap for the whole Chrome run (launch, load, capture).
+    screenshot_timeout_seconds: float = 14.0
 
     # Session cookie hardening. None = derive from the web_origin scheme, so an
     # https deployment gets Secure cookies automatically and local http dev does not.

@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 import re
@@ -10,7 +11,7 @@ from app.services.audiences import (
 )
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
-from app.services.gemini import lite_json, strategy_json
+from app.services.gemini import extract_json, lite_json, strategy_json
 from app.config import get_settings
 from app.services.post_model_router import post_json
 from app.services import google_cost
@@ -30,7 +31,8 @@ from app.services.schemas_llm import (
 from app.services.cost_model import plan_from_budget, prompt_block
 from app.services.instagram_signal import attach_inspiration, prompt_block as instagram_prompt_block
 from app.services.month_loop import prior_prompt_block
-from app.services.scraper import scrape_site
+from app.services.scraper import _normalize_url, scrape_site
+from app.services.screenshot import attach_screenshot, capture_site
 
 
 def _business_brief(business: dict) -> dict:
@@ -66,7 +68,7 @@ URL: {scraped.get("url")}
 טקסט:
 {scraped.get("text")}
 """
-    return loads(lite_json(prompt, SITE_EXTRACT_SCHEMA), {})
+    return loads(extract_json(prompt, SITE_EXTRACT_SCHEMA, thinking_level="LOW"), {})
 
 
 def extract_competitor(scraped: dict, name: str) -> dict:
@@ -86,7 +88,16 @@ URL: {scraped.get("url")}
 
 
 def scan_website(url: str) -> dict:
-    own = scrape_site(url)
+    # The rendered screenshot (when Chrome is available) runs beside the scrape; it is
+    # guarded on its own (see services/screenshot.py) and None when it cannot be taken.
+    pool = ThreadPoolExecutor(max_workers=1)
+    try:
+        shot = pool.submit(capture_site, _normalize_url(url))
+        own = scrape_site(url)
+        attach_screenshot(own, shot.result())
+    finally:
+        # A failed scrape answers at once; a running Chrome ends on its own deadline.
+        pool.shutdown(wait=False)
     profile = extract_site_profile(own)
     brand = extract_brand_language(own)
     if not profile.get("business_name") and brand.get("business_name"):

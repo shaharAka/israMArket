@@ -97,6 +97,7 @@ GUESS = {
     "presence_type": "brick_and_mortar",
     "offerings_summary": "חלות ולחם מחמצת",
     "post": {
+        "product": "חלות לשישי",
         "title": "החלות של שישי",
         "hook": "מה ריח הבוקר ביפו?",
         "caption": "כל שישי מ-05:00 החלות יוצאות מהתנור. בואו מוקדם.",
@@ -170,8 +171,10 @@ class PreviewTestCase(unittest.TestCase):
             mock.patch.object(scraper.httpx, "Client", side_effect=client_factory),
             mock.patch("app.services.netguard.socket.getaddrinfo", side_effect=fake_dns),
             mock.patch.object(brand_service, "lite_json", side_effect=fake),
+            mock.patch.object(brand_service, "extract_json", side_effect=fake),
+            mock.patch.object(strategy_service, "extract_json", side_effect=fake),
             mock.patch.object(strategy_service, "lite_json", side_effect=fake),
-            mock.patch.object(preview_service, "lite_json", side_effect=fake),
+            mock.patch.object(preview_service, "extract_json", side_effect=fake),
         ]
         for patch in self._patches:
             patch.start()
@@ -207,7 +210,7 @@ class PublicPreviewTest(PreviewTestCase):
         for field in ("title", "hook", "caption", "cta", "overlay_headline"):
             self.assertTrue(post[field], field)
         self.assertFalse(body["cached"])
-        # Lite model only: brand, site profile, and the guess + post.
+        # One call each: brand, site profile, and the guess + post (no retry needed).
         self.assertCountEqual(self.gemini_calls, ["BrandLanguage", "SiteExtract", "PreviewGuess"])
 
     def test_never_returns_page_html_or_text(self):
@@ -295,7 +298,7 @@ class PublicPreviewTest(PreviewTestCase):
         def broken(prompt, schema, images=None, thinking_level="LOW"):
             raise RuntimeError("upstream said: key AIza-secret-123 is invalid")
 
-        with mock.patch.object(brand_service, "lite_json", side_effect=broken):
+        with mock.patch.object(brand_service, "extract_json", side_effect=broken):
             response = self.preview("bakery.example")
         self.assertEqual(response.status_code, 502)
         self.assertNotIn("AIza", response.text)
@@ -311,7 +314,7 @@ class PublicPreviewTest(PreviewTestCase):
                 raise RuntimeError("timeout")
             return real(prompt, schema, images, thinking_level)
 
-        with mock.patch.object(preview_service, "lite_json", side_effect=no_post):
+        with mock.patch.object(preview_service, "extract_json", side_effect=no_post):
             body = self.preview("bakery.example").json()
         self.assertEqual(body["business_name"], "מאפיית לחם תום")
         self.assertIsNone(body["sample_post"])

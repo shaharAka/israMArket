@@ -8,25 +8,32 @@ of reading the same site a second time.
 
 This path is anonymous and spends Gemini quota, so it is deliberately smaller than the
 authenticated scan: the scrape runs under `scraper.PREVIEW_LIMITS` (byte caps, one
-shared deadline, three images), the brand extraction uses the lite model, and the router
-in front of it rate-limits by IP. The cache is per-process, like the rate limiter: fine
+shared deadline, three photos plus the logo), and the router in front of it rate-limits
+by IP. Reading the brand and writing the sample post use `gemini_extract_model`: this
+page is the first thing an owner sees, and the lite model painted a beige-and-pink shop
+in its website builder's navy and copied the meta description into the caption. The cache is per-process, like the rate limiter: fine
 for the single-process deployment this app runs as, not shared across workers.
 """
 
 from __future__ import annotations
 
 import copy
+import logging
+import re
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 
 from app.services.brand import extract_brand_language, public_scan
-from app.services.gemini import lite_json
+from app.services.gemini import extract_json
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.scraper import PREVIEW_LIMITS, _normalize_url, scrape_site
+from app.services.screenshot import attach_screenshot, capture_site
 from app.services.strategy import extract_site_profile
+
+logger = logging.getLogger(__name__)
 
 # Mirrors BUSINESS_TYPES in web/components/onboarding/constants.ts — the onboarding
 # select offers exactly these, so the guess has to be one of them to prefill it.
@@ -67,16 +74,20 @@ SAMPLE_POST_SCHEMA = {
         "post": {
             "type": "object",
             "properties": {
+                "product": {
+                    "type": "string",
+                    "description": "המוצר, הקולקציה או השירות המסוים מהאתר שהפוסט עוסק בו, בשם שלו באתר",
+                },
                 "title": {"type": "string", "description": "כותרת פנימית קצרה לפוסט"},
-                "hook": {"type": "string", "description": "משפט הפתיחה של הפוסט"},
-                "caption": {"type": "string", "description": "הכיתוב המלא, 2 עד 4 משפטים"},
+                "hook": {"type": "string", "description": "משפט הפתיחה של הפוסט: פרט אמיתי על המוצר"},
+                "caption": {"type": "string", "description": "הכיתוב המלא, 2 עד 4 משפטים, בניסוח חדש"},
                 "cta": {"type": "string", "description": "קריאה לפעולה, 2 עד 4 מילים"},
                 "overlay_headline": {
                     "type": "string",
                     "description": "כותרת לכרטיס הגרפי, עד 6 מילים",
                 },
             },
-            "required": ["title", "hook", "caption", "cta", "overlay_headline"],
+            "required": ["product", "title", "hook", "caption", "cta", "overlay_headline"],
         },
     },
     "required": ["business_type", "business_model", "presence_type", "offerings_summary", "post"],
@@ -133,12 +144,13 @@ def reset_cache() -> None:
 
 
 def cached_preview(url: str) -> dict | None:
-    """The public preview for this site if it was built recently, else None."""
+    """The full public preview (with the sample post) if built recently, else None.
+    A brand-only entry (`build_brand_preview`) does not count: it has no post yet."""
     try:
         entry = _cache_get(cache_key(url))
     except ValueError:
         return None
-    return entry["preview"] if entry else None
+    return entry["preview"] if entry and entry.get("post_done", True) else None
 
 
 def cached_scan(url: str) -> dict | None:
@@ -155,34 +167,128 @@ def _clip(value, limit: int) -> str:
     return str(value or "").strip()[:limit]
 
 
-def _sample_post(scraped: dict, profile: dict, brand: dict) -> dict:
-    prompt = f"""
+# Openers and clichés the sample post must not use. HEBREW_STYLE names most of them; the
+# owner's first real test still came back "…מחכות לכן באתר", so the preview checks.
+_CLICHE_RE = re.compile(
+    r"מחכ(?:ים|ות|ה)\s+(?:ל(?:כם|כן|ך)|רק)|אל\s+תפספס|הגיע\s+הזמן|היי\s+לכול|"
+    r"אנחנו\s+שמחים\s+להציג|פנק(?:ו|י)\s+את\s+עצמ|מחפשי(?:ם|ות)\s"
+)
+# The site addressing its customers as women: feminine singular imperatives that are
+# unambiguous in shop copy ("התחברי", "לחצי לרכישה", "הירשמי לניוזלטר").
+_FEMININE_RE = re.compile(
+    r"(?<![א-ת])ו?(?:התחברי|הירשמי|הרשמי|לחצי|הזמיני|הצטרפי|בחרי|גלי|קני|בואי|תתחדשי|שלחי|"
+    r"היכנסי|כנסי|מדדי|צרי|תהני|שתפי|עקבי)(?![א-ת])"
+)
+_WORD_RE = re.compile(r"[\w֐-׿׳״'\"-]+")
+SAMPLE_RETRY_BEFORE_SECONDS = 40.0
+
+
+def _words(text: str) -> list[str]:
+    return _WORD_RE.findall(text or "")
+
+
+def addresses_women(scraped: dict) -> bool:
+    """True when the site plainly speaks to its customers in the feminine."""
+    blob = " ".join([scraped.get("text") or "", " ".join(scraped.get("buttons") or [])])
+    return len(set(_FEMININE_RE.findall(blob))) >= 2
+
+
+def _shingles(text: str, size: int = 5) -> set[tuple[str, ...]]:
+    words = [w.strip("׳״'\".,:!?-").lower() for w in _words(text)]
+    words = [w for w in words if w]
+    return {tuple(words[i : i + size]) for i in range(len(words) - size + 1)}
+
+
+def post_problems(post: dict, scraped: dict) -> list[str]:
+    """What is wrong with a sample post, in Hebrew, for one corrective retry."""
+    if not isinstance(post, dict):
+        return ["לא התקבל פוסט."]
+    problems = []
+    body = " ".join(str(post.get(k) or "") for k in ("hook", "caption", "overlay_headline"))
+    meta = " ".join(scraped.get("meta") or [])
+    if meta and _shingles(body) & _shingles(meta):
+        problems.append("הכיתוב מעתיק משפט מתיאור האתר (meta description). כתוב אותו מחדש במילים שלך.")
+    hook_words = _shingles(post.get("hook") or "", size=4)
+    if hook_words and len(hook_words & _shingles(post.get("caption") or "", size=4)) >= max(1, len(hook_words) // 2):
+        # The card shows the hook, then the caption: repeating it reads twice.
+        problems.append("ה-caption חוזר על ה-hook. הכיתוב צריך להמשיך אותו, לא לחזור עליו.")
+    cliche = _CLICHE_RE.search(body)
+    if cliche:
+        problems.append(f"יש קלישאה אסורה: \"{cliche.group(0).strip()}\". פתח בפרט אמיתי על המוצר.")
+    if len(_words(post.get("overlay_headline") or "")) > 6:
+        problems.append("overlay_headline ארוכה מ-6 מילים.")
+    cta_words = len(_words(post.get("cta") or ""))
+    if cta_words < 2 or cta_words > 4:
+        problems.append("cta חייבת להיות 2 עד 4 מילים.")
+    if not str(post.get("product") or "").strip():
+        problems.append("חסר מוצר או הצעה מסוימת מהאתר.")
+    return problems
+
+
+def _sample_prompt(scraped: dict, profile: dict, brand: dict, problems: list[str] | None = None) -> str:
+    women = addresses_women(scraped)
+    address_rule = (
+        "האתר פונה ללקוחות שלו בלשון נקבה (למשל \"התחברי\", \"לחצי\"). בפוסט עצמו כתוב באותה פנייה, "
+        "בלשון נקבה, כמו שהעסק מדבר עם הלקוחות שלו. כלל ה\"פנייה ברבים\" שבהנחיות הכתיבה למטה "
+        "נוגע לפנייה אל בעל העסק, לא לפוסט הזה."
+        if women
+        else "פנה ללקוחות כמו שהאתר פונה אליהם; אם לא ברור, ברבים."
+    )
+    retry = ""
+    if problems:
+        retry = "\nהגרסה הקודמת נפסלה. תקן את כל אלה:\n" + "\n".join(f"- {p}" for p in problems) + "\n"
+    return f"""
 לפניך אתר של עסק ישראלי קטן. עשה שני דברים, רק מתוך מה שכתוב באתר:
 
 1. נחש את סוג העסק (business_type מתוך הרשימה), אם הוא מוכר מוצרים, שירותים או את שניהם,
    ואיך לקוחות מגיעים אליו (מקום פיזי / אונליין בלבד / משולב). אם לא ברור — בחר "עסק אחר".
-2. כתוב פוסט אחד לאינסטגרם, מוכן לפרסום, בטון של האתר עצמו.
+2. כתוב פוסט אחד לאינסטגרם, מוכן לפרסום, בטון של האתר עצמו:
+   - בחר מוצר, קולקציה או שירות אחד מסוים שבאמת מופיע באתר (בכותרות, בכפתורים או בטקסט) וכתוב עליו בלבד.
+     כתוב את השם שלו ב-product. לא פוסט כללי על העסק.
+   - hook: פרט אמיתי ומוחשי על המוצר הזה (חומר, גזרה, עונה, איך משתמשים בו, למי הוא מתאים). בלי פתיח גנרי.
+   - caption: 2 עד 4 משפטים בניסוח שלך, שממשיכים את ה-hook (לא חוזרים עליו).
+     אסור להעתיק את תיאור האתר (meta) או משפטים מהאתר כמו שהם.
    - בלי מבצעים, מחירים, הנחות או מספרים שלא כתובים באתר. אסור להמציא.
-   - הוק שעוצר גלילה, כיתוב של 2 עד 4 משפטים, קריאה לפעולה של 2 עד 4 מילים.
-   - overlay_headline עד 6 מילים — זו הכותרת שמודפסת על הכרטיס.
-
+   - אסור: "מחכים לכם", "מחכות לכן", "מחכה לך", "אל תפספסו", "הגיע הזמן", "מחפשים...?", "היי לכולם".
+   - overlay_headline: עד 6 מילים, הכותרת שמודפסת על הכרטיס. cta: 2 עד 4 מילים.
+   - {address_rule}
+{retry}
 שם העסק: {brand.get("business_name") or profile.get("business_name")}
 טון הדיבור: {brand.get("voice")}
 דוגמאות לטון: {brand.get("voice_examples")}
 מילים שהאתר משתמש בהן: {brand.get("do_say")}
 מילים שהאתר נמנע מהן: {brand.get("dont_say")}
-מה ראינו באתר: {brand.get("offers_seen") or profile.get("offers")}
+מוצרים והצעות שראינו באתר: {brand.get("offers_seen") or profile.get("offers")}
 הצעות ערך: {profile.get("value_propositions")}
 מיקום: {profile.get("location")}
 
 כותרת האתר: {scraped.get("title")}
+תיאור האתר (meta, לא להעתיק): {scraped.get("meta")}
 כותרות: {scraped.get("headings")}
+כפתורים וקישורים: {scraped.get("buttons")}
 טקסט מהאתר (מקוצר):
 {_clip(scraped.get("text"), 5000)}
 
 {HEBREW_STYLE}
 """
-    return loads(lite_json(prompt, SAMPLE_POST_SCHEMA, thinking_level="LOW"), {}) or {}
+
+
+def _sample_post(scraped: dict, profile: dict, brand: dict, started: float | None = None) -> dict:
+    """The guess and one sample post, with one corrective retry when the post breaks a
+    rule we can check (meta copied, cliché, lengths) and the time budget allows it."""
+    started = started if started is not None else time.monotonic()
+    guess = loads(extract_json(_sample_prompt(scraped, profile, brand), SAMPLE_POST_SCHEMA), {}) or {}
+    problems = post_problems(guess.get("post"), scraped)
+    if problems and time.monotonic() - started < SAMPLE_RETRY_BEFORE_SECONDS:
+        try:
+            second = loads(
+                extract_json(_sample_prompt(scraped, profile, brand, problems), SAMPLE_POST_SCHEMA), {}
+            ) or {}
+        except Exception:
+            second = {}
+        if second.get("post") and len(post_problems(second.get("post"), scraped)) < len(problems):
+            guess = second
+    return guess
 
 
 def _public_payload(scan: dict, guess: dict) -> dict:
@@ -222,12 +328,22 @@ def _public_payload(scan: dict, guess: dict) -> dict:
     if post and _clip(post.get("hook"), 10) and _clip(post.get("caption"), 10):
         sample = {
             "format": "image",
+            "product": _clip(post.get("product"), 120),
             "title": _clip(post.get("title"), 120),
             "hook": _clip(post.get("hook"), 240),
             "caption": _clip(post.get("caption"), 900),
             "cta": _clip(post.get("cta"), 40),
             "overlay_headline": _clip(post.get("overlay_headline"), 60),
+            # One of the site's own photographs, picked by the brand model as clean
+            # (no baked-in text or logo). Empty = the card is typographic.
+            "photo_url": _public_image_url(brand.get("card_photo_url")),
         }
+    logo_url = _public_image_url(brand.get("logo_url") or raw.get("logo_url"))
+    social = {
+        network: _public_image_url(link)
+        for network, link in (brand.get("social_links") or raw.get("social_links") or {}).items()
+        if network in {"instagram", "facebook", "tiktok"} and _public_image_url(link)
+    }
 
     return {
         "url": _clip(raw.get("url"), 500),
@@ -240,6 +356,9 @@ def _public_payload(scan: dict, guess: dict) -> dict:
         "location": _clip(profile.get("location"), 120),
         "palette": palette,
         "voice": _clip(brand.get("voice"), 400),
+        "logo_url": logo_url,
+        # The business's own accounts, linked from its site (footer / JSON-LD sameAs).
+        "social_links": social,
         # A trimmed BrandLanguage for the card renderer (it paints from the palette).
         # Model-derived fields only; nothing here is page text.
         "brand_language": {
@@ -251,46 +370,143 @@ def _public_payload(scan: dict, guess: dict) -> dict:
                 "mood": _clip((brand.get("typography") or {}).get("mood"), 120),
             },
             "offers_seen": offerings,
+            "logo_url": logo_url,
+            "logo_description": _clip(brand.get("logo_description"), 200),
         },
         "sample_post": sample,
     }
 
 
-def build_preview(url: str) -> dict:
-    """Scan, extract, write one post, cache. Returns the public payload.
+def _public_image_url(value) -> str:
+    """An absolute http(s) URL the visitor's browser can load, or ""."""
+    url = _clip(value, 1000)
+    return url if url.startswith(("https://", "http://")) else ""
+
+
+# What `build_brand_preview` returns: the brand half of the public payload.
+BRAND_FIELDS = (
+    "url", "business_name", "offerings", "location", "palette", "voice", "logo_url",
+    "social_links", "brand_language",
+)
+
+
+def brand_part(preview: dict) -> dict:
+    """The brand half of a public preview (no business guess, no sample post)."""
+    return {field: copy.deepcopy(preview.get(field)) for field in BRAND_FIELDS}
+
+
+def cached_brand_preview(url: str) -> dict | None:
+    """The brand for this site if a brand or full preview was built recently, else None."""
+    try:
+        entry = _cache_get(cache_key(url))
+    except ValueError:
+        return None
+    return brand_part(entry["preview"]) if entry else None
+
+
+def _scan_brand(url: str, started: float, marks: dict[str, float]) -> dict:
+    """Scrape (+ screenshot), read the brand and the site profile. Returns the scan.
 
     Raises PreviewError with a visitor-safe Hebrew message. Anything else (a Gemini
     outage, a bug) is left to the router, which answers with a generic message rather
     than leaking a provider error to an anonymous caller.
     """
-    key = cache_key(url)
+    pool = ThreadPoolExecutor(max_workers=2)
     try:
-        scraped = scrape_site(url, limits=PREVIEW_LIMITS)
-    except (RuntimeError, ValueError) as exc:
-        # The scraper's own messages are Hebrew and name only the URL the visitor typed.
-        raise PreviewError(str(exc)) from exc
+        # The rendered screenshot needs only the (netguard-checked) URL, so Chrome starts
+        # at once and runs beside the scrape. None when Chrome is missing or too slow.
+        shot_future = pool.submit(capture_site, _normalize_url(url))
+        try:
+            scraped = scrape_site(url, limits=PREVIEW_LIMITS)
+        except (RuntimeError, ValueError) as exc:
+            # The scraper's own messages are Hebrew and name only the URL the visitor typed.
+            raise PreviewError(str(exc)) from exc
+        marks["scrape"] = time.monotonic() - started
 
-    # The two extractions are independent; run them side by side to halve the wait.
-    with ThreadPoolExecutor(max_workers=2) as pool:
+        # The site profile reads text only: start it before waiting for the screenshot.
         profile_future = pool.submit(extract_site_profile, scraped)
-        brand_future = pool.submit(extract_brand_language, scraped)
-        brand = brand_future.result()
+        attach_screenshot(scraped, shot_future.result())
+        marks["screenshot"] = time.monotonic() - started
+        brand = extract_brand_language(scraped)
+        marks["brand"] = time.monotonic() - started
         try:
             profile = profile_future.result() or {}
         except Exception:
             # The value-proposition extract enriches the plan later; the preview does
             # not need it to show the brand, so a failure here is not a failed preview.
             profile = {}
+    finally:
+        # On a failed scrape, answer now; a running Chrome ends on its own deadline.
+        pool.shutdown(wait=False)
     if not profile.get("business_name") and brand.get("business_name"):
         profile["business_name"] = brand["business_name"]
-    scan = public_scan(scraped, profile, brand)
+    marks["screenshot_used"] = 1.0 if scraped.get("screenshot") else 0.0
+    marks["logo_found"] = 1.0 if scraped.get("logo") else 0.0
+    return public_scan(scraped, profile, brand)
+
+
+def _log(kind: str, key: str, marks: dict[str, float]) -> None:
+    timings = " ".join(f"{k}={v:.1f}s" for k, v in marks.items() if not k.endswith(("_used", "_found")))
+    logger.info(
+        "%s %s: %s (screenshot %s, logo %s)",
+        kind,
+        key,
+        timings,
+        "yes" if marks.get("screenshot_used") else "no",
+        "yes" if marks.get("logo_found") else "no",
+    )
+
+
+def build_brand_preview(url: str) -> dict:
+    """The brand only — palette, voice, logo, name, offerings, social links — without the
+    business guess or the sample post, so it answers one model call sooner.
+
+    Shares the cache with `build_preview`: a full preview built earlier answers this
+    for free, and a brand scan stored here is reused by a later `build_preview` (which
+    then only writes the post) and by `/onboarding/scan` via `cached_scan`.
+    Returns `brand_part(...)` of the public payload. Raises like `build_preview`.
+    """
+    cached = cached_brand_preview(url)
+    if cached is not None:
+        return cached
+    key = cache_key(url)
+    started = time.monotonic()
+    marks: dict[str, float] = {}
+    scan = _scan_brand(url, started, marks)
+    preview = _public_payload(scan, {})
+    _cache_put(key, {"scan": scan, "preview": preview, "post_done": False})
+    _log("brand preview", key, marks)
+    return brand_part(preview)
+
+
+def build_preview(url: str) -> dict:
+    """Scan, extract, write one post, cache. Returns the public payload.
+
+    When a brand-only scan of this site is cached (`build_brand_preview`), the site is
+    not read again: only the business guess and the sample post are written.
+    Raises PreviewError with a visitor-safe Hebrew message; see `_scan_brand`.
+    """
+    key = cache_key(url)
+    started = time.monotonic()
+    marks: dict[str, float] = {}
+    entry = _cache_get(key)
+    if entry and entry.get("post_done", True):
+        return entry["preview"]
+    scan = entry["scan"] if entry else _scan_brand(url, started, marks)
+    # The stored scan keeps everything the post needs (title, meta, headings, buttons,
+    # text); only image bytes were dropped, and the post does not use them.
+    scraped = scan.get("raw") or {}
+    profile = scan.get("extracted") or {}
+    brand = scan.get("brand_language") or {}
 
     try:
-        guess = _sample_post(scraped, profile, brand)
+        guess = _sample_post(scraped, profile, brand, started)
     except Exception:
         # The brand is the promise; the sample post is the bonus. Show what we have.
         guess = {}
+    marks["post"] = time.monotonic() - started
 
     preview = _public_payload(scan, guess)
-    _cache_put(key, {"scan": scan, "preview": preview})
+    _cache_put(key, {"scan": scan, "preview": preview, "post_done": True})
+    _log("preview", key, marks)
     return preview

@@ -1,6 +1,8 @@
 """Endpoints that work without an account.
 
-Only one lives here: the landing page's site preview. It is anonymous by design — the
+The site preview, in two sizes: `/public/preview` (brand + business guess + one sample
+post) and `/public/brand` (the brand only, for a flow that reads the site in the
+background). They share one cache and one budget. It is anonymous by design — the
 point is to show an owner what we make of their business *before* asking them to sign
 up — so everything that normally protects a scan has to be explicit instead:
 
@@ -55,8 +57,15 @@ class PreviewIn(BaseModel):
     url: str = Field(min_length=4, max_length=500)
 
 
-def _run(key: str, url: str) -> dict:
+# The two kinds of scan. "brand" reads the site and the brand only; "full" also writes
+# the business guess and the sample post, reusing a cached brand scan when there is one.
+FULL, BRAND = "full", "brand"
+
+
+def _run(key: str, url: str, kind: str) -> dict:
     try:
+        if kind == BRAND:
+            return preview_service.build_brand_preview(url)
         return preview_service.build_preview(url)
     finally:
         _slots.release()
@@ -64,55 +73,41 @@ def _run(key: str, url: str) -> dict:
             _inflight.pop(key, None)
 
 
-@router.post("/preview")
-def site_preview(body: PreviewIn, request: Request) -> dict:
-    """Brand colours, voice, a business guess and one sample post for a public site.
-
-    No account, no database writes. See the module docstring for the limits.
-    """
+def _start(key: str, url: str, kind: str, request: Request) -> Future:
+    """Charge the budgets and start a scan, or join one already running for this site."""
+    # Refuse internal targets up front, before they cost anyone budget. The scraper
+    # checks again on every hop, so this is a fast path, not the guard itself.
     try:
-        url = _normalize_url(body.url)
-        key = preview_service.cache_key(url)
-    except ValueError as exc:
+        assert_public_url(url)
+    except UnsafeUrlError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-
-    cached = preview_service.cached_preview(url)
-    if cached:
-        return {**cached, "cached": True}
-
+    ip = ratelimit._client_ip(request)
+    if not ratelimit.allow(f"preview:ip:{ip}", PREVIEW_PER_IP, PREVIEW_WINDOW_SECONDS):
+        raise HTTPException(
+            status_code=429,
+            detail="כבר קראנו מכאן כמה אתרים בשעה האחרונה. נסו שוב מאוחר יותר, או הירשמו והמשיכו משם.",
+        )
+    if not ratelimit.allow("preview:global", PREVIEW_GLOBAL, PREVIEW_WINDOW_SECONDS):
+        raise HTTPException(
+            status_code=429,
+            detail="יש עומס כרגע. נסו שוב בעוד כמה דקות.",
+        )
+    if not _slots.acquire(blocking=False):
+        raise HTTPException(status_code=503, detail="יש עומס כרגע. נסו שוב בעוד דקה.")
     with _inflight_lock:
-        future = _inflight.get(key)
-    if future is None:
-        # Refuse internal targets up front, before they cost anyone budget. The scraper
-        # checks again on every hop, so this is a fast path, not the guard itself.
-        try:
-            assert_public_url(url)
-        except UnsafeUrlError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
-        ip = ratelimit._client_ip(request)
-        if not ratelimit.allow(f"preview:ip:{ip}", PREVIEW_PER_IP, PREVIEW_WINDOW_SECONDS):
-            raise HTTPException(
-                status_code=429,
-                detail="כבר קראנו מכאן כמה אתרים בשעה האחרונה. נסו שוב מאוחר יותר, או הירשמו והמשיכו משם.",
-            )
-        if not ratelimit.allow("preview:global", PREVIEW_GLOBAL, PREVIEW_WINDOW_SECONDS):
-            raise HTTPException(
-                status_code=429,
-                detail="יש עומס כרגע. נסו שוב בעוד כמה דקות.",
-            )
-        if not _slots.acquire(blocking=False):
-            raise HTTPException(status_code=503, detail="יש עומס כרגע. נסו שוב בעוד דקה.")
-        with _inflight_lock:
-            future = _inflight.get(key)
-            if future is None:
-                future = _pool.submit(_run, key, url)
-                _inflight[key] = future
-            else:
-                # Someone else started the same site between our two looks; share it.
-                _slots.release()
+        current = _inflight.get(key)
+        if current is None:
+            future = _pool.submit(_run, key, url, kind)
+            _inflight[key] = (kind, future)
+            return future
+    # Someone else started the same site between our two looks; share it.
+    _slots.release()
+    return current[1]
 
+
+def _await(future: Future) -> dict:
     try:
-        result = future.result(timeout=PREVIEW_REQUEST_SECONDS)
+        return future.result(timeout=PREVIEW_REQUEST_SECONDS)
     except FutureTimeout as exc:
         raise HTTPException(status_code=504, detail=SLOW_SITE) from exc
     except preview_service.PreviewError as exc:
@@ -120,4 +115,55 @@ def site_preview(body: PreviewIn, request: Request) -> dict:
     except Exception as exc:
         # A provider error message is not for an anonymous visitor.
         raise HTTPException(status_code=502, detail=GENERIC_FAILURE) from exc
+
+
+def _serve(raw_url: str, request: Request, kind: str) -> dict:
+    try:
+        url = _normalize_url(raw_url)
+        key = preview_service.cache_key(url)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    lookup = preview_service.cached_brand_preview if kind == BRAND else preview_service.cached_preview
+    cached = lookup(url)
+    if cached:
+        return {**cached, "cached": True}
+
+    with _inflight_lock:
+        current = _inflight.get(key)
+    if current is not None and (kind == BRAND or current[0] == FULL):
+        # Any scan in flight answers a brand request; only a full one answers a full one.
+        future = current[1]
+    else:
+        if current is not None:
+            # A brand scan of this site is running: let it land in the cache, so the
+            # full preview only has to write the post instead of reading the site again.
+            try:
+                current[1].result(timeout=PREVIEW_REQUEST_SECONDS)
+            except Exception:
+                pass
+        future = _start(key, url, kind, request)
+
+    result = _await(future)
+    if kind == BRAND:
+        result = preview_service.brand_part(result)
     return {**result, "cached": False}
+
+
+@router.post("/preview")
+def site_preview(body: PreviewIn, request: Request) -> dict:
+    """Brand colours, voice, logo, a business guess and one sample post for a public site.
+
+    No account, no database writes. See the module docstring for the limits.
+    """
+    return _serve(body.url, request, FULL)
+
+
+@router.post("/brand")
+def site_brand(body: PreviewIn, request: Request) -> dict:
+    """The brand only (palette, voice, logo, name, offerings, social links), one model
+    call sooner than `/public/preview`, for a flow that reads the site in the background.
+    Same limits and the same cache as `/public/preview`.
+    """
+    return _serve(body.url, request, BRAND)
+

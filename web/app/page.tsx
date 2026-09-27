@@ -12,7 +12,7 @@ import {
   savePreview,
   type SitePreview,
 } from "@/components/onboarding/preview";
-import { SamplePostCard, Swatches } from "@/components/onboarding/SitePreviewView";
+import { BrandCard, SamplePostCard } from "@/components/onboarding/SitePreviewView";
 
 /** What the wait is spent on, in the order it happens. Rotated while the scan runs. */
 const READING_STEPS = ["קוראים את האתר…", "מזהים את הצבעים והסגנון…", "כותבים פוסט לדוגמה…"];
@@ -108,19 +108,7 @@ export default function Home() {
         {preview ? (
           <div ref={resultRef} className="grid items-start gap-6 lg:grid-cols-[1fr_1fr] lg:gap-12">
             <section className="max-w-xl space-y-4">
-              <div>
-                <p className="text-xs font-bold text-[#2d3f32]">זה מה שראינו באתר שלכם</p>
-                <h1 className="mt-1 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
-                  {preview.business_name || "העסק שלכם"}
-                </h1>
-              </div>
-              <Swatches preview={preview} />
-              {preview.voice ? (
-                <p className="text-sm leading-6 text-[#4f524b] sm:text-base sm:leading-7">
-                  <span className="font-bold text-[#191b18]">הסגנון: </span>
-                  {preview.voice}
-                </p>
-              ) : null}
+              <BrandCard brand={preview} />
               {preview.offerings.length ? (
                 <p className="hidden text-sm leading-6 text-[#4f524b] sm:block">
                   <span className="font-bold text-[#191b18]">מה אתם מוכרים: </span>
