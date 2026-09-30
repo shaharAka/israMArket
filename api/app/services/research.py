@@ -1008,6 +1008,32 @@ def gather_calendar(db: Session, business: Business, ctx: dict) -> tuple[list[di
 # --- source: own results ----------------------------------------------------------------
 
 
+def _account_fact_he(account: dict) -> tuple[str, str]:
+    """One sentence from `meta.account_digest`: only numbers Meta returned, and the change
+    against the period before only where both periods have the number."""
+    values, previous = account.get("values") or {}, account.get("previous") or {}
+    parts = [
+        f"{_fmt(values[key])} {meta.ACCOUNT_LABELS_HE[key]}"
+        for key in ("reach", "accounts_engaged", "profile_links_taps")
+        if _num(values.get(key)) is not None
+    ]
+    followers = _num(account.get("followers_count"))
+    if followers is not None:
+        net = _num(values.get("net_followers"))
+        parts.append(f"{_fmt(followers)} עוקבים" + (f" ({net:+d} בתקופה)" if net is not None else ""))
+    period = f"{_d(account.get('start'))}–{_d(account.get('end'))}" if account.get("start") else ""
+    text = f"החשבון באינסטגרם{f' בין {period}' if period else ''}: " + (", ".join(parts) or "לא נמדד") + "."
+    changes = []
+    for key in ("reach", "accounts_engaged", "profile_links_taps"):
+        now, before = _num(values.get(key)), _num(previous.get(key))
+        if now is not None and before:
+            changes.append(f"{meta.ACCOUNT_LABELS_HE[key]}: {_fmt(before)} ({round((now - before) / before * 100):+d}%)")
+    if changes:
+        text += f" ב-{account.get('days')} הימים שלפני: " + "; ".join(changes) + "."
+        return text, "change"
+    return text, "fact"
+
+
 def gather_own_results(db: Session, business: Business, ctx: dict) -> tuple[list[dict], dict, dict]:
     out = _Findings("own_results", ctx["now"])
     measured = False
@@ -1129,6 +1155,17 @@ def gather_own_results(db: Session, business: Business, ctx: dict) -> tuple[list
                     date_ref=latest.period_end,
                     data={"pages": [{"path": p, "sessions": c, "conversions": v} for c, p, v in pages[:5]]},
                 )
+        account = meta.account_digest((loads(latest.meta_json, {}) or {}).get("account"))
+        if account:
+            measured = True
+            text, kind = _account_fact_he(account)
+            out.add(
+                kind,
+                text,
+                origin="Instagram Graph API (המספרים של החשבון)",
+                date_ref=account["end"] or latest.period_end,
+                data=account,
+            )
         attribution = [
             row
             for row in ga4.get("post_attribution") or []

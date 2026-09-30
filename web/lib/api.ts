@@ -1264,6 +1264,58 @@ const DEMO_POST_ATTRIBUTION: Record<string, unknown>[] = POSTS.map((post, index)
   };
 });
 
+/**
+ * The demo bakery's Instagram account, in the shape `account_overview()` stores. Link
+ * taps in the bio are not here because Meta no longer reports them; the screen says so.
+ */
+function demoAccountWindow(
+  start: string,
+  end: string,
+  days: number,
+  [reach, views, engaged, interactions, calls, directions, follows, unfollows]: number[],
+): InstagramAccountWindow {
+  return {
+    start,
+    end,
+    days,
+    values: {
+      reach,
+      views,
+      accounts_engaged: engaged,
+      total_interactions: interactions,
+      profile_links_taps: calls + directions,
+      follows_and_unfollows: follows + unfollows,
+      follows,
+      unfollows,
+      net_followers: follows - unfollows,
+    },
+    breakdowns: {
+      profile_links_taps: { CALL: calls, DIRECTION: directions },
+      follows_and_unfollows: { FOLLOWER: follows, NON_FOLLOWER: unfollows },
+    },
+    errors: {},
+    stopped: "",
+  };
+}
+
+const DEMO_ACCOUNT: InstagramAccount = {
+  as_of: "2026-09-05",
+  followers_count: 2380,
+  new_followers: { "7": 24, "28": 96 },
+  windows: {
+    "7": {
+      current: demoAccountWindow("2026-08-29", "2026-09-04", 7, [1980, 5600, 118, 330, 6, 9, 24, 9]),
+      previous: demoAccountWindow("2026-08-22", "2026-08-28", 7, [1710, 5100, 102, 301, 7, 10, 19, 8]),
+    },
+    "28": {
+      current: demoAccountWindow("2026-08-08", "2026-09-04", 28, [6240, 21400, 410, 1280, 21, 36, 96, 31]),
+      previous: demoAccountWindow("2026-07-11", "2026-08-07", 28, [5110, 18900, 356, 1090, 19, 30, 71, 29]),
+    },
+  },
+  errors: {},
+  stopped: "",
+};
+
 const DEMO_PERFORMANCE: PerformancePayload = {
   period_start: "2026-08-08",
   period_end: "2026-09-04",
@@ -1290,6 +1342,7 @@ const DEMO_PERFORMANCE: PerformancePayload = {
   meta: {
     page: { name: "לחם תום", fan_count: 4120 },
     posts: [{ id: "1", caption: "החלות נגמרות לפני הצהריים", media_type: "REEL", like_count: 640 }],
+    account: DEMO_ACCOUNT,
   },
   diagnostic: {
     headline: "רילס החלות מביא הרבה לייקים ותגובות, אבל 41% יוצאים מעמוד החג באתר לפני שהם מגיעים לוואטסאפ.",
@@ -4349,7 +4402,12 @@ export type PerformancePayload = {
     campaigns?: Record<string, string>[];
     post_attribution?: Record<string, unknown>[];
   };
-  meta: { page?: { name?: string; fan_count?: number }; posts?: Record<string, unknown>[] };
+  meta: {
+    page?: { name?: string; fan_count?: number };
+    posts?: Record<string, unknown>[];
+    /** The account's own totals. Absent on snapshots from before it was read. */
+    account?: InstagramAccount | null;
+  };
   diagnostic: {
     headline: string;
     top_content: { label: string; why: string }[];
@@ -4365,6 +4423,50 @@ export type PerformancePayload = {
    * Meta report no per-audience rate, so the screen must not compute one either.
    */
   audiences?: AudiencePerformance | null;
+};
+
+/**
+ * One since–until window of the Instagram account's totals, as `account_insights()` in
+ * `api/app/services/meta.py` returns it. A metric that is missing from `values` was not
+ * measured, and `errors` says why in Hebrew — it is never a zero.
+ */
+export type InstagramAccountWindow = {
+  /** First and last day counted (today is never in: Meta's numbers are not in yet). */
+  start: string;
+  end: string;
+  days: number;
+  values: Partial<
+    Record<
+      | "reach"
+      | "views"
+      | "accounts_engaged"
+      | "total_interactions"
+      | "profile_links_taps"
+      | "follows_and_unfollows"
+      | "follows"
+      | "unfollows"
+      | "net_followers",
+      number
+    >
+  >;
+  /** `profile_links_taps` by contact button, `follows_and_unfollows` by follow type. */
+  breakdowns?: Record<string, Record<string, number>>;
+  errors: Record<string, string>;
+  stopped?: string;
+};
+
+/** `meta.account` on a snapshot: `account_overview()` in `api/app/services/meta.py`. */
+export type InstagramAccount = {
+  as_of?: string;
+  followers_count: number | null;
+  /** Under 100 followers: Meta does not report follows and unfollows. */
+  few_followers?: boolean;
+  /** New followers per window length ("7", "28"), from Meta's legacy daily count. */
+  new_followers?: Record<string, number>;
+  /** Keyed by window length in days: the last N days, and the N days before them. */
+  windows: Record<string, { current: InstagramAccountWindow; previous?: InstagramAccountWindow }>;
+  errors?: Record<string, string>;
+  stopped?: string;
 };
 
 /** The metric buckets a row can carry. A bucket is absent (`null`) when nothing was
