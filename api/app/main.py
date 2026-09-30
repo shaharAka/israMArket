@@ -111,6 +111,20 @@ app.include_router(whatsapp.public_router)
 app.include_router(public.router)
 # Onboarding v2 (/start, before signup): anonymous too, with its own budgets.
 app.include_router(public_onboarding.router)
+
+
+@app.on_event("startup")
+def _resume_month_generation() -> None:
+    """A month that was being built when the API stopped continues from its saved stage
+    (services/generation_jobs.py). Never blocks or fails the startup."""
+    from app.services import generation_jobs
+
+    try:
+        generation_jobs.resume_on_startup()
+    except Exception:
+        pass
+
+
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.

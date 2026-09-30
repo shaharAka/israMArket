@@ -574,7 +574,9 @@ class FirstRunTest(PreviewTestCase):
         self.assertTrue(result["done"])
         business = result["business"]
         self.assertTrue(business["onboarding_complete"])
-        self.assertEqual(len(result["strategy"]["roadmap"]["posts"]), 4)
+        # Revision 8: signup builds the month's structure only; posts come per week later.
+        self.assertEqual(result["strategy"]["roadmap"]["posts"], [])
+        self.assertEqual(set(result["job"]["posts"].values()), {"pending"})
         # The deferred decisions are still open, and say so, for /decisions and /plan.
         self.assertCountEqual(
             business["deferred_decisions"],
@@ -588,7 +590,7 @@ class FirstRunTest(PreviewTestCase):
         self.assertEqual(self.db.query(Strategy).count(), 1)
         titles = [title for title, _ in self.prompts]
         self.assertEqual(titles.count("StrategyDefinition"), 1)
-        self.assertEqual(titles.count("MonthlyPosts"), 2)
+        self.assertEqual(titles.count("MonthlyPosts"), 0)
 
     def test_goal_defaults_from_the_business_model(self):
         self._three_steps("services", "leads")

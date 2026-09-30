@@ -24,8 +24,7 @@ export const MODEL_SHORT: Record<"products" | "services" | "both", string> = {
 
 /** Generation stages as the API reports them, in order. */
 export const GENERATE_STAGES: { key: string; label: string }[] = [
+  // Revision 8: after signup the month's structure is built; its posts come later, per week.
   { key: "usp", label: "מנסחים מה מייחד אתכם" },
-  { key: "plan", label: "בונים את תוכנית החודש" },
-  { key: "posts", label: "כותבים פוסטים לשבועות 1–2" },
-  { key: "posts_late", label: "כותבים פוסטים לשבועות 3–4" },
+  { key: "plan", label: "מתכננים את השבועות" },
 ];

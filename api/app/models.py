@@ -369,3 +369,37 @@ class WhatsappClick(Base):
     count: Mapped[int] = mapped_column(Integer, default=0)
 
     __table_args__ = (UniqueConstraint("link_id", "day", "ua_family", name="uq_whatsapp_click_bucket"),)
+
+
+class GenerationJob(Base):
+    """The month being built for one business, in the background (services/generation_jobs.py).
+
+    One row per business (the unique constraint is the "one job per business" guard): the
+    row is claimed with a compare-and-set on `status`/`heartbeat_at`, so a double click, a
+    second tab or a second API process never starts a second writer. The month's own
+    progress stays in `Business.generate_state_json` (the stage machine in
+    services/strategy.py); this row says who is running it, since when, and how it ended.
+    """
+
+    __tablename__ = "generation_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), unique=True, index=True)
+    # "first_month" (/onboarding/generate) | "next_month" (/strategy/next-month).
+    kind: Mapped[str] = mapped_column(String(20), default="first_month")
+    # "running" | "failed" | "done".
+    status: Mapped[str] = mapped_column(String(20), default="running")
+    # Changes on every claim; a worker whose token is no longer the row's stops writing.
+    token: Mapped[str] = mapped_column(String(40), default="")
+    year: Mapped[int] = mapped_column(Integer, default=0)
+    month: Mapped[int] = mapped_column(Integer, default=0)
+    # Shown to the owner when the job stopped; the raw error is kept in `error_detail`.
+    error_he: Mapped[str] = mapped_column(Text, default="")
+    error_detail: Mapped[str] = mapped_column(Text, default="")
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # The last time a stage finished (or the job started): what "updated" means to the owner.
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # Ticked every few seconds by the process running the job, also mid-stage. A running
+    # job whose heartbeat went quiet belongs to a process that is gone, and is resumed.
+    heartbeat_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)

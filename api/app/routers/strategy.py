@@ -19,6 +19,7 @@ from app.schemas import (
     PostUpdateIn,
     StrategyApproveIn,
 )
+from app.services import generation_jobs
 from app.services.assets import (
     asset_catalogue,
     suggest_assets,
@@ -38,7 +39,7 @@ from app.services.jsonutil import dumps, loads
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
 from app.services.publish import parse_scheduled_for
 from app.services.scraper import fetch_photo_candidates
-from app.services.strategy import generate_monthly_strategy, rewrite_post
+from app.services.strategy import featured_items_from, generate_monthly_strategy, rewrite_post
 from app.services.business_fields import field_label
 
 router = APIRouter(tags=["strategy"])
@@ -710,25 +711,27 @@ def publish_post(
     return {"post": target, "strategy": serialize_strategy(strategy, business)}
 
 
-@router.post("/strategy/next-month")
-def generate_next_month(
-    business: Business = Depends(get_business),
-    db: Session = Depends(get_db),
-) -> dict:
+def _next_month_target(db: Session, business: Business) -> tuple[Strategy, int, int, dict, bool]:
+    """(source month, next year, next month, saved state, whether that state is for it)."""
     source = _active_strategy(db, business)
     year, month = next_civil_month(source.year, source.month)
-    existing = _strategy_for_month(db, business, year, month)
     state = loads(business.generate_state_json, {}) or {}
     resume = state.get("year") == year and state.get("month") == month
+    return source, year, month, state, resume
+
+
+def run_next_month_stage(db: Session, business: Business) -> bool:
+    """Run ONE stage of the next month and persist it; True once it is stored. Raises on
+    failure (the background job retries it once). What `POST /strategy/next-month` did
+    per call before month generation moved to services/generation_jobs.py."""
+    source, year, month, state, resume = _next_month_target(db, business)
+    existing = _strategy_for_month(db, business, year, month)
     if existing and not resume:
-        return {
-            "done": True,
-            "strategy": serialize_strategy(existing, business, horizon=_horizon_for(db, business, existing)),
-        }
+        return True
 
     stored = loads(business.scraped_profile_json, {}) or {}
     if not stored.get("brand_language"):
-        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר. בלי הצבעים והסגנון שלכם אי אפשר לבנות חודש.")
+        raise RuntimeError("עוד לא קראנו את האתר. בלי הצבעים והסגנון שלכם אי אפשר לבנות חודש.")
 
     snap = (
         db.query(PerformanceSnapshot)
@@ -775,6 +778,8 @@ def generate_next_month(
         # What the owner told us at /start (seasons, what they tried...). Absent for
         # businesses onboarded before v2. The first-month seed deliberately stays out.
         "owner_context": stored.get("owner_context") or None,
+        # Revision 8: the products/services the owner chose to feature, when they have.
+        "featured_items": featured_items_from(stored),
     }
 
     def persist_stage(next_state: dict) -> None:
@@ -782,37 +787,64 @@ def generate_next_month(
         business.updated_at = datetime.utcnow()
         db.commit()
 
-    try:
-        generated = generate_monthly_strategy(
-            payload,
-            year=year,
-            month=month,
-            scan=stored if stored.get("brand_language") else None,
-            state=state if resume else {},
-            on_stage=persist_stage,
-            one_stage=True,
-            prior=prior,
-        )
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
-
+    generated = generate_monthly_strategy(
+        payload,
+        year=year,
+        month=month,
+        scan=stored if stored.get("brand_language") else None,
+        state=state if resume else {},
+        on_stage=persist_stage,
+        one_stage=True,
+        prior=prior,
+    )
     if not generated.get("complete"):
-        db.refresh(business)
-        return {
-            "done": False,
-            "business": {"generate_state": generated["generate_state"]},
-            "generate_state": generated["generate_state"],
-        }
+        return False
 
-    strategy = upsert_generated_strategy(db, business, generated)
+    upsert_generated_strategy(db, business, generated)
     business.generate_state_json = ""
     business.updated_at = datetime.utcnow()
     db.commit()
-    db.refresh(strategy)
-    return {
-        "done": True,
-        "strategy": serialize_strategy(strategy, business, horizon=_horizon_for(db, business, source)),
+    return True
+
+
+generation_jobs.register(generation_jobs.NEXT_MONTH, run_next_month_stage)
+
+
+@router.post("/strategy/next-month")
+def generate_next_month(
+    business: Business = Depends(get_business),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Start (or join) building the next month in the background, and return at once.
+
+    Poll `GET /onboarding/generate/status` (kind "next_month"). When the next month
+    already exists (and nothing is mid-way for it) this answers `done` with it, as before.
+    """
+    source, year, month, _state, resume = _next_month_target(db, business)
+    existing = _strategy_for_month(db, business, year, month)
+    if existing and not resume:
+        return {
+            "done": True,
+            "strategy": serialize_strategy(existing, business, horizon=_horizon_for(db, business, existing)),
+        }
+
+    stored = loads(business.scraped_profile_json, {}) or {}
+    if not stored.get("brand_language"):
+        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר. בלי הצבעים והסגנון שלכם אי אפשר לבנות חודש.")
+
+    job = generation_jobs.start(db, business, generation_jobs.NEXT_MONTH, year, month)
+    db.refresh(business)
+    response: dict = {
+        "done": False,
+        "job": job,
+        "business": {"generate_state": loads(business.generate_state_json, {}) or {}},
+        "generate_state": loads(business.generate_state_json, {}) or {},
     }
+    built = _strategy_for_month(db, business, year, month)
+    if job["kind"] == generation_jobs.NEXT_MONTH and job["done"] and built is not None:
+        response["done"] = True
+        response["strategy"] = serialize_strategy(built, business, horizon=_horizon_for(db, business, source))
+    return response
 
 
 @router.post("/strategy/approve")

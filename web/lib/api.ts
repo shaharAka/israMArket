@@ -2543,7 +2543,11 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     }
     return { business: DEMO_BUSINESS, scan: DEMO_BUSINESS.scraped_profile } as T;
   }
-  if (path === "/onboarding/generate" && method === "POST") return { strategy: cloneDemoStrategy() } as T;
+  if (path === "/onboarding/generate" && method === "POST") {
+    return { done: true, job: DEMO_GENERATION_DONE, strategy: cloneDemoStrategy() } as T;
+  }
+  if (path === "/onboarding/generate/status") return DEMO_GENERATION_DONE as T;
+  if (path === "/onboarding/posts/start" && method === "POST") return { ...DEMO_GENERATION_DONE, kind: "posts" } as T;
   if (path === "/strategy/current") return cloneDemoStrategy() as T;
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
@@ -3354,8 +3358,20 @@ export const endpoints = {
   targets: () => api<{ targets: GrowthTargetCandidate[] }>("/onboarding/targets", { method: "POST" }),
   longHorizonPlan: () =>
     api<{ long_horizon_plan: LongHorizonPlan }>("/onboarding/plan", { method: "POST" }),
+  /** Starts (or joins) the first month's background build and answers at once; poll
+   *  `generationStatus` for its progress. See lib/useMonthBuild.ts. */
   generate: () => api<GenerateResult>("/onboarding/generate", { method: "POST" }),
+  /** Same, for the month after the active one. `done` at once when it already exists. */
   generateNextMonth: () => api<GenerateResult>("/strategy/next-month", { method: "POST" }),
+  /** The business's month build (first month, its posts, or next month): stage, label, error. */
+  generationStatus: () => api<GenerationStatus>("/onboarding/generate/status"),
+  /** Write the month's posts in the background: one week, or every week still pending
+   *  (Revision 8: once the owner chose what to feature). Answers with the status. */
+  startPosts: (week?: 1 | 2 | 3 | 4) =>
+    api<GenerationStatus>("/onboarding/posts/start", {
+      method: "POST",
+      body: JSON.stringify(week ? { week } : {}),
+    }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
   generatePostImage: (
     post_index: number,
@@ -4515,31 +4531,65 @@ export type KeywordsPayload = {
   cached?: boolean;
 };
 
+/**
+ * A month being built on the server (GET /onboarding/generate/status). The build runs in
+ * the background whether or not a page is open; pages only poll this. `stage` is the one
+ * running now ("usp" | "plan" | "posts" | "posts_late"; "done" once built).
+ */
+export type WeekPostsState = "pending" | "running" | "done" | "error";
+
+export type GenerationStatus = {
+  /** "first_month": the month's structure after signup (no posts, Revision 8);
+   *  "posts": the posts of the weeks asked for; "next_month": a later month, posts included. */
+  kind: "first_month" | "next_month" | "posts";
+  /** "idle": nothing has run yet (or it stopped before jobs existed; see `resumable`). */
+  status: "idle" | "running" | "failed" | "done";
+  running: boolean;
+  done: boolean;
+  stage: string;
+  /** e.g. "כותבים את הפוסטים לשבועות 3–4" */
+  stage_label_he: string;
+  /** e.g. "בונים את אוקטובר: כותבים את הפוסטים לשבועות 3–4…" */
+  label_he: string;
+  stage_index: number;
+  stage_count: number;
+  year: number | null;
+  month: number | null;
+  month_name_he: string;
+  started_at: string | null;
+  updated_at: string | null;
+  /** Set when the build stopped (a stage failed twice); show it with "לנסות שוב". */
+  error_he: string | null;
+  /** A saved stage and nothing running: starting again continues from it. */
+  resumable: boolean;
+  /** Each week's posts in that month ("1".."4"); null before the month exists. */
+  posts: Record<"1" | "2" | "3" | "4", WeekPostsState> | null;
+};
+
 export type GenerateResult = {
   done?: boolean;
+  job?: GenerationStatus;
   generate_state?: { stage?: string };
-  business?: Business;
+  business?: Business | { generate_state?: { stage?: string } };
   strategy?: StrategyPayload;
 };
 
-export async function generateUntilDone(
-  start: () => Promise<GenerateResult>,
-  onStage?: (stage: string) => void,
-): Promise<GenerateResult> {
-  let result: GenerateResult | null = null;
-  for (let step = 0; step < 10; step += 1) {
-    try {
-      result = await start();
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 502 && step < 9) {
-        await new Promise((resolve) => window.setTimeout(resolve, 4000 * (step + 1)));
-        continue;
-      }
-      throw err;
-    }
-    const stage = result.generate_state?.stage || result.business?.generate_state?.stage;
-    if (stage) onStage?.(stage);
-    if (result.strategy) return result;
-  }
-  throw new ApiError("בניית התוכנית נעצרה באמצע. נסו שוב, ונמשיך מהשלב שנשמר.", 502);
-}
+const DEMO_GENERATION_DONE: GenerationStatus = {
+  kind: "first_month",
+  status: "done",
+  running: false,
+  done: true,
+  stage: "done",
+  stage_label_he: "החודש מוכן",
+  label_he: "החודש מוכן",
+  stage_index: 4,
+  stage_count: 4,
+  year: null,
+  month: null,
+  month_name_he: "",
+  started_at: null,
+  updated_at: null,
+  error_he: null,
+  resumable: false,
+  posts: { "1": "done", "2": "done", "3": "done", "4": "done" },
+};

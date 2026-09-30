@@ -64,6 +64,10 @@ class ModelError(MetaModelError):
     """Anything else: 4xx/5xx, transport failure, or a reply we could not turn into JSON."""
 
 
+class ModelTimeout(ModelError):
+    """The call did not answer within its time budget (`chat_json(timeout=...)`)."""
+
+
 class ContributorModelRefused(ValueError):
     pass
 
@@ -171,11 +175,37 @@ def _retry_delay(response: httpx.Response | None) -> float:
     return _RETRY_DELAY_SECONDS
 
 
-def _post(client: httpx.Client, url: str, headers: dict, payload: dict) -> httpx.Response:
-    """POST with exactly one retry on 429, 5xx or a transport failure."""
+def _post(
+    client: httpx.Client, url: str, headers: dict, payload: dict, deadline: float | None = None
+) -> httpx.Response:
+    """POST with exactly one retry on 429, 5xx or a transport failure.
+
+    With a `deadline` (time.monotonic()) there is no retry once it has passed, each try
+    waits at most until it, and running out raises ModelTimeout, so a slow model costs
+    at most its budget. A read timeout is the slow-model case: it is not retried at all.
+    """
+
+    def remaining() -> float | None:
+        return None if deadline is None else deadline - time.monotonic()
+
     for attempt in range(2):
+        left = remaining()
+        if left is not None and left <= 0:
+            raise ModelTimeout("Meta Model API: no answer within the time budget.", code="timeout")
+        kwargs = {}
+        if left is not None:
+            kwargs["timeout"] = httpx.Timeout(connect=min(10.0, left), read=left, write=min(30.0, left), pool=min(10.0, left))
         try:
-            response = client.post(url, headers=headers, json=payload)
+            response = client.post(url, headers=headers, json=payload, **kwargs)
+        except httpx.TimeoutException as exc:
+            if deadline is not None:
+                raise ModelTimeout(
+                    f"Meta Model API: no answer within the time budget ({type(exc).__name__}).", code="timeout"
+                ) from exc
+            if attempt == 0:
+                time.sleep(_RETRY_DELAY_SECONDS)
+                continue
+            raise ModelError(f"Meta Model API: הבקשה נכשלה ({type(exc).__name__}). / Request failed.") from exc
         except httpx.TransportError as exc:
             if attempt == 0:
                 time.sleep(_RETRY_DELAY_SECONDS)
@@ -184,7 +214,11 @@ def _post(client: httpx.Client, url: str, headers: dict, payload: dict) -> httpx
         retryable = response.status_code == 429 or response.status_code >= 500
         # A billing error is never going to succeed on retry, whatever status it came with.
         if retryable and attempt == 0 and not _is_billing(response, _error_fields(response)[0]):
-            time.sleep(_retry_delay(response))
+            delay = _retry_delay(response)
+            left = remaining()
+            if left is not None and left <= delay:
+                return response
+            time.sleep(delay)
             continue
         return response
     raise ModelError("Meta Model API: unreachable retry state")  # pragma: no cover
@@ -236,8 +270,12 @@ def chat_json(
     web_search: bool = False,
     system: str | None = None,
     client: httpx.Client | None = None,
+    timeout: float | None = None,
 ) -> Any:
     """Send one prompt and return the parsed JSON reply.
+
+    `timeout` (seconds) is the budget for the whole call, retries included; past it
+    ModelTimeout is raised (a MetaModelError, so post writing falls back to Gemini).
 
     Structured output is requested with an OpenAI-style `json_schema` response format.
     If the server rejects that parameter, the call is repeated once with the schema
@@ -268,12 +306,13 @@ def chat_json(
             body["tools"] = [{"type": "web_search"}]
         return body
 
+    deadline = time.monotonic() + timeout if timeout else None
     owns_client = client is None
     http = client or httpx.Client(timeout=_TIMEOUT)
     try:
-        response = _post(http, url, headers, payload(structured=True))
+        response = _post(http, url, headers, payload(structured=True), deadline)
         if _looks_like_unsupported_response_format(response) and not _is_billing(response, _error_fields(response)[0]):
-            response = _post(http, url, headers, payload(structured=False))
+            response = _post(http, url, headers, payload(structured=False), deadline)
         if response.status_code >= 400:
             _raise_for(response)
         body = loads(response.text, None)

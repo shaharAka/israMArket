@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
-import { GENERATE_STAGES } from "@/components/onboarding/constants";
+import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
   ApiError,
   endpoints,
-  generateUntilDone,
   type Business,
   type LongHorizonMilestone,
   type StrategyPayload,
@@ -28,7 +27,8 @@ import { toast } from "@/lib/ui";
  * A business built at /start arrives here right after signup (Revision 5): the plan the
  * owner saw and shaped before the email is on the page at once, and the first month is
  * built from it underneath, stage by stage, while they read. So this page renders with no
- * month yet, and drives that build itself (the API builds one stage per call).
+ * month yet; the server builds it in the background (one job per business, whether or
+ * not this page stays open) and the page only shows its progress (MonthBuildProgress).
  *
  * Once there is a month, it leads for a returning owner (it is what they act on) and the
  * 3-month plan follows as a reference, its later sections folded to one line each. On the
@@ -49,37 +49,6 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
   const now = new Date();
   if (now.getFullYear() !== strategy.year || now.getMonth() + 1 !== strategy.month) return null;
   return Math.min(4, Math.ceil(now.getDate() / 7));
-}
-
-type Build = { state: "idle" | "running" | "failed"; stage: string; error: string };
-
-/**
- * The first month, built in the background from the stored plan. Resumes where it stopped
- * (the API keeps the stage), so leaving and coming back continues rather than restarts.
- */
-function useFirstMonthBuild(onDone: () => void) {
-  const [build, setBuild] = useState<Build>({ state: "idle", stage: "usp", error: "" });
-  const started = useRef(false);
-  const start = () => {
-    if (started.current) return;
-    started.current = true;
-    setBuild({ state: "running", stage: "usp", error: "" });
-    generateUntilDone(endpoints.generate, (stage) => setBuild((b) => ({ ...b, stage })))
-      .then(() => {
-        setBuild({ state: "idle", stage: "done", error: "" });
-        toast("החודש הראשון מוכן");
-        onDone();
-      })
-      .catch((err: unknown) => {
-        started.current = false;
-        setBuild((b) => ({
-          ...b,
-          state: "failed",
-          error: err instanceof Error && err.message ? err.message : "לא הצלחנו לבנות את החודש. נסו שוב.",
-        }));
-      });
-  };
-  return { build, start };
 }
 
 export default function StrategyPage() {
@@ -103,8 +72,6 @@ export default function StrategyPage() {
       });
   }
 
-  const { build, start } = useFirstMonthBuild(() => void loadStrategy());
-
   useEffect(() => {
     const timer = window.setTimeout(() => setWelcome(new URLSearchParams(window.location.search).get("welcome") === "1"), 0);
     Promise.all([
@@ -119,13 +86,6 @@ export default function StrategyPage() {
 
   const plan = strategy?.quarter_plan ?? business?.quarter_plan ?? mockStoredPlan();
   const needsMonth = Boolean(business && !business.onboarding_complete && !strategy);
-
-  // Arrived from /start with the plan and no month yet: build it now, in the background.
-  useEffect(() => {
-    if (loaded && needsMonth && build.state === "idle" && build.stage !== "done") start();
-    // `start` is stable enough: it guards itself with a ref.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, needsMonth]);
 
   // `/plan` and the hub link land on `#quarter`, but the section only exists once the
   // plan has loaded — the browser's own jump to the fragment has already happened by then.
@@ -172,7 +132,16 @@ export default function StrategyPage() {
 
         {loaded ? (
           <div className="space-y-8 pb-2">
-            {needsMonth || build.state !== "idle" ? <BuildRow build={build} onRetry={start} /> : null}
+            {/* Arrived from /start with the plan and no month yet: the server builds it now. */}
+            {needsMonth ? (
+              <MonthBuildProgress
+                autoStart
+                onDone={() => {
+                  toast("התוכנית של החודש מוכנה");
+                  void loadStrategy();
+                }}
+              />
+            ) : null}
             {planFirst ? planView : null}
             {strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
             {planFirst ? null : planView}
@@ -188,39 +157,6 @@ export default function StrategyPage() {
         ) : null}
       </div>
     </AppShell>
-  );
-}
-
-/** The first month being built: one quiet row with the stage, never a second ask. */
-function BuildRow({ build, onRetry }: { build: Build; onRetry: () => void }) {
-  const index = Math.max(0, GENERATE_STAGES.findIndex((s) => s.key === build.stage));
-  const label = GENERATE_STAGES[index]?.label ?? GENERATE_STAGES[0].label;
-  if (build.state === "failed") {
-    return (
-      <div role="alert" className="rounded-lg border border-[#d8c3bd] bg-white px-4 py-3 text-sm leading-6 text-[#7c4036]">
-        <p className="font-bold">לא הצלחנו לבנות את החודש הראשון.</p>
-        <p>{build.error}</p>
-        <button
-          type="button"
-          onClick={onRetry}
-          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f]"
-        >
-          לנסות שוב
-        </button>
-      </div>
-    );
-  }
-  return (
-    <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: TONE.surface }}>
-      <span aria-hidden className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full motion-reduce:animate-none" style={{ background: TONE.accent }} />
-      <p className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
-        <b>בונים את החודש הראשון לפי התוכנית: </b>
-        {label}…
-        <span className="block text-xs text-[#5e6159]">
-          שלב {index + 1} מתוך {GENERATE_STAGES.length}. אפשר לקרוא את התוכנית בינתיים, ולא לסגור את המסך.
-        </span>
-      </p>
-    </div>
   );
 }
 
