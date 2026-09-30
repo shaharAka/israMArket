@@ -1,14 +1,208 @@
-.brief { padding-block:4px 24px; color:var(--im-ink,var(--ink)); }
-.eyebrow { font-size:12px; color:var(--im-muted,var(--ink-soft)); margin-bottom:12px; }
-.brief h2 { font-size:clamp(23px,3vw,32px); font-weight:700; letter-spacing:-.6px; line-height:1.45; max-width:680px; text-wrap:pretty; }
-.brief details { margin-top:12px; font-size:13px; line-height:1.9; color:var(--im-muted,var(--ink-soft)); }.brief summary { cursor:pointer; min-height:40px; }.brief details p { padding-block:8px; }
-.measure { padding-block:17px; margin-top:18px; border-block:1px solid var(--im-rule,var(--rule)); font-size:14px; line-height:1.8; }
-.baseline { font-size:12px; color:var(--im-muted,var(--ink-soft)); margin-top:4px; }
-.decision { margin-top:17px; }.decision strong { font-size:12px; color:var(--im-muted,var(--ink-soft)); }.decision p { margin-top:5px; font-size:15px; line-height:1.8; font-weight:500; }
-.action { margin-top:20px; }
+/* The plan brief (DESIGN-STANDARD.md): a sheet with depth, not a frame. No coloured rules or
+   side tails; the owner's step is the one soft fill. `--im-*` lets the design library preview
+   other palettes; the app falls back to the product tokens. */
+.brief {
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--im-paper, var(--paper));
+  box-shadow: var(--shadow-card);
+  color: var(--im-ink, var(--ink));
+}
 
-.hypothesis { padding-block:14px; }.hypothesis h3 { font-size:15px; line-height:1.7; font-weight:600; }.hypothesis p { margin-top:6px; font-size:13px; line-height:1.8; color:var(--im-muted,var(--ink-soft)); }.hypothesis strong { font-weight:500; }
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--im-rule, var(--rule));
+  font-size: 14px;
+  font-weight: 600;
+}
 
-.brief { background:var(--im-paper,var(--paper)); padding:24px 26px; border:1px solid var(--im-rule,var(--rule)); border-top:3px solid var(--im-primary,var(--primary)); box-shadow:4px 5px 0 var(--im-soft,var(--primary-soft)); }
-.decision { border-inline-start:3px solid var(--im-sun,var(--sun)); padding-inline-start:14px; }
-@media(max-width:600px) { .brief { padding:20px 18px; box-shadow:3px 4px 0 var(--im-soft,var(--primary-soft)); } }
+.mark {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--im-sun, var(--sun));
+}
+
+.body {
+  padding: 28px 32px 32px;
+}
+
+.body h2 {
+  max-width: 640px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+
+.why {
+  margin-top: 6px;
+}
+
+.why summary {
+  width: fit-content;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--im-muted, var(--ink-soft));
+  transition: color 160ms ease;
+}
+
+.why summary:hover {
+  color: var(--im-ink, var(--ink));
+}
+
+.why p {
+  max-width: 600px;
+  padding-bottom: 8px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--im-muted, var(--ink-soft));
+}
+
+.measure {
+  display: flex;
+  gap: 4px 24px;
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--im-rule, var(--rule));
+}
+
+.measureLabel {
+  flex: 0 0 72px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--ink-muted);
+}
+
+.measureValue {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.baseline {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+.decision {
+  margin-top: 24px;
+  padding: 24px 24px 24px;
+  border-radius: 14px;
+  background: var(--im-soft, var(--primary-soft));
+}
+
+.decisionQuiet {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--im-rule, var(--rule));
+}
+
+.decisionLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--im-primary, var(--primary));
+}
+
+.decisionQuiet .decisionLabel {
+  color: var(--ink-muted);
+}
+
+.decisionQuiet .decisionTitle {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.decisionLabel span {
+  font-weight: 500;
+  color: var(--im-muted, var(--ink-soft));
+}
+
+.decisionTitle {
+  margin-top: 6px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+}
+
+.decisionWhy {
+  max-width: 600px;
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--im-muted, var(--ink-soft));
+}
+
+.action {
+  margin-top: 20px;
+}
+
+.body > .action {
+  margin-top: 24px;
+}
+
+@media (max-width: 600px) {
+  .head {
+    padding: 12px 20px;
+  }
+  .body {
+    padding: 20px 20px 20px;
+  }
+  .body h2 {
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  .why {
+    margin-top: 2px;
+  }
+  .measure {
+    gap: 4px 16px;
+    margin-top: 8px;
+    padding-top: 16px;
+  }
+  .measureLabel {
+    flex-basis: 56px;
+  }
+  .decision {
+    margin-top: 20px;
+    margin-inline: -8px;
+    padding: 20px;
+  }
+}
+
+.hypothesis {
+  padding-block: 16px;
+}
+
+.hypothesis h3 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+.hypothesis p {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--im-muted, var(--ink-soft));
+}
+
+.hypothesis strong {
+  font-weight: 500;
+}
+
+.hypothesis .evidence {
+  font-size: 13px;
+  color: var(--ink-muted);
+}

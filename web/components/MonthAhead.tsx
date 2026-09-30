@@ -59,10 +59,12 @@ export function MonthAhead({
     void build.start();
   }
 
-  const buttonClass = `inline-flex min-h-11 items-center justify-center rounded-md px-4 text-sm font-bold ${
+  // The primary tone is the page's one filled button, so it wears the product's (depth,
+  // 12px radius); the quiet one is the secondary outline (DESIGN-STANDARD §4).
+  const buttonClass = `inline-flex items-center justify-center text-sm font-semibold ${
     tone === "quiet"
-      ? "border border-[var(--rule-dark)] bg-transparent text-[var(--ink)] hover:bg-[var(--primary-soft)]"
-      : "bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
+      ? "min-h-11 rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[var(--ink)] transition-colors hover:border-[var(--ink-faint)]"
+      : "drawn-button min-h-12 bg-[var(--primary)] px-5 text-white hover:bg-[var(--primary-dark)]"
   }`;
   const buttonLabel = error ? "לנסות שוב" : next.next_in_progress ? "להמשיך לבנות" : `לבנות את ${next.next_month_name_he}`;
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ApiError } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 import { researchLatest, researchRun, useTrial, type ResearchPayload } from "@/lib/trial";
 import { HypothesisStatus } from "./WeeklyBrief";
 
@@ -61,12 +62,9 @@ export function ResearchSection() {
   if (!run_ || !data.available) {
     return (
       <details id="research" className="group scroll-mt-24 border-y border-[var(--rule)]">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
           <span>מה למדנו השבוע · המחקר עוד לא רץ</span>
-          <span
-            aria-hidden
-            className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
-          />
+          <IconChevron className="h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
         </summary>
         <div className="pb-4">
           <p className="mb-3 text-sm leading-6 text-[color:var(--ink)]">
@@ -85,7 +83,7 @@ export function ResearchSection() {
 
   return (
     <section id="research" aria-labelledby="research-heading" className="scroll-mt-24">
-      <h2 id="research-heading" className="text-base font-black text-[color:var(--ink)]">
+      <h2 id="research-heading" className="text-base font-bold text-[color:var(--ink)]">
         מה למדנו השבוע
       </h2>
       {run_.headline ? <p className="mt-2 text-sm font-bold leading-6 text-[color:var(--ink)]">{run_.headline}</p> : null}
@@ -94,7 +92,7 @@ export function ResearchSection() {
           {run_.insights.slice(0, 3).map((insight, index) => (
             <li key={`${insight.title}-${index}`}>
               <details className="group">
-                <summary className="flex min-h-12 cursor-pointer list-none items-start gap-3 px-4 py-3 hover:bg-[var(--primary-soft)]">
+                <summary className="flex min-h-12 cursor-pointer list-none items-start gap-3 px-4 py-3 hover:bg-[var(--soft)] [&::-webkit-details-marker]:hidden">
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm font-bold leading-6 text-[color:var(--ink)]">{insight.title}</span>
                     <span className="mt-0.5 block text-xs leading-5 text-[color:var(--ink)]">
@@ -102,10 +100,7 @@ export function ResearchSection() {
                       {insight.plan_change}
                     </span>
                   </span>
-                  <span
-                    aria-hidden
-                    className="mt-2 h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
-                  />
+                  <IconChevron className="mt-1 h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
                 </summary>
                 <div className="px-4 pb-3 text-xs leading-5 text-[color:var(--ink-soft)]">
                   <p>{insight.text}</p>

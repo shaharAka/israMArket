@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { formatPrice, NO_COMMITMENT_LABEL, VAT_NOTE } from "@/lib/pricing";
-import { IconArrowLeft, IconCheck, IconLock } from "@/lib/icons";
+import { IconArrowLeft, IconCheck, IconChevron, IconLock } from "@/lib/icons";
 import { ApiError } from "@/lib/api";
 import { nextStep, startPosts, weekLabel, type TrialPayload, type TrialStep } from "@/lib/trial";
 import "./trial.css";
@@ -41,7 +41,40 @@ function continueLine() {
 }
 
 /**
- * The free month, as Today's guide: the day, the one next thing, and the four weeks.
+ * Where the free month stands: "יום N מתוך 30", with a calm bar. Today's header carries it
+ * beside the page title, so the journey below is only the map.
+ */
+export function TrialDay({ trial }: { trial: TrialPayload }) {
+  if (trial.ended) {
+    return <p className="text-sm font-medium text-[color:var(--ink-soft)]">החודש החינמי הסתיים</p>;
+  }
+  const percent = Math.round((trial.day / trial.days_total) * 100);
+  return (
+    <div className="flex items-center gap-3">
+      <p className="text-sm font-medium text-[color:var(--ink-soft)]">
+        יום <span className="font-semibold tabular-nums text-[color:var(--ink)]">{trial.day}</span> מתוך{" "}
+        <span className="tabular-nums">{trial.days_total}</span> בחודש החינמי
+      </p>
+      <span
+        role="progressbar"
+        aria-valuemin={1}
+        aria-valuemax={trial.days_total}
+        aria-valuenow={trial.day}
+        aria-label="הימים בחודש החינמי"
+        className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[var(--rule)] sm:w-28"
+      >
+        <span
+          className="block h-full rounded-full bg-[var(--primary)] transition-[width] duration-700 ease-out motion-reduce:transition-none"
+          style={{ width: `${percent}%` }}
+        />
+      </span>
+    </div>
+  );
+}
+
+/**
+ * The free month, as Today's guide: the one next thing, and the four weeks. The day itself
+ * sits in the page header (TrialDay).
  *
  * The next thing is the page's only dark button (UI-RULES rule 1). The weeks are native
  * expands, so a closed week's steps are out of the reading order and the word count; the
@@ -97,53 +130,35 @@ export function TrialGuide({
 
   const targetWeek = target ? trial.steps.find((step) => step.key === target)?.week : undefined;
   const openWeek = targetWeek ?? (next && next.week > trial.week ? next.week : trial.week);
-  const percent = Math.round((trial.day / trial.days_total) * 100);
 
   return (
-    <section aria-labelledby="trial-heading" className="space-y-4">
-      <div>
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 id="trial-heading" className="text-base font-black text-[color:var(--ink)]">
-            {trial.ended ? "החודש החינמי הסתיים" : `יום ${trial.day} מתוך ${trial.days_total} בחודש החינמי`}
-          </h2>
-          <p className="shrink-0 text-xs font-bold text-[color:var(--ink-soft)]">
-            {trial.done} מתוך {trial.total} צעדים
-          </p>
-        </div>
-        <span
-          role="progressbar"
-          aria-valuemin={1}
-          aria-valuemax={trial.days_total}
-          aria-valuenow={trial.day}
-          aria-label="הימים בחודש החינמי"
-          className="mt-2 block h-1 w-full overflow-hidden rounded-full bg-[var(--rule)]"
-        >
-          <span
-            className="block h-full rounded-full bg-[var(--primary)] transition-[width] duration-700 ease-out motion-reduce:transition-none"
-            style={{ width: `${percent}%` }}
-          />
-        </span>
-      </div>
-
+    <section aria-labelledby="trial-heading" className="space-y-8">
       {showNext ? next ? <NextStepCard step={next} /> : <AllDone trial={trial} /> : null}
 
-      <div className="divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
-        {[1, 2, 3, 4].map((week) => {
-          const steps = trial.steps.filter((step) => step.week === week);
-          if (!steps.length) return null;
-          return (
-            <WeekGroup
-              key={`${week}-${openWeek === week}`}
-              week={week}
-              steps={steps}
-              open={openWeek === week}
-              current={trial.week === week}
-              nextKey={next?.key ?? null}
-              fresh={fresh}
-              target={target}
-            />
-          );
-        })}
+      <div className="drawn-card overflow-hidden">
+        <div className="flex min-h-[52px] items-center border-b border-[var(--rule)] px-5 py-3 sm:px-6">
+          <h2 id="trial-heading" className="text-sm font-semibold text-[color:var(--ink)]">
+            <span className="tabular-nums">{trial.done}</span> מתוך <span className="tabular-nums">{trial.total}</span> צעדים
+          </h2>
+        </div>
+        <div className="divide-y divide-[var(--rule)]">
+          {[1, 2, 3, 4].map((week) => {
+            const steps = trial.steps.filter((step) => step.week === week);
+            if (!steps.length) return null;
+            return (
+              <WeekGroup
+                key={`${week}-${openWeek === week}`}
+                week={week}
+                steps={steps}
+                open={openWeek === week}
+                current={trial.week === week}
+                nextKey={next?.key ?? null}
+                fresh={fresh}
+                target={target}
+              />
+            );
+          })}
+        </div>
       </div>
     </section>
   );
@@ -152,13 +167,15 @@ export function TrialGuide({
 /** The one thing to do now: why, how long, and the page's dark button. */
 function NextStepCard({ step }: { step: TrialStep }) {
   return (
-    <div className="today-ask rounded-lg border p-4 sm:p-5">
-      <p className="text-xs font-bold text-[color:var(--ink-muted)]">
-        הצעד הבא · {minutesLabel(step.minutes)}
-      </p>
-      <h3 className="mt-1 text-lg font-black leading-7 text-[color:var(--ink)]">{step.title_he}</h3>
-      <p className="mt-1 text-sm leading-6 text-[color:var(--ink)]">{step.why_he}</p>
-      <NextStepAction step={step} className="mt-4" />
+    <div className="drawn-card p-6 sm:p-8">
+      <div className="rounded-[14px] bg-[var(--primary-soft)] p-5 sm:p-6">
+        <p className="text-[13px] font-semibold text-[color:var(--primary)]">
+          הצעד הבא <span className="font-medium text-[color:var(--ink-soft)]">· {minutesLabel(step.minutes)}</span>
+        </p>
+        <h3 className="mt-1.5 text-[19px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{step.title_he}</h3>
+        <p className="mt-1.5 max-w-[600px] text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{step.why_he}</p>
+        <NextStepAction step={step} className="mt-5" />
+      </div>
     </div>
   );
 }
@@ -168,7 +185,7 @@ function NextStepCard({ step }: { step: TrialStep }) {
  * or, for "להתחיל לכתוב את הפוסטים", the action itself.
  */
 export function NextStepAction({ step, className = "" }: { step: TrialStep; className?: string }) {
-  const buttonClass = `drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-sm font-bold text-white disabled:opacity-60 sm:w-auto ${className}`;
+  const buttonClass = `drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] font-semibold text-white disabled:opacity-60 sm:w-auto ${className}`;
   const label = (
     <>
       {step.action_he}
@@ -231,17 +248,30 @@ export function allDoneText(trial: TrialPayload): string {
 function AllDone({ trial }: { trial: TrialPayload }) {
   const waiting = trial.steps.find((step) => step.status === "locked");
   return (
-    <div className="rounded-lg border border-[var(--rule-dark)] bg-white p-4 sm:p-5">
-      <p className="flex items-center gap-2 text-base font-black text-[color:var(--ink)]">
-        <IconCheck className="h-4 w-4 shrink-0" />
+    <div className="drawn-card p-6 sm:p-8">
+      <p className="flex items-center gap-2.5 text-[17px] font-bold text-[color:var(--ink)]">
+        <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
+          <IconCheck className="h-3.5 w-3.5" />
+        </span>
         {waiting ? "כל מה שאפשר לעשות עכשיו, עשיתם" : "עברתם את כל הצעדים של החודש"}
       </p>
       {waiting ? (
-        <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">
+        <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--ink-soft)]">
           הבא בתור: {waiting.title_he}. {waiting.note_he}
         </p>
       ) : null}
     </div>
+  );
+}
+
+/** A closed disclosure points down; open, up. The icon is the app's chevron, turned. */
+function Disclosure({ group }: { group: "week" | "done" }) {
+  return (
+    <IconChevron
+      className={`h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 motion-reduce:transition-none ${
+        group === "week" ? "group-open/week:rotate-90" : "group-open/done:rotate-90"
+      }`}
+    />
   );
 }
 
@@ -268,48 +298,43 @@ function WeekGroup({
   const settled = steps.filter((step) => step.status === "done" && !fresh.has(step.key));
   const open_ = steps.filter((step) => !(step.status === "done" && !fresh.has(step.key)));
   return (
-    <details open={open} className="group">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-[var(--primary-soft)]">
+    <details open={open} className="group/week">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-5 py-3 transition-colors hover:bg-[var(--soft)] sm:px-6 [&::-webkit-details-marker]:hidden">
+        {/* The week that is now is the strong mark; a finished week recedes into a soft tick. */}
         <span
           aria-hidden
-          className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-            complete
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-semibold tabular-nums ${
+            current && !complete
               ? "bg-[var(--primary)] text-white"
-              : current
-                ? "bg-[var(--primary)] text-white"
-                : "border border-[var(--rule-dark)] text-[color:var(--ink-soft)]"
+              : complete
+                ? "bg-[var(--primary-soft)] text-[color:var(--primary)]"
+                : "bg-[var(--soft)] text-[color:var(--ink-muted)]"
           }`}
         >
-          {complete ? <IconCheck className="h-3 w-3" /> : week}
+          {complete ? <IconCheck className="h-3.5 w-3.5" /> : week}
         </span>
-        <span className="min-w-0 flex-1 text-sm font-bold text-[color:var(--ink)]">
+        <span className={`min-w-0 flex-1 text-[15px] font-semibold ${current || complete ? "text-[color:var(--ink)]" : "text-[color:var(--ink-soft)]"}`}>
           {weekLabel(week)}
         </span>
-        <span className="shrink-0 text-xs text-[color:var(--ink-soft)]">
+        <span className="shrink-0 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
           {done}/{counted.length}
         </span>
-        <span
-          aria-hidden
-          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
-        />
+        <Disclosure group="week" />
       </summary>
-      <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
+      <ul className="journey-steps pb-2">
         {/* Steps done before this visit fold into one line, so the open week reads as what
             is left; a step ticked since the last visit stays in place for its animation. */}
         {settled.length ? (
           <li>
             <details className="group/done">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 px-4 py-2.5 text-xs font-bold text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)]">
-                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-4 py-2.5 ps-6 pe-5 text-[13px] font-medium text-[color:var(--ink-soft)] transition-colors hover:bg-[var(--soft)] sm:ps-7 sm:pe-6 [&::-webkit-details-marker]:hidden">
+                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
                   <IconCheck className="h-3 w-3" />
                 </span>
                 <span className="flex-1">{settled.length === 1 ? "צעד אחד בוצע" : `${settled.length} צעדים בוצעו`}</span>
-                <span
-                  aria-hidden
-                  className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open/done:rotate-180"
-                />
+                <Disclosure group="done" />
               </summary>
-              <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
+              <ul className="journey-steps">
                 {settled.map((step) => (
                   <StepRow key={step.key} step={step} isNext={false} fresh={false} highlighted={step.key === target} />
                 ))}
@@ -331,12 +356,12 @@ function WeekGroup({
   );
 }
 
-function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
+function StatusMark({ step, fresh, isNext }: { step: TrialStep; fresh: boolean; isNext: boolean }) {
   if (step.status === "done") {
     return (
       <span
         aria-hidden
-        className={`relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white ${
+        className={`relative mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)] ${
           fresh ? "trial-tick" : ""
         }`}
       >
@@ -346,7 +371,7 @@ function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
   }
   if (step.status === "locked") {
     return (
-      <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center text-[color:var(--ink-muted)]">
+      <span aria-hidden className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-[color:var(--ink-muted)]">
         <IconLock className="h-4 w-4" />
       </span>
     );
@@ -354,8 +379,12 @@ function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
   return (
     <span
       aria-hidden
-      className={`block h-5 w-5 shrink-0 rounded-full border ${
-        step.status === "soon" ? "border-dashed border-[var(--rule-dark)]" : "border-[var(--ink-muted)] bg-white"
+      className={`mt-0.5 block h-5 w-5 shrink-0 rounded-full border-[1.5px] ${
+        step.status === "soon"
+          ? "border-dashed border-[var(--rule-dark)]"
+          : isNext
+            ? "border-[var(--primary)] bg-[var(--paper)]"
+            : "border-[var(--rule-dark)] bg-[var(--paper)]"
       }`}
     />
   );
@@ -393,24 +422,28 @@ function StepRow({
 
   const body = (
     <>
-      <StatusMark step={step} fresh={fresh} />
+      <StatusMark step={step} fresh={fresh} isNext={isNext} />
       <span className="min-w-0 flex-1">
         <span className="sr-only">{STATUS_SR[step.status]}: </span>
         <span
-          className={`block text-sm font-bold leading-6 ${
-            step.status === "done" ? "text-[color:var(--ink-muted)] line-through decoration-[var(--rule-dark)]" : muted ? "text-[color:var(--ink-soft)]" : "text-[color:var(--ink)]"
+          className={`block text-[15px] leading-6 ${
+            step.status === "done"
+              ? "text-[color:var(--ink-muted)] line-through decoration-[var(--rule-dark)]"
+              : muted
+                ? "text-[color:var(--ink-soft)]"
+                : `${isNext ? "font-semibold" : "font-medium"} text-[color:var(--ink)]`
           } ${fresh ? "trial-fade-done" : ""}`}
         >
           {step.title_he}
         </span>
-        {detail ? <span className="mt-0.5 block text-xs leading-5 text-[color:var(--ink-soft)]">{detail}</span> : null}
+        {detail ? <span className="mt-0.5 block text-[13px] leading-5 text-[color:var(--ink-muted)]">{detail}</span> : null}
       </span>
       {step.status === "soon" ? (
-        <span className="shrink-0 rounded-full bg-[var(--rule)] px-2 py-0.5 text-[11px] font-bold text-[color:var(--ink-soft)]">בקרוב</span>
+        <span className="shrink-0 rounded-full bg-[var(--soft)] px-2.5 py-0.5 text-xs font-medium text-[color:var(--ink-soft)]">בקרוב</span>
       ) : step.status === "todo" ? (
-        <span className="flex shrink-0 items-center gap-1.5 text-xs text-[color:var(--ink-soft)]">
+        <span className="flex h-6 shrink-0 items-center gap-2 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
           {minutesLabel(step.minutes)}
-          <IconArrowLeft className="h-4 w-4 text-[color:var(--ink-muted)]" />
+          <IconChevron className="h-4 w-4 transition-transform duration-200 group-hover/step:-translate-x-0.5 motion-reduce:transition-none" />
         </span>
       ) : null}
     </>
@@ -418,14 +451,14 @@ function StepRow({
 
   // The next step is tinted in the list too, so the card and the map point at one place.
   const rowTitle = step.status === "soon" ? step.note_he : undefined;
-  const rowClass = `flex min-h-12 items-start gap-3 px-4 py-3 ${isNext ? "bg-[var(--primary-soft)]" : ""} ${
+  const rowClass = `flex min-h-12 items-start gap-4 py-3 ps-6 pe-5 sm:ps-7 sm:pe-6 ${isNext ? "bg-[var(--primary-soft)]" : ""} ${
     highlighted ? "trial-highlight" : ""
   }`;
 
   return (
-    <li id={`step-${step.key}`} className="scroll-mt-24">
+    <li id={`step-${step.key}`} className="journey-step scroll-mt-24">
       {step.status === "todo" && step.href ? (
-        <Link href={step.href} className={`${rowClass} transition-colors hover:bg-[var(--primary-soft)]`}>
+        <Link href={step.href} className={`group/step ${rowClass} transition-colors ${isNext ? "" : "hover:bg-[var(--soft)]"}`}>
           {body}
         </Link>
       ) : (
