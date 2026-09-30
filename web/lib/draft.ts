@@ -587,6 +587,29 @@ const PRODUCT_WORDS = /מוצר|מוכר|חנות|קולקצי|מארז|משלו
 const SERVICE_WORDS = /שירות|טיפול|ייעוץ|יועצ|שיעור|סדנ|קורס|פגיש|אימון|הדרכ|עיצוב|ליווי|צילום אירוע/;
 
 /** Products, services or both, from the type and the owner's own words. Confirmed at the goal step. */
+/**
+ * The closest BUSINESS_TYPES entry for what the owner wrote in their own words, when they
+ * did not tap a field. The field only tunes examples and cost tables; what they wrote is
+ * what the plan is built from, so a rough match (or "עסק אחר") is fine.
+ */
+const TYPE_WORDS: [string, RegExp][] = [
+  ["מאפייה / קפה / מסעדה", /מאפי|לחם|חלות|עוגות|קונדיטור|קפה|בית קפה|מסעד|אוכל|שף|קייטרינג|פיצ|בורגר|גלידה|bakery|cafe|coffee|restaurant|catering|food/i],
+  ["חנות אונליין (אי-קומרס)", /אונליין|אתר מכירות|חנות אינטרנט|משלוחים לכל הארץ|online|e-?commerce|shopify/i],
+  ["חנות פיזית / קמעונאות", /חנות|בוטיק|הלבשה|תחתונ|לנז׳רי|לנז'רי|חזיות|בגדים|אופנה|נעליים|תכשיט|פרחים|צעצוע|ספרים|lingerie|fashion|clothing|shop|store|boutique|jewel/i],
+  ["קליניקה, יופי ובריאות", /קליני|קוסמטי|טיפול|טיפולי|ציפורניים|מספרה|שיער|איפור|לייזר|פיזיותרפ|רופא|שיניים|דיאט|תזונ|beauty|clinic|salon|nails|hair|spa|therapy/i],
+  ["סטודיו לאימון / ספורט", /יוגה|פילאטיס|אימון|כושר|מאמן|ריצה|סטודיו לאימון|קרוספיט|yoga|pilates|fitness|gym|trainer/i],
+  ["שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)", /עורך דין|עו"ד|עו״ד|רואה חשבון|רו"ח|רו״ח|הנהלת חשבונות|ייעוץ|יועצ|ביטוח|משכנתא|lawyer|accountant|consult|insurance/i],
+  ["עיצוב / אדריכלות / נדל״ן", /עיצוב פנים|אדריכל|נדל"ן|נדל״ן|תיווך|שיפוץ|נגרות|מטבחים|interior|architect|real estate|renovation/i],
+  ["הדרכות, קורסים וחינוך", /קורס|סדנ|הדרכ|שיעורי|מורה|חוג|לימוד|course|workshop|lesson|tutor|school/i],
+  ["תיירות ואירוח", /צימר|אירוח|מלון|טיול|סיור|מדריך טיולים|חדרי אירוח|zimmer|hotel|b&b|tour|guest/i],
+];
+
+export function inferBusinessType(offerings: string): string {
+  const text = offerings || "";
+  const hit = TYPE_WORDS.find(([, words]) => words.test(text));
+  return hit ? hit[0] : "עסק אחר";
+}
+
 export function inferBusinessModel(businessType: string, offerings: string): BusinessModel {
   const base = kitFor(businessType).model;
   const text = offerings || "";

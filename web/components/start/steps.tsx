@@ -12,6 +12,7 @@ import {
   TRIED_OPTIONS,
   draftForApi,
   inferBusinessModel,
+  inferBusinessType,
   kitFor,
   loadStylePresets,
   looksLikeUrl,
@@ -99,40 +100,22 @@ export function StepWhat(props: StepProps) {
       why="ככה נדע מה לחקור ועל מה לדבר."
       primary="להמשיך למה שמייחד אתכם"
       onPrimary={() => {
-        if (!d.business_type) {
-          setError("בחרו את התחום הכי קרוב. אם אין, בחרו ״משהו אחר״.");
-          return;
-        }
         if (d.offerings.trim().length < 3) {
           setError("כתבו במשפט קצר מה אתם מוכרים או עושים.");
           return;
         }
-        // Inferred here, confirmed with one tap at the goal step.
-        update((f) =>
-          f.modelConfirmed
-            ? f
-            : { ...f, draft: { ...f.draft, business_model: inferBusinessModel(f.draft.business_type, f.draft.offerings) } },
-        );
+        // The owner's own words are the answer. The field is optional: when none was
+        // tapped we take the closest one from what they wrote.
+        update((f) => {
+          const businessType = f.draft.business_type || inferBusinessType(f.draft.offerings);
+          const business_model = f.modelConfirmed
+            ? f.draft.business_model
+            : inferBusinessModel(businessType, f.draft.offerings);
+          return { ...f, draft: { ...f.draft, business_type: businessType, business_model } };
+        });
         next();
       }}
     >
-      <fieldset>
-        <legend className="mb-2 text-sm font-bold text-[#191b18]">התחום</legend>
-        <div className="flex flex-wrap gap-2">
-          {BUSINESS_TYPES.map((type) => (
-            <Chip
-              key={type}
-              label={kitFor(type).chip}
-              selected={d.business_type === type}
-              onClick={() => {
-                setError("");
-                setDraft({ business_type: type });
-              }}
-              className="px-3.5"
-            />
-          ))}
-        </div>
-      </fieldset>
       <TextInput
         id="offerings"
         label="במילים שלכם: מה אתם מוכרים או עושים?"
@@ -145,6 +128,26 @@ export function StepWhat(props: StepProps) {
         maxLength={300}
       />
       <FieldError message={error} />
+      <fieldset>
+        <legend className="mb-2 text-sm text-[#5e6159]">
+          <span className="font-bold text-[#191b18]">התחום</span> (לא חובה, רק אם אחד מאלה מתאים)
+        </legend>
+        <div className="flex flex-wrap gap-2">
+          {BUSINESS_TYPES.map((type) => (
+            <Chip
+              key={type}
+              label={kitFor(type).chip}
+              selected={d.business_type === type}
+              onClick={() => {
+                setError("");
+                // Tapping the selected field again clears it.
+                setDraft({ business_type: d.business_type === type ? "" : type });
+              }}
+              className="px-3.5"
+            />
+          ))}
+        </div>
+      </fieldset>
     </StepShell>
   );
 }
