@@ -298,7 +298,9 @@ def build_integrations(draft: OnboardingDraft, scan: dict | None, measures: list
             "name_he": INTEGRATIONS[key]["name_he"],
             "why_he": f"{INTEGRATIONS[key]['what_he']}. בשביל: {', '.join(uses)}. {note}",
             "status": status,
-            "effort_he": _STATUS_EFFORT[status],
+            # The WhatsApp link is ours to make, not something the owner connects:
+            # "already exists, just connect it" would contradict "works from day one".
+            "effort_he": "אין מה לעשות. אנחנו מכינים את הקישור." if key == "whatsapp_link" else _STATUS_EFFORT[status],
         })
     return out
 
