@@ -62,3 +62,5 @@
 @media (prefers-reduced-motion:reduce) { .button,.field input,.toggleTrack,.toggleTrack::after,.dialog,.dialog::backdrop { transition:none; }.button:active:not(:disabled),[data-motion-mood="playful"] .button:active:not(:disabled) { transform:none; }.panel,[data-motion-mood="playful"] .panel,[data-motion-mood="playful"] .choice[aria-pressed="true"],.busyDots i,.skeleton span { animation:none; } }
 [data-motion-reduced="true"] .panel,[data-motion-reduced="true"] .button,[data-motion-reduced="true"] .choice,[data-motion-reduced="true"] .busyDots i,[data-motion-reduced="true"] .skeleton span,[data-motion-reduced="true"] .dialog,[data-motion-reduced="true"] .dialog::backdrop,[data-motion-reduced="true"] .toggleTrack,[data-motion-reduced="true"] .toggleTrack::after { animation:none; transition:none; }
 [data-motion-reduced="true"] .button:active:not(:disabled) { transform:none; }
+/* 16px text on phones: iOS zooms into any field below 16px. */
+@media (max-width: 639px) { .field input { font-size:16px; } }
