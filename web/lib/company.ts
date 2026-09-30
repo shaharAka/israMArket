@@ -23,7 +23,8 @@
  * - Unpaid Services: content and responses are used to provide, improve and develop
  *   Google products, and human reviewers may read them.
  */
-export const GEMINI_PAID_TIER = false;
+// Confirmed by the owner 2026-09-30: the key is on a paid (prepaid billing) account.
+export const GEMINI_PAID_TIER = true;
 
 /** PLACEHOLDER. Replace with the real address before launch. */
 export const CONTACT_EMAIL = "privacy@isramarket.example";
