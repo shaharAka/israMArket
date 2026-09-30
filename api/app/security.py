@@ -34,10 +34,12 @@ def verify_password(password: str, password_hash: str) -> bool:
         return False
 
 
-def create_access_token(user_id: int) -> str:
+def create_access_token(user_id: int, epoch: int = 0) -> str:
     settings = get_settings()
     expire = datetime.now(timezone.utc) + timedelta(days=7)
-    return jwt.encode({"sub": str(user_id), "exp": expire}, settings.jwt_secret, algorithm=ALGORITHM)
+    return jwt.encode(
+        {"sub": str(user_id), "ep": int(epoch or 0), "exp": expire}, settings.jwt_secret, algorithm=ALGORITHM
+    )
 
 
 def create_oauth_state(user_id: int, business_id: int, provider: str) -> str:
@@ -56,13 +58,20 @@ def decode_oauth_state(state: str) -> dict:
     return {"user_id": int(payload["sub"]), "business_id": int(payload["biz"]), "provider": payload["p"]}
 
 
-def decode_access_token(token: str) -> int | None:
+def decode_access_claims(token: str) -> tuple[int, int] | None:
+    """(user id, session epoch), or None for a bad or expired token. Tokens from before
+    the epoch existed read as epoch 0."""
     settings = get_settings()
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[ALGORITHM])
-        return int(payload["sub"])
-    except (JWTError, KeyError, ValueError):
+        return int(payload["sub"]), int(payload.get("ep", 0))
+    except (JWTError, KeyError, ValueError, TypeError):
         return None
+
+
+def decode_access_token(token: str) -> int | None:
+    claims = decode_access_claims(token)
+    return claims[0] if claims else None
 
 
 def _fernet() -> Fernet:

@@ -40,11 +40,11 @@ def _cookie_secure() -> bool:
     )
 
 
-def _set_cookie(response: Response, user_id: int) -> None:
+def _set_cookie(response: Response, user: User) -> None:
     secure = _cookie_secure()
     response.set_cookie(
         key=COOKIE_NAME,
-        value=create_access_token(user_id),
+        value=create_access_token(user.id, user.session_epoch or 0),
         httponly=True,
         samesite="lax",
         secure=secure,
@@ -73,7 +73,7 @@ def register(
     db.add(user)
     db.commit()
     db.refresh(user)
-    _set_cookie(response, user.id)
+    _set_cookie(response, user)
     return user
 
 
@@ -90,7 +90,7 @@ def login(
         raise HTTPException(status_code=401, detail=GOOGLE_ONLY_HINT)
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="האימייל או הסיסמה לא נכונים")
-    _set_cookie(response, user.id)
+    _set_cookie(response, user)
     return user
 
 
@@ -149,6 +149,13 @@ def _google_user(db: Session, identity: dict) -> User:
         if user.google_sub and user.google_sub != identity["sub"]:
             raise google_login.GoogleLoginError("conflict")
         user.google_sub = identity["sub"]
+        if user.password_hash:
+            # There is no email verification on password signup, so whoever set this
+            # password may not own the address. Google just proved who does: drop the
+            # password and sign out every earlier session (pre-account-takeover). The owner
+            # can set a new password on /account.
+            user.password_hash = ""
+            user.session_epoch = (user.session_epoch or 0) + 1
         if not (user.full_name or "").strip() and identity["name"]:
             user.full_name = identity["name"]
         db.commit()
@@ -220,7 +227,7 @@ def google_callback(
         return fail(exc.code)
     response = RedirectResponse(f"{web}{next_path}", status_code=303)
     response.delete_cookie(google_login.FLOW_COOKIE, path="/")
-    _set_cookie(response, user.id)
+    _set_cookie(response, user)
     return response
 
 
@@ -233,6 +240,7 @@ def logout(response: Response) -> dict:
 @router.post("/password")
 def change_password(
     body: PasswordChangeIn,
+    response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -249,7 +257,10 @@ def change_password(
     if body.current_password == body.new_password:
         raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לישנה")
     user.password_hash = hash_password(body.new_password)
+    # Sign out every other session; this one gets a fresh cookie.
+    user.session_epoch = (user.session_epoch or 0) + 1
     db.commit()
+    _set_cookie(response, user)
     return {"ok": True}
 
 
