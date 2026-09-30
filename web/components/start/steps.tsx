@@ -27,6 +27,7 @@ import {
   type OnboardingDraft,
   type TriedChannel,
 } from "@/lib/draft";
+import { HowToFind } from "@/components/help/HowToFind";
 import { Chip, IconButton, NetworkIcon, QuietLink, StepShell, TextInput } from "./ui";
 import styles from "./start.module.css";
 
@@ -798,7 +799,8 @@ export function StepCompetitors(props: StepProps) {
     >
       <div className="space-y-3">
         {rows.map((row, index) => (
-          <div key={index} className="grid grid-cols-[1fr_1.1fr] gap-2">
+          // items-end: both boxes line up even if one label wraps to two lines.
+          <div key={index} className="grid grid-cols-[1fr_1.1fr] items-end gap-2">
             <TextInput
               id={`comp-name-${index}`}
               label={rows.length > 1 ? `מתחרה ${index + 1}` : "שם העסק"}
@@ -815,7 +817,6 @@ export function StepCompetitors(props: StepProps) {
               placeholder="@name"
               dir="ltr"
               inputMode="url"
-              helpTopic="competitor_instagram"
               maxLength={200}
             />
           </div>
@@ -826,7 +827,12 @@ export function StepCompetitors(props: StepProps) {
           להוסיף עוד מתחרה
         </QuietLink>
       ) : null}
-      <p className="text-xs text-[#5e6159]">לא חייבים קישור. מספיק השם.</p>
+      {/* One help link for all rows: inside each row's label it pushed that box lower
+          than the name box beside it. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3">
+        <p className="text-xs text-[#5e6159]">לא חייבים קישור. מספיק השם.</p>
+        <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
+      </div>
     </StepShell>
   );
 }

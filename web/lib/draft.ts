@@ -15,7 +15,6 @@
 import {
   ApiError,
   endpoints,
-  isDemo,
   type Business,
   type BusinessModel,
   type BrandSwatch,
@@ -709,12 +708,15 @@ export function signature(value: unknown): string {
 
 /* ------------------------------ Mock mode ------------------------------ */
 
-let fellBack = false;
-
-/** Fixtures instead of the network: demo mode, an explicit flag, or after a 404. */
+/**
+ * Fixtures instead of the network — only when a developer asks for them (?mock=1 or
+ * NEXT_PUBLIC_DRAFT_MOCK=1). Never implicitly: an owner who had opened the demo earlier, or
+ * whose request failed, was shown invented colours, audiences and plans as if they were
+ * theirs. A failure is shown as a failure.
+ */
 export function isMockMode(): boolean {
   if (typeof window === "undefined") return false;
-  if (fellBack || isDemo() || process.env.NEXT_PUBLIC_DRAFT_MOCK === "1") return true;
+  if (process.env.NEXT_PUBLIC_DRAFT_MOCK === "1") return true;
   try {
     if (new URLSearchParams(window.location.search).get("mock") === "1") {
       window.sessionStorage.setItem(MOCK_KEY, "1");
@@ -725,21 +727,9 @@ export function isMockMode(): boolean {
   }
 }
 
-/** The endpoint is not deployed yet (or the API is unreachable in dev). */
-function isMissing(err: unknown): boolean {
-  if (err instanceof ApiError) return err.status === 404 || err.status === 405 || err.status === 501;
-  return err instanceof TypeError; // fetch() network failure
-}
-
 async function withMock<T>(real: () => Promise<T>, mock: () => T | Promise<T>): Promise<T> {
   if (isMockMode()) return mock();
-  try {
-    return await real();
-  } catch (err) {
-    if (!isMissing(err)) throw err;
-    fellBack = true;
-    return mock();
-  }
+  return real();
 }
 
 function wait(ms: number) {

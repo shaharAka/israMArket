@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ApiError, endpoints, isDemo } from "@/lib/api";
+import { ApiError, endpoints, exitDemo, isDemo } from "@/lib/api";
 import {
   clearFlow,
   draftForApi,
@@ -74,20 +74,21 @@ export function StartFlow() {
       }
       setFlow(loaded);
     }, 0);
-    if (!isDemo()) {
-      endpoints
-        .me()
-        .then(() => {
-          setLoggedIn(true);
-          return endpoints.business();
-        })
-        .then((res) => {
-          if (res?.business?.onboarding_complete) router.replace("/dashboard");
-        })
-        .catch(() => {
-          // Not signed in: the normal case here.
-        });
-    }
+    // /start builds a real business. A browser still in demo mode (the owner looked at the
+    // demo earlier) would otherwise answer with the demo's fixtures instead of the API.
+    if (isDemo()) exitDemo();
+    endpoints
+      .me()
+      .then(() => {
+        setLoggedIn(true);
+        return endpoints.business();
+      })
+      .then((res) => {
+        if (res?.business?.onboarding_complete) router.replace("/dashboard");
+      })
+      .catch(() => {
+        // Not signed in: the normal case here.
+      });
     return () => window.clearTimeout(timer);
   }, [router]);
 
