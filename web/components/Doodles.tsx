@@ -20,7 +20,7 @@ export function Scribble({ className = "" }: { className?: string }) {
 /** A quiet pending indicator. Use for loading states. */
 export function LoadingMark({ label = "טוענים…" }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 py-14 text-[#535f75]" role="status" aria-live="polite">
+    <div className="flex flex-col items-center gap-3 py-14 text-[color:var(--ink-muted)]" role="status" aria-live="polite">
       <MotionScope><MotionIllustration kind="prepare" active className="!h-14 !w-14" /></MotionScope>
       <p className="text-sm">{label}</p>
     </div>

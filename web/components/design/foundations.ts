@@ -14,7 +14,7 @@ export type DesignPalette = {
 };
 
 export const designPalettes: DesignPalette[] = [
-  { id: "blue-sun", name: "כחול ושמש", description: "כחול חד, שמש צהובה, הרבה לבן", canvas: "#fbfcff", paper: "#ffffff", ink: "#1d2940", muted: "#535f75", primary: "#2853c7", soft: "#edf2ff", sun: "#ffc44a", support: "#e66a4f" },
+  { id: "blue-sun", name: "כחול ושמש", description: "כחול חד, שמש צהובה, הרבה לבן", canvas: "#f6f7fb", paper: "#ffffff", ink: "#14203a", muted: "#4b5670", primary: "#2853c7", soft: "#eef2fd", sun: "#ffc44a", support: "#e66a4f" },
   { id: "sea-sun", name: "ים ושמש", description: "טורקיז עמוק, צהוב נקי וקורל", canvas: "#fcfefe", paper: "#ffffff", ink: "#16343c", muted: "#4b666c", primary: "#087c88", soft: "#eaf6f7", sun: "#f5ca38", support: "#e86752" },
   { id: "red-sun", name: "אדום של חנות", description: "אדום חי, שמש כתומה ודיו כחול", canvas: "#fffdfb", paper: "#ffffff", ink: "#23334b", muted: "#616573", primary: "#b83d3c", soft: "#fff0ed", sun: "#ffa544", support: "#3268bf" },
 ];

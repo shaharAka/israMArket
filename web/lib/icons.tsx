@@ -10,7 +10,7 @@ function Sketch({ className = "w-5 h-5", children }: IconProps & { children: Rea
       viewBox="0 0 24 24"
       stroke="currentColor"
       strokeWidth="1.6"
-      strokeLinecap="square"
+      strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
     >

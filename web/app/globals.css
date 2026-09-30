@@ -363,7 +363,6 @@ a {
 .start-blue :is(input,textarea,select):focus { border-color: var(--primary); }
 .start-blue :is(button[aria-pressed="true"],label:has(input:checked)) { border-color: var(--primary); background-color: var(--primary-soft); }
 .start-blue .chapter-fill { background: var(--primary); transition: width 900ms cubic-bezier(.32,0,.18,1); }
-.today-ask { border-color: var(--rule); border-top: 3px solid var(--sun); background: linear-gradient(115deg, var(--primary-soft), var(--paper) 65%); }
 .app-feedback { animation: feedback-in 260ms ease-out both; background: var(--ink); border-inline-start: 4px solid var(--sun); }
 @keyframes feedback-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
 @media (max-width: 639px) { .sun-progress { width: 104px; } }
@@ -374,7 +373,6 @@ a {
 }
 
 /* Keep the identity in the sun and shop, rather than decorative panel tails. */
-.today-ask { border:1px solid var(--rule); background:var(--paper); }
 .app-blue .nav-active-bar { display:none; }
 .app-blue .plan-document :is(span,li).rounded-full:not([aria-hidden]) { background:transparent !important; color:var(--ink-soft) !important; border:0; padding-inline:0; font-weight:400; }
 .app-blue .plan-document dl { background:var(--paper); }
