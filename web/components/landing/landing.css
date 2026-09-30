@@ -6,6 +6,13 @@
  * prefers-reduced-motion and shows its finished state.
  */
 
+html:has(.lp-home) { scroll-behavior: smooth; }
+.lp-home section[id] { scroll-margin-top: 8rem; }
+.lp-nav { background: color-mix(in srgb, var(--canvas) 96%, transparent); backdrop-filter: blur(8px); }
+.lp-nav nav { scrollbar-width: none; }
+.lp-nav nav a { display: inline-flex; align-items: center; min-height: 44px; white-space: nowrap; font-size: 14px; color: var(--ink-soft); }
+.lp-nav nav a:hover { color: var(--primary); }
+
 .lp-showcase {
   overflow-x: clip;
   background: var(--primary-soft);
@@ -43,6 +50,10 @@
 .lp-progress[data-paused="true"] {
   animation-play-state: paused;
 }
+
+.lp-plan-details summary { list-style: none; }
+.lp-plan-details summary::-webkit-details-marker { display: none; }
+.lp-plan-details[open] .lp-details-arrow { transform: rotate(45deg); }
 
 /* --- the plan panel ---------------------------------------------------------------- */
 
@@ -286,7 +297,7 @@
 .rm-halo {
   transform-box: fill-box;
   transform-origin: center;
-  animation: rm-pulse 3.6s ease-out 0.6s infinite;
+  animation: rm-pulse 3.6s ease-out 0.6s both;
 }
 .rm-status-a {
   animation: rm-out 300ms ease 2.5s both;
@@ -303,13 +314,14 @@
 .rm-store { overflow: visible; }
 .rm-store-art { width: 100%; height: 100%; }
 @keyframes lp-sunrise {
-  0% { transform: translate(35px, 77px); }
-  25% { transform: translate(40px, 56px); }
-  50% { transform: translate(54px, 39px); }
-  75% { transform: translate(75px, 27px); }
+  0% { transform: translate(35px, 96px); opacity: 0; }
+  12% { transform: translate(35px, 77px); opacity: 1; }
+  30% { transform: translate(40px, 56px); }
+  55% { transform: translate(54px, 39px); }
+  78% { transform: translate(75px, 27px); }
   100% { transform: translate(100px, 23px); }
 }
-.lp-route .journey-sun { animation: lp-sunrise 3.6s linear 2.65s both; }
+.lp-route .journey-sun { animation: lp-sunrise 3.6s linear var(--rm-arrival) both; }
 
 /* --- scroll reveals, hover lifts, button presses ---------------------------------- */
 
@@ -385,6 +397,7 @@ html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
 .lp-home :is(a,button,summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
+  html:has(.lp-home) { scroll-behavior: auto; }
   .lp-faq summary span {
     transition: none;
   }

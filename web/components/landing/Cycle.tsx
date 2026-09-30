@@ -23,7 +23,7 @@ const ROWS = [
 
 export function Cycle() {
   return (
-    <section aria-labelledby="cycle-title" className="border-t border-[var(--rule)] bg-[var(--paper)]">
+    <section id="cycle" aria-labelledby="cycle-title" className="border-t border-[var(--rule)] bg-[var(--paper)]">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_minmax(0,44rem)] lg:gap-16">
         <header data-rv className="max-w-md">
           <p className="text-sm font-bold text-[var(--primary)]">מודדים ומעדכנים</p>

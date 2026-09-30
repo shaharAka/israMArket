@@ -1,0 +1,33 @@
+.overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--rule); background: white; }
+.column { min-width: 0; padding: 20px 24px; }
+.column + .column { border-inline-start: 1px solid var(--rule); }
+.column h4 { margin: 0 0 12px; font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+.connections { display: grid; gap: 12px; }
+.connections li { display: grid; grid-template-columns: 16px minmax(0, 1fr) auto; align-items: center; gap: 8px; font-size: 12px; line-height: 1.5; }
+.connections li > :nth-child(n + 4) { grid-column: 2 / -1; }
+.mark { display: flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1.5px dashed var(--ink-muted); border-radius: 50%; }
+.mark[data-ready="true"] { border-style: solid; border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+.mark svg { width: 12px; height: 12px; }
+.status { color: var(--ink-muted); font-size: 11px; text-align: end; }
+.posts { display: grid; gap: 12px; }
+.postStatus { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--ink-soft); }
+.postStatus::before { content: ""; width: 5px; height: 5px; background: var(--sun); }
+.postTitle, .metric { margin-top: 5px; color: var(--ink); font-size: 15px; font-weight: 700; line-height: 1.5; }
+.note { margin-top: 6px; color: var(--ink-soft); font-size: 12px; line-height: 1.65; }
+.figure { margin-top: 16px; }
+.figure figcaption { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+.figure figcaption span { font-weight: 400; }
+.figure ul { display: grid; gap: 9px; margin-top: 9px; }
+.figure li { display: grid; grid-template-columns: 36px minmax(28px, 1fr) auto; align-items: center; gap: 8px; }
+.axisLabel, .value { font-size: 11px; line-height: 1.4; color: var(--ink-soft); }
+.value { font-variant-numeric: tabular-nums; min-width: 64px; text-align: end; }
+.track { display: block; height: 6px; background: var(--rule); }
+.track span { display: block; height: 100%; background: var(--primary); }
+.caption { margin-top: 8px; color: var(--ink-muted); font-size: 10px; line-height: 1.5; }
+@media (max-width: 767px) {
+  .overview { grid-template-columns: 1fr; }
+  .column { padding: 16px 20px; }
+  .column + .column { border-inline-start: 0; border-top: 1px solid var(--rule); }
+  .connections { gap: 9px; }
+  .figure { max-width: 320px; }
+}

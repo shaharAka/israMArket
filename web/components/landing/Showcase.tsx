@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
-import { swatch } from "./cards";
 import { LANDING_EXAMPLES, type LandingExample } from "./examples";
 import { PlanPanel } from "./PlanPanel";
 import { LANDING_PLANS } from "./plans";
@@ -11,8 +10,8 @@ const AUTO_ADVANCE_MS = 10000;
 
 /**
  * "בחרו עסק וראו את התוכנית שלו": a tab per fictional business, and a stage with that
- * business's 3-month plan. The plan is the product; a post shows up only as one title
- * with a thumbnail inside its month. Switching business re-plays the plan assembling.
+ * business's 3-month plan. The compact overview uses supplied connection states,
+ * one example post title and the planned budget. Switching re-plays the plan assembling.
  *
  * Auto-advance follows the WAI carousel rules: it starts only when motion is allowed,
  * pauses while the pointer, focus or a finger is on the showcase, while the top of the
@@ -26,6 +25,9 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
   const examples = all.filter((example) => LANDING_PLANS[example.slug]);
   const [current, setCurrent] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
+  const [motionAllowed, setMotionAllowed] = useState(false);
+  const [readingDetails, setReadingDetails] = useState(false);
+  const [playRequested, setPlayRequested] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [touching, setTouching] = useState(false);
@@ -42,7 +44,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
   // Decided after mount: the server cannot know the visitor's motion preference.
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setAutoplay(!media.matches);
+    const sync = () => { setAutoplay(!media.matches); setMotionAllowed(!media.matches); };
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
@@ -103,6 +105,8 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
   const choose = (index: number, focus = false) => {
     const next = (index + examples.length) % examples.length;
     setAutoplay(false);
+    setReadingDetails(false);
+    setPlayRequested(false);
     setCurrent(next);
     if (focus) tabRefs.current[next]?.focus();
   };
@@ -120,9 +124,9 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
     choose(moves[event.key], true);
   }
 
-  const paused = hovered || focused || touching || !visible || pageHidden;
+  const paused = ((hovered || focused) && !playRequested) || touching || readingDetails || !visible || pageHidden;
   const active = examples[current];
-  const accent = swatch(active.palette, "primary");
+  const accent = "var(--primary)";
 
   return (
     <div
@@ -131,10 +135,11 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
       style={{ "--lp-accent": accent } as CSSProperties}
       onPointerEnter={(event) => event.pointerType === "mouse" && setHovered(true)}
       onPointerLeave={() => setHovered(false)}
+      onPointerMove={(event) => { if (!(event.target as Element).closest("[data-rotation-control]")) setPlayRequested(false); }}
       onTouchStart={() => setTouching(true)}
       onTouchEnd={() => setTouching(false)}
       onTouchCancel={() => setTouching(false)}
-      onFocus={() => setFocused(true)}
+      onFocus={(event) => { setFocused(true); if (!(event.target as Element).closest("[data-rotation-control]")) setPlayRequested(false); }}
       onBlur={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false);
       }}
@@ -152,11 +157,11 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
           ref={pillRowRef}
           role="tablist"
           aria-label="סוג העסק"
-          className="lp-pills sticky top-0 z-10 -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8 lg:static lg:mx-0 lg:mt-7 lg:flex-wrap lg:overflow-visible lg:px-0 lg:py-1"
+          className="lp-pills -mx-4 mt-6 flex gap-1 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-7 lg:flex-wrap lg:overflow-visible lg:px-0 lg:py-1"
         >
           {examples.map((example, index) => {
             const selected = index === current;
-            const color = swatch(example.palette, "primary");
+            const color = "var(--primary)";
             return (
               <button
                 key={example.slug}
@@ -171,33 +176,37 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
                 tabIndex={selected ? 0 : -1}
                 onClick={() => choose(index)}
                 onKeyDown={onTabKeyDown}
-                className={`relative inline-flex min-h-11 shrink-0 items-center gap-2 overflow-hidden rounded-md border px-4 text-sm font-bold transition-[background-color,color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas)] ${
+                className={`relative inline-flex min-h-11 shrink-0 items-center overflow-hidden border-b-2 px-4 text-sm font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas)] ${
                   selected
-                    ? "border-transparent text-white"
-                    : "border-[var(--rule)] bg-white/80 text-[var(--ink-soft)] hover:border-[var(--rule-dark)] hover:bg-white"
+                    ? "border-[var(--lp-accent)] text-[var(--ink)]"
+                    : "border-transparent text-[var(--ink-soft)] hover:text-[var(--ink)]"
                 }`}
-                style={selected ? { backgroundColor: color } : undefined}
+                style={selected ? { color, borderColor: color } : undefined}
               >
-                <span
-                  aria-hidden
-                  className="h-2 w-2 rounded-full"
-                  style={{ backgroundColor: selected ? "rgba(255,255,255,0.85)" : color }}
-                />
                 {example.pill}
                 {selected && autoplay ? (
-                  <span aria-hidden className="absolute inset-x-3 bottom-1 h-[3px] overflow-hidden rounded-full bg-white/25">
+                  <span aria-hidden className="absolute inset-x-0 bottom-0 h-[2px] overflow-hidden bg-[var(--rule)]">
                     <span
                       key={current}
                       data-paused={paused}
                       onAnimationEnd={advance}
-                      className="lp-progress block h-full rounded-full bg-white/90"
-                      style={{ "--lp-duration": `${AUTO_ADVANCE_MS}ms` } as CSSProperties}
+                      className="lp-progress block h-full"
+                      style={{ "--lp-duration": `${AUTO_ADVANCE_MS}ms`, backgroundColor: color } as CSSProperties}
                     />
                   </span>
                 ) : null}
               </button>
             );
           })}
+        </div>
+        <div className="mt-2 flex items-center justify-end gap-4 text-xs text-[var(--ink-soft)]">
+          <span dir="ltr" className="tabular-nums">{current + 1} / {examples.length}</span>
+          {motionAllowed ? <button type="button" data-rotation-control className="inline-flex min-h-11 items-center gap-2 font-bold" aria-label={autoplay ? "לעצור את המעבר האוטומטי בין העסקים" : "להפעיל מעבר אוטומטי בין העסקים"}
+            onClick={() => { setPlayRequested(!autoplay); setAutoplay(!autoplay); }}>
+            <svg aria-hidden viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6">
+              {autoplay ? <path d="M5 3v10M11 3v10" /> : <path d="m5 3 7 5-7 5Z" />}
+            </svg>{autoplay ? "לעצור" : "להמשיך אוטומטית"}
+          </button> : null}
         </div>
 
         {/* Announced only when the visitor switched; auto-advance stays quiet. */}
@@ -211,7 +220,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
           role="tabpanel"
           aria-labelledby={`lp-tab-${active.slug}`}
           tabIndex={0}
-          className="lp-stack mt-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-8 focus-visible:ring-offset-[var(--canvas)] lg:mt-8"
+          className="lp-stack mt-2 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-8 focus-visible:ring-offset-[var(--canvas)]"
         >
           {examples.map((example, index) => (
             <PlanPanel
@@ -220,6 +229,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
               plan={LANDING_PLANS[example.slug]}
               current={index === current}
               reveal={seen && index === current}
+              onDetailsChange={setReadingDetails}
             />
           ))}
         </div>

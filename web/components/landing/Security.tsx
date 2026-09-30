@@ -56,7 +56,7 @@ export const TRUST_TILES: Tile[] = [
 
 export function Security() {
   return (
-    <section aria-labelledby="security-title" className="lp-security border-t border-[var(--rule)]">
+    <section id="security" aria-labelledby="security-title" className="lp-security border-t border-[var(--rule)]">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-8 sm:py-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <header data-rv className="max-w-2xl">

@@ -12,7 +12,7 @@ import { Storefront } from "@/components/brand/Storefront";
  * Server-rendered. The draw-in is CSS (stroke-dashoffset on a
  * pathLength=1 path, landing.css `.rm-*`), each stop's delay is computed here from its
  * distance along the route so it pops exactly when the line reaches it, and the small
- * dot that keeps travelling afterwards is SVG <animateMotion>. Under
+ * dot that follows the completed road once afterwards is SVG <animateMotion>. Under
  * prefers-reduced-motion the CSS shows the finished route and hides the moving dot.
  *
  * Two layouts of the same idea: `wide` beside the headline on desktop, `compact` under
@@ -123,7 +123,7 @@ const DRAW_START = 0.55;
 const DRAW_DURATION = 2.1;
 /** The travelling dot starts once the route is drawn and every stop has appeared. */
 const TRAVEL_BEGIN = DRAW_START + DRAW_DURATION + 0.6;
-const TRAVEL_DURATION = 13;
+const TRAVEL_DURATION = 7.2;
 
 function polyline(points: Point[]): string {
   return points.map(([x, y], index) => `${index ? "L" : "M"}${x} ${y}`).join(" ");
@@ -184,6 +184,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
   const id = `rm-route-${variant}`;
   const d = roundedPath(route, radius);
   const wide = variant === "wide";
+  const destination = route[route.length - 1];
 
   const stops = layout.stops.map((stop) => {
     const delay = stop.kind === "start" ? 0.2 : DRAW_START + DRAW_DURATION * progressAt(route, radius, stop.at);
@@ -192,6 +193,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
 
   return (
     <figure
+      style={{ "--rm-arrival": `${TRAVEL_BEGIN + TRAVEL_DURATION}s` } as CSSProperties}
       role="img"
       aria-label={`המסלול: ${LABELS.join(", ")}`}
       className={`lp-route relative overflow-hidden rounded-lg border border-[var(--rule)] bg-[var(--paper)] ${className}`}
@@ -212,7 +214,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
             </pattern>
           </defs>
 
-          {/* The map: dot paper, a few streets, one small park. */}
+          {/* A flat street map; the road is planned before the journey begins. */}
           <g className="rm-map">
             <rect width={width} height={height} fill={`url(#${id}-dots)`} opacity="0.7" />
             {layout.park ? (
@@ -268,15 +270,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
                 </g>
               );
             }
-            if (stop.kind === "end") {
-              return (
-                <g key={stop.label} transform={`translate(${x} ${y})`}>
-                  <svg x={wide ? -80 : -50} y={wide ? -95 : -65} width={wide ? 160 : 100} height={wide ? 117 : 73} className="rm-store">
-                    <Storefront phase={.5} animated className="rm-store-art" />
-                  </svg>
-                </g>
-              );
-            }
+            if (stop.kind === "end") return null;
             return (
               <g key={stop.label} transform={`translate(${x} ${y})`}>
                 <circle className="rm-pop" style={style} r={wide ? 8 : 6.5} fill="#fff" stroke="var(--primary)" strokeWidth={wide ? 3.5 : 3} />
@@ -284,29 +278,34 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
             );
           })}
 
-          {/* Your business, moving along the plan. Starts after the draw, rests at the end,
-              fades, and goes again. Hidden under reduced motion (landing.css). */}
+          {/* Your business, moving along the plan. Starts after the draw and stays at the destination.
+              The sunrise begins only after this walk finishes. Hidden under reduced motion (landing.css). */}
           <g className="rm-traveler" opacity="0">
             <circle r={wide ? 11 : 9} fill="var(--sun)" opacity="0.28" />
             <circle r={wide ? 6 : 5} fill="var(--sun)" stroke="#fff" strokeWidth="2.5" />
             <animateMotion
               dur={`${TRAVEL_DURATION}s`}
               begin={`${TRAVEL_BEGIN}s`}
-              repeatCount="indefinite"
-              keyPoints="0;1;1"
-              keyTimes="0;0.8;1"
+              fill="freeze"
+              keyPoints="0;1"
+              keyTimes="0;1"
               calcMode="linear"
             >
               <mpath href={`#${id}`} />
             </animateMotion>
             <animate
               attributeName="opacity"
-              values="0;1;1;0"
-              keyTimes="0;0.05;0.9;1"
+              values="0;1;1"
+              keyTimes="0;0.04;1"
               dur={`${TRAVEL_DURATION}s`}
               begin={`${TRAVEL_BEGIN}s`}
-              repeatCount="indefinite"
+              fill="freeze"
             />
+          </g>
+          <g transform={`translate(${destination[0]} ${destination[1]})`}>
+            <svg x={wide ? -80 : -50} y={wide ? -95 : -65} width={wide ? 160 : 100} height={wide ? 117 : 73} className="rm-store">
+              <Storefront phase={.5} animated className="rm-store-art" />
+            </svg>
           </g>
         </svg>
 

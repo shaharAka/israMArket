@@ -57,7 +57,7 @@ const QUESTIONS: Question[] = [
 
 export function Faq() {
   return (
-    <section aria-labelledby="faq-title" className="border-t border-[var(--rule)] bg-[var(--paper)]">
+    <section id="faq" aria-labelledby="faq-title" className="border-t border-[var(--rule)] bg-[var(--paper)]">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_minmax(0,44rem)] lg:gap-16">
         <header data-rv>
           <h2 id="faq-title" className="text-2xl font-black tracking-tight sm:text-[2rem]">
