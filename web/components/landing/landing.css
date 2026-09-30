@@ -1,7 +1,9 @@
 /*
- * Landing page motion: the showcase (tabs, staggered plan reveal, phone cross-fade) and
- * the wall of posts (two marquee rows). CSS only, no animation library. Everything
- * here stops under prefers-reduced-motion, and the wall turns into a static grid.
+ * Landing page motion, CSS only (no animation library): the hero's route being planned
+ * (`.rm-*`), the showcase (tabs, the 3-month plan assembling), scroll reveals
+ * (`[data-rv]`, driven by LandingMotion.tsx), hover lifts and button presses. Only
+ * transform and opacity move, so nothing shifts the layout. Everything here stops under
+ * prefers-reduced-motion and shows its finished state.
  */
 
 /* The business's accent, animated between businesses (the gradient behind the stage
@@ -91,102 +93,291 @@
 }
 .lp-slide[data-reveal="true"] .lp-reveal {
   animation: lp-reveal 560ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: calc(var(--i, 0) * 90ms);
+  animation-delay: calc(var(--i, 0) * 110ms);
 }
 
-/* The phone screens cross-fade instead of cutting. The outgoing screen leaves fast and
-   the incoming one waits a beat, so two captions are never legible on top of each other. */
-.lp-screen {
-  opacity: 0;
-  transform: scale(1.02);
-  transition:
-    opacity 220ms ease,
-    transform 220ms ease,
-    visibility 0s linear 220ms;
-  visibility: hidden;
-}
-.lp-screen[data-current="true"] {
-  opacity: 1;
-  transform: none;
-  visibility: visible;
-  transition:
-    opacity 600ms ease 140ms,
-    transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 140ms,
-    visibility 0s;
-}
-
-/* Floating notes beside the phone. */
-@keyframes lp-float-in {
+/* Inside a block: chips pop, budget segments grow, the months' line draws and its stops
+   appear one after the other. `--i` is the block's step, `--j` / `--m` the item's. */
+@keyframes lp-pop {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.97);
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-.lp-note[data-current="true"] {
-  animation: lp-float-in 520ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  animation-delay: var(--d, 250ms);
-}
-
-/* --- the wall of posts ----------------------------------------------------------- */
-
-.lp-row {
-  overflow: hidden;
-  mask-image: linear-gradient(to left, transparent 0, #000 7%, #000 93%, transparent 100%);
-}
-
-@keyframes lp-marquee-a {
+@keyframes lp-grow-x {
   from {
-    transform: translateX(0);
+    transform: scaleX(0);
   }
   to {
-    transform: translateX(50%);
+    transform: none;
   }
 }
-@keyframes lp-marquee-b {
+@keyframes lp-grow-y {
   from {
-    transform: translateX(50%);
+    transform: scaleY(0);
   }
   to {
-    transform: translateX(0);
+    transform: none;
   }
 }
 
-/* Two identical copies side by side; moving by exactly one copy's width loops seamlessly.
-   Each copy carries its own trailing gap (padding) so 50% is exactly one copy. */
-.lp-track {
-  display: flex;
-  width: max-content;
-  animation: lp-marquee-a var(--lp-speed, 70s) linear infinite;
-  will-change: transform;
+.lp-slide[data-reveal="true"] .lp-pop {
+  animation: lp-pop 460ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: calc(var(--i, 0) * 110ms + 220ms + var(--j, 0) * 80ms);
 }
-.lp-track[data-direction="b"] {
-  animation-name: lp-marquee-b;
+.lp-grow {
+  transform-origin: right;
 }
-.lp-copy {
-  display: flex;
-  gap: 16px;
-  padding-inline-end: 16px;
-  padding-block: 14px 22px;
+.lp-slide[data-reveal="true"] .lp-grow {
+  animation: lp-grow-x 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 110ms + 200ms + var(--j, 0) * 70ms);
 }
 
-.lp-wall:hover .lp-track,
-.lp-wall:focus-within .lp-track,
-.lp-wall[data-paused="true"] .lp-track {
-  animation-play-state: paused;
+/* The months' line: vertical on phones (beside the stops), horizontal on desktop. */
+.lp-line {
+  inset-inline-start: 6px;
+  top: 10px;
+  bottom: 44px;
+  width: 2px;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--lp-primary) 28%, #efede6);
+  transform-origin: top;
+}
+@media (min-width: 1024px) {
+  .lp-line {
+    inset-inline: 7px 0;
+    top: 6px;
+    bottom: auto;
+    width: auto;
+    height: 2px;
+    transform-origin: right;
+  }
+}
+.lp-slide[data-reveal="true"] .lp-line {
+  animation: lp-grow-y 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+}
+@media (min-width: 1024px) {
+  .lp-slide[data-reveal="true"] .lp-line {
+    animation-name: lp-grow-x;
+  }
+}
+.lp-slide[data-reveal="true"] .lp-dot {
+  animation: lp-pop 420ms cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: calc(var(--i, 0) * 110ms + 160ms + var(--m, 0) * 280ms);
 }
 
-.lp-card {
+/* Sticky business tabs on phones, so the plan below always says whose it is. */
+@media (max-width: 1023.98px) {
+  .lp-pills {
+    background: color-mix(in oklab, #f7f5f0 86%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+}
+
+/* --- the hero route -------------------------------------------------------------- */
+
+@keyframes rm-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes rm-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes rm-ghost {
+  0% {
+    opacity: 0;
+    stroke-dashoffset: 0;
+  }
+  35% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0.4;
+    stroke-dashoffset: -44;
+  }
+}
+@keyframes rm-pulse {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.7);
+  }
+  80%,
+  100% {
+    opacity: 0;
+    transform: scale(2.3);
+  }
+}
+@keyframes rm-label {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rm-out {
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+@keyframes rm-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes rm-dot {
+  0%,
+  24%,
+  48%,
+  72% {
+    background-color: #d9a441;
+    opacity: 1;
+  }
+  12%,
+  36%,
+  60% {
+    background-color: #d9a441;
+    opacity: 0.35;
+  }
+  90%,
+  100% {
+    background-color: #2d3f32;
+    opacity: 1;
+  }
+}
+
+.rm-map {
+  animation: rm-fade 900ms ease both;
+}
+.rm-ghost {
+  opacity: 0.4;
+  animation: rm-ghost 2.2s ease-out 0.15s both;
+}
+.rm-draw {
+  stroke-dasharray: 1;
+  animation: rm-draw var(--rm-dur, 2s) linear var(--rm-delay, 0s) both;
+}
+.rm-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lp-pop 480ms cubic-bezier(0.3, 1.6, 0.5, 1) var(--rm-delay, 0s) both;
+}
+.rm-label {
+  animation: rm-label 380ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--rm-delay, 0s) both;
+}
+/* The destination breathes once the route reaches it; the start breathes slower. */
+.rm-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: rm-pulse 2.8s ease-out calc(var(--rm-delay, 0s) + 0.4s) infinite;
+}
+.rm-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: rm-pulse 3.6s ease-out 0.6s infinite;
+}
+.rm-status-a {
+  animation: rm-out 300ms ease 2.5s both;
+}
+.rm-status-b {
+  animation: rm-in 420ms ease 2.75s both;
+}
+/* Amber and blinking while planning, then settles on the route's green. */
+.rm-status-dot {
+  animation: rm-dot 2.8s linear both;
+}
+
+/* --- scroll reveals, hover lifts, button presses ---------------------------------- */
+
+@keyframes rv-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+/* Hidden only once LandingMotion has opted the page in; without JS everything shows. */
+html[data-lp-motion="on"] [data-rv]:not([data-rv-in]) {
+  opacity: 0;
+  transform: translateY(18px);
+}
+/* `backwards`, not `both`: after the reveal the element's own hover transform applies. */
+html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
+  animation: rv-in 700ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: calc(var(--rv-i, 0) * 80ms);
+}
+
+@media (hover: hover) {
+  .lp-lift {
+    transition:
+      transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 260ms ease,
+      border-color 260ms ease;
+  }
+  .lp-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 26px 48px -30px rgba(25, 27, 24, 0.4);
+  }
+  .lp-cta-arrow {
+    transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .lp-press:hover .lp-cta-arrow {
+    transform: translateX(-4px);
+  }
+}
+
+.drawn-button.lp-press {
   transition:
-    transform 260ms cubic-bezier(0.2, 0.7, 0.2, 1),
-    box-shadow 260ms ease;
+    background 120ms ease,
+    color 120ms ease,
+    transform 140ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.lp-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 22px 40px -22px rgba(25, 27, 24, 0.35);
+.drawn-button.lp-press:active {
+  transform: scale(0.97);
+}
+
+/* Tabs give under the finger too. */
+.lp-pills [role="tab"]:active {
+  transform: scale(0.96);
+}
+.lp-pills [role="tab"] {
+  transition-property: background-color, color, border-color, box-shadow, transform;
+}
+
+/* FAQ: the answer fades in when a question opens. */
+@keyframes lp-faq-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+.lp-faq[open] > p {
+  animation: lp-faq-in 260ms ease both;
 }
 
 /* --- security, pricing, FAQ, closing ask ---------------------------------------- */
@@ -213,6 +404,7 @@
     #f9f8f6;
 }
 
+
 @media (prefers-reduced-motion: reduce) {
   .lp-faq summary span {
     transition: none;
@@ -224,39 +416,45 @@
     animation: none;
     transform: scaleX(0);
   }
-  .lp-slide[data-reveal="true"] .lp-reveal {
+  .lp-slide[data-reveal="true"] .lp-reveal,
+  .lp-slide[data-reveal="true"] .lp-pop,
+  .lp-slide[data-reveal="true"] .lp-grow,
+  .lp-slide[data-reveal="true"] .lp-line,
+  .lp-slide[data-reveal="true"] .lp-dot,
+  .lp-faq[open] > p {
     animation: none;
-  }
-  .lp-screen,
-  .lp-screen[data-current="true"] {
-    transition: none;
-    transform: none;
-  }
-  .lp-note[data-current="true"] {
-    animation: none;
-  }
-  .lp-card,
-  .lp-card:hover {
-    transition: none;
-    transform: none;
   }
 
-  /* The wall becomes a plain grid: no motion, no duplicate copy, no fade masks. */
-  .lp-row {
-    overflow: visible;
-    mask-image: none;
-  }
-  .lp-track {
+  /* The route, finished: drawn, every stop shown, the chosen one only. No moving dot. */
+  .rm-map,
+  .rm-draw,
+  .rm-pop,
+  .rm-label,
+  .rm-status-b,
+  .rm-status-dot {
     animation: none;
-    width: auto;
   }
-  .lp-copy {
-    flex-wrap: wrap;
-    justify-content: center;
-    padding-inline: 16px;
+  .rm-draw {
+    stroke-dasharray: none;
   }
-  .lp-copy[aria-hidden="true"],
-  .lp-motion-toggle {
+  .rm-ghost {
+    animation: none;
+    opacity: 0.4;
+  }
+  .rm-pulse,
+  .rm-halo,
+  .rm-traveler,
+  .rm-status-a {
     display: none;
+  }
+
+  .lp-lift,
+  .lp-lift:hover,
+  .drawn-button.lp-press,
+  .drawn-button.lp-press:active,
+  .lp-pills [role="tab"]:active,
+  .lp-cta-arrow {
+    transition: none;
+    transform: none;
   }
 }

@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -17,15 +17,19 @@ from app.services.instagram_signal import handles_for, signal_for
 from app.services.onboarding_draft import (
     OWNER_CONTEXT_FALLBACK_HE,
     DirectionIn,
+    DraftPhotoError,
     IdeaIn,
     OnboardingDraft,
     OwnerContextIn,
     apply_draft,
     apply_owner_context,
+    link_draft_photos,
     owner_context_errors_he,
     seed_from_stored,
 )
 from app.services.preview import cached_scan
+from app.services.quarter_plan import QuarterPlanIn
+from app.services.strategy_reveal import SamplePostIn, StrategyIn
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -98,6 +102,9 @@ def _business_payload(business: Business) -> dict:
         "owner_context": stored.get("owner_context"),
         "brand_source": stored.get("brand_source") or ("scan" if stored.get("brand_language") else None),
         "first_month_seed": seed_from_stored(stored),
+        # Revision 5: the 3-month plan saved at signup, and the measurement checklist it needs.
+        "quarter_plan": stored.get("quarter_plan"),
+        "integrations_checklist": stored.get("integrations_checklist") or [],
     }
 
 
@@ -115,6 +122,22 @@ class FromDraftIn(BaseModel):
     # preview could not be shown. Without it the first month is planned as before.
     chosen_direction: DirectionIn | None = None
     chosen_idea: IdeaIn | None = None
+    # Revision 4: the strategy from /public/strategy (as the owner last shaped it) and
+    # the sample posts they chose from /public/sample-posts. Both optional; with them the
+    # first month follows the strategy and the chosen posts are its first posts.
+    strategy: StrategyIn | None = None
+    chosen_posts: list[SamplePostIn] | None = Field(default=None, max_length=3)
+    # Revision 5: the 3-month plan from /public/quarter-plan, as the owner last saw it.
+    quarter_plan: QuarterPlanIn | None = None
+
+
+def _stored_plan(plan: QuarterPlanIn | None) -> dict | None:
+    if plan is None:
+        return None
+    try:
+        return plan.stored()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.post("/from-draft")
@@ -139,7 +162,36 @@ def from_draft(
         body.draft,
         body.chosen_direction.model_dump() if body.chosen_direction else None,
         body.chosen_idea.model_dump() if body.chosen_idea else None,
+        strategy=body.strategy.stored() if body.strategy else None,
+        chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
+        quarter_plan=_stored_plan(body.quarter_plan),
     )
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+class DraftPhotoLink(BaseModel):
+    post_index: int = Field(ge=0, le=2)
+    asset_id: int = Field(ge=1)
+
+
+@router.post("/draft-photos")
+def draft_photos(
+    body: list[DraftPhotoLink] = Body(..., max_length=3),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Link the photos uploaded right after signup (kept in the browser until then) to
+    the week-1 posts chosen at /start, so the month uses them. Idempotent. Same
+    response as /onboarding/me."""
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=404, detail="עוד אין עסק. קודם שומרים את מה שבנינו.")
+    try:
+        link_draft_photos(db, business, [item.model_dump() for item in body])
+    except DraftPhotoError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business)}
@@ -498,6 +550,13 @@ def generate(
         business.updated_at = datetime.utcnow()
         db.commit()
 
+    # A plan built at /start names its first month (it starts two weeks out, so on the
+    # 30th it is next month); the first generation builds that month, not today's.
+    start = (payload["first_month_seed"] or {}).get("start") or {}
+    first_month = {}
+    if isinstance(start.get("year"), int) and isinstance(start.get("month"), int) and 1 <= start["month"] <= 12:
+        first_month = {"year": start["year"], "month": start["month"]}
+
     def run() -> dict:
         return generate_monthly_strategy(
             payload,
@@ -505,6 +564,7 @@ def generate(
             state=state,
             on_stage=persist_stage,
             one_stage=True,
+            **first_month,
         )
 
     try:

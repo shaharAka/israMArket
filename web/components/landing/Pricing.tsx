@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { IconCheck } from "@/lib/icons";
 import {
   COMPARISON_NOTE,
@@ -21,7 +22,7 @@ export function Pricing() {
   return (
     <section aria-labelledby="pricing-title" className="lp-pricing border-t border-[#ebe8e0]">
       <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-16">
-        <header className="max-w-xl">
+        <header data-rv className="max-w-xl">
           <p className="text-sm font-bold text-[#2d3f32]">מחיר</p>
           <h2 id="pricing-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
             תוכנית אחת. כל מה שהעסק צריך בחודש.
@@ -31,7 +32,9 @@ export function Pricing() {
 
         <article
           aria-label="התוכנית"
-          className="relative overflow-hidden rounded-[28px] border border-[#e6e3da] bg-white p-6 shadow-[0_40px_80px_-48px_rgba(25,27,24,0.45),0_2px_6px_-2px_rgba(25,27,24,0.06)] sm:p-8"
+          data-rv
+          style={{ "--rv-i": 1 } as CSSProperties}
+          className="lp-lift relative overflow-hidden rounded-[28px] border border-[#e6e3da] bg-white p-6 shadow-[0_40px_80px_-48px_rgba(25,27,24,0.45),0_2px_6px_-2px_rgba(25,27,24,0.06)] sm:p-8"
         >
           <p className="inline-flex rounded-full bg-[#fbeed3] px-3.5 py-1 text-sm font-black text-[#7a4d12]">{TRIAL_LABEL}</p>
 
@@ -72,7 +75,7 @@ export function Pricing() {
 
           <Link
             href="/start"
-            className="drawn-button mt-7 inline-flex min-h-12 w-full items-center justify-center bg-[#191b18] px-8 py-3 text-base font-bold text-white hover:bg-[#2c2f29]"
+            className="drawn-button lp-press mt-7 inline-flex min-h-12 w-full items-center justify-center bg-[#191b18] px-8 py-3 text-base font-bold text-white hover:bg-[#2c2f29]"
           >
             להתחיל חודש חינם
           </Link>

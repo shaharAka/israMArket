@@ -307,14 +307,23 @@ def _with_query(url: str, params: dict) -> str:
     return urlunparse(parsed._replace(query=urlencode(existing)))
 
 
-def _write_posts_for_weeks(
+def posts_prompt(
     business: dict,
     usp: dict,
     core: dict,
     brand: dict,
     weeks: list[int],
     prior: dict | None = None,
-) -> list[dict]:
+    *,
+    count_line: str = "",
+    extra: str = "",
+) -> str:
+    """The post writer's prompt. One definition for the month and for the onboarding's
+    sample posts (services/strategy_reveal.py), so a sample is what the product writes.
+
+    `count_line` replaces the default "3 to 4 posts" line and `extra` is appended; both
+    empty means the prompt is exactly what it always was.
+    """
     week_text = " ו".join(str(week) for week in weeks)
     audience_note = (
         "כל פוסט משרת קהל אחד מהרשימה שלמעלה, והבחירה חייבת להשפיע על הזווית, ההוק והכיתוב — "
@@ -323,12 +332,13 @@ def _write_posts_for_weeks(
     # What Instagram actually showed for this business: own top posts, the month's
     # pattern brief, or an explicit "no data, claim nothing". Built by the router.
     instagram = business.get("instagram_signal")
+    count_line = count_line or f"כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד."
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
 {_owner_block(business, include_idea=1 in weeks)}
 
-כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד.
+{count_line}
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
 
 עסק: {_business_brief(business)}
@@ -360,16 +370,49 @@ USP: {usp}
 
 {instagram_prompt_block(instagram)}
 """
+    if extra:
+        prompt = f"{prompt}\n{extra.strip()}\n"
+    return prompt
+
+
+def _write_posts_for_weeks(
+    business: dict,
+    usp: dict,
+    core: dict,
+    brand: dict,
+    weeks: list[int],
+    prior: dict | None = None,
+) -> list[dict]:
+    week_text = " ו".join(str(week) for week in weeks)
+    instagram = business.get("instagram_signal")
+    # Onboarding v2, revision 4: a first month seeded with the strategy the owner built at
+    # /start. The cadence decides how many posts, the pillars what they are about, and
+    # the sample posts the owner chose are the month's first posts, as they were shown.
+    # Without that seed `plan` is None and this is the unchanged path.
+    from app.services import strategy_reveal  # avoids an import cycle
+
+    plan = strategy_reveal.seeded_posts_plan(business.get("first_month_seed"), weeks)
+    schema = MONTHLY_POSTS_SCHEMA
+    count_line = extra = ""
+    if plan is not None:
+        if plan["to_write"] <= 0:
+            return attach_audiences(plan["fixed"], business.get("audiences") or [])
+        count_line, extra = plan["count_line"], plan["extra"]
+        schema = strategy_reveal.SEEDED_POSTS_SCHEMA
+    prompt = posts_prompt(business, usp, core, brand, weeks, prior, count_line=count_line, extra=extra)
     # POST_MODEL=gemini (the default) keeps the direct call, so nothing changes unless the
     # Muse Spark experiment is switched on (see services/post_model_router.py).
     writer = strategy_json if (get_settings().post_model or "gemini") == "gemini" else post_json
-    posts = loads(writer(prompt, MONTHLY_POSTS_SCHEMA), {})
+    posts = loads(writer(prompt, schema), {})
     items = posts.get("posts") or []
-    if len(items) < 2:
+    needed = 2 if plan is None else max(1, min(2, plan["to_write"]))
+    if len(items) < needed:
         raise RuntimeError(f"קיבלנו פחות מדי פוסטים לשבועות {week_text}. נסו שוב.")
     # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
     # post with no real source carries `inspiration: None` rather than a made-up reason.
     items = attach_inspiration(items, instagram)
+    if plan is not None:
+        items = plan["fixed"] + strategy_reveal.finish_seeded_posts(items, plan)
     # The model names a segment; only real segments exist. An unknown (or missing) name
     # falls back to the primary audience here, so a stored post can never carry a dangling
     # audience id — and a business with no audiences gets an empty field, not an invention.
@@ -446,7 +489,11 @@ USP והשערת צמיחה: {usp}
         # The quarter plan is what the user read and approved during onboarding. The
         # month plan is generated afterwards and must never silently rewrite it.
         core["long_horizon_plan"] = long_horizon
-    return core
+    # The strategy the owner built at /start (if any): its weeks, measures and target
+    # are what they approved, so the month plan carries them as they were shown.
+    from app.services import strategy_reveal  # avoids an import cycle
+
+    return strategy_reveal.apply_strategy_to_core(core, business.get("first_month_seed"))
 
 
 def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prior: dict | None = None) -> list[dict]:
@@ -569,6 +616,10 @@ def generate_monthly_strategy(
             business["primary_goal"],
             business.get("business_model", "products"),
         )
+        # A cadence the owner chose at /start replaces the budget-derived one.
+        from app.services import strategy_reveal  # avoids an import cycle
+
+        plan = strategy_reveal.apply_cadence_to_posting_plan(plan, business.get("first_month_seed"))
         mark(
             "plan",
             usp=usp,

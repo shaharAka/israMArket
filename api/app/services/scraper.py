@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup
 
 from app.services import colors as color_evidence
 from app.services.netguard import UnsafeUrlError, assert_public_url, safe_get
+from app.services.tracking_detect import detect_tags
 
 
 class ScrapeBudgetExceeded(RuntimeError):
@@ -1063,4 +1064,7 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
         "logo_url": logo["url"] if logo else "",
         "color_evidence": build_color_evidence(logo, downloaded, colors),
         "social_links": social_links(soup),
+        # Measurement tags seen in the page source (GA4, GTM, Meta pixel, Google Ads,
+        # Search Console verification). The quarter plan's integrations read this.
+        "detected_tags": detect_tags(response.text),
     }
