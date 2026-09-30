@@ -3,23 +3,27 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { swatch } from "./cards";
 import { LANDING_EXAMPLES, type LandingExample } from "./examples";
-import { PhoneMockup } from "./PhoneMockup";
 import { PlanPanel } from "./PlanPanel";
+import { LANDING_PLANS } from "./plans";
 
-/** Long enough to read the insight and the direction once. */
-const AUTO_ADVANCE_MS = 7000;
+/** Long enough to read the strategy, the measure and the three months once. */
+const AUTO_ADVANCE_MS = 10000;
 
 /**
- * "בחרו עסק וראו איך זה עובד": a tab per fictional business, and a stage with that
- * business's month (the plan panel, the hero) beside the post it produces (the phone).
+ * "בחרו עסק וראו את התוכנית שלו": a tab per fictional business, and a stage with that
+ * business's 3-month plan. The plan is the product; a post shows up only as one title
+ * with a thumbnail inside its month. Switching business re-plays the plan assembling.
  *
  * Auto-advance follows the WAI carousel rules: it starts only when motion is allowed,
- * pauses while the pointer, focus or a finger is on the showcase, while it is off screen
+ * pauses while the pointer, focus or a finger is on the showcase, while the top of the
+ * plan is off screen (a phone reader deep in the plan keeps their business)
  * and while the tab is hidden, and stops for good once the visitor picks a business.
  * The progress bar IS the timer: its CSS animation ending advances to the next tab, so
  * pausing the bar pauses the clock exactly where it was.
  */
-export function Showcase({ examples = LANDING_EXAMPLES }: { examples?: LandingExample[] }) {
+export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: LandingExample[] }) {
+  // Only businesses with a hand-written plan (plans.ts) are shown.
+  const examples = all.filter((example) => LANDING_PLANS[example.slug]);
   const [current, setCurrent] = useState(0);
   const [autoplay, setAutoplay] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -30,6 +34,8 @@ export function Showcase({ examples = LANDING_EXAMPLES }: { examples?: LandingEx
   /** Rows animate in only once the stage has been seen, not while it is below the fold. */
   const [seen, setSeen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  /** A 1px line at the top of the plan: whether its beginning is on screen. */
+  const stageTopRef = useRef<HTMLDivElement>(null);
   const pillRowRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -44,20 +50,30 @@ export function Showcase({ examples = LANDING_EXAMPLES }: { examples?: LandingEx
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || typeof IntersectionObserver === "undefined") {
+    const top = stageTopRef.current;
+    if (!root || !top || typeof IntersectionObserver === "undefined") {
       setVisible(true);
       setSeen(true);
       return;
     }
-    const observer = new IntersectionObserver(
+    const seenObserver = new IntersectionObserver(
       ([entry]) => {
-        setVisible(entry.isIntersecting);
         if (entry.isIntersecting) setSeen(true);
       },
-      { threshold: 0.35 },
+      { threshold: 0.2 },
     );
-    observer.observe(root);
-    return () => observer.disconnect();
+    // The clock runs only while the top of the plan is on screen. On a phone the plan is
+    // taller than the screen, and it must not switch business under someone reading its
+    // lower half.
+    const clockObserver = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      rootMargin: "0px 0px -15% 0px",
+    });
+    seenObserver.observe(root);
+    clockObserver.observe(top);
+    return () => {
+      seenObserver.disconnect();
+      clockObserver.disconnect();
+    };
   }, []);
 
   useEffect(() => {
@@ -124,19 +140,19 @@ export function Showcase({ examples = LANDING_EXAMPLES }: { examples?: LandingEx
       }}
     >
       <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-8 sm:pb-20 sm:pt-16">
-        <header className="max-w-2xl">
-          <p className="text-sm font-bold text-[#2d3f32]">מחקר, תוכנית ופוסט</p>
+        <header data-rv className="max-w-2xl">
+          <p className="text-sm font-bold text-[#2d3f32]">מחקר, אסטרטגיה ותוכנית</p>
           <h2 id="examples-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
-            בחרו עסק וראו איך זה עובד
+            בחרו עסק וראו את התוכנית שלו
           </h2>
-          <p className="mt-2 text-sm text-[#6d7068]">דוגמאות לעסקים בדויים</p>
+          <p className="mt-2 text-base leading-7 text-[#5e6159]">לכל עסק תוכנית אחרת ל-3 חודשים, לפי מה שגילינו עליו. אלה עסקים בדויים.</p>
         </header>
 
         <div
           ref={pillRowRef}
           role="tablist"
           aria-label="סוג העסק"
-          className="lp-pills -mx-4 mt-7 flex gap-2 overflow-x-auto px-4 py-1 sm:-mx-8 sm:px-8 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0"
+          className="lp-pills sticky top-0 z-10 -mx-4 mt-6 flex gap-2 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8 lg:static lg:mx-0 lg:mt-7 lg:flex-wrap lg:overflow-visible lg:px-0 lg:py-1"
         >
           {examples.map((example, index) => {
             const selected = index === current;
@@ -189,39 +205,27 @@ export function Showcase({ examples = LANDING_EXAMPLES }: { examples?: LandingEx
           {active.businessName}, {active.typeLabel}
         </p>
 
+        <div ref={stageTopRef} aria-hidden className="h-px" />
         <div
           id="lp-stage"
           role="tabpanel"
           aria-labelledby={`lp-tab-${active.slug}`}
           tabIndex={0}
-          className="mt-7 grid items-start gap-10 rounded-[28px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#191b18] focus-visible:ring-offset-8 focus-visible:ring-offset-[#f7f5f0] lg:mt-9 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-14"
+          className="lp-stack mt-4 rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#191b18] focus-visible:ring-offset-8 focus-visible:ring-offset-[#f7f5f0] lg:mt-8"
         >
-          <div className="lp-stack">
-            {examples.map((example, index) => (
-              <PlanPanel key={example.slug} example={example} current={index === current} reveal={seen && index === current} />
-            ))}
-          </div>
-
-          <div className="flex flex-col items-center gap-5">
-            <PhoneMockup examples={examples} current={current} />
-            <div className="lp-stack w-full max-w-[340px]">
-              {examples.map((example, index) => (
-                <p
-                  key={example.slug}
-                  data-current={index === current}
-                  aria-hidden={index !== current}
-                  className="lp-screen text-center text-sm leading-6 text-[#4f524b]"
-                >
-                  <span className="font-bold text-[#191b18]">למה הפוסט הזה: </span>
-                  {example.why.reason}
-                </p>
-              ))}
-            </div>
-          </div>
+          {examples.map((example, index) => (
+            <PlanPanel
+              key={example.slug}
+              example={example}
+              plan={LANDING_PLANS[example.slug]}
+              current={index === current}
+              reveal={seen && index === current}
+            />
+          ))}
         </div>
 
         <p className="mt-10 max-w-2xl text-sm leading-6 text-[#5e6159]">
-          את האתר אנחנו קוראים לבד. נתונים מאינסטגרם, רק אחרי שתחברו אותו. לא נמציא לכם מספרים.
+          התקציבים בדוגמאות הם טווחים משוערים. את האתר אנחנו קוראים לבד, ונתונים מאינסטגרם רק אחרי שתחברו אותו. לא נמציא לכם מספרים.
         </p>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { IconPlus } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
 
@@ -59,13 +59,13 @@ export function Faq() {
   return (
     <section aria-labelledby="faq-title" className="border-t border-[#ebe8e0] bg-[#fbfaf8]">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_minmax(0,44rem)] lg:gap-16">
-        <header>
+        <header data-rv>
           <h2 id="faq-title" className="text-2xl font-black tracking-tight sm:text-[2rem]">
             שאלות ששואלים אותנו
           </h2>
         </header>
 
-        <div className="divide-y divide-[#e6e4dc] border-y border-[#e6e4dc]">
+        <div data-rv style={{ "--rv-i": 1 } as CSSProperties} className="divide-y divide-[#e6e4dc] border-y border-[#e6e4dc]">
           {QUESTIONS.map(({ q, a }) => (
             <details key={q} className="lp-faq group">
               <summary className="flex min-h-14 cursor-pointer list-none items-center gap-4 py-4 text-base font-bold text-[#191b18] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#191b18] sm:text-lg [&::-webkit-details-marker]:hidden">
