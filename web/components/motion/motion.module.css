@@ -1,0 +1,74 @@
+.scope {
+  --motion-paper: #fffefa;
+  --motion-accent: #e6d89e;
+  --motion-distance: 7px;
+  --motion-turn: -7deg;
+  --motion-scale: 1.055;
+  --motion-ease: cubic-bezier(.2, .8, .25, 1);
+}
+.scope[data-motion-mood="playful"] { --motion-distance: 14px; --motion-turn: -14deg; --motion-scale: 1.11; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 11px 22px; border: 1px solid #c7c4b7; border-radius: 9px; color: #2d3f32; background: #fffefa; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: transform 160ms var(--motion-ease), background 160ms, border-color 160ms; }
+.button:hover:not(:disabled) { background: #f3f7f1; border-color: #7e927b; transform: translateY(-2px); }
+.button:active:not(:disabled) { transform: scale(.96); }
+.button:disabled { cursor: wait; opacity: .65; }
+.button:focus-visible, .disclosure summary:focus-visible { outline: 2px solid #2d3f32; outline-offset: 5px; }
+.choice { justify-content: flex-start; min-width: 136px; }
+.choice[aria-pressed="true"] { border-color: #73896e; background: #edf2e9; animation: settle 320ms var(--motion-ease); }
+.choiceMark { width: 20px; height: 20px; border: 1px solid #c7c4b7; border-radius: 50%; background: #fffefa; }
+.choiceMark .check { width: 18px; height: 18px; }
+.check { width: 22px; height: 22px; flex-shrink: 0; }
+.check path { stroke-dasharray: 1; animation: draw 340ms var(--motion-ease) both; }
+.illustration { width: 160px; height: 160px; color: #3e513e; overflow: visible; }
+.halo { fill: #e9eee2; }
+.illustration[data-kind="copy"] .halo, .illustration[data-kind="publish"] .halo { fill: #ebe8df; }
+.illustration[data-kind="milestone"] .halo { fill: #efead6; }
+.illustration [class] { transform-box: fill-box; transform-origin: center; }
+.illustration .sparks { opacity: 0; }
+.illustration[data-active="true"] .sparks { animation: spark 600ms var(--motion-ease) both; }
+.illustration[data-active="true"] .pressShape { animation: press 300ms var(--motion-ease); }
+.illustration[data-active="true"] .draw { stroke-dasharray: 1; animation: draw 320ms var(--motion-ease) both; }
+.illustration[data-active="true"] .bookmark { transform-origin: center top; animation: bookmark 480ms var(--motion-ease) both; }
+.illustration[data-active="true"] .copySheet { animation: copy 400ms var(--motion-ease); }
+.illustration[data-active="true"] .photo { animation: land 520ms var(--motion-ease); }
+.illustration[data-active="true"] .workingDot { animation: work 1.2s ease-in-out infinite; animation-delay: var(--dot-delay); }
+.illustration[data-active="true"] .revealLines { animation: reveal 260ms var(--motion-ease); }
+.illustration[data-active="true"] .plane { animation: flight 640ms var(--motion-ease); }
+.illustration[data-active="true"] .flightTrail { animation: trail 640ms var(--motion-ease); }
+.illustration[data-kind="milestone"][data-active="false"] .sunrise { transform: translateY(24px); }
+.illustration .sunRays { opacity: 0; }
+.illustration[data-active="true"] .sunrise { animation: sunrise 1800ms cubic-bezier(.35, 0, .35, 1) both; }
+.illustration[data-active="true"] .sunRays { animation: daylight 700ms ease-out 1100ms both; }
+.illustration[data-active="true"] .sunRays path { stroke-dasharray: 1; animation: draw 700ms ease-out 1100ms both; }
+.result { display: inline-flex; align-items: center; gap: 7px; color: #3e513e; font-size: 14px; animation: reveal 220ms var(--motion-ease); }
+.progress { height: 6px; width: 100%; border-radius: 9px; background: #e4e7dd; overflow: hidden; }
+.progress span { display: block; width: 100%; height: 100%; background: #697f5f; border-radius: inherit; transform-origin: left; transition: transform 420ms var(--motion-ease); }
+.scope:dir(rtl) .progress span { transform-origin: right; }
+.disclosure { width: 100%; border-block: 1px solid #e5e3da; text-align: start; }
+.disclosure summary { cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 14px 0; list-style: none; font-size: 14px; font-weight: 600; }
+.disclosure summary::-webkit-details-marker { display: none; }
+.chevron { transition: transform 260ms var(--motion-ease); }
+.disclosure[open] .chevron { transform: rotate(180deg); }
+.disclosureBody { padding-bottom: 16px; font-size: 14px; line-height: 1.7; }
+.disclosure[open] .disclosureBody { animation: reveal 260ms var(--motion-ease); }
+@keyframes press { 40% { transform: scale(.9); } 75% { transform: scale(var(--motion-scale)); } }
+@keyframes settle { 0% { transform: scale(.97); } 70% { transform: scale(1.015); } 100% { transform: none; } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes bookmark { from { transform: scaleY(.1); opacity: .3; } 70% { transform: scaleY(1.1); } to { transform: scaleY(1); opacity: 1; } }
+@keyframes copy { from { transform: translate(-10px, -10px); } 75% { transform: translate(2px, 2px); } to { transform: none; } }
+@keyframes land { from { opacity: .2; transform: translateY(calc(var(--motion-distance) * -2)) rotate(var(--motion-turn)); } 70% { transform: translateY(3px) rotate(2deg); } to { opacity: 1; transform: none; } }
+@keyframes work { 0%, 65%, 100% { transform: translateY(0); opacity: .4; } 30% { transform: translateY(calc(var(--motion-distance) * -1)); opacity: 1; } }
+@keyframes reveal { from { transform: translateY(var(--motion-distance)); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes flight { 0% { transform: translate(18px, 8px) rotate(12deg); opacity: .3; } 60% { transform: translate(-6px, -5px) rotate(-5deg); opacity: 1; } 100% { transform: none; opacity: 1; } }
+@keyframes trail { from { opacity: 0; } to { opacity: .45; } }
+@keyframes sunrise { from { transform: translateY(24px); } to { transform: translateY(0); } }
+@keyframes daylight { from { opacity: 0; } to { opacity: 1; } }
+@keyframes spark { 0% { transform: scale(.65); opacity: 0; } 35% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.15); opacity: 0; } }
+/* Keep final states legible; reduced motion changes presentation, never behavior. */
+.scope[data-motion-reduced="true"] *, .scope[data-motion-reduced="true"] *::before, .scope[data-motion-reduced="true"] *::after { animation: none !important; transition: none !important; }
+.scope[data-motion-reduced="true"] .button { transform: none !important; }
+.scope[data-motion-reduced="true"] .illustration[data-active="true"] .sunRays { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .scope *, .scope *::before, .scope *::after, .button, .check path, .illustration *, .result, .progress span, .disclosure * { animation: none !important; transition: none !important; }
+  .button:hover:not(:disabled), .button:active:not(:disabled) { transform: none; }
+  .illustration[data-active="true"] .sunRays { opacity: 1; }
+}
