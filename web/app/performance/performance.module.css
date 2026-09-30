@@ -1,9 +1,6 @@
 /*
  * The two folded rows from the plan side (ResearchSection, HypothesisStatus) are shared
- * components that still draw a CSS triangle and a 14px bold label. Until they take
- * IconChevron themselves, this wrapper draws them like the page's own rows: the same
- * chevron (down closed, up open), the same 15px/600 label, the same 56px row, so the page
- * has one disclosure mark. It only restyles; it does not reach into what they render.
+ * components; this wrapper gives them the page's own row size and label weight.
  */
 .planRows > details > summary {
   min-height: 56px;
@@ -11,16 +8,6 @@
   font-weight: 600;
 }
 
-.planRows > details > summary > span[aria-hidden] {
-  width: 8px;
-  height: 8px;
-  margin-top: -4px;
-  margin-inline: 5px;
-  border: 0;
-  border-right: 1.6px solid var(--ink-muted);
-  border-bottom: 1.6px solid var(--ink-muted);
-  transform: rotate(45deg);
-}
 
 .planRows > details > summary:hover {
   color: var(--primary);

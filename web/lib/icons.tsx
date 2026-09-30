@@ -264,3 +264,13 @@ export function IconLogout({ className }: IconProps) {
     </Sketch>
   );
 }
+
+/** Refresh: a circular arrow. */
+export function IconRefresh({ className }: IconProps) {
+  return <Sketch className={className}><path d="M19.5 12a7.5 7.5 0 11-2.2-5.3M19.5 4.8v4.2h-4.2" /></Sketch>;
+}
+
+/** Close: an X. */
+export function IconClose({ className }: IconProps) {
+  return <Sketch className={className}><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></Sketch>;
+}
