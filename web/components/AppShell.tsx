@@ -194,7 +194,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <BrandMark className="h-7 w-7 shrink-0 text-[color:var(--primary)]" />}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
-            <span className="min-w-0 truncate text-[15px] font-black text-[color:var(--ink)]">
+            <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">
               {businessName || "ישראמארקט"}
             </span>
           </Link>
@@ -217,7 +217,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               יציאה
             </button>
           ) : (
-            <Link href="/business" className="inline-flex min-h-11 items-center px-2 text-xs text-[color:var(--ink-soft)] underline underline-offset-4">העסק שלי</Link>
+            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]">העסק שלי</Link>
           )}
         </div>
       </header>
@@ -418,12 +418,12 @@ export function Badge({
   className?: string;
 }) {
   const map = {
-    slate: "bg-[var(--canvas)] text-[color:var(--ink-soft)] border-[var(--rule)]",
-    blue: "bg-[var(--primary-soft)] text-[color:var(--primary)] border-[var(--rule-dark)]",
-    amber: "bg-[var(--sand)] text-[var(--sand-dark)] border-[var(--sand-rule)]",
-    emerald: "bg-[var(--primary-soft)] text-[color:var(--primary)] border-[var(--rule-dark)]",
-    purple: "bg-[var(--canvas)] text-[color:var(--ink)] border-[var(--rule)]",
-    rose: "bg-[var(--danger-soft)] text-[var(--danger)] border-[var(--danger-rule)]",
+    slate: "bg-[var(--soft)] text-[color:var(--ink-soft)]",
+    blue: "bg-[var(--primary-soft)] text-[color:var(--primary)]",
+    amber: "bg-[var(--sand)] text-[var(--sand-dark)]",
+    emerald: "bg-[var(--good-soft)] text-[var(--good)]",
+    purple: "bg-[var(--soft)] text-[color:var(--ink)]",
+    rose: "bg-[var(--danger-soft)] text-[var(--danger)]",
   };
   return (
     <span className={`label-mark ${map[tone]} ${className}`}>
@@ -435,10 +435,8 @@ export function Badge({
 export function ErrorNote({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <div className="border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-4 py-3 text-sm text-[var(--danger)] rounded-md flex items-center gap-2">
-      <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-      </svg>
+    <div role="alert" className="flex items-start gap-2.5 rounded-xl bg-[var(--danger-soft)] px-4 py-3 text-sm leading-relaxed text-[var(--danger)]">
+      <span aria-hidden className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-[var(--danger)]" />
       <span>{message}</span>
     </div>
   );
