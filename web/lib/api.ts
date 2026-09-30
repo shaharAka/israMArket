@@ -1915,6 +1915,31 @@ function demoCalendar(year: number, month: number): CalendarPayload {
   };
 }
 
+// The explicit demo includes the same stored-plan artifact created by /start.
+// Fixtures load lazily; real accounts never run this builder.
+let demoPlanReady: Promise<void> | null = null;
+async function ensureDemoPlan() {
+  if (DEMO_BUSINESS.quarter_plan) return;
+  demoPlanReady ??= (async () => {
+    const [{ mockQuarterPlan }, { planForApi }] = await Promise.all([import("./quarterPlanMock"), import("./quarterPlan")]);
+    const draft: OnboardingDraft = {
+      business_name: DEMO_BUSINESS.name, business_type: DEMO_BUSINESS.business_type,
+      offerings: DEMO_BUSINESS.offerings || "", business_model: "products", grow_where: "online",
+      audiences: DEMO_AUDIENCES_SEED.map(a => ({ name: a.name, description: a.description })),
+      links: { website: DEMO_BUSINESS.website_url, instagram: DEMO_BUSINESS.social_links?.instagram, facebook: DEMO_BUSINESS.social_links?.facebook },
+      budget: { range: "3k-7k", exact_ils: DEMO_BUSINESS.monthly_budget_ils }, success: { kpi: "online_orders" },
+    };
+    const plan = planForApi(mockQuarterPlan(draft, {
+      title: "לקוחות חוזרים, ביקוש צפוי", approach_he: "לבנות הרגל של הזמנה מראש אצל לקוחות המאפייה.",
+      audience: draft.audiences[0]?.name || "תושבי השכונה", goal_he: "יותר הזמנות מראש באתר",
+      why_he: "הזמנות מוקדמות עוזרות לתכנן את האפייה. בודקים את הביקוש לפני שמגדילים את הפרסום.",
+      first_steps: ["לחבר מדידה", "לבחור מוצרים וחומרי גלם עם בעל העסק"],
+    }, { cadence: "1-2" }, []));
+    DEMO_BUSINESS.quarter_plan = plan; DEMO_STRATEGY.quarter_plan = plan;
+  })();
+  await demoPlanReady;
+}
+
 function cloneDemoStrategy(): StrategyPayload {
   return {
     ...DEMO_STRATEGY,
@@ -2487,7 +2512,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     exitDemo();
     return { ok: true } as T;
   }
-  if (path === "/onboarding/me") return { business: DEMO_BUSINESS } as T;
+  if (path === "/onboarding/me") { await ensureDemoPlan(); return { business: DEMO_BUSINESS } as T; }
   if (path === "/onboarding/profile" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as OnboardingPayload;
     if (body.growth_targets) DEMO_BUSINESS.growth_targets = body.growth_targets;
@@ -2548,7 +2573,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   }
   if (path === "/onboarding/generate/status") return DEMO_GENERATION_DONE as T;
   if (path === "/onboarding/posts/start" && method === "POST") return { ...DEMO_GENERATION_DONE, kind: "posts" } as T;
-  if (path === "/strategy/current") return cloneDemoStrategy() as T;
+  if (path === "/strategy/current") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
   }

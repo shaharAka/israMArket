@@ -116,7 +116,11 @@ export function weekLabel(week: number): string {
 
 /** The same rule as the API's `next_step`: the first step that can be done now. */
 export function nextStep(payload: TrialPayload): TrialStep | null {
-  return payload.steps.find((step) => step.status === "todo") ?? null;
+  // Never past a week that is still waiting (a locked step): the same rule as the API's
+  // next_step, so "לבנות את החודש השני" is not the ask while the first posts are written.
+  const waiting = payload.steps.filter((step) => step.status === "locked").map((step) => step.week);
+  const horizon = waiting.length ? Math.min(...waiting) : Infinity;
+  return payload.steps.find((step) => step.status === "todo" && step.week <= horizon) ?? null;
 }
 
 function recount(payload: TrialPayload): TrialPayload {

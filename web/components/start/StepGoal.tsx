@@ -64,10 +64,10 @@ export function ModelConfirm({ flow, update }: Pick<StepProps, "flow" | "update"
   }
 
   return (
-    <div className="rounded-xl bg-[#efece3] p-3">
+    <div className="rounded-xl bg-[#fff5d9] p-3">
       {changing ? (
         <div className="space-y-2">
-          <p className="text-sm font-bold text-[#191b18]">מה אתם מוכרים?</p>
+          <p className="text-sm font-bold text-[color:var(--ink)]">מה אתם מוכרים?</p>
           <div className="grid grid-cols-3 gap-2">
             {BUSINESS_MODEL_OPTIONS.map((option) => (
               <Chip
@@ -82,7 +82,7 @@ export function ModelConfirm({ flow, update }: Pick<StepProps, "flow" | "update"
         </div>
       ) : (
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-bold text-[#191b18]">{MODEL_QUESTION[model]}</p>
+          <p className="text-sm font-bold text-[color:var(--ink)]">{MODEL_QUESTION[model]}</p>
           <div className="flex gap-2">
             <Chip
               label="נכון"
@@ -119,24 +119,23 @@ export function Tile({
       aria-checked={on}
       onClick={onClick}
       className={`min-h-[60px] w-full cursor-pointer rounded-xl border p-3 text-right transition-colors ${
-        on ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white hover:border-[#b9b7ad]"
+        on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"
       }`}
     >
       <span className="flex items-center gap-2.5">
         <span
           aria-hidden
-          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${on ? "border-[#191b18]" : "border-[#c7c4b8]"}`}
+          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${on ? "border-[var(--ink)]" : "border-[var(--rule-dark)]"}`}
         >
-          {on ? <span className={`h-2.5 w-2.5 rounded-full bg-[#191b18] ${styles.pop}`} /> : null}
+          {on ? <span className={`h-2.5 w-2.5 rounded-full bg-[var(--primary)] ${styles.pop}`} /> : null}
         </span>
         <span className="min-w-0">
-          <span className="flex flex-wrap items-center gap-x-2 text-base font-black leading-6 text-[#191b18]">
+          <span className="flex flex-wrap items-center gap-x-2 text-base font-black leading-6 text-[color:var(--ink)]">
             {title}
-            {badge ? (
-              <span className="rounded-full bg-[#191b18] px-2 text-[11px] font-bold leading-5 text-white">{badge}</span>
-            ) : null}
+            {/* A plain text status, not a filled pill: the screen's one filled control is its primary action. */}
+            {badge ? <span className="text-[11px] font-bold leading-5 text-[color:var(--primary)]">{badge}</span> : null}
           </span>
-          {desc ? <span className="block text-xs leading-5 text-[#5e6159]">{desc}</span> : null}
+          {desc ? <span className="block text-xs leading-5 text-[color:var(--ink-soft)]">{desc}</span> : null}
         </span>
       </span>
     </button>
@@ -183,7 +182,7 @@ export function StepGrow(props: StepProps) {
     >
       <ModelConfirm flow={flow} update={update} />
       {services ? (
-        <p className={`text-sm leading-6 text-[#2b2d28] ${styles.rise}`}>בשירות אין ״באתר או בחנות״. נדלג על השאלה הזו.</p>
+        <p className={`text-sm leading-6 text-[color:var(--ink)] ${styles.rise}`}>בשירות אין ״באתר או בחנות״. נדלג על השאלה הזו.</p>
       ) : (
         <div role="radiogroup" aria-label="איפה לגדול" className="grid gap-2">
           {GROW_OPTIONS.map((option) => (
@@ -255,9 +254,9 @@ export function StepBudget(props: StepProps) {
               role="radio"
               aria-checked={on}
               onClick={() => pick(option.key)}
-              className={`min-h-14 cursor-pointer rounded-xl border px-3 py-2 text-right text-sm font-bold leading-5 text-[#191b18] transition-colors ${
+              className={`min-h-14 cursor-pointer rounded-xl border px-3 py-2 text-right text-sm font-bold leading-5 text-[color:var(--ink)] transition-colors ${
                 option.key === "none" || option.key === "unknown" ? "" : "tabular-nums"
-              } ${on ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white hover:border-[#b9b7ad]"}`}
+              } ${on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"}`}
             >
               {option.label}
             </button>
@@ -266,8 +265,8 @@ export function StepBudget(props: StepProps) {
       </div>
       <FieldError message={error} />
       <div>
-        <label htmlFor={fieldId} className="mb-1 block text-sm font-bold text-[#191b18]">
-          או סכום מדויק <span className="font-normal text-[#6b6e65]">(לא חובה)</span>
+        <label htmlFor={fieldId} className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
+          או סכום מדויק <span className="font-normal text-[color:var(--ink-soft)]">(לא חובה)</span>
         </label>
         <div className="flex items-center gap-2">
           <input
@@ -287,9 +286,9 @@ export function StepBudget(props: StepProps) {
             }}
             placeholder="2500"
             dir="ltr"
-            className="min-h-12 w-36 rounded-lg border border-[#dedcd4] bg-white px-3 text-left text-base font-bold text-[#191b18] outline-none focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+            className="min-h-12 w-36 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
           />
-          <span className="text-sm font-bold text-[#5e6159]">₪ לחודש</span>
+          <span className="text-sm font-bold text-[color:var(--ink-soft)]">₪ לחודש</span>
         </div>
       </div>
     </StepShell>

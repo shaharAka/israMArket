@@ -46,7 +46,14 @@ function continueLine() {
  * expands, so a closed week's steps are out of the reading order and the word count; the
  * current week — or the week the next step is in — opens by default.
  */
-export function TrialGuide({ trial }: { trial: TrialPayload }) {
+export function TrialGuide({
+  trial,
+  showNext = true,
+}: {
+  trial: TrialPayload;
+  /** False when the page's brief already carries the next step (Today's PlanBrief). */
+  showNext?: boolean;
+}) {
   const next = nextStep(trial);
   const [fresh, setFresh] = useState<Set<string>>(new Set());
 
@@ -95,10 +102,10 @@ export function TrialGuide({ trial }: { trial: TrialPayload }) {
     <section aria-labelledby="trial-heading" className="space-y-4">
       <div>
         <div className="flex items-baseline justify-between gap-3">
-          <h2 id="trial-heading" className="text-base font-black text-[#20211f]">
+          <h2 id="trial-heading" className="text-base font-black text-[color:var(--ink)]">
             {trial.ended ? "החודש החינמי הסתיים" : `יום ${trial.day} מתוך ${trial.days_total} בחודש החינמי`}
           </h2>
-          <p className="shrink-0 text-xs font-bold text-[#62635f]">
+          <p className="shrink-0 text-xs font-bold text-[color:var(--ink-soft)]">
             {trial.done} מתוך {trial.total} צעדים
           </p>
         </div>
@@ -108,18 +115,18 @@ export function TrialGuide({ trial }: { trial: TrialPayload }) {
           aria-valuemax={trial.days_total}
           aria-valuenow={trial.day}
           aria-label="הימים בחודש החינמי"
-          className="mt-2 block h-1 w-full overflow-hidden rounded-full bg-[#e1e0db]"
+          className="mt-2 block h-1 w-full overflow-hidden rounded-full bg-[var(--rule)]"
         >
           <span
-            className="block h-full rounded-full bg-[#374b3d] transition-[width] duration-700 ease-out motion-reduce:transition-none"
+            className="block h-full rounded-full bg-[var(--primary)] transition-[width] duration-700 ease-out motion-reduce:transition-none"
             style={{ width: `${percent}%` }}
           />
         </span>
       </div>
 
-      {next ? <NextStepCard step={next} /> : <AllDone trial={trial} />}
+      {showNext ? next ? <NextStepCard step={next} /> : <AllDone trial={trial} /> : null}
 
-      <div className="divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+      <div className="divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
         {[1, 2, 3, 4].map((week) => {
           const steps = trial.steps.filter((step) => step.week === week);
           if (!steps.length) return null;
@@ -143,29 +150,36 @@ export function TrialGuide({ trial }: { trial: TrialPayload }) {
 
 /** The one thing to do now: why, how long, and the page's dark button. */
 function NextStepCard({ step }: { step: TrialStep }) {
-  const buttonClass =
-    "group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] disabled:opacity-60 sm:w-auto";
+  return (
+    <div className="today-ask rounded-lg border p-4 sm:p-5">
+      <p className="text-xs font-bold text-[color:var(--ink-muted)]">
+        הצעד הבא · {minutesLabel(step.minutes)}
+      </p>
+      <h3 className="mt-1 text-lg font-black leading-7 text-[color:var(--ink)]">{step.title_he}</h3>
+      <p className="mt-1 text-sm leading-6 text-[color:var(--ink)]">{step.why_he}</p>
+      <NextStepAction step={step} className="mt-4" />
+    </div>
+  );
+}
+
+/**
+ * The next step's button — the page's one dark fill. A link to where the step is done,
+ * or, for "להתחיל לכתוב את הפוסטים", the action itself.
+ */
+export function NextStepAction({ step, className = "" }: { step: TrialStep; className?: string }) {
+  const buttonClass = `drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-sm font-bold text-white disabled:opacity-60 sm:w-auto ${className}`;
   const label = (
     <>
       {step.action_he}
       <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1 motion-reduce:transition-none" />
     </>
   );
-  return (
-    <div className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-      <p className="text-xs font-bold text-[#747570]">
-        הצעד הבא · {minutesLabel(step.minutes)}
-      </p>
-      <h3 className="mt-1 text-lg font-black leading-7 text-[#20211f]">{step.title_he}</h3>
-      <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{step.why_he}</p>
-      {step.key === "start_posts" ? (
-        <StartPostsButton className={buttonClass}>{label}</StartPostsButton>
-      ) : (
-        <Link href={step.href} className={buttonClass}>
-          {label}
-        </Link>
-      )}
-    </div>
+  return step.key === "start_posts" ? (
+    <StartPostsButton className={buttonClass}>{label}</StartPostsButton>
+  ) : (
+    <Link href={step.href} className={buttonClass}>
+      {label}
+    </Link>
   );
 }
 
@@ -206,16 +220,23 @@ function StartPostsButton({ className, children }: { className: string; children
 }
 
 /** Nothing can be done right now: say so, and what unlocks next. */
+export function allDoneText(trial: TrialPayload): string {
+  const waiting = trial.steps.find((step) => step.status === "locked");
+  return waiting
+    ? `כל מה שאפשר לעשות עכשיו, עשיתם. הבא בתור: ${waiting.title_he}. ${waiting.note_he ?? ""}`.trim()
+    : "עברתם את כל הצעדים של החודש";
+}
+
 function AllDone({ trial }: { trial: TrialPayload }) {
   const waiting = trial.steps.find((step) => step.status === "locked");
   return (
-    <div className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-      <p className="flex items-center gap-2 text-base font-black text-[#20211f]">
+    <div className="rounded-lg border border-[var(--rule-dark)] bg-white p-4 sm:p-5">
+      <p className="flex items-center gap-2 text-base font-black text-[color:var(--ink)]">
         <IconCheck className="h-4 w-4 shrink-0" />
         {waiting ? "כל מה שאפשר לעשות עכשיו, עשיתם" : "עברתם את כל הצעדים של החודש"}
       </p>
       {waiting ? (
-        <p className="mt-1 text-sm leading-6 text-[#62635f]">
+        <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">
           הבא בתור: {waiting.title_he}. {waiting.note_he}
         </p>
       ) : null}
@@ -247,47 +268,47 @@ function WeekGroup({
   const open_ = steps.filter((step) => !(step.status === "done" && !fresh.has(step.key)));
   return (
     <details open={open} className="group">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-[#faf9f7]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center gap-3 px-4 py-3 hover:bg-[var(--primary-soft)]">
         <span
           aria-hidden
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
             complete
-              ? "bg-[#374b3d] text-white"
+              ? "bg-[var(--primary)] text-white"
               : current
-                ? "bg-[#20211f] text-white"
-                : "border border-[#dedcd4] text-[#62635f]"
+                ? "bg-[var(--primary)] text-white"
+                : "border border-[var(--rule-dark)] text-[color:var(--ink-soft)]"
           }`}
         >
           {complete ? <IconCheck className="h-3 w-3" /> : week}
         </span>
-        <span className="min-w-0 flex-1 text-sm font-bold text-[#20211f]">
+        <span className="min-w-0 flex-1 text-sm font-bold text-[color:var(--ink)]">
           {weekLabel(week)}
         </span>
-        <span className="shrink-0 text-xs text-[#62635f]">
+        <span className="shrink-0 text-xs text-[color:var(--ink-soft)]">
           {done}/{counted.length}
         </span>
         <span
           aria-hidden
-          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
         />
       </summary>
-      <ul className="divide-y divide-[#f0efea] border-t border-[#f0efea]">
+      <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
         {/* Steps done before this visit fold into one line, so the open week reads as what
             is left; a step ticked since the last visit stays in place for its animation. */}
         {settled.length ? (
           <li>
             <details className="group/done">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 px-4 py-2.5 text-xs font-bold text-[#62635f] hover:bg-[#faf9f7]">
-                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#374b3d] text-white">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 px-4 py-2.5 text-xs font-bold text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)]">
+                <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white">
                   <IconCheck className="h-3 w-3" />
                 </span>
                 <span className="flex-1">{settled.length === 1 ? "צעד אחד בוצע" : `${settled.length} צעדים בוצעו`}</span>
                 <span
                   aria-hidden
-                  className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#b3b0a5] transition-transform duration-200 group-open/done:rotate-180"
+                  className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open/done:rotate-180"
                 />
               </summary>
-              <ul className="divide-y divide-[#f0efea] border-t border-[#f0efea]">
+              <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
                 {settled.map((step) => (
                   <StepRow key={step.key} step={step} isNext={false} fresh={false} highlighted={step.key === target} />
                 ))}
@@ -314,7 +335,7 @@ function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
     return (
       <span
         aria-hidden
-        className={`relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#374b3d] text-white ${
+        className={`relative flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-white ${
           fresh ? "trial-tick" : ""
         }`}
       >
@@ -324,7 +345,7 @@ function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
   }
   if (step.status === "locked") {
     return (
-      <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center text-[#9a9b95]">
+      <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center text-[color:var(--ink-muted)]">
         <IconLock className="h-4 w-4" />
       </span>
     );
@@ -333,7 +354,7 @@ function StatusMark({ step, fresh }: { step: TrialStep; fresh: boolean }) {
     <span
       aria-hidden
       className={`block h-5 w-5 shrink-0 rounded-full border ${
-        step.status === "soon" ? "border-dashed border-[#c7c4b8]" : "border-[#b3b0a5] bg-white"
+        step.status === "soon" ? "border-dashed border-[var(--rule-dark)]" : "border-[var(--ink-muted)] bg-white"
       }`}
     />
   );
@@ -376,19 +397,19 @@ function StepRow({
         <span className="sr-only">{STATUS_SR[step.status]}: </span>
         <span
           className={`block text-sm font-bold leading-6 ${
-            step.status === "done" ? "text-[#8b8e84] line-through decoration-[#c7c4b8]" : muted ? "text-[#62635f]" : "text-[#20211f]"
+            step.status === "done" ? "text-[color:var(--ink-muted)] line-through decoration-[var(--rule-dark)]" : muted ? "text-[color:var(--ink-soft)]" : "text-[color:var(--ink)]"
           } ${fresh ? "trial-fade-done" : ""}`}
         >
           {step.title_he}
         </span>
-        {detail ? <span className="mt-0.5 block text-xs leading-5 text-[#62635f]">{detail}</span> : null}
+        {detail ? <span className="mt-0.5 block text-xs leading-5 text-[color:var(--ink-soft)]">{detail}</span> : null}
       </span>
       {step.status === "soon" ? (
-        <span className="shrink-0 rounded-full bg-[#f0efea] px-2 py-0.5 text-[11px] font-bold text-[#62635f]">בקרוב</span>
+        <span className="shrink-0 rounded-full bg-[var(--rule)] px-2 py-0.5 text-[11px] font-bold text-[color:var(--ink-soft)]">בקרוב</span>
       ) : step.status === "todo" ? (
-        <span className="flex shrink-0 items-center gap-1.5 text-xs text-[#62635f]">
+        <span className="flex shrink-0 items-center gap-1.5 text-xs text-[color:var(--ink-soft)]">
           {minutesLabel(step.minutes)}
-          <IconArrowLeft className="h-4 w-4 text-[#8b8e84]" />
+          <IconArrowLeft className="h-4 w-4 text-[color:var(--ink-muted)]" />
         </span>
       ) : null}
     </>
@@ -396,14 +417,14 @@ function StepRow({
 
   // The next step is tinted in the list too, so the card and the map point at one place.
   const rowTitle = step.status === "soon" ? step.note_he : undefined;
-  const rowClass = `flex min-h-12 items-start gap-3 px-4 py-3 ${isNext ? "bg-[#f3f6f1]" : ""} ${
+  const rowClass = `flex min-h-12 items-start gap-3 px-4 py-3 ${isNext ? "bg-[var(--primary-soft)]" : ""} ${
     highlighted ? "trial-highlight" : ""
   }`;
 
   return (
     <li id={`step-${step.key}`} className="scroll-mt-24">
       {step.status === "todo" && step.href ? (
-        <Link href={step.href} className={`${rowClass} transition-colors hover:bg-[#faf9f7]`}>
+        <Link href={step.href} className={`${rowClass} transition-colors hover:bg-[var(--primary-soft)]`}>
           {body}
         </Link>
       ) : (

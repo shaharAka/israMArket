@@ -1,10 +1,10 @@
-import { BRAND_MARK_PATHS } from "@/lib/icons";
+import { MotionIllustration, MotionScope } from "@/components/motion";
 
 /** One loose hand-drawn stroke under a heading. */
 export function Scribble({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`draw block h-2 w-24 text-[#2d3f32] ${className}`}
+      className={`draw block h-2 w-24 text-[#2853c7] ${className}`}
       viewBox="0 0 96 8"
       fill="none"
       stroke="currentColor"
@@ -17,24 +17,11 @@ export function Scribble({ className = "" }: { className?: string }) {
   );
 }
 
-/** Brand mark that draws itself in a loop. Use for loading states. */
+/** A quiet pending indicator. Use for loading states. */
 export function LoadingMark({ label = "טוענים…" }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 py-14 text-[#747570]" role="status" aria-live="polite">
-      <svg
-        className="draw-loop h-10 w-10 text-[#20211f]"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="square"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {BRAND_MARK_PATHS.map((d) => (
-          <path key={d} pathLength="1" d={d} />
-        ))}
-      </svg>
+    <div className="flex flex-col items-center gap-3 py-14 text-[#535f75]" role="status" aria-live="polite">
+      <MotionScope><MotionIllustration kind="prepare" active className="!h-14 !w-14" /></MotionScope>
       <p className="text-sm">{label}</p>
     </div>
   );
@@ -47,7 +34,7 @@ export function LoadingMark({ label = "טוענים…" }: { label?: string }) {
 export function PlanDoodle({ className = "" }: { className?: string }) {
   return (
     <svg
-      className={`draw text-[#20211f] ${className}`}
+      className={`draw text-[#2853c7] ${className}`}
       viewBox="0 0 168 64"
       fill="none"
       stroke="currentColor"

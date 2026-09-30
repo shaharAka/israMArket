@@ -16,7 +16,7 @@ export function GbpConfirm() {
   if (!payload || payload.ended || !step) return null;
   if (step.status === "done") {
     return (
-      <p className="mt-2 flex items-center gap-2 text-xs font-bold text-[#374b3d]">
+      <p className="mt-2 flex items-center gap-2 text-xs font-bold text-[color:var(--primary)]">
         <IconCheck className="h-4 w-4" />
         סימנתם שהכרטיס קיים ומעודכן
       </p>
@@ -30,7 +30,7 @@ export function GbpConfirm() {
         setBusy(true);
         void confirmStep("gbp").finally(() => setBusy(false));
       }}
-      className="mt-2 inline-flex min-h-11 items-center rounded-md border border-[#c7c4b8] bg-white px-4 text-sm font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-50"
+      className="mt-2 inline-flex min-h-11 items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-50"
     >
       בדקנו, הכרטיס קיים ומעודכן
     </button>

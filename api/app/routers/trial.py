@@ -447,8 +447,19 @@ def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
 
 
 def next_step(steps: list[dict]) -> dict | None:
-    """The one thing to do now: the first step that can be done, in the journey's order."""
-    return next((step for step in steps if step["status"] == "todo"), None)
+    """The one thing to do now: the first step that can be done, in the journey's order.
+
+    Never past a week that is still waiting (a locked step: week 3 while its posts are
+    being written). Otherwise "לבנות את החודש השני", open as soon as the month's structure
+    exists, became the ask on day 1 while the first posts were still being written
+    (Revision 8: foundations, then content, then measure and adjust).
+    """
+    waiting = [step["week"] for step in steps if step["status"] == "locked"]
+    horizon = min(waiting) if waiting else None
+    return next(
+        (step for step in steps if step["status"] == "todo" and (horizon is None or step["week"] <= horizon)),
+        None,
+    )
 
 
 def _has_route(request: Request, path: str, method: str) -> bool:

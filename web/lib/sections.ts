@@ -1,17 +1,4 @@
-/**
- * Section tokens.
- *
- * Every section used to carry its own accent (ink, sand, sage, slate, clay, teal), which
- * made each screen feel like a different product. There is now one system: a neutral
- * page and a single accent — the sage the badges and success states already use. A page
- * says where you are through its eyebrow and the active tab, not through colour.
- *
- * The export shape is unchanged so pages that read `SECTIONS.x.accent` keep working;
- * they simply all get the same values now.
- *
- * Contrast: white on `accent` and `accent` on `surface` both clear AA for small text, so
- * the accent is safe as a filled background and as a label colour.
- */
+/** Blue product chrome shared by navigation, headings and actions. */
 export type SectionKey =
   | "dashboard"
   | "strategy"
@@ -36,9 +23,9 @@ export type SectionIdentity = {
 
 /** The app's one accent. Everything section-coloured reads from here. */
 export const ACCENT = {
-  accent: "#374b3d",
-  surface: "#f3f6f1",
-  border: "#d3ddcf",
+  accent: "var(--primary)",
+  surface: "var(--primary-soft)",
+  border: "var(--rule-dark)",
 } as const;
 
 export const SECTIONS: Record<SectionKey, SectionIdentity> = {

@@ -1,0 +1,46 @@
+.scope { --im-radius: 8px; color: var(--im-ink); }
+.action { border-radius: var(--im-radius); min-height: 48px; padding: 12px 22px; justify-content: space-between; gap: 26px; font-weight: 600; font-size: 14px; }
+.primary { background: var(--im-primary); color: var(--im-paper); border-color: var(--im-primary); }
+.primary:hover:not(:disabled) { background: var(--im-primary); color: var(--im-paper); border-color: var(--im-primary); }
+.quiet { background: transparent; color: var(--im-ink); border-color: var(--im-rule); }
+.actionArrow { width: 20px; height: 20px; transition: transform 180ms ease; }
+.action:hover .actionArrow { transform: translateX(-3px); }
+.action:dir(ltr) .actionArrow { transform: rotate(180deg); }
+.action:dir(ltr):hover .actionArrow { transform: rotate(180deg) translateX(-3px); }
+.heading > p { font-size: 12px; color: var(--im-muted); margin-bottom: 8px; }
+.heading h2 { font-size: clamp(27px, 3vw, 38px); font-weight: 600; letter-spacing: -1px; line-height: 1.25; text-wrap: balance; }
+.heading > svg { width: 85px; height: 10px; color: var(--im-primary); margin-top: 12px; }
+.headingText { margin-top: 15px; font-size: 14px; line-height: 1.8; color: var(--im-muted); max-width: 410px; }
+.note { position: relative; padding: 19px 21px; background: color-mix(in srgb, var(--im-sun) 24%, var(--im-paper)); color: var(--im-ink); border-radius: 2px 8px 8px 8px; max-width: 360px; }
+.noteLabel { font-size: 11px; font-weight: 600; display: block; margin-bottom: 6px; }
+.note p { font-size: 13px; line-height: 1.8; padding-inline-end: 12px; }
+.fold { position: absolute; left: 0; top: 0; border-right: 12px solid var(--im-sun); border-top: 12px solid var(--im-canvas); }
+.journey { list-style: none; display: flex; flex-wrap: wrap; gap: 0; padding: 0; }
+.journey li { display: flex; align-items: center; gap: 10px; flex: 1; position: relative; min-width: 130px; }
+.journey li:not(:last-child)::after { content: ""; height: 1px; flex: 1; margin-inline: 14px; border-top: 1px dashed var(--im-rule); }
+.stepMark { flex-shrink: 0; height: 32px; width: 32px; border: 1px solid var(--im-rule); border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 11px monospace; background: var(--im-paper); color: var(--im-muted); }
+.stepMark svg { height: 18px; width: 18px; }
+.stepLabel { font-size: 12px; white-space: nowrap; color: var(--im-muted); }
+.stepLabel small { display: block; font-size: 10px; color: var(--im-muted); margin-top: 3px; }
+.journey li[data-state="current"] .stepMark { border-color: var(--im-primary); background: var(--im-soft); box-shadow: 0 0 0 4px var(--im-soft); }
+.journey li[data-state="current"] .stepLabel { color: var(--im-ink); font-weight: 600; }
+.journey li[data-state="done"] .stepMark { color: var(--im-primary); }
+.status { display: flex; align-items: center; gap: 8px; font-size: 13px; line-height: 1.6; color: var(--im-primary); }
+.status svg { width: 20px; height: 20px; }
+.status[data-state="waiting"] { color: var(--im-muted); }
+.status[data-state="attention"] { color: var(--im-ink); }
+.statusSymbol { width: 20px; text-align: center; }
+.field { display: flex; flex-direction: column; gap: 7px; width: 100%; }
+.field label { font-size: 12px; color: var(--im-muted); font-weight: 500; }
+.field input { border: 1px solid var(--im-rule); border-radius: 6px; background: var(--im-paper); padding: 11px 12px; min-height: 46px; font: inherit; font-size: 14px; color: var(--im-ink); }
+.field input:focus-visible { outline: 2px solid var(--im-primary); outline-offset: 3px; }
+.field p { font-size: 11px; color: var(--im-muted); line-height: 1.6; }
+.photoMoment { color: var(--im-primary); max-width: 290px; margin-inline: auto; }
+.photoMoment svg { width: 100%; }
+.photoMoment p { text-align: center; font-size: 12px; color: var(--im-muted); margin-top: -12px; }
+.photoContent { animation: arrive 420ms cubic-bezier(.2, .8, .25, 1) both; }
+@keyframes arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+@media (max-width: 600px) { .journey li { min-width: 0; flex-direction: column; align-items: flex-start; gap: 8px; } .journey li:not(:last-child)::after { position: absolute; top: 16px; right: 42px; left: 13px; margin: 0; } .stepLabel { font-size: 11px; } }
+@media (prefers-reduced-motion: reduce) { .photoContent { animation: none; } .actionArrow { transition: none; } .action:hover .actionArrow { transform: none; } .action:dir(ltr):hover .actionArrow { transform: rotate(180deg); } }
+
+[data-motion-reduced="true"] .photoContent { animation:none; }

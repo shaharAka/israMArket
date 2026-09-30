@@ -392,8 +392,8 @@ export default function OnboardingPage() {
         {step === 0 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#191b18]">זה העסק שלכם?</h1>
-              <p className="mt-1 text-sm text-[#5e6159]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
+              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">זה העסק שלכם?</h1>
+              <p className="mt-1 text-sm text-[#535f75]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
             </div>
 
             <TextField
@@ -411,14 +411,14 @@ export default function OnboardingPage() {
             />
             <TextField label="שם העסק" value={name} onChange={setName} autoComplete="organization" />
             <div>
-              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[#191b18]">
+              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[#1d2940]">
                 התחום
               </label>
               <select
                 id="business-type"
                 value={businessType}
                 onChange={(event) => setBusinessType(event.target.value)}
-                className="min-h-11 w-full rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
+                className="min-h-11 w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
               >
                 {BUSINESS_FIELDS.map((field) => (
                   <option key={field.key} value={field.key}>
@@ -430,7 +430,7 @@ export default function OnboardingPage() {
             <TextField label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
 
             <fieldset>
-              <legend className="mb-1 text-sm font-bold text-[#191b18]">מוצרים או שירותים?</legend>
+              <legend className="mb-1 text-sm font-bold text-[#1d2940]">מוצרים או שירותים?</legend>
               <div className="grid grid-cols-3 gap-2">
                 {BUSINESS_MODEL_OPTIONS.map((option) => (
                   <Chip
@@ -445,7 +445,7 @@ export default function OnboardingPage() {
             </fieldset>
 
             <details className="group">
-              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[#5e6159] underline underline-offset-4">
+              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[#535f75] underline underline-offset-4">
                 עיר ואיך מגיעים אליכם
               </summary>
               <div className="mt-2 space-y-3">
@@ -473,8 +473,8 @@ export default function OnboardingPage() {
         {step === 1 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#191b18]">כמה תשקיעו בשיווק בחודש?</h1>
-              <p className="mt-1 text-sm text-[#5e6159]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
+              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">כמה תשקיעו בשיווק בחודש?</h1>
+              <p className="mt-1 text-sm text-[#535f75]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -486,8 +486,8 @@ export default function OnboardingPage() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setBudget(option.suggestion)}
-                    className={`min-h-16 rounded-md border p-3 text-right text-[#191b18] ${
-                      active ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#e6e4dc] bg-white"
+                    className={`min-h-16 rounded-md border p-3 text-right text-[#1d2940] ${
+                      active ? "border-[#1d2940] bg-[var(--primary-soft)] ring-1 ring-[#1d2940]" : "border-[#e1e7f2] bg-white"
                     }`}
                   >
                     <span className="block text-sm font-black">{option.title}</span>
@@ -498,7 +498,7 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[#191b18]">
+              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[#1d2940]">
                 או סכום מדויק
               </label>
               <div className="flex items-center gap-2">
@@ -510,14 +510,14 @@ export default function OnboardingPage() {
                   min={0}
                   step={100}
                   onChange={(event) => setBudget(Number(event.target.value))}
-                  className="min-h-11 w-40 rounded-md border border-[#dedcd4] bg-white px-3 text-base font-bold sm:text-sm"
+                  className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base font-bold sm:text-sm"
                 />
-                <span className="text-sm font-bold text-[#5e6159]">₪ לחודש</span>
+                <span className="text-sm font-bold text-[#535f75]">₪ לחודש</span>
               </div>
             </div>
 
             <p className="text-sm leading-6 text-[#4f524b]">
-              <span className="font-bold text-[#191b18]">{formatNis(budget)}: </span>
+              <span className="font-bold text-[#1d2940]">{formatNis(budget)}: </span>
               {stage.buys}
             </p>
 
@@ -531,12 +531,12 @@ export default function OnboardingPage() {
         {step === 2 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#191b18]">מי המתחרים שלכם?</h1>
-              <p className="mt-1 text-sm text-[#5e6159]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
+              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">מי המתחרים שלכם?</h1>
+              <p className="mt-1 text-sm text-[#535f75]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
             </div>
 
             <fieldset className="space-y-2">
-              <legend className="mb-1 text-sm font-bold text-[#191b18]">עסקים מתחרים</legend>
+              <legend className="mb-1 text-sm font-bold text-[#1d2940]">עסקים מתחרים</legend>
               {competitors.map((item, index) => (
                 <div key={index} className="grid grid-cols-2 gap-2">
                   <input
@@ -544,7 +544,7 @@ export default function OnboardingPage() {
                     value={item.name}
                     onChange={(event) => updateCompetitor(index, { name: event.target.value })}
                     placeholder="שם"
-                    className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
+                    className="min-h-11 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
                   />
                   <input
                     aria-label={`מתחרה ${index + 1}: אתר`}
@@ -555,7 +555,7 @@ export default function OnboardingPage() {
                     inputMode="url"
                     autoCapitalize="none"
                     spellCheck={false}
-                    className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-3 text-base placeholder:text-right sm:text-sm"
+                    className="min-h-11 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base placeholder:text-right sm:text-sm"
                   />
                 </div>
               ))}
@@ -588,21 +588,21 @@ function StepHeader({ step, onBack, lastStep }: { step: number; onBack?: () => v
   return (
     <div>
       <div className="flex min-h-11 items-center justify-between">
-        <p className="text-xs font-bold text-[#5e6159]">
+        <p className="text-xs font-bold text-[#535f75]">
           {label}
         </p>
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex min-h-11 items-center px-1 text-sm text-[#5e6159] underline underline-offset-4"
+            className="inline-flex min-h-11 items-center px-1 text-sm text-[#535f75] underline underline-offset-4"
           >
             חזרה
           </button>
         ) : null}
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-[#e6e4dc]">
-        <div className="h-full bg-[#191b18] transition-all" style={{ width: `${progress}%` }} />
+      <div className="h-1.5 overflow-hidden rounded-full bg-[#e1e7f2]">
+        <div className="h-full bg-[#2853c7] transition-all" style={{ width: `${progress}%` }} />
       </div>
     </div>
   );
@@ -626,8 +626,8 @@ function Chip({
       aria-pressed={selected}
       onClick={onClick}
       // Selected is an outline, not a dark fill: the page's one dark button is the ask.
-      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[#191b18] ${
-        selected ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white"
+      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[#1d2940] ${
+        selected ? "border-[#1d2940] bg-[var(--primary-soft)] ring-1 ring-[#1d2940]" : "border-[var(--rule-dark)] bg-white"
       }`}
     >
       {label}
@@ -658,7 +658,7 @@ function TextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-bold text-[#191b18]">{label}</span>
+      <span className="mb-1 block text-sm font-bold text-[#1d2940]">{label}</span>
       {/* 16px on phones: iOS zooms into any field smaller than that. */}
       <input
         value={value}
@@ -670,9 +670,9 @@ function TextField({
         autoComplete={autoComplete}
         autoCapitalize={dir === "ltr" ? "none" : undefined}
         spellCheck={dir === "ltr" ? false : undefined}
-        className="min-h-11 w-full rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
+        className="min-h-11 w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
       />
-      {note ? <span className="mt-1 block text-xs text-[#5e6159]">{note}</span> : null}
+      {note ? <span className="mt-1 block text-xs text-[#535f75]">{note}</span> : null}
     </label>
   );
 }

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -414,3 +414,58 @@ class GenerationJob(Base):
     # job whose heartbeat went quiet belongs to a process that is gone, and is resumed.
     heartbeat_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+
+
+# --- ids that come back ---------------------------------------------------------------
+#
+# SQLite hands out the highest free rowid again (these tables have no AUTOINCREMENT), so a
+# business or a user created after a deletion can get a deleted one's id. Anything still
+# keyed by that id — a month a background build wrote while the account was being deleted,
+# or a row from before services/account_deletion.py existed — would silently become the
+# new owner's: an old plan, an old token. A row that was just inserted has no children by
+# definition, so whatever already points at its id is a leftover, and goes (children
+# first). services/account_deletion.py also sweeps rows whose parent is gone.
+
+
+def business_scoped_tables():
+    """Every table keyed by `business_id`, children before parents (businesses excluded)."""
+    return [t for t in reversed(Base.metadata.sorted_tables) if t.name != "businesses" and "business_id" in t.c]
+
+
+def user_scoped_tables():
+    """Every table keyed by `user_id`, children before parents (users excluded)."""
+    return [t for t in reversed(Base.metadata.sorted_tables) if t.name != "users" and "user_id" in t.c]
+
+
+def purge_business_rows(connection, business_ids) -> dict[str, int]:
+    """Delete every row keyed by these business ids (not the businesses themselves)."""
+    ids = list(business_ids)
+    counts: dict[str, int] = {}
+    if not ids:
+        return counts
+    endpoints = WebhookEndpoint.__table__
+    deliveries = WebhookDelivery.__table__
+    result = connection.execute(
+        delete(deliveries).where(
+            deliveries.c.endpoint_id.in_(select(endpoints.c.id).where(endpoints.c.business_id.in_(ids)))
+        )
+    )
+    counts["webhook_deliveries"] = result.rowcount or 0
+    for table in business_scoped_tables():
+        result = connection.execute(delete(table).where(table.c.business_id.in_(ids)))
+        counts[table.name] = result.rowcount or 0
+    return counts
+
+
+@event.listens_for(Business, "after_insert")
+def _new_business_starts_clean(mapper, connection, target) -> None:  # noqa: ARG001
+    purge_business_rows(connection, [target.id])
+
+
+@event.listens_for(User, "after_insert")
+def _new_user_starts_clean(mapper, connection, target) -> None:  # noqa: ARG001
+    businesses = Business.__table__
+    stale = [row[0] for row in connection.execute(select(businesses.c.id).where(businesses.c.user_id == target.id))]
+    purge_business_rows(connection, stale)
+    for table in user_scoped_tables():  # `businesses` is one of these, after its children
+        connection.execute(delete(table).where(table.c.user_id == target.id))

@@ -37,8 +37,9 @@ export const BRAND_MARK_PATHS = [
 export function BrandMark({ className = "w-8 h-8" }: IconProps) {
   return (
     <Sketch className={className}>
-      {BRAND_MARK_PATHS.map((d) => (
-        <path key={d} d={d} />
+      <path d="M9 6.5a3 3 0 016 0Z" fill="var(--sun)" stroke="none" />
+      {BRAND_MARK_PATHS.map((d, index) => (
+        <path key={d} d={d} stroke={index < 2 ? "var(--sun-edge)" : "currentColor"} />
       ))}
     </Sketch>
   );

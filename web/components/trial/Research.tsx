@@ -50,7 +50,7 @@ export function ResearchSection() {
       onClick={() => void run()}
       disabled={running || !canRun}
       aria-busy={running}
-      className="inline-flex min-h-11 items-center rounded-md border border-[#c7c4b8] bg-white px-4 text-sm font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-50"
+      className="inline-flex min-h-11 items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-50"
     >
       {running ? "חוקרים… זה לוקח כדקה" : "להריץ את המחקר"}
     </button>
@@ -60,16 +60,16 @@ export function ResearchSection() {
   // (the page's word budget is for the results, not for what is not there).
   if (!run_ || !data.available) {
     return (
-      <details id="research" className="group scroll-mt-24 border-y border-[#e6e4dc]">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#20211f]">
+      <details id="research" className="group scroll-mt-24 border-y border-[var(--rule)]">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
           <span>מה למדנו השבוע · המחקר עוד לא רץ</span>
           <span
             aria-hidden
-            className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+            className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
           />
         </summary>
         <div className="pb-4">
-          <p className="mb-3 text-sm leading-6 text-[#3c3e3a]">
+          <p className="mb-3 text-sm leading-6 text-[color:var(--ink)]">
             המחקר בודק מה המתחרים מפרסמים, מה מחפשים בגוגל ואילו מועדים מתקרבים, ואומר מה זה משנה בתוכנית.
           </p>
           {button}
@@ -85,29 +85,29 @@ export function ResearchSection() {
 
   return (
     <section id="research" aria-labelledby="research-heading" className="scroll-mt-24">
-      <h2 id="research-heading" className="text-base font-black text-[#20211f]">
+      <h2 id="research-heading" className="text-base font-black text-[color:var(--ink)]">
         מה למדנו השבוע
       </h2>
-      {run_.headline ? <p className="mt-2 text-sm font-bold leading-6 text-[#20211f]">{run_.headline}</p> : null}
+      {run_.headline ? <p className="mt-2 text-sm font-bold leading-6 text-[color:var(--ink)]">{run_.headline}</p> : null}
       {run_.insights.length ? (
-        <ul className="mt-3 divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+        <ul className="mt-3 divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
           {run_.insights.slice(0, 3).map((insight, index) => (
             <li key={`${insight.title}-${index}`}>
               <details className="group">
-                <summary className="flex min-h-12 cursor-pointer list-none items-start gap-3 px-4 py-3 hover:bg-[#faf9f7]">
+                <summary className="flex min-h-12 cursor-pointer list-none items-start gap-3 px-4 py-3 hover:bg-[var(--primary-soft)]">
                   <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-bold leading-6 text-[#20211f]">{insight.title}</span>
-                    <span className="mt-0.5 block text-xs leading-5 text-[#3c3e3a]">
+                    <span className="block text-sm font-bold leading-6 text-[color:var(--ink)]">{insight.title}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-[color:var(--ink)]">
                       <b>מה זה משנה: </b>
                       {insight.plan_change}
                     </span>
                   </span>
                   <span
                     aria-hidden
-                    className="mt-2 h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+                    className="mt-2 h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
                   />
                 </summary>
-                <div className="px-4 pb-3 text-xs leading-5 text-[#62635f]">
+                <div className="px-4 pb-3 text-xs leading-5 text-[color:var(--ink-soft)]">
                   <p>{insight.text}</p>
                   <p className="mt-1">
                     {insight.confidence === "strong" ? "נשען על עובדה שנמדדה" : "כיוון, עוד לא מגמה"}
@@ -119,7 +119,7 @@ export function ResearchSection() {
           ))}
         </ul>
       ) : run_.insights_error_he ? (
-        <p className="mt-2 text-sm leading-6 text-[#62635f]">{run_.insights_error_he}</p>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--ink-soft)]">{run_.insights_error_he}</p>
       ) : null}
 
       {error ? (
@@ -134,5 +134,5 @@ export function ResearchSection() {
 /** Results show which hypothesis they confirm (Revision 8): the plan's hypotheses, folded. */
 export function PerformanceHypotheses() {
   const { payload } = useTrial();
-  return <HypothesisStatus trial={payload} className="border-y border-[#e6e4dc]" />;
+  return <HypothesisStatus trial={payload} className="border-y border-[var(--rule)]" />;
 }

@@ -49,6 +49,8 @@ import {
 } from "./steps";
 import { QuietLink } from "./ui";
 import styles from "./start.module.css";
+import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
+import { SunProgress } from "@/components/brand/SunProgress";
 
 /**
  * /start: the first meeting with a marketing consultant.
@@ -60,6 +62,7 @@ import styles from "./start.module.css";
  * refresh in localStorage.
  */
 export function StartFlow() {
+  const { palette } = useDesignPalette();
   const router = useRouter();
   const [flow, setFlow] = useState<FlowState | null>(null);
   const [direction, setDirection] = useState<"fwd" | "back">("fwd");
@@ -71,6 +74,7 @@ export function StartFlow() {
   const [resumed, setResumed] = useState(false);
   const [confirmRestart, setConfirmRestart] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
+  const [mockPreview, setMockPreview] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const latest = useRef<FlowState | null>(null);
@@ -82,6 +86,7 @@ export function StartFlow() {
   // The draft and the URL only exist in the browser: read them after mount.
   useEffect(() => {
     const timer = window.setTimeout(() => {
+      setMockPreview(new URLSearchParams(window.location.search).get("mock") === "1");
       const saved = loadFlow();
       const loaded = saved ?? emptyFlow();
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
@@ -97,6 +102,10 @@ export function StartFlow() {
     // /start builds a real business. A browser still in demo mode (the owner looked at the
     // demo earlier) would otherwise answer with the demo's fixtures instead of the API.
     if (isDemo()) exitDemo();
+    // An explicitly requested mock walkthrough never redirects using a real account.
+    if (new URLSearchParams(window.location.search).get("mock") === "1") {
+      return () => window.clearTimeout(timer);
+    }
     endpoints
       .me()
       .then(() => {
@@ -205,8 +214,8 @@ export function StartFlow() {
 
   if (!flow) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[#f8f7f4]">
-        <p className="text-sm text-[#63665e]">טוענים…</p>
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--canvas)]">
+        <p className="text-sm text-[color:var(--ink-soft)]">טוענים…</p>
       </div>
     );
   }
@@ -227,7 +236,7 @@ export function StartFlow() {
       <div role="status" className={`rounded-xl border border-[#e8d9c2] bg-[#fbf5ea] px-3.5 py-3 text-sm leading-6 text-[#4a3b22] ${styles.rise}`}>
         <p>לא הצלחנו לקרוא את האתר. זה קורה, ולא צריך לתקן כלום עכשיו. אפשר לבחור סגנון במקום.</p>
         <div className="flex gap-3">
-          <QuietLink onClick={() => setStyleOpen(true)} className="font-bold text-[#191b18]">
+          <QuietLink onClick={() => setStyleOpen(true)} className="font-bold text-[color:var(--ink)]">
             לבחור סגנון
           </QuietLink>
           <QuietLink onClick={() => setNoticeDismissed(true)}>לא עכשיו</QuietLink>
@@ -305,21 +314,22 @@ export function StartFlow() {
   }
 
   return (
-    <div className="min-h-dvh bg-[#f8f7f4] text-[#191b18]">
+    <div style={mockPreview ? productPaletteVariables(palette) : undefined} className={`start-blue min-h-dvh bg-[var(--canvas)] text-[color:var(--ink)] ${step === "quarter" ? styles.planFlow : ""}`}>
+      {mockPreview ? <div className="border-b border-[var(--rule)] bg-[var(--sand)] px-4 py-2 text-center text-xs text-[color:var(--sand-dark)]">תצוגה עם נתוני דוגמה · <Link href="/preview" className="font-bold underline underline-offset-4">למסכים האחרים</Link></div> : null}
       {/* Phones: back (or home) and the business card, in one bar. */}
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-[#e2e0d8] bg-white/95 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
+      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-[var(--rule)] bg-white/95 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
         {back ? (
           <button
             type="button"
             onClick={back}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1 rounded-md px-1.5 text-sm font-bold text-[#191b18]"
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1 rounded-md px-1.5 text-sm font-bold text-[color:var(--ink)]"
           >
             <IconArrowRight className="h-5 w-5" />
             חזרה
           </button>
         ) : (
           <Link href="/" aria-label="לעמוד הבית" className="flex min-h-11 shrink-0 items-center px-1">
-            <BrandMark className="h-7 w-7 text-[#191b18]" />
+            <BrandMark className="h-7 w-7 text-[color:var(--ink)]" />
           </Link>
         )}
         <CardBar flow={flow} open={cardOpen} onToggle={toggleCard} onPickStyle={() => setStyleOpen(true)} />
@@ -328,35 +338,35 @@ export function StartFlow() {
       {/* Desktop */}
       <header className="mx-auto hidden max-w-6xl items-center justify-between px-8 pt-6 lg:flex">
         <Link href="/" className="flex items-center gap-2.5" aria-label="לעמוד הבית">
-          <BrandMark className="h-9 w-9 text-[#191b18]" />
+          <BrandMark className="h-9 w-9 text-[color:var(--ink)]" />
           <span>
             <span className="block text-base font-black">ישראמארקט</span>
-            <span className="-mt-0.5 block text-xs text-[#63665e]">שיווק לעסקים קטנים</span>
+            <span className="-mt-0.5 block text-xs text-[color:var(--ink-soft)]">שיווק לעסקים קטנים</span>
           </span>
         </Link>
         {loggedIn ? null : (
-          <p className="text-sm text-[#5e6159]">
+          <p className="text-sm text-[color:var(--ink-soft)]">
             כבר יש לכם חשבון?{" "}
-            <Link href="/login" className="font-bold text-[#191b18] underline underline-offset-4">
+            <Link href="/login" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
               להיכנס
             </Link>
           </p>
         )}
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-12 lg:px-8">
+      <div className={`mx-auto max-w-6xl px-4 lg:grid lg:gap-12 lg:px-8 ${step === "quarter" ? "lg:grid-cols-[minmax(0,1fr)_220px]" : "lg:grid-cols-[minmax(0,1fr)_360px]"}`}>
         <main className={`mx-auto w-full py-4 lg:mx-0 lg:py-8 ${wide ? "max-w-3xl" : "max-w-xl"}`}>
           <div className="mb-4 space-y-2">
             <div className="hidden min-h-11 items-center lg:flex">
               {back ? <QuietLink onClick={back}>חזרה</QuietLink> : null}
             </div>
             <ChapterProgress step={step} flow={flow} />
-            {resumed || step !== "name" ? (
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5e6159]">
+            {step !== "quarter" && (resumed || step !== "name") ? (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[color:var(--ink-soft)]">
                 {confirmRestart ? (
                   <>
                     <span>כל התשובות שכאן יימחקו.</span>
-                    <QuietLink onClick={startOver} className="font-bold text-[#191b18]">
+                    <QuietLink onClick={startOver} className="font-bold text-[color:var(--ink)]">
                       למחוק ולהתחיל מחדש
                     </QuietLink>
                     <QuietLink onClick={() => setConfirmRestart(false)}>ביטול</QuietLink>
@@ -374,7 +384,7 @@ export function StartFlow() {
         </main>
         <aside className="hidden lg:block" aria-label="העסק שלכם">
           <div className="sticky top-6 max-h-[calc(100dvh-7.5rem)] overflow-y-auto pt-8">
-            <BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} />
+            {step === "quarter" ? <details className={styles.planBusiness}><summary>פרטי העסק שבנינו</summary><BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} /></details> : <BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} />}
           </div>
         </aside>
       </div>
@@ -398,6 +408,10 @@ function ChapterProgress({ step, flow }: { step: StepId; flow: FlowState }) {
   const current = chapterIndexOf(step);
   return (
     <nav aria-label="איפה אנחנו בשיחה">
+      <div className="mb-2 flex items-center justify-between gap-4">
+        <p className="text-sm font-bold text-[color:var(--primary)]">{CHAPTERS[current].label}</p>
+        {step !== "quarter" && <SunProgress value={current} total={CHAPTERS.length - 1} label="התקדמות ההיכרות" />}
+      </div>
       <ol className="grid grid-cols-5 gap-1.5">
         {CHAPTERS.map((chapter, index) => {
           const steps = chapterSteps(index, flow);
@@ -405,14 +419,14 @@ function ChapterProgress({ step, flow }: { step: StepId; flow: FlowState }) {
           const fill = index < current ? 1 : index === current ? (within + 1) / Math.max(1, steps.length) : 0;
           return (
             <li key={chapter.key} aria-current={index === current ? "step" : undefined}>
-              <span className="block h-1.5 overflow-hidden rounded-full bg-[#e2e0d8]">
+              <span className="block h-1.5 overflow-hidden rounded-full bg-[var(--rule)]">
                 <span
-                  className="block h-full rounded-full bg-[#191b18] transition-[width] duration-500"
+                  className="chapter-fill block h-full rounded-full"
                   style={{ width: `${fill * 100}%` }}
                 />
               </span>
               <span
-                className={`mt-1 block truncate text-[11px] ${index === current ? "font-black text-[#191b18]" : "text-[#8a8c84]"}`}
+                className={`mt-1 block truncate text-[11px] ${index === current ? "font-black text-[color:var(--ink)]" : "text-[color:var(--ink-muted)]"}`}
               >
                 <span className="lg:hidden">{chapter.short ?? chapter.label}</span>
                 <span className="hidden lg:inline">{chapter.label}</span>
@@ -449,7 +463,7 @@ function StyleSheet({
         type="button"
         aria-label="לסגור"
         onClick={onClose}
-        className={`absolute inset-0 cursor-default bg-[#191b18]/40 ${styles.backdrop}`}
+        className={`absolute inset-0 cursor-default bg-[var(--primary)]/40 ${styles.backdrop}`}
       />
       <div
         ref={panel}
@@ -459,8 +473,8 @@ function StyleSheet({
         tabIndex={-1}
         className={`relative w-full space-y-3 rounded-t-3xl bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] outline-none lg:max-w-lg lg:rounded-3xl ${styles.sheet}`}
       >
-        <h2 className="text-lg font-black text-[#191b18]">איזה סגנון מרגיש כמוכם?</h2>
-        <p className="text-sm text-[#5e6159]">נצבע בו את הפוסטים. אפשר לשנות בכל רגע.</p>
+        <h2 className="text-lg font-black text-[color:var(--ink)]">איזה סגנון מרגיש כמוכם?</h2>
+        <p className="text-sm text-[color:var(--ink-soft)]">נצבע בו את הפוסטים. אפשר לשנות בכל רגע.</p>
         <PresetGrid value={value} onPick={onPick} />
         <QuietLink onClick={onClose}>לסגור</QuietLink>
       </div>

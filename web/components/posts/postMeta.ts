@@ -22,11 +22,11 @@ export const STATUS_LABEL: Record<PostStatus, string> = {
   published: "פורסם",
 };
 
-/** Tint only, no border — a chip inside a row, not another box (UI-RULES rule 3). */
+/** Plain status labels: meaning comes from words, not decorative pills. */
 export const STATUS_TONE: Record<PostStatus, string> = {
-  review: "bg-[#f7ecd9] text-[#7a5216]",
-  approved: "bg-[#e4efe4] text-[#2d5b33]",
-  published: "bg-[#e6ecf5] text-[#2c4a72]",
+  review: "text-[#535f75]",
+  approved: "text-[#2853c7]",
+  published: "text-[#2853c7]",
 };
 
 export function isDone(post: RoadmapPost) {

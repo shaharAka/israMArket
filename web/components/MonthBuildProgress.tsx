@@ -61,7 +61,7 @@ export function MonthBuildProgress({
         <button
           type="button"
           onClick={() => void start()}
-          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f]"
+          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)]"
         >
           לנסות שוב
         </button>
@@ -86,9 +86,9 @@ export function MonthBuildProgress({
         className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full motion-reduce:animate-none"
         style={{ background: TONE.accent }}
       />
-      <p className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
+      <p className="min-w-0 flex-1 text-sm leading-6 text-[color:var(--ink)]">
         <b>{label}</b>
-        <span className="block text-xs text-[#5e6159]">
+        <span className="block text-xs text-[color:var(--ink-soft)]">
           שלב {step} מתוך {steps}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.
         </span>
       </p>

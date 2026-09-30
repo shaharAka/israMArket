@@ -441,6 +441,26 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(self.status("month_review"), "todo")
         self.assertEqual(self.steps(self.post_json("/trial/seen", {"what": "results"}))["month_review"]["status"], "done")
 
+    def test_the_next_step_waits_for_the_posts_being_written(self):
+        """Revision 8: with the foundations in and the posts being written, the ask is not
+        "לבנות את החודש השני" (open since the structure exists) — nothing jumps past week 3."""
+        self.foundations()
+        self.add_month([])
+        self.post_json("/trial/confirm", {"what": "posts_started"})
+        payload = self.payload()
+        steps = self.steps(payload)
+        self.assertEqual(steps["approve_first"]["status"], "locked")
+        self.assertEqual(steps["month_two"]["status"], "todo")
+        self.assertNotEqual(payload["next_key"], "month_two")
+        self.assertNotIn(payload["next_key"], {"results", "month_review"})
+        # The rule itself, with every earlier step done: nothing to do until the posts exist.
+        from app.routers.trial import next_step
+
+        done_before = [dict(step, status="done") if step["week"] < 3 else step for step in payload["steps"]]
+        self.assertIsNone(next_step(done_before))
+        written = [dict(step, status="todo") if step["key"] == "approve_first" else step for step in done_before]
+        self.assertEqual(next_step(written)["key"], "approve_first")
+
     def test_month_two_is_a_second_month(self):
         today = date.today()
         self.add_month([post(1)])

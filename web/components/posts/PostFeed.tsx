@@ -6,7 +6,8 @@ import { useState } from "react";
 import { needsPhoto } from "@/components/CardCanvas";
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
 import { cardTokens } from "@/lib/cardTokens";
-import { IconArrowLeft, IconImage } from "@/lib/icons";
+import { IconArrowLeft } from "@/lib/icons";
+import { PhotoPlaceholder } from "./PhotoPlaceholder";
 import { STATUS_LABEL, STATUS_TONE, postDateLabel, postStatus } from "@/components/posts/postMeta";
 
 /**
@@ -24,8 +25,8 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   }
   if (!post.image_url || broken) {
     return (
-      <span aria-hidden className={`${base} flex items-center justify-center bg-[#f0efeb] text-[#a3a29b]`}>
-        <IconImage className="h-5 w-5" />
+      <span aria-hidden className={`${base} flex items-center justify-center bg-[var(--primary-soft)] text-[#a3a29b]`}>
+        <PhotoPlaceholder small />
       </span>
     );
   }
@@ -35,7 +36,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
       alt=""
       loading="lazy"
       onError={() => setBroken(true)}
-      className={`${base} bg-[#f0efeb] object-cover`}
+      className={`${base} bg-[var(--primary-soft)] object-cover`}
     />
   );
 }
@@ -59,11 +60,11 @@ export function PostFeed({
 }) {
   if (!posts.length) {
     return (
-      <p className="py-10 text-center text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
+      <p className="py-10 text-center text-sm text-[color:var(--ink-soft)]">עוד מכינים את הפוסטים של החודש.</p>
     );
   }
   return (
-    <ul className="divide-y divide-[#eeede8] overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
+    <ul className="divide-y divide-[var(--primary-soft)] overflow-hidden border-y border-[var(--rule)] bg-white">
       {posts.map((post, index) => {
         const status = postStatus(post);
         return (
@@ -75,18 +76,18 @@ export function PostFeed({
                 event.preventDefault();
                 onOpen(index);
               }}
-              className="flex min-h-24 items-center gap-3 px-3 py-2.5 transition-colors hover:bg-[#faf9f6] active:bg-[#f4f3ee] sm:px-4"
+              className="flex min-h-24 items-center gap-3 px-3 py-2.5 transition-colors hover:bg-[var(--canvas)] active:bg-[var(--primary-soft)] sm:px-4"
             >
               <Thumb post={post} brand={brand} />
               <span className="min-w-0 flex-1">
-                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#20211f]">
+                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[color:var(--ink)]">
                   {post.title}
                 </span>
                 <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_TONE[status]}`}>
+                  <span className={`text-xs ${STATUS_TONE[status]}`}>
                     {STATUS_LABEL[status]}
                   </span>
-                  <span className="text-xs font-bold text-[#6b6c66]">{postDateLabel(post)}</span>
+                  <span className="text-xs font-bold text-[color:var(--ink-soft)]">{postDateLabel(post)}</span>
                 </span>
               </span>
               <IconArrowLeft className="h-4 w-4 shrink-0 text-[#a3a29b]" />

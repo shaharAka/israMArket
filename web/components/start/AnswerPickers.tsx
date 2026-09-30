@@ -32,7 +32,7 @@ export function ActivityPicker({
             aria-checked={on}
             onClick={() => onChange(on && clearable ? undefined : option.key)}
             className={`min-h-10 cursor-pointer rounded-lg border px-1 text-xs font-bold ${
-              on ? "border-[#191b18] bg-[#f1efe8] text-[#191b18] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white text-[#4f524b]"
+              on ? "border-[#1d2940] bg-[#f1efe8] text-[#1d2940] ring-1 ring-[#1d2940]" : "border-[#dedcd4] bg-white text-[#4f524b]"
             }`}
           >
             {option.label}

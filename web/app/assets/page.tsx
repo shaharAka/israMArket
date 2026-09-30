@@ -237,7 +237,7 @@ export default function AssetsPage() {
               type="button"
               onClick={() => void handleScan()}
               disabled={scanning || busy}
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-4 text-sm font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-default disabled:opacity-60 sm:w-auto"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#2853c7] px-4 text-sm font-bold text-white transition-colors hover:bg-[#1e42a4] disabled:cursor-default disabled:opacity-60 sm:w-auto"
             >
               <IconEye className="h-4 w-4" />
               {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
@@ -254,12 +254,12 @@ export default function AssetsPage() {
         {/* One disclosure holds the two other ways in. Closed by default, so the page opens
             on the pictures rather than on a toolbar; open by one tap for anyone who came
             here to upload or to paste a link. */}
-        <section className="border-y border-[#e6e4dc]">
+        <section className="border-y border-[#e1e7f2]">
           <button
             type="button"
             onClick={() => setAddOpen((prev) => !prev)}
             aria-expanded={addOpen}
-            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[#5e6159] transition-colors hover:text-[#20211f]"
+            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[#535f75] transition-colors hover:text-[#1d2940]"
           >
             <span className="flex items-center gap-2">
               <IconImage className="h-4 w-4" />
@@ -267,14 +267,14 @@ export default function AssetsPage() {
             </span>
             <span
               aria-hidden
-              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 ${
+              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#647087] transition-transform duration-200 ${
                 addOpen ? "rotate-180" : ""
               }`}
             />
           </button>
 
           {addOpen ? (
-            <div className="space-y-4 border-t border-[#e6e4dc] py-4">
+            <div className="space-y-4 border-t border-[#e1e7f2] py-4">
               <div className="flex flex-wrap items-center gap-3">
                 <input
                   ref={fileInput}
@@ -294,7 +294,7 @@ export default function AssetsPage() {
                   <IconImage className="h-4 w-4" />
                   {uploadLabel}
                 </button>
-                <span className="text-xs text-[#8b8e84]">אפשר לבחור כמה קבצים בבת אחת</span>
+                <span className="text-xs text-[#647087]">אפשר לבחור כמה קבצים בבת אחת</span>
               </div>
 
               <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
@@ -308,7 +308,7 @@ export default function AssetsPage() {
                   onChange={(event) => setUrl(event.target.value)}
                   placeholder="https://..."
                   dir="ltr"
-                  className="min-h-11 w-64 max-w-full rounded-md border border-[#dedcd4] bg-white px-3 text-sm text-[#20211f] focus:outline-2"
+                  className="min-h-11 w-64 max-w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm text-[#1d2940] focus:outline-2"
                   style={{ outlineColor: identity.accent }}
                 />
                 <button
@@ -320,7 +320,7 @@ export default function AssetsPage() {
                   <IconLink className="h-4 w-4" />
                   {importing ? "מביאים…" : "להוסיף מקישור"}
                 </button>
-                <span className="text-xs text-[#8b8e84]">קישור לתמונה אחת ברשת.</span>
+                <span className="text-xs text-[#647087]">קישור לתמונה אחת ברשת.</span>
               </form>
             </div>
           ) : null}
@@ -333,21 +333,21 @@ export default function AssetsPage() {
             עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח.
           </p>
         ) : null}
-        {scanResult ? <p className="mt-4 text-sm leading-6 text-[#3c3e3a]">{scanResult}</p> : null}
-        {notice ? <p className="mt-3 text-sm leading-6 text-[#3c3e3a]">{notice}</p> : null}
+        {scanResult ? <p className="mt-4 text-sm leading-6 text-[color:var(--ink)]">{scanResult}</p> : null}
+        {notice ? <p className="mt-3 text-sm leading-6 text-[color:var(--ink)]">{notice}</p> : null}
         {loadError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{loadError}</p> : null}
 
         {Object.keys(pending).length ? (
           <ul className="mt-4 space-y-1.5">
             {Object.entries(pending).map(([name, state]) => (
-              <li key={name} className="flex items-center gap-2 text-xs text-[#5e6159]">
+              <li key={name} className="flex items-center gap-2 text-xs text-[#535f75]">
                 {state === "uploading" ? (
                   <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
                 ) : (
                   <IconSparkles className="h-3.5 w-3.5" />
                 )}
                 <span className="truncate">{name}</span>
-                <span className="text-[#8b8e84]">
+                <span className="text-[#647087]">
                   {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
                 </span>
               </li>
@@ -364,11 +364,11 @@ export default function AssetsPage() {
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
               {/* Both counts, always — including a zero. The split is real information
                   about what is in the library; the total is the two added up. */}
-              <p className="text-xs text-[#8b8e84]">
+              <p className="text-xs text-[#647087]">
                 {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
                 {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
               </p>
-              <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#20211f] underline underline-offset-4">
+              <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#1d2940] underline underline-offset-4">
                 <IconArrowLeft className="h-4 w-4" />
                 לפוסטים שבנינו מהן
               </Link>
@@ -397,12 +397,12 @@ export default function AssetsPage() {
         ) : loadError ? null : (
           // The empty state asks for the one thing the page asks for everywhere else and
           // stops. Upload and link import are one tap up, in the disclosure.
-          <section className="mt-7 rounded-lg border border-[#e6e4dc] bg-white p-8 text-center">
+          <section className="mt-7 rounded-lg border border-[#e1e7f2] bg-white p-8 text-center">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full" style={{ background: identity.surface, color: identity.accent }}>
               <IconImage className="h-6 w-6" />
             </span>
-            <h2 className="mt-4 text-lg font-black text-[#20211f]">עוד אין כאן תמונות</h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
+            <h2 className="mt-4 text-lg font-black text-[#1d2940]">עוד אין כאן תמונות</h2>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#535f75]">
               לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
             <StepLink stepKey="photos" className="mt-2" />

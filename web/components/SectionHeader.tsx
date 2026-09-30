@@ -23,16 +23,15 @@ export function SectionHeader({
   return (
     <header className="mb-7">
       <div className="flex items-center gap-2">
-        <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
         <p className="text-[11px] font-black tracking-wide" style={{ color: identity.accent }}>
           {identity.eyebrow}
         </p>
       </div>
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-3xl font-black tracking-tight text-[#1e201d]">{title}</h1>
+          <h1 className="text-3xl font-black tracking-tight text-[#1d2940]">{title}</h1>
           {subtitle ? (
-            <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#63665e]">{subtitle}</p>
+            <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#535f75]">{subtitle}</p>
           ) : null}
         </div>
         {action ? <div className="flex shrink-0 items-center gap-2">{action}</div> : null}

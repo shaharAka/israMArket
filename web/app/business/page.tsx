@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, useLogOut } from "@/components/AppShell";
 import { IconCamera } from "@/components/instagram/SourceLink";
+import { BrandLink } from "@/components/BrandLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { endpoints } from "@/lib/api";
 import {
@@ -38,7 +39,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
     title: "התכנון",
     rows: [
       { href: "/strategy", title: "התוכנית", hint: "החודש שבוע אחר שבוע, והרבעון", icon: IconRoute },
-      { href: "/calendar", title: "לוח שנה", hint: "חגים, ימי קניות ופוסטים", icon: IconCalendar },
+      { href: "/calendar", title: "לוח התוכנית", hint: "פוסטים, משימות ותאריכים חשובים", icon: IconCalendar },
       { href: "/recommendations", title: "המלצות לשבוע", hint: "מה כדאי לעשות השבוע", icon: IconLightbulb },
     ],
   },
@@ -62,7 +63,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
 ];
 
 const rowClass =
-  "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-[#f8f7f4] active:bg-[#f4f3ee] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#20211f]";
+  "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-[var(--canvas)] active:bg-[var(--primary-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ink)]";
 
 export default function BusinessPage() {
   const [businessName, setBusinessName] = useState("");
@@ -80,21 +81,23 @@ export default function BusinessPage() {
       <div className="mx-auto max-w-2xl">
         <SectionHeader section="business" title={businessName || "העסק שלי"} />
 
+        <div className="mb-5 border-b border-[var(--rule)] pb-3"><BrandLink /></div>
+
         {/* One container, hairlines between rows: a list, not a grid of boxes. */}
-        <div className="overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+        <div className="overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
           {GROUPS.map((group, index) => (
-            <section key={group.title} className={index > 0 ? "border-t border-[#e6e4dc]" : undefined}>
-              <h2 className="px-4 pt-4 pb-1 text-xs font-black text-[#63665e]">{group.title}</h2>
-              <ul className="divide-y divide-[#eeede8]">
+            <section key={group.title} className={index > 0 ? "border-t border-[var(--rule)]" : undefined}>
+              <h2 className="px-4 pt-4 pb-1 text-xs font-black text-[color:var(--ink-soft)]">{group.title}</h2>
+              <ul className="divide-y divide-[var(--primary-soft)]">
                 {group.rows.map((row) => (
                   <li key={row.href}>
                     <Link href={row.href} className={rowClass}>
-                      <row.icon className="h-5 w-5 shrink-0 text-[#63665e]" />
+                      <row.icon className="h-5 w-5 shrink-0 text-[color:var(--ink-soft)]" />
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-bold text-[#1e201d]">{row.title}</span>
-                        <span className="mt-0.5 block text-sm text-[#63665e]">{row.hint}</span>
+                        <span className="block text-[15px] font-bold text-[color:var(--ink)]">{row.title}</span>
+                        <span className="mt-0.5 block text-sm text-[color:var(--ink-soft)]">{row.hint}</span>
                       </span>
-                      <IconChevron className="h-5 w-5 shrink-0 text-[#8b8e84]" />
+                      <IconChevron className="h-5 w-5 shrink-0 text-[color:var(--ink-muted)]" />
                     </Link>
                   </li>
                 ))}
@@ -102,10 +105,10 @@ export default function BusinessPage() {
             </section>
           ))}
 
-          <div className="border-t border-[#e6e4dc]">
+          <div className="border-t border-[var(--rule)]">
             <button type="button" onClick={logOut} className={`${rowClass} cursor-pointer`}>
-              <IconLogout className="h-5 w-5 shrink-0 text-[#63665e]" />
-              <span className="flex-1 text-[15px] font-bold text-[#1e201d]">יציאה מהחשבון</span>
+              <IconLogout className="h-5 w-5 shrink-0 text-[color:var(--ink-soft)]" />
+              <span className="flex-1 text-[15px] font-bold text-[color:var(--ink)]">יציאה מהחשבון</span>
             </button>
           </div>
         </div>

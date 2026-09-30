@@ -85,15 +85,15 @@ export default function BaselinePage() {
         ) : (
           <div className="space-y-5">
             {data.from_integrations ? (
-              <p className="rounded-lg border border-[#d3ddcf] bg-[#f3f6f1] px-4 py-3 text-sm leading-6 text-[#20211f]">
+              <p className="rounded-lg border border-[#d3ddcf] bg-[var(--primary-soft)] px-4 py-3 text-sm leading-6 text-[color:var(--ink)]">
                 כבר יש לנו מספרים אמיתיים מהחיבורים, והם נקודת הפתיחה. אפשר להוסיף כאן גם מה שהם לא רואים.
               </p>
             ) : null}
 
-            <div className="space-y-4 rounded-lg border border-[#e6e4dc] bg-white p-5">
+            <div className="space-y-4 rounded-lg border border-[var(--rule)] bg-white p-5">
               {data.fields.map((field) => (
                 <div key={field.key}>
-                  <label htmlFor={`baseline-${field.key}`} className="mb-1 block text-sm font-bold text-[#20211f]">
+                  <label htmlFor={`baseline-${field.key}`} className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
                     {field.label_he}
                   </label>
                   <div className="flex items-center gap-2">
@@ -103,9 +103,9 @@ export default function BaselinePage() {
                       value={values[field.key] ?? ""}
                       onChange={(event) => setValues({ ...values, [field.key]: event.target.value })}
                       placeholder="לא בטוחים"
-                      className="min-h-11 w-40 rounded-md border border-[#dedcd4] bg-[#faf8f5] px-3 text-sm"
+                      className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 text-sm"
                     />
-                    <span className="text-sm text-[#62635f]">{field.unit_he}</span>
+                    <span className="text-sm text-[color:var(--ink-soft)]">{field.unit_he}</span>
                   </div>
                 </div>
               ))}
@@ -122,12 +122,12 @@ export default function BaselinePage() {
                 type="button"
                 onClick={() => void save()}
                 disabled={saving}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[#20211f] px-6 text-sm font-bold text-white hover:bg-[#343632] disabled:opacity-40 sm:w-auto"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--primary)] px-6 text-sm font-bold text-white hover:bg-[var(--primary-dark)] disabled:opacity-40 sm:w-auto"
               >
                 {saving ? "שומרים…" : "לשמור את נקודת הפתיחה"}
               </button>
               {data.saved_at ? (
-                <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[#20211f] underline underline-offset-4">
+                <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">
                   לצעד הבא
                   <IconArrowLeft className="h-4 w-4" />
                 </Link>

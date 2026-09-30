@@ -26,6 +26,7 @@ import {
 } from "@/components/posts/postMeta";
 import {
   endpoints,
+  isDemo,
   type Asset,
   type AssetSource,
   type AssetSuggestion,
@@ -39,13 +40,13 @@ import {
   IconArrowLeft,
   IconCheck,
   IconCopy,
-  IconImage,
-  IconMegaphone,
-  IconPen,
-  IconSparkles,
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
+import { EditorIcon, type EditorIconKind } from "@/components/posts/EditorIcon";
+import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
+import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
+import editorStyles from "@/components/posts/editor.module.css";
 
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
 type RewriteTone = "direct" | "neighborhood" | "punchy";
@@ -55,11 +56,11 @@ type RewriteTone = "direct" | "neighborhood" | "punchy";
  * mockup below is the format spec that each old badge and spec line used to repeat.
  * `label` is still what the copy column and the publish row call the outlet.
  */
-const OUTLETS: { key: OutletKey; label: string; icon: string }[] = [
-  { key: "instagram", label: "אינסטגרם", icon: "📸" },
-  { key: "facebook", label: "פייסבוק", icon: "📘" },
-  { key: "whatsapp", label: "וואטסאפ", icon: "💬" },
-  { key: "tiktok", label: "טיקטוק", icon: "🎵" },
+const OUTLETS: { key: OutletKey; label: string }[] = [
+  { key: "instagram", label: "אינסטגרם" },
+  { key: "facebook", label: "פייסבוק" },
+  { key: "whatsapp", label: "וואטסאפ" },
+  { key: "tiktok", label: "טיקטוק" },
 ];
 
 const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[] = [
@@ -75,44 +76,27 @@ const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[]
  */
 type Section = "text" | "tone" | "photo" | "download" | "publish";
 
-function IconDownload({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="square"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M4.5 19.5h15" />
-    </svg>
-  );
-}
-
-const SECTIONS: { key: Section; label: string; title: string; Icon: (props: { className?: string }) => React.ReactNode }[] = [
-  { key: "text", label: "טקסט", title: "הטקסט של הפוסט", Icon: IconPen },
-  { key: "tone", label: "טון", title: "לשנות את הטון", Icon: IconSparkles },
-  { key: "photo", label: "תמונה", title: "התמונה והעיצוב", Icon: IconImage },
-  { key: "download", label: "הורדה", title: "הורדת הכרטיס", Icon: IconDownload },
-  { key: "publish", label: "פרסום", title: "פרסום ידני", Icon: IconMegaphone },
+const SECTIONS: { key: Section; label: string; title: string }[] = [
+  { key: "text", label: "טקסט", title: "הטקסט של הפוסט" },
+  { key: "tone", label: "טון", title: "לשנות את הטון" },
+  { key: "photo", label: "תמונה", title: "התמונה והעיצוב" },
+  { key: "download", label: "הורדה", title: "הורדת הכרטיס" },
+  { key: "publish", label: "פרסום", title: "פרסום ידני" },
 ];
 
-const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: string }[] = [
-  { key: "hero_clean", label: "צילום נקי", desc: "בלי שום כיתוב, רק המוצר והמרקם", icon: "📸" },
-  { key: "corner_badge", label: "מדבקה בפינה", desc: "תגית קטנה ועדינה בפינה העליונה", icon: "🏷️" },
-  { key: "announcement_card", label: "כרטיס הודעה", desc: "כרטיס נייר חם, באמצע או למטה", icon: "📜" },
-  { key: "ink_pill", label: "תגית שחורה", desc: "תגית שחורה צפה, עם אותיות חדות", icon: "✒️" },
+const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: EditorIconKind }[] = [
+  { key: "hero_clean", label: "צילום נקי", desc: "בלי שום כיתוב, רק המוצר והמרקם", icon: "photo" },
+  { key: "corner_badge", label: "מדבקה בפינה", desc: "תגית קטנה ועדינה בפינה העליונה", icon: "badge" },
+  { key: "announcement_card", label: "כרטיס הודעה", desc: "כרטיס נייר חם, באמצע או למטה", icon: "paper" },
+  { key: "ink_pill", label: "תגית שחורה", desc: "תגית שחורה צפה, עם אותיות חדות", icon: "text" },
 ];
 
-const IMAGE_SOURCE_LABELS: Record<string, { text: string; tone: string }> = {
-  real_photo: { text: "תמונה אמיתית מהאתר שלכם", tone: "bg-[#e4efe4] text-[#2d5b33] border-[#bcd6bc]" },
-  generated: { text: "תמונה שנוצרה ב-AI", tone: "bg-[#fdf1e3] text-[#8a5a1c] border-[#e8cfa8]" },
-  asset: { text: "אחת מהתמונות שלכם", tone: "bg-[#fbf4f0] text-[#7d4436] border-[#e3cec4]" },
-  pending: { text: "עוד אין תמונה. אפשר ליצור אחת", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
-  none: { text: "כרטיס של טקסט בלבד, בלי תמונה", tone: "bg-[#f0efeb] text-[#62635f] border-[#dedcd4]" },
+const IMAGE_SOURCE_LABELS: Record<string, string> = {
+  real_photo: "תמונה אמיתית מהאתר שלכם",
+  generated: "תמונה שנוצרה ב-AI",
+  asset: "אחת מהתמונות שלכם",
+  pending: "עוד אין תמונה. אפשר לבחור או להעלות צילום",
+  none: "כרטיס של טקסט בלבד, בלי תמונה",
 };
 
 /** Where each library file came from, in the owner's words — same wording as AssetCard. */
@@ -129,8 +113,8 @@ function AssetPickerThumb({ asset, className }: { asset: Asset; className: strin
   const [broken, setBroken] = useState(false);
   if (!asset.url || broken) {
     return (
-      <span className={`flex items-center justify-center bg-[#f4f3ee] text-[#b3b0a5] ${className}`}>
-        <IconImage className="h-4 w-4" />
+      <span className={`flex items-center justify-center bg-[var(--primary-soft)] text-[color:var(--ink-muted)] ${className}`}>
+        <PhotoPlaceholder small />
       </span>
     );
   }
@@ -146,7 +130,7 @@ function AssetPickerThumb({ asset, className }: { asset: Asset; className: strin
         onLoadedMetadata={(event) => {
           event.currentTarget.currentTime = 0.1;
         }}
-        className={`bg-[#f4f3ee] object-cover ${className}`}
+        className={`bg-[var(--primary-soft)] object-cover ${className}`}
       />
     );
   }
@@ -157,7 +141,7 @@ function AssetPickerThumb({ asset, className }: { asset: Asset; className: strin
       alt={asset.description || "אחת מהתמונות שלכם"}
       loading="lazy"
       onError={() => setBroken(true)}
-      className={`bg-[#f4f3ee] object-cover ${className}`}
+      className={`bg-[var(--primary-soft)] object-cover ${className}`}
     />
   );
 }
@@ -227,6 +211,8 @@ export function PostEditor({
   /** Back to the month's feed. */
   onClose?: () => void;
 }) {
+  const { palette } = useDesignPalette();
+  const demo = useSyncExternalStore(subscribeClient, isDemo, serverSnapshot);
   const [posts, setPosts] = useState(initialPosts);
   const [selectedIndex, setSelectedIndex] = useState(() =>
     Math.min(Math.max(initialIndex, 0), Math.max(initialPosts.length - 1, 0))
@@ -247,6 +233,9 @@ export function PostEditor({
   const [approving, setApproving] = useState(false);
   const [imageBusy, setImageBusy] = useState<number | null>(null);
   const [imageError, setImageError] = useState("");
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [photoUploadError, setPhotoUploadError] = useState("");
+  const photoInput = useRef<HTMLInputElement>(null);
   const [publishUrl, setPublishUrl] = useState(() => initialPosts[initialIndex]?.published_url || "");
   const [publishing, setPublishing] = useState(false);
 
@@ -315,7 +304,7 @@ export function PostEditor({
 
   /** True while any image operation is in flight. Every image control checks this, so a
    *  library pick, an AI generation and a source switch can never overlap. */
-  const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null;
+  const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null || uploadingPhoto;
 
   const currentPost = posts[selectedIndex];
   const availableOutlets = useMemo(
@@ -330,7 +319,7 @@ export function PostEditor({
 
   if (!currentPost) {
     return (
-      <div className="rounded-lg border border-[#deddd8] bg-white px-6 py-14 text-center text-sm text-[#62635f]">
+      <div className="rounded-lg border border-[var(--rule)] bg-white px-6 py-14 text-center text-sm text-[color:var(--ink-soft)]">
         עוד מכינים את הפוסטים של החודש.
       </div>
     );
@@ -502,6 +491,23 @@ export function PostEditor({
     }
   }
 
+  async function uploadPhoto(file: File | undefined) {
+    if (!file || imageLocked) return;
+    if (!file.type.startsWith("image/")) { setPhotoUploadError("בחרו קובץ תמונה. סרטונים אפשר להוסיף דרך התמונות שלי."); return; }
+    const postIndex = selectedIndex;
+    setUploadingPhoto(true); setPhotoUploadError(""); setImageError("");
+    try {
+      const uploaded = await endpoints.uploadAsset(file);
+      setAssets(prev => prev ? [...prev, uploaded.asset] : null);
+      const result = await endpoints.attachPostAsset(postIndex, uploaded.asset.id);
+      setPosts(result.strategy.roadmap.posts); onStrategyUpdated?.(result.strategy);
+      setShowAssets(false); setSuggestions(null);
+      toast("התמונה נוספה לפוסט. אפשר לבדוק אותה בתצוגה.");
+    } catch (err) {
+      setPhotoUploadError(err instanceof Error ? err.message : "לא הצלחנו להוסיף את התמונה. אם ההעלאה הסתיימה, אפשר לבחור אותה מהתמונות שלי.");
+    } finally { setUploadingPhoto(false); if (photoInput.current) photoInput.current.value = ""; }
+  }
+
   /** Real model call over the post and the library — several seconds, so it only ever
    *  runs from an explicit click and always shows a busy state. */
   async function suggestAssetsForPost() {
@@ -574,10 +580,10 @@ export function PostEditor({
       // that was skipped earlier), and back to the feed once the month is done.
       const nextIndex = nextPendingIndex(updatedPosts, selectedIndex);
       if (nextIndex >= 0) {
-        toast("הפוסט אושר. הנה הבא בתור.");
+        toast("הפוסט אושר. הנה הבא בתור.", "milestone");
         goTo(nextIndex);
       } else {
-        toast("הפוסט אושר. כל הפוסטים של החודש אושרו.");
+        toast("הפוסט אושר. כל הפוסטים של החודש אושרו.", "milestone");
         onClose?.();
       }
     } catch (err) {
@@ -679,7 +685,7 @@ export function PostEditor({
       const result = await endpoints.savePost(selectedIndex, savePayload(currentPost, captionDraft));
       applyStrategy(result.strategy);
       setCaptionDraft(null);
-      toast(wasApproved ? "הנוסח נשמר. צריך לאשר את הפוסט שוב." : "הנוסח נשמר.");
+      toast(wasApproved ? "הנוסח נשמר. צריך לאשר את הפוסט שוב." : "הנוסח נשמר.", "save");
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו לשמור את הנוסח");
     } finally {
@@ -745,26 +751,12 @@ export function PostEditor({
     const photoFree = !needsPhoto(currentPost.overlay_theme);
     if (!currentPost.image_url && !photoFree) {
       return (
-        <div
-          style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }}
-          className="flex w-full flex-col items-center justify-center gap-3 bg-[#f0efeb] px-6 text-center"
-        >
-          <IconImage className="h-6 w-6 text-[#898a85]" />
-          <p className="text-sm font-bold text-[#62635f]">
-            {isPreparingImage ? "יוצרים את התמונה…" : "התמונה בהכנה"}
-          </p>
-          {imageError ? (
-            <>
-              <p className="text-xs leading-5 text-[#8d4539]">{imageError}</p>
-              <button
-                type="button"
-                onClick={() => void prepareImage(selectedIndex, true)}
-                className="min-h-11 text-sm font-bold text-[#20211f] underline underline-offset-4"
-              >
-                לנסות שוב
-              </button>
-            </>
-          ) : null}
+        <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
+          <PhotoPlaceholder />
+          <h3>{isPreparingImage || uploadingPhoto ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
+          <p>{isPreparingImage || uploadingPhoto ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
+          {imageError && <p role="alert">{imageError}</p>}
+          <button type="button" disabled={imageLocked} onClick={() => { setActive("photo"); setShowAssets(true); void loadAssets(); }}>לבחור או להעלות תמונה ←</button>
         </div>
       );
     }
@@ -800,10 +792,10 @@ export function PostEditor({
         type="button"
         onClick={() => setActive("text")}
         aria-label="לקרוא את הטקסט המלא"
-        className="block w-full px-3 py-2.5 text-right text-[13px] leading-5 text-[#343632] transition-colors hover:bg-[#faf9f6]"
+        className="block w-full px-3 py-2.5 text-right text-[13px] leading-5 text-[color:var(--primary-dark)] transition-colors hover:bg-[var(--canvas)]"
       >
         <span className="line-clamp-2">
-          <span className="ml-1.5 font-bold text-[#20211f]">{businessName}</span>{" "}
+          <span className="ml-1.5 font-bold text-[color:var(--ink)]">{businessName}</span>{" "}
           {previewCaption(activeCaption)}
         </span>
       </button>
@@ -821,7 +813,7 @@ export function PostEditor({
           width: `min(100%, max(${currentPost.inspiration?.sources?.length ? 176 : 200}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
         }}
       >
-        <div className="overflow-hidden rounded-xl border border-[#deddd8] bg-white shadow-sm">
+        <div className="overflow-hidden rounded border border-[var(--rule)] bg-white shadow-sm">
           {outlet === "facebook" ? captionLine : null}
           {renderMediaSlot()}
           {outlet !== "facebook" ? captionLine : null}
@@ -841,61 +833,30 @@ export function PostEditor({
   function renderImageTools() {
     return (
       <div>
-        <p className="text-sm leading-6 text-[#62635f]">
-          {IMAGE_SOURCE_LABELS[imageSourceKey]?.text}
+        <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
+          {IMAGE_SOURCE_LABELS[imageSourceKey]}
           {currentAsset ? ` · ${currentAsset.description || "תמונה בלי תיאור"}` : ""}
         </p>
 
-        {needsPhoto(currentPost.overlay_theme) ? (
-          <div className="mt-2 flex flex-wrap gap-2">
-            <button
-              type="button"
-              disabled={imageLocked}
-              onClick={() => void chooseImageSource("real")}
-              className="min-h-9 rounded-md border border-[#cecdc7] bg-white px-3 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
-            >
-              להשתמש בתמונה מהאתר
-            </button>
-            <button
-              type="button"
-              disabled={imageLocked}
-              onClick={() => void chooseImageSource("ai")}
-              className="min-h-9 rounded-md border border-[#cecdc7] bg-white px-3 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
-            >
-              ליצור ב-AI
-            </button>
+        {cardNeedsPhoto && <div className={editorStyles.photoGuide}>
+          <h3>{currentPost.image_url ? "להחליף את התמונה" : "1. בוחרים תמונה מהעסק"}</h3>
+          <p>בחרו צילום של מה שהפוסט מדבר עליו. השאירו קצת מרווח סביב הנושא כדי שיתאים גם לחיתוך אנכי.</p>
+          <div><button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()}><EditorIcon kind="photo" />{uploadingPhoto ? "מעלים ומוסיפים…" : "להעלות מהמכשיר"}</button><button type="button" disabled={imageLocked} onClick={toggleAssetPicker}>{showAssets ? "לסגור את התמונות שלי" : "לבחור מהתמונות שלי"}</button></div>
+          {photoUploadError && <p role="alert" className={editorStyles.uploadError}>{photoUploadError}</p>}
+        </div>}
+        <details className={editorStyles.photoOptions}><summary>תמונה מהאתר או יצירה ב-AI</summary>
+          <p className="text-xs leading-6 text-[color:var(--ink-soft)]">תמונה מהעסק נותנת לפוסט אמינות. אפשר גם לקחת מהאתר או ליצור תמונה לפי העיצוב.</p>
+          <div className="mt-2 flex flex-wrap gap-3">
+            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("real")} className="min-h-11 text-xs text-[color:var(--primary)] underline underline-offset-4">לקחת תמונה מהאתר</button>
+            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("ai")} className="min-h-11 text-xs text-[color:var(--primary)] underline underline-offset-4">לבחור יצירה ב-AI</button>
+            <button type="button" disabled={imageLocked} onClick={() => void prepareImage(selectedIndex, true)} className="min-h-11 text-xs text-[color:var(--primary)] underline underline-offset-4">{isPreparingImage ? "יוצרים תמונה…" : "ליצור לפי העיצוב"}</button>
           </div>
-        ) : null}
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            disabled={imageLocked}
-            onClick={() => void prepareImage(selectedIndex, true)}
-            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
-          >
-            <IconImage className="h-3.5 w-3.5" />
-            {isPreparingImage
-              ? "יוצרים תמונה חדשה…"
-              : currentPost.image_url
-                ? "ליצור תמונה חדשה לפי העיצוב"
-                : "ליצור תמונה לפוסט"}
-          </button>
-          <button
-            type="button"
-            disabled={imageLocked}
-            onClick={toggleAssetPicker}
-            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
-          >
-            <IconImage className="h-3.5 w-3.5" />
-            {showAssets ? "לסגור את התמונות שלי" : "לבחור מהתמונות שלי"}
-          </button>
-        </div>
+        </details>
 
         {showAssets ? (
-          <div className="mt-3 rounded-md border border-[#e3cec4] bg-[#fdfbf9] p-3">
+          <div className="mt-3 rounded-md border border-[var(--rule)] bg-[var(--paper)] p-3">
             <div className="flex items-center justify-between gap-2">
-              <p className="text-[13px] font-bold text-[#7d4436]">
+              <p className="text-[13px] font-bold text-[color:var(--primary)]">
                 התמונות שלי{assets ? ` · ${assets.length}` : ""}
               </p>
               <span className="flex items-center gap-2 text-xs">
@@ -903,13 +864,13 @@ export function PostEditor({
                   type="button"
                   disabled={assetsLoading || imageLocked}
                   onClick={() => void loadAssets()}
-                  className="font-bold text-[#747570] underline underline-offset-2 hover:text-[#20211f] disabled:opacity-40"
+                  className="font-bold text-[color:var(--ink-muted)] underline underline-offset-2 hover:text-[color:var(--ink)] disabled:opacity-40"
                 >
                   לרענן
                 </button>
                 <Link
                   href="/assets"
-                  className="font-bold text-[#7d4436] underline underline-offset-2"
+                  className="font-bold text-[color:var(--primary)] underline underline-offset-2"
                 >
                   לכל התמונות
                 </Link>
@@ -923,46 +884,46 @@ export function PostEditor({
             ) : null}
 
             {!cardNeedsPhoto ? (
-              <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-2.5 py-1.5 text-[13px] leading-5 text-[#6b6961]">
+              <p className="mt-3 rounded-md border border-[var(--rule)] bg-[var(--primary-soft)] px-2.5 py-1.5 text-[13px] leading-5 text-[color:var(--ink-soft)]">
                 הכרטיס הזה בנוי מטקסט בלבד, אז התמונה שתבחרו לא תופיע עליו. כדי שתופיע, בחרו
                 תבנית אחרת ב״התאמה ידנית״.
               </p>
             ) : null}
 
             {assetsLoading && !assets ? (
-              <p className="mt-3 text-[13px] text-[#747570]">טוענים את התמונות…</p>
+              <p className="mt-3 text-[13px] text-[color:var(--ink-muted)]">טוענים את התמונות…</p>
             ) : assetsError ? (
               <p className="mt-3 text-[13px] leading-5 text-[#9f4330]">{assetsError}</p>
             ) : libraryEmpty ? (
-              <div className="mt-3 rounded-md border border-[#e3cec4] bg-white px-3 py-4 text-center">
-                <p className="text-[13px] font-bold text-[#20211f]">עוד אין לכם כאן תמונות</p>
-                <p className="mx-auto mt-1 max-w-xs text-[13px] leading-5 text-[#747570]">
-                  כדי לבחור תמונה משלכם, קודם הוסיפו אותה: העלו תמונה או סרטון, הוסיפו מקישור,
+              <div className="mt-3 rounded-md border border-[var(--rule)] bg-white px-3 py-4 text-center">
+                <p className="text-[13px] font-bold text-[color:var(--ink)]">עוד אין לכם כאן תמונות</p>
+                <p className="mx-auto mt-1 max-w-xs text-[13px] leading-5 text-[color:var(--ink-muted)]">
+                  להוספת צילום לחצו על ״להעלות מהמכשיר״ למעלה. אפשר גם להוסיף סרטון או קישור
                   או תנו לנו לקרוא את האתר.
                 </p>
                 <Link
                   href="/assets"
-                  className="mt-2.5 inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-[13px] font-bold text-[#1e201d]"
+                  className="mt-2.5 inline-flex min-h-9 items-center justify-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-transparent px-3 text-[13px] font-bold text-[color:var(--ink)]"
                 >
-                  <IconImage className="h-3.5 w-3.5" />
+                  <EditorIcon kind="photo" className="h-3.5 w-3.5" />
                   להוסיף תמונות
                 </Link>
               </div>
             ) : (
               <>
-                <div className="mt-3 rounded-md border border-[#e3cec4] bg-white p-2.5">
+                <div className="mt-3 rounded-md border border-[var(--rule)] bg-white p-2.5">
                   <button
                     type="button"
                     disabled={suggesting || imageLocked}
                     onClick={() => void suggestAssetsForPost()}
-                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 py-2 text-[13px] font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-50"
+                    className="w-full inline-flex items-center justify-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-white px-3 py-2 text-[13px] font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-50"
                   >
-                    <IconSparkles className="h-3.5 w-3.5" />
+                    <EditorIcon kind="tone" className="h-3.5 w-3.5" />
                     {suggesting ? "מחפשים מה מתאים…" : "למצוא תמונה שמתאימה לפוסט"}
                   </button>
 
                   {suggesting ? (
-                    <p className="mt-2 text-[13px] leading-5 text-[#747570]">
+                    <p className="mt-2 text-[13px] leading-5 text-[color:var(--ink-muted)]">
                       עוברים על התמונות שלכם ובודקים מה מתאים לנושא הפוסט. זה לוקח כמה שניות,
                       השאירו את החלון פתוח.
                     </p>
@@ -973,7 +934,7 @@ export function PostEditor({
                   ) : null}
 
                   {!suggesting && suggestions && !rankedSuggestions.length ? (
-                    <p className="mt-2 text-[13px] leading-5 text-[#747570]">
+                    <p className="mt-2 text-[13px] leading-5 text-[color:var(--ink-muted)]">
                       לא מצאנו תמונה שמתאימה לפוסט הזה, ולא נציע אחת בכוח. אפשר לבחור בעצמכם
                       מהתמונות למטה.
                     </p>
@@ -981,7 +942,7 @@ export function PostEditor({
 
                   {rankedSuggestions.length ? (
                     <>
-                      <p className="mt-2.5 text-xs font-bold text-[#747570]">
+                      <p className="mt-2.5 text-xs font-bold text-[color:var(--ink-muted)]">
                         מה הכי מתאים, לפי הסדר:
                       </p>
                       <ul className="mt-1.5 space-y-1.5">
@@ -991,22 +952,22 @@ export function PostEditor({
                               type="button"
                               disabled={imageLocked}
                               onClick={() => void attachAsset(asset)}
-                              className="flex w-full items-start gap-2 rounded-md border border-[#e3cec4] bg-[#fdfbf9] p-2 text-right hover:border-[#7d4436] disabled:opacity-50"
+                              className="flex w-full items-start gap-2 rounded-md border border-[var(--rule)] bg-[var(--paper)] p-2 text-right hover:border-[var(--primary)] disabled:opacity-50"
                             >
                               <AssetPickerThumb asset={asset} className="h-11 w-11 shrink-0 rounded" />
                               <span className="min-w-0 flex-1">
                                 <span className="flex items-start gap-1.5">
-                                  <span className="mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#7d4436] text-[11px] font-bold text-white">
+                                  <span className="mt-px flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[var(--primary)] text-[11px] font-bold text-white">
                                     {rank + 1}
                                   </span>
-                                  <span className="line-clamp-2 text-[13px] font-bold leading-4 text-[#20211f]">
+                                  <span className="line-clamp-2 text-[13px] font-bold leading-4 text-[color:var(--ink)]">
                                     {asset.description || "תמונה בלי תיאור"}
                                   </span>
                                 </span>
-                                <span className="mt-1 block text-[13px] leading-5 text-[#7d4436]">
+                                <span className="mt-1 block text-[13px] leading-5 text-[color:var(--primary)]">
                                   {suggestion.reason}
                                 </span>
-                                <span className="mt-0.5 block text-xs font-bold text-[#747570]">
+                                <span className="mt-0.5 block text-xs font-bold text-[color:var(--ink-muted)]">
                                   {assetBusyId === asset.id
                                     ? "מכניסים לפוסט…"
                                     : "לחצו כדי להכניס לפוסט"}
@@ -1020,7 +981,7 @@ export function PostEditor({
                   ) : null}
                 </div>
 
-                <p className="mt-3 text-xs font-bold text-[#747570]">
+                <p className="mt-3 text-xs font-bold text-[color:var(--ink-muted)]">
                   כל התמונות שלכם. לחיצה מכניסה את התמונה לפוסט:
                 </p>
                 <ul className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
@@ -1033,12 +994,12 @@ export function PostEditor({
                           disabled={imageLocked}
                           onClick={() => void attachAsset(asset)}
                           className={`flex w-full flex-col overflow-hidden rounded-md border bg-white text-right disabled:opacity-50 ${
-                            inPost ? "border-[#7d4436]" : "border-[#dedcd4] hover:border-[#7d4436]"
+                            inPost ? "border-[var(--primary)]" : "border-[var(--rule-dark)] hover:border-[var(--primary)]"
                           }`}
                         >
                           <AssetPickerThumb asset={asset} className="h-20 w-full" />
                           <span className="block w-full p-1.5">
-                            <span className="line-clamp-2 block text-xs leading-4 text-[#3c3e3a]">
+                            <span className="line-clamp-2 block text-xs leading-4 text-[color:var(--ink)]">
                               {asset.description || "תמונה בלי תיאור"}
                             </span>
                             {asset.tags.length ? (
@@ -1046,19 +1007,19 @@ export function PostEditor({
                                 {asset.tags.slice(0, 2).map((tag) => (
                                   <span
                                     key={tag}
-                                    className="rounded-full border border-[#e3cec4] bg-[#fbf4f0] px-1.5 text-[11px] text-[#7d4436]"
+                                    className="text-[11px] text-[color:var(--ink-soft)]"
                                   >
                                     {tag}
                                   </span>
                                 ))}
                               </span>
                             ) : null}
-                            <span className="mt-1 flex items-center justify-between gap-1 text-[11px] text-[#8b8e84]">
+                            <span className="mt-1 flex items-center justify-between gap-1 text-[11px] text-[color:var(--ink-muted)]">
                               <span>
                                 {ASSET_SOURCE_LABELS[asset.source]}
                                 {asset.kind === "video" ? " · סרטון" : ""}
                               </span>
-                              <span className="font-bold text-[#7d4436]">
+                              <span className="font-bold text-[color:var(--primary)]">
                                 {assetBusyId === asset.id
                                   ? "מכניסים…"
                                   : inPost
@@ -1084,9 +1045,9 @@ export function PostEditor({
    *  opened on demand, instead of four always-visible tiles and a dark apply button. */
   function renderDesignerPanel() {
     return (
-      <div className="mt-3 border-t border-[#e9e8e3] pt-3">
+      <div className="mt-3 border-t border-[var(--rule)] pt-3">
         {currentPost.creative_concept || currentPost.visual_style ? (
-          <div className="rounded-md border border-[#e2d7c3] bg-[#fcf9f2] p-2.5 text-xs text-[#191b18]">
+          <div className="rounded-md border border-[var(--rule)] bg-[var(--primary-soft)] p-2.5 text-xs text-[color:var(--ink)]">
             {currentPost.creative_concept ? (
               <p className="leading-5">
                 <span className="font-bold">הרעיון: </span>
@@ -1094,7 +1055,7 @@ export function PostEditor({
               </p>
             ) : null}
             {currentPost.visual_style ? (
-              <p className="mt-1 text-[13px] text-[#6b6961]">
+              <p className="mt-1 text-[13px] text-[color:var(--ink-soft)]">
                 <span className="font-bold">הסגנון: </span>
                 {currentPost.visual_style}
               </p>
@@ -1102,7 +1063,7 @@ export function PostEditor({
           </div>
         ) : null}
 
-        <p className="mt-3 text-[13px] font-bold text-[#747570]">עיצוב מהיר, בלחיצה אחת:</p>
+        <p className="mt-3 text-[13px] font-bold text-[color:var(--ink-muted)]">עיצוב מהיר, בלחיצה אחת:</p>
         <div className="mt-2 grid grid-cols-2 gap-2">
           {DESIGN_PRESETS.map((preset) => (
             <button
@@ -1110,20 +1071,20 @@ export function PostEditor({
               type="button"
               disabled={imageLocked}
               onClick={() => void handleApplyDesignPreset(preset.key, false)}
-              className="rounded-md border border-[#cecdc7] bg-white p-2 text-right transition-colors hover:border-[#191b18] disabled:opacity-50"
+              className="rounded-md border border-[var(--rule-dark)] bg-white p-2 text-right transition-colors hover:border-[var(--ink)] disabled:opacity-50"
             >
-              <span className="block text-xs font-bold text-[#20211f]">
-                {preset.icon} {preset.label}
+              <span className="block text-xs font-bold text-[color:var(--ink)]">
+                <EditorIcon kind={preset.icon} className="mb-2 h-6 w-6 text-[color:var(--primary)]" />{preset.label}
               </span>
-              <span className="mt-0.5 block text-xs leading-3 text-[#747570]">{preset.desc}</span>
+              <span className="mt-0.5 block text-xs leading-3 text-[color:var(--ink-muted)]">{preset.desc}</span>
             </button>
           ))}
         </div>
 
-        <div className="mt-3 border-t border-[#e9e8e3] pt-3">
+        <div className="mt-3 border-t border-[var(--rule)] pt-3">
           <label
             htmlFor="custom-design-prompt"
-            className="mb-1.5 block text-[13px] font-bold text-[#747570]"
+            className="mb-1.5 block text-[13px] font-bold text-[color:var(--ink-muted)]"
           >
             או תארו במילים שלכם:
           </label>
@@ -1134,7 +1095,7 @@ export function PostEditor({
               onChange={(e) => setCustomDesignPrompt(e.target.value)}
               placeholder="למשל: ידיים לשות בצק מקרוב, שולחן חג עמוס"
               disabled={imageLocked}
-              className="flex-1 rounded-md border border-[#dedcd4] px-2.5 py-1.5 text-xs text-[#20211f]"
+              className="flex-1 rounded-md border border-[var(--rule-dark)] px-2.5 py-1.5 text-xs text-[color:var(--ink)]"
             />
             {/* Only meaningful once something was typed — otherwise it is a dark button
                 that does nothing sitting in the middle of the screen. */}
@@ -1143,7 +1104,7 @@ export function PostEditor({
                 type="button"
                 disabled={imageLocked || designerBusy}
                 onClick={() => void handleApplyDesignPreset("custom", false)}
-                className="rounded-md border border-[#cecdc7] bg-white px-3 py-1.5 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
+                className="rounded-md border border-[var(--rule-dark)] bg-white px-3 py-1.5 text-xs font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
               >
                 {designerBusy ? "מעצבים…" : "לעצב לפי זה"}
               </button>
@@ -1154,15 +1115,15 @@ export function PostEditor({
         <button
           type="button"
           onClick={() => setShowDesignerSettings((open) => !open)}
-          className="mt-3 text-[13px] font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+          className="mt-3 text-[13px] font-bold text-[color:var(--ink-soft)] underline underline-offset-2 hover:text-[color:var(--ink)]"
         >
           {showDesignerSettings ? "לסגור את ההתאמה הידנית" : "התאמה ידנית"}
         </button>
 
         {showDesignerSettings ? (
-          <div className="mt-3 space-y-3 rounded-md border border-[#dedcd4] bg-[#f9f8f6] p-3 text-xs">
+          <div className="mt-3 space-y-3 rounded-md border border-[var(--rule-dark)] bg-[var(--canvas)] p-3 text-xs">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-[#20211f]">כיתוב על התמונה</span>
+              <span className="font-bold text-[color:var(--ink)]">כיתוב על התמונה</span>
               <button
                 type="button"
                 onClick={() => void updateDesignField({ has_overlay: !hasOverlay })}
@@ -1170,8 +1131,8 @@ export function PostEditor({
                 // Outlined even when on: a filled toggle here was a second dark button.
                 className={`min-h-10 rounded-full border px-3 text-xs font-bold transition-colors ${
                   hasOverlay
-                    ? "border-[#20211f] bg-white text-[#20211f] ring-1 ring-[#20211f]"
-                    : "border-[#cecdc7] bg-white text-[#62635f]"
+                    ? "border-[var(--ink)] bg-white text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
+                    : "border-[var(--rule-dark)] bg-white text-[color:var(--ink-soft)]"
                 }`}
               >
                 {hasOverlay ? "כן, עם כיתוב" : "לא, צילום נקי"}
@@ -1183,7 +1144,7 @@ export function PostEditor({
                 {/* The headline and the badge themselves are edited under "טקסט", with
                     the rest of the post's words. */}
                 <div>
-                  <span className="block text-[13px] font-bold text-[#62635f] mb-1">תבנית הכרטיס</span>
+                  <span className="block text-[13px] font-bold text-[color:var(--ink-soft)] mb-1">תבנית הכרטיס</span>
                   <div className="grid grid-cols-2 gap-1">
                     {THEME_OPTIONS.map((theme) => (
                       <button
@@ -1192,15 +1153,15 @@ export function PostEditor({
                         onClick={() => void updateDesignField({ overlay_theme: theme.key })}
                         className={`rounded border px-2 py-1.5 text-[13px] font-bold ${
                           activeTemplate === theme.key
-                            ? "border-[#20211f] bg-white text-[#20211f] ring-1 ring-[#20211f]"
-                            : "border-[#dedcd4] bg-white text-[#62635f]"
+                            ? "border-[var(--ink)] bg-white text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
+                            : "border-[var(--rule-dark)] bg-white text-[color:var(--ink-soft)]"
                         }`}
                       >
                         {theme.label}
                       </button>
                     ))}
                   </div>
-                  <p className="mt-1.5 text-xs leading-4 text-[#898a85]">
+                  <p className="mt-1.5 text-xs leading-4 text-[color:var(--ink-muted)]">
                     {CARD_TEMPLATES.find((t) => t.key === activeTemplate)?.desc}
                   </p>
                 </div>
@@ -1221,15 +1182,19 @@ export function PostEditor({
    * handlers, the same states, now one tap away in a sheet or panel.   *
    * ------------------------------------------------------------------ */
 
-  function copyCaption() {
+  async function copyCaption() {
     // WhatsApp gets the whole formatted message (bold title, caption, call to action and
     // link), which is what the WhatsApp mockup's copy button used to hand over.
     const text =
       outlet === "whatsapp"
         ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${currentPost.tracking_url || ""}`.trim()
         : activeCaption;
-    void navigator.clipboard.writeText(text);
-    toast(`נוסח ה${currentOutletMeta.label} הועתק.`);
+    try {
+      await navigator.clipboard.writeText(text);
+      toast(`נוסח ה${currentOutletMeta.label} הועתק.`, "copy");
+    } catch {
+      toast("לא הצלחנו להעתיק. אפשר לסמן את הנוסח ולהעתיק ידנית.");
+    }
   }
 
   function renderTextSection() {
@@ -1242,13 +1207,13 @@ export function PostEditor({
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between gap-2">
-            <label htmlFor="post-caption" className="text-sm font-bold text-[#20211f]">
+            <label htmlFor="post-caption" className="text-sm font-bold text-[color:var(--ink)]">
               הנוסח ל{currentOutletMeta.label}
             </label>
             <button
               type="button"
               onClick={copyCaption}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-[#20211f] underline underline-offset-4"
+              className="inline-flex min-h-11 items-center gap-1 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4"
             >
               <IconCopy className="h-3.5 w-3.5" />
               להעתיק
@@ -1261,10 +1226,10 @@ export function PostEditor({
               rows={5}
               disabled={savingCaption}
               onChange={(event) => setCaptionDraft(event.target.value)}
-              className="mt-1 w-full resize-y rounded-lg border border-[#cecdc7] bg-white px-3 py-2 text-[15px] leading-7 text-[#20211f] disabled:opacity-60"
+              className="mt-1 w-full resize-y rounded-lg border border-[var(--rule-dark)] bg-white px-3 py-2 text-[15px] leading-7 text-[color:var(--ink)] disabled:opacity-60"
             />
           ) : (
-            <p id="post-caption" className="mt-1 whitespace-pre-line text-[15px] leading-7 text-[#20211f]">
+            <p id="post-caption" className="mt-1 whitespace-pre-line text-[15px] leading-7 text-[color:var(--ink)]">
               {activeCaption}
             </p>
           )}
@@ -1274,7 +1239,7 @@ export function PostEditor({
                 type="button"
                 disabled={savingCaption}
                 onClick={() => void saveCaption()}
-                className="min-h-11 rounded-lg border border-[#20211f] bg-white px-4 text-sm font-bold text-[#20211f] disabled:opacity-50"
+                className="min-h-11 rounded-lg border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] disabled:opacity-50"
               >
                 {savingCaption ? "שומרים…" : "לשמור את הנוסח"}
               </button>
@@ -1282,26 +1247,26 @@ export function PostEditor({
                 type="button"
                 disabled={savingCaption}
                 onClick={() => setCaptionDraft(null)}
-                className="min-h-11 text-sm font-bold text-[#62635f] underline underline-offset-4"
+                className="min-h-11 text-sm font-bold text-[color:var(--ink-soft)] underline underline-offset-4"
               >
                 לבטל
               </button>
             </div>
           ) : null}
           {!editable && primaryOutletLabel ? (
-            <p className="mt-1 text-xs text-[#6b6c66]">אפשר לערוך רק את הנוסח ל{primaryOutletLabel}.</p>
+            <p className="mt-1 text-xs text-[color:var(--ink-soft)]">אפשר לערוך רק את הנוסח ל{primaryOutletLabel}.</p>
           ) : null}
         </div>
 
         {currentPost.cta ? (
-          <p className="border-t border-[#eeede8] pt-3 text-sm font-bold text-[#20211f]">{currentPost.cta}</p>
+          <p className="border-t border-[var(--primary-soft)] pt-3 text-sm font-bold text-[color:var(--ink)]">{currentPost.cta}</p>
         ) : null}
 
         {/* The words drawn on the card itself — the one place the headline lives. */}
         {hasOverlay ? (
-          <div className="space-y-3 border-t border-[#eeede8] pt-3">
+          <div className="space-y-3 border-t border-[var(--primary-soft)] pt-3">
             <div>
-              <label htmlFor="post-overlay-headline" className="mb-1 block text-sm font-bold text-[#20211f]">
+              <label htmlFor="post-overlay-headline" className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
                 הכותרת על התמונה
               </label>
               <input
@@ -1313,19 +1278,19 @@ export function PostEditor({
                     overlay_text: e.target.value,
                   })
                 }
-                className="h-11 w-full rounded-lg border border-[#cecdc7] bg-white px-3 text-sm"
+                className="h-11 w-full rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-sm"
                 placeholder="2–5 מילים"
               />
             </div>
             <div>
-              <label htmlFor="post-overlay-badge" className="mb-1 block text-sm font-bold text-[#20211f]">
+              <label htmlFor="post-overlay-badge" className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
                 תגית
               </label>
               <input
                 id="post-overlay-badge"
                 value={overlayBadge}
                 onChange={(e) => void updateDesignField({ overlay_badge: e.target.value })}
-                className="h-11 w-full rounded-lg border border-[#cecdc7] bg-white px-3 text-sm"
+                className="h-11 w-full rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-sm"
                 placeholder="למשל: מיוחד לחג / רק בשישי"
               />
             </div>
@@ -1333,16 +1298,16 @@ export function PostEditor({
         ) : null}
 
         {currentPost.why_now ? (
-          <details className="border-t border-[#eeede8] pt-3">
-            <summary className="min-h-11 cursor-pointer content-center text-sm font-bold text-[#62635f]">למה עכשיו</summary>
-            <p className="mt-1.5 text-sm leading-6 text-[#5e6159]">{currentPost.why_now}</p>
+          <details className="border-t border-[var(--primary-soft)] pt-3">
+            <summary className="min-h-11 cursor-pointer content-center text-sm font-bold text-[color:var(--ink-soft)]">למה עכשיו</summary>
+            <p className="mt-1.5 text-sm leading-6 text-[color:var(--ink-soft)]">{currentPost.why_now}</p>
           </details>
         ) : currentPost.calendar_tie || currentPost.goal_fit ? (
-          <details className="border-t border-[#eeede8] pt-3">
-            <summary className="min-h-11 cursor-pointer content-center text-sm font-bold text-[#62635f]">
+          <details className="border-t border-[var(--primary-soft)] pt-3">
+            <summary className="min-h-11 cursor-pointer content-center text-sm font-bold text-[color:var(--ink-soft)]">
               למה הפוסט הזה
             </summary>
-            <p className="mt-1.5 text-sm leading-6 text-[#5e6159]">
+            <p className="mt-1.5 text-sm leading-6 text-[color:var(--ink-soft)]">
               {currentPost.calendar_tie ? `${currentPost.calendar_tie}. ` : ""}
               {currentPost.goal_fit}
             </p>
@@ -1355,19 +1320,19 @@ export function PostEditor({
   function renderToneSection() {
     return (
       <div className="space-y-2">
-        <p className="text-sm text-[#62635f]">בחרו כיוון, ונכין גרסה חדשה.</p>
+        <p className="text-sm text-[color:var(--ink-soft)]">בחרו כיוון, ונכין גרסה חדשה.</p>
         {CHANGE_OPTIONS.map((option) => (
           <button
             key={option.key}
             type="button"
             disabled={rewriting !== null}
             onClick={() => void requestRewrite(option.key)}
-            className="flex min-h-14 w-full flex-col justify-center rounded-lg border border-[#dedcd4] bg-white px-3 py-2 text-right hover:border-[#20211f] disabled:opacity-50"
+            className="flex min-h-14 w-full flex-col justify-center rounded-lg border border-[var(--rule-dark)] bg-white px-3 py-2 text-right hover:border-[var(--ink)] disabled:opacity-50"
           >
-            <span className="text-sm font-bold text-[#20211f]">
+            <span className="text-sm font-bold text-[color:var(--ink)]">
               {rewriting === option.key ? "מכינים…" : option.label}
             </span>
-            <span className="mt-0.5 text-xs leading-5 text-[#6b6c66]">{option.description}</span>
+            <span className="mt-0.5 text-xs leading-5 text-[color:var(--ink-soft)]">{option.description}</span>
           </button>
         ))}
       </div>
@@ -1378,19 +1343,19 @@ export function PostEditor({
     return (
       <div>
         {renderImageTools()}
-        <div className="mt-4 border-t border-[#eeede8] pt-1">
+        <div className="mt-4 border-t border-[var(--primary-soft)] pt-1">
           <button
             type="button"
             aria-expanded={showDesigner}
             disabled={imageLocked}
             onClick={() => setShowDesigner((open) => !open)}
-            className="flex min-h-11 w-full items-center justify-between text-right text-sm font-bold text-[#20211f] disabled:opacity-40"
+            className="flex min-h-11 w-full items-center justify-between text-right text-sm font-bold text-[color:var(--ink)] disabled:opacity-40"
           >
             <span className="inline-flex items-center gap-1.5">
-              <IconSparkles className="h-4 w-4" />
+              <EditorIcon kind="paper" className="h-5 w-5" />
               לשנות עיצוב
             </span>
-            <span className="text-xs font-bold text-[#62635f]">{showDesigner ? "לסגור" : "לפתוח"}</span>
+            <span className="text-xs font-bold text-[color:var(--ink-soft)]">{showDesigner ? "לסגור" : "לפתוח"}</span>
           </button>
           {showDesigner ? renderDesignerPanel() : null}
         </div>
@@ -1401,7 +1366,7 @@ export function PostEditor({
   function renderDownloadSection() {
     return (
       <div className="space-y-3">
-        <p className="text-sm font-bold text-[#20211f]">גודל</p>
+        <p className="text-sm font-bold text-[color:var(--ink)]">גודל</p>
         <div className="grid grid-cols-2 gap-2">
           {([{ key: "auto" as const, label: "אוטומטי" }, ...CARD_RATIOS]).map((r) => (
             <button
@@ -1411,8 +1376,8 @@ export function PostEditor({
               onClick={() => setExportRatio(r.key)}
               className={`min-h-11 rounded-lg border px-2 text-sm font-bold ${
                 exportRatio === r.key
-                  ? "border-[#20211f] bg-white text-[#20211f] ring-1 ring-[#20211f]"
-                  : "border-[#dedcd4] bg-white text-[#62635f]"
+                  ? "border-[var(--ink)] bg-white text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
+                  : "border-[var(--rule-dark)] bg-white text-[color:var(--ink-soft)]"
               }`}
             >
               {r.label}
@@ -1423,9 +1388,9 @@ export function PostEditor({
           type="button"
           disabled={downloadDisabled}
           onClick={() => void handleExportCard()}
-          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-[#20211f] bg-white px-4 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-40"
+          className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
         >
-          <IconDownload className="h-4 w-4" />
+          <EditorIcon kind="download" className="h-4 w-4" />
           {exporting ? "מורידים את הכרטיס…" : `להוריד את הכרטיס · ${exportSize.w}×${exportSize.h}`}
         </button>
       </div>
@@ -1435,15 +1400,15 @@ export function PostEditor({
   /** Who the post is for — the choice the old collapsed "קהל" row held. */
   function renderAudience() {
     return (
-      <div className="mb-4 border-b border-[#eeede8] pb-4">
+      <div className="mb-4 border-b border-[var(--primary-soft)] pb-4">
         <div className="flex items-center justify-between gap-2">
-          <label htmlFor="post-audience-select" className="inline-flex items-center gap-1.5 text-sm font-bold text-[#20211f]">
+          <label htmlFor="post-audience-select" className="inline-flex items-center gap-1.5 text-sm font-bold text-[color:var(--ink)]">
             <IconUsers className="h-4 w-4" />
             למי הפוסט
           </label>
           <Link
             href="/decisions#audiences"
-            className="min-h-11 content-center text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
+            className="min-h-11 content-center text-xs font-bold text-[color:var(--ink-soft)] underline underline-offset-2 hover:text-[color:var(--ink)]"
           >
             לכל הקהלים
           </Link>
@@ -1451,11 +1416,11 @@ export function PostEditor({
         {/* A load in flight, a failed read and "no audiences yet" are all things the owner
             has to know without asking. */}
         {audiencesLoading ? (
-          <p className="text-xs text-[#747570]">טוענים את הקהלים…</p>
+          <p className="text-xs text-[color:var(--ink-muted)]">טוענים את הקהלים…</p>
         ) : audiencesError ? (
           <p className="text-xs leading-5 text-[#9f4330]">{audiencesError}</p>
         ) : !audiences.length ? (
-          <p className="text-xs leading-5 text-[#747570]">
+          <p className="text-xs leading-5 text-[color:var(--ink-muted)]">
             עוד לא הגדרתם קהלים, אז אי אפשר לבחור למי הפוסט פונה.
           </p>
         ) : (
@@ -1469,7 +1434,7 @@ export function PostEditor({
               onChange={(event) =>
                 void changeAudience(event.target.value === "" ? null : Number(event.target.value))
               }
-              className="h-11 w-full rounded-lg border border-[#cecdc7] bg-white px-2 text-sm font-bold text-[#20211f] disabled:opacity-40"
+              className="h-11 w-full rounded-lg border border-[var(--rule-dark)] bg-white px-2 text-sm font-bold text-[color:var(--ink)] disabled:opacity-40"
             >
               <option value="" dir="rtl" lang="he">
                 {currentAudienceId !== null && !currentAudienceName ? "קהל שהוגדר קודם" : "לא נבחר קהל"}
@@ -1481,7 +1446,7 @@ export function PostEditor({
                 </option>
               ))}
             </select>
-            {audienceBusy ? <p className="mt-1 text-xs text-[#747570]">שומרים…</p> : null}
+            {audienceBusy ? <p className="mt-1 text-xs text-[color:var(--ink-muted)]">שומרים…</p> : null}
           </>
         )}
       </div>
@@ -1527,7 +1492,7 @@ export function PostEditor({
   /** THE one dark button: approve this post, or — once it is approved — the next one. */
   function renderPrimary() {
     const primaryClass =
-      "inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#20211f] px-6 text-base font-bold text-white disabled:bg-[#c7c6c0]";
+      "inline-flex min-h-13 w-full items-center justify-center gap-2 rounded bg-[var(--primary)] px-6 text-base font-bold text-white disabled:bg-[#c7c6c0]";
     if (status === "review") {
       return (
         <button
@@ -1564,7 +1529,8 @@ export function PostEditor({
   }
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <div className={`${editorStyles.editor} mx-auto max-w-5xl`}>
+      <input ref={photoInput} type="file" accept="image/*" aria-label="להעלות תמונה לפוסט" hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
       <div className="md:grid md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] md:items-start md:gap-8 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
         <div className="min-w-0">
           {/* Where this is and how to get back — one row, so the card gets the height. */}
@@ -1573,7 +1539,7 @@ export function PostEditor({
               <button
                 type="button"
                 onClick={onClose}
-                className="-mr-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-bold text-[#20211f]"
+                className="-mr-1 inline-flex min-h-11 items-center gap-1.5 px-1 text-sm font-bold text-[color:var(--ink)]"
               >
                 <IconArrowLeft className="h-4 w-4 -scale-x-100" />
                 כל הפוסטים
@@ -1582,14 +1548,14 @@ export function PostEditor({
               <span />
             )}
             <span className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[#6b6c66]">{postDateLabel(currentPost)}</span>
+              <span className="text-xs font-bold text-[color:var(--ink-soft)]">{postDateLabel(currentPost)}</span>
               <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_TONE[status]}`}>
                 {STATUS_LABEL[status]}
               </span>
             </span>
           </div>
 
-          <h1 className="mb-2 line-clamp-1 text-xl font-black leading-7 md:mb-3 md:line-clamp-2 text-[#20211f] md:text-2xl md:leading-8">
+          <h1 className="mb-2 line-clamp-1 text-xl font-black leading-7 md:mb-3 md:line-clamp-2 text-[color:var(--ink)] md:text-2xl md:leading-8">
             {currentPost.title}
           </h1>
 
@@ -1607,8 +1573,8 @@ export function PostEditor({
                     setOutlet(item.key);
                     setCaptionDraft(null);
                   }}
-                  className={`min-h-11 rounded-full px-3.5 text-sm font-bold transition-colors disabled:opacity-40 ${
-                    outlet === item.key ? "bg-[#eeede8] text-[#20211f]" : "text-[#62635f] hover:text-[#20211f]"
+                  className={`min-h-11 rounded border-b-2 px-3.5 text-sm font-bold transition-colors disabled:opacity-40 ${
+                    outlet === item.key ? "border-[var(--primary)] text-[color:var(--primary)]" : "border-transparent text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
                   }`}
                 >
                   {item.label}
@@ -1627,7 +1593,7 @@ export function PostEditor({
 
           {/* Everything else, one row of quiet actions. */}
           <div role="toolbar" aria-label="עוד פעולות על הפוסט" className="mt-2 grid grid-cols-5 gap-1">
-            {SECTIONS.map(({ key, label, title, Icon }) => {
+            {SECTIONS.map(({ key, label, title }) => {
               const on = isDesktop && shownSection === key;
               return (
                 <button
@@ -1637,11 +1603,11 @@ export function PostEditor({
                   aria-pressed={isDesktop ? on : undefined}
                   aria-haspopup={isDesktop ? undefined : "dialog"}
                   onClick={() => setActive(key)}
-                  className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-xs font-bold transition-colors ${
-                    on ? "bg-[#eeede8] text-[#20211f]" : "text-[#3c3e3a] hover:bg-[#f4f3ee]"
+                  className={`flex min-h-14 flex-col items-center justify-center gap-1 border-b-2 text-xs font-bold transition-colors ${
+                    on ? "border-[var(--primary)] text-[color:var(--primary)]" : "border-transparent text-[color:var(--ink-soft)] hover:text-[color:var(--primary)]"
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
+                  <EditorIcon kind={key} className={editorStyles.toolIcon} />
                   {label}
                 </button>
               );
@@ -1651,14 +1617,16 @@ export function PostEditor({
 
         {/* From 768px up the same sections sit beside the preview instead of over it. */}
         {isDesktop && sectionMeta ? (
-          <aside className="min-w-0 rounded-2xl border border-[#e6e4dc] bg-white p-5">
-            <h2 className="mb-3 text-base font-black text-[#20211f]">{sectionMeta.title}</h2>
+          <aside className="min-w-0 rounded border border-[var(--rule)] border-t-[3px] border-t-[var(--primary)] bg-white p-5 shadow-[4px_5px_0_var(--primary-soft)]">
+            <h2 className="mb-3 text-base font-black text-[color:var(--ink)]">{sectionMeta.title}</h2>
+            {sectionMeta.key === "text" && <p className={editorStyles.stepNote}>2. קראו את הנוסח, תקנו פרטים לפי הצורך, ואז אשרו את הפוסט.</p>}
             {renderSection(sectionMeta.key)}
           </aside>
         ) : null}
       </div>
 
       <BottomSheet
+        style={demo ? productPaletteVariables(palette) : undefined}
         open={!isDesktop && sectionMeta !== null}
         title={sectionMeta?.title ?? ""}
         onClose={closeSection}

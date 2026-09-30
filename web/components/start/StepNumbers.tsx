@@ -93,7 +93,7 @@ function SmallChip({ label, selected, onClick }: { label: string; selected: bool
       aria-pressed={selected}
       onClick={onClick}
       className={`inline-flex h-10 cursor-pointer items-center gap-1 rounded-full border px-3 text-sm font-bold tabular-nums transition-colors ${
-        selected ? "border-[#191b18] bg-[#f1efe8] text-[#191b18] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white text-[#2b2d28] hover:border-[#b9b7ad]"
+        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[#b9b7ad]"
       }`}
     >
       {selected ? (
@@ -127,7 +127,7 @@ function BaselineRow({
   return (
     <div role="group" aria-labelledby={labelId}>
       <div className="flex items-center justify-between gap-2">
-        <p id={labelId} className="text-sm font-bold leading-5 text-[#191b18]">
+        <p id={labelId} className="text-sm font-bold leading-5 text-[color:var(--ink)]">
           {question.label}
         </p>
         <button
@@ -138,7 +138,7 @@ function BaselineRow({
             onChange(unknown ? undefined : UNKNOWN);
           }}
           className={`-my-2 min-h-9 shrink-0 cursor-pointer px-1 text-xs underline underline-offset-4 ${
-            unknown ? "font-bold text-[#191b18]" : "text-[#6b6e65] hover:text-[#191b18]"
+            unknown ? "font-bold text-[color:var(--ink)]" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
           }`}
         >
           {unknown ? "✓ לא בטוחים" : "לא בטוחים"}
@@ -168,9 +168,9 @@ function BaselineRow({
             }}
             placeholder={exact.placeholder}
             dir="ltr"
-            className="min-h-10 w-28 rounded-lg border border-[#dedcd4] bg-white px-3 text-left text-base font-bold text-[#191b18] outline-none focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+            className="min-h-10 w-28 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
           />
-          <span className="text-sm font-bold text-[#5e6159]">{exact.unit}</span>
+          <span className="text-sm font-bold text-[color:var(--ink-soft)]">{exact.unit}</span>
           <QuietLink
             onClick={() => {
               setTyping(false);
@@ -316,8 +316,8 @@ export function StepLever(props: StepProps) {
       {chosen ? (
         secondaryOpen ? (
           <div className={styles.rise}>
-            <p className="mb-1.5 text-xs font-bold text-[#191b18]">
-              ועוד משהו? <span className="font-normal text-[#6b6e65]">(לא חובה)</span>
+            <p className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">
+              ועוד משהו? <span className="font-normal text-[color:var(--ink-soft)]">(לא חובה)</span>
             </p>
             <div className="flex flex-wrap gap-1.5">
               {levers
@@ -349,9 +349,9 @@ export function MathLines({ lines }: { lines: string[] }) {
   const shown = lines.filter((line) => !line.startsWith("היעד:"));
   if (!shown.length) return null;
   return (
-    <ol className="mt-2 space-y-1 border-t border-[#ecebe5] pt-2">
+    <ol className="mt-2 space-y-1 border-t border-[var(--rule)] pt-2">
       {shown.map((line) => (
-        <li key={line} className="text-[13px] leading-5 text-[#2b2d28]">
+        <li key={line} className="text-[13px] leading-5 text-[color:var(--ink)]">
           <BidiText text={line} />
         </li>
       ))}
@@ -361,7 +361,7 @@ export function MathLines({ lines }: { lines: string[] }) {
 
 const PAYBACK_STYLE: Record<string, string> = {
   no: "border-[#e8d3b0] bg-[#fbf3e4] text-[#4a3b22]",
-  partly: "border-[#e2e0d8] bg-[#faf9f6] text-[#2b2d28]",
+  partly: "border-[var(--rule)] bg-[var(--canvas)] text-[color:var(--ink)]",
   pays: "border-[#cfe0c9] bg-[#f1f7ee] text-[#23401f]",
 };
 
@@ -374,7 +374,7 @@ function hasSources(result: SourcesInput): boolean {
 /** The sources, the budget line and every assumption, one level down (UI-RULES rule 2); never dropped. */
 export function SourcesPanel({ result, id }: { result: SourcesInput; id?: string }) {
   return (
-    <div id={id} className={`space-y-2 rounded-xl bg-[#f4f2ec] px-3.5 py-2.5 text-xs leading-5 text-[#2b2d28] ${styles.rise}`}>
+    <div id={id} className={`space-y-2 rounded-xl bg-[var(--primary-soft)] px-3.5 py-2.5 text-xs leading-5 text-[color:var(--ink)] ${styles.rise}`}>
         {result.budget_he ? (
           <p>
             <BidiText text={result.budget_he} />
@@ -384,7 +384,7 @@ export function SourcesPanel({ result, id }: { result: SourcesInput; id?: string
           <ul className="space-y-1">
             {result.assumptions_he.map((line) => (
               <li key={line} className="flex gap-2">
-                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
+                <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--ink-muted)]" />
                 <span>
                   <BidiText text={line} />
                 </span>
@@ -394,11 +394,11 @@ export function SourcesPanel({ result, id }: { result: SourcesInput; id?: string
         ) : null}
         {result.sources.length ? (
           <p>
-            <b className="text-[#191b18]">המקורות: </b>
+            <b className="text-[color:var(--ink)]">המקורות: </b>
             {result.sources.map((source, index) => (
               <span key={source.url}>
                 {index ? " · " : ""}
-                <a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#191b18]">
+                <a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[color:var(--ink)]">
                   {source.title}
                 </a>
               </span>
@@ -420,10 +420,10 @@ export function SourcesToggle({ result }: { result: SourcesInput }) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-1 text-sm font-bold text-[#5e6159] hover:text-[#191b18]"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-1 text-sm font-bold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
       >
         מאיפה המספרים
-        <span aria-hidden className={`h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform ${open ? "rotate-180" : ""}`} />
+        <span aria-hidden className={`h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
       {open ? <div className="basis-full"><SourcesPanel result={result} id={panelId} /></div> : null}
     </>
@@ -456,11 +456,11 @@ export function TargetEdit({
   const lowId = useId();
   const highId = useId();
   const field =
-    "min-h-11 w-24 rounded-lg border border-[#dedcd4] bg-white px-3 text-left text-base font-bold text-[#191b18] outline-none focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]";
+    "min-h-11 w-24 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]";
   return (
-    <div className={`space-y-2 rounded-xl bg-[#faf9f6] p-3 ${styles.rise}`}>
-      <p className="text-xs font-bold text-[#191b18]">היעד שלכם, בתוספת על היום ({target.unit_he})</p>
-      <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-[#5e6159]">
+    <div className={`space-y-2 rounded-xl bg-[var(--canvas)] p-3 ${styles.rise}`}>
+      <p className="text-xs font-bold text-[color:var(--ink)]">היעד שלכם, בתוספת על היום ({target.unit_he})</p>
+      <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-[color:var(--ink-soft)]">
         <label htmlFor={lowId}>מ-+</label>
         <input id={lowId} type="number" inputMode="decimal" min={0} dir="ltr" value={low} onChange={(e) => setLow(e.target.value)} className={field} />
         <label htmlFor={highId}>עד +</label>
@@ -484,7 +484,7 @@ export function TargetEdit({
             }
             onSave({ ...target, value_min: min, value_max: max, accepted: true, edited_by_owner: true });
           }}
-          className="min-h-11 cursor-pointer rounded-full border border-[#191b18] bg-white px-4 text-sm font-bold text-[#191b18]"
+          className="min-h-11 cursor-pointer rounded-full border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)]"
         >
           לשמור את היעד
         </button>
@@ -534,48 +534,48 @@ export function StepTarget(props: StepProps) {
     >
       {loading ? (
         <div className="space-y-2" role="status" aria-live="polite">
-          <p className="text-sm text-[#5e6159]">מחשבים את היעד…</p>
-          <div className={`h-40 rounded-2xl border border-[#e6e4dc] bg-white ${styles.shimmer}`} />
+          <p className="text-sm text-[color:var(--ink-soft)]">מחשבים את היעד…</p>
+          <div className={`h-40 rounded-2xl border border-[var(--rule)] bg-white ${styles.shimmer}`} />
         </div>
       ) : null}
       {failed && !result ? (
-        <div role="alert" className="rounded-xl border border-[#e2e0d8] bg-white p-3.5 text-sm leading-6 text-[#2b2d28]">
-          <p className="font-bold text-[#191b18]">לא הצלחנו לחשב את היעד.</p>
+        <div role="alert" className="rounded-xl border border-[var(--rule)] bg-white p-3.5 text-sm leading-6 text-[color:var(--ink)]">
+          <p className="font-bold text-[color:var(--ink)]">לא הצלחנו לחשב את היעד.</p>
           <p>{failed}</p>
         </div>
       ) : null}
       {result ? (
         <div className={`space-y-3 transition-opacity ${stale ? "opacity-60" : ""}`} aria-busy={stale}>
-          <div className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[#e2e0d8]">
+          <div className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[var(--rule)]">
             {suggestion || owner ? (
               <>
-                {owner ? <p className="text-[11px] font-bold text-[#5e6159]">היעד שלכם</p> : null}
-                <p className="text-xl font-black leading-7 text-[#191b18]">
+                {owner ? <p className="text-[11px] font-bold text-[color:var(--ink-soft)]">היעד שלכם</p> : null}
+                <p className="text-xl font-black leading-7 text-[color:var(--ink)]">
                   <BidiText text={owner ? targetText(owner) : suggestion!.headline_he} />
                 </p>
                 {!owner && suggestion?.level_he ? (
-                  <p className="text-sm text-[#2b2d28]">
+                  <p className="text-sm text-[color:var(--ink)]">
                     כלומר <BidiText text={suggestion.level_he} />
                   </p>
                 ) : null}
                 {owner && suggestion ? (
-                  <p className="text-xs text-[#6b6e65]">
+                  <p className="text-xs text-[color:var(--ink-soft)]">
                     החישוב שלנו: <BidiText text={suggestion.headline_he} />
                   </p>
                 ) : null}
               </>
             ) : (
-              <p className="text-base font-black leading-7 text-[#191b18]">{result.qualitative_he}</p>
+              <p className="text-base font-black leading-7 text-[color:var(--ink)]">{result.qualitative_he}</p>
             )}
             <MathLines lines={result.math_he} />
-            <p className="mt-1.5 text-xs font-bold text-[#6b6e65]">{result.caveat_he}</p>
+            <p className="mt-1.5 text-xs font-bold text-[color:var(--ink-soft)]">{result.caveat_he}</p>
           </div>
           {result.unit_economics_he ? (
             <p className={`rounded-xl border px-3.5 py-2 text-[13px] leading-5 ${PAYBACK_STYLE[result.payback ?? "partly"] ?? PAYBACK_STYLE.partly}`}>
               <BidiText text={result.unit_economics_he} />
             </p>
           ) : null}
-          {!suggestion ? <p className="text-[13px] leading-5 text-[#2b2d28]">{result.first_checkpoint_he}</p> : null}
+          {!suggestion ? <p className="text-[13px] leading-5 text-[color:var(--ink)]">{result.first_checkpoint_he}</p> : null}
           {editing && (suggestion || owner) ? (
             <TargetEdit
               target={owner ?? (targetFromSuggestion(result) as DraftTarget)}

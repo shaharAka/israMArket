@@ -97,21 +97,21 @@ export default function FeaturedPage() {
         ) : (
           <div className="space-y-5">
             {items.length ? (
-              <ol className="divide-y divide-[#eeede8] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+              <ol className="divide-y divide-[var(--primary-soft)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
                 {items.map((item, index) => (
                   <li key={item.name} className="px-4 py-3">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#dedcd4] text-xs font-bold text-[#62635f]">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--rule-dark)] text-xs font-bold text-[color:var(--ink-soft)]">
                         {index + 1}
                       </span>
-                      <span className="min-w-0 flex-1 text-[15px] font-bold text-[#20211f]">{item.name}</span>
+                      <span className="min-w-0 flex-1 text-[15px] font-bold text-[color:var(--ink)]">{item.name}</span>
                       <button
                         type="button"
                         onClick={() => move(index, -1)}
                         disabled={index === 0}
                         aria-label={`להעלות את ${item.name} למעלה`}
                         title="למעלה"
-                        className="min-h-11 min-w-11 rounded-md text-[#62635f] hover:bg-[#f4f3ee] disabled:opacity-30"
+                        className="min-h-11 min-w-11 rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] disabled:opacity-30"
                       >
                         ↑
                       </button>
@@ -121,7 +121,7 @@ export default function FeaturedPage() {
                         disabled={index === items.length - 1}
                         aria-label={`להוריד את ${item.name} למטה`}
                         title="למטה"
-                        className="min-h-11 min-w-11 rounded-md text-[#62635f] hover:bg-[#f4f3ee] disabled:opacity-30"
+                        className="min-h-11 min-w-11 rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] disabled:opacity-30"
                       >
                         ↓
                       </button>
@@ -130,7 +130,7 @@ export default function FeaturedPage() {
                         onClick={() => change(items.filter((_, i) => i !== index))}
                         aria-label={`להסיר את ${item.name}`}
                         title="להסיר"
-                        className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-[#62635f] hover:bg-[#f4f3ee]"
+                        className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)]"
                       >
                         <IconTrash className="h-4 w-4" />
                       </button>
@@ -152,8 +152,8 @@ export default function FeaturedPage() {
                             }
                             className={`min-h-9 rounded-full border px-3 text-xs font-bold transition-colors ${
                               on
-                                ? "border-[#374b3d] bg-[#374b3d] text-white"
-                                : "border-[#dedcd4] bg-white text-[#3c3e3a] hover:bg-[#f4f3ee]"
+                                ? "border-[var(--primary)] bg-[var(--primary-soft)] text-[color:var(--primary)]"
+                                : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
                             }`}
                           >
                             {reason.label_he}
@@ -165,7 +165,7 @@ export default function FeaturedPage() {
                 ))}
               </ol>
             ) : (
-              <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm leading-6 text-[#5e6159]">
+              <p className="rounded-lg border border-[var(--rule)] bg-white px-4 py-3 text-sm leading-6 text-[color:var(--ink-soft)]">
                 עוד לא בחרתם. כתבו שם של {kind === "שירותים" ? "שירות" : "מוצר"}, או בחרו מההצעות.
               </p>
             )}
@@ -187,12 +187,12 @@ export default function FeaturedPage() {
                   maxLength={80}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder={kind === "שירותים" ? "למשל: טיפול פנים" : "למשל: עוגת דבש"}
-                  className="min-h-11 min-w-0 flex-1 rounded-md border border-[#dedcd4] bg-white px-3 text-sm"
+                  className="min-h-11 min-w-0 flex-1 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm"
                 />
                 <button
                   type="submit"
                   disabled={!draft.trim()}
-                  className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border border-[#c7c4b8] bg-white px-4 text-sm font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
+                  className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
                 >
                   <IconPlus className="h-4 w-4" />
                   להוסיף
@@ -202,7 +202,7 @@ export default function FeaturedPage() {
 
             {!full && data.suggestions.filter((name) => !items.some((item) => item.name === name)).length ? (
               <div>
-                <p className="text-xs font-bold text-[#747570]">ממה שכתבתם לנו</p>
+                <p className="text-xs font-bold text-[color:var(--ink-muted)]">ממה שכתבתם לנו</p>
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {data.suggestions
                     .filter((name) => !items.some((item) => item.name === name))
@@ -211,7 +211,7 @@ export default function FeaturedPage() {
                         key={name}
                         type="button"
                         onClick={() => add(name)}
-                        className="min-h-9 rounded-full border border-dashed border-[#c7c4b8] bg-white px-3 text-xs font-bold text-[#3c3e3a] hover:bg-[#f4f3ee]"
+                        className="min-h-9 rounded-full border border-dashed border-[var(--rule-dark)] bg-white px-3 text-xs font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
                       >
                         + {name}
                       </button>
@@ -231,19 +231,19 @@ export default function FeaturedPage() {
                 type="button"
                 onClick={() => void save()}
                 disabled={saving || !dirty}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[#20211f] px-6 text-sm font-bold text-white hover:bg-[#343632] disabled:opacity-40 sm:w-auto"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--primary)] px-6 text-sm font-bold text-white hover:bg-[var(--primary-dark)] disabled:opacity-40 sm:w-auto"
               >
                 {saving ? "שומרים…" : "לשמור את הרשימה"}
               </button>
               {!dirty && enough ? (
-                <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[#20211f] underline underline-offset-4">
+                <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">
                   לצעד הבא
                   <IconArrowLeft className="h-4 w-4" />
                 </Link>
               ) : null}
             </div>
             {enough ? null : (
-              <p className="text-xs text-[#62635f]">
+              <p className="text-xs text-[color:var(--ink-soft)]">
                 צריך לפחות {data.min}. אפשר לשמור גם פחות, ולהשלים אחר כך.
               </p>
             )}

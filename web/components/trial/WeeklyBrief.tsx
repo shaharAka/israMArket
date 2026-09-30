@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { Business, StrategyPayload } from "@/lib/api";
 import { IconArrowLeft, IconFlag, IconLightbulb } from "@/lib/icons";
 import { researchLatest, type TrialPayload } from "@/lib/trial";
+import { HypothesisNote } from "@/components/design/PlanBrief";
 
 const SOURCE_HE: Record<string, string> = { instagram: "אינסטגרם", site: "נתוני האתר", whatsapp: "קישור הוואטסאפ" };
 
@@ -63,27 +64,27 @@ export function WeeklyBrief({
 
   const focus = focusOf(trial, strategy, business);
   return (
-    <div className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
+    <div className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white px-4 sm:px-5">
       {focus ? (
-        <Link href="/strategy" className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[#20211f]">
-          <IconFlag className="mt-1 h-4 w-4 shrink-0 text-[#62635f]" />
+        <Link href="/strategy" className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[color:var(--ink)]">
+          <IconFlag className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
           <span className="min-w-0 flex-1">
-            <span className="block text-xs font-bold text-[#747570]">הפוקוס השבוע</span>
-            <span className="mt-0.5 block text-sm font-bold leading-6 text-[#20211f]">{focus}</span>
+            <span className="block text-xs font-bold text-[color:var(--ink-muted)]">הפוקוס השבוע</span>
+            <span className="mt-0.5 block text-sm font-bold leading-6 text-[color:var(--ink)]">{focus}</span>
           </span>
-          <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[#8b8e84]" />
+          <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
         </Link>
       ) : null}
       <Link
         href={headline ? "/performance#research" : "/performance"}
-        className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[#20211f]"
+        className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[color:var(--ink)]"
       >
-        <IconLightbulb className="mt-1 h-4 w-4 shrink-0 text-[#62635f]" />
+        <IconLightbulb className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
         <span className="min-w-0 flex-1">
-          <span className="block text-xs font-bold text-[#747570]">מה למדנו</span>
-          <span className="mt-0.5 block text-sm leading-6 text-[#20211f]">{learnedLine(trial, headline)}</span>
+          <span className="block text-xs font-bold text-[color:var(--ink-muted)]">מה למדנו</span>
+          <span className="mt-0.5 block text-sm leading-6 text-[color:var(--ink)]">{learnedLine(trial, headline)}</span>
         </span>
-        <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[#8b8e84]" />
+        <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
       </Link>
     </div>
   );
@@ -92,39 +93,28 @@ export function WeeklyBrief({
 /**
  * The plan's hypotheses and where each stands: נמדדת / אושרה / לא אושרה. Folded to one
  * line; the monthly review sets the statuses, so until then every one reads "נמדדת".
+ * Each is the design library's HypothesisNote; its status is the supplied evidence line,
+ * in words (plain status text, not a coloured pill).
  */
 export function HypothesisStatus({ trial, className = "" }: { trial: TrialPayload | null; className?: string }) {
   const items = trial?.hypotheses ?? [];
   if (!items.length) return null;
   const measuring = items.filter((item) => item.status === "measuring").length;
-  const tone: Record<string, string> = {
-    measuring: "bg-[#f0efea] text-[#62635f]",
-    confirmed: "bg-[#eaf0e6] text-[#374b3d]",
-    not_confirmed: "bg-[#fbf2ef] text-[#9f4330]",
-  };
   return (
     <details className={`group ${className}`}>
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#20211f]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
         <span>
           ההשערות שבודקים · {measuring === items.length ? `${items.length} נמדדות` : `${items.length - measuring} מתוך ${items.length} הוכרעו`}
         </span>
         <span
           aria-hidden
-          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
         />
       </summary>
-      <ul className="space-y-3 pb-4">
+      <ul className="divide-y divide-[var(--rule)] pb-2">
         {items.map((item, index) => (
-          <li key={`${index}-${item.text_he}`} className="flex items-start gap-3">
-            <span className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[11px] font-bold ${tone[item.status]}`}>
-              {item.status_he}
-            </span>
-            <span className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
-              {item.text_he}
-              {item.if_wrong_he ? (
-                <span className="block text-xs leading-5 text-[#62635f]">אם היא לא תתאמת: {item.if_wrong_he}</span>
-              ) : null}
-            </span>
+          <li key={`${index}-${item.text_he}`}>
+            <HypothesisNote hypothesis={item.text_he} ifWrong={item.if_wrong_he} evidence={`מצב: ${item.status_he}`} />
           </li>
         ))}
       </ul>
