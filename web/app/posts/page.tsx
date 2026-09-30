@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
@@ -7,7 +8,8 @@ import { PostEditor } from "@/components/PostEditor";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
-import { endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
+import { StepLink } from "@/components/trial/StepLink";
+import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
 import { IconCalendar } from "@/lib/icons";
 
 /**
@@ -75,6 +77,7 @@ function PostsWorkspace() {
   const location = readLocation(params);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
+  const [noMonth, setNoMonth] = useState(false);
   const [queue, setQueue] = useState<PublishQueue | null>(null);
 
   // Whether the open post was reached from this page's own feed. Closing it then steps
@@ -105,7 +108,12 @@ function PostsWorkspace() {
           }
         }
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
+        if (!active) return;
+        // No month yet (right after /start, while it is written) is a normal state with
+        // its own screen, not an error. A 401 is AppShell's redirect to make.
+        if (err instanceof ApiError && err.status === 404) setNoMonth(true);
+        else if (!(err instanceof ApiError && err.status === 401))
+          setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
       }
     }
     void loadPosts();
@@ -263,7 +271,11 @@ function PostsWorkspace() {
       ) : null}
 
       {!strategy ? (
-        !error ? <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש…</p> : null
+        noMonth ? (
+          <NoPostsYet />
+        ) : !error ? (
+          <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש…</p>
+        ) : null
       ) : location.calendar ? (
         <CalendarView
           initialYear={strategy.year}
@@ -276,6 +288,31 @@ function PostsWorkspace() {
         <PostFeed posts={posts} brand={strategy.brand_language} onOpen={openPost} />
       )}
     </div>
+  );
+}
+
+/**
+ * No month yet — normal in the free month: posts are written only once the week-2
+ * foundations are in (Revision 8). Says why, and links to the step that is next.
+ */
+function NoPostsYet() {
+  return (
+    <section className="rounded-lg border border-[#e6e4dc] bg-white px-6 py-8 text-center">
+      <h2 className="text-lg font-black text-[#20211f]">עוד אין פוסטים לחודש הזה</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#5e6159]">
+        קודם מחברים מדידה ובוחרים מוצרים, ככה הפוסטים יהיו שלכם. אחר כך נכתוב אותם, והם יחכו כאן
+        לאישור שלכם.
+      </p>
+      <div className="mt-4 flex flex-col items-center gap-1">
+        <Link
+          href="/strategy"
+          className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[#c7c4b8] bg-white px-4 text-sm font-bold text-[#1e201d] hover:bg-[#f4f3ee]"
+        >
+          לראות את התוכנית
+        </Link>
+        <StepLink stepKey={["instagram", "site_data", "whatsapp", "gbp", "baseline", "photos", "featured", "voice", "start_posts"]} />
+      </div>
+    </section>
   );
 }
 

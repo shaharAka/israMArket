@@ -44,8 +44,8 @@ export const ACCENT = {
 export const SECTIONS: Record<SectionKey, SectionIdentity> = {
   dashboard: {
     ...ACCENT,
-    eyebrow: "היום",
-    purpose: "מה מתקדם, ומה צריך מכם עכשיו",
+    eyebrow: "השבוע",
+    purpose: "הפוקוס של השבוע, מה למדנו, ומה צריך מכם",
   },
   strategy: {
     ...ACCENT,

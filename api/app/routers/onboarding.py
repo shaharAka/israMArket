@@ -173,6 +173,10 @@ def from_draft(
         chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
         quarter_plan=_stored_plan(body.quarter_plan),
     )
+    # The free month (Revision 7 B) starts at signup; an account from before the trial
+    # existed starts it here, the first time it brings a plan in.
+    if user.trial_started_at is None:
+        user.trial_started_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business)}

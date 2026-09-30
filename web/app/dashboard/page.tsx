@@ -11,7 +11,11 @@ import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SetupChecklist } from "@/components/SetupChecklist";
 import { postDay, postHref, postState, STATE_LABEL, type PostState } from "@/components/today/posts";
+import { ContactLink } from "@/components/trial/StepLink";
+import { TrialGuide } from "@/components/trial/TrialGuide";
+import { HypothesisStatus, WeeklyBrief } from "@/components/trial/WeeklyBrief";
 import {
+  ApiError,
   endpoints,
   type Business,
   type InstagramBriefPayload,
@@ -21,6 +25,7 @@ import {
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
 import { IconArrowLeft, IconCheck, IconImage, IconRoute } from "@/lib/icons";
+import { foundationsDone, loadTrial, useTrial } from "@/lib/trial";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
@@ -44,64 +49,81 @@ function monthNearlyDone(strategy: StrategyPayload, allApproved: boolean): boole
   return planEnd.getDate() - now.getDate() < 7;
 }
 
+/** The month: loading, there, not built yet (404 — normal right after /start), or failed. */
+type MonthState = "loading" | "ready" | "none" | "error";
+
 /**
- * Today.
+ * השבוע (the home tab, `/dashboard`) — during the free month, the weekly brief and the
+ * guide (docs/onboarding-v2.md, Revision 7 B in the order of Revision 8).
  *
  * The one screen the owner opens without being asked to do something, read on a phone
- * between customers. So it answers three questions in order and stops:
+ * between customers. In the free month it answers, in order:
  *
- * 1. What do you need from me now? — one card, one dark button.
- * 2. What is going out this week? — a short list, each post tappable.
- * 3. How far along is the month? — one line.
+ * 1. Where am I? — "יום N מתוך 30" and the one next step: why, how long, one dark button.
+ * 2. What is the month made of? — the journey by week, the current week open, ticking
+ *    itself as things really happen (`GET /trial`).
+ * 3. The 3-month plan, one row; then this week's posts.
  *
- * Everything else that used to compete for the first screen — setup, budget, the leading
- * target, the week's one recommendation, the month's reasoning, next month — is still
- * here, one tap down in a single quiet list. Nothing was dropped.
+ * The journey replaces the setup checklist here: both are computed from the same facts
+ * (api/app/services/journey.py), and two lists of the same steps would compete. After the
+ * free month — or if `/trial` fails — Today is what it was: the next post is the ask, and
+ * the checklist is one quiet row.
+ *
+ * Nothing here may reject unhandled: a signed-out visit gets 401s that AppShell turns into
+ * a redirect, so every call catches, and a 401 renders nothing rather than an error.
  */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
+  const [month, setMonth] = useState<MonthState>("loading");
   const [recommendation, setRecommendation] = useState<RecommendationPayload | null>(null);
   const [instagram, setInstagram] = useState<InstagramBriefPayload | null>(null);
-  // No month yet (right after signup, while the server builds the first one).
-  const [noMonth, setNoMonth] = useState(false);
+  const { payload: trial, failed: trialFailed } = useTrial();
 
   useEffect(() => {
-    Promise.all([endpoints.business(), endpoints.strategy().catch(() => null)]).then(([businessResult, strategyResult]) => {
-      setBusiness(businessResult.business);
-      setStrategy(strategyResult);
-      setNoMonth(!strategyResult);
-    });
+    // Today is where ticks are read, so it always asks afresh rather than trusting the
+    // copy another tab loaded minutes ago.
+    void loadTrial(true);
+    endpoints
+      .business()
+      .then((result) => setBusiness(result.business))
+      .catch(() => {});
+    endpoints
+      .strategy()
+      .then((result) => {
+        setStrategy(result);
+        setMonth("ready");
+      })
+      .catch((err: unknown) => {
+        if (err instanceof ApiError && err.status === 401) return; // AppShell redirects
+        setMonth(err instanceof ApiError && err.status === 404 ? "none" : "error");
+      });
     endpoints.recommendations().then(setRecommendation).catch(() => {});
     // Guidance only: a failed call just means no nudge.
     endpoints.instagramBrief().then(setInstagram).catch(() => {});
   }, []);
 
-  if (!strategy) {
+  const guided = Boolean(trial && !trial.ended);
+  const trialSettled = Boolean(trial) || trialFailed;
+
+  if (month === "loading" || !trialSettled) {
     return (
       <AppShell>
         <div className="mx-auto max-w-3xl">
-          <SectionHeader section="dashboard" title="היום" />
-          {noMonth ? (
-            <MonthBuildProgress
-              autoStart={Boolean(business && !business.onboarding_complete)}
-              onDone={() => void endpoints.strategy().then(setStrategy).catch(() => {})}
-            />
-          ) : (
-            <LoadingMark label="טוענים את החודש…" />
-          )}
+          <SectionHeader section="dashboard" title="השבוע" />
+          <LoadingMark label="טוענים את החודש…" />
         </div>
       </AppShell>
     );
   }
 
-  const posts = strategy.roadmap?.posts || [];
+  const posts = strategy?.roadmap?.posts || [];
   const nextIndex = posts.findIndex((post) => post.approval_status !== "approved");
   const nextPost = nextIndex >= 0 ? posts[nextIndex] : undefined;
   const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
   const allApproved = posts.length > 0 && approvedCount === posts.length;
-  const currentWeek = currentWeekOf(strategy);
-  const nearlyDone = monthNearlyDone(strategy, allApproved);
+  const currentWeek = strategy ? currentWeekOf(strategy) : null;
+  const nearlyDone = strategy ? monthNearlyDone(strategy, allApproved) : false;
 
   // "This week" is the plan week today falls in. Outside the plan's month there is no
   // "this week", so the list shows the week of the post that is waiting instead.
@@ -113,13 +135,38 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        <SectionHeader section="dashboard" title={`${strategy.month_name_he} ${strategy.year}`} />
+        <SectionHeader
+          section="dashboard"
+          title="השבוע"
+        />
 
         <div className="rise-stagger space-y-7">
+          {/* Revision 7 A: the month being built on the server, above everything else. */}
+          {month === "none" ? (
+            <MonthBuildProgress
+              autoStart={Boolean(business && !business.onboarding_complete)}
+              onDone={() =>
+                void endpoints
+                  .strategy()
+                  .then((result) => {
+                    setStrategy(result);
+                    setMonth("ready");
+                  })
+                  .catch(() => {})
+              }
+            />
+          ) : null}
+
           {/* 1. The one thing. */}
-          {nextPost ? (
+          {/* The weekly brief (Revision 8): the week's focus and what we learned; what
+              needs a decision is the journey's next step, the card below. */}
+          {guided && trial ? <WeeklyBrief trial={trial} strategy={strategy} business={business} /> : null}
+
+          {guided && trial ? (
+            <TrialGuide trial={trial} />
+          ) : nextPost ? (
             <NextPostCard post={nextPost} index={nextIndex} total={posts.length} />
-          ) : allApproved ? (
+          ) : strategy && allApproved ? (
             <section className="rounded-lg border border-[#cecdc7] bg-white px-4 pt-4 sm:px-5">
               <p className="flex items-center gap-2 text-base font-black text-[#20211f]">
                 <IconCheck className="h-4 w-4 shrink-0" />
@@ -134,17 +181,45 @@ export default function DashboardPage() {
               )}
             </section>
           ) : (
-            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
-            </section>
+            <MonthNotReady month={month} />
           )}
 
-          {/* 2. This week, and 3. how far along the month is. */}
-          {posts.length ? (
+          {/* The 3-month plan, and everything else: quiet rows in one container. */}
+          <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
+            <QuarterPlanRow strategy={strategy} business={business} />
+            <HypothesisStatus trial={guided ? trial : null} />
+            {guided ? null : instagram && needsInstagram(instagram) ? (
+              <InstagramNudge connected={instagram.meta_connected} />
+            ) : null}
+            {guided ? null : <SetupChecklist />}
+            {guided && month === "error" ? <MonthNotReadyRow month={month} /> : null}
+            {/* In the free month, building next month is a step of the journey
+                ("לבנות את החודש השני"), so it is not a second row here. */}
+            {strategy && nearlyDone && !allApproved && !guided ? (
+              <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
+            ) : null}
+            {strategy ? (
+              <MoreAboutMonth
+                strategy={strategy}
+                business={business}
+                recommendation={recommendation}
+                currentWeek={currentWeek}
+              >
+                {nearlyDone ? null : (
+                  <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
+                )}
+              </MoreAboutMonth>
+            ) : null}
+          </section>
+
+          {/* This week's posts, and how far along the month is. In the free month they wait
+              for the week-2 foundations: posts are not pushed before measurement, the
+              products and the owner's photos are in (Revision 8). */}
+          {posts.length > 0 && (!guided || (trial && foundationsDone(trial))) ? (
             <section aria-labelledby="week-heading">
               <div className="flex items-baseline justify-between gap-3">
                 <h2 id="week-heading" className="text-base font-black text-[#20211f]">
-                  {currentWeek ? "השבוע" : `שבוע ${shownWeek}`}
+                  {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`}
                 </h2>
                 <Link href="/posts" className="text-xs font-bold text-[#5e6159] underline-offset-4 hover:underline">
                   כל הפוסטים
@@ -182,28 +257,39 @@ export default function DashboardPage() {
             </section>
           ) : null}
 
-          {/* Everything else: quiet rows in one container. */}
-          <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
-            <QuarterPlanRow strategy={strategy} business={business} />
-            {instagram && needsInstagram(instagram) ? <InstagramNudge connected={instagram.meta_connected} /> : null}
-            <SetupChecklist />
-            {nearlyDone && !allApproved ? (
-              <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
-            ) : null}
-            <MoreAboutMonth
-              strategy={strategy}
-              business={business}
-              recommendation={recommendation}
-              currentWeek={currentWeek}
-            >
-              {nearlyDone ? null : (
-                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
-              )}
-            </MoreAboutMonth>
-          </section>
+          <ContactLink className="text-center" />
         </div>
       </div>
     </AppShell>
+  );
+}
+
+/** No month to show, outside the free month: say why, never a blank card. */
+function MonthNotReady({ month }: { month: MonthState }) {
+  return (
+    <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
+      <p className="text-sm leading-6 text-[#62635f]">
+        {month === "error" ? "לא הצלחנו לטעון את החודש. נסו לרענן את העמוד." : "עוד מכינים את הפוסטים של החודש."}
+      </p>
+      {month === "none" ? (
+        <Link href="/strategy" className="mt-1 inline-flex min-h-11 items-center text-sm font-bold text-[#20211f] underline underline-offset-4">
+          לתוכנית
+        </Link>
+      ) : null}
+    </section>
+  );
+}
+
+/** In the free month the journey is the ask; the missing month is one quiet row. */
+function MonthNotReadyRow({ month }: { month: MonthState }) {
+  return (
+    <Link href="/strategy" className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
+      <IconImage className="h-4 w-4 shrink-0 text-[#62635f]" />
+      <span className="min-w-0 flex-1 text-sm leading-6 text-[#3c3e3a]">
+        {month === "error" ? "לא הצלחנו לטעון את הפוסטים של החודש" : "הפוסטים של החודש עוד נכתבים"}
+      </span>
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+    </Link>
   );
 }
 
@@ -211,9 +297,9 @@ export default function DashboardPage() {
  * The 3-month plan, one row: the plan's one line (or, for a business from before the
  * stored plan, the quarter's hypothesis), leading to /strategy.
  */
-function QuarterPlanRow({ strategy, business }: { strategy: StrategyPayload; business: Business | null }) {
-  const plan = strategy.quarter_plan ?? business?.quarter_plan;
-  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+function QuarterPlanRow({ strategy, business }: { strategy: StrategyPayload | null; business: Business | null }) {
+  const plan = strategy?.quarter_plan ?? business?.quarter_plan;
+  const quarter = strategy?.long_horizon_plan || strategy?.roadmap?.long_horizon_plan;
   const line = plan?.strategy.one_liner_he || quarter?.hypothesis;
   if (!line) return null;
   return (

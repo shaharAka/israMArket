@@ -51,6 +51,15 @@ def migrate_db():
         for col, col_type in new_cols:
             if col not in existing:
                 conn.exec_driver_sql(f"ALTER TABLE businesses ADD COLUMN {col} {col_type}")
+        # The free first month (Revision 7 B): additive, NULL/empty on existing accounts.
+        user_cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(users)").fetchall()}
+        for col, col_type in (
+            ("trial_started_at", "DATETIME"),
+            ("welcomed_at", "DATETIME"),
+            ("trial_events_json", "TEXT DEFAULT '{}'"),
+        ):
+            if col not in user_cols:
+                conn.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
         # The business field list became industries only (keys, not Hebrew labels).
         # Rewrites old labels once; a row that already holds a key is left alone.
         from app.services.business_fields import migrate_business_types

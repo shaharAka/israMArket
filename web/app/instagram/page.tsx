@@ -9,6 +9,7 @@ import { HandlesEditor } from "@/components/instagram/HandlesEditor";
 import { LearnedList } from "@/components/instagram/LearnedList";
 import { OwnTopPosts } from "@/components/instagram/OwnTopPosts";
 import { SectionHeader } from "@/components/SectionHeader";
+import { StepLink } from "@/components/trial/StepLink";
 import { endpoints, type InstagramBriefPayload } from "@/lib/api";
 import { IconArrowLeft } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -128,6 +129,7 @@ export default function InstagramPage() {
                   <div className="mt-1">
                     <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
                   </div>
+                  <StepLink stepKey="instagram" />
                 </>
               ) : (
                 <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>

@@ -20,6 +20,7 @@ import { formatNis } from "@/lib/budget";
 import { IconBell, IconCheck, IconCopy, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { copyText } from "@/lib/ui";
+import { GbpConfirm } from "@/components/trial/GbpConfirm";
 
 const identity = SECTIONS.promotion;
 
@@ -1142,7 +1143,7 @@ export default function PromotionPage() {
         </section>
 
         {/* ---------- what is free ---------- */}
-        <section aria-labelledby="profile-heading" className="mt-4 border-t border-[#e6e4dc] pt-5">
+        <section id="profile" aria-labelledby="profile-heading" className="mt-4 scroll-mt-20 border-t border-[#e6e4dc] pt-5">
           <div className="flex flex-wrap items-center gap-2">
             <span style={{ color: identity.accent }}>
               <IconStore className="h-4 w-4" />
@@ -1163,6 +1164,7 @@ export default function PromotionPage() {
                 {profile.steps.length} צעדים
                 {criticalSteps ? `, ${criticalSteps} מהם דחופים` : ""}. הראשון: {profile.steps[0].title}.
               </p>
+              <GbpConfirm />
 
               <details className="group mt-1 border-t border-[#e6e4dc]">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#5e6159] hover:text-[#20211f]">
