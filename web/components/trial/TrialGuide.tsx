@@ -36,7 +36,8 @@ export function minutesLabel(minutes: number) {
 
 /** The price line of the last step, from the one place the price lives. */
 function continueLine() {
-  return `${formatPrice()} לחודש אחרי החודש החינמי, ${VAT_NOTE}. ${NO_COMMITMENT_LABEL}, והתשלום עוד לא פתוח.`;
+  // Paying happens on /billing, near the end of the free month (docs/billing.md).
+  return `${formatPrice()} לחודש אחרי החודש החינמי, ${VAT_NOTE}. ${NO_COMMITMENT_LABEL}.`;
 }
 
 /**

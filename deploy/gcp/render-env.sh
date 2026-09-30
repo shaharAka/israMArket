@@ -98,6 +98,12 @@ trap 'rm -f "$tmp"' EXIT
   line GOOGLE_CLIENT_SECRET "$(secret google-client-secret optional)"
   line META_APP_ID "$(secret meta-app-id optional)"
   line META_APP_SECRET "$(secret meta-app-secret optional)"
+  # PayPal subscription billing (docs/billing.md). Blank = "payment not open yet".
+  # Non-secret companions go in $EXTRA_FILE: PAYPAL_ENV (sandbox|live), PAYPAL_PLAN_ID,
+  # BILLING_ENFORCE (default false).
+  line PAYPAL_CLIENT_ID "$(secret paypal-client-id optional)"
+  line PAYPAL_CLIENT_SECRET "$(secret paypal-client-secret optional)"
+  line PAYPAL_WEBHOOK_ID "$(secret paypal-webhook-id optional)"
 
   if [[ -f "$EXTRA_FILE" ]]; then
     echo "# --- $EXTRA_FILE"

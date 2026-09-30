@@ -47,7 +47,7 @@ export const TABS: Tab[] = [
 ];
 
 // `/security` is public (the landing links to it) and has no shell.
-const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/help"];
+const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help"];
 
 function underRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);

@@ -48,6 +48,7 @@ from app.services.strategy import (
 )
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
 
@@ -394,7 +395,7 @@ def preview_scan(
     return {"scan": scanned}
 
 
-@router.post("/hypotheses")
+@router.post("/hypotheses", dependencies=[Depends(require_generation_access)])
 def hypotheses(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -440,7 +441,7 @@ def _wizard_payload(business: Business, stored: dict) -> dict:
     }
 
 
-@router.post("/targets")
+@router.post("/targets", dependencies=[Depends(require_generation_access)])
 def targets(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -467,7 +468,7 @@ def targets(
     return {"targets": items}
 
 
-@router.post("/plan")
+@router.post("/plan", dependencies=[Depends(require_generation_access)])
 def long_horizon_plan(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -746,7 +747,7 @@ def _first_month_strategy(db: Session, business: Business, year: int, month: int
     )
 
 
-@router.post("/generate")
+@router.post("/generate", dependencies=[Depends(require_generation_access)])
 def generate(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -806,7 +807,7 @@ class PostsStartIn(BaseModel):
     week: int | None = Field(default=None, ge=1, le=4)
 
 
-@router.post("/posts/start")
+@router.post("/posts/start", dependencies=[Depends(require_generation_access)])
 def start_posts(
     body: PostsStartIn | None = Body(default=None),
     user: User = Depends(get_current_user),

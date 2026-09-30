@@ -18,6 +18,7 @@ from app.db import get_db
 from app.deps import get_business
 from app.models import Business, ResearchRun
 from app.services import research
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(prefix="/research", tags=["research"])
 
@@ -52,7 +53,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
     }
 
 
-@router.post("/run")
+@router.post("/run", dependencies=[Depends(require_generation_access)])
 def run_now(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     try:
         research.check_rate_limit(db, business.id)

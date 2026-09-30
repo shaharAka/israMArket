@@ -27,10 +27,12 @@ from app.models import (
     InspirationBrief,
     InstagramPost,
     Integration,
+    Payment,
     PerformanceSnapshot,
     Recommendation,
     ResearchRun,
     Strategy,
+    Subscription,
     User,
     WebhookDelivery,
     WebhookEndpoint,
@@ -79,6 +81,10 @@ class AccountDeletionTest(unittest.TestCase):
         user = User(email=email, password_hash=hash_password(PASSWORD), full_name="בעלת העסק")
         db.add(user)
         db.flush()
+        # Billing rows are the user's, not a business's. Already cancelled, so the deletion
+        # has nothing to cancel at PayPal (tests/test_billing.py covers that call).
+        db.add(Subscription(user_id=user.id, provider_subscription_id=f"I-SEED{user.id}", status="CANCELLED"))
+        db.add(Payment(user_id=user.id, provider_payment_id=f"SALE-SEED-{user.id}", amount="99.00"))
         ids: list[int] = []
         for index in range(businesses):
             business = Business(user_id=user.id, name=f"עסק {index}")

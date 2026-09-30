@@ -435,6 +435,62 @@ class GenerationJob(Base):
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
 
 
+class Subscription(Base):
+    """The account's paid subscription (routers/billing.py, docs/billing.md).
+
+    One row per user: the subscription that currently counts. Subscribing again (after a
+    cancellation) replaces the provider id on the same row; the payments keep their own
+    history. Every field is copied from what PayPal itself returned (a subscription fetched
+    server-side, or a webhook whose signature PayPal verified), never from the browser.
+    """
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), unique=True, index=True)
+    provider: Mapped[str] = mapped_column(String(20), default="paypal")
+    # PayPal's subscription id ("I-…").
+    provider_subscription_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    plan_id: Mapped[str] = mapped_column(String(64), default="")
+    # PayPal's own status: APPROVAL_PENDING | APPROVED | ACTIVE | SUSPENDED | CANCELLED | EXPIRED.
+    status: Mapped[str] = mapped_column(String(20), default="APPROVAL_PENDING")
+    # PayPal's billing_info.next_billing_time. Kept after a cancellation: it is then the end
+    # of the period already paid for ("paid through").
+    next_billing_time: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+    # BILLING.SUBSCRIPTION.PAYMENT.FAILED; cleared by the next completed payment.
+    payment_failed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    cancelled_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+
+
+class Payment(Base):
+    """A completed payment (PayPal's PAYMENT.SALE.COMPLETED), stored once per sale id.
+
+    Kept so that Israeli tax invoices can be issued later by an invoicing service (Morning /
+    Green Invoice or iCount): `invoice_ref` is that service's document id, NULL until the
+    integration exists. PayPal does not issue Israeli tax invoices. See docs/billing.md.
+    """
+
+    __tablename__ = "payments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    provider: Mapped[str] = mapped_column(String(20), default="paypal")
+    # PayPal's sale id: the idempotency key (a webhook delivered twice is stored once).
+    provider_payment_id: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    provider_subscription_id: Mapped[str] = mapped_column(String(64), default="")
+    # The decimal string exactly as PayPal sent it ("99.00"), never a float.
+    amount: Mapped[str] = mapped_column(String(20), default="")
+    currency: Mapped[str] = mapped_column(String(3), default="ILS")
+    paid_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # PayPal's sale state ("completed").
+    raw_status: Mapped[str] = mapped_column(String(40), default="")
+    # TODO(invoicing): the tax invoice's id in the invoicing service, once it exists.
+    invoice_ref: Mapped[str | None] = mapped_column(String(120), nullable=True, default=None)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 # --- ids that come back ---------------------------------------------------------------
 #
 # SQLite hands out the highest free rowid again (these tables have no AUTOINCREMENT), so a
