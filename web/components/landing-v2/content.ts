@@ -95,3 +95,21 @@ export const TRUST = [
   { k: "הסיסמאות נשארות אצלכם", v: "את החיבור לאינסטגרם ולגוגל עושים אצלם. הסיסמה לא עוברת דרכנו." },
   { k: "מוחקים בכל רגע", v: "אפשר לנתק חיבור או למחוק את החשבון וכל המידע." },
 ];
+
+/**
+ * The hero route (a map, like a navigation app): stops on the way to the goal, in SVG
+ * coordinates of the 640 × 560 map, and `at` = how far along the route (0–1) each one is.
+ * The "next step" panel changes as the route passes each stop.
+ */
+export const ROUTE_STOPS = [
+  { x: 430, y: 405, at: 0.25, month: "אוקטובר", text: "מודדים ומכינים", side: "left" },
+  { x: 340, y: 330, at: 0.45, month: "נובמבר", text: "הלקוחות הקבועים", side: "up" },
+  { x: 180, y: 180, at: 0.82, month: "דצמבר", text: "חנוכה", side: "down" },
+] as const;
+
+export const NEXT_STEPS = [
+  "מחברים קישור וואטסאפ ומודדים מאיפה מגיעות הפניות",
+  "תזכורת ללקוחות הקבועים, בוואטסאפ ובסטורי",
+  "הזמנות מראש לסופגניות, שבועיים לפני החג",
+  "בודקים מה הצליח ומעדכנים את החודש הבא",
+];
