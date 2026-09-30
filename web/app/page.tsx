@@ -18,8 +18,7 @@ import "@/components/landing/landing.css";
  *
  * The product is the PLAN, not the post: a marketing plan for 3 months built for this
  * one business. The page tells it in order: research → strategy → the 3-month plan
- * (hero route, showcase) → measure → adjust (Cycle). Posts appear only as titles inside
- * a plan.
+ * (hero route, showcase) → execute with posts → measure → adjust (Cycle).
  *
  * Order: hero → showcase → cycle → security → pricing → FAQ → closing ask. Each section
  * has at most one dark button. The headline is the LCP; the route beside it is inline SVG.
@@ -67,26 +66,17 @@ export default function Home() {
               חוקרים את העסק, הלקוחות ולוח השנה, ובונים איתכם תוכנית ל-3 החודשים הקרובים. כל חודש בודקים מה הצליח ומעדכנים.
             </p>
 
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:gap-4">
               <Link
                 href="/start"
-                className="drawn-button lp-press inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-10 py-3 text-base font-bold text-white hover:bg-[var(--primary-dark)] sm:w-auto"
+                className="drawn-button lp-press inline-flex min-h-12 items-center justify-center gap-2 bg-[var(--primary)] px-8 py-3 text-sm font-bold text-white hover:bg-[var(--primary-dark)] sm:min-w-40"
               >
                 להתחיל
                 <IconArrowLeft className="lp-cta-arrow h-4 w-4" />
               </Link>
-              <p className="text-center text-sm text-[var(--ink-soft)] sm:text-right">אפשר להתחיל בלי להירשם.</p>
+              <DemoLink className="inline-flex min-h-12 items-center justify-center rounded border border-[var(--rule-dark)] px-6 py-3 text-sm font-bold text-[var(--primary)] hover:bg-[var(--primary-soft)] disabled:opacity-60" />
             </div>
-
-            <p className="mt-3 flex flex-wrap items-center justify-center gap-x-4 text-sm text-[var(--ink-soft)] sm:justify-start">
-              <span>
-                כבר יש לכם חשבון?{" "}
-                <Link href="/login" className={QUIET_LINK}>
-                  להיכנס
-                </Link>
-              </span>
-              <DemoLink className={QUIET_LINK} />
-            </p>
+            <p className="mt-2 text-xs leading-6 text-[var(--ink-soft)]">אפשר להתחיל בלי להירשם.</p>
           </div>
 
           <RouteMap variant="wide" className="hidden lg:block" />
