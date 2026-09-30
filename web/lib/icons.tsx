@@ -27,11 +27,10 @@ export const BRAND_MARK_PATHS = [
   // sun
   "M9 6.5a3 3 0 016 0",
   "M12 1.2v1.3M8.3 2.7l.9.9M15.7 2.7l-.9.9",
-  // awning slope + scallops
-  "M3.5 10l2-3.5h13l2 3.5",
-  "M3.5 10c0 2.3 4.25 2.3 4.25 0c0 2.3 4.25 2.3 4.25 0c0 2.3 4.25 2.3 4.25 0c0 2.3 4.25 2.3 4.25 0",
-  // posts + counter
-  "M6.2 12.6v6.9M17.8 12.6v6.9M3 19.5h18",
+  // flat striped awning, display window and entrance
+  "M4 6.5h16V9H4zM3 9h18v2c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0V9z",
+  "M7.5 9v2M12 9v2M16.5 9v2",
+  "M4 13.5V21h16v-7.5M6.5 14.5h6V18h-6zM15 21v-6.5h2.5V21M2.5 21h19",
 ];
 
 export function BrandMark({ className = "w-8 h-8" }: IconProps) {

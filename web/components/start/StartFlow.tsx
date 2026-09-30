@@ -11,9 +11,13 @@ import {
   hasSavableDraft,
   loadFlow,
   normalizeUrl,
+  NETWORKS,
+  signature,
   saveFlow,
   saveFlowToAccount,
   scanBrand,
+  validateLinks,
+  type LinkKey,
   type FlowState,
   type OnboardingDraft,
 } from "@/lib/draft";
@@ -28,6 +32,7 @@ import {
   isStepId,
   migrateStep,
   nextStep,
+  nextStepLabel,
   previousStep,
   reflectionAfter,
   type StepId,
@@ -166,6 +171,34 @@ export function StartFlow() {
     [update],
   );
 
+  const linksToCheck = signature(flow?.draft.links ?? {});
+  const hasNoLinks = Boolean(flow?.draft.has_none);
+  // Recheck saved drafts too: optional research sources must not block a goal or plan.
+  // Raw links remain in the answers; deferred links are omitted only from API requests.
+  useEffect(() => {
+    if (!flow || hasNoLinks) return;
+    let live = true;
+    const links = flow.draft.links;
+    const timer = window.setTimeout(() => {
+      validateLinks(links).then((errors) => {
+        if (!live) return;
+        update((current) => signature(current.draft.links) !== linksToCheck ? current : {
+          ...current, deferredLinks: Object.keys(errors) as LinkKey[], deferredLinkErrors: errors,
+        });
+      }).catch(() => {
+        if (!live) return;
+        const unchecked = Object.entries(links).filter(([, value]) => value?.trim()).map(([key]) => key as LinkKey);
+        update((current) => signature(current.draft.links) !== linksToCheck ? current : {
+          ...current, deferredLinks: unchecked,
+          deferredLinkErrors: Object.fromEntries(unchecked.map((key) => [key, "לא הצלחנו לבדוק את הקישור כרגע. אפשר לבדוק אותו שוב בחיבורים אחרי ההרשמה."])),
+        });
+      });
+    }, 300);
+    return () => { live = false; window.clearTimeout(timer); };
+    // Keyed by the link answers; completing another question doesn't repeat the check.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linksToCheck, hasNoLinks, update]);
+
   const toggleCard = useCallback((open: boolean) => setCardOpen(open), []);
 
   function go(step: StepId, dir: "fwd" | "back") {
@@ -262,7 +295,7 @@ export function StartFlow() {
   const jump = (to: StepId) => go(to, STEP_ORDER.indexOf(to) > STEP_ORDER.indexOf(step) ? "fwd" : "back");
 
   const scanFailed = flow.brandScan?.status === "failed" && !flow.draft.style_preset;
-  const notice =
+  const scanNotice =
     scanFailed && !noticeDismissed && step !== "links" ? (
       <div role="status" className={`rounded-xl border border-[#e8d9c2] bg-[#fbf5ea] px-3.5 py-3 text-sm leading-6 text-[#4a3b22] ${styles.rise}`}>
         <p>לא הצלחנו לקרוא את האתר. זה קורה, ולא צריך לתקן כלום עכשיו. אפשר לבחור סגנון במקום.</p>
@@ -280,8 +313,22 @@ export function StartFlow() {
     update,
     setDraft,
     next,
+    nextLabel: nextStepLabel(step, flow),
+    editLinks: () => jump("links"),
     reflection: prev ? reflectionAfter(prev, flow) : null,
-    notice,
+    notice: <>
+      {scanNotice}
+      {!flow.draft.has_none && (flow.deferredLinks ?? []).length && step !== "links" ? (
+        <div role="status" className="border-s-2 border-[var(--sun)] ps-3 text-sm leading-6 text-[color:var(--ink-soft)]">
+          <p>ממשיכים בלי לקרוא את {(flow.deferredLinks ?? []).map((key) => key === "website" ? "האתר" : NETWORKS.find((network) => network.key === key)?.label).join(" ו")}. הקישורים נשמרו לתיקון בהמשך.</p>
+          <details>
+            <summary className="min-h-11 cursor-pointer py-2 font-bold text-[color:var(--ink)]">מה צריך לתקן?</summary>
+            {(flow.deferredLinks ?? []).map((key) => <p key={key}>{flow.deferredLinkErrors?.[key]}</p>)}
+            <QuietLink onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink>
+          </details>
+        </div>
+      ) : null}
+    </>,
     focus: navigated,
     direction,
   };

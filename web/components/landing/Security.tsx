@@ -30,7 +30,7 @@ export const TRUST_PROMISES: Promise[] = [
     // services/research.py + services/scraper.py: public pages through netguard, no
     // cookies or logins; Instagram only via Meta's API on the owner's own connection.
     title: "קוראים רק מה שפתוח לכולם",
-    line: "אתרים קוראים רק בעמודים ציבוריים. אינסטגרם ופייסבוק רק דרך החיבור שלכם.",
+    line: "קוראים רק עמודים ציבוריים באתר. נתונים מאינסטגרם ומפייסבוק מתקבלים רק אחרי שתחברו את החשבון.",
   },
   {
     // A commitment. Nothing in the app collects advertising data or sends data to ad networks.

@@ -52,18 +52,18 @@ export default function Home() {
           id="top"
           aria-labelledby="hero-title"
           data-landing-hero
-          className="mx-auto grid max-w-7xl items-center gap-7 px-4 pb-10 pt-7 sm:px-8 sm:pt-14 lg:min-h-[calc(100svh-9rem)] lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pb-16"
+          className="mx-auto grid max-w-7xl items-center gap-7 px-4 pb-8 pt-7 sm:px-8 sm:pt-8 lg:grid-cols-[1.15fr_1fr] lg:gap-14 lg:py-8"
         >
           <div className="max-w-xl">
             <p className="text-sm font-bold text-[var(--primary)]">שיווק לעסקים קטנים</p>
             <h1
               id="hero-title"
-              className="mt-3 text-[2.4rem] font-black leading-[1.1] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-[3.5rem]"
+              className="mt-3 text-[2.4rem] font-black leading-[1.1] tracking-tight [text-wrap:balance] sm:text-5xl"
             >
-              תוכנית שיווק שנבנית רק לעסק שלכם
+              תוכנית שיווק שמתאימה לעסק שלכם
             </h1>
             <p className="mt-4 max-w-md text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
-              חוקרים את העסק, הלקוחות ולוח השנה, ובונים איתכם תוכנית ל-3 החודשים הקרובים. כל חודש בודקים מה הצליח ומעדכנים.
+              בונים יחד תוכנית ל־3 חודשים לפי העסק שלכם. כותבים פוסטים, מודדים תוצאות ומשפרים בכל חודש.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:gap-4">

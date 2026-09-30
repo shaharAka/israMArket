@@ -155,7 +155,7 @@ export function StepFound(props: RevealProps) {
       onSkip={failed ? () => jump("save") : undefined}
     >
       {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website)} /> : null}
-      {failed ? <PlanFailed message={failMessage} /> : null}
+      {failed ? <><PlanFailed message={failMessage} />{failMessage.includes("קישור") ? <QuietLink onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink> : null}</> : null}
       {plan ? <InsightList insights={plan.insights} /> : null}
     </StepShell>
   );

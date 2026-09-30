@@ -14,6 +14,7 @@ import {
   type InstagramAccount,
   type InstagramAccountWindow,
   type PerformancePayload,
+  type RecommendationPayload,
 } from "@/lib/api";
 import { markSeen } from "@/lib/trial";
 import { IconChart } from "@/lib/icons";
@@ -21,9 +22,9 @@ import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsa
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
   sessions: { label: "כניסות לאתר", note: "כמה פעמים נכנסו לאתר" },
-  engagedSessions: { label: "נשארו באתר", note: "כניסות של יותר מ-10 שניות" },
-  conversions: { label: "פניות והזמנות", note: "רכישות באתר או לחיצות על וואטסאפ" },
-  bounceRate: { label: "יצאו מיד", note: "אחוז הנכנסים שיצאו בלי לעשות כלום" },
+  engagedSessions: { label: "כניסות עם פעילות", note: "לפי גוגל: מעל 10 שניות, אירוע חשוב או לפחות שתי צפיות בעמודים" },
+  conversions: { label: "פעולות חשובות באתר", note: "אירועים שהוגדרו כחשובים בגוגל אנליטיקס; לא בהכרח פניות או הזמנות" },
+  bounceRate: { label: "כניסות בלי פעילות מספקת", note: "אחוז הכניסות שלא עמדו בהגדרת הפעילות של גוגל" },
   screenPageViews: { label: "צפיות בעמודים", note: "כמה עמודים נפתחו בסך הכול" },
   averageSessionDuration: { label: "זמן ממוצע באתר", note: "כמה זמן נשארים באתר, בממוצע" },
 };
@@ -124,7 +125,7 @@ function postResults(payload: PerformancePayload): PostResult[] | null {
   });
 }
 
-/** Best first: inquiries, then visits, then likes. Unmeasured posts are not ranked. */
+/** Key events, then visits, then likes. Unmeasured posts are not ranked. */
 function byResult(a: PostResult, b: PostResult) {
   return (
     (b.conversions ?? -1) - (a.conversions ?? -1) ||
@@ -136,7 +137,7 @@ function byResult(a: PostResult, b: PostResult) {
 function ResultFigures({ result }: { result: PostResult }) {
   if (!result.measured) return <span className="text-xs text-[color:var(--ink-muted)]">לא נמדד</span>;
   const parts = [
-    result.conversions !== undefined ? `${result.conversions.toLocaleString("he-IL")} פניות` : "",
+    result.conversions !== undefined ? `${result.conversions.toLocaleString("he-IL")} פעולות חשובות` : "",
     result.sessions !== undefined ? `${result.sessions.toLocaleString("he-IL")} כניסות` : "",
     result.likes !== undefined ? `${result.likes.toLocaleString("he-IL")} לייקים` : "",
   ].filter(Boolean);
@@ -220,7 +221,7 @@ function PostResults({ results }: { results: PostResult[] }) {
 function PostComparison({ results, payload }: { results: PostResult[]; payload: PerformancePayload }) {
   const metric = (["conversions", "sessions", "likes"] as const).find(key => results.some(row => row[key] !== undefined));
   if (!metric) return null;
-  const labels = { conversions: "פניות והזמנות", sessions: "כניסות לאתר", likes: "לייקים" };
+  const labels = { conversions: "פעולות חשובות באתר", sessions: "כניסות לאתר", likes: "לייקים" };
   return <MetricComparison title="התוצאות לפי פוסט" unit={labels[metric]}
     source={metric === "likes" ? "אינסטגרם · לפי ההתאמה לפוסטים בתוכנית" : "גוגל אנליטיקס · לפי הקישורים של הפוסטים"}
     period={formatPeriod(payload.period_start, payload.period_end)}
@@ -232,7 +233,7 @@ function PostComparison({ results, payload }: { results: PostResult[]; payload: 
 /* ------------------------------------------------------------------------------------ */
 
 /**
- * One sentence and two numbers: how many people asked to buy, and how many came at all.
+ * Measured totals first; the interpretation waits in the proposed next step.
  * A number that was not measured says so instead of showing a zero.
  */
 function Answer({ payload }: { payload: PerformancePayload }) {
@@ -241,9 +242,9 @@ function Answer({ payload }: { payload: PerformancePayload }) {
   const conversions = overview.conversions;
   const sessions = overview.sessions;
   const sentence =
-    payload.diagnostic?.headline ||
     (conversions !== undefined && sessions !== undefined
-      ? `היו ${formatMetricValue("sessions", sessions)} כניסות לאתר, ומתוכן ${formatMetricValue("conversions", conversions)} פניות.`
+      ? `היו ${formatMetricValue("sessions", sessions)} כניסות לאתר ו־${formatMetricValue("conversions", conversions)} פעולות שהוגדרו כחשובות.`
+      : sessions !== undefined ? `היו ${formatMetricValue("sessions", sessions)} כניסות לאתר.`
       : "עוד אין מספיק נתונים כדי לדעת אם השיווק מביא פניות.");
 
   return (
@@ -253,12 +254,35 @@ function Answer({ payload }: { payload: PerformancePayload }) {
         {sentence}
       </h2>
       <dl className="mt-5 grid grid-cols-2 gap-4 sm:max-w-md">
-        <BigNumber label="פניות והזמנות" value={conversions !== undefined ? formatMetricValue("conversions", conversions) : undefined} />
+        <BigNumber label="פעולות חשובות באתר" value={conversions !== undefined ? formatMetricValue("conversions", conversions) : undefined} />
         <BigNumber label="כניסות לאתר" value={sessions !== undefined ? formatMetricValue("sessions", sessions) : undefined} />
       </dl>
       {conversions !== undefined ? (
-        <p className="mt-2 text-xs text-[color:var(--ink-soft)]">פנייה: רכישה באתר או לחיצה על וואטסאפ.</p>
+        <p className="mt-2 text-xs leading-5 text-[color:var(--ink-soft)]">הפעולות לפי ההגדרה בגוגל אנליטיקס. כדי לספור פניות או הזמנות, צריך לוודא מה בדיוק נמדד.</p>
       ) : null}
+    </section>
+  );
+}
+
+/** Show one useful action without regenerating analysis on every visit. */
+function AnalysisAction({ recommendation, payload }: { recommendation: RecommendationPayload | null; payload: PerformancePayload }) {
+  const items = recommendation?.available === false ? [] : recommendation?.suggestions?.suggestions ?? [];
+  const item = items[0];
+  const summary = recommendation?.suggestions?.week_summary || payload.diagnostic?.headline;
+  if (!summary && !item) return null;
+  return (
+    <section className="border-s-2 border-[var(--primary)] ps-4" aria-labelledby="analysis-action-heading">
+      <p className="text-xs font-bold text-[color:var(--ink-soft)]">מה כדאי לבדוק עכשיו</p>
+      {recommendation?.week_of ? <p className="mt-1 text-xs text-[color:var(--ink-soft)]">לשבוע שמתחיל ב־{formatPeriod(recommendation.week_of, recommendation.week_of).split(" עד ")[0]}</p> : null}
+      <h2 id="analysis-action-heading" className="mt-1 text-lg font-bold leading-7 text-[color:var(--ink)]">{item?.title || summary}</h2>
+      {item ? <p className="mt-2 text-sm leading-6 text-[color:var(--ink)]">{item.action}</p> : null}
+      <details className="mt-2">
+        <summary className="min-h-11 cursor-pointer py-3 text-xs font-bold text-[color:var(--ink-soft)]">על מה ההמלצה מבוססת</summary>
+        <p className="text-sm leading-6 text-[color:var(--ink-soft)]">{item?.evidence || summary}</p>
+        {item?.target ? <p className="mt-2 text-xs text-[color:var(--ink-soft)]">בתוכנית: {item.target}</p> : null}
+        {recommendation?.week_of ? <p className="mt-2 text-xs text-[color:var(--ink-soft)]">המלצה לשבוע שמתחיל ב־{formatPeriod(recommendation.week_of, recommendation.week_of).split(" עד ")[0]}. מבוססת על הנתונים שהיו זמינים אז.</p> : null}
+      </details>
+      <Link href={item ? "/recommendations" : "/strategy"} className="mt-2 inline-flex min-h-11 items-center text-sm font-bold text-[color:var(--primary)] underline underline-offset-4">{item ? "לבדוק את ההמלצה" : "לראות את התוכנית"}</Link>
     </section>
   );
 }
@@ -614,8 +638,8 @@ function Friction({ payload }: { payload: PerformancePayload }) {
  */
 const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] = [
   { key: "sessions", label: "כניסות לאתר", source: "ga4" },
-  { key: "conversions", label: "פניות והזמנות", source: "ga4" },
-  { key: "engaged_sessions", label: "נשארו באתר", source: "ga4" },
+  { key: "conversions", label: "פעולות חשובות באתר", source: "ga4" },
+  { key: "engaged_sessions", label: "כניסות עם פעילות", source: "ga4" },
   { key: "likes", label: "לייקים", source: "meta" },
   { key: "comments", label: "תגובות", source: "meta" },
   { key: "views", label: "צפיות", source: "meta" },
@@ -629,8 +653,8 @@ const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] =
 /** What each column means, in the owner's words. No acronym has to be looked up. */
 const METRIC_NOTES: Record<string, string> = {
   sessions: "כמה פעמים נכנסו לאתר מהפוסטים של כל קהל.",
-  conversions: "כמה קנו באתר או לחצו על וואטסאפ אחרי הפוסטים האלה.",
-  engaged_sessions: "כניסות של יותר מ-10 שניות. כלומר, מישהו באמת הסתכל.",
+  conversions: "אירועים שהוגדרו כחשובים בגוגל אנליטיקס ושויכו לפוסטים. בלי לבדוק את ההגדרה, אי אפשר לקרוא להם הזמנות או פניות.",
+  engaged_sessions: "לפי גוגל: מעל 10 שניות, אירוע חשוב או לפחות שתי צפיות בעמודים.",
   likes: "כמה לייקים קיבלו הפוסטים.",
   comments: "כמה תגובות קיבלו הפוסטים.",
   views: "כמה פעמים צפו בפוסטים. אותו אדם יכול להיספר יותר מפעם אחת.",
@@ -767,7 +791,7 @@ function Method({ data }: { data?: AudiencePerformance | null }) {
     <Expand title="איך חישבנו">
       {data?.method ? <p className="text-xs leading-6 text-[color:var(--ink-soft)]">{data.method}</p> : null}
       <p className="mt-2 text-xs leading-6 text-[color:var(--ink-soft)]">
-        לכל פוסט יש קישור מיוחד משלו, וכך אנחנו יודעים אילו כניסות ופניות הגיעו ממנו. פוסט
+        לכל פוסט יש קישור מיוחד משלו, וכך משייכים אליו כניסות ואירועים שגוגל מדד. השיוך אינו הוכחה שהפוסט גרם לרכישה. פוסט
         שלא הצלחנו לקשר לתוצאות מסומן &quot;לא נמדד&quot;. ככל שיש לקהל יותר פוסטים, המספרים
         שלו אמינים יותר. קהל עם פוסט אחד נותן כיוון, לא מגמה.
       </p>
@@ -922,6 +946,7 @@ function NoSnapshotYet() {
  */
 export default function PerformancePage() {
   const [data, setData] = useState<PerformancePayload | null>(null);
+  const [recommendation, setRecommendation] = useState<RecommendationPayload | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [planMeasure, setPlanMeasure] = useState("");
@@ -938,6 +963,7 @@ export default function PerformancePage() {
 
   useEffect(() => {
     endpoints.business().then(({ business }) => setPlanMeasure(business?.quarter_plan?.kpi.name_he || "")).catch(() => {});
+    endpoints.recommendations().then(setRecommendation).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -958,6 +984,7 @@ export default function PerformancePage() {
     try {
       const weekly = await endpoints.weeklyLoop();
       setData(weekly.performance);
+      setRecommendation(weekly.recommendation);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לרענן את הנתונים מגוגל ומאינסטגרם. נסו שוב בעוד כמה דקות.");
     } finally {
@@ -992,6 +1019,7 @@ export default function PerformancePage() {
             {available ? <Answer payload={data} /> : <NoSnapshotYet />}
             {planMeasure ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">המדד בתוכנית: {planMeasure}. <Link href="/strategy" className="text-[color:var(--primary)] underline underline-offset-4">לתוכנית</Link></p> : null}
             <MeasurementGaps payload={data} />
+            <AnalysisAction recommendation={recommendation} payload={data} />
             {account ? <InstagramAccountBlock account={account} /> : null}
 
             {available ? (

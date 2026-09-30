@@ -21,13 +21,14 @@ export function Storefront({ phase = .5, riseOnly = false, animated = false, cla
       </g>
     </g>
     <ellipse cx="104" cy="132" rx="58" ry="5" fill="var(--im-primary,var(--primary))" opacity=".08" />
-    <path d="m141 84 8 7v37h-8Z" fill="var(--im-primary,var(--primary))" opacity=".16" />
-    <path d="M59 82h82v45H59Z" fill="var(--im-paper,var(--paper))" stroke="var(--im-primary,var(--primary))" strokeWidth="2" />
-    <path d="M68 98h31v19H68Z" fill="var(--im-soft,var(--primary-soft))" stroke="var(--im-primary,var(--primary))" strokeWidth="1.7" />
-    <path d="M110 98h21v29h-21Z" fill="var(--im-soft,var(--primary-soft))" stroke="var(--im-primary,var(--primary))" strokeWidth="1.7" />
-    <path d="M124 111v4M54 127h94" stroke="var(--im-primary,var(--primary))" strokeWidth="2" strokeLinecap="round" />
-    <path d="m51 80 12-22h74l12 22c0 12-24.5 12-24.5 0 0 12-24.5 12-24.5 0 0 12-24.5 12-24.5 0 0 12-24.5 12-24.5 0Z" fill="var(--im-paper,var(--paper))" stroke="var(--im-primary,var(--primary))" strokeWidth="2" strokeLinejoin="round" />
-    <path d="m76 59-6 20h15l2-20m25 0 2 20h15l-6-20" fill="var(--im-primary,var(--primary))" opacity=".12" />
+    <path d="M50 78h100v52H50Z" fill="var(--im-paper,var(--paper))" stroke="var(--im-primary,var(--primary))" strokeWidth="2" />
+    <path d="M58 88h62v33H58Z" fill="var(--im-soft,var(--primary-soft))" stroke="var(--im-primary,var(--primary))" strokeWidth="1.7" />
+    <path d="M89 88v33M58 114h62" stroke="var(--im-primary,var(--primary))" strokeWidth="1.3" opacity=".5" />
+    <path d="M127 88h17v42h-17Z" fill="var(--im-soft,var(--primary-soft))" stroke="var(--im-primary,var(--primary))" strokeWidth="1.7" />
+    <path d="M139 107v5M45 130h110" stroke="var(--im-primary,var(--primary))" strokeWidth="2" strokeLinecap="round" />
+    <path d="M48 57h104v10H48Z" fill="var(--im-soft,var(--primary-soft))" stroke="var(--im-primary,var(--primary))" strokeWidth="2" />
+    <path d="M44 67h112v11c0 10-22.4 10-22.4 0 0 10-22.4 10-22.4 0 0 10-22.4 10-22.4 0 0 10-22.4 10-22.4 0 0 10-22.4 10-22.4 0Z" fill="var(--im-paper,var(--paper))" stroke="var(--im-primary,var(--primary))" strokeWidth="2" strokeLinejoin="round" />
+    <path d="M66.4 67h22.4v11c0 10-22.4 10-22.4 0ZM111.2 67h22.4v11c0 10-22.4 10-22.4 0Z" fill="var(--im-primary,var(--primary))" opacity=".22" />
 
   </svg>;
 }

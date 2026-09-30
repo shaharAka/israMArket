@@ -327,7 +327,7 @@ html:has(.lp-home) { scroll-behavior: smooth; }
   78% { transform: translate(75px, 27px); }
   100% { transform: translate(100px, 23px); }
 }
-.lp-route .journey-sun { animation: lp-sunrise 3.6s linear var(--rm-arrival) both; }
+.lp-route .journey-sun { animation: lp-sunrise 5s linear var(--rm-arrival) both; }
 
 /* --- scroll reveals, hover lifts, button presses ---------------------------------- */
 

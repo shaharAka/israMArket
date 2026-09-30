@@ -17,6 +17,7 @@ import {
   type TargetSuggestion,
 } from "@/lib/goals";
 import { goalsFor } from "@/lib/businessModel";
+import { budgetLabel } from "@/lib/quarterPlan";
 import { modelOf } from "./script";
 import { ModelConfirm, Tile } from "./StepGoal";
 import type { StepProps } from "./steps";
@@ -38,6 +39,9 @@ import styles from "./start.module.css";
 function suggestionDraft(flow: FlowState) {
   const draft = { ...draftForApi(flow), business_model: modelOf(flow) };
   delete draft.target;
+  // Social profiles are optional research inputs, not inputs to the goal arithmetic.
+  // An unfinished Facebook page link must not prevent calculating a budget or target.
+  draft.links = draft.links.website ? { website: draft.links.website } : {};
   return draft;
 }
 
@@ -45,7 +49,7 @@ function suggestionDraft(flow: FlowState) {
 export function useTargetSuggestion({ flow, update }: Pick<StepProps, "flow" | "update">) {
   const payload = suggestionDraft(flow);
   const want = signature(payload);
-  const [failed, setFailed] = useState("");
+  const [failure, setFailure] = useState<{ for: string; message: string } | null>(null);
   const [attempt, setAttempt] = useState(0);
   const fresh = flow.targetSuggestionFor === want ? (flow.targetSuggestion ?? null) : null;
 
@@ -57,12 +61,12 @@ export function useTargetSuggestion({ flow, update }: Pick<StepProps, "flow" | "
       fetchTargetSuggestion(payload)
         .then((result) => {
           if (!live) return;
-          setFailed("");
+          setFailure(null);
           update((f) => ({ ...f, targetSuggestion: result, targetSuggestionFor: want }));
         })
         .catch((err: unknown) => {
           if (!live) return;
-          setFailed(err instanceof ApiError && /[֐-׿]/.test(err.message) ? err.message : "לא הצלחנו לחשב כרגע.");
+          setFailure({ for: want, message: err instanceof ApiError && /[֐-׿]/.test(err.message) ? err.message : "לא הצלחנו להתחבר לחישוב. התשובות שלכם נשמרו; אפשר לנסות שוב." });
         });
     }, 250);
     return () => {
@@ -74,11 +78,12 @@ export function useTargetSuggestion({ flow, update }: Pick<StepProps, "flow" | "
   }, [want, attempt]);
 
   return {
-    result: fresh ?? flow.targetSuggestion ?? null,
+    // An old estimate must never be accepted for a changed budget or baseline.
+    result: fresh,
     stale: !fresh,
-    failed: fresh ? "" : failed,
+    failed: !fresh && failure?.for === want ? failure.message : "",
     retry: () => {
-      setFailed("");
+      setFailure(null);
       setAttempt((n) => n + 1);
     },
   };
@@ -256,10 +261,11 @@ export function StepLever(props: StepProps) {
   const { flow, update, next } = props;
   const model = modelOf(flow);
   const levers = leversFor(model);
-  const { result } = useTargetSuggestion(props);
+  const { result, failed, retry } = useTargetSuggestion(props);
   const recommended = result && isLeverFor(result.recommended_lever, model) ? result.recommended_lever : null;
   const chosen = flow.draft.lever?.primary && isLeverFor(flow.draft.lever.primary, model) ? flow.draft.lever.primary : null;
   const [secondaryOpen, setSecondaryOpen] = useState(Boolean(flow.draft.lever?.secondary));
+  const [alternativesOpen, setAlternativesOpen] = useState(false);
 
   function pick(key: LeverKey, secondary?: LeverKey) {
     update((f) => {
@@ -286,19 +292,35 @@ export function StepLever(props: StepProps) {
   }, [recommended]);
 
   const secondary = flow.draft.lever?.secondary;
+  const selected = levers.find((lever) => lever.key === (chosen ?? recommended));
 
   return (
     <StepShell
       {...props}
-      title="מה הכי נכון להגדיל?"
-      why="סימנו את מה שהמספרים שלכם מראים. אתם מחליטים."
+      title="הכיוון שאנחנו ממליצים עליו"
+      why="לפי מה שסיפרתם על העסק והמספרים שלו. אפשר לקבל את ההמלצה או לשנות."
       primary="להמשיך לתקציב"
+      primaryDisabled={!selected}
       onPrimary={() => {
         if (!chosen && recommended) pick(recommended);
         next();
       }}
     >
-      <div role="radiogroup" aria-label="מה להגדיל" className={`grid gap-2 ${styles.stagger}`}>
+      {selected ? (
+        <div className="border-s-2 border-[var(--primary)] bg-[var(--primary-soft)] px-4 py-4">
+          <p className="text-xs font-bold text-[color:var(--ink-soft)]">{chosen && recommended && chosen !== recommended ? "הכיוון שבחרתם" : "ההמלצה שלנו"}</p>
+          <h2 className="mt-1 text-xl font-black text-[color:var(--ink)]">{selected.name_he}</h2>
+          <p className="mt-2 text-sm leading-6 text-[color:var(--ink)]">{selected.key === recommended && result ? result.lever_hint_he : selected.when_he}</p>
+        </div>
+      ) : failed ? (
+        <div role="alert" className="space-y-2 text-sm leading-6">
+          <p>{failed}</p>
+          <QuietLink onClick={retry}>לנסות שוב לקבל המלצה</QuietLink>
+        </div>
+      ) : <p role="status" className="text-sm text-[color:var(--ink-soft)]">בודקים איזה כיוון מתאים לעסק…</p>}
+      <details open={alternativesOpen} onToggle={(event) => setAlternativesOpen(event.currentTarget.open)}>
+        <summary className="min-h-11 cursor-pointer py-3 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">לבחור כיוון אחר</summary>
+        <div role="radiogroup" aria-label="כיוון אחר לצמיחה" className={`grid gap-2 ${styles.stagger}`}>
         {levers.map((lever) => {
           const isRecommended = lever.key === recommended;
           return (
@@ -308,11 +330,12 @@ export function StepLever(props: StepProps) {
               title={lever.name_he}
               badge={isRecommended ? "ההמלצה שלנו" : undefined}
               desc={isRecommended && result ? result.lever_hint_he : lever.when_he}
-              onClick={() => pick(lever.key, secondary)}
+              onClick={() => { pick(lever.key, secondary); setAlternativesOpen(false); }}
             />
           );
         })}
-      </div>
+        </div>
+      </details>
       {chosen ? (
         secondaryOpen ? (
           <div className={styles.rise}>
@@ -515,8 +538,8 @@ export function StepTarget(props: StepProps) {
     <StepShell
       {...props}
       title="היעד ל-3 חודשים"
-      why={suggestion ? "חישבנו לפי המספרים שלכם והתקציב. אפשר לקבל או לשנות." : "בלי מספרים מהיום אין יעד אמיתי במספרים. קובעים איך מודדים, ומתחילים."}
-      primary={loading ? "מחשבים…" : failed && !result ? "לנסות שוב" : owner ? "לשמור את היעד ולהמשיך" : "לקבל את היעד ולהמשיך"}
+      why={loading ? "בודקים את המספרים והתקציב שבחרתם." : failed ? "התשובות נשמרו. אפשר לנסות שוב או לקבוע יעד בהמשך." : suggestion ? "הערכה לפי המספרים שלכם והתקציב. אפשר לקבל או לשנות." : "כשחסרים נתונים, מתחילים למדוד וקובעים יעד בהמשך."}
+      primary={loading ? "מחשבים…" : failed && !result ? "לנסות שוב לחשב" : owner ? "לשמור את היעד ולעבור למחקר" : suggestion ? "לקבל את היעד ולעבור למחקר" : "לעבור למחקר"}
       primaryDisabled={loading || editing}
       onPrimary={() => {
         if (failed && !result) {
@@ -526,7 +549,7 @@ export function StepTarget(props: StepProps) {
         if (!owner && result) accept(targetFromSuggestion(result));
         next();
       }}
-      skip={result ? "בלי יעד בינתיים" : undefined}
+      skip={result || failed ? "בלי יעד בינתיים" : undefined}
       onSkip={() => {
         accept(null);
         next();
@@ -542,10 +565,14 @@ export function StepTarget(props: StepProps) {
         <div role="alert" className="rounded-xl border border-[var(--rule)] bg-white p-3.5 text-sm leading-6 text-[color:var(--ink)]">
           <p className="font-bold text-[color:var(--ink)]">לא הצלחנו לחשב את היעד.</p>
           <p>{failed}</p>
+          {props.editLinks && failed.includes("קישור") ? <QuietLink onClick={props.editLinks}>לתקן את הקישור באתר וברשתות</QuietLink> : null}
         </div>
       ) : null}
       {result ? (
         <div className={`space-y-3 transition-opacity ${stale ? "opacity-60" : ""}`} aria-busy={stale}>
+          {flow.draft.budget && !["none", "unknown"].includes(flow.draft.budget.range) ? (
+            <p className="text-sm leading-6 text-[color:var(--ink-soft)]">התקציב שבחרתם: <BidiText text={budgetLabel(flow.draft.budget)} />{flow.draft.budget.exact_ils == null ? " בחודש. החישוב משתמש באמצע הטווח כהנחת עבודה." : "."}</p>
+          ) : null}
           <div className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[var(--rule)]">
             {suggestion || owner ? (
               <>

@@ -66,6 +66,46 @@ class OwnerContextTest(unittest.TestCase):
 
     # partial updates -------------------------------------------------------------------
 
+    def test_deferred_link_survives_signup_and_can_be_repaired_without_other_changes(self):
+        raw = "https://www.facebook.com/groups/123456"
+        response = self.client.post("/onboarding/from-draft", json={
+            "draft": base.BAKERY, "chosen_direction": DIRECTION,
+            "deferred_links": {"facebook": raw},
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        before = response.json()["business"]
+        self.assertEqual(before["owner_context"]["pending_links"]["facebook"]["url"], raw)
+        self.assertNotIn("facebook", before["social_links"])
+        self.assertEqual(self.put({"links": {"facebook": raw}}).status_code, 422)
+        self.assertEqual(self.client.get("/onboarding/me").json()["business"]["owner_context"]["pending_links"]["facebook"]["url"], raw)
+        fixed = self.put({"links": {"facebook": "https://m.facebook.com/example.shop?ref=share"}})
+        self.assertEqual(fixed.status_code, 200, fixed.text)
+        after = fixed.json()["business"]
+        self.assertEqual(after["social_links"]["facebook"], "https://www.facebook.com/example.shop")
+        self.assertEqual(after["social_links"].get("instagram"), before["social_links"].get("instagram"))
+        self.assertEqual(after["website_url"], before["website_url"])
+        self.assertEqual(after["primary_goal"], before["primary_goal"])
+        self.assertEqual(after["owner_context"]["pending_links"], {})
+
+    def test_public_link_repair_cannot_store_another_protocol(self):
+        self.signup()
+        before = self.business().website_url
+        response = self.put({"links": {"website": "javascript:alert(1)"}})
+        self.assertEqual(response.status_code, 422)
+        self.assertEqual(self.business().website_url, before)
+
+    def test_unchecked_valid_link_is_kept_until_the_owner_confirms_it(self):
+        response = self.client.post("/onboarding/from-draft", json={
+            "draft": base.BAKERY, "deferred_links": {"facebook": "https://facebook.com/example.shop?ref=share"},
+        })
+        self.assertEqual(response.status_code, 200, response.text)
+        pending = response.json()["business"]["owner_context"]["pending_links"]
+        self.assertIn("facebook", pending)
+        fixed = self.put({"links": {"facebook": pending["facebook"]["url"]}})
+        self.assertEqual(fixed.status_code, 200, fixed.text)
+        self.assertEqual(fixed.json()["business"]["social_links"]["facebook"], "https://www.facebook.com/example.shop")
+        self.assertEqual(fixed.json()["business"]["owner_context"]["pending_links"], {})
+
     def test_seasons_only_changes_seasons(self):
         before = self.signup()["owner_context"]
         response = self.put({"seasons": {"busy": [12, 11, 11], "slow": [1]}})

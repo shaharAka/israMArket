@@ -131,6 +131,7 @@ export default function StrategyPage() {
     <AppShell>
       <div className="mx-auto max-w-3xl">
         <SectionHeader section="plan" title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"} />
+        {Object.keys(business?.owner_context?.pending_links ?? {}).length ? <p className="mb-5 text-xs leading-6 text-[color:var(--ink-soft)]">התוכנית מוכנה. נשארו קישורים שלא יכולנו לקרוא. <Link href="/integrations#pending-links" className="font-bold text-[color:var(--primary)] underline underline-offset-4">לתקן בהמשך בחיבורים</Link></p> : null}
 
         {error ? (
           <p className="mb-4 rounded-md border border-[#d8c3bd] bg-white px-4 py-3 text-sm text-[#7c4036]">{error}</p>

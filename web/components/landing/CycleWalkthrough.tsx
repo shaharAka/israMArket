@@ -53,10 +53,10 @@ export function CycleWalkthrough({ rows, example }: {
             <strong>{example.post.cta} ←</strong>
           </div>
           <p className="lp-cycle-context"><b>למה הפוסט הזה?</b> {example.why.reason}</p>
-          <p className="lp-cycle-owner-note">במוצר אפשר לערוך את הטקסט ולבחור צילום מהעסק לפני שמאשרים.</p>
+          <p className="lp-cycle-owner-note">לפני הפרסום אפשר לערוך את הטקסט ולבחור תמונה מהעסק.</p>
         </div>}
         {step === 1 && <div key="measure" className="lp-cycle-content lp-cycle-results">
-          <p className="lp-cycle-label">מספרים מומצאים להמחשה</p>
+          <p className="lp-cycle-label">נתוני דוגמה להמחשה בלבד</p>
           <h4>מאילו פוסטים הגיעו הלחיצות?</h4>
           <dl className="lp-cycle-totals"><div><dt>לחיצות על הקישור</dt><dd>{DEMO_TOTAL}</dd></div><div><dt>הזמנות מראש לגנים</dt><dd>{DEMO_ORDERS}</dd><small>דיווח העסק · דוגמה</small></div></dl>
           <MetricComparison title="לחיצות לפי פוסט" unit="לחיצות על וואטסאפ" points={DEMO_CLICKS}
@@ -80,7 +80,7 @@ export function CycleWalkthrough({ rows, example }: {
           <p className="lp-cycle-owner-note">אתם מחליטים אם להכניס את ההצעה לתוכנית.</p>
         </div>}
       </div>
-      <footer>עסק ופוסטים לדוגמה · כל המספרים כאן מומצאים להמחשה.</footer>
+      <footer>עסק ופוסטים לדוגמה · המספרים להמחשה בלבד.</footer>
     </section>
   </div>;
 }

@@ -81,6 +81,7 @@ export function StepShell({
   notice,
   children,
   primary,
+  nextLabel,
   primaryDisabled,
   onPrimary,
   skip,
@@ -103,6 +104,8 @@ export function StepShell({
   notice?: React.ReactNode;
   children: React.ReactNode;
   primary: string;
+  /** Destination supplied by the actual route, including skipped questions. */
+  nextLabel?: string;
   primaryDisabled?: boolean;
   onPrimary: () => void;
   skip?: string;
@@ -153,7 +156,7 @@ export function StepShell({
         }
       >
         {actionNote}
-        <PrimaryButton disabled={primaryDisabled}>{primary}</PrimaryButton>
+        <PrimaryButton disabled={primaryDisabled}>{nextLabel && primary.startsWith("להמשיך") ? nextLabel : primary}</PrimaryButton>
         {skip && onSkip ? (
           <div className="flex justify-center">
             <QuietLink onClick={onSkip}>{skip}</QuietLink>
