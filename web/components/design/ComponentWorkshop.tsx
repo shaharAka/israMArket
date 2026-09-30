@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HypothesisNote, PlanBrief } from "./PlanBrief";
+import { BusinessOverview } from "./BusinessOverview";
 import { MotionDisclosure, MotionIllustration, MotionProgress } from "@/components/motion";
 import { ChoiceCard, EmptyState, FileField, InlineNotice, SegmentedControl, SkeletonBlock, StateBadge, TextField, ToggleField, TransitionPanel, UIAction, UIDialog, UITabs } from "./Controls";
 import styles from "./workshop.module.css";
@@ -33,9 +34,20 @@ export function ComponentWorkshop() {
   return <section id="components" className={styles.section} aria-labelledby="components-title">
     <div className={styles.heading}><div><p>רכיבים שעובדים יחד</p><h2 id="components-title">רכיבים ליום העבודה.</h2></div><Link href="/preview">לראות אותם במסכים האמיתיים ←</Link></div>
     <UITabs label="סוגי רכיבים" value={category} options={categories} onChange={setCategory}>
-      {category === "plan" && <div className={styles.twoColumns}>
+      {category === "plan" && <div className={styles.stack}>
+        <div className={styles.twoColumns}>
         <PlanBrief businessName="לחם תום · דוגמה" direction="להפוך קונים מזדמנים ללקוחות שמזמינים מראש וחוזרים." why="הזמנות מוקדמות עוזרות לתכנן את האפייה. קודם בודקים שהלקוחות מעוניינים, ושאפשר לעמוד בהזמנות." measure="הזמנות מראש, ביחס לנקודת ההתחלה." baseline="עוד אין כאן נתוני עסק. זו הדגמה של מבנה התוכנית." ownerAction="לבחור אילו מוצרים מתאימים להזמנה מראש ולבדוק שאפשר למדוד אותה." action={<UIAction onClick={() => setDialog("drawer")}>לראות איך נבדוק את הכיוון</UIAction>} />
         <details className={styles.secondary}><summary>ההשערות וההחלטות</summary><div className={styles.stack}><h3>מה עדיין צריך לברר</h3><HypothesisNote hypothesis="לקוחות יעדיפו להזמין מראש אם התהליך קצר וברור." ifWrong="נבדוק את תהליך ההזמנה ואת ההצעה לפני שמגדילים את הפרסום." evidence="השערה לדוגמה, עדיין ללא בדיקה." /><p className={styles.note}>לא קובעים אילו מוצרים זמינים או רווחיים. את זה בוחרים עם בעל העסק.</p><Link href="/preview">לתוכנית במסך האמיתי ←</Link></div></details>
+        </div>
+        <div>
+          <p className={styles.note}>העסק במבט אחד · תרחיש עיצוב עם נתונים לדוגמה בלבד</p>
+          <BusinessOverview
+            connections={[{ key: "whatsapp", name: "קישור וואטסאפ", ready: true, status: "מוכן" }, { key: "meta", name: "אינסטגרם ופייסבוק", ready: true, status: "מחובר" }, { key: "ga4", name: "נתוני האתר", ready: false, status: "צריך לחבר" }]}
+            posts={[{ key: "one", title: "הזמנות לסוף השבוע", status: "לבדיקה", note: "יום רביעי · אינסטגרם" }, { key: "two", title: "מה יוצא היום מהתנור", status: "אושר", note: "יום שישי · פייסבוק" }]}
+            measure={{ name: "הזמנות מראש", note: "משווים לנקודת ההתחלה שנאספה." }}
+            figure={{ title: "הזמנות שנרשמו", unit: "הזמנות לשבוע", caption: "תרחיש עיצוב · נתונים לדוגמה בלבד", points: [{ label: "שבוע 1", value: 12, display: "12" }, { label: "שבוע 2", value: 14, display: "14" }, { label: "שבוע 3", value: 11, display: "11" }, { label: "שבוע 4", value: 18, display: "18" }] }}
+          />
+        </div>
       </div>}
       {category === "actions" && <div className={styles.twoColumns}>
         <div className={styles.stack}><h3>פעולה אחת מובילה</h3><div className={styles.row}><UIAction busy={busy} busyLabel="שומרים את הדוגמה…" onClick={saveDemo}>לשמור דוגמה</UIAction><UIAction variant="secondary" onClick={() => { window.clearTimeout(timer.current); setSaved(false); setBusy(false); }}>לאפס</UIAction><UIAction variant="text" onClick={() => setCategory("fields")}>לערוך קודם</UIAction></div><p className={styles.note}>לחצו כדי לראות המתנה ותוצאה. ההדגמה שומרת מצב מקומי בלבד.</p>{saved && <InlineNotice tone="success" title="הדוגמה נשמרה כאן"><span>המשוב מופיע אחרי שהפעולה מסתיימת.</span></InlineNotice>}</div>

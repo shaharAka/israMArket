@@ -105,6 +105,16 @@ UIAction backs the application Button. The plan uses SegmentedControl and Transi
 and HypothesisNote used in the plan's assumptions. HypothesisNote displays supplied
 evidence only; it does not infer confirmation from traffic or post approval.
 
+`BusinessOverview.tsx` supplies a compact, responsive row for connection statuses,
+post statuses and the plan's main measure, with an optional sourced bar figure. It is
+presentation only: callers supply real statuses, labels, dates, figures and actions.
+An approved post is not assumed published, a discovered tracking tag is not assumed
+connected, and absent analytics never become zeroes or a decorative growth curve.
+The landing uses existing fictional plan data and explicitly labelled planned budget
+ranges. `/design` shows a separately labelled design fixture with weekly order counts.
+Wiring this component into the owner's plan/dashboard belongs to Claude's flow work;
+use authenticated integration and publication state, not pre-signup plan assumptions.
+
 Primitives also provide headings, notes, journey rails, photo states and status lines.
 The motion package supplies measured progress, drawn checks and contextual feedback.
 `SunProgress` receives the actual post approval count or onboarding chapter.

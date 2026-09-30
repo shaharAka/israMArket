@@ -20,7 +20,7 @@ import {
 export function Pricing() {
   const terms = [NO_COMMITMENT_LABEL, NO_CARD_AT_SIGNUP ? "בלי כרטיס אשראי בהרשמה" : null].filter(Boolean) as string[];
   return (
-    <section aria-labelledby="pricing-title" className="lp-pricing border-t border-[var(--rule)]">
+    <section id="pricing" aria-labelledby="pricing-title" className="lp-pricing border-t border-[var(--rule)]">
       <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1fr_minmax(0,30rem)] lg:gap-16">
         <header data-rv className="max-w-xl">
           <p className="text-sm font-bold text-[var(--primary)]">מחיר</p>

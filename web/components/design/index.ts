@@ -9,3 +9,5 @@ export { UIAction, TextField, ChoiceCard, SegmentedControl, UITabs, ToggleField,
 export type { ControlOption } from "./Controls";
 
 export { PlanBrief, HypothesisNote } from "./PlanBrief";
+export { BusinessOverview } from "./BusinessOverview";
+export type { OverviewConnection, OverviewPost, OverviewFigure } from "./BusinessOverview";

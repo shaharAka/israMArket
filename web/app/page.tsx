@@ -31,13 +31,26 @@ const QUIET_LINK =
 export default function Home() {
   return (
     <div className="lp-home min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
-      <header className="mx-auto flex max-w-7xl items-center gap-2.5 px-4 pt-4 sm:px-8 sm:pt-6">
-        <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-        <span className="text-lg font-black tracking-tight">ישראמארקט</span>
+      <header className="lp-nav sticky top-0 z-30 border-b border-[var(--rule)]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 px-4 sm:px-8">
+          <a href="#top" className="flex min-h-16 items-center gap-2.5" aria-label="ישראמארקט — לראש העמוד">
+            <BrandMark className="h-8 w-8 text-[var(--primary)]" />
+            <span className="text-lg font-black tracking-tight">ישראמארקט</span>
+          </a>
+          <nav aria-label="בעמוד הזה" className="order-3 -mx-4 flex w-[calc(100%+2rem)] gap-6 overflow-x-auto px-4 lg:order-none lg:mx-0 lg:ms-auto lg:w-auto lg:px-0">
+            <a href="#examples">התוכנית</a>
+            <a href="#cycle">איך זה עובד</a>
+            <a href="#security">פרטיות</a>
+            <a href="#pricing">מחיר</a>
+            <a href="#faq">שאלות</a>
+          </nav>
+          <Link href="/login" className="ms-auto inline-flex min-h-11 items-center text-sm font-bold lg:ms-0">להיכנס</Link>
+        </div>
       </header>
 
       <main>
         <section
+          id="top"
           aria-labelledby="hero-title"
           data-landing-hero
           className="mx-auto grid max-w-7xl items-center gap-7 px-4 pb-10 pt-7 sm:px-8 sm:pt-14 lg:min-h-[calc(100svh-9rem)] lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pb-16"
@@ -80,7 +93,7 @@ export default function Home() {
           <RouteMap variant="compact" className="mx-auto w-full max-w-[520px] lg:hidden" />
         </section>
 
-        <section aria-labelledby="examples-title" className="border-t border-[var(--rule)]">
+        <section id="examples" aria-labelledby="examples-title" className="border-t border-[var(--rule)]">
           <Showcase />
         </section>
 
