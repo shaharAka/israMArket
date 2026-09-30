@@ -57,9 +57,15 @@ def migrate_db():
             ("trial_started_at", "DATETIME"),
             ("welcomed_at", "DATETIME"),
             ("trial_events_json", "TEXT DEFAULT '{}'"),
+            # Sign in with Google (routers/auth.py). SQLite cannot add a UNIQUE column, so
+            # the uniqueness is the index below, the same one create_all makes.
+            ("google_sub", "VARCHAR(255)"),
         ):
             if col not in user_cols:
                 conn.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {col} {col_type}")
+        conn.exec_driver_sql(
+            "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)"
+        )
         # The business field list became industries only (keys, not Hebrew labels).
         # Rewrites old labels once; a row that already holds a key is left alone.
         from app.services.business_fields import migrate_business_types

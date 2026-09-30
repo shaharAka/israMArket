@@ -66,14 +66,13 @@ internet ──80/443──▶ caddy ──edge net──▶ web (Next.js :3000)
 - **HTTPS host = one variable.** It is the instance metadata key `site-host`. When it is
   empty, the host is `<external-ip-with-dashes>.sslip.io`. `WEB_ORIGIN`, `API_ORIGIN`,
   `PUBLIC_BASE_URL` and Caddy's certificate all follow from it.
-- **`API_ORIGIN=https://<host>/backend`.**
-  - The API uses `API_ORIGIN` only to build OAuth redirect URIs (`services/ga4.py` and
-    `services/meta.py`).
+- **OAuth callbacks go through the web origin.**
+  - The API builds every redirect URI from `WEB_ORIGIN` + `/backend` (`OAUTH_REDIRECT_BASE`
+    overrides it): Google sign-in, GA4 and Meta.
   - Only the web tier is public, so the callbacks go through the existing Next.js
     `/backend/*` proxy.
-  - CORS, the CSRF origin check and the cookie `Secure` flag all use `WEB_ORIGIN`, not
-    `API_ORIGIN`, so this needs no code change.
-  - The web container's own `API_ORIGIN` is the internal `http://api:8000`.
+  - The API's `API_ORIGIN` (`https://<host>/backend`) is no longer used for OAuth. The web
+    container's own `API_ORIGIN` is the internal `http://api:8000`.
 - **`TRUST_FORWARDED_FOR=true` is safe here.**
   - Caddy faces the internet directly. It ignores any client-sent `X-Forwarded-For` and
     sets it to the real peer address.
@@ -314,19 +313,16 @@ With `HOST` as above, or the real domain later:
 |---|---|---|
 | Google (APIs & Services > Credentials > OAuth client, "Web application") | Authorized JavaScript origins | `https://$HOST` |
 | | Authorized redirect URIs | `https://$HOST/backend/integrations/ga4/callback` |
-| | | `https://$HOST/backend/auth/google/callback` (Google sign-in, being built; see below) |
+| | | `https://$HOST/backend/auth/google/callback` (Google sign-in) |
 | Meta (App > Facebook Login > Settings) | Valid OAuth Redirect URIs | `https://$HOST/backend/integrations/meta/callback` |
 | Meta (App settings > Basic) | App domains / Site URL | `$HOST` / `https://$HOST/` |
-| | Privacy Policy URL, **Terms of Service URL**, User data deletion | pages on `https://$HOST/` (the terms page does not exist yet; see open decisions) |
+| | Privacy Policy URL, **Terms of Service URL**, User data deletion | pages on `https://$HOST/` (`/security`, `/terms`, `/security#delete`) |
 
-- **Why `/backend/...`.** The API builds these URIs as `{API_ORIGIN}/integrations/.../callback`,
-  and in production `API_ORIGIN` is `https://$HOST/backend`. The provider sends the
-  browser there, Next.js proxies it to the API, and the API redirects back to
-  `{WEB_ORIGIN}/integrations`.
-- **Google sign-in (new).** The URI above assumes the new `/auth/google/callback` builds
-  its redirect from `settings.api_origin`, like GA4. If it builds it from `web_origin`
-  instead, register `https://$HOST/auth/google/callback`, and the web app must then have
-  that route.
+- **Why `/backend/...`.** The API builds every redirect URI as
+  `{OAUTH_REDIRECT_BASE}/...`, and a blank `OAUTH_REDIRECT_BASE` means `{WEB_ORIGIN}/backend`
+  (`Settings.oauth_callback_base`). The provider sends the browser there, Next.js proxies
+  it to the API, and the API redirects back to the web app. Full console checklist:
+  `deploy/gcp/google-oauth.md`.
 - **sslip.io and Google.**
   - `sslip.io` is **not** on the Public Suffix List (checked 2026-09-30), so the
     "authorized domain" for the consent screen would be `sslip.io` itself, which we
@@ -463,12 +459,8 @@ curl -fsS --resolve "$(sed -n "s/^SITE_HOST='\(.*\)'$/\1/p" /run/isramarket/app.
      keep their origin.
    - Also register it before Google OAuth verification, which cannot pass on sslip.io.
    - Also before the sslip.io certificate limit bites.
-4. **A terms page is missing.** Meta asks for a **Terms of Service URL** (plus Privacy
-   Policy and data-deletion instructions). The app needs at least a placeholder `/terms`
-   page, and a privacy page if none exists, before Meta App Review.
-5. **The Google sign-in redirect base.** The auth work in progress should build its
-   redirect from `API_ORIGIN` (giving `https://<host>/backend/auth/google/callback`), the
-   same as GA4, so one proxy path covers every callback.
+4. **Terms page.** Done: `/terms` (plus `/security` and `/security#delete`) for Meta.
+5. **OAuth redirect base.** Done: Google sign-in, GA4 and Meta all use `OAUTH_REDIRECT_BASE`.
 6. **Media backup growth.** Every night uploads a full `files.tar`. Once the images pass a
    few GB, switch the files part to an incremental `gcloud storage rsync` into a
    versioned prefix.

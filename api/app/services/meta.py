@@ -35,7 +35,7 @@ def authorization_url(state: str) -> str:
     settings = get_settings()
     if not meta_configured():
         raise RuntimeError("חסרים META_APP_ID ו-META_APP_SECRET לחיבור מטא.")
-    redirect = f"{settings.api_origin}/integrations/meta/callback"
+    redirect = f"{settings.oauth_callback_base()}/integrations/meta/callback"
     query = urlencode(
         {
             "client_id": settings.meta_app_id,
@@ -50,7 +50,7 @@ def authorization_url(state: str) -> str:
 
 def exchange_code(code: str) -> dict:
     settings = get_settings()
-    redirect = f"{settings.api_origin}/integrations/meta/callback"
+    redirect = f"{settings.oauth_callback_base()}/integrations/meta/callback"
     short = httpx.get(
         f"{GRAPH}/oauth/access_token",
         params={

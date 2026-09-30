@@ -83,8 +83,8 @@ trap 'rm -f "$tmp"' EXIT
   # The browser-facing origin: CORS, the CSRF origin check, cookies, OAuth return pages.
   line WEB_ORIGIN "https://$SITE_HOST"
   # Only the web tier is public, so the API is addressed through the Next.js proxy.
-  # The API uses API_ORIGIN solely to build OAuth redirect URIs, which therefore become
-  # https://$SITE_HOST/backend/integrations/{ga4,meta}/callback (register these).
+  # OAuth redirect URIs are built from WEB_ORIGIN + /backend (Settings.oauth_callback_base):
+  # https://$SITE_HOST/backend/auth/google/callback, .../integrations/{ga4,meta}/callback.
   line API_ORIGIN "https://$SITE_HOST/backend"
   # WhatsApp tracked links: {PUBLIC_BASE_URL}/r/{code}. Links already posted keep the
   # origin they were printed with, so set the final domain before owners post.

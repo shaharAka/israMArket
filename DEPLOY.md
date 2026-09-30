@@ -47,7 +47,8 @@ production but it still has no TLS of its own.
 | `TOKEN_ENCRYPTION_KEY` | Encrypts stored GA4/Meta OAuth tokens. Without it the key is derived from `JWT_SECRET` — acceptable only because a real `JWT_SECRET` is now mandatory. Rotating `JWT_SECRET` without setting this will make existing stored tokens undecryptable. |
 | `GEMINI_API_KEY` | Strategy, extraction and image generation. |
 | `WEB_ORIGIN` | Must be the browser-facing origin **including scheme**. It is used for OAuth redirects *and* the CSRF origin check, so a mismatch makes the connect buttons fail. |
-| `API_ORIGIN` | Where the web tier proxies. Must match the registered OAuth redirect URI (`{API_ORIGIN}/integrations/ga4/callback`). |
+| `API_ORIGIN` | Where the web tier proxies (`web/app/backend`). Not used for OAuth any more. |
+| `OAUTH_REDIRECT_BASE` | Optional. Base of every OAuth redirect URI (Google sign-in, GA4, Meta). Blank means `{WEB_ORIGIN}/backend`, so the registered URIs are `{WEB_ORIGIN}/backend/auth/google/callback`, `/backend/integrations/ga4/callback` and `/backend/integrations/meta/callback`. See `deploy/gcp/google-oauth.md`. |
 | `PUBLIC_BASE_URL` | Optional. The origin printed on every WhatsApp tracked link, `{PUBLIC_BASE_URL}/r/{code}`. Blank means `WEB_ORIGIN`: only the web tier is public, and `web/app/r/[code]/route.ts` forwards `/r/{code}` to the API (not `API_ORIGIN`, which is an internal address in this compose file). **Set the final domain before owners post links**: a link already in an Instagram bio keeps pointing at the old origin. |
 
 Generate secrets with:

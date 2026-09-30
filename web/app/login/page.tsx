@@ -2,15 +2,26 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
+import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { endpoints } from "@/lib/api";
+import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { BrandMark, IconSparkles } from "@/lib/icons";
 
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+
+  // Back from Google with `?google_error=`: say what happened. Browser only, after mount.
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const message = googleErrorFromLocation();
+      if (message) setError(message);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -62,6 +73,12 @@ export default function LoginPage() {
         <div className="flex-grow border-t border-[#e6e4dc]"></div>
         <span className="mx-4 flex-shrink text-xs text-[#63665e]">או עם החשבון שלכם</span>
         <div className="flex-grow border-t border-[#e6e4dc]"></div>
+      </div>
+
+      {/* AppShell sends an account with no business on to /start or /onboarding. */}
+      <GoogleButton next="/dashboard" back="/login" disabled={pending} />
+      <div className="my-4">
+        <OrDivider />
       </div>
 
       <form onSubmit={onSubmit} className="space-y-4">

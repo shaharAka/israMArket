@@ -55,7 +55,8 @@ function Rows({ rows }: { rows: { title: string; body: ReactNode; code?: string 
 const STORED = [
   {
     title: "החשבון",
-    body: "אימייל, שם, והסיסמה בצורה מקודדת שאי אפשר לשחזר ממנה את הסיסמה. כדי שתוכלו להיכנס.",
+    // models.User: email, full_name, password_hash, google_sub.
+    body: "אימייל, שם, והסיסמה בצורה מקודדת שאי אפשר לשחזר ממנה את הסיסמה. אם נכנסתם עם גוגל: המזהה שגוגל נותנת לחשבון, בלי סיסמה. כדי שתוכלו להיכנס.",
   },
   {
     title: "העסק",
@@ -80,8 +81,9 @@ const STORED = [
   },
 ];
 
-// api/app/services/ga4.py GA4_SCOPES
+// api/app/services/ga4.py GA4_SCOPES, services/google_login.py (sign-in: openid email profile)
 const GOOGLE_SCOPES = [
+  { title: "להיכנס עם גוגל", body: "השם, האימייל והמזהה של החשבון. רק אם בחרתם ״להמשיך עם Google״.", code: "openid, email, profile" },
   { title: "לראות את נתוני האתר (גוגל אנליטיקס)", body: "קריאה בלבד.", code: "analytics.readonly" },
   { title: "לראות באילו חיפושים בגוגל האתר מופיע", body: "קריאה בלבד.", code: "webmasters.readonly" },
   { title: "לדעת לאיזה חשבון גוגל התחברתם", body: "האימייל של החשבון, כדי להציג לכם מה מחובר.", code: "openid, email" },

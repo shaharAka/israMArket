@@ -29,7 +29,10 @@ export const GEMINI_PAID_TIER = false;
 export const CONTACT_EMAIL = "privacy@isramarket.example";
 
 /** Null until the owner decides where the data is hosted. */
-export const HOSTING_NOTE: string | null = null;
+export const HOSTING_NOTE: string | null =
+  "השרתים והגיבויים נמצאים בגוגל קלאוד, באזור תל אביב (me-west1).";
 
 /** Null until the owner sets a backup retention policy. */
-export const BACKUP_NOTE: string | null = null;
+// deploy/gcp/backup.sh + backup-lifecycle.json: nightly copy, objects deleted after 30 days.
+export const BACKUP_NOTE: string | null =
+  "כל לילה נשמר גיבוי. גיבוי נמחק אחרי 30 יום, כך שמידע של חשבון שנמחק נעלם גם מהגיבויים תוך 30 יום.";

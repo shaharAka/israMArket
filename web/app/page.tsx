@@ -118,6 +118,9 @@ export default function Home() {
           <Link href="/security" className={QUIET_LINK}>
             אבטחה ופרטיות
           </Link>
+          <Link href="/terms" className={QUIET_LINK}>
+            תנאי שימוש
+          </Link>
         </div>
       </footer>
 

@@ -88,6 +88,9 @@ Use these consistently. A term changes only if it changes everywhere.
 | an assumption the plan tests | השערה (שנבדוק / שנמדוד), "אנחנו מניחים ש…"; if not: "אם היא לא תתאמת" | הימור, מהמרים, "אם טעינו" |
 
 English brand names in Hebrew letters: גוגל, אינסטגרם, פייסבוק, וואטסאפ.
+**Exception: signing in with Google.** Google's branding rules keep its name in Latin letters
+on the sign-in button and next to it: `להמשיך עם Google`, `מחובר עם Google`, and the sign-in
+errors (web/lib/googleAuth.ts). Everywhere else it stays גוגל.
 Google is grammatically masculine (`גוגל לומד`). Say אינסטגרם or פייסבוק, not מטא — מטא only
 when naming the company that approves the app. The business speaks as `אנחנו`, never `אני`.
 Acronyms (ROAS, CPC, CTR, SEO, UTM, OAuth, API) never appear in owner-facing copy.
