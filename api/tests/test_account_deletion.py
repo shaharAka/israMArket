@@ -22,6 +22,7 @@ from app.models import (
     Asset,
     Audience,
     Business,
+    GenerationJob,
     HashtagQuery,
     InspirationBrief,
     InstagramPost,
@@ -104,6 +105,7 @@ class AccountDeletionTest(unittest.TestCase):
                     Asset(business_id=bid, filename="asset-photo.png"),
                     Audience(business_id=bid, name="שכונה"),
                     ResearchRun(business_id=bid, period="2026-W40"),
+                    GenerationJob(business_id=bid, kind="first_month", status="done"),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
             )

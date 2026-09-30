@@ -16,3 +16,7 @@ import os
 os.environ["POST_MODEL"] = "gemini"
 os.environ["META_MODEL_API_KEY"] = ""
 os.environ["SITE_SCREENSHOT"] = "false"
+# Month generation runs as a background job (services/generation_jobs.py). In tests it
+# runs to the end inside the request that started it, so `mock.patch` blocks and the
+# overridden test database still apply; tests of the worker threads switch it off.
+os.environ["GENERATION_JOBS_INLINE"] = "1"

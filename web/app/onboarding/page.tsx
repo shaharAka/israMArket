@@ -5,7 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { AppShell, Button, ErrorNote } from "@/components/AppShell";
 import {
   endpoints,
-  generateUntilDone,
   isDemo,
   type Business,
   type BusinessModel,
@@ -21,6 +20,7 @@ import {
 } from "@/lib/businessModel";
 import { BUDGET_STAGES, formatNis, stageFor } from "@/lib/budget";
 import { toast } from "@/lib/ui";
+import { useMonthBuild } from "@/lib/useMonthBuild";
 import { BUSINESS_FIELDS, MODEL_SHORT, PRESENCE_MODELS } from "@/components/onboarding/constants";
 import { coerceField, resolveField } from "@/lib/businessFields";
 import { GenerationProgress } from "@/components/onboarding/GenerationProgress";
@@ -64,8 +64,18 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [generating, setGenerating] = useState(false);
-  const [generateStage, setGenerateStage] = useState("usp");
+  // The month is built on the server (lib/useMonthBuild.ts): this page starts it and shows
+  // its progress, and a reload mid-build comes back to the progress, not to the form.
+  const monthBuild = useMonthBuild({
+    kind: "first_month",
+    onDone: () => {
+      toast("החודש מוכן");
+      router.replace("/dashboard");
+    },
+  });
+  const generating = monthBuild.running || monthBuild.starting;
+  const generateStage = monthBuild.status?.running ? monthBuild.status.stage : "usp";
+  const buildError = generating ? "" : monthBuild.error;
 
   const [website, setWebsite] = useState("");
   const [name, setName] = useState("");
@@ -341,26 +351,10 @@ export default function OnboardingPage() {
       }
     }
 
-    setGenerating(true);
-    setGenerateStage("usp");
-    const poll = window.setInterval(() => {
-      endpoints
-        .business()
-        .then((res) => {
-          const stage = res.business?.generate_state?.stage;
-          if (stage) setGenerateStage(stage);
-        })
-        .catch(() => {});
-    }, 2500);
     try {
-      await generateUntilDone(endpoints.generate, setGenerateStage);
-      toast("החודש מוכן");
-      router.replace("/dashboard");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לבנות את החודש. נסו שוב.");
-      setGenerating(false);
+      // Returns at once; the hook polls the server until the month is built (or stops).
+      await monthBuild.start();
     } finally {
-      window.clearInterval(poll);
       setBusy(false);
     }
   }
@@ -576,7 +570,7 @@ export default function OnboardingPage() {
               note={`עד ${MAX_HANDLES}, עם רווח ביניהם. אפשר גם להדביק קישור לפרופיל.`}
             />
 
-            {error ? <ErrorNote message={error} /> : null}
+            {error || buildError ? <ErrorNote message={error || buildError} /> : null}
             <Button onClick={() => void buildMonth()} disabled={busy} className="min-h-12 w-full justify-center">
               {busy ? (scanState === "reading" ? "מסיימים לקרוא את האתר…" : "שומרים…") : "לבנות את החודש שלי"}
             </Button>

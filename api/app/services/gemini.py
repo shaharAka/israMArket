@@ -32,6 +32,14 @@ def _client() -> genai.Client:
     settings = get_settings()
     if not settings.gemini_api_key:
         raise RuntimeError("חסר GEMINI_API_KEY. הוסיפו מפתח ב-.env כדי להריץ את מנוע האסטרטגיה.")
+    # Without a timeout a request that never answers holds its caller (a month being
+    # built in the background, services/generation_jobs.py) forever. HttpOptions is in ms.
+    timeout = float(getattr(settings, "gemini_timeout_seconds", 0) or 0)
+    if timeout > 0:
+        return genai.Client(
+            api_key=settings.gemini_api_key,
+            http_options=types.HttpOptions(timeout=int(timeout * 1000)),
+        )
     return genai.Client(api_key=settings.gemini_api_key)
 
 

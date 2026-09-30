@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
+import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SetupChecklist } from "@/components/SetupChecklist";
@@ -62,11 +63,14 @@ export default function DashboardPage() {
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [recommendation, setRecommendation] = useState<RecommendationPayload | null>(null);
   const [instagram, setInstagram] = useState<InstagramBriefPayload | null>(null);
+  // No month yet (right after signup, while the server builds the first one).
+  const [noMonth, setNoMonth] = useState(false);
 
   useEffect(() => {
-    Promise.all([endpoints.business(), endpoints.strategy()]).then(([businessResult, strategyResult]) => {
+    Promise.all([endpoints.business(), endpoints.strategy().catch(() => null)]).then(([businessResult, strategyResult]) => {
       setBusiness(businessResult.business);
       setStrategy(strategyResult);
+      setNoMonth(!strategyResult);
     });
     endpoints.recommendations().then(setRecommendation).catch(() => {});
     // Guidance only: a failed call just means no nudge.
@@ -78,7 +82,14 @@ export default function DashboardPage() {
       <AppShell>
         <div className="mx-auto max-w-3xl">
           <SectionHeader section="dashboard" title="היום" />
-          <LoadingMark label="טוענים את החודש…" />
+          {noMonth ? (
+            <MonthBuildProgress
+              autoStart={Boolean(business && !business.onboarding_complete)}
+              onDone={() => void endpoints.strategy().then(setStrategy).catch(() => {})}
+            />
+          ) : (
+            <LoadingMark label="טוענים את החודש…" />
+          )}
         </div>
       </AppShell>
     );
