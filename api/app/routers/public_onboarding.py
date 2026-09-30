@@ -26,6 +26,11 @@ Limits (per hour):
 | POST /public/brand    | 8      | 150    | 60 s  |
 | POST /public/audiences| 30     | 600    | 20 s  |
 | POST /public/plan-preview | 10 | 200    | 100 s |
+| POST /public/quarter-plan | 24 | 400    | 110 s |
+| GET /public/success-options | — | —     | static |
+| POST /public/strategy | 24     | 400    | 100 s | (revision 4, superseded, unused by the web)
+| POST /public/sample-posts | 10 | 200    | 90 s  |
+| (sample posts prefetch)   | 12 | —      | background, after each strategy |
 | POST /public/links    | 120    | —      | no model, no network |
 | GET /public/style-presets | —  | —      | static |
 
@@ -40,14 +45,15 @@ import threading
 from concurrent.futures import Future, ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeout
 from datetime import date
-from typing import Callable
+from typing import Callable, Literal
 
 from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.services import onboarding_draft as drafts
 from app.services import preview as preview_service
 from app.services import ratelimit
+from app.services import strategy_reveal as reveal
 from app.services.gemini import is_provider_unavailable
 from app.services.netguard import UnsafeUrlError, assert_public_url
 
@@ -70,6 +76,21 @@ PLAN_REQUEST_SECONDS = 100.0
 
 LINKS_PER_IP = 120
 
+# Revision 4. The strategy is re-run on every change the owner makes (debounced on the
+# client), so its per-IP budget is higher than the plan's; a cached re-run is free.
+STRATEGY_PER_IP = 24
+STRATEGY_GLOBAL = 400
+STRATEGY_REQUEST_SECONDS = 100.0
+
+QUARTER_PER_IP = 24
+QUARTER_GLOBAL = 400
+QUARTER_REQUEST_SECONDS = 110.0
+
+SAMPLES_PER_IP = 10
+SAMPLES_GLOBAL = 200
+SAMPLES_REQUEST_SECONDS = 90.0
+SAMPLES_PREFETCH_PER_IP = 12
+
 MODEL_CONCURRENCY = 6
 ANSWER_TTL_SECONDS = 30 * 60
 
@@ -85,7 +106,13 @@ BRAND_FAILED = "לא הצלחנו לקרוא את האתר. אפשר לבחור 
 UNAVAILABLE = "השירות לא זמין כרגע, נסו שוב מאוחר יותר."
 BRAND_SLOW = "האתר נטען לאט. נמשיך בלעדיו בינתיים, ואם נצליח לקרוא אותו נעדכן."
 
+STRATEGY_FAILED = "לא הצלחנו לבנות את האסטרטגיה כרגע. נסו שוב בעוד דקה."
+QUARTER_FAILED = "לא הצלחנו לבנות את התוכנית כרגע. נסו שוב בעוד דקה."
+SAMPLES_FAILED = "לא הצלחנו לכתוב את הפוסטים לדוגמה כרגע. נסו שוב בעוד דקה."
+
 answers = drafts.TTLCache(ANSWER_TTL_SECONDS)
+# The strategy last shown per (draft, direction): a re-run with new inputs revises it.
+latest = drafts.TTLCache(ANSWER_TTL_SECONDS)
 
 
 class _Gate:
@@ -316,6 +343,21 @@ def style_presets() -> dict:
     return {"presets": drafts.public_presets()}
 
 
+# --- revision 5: the goal and the budget (static) ------------------------------------------
+
+
+@router.get("/success-options")
+def success_options(model: str = "products", grow_where: str | None = None) -> dict:
+    """The "מה ייחשב הצלחה" choices for a business model and where it wants to grow,
+    plus the budget chips. No model, no network."""
+    model = model if model in {"products", "services", "both"} else "products"
+    return {
+        "options": drafts.success_options(model, grow_where),
+        "grow_where": [{"key": k, "name_he": v} for k, v in drafts.GROW_WHERE_HE.items()] if model != "services" else [],
+        "budgets": [{"key": k, "label_he": v["label_he"]} for k, v in drafts.BUDGET_RANGES.items()],
+    }
+
+
 # --- audiences --------------------------------------------------------------------------
 
 
@@ -351,16 +393,30 @@ def public_audiences(body: DraftIn, request: Request) -> dict:
 # --- the plan preview -------------------------------------------------------------------
 
 
+class PlanPreviewIn(DraftIn):
+    # "משהו אחר? ספרו לנו": the owner's words about the two directions. The answer then
+    # carries two revised directions (and their ideas), cached apart from the first plan.
+    feedback: str = Field(default="", max_length=600)
+
+    @field_validator("feedback")
+    @classmethod
+    def _feedback(cls, value: str) -> str:
+        text = drafts.clean_text(value, 400)
+        return drafts._readable(text, "מה לשנות") if text else ""
+
+
 @router.post("/plan-preview")
-def public_plan_preview(body: DraftIn, request: Request) -> dict:
+def public_plan_preview(body: PlanPreviewIn, request: Request) -> dict:
     """Step 6, "מה למדנו ואיך מתקדמים": insights → 2 directions → 3 ideas per direction."""
     draft = body.draft
     today = date.today()
     # The calendar is part of the answer, so a new day is a new answer.
-    key = draft.fingerprint(f"plan:{today.isoformat()}")
+    first_key = draft.fingerprint(f"plan:{today.isoformat()}")
+    key = first_key if not body.feedback else draft.fingerprint(f"plan:{today.isoformat()}:revise:{body.feedback}")
 
     def work() -> dict:
-        result = drafts.build_plan_preview(draft, today=today)
+        previous = answers.get(first_key) if body.feedback else None
+        result = drafts.build_plan_preview(draft, today=today, feedback=body.feedback, previous=previous)
         return {**result, "brand": cached_brand(draft.links.website)}
 
     hit, future = _cached_or_start(
@@ -381,4 +437,226 @@ def public_plan_preview(body: DraftIn, request: Request) -> dict:
     except Exception as exc:
         _raise_unavailable(exc)
         raise HTTPException(status_code=502, detail=PLAN_FAILED) from exc
+    return {**result, "cached": False}
+
+
+# --- the strategy (revision 4) ------------------------------------------------------------
+
+
+class StrategyRequest(BaseModel):
+    draft: drafts.OnboardingDraft
+    direction: drafts.DirectionIn
+    # All the owner's current inputs, every time.
+    inputs: reveal.StrategyInputs | None = None
+    # Which of the inputs this request changes; `changed_he` describes exactly those.
+    changed: list[Literal["target", "cadence", "primary_audience", "pillars_removed", "feedback"]] | None = Field(
+        default=None, max_length=5
+    )
+    # The insights the owner saw (the web sends them back). `from_insight` indexes this
+    # list; without it, the plan preview's own cached answer is used.
+    insights: list[reveal.InsightIn] | None = Field(default=None, max_length=4)
+
+
+def _plan_insights(draft: drafts.OnboardingDraft, today: date, sent: list | None) -> list[dict]:
+    if sent:
+        return [item.model_dump() for item in sent]
+    plan = answers.get(draft.fingerprint(f"plan:{today.isoformat()}"))
+    return list((plan or {}).get("insights") or [])
+
+
+def _samples_key(draft: drafts.OnboardingDraft, direction: dict, strategy: dict, today: date) -> str:
+    return draft.fingerprint(f"samples:{today.isoformat()}:{reveal.signature([direction, strategy])}")
+
+
+def _prefetch_samples(ip: str, draft: drafts.OnboardingDraft, direction: dict, strategy: dict, today: date) -> None:
+    """Start writing the week-1 posts for a strategy as soon as it exists.
+
+    The owner reads (and maybe adjusts) the strategy before the next screen, and the
+    post writer (Muse) needs about a minute, so by the time `/public/sample-posts`
+    is called the answer is usually cached or in flight (joined, not charged again).
+    Its own small budget; when that is spent, or the pool is full, nothing starts and
+    the explicit call works as before.
+    """
+    try:
+        stored = reveal.StrategyIn(**strategy).stored()
+    except Exception:
+        return
+    key = _samples_key(draft, direction, stored, today)
+    if answers.get(key) is not None or _models.running(key) is not None:
+        return
+    if not ratelimit.allow(f"onboarding-samples-prefetch:ip:{ip}", SAMPLES_PREFETCH_PER_IP, WINDOW_SECONDS):
+        return
+
+    def job():
+        result = reveal.build_sample_posts(draft, direction, stored, today=today)
+        answers.put(key, result)
+        return result
+
+    try:
+        _models.start(key, job)
+    except HTTPException:
+        pass
+
+
+@router.post("/strategy")
+def public_strategy(body: StrategyRequest, request: Request) -> dict:
+    """Revision 4, "האסטרטגיה": the one-page strategy for the chosen direction.
+
+    With `inputs` it is a revision of the strategy last shown for this draft and
+    direction, with `changed_he`. Cached by (draft, direction, inputs, changed, day).
+    """
+    draft = body.draft
+    today = date.today()
+    ip = ratelimit._client_ip(request)
+    direction = body.direction.model_dump()
+    inputs = body.inputs.normalized() if body.inputs else {}
+    changed = list(dict.fromkeys(body.changed)) if body.changed is not None else None
+    base_key = draft.fingerprint(f"strategy-base:{reveal.signature(direction)}")
+    key = draft.fingerprint(f"strategy:{today.isoformat()}:{reveal.signature([direction, inputs, changed])}")
+    insights = _plan_insights(draft, today, body.insights)
+
+    def work() -> dict:
+        # The photo check for the sample posts runs beside the strategy, so the next
+        # screen finds it cached (cache reads only: the site was read by /public/brand).
+        if draft.links.website:
+            reveal.background.submit(reveal.site_photos, draft)
+        last = latest.get(base_key) if (inputs or changed) else None
+        previous = last["strategy"] if last and (last["inputs"] != inputs or changed) else None
+        result = reveal.build_strategy(
+            draft, direction, inputs=inputs, insights=insights, today=today,
+            previous=previous, previous_inputs=last["inputs"] if previous else None, changed=changed,
+        )
+        _prefetch_samples(ip, draft, direction, result, today)
+        return result
+
+    hit, future = _cached_or_start(
+        request,
+        gate=_models,
+        key=key,
+        name="onboarding-strategy",
+        per_ip=STRATEGY_PER_IP,
+        global_cap=STRATEGY_GLOBAL,
+        work=work,
+    )
+    if hit is not None:
+        latest.put(base_key, {"inputs": inputs, "strategy": hit})
+        _prefetch_samples(ip, draft, direction, hit, today)
+        return {**hit, "cached": True}
+    try:
+        result = future.result(timeout=STRATEGY_REQUEST_SECONDS)
+    except FutureTimeout as exc:
+        raise HTTPException(status_code=504, detail=PLAN_SLOW) from exc
+    except Exception as exc:
+        _raise_unavailable(exc)
+        raise HTTPException(status_code=502, detail=STRATEGY_FAILED) from exc
+    latest.put(base_key, {"inputs": inputs, "strategy": result})
+    return {**result, "cached": False}
+
+
+class SamplePostsRequest(BaseModel):
+    draft: drafts.OnboardingDraft
+    direction: drafts.DirectionIn
+    strategy: reveal.StrategyIn
+
+
+@router.post("/sample-posts")
+def public_sample_posts(body: SamplePostsRequest, request: Request) -> dict:
+    """Revision 4, "ככה זה ייראה": three week-1 posts by the product's post writer.
+
+    Usually already written (or being written) since the strategy was shown; see
+    `_prefetch_samples`. Send the strategy back as `/public/strategy` returned it.
+    """
+    draft = body.draft
+    today = date.today()
+    direction = body.direction.model_dump()
+    strategy = body.strategy.stored()
+    key = _samples_key(draft, direction, strategy, today)
+    hit, future = _cached_or_start(
+        request,
+        gate=_models,
+        key=key,
+        name="onboarding-samples",
+        per_ip=SAMPLES_PER_IP,
+        global_cap=SAMPLES_GLOBAL,
+        work=lambda: reveal.build_sample_posts(draft, direction, strategy, today=today),
+    )
+    if hit is not None:
+        return {**hit, "cached": True}
+    try:
+        result = future.result(timeout=SAMPLES_REQUEST_SECONDS)
+    except FutureTimeout as exc:
+        raise HTTPException(status_code=504, detail=PLAN_SLOW) from exc
+    except Exception as exc:
+        _raise_unavailable(exc)
+        raise HTTPException(status_code=502, detail=SAMPLES_FAILED) from exc
+    return {**result, "cached": False}
+
+
+# --- revision 5: the 3-month plan ---------------------------------------------------------
+
+
+class QuarterInputs(reveal.StrategyInputs):
+    changed: list[Literal["target", "cadence", "primary_audience", "feedback"]] | None = Field(
+        default=None, max_length=4
+    )
+
+
+class QuarterPlanRequest(BaseModel):
+    draft: drafts.OnboardingDraft
+    direction: drafts.DirectionIn
+    # All the owner's current inputs every time, with `changed` naming what this request
+    # changes (`changed_he` describes exactly those).
+    inputs: QuarterInputs | None = None
+    insights: list[reveal.InsightIn] | None = Field(default=None, max_length=4)
+
+
+@router.post("/quarter-plan")
+def public_quarter_plan(body: QuarterPlanRequest, request: Request) -> dict:
+    """Revision 5: "התוכנית שלכם ל-3 החודשים הקרובים" (services/quarter_plan.py).
+
+    With inputs it revises the plan last shown for this draft and direction. Cached by
+    (draft, direction, inputs, changed, day); only new work is charged.
+    """
+    from app.services import quarter_plan as quarter
+
+    draft = body.draft
+    today = date.today()
+    direction = body.direction.model_dump()
+    raw = body.inputs.model_dump(mode="json") if body.inputs else {}
+    changed = list(dict.fromkeys(raw.pop("changed", None) or [])) if raw.get("changed") is not None else None
+    raw.pop("changed", None)
+    raw.pop("pillars_removed", None)
+    inputs = {k: v for k, v in raw.items() if v not in ("", None, [])}
+    base_key = draft.fingerprint(f"quarter-base:{reveal.signature(direction)}")
+    key = draft.fingerprint(f"quarter:{today.isoformat()}:{reveal.signature([direction, inputs, changed])}")
+    insights = _plan_insights(draft, today, body.insights)
+
+    def work() -> dict:
+        last = latest.get(base_key) if (inputs or changed) else None
+        previous = last["plan"] if last and (last["inputs"] != inputs or changed) else None
+        return quarter.build_quarter_plan(
+            draft, direction, inputs=inputs, insights=insights, today=today,
+            previous=previous, previous_inputs=last["inputs"] if previous else None, changed=changed,
+        )
+
+    hit, future = _cached_or_start(
+        request,
+        gate=_models,
+        key=key,
+        name="onboarding-quarter",
+        per_ip=QUARTER_PER_IP,
+        global_cap=QUARTER_GLOBAL,
+        work=work,
+    )
+    if hit is not None:
+        latest.put(base_key, {"inputs": inputs, "plan": hit})
+        return {**hit, "cached": True}
+    try:
+        result = future.result(timeout=QUARTER_REQUEST_SECONDS)
+    except FutureTimeout as exc:
+        raise HTTPException(status_code=504, detail=PLAN_SLOW) from exc
+    except Exception as exc:
+        _raise_unavailable(exc)
+        raise HTTPException(status_code=502, detail=QUARTER_FAILED) from exc
+    latest.put(base_key, {"inputs": inputs, "plan": result})
     return {**result, "cached": False}

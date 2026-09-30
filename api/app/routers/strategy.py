@@ -69,6 +69,8 @@ def serialize_strategy(
         "competitors": extra.get("competitors"),
         "brand_language": extra.get("brand_language") or scraped.get("brand_language"),
         "created_at": strategy.created_at.isoformat(),
+        # Onboarding v2 revision 5 (additive): the 3-month plan saved at signup.
+        "quarter_plan": (scraped or {}).get("quarter_plan"),
     }
     if horizon:
         payload["horizon"] = horizon
@@ -324,6 +326,19 @@ def _active_strategy(db: Session, business: Business) -> Strategy:
     if not strategy:
         raise HTTPException(status_code=404, detail="עוד אין תוכנית. בנו את התוכנית של החודש קודם.")
     return strategy
+
+
+@router.get("/strategy/quarter")
+def quarter_plan(business: Business = Depends(get_business)) -> dict:
+    """The 3-month plan built at /start, and its integrations checklist. Readable right
+    after signup, before (and while) the first month is generated. `quarter_plan` is
+    null for businesses that did not come through /start."""
+    stored = loads(business.scraped_profile_json, {}) or {}
+    return {
+        "quarter_plan": stored.get("quarter_plan"),
+        "integrations_checklist": stored.get("integrations_checklist") or [],
+        "long_horizon_plan": stored.get("long_horizon_plan"),
+    }
 
 
 @router.get("/strategy/current")
