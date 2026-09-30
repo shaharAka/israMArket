@@ -269,3 +269,55 @@ feedback?, changed?: string[]}, insights?}` →
 `POST /onboarding/from-draft {draft, chosen_direction, quarter_plan}` — seeds `long_horizon_plan`
 (the quarter), the first month (weeks, pillars, cadence, budget lines, KPI), and the
 integrations checklist. `/public/strategy` and `/public/sample-posts` are superseded.
+
+## Revision 6 — setting the goal like a professional (owner feedback 2026-10-01)
+
+Owner: "asking how many buys through the website is a success is a bit stupid. What are
+the current sales? What is the average sale? Do we want to increase the average, the
+amount, or what? This should be simple but SUPER PROFESSIONAL every step — we are not
+dumbing this down, it is a HARD problem."
+
+The chapter "המטרה והתקציב" becomes a short, professional goal-setting sequence. Every
+number question offers range chips + an exact field + "לא בטוחים" (never blocks), says in
+one line why we ask, and the reflection after it does the arithmetic back to the owner.
+
+1. **איפה אתם רוצים לגדול?** (products/both) — unchanged.
+2. **איפה העסק היום** (baseline) — model-aware:
+   - products: הזמנות / קניות בחודש (range chips), סכום ממוצע לקנייה (₪ chips), how much of it
+     is online vs in store (only if both), how many are returning customers (chips: "מעט / בערך
+     חצי / רובם").
+   - services: פניות בחודש, כמה מהן הופכות ללקוחות (chips "1 מתוך 10 / 3 מתוך 10 / חצי / רובן"),
+     שווי ממוצע של לקוח/עסקה (₪), כמה לקוחות נוספים אפשר לקבל בחודש (capacity).
+   - optional for both: **כמה נשאר לכם מכל מכירה, בערך?** (margin chips 20% / 40% / 60%+ /
+     לא בטוחים) — this decides how much it is worth paying for a new customer.
+   Reflection example: "הבנו: בערך 40 הזמנות בחודש, ממוצע ₪180 — כ-₪7,200 בחודש."
+3. **מה הכי נכון להגדיל?** — the growth lever, one primary (+ optional secondary):
+   יותר לקוחות חדשים · קנייה ממוצעת גדולה יותר · לקוחות שחוזרים יותר · (services) לסגור יותר
+   מהפניות · למלא את החודשים השקטים. Each with a one-line "מתי זה נכון" hint, and a
+   recommended default computed from the baseline (e.g. many one-time buyers → returning
+   customers; low close rate → close more; full capacity → higher price/average, not more
+   leads).
+4. **התקציב** — unchanged (range chips + exact + "בלי תקציב").
+5. **היעד ל-3 חודשים** — a *suggested*, calculated target the owner can accept or edit:
+   the math is shown in 2–4 short lines: baseline → what the budget buys (clicks/impressions
+   from `cost_model`/`google_cost` ranges, with sources) → expected extra results as a range
+   (industry conversion ranges from the sourced table) → the target, e.g. "+6 עד +12
+   הזמנות בחודש (+15%–30%)"; plus unit economics when margin is known: "כל לקוח חדש שווה
+   לכם בערך ₪72 רווח, אז זה המקסימום שכדאי לשלם כדי להביא לקוח". With no budget or no
+   baseline: say so and give an organic, qualitative target with a first checkpoint instead
+   of a fake number. Never present a range as a promise ("טווח לתכנון, לא הבטחה").
+
+Draft additions: `baseline {orders_month?, avg_order_ils?, online_share?, returning?,
+inquiries_month?, close_rate?, deal_value_ils?, capacity_more?, margin_pct?}` (each value
+may be a range key or a number), `lever {primary, secondary?}`, `target {kind, value_min?,
+value_max?, unit_he, accepted: boolean, edited_by_owner: boolean}` (replaces
+`success.target`; `success.kpi` is derived from the lever + model).
+
+New endpoint (deterministic — no model call): `POST /public/target-suggestion {draft}` →
+`{baseline_summary_he, lever_hint_he, suggestion: {kind, min, max, unit_he, pct_min?,
+pct_max?} | null, math_he: string[], unit_economics_he?, assumptions_he: string[],
+sources: {title, url}[], organic_only: boolean}`.
+
+The quarter plan uses all of it: the strategy is built around the lever; section "המטרה
+ואיך נמדוד" becomes "המספרים" — baseline, lever, target with its math, unit economics, and
+how each number will be measured (integrations as today).
