@@ -6,14 +6,15 @@
  * wrapped: private mode, blocked storage or a full quota must never break the flow, it
  * only loses the resume-on-refresh.
  *
- * Mock mode. The four endpoints are built in parallel with this screen. When they are not
- * there yet (404), or in demo mode, or with NEXT_PUBLIC_DRAFT_MOCK=1 / ?mock=1, the three
- * public calls answer from the fixtures below so the conversation can be walked end to
- * end. `from-draft` is never faked against a real account: on 404 it falls back to the
+ * Mock mode. Only with NEXT_PUBLIC_DRAFT_MOCK=1 or ?mock=1 do the public calls answer from
+ * the fixtures below, so the conversation can be walked end to end while the API is built
+ * in parallel. Never implicitly: a 404 from a public endpoint is shown as a failure.
+ * `from-draft` is never faked against a real account: on 404 it falls back to the
  * existing profile + audiences endpoints, which is what it will do on the server anyway.
  */
 import {
   ApiError,
+  api,
   endpoints,
   type Business,
   type BusinessModel,
@@ -28,6 +29,19 @@ import {
   type SuggestedAudience,
 } from "./api";
 import { defaultGoalFor, goalsFor } from "./businessModel";
+import { clearPending } from "./pendingUploads";
+import {
+  KPI_UNITS,
+  budgetIls,
+  planForApi,
+  type DraftBudget,
+  type DraftSuccess,
+  type GrowWhere,
+  type PlanInputs,
+  type QuarterPlan,
+  type StoredQuarterPlan,
+  type SuccessOption,
+} from "./quarterPlan";
 
 /* --------------------------------- Types --------------------------------- */
 
@@ -59,8 +73,13 @@ export type OnboardingDraft = {
   tried?: { channels: TriedChannel[]; what_worked?: string };
   competitors?: { name: string; link?: string }[]; // 0–3
   business_model?: BusinessModel; // inferred from the type and the owner's words, confirmable
+  /** Derived from `success.kpi` at /start (the month planner still reads it). */
   goal?: PrimaryGoal;
   city?: string;
+  /** Revision 5: the marketing budget, where to grow (products / both) and the main KPI. */
+  budget?: DraftBudget;
+  grow_where?: GrowWhere;
+  success?: DraftSuccess;
 };
 
 export type BrandScan = {
@@ -84,7 +103,20 @@ export type FlowState = {
   plan?: PlanPreview | null;
   planFor?: string;
   chosenDirection?: number | null;
-  chosenIdea?: number | null;
+  /** "משהו אחר? ספרו לנו" at the direction step: the owner's own words. They revise the
+   *  two directions once, and travel with every strategy request after that. */
+  directionFeedback?: string;
+  /** The 3-month plan for the chosen direction, and what it was computed from. */
+  quarterPlan?: QuarterPlan | null;
+  quarterPlanFor?: string;
+  /** What the owner shaped on the plan (cadence, who comes first). Never prefilled by us.
+   *  The target is `draft.success.target`, one value for the question and the plan. */
+  planInputs?: Pick<PlanInputs, "cadence" | "primary_audience">;
+  /** "משהו לא מתאים? ספרו לנו" on the plan: the owner's own words. */
+  planFeedback?: string;
+  /** "מה ייחשב הצלחה?" options, and the answers they were fetched for. */
+  successOptions?: SuccessOption[] | null;
+  successOptionsFor?: string;
   modelConfirmed?: boolean;
   /** "עוד לא ניסינו" at the tried step: an answer, not a skip. */
   triedNone?: boolean;
@@ -719,6 +751,18 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
   if (d.goal && goalsFor(model).some((g) => g.key === d.goal)) out.goal = d.goal;
   if (d.city?.trim()) out.city = d.city.trim();
+  if (d.budget?.range) {
+    out.budget = { range: d.budget.range };
+    if (d.budget.exact_ils != null && Number.isFinite(d.budget.exact_ils) && d.budget.exact_ils >= 0) {
+      out.budget.exact_ils = Math.round(d.budget.exact_ils);
+    }
+  }
+  // Where to grow is asked of shops only: a service business has no "online or in store".
+  if (d.grow_where && model !== "services") out.grow_where = d.grow_where;
+  if (d.success?.kpi) {
+    out.success = { kpi: d.success.kpi };
+    if (d.success.target?.trim()) out.success.target = d.success.target.trim().slice(0, 120);
+  }
   return out;
 }
 
@@ -783,16 +827,7 @@ export async function suggestAudiences(draft: OnboardingDraft): Promise<Suggeste
  */
 export async function fetchPlanPreview(draft: OnboardingDraft, brand: PublicBrand | null): Promise<PlanPreview> {
   return withMock(
-    async () => {
-      for (let attempt = 0; ; attempt += 1) {
-        try {
-          return await endpoints.publicPlanPreview(draft);
-        } catch (err) {
-          if (!(err instanceof ApiError && err.status === 504) || attempt >= 2) throw err;
-          await wait(1500);
-        }
-      }
-    },
+    () => retrying(() => endpoints.publicPlanPreview(draft)),
     async () => {
       await wait(4200);
       return mockPlanPreview(draft, brand);
@@ -820,21 +855,206 @@ export async function validateLinks(links: OnboardingDraft["links"]): Promise<Li
   );
 }
 
+/** The long model calls: a 504 means the work finished into the cache, so ask again (twice at most). */
+async function retrying<T>(call: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await call();
+    } catch (err) {
+      if (!(err instanceof ApiError && err.status === 504) || attempt >= 2) throw err;
+      await wait(1500);
+    }
+  }
+}
+
 /**
- * Turn the draft into the business. On 404 (the endpoint is not deployed yet) the same
- * result is reached through the existing endpoints: the profile, then the audiences.
- * The brand is read later by /onboarding when there is a site.
+ * "משהו אחר? ספרו לנו": the two directions again, with the owner's words.
+ * Not in the Revision 4 contract yet: sent as `feedback` next to the draft (the API
+ * ignores unknown keys today, so an unchanged answer is possible and handled by the
+ * screen). The same words always travel to `/public/strategy` as `inputs.feedback`.
  */
-export async function saveDraftToAccount(
+export async function revisePlan(draft: OnboardingDraft, feedback: string, brand: PublicBrand | null): Promise<PlanPreview> {
+  return withMock(
+    () =>
+      retrying(() =>
+        api<PlanPreview>("/public/plan-preview", { method: "POST", body: JSON.stringify({ draft, feedback }) }),
+      ),
+    async () => {
+      await wait(2600);
+      return mockRevisedPlan(draft, brand, feedback);
+    },
+  );
+}
+
+/** The chosen direction in the shape the API takes. */
+export function chosenDirectionOf(flow: FlowState): PlanDirection | null {
+  const index = flow.chosenDirection;
+  return flow.plan && index != null ? (flow.plan.directions[index] ?? null) : null;
+}
+
+/* --------------------------- The 3-month plan --------------------------- */
+
+/**
+ * What a plan was computed from, apart from what the owner shapes on the plan itself.
+ * The target lives in the draft (`success.target`) but travels as `inputs.target`, so a
+ * changed target is an update ("מה השתנה"), not a new plan.
+ */
+export function planBase(flow: FlowState): string {
+  const draft = draftForApi(flow);
+  if (draft.success) draft.success = { kpi: draft.success.kpi };
+  return signature([draft, chosenDirectionOf(flow), flow.directionFeedback?.trim() || ""]);
+}
+
+/** The owner's shaping as sent: the target from the draft, the feedback from both screens. */
+export function planInputsForApi(flow: FlowState): PlanInputs {
+  const raw = flow.planInputs ?? {};
+  const out: PlanInputs = {};
+  const target = flow.draft.success?.target?.trim();
+  if (target) out.target = target.slice(0, 120);
+  if (raw.cadence) out.cadence = raw.cadence;
+  if (raw.primary_audience?.trim()) out.primary_audience = raw.primary_audience.trim();
+  const feedback = [flow.directionFeedback?.trim(), flow.planFeedback?.trim()].filter(Boolean).join("\n");
+  if (feedback) out.feedback = feedback.slice(0, 600);
+  return out;
+}
+
+/**
+ * `POST /public/quarter-plan` (Revision 5). `inputs.changed` names what this request
+ * changes, so the API can say "מה השתנה" about exactly that.
+ */
+export async function fetchQuarterPlan(
   draft: OnboardingDraft,
-  chosenDirection: PlanDirection | null,
-  chosenIdea: PostIdea | null,
-): Promise<Business | null> {
+  direction: PlanDirection,
+  inputs: PlanInputs,
+  context: { insights?: PlanInsight[]; previous?: QuarterPlan | null } = {},
+): Promise<QuarterPlan> {
+  return withMock(
+    () =>
+      retrying(() =>
+        api<QuarterPlan>("/public/quarter-plan", {
+          method: "POST",
+          body: JSON.stringify({ draft, direction, inputs, ...(context.insights?.length ? { insights: context.insights } : {}) }),
+        }),
+      ),
+    async () => {
+      await wait(inputs.changed?.length ? 1400 : 4200);
+      const { mockQuarterPlan } = await import("./quarterPlanMock");
+      return mockQuarterPlan(draft, direction, inputs, context.insights ?? []);
+    },
+  );
+}
+
+/**
+ * "מה ייחשב הצלחה?": `GET /public/success-options`. The query says who is asking; when the
+ * API answers with one list for everyone, the `models` / `grow_where` fields filter it.
+ */
+export async function fetchSuccessOptions(draft: OnboardingDraft): Promise<SuccessOption[]> {
+  const model = draft.business_model ?? inferBusinessModel(draft.business_type, draft.offerings);
+  const grow = model === "services" ? undefined : draft.grow_where;
+  return withMock(
+    async () => {
+      const query = new URLSearchParams({ model });
+      if (grow) query.set("grow_where", grow);
+      const res = await api<{ options: (SuccessOption & { description_he?: string })[] }>(
+        `/public/success-options?${query.toString()}`,
+      );
+      return (res.options ?? [])
+        .filter(
+          (o) =>
+            o.key &&
+            o.name_he &&
+            (!o.models?.length || o.models.includes(model)) &&
+            (!grow || !o.grow_where?.length || o.grow_where.includes(grow)),
+        )
+        .map((o) => ({ ...KPI_UNITS[o.key], ...o, hint_he: o.hint_he ?? o.description_he }));
+    },
+    async () => {
+      await wait(500);
+      const { mockSuccessOptions } = await import("./quarterPlanMock");
+      return mockSuccessOptions(model, grow, Boolean(draft.links.website));
+    },
+  );
+}
+
+/**
+ * The PrimaryGoal a KPI stands for (the month planner and the old endpoints still read
+ * `goal`). The option's own `goal` wins; otherwise a plain reading of the key.
+ */
+export function goalForKpi(kpi: string, model: BusinessModel, option?: SuccessOption | null): PrimaryGoal {
+  const valid = (goal: PrimaryGoal) => goalsFor(model).some((g) => g.key === goal);
+  if (option?.goal && valid(option.goal)) return option.goal;
+  const guess: PrimaryGoal = /aware|know|local/.test(kpi)
+    ? model === "services"
+      ? "personal_brand"
+      : "brand_awareness"
+    : /order|sale|visit|store|shop/.test(kpi)
+      ? "sales"
+      : "leads";
+  return valid(guess) ? guess : defaultGoalFor(model);
+}
+
+/** In mock mode only: the plan the owner saved, for /strategy to show after signup. */
+const MOCK_PLAN_KEY = "isramarket_plan_mock";
+
+export function stashMockPlan(plan: QuarterPlan | null) {
+  if (!isMockMode() || !plan) return;
   try {
-    const res = await endpoints.onboardingFromDraft({
-      draft,
-      chosen_direction: chosenDirection,
-      chosen_idea: chosenIdea,
+    window.sessionStorage.setItem(MOCK_PLAN_KEY, JSON.stringify(planForApi(plan)));
+  } catch {
+    // Nothing to keep.
+  }
+}
+
+export function mockStoredPlan(): StoredQuarterPlan | null {
+  if (!isMockMode()) return null;
+  try {
+    const raw = window.sessionStorage.getItem(MOCK_PLAN_KEY);
+    return raw ? (JSON.parse(raw) as StoredQuarterPlan) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Where the owner lands after the plan is saved: the plan itself. */
+export const AFTER_SAVE = "/strategy?welcome=1";
+
+/**
+ * Turn the flow into the business: `from-draft` with the direction and the 3-month plan.
+ * On 404 (the endpoint is not deployed yet) the same result is reached through the
+ * existing endpoints: the profile (with the budget from /start), then the audiences.
+ */
+export async function saveFlowToAccount(flow: FlowState): Promise<Business | null> {
+  const business = await saveDraft(flow);
+  stashMockPlan(currentPlan(flow));
+  return business;
+}
+
+/** The plan for the current answers and direction, not a stale one. */
+export function currentPlan(flow: FlowState): QuarterPlan | null {
+  return flow.quarterPlan && flow.quarterPlanFor === planBase(flow) ? flow.quarterPlan : null;
+}
+
+/**
+ * After a finished save, or "להתחיל מחדש": nothing of the onboarding stays in this browser.
+ * Photos are no longer picked before signup, but a browser that went through the earlier
+ * flow may still hold some in IndexedDB: they go too.
+ */
+export async function clearSavedFlow() {
+  clearFlow();
+  await clearPending();
+}
+
+async function saveDraft(flow: FlowState): Promise<Business | null> {
+  const draft = draftForApi(flow);
+  const plan = currentPlan(flow);
+  try {
+    const res = await api<{ business: Business | null }>("/onboarding/from-draft", {
+      method: "POST",
+      body: JSON.stringify({
+        draft,
+        chosen_direction: chosenDirectionOf(flow),
+        quarter_plan: plan ? planForApi(plan) : null,
+      }),
     });
     return res.business;
   } catch (err) {
@@ -857,7 +1077,7 @@ export async function saveDraftToAccount(
     location: draft.city ?? "",
     business_model: model,
     social_links: social,
-    monthly_budget_ils: 0,
+    monthly_budget_ils: budgetIls(draft.budget),
     competitors: (draft.competitors ?? []).map((c) => ({
       name: c.name,
       website_url: c.link && looksLikeUrl(c.link) ? normalizeUrl(c.link) : "",
@@ -921,13 +1141,16 @@ function mockBrand(url: string, draft: OnboardingDraft): PublicBrandResult {
   };
 }
 
-type IlDate = { date: string; name: string };
+export type IlDate = { date: string; name: string };
 
 /** Enough of the Israeli calendar for the fixtures. The real API uses services/calendar_il.py. */
-const IL_DATES: IlDate[] = [
+export const IL_DATES: IlDate[] = [
   { date: "2026-10-03", name: "שמחת תורה" },
+  { date: "2026-11-11", name: "יום הרווקים" },
   { date: "2026-11-27", name: "בלאק פריידי" },
+  { date: "2026-11-30", name: "סייבר מאנדיי" },
   { date: "2026-12-04", name: "חנוכה" },
+  { date: "2026-12-31", name: "סוף השנה האזרחית" },
   { date: "2027-01-23", name: "ט״ו בשבט" },
   { date: "2027-03-23", name: "פורים" },
   { date: "2027-04-21", name: "פסח" },
@@ -1355,4 +1578,32 @@ function mockPlanPreview(d: OnboardingDraft, brand: PublicBrand | null): PlanPre
     })),
   );
   return { insights: insights.slice(0, 4), directions, ideas, brand };
+}
+
+/* ------------------------ Fixtures: revised directions ------------------------ */
+
+function quoteShort(text: string, max = 70): string {
+  const clean = text.trim().replace(/\s+/g, " ");
+  return clean.length > max ? `${clean.slice(0, max - 1).trim()}…` : clean;
+}
+
+function mockRevisedPlan(d: OnboardingDraft, brand: PublicBrand | null, feedback: string): PlanPreview {
+  const base = mockPlanPreview(d, brand);
+  const words = quoteShort(feedback);
+  const first = base.directions[0];
+  const own: PlanDirection = {
+    title: "הכיוון שלכם",
+    approach_he: `לבנות את החודש סביב מה שביקשתם: "${words}".`,
+    audience: first.audience,
+    goal_he: first.goal_he,
+    why_he: "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה עובד.",
+    first_steps: ["לחדד יחד את הרעיון במשפט אחד", "לבחור 3 נושאים שמשרתים אותו", "לבדוק אחרי שבועיים מה הביא תגובות"],
+  };
+  // The owner's idea first, next to the stronger of the two we had.
+  const directions = [own, first];
+  const ideas = [
+    ...base.ideas.filter((i) => (i.direction_index ?? 0) === 0).map((i) => ({ ...i, direction_index: 0 })),
+    ...base.ideas.filter((i) => (i.direction_index ?? 0) === 0).map((i) => ({ ...i, direction_index: 1 })),
+  ];
+  return { ...base, directions, ideas };
 }

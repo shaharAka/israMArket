@@ -1,0 +1,99 @@
+/* The 3-month plan. Alive, not busy: sections rise in as they reach the screen, the budget
+   bars grow from their baseline, and the "works from day one" dot breathes. All of it is
+   off under prefers-reduced-motion. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.55s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.55s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal[data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Bars grow from the right (the RTL baseline) once their section is shown. */
+.seg {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-shown] .seg {
+  transform: scaleX(1);
+}
+
+[data-shown] .seg:nth-child(2) {
+  transition-delay: 0.08s;
+}
+[data-shown] .seg:nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+/* Timeline dots pop in, one month after the other. */
+.dot {
+  transform: scale(0.3);
+  opacity: 0;
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1.4),
+    opacity 0.3s ease-out;
+}
+
+[data-shown] .dot {
+  transform: none;
+  opacity: 1;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(47, 93, 42, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(47, 93, 42, 0);
+  }
+}
+
+.live {
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+/* The section index on phones: one swipeable row, no visible scrollbar. */
+.nav {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes busy {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.busy {
+  animation: busy 1.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .seg,
+  .dot {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .live,
+  .busy {
+    animation: none !important;
+  }
+}

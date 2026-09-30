@@ -1,39 +1,45 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
+import { GENERATE_STAGES } from "@/components/onboarding/constants";
+import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
+  ApiError,
   endpoints,
+  generateUntilDone,
+  type Business,
   type LongHorizonMilestone,
   type StrategyPayload,
   type WeeklyBreakdownItem,
 } from "@/lib/api";
+import { mockStoredPlan } from "@/lib/draft";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconCalendar, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
+import { toast } from "@/lib/ui";
 
 /**
- * התוכנית — the month and the quarter on one page.
+ * התוכנית — the 3-month plan, the month and the quarter on one page.
  *
- * These used to be two pages (`/strategy` for the month, `/plan` for the quarter), and the
- * owner had to know the difference to find either. They are one plan at two zoom levels,
- * so they are one page: the month first, because that is what the owner acts on, and the
- * quarter underneath as a single quiet section, because it is context for the month rather
- * than a second thing to do. `/plan` redirects to `#quarter`.
+ * A business built at /start arrives here right after signup (Revision 5): the plan the
+ * owner saw and shaped before the email is on the page at once, and the first month is
+ * built from it underneath, stage by stage, while they read. So this page renders with no
+ * month yet, and drives that build itself (the API builds one stage per call).
  *
- * The month leads with its answer (UI-RULES rule 2): the goal sentence, its targets and
- * what we need from the owner share one tinted panel; the four weeks are compact rows in
- * one hairline container — a numbered marker and the week's focus, each row its own
- * expand for the four lists that explain it. The next-month build sits in that same
- * container as its last row, with a quiet outline button, so the page keeps exactly one
- * dark button: `לבדוק את הפוסט הבא`.
+ * Once there is a month, it leads for a returning owner (it is what they act on) and the
+ * 3-month plan follows as a reference, its later sections folded to one line each. On the
+ * first visit the plan leads. The month itself leads with its answer (UI-RULES rule 2):
+ * the goal sentence, its targets and what we need from the owner share one tinted panel;
+ * the four weeks are compact rows, each its own expand. The page keeps exactly one dark
+ * button: `לבדוק את הפוסט הבא`, and only once there are posts to check.
  *
- * The quarter keeps its hypothesis on the face and its three months as rows. Its targets,
- * how we help and the checkpoint windows are method, not the answer, so they are one
- * expand. Nothing the payload holds was dropped — it is staged, not deleted.
+ * Editing the plan itself is not built yet, and the page says so; what it is built on is
+ * editable from /decisions today. A business without a stored plan (built before Revision
+ * 5) sees the month and the quarter as before.
  */
 
 const TONE = SECTIONS.strategy;
@@ -45,36 +51,113 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
   return Math.min(4, Math.ceil(now.getDate() / 7));
 }
 
+type Build = { state: "idle" | "running" | "failed"; stage: string; error: string };
+
+/**
+ * The first month, built in the background from the stored plan. Resumes where it stopped
+ * (the API keeps the stage), so leaving and coming back continues rather than restarts.
+ */
+function useFirstMonthBuild(onDone: () => void) {
+  const [build, setBuild] = useState<Build>({ state: "idle", stage: "usp", error: "" });
+  const started = useRef(false);
+  const start = () => {
+    if (started.current) return;
+    started.current = true;
+    setBuild({ state: "running", stage: "usp", error: "" });
+    generateUntilDone(endpoints.generate, (stage) => setBuild((b) => ({ ...b, stage })))
+      .then(() => {
+        setBuild({ state: "idle", stage: "done", error: "" });
+        toast("החודש הראשון מוכן");
+        onDone();
+      })
+      .catch((err: unknown) => {
+        started.current = false;
+        setBuild((b) => ({
+          ...b,
+          state: "failed",
+          error: err instanceof Error && err.message ? err.message : "לא הצלחנו לבנות את החודש. נסו שוב.",
+        }));
+      });
+  };
+  return { build, start };
+}
+
 export default function StrategyPage() {
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
+  const [business, setBusiness] = useState<Business | null>(null);
+  const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
+  const [welcome, setWelcome] = useState(false);
+
+  function loadStrategy() {
+    return endpoints
+      .strategy()
+      .then((payload) => {
+        setStrategy(payload);
+        setError("");
+      })
+      .catch((err: unknown) => {
+        // 404: no month yet. That is expected right after /start, not an error.
+        if (err instanceof ApiError && err.status === 404) return;
+        setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התוכנית.");
+      });
+  }
+
+  const { build, start } = useFirstMonthBuild(() => void loadStrategy());
 
   useEffect(() => {
-    endpoints
-      .strategy()
-      .then(setStrategy)
-      .catch((err) => setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התוכנית."));
+    const timer = window.setTimeout(() => setWelcome(new URLSearchParams(window.location.search).get("welcome") === "1"), 0);
+    Promise.all([
+      loadStrategy(),
+      endpoints
+        .business()
+        .then((res) => setBusiness(res.business))
+        .catch(() => {}),
+    ]).finally(() => setLoaded(true));
+    return () => window.clearTimeout(timer);
   }, []);
+
+  const plan = strategy?.quarter_plan ?? business?.quarter_plan ?? mockStoredPlan();
+  const needsMonth = Boolean(business && !business.onboarding_complete && !strategy);
+
+  // Arrived from /start with the plan and no month yet: build it now, in the background.
+  useEffect(() => {
+    if (loaded && needsMonth && build.state === "idle" && build.stage !== "done") start();
+    // `start` is stable enough: it guards itself with a ref.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, needsMonth]);
 
   // `/plan` and the hub link land on `#quarter`, but the section only exists once the
   // plan has loaded — the browser's own jump to the fragment has already happened by then.
-  const loaded = Boolean(strategy);
+  const hasStrategy = Boolean(strategy);
   useEffect(() => {
-    if (!loaded || window.location.hash !== "#quarter") return;
-    const frame = requestAnimationFrame(() =>
-      document.getElementById("quarter")?.scrollIntoView({ block: "start" })
-    );
+    if (!hasStrategy || window.location.hash !== "#quarter") return;
+    const frame = requestAnimationFrame(() => document.getElementById("quarter")?.scrollIntoView({ block: "start" }));
     return () => cancelAnimationFrame(frame);
-  }, [loaded]);
+  }, [hasStrategy]);
 
-  const weeks = strategy?.weekly_breakdown || strategy?.roadmap?.weekly_breakdown || [];
-  const events = strategy?.relevant_events || strategy?.roadmap?.relevant_events || [];
-  const monthly = strategy?.monthly_horizon_plan || strategy?.roadmap?.monthly_horizon_plan;
-  const quarter = strategy?.long_horizon_plan || strategy?.roadmap?.long_horizon_plan;
-  const management =
-    strategy?.management_and_checkpoints || strategy?.roadmap?.management_and_checkpoints;
-  const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
-  const currentWeek = strategy ? currentWeekOf(strategy) : null;
+  const accent = business?.brand_language?.palette?.find((s) => s.role === "primary")?.hex ?? TONE.accent;
+  const planFirst = welcome || !strategy;
+
+  const planView = plan ? (
+    <section aria-labelledby="quarter-plan-heading" className="space-y-3">
+      <div>
+        <h2 id="quarter-plan-heading" className="text-lg font-black text-[#20211f]">
+          התוכנית ל-3 החודשים
+        </h2>
+        {welcome ? (
+          <p className="mt-0.5 text-sm leading-6 text-[#5e6159]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
+        ) : null}
+      </div>
+      <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" />
+      <p className="border-t border-[#deddd8] pt-3 text-xs leading-5 text-[#747570]">
+        לערוך את התוכנית עצמה יהיה אפשר בקרוב. בינתיים אפשר לשנות את מה שהיא בנויה עליו:{" "}
+        <Link href="/decisions" className="font-bold text-[#20211f] underline underline-offset-4">
+          ההחלטות שלי
+        </Link>
+      </p>
+    </section>
+  ) : null;
 
   return (
     <AppShell>
@@ -82,148 +165,212 @@ export default function StrategyPage() {
         <SectionHeader section="business" title="התוכנית" />
 
         {error ? (
-          <p className="rounded-md border border-[#d8c3bd] bg-white px-4 py-3 text-sm text-[#7c4036]">
-            {error}
-          </p>
+          <p className="mb-4 rounded-md border border-[#d8c3bd] bg-white px-4 py-3 text-sm text-[#7c4036]">{error}</p>
         ) : null}
 
-        {strategy ? (
-          <div className="rise-stagger space-y-3.5 pb-2">
-            {/* The month's goal and what it asks of the owner are one statement, so they
-                share one tinted panel. The month's name is the panel's label — a separate
-                date chip under the title cost a row of height to say the same thing. */}
-            <section className="rounded-lg p-4 sm:p-6" style={{ background: TONE.surface }}>
-              <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
-                <IconFlag className="h-4 w-4" />
-                המטרה ל{strategy.month_name_he}
+        {!loaded ? <LoadingMark label="טוענים את התוכנית…" /> : null}
+
+        {loaded ? (
+          <div className="space-y-8 pb-2">
+            {needsMonth || build.state !== "idle" ? <BuildRow build={build} onRetry={start} /> : null}
+            {planFirst ? planView : null}
+            {strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
+            {planFirst ? null : planView}
+            {!plan && !strategy && !needsMonth && !error ? (
+              <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
+                עוד אין תוכנית.{" "}
+                <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
+                  לבנות אותה
+                </Link>
               </p>
-              <h2 className="mt-1 text-[17px] font-black leading-7 text-[#20211f] sm:text-xl sm:leading-8">
-                {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
-              </h2>
-              {monthly?.targets?.length ? (
-                <ul className="mt-2 space-y-0.5 border-r-2 pr-3" style={{ borderColor: TONE.accent }}>
-                  {monthly.targets.slice(0, 3).map((target) => (
-                    <li key={target} className="text-sm leading-5 text-[#5e6159]">
-                      {target}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-
-              <div className="mt-3 flex items-start gap-2 border-t pt-3" style={{ borderColor: TONE.border }}>
-                <span className="mt-1 shrink-0" style={{ color: TONE.accent }}>
-                  <IconBell className="h-4 w-4" />
-                </span>
-                <p className="text-[15px] font-bold leading-6 text-[#20211f]">
-                  <span style={{ color: TONE.accent }}>מה צריך מכם: </span>
-                  {nextUserAction || "כרגע כלום. אנחנו ממשיכים לעבוד."}
-                </p>
-              </div>
-            </section>
-
-            <section aria-labelledby="weeks-heading">
-              <h2 id="weeks-heading" className="mb-2 text-sm font-black text-[#20211f]">
-                השבועות
-              </h2>
-              {weeks.length ? (
-                <ol className="divide-y divide-[#eeede8] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
-                  {weeks.map((week) => (
-                    <WeekRow key={week.week} week={week} currentWeek={currentWeek} />
-                  ))}
-                  {strategy.horizon ? (
-                    <li className="px-4">
-                      <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="line" />
-                    </li>
-                  ) : null}
-                </ol>
-              ) : (
-                <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
-                  עדיין אין לתוכנית הזו חלוקה לשבועות.
-                </p>
-              )}
-            </section>
-            <Link
-              href="/posts"
-              className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:inline-flex sm:w-auto"
-            >
-              לבדוק את הפוסט הבא
-              <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
-            </Link>
-
-            {/* The quarter: context for the month, so it is quiet — no panel, no box, a
-                rule above it and a heading. */}
-            <section id="quarter" className="scroll-mt-24 border-t border-[#deddd8] pt-4">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-                <h2 className="text-lg font-black text-[#20211f]">הרבעון</h2>
-                {quarter?.horizon ? <p className="text-xs text-[#747570]">{quarter.horizon}</p> : null}
-              </div>
-
-              {quarter ? (
-                <>
-                  <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">{quarter.hypothesis}</p>
-                  <ol className="mt-2 divide-y divide-[#eeede8] border-y border-[#eeede8]">
-                    {quarter.milestones.map((milestone, index) => (
-                      <MonthRow key={`${milestone.month_label}-${index}`} milestone={milestone} index={index} />
-                    ))}
-                  </ol>
-                </>
-              ) : (
-                <p className="mt-2 text-sm leading-6 text-[#5e6159]">
-                  עדיין אין תוכנית לרבעון.{" "}
-                  <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
-                    לבנות אותה
-                  </Link>
-                </p>
-              )}
-            </section>
-
-            {/* All of the reasoning — the month's message and dates, the quarter's ranked
-                targets, how we help and when we will need the owner — is one expand on the
-                page's last line, beside the way to change what the plan is built on. Two
-                expands, one per zoom level, cost a line each and said "there is more" twice. */}
-            <div className="mt-1! flex items-start justify-between gap-4">
-              <details className="group min-w-0 flex-1">
-                <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#62635f] hover:text-[#20211f]">
-                  <Caret />
-                  למה ככה, ומתי נצטרך אתכם
-                </summary>
-                <div className="space-y-4 pt-1 pb-2 text-sm leading-6 text-[#62635f]">
-                  <div>
-                    <p className="text-[11px] font-bold text-[#8b8e84]">המסר המרכזי בפוסטים</p>
-                    <p className="mt-1 text-[#3c3e3a]">{strategy.usp.usp_one_liner}</p>
-                  </div>
-                  {events.length ? (
-                    <div>
-                      <p className="flex items-center gap-2 text-[11px] font-bold text-[#8b8e84]">
-                        <IconCalendar className="h-3.5 w-3.5" />
-                        המועדים שלקחנו בחשבון
-                      </p>
-                      <ul className="mt-1.5 space-y-1.5">
-                        {events.slice(0, 4).map((event) => (
-                          <li key={`${event.date}-${event.name}`}>
-                            <span className="font-bold text-[#20211f]">
-                              {event.date} · {event.name}
-                            </span>
-                            {": "}
-                            {event.business_relevance}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ) : null}
-                  <QuarterDetails targets={quarter?.targets || []} management={management} />
-                </div>
-              </details>
-              <Link href="/decisions" className="shrink-0 py-2 text-sm text-[#747570] underline underline-offset-4">
-                לשנות את ההחלטות
-              </Link>
-            </div>
+            ) : null}
           </div>
-        ) : !error ? (
-          <LoadingMark label="טוענים את התוכנית…" />
         ) : null}
       </div>
     </AppShell>
+  );
+}
+
+/** The first month being built: one quiet row with the stage, never a second ask. */
+function BuildRow({ build, onRetry }: { build: Build; onRetry: () => void }) {
+  const index = Math.max(0, GENERATE_STAGES.findIndex((s) => s.key === build.stage));
+  const label = GENERATE_STAGES[index]?.label ?? GENERATE_STAGES[0].label;
+  if (build.state === "failed") {
+    return (
+      <div role="alert" className="rounded-lg border border-[#d8c3bd] bg-white px-4 py-3 text-sm leading-6 text-[#7c4036]">
+        <p className="font-bold">לא הצלחנו לבנות את החודש הראשון.</p>
+        <p>{build.error}</p>
+        <button
+          type="button"
+          onClick={onRetry}
+          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f]"
+        >
+          לנסות שוב
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: TONE.surface }}>
+      <span aria-hidden className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full motion-reduce:animate-none" style={{ background: TONE.accent }} />
+      <p className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
+        <b>בונים את החודש הראשון לפי התוכנית: </b>
+        {label}…
+        <span className="block text-xs text-[#5e6159]">
+          שלב {index + 1} מתוך {GENERATE_STAGES.length}. אפשר לקרוא את התוכנית בינתיים, ולא לסגור את המסך.
+        </span>
+      </p>
+    </div>
+  );
+}
+
+/** This month: the goal, what we need from the owner, the four weeks, and the next post. */
+function MonthSection({
+  strategy,
+  setStrategy,
+  showQuarter,
+}: {
+  strategy: StrategyPayload;
+  setStrategy: (s: StrategyPayload) => void;
+  /** The old quarter block, for a business with no stored 3-month plan. */
+  showQuarter: boolean;
+}) {
+  const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
+  const events = strategy.relevant_events || strategy.roadmap?.relevant_events || [];
+  const monthly = strategy.monthly_horizon_plan || strategy.roadmap?.monthly_horizon_plan;
+  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  const management = strategy.management_and_checkpoints || strategy.roadmap?.management_and_checkpoints;
+  const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
+  const currentWeek = currentWeekOf(strategy);
+
+  return (
+    <div className="rise-stagger space-y-3.5">
+      <section className="rounded-lg p-4 sm:p-6" style={{ background: TONE.surface }}>
+        <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
+          <IconFlag className="h-4 w-4" />
+          המטרה ל{strategy.month_name_he}
+        </p>
+        <h2 className="mt-1 text-[17px] font-black leading-7 text-[#20211f] sm:text-xl sm:leading-8">
+          {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
+        </h2>
+        {monthly?.targets?.length ? (
+          <ul className="mt-2 space-y-0.5 border-r-2 pr-3" style={{ borderColor: TONE.accent }}>
+            {monthly.targets.slice(0, 3).map((target) => (
+              <li key={target} className="text-sm leading-5 text-[#5e6159]">
+                {target}
+              </li>
+            ))}
+          </ul>
+        ) : null}
+
+        <div className="mt-3 flex items-start gap-2 border-t pt-3" style={{ borderColor: TONE.border }}>
+          <span className="mt-1 shrink-0" style={{ color: TONE.accent }}>
+            <IconBell className="h-4 w-4" />
+          </span>
+          <p className="text-[15px] font-bold leading-6 text-[#20211f]">
+            <span style={{ color: TONE.accent }}>מה צריך מכם: </span>
+            {nextUserAction || "כרגע כלום. אנחנו ממשיכים לעבוד."}
+          </p>
+        </div>
+      </section>
+
+      <section aria-labelledby="weeks-heading">
+        <h2 id="weeks-heading" className="mb-2 text-sm font-black text-[#20211f]">
+          השבועות
+        </h2>
+        {weeks.length ? (
+          <ol className="divide-y divide-[#eeede8] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+            {weeks.map((week) => (
+              <WeekRow key={week.week} week={week} currentWeek={currentWeek} />
+            ))}
+            {strategy.horizon ? (
+              <li className="px-4">
+                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="line" />
+              </li>
+            ) : null}
+          </ol>
+        ) : (
+          <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
+            עדיין אין לתוכנית הזו חלוקה לשבועות.
+          </p>
+        )}
+      </section>
+      <Link
+        href="/posts"
+        className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:inline-flex sm:w-auto"
+      >
+        לבדוק את הפוסט הבא
+        <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+      </Link>
+
+      {showQuarter ? (
+        <section id="quarter" className="scroll-mt-24 border-t border-[#deddd8] pt-4">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
+            <h2 className="text-lg font-black text-[#20211f]">הרבעון</h2>
+            {quarter?.horizon ? <p className="text-xs text-[#747570]">{quarter.horizon}</p> : null}
+          </div>
+          {quarter ? (
+            <>
+              <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">{quarter.hypothesis}</p>
+              <ol className="mt-2 divide-y divide-[#eeede8] border-y border-[#eeede8]">
+                {quarter.milestones.map((milestone, index) => (
+                  <MonthRow key={`${milestone.month_label}-${index}`} milestone={milestone} index={index} />
+                ))}
+              </ol>
+            </>
+          ) : (
+            <p className="mt-2 text-sm leading-6 text-[#5e6159]">
+              עדיין אין תוכנית לרבעון.{" "}
+              <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
+                לבנות אותה
+              </Link>
+            </p>
+          )}
+        </section>
+      ) : (
+        <span id="quarter" className="block scroll-mt-24" />
+      )}
+
+      {/* The month's reasoning, one expand on its last line, beside the way to change what
+          the plan is built on. */}
+      <div className="mt-1! flex items-start justify-between gap-4">
+        <details className="group min-w-0 flex-1">
+          <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#62635f] hover:text-[#20211f]">
+            <Caret />
+            למה ככה, ומתי נצטרך אתכם
+          </summary>
+          <div className="space-y-4 pt-1 pb-2 text-sm leading-6 text-[#62635f]">
+            <div>
+              <p className="text-[11px] font-bold text-[#8b8e84]">המסר המרכזי בפוסטים</p>
+              <p className="mt-1 text-[#3c3e3a]">{strategy.usp.usp_one_liner}</p>
+            </div>
+            {events.length ? (
+              <div>
+                <p className="flex items-center gap-2 text-[11px] font-bold text-[#8b8e84]">
+                  <IconCalendar className="h-3.5 w-3.5" />
+                  המועדים שלקחנו בחשבון
+                </p>
+                <ul className="mt-1.5 space-y-1.5">
+                  {events.slice(0, 4).map((event) => (
+                    <li key={`${event.date}-${event.name}`}>
+                      <span className="font-bold text-[#20211f]">
+                        {event.date} · {event.name}
+                      </span>
+                      {": "}
+                      {event.business_relevance}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            <QuarterDetails targets={quarter?.targets || []} management={management} />
+          </div>
+        </details>
+        <Link href="/decisions" className="shrink-0 py-2 text-sm text-[#747570] underline underline-offset-4">
+          לשנות את ההחלטות
+        </Link>
+      </div>
+    </div>
   );
 }
 

@@ -63,8 +63,6 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  /** Arrived from /start: the business was built there, so this page starts at the budget. */
-  const [fromDraft, setFromDraft] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [generateStage, setGenerateStage] = useState("usp");
 
@@ -171,11 +169,13 @@ export default function OnboardingPage() {
           router.replace(site ? `/start?site=${encodeURIComponent(site)}` : "/start");
           return;
         }
-        // Built by /start (from-draft): skip the old business step, which needs a website.
-        const builtFromDraft = Boolean(business.owner_context || business.first_month_seed);
+        // Built by /start (from-draft): the budget was asked there too (Revision 5), so
+        // nothing is left to ask here. The plan page shows the stored plan and builds the
+        // first month from it.
+        const builtFromDraft = Boolean(business.owner_context || business.first_month_seed || business.quarter_plan);
         if ((builtFromDraft || new URLSearchParams(window.location.search).get("from") === "start") && business.name) {
-          setFromDraft(true);
-          setStep(1);
+          router.replace("/strategy");
+          return;
         }
         // What the owner already saved wins over any guess from the site.
         if (stored) applyPreview(stored);
@@ -295,12 +295,6 @@ export default function OnboardingPage() {
     setBusy(true);
     try {
       await endpoints.saveProfile(profilePayload());
-      // From /start the competitors were already asked, so the budget is the last step.
-      if (fromDraft) {
-        setBusy(false);
-        await buildMonth();
-        return;
-      }
       goTo(2);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התקציב. נסו שוב.");
@@ -330,9 +324,8 @@ export default function OnboardingPage() {
     }
 
     // The month is written from the brand, so the site has to have been read first.
-    // A business from /start already has its brand (from the site or the picked style), and
-    // /onboarding/scan would overwrite the profile and the first month's seed.
-    if (!hasBrand && !fromDraft && looksLikeWebsite(website)) {
+    // (A business from /start never reaches this: it is sent to /strategy on load.)
+    if (!hasBrand && looksLikeWebsite(website)) {
       const url = normalizeWebsite(website);
       let ok = await startScan(url);
       if (!ok) {
@@ -398,9 +391,7 @@ export default function OnboardingPage() {
       <div className="mx-auto max-w-xl space-y-4">
         <StepHeader
           step={step}
-          lastStep={fromDraft}
-          // From /start, step 0 would ask again for what was just answered (and require a site).
-          onBack={step > 0 && !(fromDraft && step === 1) ? () => goTo(step - 1) : undefined}
+          onBack={step > 0 ? () => goTo(step - 1) : undefined}
         />
 
         {step === 0 ? (
@@ -535,7 +526,7 @@ export default function OnboardingPage() {
 
             {error ? <ErrorNote message={error} /> : null}
             <Button onClick={() => void saveBudget()} disabled={busy} className="min-h-12 w-full justify-center">
-              {busy ? "שומרים…" : fromDraft ? "לבנות את החודש הראשון" : "להמשיך למתחרים"}
+              {busy ? "שומרים…" : "להמשיך למתחרים"}
             </Button>
           </section>
         ) : null}

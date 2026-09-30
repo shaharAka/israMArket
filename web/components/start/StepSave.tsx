@@ -9,13 +9,20 @@ import { StepShell, TextInput } from "./ui";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
- * Save: an account (email + password, the same rules as /signup), then the draft becomes
- * the business. No personal name is asked: the owner has already told us about the business.
+ * Save: an account (email + password, the same rules as /signup), then the draft and the
+ * 3-month plan become the business. No personal name is asked: the owner has already told
+ * us about the business.
  */
 export function StepSave(
-  props: StepProps & { loggedIn: boolean; saving: boolean; saveError: string; onSave: () => Promise<void> },
+  props: StepProps & {
+    loggedIn: boolean;
+    saving: boolean;
+    saveError: string;
+    onSave: () => Promise<void>;
+  },
 ) {
   const { loggedIn, saving, saveError, onSave } = props;
+  const savingLabel = "שומרים את התוכנית…";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -59,9 +66,9 @@ export function StepSave(
     return (
       <StepShell
         {...props}
-        title="נשמור את מה שבנינו"
-        why="אתם מחוברים לחשבון. נשמור את העסק ונמשיך לתקציב."
-        primary={saving ? "שומרים את העסק…" : "לשמור ולהמשיך לתקציב"}
+        title="נשמור את התוכנית"
+        why="אתם מחוברים לחשבון. נשמור את העסק ואת התוכנית ל-3 החודשים, ונתחיל לכתוב את הפוסטים של החודש הראשון."
+        primary={saving ? savingLabel : "לשמור את התוכנית ולהיכנס"}
         primaryDisabled={saving}
         onPrimary={() => void onSave()}
       >
@@ -77,9 +84,9 @@ export function StepSave(
   return (
     <StepShell
       {...props}
-      title="נשמור את מה שבנינו"
-      why="חשבון אחד, ואז נבחר תקציב ונבנה את החודש הראשון לפי הכיוון שבחרתם."
-      primary={busy ? (saving ? "שומרים את העסק…" : "פותחים חשבון…") : "לפתוח חשבון ולהמשיך לתקציב"}
+      title="נשמור את התוכנית"
+      why="חשבון אחד, והתוכנית מחכה לכם בפנים. את הפוסטים של החודש הראשון נתחיל לכתוב מיד."
+      primary={busy ? (saving ? savingLabel : "פותחים חשבון…") : "לפתוח חשבון ולהיכנס לתוכנית"}
       primaryDisabled={busy}
       onPrimary={() => void submit()}
     >

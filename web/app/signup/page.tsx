@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
 import { endpoints } from "@/lib/api";
-import { clearFlow, draftForApi, hasSavableDraft, loadFlow, saveDraftToAccount, type FlowState } from "@/lib/draft";
+import { AFTER_SAVE, clearSavedFlow, hasSavableDraft, loadFlow, saveFlowToAccount, type FlowState } from "@/lib/draft";
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
@@ -50,11 +50,10 @@ export default function SignupPage() {
       });
       if (draft) {
         try {
-          const chosen = draft.plan && draft.chosenDirection != null ? draft.plan.directions[draft.chosenDirection] : null;
-          const idea = draft.plan && draft.chosenIdea != null ? draft.plan.ideas[draft.chosenIdea] : null;
-          await saveDraftToAccount(draftForApi(draft), chosen ?? null, idea ?? null);
-          clearFlow();
-          router.replace("/onboarding?from=start");
+          await saveFlowToAccount(draft);
+          await clearSavedFlow();
+          // The budget was asked at /start: straight to the plan, not the old budget step.
+          router.replace(AFTER_SAVE);
         } catch {
           // The account exists; /start still holds the draft and saves it from there.
           router.replace("/start");

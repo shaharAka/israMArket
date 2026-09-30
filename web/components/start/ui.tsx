@@ -92,7 +92,9 @@ export function StepShell({
   focus,
   direction,
   stickyAction = false,
+  stickyDesktop = false,
   reassure,
+  actionNote,
 }: {
   title: string;
   why: string;
@@ -112,6 +114,10 @@ export function StepShell({
   focus: boolean;
   direction: "fwd" | "back";
   stickyAction?: boolean;
+  /** Keep the action sticky on desktop too (the long plan page). */
+  stickyDesktop?: boolean;
+  /** A short live line right above the primary button (e.g. "מה השתנה"). */
+  actionNote?: React.ReactNode;
 }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -144,10 +150,13 @@ export function StepShell({
       <div
         className={
           stickyAction
-            ? "sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 lg:static lg:mx-0 lg:bg-none lg:p-0"
+            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
+                stickyDesktop ? "lg:mx-0 lg:px-0" : "lg:static lg:mx-0 lg:bg-none lg:p-0"
+              }`
             : "space-y-1 pt-1"
         }
       >
+        {actionNote}
         <PrimaryButton disabled={primaryDisabled}>{primary}</PrimaryButton>
         {skip && onSkip ? (
           <div className="flex justify-center">
@@ -327,6 +336,14 @@ export function IconButton({
 /** "ל" joins a Hebrew name directly (למשפחות) and takes a maqaf before a Latin one (ל־Tom's). */
 export function withLamed(name: string): string {
   return /^[֐-׿]/.test(name) ? `ל${name}` : `ל־${name}`;
+}
+
+/**
+ * "3–4" with an en dash reads "4–3" in a Hebrew line (the dash is bidi-neutral, so the
+ * digits split into two runs). A hyphen keeps the range one left-to-right number run.
+ */
+export function rangeSafe(text: string): string {
+  return text.replace(/(\d)\s?[–—]\s?(\d)/g, "$1-$2");
 }
 
 /** Dark text on a light colour, white on a dark one. */

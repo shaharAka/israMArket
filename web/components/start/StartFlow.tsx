@@ -5,28 +5,40 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, endpoints, exitDemo, isDemo } from "@/lib/api";
 import {
-  clearFlow,
-  draftForApi,
+  AFTER_SAVE,
+  clearSavedFlow,
   emptyFlow,
   loadFlow,
   normalizeUrl,
-  saveDraftToAccount,
   saveFlow,
+  saveFlowToAccount,
   scanBrand,
   type FlowState,
   type OnboardingDraft,
 } from "@/lib/draft";
 import { BrandMark, IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
-import { CHAPTERS, chapterIndexOf, isStepId, nextStep, previousStep, reflectionAfter, type StepId } from "./script";
-import { StepPlan } from "./StepPlan";
+import {
+  CHAPTERS,
+  STEP_ORDER,
+  chapterIndexOf,
+  chapterSteps,
+  isStepId,
+  migrateStep,
+  nextStep,
+  previousStep,
+  reflectionAfter,
+  type StepId,
+} from "./script";
+import { StepBudget, StepGrow, StepSuccess } from "./StepGoal";
+import { StepDirection, StepFound } from "./StepPlan";
+import { StepQuarter } from "./StepQuarter";
 import { StepSave } from "./StepSave";
 import {
   PresetGrid,
   StepAudiences,
   StepCompetitors,
   StepDifferent,
-  StepGoal,
   StepLinks,
   StepName,
   StepSeasons,
@@ -40,10 +52,11 @@ import styles from "./start.module.css";
 /**
  * /start: the first meeting with a marketing consultant.
  *
- * One question per screen, in four chapters (the business, its customers, how it markets
- * today, what we learned). After each answer the consultant says back what they heard,
- * and the business card fills in. Nothing needs an account until the owner decides to
- * keep what we built; the draft survives a refresh in localStorage.
+ * One question per screen, in five chapters (the business, its customers, how it markets
+ * today, the goal and the budget, what we learned). After each answer the consultant says
+ * back what they heard, and the business card fills in. The end is the 3-month plan.
+ * Nothing needs an account until the owner decides to keep it; the draft survives a
+ * refresh in localStorage.
  */
 export function StartFlow() {
   const router = useRouter();
@@ -71,6 +84,7 @@ export function StartFlow() {
       const saved = loadFlow();
       const loaded = saved ?? emptyFlow();
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
+      loaded.step = migrateStep(loaded.step);
       if (!isStepId(loaded.step)) loaded.step = "name";
       // Arriving from the landing page's site box: the site is already answered.
       const site = new URLSearchParams(window.location.search).get("site");
@@ -127,7 +141,8 @@ export function StartFlow() {
 
   /** Forget every answer in this browser and go back to the first question. */
   function startOver() {
-    clearFlow();
+    // The draft, and any photo an earlier version of this flow kept in IndexedDB.
+    void clearSavedFlow();
     setResumed(false);
     setConfirmRestart(false);
     setNoticeDismissed(false);
@@ -166,11 +181,8 @@ export function StartFlow() {
     setSaving(true);
     setSaveError("");
     try {
-      const chosen = current.plan && current.chosenDirection != null ? current.plan.directions[current.chosenDirection] : null;
-      const idea = current.plan && current.chosenIdea != null ? current.plan.ideas[current.chosenIdea] : null;
-      await saveDraftToAccount(draftForApi(current), chosen ?? null, idea ?? null);
-      clearFlow();
-      router.replace("/onboarding?from=start");
+      await saveFlowToAccount(current);
+      await finish();
     } catch (err) {
       setSaving(false);
       if (err instanceof ApiError && err.status === 401) {
@@ -178,8 +190,16 @@ export function StartFlow() {
         go("save", "fwd");
         return;
       }
-      setSaveError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור את העסק. נסו שוב.");
+      setSaveError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור את התוכנית. נסו שוב.");
     }
+  }
+
+  /** Everything is in the account: nothing of the onboarding stays in this browser. */
+  async function finish() {
+    setSaving(true);
+    await clearSavedFlow();
+    // The budget was asked here, so the old budget step is skipped: straight to the plan.
+    router.replace(AFTER_SAVE);
   }
 
   if (!flow) {
@@ -191,12 +211,14 @@ export function StartFlow() {
   }
 
   const step = flow.step as StepId;
-  const prev = previousStep(step);
+  const prev = previousStep(step, flow);
   const back = prev ? () => go(prev, "back") : null;
   const next = () => {
-    const to = nextStep(step);
+    // Read the latest flow: the answer given on this screen can change what comes next.
+    const to = nextStep(step, latest.current ?? flow);
     if (to) go(to, "fwd");
   };
+  const jump = (to: StepId) => go(to, STEP_ORDER.indexOf(to) > STEP_ORDER.indexOf(step) ? "fwd" : "back");
 
   const scanFailed = flow.brandScan?.status === "failed" && !flow.draft.style_preset;
   const notice =
@@ -223,7 +245,7 @@ export function StartFlow() {
     direction,
   };
 
-  const wide = step === "plan";
+  const wide = step === "direction" || step === "quarter";
   let screen: React.ReactNode;
   switch (step) {
     case "name":
@@ -250,11 +272,25 @@ export function StartFlow() {
     case "competitors":
       screen = <StepCompetitors {...common} />;
       break;
-    case "goal":
-      screen = <StepGoal {...common} />;
+    case "grow":
+      screen = <StepGrow {...common} />;
       break;
-    case "plan":
-      screen = <StepPlan {...common} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={() => void save()} />;
+    case "success":
+      screen = <StepSuccess {...common} />;
+      break;
+    case "budget":
+      screen = <StepBudget {...common} />;
+      break;
+    case "found":
+      screen = <StepFound {...common} jump={jump} />;
+      break;
+    case "direction":
+      screen = <StepDirection {...common} jump={jump} />;
+      break;
+    case "quarter":
+      screen = (
+        <StepQuarter {...common} jump={jump} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={() => void save()} />
+      );
       break;
     case "save":
       screen = <StepSave {...common} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={save} />;
@@ -307,7 +343,7 @@ export function StartFlow() {
             <div className="hidden min-h-11 items-center lg:flex">
               {back ? <QuietLink onClick={back}>חזרה</QuietLink> : null}
             </div>
-            <ChapterProgress step={step} />
+            <ChapterProgress step={step} flow={flow} />
             {resumed || step !== "name" ? (
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5e6159]">
                 {confirmRestart ? (
@@ -350,15 +386,16 @@ export function StartFlow() {
   );
 }
 
-/** Four chapters, not "step 7 of 11": where we are in the meeting. */
-function ChapterProgress({ step }: { step: StepId }) {
+/** Five chapters, not "step 7 of 14": where we are in the meeting. */
+function ChapterProgress({ step, flow }: { step: StepId; flow: FlowState }) {
   const current = chapterIndexOf(step);
   return (
     <nav aria-label="איפה אנחנו בשיחה">
-      <ol className="grid grid-cols-4 gap-1.5">
+      <ol className="grid grid-cols-5 gap-1.5">
         {CHAPTERS.map((chapter, index) => {
-          const within = chapter.steps.indexOf(step);
-          const fill = index < current ? 1 : index === current ? (within + 1) / chapter.steps.length : 0;
+          const steps = chapterSteps(index, flow);
+          const within = steps.indexOf(step);
+          const fill = index < current ? 1 : index === current ? (within + 1) / Math.max(1, steps.length) : 0;
           return (
             <li key={chapter.key} aria-current={index === current ? "step" : undefined}>
               <span className="block h-1.5 overflow-hidden rounded-full bg-[#e2e0d8]">
@@ -370,7 +407,8 @@ function ChapterProgress({ step }: { step: StepId }) {
               <span
                 className={`mt-1 block truncate text-[11px] ${index === current ? "font-black text-[#191b18]" : "text-[#8a8c84]"}`}
               >
-                {chapter.label}
+                <span className="lg:hidden">{chapter.short ?? chapter.label}</span>
+                <span className="hidden lg:inline">{chapter.label}</span>
               </span>
             </li>
           );
