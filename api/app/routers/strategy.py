@@ -41,6 +41,7 @@ from app.services.publish import parse_scheduled_for
 from app.services.scraper import fetch_photo_candidates
 from app.services.strategy import featured_items_from, generate_monthly_strategy, rewrite_post
 from app.services.business_fields import field_label
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(tags=["strategy"])
 
@@ -349,7 +350,7 @@ def current_strategy(business: Business = Depends(get_business), db: Session = D
     return serialize_strategy(strategy, business, horizon=_horizon_for(db, business, strategy))
 
 
-@router.post("/strategy/posts/image")
+@router.post("/strategy/posts/image", dependencies=[Depends(require_generation_access)])
 def generate_post_image(
     body: PostImageIn,
     business: Business = Depends(get_business),
@@ -377,7 +378,7 @@ def generate_post_image(
     return {"post": post, "strategy": serialize_strategy(strategy, business)}
 
 
-@router.post("/strategy/posts/design")
+@router.post("/strategy/posts/design", dependencies=[Depends(require_generation_access)])
 def design_post_endpoint(
     body: PostDesignIn,
     business: Business = Depends(get_business),
@@ -507,7 +508,7 @@ def suggest_post_assets(
     return {"suggestions": suggestions}
 
 
-@router.post("/strategy/posts/images")
+@router.post("/strategy/posts/images", dependencies=[Depends(require_generation_access)])
 def generate_all_post_images(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
@@ -583,7 +584,7 @@ def save_post(
     return {"post": target, "strategy": serialize_strategy(strategy, business)}
 
 
-@router.post("/strategy/posts/rewrite")
+@router.post("/strategy/posts/rewrite", dependencies=[Depends(require_generation_access)])
 def rewrite_post_endpoint(
     body: PostRewriteIn,
     business: Business = Depends(get_business),
@@ -810,7 +811,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
 generation_jobs.register(generation_jobs.NEXT_MONTH, run_next_month_stage)
 
 
-@router.post("/strategy/next-month")
+@router.post("/strategy/next-month", dependencies=[Depends(require_generation_access)])
 def generate_next_month(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),

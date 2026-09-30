@@ -19,7 +19,7 @@ from datetime import datetime
 
 from app.db import Base, SessionLocal, engine, migrate_db
 from app.models import Business
-from app.services import research
+from app.services import billing, research
 
 
 def due(db, business: Business, now: datetime, force: bool = False) -> bool:
@@ -51,6 +51,10 @@ def main(argv: list[str] | None = None) -> int:
         for business in businesses:
             if not due(db, business, now, args.force):
                 print(f"skip  business={business.id} (ran in the last 6 days)")
+                continue
+            # The same gate as the API's generation endpoints (off unless BILLING_ENFORCE).
+            if business.owner is not None and billing.locked(db, business.owner, now):
+                print(f"skip  business={business.id} (free month over, no subscription)")
                 continue
             if args.dry_run:
                 print(f"due   business={business.id} {business.name}")

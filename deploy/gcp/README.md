@@ -156,10 +156,10 @@ gcloud iam service-accounts create isramarket-vm --project $PROJECT \
   --display-name="IsraMarket VM (secrets read, backups write)"
 ```
 
-### 4. Secrets (≈ $0.12/month)
+### 4. Secrets (≈ $0.12/month, ≈ $0.30 with PayPal)
 
 Follow `deploy/gcp/secrets.md`: create the secrets, add their values, and grant
-`secretAccessor` to `$SA`.
+`secretAccessor` to `$SA`. The three PayPal secrets are optional; see step 14.
 
 ### 5. Network and firewall (free: VPC, subnet and rules cost nothing)
 
@@ -331,6 +331,32 @@ With `HOST` as above, or the real domain later:
     refresh tokens expire after 7 days.
   - Brand and scope verification (docs/integrations-research.md §6) needs the real,
     verified domain.
+
+### 14. PayPal subscriptions (optional; free to set up)
+
+Until this is done, `/billing` says payment is not open yet and nothing is charged or
+enforced. The owner's checklist, sandbox first, is `docs/billing.md`. In short:
+
+1. Secrets `paypal-client-id`, `paypal-client-secret`, `paypal-webhook-id` (secrets.md).
+2. `/etc/isramarket/extra.env` on the VM:
+   ```
+   PAYPAL_ENV=sandbox
+   PAYPAL_PLAN_ID=P-...
+   BILLING_ENFORCE=false
+   ```
+   The plan id comes from `sudo isramarket-compose exec api python -m app.jobs.paypal_setup`
+   (run it once per environment; `--dry-run` first shows what it will create).
+3. The webhook, in developer.paypal.com > the app > Webhooks > Add webhook:
+
+   | Setting | Value |
+   |---|---|
+   | Webhook URL | `https://$HOST/backend/billing/paypal/webhook` |
+   | Events | `BILLING.SUBSCRIPTION.ACTIVATED`, `BILLING.SUBSCRIPTION.UPDATED`, `BILLING.SUBSCRIPTION.CANCELLED`, `BILLING.SUBSCRIPTION.SUSPENDED`, `BILLING.SUBSCRIPTION.EXPIRED`, `BILLING.SUBSCRIPTION.PAYMENT.FAILED`, `PAYMENT.SALE.COMPLETED` |
+
+   Its Webhook ID is the `paypal-webhook-id` secret. The Next.js proxy forwards the raw
+   body and the `PAYPAL-*` headers unchanged, and the API's origin check skips exactly
+   this path; every delivery is verified with PayPal before it is read.
+4. `sudo /srv/isramarket/deploy/gcp/update.sh --recreate`.
 
 ## Day 2
 

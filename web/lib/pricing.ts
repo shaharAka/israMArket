@@ -2,12 +2,12 @@
  * The price, in one place. The landing page, the FAQ and /security read from here, so a
  * change of price or trial is a one-line edit.
  *
- * There is no billing system yet. Nothing here may promise a payment feature that does
- * not exist (invoices, a card on file, self-serve cancellation): the copy says
- * "אין התחייבות" because there is no subscription to be bound by, not "ביטול בקליק".
+ * Billing: a monthly PayPal subscription the owner starts on /billing near the end of the
+ * free month (docs/billing.md), cancellable there at any time. There are no tax invoices
+ * yet (they will come from an invoicing service), so no copy may promise one.
  */
 
-/** Monthly price in shekels. */
+/** Monthly price in shekels. The PayPal plan charges api/app/services/paypal.PRICE_ILS, which a test keeps equal. */
 export const PRICE_ILS = 99;
 
 /** The free trial, as the owner reads it. */
@@ -20,7 +20,8 @@ export const TRIAL_LABEL = "החודש הראשון חינם";
 export const VAT_NOTE = "המחיר לא כולל מע״מ";
 
 /**
- * True today: /start and /signup never ask for a card (there is nowhere to put one).
+ * True: /start and /signup never ask for a card. Payment is asked for only on /billing,
+ * near the end of the free month, and the first charge is set to the day it ends.
  * Set to false the day signup starts asking for payment details, and the line disappears.
  */
 export const NO_CARD_AT_SIGNUP = true;

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
+import { BillingReminder } from "@/components/billing/BillingReminder";
 import { LoadingMark } from "@/components/Doodles";
 import { PlanBrief } from "@/components/design/PlanBrief";
 import { MonthAhead } from "@/components/MonthAhead";
@@ -250,6 +251,8 @@ export default function DashboardPage() {
 
           {/* Everything else: quiet rows in one container. */}
           <section className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white px-4 sm:px-5">
+            {/* The free month's last week, and after it with nothing paid: one line to /billing. */}
+            <BillingReminder />
             <HypothesisStatus trial={guided ? trial : null} />
             {guided ? null : instagram && needsInstagram(instagram) ? (
               <InstagramNudge connected={instagram.meta_connected} />

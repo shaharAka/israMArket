@@ -212,6 +212,12 @@ export default function SecurityPage() {
                 body: "המודל שכותב את הפוסטים. אם הוא לא זמין, גוגל כותבת במקומו. אנחנו משתמשים רק בגרסה שלפי מטא לא משמשת לשיפור המוצרים שלה. המערכת שלנו מסרבת לעבוד עם הגרסה האחרת.",
               },
               {
+                // routers/billing.py: the browser's PayPal buttons talk to PayPal directly; the API
+                // stores the subscription id, its status and each payment's amount and date.
+                title: "פייפאל",
+                body: "התשלום על המנוי. את פרטי הכרטיס או חשבון הפייפאל מקלידים אצל פייפאל, והם לא מגיעים אלינו. אצלנו נשמרים רק מספר המנוי, המצב שלו, והסכום והתאריך של כל תשלום.",
+              },
+              {
                 title: "גוגל, פייסבוק ואינסטגרם",
                 body: "רק אם חיברתם אותם. מהם מגיעים הנתונים, והם רואים שהחיבור פעיל.",
               },

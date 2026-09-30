@@ -105,6 +105,23 @@ class Settings(BaseSettings):
     auth_rate_limit: int = 8
     auth_rate_window_seconds: int = 300
 
+    # Subscription billing through PayPal (services/paypal.py, routers/billing.py,
+    # docs/billing.md). Blank credentials = "not configured": /billing says payment is not
+    # open yet and nothing is enforced. The client id is public (the browser's PayPal
+    # buttons need it); the secret and the webhook id never leave the API.
+    # "sandbox" (api-m.sandbox.paypal.com) | "live" (api-m.paypal.com).
+    paypal_env: str = "sandbox"
+    paypal_client_id: str = ""
+    paypal_client_secret: str = ""
+    # The monthly plan, created once by `python -m app.jobs.paypal_setup`. Not secret.
+    paypal_plan_id: str = ""
+    # From developer.paypal.com > the app > Webhooks. Needed to verify every webhook.
+    paypal_webhook_id: str = ""
+    # Off by default. When on (and PayPal is configured), AI generation answers 402 once
+    # the free month plus a short grace has passed without a paid-through subscription.
+    # Viewing, editing, exporting, the account and deletion are never gated.
+    billing_enforce: bool = False
+
     @field_validator("cookie_secure", mode="before")
     @classmethod
     def _blank_bool_is_none(cls, value: object) -> object:

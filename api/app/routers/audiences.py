@@ -27,6 +27,7 @@ from app.services.audiences import (
 )
 from app.services.jsonutil import dumps, loads
 from app.services.business_fields import field_label
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(tags=["audiences"])
 
@@ -153,7 +154,7 @@ def list_audiences(business: Business = Depends(get_business), db: Session = Dep
     return {"audiences": [serialize_audience(audience) for audience in _list(db, business)]}
 
 
-@router.post("/audiences/generate")
+@router.post("/audiences/generate", dependencies=[Depends(require_generation_access)])
 def generate_audiences(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
