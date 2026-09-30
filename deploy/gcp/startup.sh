@@ -49,7 +49,8 @@ fi
 mountpoint -q "$DATA_DIR" || { log "$DATA_DIR failed to mount"; exit 1; }
 mkdir -p "$DATA_DIR/api" "$DATA_DIR/caddy/data" "$DATA_DIR/caddy/config" "$DATA_DIR/backups"
 chown "$APP_UID:$APP_UID" "$DATA_DIR/api"
-chmod 700 "$DATA_DIR/backups"
+# 711: the API user (backup.sh snapshots as that user) must traverse it; nobody can list it.
+chmod 711 "$DATA_DIR/backups"
 
 # --- 2. Swap (next build + Chrome on 4 GB) -------------------------------------------
 if [[ ! -f /swapfile ]]; then

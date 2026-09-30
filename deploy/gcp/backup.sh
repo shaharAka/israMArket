@@ -51,9 +51,13 @@ ts=$(date -u +%Y%m%dT%H%M%SZ)
 day=$(date -u +%Y-%m-%d)
 work="$LOCAL_DIR/$PREFIX-$ts"
 mkdir -p "$work"
+# The snapshot runs as the app user, which must traverse LOCAL_DIR (711: no listing)
+# to reach its own work dir (700).
+chmod 711 "$LOCAL_DIR"
 # Read the database as the app's own user, so SQLite never creates a root-owned journal
 # or -shm file next to it that the API could then not write.
 chown "$APP_UID:$APP_UID" "$work"
+chmod 700 "$work"
 
 log "database snapshot"
 setpriv --reuid="$APP_UID" --regid="$APP_UID" --clear-groups \
