@@ -13,9 +13,26 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
  * the business. No personal name is asked: the owner has already told us about the business.
  */
 export function StepSave(
-  props: StepProps & { loggedIn: boolean; saving: boolean; saveError: string; onSave: () => Promise<void> },
+  props: StepProps & {
+    loggedIn: boolean;
+    saving: boolean;
+    saveError: string;
+    onSave: () => Promise<void>;
+    photoProgress: { done: number; total: number } | null;
+    photosFailed: number;
+    onFinish: () => void;
+  },
 ) {
-  const { loggedIn, saving, saveError, onSave } = props;
+  const { flow, loggedIn, saving, saveError, onSave, photoProgress, photosFailed, onFinish } = props;
+  const photos = Object.values(flow.postPhotos ?? {}).filter((p) => p.kind === "upload").length;
+  const savingLabel = photoProgress
+    ? `מעלים תמונות (${Math.min(photoProgress.done + 1, photoProgress.total)} מתוך ${photoProgress.total})…`
+    : "שומרים את העסק…";
+  const photosNote = photos
+    ? photos === 1
+      ? "התמונה שבחרתם תעלה ל״התמונות שלי״."
+      : `${photos} התמונות שבחרתם יעלו ל״התמונות שלי״.`
+    : "";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -55,13 +72,34 @@ export function StepSave(
     await onSave();
   }
 
+  if (photosFailed) {
+    return (
+      <StepShell
+        {...props}
+        title="העסק נשמר"
+        why={
+          photosFailed === 1
+            ? "תמונה אחת לא עלתה, כנראה בגלל החיבור. היא עדיין שמורה במכשיר."
+            : `${photosFailed} תמונות לא עלו, כנראה בגלל החיבור. הן עדיין שמורות במכשיר.`
+        }
+        primary={saving ? savingLabel : "לנסות שוב להעלות"}
+        primaryDisabled={saving}
+        onPrimary={() => void onSave()}
+        skip="להמשיך לתקציב בלי התמונות"
+        onSkip={onFinish}
+      >
+        <p className="text-sm leading-6 text-[#5e6159]">אפשר גם להעלות אותן אחר כך, מ״התמונות שלי״.</p>
+      </StepShell>
+    );
+  }
+
   if (loggedIn) {
     return (
       <StepShell
         {...props}
         title="נשמור את מה שבנינו"
-        why="אתם מחוברים לחשבון. נשמור את העסק ונמשיך לתקציב."
-        primary={saving ? "שומרים את העסק…" : "לשמור ולהמשיך לתקציב"}
+        why={`אתם מחוברים לחשבון. נשמור את העסק ואת האסטרטגיה, ונמשיך לתקציב.${photosNote ? ` ${photosNote}` : ""}`}
+        primary={saving ? savingLabel : "לשמור ולהמשיך לתקציב"}
         primaryDisabled={saving}
         onPrimary={() => void onSave()}
       >
@@ -78,8 +116,8 @@ export function StepSave(
     <StepShell
       {...props}
       title="נשמור את מה שבנינו"
-      why="חשבון אחד, ואז נבחר תקציב ונבנה את החודש הראשון לפי הכיוון שבחרתם."
-      primary={busy ? (saving ? "שומרים את העסק…" : "פותחים חשבון…") : "לפתוח חשבון ולהמשיך לתקציב"}
+      why={`חשבון אחד, ואז נבחר תקציב ונבנה את החודש הראשון לפי האסטרטגיה.${photosNote ? ` ${photosNote}` : ""}`}
+      primary={busy ? (saving ? savingLabel : "פותחים חשבון…") : "לפתוח חשבון ולהמשיך לתקציב"}
       primaryDisabled={busy}
       onPrimary={() => void submit()}
     >

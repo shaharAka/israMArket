@@ -9,10 +9,11 @@ import {
   TRIED_OPTIONS,
   kitFor,
   presetFor,
+  strategyBase,
   type FlowState,
   type LinkKey,
 } from "@/lib/draft";
-import { NetworkIcon, inkOn } from "./ui";
+import { NetworkIcon, inkOn, rangeSafe } from "./ui";
 import styles from "./start.module.css";
 
 /**
@@ -63,12 +64,18 @@ export function cardSlots(flow: FlowState): Slot[] {
     { key: "competitors", filled: Boolean(d.competitors?.some((c) => c.name.trim())) },
     { key: "goal", filled: Boolean(d.goal && flow.seen.includes("goal")) },
     { key: "direction", filled: flow.chosenDirection !== null && flow.chosenDirection !== undefined },
+    { key: "strategy", filled: Boolean(strategyOf(flow)) },
   ];
 }
 
 export function filledCount(flow: FlowState): { filled: number; total: number } {
   const slots = cardSlots(flow);
   return { filled: slots.filter((s) => s.filled).length, total: slots.length };
+}
+
+/** The strategy for the chosen direction, once it was built (not a stale one from another direction). */
+function strategyOf(flow: FlowState) {
+  return flow.strategy && flow.strategyFor === strategyBase(flow) ? flow.strategy : null;
 }
 
 function Empty({ children = "עוד לא סיפרתם" }: { children?: React.ReactNode }) {
@@ -138,6 +145,7 @@ export function BusinessCard({
   const kit = d.business_type ? kitFor(d.business_type) : null;
   const goal = d.goal && flow.seen.includes("goal") ? goalsFor(d.business_model ?? "products").find((g) => g.key === d.goal) : null;
   const direction = flow.chosenDirection != null ? flow.plan?.directions[flow.chosenDirection] : null;
+  const strategy = strategyOf(flow);
   const { filled, total } = filledCount(flow);
   const links = (["website", ...NETWORKS.map((n) => n.key)] as LinkKey[]).filter((key) => d.links[key] !== undefined);
   const busy = d.seasons?.busy ?? [];
@@ -318,6 +326,19 @@ export function BusinessCard({
             <Filled on={Boolean(direction)} empty={<Empty>נבחר יחד בסוף</Empty>}>
               <p className="text-sm font-black text-[#191b18]">{direction?.title}</p>
               <p className="text-xs leading-5 text-[#5e6159]">{direction?.approach_he}</p>
+            </Filled>
+          </Row>
+          <Row label="האסטרטגיה">
+            <Filled on={Boolean(strategy)} empty={<Empty>נבנה יחד אחרי הכיוון</Empty>}>
+              <p className="text-sm leading-6 text-[#191b18]">{strategy?.objective.text_he}</p>
+              {strategy?.channels[0] ? (
+                <p className="text-xs leading-5 text-[#5e6159]">
+                  {strategy.channels[0].network} · {rangeSafe(strategy.channels[0].cadence_he)}
+                </p>
+              ) : null}
+              {strategy?.success.owner_target ? (
+                <p className="text-xs leading-5 text-[#5e6159]">היעד: {strategy.success.owner_target}</p>
+              ) : null}
             </Filled>
           </Row>
         </Section>

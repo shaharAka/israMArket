@@ -28,17 +28,25 @@ export type StepId =
   | "tried"
   | "competitors"
   | "goal"
-  | "plan"
+  | "found"
+  | "direction"
+  | "strategy"
+  | "preview"
   | "save";
 
 export const CHAPTERS: { key: string; label: string; steps: StepId[] }[] = [
   { key: "business", label: "העסק", steps: ["name", "what", "different"] },
   { key: "customers", label: "הלקוחות", steps: ["audiences", "seasons"] },
   { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors", "goal"] },
-  { key: "plan", label: "מה למדנו", steps: ["plan", "save"] },
+  { key: "plan", label: "מה למדנו", steps: ["found", "direction", "strategy", "preview", "save"] },
 ];
 
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
+
+/** A saved flow from before the reveal was split: "plan" is now "found". */
+export function migrateStep(value: string): string {
+  return value === "plan" ? "found" : value;
+}
 
 export function isStepId(value: string): value is StepId {
   return (STEP_ORDER as string[]).includes(value);
@@ -148,9 +156,15 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
           return null;
       }
     }
-    case "plan": {
+    case "direction": {
       const direction = flow.plan?.directions[flow.chosenDirection ?? -1];
-      return direction ? `בחרתם: ${direction.title}. מכאן נבנה את החודש הראשון.` : null;
+      return direction ? `בחרתם: ${direction.title}. עכשיו נפרוש את זה לתוכנית.` : null;
+    }
+    case "preview": {
+      const photos = Object.values(flow.postPhotos ?? {}).filter((p) => p.kind === "upload").length;
+      if (photos === 1) return "התמונה שהעליתם תחכה לכם ב״התמונות שלי״.";
+      if (photos > 1) return `${photos} התמונות שהעליתם יחכו לכם ב״התמונות שלי״.`;
+      return null;
     }
     default:
       return null;
