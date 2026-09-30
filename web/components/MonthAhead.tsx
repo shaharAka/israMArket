@@ -71,7 +71,7 @@ export function MonthAhead({
   if (variant === "line") {
     if (next.next_exists) {
       return (
-        <p className="flex min-h-12 items-center gap-3 text-sm font-bold text-[var(--ink)]">
+        <p className="flex min-h-12 items-center gap-3 text-sm font-semibold text-[var(--ink)]">
           <span className="shrink-0" style={{ color: TONE.accent }}>
             <IconCalendar className="h-4 w-4" />
           </span>
@@ -82,7 +82,7 @@ export function MonthAhead({
     return (
       <div className="flex items-center justify-between gap-3 py-2.5">
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[var(--ink)]">
+          <p className="text-sm font-semibold text-[var(--ink)]">
             החודש הבא: {next.next_month_name_he}
             {next.next_in_progress && !busy ? " · נעצר באמצע" : ""}
           </p>
@@ -113,7 +113,7 @@ export function MonthAhead({
       return (
         <div className="flex items-center gap-3 py-3">
           <IconCalendar className="h-4 w-4 shrink-0 text-[var(--primary)]" />
-          <p className="text-sm font-bold text-[var(--ink)]">
+          <p className="text-sm font-semibold text-[var(--ink)]">
             {next.next_month_name_he} כבר מוכן, ויתחיל ב־1 לחודש.
           </p>
         </div>
@@ -122,7 +122,7 @@ export function MonthAhead({
     return (
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[var(--ink)]">
+          <p className="text-sm font-semibold text-[var(--ink)]">
             החודש הבא: {next.next_month_name_he}
             {next.next_in_progress && !busy ? " · נעצר באמצע" : ""}
           </p>
@@ -152,7 +152,7 @@ export function MonthAhead({
           <IconCalendar className="h-4 w-4" />
           החודש הבא מוכן
         </p>
-        <p className="mt-1 text-sm font-bold text-[var(--ink)]">
+        <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
           התוכנית ל{next.next_month_name_he} כבר מוכנה, ותתחיל ב־1 לחודש.
         </p>
       </section>
@@ -165,7 +165,7 @@ export function MonthAhead({
         <IconRoute className="h-4 w-4" />
         החודש הבא
       </p>
-      <p className="mt-1 text-sm font-bold text-[var(--ink)]">
+      <p className="mt-1 text-sm font-semibold text-[var(--ink)]">
         לבנות את {next.next_month_name_he} לפי מה שאישרתם החודש
         {next.next_in_progress ? ". נמשיך מאיפה שעצרנו" : ""}
       </p>

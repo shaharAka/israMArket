@@ -378,7 +378,6 @@ a {
 
 /* Keep the identity in the sun and shop, rather than decorative panel tails. */
 .app-blue .nav-active-bar { display:none; }
-.app-blue .plan-document :is(span,li).rounded-full:not([aria-hidden]) { background:transparent !important; color:var(--ink-soft) !important; border:0; padding-inline:0; font-weight:400; }
 .app-blue .plan-document dl { background:var(--paper); }
 
 .app-blue .dot-grid { background-image:none; }
@@ -416,4 +415,11 @@ a {
 
 :where(.app-blue, .start-blue, .auth-blue) details[open] > summary:not(.list-none):not(:has(> [aria-hidden]))::after {
   transform: rotate(180deg);
+}
+
+/* Fields focus with the border and a soft ring, not an offset outline (DESIGN-STANDARD §4). */
+:where(.app-blue, .start-blue, .auth-blue) :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select):focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }

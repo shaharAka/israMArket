@@ -139,6 +139,7 @@ export default function StrategyPage() {
       <div className="mx-auto max-w-3xl">
         <SectionHeader
           section="plan"
+          eyebrow={null}
           title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"}
           action={
             loaded && plan && strategy ? (

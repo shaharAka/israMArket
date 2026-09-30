@@ -12,16 +12,20 @@ export function SectionHeader({
   title,
   subtitle,
   action,
+  eyebrow: eyebrowOverride,
 }: {
   section: SectionKey;
   title: string;
+  /** `null` hides the section label; a string replaces it. */
+  eyebrow?: string | null;
   subtitle?: string;
   action?: React.ReactNode;
 }) {
   const identity = SECTIONS[section];
   // The section label adds context only when it is not the title itself
   // (DESIGN-STANDARD.md §2: one title, no eyebrow that repeats it).
-  const eyebrow = identity.eyebrow && identity.eyebrow.trim() !== title.trim() ? identity.eyebrow : null;
+  const label = eyebrowOverride === undefined ? identity.eyebrow : eyebrowOverride;
+  const eyebrow = label && label.trim() !== title.trim() ? label : null;
   return (
     <header className="mb-8">
       {eyebrow ? <p className="mb-2 text-[13px] font-semibold text-[var(--ink-muted)]">{eyebrow}</p> : null}

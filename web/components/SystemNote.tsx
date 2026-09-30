@@ -27,25 +27,25 @@ export function SystemNote({
 
   return (
     <section
-      className={`rounded-lg ${isPanel ? "p-5" : "border p-4"} ${className}`}
+      className={`${isPanel ? "rounded-2xl p-5" : "rounded-xl p-4"} ${className}`}
       style={
         isPanel
           ? { background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }
-          : { background: SYSTEM_TONE.surface, borderColor: SYSTEM_TONE.border }
+          : { background: "var(--soft)" }
       }
     >
       <div className={isPanel && action ? "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" : ""}>
         <div className="min-w-0">
           {title ? (
             <h3
-              className={isPanel ? "text-sm font-black" : "text-xs font-black"}
+              className={isPanel ? "text-sm font-semibold" : "text-[13px] font-semibold"}
               style={{ color: isPanel ? SYSTEM_TONE.onBase : SYSTEM_TONE.ink }}
             >
               {title}
             </h3>
           ) : null}
           <div
-            className={`${title ? "mt-1.5" : ""} text-xs leading-6`}
+            className={`${title ? "mt-1.5" : ""} text-[13px] leading-6`}
             style={{ color: isPanel ? SYSTEM_TONE.onBaseMuted : SYSTEM_TONE.inkMuted }}
           >
             {children}
