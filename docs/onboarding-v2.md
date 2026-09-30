@@ -157,7 +157,7 @@ The single reveal screen becomes four short screens (chapter "מה למדנו ו
    | איפה וכמה | channels + realistic cadence for their activity level | cadence chips (1–2 / 3–4 / 5+ בשבוע) |
    | מה מבקשים מהלקוח | the offer / call to action and its mechanism (e.g. WhatsApp link) | — |
    | התוכנית | month 1 as 4 weeks (focus + calendar event) + months 2–3 in one line each | — |
-   | על מה אנחנו מהמרים | 2–3 assumptions this month tests | — |
+   | ההשערות שנבדוק | 2–3 hypotheses this month tests | — |
    Any change re-runs the strategy (debounced; only changed inputs), with a short
    "מה השתנה" note. "אפשר לשנות הכול אחר כך" is stated here.
 4. **ככה זה ייראה** — 3 real posts for week 1, written by the same post writer the product
@@ -239,7 +239,7 @@ One scrollable, beautiful plan ("התוכנית שלכם ל-3 החודשים ה�
 6. **התוכן** — per month: the content themes (pillars), cadence per channel (editable later),
    and 2–3 example post *titles* per month with the channel — no rendered post cards here;
    one line says "את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת".
-7. **על מה אנחנו מהמרים** — assumptions to test, and what we'll change if they're wrong.
+7. **ההשערות שנבדוק** — hypotheses to measure, and what we'll change if they aren't confirmed. (Never "הימור/מהמרים": owner, 2026-10-01.)
 Owner shaping before signup: direction choice + free-text feedback + primary audience +
 cadence + target; everything else is edited after login. CTA: "לשמור את התוכנית ולהיכנס".
 The sample-post screen with photo uploads (Revision 4 step 4) is **removed from onboarding**;

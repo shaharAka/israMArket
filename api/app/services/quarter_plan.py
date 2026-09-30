@@ -98,6 +98,13 @@ INTEGRATIONS: dict[str, dict] = {
     "tiktok_business": {"name_he": "הנתונים של הטיקטוק", "site": False, "social": "tiktok",
                         "what_he": "צפיות, כמה צפו עד הסוף ומאיפה הגיעו"},
 }
+def _as_hypothesis(text: str) -> str:
+    """'אנחנו מהמרים ש…' → 'אנחנו מניחים ש…': the plan tests hypotheses, it doesn't bet."""
+    for old, new in (("אנחנו מהמרים ש", "אנחנו מניחים ש"), ("מהמרים ש", "מניחים ש"), ("ההימור", "ההשערה"), ("הימור", "השערה")):
+        text = text.replace(old, new)
+    return text
+
+
 _STATUS_EFFORT = {
     "have": "כבר קיים. נשאר רק לחבר אותו אלינו.",
     "connect": "לחבר את החשבון, כמה לחיצות.",
@@ -551,7 +558,7 @@ def plan_prompt(
 אתה מנהל אסטרטגיה בסוכנות שיווק ישראלית טובה שעובדת עם עסקים קטנים. בעל העסק ענה על השאלות,
 ראה מה למדנו ובחר כיוון. עכשיו אתה כותב לו את התוכנית ל-3 החודשים הקרובים ({labels}):
 מה האסטרטגיה, איך נמדוד, באילו ערוצים (כולל ערוצים חדשים שכדאי לפתוח), כמה כסף לכל ערוץ בכל חודש,
-מה קורה מתי, על מה מדברים ואיפה, ועל מה אנחנו מהמרים. זה מה שהוא יראה לפני שהוא נרשם.
+מה קורה מתי, על מה מדברים ואיפה, ואילו השערות נבדוק. זה מה שהוא יראה לפני שהוא נרשם.
 הוא צריך לסיים לקרוא ולהגיד: "זו תוכנית לעסק שלי, ואני יכול לעמוד בה".
 
 איך נראית תוכנית של סוכנות טובה:
@@ -596,7 +603,8 @@ def plan_prompt(
 7. content: לכל חודש 2 עד 3 נושאי תוכן (pillars; key באנגלית snake_case, title 2 עד 4 מילים, description_he משפט),
    cadence לכל ערוץ שמפרסמים בו (per_week כמו "1-2"), ו-example_titles: 2 עד 3 כותרות של פוסטים אמיתיים לחודש,
    עם מוצר או רגע אמיתי מהעסק, הערוץ והפורמט. זו רק כותרת, לא פוסט.
-8. assumptions: 2 עד 3. bet_he מתחיל ב"אנחנו מהמרים ש". if_wrong_he: מה נשנה אם לא.
+8. assumptions: 2 עד 3 השערות שהחודשים האלה בודקים (לא הימורים: השערה שנמדוד ונאשר או נשנה).
+   bet_he: "אנחנו מניחים ש..." ואיך נדע, למשל "…, ונראה את זה ב…". if_wrong_he: מה נשנה אם היא לא תתאמת.
 
 אסור להמציא: מספרים, מחירים, הנחות, מבצעים, שעות, ותק, כמות לקוחות, ביקורות, ביצועים ברשתות, נפחי חיפוש,
 מוצרים או שירותים שלא הוזכרו. גם לא מוצר "משלים" (קפה, משלוחים, מארזים, סדנאות) אם הוא לא כתוב למעלה.
@@ -853,10 +861,11 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
             problems.append(f"בחודש {info['index']} חסרים נושאי תוכן או כותרות לדוגמה.")
         content.append({"month_label": info["label"], "pillars": pillars, "cadence": cadence, "example_titles": titles})
 
-    assumptions = [{"bet_he": clean_text(a.get("bet_he"), 300), "if_wrong_he": clean_text(a.get("if_wrong_he"), 300)}
+    # A hypothesis to measure, never a gamble: rewrite the model's occasional "מהמרים".
+    assumptions = [{"bet_he": _as_hypothesis(clean_text(a.get("bet_he"), 300)), "if_wrong_he": clean_text(a.get("if_wrong_he"), 300)}
                    for a in parsed.get("assumptions") or [] if isinstance(a, dict) and clean_text(a.get("bet_he"), 300)][:3]
     if len(assumptions) < 2:
-        problems.append("צריך 2 עד 3 הימורים.")
+        problems.append("צריך 2 עד 3 השערות.")
 
     result = {
         "strategy": strategy, "kpi": kpi, "measures": measures, "audiences": audiences[:3], "channels": channels,

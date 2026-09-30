@@ -85,6 +85,7 @@ Use these consistently. A term changes only if it changes everywhere.
 | call to action | קריאה לפעולה | CTA |
 | sold out | נגמר, נמכר הכול | סולד אאוט |
 | the assistant | מאיה (e.g. `הצעה של מאיה`) | המערכת, האלגוריתם |
+| an assumption the plan tests | השערה (שנבדוק / שנמדוד), "אנחנו מניחים ש…"; if not: "אם היא לא תתאמת" | הימור, מהמרים, "אם טעינו" |
 
 English brand names in Hebrew letters: גוגל, אינסטגרם, פייסבוק, וואטסאפ.
 Google is grammatically masculine (`גוגל לומד`). Say אינסטגרם or פייסבוק, not מטא — מטא only

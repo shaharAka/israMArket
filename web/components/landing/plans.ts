@@ -71,7 +71,7 @@ export type LandingPlan = {
     unlock?: string;
   };
   months: [PlanMonth, PlanMonth, PlanMonth];
-  /** "על מה מהמרים": the assumption, and what changes if it turns out wrong. */
+  /** "ההשערה שנבדוק": the hypothesis, and what changes if it is not confirmed. */
   bet: { bet: string; ifWrong: string };
 };
 

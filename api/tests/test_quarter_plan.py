@@ -404,3 +404,14 @@ class FromDraftQuarterTest(QuarterTestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HypothesisWordingTest(unittest.TestCase):
+    """The plan states hypotheses to measure, never bets (owner, 2026-10-01)."""
+
+    def test_bets_become_hypotheses(self):
+        from app.services.quarter_plan import _as_hypothesis
+
+        self.assertEqual(_as_hypothesis("אנחנו מהמרים שהטאבון מושך."), "אנחנו מניחים שהטאבון מושך.")
+        self.assertEqual(_as_hypothesis("ההימור: הכרטיס בגוגל"), "ההשערה: הכרטיס בגוגל")
+        self.assertEqual(_as_hypothesis("אנחנו מניחים ש..."), "אנחנו מניחים ש...")

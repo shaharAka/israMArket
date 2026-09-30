@@ -37,7 +37,7 @@ const SECTIONS: { key: SectionKey; title: string; short: string }[] = [
   { key: "budget", title: "התקציב", short: "תקציב" },
   { key: "calendar", title: "לוח השנה", short: "לוח שנה" },
   { key: "content", title: "התוכן", short: "תוכן" },
-  { key: "bets", title: "על מה אנחנו מהמרים", short: "הימורים" },
+  { key: "bets", title: "ההשערות שנבדוק", short: "השערות" },
 ];
 
 type AnyPlan = QuarterPlan | StoredQuarterPlan;
@@ -134,7 +134,7 @@ export function QuarterPlanView({
         <ContentBlock plan={plan} cadenceSlot={slots.cadence} />
       </Section>
 
-      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={`${plan.assumptions.length} הנחות שנבדוק`}>
+      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={`${plan.assumptions.length} השערות שנמדוד`}>
         <BetsBlock plan={plan} />
       </Section>
 
@@ -795,7 +795,7 @@ function BetsBlock({ plan }: { plan: AnyPlan }) {
         <li key={bet.bet_he} className="px-3.5 py-3">
           <p className="text-[15px] font-bold leading-6 text-[#191b18]">{bet.bet_he}</p>
           <p className="mt-0.5 text-sm leading-6 text-[#5e6159]">
-            <b className="text-[#2b2d28]">אם טעינו: </b>
+            <b className="text-[#2b2d28]">אם היא לא תתאמת: </b>
             {bet.if_wrong_he}
           </p>
         </li>

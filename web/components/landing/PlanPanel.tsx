@@ -144,16 +144,16 @@ export function PlanPanel({
           <p className="mt-4 text-xs text-[#6d7068]">את הפוסטים עצמם כותבים ומעצבים יחד, בתוך המערכת.</p>
         </section>
 
-        {/* 7. The bet, and what changes if it is wrong: the "adjust" in the story. */}
+        {/* 7. The hypothesis, and what changes if it is not confirmed: the "adjust" in the story. */}
         <section className="lp-reveal flex flex-col gap-2 px-5 py-4 sm:flex-row sm:items-baseline sm:gap-6 sm:px-7" style={{ "--i": 7 } as CSSProperties}>
           <p className="text-sm leading-6 text-[#34372f]">
             <span className="font-bold" style={{ color: ink }}>
-              על מה מהמרים:{" "}
+              ההשערה שנבדוק:{" "}
             </span>
             {plan.bet.bet}
           </p>
           <p className="shrink-0 text-sm leading-6 text-[#4f524b] sm:ms-auto">
-            <span className="font-bold text-[#191b18]">אם לא: </span>
+            <span className="font-bold text-[#191b18]">אם היא לא תתאמת: </span>
             {plan.bet.ifWrong}
           </p>
         </section>

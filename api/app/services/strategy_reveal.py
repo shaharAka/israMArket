@@ -807,7 +807,7 @@ def strategy_prompt(
    בלי הנחה או מבצע שלא הוזכרו. why_he.
 {no_site}8. month_plan: 4 שבועות לפי הרשימה למעלה. focus_he: משפט אחד, מה עושים בשבוע הזה ולמה עכשיו. event_he: מועד מהשבוע הזה או ריק.
 9. quarter: 2 חודשים, month_label בדיוק "{labels[0]}" ואז "{labels[1]}". direction_he: משפט אחד, איך ממשיכים ממה שנלמד בחודש הראשון.
-10. assumptions: 2 עד 3 הימורים שהחודש הזה בודק. כל אחד מתחיל ב"אנחנו מהמרים ש" ואומר איך נדע אם צדקנו.
+10. assumptions: 2 עד 3 השערות שהחודש הזה בודק. כל אחת מתחילה ב"אנחנו מניחים ש" ואומר איך נדע אם צדקנו.
 {feedback}
 אסור להמציא: מספרים, מחירים, הנחות, מבצעים, שעות, ותק, כמות לקוחות, ביקורות, ציטוטים, ביצועים ברשתות,
 מוצרים או שירותים שלא הוזכרו. זה כולל מספרים במילים ("עשרות לקוחות", "פי שניים").
@@ -1048,7 +1048,7 @@ def _parse_strategy(
     result["quarter"] = quarter
     result["assumptions"] = [clean_text(a, 300) for a in parsed.get("assumptions") or [] if clean_text(a, 300)][:3]
     if len(result["assumptions"]) < 2:
-        problems.append("צריך 2 עד 3 הימורים.")
+        problems.append("צריך 2 עד 3 השערות.")
     result["changed_he"] = clean_text(parsed.get("changed_he"), 400)
 
     # Numbers nobody gave us.
@@ -1875,7 +1875,7 @@ def strategy_prompt_block(seed: dict | None) -> str:
     if success.get("owner_target"):
         lines.append(f"- היעד של בעל העסק, במילים שלו (היעד היחיד; לא להמציא אחר): \"{success['owner_target']}\"")
     for bet in strategy.get("assumptions") or []:
-        lines.append(f"- הימור לבדוק: {bet}")
+        lines.append(f"- השערה לבדוק: {bet}")
     feedback = ((strategy.get("inputs") or {}).get("feedback") or "").strip()
     if feedback:
         lines.append(f"- מה בעל העסק ביקש כשבנינו את האסטרטגיה (להתחשב בזה): \"{feedback}\"")
