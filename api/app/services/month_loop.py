@@ -45,6 +45,9 @@ def prior_month_review(
         "has_performance": bool(snapshot),
         "attribution": attribution,
         "diagnostic": (snapshot or {}).get("diagnostic"),
+        # The Instagram account's own totals for the last 28 days and the 28 before
+        # (services/meta.account_digest), when the last refresh got them.
+        "instagram_account": (snapshot or {}).get("instagram_account"),
         "weekly_recommendation": (recommendation or {}).get("suggestions"),
     }
 
