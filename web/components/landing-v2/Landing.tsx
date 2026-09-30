@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
-import { MONTH, PART_SUMMARY, STORY, TRUST } from "./content";
+import { MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
 import { RouteHero } from "./RouteHero";
@@ -169,17 +169,32 @@ export function Landing() {
           </div>
         </section>
 
-        {/* The weekly screen: what the owner opens every week. */}
-        <section id="week" className="lv2-weekly" aria-labelledby="lv2-week-title">
-          <div className="lv2-wrap lv2-weekly-head">
-            <p className="lv2-eyebrow">השבוע שלכם</p>
-            <h2 id="lv2-week-title" className="lv2-h2">
-              כל שבוע, צעד אחד ברור.
-            </h2>
-            <p className="lv2-lead">מה עושים השבוע ולמה, הפוסטים שמחכים לאישור, והמספרים שמראים אם מתקרבים.</p>
-          </div>
-          <div className="lv2-weekly-stage" data-scene="view">
-            <HeroWeek className="lv2-weekly-card" />
+        {/* The weekly screen, as a short tour (pinned on desktop): each point lights up
+            its part of the card. */}
+        <section id="week" className="lv2-tour" data-scene="track" data-steps={WEEK_TOUR.length} aria-labelledby="lv2-week-title">
+          <div className="lv2-tour-pin">
+            <div className="lv2-wrap lv2-tour-grid">
+              <div className="lv2-tour-text">
+                <p className="lv2-eyebrow">השבוע שלכם</p>
+                <h2 id="lv2-week-title" className="lv2-h2">
+                  כל שבוע, צעד אחד ברור.
+                </h2>
+                <ol className="lv2-tour-points">
+                  {WEEK_TOUR.map((point, i) => (
+                    <li key={point.k} data-i={i}>
+                      <span className="lv2-tour-bar" aria-hidden>
+                        <i />
+                      </span>
+                      <strong>{point.k}</strong>
+                      <span>{point.v}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="lv2-tour-stage">
+                <HeroWeek tour className="lv2-tour-card" />
+              </div>
+            </div>
           </div>
         </section>
 

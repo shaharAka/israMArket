@@ -1243,33 +1243,140 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
   margin-top: 26px;
 }
 
-/* ---- The weekly screen --------------------------------------------------- */
+/* ---- The weekly screen, as a tour ------------------------------------------ */
 
-.lv2-weekly {
-  padding-block: clamp(96px, 14vh, 160px) clamp(72px, 10vh, 120px);
+.lv2-tour {
+  padding-block: clamp(80px, 12vh, 140px) 40px;
 }
 
-.lv2-weekly-head .lv2-h2 {
+.lv2-tour-grid {
+  display: grid;
+  gap: 40px;
+}
+
+.lv2-tour-text .lv2-h2 {
   margin-top: 14px;
 }
 
-.lv2-weekly-head .lv2-lead {
-  margin-top: 18px;
+.lv2-tour-points {
+  display: grid;
+  gap: 8px;
+  margin-top: 32px;
 }
 
-.lv2-weekly-stage {
-  display: flex;
-  justify-content: center;
-  margin-top: clamp(48px, 7vh, 80px);
-  padding-inline: clamp(20px, 5vw, 48px);
+.lv2-tour-points li {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 16px 20px 16px 16px;
+  border-radius: 16px;
+  transition:
+    background 400ms ease,
+    color 400ms ease;
+}
+
+.lv2-tour-points strong {
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.lv2-tour-points li > span:last-child {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--lv2-ink-2);
+}
+
+.lv2-tour-bar {
+  display: none;
+}
+
+.lv2-tour-stage {
   perspective: 2200px;
 }
 
-.lv2-weekly-card {
-  width: min(1100px, 100%);
-  transform-origin: 50% 0%;
-  transform: rotateX(calc((1 - var(--p, 1)) * 16deg)) scale(calc(0.95 + var(--p, 1) * 0.05));
-  opacity: calc(0.55 + var(--p, 1) * 0.45);
+@media (min-width: 1024px) {
+  .lv2-tour {
+    height: 330vh;
+    padding: 0;
+  }
+
+  .lv2-tour-pin {
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    display: flex;
+    align-items: center;
+  }
+
+  .lv2-tour-grid {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    gap: clamp(40px, 5vw, 80px);
+    align-items: center;
+  }
+
+  /* One point at a time: the current one gets a soft fill and a progress bar. */
+  html[data-lv2="on"] .lv2-tour-points li {
+    color: var(--lv2-ink-3);
+  }
+
+  html[data-lv2="on"] .lv2-tour-points li > span:last-child {
+    color: var(--lv2-ink-3);
+  }
+
+  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] {
+    background: var(--lv2-soft);
+    color: var(--lv2-ink);
+  }
+
+  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] > span:last-child {
+    color: var(--lv2-ink-2);
+  }
+
+  .lv2-tour-bar {
+    display: block;
+    position: absolute;
+    inset-block: 16px;
+    inset-inline-start: 0;
+    width: 3px;
+    border-radius: 3px 0 0 3px;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .lv2-tour-bar i {
+    position: absolute;
+    inset: 0;
+    background: var(--lv2-blue);
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+  }
+
+  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] .lv2-tour-bar i {
+    transform: scaleY(var(--pp, 1));
+  }
+
+  html[data-lv2="on"] .lv2-tour-points li[data-state="past"] .lv2-tour-bar i {
+    transform: scaleY(0);
+  }
+
+  /* The card: everything but the current region steps back. */
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region,
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > * {
+    transition:
+      opacity 500ms ease,
+      box-shadow 500ms ease;
+  }
+
+  /* Fade the content, not the surface, so nothing turns into a grey block. */
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > *,
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region:not([data-state="current"]) {
+    opacity: 0.34;
+  }
+
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region[data-state="current"] {
+    box-shadow: inset 0 0 0 2px rgba(40, 83, 199, 0.22);
+    background: linear-gradient(180deg, rgba(238, 242, 253, 0.55), rgba(238, 242, 253, 0));
+  }
 }
 
 .lv2-wk-grid {
@@ -1305,56 +1412,111 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
   color: var(--lv2-ink-2);
 }
 
-.lv2-wk-posts {
-  display: grid;
-  gap: 12px;
-  margin-top: 22px;
+.lv2-wk-region {
+  border-radius: 16px;
 }
 
-@media (min-width: 600px) {
-  .lv2-wk-posts {
-    grid-template-columns: 1fr 1fr;
-  }
+.lv2-wk-main {
+  display: grid;
+  gap: 6px;
+}
+
+.lv2-wk-main .lv2-wk-region {
+  padding: 8px 10px;
+  margin: -8px -10px;
+}
+
+.lv2-wk-posts-region {
+  margin-top: 14px !important;
+}
+
+.lv2-wk-posts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
 }
 
 .lv2-wk-posts li {
   display: flex;
-  gap: 12px;
-  align-items: center;
-  padding: 10px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Two drawn posts, the way the product designs them: brand colours and one headline. */
+.lv2-post {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  aspect-ratio: 4 / 5;
+  max-height: 230px;
+  padding: 16px;
   border-radius: 14px;
-  background: var(--lv2-soft);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(20, 32, 58, 0.06),
+    0 10px 24px -14px rgba(20, 32, 58, 0.4);
 }
 
-.lv2-wk-thumb {
-  flex: none;
-  width: 52px;
-  height: 52px;
-  border-radius: 11px;
-  background:
-    radial-gradient(60% 60% at 35% 30%, rgba(255, 255, 255, 0.55), transparent 70%),
-    linear-gradient(135deg, #f2d9b8, #d9a86c);
+.lv2-post strong {
+  font-size: clamp(15px, 1.35vw, 19px);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
-.lv2-wk-posts li + li .lv2-wk-thumb {
+.lv2-post small {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.lv2-post--cream {
   background:
-    radial-gradient(60% 60% at 35% 30%, rgba(255, 255, 255, 0.5), transparent 70%),
-    linear-gradient(135deg, #f7e6c8, #e0b27e 60%, #b9794a);
+    radial-gradient(90% 70% at 20% 10%, rgba(255, 255, 255, 0.7), transparent 60%),
+    linear-gradient(160deg, #f9eedd, #edd3ae);
+  color: #5a2e12;
+}
+
+.lv2-post--dark {
+  background:
+    radial-gradient(80% 60% at 80% 0%, rgba(255, 196, 74, 0.22), transparent 60%),
+    linear-gradient(165deg, #4b2d1e, #26170f);
+  color: #f8ecd9;
+}
+
+.lv2-post-donut {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 54px;
+  height: 54px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, #f9eedd 0 20%, transparent 21%),
+    radial-gradient(circle at 40% 35%, #f6c27f, #d9873c 62%, #b86a27 70%);
+  box-shadow: 0 8px 16px -8px rgba(90, 46, 18, 0.6);
 }
 
 .lv2-wk-post {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 8px;
+  font-size: 13px;
+  color: var(--lv2-ink-2);
 }
 
-.lv2-wk-post small {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--lv2-ink-3);
+.lv2-wk-pill {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--lv2-sun-soft);
+  color: #7a5210;
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .lv2-wk-bar {
@@ -1739,8 +1901,4 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
     transition: none !important;
   }
 
-  .lv2-weekly-card {
-    transform: none;
-    opacity: 1;
   }
-}
