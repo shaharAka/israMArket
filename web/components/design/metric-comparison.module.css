@@ -1,17 +1,24 @@
-.figure { border-block: 1px solid var(--im-rule,var(--rule)); padding-block: 20px; }
-.figure figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-.figure figcaption strong { font-size: 16px; font-weight: 800; color: var(--im-ink,var(--ink)); }
-.figure figcaption > span { font-size: 12px; color: var(--im-muted,var(--ink-soft)); }
-.figure ul { display: grid; gap: 18px; }
-.figure li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(60px, 1.1fr) 62px; align-items: center; gap: 18px; }
-.label { font-size: 13px; line-height: 1.7; color: var(--im-ink,var(--ink)); }
-.track { display: block; height: 8px; background: var(--im-soft,var(--primary-soft)); }
-.track[data-measured="false"] { height: 1px; background: var(--im-rule,var(--rule)); }
-.track > span { display: block; height: 100%; background: var(--im-primary,var(--primary)); }
-.value { text-align: end; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--im-ink,var(--ink)); }
-.caption { font-size: 11px; line-height: 1.8; color: var(--im-muted,var(--ink-soft)); margin-top: 20px; }
+/* One metric across posts. Calm bars: one blue, rounded ends, a soft track, tabular values.
+   Frameless: the page decides whether it sits in a card. */
+.figure { margin: 0; }
+.figure figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
+.figure figcaption strong { font-size: 18px; font-weight: 700; letter-spacing: -.01em; color: var(--im-ink,var(--ink)); }
+.figure figcaption > span { font-size: 13px; font-weight: 500; color: var(--im-muted,var(--ink-muted)); text-align: end; }
+.figure ul { display: grid; gap: 16px; }
+.figure li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) 48px; align-items: center; gap: 20px; }
+.label { font-size: 14px; font-weight: 500; line-height: 1.5; color: var(--im-ink,var(--ink)); overflow-wrap: anywhere; }
+.track { position: relative; display: block; height: 12px; border-radius: 999px; background: var(--im-soft,var(--soft)); overflow: hidden; }
+.track[data-measured="false"] { height: 1px; border-radius: 0; background: var(--im-rule,var(--rule-dark)); }
+.track > span { display: block; height: 100%; border-radius: inherit; background: var(--im-primary,var(--primary)); transition: width 240ms cubic-bezier(.2,.7,.2,1); }
+.value { text-align: end; font-size: 15px; font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; color: var(--im-ink,var(--ink)); }
+.track[data-measured="false"] + .value { font-size: 12px; font-weight: 500; color: var(--im-muted,var(--ink-muted)); }
+.caption { font-size: 12px; line-height: 1.7; color: var(--im-muted,var(--ink-muted)); margin-top: 24px; }
+.period { white-space: nowrap; font-variant-numeric: tabular-nums; }
 @media (max-width: 600px) {
-  .figure li { grid-template-columns: minmax(0, 1fr) 62px; gap: 6px 12px; }
+  .figure figcaption { margin-bottom: 20px; }
+  .figure ul { gap: 14px; }
+  .figure li { grid-template-columns: minmax(0, 1fr) 48px; gap: 6px 12px; }
   .label { grid-column: 1 / -1; }
-  .track { grid-column: 1; }
+  .track { grid-column: 1; height: 10px; }
 }
+@media (prefers-reduced-motion: reduce) { .track > span { transition: none; } }

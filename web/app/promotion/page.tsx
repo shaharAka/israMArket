@@ -5,7 +5,6 @@ import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
-import { SystemNote } from "@/components/SystemNote";
 import {
   endpoints,
   isDemo,
@@ -17,12 +16,9 @@ import {
   type PublishBrief,
 } from "@/lib/api";
 import { formatNis } from "@/lib/budget";
-import { IconBell, IconCheck, IconCopy, IconEye, IconLightbulb, IconLink, IconStore } from "@/lib/icons";
-import { SECTIONS } from "@/lib/sections";
+import { IconBell, IconCheck, IconChevron, IconCopy, IconEye, IconLink } from "@/lib/icons";
 import { copyText } from "@/lib/ui";
 import { GbpConfirm } from "@/components/trial/GbpConfirm";
-
-const identity = SECTIONS.promotion;
 
 const whole = new Intl.NumberFormat("he-IL", { maximumFractionDigits: 0 });
 const oneDecimal = new Intl.NumberFormat("he-IL", { maximumFractionDigits: 1 });
@@ -81,9 +77,9 @@ function singlePercent(value: number | undefined): number | undefined {
  * Ranges are left-to-right inside a right-to-left sentence. Without isolating them the
  * dash and the שקל sign jump to the wrong side of the digits.
  */
-function Figure({ children }: { children: ReactNode }) {
+function Figure({ children, strong = false }: { children: ReactNode; strong?: boolean }) {
   return (
-    <span dir="ltr" className="inline-block tabular-nums">
+    <span dir="ltr" className={`inline-block tabular-nums ${strong ? "font-semibold text-[color:var(--ink)]" : ""}`}>
       {children}
     </span>
   );
@@ -112,22 +108,22 @@ const INTENT_META: Record<KeywordIntent, { label: string; why: string; accent?: 
   commercial: {
     label: "בחינה והשוואה",
     why: "משווים אפשרויות לפני שמחליטים. מתאים לפוסט או לעמוד באתר שמסביר למה דווקא אתם.",
-    className: "border-[var(--rule-dark)] bg-white text-[color:var(--ink)]",
+    className: "bg-[var(--soft)] text-[color:var(--ink)]",
   },
   branded: {
     label: "חיפוש לפי שם",
     why: "מחפשים אתכם בשם. על אלה כמעט לא צריך לשלם, כי הכרטיס והאתר כבר מופיעים.",
-    className: "border-[var(--rule-dark)] bg-[var(--primary-soft)] text-[color:var(--ink)]",
+    className: "bg-[var(--soft)] text-[color:var(--ink)]",
   },
   informational: {
     label: "מידע",
     why: "לומדים נושא, לא קונים. בדרך כלל לא שווה לקנות את הקליקים האלה.",
-    className: "border-[var(--rule)] bg-[var(--canvas)] text-[var(--ink-soft)]",
+    className: "bg-[var(--soft)] text-[color:var(--ink-muted)]",
   },
   general: {
     label: "כללי",
     why: "לא ברור מה המחפשים רוצים. אפשר לכתוב על זה פוסטים, אבל לא לשלם על זה במודעות.",
-    className: "border-[var(--rule)] bg-[var(--canvas)] text-[var(--ink-soft)]",
+    className: "bg-[var(--soft)] text-[color:var(--ink-muted)]",
   },
 };
 
@@ -143,26 +139,24 @@ const INTENT_ORDER: KeywordIntent[] = [
 const FALLBACK_INTENT: { label: string; why: string; accent?: boolean; className: string } = {
   label: "כללי",
   why: "לא ברור מה המחפשים רוצים.",
-  className: "border-[var(--rule)] bg-[var(--canvas)] text-[var(--ink-soft)]",
+  className: "bg-[var(--soft)] text-[color:var(--ink-muted)]",
 };
 
 /** Red stays red: "critical" is a warning, not a section colour. */
 const PRIORITY_META: Record<string, { label: string; className: string }> = {
-  critical: { label: "דחוף", className: "border-[var(--danger-rule)] bg-[var(--danger-soft)] text-[var(--danger)]" },
-  high: { label: "חשוב", className: "border-[var(--rule-dark)] bg-[var(--primary-soft)] text-[color:var(--ink)]" },
-  medium: { label: "כדאי", className: "border-[var(--rule)] bg-[var(--canvas)] text-[var(--ink-soft)]" },
+  critical: { label: "דחוף", className: "bg-[var(--danger-soft)] text-[color:var(--danger)]" },
+  high: { label: "חשוב", className: "bg-[var(--primary-soft)] text-[color:var(--primary)]" },
+  medium: { label: "כדאי", className: "bg-[var(--soft)] text-[color:var(--ink-muted)]" },
 };
 
-const ACCENT_CHIP = { background: identity.surface, borderColor: identity.border, color: identity.accent };
+/** A pill for a real state (DESIGN-STANDARD §4): soft fill, no frame, 12px, 999px. */
+const PILL = "inline-flex min-h-6 items-center rounded-full px-2.5 text-xs font-medium leading-5";
+const ACCENT_PILL = "bg-[var(--primary-soft)] text-[color:var(--primary)]";
 
 function IntentChip({ intent, label }: { intent: KeywordIntent; label?: string }) {
   const meta = INTENT_META[intent] ?? FALLBACK_INTENT;
   return (
-    <span
-      className={`label-mark ${meta.className}`}
-      style={meta.accent ? ACCENT_CHIP : undefined}
-      title={meta.why}
-    >
+    <span className={`${PILL} ${meta.accent ? ACCENT_PILL : meta.className}`} title={meta.why}>
       {label || meta.label}
     </span>
   );
@@ -222,17 +216,24 @@ function plain(text: string): string {
 }
 
 /**
- * The disclosure caret, drawn as a CSS triangle rather than a "‹" glyph: rule 7 counts
- * `main.innerText`, and a text glyph is counted as a word on every closed expand.
+ * The disclosure mark: a real chevron (DESIGN-STANDARD §4), down when closed and up when
+ * open. An icon rather than a "‹" glyph: rule 7 counts `main.innerText`, and a text glyph
+ * is counted as a word on every closed expand. Every fold on this page is a direct
+ * `group/fold`, so a nested fold keeps its own direction.
  */
 function Caret() {
   return (
-    <span
-      aria-hidden
-      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
-    />
+    <IconChevron className="h-[18px] w-[18px] shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 ease-[cubic-bezier(.2,.7,.2,1)] group-open/fold:rotate-90" />
   );
 }
+
+/** A disclosure row: 56px, 15px/600, the chevron at the end. */
+const FOLD_SUMMARY =
+  "flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-semibold text-[color:var(--ink)] transition-colors hover:text-[color:var(--primary)] [&::-webkit-details-marker]:hidden";
+
+/** Secondary button: white, a 1px rule, 44px, radius 12 (DESIGN-STANDARD §4). */
+const QUIET_BUTTON =
+  "inline-flex min-h-11 items-center gap-2 rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)]";
 
 /**
  * Detail on demand — the whole restructuring of this page rests on this one control.
@@ -253,34 +254,39 @@ function Expand({
   children: ReactNode;
 }) {
   return (
-    <details className="group">
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[var(--ink-soft)] hover:text-[var(--ink)]">
+    <details className="group/fold">
+      <summary className={FOLD_SUMMARY}>
         <span className="min-w-0">
           {title}
-          {hint ? <span className="block text-xs font-normal text-[var(--ink-muted)]">{hint}</span> : null}
+          {hint ? <span className="block text-[13px] font-normal text-[color:var(--ink-muted)]">{hint}</span> : null}
         </span>
         <Caret />
       </summary>
-      <div className="pb-5 pt-1">{children}</div>
+      <div className="pb-8 pt-1">{children}</div>
     </details>
   );
+}
+
+/** A group heading inside an expand: 13px, muted, a hairline list under it. */
+function GroupTitle({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <h3 className={`text-[13px] font-semibold text-[color:var(--ink-muted)] ${className}`}>{children}</h3>;
 }
 
 /** One range in the cost break-down, with the reasoning that produced it underneath. */
 function CostRow({ label, value, basis }: { label: string; value: string | null; basis: string }) {
   return (
-    <div className="py-4 first:pt-0 last:pb-0">
+    <div className="py-4">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <span className="text-sm font-bold text-[var(--ink)]">{label}</span>
+        <span className="text-[15px] font-medium text-[color:var(--ink)]">{label}</span>
         {value ? (
-          <span className="text-lg font-black tabular-nums text-[var(--ink)]">
+          <span className="text-lg font-bold tracking-tight tabular-nums text-[color:var(--ink)]">
             <Figure>{value}</Figure>
           </span>
         ) : (
-          <span className="text-xs font-bold text-[var(--ink-muted)]">המקור לא מפרסם את הנתון הזה</span>
+          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]">המקור לא מפרסם את הנתון הזה</span>
         )}
       </div>
-      <p className="mt-1 text-xs leading-5 text-[var(--ink-soft)]">{basis}</p>
+      <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">{basis}</p>
     </div>
   );
 }
@@ -297,18 +303,18 @@ function FeeRow({
   emphasis?: boolean;
 }) {
   return (
-    <li className="flex flex-wrap items-start justify-between gap-3 py-3">
+    <li className="flex flex-wrap items-start justify-between gap-3 py-4">
       <div className="min-w-0 max-w-md">
-        <span className={`text-sm ${emphasis ? "font-black" : "font-bold"} text-[var(--ink)]`}>{label}</span>
-        {children ? <span className="mt-1 block text-xs leading-5 text-[var(--ink-soft)]">{children}</span> : null}
+        <span className={`text-[15px] ${emphasis ? "font-semibold" : "font-medium"} text-[color:var(--ink)]`}>{label}</span>
+        {children ? <span className="mt-1 block text-[13px] leading-6 text-[color:var(--ink-muted)]">{children}</span> : null}
       </div>
       <div className="text-left">
         {amount ? (
-          <span className={`block ${emphasis ? "text-base" : "text-sm"} font-black text-[var(--ink)]`}>
+          <span className={`block ${emphasis ? "text-lg" : "text-[15px]"} font-bold tracking-tight tabular-nums text-[color:var(--ink)]`}>
             <Figure>{amount}</Figure>
           </span>
         ) : (
-          <span className="text-xs font-bold text-[var(--ink-muted)]">לא נמסר</span>
+          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]">לא נמסר</span>
         )}
       </div>
     </li>
@@ -331,16 +337,16 @@ function MetricCell({
 }) {
   return (
     <span>
-      <span className="text-[var(--ink-muted)]">{label} </span>
+      <span className="text-[color:var(--ink-muted)]">{label} </span>
       {typeof value === "number" && Number.isFinite(value) ? (
-        <span className="font-bold text-[var(--ink)]">
+        <span className="font-semibold text-[color:var(--ink)]">
           <Figure>
             {oneDecimal.format(value)}
             {suffix || ""}
           </Figure>
         </span>
       ) : (
-        <span className="font-bold text-[var(--ink-muted)]">לא נמסר</span>
+        <span className="font-medium text-[color:var(--ink-muted)]">לא נמסר</span>
       )}
     </span>
   );
@@ -353,7 +359,7 @@ function MetricLine({ impressions, clicks, position, ctr }: {
   ctr: number | undefined;
 }) {
   return (
-    <p className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+    <p className="mt-1.5 flex flex-wrap gap-x-5 gap-y-1 text-[13px]">
       <MetricCell label="חשיפות" value={impressions} />
       <MetricCell label="קליקים" value={clicks} />
       <MetricCell label="מיקום" value={position} />
@@ -364,11 +370,7 @@ function MetricLine({ impressions, clicks, position, ctr }: {
 
 function RetryButton({ onClick, label = "לנסות שוב" }: { onClick: () => void; label?: string }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="mt-3 inline-flex min-h-9 items-center rounded-md border border-[var(--rule-dark)] bg-white px-3 text-xs font-bold text-[var(--ink)] transition-colors hover:bg-[var(--canvas)]"
-    >
+    <button type="button" onClick={onClick} className={`mt-3 ${QUIET_BUTTON}`}>
       {label}
     </button>
   );
@@ -376,8 +378,8 @@ function RetryButton({ onClick, label = "לנסות שוב" }: { onClick: () => 
 
 function ErrorPanel({ message, onRetry }: { message: string; onRetry: () => void }) {
   return (
-    <div className="rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-4 py-3">
-      <p className="text-sm text-[var(--danger)]">{message}</p>
+    <div className="rounded-[14px] bg-[var(--danger-soft)] px-5 py-4 shadow-[inset_0_0_0_1px_var(--danger-rule)]">
+      <p className="text-[15px] leading-6 text-[color:var(--danger)]">{message}</p>
       <RetryButton onClick={onRetry} />
     </div>
   );
@@ -397,16 +399,21 @@ function SourceLine({
   detail?: ReactNode;
 }) {
   return (
-    <li className="py-3 first:pt-0 last:pb-0">
-      <div className="flex flex-wrap items-center gap-2">
-        <span style={{ color: active ? identity.accent : "#b3b0a5" }}>
-          {active ? <IconCheck className="h-4 w-4" /> : <span aria-hidden>·</span>}
+    <li className="py-4">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <span className="text-[15px] font-semibold text-[color:var(--ink)]">{title}</span>
+        {/* Status: words first, a small dot second (DESIGN-STANDARD §4). */}
+        <span
+          className={`inline-flex items-center gap-1.5 text-[13px] font-medium ${
+            active ? "text-[color:var(--good)]" : "text-[color:var(--ink-muted)]"
+          }`}
+        >
+          {active ? <IconCheck className="h-3.5 w-3.5" /> : <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--ink-faint)]" />}
+          {statusLabel}
         </span>
-        <span className="text-sm font-black text-[var(--ink)]">{title}</span>
-        <span className="label-mark border-[var(--rule)] bg-white text-[var(--ink-soft)]">{statusLabel}</span>
       </div>
-      <p className="mt-2 text-xs leading-5 text-[var(--ink-soft)]">{note}</p>
-      {detail ? <p className="mt-2 text-[11px] text-[var(--ink-muted)]">{detail}</p> : null}
+      <p className="mt-1.5 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">{note}</p>
+      {detail ? <p className="mt-1.5 text-xs text-[color:var(--ink-muted)]">{detail}</p> : null}
     </li>
   );
 }
@@ -582,17 +589,14 @@ export default function PromotionPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-3xl">
         <SectionHeader section="business" title="קידום בגוגל" />
 
-        {demo ? <p className="-mt-3 mb-4 text-xs text-[var(--ink-soft)]">בדמו המחירים והמילים לדוגמה.</p> : null}
+        {demo ? <p className="-mt-3 mb-5 text-[13px] text-[color:var(--ink-muted)]">בדמו המחירים והמילים לדוגמה.</p> : null}
 
         {/* ---------- the answer, its reason, and the one ask ---------- */}
-        <section
-          aria-label="התשובה בקצרה"
-          className="rounded-lg p-4 sm:p-6"
-          style={{ background: identity.surface }}
-        >
+        {/* One card with depth, not a tinted panel: the answer is the page's one object. */}
+        <section aria-label="התשובה בקצרה" className="paper px-5 py-6 sm:px-8 sm:py-8">
           {promotionLoading ? <LoadingMark label="מחשבים כמה יעלה לפרסם בגוגל…" /> : null}
 
           {promotionError ? (
@@ -607,14 +611,14 @@ export default function PromotionPage() {
           ) : null}
 
           {!promotionLoading && !promotionError && !plan ? (
-            <p className="text-sm text-[var(--ink-soft)]">
+            <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">
               לא קיבלנו תוכנית קידום מהשרת, ולא נמציא מספרים במקומה. אפשר לנסות שוב.
             </p>
           ) : null}
 
           {plan ? (
             <div>
-              <p className="text-lg font-black leading-7 text-[var(--ink)]">
+              <h2 className="max-w-[28em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
                 {budgetFigure ? (
                   <>
                     {"בתקציב של "}
@@ -623,13 +627,13 @@ export default function PromotionPage() {
                   </>
                 ) : null}
                 {floorStatus ? floorStatus.verdict : `זו עלות הפרסום בגוגל בתחום ${plan.industry_label}.`}
-              </p>
+              </h2>
 
-              <p className="mt-2 text-sm leading-6 text-[color:var(--ink)]">
+              <p className="mt-3 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
                 {totalFigure ? (
                   <>
                     {"בפועל זה "}
-                    <Figure>{totalFigure}</Figure>
+                    <Figure strong>{totalFigure}</Figure>
                     {" בחודש, עם דמי הניהול. "}
                   </>
                 ) : (
@@ -638,23 +642,31 @@ export default function PromotionPage() {
                 {cpcFigure ? (
                   <>
                     {"כל כניסה לאתר מהמודעה עולה "}
-                    <Figure>{cpcFigure}</Figure>
+                    <Figure strong>{cpcFigure}</Figure>
                     {"."}
                   </>
                 ) : (
                   "המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר."
                 )}{" "}
-                <Link href="/decisions" className="font-bold whitespace-nowrap text-[var(--ink-soft)] underline underline-offset-4">
+                <Link
+                  href="/decisions"
+                  className="font-semibold whitespace-nowrap text-[color:var(--primary)] hover:underline hover:underline-offset-4"
+                >
                   לשנות את התקציב
                 </Link>
               </p>
 
               {floorStatus ? (
                 <p
-                  className={`mt-2 text-sm leading-6 ${floorStatus.tone === "warn" ? "text-[var(--danger)]" : "text-[color:var(--ink)]"}`}
-                  style={floorStatus.tone === "good" ? { color: identity.accent } : undefined}
+                  className={`mt-3 max-w-[42em] text-[15px] leading-7 ${
+                    floorStatus.tone === "warn"
+                      ? "text-[color:var(--danger)]"
+                      : floorStatus.tone === "good"
+                        ? "text-[color:var(--primary)]"
+                        : "text-[color:var(--ink)]"
+                  }`}
                 >
-                  <span className="font-black">
+                  <span className="font-semibold">
                     {"המינימום שפורסם לתחום: "}
                     {floorFigure ? <Figure>{floorFigure}</Figure> : null}
                     {" בחודש. "}
@@ -663,43 +675,43 @@ export default function PromotionPage() {
                 </p>
               ) : null}
 
+              {/* A warning, so the sun (DESIGN-STANDARD §1): the budget line above keeps
+                  the danger tone; two red paragraphs in a row read as an error. */}
               {extraWarning ? (
-                <p className="mt-3 flex items-start gap-2 text-sm leading-6 text-[var(--danger)]">
-                  <span aria-hidden className="mt-1 shrink-0 text-[var(--danger)]">
-                    <IconBell className="h-4 w-4" />
-                  </span>
-                  {plain(extraWarning)}
+                <p className="mt-5 flex items-start gap-3 rounded-[12px] bg-[var(--sand)] px-4 py-3 text-[14px] leading-6 text-[color:var(--sand-dark)]">
+                  <IconBell className="mt-0.5 h-[18px] w-[18px] shrink-0" />
+                  <span>{plain(extraWarning)}</span>
                 </p>
               ) : null}
 
-              <div className="mt-4">
-                {!keywordsLoading && !keywordsError ? (
+              {!keywordsLoading && !keywordsError ? (
+                <div className="mt-6">
                   <Link
                     href="/integrations"
-                    className="inline-flex min-h-11 w-full items-center justify-center rounded-md bg-[var(--primary)] px-5 text-sm font-bold text-white transition-colors hover:bg-[var(--primary-dark)] sm:w-auto"
+                    className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 py-3 text-center text-[15px] leading-6 text-white hover:bg-[var(--primary-dark)] sm:w-auto"
                   >
                     {searchConsoleConnected
                       ? "לחבר את נתוני האתר: מה קורה אחרי הקליק"
                       : "לחבר את גוגל: באילו חיפושים אתם כבר מופיעים"}
                   </Link>
-                ) : null}
-              </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </section>
 
         {/* ---------- every figure and every warning, one level down ---------- */}
         {plan ? (
-          <section aria-label="כל המספרים והאזהרות" className="mt-2 divide-y divide-[var(--rule)]">
+          <section aria-label="כל המספרים והאזהרות" className="mt-4 divide-y divide-[var(--rule)] border-b border-[var(--rule)]">
             {(plan.assumptions?.length ||
               plan.warnings?.length ||
               plan.channel_comparison?.recommendation ||
               plan.source) ? (
               <Expand title="כל המספרים והחישובים">
-                <div className="space-y-5">
-                  <div className="rounded-lg border border-[var(--rule)] bg-white p-5">
-                    <h3 className="text-sm font-black text-[var(--ink)]">הטווחים, כל אחד עם החישוב שלו</h3>
-                    <div className="mt-3 divide-y divide-[var(--rule)]">
+                <div className="space-y-8">
+                  <div>
+                    <GroupTitle>הטווחים, כל אחד עם החישוב שלו</GroupTitle>
+                    <div className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                       <CostRow
                         label="כמה עולה כל כניסה מהמודעה (קליק)"
                         value={cpcFigure}
@@ -736,23 +748,23 @@ export default function PromotionPage() {
                       />
                     </div>
                     {plan.matched_keywords?.length ? (
-                      <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[11px] text-[var(--ink-soft)]">
-                        <span className="font-bold">זיהינו את התחום לפי:</span>
+                      <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[13px] text-[color:var(--ink-muted)]">
+                        <span className="font-medium">זיהינו את התחום לפי:</span>
                         {plan.matched_keywords.map((word) => (
-                          <span key={word} className="label-mark bg-white" style={{ borderColor: identity.border }}>
+                          <span key={word} className={`${PILL} bg-[var(--soft)] text-[color:var(--ink-soft)]`}>
                             {word}
                           </span>
                         ))}
                       </p>
                     ) : null}
                   </div>
-                  <div className="rounded-lg border border-[var(--rule)] bg-white p-5">
-                    <h3 className="text-sm font-black text-[var(--ink)]">מה עוד משלמים, חוץ מתקציב המדיה</h3>
-                    <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
+                  <div>
+                    <GroupTitle>מה עוד משלמים, חוץ מתקציב המדיה</GroupTitle>
+                    <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
                       תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש
                       עולה באמת ולא רק את המספר שנשמע טוב.
                     </p>
-                    <ul className="mt-3 divide-y divide-[var(--rule)]">
+                    <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                       <FeeRow label="דמי ניהול בחודש" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
                         {plan.management_fee?.percent_label ? (
                           <span className="block">
@@ -786,39 +798,30 @@ export default function PromotionPage() {
                     </ul>
                   </div>
 
-                  <div className="rounded-lg border border-[var(--rule)] bg-white p-5">
-                    <h3 className="flex items-center gap-2 text-sm font-black text-[var(--ink)]">
-                      <span style={{ color: identity.accent }}>
-                        <IconLightbulb className="h-4 w-4" />
-                      </span>
-                      מה עומד מאחורי המספרים
-                    </h3>
+                  <div>
+                    <GroupTitle>מה עומד מאחורי המספרים</GroupTitle>
 
                     {plan.assumptions?.length ? (
-                      <ul className="mt-3 space-y-2">
+                      <ul className="mt-3 space-y-2.5">
                         {plan.assumptions.map((assumption, index) => (
                           <li
                             key={`${assumption.slice(0, 24)}-${index}`}
-                            className="flex items-start gap-2 text-sm leading-6 text-[color:var(--ink)]"
+                            className="flex max-w-[42em] items-start gap-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"
                           >
-                            <span
-                              aria-hidden
-                              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
-                              style={{ background: identity.accent }}
-                            />
+                            <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
                             {plain(assumption)}
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="mt-3 text-sm leading-6 text-[var(--ink-soft)]">
+                      <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
                         לא קיבלנו מהשרת את ההנחות שמאחורי החישוב. בלעדיהן אי אפשר לדעת מה הטווח כולל.
                       </p>
                     )}
 
                     {plan.channel_comparison?.recommendation ? (
-                      <p className="mt-4 rounded-md border border-[var(--rule)] bg-white px-4 py-3 text-xs leading-6 text-[color:var(--ink)]">
-                        <span className="font-black">ולא רק גוגל: </span>
+                      <p className="mt-5 max-w-[42em] rounded-[12px] bg-[var(--soft)] px-4 py-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
+                        <span className="font-semibold text-[color:var(--ink)]">ולא רק גוגל: </span>
                         {plain(plan.channel_comparison.recommendation)}
                       </p>
                     ) : null}
@@ -828,10 +831,9 @@ export default function PromotionPage() {
                         href={plan.source}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-4 inline-flex items-center gap-2 text-sm font-bold underline underline-offset-4"
-                        style={{ color: identity.accent }}
+                        className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"
                       >
-                        <IconLink className="h-4 w-4" />
+                        <IconLink className="h-4 w-4 shrink-0" />
                         {plan.source_title || "המקור שממנו נלקחו טווחי המחירים"}
                       </a>
                     ) : null}
@@ -848,34 +850,29 @@ export default function PromotionPage() {
                     : `${plan.warnings.length} אזהרות לקרוא לפני שמתחילים`
                 }
               >
-                <ul aria-label="אזהרות לפני שמתחילים" className="space-y-3">
+                <ol aria-label="אזהרות לפני שמתחילים" className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                   {plan.warnings.map((warning, index) => (
-                    <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3">
+                    <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3 py-3.5">
                       <span
                         aria-hidden
-                        className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--danger)] text-[11px] font-black text-white"
+                        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--danger-soft)] text-xs font-semibold tabular-nums text-[color:var(--danger)]"
                       >
                         {index + 1}
                       </span>
-                      <span className="text-sm leading-6 text-[var(--danger)]">{plain(warning)}</span>
+                      <span className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink)]">{plain(warning)}</span>
                     </li>
                   ))}
-                </ul>
+                </ol>
               </Expand>
             ) : null}
           </section>
         ) : null}
 
         {/* ---------- the terms worth targeting ---------- */}
-        <section aria-labelledby="keywords-heading" className="mt-4 border-t border-[var(--rule)] pt-5">
-          <div className="flex items-center gap-2">
-            <span style={{ color: identity.accent }}>
-              <IconEye className="h-4 w-4" />
-            </span>
-            <h2 id="keywords-heading" className="text-sm font-black text-[var(--ink)]">
-              חיפושים שבהם אתם כמעט בעמוד הראשון
-            </h2>
-          </div>
+        <section aria-labelledby="keywords-heading" className="mt-12">
+          <h2 id="keywords-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
+            חיפושים שבהם אתם כמעט בעמוד הראשון
+          </h2>
 
           {keywordsLoading ? <LoadingMark label="אוספים את המילים…" /> : null}
 
@@ -902,14 +899,14 @@ export default function PromotionPage() {
                   {/* One line per opportunity: the phrase, where the site already ranks and
                       how many came in. Views and the click-through share are in the full
                       list one expand down — the same rows, all four figures. */}
-                  <ul className="divide-y divide-[var(--primary-soft)]">
+                  <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
                     {topQuickWins.map((win: PromotionQuickWin, index) => (
                       <li
                         key={`${win.query}-${index}`}
-                        className="flex items-baseline justify-between gap-3 py-2.5 first:pt-1"
+                        className="flex min-h-14 items-center justify-between gap-4 py-3"
                       >
-                        <span className="min-w-0 text-sm font-bold text-[var(--ink)]">{win.query}</span>
-                        <span className="shrink-0 text-xs text-[var(--ink-soft)]">
+                        <span className="min-w-0 text-[15px] font-medium text-[color:var(--ink)]">{win.query}</span>
+                        <span className="shrink-0 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
                           {typeof win.position === "number" ? (
                             <>
                               {"מקום "}
@@ -933,15 +930,15 @@ export default function PromotionPage() {
                   </ul>
                 </div>
               ) : (
-                <p className="mt-2 text-sm leading-6 text-[var(--ink-soft)]">
+                <p className="mt-2 text-[15px] leading-7 text-[color:var(--ink-soft)]">
                   עוד אין חיפושים שבהם האתר קרוב לעמוד הראשון. זה משתנה ככל שגוגל סורקת את האתר.
                 </p>
               )}
 
-              <div className="mt-1 border-t border-[var(--rule)]">
+              <div className="border-y border-[var(--rule)]">
                 <Expand title={`כל ${moreTerms} המילים, ומאיפה כל אחת באה`}>
-                  <div className="space-y-6">
-                    <p className="max-w-3xl text-sm leading-6 text-[var(--ink-soft)]">
+                  <div className="space-y-8">
+                    <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
                       אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון.
                       {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
                       הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק.
@@ -953,7 +950,7 @@ export default function PromotionPage() {
                         </>
                       ) : null}
                     </p>
-                    <ul className="divide-y divide-[var(--rule)]">
+                    <ul className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                       <SourceLine
                         title="נתוני החיפוש של גוגל (Search Console)"
                         active={searchConsoleConnected}
@@ -978,37 +975,35 @@ export default function PromotionPage() {
                       />
                     </ul>
 
-                    {/* The house rule, in the backend's own words: no volume column, anywhere. */}
-                    <SystemNote variant="panel" title="למה אין כאן מספר חיפושים">
-                      {kwSources?.search_volumes?.note ||
-                        "אין לנו גישה לנתון של גוגל על כמה מחפשים כל מילה, ולכן לא תמצאו כאן מספר חיפושים."}
-                    </SystemNote>
+                    {/* The house rule, in the backend's own words: no volume column, anywhere.
+                        A quiet inset in the page's own tones (it used to be a dark panel). */}
+                    <section className="rounded-[14px] bg-[var(--soft)] px-5 py-4">
+                      <h3 className="text-[14px] font-semibold text-[color:var(--ink)]">למה אין כאן מספר חיפושים</h3>
+                      <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-soft)]">
+                        {kwSources?.search_volumes?.note ||
+                          "אין לנו גישה לנתון של גוגל על כמה מחפשים כל מילה, ולכן לא תמצאו כאן מספר חיפושים."}
+                      </p>
+                    </section>
 
                     {rowsWithNumbers.length ? (
                       <div>
-                        <h3 className="text-sm font-black text-[var(--ink)]">
-                          מילים עם מספרים אמיתיים מגוגל
-                        </h3>
-                        <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
+                        <GroupTitle>מילים עם מספרים אמיתיים מגוגל</GroupTitle>
+                        <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
                           חיפושים שבהם האתר שלכם הופיע
                           {typeof periodDays === "number" ? ` ב-${periodDays} הימים האחרונים` : ""}. המספרים
                           מגוגל, לא הערכה שלנו.
                         </p>
-                        <ul className="mt-3 divide-y divide-[var(--rule)]">
+                        <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {rowsWithNumbers.map((row: PromotionKeyword, index) => {
                             const quick = quickWinTerms.has(row.term);
                             return (
-                              <li key={`${row.term}-${index}`} className="py-4 first:pt-3 last:pb-0">
+                              <li key={`${row.term}-${index}`} className="py-4">
                                 <div className="flex flex-wrap items-center gap-2">
-                                  <span className="text-sm font-bold text-[var(--ink)]">{row.term}</span>
+                                  <span className="text-[15px] font-medium text-[color:var(--ink)]">{row.term}</span>
                                   <IntentChip intent={row.intent} label={row.intent_label} />
-                                  {quick ? (
-                                    <span className="label-mark" style={ACCENT_CHIP}>
-                                      הזדמנות מהירה
-                                    </span>
-                                  ) : null}
+                                  {quick ? <span className={`${PILL} ${ACCENT_PILL}`}>הזדמנות מהירה</span> : null}
                                   {row.source === "autocomplete+search_console" ? (
-                                    <span className="text-[11px] text-[var(--ink-muted)]">מופיעה גם בהשלמה האוטומטית</span>
+                                    <span className="text-xs text-[color:var(--ink-muted)]">מופיעה גם בהשלמה האוטומטית</span>
                                   ) : null}
                                 </div>
                                 <MetricLine
@@ -1026,14 +1021,12 @@ export default function PromotionPage() {
 
                     {restQuickWins.length ? (
                       <div>
-                        <h3 className="text-sm font-black text-[var(--ink)]">
-                          עוד {restQuickWins.length} הזדמנויות מהירות
-                        </h3>
-                        <ul className="mt-3 divide-y divide-[var(--rule)]">
+                        <GroupTitle>עוד {restQuickWins.length} הזדמנויות מהירות</GroupTitle>
+                        <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {restQuickWins.map((win: PromotionQuickWin, index) => (
-                            <li key={`${win.query}-${index}`} className="py-4 first:pt-3 last:pb-0">
-                              <span className="text-sm font-bold text-[var(--ink)]">{win.query}</span>
-                              {win.why ? <p className="mt-1 text-xs leading-5 text-[var(--ink-soft)]">{win.why}</p> : null}
+                            <li key={`${win.query}-${index}`} className="py-4">
+                              <span className="text-[15px] font-medium text-[color:var(--ink)]">{win.query}</span>
+                              {win.why ? <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">{win.why}</p> : null}
                               <MetricLine
                                 impressions={win.impressions}
                                 clicks={win.clicks}
@@ -1048,23 +1041,21 @@ export default function PromotionPage() {
 
                     {phraseRows.length ? (
                       <div>
-                        <h3 className="text-sm font-black text-[var(--ink)]">
-                          ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים
-                        </h3>
-                        <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
+                        <GroupTitle>ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים</GroupTitle>
+                        <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
                           מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה תוך כדי הקלדה. אין עליהן נתונים של
                           חשיפות, קליקים או מיקום, ולא נעמיד פנים שיש.
                         </p>
-                        <ul className="mt-3 divide-y divide-[var(--rule)]">
+                        <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {phraseRows.map((row: PromotionKeyword, index) => (
                             <li
                               key={`${row.term}-${index}`}
-                              className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3 first:pt-2"
+                              className="flex min-h-12 flex-wrap items-center justify-between gap-x-4 gap-y-2 py-2.5"
                             >
-                              <span className="text-sm text-[var(--ink)]">{row.term}</span>
-                              <span className="flex items-center gap-2">
+                              <span className="text-[15px] text-[color:var(--ink)]">{row.term}</span>
+                              <span className="flex items-center gap-3">
                                 <IntentChip intent={row.intent} label={row.intent_label} />
-                                <span className="text-[11px] text-[var(--ink-muted)]">אין מספרים</span>
+                                <span className="text-xs text-[color:var(--ink-muted)]">אין מספרים</span>
                               </span>
                             </li>
                           ))}
@@ -1073,13 +1064,13 @@ export default function PromotionPage() {
                     ) : null}
 
                     {legend.length ? (
-                      <div className="rounded-lg border border-[var(--rule)] bg-white p-4">
-                        <span className="text-[11px] font-bold text-[var(--ink-muted)]">מה כל תווית אומרת</span>
-                        <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+                      <div>
+                        <GroupTitle>מה כל תווית אומרת</GroupTitle>
+                        <ul className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                           {legend.map((item) => (
-                            <li key={item.intent} className="flex items-start gap-2">
+                            <li key={item.intent} className="flex items-start gap-3">
                               <IntentChip intent={item.intent} label={item.label} />
-                              <span className="text-xs leading-5 text-[var(--ink-soft)]">
+                              <span className="text-[13px] leading-6 text-[color:var(--ink-soft)]">
                                 {(INTENT_META[item.intent] ?? FALLBACK_INTENT).why}
                               </span>
                             </li>
@@ -1089,31 +1080,24 @@ export default function PromotionPage() {
                     ) : null}
 
                     {keywords?.seeds?.length ? (
-                      <p className="text-[11px] leading-5 text-[var(--ink-muted)]">
+                      <p className="text-xs leading-6 text-[color:var(--ink-muted)]">
                         חיפשנו השלמות לפי מה שכתוב בפרופיל העסק:{" "}
-                        <span className="text-[var(--ink-soft)]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
+                        <span className="text-[color:var(--ink-soft)]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
                         {keywords.seeds.length > 4 ? ` ועוד ${keywords.seeds.length - 4}` : ""}
                       </p>
                     ) : null}
 
                     {!searchConsoleConnected ? (
-                      <div
-                        className="rounded-lg border p-5"
-                        style={{ borderColor: identity.border, background: identity.surface }}
-                      >
-                        <h3 className="text-sm font-black" style={{ color: identity.accent }}>
+                      <div className="rounded-[14px] bg-[var(--primary-soft)] px-5 py-5">
+                        <h3 className="text-[15px] font-semibold text-[color:var(--ink)]">
                           מה תרוויחו מחיבור נתוני החיפוש של גוגל
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-[color:var(--ink)]">
+                        <p className="mt-1.5 max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
                           זה כלי חינמי של גוגל (Search Console) שמראה באילו חיפושים האתר שלכם כבר מופיע, עם
                           חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים על מה שמחפשים בגוגל.
                           בלעדיהם יש לנו רק את הביטויים.
                         </p>
-                        <Link
-                          href="/integrations"
-                          className="mt-3 inline-flex min-h-9 items-center rounded-md border bg-white px-3 text-xs font-bold"
-                          style={{ borderColor: identity.border, color: identity.accent }}
-                        >
+                        <Link href="/integrations" className={`mt-4 ${QUIET_BUTTON}`}>
                           לעמוד החיבורים
                         </Link>
                       </div>
@@ -1125,15 +1109,12 @@ export default function PromotionPage() {
           ) : null}
 
           {keywords && !keywordsError && !rows.length ? (
-            <div className="mt-4 rounded-lg border border-[var(--rule)] bg-white p-6 text-center">
-              <span
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full"
-                style={{ background: identity.surface, color: identity.accent }}
-              >
+            <div className="paper mt-4 px-6 py-8 text-center">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
                 <IconEye className="h-6 w-6" />
               </span>
-              <h3 className="mt-4 text-lg font-black text-[var(--ink)]">עוד אין מילים להציג</h3>
-              <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[var(--ink-soft)]">
+              <h3 className="mt-4 text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין מילים להציג</h3>
+              <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[color:var(--ink-soft)]">
                 {searchConsoleConnected
                   ? "נתוני החיפוש של גוגל מחוברים, אבל האתר עוד לא הופיע בחיפושים שאפשר לבנות עליהם תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
                   : "אחרי שתחברו את נתוני החיפוש של גוגל, נראה לכם באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום. בלי לנחש כמה מחפשים."}
@@ -1143,95 +1124,87 @@ export default function PromotionPage() {
         </section>
 
         {/* ---------- what is free ---------- */}
-        <section id="profile" aria-labelledby="profile-heading" className="mt-4 scroll-mt-20 border-t border-[var(--rule)] pt-5">
-          <div className="flex flex-wrap items-center gap-2">
-            <span style={{ color: identity.accent }}>
-              <IconStore className="h-4 w-4" />
-            </span>
+        <section id="profile" aria-labelledby="profile-heading" className="mt-12 scroll-mt-20">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {/* Our own Hebrew name: the backend's title carries "(Google Business Profile)". */}
-            <h2 id="profile-heading" className="text-sm font-black text-[var(--ink)]">
+            <h2 id="profile-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
               הכרטיס של העסק בגוגל
             </h2>
-            {profile?.free ? (
-              <span className="label-mark" style={ACCENT_CHIP}>
-                בחינם
-              </span>
-            ) : null}
+            {profile?.free ? <span className={`${PILL} bg-[var(--good-soft)] text-[color:var(--good)]`}>בחינם</span> : null}
           </div>
           {profile?.steps?.length ? (
-            <div className="mt-1">
-              <p className="text-sm leading-6 text-[color:var(--ink)]">
+            <div className="mt-1.5">
+              <p className="max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
                 {profile.steps.length} צעדים
                 {criticalSteps ? `, ${criticalSteps} מהם דחופים` : ""}. הראשון: {profile.steps[0].title}.
               </p>
               <GbpConfirm />
 
-              <details className="group mt-1 border-t border-[var(--rule)]">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[var(--ink-soft)] hover:text-[var(--ink)]">
+              <details className="group/fold mt-4 border-y border-[var(--rule)]">
+                <summary className={FOLD_SUMMARY}>
                   <span>כל הצעדים, ומה שחשוב לדעת</span>
                   <Caret />
                 </summary>
-                <div className="pb-3 pt-1">
+                <div className="pb-8 pt-1">
                   {/* What the profile is, and which category to pick, explain the list —
                       so they sit with the list rather than above it. */}
-                  <p className="max-w-3xl text-xs leading-5 text-[var(--ink-muted)]">
+                  <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
                     {profile?.summary || "המקום היחיד בגוגל שבו מופיעים בחינם, ודרכו אפשר לבקש ביקורות."}
                   </p>
                   {profile?.suggested_category_hint ? (
-                    <p className="mt-2 text-xs text-[var(--ink-soft)]">
+                    <p className="mt-2 text-[14px] text-[color:var(--ink-soft)]">
                       הקטגוריה הראשית שכדאי לבחור:{" "}
-                      <span className="font-black">{profile.suggested_category_hint}</span>
+                      <span className="font-semibold text-[color:var(--ink)]">{profile.suggested_category_hint}</span>
                     </p>
                   ) : null}
-                  <ol className="mt-3 divide-y divide-[var(--rule)]">
+                  <ol className="mt-4 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                     {profile.steps.map((step, index) => {
                       const priority = PRIORITY_META[step.priority] ?? PRIORITY_META.medium;
                       const number = index + 1;
                       return (
-                        <li key={step.id || `${step.title}-${index}`} className="py-4 first:pt-1 last:pb-0">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <span
-                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-black text-white"
-                              style={{ background: identity.accent }}
-                            >
-                              {number}
-                            </span>
-                            <h3 className="text-sm font-black text-[var(--ink)]">{step.title}</h3>
-                            <span className={`label-mark ${priority.className}`}>{priority.label}</span>
-                          </div>
-                          <p className="mt-3 text-xs leading-5 text-[color:var(--ink)]">
-                            <span className="font-black text-[var(--ink)]">למה זה חשוב: </span>
-                            {step.why}
-                          </p>
-                          {step.how?.length ? (
-                            <div className="mt-2">
-                              <span className="text-xs font-black text-[var(--ink)]">איך עושים:</span>
-                              <ul className="mt-1 space-y-1">
-                                {step.how.map((line, lineIndex) => (
-                                  <li
-                                    key={`${line.slice(0, 20)}-${lineIndex}`}
-                                    className="flex items-start gap-2 text-xs leading-5 text-[color:var(--ink)]"
-                                  >
-                                    <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--ink-muted)]" />
-                                    {line}
-                                  </li>
-                                ))}
-                              </ul>
+                        <li key={step.id || `${step.title}-${index}`} className="flex gap-4 py-5">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[13px] font-semibold tabular-nums text-[color:var(--primary)]">
+                            {number}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex min-h-7 flex-wrap items-center gap-x-3 gap-y-1">
+                              <h3 className="text-[15px] font-semibold text-[color:var(--ink)]">{step.title}</h3>
+                              <span className={`${PILL} ${priority.className}`}>{priority.label}</span>
                             </div>
-                          ) : null}
+                            <p className="mt-2 max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
+                              <span className="font-semibold text-[color:var(--ink)]">למה זה חשוב: </span>
+                              {step.why}
+                            </p>
+                            {step.how?.length ? (
+                              <div className="mt-3">
+                                <span className="text-[13px] font-semibold text-[color:var(--ink)]">איך עושים:</span>
+                                <ul className="mt-1.5 space-y-1.5">
+                                  {step.how.map((line, lineIndex) => (
+                                    <li
+                                      key={`${line.slice(0, 20)}-${lineIndex}`}
+                                      className="flex max-w-[42em] items-start gap-2.5 text-[14px] leading-6 text-[color:var(--ink-soft)]"
+                                    >
+                                      <span aria-hidden className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-[var(--ink-faint)]" />
+                                      {line}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
+                          </div>
                         </li>
                       );
                     })}
                   </ol>
 
                   {profile.notes?.length ? (
-                    <ul className="mt-4 space-y-1.5">
+                    <ul className="mt-5 space-y-1.5">
                       {profile.notes.map((note, index) => (
                         <li
                           key={`${note.slice(0, 24)}-${index}`}
-                          className="flex items-start gap-2 text-xs leading-5 text-[var(--ink-muted)]"
+                          className="flex max-w-[42em] items-start gap-2.5 text-[13px] leading-6 text-[color:var(--ink-muted)]"
                         >
-                          <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--rule-dark)]" />
+                          <span aria-hidden className="mt-[10px] h-1 w-1 shrink-0 rounded-full bg-[var(--rule-dark)]" />
                           {note}
                         </li>
                       ))}
@@ -1241,7 +1214,7 @@ export default function PromotionPage() {
               </details>
             </div>
           ) : (
-            <p className="mt-3 text-sm text-[var(--ink-soft)]">
+            <p className="mt-2 text-[15px] leading-7 text-[color:var(--ink-soft)]">
               לא קיבלנו מהשרת את רשימת הצעדים לכרטיס בגוגל. נסו שוב מאוחר יותר. בינתיים, את הכרטיס עצמו
               מוצאים כשמחפשים בגוגל את שם העסק.
             </p>
@@ -1254,32 +1227,32 @@ export default function PromotionPage() {
             assembled into text the owner can paste to whoever runs the ads. It sits last
             because it is the hand-off, not the answer, and it is an Expand because the
             page's word budget belongs to the answer above it. */}
-        <section className="border-t border-[var(--rule)]">
+        <section className="mt-12 border-y border-[var(--rule)]">
           <Expand title={brief ? `סיכום ${brief.month_name_he} למי שמפרסם בשבילכם` : "סיכום החודש למי שמפרסם בשבילכם"}>
             {briefError ? (
               <div>
-                <p className="text-sm text-[var(--danger)]">{briefError}</p>
+                <p className="text-[15px] text-[color:var(--danger)]">{briefError}</p>
                 <RetryButton onClick={() => setBriefAttempt((attempt) => attempt + 1)} />
               </div>
             ) : !brief ? (
-              <p className="text-sm text-[var(--ink-soft)]">מכינים את הסיכום…</p>
+              <p className="text-[15px] text-[color:var(--ink-soft)]">מכינים את הסיכום…</p>
             ) : (
               <>
-                <p className="max-w-3xl text-xs leading-5 text-[var(--ink-muted)]">
+                <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   כל התוכנית של החודש בטקסט אחד להעתקה ולשליחה: המטרה, התקציב ואיך מחלקים אותו, הקהלים,
                   כמה מפרסמים והקישור למעקב.
                 </p>
                 <button
                   type="button"
                   onClick={() => void copyText(brief.text, "הסיכום הועתק.")}
-                  className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-xs font-bold text-[var(--ink)] hover:bg-[var(--primary-soft)]"
+                  className={`mt-4 ${QUIET_BUTTON}`}
                 >
-                  <IconCopy className="h-3.5 w-3.5" />
+                  <IconCopy className="h-4 w-4" />
                   להעתיק את הסיכום
                 </button>
                 {/* The text itself, exactly what the button copies, and scrollable so a
                     long month cannot push the page's real content off the screen. */}
-                <pre className="mt-3 max-h-96 overflow-auto rounded-md border border-[var(--rule)] bg-white p-4 text-xs leading-6 whitespace-pre-wrap text-[color:var(--ink)]">
+                <pre className="mt-4 max-h-96 overflow-auto rounded-[14px] bg-[var(--soft)] p-5 font-sans text-[13px] leading-6 whitespace-pre-wrap text-[color:var(--ink)]">
                   {brief.text}
                 </pre>
               </>

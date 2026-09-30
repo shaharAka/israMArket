@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, type ReactNode } from "react";
-import { BrandMark } from "@/lib/icons";
+import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
 import { UIAction } from "./Controls";
 import styles from "./results-brief.module.css";
 
@@ -39,7 +39,7 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
       <h2 id={`${id}-heading`}>{data.heading}</h2>
       <p className={styles.explanation}>{data.explanation}</p>
       <details className={styles.evidence}>
-        <summary>למה זו ההמלצה שלנו?</summary>
+        <summary>למה זו ההמלצה שלנו?<IconChevron className={styles.chevron} /></summary>
         <div className={styles.evidenceBody}>
           <p className={styles.eyebrow}>המידע שחיברנו בדוגמה הזו</p>
           <ol>{data.evidence.map(item => <li key={item.source}>
@@ -53,7 +53,7 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
       <div className={styles.actionIntro}><div><p className={styles.eyebrow}>מה נעשה עכשיו</p><h3>{data.nextAction.title}</h3></div><span className={styles.effort}>{data.nextAction.effort}</span></div>
       <p className={styles.actionExplanation}>{data.nextAction.explanation}</p>
       <div className={styles.mainActions}>
-        <UIAction variant={expanded ? "secondary" : "primary"} onClick={onAction} aria-expanded={data.state === "disconnected" ? undefined : expanded} aria-controls={data.state === "disconnected" ? undefined : `${id}-action`}>{data.actionLabel}<span aria-hidden="true"> ←</span></UIAction>
+        <UIAction variant={expanded ? "secondary" : "primary"} onClick={onAction} aria-expanded={data.state === "disconnected" ? undefined : expanded} aria-controls={data.state === "disconnected" ? undefined : `${id}-action`}>{data.actionLabel}<IconArrowLeft className={styles.actionArrow} /></UIAction>
         {onContinue && <UIAction variant="text" onClick={onContinue} aria-expanded={expanded} aria-controls={`${id}-action`}>להמשיך עם מה שכבר הכנו</UIAction>}
       </div>
       <p className={styles.successCheck}><strong>איך נבדוק שזה עוזר?</strong> {data.nextAction.successCheck}</p>
