@@ -8,6 +8,7 @@ import {
   AFTER_SAVE,
   clearSavedFlow,
   emptyFlow,
+  hasSavableDraft,
   loadFlow,
   normalizeUrl,
   saveFlow,
@@ -16,6 +17,7 @@ import {
   type FlowState,
   type OnboardingDraft,
 } from "@/lib/draft";
+import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { BrandMark, IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
 import {
@@ -81,7 +83,35 @@ export function StartFlow() {
 
   // The draft and the URL only exist in the browser: read them after mount.
   useEffect(() => {
+    // Back from "להמשיך עם Google" (StepSave): `resume=save` on success, `google_error` on
+    // a failure. Read once, then dropped from the address so a refresh does not repeat it.
+    const params = new URLSearchParams(window.location.search);
+    const resumeSave = params.get("resume") === "save";
+    const googleError = googleErrorFromLocation();
+    if (resumeSave || params.has("google_error")) {
+      params.delete("resume");
+      params.delete("google_error");
+      const rest = params.toString();
+      window.history.replaceState(null, "", `${window.location.pathname}${rest ? `?${rest}` : ""}`);
+    }
+
+    /** The same save as after an email signup: from-draft, then straight to the plan. */
+    async function saveAfterGoogle() {
+      const stored = loadFlow();
+      if (!hasSavableDraft(stored)) return;
+      setSaving(true);
+      try {
+        await saveFlowToAccount(stored);
+        await clearSavedFlow();
+        router.replace(AFTER_SAVE);
+      } catch (err) {
+        setSaving(false);
+        setSaveError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור את התוכנית. נסו שוב.");
+      }
+    }
+
     const timer = window.setTimeout(() => {
+      if (googleError) setSaveError(googleError);
       const saved = loadFlow();
       const loaded = saved ?? emptyFlow();
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
@@ -105,6 +135,7 @@ export function StartFlow() {
       })
       .then((res) => {
         if (res?.business?.onboarding_complete) router.replace("/dashboard");
+        else if (resumeSave) void saveAfterGoogle();
       })
       .catch(() => {
         // Not signed in: the normal case here.

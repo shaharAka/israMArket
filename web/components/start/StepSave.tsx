@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { ApiError, endpoints } from "@/lib/api";
 import type { StepProps } from "./steps";
 import { StepShell, TextInput } from "./ui";
@@ -9,8 +10,8 @@ import { StepShell, TextInput } from "./ui";
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**
- * Save: an account (email + password, the same rules as /signup), then the draft and the
- * 3-month plan become the business. No personal name is asked: the owner has already told
+ * Save: an account (Google, or email + password with the same rules as /signup), then the
+ * draft and the 3-month plan become the business. No personal name is asked: the owner has already told
  * us about the business.
  */
 export function StepSave(
@@ -90,6 +91,11 @@ export function StepSave(
       primaryDisabled={busy}
       onPrimary={() => void submit()}
     >
+      {/* The draft is already in this browser (saveFlow on every answer). Google sends the
+          owner back to /start?resume=save, and StartFlow saves it from there with the same
+          from-draft call as the email path below. */}
+      <GoogleButton next="/start?resume=save" back="/start" disabled={busy} />
+      <OrDivider />
       <TextInput
         id="signup-email"
         label="אימייל"

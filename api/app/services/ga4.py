@@ -25,11 +25,24 @@ def ga4_configured() -> bool:
     return bool(settings.google_client_id and settings.google_client_secret)
 
 
-def authorization_url(state: str) -> str:
+def redirect_uri() -> str:
+    """On the public web origin, through the /backend proxy: in the documented deployment
+    the API itself is not reachable from the internet (config.oauth_redirect_base)."""
+    return f"{get_settings().oauth_callback_base()}/integrations/ga4/callback"
+
+
+def authorization_url(state: str, login_hint: str = "") -> str:
+    """Google's consent screen for Analytics + Search Console.
+
+    Incremental authorization on top of "להמשיך עם Google": `login_hint` (the linked Google
+    account id, or the account email) pre-selects the account the owner signed in with,
+    and `include_granted_scopes` folds the new scopes into the grant that account already
+    gave. The owner can still pick another account; the callback notices and says so.
+    """
     settings = get_settings()
     if not ga4_configured():
         raise RuntimeError("חסרים GOOGLE_CLIENT_ID ו-GOOGLE_CLIENT_SECRET לחיבור GA4.")
-    redirect = f"{settings.api_origin}/integrations/ga4/callback"
+    redirect = redirect_uri()
     params = {
         "client_id": settings.google_client_id,
         "redirect_uri": redirect,
@@ -40,13 +53,15 @@ def authorization_url(state: str) -> str:
         "include_granted_scopes": "true",
         "state": state,
     }
+    if login_hint:
+        params["login_hint"] = login_hint
     query = "&".join(f"{key}={httpx.QueryParams({key: value})[key]}" for key, value in params.items())
     return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
 
 
 def exchange_code(code: str) -> dict:
     settings = get_settings()
-    redirect = f"{settings.api_origin}/integrations/ga4/callback"
+    redirect = redirect_uri()
     response = httpx.post(
         "https://oauth2.googleapis.com/token",
         data={
@@ -71,6 +86,9 @@ def exchange_code(code: str) -> dict:
         # What Google actually granted, which is not always what was asked for. Stored so
         # Search Console can be reported as "not granted" instead of failing silently.
         "scopes": [scope for scope in (payload.get("scope") or "").split(" ") if scope],
+        # `openid email` is in the scopes, so Google says which account granted this. Used
+        # only to compare with the account the owner signs in with; never stored raw.
+        "id_token": payload.get("id_token") or "",
     }
 
 

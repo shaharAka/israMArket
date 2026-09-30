@@ -1,13 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { DeleteAccount } from "@/components/account/DeleteAccount";
-import { endpoints } from "@/lib/api";
+import { endpoints, type AuthUser } from "@/lib/api";
 import { toast } from "@/lib/ui";
 
 export default function AccountPage() {
+  // Which sign-in the account has: a Google-only account has no password to change, so it
+  // is offered a first one instead (optional).
+  const [me, setMe] = useState<AuthUser | null>(null);
+  const loadMe = useCallback(() => {
+    endpoints
+      .me()
+      .then(setMe)
+      .catch(() => setMe(null));
+  }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(loadMe, 0);
+    return () => window.clearTimeout(timer);
+  }, [loadMe]);
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -27,17 +40,31 @@ export default function AccountPage() {
     }
     setPending(true);
     try {
-      await endpoints.changePassword(current, next);
+      if (settingFirst) await endpoints.setPassword(next);
+      else await endpoints.changePassword(current, next);
       setCurrent("");
       setNext("");
       setConfirm("");
-      toast("הסיסמה החדשה נשמרה");
+      toast(settingFirst ? "הסיסמה נשמרה. אפשר להיכנס גם עם אימייל וסיסמה." : "הסיסמה החדשה נשמרה");
+      if (settingFirst) loadMe();
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו להחליף את הסיסמה. נסו שוב.");
     } finally {
       setPending(false);
     }
   }
+
+  const settingFirst = me !== null && !me.has_password;
+  const fields = settingFirst
+    ? [
+        { label: "סיסמה חדשה", value: next, set: setNext },
+        { label: "הקלידו שוב את הסיסמה", value: confirm, set: setConfirm },
+      ]
+    : [
+        { label: "הסיסמה הנוכחית", value: current, set: setCurrent },
+        { label: "סיסמה חדשה", value: next, set: setNext },
+        { label: "הקלידו שוב את הסיסמה החדשה", value: confirm, set: setConfirm },
+      ];
 
   return (
     <AppShell>
@@ -46,15 +73,31 @@ export default function AccountPage() {
           <h1 className="text-2xl font-black tracking-tight text-[#20211f]">החשבון</h1>
         </header>
 
+        {me?.google_linked ? (
+          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-[#deddd8] bg-white p-5 text-sm text-[#20211f]">
+            <span className="font-bold">מחובר עם Google</span>
+            <span dir="ltr" className="text-[#62635f]">
+              {me.email}
+            </span>
+          </p>
+        ) : null}
+
         <form onSubmit={submit} className="mt-6 space-y-4 rounded-lg border border-[#deddd8] bg-white p-5">
-          {[
-            { label: "הסיסמה הנוכחית", value: current, set: setCurrent },
-            { label: "סיסמה חדשה", value: next, set: setNext },
-            { label: "הקלידו שוב את הסיסמה החדשה", value: confirm, set: setConfirm },
-          ].map((field) => (
+          {settingFirst ? (
+            <div>
+              <h2 className="text-sm font-bold text-[#191b18]">לקבוע סיסמה (לא חובה)</h2>
+              <p className="mt-1 text-xs leading-5 text-[#62635f]">
+                נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google.
+              </p>
+            </div>
+          ) : null}
+          {fields.map((field, index) => (
             <div key={field.label}>
-              <label className="mb-1 block text-xs font-bold text-[#191b18]">{field.label}</label>
+              <label htmlFor={`pw-${index}`} className="mb-1 block text-xs font-bold text-[#191b18]">
+                {field.label}
+              </label>
               <input
+                id={`pw-${index}`}
                 type="password"
                 value={field.value}
                 onChange={(e) => field.set(e.target.value)}
@@ -72,10 +115,10 @@ export default function AccountPage() {
 
           <button
             type="submit"
-            disabled={pending || !current || !next}
+            disabled={pending || (!settingFirst && !current) || !next}
             className="w-full rounded-md bg-[#20211f] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
           >
-            {pending ? "שומרים…" : "להחליף סיסמה"}
+            {pending ? "שומרים…" : settingFirst ? "לשמור סיסמה" : "להחליף סיסמה"}
           </button>
         </form>
 
@@ -87,7 +130,7 @@ export default function AccountPage() {
           </Link>
         </p>
 
-        <DeleteAccount />
+        <DeleteAccount googleOnly={settingFirst} email={me?.email ?? ""} />
       </div>
     </AppShell>
   );

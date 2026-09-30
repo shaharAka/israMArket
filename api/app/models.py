@@ -11,8 +11,15 @@ class User(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(255))
+    # "" for an account opened with Google that never set a password (the column predates
+    # Google sign-in and is NOT NULL in existing SQLite files, so empty stands in for NULL).
+    # An empty hash never verifies: see security.verify_password.
+    password_hash: Mapped[str] = mapped_column(String(255), default="")
     full_name: Mapped[str] = mapped_column(String(255))
+    # Google's stable account id (the ID token's `sub`), set on the first "להמשיך עם Google".
+    # Sign-in matches on it first, so a later change of the Google address still finds the
+    # account. Unique; NULL for password-only accounts. See routers/auth.google_callback.
+    google_sub: Mapped[str | None] = mapped_column(String(255), unique=True, index=True, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     # The free first month (docs/onboarding-v2.md, Revision 7 B). Account-level, not
     # per business: the trial is what the owner signed up for, and a second business does
@@ -27,6 +34,14 @@ class User(Base):
     trial_events_json: Mapped[str] = mapped_column(Text, default="{}")
 
     businesses: Mapped[list["Business"]] = relationship(back_populates="owner")
+
+    @property
+    def has_password(self) -> bool:
+        return bool(self.password_hash)
+
+    @property
+    def google_linked(self) -> bool:
+        return bool(self.google_sub)
 
 
 class Business(Base):

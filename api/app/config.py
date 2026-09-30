@@ -15,6 +15,15 @@ class Settings(BaseSettings):
     api_origin: str = "http://localhost:8000"
     google_client_id: str = ""
     google_client_secret: str = ""
+    # The public base every Google redirect URI is built on. In the documented deployment
+    # only the web tier is reachable from the internet and it proxies /backend/* to the
+    # API, so Google must send the browser back through it: that is also what puts the
+    # session cookie on the origin the owner is actually on. Empty = WEB_ORIGIN + /backend,
+    # giving {WEB_ORIGIN}/backend/auth/google/callback (sign-in) and
+    # {WEB_ORIGIN}/backend/integrations/ga4/callback (Analytics + Search Console). Each must
+    # be registered exactly on the OAuth client; see deploy/gcp/google-oauth.md.
+    # Not PUBLIC_BASE_URL: that may be a short-link domain that forwards only /r/{code}.
+    oauth_redirect_base: str = ""
     meta_app_id: str = ""
     meta_app_secret: str = ""
     # Graph API version for every Meta call (OAuth dialog included). v25.0 is supported
@@ -108,6 +117,10 @@ class Settings(BaseSettings):
         if isinstance(value, str) and not value.strip():
             return None
         return value
+
+    def oauth_callback_base(self) -> str:
+        """See `oauth_redirect_base`."""
+        return (self.oauth_redirect_base.strip() or f"{self.web_origin}/backend").rstrip("/")
 
 
 @lru_cache

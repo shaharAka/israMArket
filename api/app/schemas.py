@@ -24,16 +24,30 @@ class PasswordChangeIn(BaseModel):
     new_password: str = Field(min_length=8, max_length=200)
 
 
-class AccountDeleteIn(BaseModel):
-    """The current password, so a stolen session cookie alone cannot erase an account."""
+class PasswordSetIn(BaseModel):
+    """A first password for an account opened with Google (it has no current one)."""
 
-    password: str = Field(min_length=1, max_length=200)
+    new_password: str = Field(min_length=8, max_length=200)
+
+
+class AccountDeleteIn(BaseModel):
+    """The current password, so a stolen session cookie alone cannot erase an account.
+
+    An account opened with Google has no password: it confirms with its email address
+    instead (`confirm_email`), which a click-through cannot supply by accident.
+    """
+
+    password: str = Field(default="", max_length=200)
+    confirm_email: str = Field(default="", max_length=255)
 
 
 class UserOut(BaseModel):
     id: int
     email: EmailStr
     full_name: str
+    # False for an account opened with Google that never set a password.
+    has_password: bool = True
+    google_linked: bool = False
 
 
 class CompetitorIn(BaseModel):
