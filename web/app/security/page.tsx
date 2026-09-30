@@ -73,6 +73,11 @@ const STORED = [
     title: "החיבורים",
     body: "אם חיברתם את גוגל או את פייסבוק ואינסטגרם: המפתחות שהם נתנו לנו, מוצפנים, והנתונים שקיבלנו דרכם (נתוני האתר, הפוסטים שלכם באינסטגרם והמספרים שלהם).",
   },
+  {
+    // models.py WhatsappLink / WhatsappClick, services/whatsapp.py.
+    title: "קישור הוואטסאפ",
+    body: "מספר הוואטסאפ של העסק, ההודעה שבחרתם, וכמה לחצו על כל קישור בכל יום. פירוט בהמשך.",
+  },
 ];
 
 // api/app/services/ga4.py GA4_SCOPES
@@ -176,6 +181,17 @@ export default function SecurityPage() {
           </p>
         </Section>
 
+        <Section id="whatsapp" title="מה קישור הוואטסאפ שומר">
+          <p>
+            {/* routers/whatsapp.py redirect + services/whatsapp.record_click: one daily counter row. */}
+            כשלקוח לוחץ על קישור הוואטסאפ של העסק, הוא עובר דרכנו לוואטסאפ. על הלחיצה אנחנו שומרים רק את היום, את הקישור שעליו לחץ, ואת סוג המכשיר בערך: אייפון, אנדרואיד, מחשב, או הדפדפן שבתוך אינסטגרם או פייסבוק.
+          </p>
+          <p className="mt-3">
+            {/* No IP column, no user-agent column: tests/test_whatsapp_link.py test_no_ip_or_user_agent_is_stored. */}
+            <strong>מה לא נשמר:</strong> כתובת הרשת של המכשיר (IP), פרטי הדפדפן המלאים, ומי לחץ. את ההודעה עצמה אנחנו לא רואים, והיא עוברת ישר בוואטסאפ. תצוגות מקדימות של קישורים ורובוטים לא נספרים.
+          </p>
+        </Section>
+
         <Section id="processors" title="מי עוד מעבד את המידע">
           <Rows
             rows={[
@@ -245,7 +261,7 @@ export default function SecurityPage() {
                     <Link href="/account" className={LINK}>
                       החשבון
                     </Link>
-                    . נמחקים החשבון, העסק, התוכניות, הפוסטים, העיצובים, התמונות, החיבורים, הנתונים והמחקר. אי אפשר לבטל את זה.
+                    . נמחקים החשבון, העסק, התוכניות, הפוסטים, העיצובים, התמונות, החיבורים, קישורי הוואטסאפ, הנתונים והמחקר. אי אפשר לבטל את זה.
                   </>
                 ),
               },

@@ -45,6 +45,7 @@ production but it still has no TLS of its own.
 | `GEMINI_API_KEY` | Strategy, extraction and image generation. |
 | `WEB_ORIGIN` | Must be the browser-facing origin **including scheme**. It is used for OAuth redirects *and* the CSRF origin check, so a mismatch makes the connect buttons fail. |
 | `API_ORIGIN` | Where the web tier proxies. Must match the registered OAuth redirect URI (`{API_ORIGIN}/integrations/ga4/callback`). |
+| `PUBLIC_BASE_URL` | Optional. The origin printed on every WhatsApp tracked link, `{PUBLIC_BASE_URL}/r/{code}`. Blank means `WEB_ORIGIN`: only the web tier is public, and `web/app/r/[code]/route.ts` forwards `/r/{code}` to the API (not `API_ORIGIN`, which is an internal address in this compose file). **Set the final domain before owners post links**: a link already in an Instagram bio keeps pointing at the old origin. |
 
 Generate secrets with:
 

@@ -3999,6 +3999,9 @@ export type PostBrief = {
   published_at: string | null;
   has_image: boolean;
   tracking_url: string;
+  /** The post's own WhatsApp tracked link (lib/whatsapp.ts); "" when its CTA is not
+   *  WhatsApp or the number is not set. */
+  whatsapp_url?: string;
 };
 
 /**
