@@ -1,8 +1,7 @@
-import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
 import { swatch } from "./cards";
 import type { LandingExample } from "./examples";
-import { INTEGRATION_NAMES, STATUS_LABELS, type LandingPlan, type PlanMonth, type PostFormat } from "./plans";
+import { INTEGRATION_NAMES, MIX_LABELS, STATUS_LABELS, type LandingPlan, type PlanMonth } from "./plans";
 
 /**
  * One business's 3-month plan, the thing the product actually builds (docs/onboarding-v2.md,
@@ -132,16 +131,18 @@ export function PlanPanel({
           </Block>
         </div>
 
-        {/* 5–6. Three months: the focus, the date it is built around, one post. */}
+        {/* 5–6. Three months: the focus and the date it is built around, then the content
+            mix. No specific posts: which products to feature is the owner's call. */}
         <section className="lp-reveal px-5 py-4 sm:px-7 sm:py-6" style={{ "--i": 6 } as CSSProperties}>
           <Label>3 החודשים</Label>
           <ol className="relative mt-1 grid gap-4 lg:grid-cols-3 lg:gap-6">
             <span aria-hidden className="lp-line pointer-events-none absolute" />
             {plan.months.map((month, m) => (
-              <Month key={m} month={month} m={m} image={m === plan.months.findIndex((item) => item.post.thumb) ? example.image : null} />
+              <Month key={m} month={month} m={m} />
             ))}
           </ol>
-          <p className="mt-4 text-xs text-[#6d7068]">את הפוסטים עצמם כותבים ומעצבים יחד, בתוך המערכת.</p>
+          <Mix plan={plan} />
+          <p className="mt-3 text-xs text-[#6d7068]">אילו מוצרים להבליט בכל פוסט, אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות.</p>
         </section>
 
         {/* 7. The hypothesis, and what changes if it is not confirmed: the "adjust" in the story. */}
@@ -252,7 +253,7 @@ function Budget({ plan }: { plan: LandingPlan }) {
   );
 }
 
-function Month({ month, m, image }: { month: PlanMonth; m: number; image: string | null }) {
+function Month({ month, m }: { month: PlanMonth; m: number }) {
   return (
     <li className="relative ps-7 lg:ps-0 lg:pt-7" style={{ "--m": m } as CSSProperties}>
       <span
@@ -271,67 +272,31 @@ function Month({ month, m, image }: { month: PlanMonth; m: number; image: string
         ) : null}
       </p>
       <p className="mt-1 text-[15px] font-black leading-6 text-[#191b18]">{month.focus}</p>
-      <div className="mt-2.5 flex items-center gap-2.5">
-        <Thumb format={month.post.format} image={image} />
-        <div className="min-w-0">
-          <p className="text-[13px] font-bold leading-5 text-[#34372f]">״{month.post.title}״</p>
-          <p className="text-xs text-[#6d7068]">
-            {month.post.format} · {month.post.channel}
-          </p>
-        </div>
-      </div>
     </li>
   );
 }
 
-/** The one real photo gets a thumbnail; the other posts get a small glyph of their format. */
-function Thumb({ format, image }: { format: PostFormat; image: string | null }) {
-  if (image) {
-    return (
-      <span className="relative block h-12 w-[38px] shrink-0 overflow-hidden rounded-[8px] bg-[#f1efe9] shadow-[0_0_0_1px_rgba(25,27,24,0.08)]">
-        <Image src={image} alt="" fill sizes="38px" className="object-cover" />
-      </span>
-    );
-  }
-  return (
-    <span
-      aria-hidden
-      className="inline-flex h-12 w-[38px] shrink-0 items-center justify-center rounded-[8px]"
-      style={{ backgroundColor: "var(--lp-tint)", color: "var(--lp-ink)" }}
-    >
-      <FormatGlyph format={format} />
-    </span>
-  );
-}
 
-function FormatGlyph({ format }: { format: PostFormat }) {
-  const common = { viewBox: "0 0 16 16", className: "h-4 w-4", fill: "none", stroke: "currentColor", strokeWidth: 1.6 } as const;
-  if (format === "ריל" || format === "סרטון") {
-    return (
-      <svg {...common}>
-        <path d="M5.5 3.8v8.4l6.5-4.2-6.5-4.2Z" fill="currentColor" stroke="none" />
-      </svg>
-    );
-  }
-  if (format === "קרוסלה") {
-    return (
-      <svg {...common}>
-        <rect x="2" y="4" width="9" height="9" rx="1.6" />
-        <path d="M5 2.2h7.2A1.8 1.8 0 0 1 14 4v7" strokeLinecap="round" />
-      </svg>
-    );
-  }
-  if (format === "סטורי") {
-    return (
-      <svg {...common}>
-        <rect x="4.5" y="1.8" width="7" height="12.4" rx="1.8" />
-      </svg>
-    );
-  }
+
+/** "תמהיל התוכן": one stacked bar of post types, with a legend. */
+function Mix({ plan }: { plan: LandingPlan }) {
+  const shades = ["var(--lp-ink)", "var(--lp-accent, #d9a441)", "#9aa392", "#cfd3c6", "#e6e2d6"];
   return (
-    <svg {...common}>
-      <rect x="2.5" y="2.5" width="11" height="11" rx="1.8" />
-      <path d="m3.5 11.5 3-3 2 2 2.5-2.5 2 2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className="mt-5">
+      <p className="text-xs font-bold text-[#6d7068]">תמהיל התוכן</p>
+      <div className="lp-mix mt-1.5 flex h-2.5 overflow-hidden rounded-full bg-[#ecebe5]" aria-hidden>
+        {plan.mix.map((item, i) => (
+          <span key={item.type} className="lp-bar-seg h-full" style={{ width: `${item.share}%`, backgroundColor: shades[i % shades.length] }} />
+        ))}
+      </div>
+      <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#34372f]">
+        {plan.mix.map((item, i) => (
+          <li key={item.type} className="flex items-center gap-1.5">
+            <span aria-hidden className="h-2 w-2 rounded-full" style={{ backgroundColor: shades[i % shades.length] }} />
+            {MIX_LABELS[item.type]} <span className="text-[#6d7068]">{item.share}%</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

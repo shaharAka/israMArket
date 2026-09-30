@@ -49,8 +49,22 @@ export type PlanMonth = {
   focus: string;
   /** The one date the month is built around, or null for a month without one. */
   date: string | null;
-  /** One example post title for the month. `thumb`: the showcase photo belongs to it. */
-  post: { title: string; channel: string; format: PostFormat; thumb?: boolean };
+};
+
+/**
+ * Content types the plan splits posts into. A strategist sets the structure; which
+ * products to feature in each post is the owner's decision inside the app (stock, margin).
+ */
+export type MixType = "product" | "value" | "behind_scenes" | "social_proof" | "offer" | "community" | "seasonal";
+
+export const MIX_LABELS: Record<MixType, string> = {
+  product: "מוצרים ושירותים",
+  value: "תוכן שמלמד",
+  behind_scenes: "מאחורי הקלעים",
+  social_proof: "לקוחות מספרים",
+  offer: "הזמנה לפעולה",
+  community: "קהילה",
+  seasonal: "חגים ועונות",
 };
 
 export type LandingPlan = {
@@ -71,6 +85,8 @@ export type LandingPlan = {
     unlock?: string;
   };
   months: [PlanMonth, PlanMonth, PlanMonth];
+  /** "תמהיל התוכן": how the posts split by type, in percent (sums to 100). */
+  mix: { type: MixType; share: number }[];
   /** "ההשערה שנבדוק": the hypothesis, and what changes if it is not confirmed. */
   bet: { bet: string; ifWrong: string };
 };
@@ -98,10 +114,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "פותחים הזמנות מראש לגנים", date: null, post: { title: "מטגנים כל בוקר, אוספים בלי תור", channel: "אינסטגרם", format: "פוסט", thumb: true } },
-      { focus: "חנוכה: טיגון כל בוקר", date: "חנוכה", post: { title: "8 ימים, 8 מילויים", channel: "אינסטגרם", format: "ריל" } },
-      { focus: "פירות יבשים לט״ו בשבט", date: "ט״ו בשבט", post: { title: "עוגת תמרים ואגוזים, מהתנור של שישי", channel: "וואטסאפ", format: "סטורי" } },
+      { focus: "פותחים הזמנות מראש לגנים", date: null },
+      { focus: "חנוכה: טיגון כל בוקר", date: "חנוכה" },
+      { focus: "פירות יבשים לט״ו בשבט", date: "ט״ו בשבט" },
     ],
+    mix: [{ type: "product", share: 40 }, { type: "seasonal", share: 25 }, { type: "behind_scenes", share: 20 }, { type: "community", share: 15 }],
     bet: { bet: "הגנים יזמינו מראש אם יהיה קישור אחד לוואטסאפ.", ifWrong: "מדברים ישירות עם ועדי ההורים." },
   },
 
@@ -127,10 +144,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "למה חזייה מאתר לא יושבת טוב", date: null, post: { title: "כמה חזיות נשארו אצלכן במגירה?", channel: "אינסטגרם", format: "ריל" } },
-      { focus: "לפני המבצעים: קודם מודדות", date: "בלאק פריידי", post: { title: "קודם מודדות, אחר כך קונות", channel: "פייסבוק", format: "פוסט", thumb: true } },
-      { focus: "מי שמדדה מצטרפת לרשימה", date: null, post: { title: "מה השתנה במידה שלכן מאז השנה שעברה", channel: "וואטסאפ", format: "פוסט" } },
+      { focus: "למה חזייה מאתר לא יושבת טוב", date: null },
+      { focus: "לפני המבצעים: קודם מודדות", date: "בלאק פריידי" },
+      { focus: "מי שמדדה מצטרפת לרשימה", date: null },
     ],
+    mix: [{ type: "product", share: 35 }, { type: "value", share: 30 }, { type: "social_proof", share: 20 }, { type: "offer", share: 15 }],
     bet: { bet: "נשים יבואו למדידה אם יידעו שאין לחץ לקנות.", ifWrong: "מציעים קודם שיחה קצרה בוואטסאפ." },
   },
 
@@ -156,10 +174,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "מה קורה בפגישה הראשונה", date: "הימים הקרים הראשונים", post: { title: "עור יבש מהחימום? מתחילים בפגישה אחת", channel: "אינסטגרם", format: "פוסט", thumb: true } },
-      { focus: "שובר מתנה לטיפול פנים", date: "חנוכה", post: { title: "מתנה שמרגישים אותה על העור", channel: "אינסטגרם", format: "סטורי" } },
-      { focus: "שגרה לבית, לאמצע החורף", date: null, post: { title: "3 דברים שעושים בבית בין טיפול לטיפול", channel: "אינסטגרם", format: "קרוסלה" } },
+      { focus: "מה קורה בפגישה הראשונה", date: "הימים הקרים הראשונים" },
+      { focus: "שובר מתנה לטיפול פנים", date: "חנוכה" },
+      { focus: "שגרה לבית, לאמצע החורף", date: null },
     ],
+    mix: [{ type: "value", share: 40 }, { type: "social_proof", share: 25 }, { type: "product", share: 20 }, { type: "behind_scenes", share: 15 }],
     bet: { bet: "מי ששואלת על עור יבש תקבע פגישה אם תבין מה קורה בה.", ifWrong: "מצלמים פגישה אמיתית, מההתחלה עד הסוף." },
   },
 
@@ -185,10 +204,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "הוצאות מוכרות לעצמאים חדשים", date: null, post: { title: "5 הוצאות שעצמאים חדשים שוכחים לרשום", channel: "פייסבוק", format: "קרוסלה" } },
-      { focus: "מה עוד מוכר לפני סוף השנה", date: "31 בדצמבר", post: { title: "מה עוד מוכר לפני סוף השנה", channel: "פייסבוק", format: "פוסט", thumb: true } },
-      { focus: "פותחים שנה מסודרת", date: null, post: { title: "תיקייה אחת לכל הקבלות של השנה", channel: "מייל", format: "פוסט" } },
+      { focus: "הוצאות מוכרות לעצמאים חדשים", date: null },
+      { focus: "מה עוד מוכר לפני סוף השנה", date: "31 בדצמבר" },
+      { focus: "פותחים שנה מסודרת", date: null },
     ],
+    mix: [{ type: "value", share: 55 }, { type: "social_proof", share: 20 }, { type: "product", share: 15 }, { type: "seasonal", share: 10 }],
     bet: { bet: "עצמאי חדש יקבע שיחה אחרי שקיבל תשובה ברורה בחינם.", ifWrong: "מוסיפים מפגש שאלות ותשובות בזום." },
   },
 
@@ -211,10 +231,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       unlock: "עם 500–1,000 ₪ בחודש אפשר לקדם את הסדרה למי שכבר מכיר אתכם.",
     },
     months: [
-      { focus: "מראים שיעור אמיתי למתחילים", date: null, post: { title: "לא צריך גמישות, רק מזרן", channel: "אינסטגרם", format: "ריל", thumb: true } },
-      { focus: "שיעור פתוח בבית הקפה", date: "חנוכה", post: { title: "מה עושים בשיעור הראשון", channel: "טיקטוק", format: "סרטון" } },
-      { focus: "נפתחת הסדרה למתחילים", date: "תחילת ינואר", post: { title: "הסדרה למתחילים נפתחת השבוע", channel: "וואטסאפ", format: "סטורי" } },
+      { focus: "מראים שיעור אמיתי למתחילים", date: null },
+      { focus: "שיעור פתוח בבית הקפה", date: "חנוכה" },
+      { focus: "נפתחת הסדרה למתחילים", date: "תחילת ינואר" },
     ],
+    mix: [{ type: "value", share: 30 }, { type: "behind_scenes", share: 25 }, { type: "community", share: 25 }, { type: "offer", share: 20 }],
     bet: { bet: "הפחד מגמישות עוצר יותר אנשים מהמחיר.", ifWrong: "בודקים שיעור ניסיון במחיר מוזל." },
   },
 
@@ -240,10 +261,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "על האובניים: איך נולדים ספלי החורף", date: null, post: { title: "אין שני ספלים זהים", channel: "טיקטוק", format: "סרטון", thumb: true } },
-      { focus: "השקת סדרת החורף", date: "יום ההשקה", post: { title: "סדרת החורף עולה לאתר ביום ראשון", channel: "אינסטגרם", format: "סטורי" } },
-      { focus: "מתנות בעבודת יד", date: "חנוכה", post: { title: "מתנה שאין לאף אחד אחר", channel: "אינסטגרם", format: "קרוסלה" } },
+      { focus: "על האובניים: איך נולדים ספלי החורף", date: null },
+      { focus: "השקת סדרת החורף", date: "יום ההשקה" },
+      { focus: "מתנות בעבודת יד", date: "חנוכה" },
     ],
+    mix: [{ type: "behind_scenes", share: 35 }, { type: "product", share: 30 }, { type: "seasonal", share: 20 }, { type: "social_proof", share: 15 }],
     bet: { bet: "מי שראה את הכלי נולד יקנה ביום ההשקה.", ifWrong: "פותחים הזמנה מראש לפני ההשקה הבאה." },
   },
 
@@ -269,10 +291,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "איפה שמים שולחן בסלון קטן", date: "אחרי החגים", post: { title: "איפה לשים את השולחן", channel: "אינסטגרם", format: "פוסט", thumb: true } },
-      { focus: "אחסון בדירה קטנה", date: null, post: { title: "3 מקומות אחסון שלא ראיתם בסלון", channel: "אינסטגרם", format: "קרוסלה" } },
-      { focus: "פינת עבודה בבית", date: "תחילת השנה", post: { title: "פינת עבודה במטר וחצי", channel: "פייסבוק", format: "ריל" } },
+      { focus: "איפה שמים שולחן בסלון קטן", date: "אחרי החגים" },
+      { focus: "אחסון בדירה קטנה", date: null },
+      { focus: "פינת עבודה בבית", date: "תחילת השנה" },
     ],
+    mix: [{ type: "value", share: 45 }, { type: "social_proof", share: 25 }, { type: "behind_scenes", share: 15 }, { type: "product", share: 15 }],
     bet: { bet: "טיפ מעשי אחד בשבוע יביא יותר פניות מתמונות של פרויקטים גמורים.", ifWrong: "חוזרים לפרויקטים, עם הסבר קצר לכל אחד." },
   },
 
@@ -298,10 +321,11 @@ export const LANDING_PLANS: Record<string, LandingPlan> = {
       ],
     },
     months: [
-      { focus: "האח דולקת: סופי שבוע גשומים", date: "הגשם הראשון", post: { title: "האח דולקת, העננים על ההר", channel: "אינסטגרם", format: "ריל", thumb: true } },
-      { focus: "חנוכה בגליל", date: "חנוכה", post: { title: "8 לילות, אח אחת", channel: "אינסטגרם", format: "פוסט" } },
-      { focus: "סופ״ש זוגי באמצע החורף", date: null, post: { title: "ארוחת בוקר בסלסלה, כשיורד גשם", channel: "אינסטגרם", format: "סטורי" } },
+      { focus: "האח דולקת: סופי שבוע גשומים", date: "הגשם הראשון" },
+      { focus: "חנוכה בגליל", date: "חנוכה" },
+      { focus: "סופ״ש זוגי באמצע החורף", date: null },
     ],
+    mix: [{ type: "seasonal", share: 30 }, { type: "behind_scenes", share: 25 }, { type: "social_proof", share: 25 }, { type: "offer", share: 20 }],
     bet: { bet: "זוגות מזמינים כשהם רואים את האח, יותר מאשר את הנוף.", ifWrong: "חוזרים לנוף, ובודקים שוב אחרי חודש." },
   },
 };
