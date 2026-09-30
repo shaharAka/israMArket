@@ -69,31 +69,31 @@ export default function AccountPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-lg">
-        <header className="border-b border-[#e1e7f2] pb-5">
-          <h1 className="text-2xl font-black tracking-tight text-[#1d2940]">החשבון</h1>
+        <header className="border-b border-[var(--rule)] pb-5">
+          <h1 className="text-2xl font-black tracking-tight text-[var(--ink)]">החשבון</h1>
         </header>
 
         {me?.google_linked ? (
-          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-[#e1e7f2] bg-white p-5 text-sm text-[#1d2940]">
+          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-[var(--rule)] bg-white p-5 text-sm text-[var(--ink)]">
             <span className="font-bold">מחובר עם Google</span>
-            <span dir="ltr" className="text-[#647087]">
+            <span dir="ltr" className="text-[var(--ink-muted)]">
               {me.email}
             </span>
           </p>
         ) : null}
 
-        <form onSubmit={submit} className="mt-6 space-y-4 rounded-lg border border-[#e1e7f2] bg-white p-5">
+        <form onSubmit={submit} className="mt-6 space-y-4 rounded-lg border border-[var(--rule)] bg-white p-5">
           {settingFirst ? (
             <div>
-              <h2 className="text-sm font-bold text-[#1d2940]">לקבוע סיסמה (לא חובה)</h2>
-              <p className="mt-1 text-xs leading-5 text-[#647087]">
+              <h2 className="text-sm font-bold text-[var(--ink)]">לקבוע סיסמה (לא חובה)</h2>
+              <p className="mt-1 text-xs leading-5 text-[var(--ink-muted)]">
                 נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google.
               </p>
             </div>
           ) : null}
           {fields.map((field, index) => (
             <div key={field.label}>
-              <label htmlFor={`pw-${index}`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+              <label htmlFor={`pw-${index}`} className="mb-1 block text-xs font-bold text-[var(--ink)]">
                 {field.label}
               </label>
               <input
@@ -102,13 +102,13 @@ export default function AccountPage() {
                 value={field.value}
                 onChange={(e) => field.set(e.target.value)}
                 autoComplete={field.label.includes("הנוכחית") ? "current-password" : "new-password"}
-                className="w-full rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 py-2 text-sm"
+                className="w-full rounded-md border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 py-2 text-sm"
               />
             </div>
           ))}
 
           {error ? (
-            <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs text-[#9f4330]">
+            <p className="rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-3 py-2 text-xs text-[var(--danger)]">
               {error}
             </p>
           ) : null}
@@ -116,7 +116,7 @@ export default function AccountPage() {
           <button
             type="submit"
             disabled={pending || (!settingFirst && !current) || !next}
-            className="w-full rounded-md bg-[#2853c7] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
+            className="w-full rounded-md bg-[var(--primary)] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
           >
             {pending ? "שומרים…" : settingFirst ? "לשמור סיסמה" : "להחליף סיסמה"}
           </button>

@@ -16,10 +16,10 @@ export function GenerationProgress({ stage, businessName }: { stage: string; bus
   return (
     <div className="space-y-5" role="status" aria-live="polite">
       <div>
-        <h2 className="text-2xl font-black text-[#191b18]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
-        <p className="mt-1 text-sm text-[#5e6159]">דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע.</p>
+        <h2 className="text-2xl font-black text-[var(--ink)]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
+        <p className="mt-1 text-sm text-[var(--ink-soft)]">דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע.</p>
       </div>
-      <ol className="divide-y divide-[#e6e4dc] rounded-lg border border-[#e6e4dc] bg-white">
+      <ol className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white">
         {GENERATE_STAGES.map((item, index) => {
           const done = finished || index < current;
           const active = !finished && index === current;
@@ -27,14 +27,14 @@ export function GenerationProgress({ stage, businessName }: { stage: string; bus
             <li
               key={item.key}
               className={`flex min-h-12 items-center gap-3 px-4 text-sm ${
-                done ? "text-[#191b18]" : active ? "font-bold text-[#191b18]" : "text-[#9a9c93]"
+                done ? "text-[var(--ink)]" : active ? "font-bold text-[var(--ink)]" : "text-[var(--ink-muted)]"
               }`}
             >
               {done ? (
                 <IconCheck className="h-4 w-4 shrink-0" />
               ) : (
                 <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${active ? "animate-pulse bg-[#191b18]" : "bg-[#d8d6ce]"}`}
+                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${active ? "animate-pulse bg-[var(--ink)]" : "bg-[var(--rule-dark)]"}`}
                 />
               )}
               {item.label}

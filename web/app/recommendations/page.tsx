@@ -68,7 +68,7 @@ export default function RecommendationsPage() {
             type="button"
             onClick={generate}
             disabled={pending}
-            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c3cee5] bg-transparent px-3 text-xs font-bold text-[#1d2940] hover:bg-[#edf2ff] disabled:opacity-40"
+            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-transparent px-3 text-xs font-bold text-[var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
           >
             <IconLightbulb className="w-4 h-4" />
             <span>{pending ? "מכינים המלצות…" : "להכין המלצות חדשות"}</span>
@@ -81,9 +81,9 @@ export default function RecommendationsPage() {
       {data ? (
         <div className="space-y-5">
           {/* The week's focus in one line — no heavy banner competing with the button. */}
-          <div className="border-b border-[#e1e7f2] pb-4">
-            <p className="text-xs font-bold text-[#647087]">מה חשוב השבוע</p>
-            <p className="mt-1 max-w-3xl text-lg font-bold leading-relaxed text-[#1d2940]">
+          <div className="border-b border-[var(--rule)] pb-4">
+            <p className="text-xs font-bold text-[var(--ink-muted)]">מה חשוב השבוע</p>
+            <p className="mt-1 max-w-3xl text-lg font-bold leading-relaxed text-[var(--ink)]">
               {data.suggestions.week_summary}
             </p>
             <p className="mt-1.5">
@@ -92,7 +92,7 @@ export default function RecommendationsPage() {
           </div>
 
           {/* One container with hairline dividers, not a stack of equal-weight boxes. */}
-          <ul className="divide-y divide-[#e1e7f2] border-y border-[#e1e7f2]">
+          <ul className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
             {suggestions.map((item, index) => {
               const priority = PRIORITY_MAP[item.priority] || PRIORITY_MAP.medium;
               const isDone = !!accepted[item.title];
@@ -104,7 +104,7 @@ export default function RecommendationsPage() {
                     <Badge tone={priority.tone}>{priority.label}</Badge>
                     <span className="text-xs text-slate-500 font-medium">איפה: {item.target}</span>
                     {isNext ? (
-                      <span className="text-xs font-bold text-[#1d2940]">· הצעד הבא</span>
+                      <span className="text-xs font-bold text-[var(--ink)]">· הצעד הבא</span>
                     ) : null}
                   </div>
 
@@ -117,7 +117,7 @@ export default function RecommendationsPage() {
 
                   {/* The reasoning is method, not the conclusion — it waits behind an expand. */}
                   <details className="mt-2 max-w-3xl">
-                    <summary className="cursor-pointer text-xs font-bold text-[#535f75]">
+                    <summary className="cursor-pointer text-xs font-bold text-[var(--ink-soft)]">
                       למה אנחנו ממליצים
                     </summary>
                     <p className="mt-1.5 text-xs leading-6 text-slate-600">{item.evidence}</p>
@@ -136,7 +136,7 @@ export default function RecommendationsPage() {
                             setAccepted((prev) => ({ ...prev, [item.title]: false }));
                             toast("ביטלנו את הסימון");
                           }}
-                          className="text-xs font-bold text-[#535f75] underline underline-offset-2 hover:text-[#1d2940]"
+                          className="text-xs font-bold text-[var(--ink-soft)] underline underline-offset-2 hover:text-[var(--ink)]"
                         >
                           לבטל את הסימון
                         </button>
@@ -151,8 +151,8 @@ export default function RecommendationsPage() {
                           }}
                           className={
                             isNext
-                              ? "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-[#2853c7] px-4 text-xs font-bold text-white hover:bg-[#1e42a4]"
-                              : "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c3cee5] bg-transparent px-3 text-xs font-bold text-[#1d2940] hover:bg-[#edf2ff]"
+                              ? "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-[var(--primary)] px-4 text-xs font-bold text-white hover:bg-[var(--primary-dark)]"
+                              : "inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-transparent px-3 text-xs font-bold text-[var(--ink)] hover:bg-[var(--primary-soft)]"
                           }
                         >
                           <IconCheck className="w-3.5 h-3.5" />
@@ -161,7 +161,7 @@ export default function RecommendationsPage() {
                         <button
                           type="button"
                           onClick={() => toast("שמרנו ברשימת המעקב")}
-                          className="text-xs font-bold text-[#535f75] underline underline-offset-2 hover:text-[#1d2940]"
+                          className="text-xs font-bold text-[var(--ink-soft)] underline underline-offset-2 hover:text-[var(--ink)]"
                         >
                           לשמור להמשך
                         </button>

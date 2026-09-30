@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { DemoLink } from "@/components/landing/DemoLink";
+import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
 import { MONTH, PART_SUMMARY, STORY, TRUST } from "./content";
@@ -11,7 +11,7 @@ import { ScrollScenes } from "./ScrollScenes";
 import "./lv2.css";
 
 /**
- * Landing draft, in the product's own direction (blue and sun, the storefront, the plan
+ * The landing page, in the product's own direction (blue and sun, the storefront, the plan
  * as a route). The hero is a navigation map that draws the route as you scroll; then the
  * plan fills in, the weekly screen, the monthly review, trust, price, questions.
  *
@@ -38,7 +38,7 @@ const FAQ: { q: string; a: string }[] = [
 /** Set before the first paint, so the scroll-driven start states never flash. */
 const EARLY = 'document.documentElement.dataset.lv2="on"';
 
-export function LandingDraft() {
+export function Landing() {
   return (
     <div className="lv2">
       <script dangerouslySetInnerHTML={{ __html: EARLY }} />
@@ -84,7 +84,6 @@ export function LandingDraft() {
                     להתחיל
                     <IconArrowLeft className="h-4 w-4" />
                   </Link>
-                  <DemoLink className="lv2-btn-quiet lv2-btn-quiet--lg" />
                 </div>
                 <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
                   אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
@@ -262,6 +261,7 @@ export function LandingDraft() {
         </div>
       </footer>
 
+      <DeletedNotice />
       <ScrollScenes />
     </div>
   );

@@ -29,9 +29,9 @@ export function SectionHeader({
       </div>
       <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-3xl font-black tracking-tight text-[#1d2940]">{title}</h1>
+          <h1 className="text-3xl font-black tracking-tight text-[var(--ink)]">{title}</h1>
           {subtitle ? (
-            <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[#535f75]">{subtitle}</p>
+            <p className="mt-1.5 max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">{subtitle}</p>
           ) : null}
         </div>
         {action ? <div className="flex shrink-0 items-center gap-2">{action}</div> : null}

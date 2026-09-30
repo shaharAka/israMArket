@@ -59,7 +59,7 @@ export default function VoicePage() {
 
         {!data ? (
           error ? (
-            <p role="alert" className="text-sm text-[#9f4330]">{error}</p>
+            <p role="alert" className="text-sm text-[var(--danger)]">{error}</p>
           ) : (
             <LoadingMark label="טוענים…" />
           )
@@ -70,7 +70,7 @@ export default function VoicePage() {
               {data.examples_he.length ? (
                 <ul className="mt-3 space-y-2">
                   {data.examples_he.map((line) => (
-                    <li key={line} className="border-r-2 border-[#374b3d] pr-3 text-[15px] font-bold leading-7 text-[color:var(--ink)]">
+                    <li key={line} className="border-r-2 border-[var(--good)] pr-3 text-[15px] font-bold leading-7 text-[color:var(--ink)]">
                       {line}
                     </li>
                   ))}
@@ -108,7 +108,7 @@ export default function VoicePage() {
                     rows={3}
                     onChange={(event) => setNote(event.target.value)}
                     placeholder="למשל: פחות רשמי, בלי אימוג׳ים, לפנות בלשון רבים"
-                    className="w-full rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 py-2 text-sm"
+                    className="w-full rounded-md border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 py-2 text-sm"
                   />
                   <button
                     type="button"
@@ -123,7 +123,7 @@ export default function VoicePage() {
             )}
 
             {error ? (
-              <p role="alert" className="text-sm text-[#9f4330]">
+              <p role="alert" className="text-sm text-[var(--danger)]">
                 {error}
               </p>
             ) : null}

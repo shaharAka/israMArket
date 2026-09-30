@@ -157,12 +157,12 @@ export function OwnerAnswers({
         type="button"
         onClick={() => setOpen(null)}
         disabled={saving}
-        className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+        className="min-h-9 px-2 text-xs font-bold text-[var(--ink-soft)] underline underline-offset-4 disabled:opacity-40"
       >
         לבטל
       </button>
       {error ? (
-        <p role="alert" className="w-full text-xs font-bold leading-5 text-[#9f4330]">
+        <p role="alert" className="w-full text-xs font-bold leading-5 text-[var(--danger)]">
           {error}
         </p>
       ) : null}
@@ -170,7 +170,7 @@ export function OwnerAnswers({
   );
 
   return (
-    <ul className="divide-y divide-[#e6e4dc] rounded-md border border-[#e6e4dc] bg-white">
+    <ul className="divide-y divide-[var(--rule)] rounded-md border border-[var(--rule)] bg-white">
       <AnswerRow id="seasons" label="עונות השנה" value={seasonsSummary} open={open === "seasons"} onToggle={() => toggle("seasons")}>
         <SeasonsPicker value={seasons} onChange={setSeasons} example={seasonsExampleFor(business.business_type)} />
         {actions(() => void save({ seasons }))}
@@ -228,7 +228,7 @@ export function OwnerAnswers({
         <div className="space-y-3">
           {NETWORKS.map((network) => (
             <div key={network.key}>
-              <p className="mb-1 text-xs font-bold text-[#191b18]">{network.label}</p>
+              <p className="mb-1 text-xs font-bold text-[var(--ink)]">{network.label}</p>
               <ActivityPicker
                 label={`כמה אתם מפרסמים ב${network.label}`}
                 value={activity[network.key]}
@@ -283,7 +283,7 @@ export function OwnerAnswers({
         {competitors.length < MAX_COMPETITORS ? (
           <QuietLink onClick={() => setCompetitors((list) => [...list, { name: "", link: "" }])}>להוסיף עוד מתחרה</QuietLink>
         ) : null}
-        <p className="text-xs text-[#5e6159]">כדי להסיר מתחרה, מחקו את השם.</p>
+        <p className="text-xs text-[var(--ink-soft)]">כדי להסיר מתחרה, מחקו את השם.</p>
         {actions(() =>
           void save({
             competitors: competitors
@@ -305,16 +305,16 @@ export function OwnerAnswers({
                 aria-checked={on}
                 onClick={() => onGoal(option.key)}
                 className={`rounded-md border p-3 text-right ${
-                  on ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#e6e4dc] bg-white hover:border-[#191b18]"
+                  on ? "border-[var(--ink)] bg-[var(--canvas)] ring-1 ring-[var(--ink)]" : "border-[var(--rule)] bg-white hover:border-[var(--ink)]"
                 }`}
               >
-                <span className="block text-xs font-bold text-[#191b18]">{option.title}</span>
-                <span className="mt-1 block text-[11px] text-[#5e6159]">{option.desc}</span>
+                <span className="block text-xs font-bold text-[var(--ink)]">{option.title}</span>
+                <span className="mt-1 block text-[11px] text-[var(--ink-soft)]">{option.desc}</span>
               </button>
             );
           })}
         </div>
-        <p className="mt-2 text-xs text-[#5e6159]">נשמר עם ״לשמור את ההחלטות״ למטה.</p>
+        <p className="mt-2 text-xs text-[var(--ink-soft)]">נשמר עם ״לשמור את ההחלטות״ למטה.</p>
       </AnswerRow>
     </ul>
   );
@@ -342,17 +342,17 @@ function AnswerRow({
         aria-expanded={open}
         aria-controls={`${id}-answer`}
         onClick={onToggle}
-        className="flex w-full items-center gap-3 px-3 py-3 text-right hover:bg-[#fafaf8]"
+        className="flex w-full items-center gap-3 px-3 py-3 text-right hover:bg-[var(--canvas)]"
       >
         <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-          <span className="shrink-0 text-sm font-bold text-[#191b18] sm:w-32">{label}</span>
-          <span className={`min-w-0 truncate text-sm ${value === NOT_SET ? "text-[#8b8e84]" : "text-[#5e6159]"}`}>{value}</span>
+          <span className="shrink-0 text-sm font-bold text-[var(--ink)] sm:w-32">{label}</span>
+          <span className={`min-w-0 truncate text-sm ${value === NOT_SET ? "text-[var(--ink-muted)]" : "text-[var(--ink-soft)]"}`}>{value}</span>
         </span>
         <span className="shrink-0 text-[11px] font-bold" style={{ color: open ? "#8b8e84" : ACCENT }}>
           {open ? "לסגור" : "לשנות"}
         </span>
       </button>
-      <div id={`${id}-answer`} hidden={!open} className="space-y-2 border-t border-[#efeee9] px-3 pb-4 pt-3">
+      <div id={`${id}-answer`} hidden={!open} className="space-y-2 border-t border-[var(--rule)] px-3 pb-4 pt-3">
         {children}
       </div>
     </li>

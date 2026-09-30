@@ -59,7 +59,7 @@ export function Reflection({ text }: { text: string | null }) {
       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary)]">
         <BrandMark className="h-4 w-4 text-white" />
       </span>
-      <p className="rounded-2xl rounded-tr-sm bg-[#fff5d9] px-3.5 py-2 text-sm leading-6 text-[color:var(--ink)]">
+      <p className="rounded-2xl rounded-tr-sm bg-[var(--sand)] px-3.5 py-2 text-sm leading-6 text-[color:var(--ink)]">
         <BidiText text={text} />
       </p>
     </div>
@@ -192,7 +192,7 @@ export function Chip({
       className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
           ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
-          : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[#b9b7ad]"
+          : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[var(--ink-faint)]"
       } ${className}`}
     >
       {selected ? <CheckMark /> : null}

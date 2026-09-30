@@ -71,35 +71,35 @@ export function DeleteAccount({ googleOnly = false, email = "" }: { googleOnly?:
   }
 
   return (
-    <section aria-labelledby={titleId} className="mt-12 border-t border-[#eed1c9] pt-6">
-      <h2 id={titleId} className="text-lg font-black text-[#20211f]">
+    <section aria-labelledby={titleId} className="mt-12 border-t border-[var(--danger-rule)] pt-6">
+      <h2 id={titleId} className="text-lg font-black text-[var(--ink)]">
         מחיקת החשבון
       </h2>
-      <p className="mt-1 text-sm leading-6 text-[#5e6159]">מוחקת את החשבון וכל המידע של העסק. אי אפשר לבטל את זה.</p>
+      <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">מוחקת את החשבון וכל המידע של העסק. אי אפשר לבטל את זה.</p>
 
       {demo ? (
-        <p className="mt-4 text-sm text-[#5e6159]">בדמו אין חשבון למחוק.</p>
+        <p className="mt-4 text-sm text-[var(--ink-soft)]">בדמו אין חשבון למחוק.</p>
       ) : !open ? (
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="mt-4 inline-flex min-h-11 items-center rounded-md border border-[#e3b6aa] bg-white px-4 text-sm font-bold text-[#9f4330] hover:border-[#9f4330] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9f4330]"
+          className="mt-4 inline-flex min-h-11 items-center rounded-md border border-[var(--danger-rule)] bg-white px-4 text-sm font-bold text-[var(--danger)] hover:border-[var(--danger)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--danger)]"
         >
           למחוק את החשבון
         </button>
       ) : (
-        <form onSubmit={submit} className="mt-4 rounded-lg border border-[#eed1c9] bg-[#fdf7f5] p-5" aria-describedby={listId}>
-          <p className="text-sm font-bold text-[#20211f]">מה יימחק:</p>
-          <ul id={listId} className="mt-2 list-disc space-y-1 ps-5 text-sm leading-6 text-[#34372f]">
+        <form onSubmit={submit} className="mt-4 rounded-lg border border-[var(--danger-rule)] bg-[var(--danger-soft)] p-5" aria-describedby={listId}>
+          <p className="text-sm font-bold text-[var(--ink)]">מה יימחק:</p>
+          <ul id={listId} className="mt-2 list-disc space-y-1 ps-5 text-sm leading-6 text-[var(--ink)]">
             {DELETED.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <p className="mt-3 text-sm leading-6 text-[#34372f]">
+          <p className="mt-3 text-sm leading-6 text-[var(--ink)]">
             הכול נמחק מיד ולתמיד. פוסטים שכבר פרסמתם באינסטגרם או בפייסבוק נשארים שם.
           </p>
 
-          <label htmlFor="delete-password" className="mt-5 block text-xs font-bold text-[#191b18]">
+          <label htmlFor="delete-password" className="mt-5 block text-xs font-bold text-[var(--ink)]">
             {googleOnly ? "כדי לאשר, הקלידו את האימייל של החשבון" : "כדי לאשר, הקלידו את הסיסמה שלכם"}
           </label>
           <input
@@ -111,11 +111,11 @@ export function DeleteAccount({ googleOnly = false, email = "" }: { googleOnly?:
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete={googleOnly ? "off" : "current-password"}
-            className="mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-md border border-[var(--rule)] bg-white px-3 py-2 text-sm"
           />
 
           {error ? (
-            <p role="alert" className="mt-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs text-[#9f4330]">
+            <p role="alert" className="mt-3 rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-3 py-2 text-xs text-[var(--danger)]">
               {error}
             </p>
           ) : null}
@@ -124,14 +124,14 @@ export function DeleteAccount({ googleOnly = false, email = "" }: { googleOnly?:
             <button
               type="submit"
               disabled={pending || !password}
-              className="inline-flex min-h-11 items-center justify-center rounded-md bg-[#9f4330] px-4 text-sm font-bold text-white hover:bg-[#86361f] disabled:opacity-40"
+              className="inline-flex min-h-11 items-center justify-center rounded-md bg-[var(--danger)] px-4 text-sm font-bold text-white hover:bg-[var(--danger)] disabled:opacity-40"
             >
               {pending ? "מוחקים…" : "למחוק לתמיד"}
             </button>
             <button
               type="button"
               onClick={cancel}
-              className="inline-flex min-h-11 items-center justify-center px-2 text-sm font-bold text-[#34372f] underline decoration-[#c7c4b7] underline-offset-4"
+              className="inline-flex min-h-11 items-center justify-center px-2 text-sm font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4"
             >
               לא עכשיו
             </button>

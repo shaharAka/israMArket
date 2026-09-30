@@ -134,7 +134,7 @@ export default function StrategyPage() {
         {Object.keys(business?.owner_context?.pending_links ?? {}).length ? <p className="mb-5 text-xs leading-6 text-[color:var(--ink-soft)]">התוכנית מוכנה. נשארו קישורים שלא יכולנו לקרוא. <Link href="/integrations#pending-links" className="font-bold text-[color:var(--primary)] underline underline-offset-4">לתקן בהמשך בחיבורים</Link></p> : null}
 
         {error ? (
-          <p className="mb-4 rounded-md border border-[#d8c3bd] bg-white px-4 py-3 text-sm text-[#7c4036]">{error}</p>
+          <p className="mb-4 rounded-md border border-[var(--danger-rule)] bg-white px-4 py-3 text-sm text-[var(--danger)]">{error}</p>
         ) : null}
 
         {!loaded ? <LoadingMark label="טוענים את התוכנית…" /> : null}
@@ -358,7 +358,7 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
       <span
         aria-hidden
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
-          isNow ? "text-white" : isPast ? "border-[#d7d5cc] bg-[#f0eee6] text-[color:var(--ink-muted)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink-soft)]"
+          isNow ? "text-white" : isPast ? "border-[var(--rule-dark)] bg-[var(--canvas)] text-[color:var(--ink-muted)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink-soft)]"
         }`}
         style={isNow ? { background: TONE.accent, borderColor: TONE.accent } : undefined}
       >

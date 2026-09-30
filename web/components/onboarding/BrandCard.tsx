@@ -79,7 +79,7 @@ export function BrandCard({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        {label ? <p className="text-xs font-bold text-[#2d3f32]">{label}</p> : null}
+        {label ? <p className="text-xs font-bold text-[var(--good)]">{label}</p> : null}
         <BrandLogo brand={brand} className="mt-3" />
         <Heading className="mt-1 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
           {brand.business_name || "העסק שלכם"}
@@ -87,8 +87,8 @@ export function BrandCard({
       </div>
       <Swatches preview={brand} />
       {showVoice && brand.voice ? (
-        <p className="text-sm leading-6 text-[#4f524b] sm:text-base sm:leading-7">
-          <span className="font-bold text-[#191b18]">הסגנון: </span>
+        <p className="text-sm leading-6 text-[var(--ink-soft)] sm:text-base sm:leading-7">
+          <span className="font-bold text-[var(--ink)]">הסגנון: </span>
           {brand.voice}
         </p>
       ) : null}

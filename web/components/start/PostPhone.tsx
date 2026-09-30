@@ -189,7 +189,7 @@ export function PostPhone({
   return (
     <figure aria-label={`פוסט ${index + 1} מתוך ${total}: ${post.title}`} className="m-0">
       <div className="relative mx-auto w-full max-w-[18rem]">
-        <div className="relative rounded-[40px] bg-[#17191b] p-[9px] shadow-[0_40px_70px_-40px_rgba(25,27,24,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)]">
+        <div className="relative rounded-[40px] bg-[var(--ink)] p-[9px] shadow-[0_40px_70px_-40px_rgba(25,27,24,0.6),inset_0_0_0_1px_rgba(255,255,255,0.08)]">
           <div className="relative overflow-hidden rounded-[32px] bg-white">
             <StatusBar />
             <div className="flex items-center gap-2.5 px-3 py-2">
@@ -205,8 +205,8 @@ export function PostPhone({
                 </span>
               )}
               <div className="min-w-0 leading-tight">
-                <p className="truncate text-[13px] font-black text-[#1d2940]">{businessName || "העסק שלכם"}</p>
-                <p className="truncate text-[11px] text-[#6d7068]">{formatLabel(post.format)} · שבוע 1</p>
+                <p className="truncate text-[13px] font-black text-[var(--ink)]">{businessName || "העסק שלכם"}</p>
+                <p className="truncate text-[11px] text-[var(--ink-soft)]">{formatLabel(post.format)} · שבוע 1</p>
               </div>
             </div>
 
@@ -232,14 +232,14 @@ export function PostPhone({
               onAiLater={onAiLater}
             />
             {error ? (
-              <p role="alert" className="px-3 pb-1 text-xs font-bold leading-5 text-[#9f4330]">
+              <p role="alert" className="px-3 pb-1 text-xs font-bold leading-5 text-[var(--danger)]">
                 {error}
               </p>
             ) : null}
 
             <div className="px-3 pb-4 pt-1">
-              <p id={captionId} className={`text-[12.5px] leading-[1.55] text-[#34372f] ${captionOpen ? "" : "line-clamp-3"}`}>
-                <span className="font-black text-[#1d2940]">{businessName} </span>
+              <p id={captionId} className={`text-[12.5px] leading-[1.55] text-[var(--ink)] ${captionOpen ? "" : "line-clamp-3"}`}>
+                <span className="font-black text-[var(--ink)]">{businessName} </span>
                 {post.caption}
               </p>
               <button
@@ -247,7 +247,7 @@ export function PostPhone({
                 aria-expanded={captionOpen}
                 aria-controls={captionId}
                 onClick={() => setCaptionOpen((v) => !v)}
-                className="-mb-2 inline-flex min-h-9 cursor-pointer items-center text-[12px] text-[#6d7068]"
+                className="-mb-2 inline-flex min-h-9 cursor-pointer items-center text-[12px] text-[var(--ink-soft)]"
               >
                 {captionOpen ? "פחות" : "לקרוא הכול"}
               </button>
@@ -257,11 +257,11 @@ export function PostPhone({
       </div>
 
       <figcaption className="mx-auto mt-3 w-full max-w-[18rem] space-y-2">
-        <div className="flex flex-wrap gap-1.5 text-[11px] font-bold text-[#4f524b]">
-          <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">{formatLabel(post.format)}</span>
-          {pillarTitle ? <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">נושא: {pillarTitle}</span> : null}
+        <div className="flex flex-wrap gap-1.5 text-[11px] font-bold text-[var(--ink-soft)]">
+          <span className="rounded-full bg-[var(--canvas)] px-2 py-0.5">{formatLabel(post.format)}</span>
+          {pillarTitle ? <span className="rounded-full bg-[var(--canvas)] px-2 py-0.5">נושא: {pillarTitle}</span> : null}
         </div>
-        <p className="text-sm font-black leading-5 text-[#1d2940]">{post.hook}</p>
+        <p className="text-sm font-black leading-5 text-[var(--ink)]">{post.hook}</p>
         <WhyBlock idea={post} compact />
       </figcaption>
     </figure>
@@ -269,7 +269,7 @@ export function PostPhone({
 }
 
 const SMALL_BUTTON =
-  "inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-full border border-[#c3cee5] bg-white px-3 text-[12px] font-bold text-[#1d2940] hover:border-[#1d2940]";
+  "inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-full border border-[var(--rule-dark)] bg-white px-3 text-[12px] font-bold text-[var(--ink)] hover:border-[var(--ink)]";
 
 /** The photo slot's controls, right under the card, where a feed's action row would be. */
 function PhotoBar({
@@ -296,7 +296,7 @@ function PhotoBar({
   const n = index + 1;
 
   if (!wantsPhoto) {
-    return <p className="px-3 pt-2.5 text-[12px] leading-5 text-[#6d7068]">פוסט טקסט בצבעים שלכם. לא צריך תמונה.</p>;
+    return <p className="px-3 pt-2.5 text-[12px] leading-5 text-[var(--ink-soft)]">פוסט טקסט בצבעים שלכם. לא צריך תמונה.</p>;
   }
 
   const pick = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -341,14 +341,14 @@ function PhotoBar({
     return (
       <div className="flex flex-wrap items-center gap-1.5 px-3 pt-2.5">
         {inputs}
-        <span className="inline-flex items-center gap-1 text-[12px] font-bold text-[#2f5d2a]">
+        <span className="inline-flex items-center gap-1 text-[12px] font-bold text-[var(--good)]">
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
             <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           התמונה שלכם
         </span>
         {uploadButton("להחליף")}
-        <button type="button" onClick={onRemove} aria-label={`להסיר את התמונה מפוסט ${n}`} className="min-h-10 cursor-pointer px-1 text-[12px] text-[#6d7068] underline underline-offset-4">
+        <button type="button" onClick={onRemove} aria-label={`להסיר את התמונה מפוסט ${n}`} className="min-h-10 cursor-pointer px-1 text-[12px] text-[var(--ink-soft)] underline underline-offset-4">
           להסיר
         </button>
       </div>
@@ -359,8 +359,8 @@ function PhotoBar({
     return (
       <div className="flex flex-wrap items-center gap-1.5 px-3 pt-2.5">
         {inputs}
-        <span className="text-[12px] font-bold text-[#1d2940]">ה-AI ייצור תמונה אחרי ההרשמה.</span>
-        <button type="button" onClick={() => onAiLater(false)} aria-label={`לבטל את התמונה מ-AI בפוסט ${n}`} className="min-h-10 cursor-pointer px-1 text-[12px] text-[#6d7068] underline underline-offset-4">
+        <span className="text-[12px] font-bold text-[var(--ink)]">ה-AI ייצור תמונה אחרי ההרשמה.</span>
+        <button type="button" onClick={() => onAiLater(false)} aria-label={`לבטל את התמונה מ-AI בפוסט ${n}`} className="min-h-10 cursor-pointer px-1 text-[12px] text-[var(--ink-soft)] underline underline-offset-4">
           לבטל
         </button>
       </div>
@@ -370,8 +370,8 @@ function PhotoBar({
   return (
     <div className="px-3 pt-2.5">
       {inputs}
-      <p className="text-[12px] leading-5 text-[#34372f]">
-        <b className="text-[#1d2940]">{photo.kind === "site" ? "תמונה מהאתר שלכם. " : "מה לצלם: "}</b>
+      <p className="text-[12px] leading-5 text-[var(--ink)]">
+        <b className="text-[var(--ink)]">{photo.kind === "site" ? "תמונה מהאתר שלכם. " : "מה לצלם: "}</b>
         {photo.kind === "site" ? "אפשר גם תמונה אחרת." : hint}
       </p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -389,9 +389,9 @@ function PhotoBar({
 
 function StatusBar() {
   return (
-    <div aria-hidden className="relative flex h-7 items-center justify-between px-5 pt-1 text-[11px] font-bold text-[#1d2940]">
+    <div aria-hidden className="relative flex h-7 items-center justify-between px-5 pt-1 text-[11px] font-bold text-[var(--ink)]">
       <span dir="ltr">08:30</span>
-      <span className="absolute left-1/2 top-1.5 h-[16px] w-[68px] -translate-x-1/2 rounded-full bg-[#17191b]" />
+      <span className="absolute left-1/2 top-1.5 h-[16px] w-[68px] -translate-x-1/2 rounded-full bg-[var(--ink)]" />
       <span className="flex items-center gap-1" dir="ltr">
         <svg viewBox="0 0 16 10" className="h-2.5 w-4" fill="currentColor">
           <rect x="0" y="6" width="3" height="4" rx="0.8" />

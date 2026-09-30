@@ -24,9 +24,9 @@ export const STATUS_LABEL: Record<PostStatus, string> = {
 
 /** Plain status labels: meaning comes from words, not decorative pills. */
 export const STATUS_TONE: Record<PostStatus, string> = {
-  review: "text-[#535f75]",
-  approved: "text-[#2853c7]",
-  published: "text-[#2853c7]",
+  review: "text-[var(--ink-soft)]",
+  approved: "text-[var(--primary)]",
+  published: "text-[var(--primary)]",
 };
 
 export function isDone(post: RoadmapPost) {

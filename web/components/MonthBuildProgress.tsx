@@ -49,7 +49,7 @@ export function MonthBuildProgress({
 
   if (error && !running && !starting) {
     return (
-      <div role="alert" className="rounded-lg border border-[#d8c3bd] bg-white px-4 py-3 text-sm leading-6 text-[#7c4036]">
+      <div role="alert" className="rounded-lg border border-[var(--danger-rule)] bg-white px-4 py-3 text-sm leading-6 text-[var(--danger)]">
         <p className="font-bold">
           {kind === "posts"
             ? "לא הצלחנו לסיים את הפוסטים."

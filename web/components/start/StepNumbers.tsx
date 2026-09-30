@@ -383,9 +383,9 @@ export function MathLines({ lines }: { lines: string[] }) {
 }
 
 const PAYBACK_STYLE: Record<string, string> = {
-  no: "border-[#e8d3b0] bg-[#fbf3e4] text-[#4a3b22]",
+  no: "border-[var(--sand-rule)] bg-[var(--sand)] text-[var(--sand-dark)]",
   partly: "border-[var(--rule)] bg-[var(--canvas)] text-[color:var(--ink)]",
-  pays: "border-[#cfe0c9] bg-[#f1f7ee] text-[#23401f]",
+  pays: "border-[var(--good-rule)] bg-[var(--good-soft)] text-[var(--good)]",
 };
 
 type SourcesInput = Pick<TargetSuggestion, "assumptions_he" | "sources"> & { budget_he?: string };
@@ -514,7 +514,7 @@ export function TargetEdit({
         <QuietLink onClick={onCancel}>ביטול</QuietLink>
       </div>
       {error ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
           {error}
         </p>
       ) : null}

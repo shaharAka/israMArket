@@ -73,8 +73,8 @@ export function TargetRanker({
     <div className="space-y-6">
       <section>
         <div className="flex items-baseline justify-between">
-          <h3 className="text-sm font-black text-[#191b18]">הסדר שלי</h3>
-          <span className={`text-[11px] ${atCap ? "font-bold text-[#191b18]" : "text-[#8b8e84]"}`}>
+          <h3 className="text-sm font-black text-[var(--ink)]">הסדר שלי</h3>
+          <span className={`text-[11px] ${atCap ? "font-bold text-[var(--ink)]" : "text-[var(--ink-muted)]"}`}>
             {value.length
               ? `${value.length} מתוך ${MAX_TARGETS} · הראשון הכי חשוב`
               : `אפשר לבחור עד ${MAX_TARGETS}`}
@@ -104,24 +104,24 @@ export function TargetRanker({
                     setOverIndex(null);
                   }}
                   className={`flex items-start gap-3 rounded-md border bg-white p-3 transition-colors ${
-                    isOver ? "border-[#191b18] bg-[#f4f3ee]" : "border-[#e6e4dc]"
+                    isOver ? "border-[var(--ink)] bg-[var(--canvas)]" : "border-[var(--rule)]"
                   } ${dragIndex === index ? "opacity-50" : ""}`}
                 >
                   <span
                     aria-hidden
-                    className="mt-0.5 cursor-grab select-none text-lg leading-none text-[#b3b0a5]"
+                    className="mt-0.5 cursor-grab select-none text-lg leading-none text-[var(--ink-faint)]"
                     title="גררו כדי לשנות את הסדר"
                   >
                     ⠿
                   </span>
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#191b18] text-[11px] font-bold text-white">
+                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--ink)] text-[11px] font-bold text-white">
                     {index + 1}
                   </span>
                   <span className="min-w-0 flex-1">
                     {meta ? (
-                      <span className="mb-1 block text-[10px] font-bold text-[#8b8e84]">{meta.category}</span>
+                      <span className="mb-1 block text-[10px] font-bold text-[var(--ink-muted)]">{meta.category}</span>
                     ) : null}
-                    <span className="block text-sm font-bold leading-6 text-[#191b18]">{target}</span>
+                    <span className="block text-sm font-bold leading-6 text-[var(--ink)]">{target}</span>
                   </span>
                   <span className="flex shrink-0 items-center gap-1">
                     <button
@@ -129,7 +129,7 @@ export function TargetRanker({
                       onClick={() => move(index, index - 1)}
                       disabled={index === 0}
                       aria-label="להזיז למעלה"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                      className="h-7 w-7 rounded border border-[var(--rule)] text-xs text-[var(--ink-soft)] disabled:opacity-30"
                     >
                       ↑
                     </button>
@@ -138,7 +138,7 @@ export function TargetRanker({
                       onClick={() => move(index, index + 1)}
                       disabled={index === value.length - 1}
                       aria-label="להזיז למטה"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                      className="h-7 w-7 rounded border border-[var(--rule)] text-xs text-[var(--ink-soft)] disabled:opacity-30"
                     >
                       ↓
                     </button>
@@ -146,7 +146,7 @@ export function TargetRanker({
                       type="button"
                       onClick={() => remove(target)}
                       aria-label="להסיר את היעד"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] hover:bg-[#f8f7f4]"
+                      className="h-7 w-7 rounded border border-[var(--rule)] text-xs text-[var(--ink-soft)] hover:bg-[var(--canvas)]"
                     >
                       ✕
                     </button>
@@ -156,7 +156,7 @@ export function TargetRanker({
             })}
           </ul>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+          <p className="mt-3 rounded-md border border-dashed border-[var(--rule)] bg-[var(--canvas)] px-4 py-6 text-center text-sm text-[var(--ink-muted)]">
             בחרו עד {MAX_TARGETS} יעדים מהרשימה למטה, ואז סדרו אותם לפי מה שהכי חשוב לכם.
           </p>
         )}
@@ -171,7 +171,7 @@ export function TargetRanker({
                 <IconSparkles className="h-3.5 w-3.5" />
                 יש המלצה מוכנה
               </p>
-              <p className="mt-1 text-xs leading-5 text-[#5e6159]">
+              <p className="mt-1 text-xs leading-5 text-[var(--ink-soft)]">
                 {AGENT_NAME} סידרה את 3 היעדים שלדעתה יועילו לעסק הכי הרבה.
               </p>
             </div>
@@ -188,7 +188,7 @@ export function TargetRanker({
               <button
                 type="button"
                 onClick={() => onChange(recommended.map((item) => item.target))}
-                className="shrink-0 rounded-md bg-[#20211f] px-4 py-2 text-xs font-bold text-white hover:bg-[#343632]"
+                className="shrink-0 rounded-md bg-[var(--ink)] px-4 py-2 text-xs font-bold text-white hover:bg-[var(--ink)]"
               >
                 לתת ל{AGENT_NAME} להחליט
               </button>
@@ -199,8 +199,8 @@ export function TargetRanker({
 
       {available.length ? (
         <section>
-          <h3 className="text-sm font-black text-[#191b18]">יעדים אפשריים</h3>
-          <p className="mt-1 text-xs text-[#8b8e84]">
+          <h3 className="text-sm font-black text-[var(--ink)]">יעדים אפשריים</h3>
+          <p className="mt-1 text-xs text-[var(--ink-muted)]">
             {atCap
               ? `בחרתם ${MAX_TARGETS} יעדים להתמקד בהם. כדי להחליף, הסירו אחד.`
               : "לפי העסק, האתר והאבחון. לחצו על יעד כדי להוסיף אותו."}
@@ -215,23 +215,23 @@ export function TargetRanker({
                     onClick={() => add(item.target)}
                     disabled={atCap}
                     className={`flex w-full items-start gap-3 rounded-md border bg-white p-3 text-right ${
-                      atCap ? "cursor-not-allowed border-[#e6e4dc] opacity-50" : "border-[#e6e4dc] hover:border-[#191b18]"
+                      atCap ? "cursor-not-allowed border-[var(--rule)] opacity-50" : "border-[var(--rule)] hover:border-[var(--ink)]"
                     }`}
                   >
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-[#dedcd4] text-[#8b8e84]">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-[var(--rule)] text-[var(--ink-muted)]">
                       +
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="mb-1 flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-[#8b8e84]">{item.category}</span>
+                        <span className="text-[10px] font-bold text-[var(--ink-muted)]">{item.category}</span>
                         {isRecommended ? (
                           <span className="rounded-full border px-2 py-0.5 text-[10px] font-bold" style={TINT}>
                             {AGENT_NAME} ממליצה · {item.recommended_rank}
                           </span>
                         ) : null}
                       </span>
-                      <span className="block text-sm font-bold leading-6 text-[#191b18]">{item.target}</span>
-                      <span className="mt-1 block text-xs leading-5 text-[#5e6159]">{item.why_this}</span>
+                      <span className="block text-sm font-bold leading-6 text-[var(--ink)]">{item.target}</span>
+                      <span className="mt-1 block text-xs leading-5 text-[var(--ink-soft)]">{item.why_this}</span>
                     </span>
                   </button>
                 </li>

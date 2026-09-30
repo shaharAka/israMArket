@@ -90,7 +90,7 @@ export default function FeaturedPage() {
 
         {!data ? (
           error ? (
-            <p role="alert" className="text-sm text-[#9f4330]">{error}</p>
+            <p role="alert" className="text-sm text-[var(--danger)]">{error}</p>
           ) : (
             <LoadingMark label="טוענים…" />
           )
@@ -221,7 +221,7 @@ export default function FeaturedPage() {
             ) : null}
 
             {error ? (
-              <p role="alert" className="text-sm text-[#9f4330]">
+              <p role="alert" className="text-sm text-[var(--danger)]">
                 {error}
               </p>
             ) : null}

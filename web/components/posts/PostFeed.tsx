@@ -25,7 +25,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   }
   if (!post.image_url || broken) {
     return (
-      <span aria-hidden className={`${base} flex items-center justify-center bg-[var(--primary-soft)] text-[#a3a29b]`}>
+      <span aria-hidden className={`${base} flex items-center justify-center bg-[var(--primary-soft)] text-[var(--ink-faint)]`}>
         <PhotoPlaceholder small />
       </span>
     );
@@ -90,7 +90,7 @@ export function PostFeed({
                   <span className="text-xs font-bold text-[color:var(--ink-soft)]">{postDateLabel(post)}</span>
                 </span>
               </span>
-              <IconArrowLeft className="h-4 w-4 shrink-0 text-[#a3a29b]" />
+              <IconArrowLeft className="h-4 w-4 shrink-0 text-[var(--ink-faint)]" />
             </a>
           </li>
         );

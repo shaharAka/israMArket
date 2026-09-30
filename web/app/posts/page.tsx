@@ -181,7 +181,7 @@ function PostsWorkspace() {
 
   if (location.post !== null && !strategy) {
     return error ? (
-      <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
+      <p className="rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-4 py-3 text-sm text-[var(--danger)]">{error}</p>
     ) : (
       <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסט…</p>
     );
@@ -246,7 +246,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(due.index)}
-            className="min-h-11 text-sm font-bold text-[#9f4330] underline underline-offset-4"
+            className="min-h-11 text-sm font-bold text-[var(--danger)] underline underline-offset-4"
           >
             {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
           </button>
@@ -254,7 +254,7 @@ function PostsWorkspace() {
       </header>
 
       {error ? (
-        <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
+        <p className="rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-4 py-3 text-sm text-[var(--danger)]">{error}</p>
       ) : null}
 
       {/* The page's one dark button: the next thing we are asking for. */}

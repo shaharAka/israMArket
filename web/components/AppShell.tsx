@@ -8,7 +8,6 @@ import { BrandMark, IconArrowRight, IconChart, IconHome, IconImage, IconCalendar
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
 import { BrandLink } from "@/components/BrandLink";
 import { TrialWelcome } from "@/components/trial/Welcome";
-import { ACCENT } from "@/lib/sections";
 import { SYSTEM_TONE } from "@/lib/tone";
 import { UIAction } from "@/components/design/Controls";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
@@ -224,18 +223,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <aside
-        className="sticky top-0 z-40 hidden h-screen w-64 shrink-0 flex-col border-l border-[var(--rule)] bg-white md:flex"
+        className="sticky top-0 z-40 hidden h-screen w-[260px] shrink-0 flex-col border-l border-[var(--rule)] bg-[var(--paper)] md:flex"
       >
-        <div className="border-b border-[var(--rule)]">
+        <div>
           {/* Identity gets the whole first row. The brand trigger used to share it and
               refused to shrink, which crushed the logo to a 7px column of wrapping text
               that the trigger then sat on top of. */}
-          <div className="flex items-center justify-between gap-2 px-5 pt-4 pb-2.5">
+          <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <BrandMark className="h-9 w-9 shrink-0 text-[color:var(--primary)]" />
               <div className="min-w-0">
-                <span className="block font-black text-[color:var(--ink)] text-base tracking-tight">ישראמארקט</span>
-                <span className="-mt-0.5 block text-xs text-[color:var(--ink-soft)]">שיווק לעסקים קטנים</span>
+                <span className="block text-[17px] font-bold tracking-tight text-[color:var(--ink)]">ישראמארקט</span>
+                <span className="block text-xs text-[color:var(--ink-muted)]">שיווק לעסקים קטנים</span>
               </div>
             </Link>
             {demo ? (
@@ -250,33 +249,33 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         </div>
 
-        <nav aria-label="ניווט ראשי" className="flex-1 overflow-y-auto px-3 py-6">
+        <nav aria-label="ניווט ראשי" className="flex-1 overflow-y-auto px-3 py-5">
           {inSetup ? null : (
             <div className="space-y-1">
-              {TABS.map(tab => <div key={tab.href}><NavLink tab={tab} active={activeTab?.href === tab.href} />{tab.href === "/strategy" && activeTab?.href === "/strategy" && <Link href="/calendar" aria-current={pathname === "/calendar" ? "page" : undefined} className="mr-9 flex min-h-10 items-center gap-2 text-xs text-[color:var(--ink-soft)] hover:text-[color:var(--primary)]"><IconCalendar className="h-4 w-4" />לוח התוכנית</Link>}</div>)}
+              {TABS.map(tab => <div key={tab.href}><NavLink tab={tab} active={activeTab?.href === tab.href} />{tab.href === "/strategy" && activeTab?.href === "/strategy" && <Link href="/calendar" aria-current={pathname === "/calendar" ? "page" : undefined} className="mr-10 flex min-h-10 items-center gap-2 rounded-lg px-2 text-[13px] text-[color:var(--ink-muted)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)] aria-[current=page]:text-[color:var(--primary)]"><IconCalendar className="h-4 w-4" />לוח התוכנית</Link>}</div>)}
             </div>
           )}
         </nav>
 
-        {!inSetup && <div className="border-t border-[var(--rule)] px-3 py-2"><BrandLink /></div>}
+        {!inSetup && <div className="px-3 pb-1"><BrandLink /></div>}
 
 
-        <div className="p-3 border-t border-[var(--rule)] flex items-center justify-between gap-2 bg-[var(--primary-soft)]">
+        <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link
             href={inSetup ? "/onboarding" : "/business"}
             aria-current={pathname === "/business" ? "page" : undefined}
-            className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-md px-1 hover:bg-[var(--primary-soft)]"
+            className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-xl px-1.5 transition-colors hover:bg-[var(--paper)]"
           >
             <BusinessLogo src={businessLogo} name={businessName || name || "העסק שלי"} color={businessColor} className="h-8 w-8 shrink-0" />
             <span className="min-w-0">
-              <span className="block truncate text-xs font-bold text-[color:var(--ink)]">{name || "החשבון שלי"}</span>
-              <span className="block truncate text-xs text-[color:var(--ink-soft)]">{businessName || "העסק שלי"}</span>
+              <span className="block truncate text-[13px] font-semibold text-[color:var(--ink)]">{name || "החשבון שלי"}</span>
+              <span className="block truncate text-xs text-[color:var(--ink-muted)]">{businessName || "העסק שלי"}</span>
             </span>
           </Link>
           <button
             type="button"
             onClick={logOut}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 text-xs text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] hover:text-[color:var(--ink)]"
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-xl px-2.5 text-xs text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--paper)] hover:text-[color:var(--ink)]"
           >
             <IconLogout className="h-4 w-4" />
             יציאה
@@ -284,10 +283,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <div className="dot-grid flex-1 flex flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         <main
           key={pathname}
-          className={`rise mx-auto w-full max-w-7xl flex-1 px-4 py-6 md:px-8 md:py-8 ${
+          className={`rise app-main mx-auto w-full max-w-[1120px] flex-1 px-4 py-6 md:px-10 md:py-10 ${
             inSetup ? "pb-10" : "pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-8"
           }`}
         >
@@ -298,7 +297,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {inSetup ? null : (
         <nav
           aria-label="ניווט ראשי"
-          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule-dark)] bg-white pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
         >
           {TABS.map((tab) => {
             const active = activeTab?.href === tab.href;
@@ -308,18 +307,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={tab.href}
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
-                className={`nav-item relative flex min-h-14 flex-col items-center justify-center gap-1 whitespace-nowrap py-1.5 text-xs font-bold ${
-                  active ? "text-[color:var(--ink)]" : "text-[color:var(--ink-soft)]"
+                className={`nav-item relative flex min-h-[60px] flex-col items-center justify-center gap-1 whitespace-nowrap py-1.5 text-[11.5px] ${
+                  active ? "font-semibold text-[color:var(--primary)]" : "font-medium text-[color:var(--ink-muted)]"
                 }`}
               >
-                {active ? (
-                  <span
-                    aria-hidden
-                    className="absolute inset-x-5 top-0 h-[3px] rounded-b"
-                    style={{ background: ACCENT.accent }}
-                  />
-                ) : null}
-                <Icon className="nav-icon h-6 w-6" />
+                <span
+                  className={`flex h-7 w-14 items-center justify-center rounded-full transition-colors ${active ? "bg-[var(--primary-soft)]" : ""}`}
+                >
+                  <Icon className="nav-icon h-[22px] w-[22px]" />
+                </span>
                 <span>{tab.label}</span>
               </Link>
             );
@@ -342,17 +338,12 @@ function NavLink({ tab, active }: { tab: Tab; active: boolean }) {
     <Link
       href={tab.href}
       aria-current={active ? "page" : undefined}
-      className={`nav-item relative flex min-h-11 items-center gap-3 rounded-md px-3.5 py-2.5 text-[15px] transition-colors ${
-        active ? "font-black text-[color:var(--ink)]" : "text-[color:var(--ink-soft)] hover:bg-[var(--canvas)] hover:text-[color:var(--ink)]"
+      className={`nav-item relative flex min-h-11 items-center gap-3 rounded-xl px-3.5 py-2.5 text-[15px] transition-colors ${
+        active
+          ? "bg-[var(--primary-soft)] font-semibold text-[color:var(--primary)]"
+          : "text-[color:var(--ink-soft)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
       }`}
-      style={active ? { background: ACCENT.surface } : undefined}
     >
-      {active ? (
-        <span
-          className="nav-active-bar absolute right-0 top-2 bottom-2 w-[3px] rounded-r"
-          style={{ background: ACCENT.accent }}
-        />
-      ) : null}
       <Icon className="nav-icon h-5 w-5" />
       <span>{tab.label}</span>
     </Link>
@@ -369,10 +360,10 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-7 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[var(--rule)] pb-5">
+    <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[color:var(--ink)]">{title}</h1>
-        {subtitle ? <p className="mt-1 text-sm text-[color:var(--ink-soft)] max-w-3xl">{subtitle}</p> : null}
+        <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">{title}</h1>
+        {subtitle ? <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{subtitle}</p> : null}
       </div>
       {action ? <div className="flex items-center gap-2 shrink-0">{action}</div> : null}
     </div>
@@ -387,7 +378,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={`drawn-card p-5 sm:p-6 bg-[var(--paper)] border border-[var(--rule)] ${className}`}>
+    <section className={`drawn-card p-5 sm:p-7 ${className}`}>
       {children}
     </section>
   );
@@ -429,10 +420,10 @@ export function Badge({
   const map = {
     slate: "bg-[var(--canvas)] text-[color:var(--ink-soft)] border-[var(--rule)]",
     blue: "bg-[var(--primary-soft)] text-[color:var(--primary)] border-[var(--rule-dark)]",
-    amber: "bg-[#fff5d9] text-[#6f654b] border-[#e2d7c3]",
+    amber: "bg-[var(--sand)] text-[var(--sand-dark)] border-[var(--sand-rule)]",
     emerald: "bg-[var(--primary-soft)] text-[color:var(--primary)] border-[var(--rule-dark)]",
-    purple: "bg-[#f4f1ee] text-[color:var(--ink)] border-[#e0dad3]",
-    rose: "bg-[#fbf2ef] text-[#9f4330] border-[#eed1c9]",
+    purple: "bg-[var(--canvas)] text-[color:var(--ink)] border-[var(--rule)]",
+    rose: "bg-[var(--danger-soft)] text-[var(--danger)] border-[var(--danger-rule)]",
   };
   return (
     <span className={`label-mark ${map[tone]} ${className}`}>
@@ -444,7 +435,7 @@ export function Badge({
 export function ErrorNote({ message }: { message?: string }) {
   if (!message) return null;
   return (
-    <div className="border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330] rounded-md flex items-center gap-2">
+    <div className="border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-4 py-3 text-sm text-[var(--danger)] rounded-md flex items-center gap-2">
       <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>

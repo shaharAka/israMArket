@@ -135,7 +135,7 @@ export function SetupChecklist() {
         onClick={() => setOpen((value) => !value)}
         className="flex min-h-12 w-full items-center justify-between gap-3 py-3 text-right"
       >
-        <span className="min-w-0 text-sm font-bold text-[#1d2940]">
+        <span className="min-w-0 text-sm font-bold text-[var(--ink)]">
           {left === 1 ? "נשאר עוד דבר אחד להגדיר" : `נשארו עוד ${left} דברים להגדיר`}
         </span>
         <span className="flex shrink-0 items-center gap-3">
@@ -145,11 +145,11 @@ export function SetupChecklist() {
             aria-valuemax={setup.total}
             aria-valuenow={setup.completed}
             aria-label={`הוגדרו ${setup.completed} מתוך ${setup.total}`}
-            className="block h-1.5 w-14 overflow-hidden rounded-full bg-[#e1e7f2]"
+            className="block h-1.5 w-14 overflow-hidden rounded-full bg-[var(--rule)]"
           >
             <span className="block h-full rounded-full" style={{ width: `${percent}%`, background: accent }} />
           </span>
-          <span aria-hidden className={`text-[#647087] transition-transform ${open ? "-rotate-90" : ""}`}>
+          <span aria-hidden className={`text-[var(--ink-muted)] transition-transform ${open ? "-rotate-90" : ""}`}>
             ‹
           </span>
         </span>
@@ -159,14 +159,14 @@ export function SetupChecklist() {
         <div className="space-y-5 pb-4">
           {setup.next ? (
             <div>
-              <p className="text-xs font-bold text-[#647087]">מה עכשיו</p>
-              <p className="mt-1 text-sm font-bold leading-6 text-[#1d2940]">{setup.next.title}</p>
-              {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[#535f75]">{nextWhy}</p> : null}
+              <p className="text-xs font-bold text-[var(--ink-muted)]">מה עכשיו</p>
+              <p className="mt-1 text-sm font-bold leading-6 text-[var(--ink)]">{setup.next.title}</p>
+              {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[var(--ink-soft)]">{nextWhy}</p> : null}
               <HelpLink itemKey={setup.next.key} />
               {/* Guidance, not the page's ask: an outline, never the dark button. */}
               <Link
                 href={setup.next.action_href}
-                className="group mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[#c3cee5] bg-transparent px-5 text-sm font-bold text-[#1d2940] transition-colors hover:bg-[#edf2ff] sm:w-auto"
+                className="group mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-[var(--rule-dark)] bg-transparent px-5 text-sm font-bold text-[var(--ink)] transition-colors hover:bg-[var(--primary-soft)] sm:w-auto"
               >
                 {setup.next.action_label}
                 <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
@@ -175,8 +175,8 @@ export function SetupChecklist() {
           ) : null}
 
           {setup.groups.map((group) => (
-            <div key={group.key} className="border-t border-[#e1e7f2] pt-4">
-              <p className="text-xs font-bold text-[#647087]">{group.title}</p>
+            <div key={group.key} className="border-t border-[var(--rule)] pt-4">
+              <p className="text-xs font-bold text-[var(--ink-muted)]">{group.title}</p>
               <ul className="mt-3 space-y-3.5">
                 {group.items.map((item) => (
                   <ItemRow key={item.key} item={item} />
@@ -197,16 +197,16 @@ function ItemRow({ item }: { item: SetupItem }) {
       <span
         aria-hidden
         className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${
-          item.done ? "bg-[#1e42a4] text-white" : "border border-[#dedcd4]"
+          item.done ? "bg-[var(--primary-dark)] text-white" : "border border-[var(--rule)]"
         }`}
       >
         {item.done ? <IconCheck className="h-3 w-3" /> : null}
       </span>
       <div className="min-w-0 flex-1">
-        <p className={`text-sm font-bold ${item.done ? "text-[#647087]" : "text-[#1d2940]"}`}>
+        <p className={`text-sm font-bold ${item.done ? "text-[var(--ink-muted)]" : "text-[var(--ink)]"}`}>
           {item.title}
         </p>
-        <p className={`mt-0.5 text-xs leading-5 ${item.done ? "text-[#647087]" : "text-[#535f75]"}`}>
+        <p className={`mt-0.5 text-xs leading-5 ${item.done ? "text-[var(--ink-muted)]" : "text-[var(--ink-soft)]"}`}>
           {item.why}
         </p>
         {item.done ? null : <HelpLink itemKey={item.key} className="-my-1" />}
@@ -214,7 +214,7 @@ function ItemRow({ item }: { item: SetupItem }) {
       {item.done ? null : (
         <Link
           href={item.action_href}
-          className="shrink-0 pt-0.5 text-xs font-bold text-[#1d2940] underline-offset-4 hover:underline"
+          className="shrink-0 pt-0.5 text-xs font-bold text-[var(--ink)] underline-offset-4 hover:underline"
         >
           {item.action_label}
         </Link>
@@ -227,14 +227,14 @@ function ItemRow({ item }: { item: SetupItem }) {
 function CompleteLine({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="flex min-h-12 items-center justify-between gap-3 py-2">
-      <p className="flex min-w-0 items-center gap-2.5 text-sm font-bold text-[#535f75]">
-        <IconCheck className="h-4 w-4 shrink-0 text-[#1e42a4]" />
+      <p className="flex min-w-0 items-center gap-2.5 text-sm font-bold text-[var(--ink-soft)]">
+        <IconCheck className="h-4 w-4 shrink-0 text-[var(--primary-dark)]" />
         <span>הכול מוגדר</span>
       </p>
       <button
         type="button"
         onClick={onDismiss}
-        className="min-h-11 shrink-0 px-2 text-xs font-bold text-[#647087] transition-colors hover:text-[#1d2940]"
+        className="min-h-11 shrink-0 px-2 text-xs font-bold text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
       >
         להסתיר
       </button>
@@ -246,7 +246,7 @@ function CompleteLine({ onDismiss }: { onDismiss: () => void }) {
 function SetupSkeleton() {
   return (
     <div role="status" aria-label="בודקים מה כבר מוגדר" className="flex min-h-12 items-center py-3">
-      <div aria-hidden className="h-3 w-44 animate-pulse rounded-full bg-[#edf2ff]" />
+      <div aria-hidden className="h-3 w-44 animate-pulse rounded-full bg-[var(--primary-soft)]" />
     </div>
   );
 }

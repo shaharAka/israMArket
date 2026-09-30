@@ -46,7 +46,7 @@ function PlayMark({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute inset-0 m-auto flex ${box} items-center justify-center rounded-full bg-[#20211f]/70 text-white shadow-sm`}
+      className={`pointer-events-none absolute inset-0 m-auto flex ${box} items-center justify-center rounded-full bg-[var(--ink)]/70 text-white shadow-sm`}
     >
       <svg viewBox="0 0 24 24" className={`${glyph} translate-x-[-1px]`} fill="currentColor">
         {/* Pointing right in an RTL page too: a play symbol is not text, it does not mirror. */}
@@ -103,7 +103,7 @@ function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
             for a clip that cannot be played at all. */}
         {mode === "tile" || broken || !asset.url ? <PlayMark size={mode === "sheet" ? "lg" : "md"} /> : null}
         {mode === "sheet" && (broken || !asset.url) ? (
-          <span className="absolute inset-x-0 bottom-3 text-center text-xs text-[#5e6159]">
+          <span className="absolute inset-x-0 bottom-3 text-center text-xs text-[var(--ink-soft)]">
             אי אפשר להציג את הסרטון כאן
           </span>
         ) : null}
@@ -121,7 +121,7 @@ function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
       className={`h-full w-full ${fit}`}
     />
   ) : (
-    <span className="flex h-full w-full items-center justify-center text-[#b3b0a5]" title="אין תצוגה מקדימה">
+    <span className="flex h-full w-full items-center justify-center text-[var(--ink-faint)]" title="אין תצוגה מקדימה">
       <IconImage className="h-8 w-8" />
     </span>
   );
@@ -143,13 +143,13 @@ export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void 
       onClick={onOpen}
       aria-label={`${kindWord(asset)}: ${asset.description.trim() || "בלי תיאור"}. לפתוח את הפרטים`}
       title={asset.description.trim() || undefined}
-      className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-lg border bg-[#f4f3ee] transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f]"
+      className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-lg border bg-[var(--canvas)] transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
       style={{ borderColor: identity.border }}
     >
       <Preview asset={asset} mode="tile" />
       {/* The one status worth seeing from the grid: a file the posts cannot use yet. */}
       {described ? null : (
-        <span className="absolute right-1.5 bottom-1.5 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[#5e6159]">
+        <span className="absolute right-1.5 bottom-1.5 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[var(--ink-soft)]">
           בלי תיאור
         </span>
       )}
@@ -254,7 +254,7 @@ export function AssetSheet({
     "inline-flex min-h-10 items-center gap-1.5 rounded-md border px-3 text-xs font-bold transition-colors disabled:cursor-default disabled:opacity-50";
   const quietButton: CSSProperties = { borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" };
   const inputClass =
-    "mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-2.5 py-2 text-sm text-[#20211f] outline-none focus:border-[#20211f]";
+    "mt-1 w-full rounded-md border border-[var(--rule)] bg-white px-2.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--ink)]";
 
   return (
     <dialog
@@ -265,16 +265,16 @@ export function AssetSheet({
         // The backdrop is the dialog element itself; a tap on the sheet lands on a child.
         if (event.target === event.currentTarget) event.currentTarget.close();
       }}
-      className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-2xl bg-white p-0 text-right backdrop:bg-[#20211f]/45 sm:m-auto sm:max-w-lg sm:rounded-2xl"
+      className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-2xl bg-white p-0 text-right backdrop:bg-[var(--ink)]/45 sm:m-auto sm:max-w-lg sm:rounded-2xl"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[#efeee9] bg-white px-4 py-2.5">
-        <p className="text-sm font-black text-[#20211f]">פרטי ה{kindWord(asset)}</p>
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--rule)] bg-white px-4 py-2.5">
+        <p className="text-sm font-black text-[var(--ink)]">פרטי ה{kindWord(asset)}</p>
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
           aria-label="לסגור"
           title="לסגור"
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[#5e6159] hover:bg-[#f4f3ee] hover:text-[#20211f]"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[var(--ink-soft)] hover:bg-[var(--canvas)] hover:text-[var(--ink)]"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d="M6 6l12 12M18 6L6 18" />
@@ -282,7 +282,7 @@ export function AssetSheet({
         </button>
       </div>
 
-      <div className="relative h-56 w-full bg-[#f4f3ee] sm:h-72">
+      <div className="relative h-56 w-full bg-[var(--canvas)] sm:h-72">
         <Preview asset={asset} mode="sheet" />
       </div>
 
@@ -290,7 +290,7 @@ export function AssetSheet({
         {editing ? (
           <div className="space-y-3">
             <label className="block">
-              <span className="text-xs font-bold text-[#20211f]">תיאור</span>
+              <span className="text-xs font-bold text-[var(--ink)]">תיאור</span>
               <textarea
                 value={draftDescription}
                 onChange={(event) => setDraftDescription(event.target.value)}
@@ -299,8 +299,8 @@ export function AssetSheet({
               />
             </label>
             <label className="block">
-              <span className="text-xs font-bold text-[#20211f]">תגיות</span>
-              <span className="mt-0.5 block text-[11px] text-[#8b8e84]">הפרידו בפסיק</span>
+              <span className="text-xs font-bold text-[var(--ink)]">תגיות</span>
+              <span className="mt-0.5 block text-[11px] text-[var(--ink-muted)]">הפרידו בפסיק</span>
               <input
                 value={draftTags}
                 onChange={(event) => setDraftTags(event.target.value)}
@@ -310,13 +310,13 @@ export function AssetSheet({
             </label>
             {tagSuggestions.length ? (
               <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-[#8b8e84]">תגיות שכבר יש:</span>
+                <span className="text-[11px] text-[var(--ink-muted)]">תגיות שכבר יש:</span>
                 {tagSuggestions.map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     onClick={() => setDraftTags((prev) => (prev.trim() ? `${prev.replace(/,\s*$/, "")}, ${tag}` : tag))}
-                    className="rounded-full border border-[#dedcd4] bg-[#f8f7f4] px-2 py-0.5 text-[11px] text-[#5e6159] hover:border-[#8b8e84]"
+                    className="rounded-full border border-[var(--rule)] bg-[var(--canvas)] px-2 py-0.5 text-[11px] text-[var(--ink-soft)] hover:border-[var(--ink-muted)]"
                   >
                     {tag}
                   </button>
@@ -353,9 +353,9 @@ export function AssetSheet({
         ) : (
           <>
             {asset.description.trim() ? (
-              <p className="text-sm leading-6 text-[#3c3e3a]">{asset.description}</p>
+              <p className="text-sm leading-6 text-[var(--ink-soft)]">{asset.description}</p>
             ) : (
-              <p className="text-sm leading-6 text-[#8b8e84]">
+              <p className="text-sm leading-6 text-[var(--ink-muted)]">
                 עדיין אין תיאור. לחצו ״לכתוב תיאור מחדש״, ונכתוב תיאור ותגיות לפי מה שרואים בתמונה.
               </p>
             )}
@@ -373,10 +373,10 @@ export function AssetSheet({
                 ))}
               </ul>
             ) : (
-              <p className="text-[11px] text-[#8b8e84]">עדיין אין תגיות.</p>
+              <p className="text-[11px] text-[var(--ink-muted)]">עדיין אין תגיות.</p>
             )}
 
-            <p className="text-[11px] text-[#8b8e84]">
+            <p className="text-[11px] text-[var(--ink-muted)]">
               {SOURCE_LABEL[asset.source]}
               {formatDate(asset.created_at) ? ` · ${formatDate(asset.created_at)}` : ""}
               {dimensions ? (
@@ -393,14 +393,14 @@ export function AssetSheet({
                 target="_blank"
                 rel="noreferrer"
                 dir="ltr"
-                className="block truncate text-[11px] text-[#8b8e84] underline underline-offset-4 hover:text-[#20211f]"
+                className="block truncate text-[11px] text-[var(--ink-muted)] underline underline-offset-4 hover:text-[var(--ink)]"
                 title={asset.source_url}
               >
                 {asset.source_url}
               </a>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-2 border-t border-[#efeee9] pt-3">
+            <div className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-3">
               <button
                 type="button"
                 onClick={() => setEditing(true)}
@@ -456,14 +456,14 @@ export function AssetSheet({
             </div>
 
             {confirmingDelete ? (
-              <p className="text-[11px] leading-5 text-[#9f4330]">
+              <p className="text-[11px] leading-5 text-[var(--danger)]">
                 {asset.kind === "video" ? "הסרטון יימחק" : "התמונה תימחק"}, ולא יהיה אפשר לשחזר.
               </p>
             ) : null}
           </>
         )}
 
-        {error ? <p className="text-[11px] leading-5 text-[#9f4330]">{error}</p> : null}
+        {error ? <p className="text-[11px] leading-5 text-[var(--danger)]">{error}</p> : null}
       </div>
     </dialog>
   );

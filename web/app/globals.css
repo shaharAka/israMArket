@@ -1,29 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #fbfcff;
+  /* The finesse palette (DESIGN-STANDARD.md). Navy ink, one blue, sun for highlights. */
+  --canvas: #f6f7fb;
   --paper: #ffffff;
-  --ink: #1d2940;
-  --ink-soft: #535f75;
-  --ink-muted: #647087;
-  --rule: #e1e7f2;
-  --rule-dark: #c3cee5;
+  --soft: #f3f5fa;
+  --ink: #14203a;
+  --ink-soft: #4b5670;
+  --ink-muted: #677390;
+  --ink-faint: #a3abbd;
+  --rule: #e6eaf2;
+  --rule-dark: #d3d9e6;
   --primary: #2853c7;
-  --primary-dark: #1e42a4;
-  --primary-soft: #edf2ff;
-  --sage: #edf2ff;
+  --primary-dark: #1f45ad;
+  --primary-soft: #eef2fd;
+  --sage: #eef2fd;
   --sage-dark: #2853c7;
-  --sage-soft: #f4f7ff;
-  --sand: #fff5d9;
-  --sand-dark: #755315;
+  --sage-soft: #f5f7fe;
+  --sand: #fff4d6;
+  --sand-rule: #f0dfb3;
+  --sand-dark: #7a5210;
   --tomato: #ba4433;
   --tomato-dark: #963626;
   --sun: #ffc44a;
   --sun-edge: #ad730b;
+  --good: #177245;
+  --good-soft: #eaf5ee;
+  --good-rule: #cde5d6;
+  --danger: #a8402c;
+  --danger-soft: #fcf1ee;
+  --danger-rule: #f0d3cb;
+  --shadow-card: 0 0 0 1px rgba(20, 32, 58, 0.06), 0 1px 2px rgba(20, 32, 58, 0.04), 0 10px 28px -18px rgba(20, 32, 58, 0.22);
+  --shadow-pop: 0 0 0 1px rgba(20, 32, 58, 0.06), 0 6px 16px -6px rgba(20, 32, 58, 0.2), 0 30px 60px -30px rgba(20, 32, 58, 0.3);
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
 @theme inline {
   --font-sans: var(--font-heebo), Arial, sans-serif;
+  /* No 800–900 in the product: the heaviest weight renders 700 (DESIGN-STANDARD.md §2). */
+  --font-weight-black: 700;
+  --font-weight-extrabold: 700;
   --color-app: var(--canvas);
   --color-card: var(--paper);
   --color-primary: var(--primary);
@@ -37,6 +53,12 @@ body {
   min-height: 100%;
   font-family: var(--font-heebo), Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ink-faint);
 }
 
 ::selection {
@@ -51,26 +73,31 @@ a {
 
 .paper {
   background: var(--paper);
-  border: 1px solid var(--rule);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .drawn-button {
   position: relative;
   isolation: isolate;
   border: 1px solid transparent;
-  border-radius: 6px;
-  box-shadow: none;
-  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 200ms var(--ease), box-shadow 200ms ease;
 }
 
-.drawn-button:hover {
-  transform: none;
-  box-shadow: none;
+/* Filled (primary) buttons get depth: an inner highlight and a soft blue shadow. */
+.drawn-button[class*="bg-[var(--primary)]"],
+.drawn-button.bg-\[var\(--primary\)\] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 1px 2px rgba(20, 32, 58, 0.18), 0 10px 22px -12px rgba(40, 83, 199, 0.7);
+}
+
+.drawn-button:hover:not(:disabled) {
+  transform: translateY(-1px);
 }
 
 .drawn-button:active:not(:disabled) {
-  transform: translateY(1px) scale(0.985);
-  box-shadow: none;
+  transform: translateY(0) scale(0.99);
 }
 
 .drawn-button:disabled {
@@ -82,8 +109,9 @@ a {
 
 .drawn-card {
   background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 8px;
+  border: 0;
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
 }
 
 .rough-rule {
@@ -297,10 +325,13 @@ a {
 .border-emerald-200,
 .border-emerald-300 { border-color: var(--rule-dark) !important; }
 .ring-blue-600 { --tw-ring-color: var(--primary) !important; }
-.rounded-lg { border-radius: 6px !important; }
-.rounded-xl { border-radius: 8px !important; }
+/* Radii (DESIGN-STANDARD.md §3): controls 10, cards 14–16, sheets 18–20. */
+.rounded { border-radius: 8px !important; }
+.rounded-md { border-radius: 10px !important; }
+.rounded-lg { border-radius: 12px !important; }
+.rounded-xl { border-radius: 14px !important; }
 .rounded-2xl,
-.rounded-3xl { border-radius: 10px !important; }
+.rounded-3xl { border-radius: 18px !important; }
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -323,7 +354,9 @@ a {
 .journey-sun { transition: transform 1800ms cubic-bezier(.32, 0, .18, 1); }
 .app-blue .nav-item[aria-current="page"] { color: var(--primary); }
 .app-blue .nav-active-bar { background: var(--sun) !important; }
-.app-blue main h1 { letter-spacing: -.045em; }
+.app-blue main h1 { letter-spacing: -.02em; }
+/* Page content sits centred in the space next to the sidebar, not against it. */
+.app-main > :where(*) { margin-inline: auto; }
 .app-blue button, .start-blue button { touch-action: manipulation; }
 .app-blue :is(button,a,input,textarea,select):focus-visible,
 .start-blue :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
@@ -351,3 +384,34 @@ a {
 /* Public account screens share the product's focus treatment. */
 .auth-blue :is(a,button,input):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 .auth-blue input:focus { border-color: var(--primary); }
+
+/* Disclosures (DESIGN-STANDARD.md §4): one refined chevron instead of the browser's
+   triangle. Summaries that draw their own icon (`list-none`, or an aria-hidden child)
+   are left alone. */
+:where(.app-blue, .start-blue, .auth-blue) summary:not(.list-none):not(:has(> [aria-hidden])) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+  cursor: pointer;
+}
+
+:where(.app-blue, .start-blue, .auth-blue) summary:not(.list-none):not(:has(> [aria-hidden]))::-webkit-details-marker {
+  display: none;
+}
+
+:where(.app-blue, .start-blue, .auth-blue) summary:not(.list-none):not(:has(> [aria-hidden]))::after {
+  content: "";
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background: currentColor;
+  opacity: 0.7;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 200ms var(--ease);
+}
+
+:where(.app-blue, .start-blue, .auth-blue) details[open] > summary:not(.list-none):not(:has(> [aria-hidden]))::after {
+  transform: rotate(180deg);
+}

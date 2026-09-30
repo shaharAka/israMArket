@@ -189,7 +189,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       {updating ? (
         <span className="text-[color:var(--ink-soft)]">מעדכנים את התוכנית…</span>
       ) : updateError ? (
-        <span className="font-bold text-[#9f4330]">
+        <span className="font-bold text-[var(--danger)]">
           לא הצלחנו לעדכן.{" "}
           <button type="button" onClick={retryUpdate} className="cursor-pointer underline underline-offset-4">
             לנסות שוב
@@ -345,7 +345,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       ) : null}
       {otherDirection && <details className={styles.planAlternative}><summary>לבדוק כיוון אחר</summary><p>{otherDirection.title}</p><QuietLink onClick={() => update(f => ({ ...f, chosenDirection: otherIndex }))}>לבנות תוכנית בכיוון הזה</QuietLink></details>}
       {saveError ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
           {saveError}
         </p>
       ) : null}
@@ -449,7 +449,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
         </QuietLink>
       </div>
       {error ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
           {error}
         </p>
       ) : null}

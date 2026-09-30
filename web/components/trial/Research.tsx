@@ -74,7 +74,7 @@ export function ResearchSection() {
           </p>
           {button}
           {error ? (
-            <p role="alert" className="mt-2 text-sm text-[#9f4330]">
+            <p role="alert" className="mt-2 text-sm text-[var(--danger)]">
               {error}
             </p>
           ) : null}
@@ -123,7 +123,7 @@ export function ResearchSection() {
       ) : null}
 
       {error ? (
-        <p role="alert" className="mt-2 text-sm text-[#9f4330]">
+        <p role="alert" className="mt-2 text-sm text-[var(--danger)]">
           {error}
         </p>
       ) : null}

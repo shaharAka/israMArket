@@ -65,7 +65,7 @@ export default function InstagramPage() {
         <div className="mx-auto max-w-2xl">
           {header}
           {loadError ? (
-            <p role="alert" className="text-sm text-[#9f4330]">
+            <p role="alert" className="text-sm text-[var(--danger)]">
               {loadError}
             </p>
           ) : (
@@ -97,8 +97,8 @@ export default function InstagramPage() {
       aria-busy={refreshing}
       className={
         refreshIsPrimary
-          ? "mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[#20211f] px-6 text-sm font-bold text-white disabled:bg-[#c7c6c0] sm:w-auto"
-          : "inline-flex min-h-10 shrink-0 items-center rounded-full border border-[#cecdc7] bg-white px-3.5 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-50"
+          ? "mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--ink)] px-6 text-sm font-bold text-white disabled:bg-[var(--rule-dark)] sm:w-auto"
+          : "inline-flex min-h-10 shrink-0 items-center rounded-full border border-[var(--rule-dark)] bg-white px-3.5 text-sm font-bold text-[var(--ink)] hover:bg-[var(--canvas)] disabled:opacity-50"
       }
     >
       {refreshing ? "לומדים…" : refreshIsPrimary ? "ללמוד מהאינסטגרם" : "ללמוד מחדש"}
@@ -112,16 +112,16 @@ export default function InstagramPage() {
 
         <div className="space-y-7">
           {connected ? null : (
-            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-base font-black text-[#20211f]">האינסטגרם עוד לא מחובר</p>
+            <section className="rounded-lg border border-[var(--rule-dark)] bg-white p-4 sm:p-5">
+              <p className="text-base font-black text-[var(--ink)]">האינסטגרם עוד לא מחובר</p>
               {data.meta_ready ? (
                 <>
-                  <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
+                  <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
                     אחרי החיבור נלמד ממה שכבר הצליח לכם ומהחשבונות שתבחרו.
                   </p>
                   <Link
                     href="/integrations"
-                    className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+                    className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[var(--ink)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--ink)] sm:w-auto"
                   >
                     לחבר את האינסטגרם
                     <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
@@ -132,7 +132,7 @@ export default function InstagramPage() {
                   <StepLink stepKey="instagram" />
                 </>
               ) : (
-                <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>
+                <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{data.empty_reason}</p>
               )}
             </section>
           )}
@@ -140,7 +140,7 @@ export default function InstagramPage() {
           {connected || brief ? (
             <section aria-labelledby="learned-heading">
               <div className="flex items-center justify-between gap-3">
-                <h2 id="learned-heading" className="text-base font-black text-[#20211f]">
+                <h2 id="learned-heading" className="text-base font-black text-[var(--ink)]">
                   מה למדנו
                 </h2>
                 {brief ? refreshButton : null}
@@ -149,12 +149,12 @@ export default function InstagramPage() {
                 <LearnedList brief={brief} />
               ) : (
                 <>
-                  <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{data.empty_reason}</p>
                   {refreshButton}
                 </>
               )}
               {refreshNote ? (
-                <p role="status" className="mt-2 text-sm leading-6 text-[#7a5216]">
+                <p role="status" className="mt-2 text-sm leading-6 text-[var(--sand-dark)]">
                   {refreshNote}
                 </p>
               ) : null}

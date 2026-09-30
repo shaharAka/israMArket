@@ -53,11 +53,11 @@ export function HandlesEditor({
 
   return (
     <section aria-labelledby="handles-heading">
-      <h2 id="handles-heading" className="text-base font-black text-[#20211f]">
+      <h2 id="handles-heading" className="text-base font-black text-[var(--ink)]">
         חשבונות להשראה
       </h2>
       <div className="mt-0.5 flex flex-wrap items-center justify-between gap-x-3">
-        <p className="text-sm text-[#62635f]">עסקים שאתם אוהבים, עד {max}.</p>
+        <p className="text-sm text-[var(--ink-soft)]">עסקים שאתם אוהבים, עד {max}.</p>
         <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
       </div>
 
@@ -68,7 +68,7 @@ export function HandlesEditor({
               key={handle}
               dir="ltr"
               className={`inline-flex min-h-10 items-center gap-1 rounded-full py-1 pl-3 pr-1 text-sm font-bold ${
-                failures[handle] ? "bg-[#fbf2ef] text-[#9f4330]" : "bg-[#eeede8] text-[#20211f]"
+                failures[handle] ? "bg-[var(--danger-soft)] text-[var(--danger)]" : "bg-[var(--rule)] text-[var(--ink)]"
               }`}
             >
               @{handle}
@@ -78,7 +78,7 @@ export function HandlesEditor({
                 onClick={() => void save(handles.filter((item) => item !== handle))}
                 aria-label={`להסיר את @${handle}`}
                 title={`להסיר את @${handle}`}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base leading-none text-[#62635f] hover:bg-white hover:text-[#20211f] disabled:opacity-40"
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base leading-none text-[var(--ink-soft)] hover:bg-white hover:text-[var(--ink)] disabled:opacity-40"
               >
                 ×
               </button>
@@ -88,7 +88,7 @@ export function HandlesEditor({
       ) : null}
 
       {failed.length ? (
-        <ul className="mt-2 space-y-1 text-xs leading-5 text-[#9f4330]">
+        <ul className="mt-2 space-y-1 text-xs leading-5 text-[var(--danger)]">
           {failed.map((handle) => (
             <li key={handle}>{failures[handle]}</li>
           ))}
@@ -114,12 +114,12 @@ export function HandlesEditor({
             spellCheck={false}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? "handle-error" : undefined}
-            className="min-h-11 min-w-0 flex-1 rounded-md border border-[#dedcd4] bg-white px-3 text-sm placeholder:text-[#9a9b95] focus:border-[#20211f] focus:outline-none"
+            className="min-h-11 min-w-0 flex-1 rounded-md border border-[var(--rule)] bg-white px-3 text-sm placeholder:text-[var(--ink-muted)] focus:border-[var(--ink)] focus:outline-none"
           />
           <button
             type="submit"
             disabled={busy || !draft.trim()}
-            className="min-h-11 shrink-0 rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-40"
+            className="min-h-11 shrink-0 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[var(--ink)] hover:bg-[var(--canvas)] disabled:opacity-40"
           >
             {busy ? "שומרים…" : "להוסיף"}
           </button>
@@ -127,7 +127,7 @@ export function HandlesEditor({
       )}
 
       {error ? (
-        <p id="handle-error" role="alert" className="mt-2 text-xs leading-5 text-[#9f4330]">
+        <p id="handle-error" role="alert" className="mt-2 text-xs leading-5 text-[var(--danger)]">
           {error}
         </p>
       ) : null}

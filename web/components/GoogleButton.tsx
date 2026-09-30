@@ -38,7 +38,7 @@ export function GoogleButton({
         continueWithGoogle(next, back);
       }}
       aria-disabled={disabled || undefined}
-      className={`flex min-h-12 w-full items-center justify-center gap-2.5 rounded-md border border-[#747775] bg-white px-3 text-sm font-medium text-[#1f1f1f] no-underline transition-colors hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f1f1f] active:bg-[#e8e8e8] ${
+      className={`flex min-h-12 w-full items-center justify-center gap-2.5 rounded-md border border-[var(--ink-soft)] bg-white px-3 text-sm font-medium text-[var(--ink)] no-underline transition-colors hover:bg-[var(--canvas)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] active:bg-[var(--rule)] ${
         disabled ? "pointer-events-none opacity-40" : ""
       } ${className}`}
     >

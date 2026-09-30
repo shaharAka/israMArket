@@ -15,12 +15,12 @@ export function InspirationLine({ inspiration }: { inspiration: PostInspiration 
   if (!inspiration || !inspiration.sources.length) return null;
   const note = inspiration.note || `בהשראת ${sourceWho(inspiration.sources[0])}`;
   return (
-    <details className="group mt-1.5 text-xs leading-5 text-[#535f75]">
+    <details className="group mt-1.5 text-xs leading-5 text-[var(--ink-soft)]">
       <summary className="flex min-h-9 cursor-pointer list-none items-center gap-1 px-1">
         <span className="min-w-0 flex-1 truncate group-open:whitespace-normal">
-          <span className="font-bold text-[#3c3e3a]">למה הפוסט הזה:</span> {note}
+          <span className="font-bold text-[var(--ink-soft)]">למה הפוסט הזה:</span> {note}
         </span>
-        <span aria-hidden className="shrink-0 text-[#647087] transition-transform group-open:-rotate-90">
+        <span aria-hidden className="shrink-0 text-[var(--ink-muted)] transition-transform group-open:-rotate-90">
           ‹
         </span>
       </summary>

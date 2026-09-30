@@ -30,7 +30,7 @@ const MODEL_QUESTION: Record<BusinessModel, string> = {
 function FieldError({ message }: { message: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="text-sm font-bold text-[#9f4330]">
+    <p role="alert" className="text-sm font-bold text-[var(--danger)]">
       {message}
     </p>
   );
@@ -64,7 +64,7 @@ export function ModelConfirm({ flow, update }: Pick<StepProps, "flow" | "update"
   }
 
   return (
-    <div className="rounded-xl bg-[#fff5d9] p-3">
+    <div className="rounded-xl bg-[var(--sand)] p-3">
       {changing ? (
         <div className="space-y-2">
           <p className="text-sm font-bold text-[color:var(--ink)]">מה אתם מוכרים?</p>
@@ -119,7 +119,7 @@ export function Tile({
       aria-checked={on}
       onClick={onClick}
       className={`min-h-[60px] w-full cursor-pointer rounded-xl border p-3 text-right transition-colors ${
-        on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"
+        on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[var(--ink-faint)]"
       }`}
     >
       <span className="flex items-center gap-2.5">
@@ -256,7 +256,7 @@ export function StepBudget(props: StepProps) {
               onClick={() => pick(option.key)}
               className={`min-h-14 cursor-pointer rounded-xl border px-3 py-2 text-right text-sm font-bold leading-5 text-[color:var(--ink)] transition-colors ${
                 option.key === "none" || option.key === "unknown" ? "" : "tabular-nums"
-              } ${on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"}`}
+              } ${on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[var(--ink-faint)]"}`}
             >
               {option.label}
             </button>

@@ -388,9 +388,9 @@ function StrategyBlock({
 /* ---------------------------------- 2 ---------------------------------- */
 
 const STATUS_STYLE: Record<IntegrationStatus, string> = {
-  have: "bg-[#e7f0e4] text-[#2f5d2a]",
-  connect: "bg-[#fbf0dc] text-[#7a4b12]",
-  install: "bg-[#e6eef6] text-[#2c4a66]",
+  have: "bg-[var(--good-soft)] text-[var(--good)]",
+  connect: "bg-[var(--sand)] text-[var(--sand-dark)]",
+  install: "bg-[var(--primary-soft)] text-[#2c4a66]",
   unknown: "bg-[var(--primary-soft)] text-[color:var(--ink-soft)]",
 };
 
@@ -398,7 +398,7 @@ function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolea
   return (
     <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 text-[11px] font-bold leading-5 ${STATUS_STYLE[status]}`}>
       {status === "have" ? (
-        <span aria-hidden className={`h-1.5 w-1.5 rounded-full bg-[#2f5d2a] ${live ? styles.live : ""}`} />
+        <span aria-hidden className={`h-1.5 w-1.5 rounded-full bg-[var(--good)] ${live ? styles.live : ""}`} />
       ) : status === "install" ? (
         <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth={1.6} aria-hidden>
           <path d="M6 2v6M3.5 5.5L6 8l2.5-2.5M2.5 10h7" strokeLinecap="round" strokeLinejoin="round" />
@@ -416,9 +416,9 @@ function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolea
 }
 
 const PAYBACK_STYLE: Record<string, string> = {
-  no: "border-[#e8d3b0] bg-[#fbf3e4] text-[#4a3b22]",
+  no: "border-[var(--sand-rule)] bg-[var(--sand)] text-[var(--sand-dark)]",
   partly: "border-[var(--rule)] bg-[var(--canvas)] text-[color:var(--ink)]",
-  pays: "border-[#cfe0c9] bg-[#f1f7ee] text-[#23401f]",
+  pays: "border-[var(--good-rule)] bg-[var(--good-soft)] text-[var(--good)]",
 };
 
 /** "המספרים": where the business is today → what we grow → the target and its math → unit economics. */
@@ -504,7 +504,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
         {plan.kpi.needs ? (
           <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-[color:var(--ink)]">
             {plan.kpi.available_now ? (
-              <span className="rounded-full bg-[#e7f0e4] px-2 text-[11px] font-bold leading-5 text-[#2f5d2a]">אפשר למדוד מהיום</span>
+              <span className="rounded-full bg-[var(--good-soft)] px-2 text-[11px] font-bold leading-5 text-[var(--good)]">אפשר למדוד מהיום</span>
             ) : (
               <span className="rounded-full bg-white/70 px-2 text-[11px] font-bold leading-5 text-[color:var(--ink-soft)]">אחרי חיבור</span>
             )}
@@ -542,7 +542,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
                   <span className="rounded-full bg-[var(--primary)] px-2 text-[11px] font-bold leading-5 text-white">המדד העיקרי</span>
                 ) : null}
                 {measure.available_now ? (
-                  <span className="rounded-full bg-[#e7f0e4] px-2 text-[11px] font-bold leading-5 text-[#2f5d2a]">אפשר למדוד מהיום</span>
+                  <span className="rounded-full bg-[var(--good-soft)] px-2 text-[11px] font-bold leading-5 text-[var(--good)]">אפשר למדוד מהיום</span>
                 ) : (
                   <span className="rounded-full bg-[var(--primary-soft)] px-2 text-[11px] font-bold leading-5 text-[color:var(--ink-soft)]">אחרי חיבור</span>
                 )}
@@ -824,7 +824,7 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
                 <ul className="mt-2 space-y-1.5">
                   {month.dates.map((date) => (
                     <li key={`${date.date}-${date.name_he}`} className="flex gap-2 text-xs leading-5">
-                      <span className="shrink-0 rounded-md bg-[#fbf0dc] px-1.5 font-black tabular-nums text-[#7a4b12]">{shortDate(date.date)}</span>
+                      <span className="shrink-0 rounded-md bg-[var(--sand)] px-1.5 font-black tabular-nums text-[var(--sand-dark)]">{shortDate(date.date)}</span>
                       <span className="min-w-0 text-[color:var(--ink)]">
                         <b className="text-[color:var(--ink)]">{date.name_he}: </b>
                         {date.action_he}

@@ -297,7 +297,7 @@ export function StartFlow() {
   const scanFailed = flow.brandScan?.status === "failed" && !flow.draft.style_preset;
   const scanNotice =
     scanFailed && !noticeDismissed && step !== "links" ? (
-      <div role="status" className={`rounded-xl border border-[#e8d9c2] bg-[#fbf5ea] px-3.5 py-3 text-sm leading-6 text-[#4a3b22] ${styles.rise}`}>
+      <div role="status" className={`rounded-xl border border-[var(--sand-rule)] bg-[var(--sand)] px-3.5 py-3 text-sm leading-6 text-[var(--sand-dark)] ${styles.rise}`}>
         <p>לא הצלחנו לקרוא את האתר. זה קורה, ולא צריך לתקן כלום עכשיו. אפשר לבחור סגנון במקום.</p>
         <div className="flex gap-3">
           <QuietLink onClick={() => setStyleOpen(true)} className="font-bold text-[color:var(--ink)]">

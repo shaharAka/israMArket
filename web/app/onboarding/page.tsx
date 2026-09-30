@@ -392,8 +392,8 @@ export default function OnboardingPage() {
         {step === 0 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">זה העסק שלכם?</h1>
-              <p className="mt-1 text-sm text-[#535f75]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
+              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">זה העסק שלכם?</h1>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
             </div>
 
             <TextField
@@ -411,7 +411,7 @@ export default function OnboardingPage() {
             />
             <TextField label="שם העסק" value={name} onChange={setName} autoComplete="organization" />
             <div>
-              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[#1d2940]">
+              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[var(--ink)]">
                 התחום
               </label>
               <select
@@ -430,7 +430,7 @@ export default function OnboardingPage() {
             <TextField label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
 
             <fieldset>
-              <legend className="mb-1 text-sm font-bold text-[#1d2940]">מוצרים או שירותים?</legend>
+              <legend className="mb-1 text-sm font-bold text-[var(--ink)]">מוצרים או שירותים?</legend>
               <div className="grid grid-cols-3 gap-2">
                 {BUSINESS_MODEL_OPTIONS.map((option) => (
                   <Chip
@@ -445,7 +445,7 @@ export default function OnboardingPage() {
             </fieldset>
 
             <details className="group">
-              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[#535f75] underline underline-offset-4">
+              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[var(--ink-soft)] underline underline-offset-4">
                 עיר ואיך מגיעים אליכם
               </summary>
               <div className="mt-2 space-y-3">
@@ -473,8 +473,8 @@ export default function OnboardingPage() {
         {step === 1 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">כמה תשקיעו בשיווק בחודש?</h1>
-              <p className="mt-1 text-sm text-[#535f75]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
+              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">כמה תשקיעו בשיווק בחודש?</h1>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -486,8 +486,8 @@ export default function OnboardingPage() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setBudget(option.suggestion)}
-                    className={`min-h-16 rounded-md border p-3 text-right text-[#1d2940] ${
-                      active ? "border-[#1d2940] bg-[var(--primary-soft)] ring-1 ring-[#1d2940]" : "border-[#e1e7f2] bg-white"
+                    className={`min-h-16 rounded-md border p-3 text-right text-[var(--ink)] ${
+                      active ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule)] bg-white"
                     }`}
                   >
                     <span className="block text-sm font-black">{option.title}</span>
@@ -498,7 +498,7 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[#1d2940]">
+              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[var(--ink)]">
                 או סכום מדויק
               </label>
               <div className="flex items-center gap-2">
@@ -512,12 +512,12 @@ export default function OnboardingPage() {
                   onChange={(event) => setBudget(Number(event.target.value))}
                   className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base font-bold sm:text-sm"
                 />
-                <span className="text-sm font-bold text-[#535f75]">₪ לחודש</span>
+                <span className="text-sm font-bold text-[var(--ink-soft)]">₪ לחודש</span>
               </div>
             </div>
 
-            <p className="text-sm leading-6 text-[#4f524b]">
-              <span className="font-bold text-[#1d2940]">{formatNis(budget)}: </span>
+            <p className="text-sm leading-6 text-[var(--ink-soft)]">
+              <span className="font-bold text-[var(--ink)]">{formatNis(budget)}: </span>
               {stage.buys}
             </p>
 
@@ -531,12 +531,12 @@ export default function OnboardingPage() {
         {step === 2 ? (
           <section className="space-y-4">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[#1d2940]">מי המתחרים שלכם?</h1>
-              <p className="mt-1 text-sm text-[#535f75]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
+              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">מי המתחרים שלכם?</h1>
+              <p className="mt-1 text-sm text-[var(--ink-soft)]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
             </div>
 
             <fieldset className="space-y-2">
-              <legend className="mb-1 text-sm font-bold text-[#1d2940]">עסקים מתחרים</legend>
+              <legend className="mb-1 text-sm font-bold text-[var(--ink)]">עסקים מתחרים</legend>
               {competitors.map((item, index) => (
                 <div key={index} className="grid grid-cols-2 gap-2">
                   <input
@@ -588,21 +588,21 @@ function StepHeader({ step, onBack, lastStep }: { step: number; onBack?: () => v
   return (
     <div>
       <div className="flex min-h-11 items-center justify-between">
-        <p className="text-xs font-bold text-[#535f75]">
+        <p className="text-xs font-bold text-[var(--ink-soft)]">
           {label}
         </p>
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex min-h-11 items-center px-1 text-sm text-[#535f75] underline underline-offset-4"
+            className="inline-flex min-h-11 items-center px-1 text-sm text-[var(--ink-soft)] underline underline-offset-4"
           >
             חזרה
           </button>
         ) : null}
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-[#e1e7f2]">
-        <div className="h-full bg-[#2853c7] transition-all" style={{ width: `${progress}%` }} />
+      <div className="h-1.5 overflow-hidden rounded-full bg-[var(--rule)]">
+        <div className="h-full bg-[var(--primary)] transition-all" style={{ width: `${progress}%` }} />
       </div>
     </div>
   );
@@ -626,8 +626,8 @@ function Chip({
       aria-pressed={selected}
       onClick={onClick}
       // Selected is an outline, not a dark fill: the page's one dark button is the ask.
-      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[#1d2940] ${
-        selected ? "border-[#1d2940] bg-[var(--primary-soft)] ring-1 ring-[#1d2940]" : "border-[var(--rule-dark)] bg-white"
+      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[var(--ink)] ${
+        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white"
       }`}
     >
       {label}
@@ -658,7 +658,7 @@ function TextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-bold text-[#1d2940]">{label}</span>
+      <span className="mb-1 block text-sm font-bold text-[var(--ink)]">{label}</span>
       {/* 16px on phones: iOS zooms into any field smaller than that. */}
       <input
         value={value}
@@ -672,7 +672,7 @@ function TextField({
         spellCheck={dir === "ltr" ? false : undefined}
         className="min-h-11 w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
       />
-      {note ? <span className="mt-1 block text-xs text-[#535f75]">{note}</span> : null}
+      {note ? <span className="mt-1 block text-xs text-[var(--ink-soft)]">{note}</span> : null}
     </label>
   );
 }

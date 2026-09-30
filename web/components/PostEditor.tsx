@@ -878,7 +878,7 @@ export function PostEditor({
             </div>
 
             {attachError ? (
-              <p className="mt-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
+              <p className="mt-3 rounded-md border border-[var(--danger-rule)] bg-[var(--danger-soft)] px-2.5 py-1.5 text-[13px] leading-5 text-[var(--danger)]">
                 {attachError}
               </p>
             ) : null}
@@ -893,7 +893,7 @@ export function PostEditor({
             {assetsLoading && !assets ? (
               <p className="mt-3 text-[13px] text-[color:var(--ink-muted)]">טוענים את התמונות…</p>
             ) : assetsError ? (
-              <p className="mt-3 text-[13px] leading-5 text-[#9f4330]">{assetsError}</p>
+              <p className="mt-3 text-[13px] leading-5 text-[var(--danger)]">{assetsError}</p>
             ) : libraryEmpty ? (
               <div className="mt-3 rounded-md border border-[var(--rule)] bg-white px-3 py-4 text-center">
                 <p className="text-[13px] font-bold text-[color:var(--ink)]">עוד אין לכם כאן תמונות</p>
@@ -930,7 +930,7 @@ export function PostEditor({
                   ) : null}
 
                   {!suggesting && suggestError ? (
-                    <p className="mt-2 text-[13px] leading-5 text-[#9f4330]">{suggestError}</p>
+                    <p className="mt-2 text-[13px] leading-5 text-[var(--danger)]">{suggestError}</p>
                   ) : null}
 
                   {!suggesting && suggestions && !rankedSuggestions.length ? (
@@ -1418,7 +1418,7 @@ export function PostEditor({
         {audiencesLoading ? (
           <p className="text-xs text-[color:var(--ink-muted)]">טוענים את הקהלים…</p>
         ) : audiencesError ? (
-          <p className="text-xs leading-5 text-[#9f4330]">{audiencesError}</p>
+          <p className="text-xs leading-5 text-[var(--danger)]">{audiencesError}</p>
         ) : !audiences.length ? (
           <p className="text-xs leading-5 text-[color:var(--ink-muted)]">
             עוד לא הגדרתם קהלים, אז אי אפשר לבחור למי הפוסט פונה.
@@ -1492,7 +1492,7 @@ export function PostEditor({
   /** THE one dark button: approve this post, or — once it is approved — the next one. */
   function renderPrimary() {
     const primaryClass =
-      "inline-flex min-h-13 w-full items-center justify-center gap-2 rounded bg-[var(--primary)] px-6 text-base font-bold text-white disabled:bg-[#c7c6c0]";
+      "inline-flex min-h-13 w-full items-center justify-center gap-2 rounded bg-[var(--primary)] px-6 text-base font-bold text-white disabled:bg-[var(--rule-dark)]";
     if (status === "review") {
       return (
         <button

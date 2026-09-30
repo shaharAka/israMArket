@@ -56,7 +56,7 @@ export function WorkProgress({ title, note, lines, pace = 5500 }: { title: strin
               </svg>
             ) : (
               <span
-                className={`mx-[3px] h-2.5 w-2.5 shrink-0 rounded-full ${index === at ? `bg-[var(--primary)] ${styles.shimmer}` : "bg-[#d8d6ce]"}`}
+                className={`mx-[3px] h-2.5 w-2.5 shrink-0 rounded-full ${index === at ? `bg-[var(--primary)] ${styles.shimmer}` : "bg-[var(--rule-dark)]"}`}
               />
             )}
             {index === at ? `${line}…` : line}
@@ -224,7 +224,7 @@ export function StepDirection(props: RevealProps) {
                   className={`relative cursor-pointer rounded-2xl border bg-white p-4 text-right transition-shadow ${
                     on
                       ? "border-[var(--ink)] shadow-[0_10px_28px_-16px_rgba(25,27,24,0.55)] ring-2 ring-[var(--ink)]"
-                      : "border-[var(--rule-dark)] hover:border-[#b9b7ad]"
+                      : "border-[var(--rule-dark)] hover:border-[var(--ink-faint)]"
                   }`}
                 >
                   <span className="flex items-center justify-between">
@@ -240,7 +240,7 @@ export function StepDirection(props: RevealProps) {
                   </span>
                   <span className="mt-1 block text-xl font-black leading-tight text-[color:var(--ink)]">{direction.title}</span>
                   <span className="mt-1 block text-sm leading-6 text-[color:var(--ink)]">{direction.approach_he}</span>
-                  <span className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-[#4f524b]">
+                  <span className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-[var(--ink-soft)]">
                     <span className="rounded-full bg-[var(--primary-soft)] px-2 py-0.5">למי: {direction.audience}</span>
                     <span className="rounded-full bg-[var(--primary-soft)] px-2 py-0.5">מטרה: {direction.goal_he}</span>
                   </span>
@@ -264,7 +264,7 @@ export function StepDirection(props: RevealProps) {
             })}
           </div>
           {error ? (
-            <p role="alert" className="text-sm font-bold text-[#9f4330]">
+            <p role="alert" className="text-sm font-bold text-[var(--danger)]">
               {error}
             </p>
           ) : null}
@@ -365,7 +365,7 @@ function SomethingElse({
         {note}
       </p>
       {error ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
           {error}
         </p>
       ) : null}

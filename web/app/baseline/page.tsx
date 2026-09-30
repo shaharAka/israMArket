@@ -78,14 +78,14 @@ export default function BaselinePage() {
 
         {!data ? (
           error ? (
-            <p role="alert" className="text-sm text-[#9f4330]">{error}</p>
+            <p role="alert" className="text-sm text-[var(--danger)]">{error}</p>
           ) : (
             <LoadingMark label="טוענים…" />
           )
         ) : (
           <div className="space-y-5">
             {data.from_integrations ? (
-              <p className="rounded-lg border border-[#d3ddcf] bg-[var(--primary-soft)] px-4 py-3 text-sm leading-6 text-[color:var(--ink)]">
+              <p className="rounded-lg border border-[var(--good-rule)] bg-[var(--primary-soft)] px-4 py-3 text-sm leading-6 text-[color:var(--ink)]">
                 כבר יש לנו מספרים אמיתיים מהחיבורים, והם נקודת הפתיחה. אפשר להוסיף כאן גם מה שהם לא רואים.
               </p>
             ) : null}
@@ -103,7 +103,7 @@ export default function BaselinePage() {
                       value={values[field.key] ?? ""}
                       onChange={(event) => setValues({ ...values, [field.key]: event.target.value })}
                       placeholder="לא בטוחים"
-                      className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 text-sm"
+                      className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 text-sm"
                     />
                     <span className="text-sm text-[color:var(--ink-soft)]">{field.unit_he}</span>
                   </div>
@@ -112,7 +112,7 @@ export default function BaselinePage() {
             </div>
 
             {error ? (
-              <p role="alert" className="text-sm text-[#9f4330]">
+              <p role="alert" className="text-sm text-[var(--danger)]">
                 {error}
               </p>
             ) : null}

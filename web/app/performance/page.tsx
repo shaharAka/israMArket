@@ -314,7 +314,7 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
   if (!offline.length) return null;
 
   return (
-    <div className="rounded-lg bg-[#fff5d9] px-4 py-3 text-xs leading-6 text-[#5e5340]">
+    <div className="rounded-lg bg-[var(--sand)] px-4 py-3 text-xs leading-6 text-[var(--sand-dark)]">
       <p>
         {anyConnected
           ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
@@ -582,8 +582,8 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
 /** The verdict on the content: what worked, and what is worth another attempt. */
 function ContentVerdict({ payload }: { payload: PerformancePayload }) {
   const groups = [
-    { id: "worked", title: "מה הצליח", items: payload.diagnostic?.top_content ?? [], mark: "bg-[#b9ccb0]" },
-    { id: "improve", title: "מה כדאי לשפר", items: payload.diagnostic?.bottom_content ?? [], mark: "bg-[#e0cfa9]" },
+    { id: "worked", title: "מה הצליח", items: payload.diagnostic?.top_content ?? [], mark: "bg-[var(--good-rule)]" },
+    { id: "improve", title: "מה כדאי לשפר", items: payload.diagnostic?.bottom_content ?? [], mark: "bg-[var(--sand-rule)]" },
   ].filter((group) => group.items.length);
   if (!groups.length) return null;
 
@@ -739,7 +739,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                             read as a trend at a glance. */}
                         <span className="block h-1 w-16 shrink-0 overflow-hidden rounded-full bg-[var(--rule)]">
                           <span
-                            className={`block h-full rounded-full ${unassigned ? "bg-[var(--ink-muted)]" : "bg-[#3f4a5c]"}`}
+                            className={`block h-full rounded-full ${unassigned ? "bg-[var(--ink-muted)]" : "bg-[var(--ink-soft)]"}`}
                             style={{ width: `${maxPosts ? Math.max(8, ((row.posts || 0) / maxPosts) * 100) : 0}%` }}
                           />
                         </span>
@@ -758,7 +758,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                       <span className="metric-number font-bold text-[color:var(--ink)]">
                         {(row.posts || 0).toLocaleString("he-IL")}
                       </span>
-                      {row.posts === 1 ? <span className="mt-0.5 block whitespace-nowrap text-[10px] text-[#9f4330]">רק פוסט אחד</span> : null}
+                      {row.posts === 1 ? <span className="mt-0.5 block whitespace-nowrap text-[10px] text-[var(--danger)]">רק פוסט אחד</span> : null}
                     </td>
                     {columns.map((column) => {
                       const bucket = column.source === "ga4" ? row.ga4 : row.meta;
@@ -912,7 +912,7 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
 function NoSnapshotYet() {
   return (
     <section className="rounded-lg border border-[var(--rule)] bg-white px-6 py-8 text-center">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fff5d9] text-[color:var(--ink)]">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sand)] text-[color:var(--ink)]">
         <IconChart className="h-6 w-6" />
       </div>
       <h2 className="mt-4 text-lg font-black text-[color:var(--ink)]">עוד אין תוצאות</h2>

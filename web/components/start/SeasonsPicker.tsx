@@ -6,8 +6,8 @@ import styles from "./start.module.css";
 
 export type Seasons = { busy: number[]; slow: number[] };
 
-const BUSY = { dot: "#d9824b", tile: "border-[#d9824b] bg-[#fbeee3] text-[#6b3517]" };
-const SLOW = { dot: "#7da2b8", tile: "border-[#7da2b8] bg-[#eaf1f5] text-[#24475a]" };
+const BUSY = { dot: "#d9824b", tile: "border-[#d9824b] bg-[var(--danger-soft)] text-[#6b3517]" };
+const SLOW = { dot: "#7da2b8", tile: "border-[#7da2b8] bg-[var(--primary-soft)] text-[#24475a]" };
 
 /**
  * The busy / quiet months grid, shared by the /start step and /decisions.
@@ -48,7 +48,7 @@ export function SeasonsPicker({
 
   return (
     <div className="space-y-2">
-      <div role="radiogroup" aria-label="מה מסמנים" className="grid grid-cols-2 gap-1 rounded-full bg-[#ecebe5] p-1">
+      <div role="radiogroup" aria-label="מה מסמנים" className="grid grid-cols-2 gap-1 rounded-full bg-[var(--rule)] p-1">
         {(["busy", "slow"] as const).map((key, index) => {
           const on = mode === key;
           const count = value[key].length;
@@ -60,17 +60,17 @@ export function SeasonsPicker({
               aria-checked={on}
               onClick={() => setMode(key)}
               className={`flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full text-sm font-bold ${
-                on ? "bg-white text-[#1d2940] shadow-sm" : "text-[#535f75]"
+                on ? "bg-white text-[var(--ink)] shadow-sm" : "text-[var(--ink-soft)]"
               } ${key === "slow" && nudge ? `ring-2 ring-[#7da2b8] ${styles.nudge}` : ""}`}
             >
               <span className="h-2.5 w-2.5 rounded-full" style={{ background: key === "busy" ? BUSY.dot : SLOW.dot }} />
               {index + 1}. {key === "busy" ? "עמוס" : "שקט"}
-              {count ? <span className="text-xs font-normal text-[#6b6e65]">({count})</span> : null}
+              {count ? <span className="text-xs font-normal text-[var(--ink-soft)]">({count})</span> : null}
             </button>
           );
         })}
       </div>
-      <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${nudge ? "font-bold text-[#24475a]" : "text-[#535f75]"}`}>
+      <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${nudge ? "font-bold text-[#24475a]" : "text-[var(--ink-soft)]"}`}>
         {guide}
       </p>
       <div className="grid grid-cols-4 gap-2">
@@ -86,7 +86,7 @@ export function SeasonsPicker({
               aria-label={`${label}${busy ? ", עמוס" : slow ? ", שקט" : ""}`}
               onClick={() => toggle(month)}
               className={`flex min-h-[52px] cursor-pointer flex-col items-center justify-center rounded-xl border text-sm font-bold transition-colors ${
-                busy ? BUSY.tile : slow ? SLOW.tile : "border-[#dedcd4] bg-white text-[#1d2940]"
+                busy ? BUSY.tile : slow ? SLOW.tile : "border-[var(--rule)] bg-white text-[var(--ink)]"
               }`}
             >
               {label}
@@ -95,10 +95,10 @@ export function SeasonsPicker({
           );
         })}
       </div>
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#535f75]" aria-label="מקרא">
-        <Swatch className="border-[#d9824b] bg-[#fbeee3]" label="עמוס" />
-        <Swatch className="border-[#7da2b8] bg-[#eaf1f5]" label="שקט" />
-        <Swatch className="border-[#dedcd4] bg-white" label="לא סימנתם? חודש רגיל" />
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[var(--ink-soft)]" aria-label="מקרא">
+        <Swatch className="border-[#d9824b] bg-[var(--danger-soft)]" label="עמוס" />
+        <Swatch className="border-[#7da2b8] bg-[var(--primary-soft)]" label="שקט" />
+        <Swatch className="border-[var(--rule)] bg-white" label="לא סימנתם? חודש רגיל" />
       </p>
     </div>
   );

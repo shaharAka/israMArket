@@ -237,7 +237,7 @@ export default function AssetsPage() {
               type="button"
               onClick={() => void handleScan()}
               disabled={scanning || busy}
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#2853c7] px-4 text-sm font-bold text-white transition-colors hover:bg-[#1e42a4] disabled:cursor-default disabled:opacity-60 sm:w-auto"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[var(--primary)] px-4 text-sm font-bold text-white transition-colors hover:bg-[var(--primary-dark)] disabled:cursor-default disabled:opacity-60 sm:w-auto"
             >
               <IconEye className="h-4 w-4" />
               {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
@@ -254,12 +254,12 @@ export default function AssetsPage() {
         {/* One disclosure holds the two other ways in. Closed by default, so the page opens
             on the pictures rather than on a toolbar; open by one tap for anyone who came
             here to upload or to paste a link. */}
-        <section className="border-y border-[#e1e7f2]">
+        <section className="border-y border-[var(--rule)]">
           <button
             type="button"
             onClick={() => setAddOpen((prev) => !prev)}
             aria-expanded={addOpen}
-            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[#535f75] transition-colors hover:text-[#1d2940]"
+            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[var(--ink-soft)] transition-colors hover:text-[var(--ink)]"
           >
             <span className="flex items-center gap-2">
               <IconImage className="h-4 w-4" />
@@ -267,14 +267,14 @@ export default function AssetsPage() {
             </span>
             <span
               aria-hidden
-              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#647087] transition-transform duration-200 ${
+              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 ${
                 addOpen ? "rotate-180" : ""
               }`}
             />
           </button>
 
           {addOpen ? (
-            <div className="space-y-4 border-t border-[#e1e7f2] py-4">
+            <div className="space-y-4 border-t border-[var(--rule)] py-4">
               <div className="flex flex-wrap items-center gap-3">
                 <input
                   ref={fileInput}
@@ -294,7 +294,7 @@ export default function AssetsPage() {
                   <IconImage className="h-4 w-4" />
                   {uploadLabel}
                 </button>
-                <span className="text-xs text-[#647087]">אפשר לבחור כמה קבצים בבת אחת</span>
+                <span className="text-xs text-[var(--ink-muted)]">אפשר לבחור כמה קבצים בבת אחת</span>
               </div>
 
               <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
@@ -308,7 +308,7 @@ export default function AssetsPage() {
                   onChange={(event) => setUrl(event.target.value)}
                   placeholder="https://..."
                   dir="ltr"
-                  className="min-h-11 w-64 max-w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm text-[#1d2940] focus:outline-2"
+                  className="min-h-11 w-64 max-w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm text-[var(--ink)] focus:outline-2"
                   style={{ outlineColor: identity.accent }}
                 />
                 <button
@@ -320,7 +320,7 @@ export default function AssetsPage() {
                   <IconLink className="h-4 w-4" />
                   {importing ? "מביאים…" : "להוסיף מקישור"}
                 </button>
-                <span className="text-xs text-[#647087]">קישור לתמונה אחת ברשת.</span>
+                <span className="text-xs text-[var(--ink-muted)]">קישור לתמונה אחת ברשת.</span>
               </form>
             </div>
           ) : null}
@@ -335,19 +335,19 @@ export default function AssetsPage() {
         ) : null}
         {scanResult ? <p className="mt-4 text-sm leading-6 text-[color:var(--ink)]">{scanResult}</p> : null}
         {notice ? <p className="mt-3 text-sm leading-6 text-[color:var(--ink)]">{notice}</p> : null}
-        {loadError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{loadError}</p> : null}
+        {loadError ? <p className="mt-3 text-sm leading-6 text-[var(--danger)]">{loadError}</p> : null}
 
         {Object.keys(pending).length ? (
           <ul className="mt-4 space-y-1.5">
             {Object.entries(pending).map(([name, state]) => (
-              <li key={name} className="flex items-center gap-2 text-xs text-[#535f75]">
+              <li key={name} className="flex items-center gap-2 text-xs text-[var(--ink-soft)]">
                 {state === "uploading" ? (
                   <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
                 ) : (
                   <IconSparkles className="h-3.5 w-3.5" />
                 )}
                 <span className="truncate">{name}</span>
-                <span className="text-[#647087]">
+                <span className="text-[var(--ink-muted)]">
                   {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
                 </span>
               </li>
@@ -355,7 +355,7 @@ export default function AssetsPage() {
           </ul>
         ) : null}
 
-        {fileError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{fileError}</p> : null}
+        {fileError ? <p className="mt-3 text-sm leading-6 text-[var(--danger)]">{fileError}</p> : null}
 
         {loading ? (
           <LoadingMark label="טוענים את התמונות…" />
@@ -364,11 +364,11 @@ export default function AssetsPage() {
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
               {/* Both counts, always — including a zero. The split is real information
                   about what is in the library; the total is the two added up. */}
-              <p className="text-xs text-[#647087]">
+              <p className="text-xs text-[var(--ink-muted)]">
                 {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
                 {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
               </p>
-              <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#1d2940] underline underline-offset-4">
+              <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[var(--ink)] underline underline-offset-4">
                 <IconArrowLeft className="h-4 w-4" />
                 לפוסטים שבנינו מהן
               </Link>
@@ -397,12 +397,12 @@ export default function AssetsPage() {
         ) : loadError ? null : (
           // The empty state asks for the one thing the page asks for everywhere else and
           // stops. Upload and link import are one tap up, in the disclosure.
-          <section className="mt-7 rounded-lg border border-[#e1e7f2] bg-white p-8 text-center">
+          <section className="mt-7 rounded-lg border border-[var(--rule)] bg-white p-8 text-center">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full" style={{ background: identity.surface, color: identity.accent }}>
               <IconImage className="h-6 w-6" />
             </span>
-            <h2 className="mt-4 text-lg font-black text-[#1d2940]">עוד אין כאן תמונות</h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#535f75]">
+            <h2 className="mt-4 text-lg font-black text-[var(--ink)]">עוד אין כאן תמונות</h2>
+            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[var(--ink-soft)]">
               לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
             <StepLink stepKey="photos" className="mt-2" />
