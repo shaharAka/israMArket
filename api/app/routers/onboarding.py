@@ -1,7 +1,8 @@
 from datetime import datetime
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Depends, HTTPException
+from pydantic import BaseModel, ValidationError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -13,7 +14,17 @@ from app.services.audiences import catalogue_for
 from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
 from app.services.instagram_signal import handles_for, signal_for
-from app.services.onboarding_draft import DirectionIn, IdeaIn, OnboardingDraft, apply_draft, seed_from_stored
+from app.services.onboarding_draft import (
+    OWNER_CONTEXT_FALLBACK_HE,
+    DirectionIn,
+    IdeaIn,
+    OnboardingDraft,
+    OwnerContextIn,
+    apply_draft,
+    apply_owner_context,
+    owner_context_errors_he,
+    seed_from_stored,
+)
 from app.services.preview import cached_scan
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
@@ -129,6 +140,33 @@ def from_draft(
         body.chosen_direction.model_dump() if body.chosen_direction else None,
         body.chosen_idea.model_dump() if body.chosen_idea else None,
     )
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+@router.put("/owner-context")
+def update_owner_context(
+    body: Any = Body(...),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Change what the owner told us at /start, from /decisions. Partial; see OwnerContextIn.
+
+    The body is validated here rather than by FastAPI so a 422 says what is wrong in
+    Hebrew (the default is pydantic's English, prefixed with "Value error").
+    Same response as /onboarding/me.
+    """
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=422, detail=OWNER_CONTEXT_FALLBACK_HE)
+    try:
+        update = OwnerContextIn.model_validate(body)
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail=owner_context_errors_he(exc.errors())) from exc
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
+    apply_owner_context(business, update)
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business)}

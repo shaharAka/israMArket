@@ -176,6 +176,22 @@
   animation-delay: 0.45s;
 }
 
+/* "Now switch to me": a soft pulse on the control the owner has not noticed yet. */
+@keyframes nudge {
+  /* The first shadow is the 2px ring the button keeps once the pulse stops. */
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px #7da2b8, 0 0 0 2px rgba(125, 162, 184, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 2px #7da2b8, 0 0 0 8px rgba(125, 162, 184, 0);
+  }
+}
+
+.nudge {
+  animation: nudge 1.6s ease-out 3;
+}
+
 /* Horizontal idea strip on phones: snap one card at a time, no visible scrollbar. */
 .strip {
   scroll-snap-type: x mandatory;
@@ -199,7 +215,8 @@
   .sheet,
   .drop,
   .backdrop,
-  .shimmer {
+  .shimmer,
+  .nudge {
     animation: none !important;
   }
 }

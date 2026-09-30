@@ -167,6 +167,27 @@ export const MONTH_HINTS: Record<number, string> = {
   12: "חנוכה",
 };
 
+/**
+ * A nudge for the seasons question, by kind of business: when owners like these are
+ * usually busy. An example to jog the memory, never a default — nothing is pre-marked.
+ */
+const SEASON_EXAMPLES: Record<TypeGroup, string> = {
+  food: "למשל: החגים וחנוכה",
+  retail: "למשל: לפני החגים ובלאק פריידי",
+  ecommerce: "למשל: בלאק פריידי ולפני החגים",
+  professional: "למשל: אחרי החגים וסוף השנה",
+  clinic: "למשל: לפני החגים ולפני הקיץ",
+  fitness: "למשל: אחרי החגים ולפני הקיץ",
+  design: "למשל: אחרי החגים ולפני פסח",
+  education: "למשל: ספטמבר וסוף החופש",
+  tourism: "למשל: הקיץ והחגים",
+  other: "למשל: החגים והקיץ",
+};
+
+export function seasonsExampleFor(businessType: string): string {
+  return SEASON_EXAMPLES[typeGroup(businessType)];
+}
+
 export const NETWORKS: { key: Network; label: string; placeholder: string }[] = [
   { key: "instagram", label: "אינסטגרם", placeholder: "@your_business" },
   { key: "facebook", label: "פייסבוק", placeholder: "facebook.com/your.business" },
