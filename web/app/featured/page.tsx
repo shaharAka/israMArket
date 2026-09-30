@@ -7,7 +7,8 @@ import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StepLink } from "@/components/trial/StepLink";
 import { ApiError } from "@/lib/api";
-import { IconArrowLeft, IconPlus, IconTrash } from "@/lib/icons";
+import ui from "@/components/posts/chrome.module.css";
+import { IconArrowLeft, IconChevron, IconPlus, IconTrash } from "@/lib/icons";
 import { foundations, type FeaturedItem, type FeaturedPayload, type FeaturedReason } from "@/lib/trial";
 import { toast } from "@/lib/ui";
 
@@ -90,52 +91,54 @@ export default function FeaturedPage() {
 
         {!data ? (
           error ? (
-            <p role="alert" className="text-sm text-[var(--danger)]">{error}</p>
+            <p role="alert" className={ui.error}>{error}</p>
           ) : (
             <LoadingMark label="טוענים…" />
           )
         ) : (
-          <div className="space-y-5">
+          <div>
             {items.length ? (
-              <ol className="divide-y divide-[var(--primary-soft)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
+              <ol className={`${ui.card} divide-y divide-[var(--rule)] overflow-hidden`}>
                 {items.map((item, index) => (
-                  <li key={item.name} className="px-4 py-3">
+                  <li key={item.name} className="px-4 py-4 sm:px-5">
                     <div className="flex items-center gap-3">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--rule-dark)] text-xs font-bold text-[color:var(--ink-soft)]">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--soft)] text-[13px] font-semibold tabular-nums text-[color:var(--ink-soft)]">
                         {index + 1}
                       </span>
-                      <span className="min-w-0 flex-1 text-[15px] font-bold text-[color:var(--ink)]">{item.name}</span>
-                      <button
-                        type="button"
-                        onClick={() => move(index, -1)}
-                        disabled={index === 0}
-                        aria-label={`להעלות את ${item.name} למעלה`}
-                        title="למעלה"
-                        className="min-h-11 min-w-11 rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] disabled:opacity-30"
-                      >
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => move(index, 1)}
-                        disabled={index === items.length - 1}
-                        aria-label={`להוריד את ${item.name} למטה`}
-                        title="למטה"
-                        className="min-h-11 min-w-11 rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] disabled:opacity-30"
-                      >
-                        ↓
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => change(items.filter((_, i) => i !== index))}
-                        aria-label={`להסיר את ${item.name}`}
-                        title="להסיר"
-                        className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)]"
-                      >
-                        <IconTrash className="h-4 w-4" />
-                      </button>
+                      <span className="min-w-0 flex-1 text-base font-semibold text-[color:var(--ink)]">{item.name}</span>
+                      <span className="-me-2 flex shrink-0 items-center">
+                        <button
+                          type="button"
+                          onClick={() => move(index, -1)}
+                          disabled={index === 0}
+                          aria-label={`להעלות את ${item.name} למעלה`}
+                          title="למעלה"
+                          className={ui.iconButton}
+                        >
+                          <IconChevron className="rotate-90" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => move(index, 1)}
+                          disabled={index === items.length - 1}
+                          aria-label={`להוריד את ${item.name} למטה`}
+                          title="למטה"
+                          className={ui.iconButton}
+                        >
+                          <IconChevron className="-rotate-90" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => change(items.filter((_, i) => i !== index))}
+                          aria-label={`להסיר את ${item.name}`}
+                          title="להסיר"
+                          className={`${ui.iconButton} hover:text-[var(--danger)]`}
+                        >
+                          <IconTrash />
+                        </button>
+                      </span>
                     </div>
-                    <div role="group" aria-label={`למה ${item.name}`} className="mt-2 flex flex-wrap gap-1.5 pr-9">
+                    <div role="group" aria-label={`למה ${item.name}`} className="mt-3 flex flex-wrap gap-2 pr-10">
                       {data.reasons.map((reason) => {
                         const on = item.reason === reason.key;
                         return (
@@ -150,11 +153,7 @@ export default function FeaturedPage() {
                                 )
                               )
                             }
-                            className={`min-h-9 rounded-full border px-3 text-xs font-bold transition-colors ${
-                              on
-                                ? "border-[var(--primary)] bg-[var(--primary-soft)] text-[color:var(--primary)]"
-                                : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
-                            }`}
+                            className={ui.chip}
                           >
                             {reason.label_he}
                           </button>
@@ -165,7 +164,7 @@ export default function FeaturedPage() {
                 ))}
               </ol>
             ) : (
-              <p className="rounded-lg border border-[var(--rule)] bg-white px-4 py-3 text-sm leading-6 text-[color:var(--ink-soft)]">
+              <p className={`${ui.inset} px-5 py-4 text-[15px] leading-7 text-[color:var(--ink-soft)]`}>
                 עוד לא בחרתם. כתבו שם של {kind === "שירותים" ? "שירות" : "מוצר"}, או בחרו מההצעות.
               </p>
             )}
@@ -176,7 +175,7 @@ export default function FeaturedPage() {
                   event.preventDefault();
                   add(draft);
                 }}
-                className="flex gap-2"
+                className="mt-6 flex gap-2"
               >
                 <label htmlFor="featured-new" className="sr-only">
                   {kind === "שירותים" ? "שירות להוסיף" : "מוצר להוסיף"}
@@ -187,23 +186,23 @@ export default function FeaturedPage() {
                   maxLength={80}
                   onChange={(event) => setDraft(event.target.value)}
                   placeholder={kind === "שירותים" ? "למשל: טיפול פנים" : "למשל: עוגת דבש"}
-                  className="min-h-11 min-w-0 flex-1 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm"
+                  className={`${ui.field} min-w-0 flex-1`}
                 />
                 <button
                   type="submit"
                   disabled={!draft.trim()}
-                  className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
+                  className={`${ui.button} ${ui.matchField} shrink-0`}
                 >
-                  <IconPlus className="h-4 w-4" />
+                  <IconPlus />
                   להוסיף
                 </button>
               </form>
             )}
 
             {!full && data.suggestions.filter((name) => !items.some((item) => item.name === name)).length ? (
-              <div>
-                <p className="text-xs font-bold text-[color:var(--ink-muted)]">ממה שכתבתם לנו</p>
-                <div className="mt-2 flex flex-wrap gap-1.5">
+              <div className="mt-6">
+                <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">ממה שכתבתם לנו</p>
+                <div className="mt-3 flex flex-wrap gap-2">
                   {data.suggestions
                     .filter((name) => !items.some((item) => item.name === name))
                     .map((name) => (
@@ -211,9 +210,10 @@ export default function FeaturedPage() {
                         key={name}
                         type="button"
                         onClick={() => add(name)}
-                        className="min-h-9 rounded-full border border-dashed border-[var(--rule-dark)] bg-white px-3 text-xs font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
+                        className={`${ui.chip} border-dashed ps-3 text-[color:var(--ink)]`}
                       >
-                        + {name}
+                        <IconPlus className="text-[color:var(--ink-muted)]" />
+                        {name}
                       </button>
                     ))}
                 </div>
@@ -221,33 +221,33 @@ export default function FeaturedPage() {
             ) : null}
 
             {error ? (
-              <p role="alert" className="text-sm text-[var(--danger)]">
+              <p role="alert" className={`${ui.error} mt-6`}>
                 {error}
               </p>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2">
               <button
                 type="button"
                 onClick={() => void save()}
                 disabled={saving || !dirty}
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--primary)] px-6 text-sm font-bold text-white hover:bg-[var(--primary-dark)] disabled:opacity-40 sm:w-auto"
+                className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
               >
                 {saving ? "שומרים…" : "לשמור את הרשימה"}
               </button>
               {!dirty && enough ? (
-                <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">
+                <Link href="/dashboard" className={ui.link}>
                   לצעד הבא
-                  <IconArrowLeft className="h-4 w-4" />
+                  <IconArrowLeft data-forward="" />
                 </Link>
               ) : null}
             </div>
             {enough ? null : (
-              <p className="text-xs text-[color:var(--ink-soft)]">
+              <p className={`${ui.help} mt-3`}>
                 צריך לפחות {data.min}. אפשר לשמור גם פחות, ולהשלים אחר כך.
               </p>
             )}
-            <StepLink stepKey="featured" />
+            <StepLink stepKey="featured" className="mt-2" />
           </div>
         )}
       </div>
