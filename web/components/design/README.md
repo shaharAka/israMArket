@@ -111,7 +111,12 @@ presentation only: callers supply real statuses, labels, dates, figures and acti
 An approved post is not assumed published, a discovered tracking tag is not assumed
 connected, and absent analytics never become zeroes or a decorative growth curve.
 The landing uses existing fictional plan data and explicitly labelled planned budget
-ranges. `/design` shows a separately labelled design fixture with weekly order counts.
+ranges. Each example uses its own supplied business palette for the header, reasoning,
+months, status marks and figures; the surrounding website retains its blue/sun palette.
+The finding and the hypothesis are visible on the card. Deeper detail uses a labelled
+"לראות את התוכנית המלאה" disclosure, rather than relying on a plus icon.
+`/design` shows a separately labelled design fixture with weekly order counts and follows
+the library's selected palette.
 Wiring this component into the owner's plan/dashboard belongs to Claude's flow work;
 use authenticated integration and publication state, not pre-signup plan assumptions.
 

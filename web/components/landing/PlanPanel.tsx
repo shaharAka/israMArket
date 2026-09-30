@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { BusinessOverview, type OverviewFigure } from "@/components/design/BusinessOverview";
 import type { LandingExample } from "./examples";
+import { swatch } from "./cards";
 import { INTEGRATION_NAMES, MIX_LABELS, STATUS_LABELS, type LandingPlan, type PlanMonth } from "./plans";
 
 /** A visual brief first; the supplied plan's supporting data stays in a disclosure. */
@@ -8,10 +9,10 @@ export function PlanPanel({ example, plan, current, reveal, onDetailsChange }: {
   example: LandingExample; plan: LandingPlan; current: boolean; reveal: boolean;
   onDetailsChange?: (open: boolean) => void;
 }) {
-  const primary = "var(--primary)";
-  const accent = "var(--sun)";
-  const ink = "var(--ink)";
-  const tint = "var(--primary-soft)";
+  const primary = swatch(example.palette, "primary", "#2853c7");
+  const accent = swatch(example.palette, "accent", "#f2c94c");
+  const ink = swatch(example.palette, "ink", "#1d2940");
+  const tint = `color-mix(in srgb, ${primary} 10%, white)`;
   const budgetFigure: OverviewFigure | undefined = plan.budget.lines.length ? {
     title: "תקציב מתוכנן", unit: "₪ לחודש", caption: "טווחי התוכנית · אורך הפס לפי אמצע הטווח",
     points: [0, 1, 2].map(month => {
@@ -22,20 +23,27 @@ export function PlanPanel({ example, plan, current, reveal, onDetailsChange }: {
   return (
     <article data-current={current} data-reveal={reveal} aria-hidden={!current}
       className="lp-slide overflow-hidden rounded-lg border border-[var(--rule)] bg-white"
-      style={{ "--lp-primary": primary, "--lp-ink": ink, "--lp-tint": tint, "--lp-second": accent, "--im-primary": primary, "--im-sun": accent, "--im-soft": tint } as CSSProperties}>
-      <header className="lp-reveal flex items-center gap-3 border-b border-[var(--rule)] px-5 py-4 sm:px-7" style={{ "--i": 0 } as CSSProperties}>
-        <span aria-hidden className="h-9 w-1 shrink-0" style={{ backgroundColor: primary }} />
+      style={{ "--lp-primary": primary, "--lp-ink": ink, "--lp-tint": tint, "--lp-second": accent, "--im-primary": primary, "--im-sun": accent, "--im-soft": tint, "--im-ink": ink, borderTop: `3px solid ${primary}` } as CSSProperties}>
+      <header className="lp-reveal flex items-center gap-3 px-5 py-4 text-white sm:px-7" style={{ "--i": 0, backgroundColor: primary } as CSSProperties}>
+        <span aria-hidden className="h-9 w-1 shrink-0" style={{ backgroundColor: accent }} />
         <div className="min-w-0">
-          <h3 className="text-lg font-black leading-tight text-[var(--ink)]">{example.businessName}</h3>
-          <p className="text-sm text-[var(--ink-soft)]">{example.typeLabel} · {example.city}</p>
+          <h3 className="text-lg font-black leading-tight">{example.businessName}</h3>
+          <p className="text-sm text-white">{example.typeLabel} · {example.city}</p>
         </div>
-        <span className="ms-auto hidden text-xs text-[var(--ink-muted)] sm:inline">התוכנית ל-3 חודשים</span>
+        <span className="ms-auto hidden text-xs text-white sm:inline">התוכנית ל-3 חודשים</span>
       </header>
 
       <section className="lp-reveal p-5 sm:px-7 sm:py-6" style={{ "--i": 1 } as CSSProperties}>
         <div>
           <Label>האסטרטגיה</Label>
-          <p className="max-w-4xl text-xl font-black leading-[1.4] text-[var(--ink)] [text-wrap:balance] sm:text-[1.65rem]">{plan.strategy}</p>
+          <p className="max-w-4xl text-xl font-black leading-[1.4] [text-wrap:balance] sm:text-[1.65rem]" style={{ color: ink }}>{plan.strategy}</p>
+        </div>
+        <div className="lp-plan-reason mt-5" style={{ backgroundColor: `color-mix(in srgb, ${accent} 22%, white)` }}>
+          <h4 style={{ color: primary }}>איך בנינו את הכיוון הזה</h4>
+          <div>
+            <p><strong>מה גילינו</strong>{example.insight}</p>
+            <p><strong>מה ננסה</strong>{plan.bet.bet}</p>
+          </div>
         </div>
       </section>
 
@@ -55,15 +63,14 @@ export function PlanPanel({ example, plan, current, reveal, onDetailsChange }: {
       </section>
 
       <details open={current ? undefined : false} onToggle={(event) => { if (current) onDetailsChange?.(event.currentTarget.open); }} className="lp-plan-details border-t border-[var(--rule)]">
-        <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-5 py-3 text-sm font-bold text-[var(--ink)] sm:px-7">
-          <span>איך התוכנית בנויה <span className="hidden font-normal text-[var(--ink-muted)] sm:inline">· ערוצים, תקציב וההשערה שנבדוק</span></span>
-          <span aria-hidden className="lp-details-arrow text-xl font-normal">+</span>
+        <summary className="flex min-h-14 cursor-pointer items-center justify-between gap-3 px-5 py-3 text-sm font-bold sm:px-7" style={{ color: primary }}>
+          <span>לראות את התוכנית המלאה <span className="hidden font-normal text-[var(--ink-muted)] sm:inline">· ערוצים, תקציב ותוכן</span></span>
+          <svg aria-hidden className="lp-details-arrow h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="m4 6 4 4 4-4" /></svg>
         </summary>
         <div className="border-t border-[var(--rule)]">
           <div className="grid divide-y divide-[var(--rule)] lg:grid-cols-3 lg:divide-x lg:divide-y-0">
-            <Block label="מה גילינו" i={0}>
-              <p className="text-sm leading-6 text-[var(--ink-soft)]">{example.insight}</p>
-              <p className="mt-3 text-xs text-[var(--ink-muted)]">{example.sources.join(" · ")}</p>
+            <Block label="מה בדקנו" i={0}>
+              <ul className="space-y-2 text-sm text-[var(--ink-soft)]">{example.sources.map(source => <li key={source}>{source}</li>)}</ul>
             </Block>
             <Block label="הערוצים" i={0}>
               <ul className="space-y-2">{plan.channels.map((channel) => <li key={channel.name} className="flex items-baseline justify-between gap-3 text-sm leading-6">
@@ -165,7 +172,7 @@ function Budget({ plan }: { plan: LandingPlan }) {
 
 function Month({ month, m }: { month: PlanMonth; m: number }) {
   return <li className="min-w-0 border-t pt-3" style={{ borderColor: "color-mix(in srgb, var(--lp-primary) 24%, white)" }}>
-    <p className="flex items-baseline gap-1 text-xs text-[var(--ink-soft)]"><span className="text-2xl font-black tabular-nums" style={{ color: "var(--lp-ink)" }}>{m + 1}</span><span>חודש</span></p>
+    <p className="flex items-baseline gap-1 text-xs text-[var(--ink-soft)]"><span className="text-2xl font-black tabular-nums" style={{ color: "var(--lp-primary)" }}>{m + 1}</span><span>חודש</span></p>
     <p className="mt-2 text-sm font-bold leading-6 text-[var(--ink)]">{month.focus}</p>
     {month.date ? <p className="mt-2 text-xs text-[var(--ink-soft)]">{month.date}</p> : null}
   </li>;
@@ -173,7 +180,7 @@ function Month({ month, m }: { month: PlanMonth; m: number }) {
 
 /** "תמהיל התוכן": one stacked bar of post types, with a legend. */
 function Mix({ plan }: { plan: LandingPlan }) {
-  const shades = ["var(--primary)", "var(--sun)", "var(--rule-dark)", "var(--ink-muted)", "var(--rule)"];
+  const shades = ["var(--lp-primary)", "var(--lp-second)", "var(--rule-dark)", "var(--ink-muted)", "var(--rule)"];
   return (
     <div className="mt-0">
       <p className="text-xs font-bold text-[var(--ink-muted)]">תמהיל התוכן</p>
