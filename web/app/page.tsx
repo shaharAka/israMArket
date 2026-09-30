@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { BrandMark } from "@/lib/icons";
+import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { DemoLink } from "@/components/landing/DemoLink";
+import { Faq } from "@/components/landing/Faq";
 import { PostWall } from "@/components/landing/PostWall";
+import { Pricing } from "@/components/landing/Pricing";
+import { Security } from "@/components/landing/Security";
 import { Showcase } from "@/components/landing/Showcase";
 import "@/components/landing/landing.css";
 
@@ -12,6 +16,9 @@ import "@/components/landing/landing.css";
  *
  * The product is the plan and the ongoing research; posts are what the plan produces.
  * The hero and the examples are both written in that order.
+ *
+ * Order: hero → showcase → wall → security → pricing → FAQ → closing ask. The hero is
+ * untouched by the later sections; each section has at most one dark button.
  */
 
 const STEPS = ["מספרים לנו על העסק", "חוקרים ובונים איתכם תוכנית", "כל חודש: כיוון, פוסטים ובדיקה מה הצליח"];
@@ -87,17 +94,42 @@ export default function Home() {
 
         <PostWall />
 
-        <section aria-label="להתחיל" className="border-t border-[#ebe8e0] bg-[#f9f8f6]">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-12">
-            <p className="max-w-xl text-base leading-7 text-[#34372f] sm:text-lg">
-              ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
-            </p>
-            <Link href="/start" className={`${QUIET_LINK} text-lg`}>
+        <Security />
+
+        <Pricing />
+
+        <Faq />
+
+        <section aria-labelledby="closing-title" className="lp-closing border-t border-[#ebe8e0]">
+          <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-20">
+            <div className="max-w-xl">
+              <h2 id="closing-title" className="text-2xl font-black leading-tight tracking-tight [text-wrap:balance] sm:text-[2rem]">
+                נבנה יחד את החודש הבא של העסק
+              </h2>
+              <p className="mt-3 text-base leading-7 text-[#34372f] sm:text-lg">
+                ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
+              </p>
+            </div>
+            <Link
+              href="/start"
+              className="drawn-button inline-flex min-h-12 w-full shrink-0 items-center justify-center bg-[#191b18] px-10 py-3 text-base font-bold text-white hover:bg-[#2c2f29] sm:w-auto"
+            >
               להתחיל עם העסק שלכם
             </Link>
           </div>
         </section>
       </main>
+
+      <footer className="border-t border-[#ebe8e0] bg-[#f9f8f6]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-6 text-sm text-[#5e6159] sm:px-8">
+          <span className="font-bold text-[#34372f]">ישראמארקט</span>
+          <Link href="/security" className={QUIET_LINK}>
+            אבטחה ופרטיות
+          </Link>
+        </div>
+      </footer>
+
+      <DeletedNotice />
     </div>
   );
 }

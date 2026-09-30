@@ -90,3 +90,29 @@ def decrypt_secret(value: str) -> str:
         return _fernet().decrypt(value.encode("utf-8")).decode("utf-8")
     except InvalidToken as exc:
         raise ValueError("Could not decrypt stored credential") from exc
+
+
+def encrypt_page_tokens(tokens: dict[str, str]) -> dict[str, str]:
+    """Facebook Page tokens, encrypted like the user token they were derived from.
+
+    They live in `Integration.extra_json` (one per page the owner can pick). Until this
+    helper they were stored there in plain text while only the user token was encrypted.
+    A page token can read that page's insights, so it gets the same Fernet key.
+    """
+    return {page_id: encrypt_secret(token) for page_id, token in tokens.items() if token}
+
+
+def decrypt_page_token(extra: dict, page_id: str) -> str:
+    """The decrypted page token for `page_id`, or "".
+
+    Rows written before `encrypt_page_tokens` hold the raw token; those are returned as
+    they are (and rewritten encrypted at startup, see
+    routers/integrations.encrypt_legacy_page_tokens).
+    """
+    value = str(((extra or {}).get("page_tokens") or {}).get(page_id) or "")
+    if not value:
+        return ""
+    try:
+        return decrypt_secret(value)
+    except (ValueError, RuntimeError):
+        return value

@@ -1752,3 +1752,155 @@ def apply_draft(
     db.flush()
     _upsert_audiences(db, business, draft)
     return business
+
+
+# --- after signup: editing what the owner told us ---------------------------------------
+
+
+class OwnerContextIn(BaseModel):
+    """A partial edit of the first-meeting answers (PUT /onboarding/owner-context).
+
+    Every field is optional and a field that is not sent is left as it was. The pieces
+    are the draft's own models, so an answer is validated exactly as it was at /start.
+
+    - `seasons` replaces both lists (a month moves between them, so they go together).
+    - `tried.what_worked`, when not sent, keeps the owner's earlier words.
+    - `activity` updates only the networks it names; `null` for a network clears it.
+    - `competitors` replaces the list (and the lists the planner reads, see below).
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    differentiator: str | None = Field(default=None, max_length=500)
+    seasons: DraftSeasons | None = None
+    tried: DraftTried | None = None
+    activity: DraftActivity | None = None
+    competitors: list[DraftCompetitor] | None = Field(default=None, max_length=3)
+
+    @field_validator("differentiator")
+    @classmethod
+    def _differentiator(cls, value: str | None) -> str | None:
+        return None if value is None else _readable(clean_text(value, 300), "מה מייחד אתכם")
+
+    @model_validator(mode="after")
+    def _unique_competitors(self) -> "OwnerContextIn":
+        if self.competitors is not None:
+            names: set[str] = set()
+            unique = []
+            for item in self.competitors:
+                if item.name.casefold() not in names:
+                    names.add(item.name.casefold())
+                    unique.append(item)
+            self.competitors = unique
+        return self
+
+
+# Said when pydantic's own message is English (a wrong type or an unknown choice).
+OWNER_CONTEXT_FIELD_HE = {
+    "differentiator": "כתבו במשפט אחד מה מייחד אתכם.",
+    "seasons": "חודש הוא מספר בין 1 ל-12.",
+    "tried": "בחרו מה ניסיתם מתוך הרשימה.",
+    "activity": "בחרו כמה אתם מפרסמים: לא מפרסמים, מדי פעם או באופן קבוע.",
+    "competitors": "אפשר לשמור עד 3 מתחרים, ולכל אחד צריך שם.",
+}
+OWNER_CONTEXT_FALLBACK_HE = "משהו בתשובות לא תקין. בדקו ונסו שוב."
+
+
+def owner_context_errors_he(errors: list[dict]) -> str:
+    """The validation problems as Hebrew sentences, for a 422 the owner can read."""
+    out: list[str] = []
+    for error in errors:
+        message = ""
+        if error.get("type") == "value_error":
+            message = str((error.get("ctx") or {}).get("error") or error.get("msg") or "")
+            message = message.removeprefix("Value error, ")
+        if not re.search("[א-ת]", message):
+            field = str((error.get("loc") or [""])[0])
+            message = OWNER_CONTEXT_FIELD_HE.get(field, OWNER_CONTEXT_FALLBACK_HE)
+        if message not in out:
+            out.append(message)
+    return " ".join(out) or OWNER_CONTEXT_FALLBACK_HE
+
+
+def _empty_owner_context() -> dict:
+    return {
+        "differentiator": "",
+        "seasons": {"busy": [], "slow": []},
+        "activity": {},
+        "tried": {"channels": [], "what_worked": ""},
+        "competitors": [],
+    }
+
+
+def _instagram_handle(link: str) -> str:
+    try:
+        return normalize_instagram(link)[1] if link else ""
+    except LinkError:
+        return ""
+
+
+def apply_owner_context(business: Business, update: OwnerContextIn) -> Business:
+    """Merge a partial edit into `owner_context`. The caller commits.
+
+    Only `scraped_profile_json["owner_context"]` changes in that blob: the scan, the
+    seed, the hypothesis and every other decision stored there are kept. Competitors
+    also go where the planner reads them, as at signup: names (and sites) into
+    `competitors_json`, Instagram accounts into the peer list. A peer account that came
+    from a competitor the owner has now removed leaves the peer list with it; accounts
+    added elsewhere stay.
+    """
+    stored = loads(business.scraped_profile_json, {}) or {}
+    current = stored.get("owner_context") if isinstance(stored.get("owner_context"), dict) else {}
+    context = {**_empty_owner_context(), **current}
+    sent = update.model_fields_set
+
+    if "differentiator" in sent and update.differentiator is not None:
+        context["differentiator"] = update.differentiator
+
+    if "seasons" in sent and update.seasons is not None:
+        context["seasons"] = {"busy": list(update.seasons.busy), "slow": list(update.seasons.slow)}
+
+    if "tried" in sent and update.tried is not None:
+        previous = context.get("tried") if isinstance(context.get("tried"), dict) else {}
+        worked = (
+            update.tried.what_worked
+            if "what_worked" in update.tried.model_fields_set
+            else previous.get("what_worked", "")
+        )
+        context["tried"] = {"channels": list(update.tried.channels), "what_worked": worked or ""}
+
+    if "activity" in sent and update.activity is not None:
+        activity = dict(context["activity"]) if isinstance(context.get("activity"), dict) else {}
+        for network in SOCIAL_NETWORKS:
+            if network in update.activity.model_fields_set:
+                value = getattr(update.activity, network)
+                if value:
+                    activity[network] = value
+                else:
+                    activity.pop(network, None)
+        context["activity"] = {n: activity[n] for n in SOCIAL_NETWORKS if n in activity}
+
+    if "competitors" in sent and update.competitors is not None:
+        before = [c for c in context.get("competitors") or [] if isinstance(c, dict)]
+        context["competitors"] = [{"name": c.name, "kind": c.kind, "link": c.link} for c in update.competitors]
+        business.competitors_json = dumps(
+            [{"name": c.name, "website_url": c.link if c.kind == "website" else ""} for c in update.competitors]
+        )
+        social = loads(business.social_links_json, {}) or {}
+        own = _instagram_handle(social.get("instagram", "") if isinstance(social, dict) else "")
+        kept = {c.handle for c in update.competitors if c.kind == "instagram"}
+        removed = {_instagram_handle(c.get("link", "")) for c in before if c.get("kind") == "instagram"} - kept
+        handles = [
+            h for h in (loads(business.instagram_handles_json, []) or []) if isinstance(h, str) and h not in removed
+        ]
+        for item in update.competitors:
+            if item.kind == "instagram" and item.handle and item.handle != own and item.handle not in handles:
+                if len(handles) >= MAX_PEER_HANDLES:
+                    break
+                handles.append(item.handle)
+        business.instagram_handles_json = dumps(handles)
+
+    stored["owner_context"] = context
+    business.scraped_profile_json = dumps(stored)
+    business.updated_at = datetime.utcnow()
+    return business

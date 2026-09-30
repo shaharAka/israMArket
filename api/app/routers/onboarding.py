@@ -1,7 +1,8 @@
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, Body, Depends, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -14,12 +15,16 @@ from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
 from app.services.instagram_signal import handles_for, signal_for
 from app.services.onboarding_draft import (
+    OWNER_CONTEXT_FALLBACK_HE,
     DirectionIn,
     DraftPhotoError,
     IdeaIn,
     OnboardingDraft,
+    OwnerContextIn,
     apply_draft,
+    apply_owner_context,
     link_draft_photos,
+    owner_context_errors_he,
     seed_from_stored,
 )
 from app.services.preview import cached_scan
@@ -171,6 +176,33 @@ def draft_photos(
         link_draft_photos(db, business, [item.model_dump() for item in body])
     except DraftPhotoError as exc:
         raise HTTPException(status_code=404, detail=str(exc)) from exc
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+@router.put("/owner-context")
+def update_owner_context(
+    body: Any = Body(...),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Change what the owner told us at /start, from /decisions. Partial; see OwnerContextIn.
+
+    The body is validated here rather than by FastAPI so a 422 says what is wrong in
+    Hebrew (the default is pydantic's English, prefixed with "Value error").
+    Same response as /onboarding/me.
+    """
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=422, detail=OWNER_CONTEXT_FALLBACK_HE)
+    try:
+        update = OwnerContextIn.model_validate(body)
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail=owner_context_errors_he(exc.errors())) from exc
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
+    apply_owner_context(business, update)
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business)}

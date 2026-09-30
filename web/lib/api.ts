@@ -133,6 +133,18 @@ export const DEMO_BUSINESS: Business = {
     capacity_constraint: "תנור אחד, אפייה לילה אחת",
   },
   growth_targets: [],
+  // What the owner said at /start. Editable in /decisions ("מה סיפרתם לנו").
+  owner_context: {
+    differentiator: "מחמצת שמתפיחים 36 שעות, ואופים כל לילה מחדש",
+    seasons: { busy: [9, 10, 12], slow: [7, 8] },
+    activity: { instagram: "sometimes", facebook: "none" },
+    tried: { channels: ["social_posts", "word_of_mouth"], what_worked: "חלה בהזמנה מראש לשישי, דרך וואטסאפ" },
+    competitors: [
+      { name: "לחמים", kind: "website", link: "https://lehamim.co.il" },
+      { name: "בייקרי מרקט", kind: "website", link: "https://bakery-market.example.co.il" },
+      { name: "מאפיית בר-קמח", kind: "website", link: "https://bar-kemach.example.co.il" },
+    ],
+  },
 };
 
 /** Candidates offered for ranking in onboarding step 5. Deliberately spread across
@@ -2403,6 +2415,61 @@ function demoCampaignBrief(): PublishBrief {
   return { ...payload, text: renderDemoBrief(payload) };
 }
 
+/** A competitor link, the way the API classifies it (onboarding_draft.DraftCompetitor), roughly. */
+function demoCompetitorLink(raw: string): { kind: string; link: string } {
+  const value = raw.trim();
+  if (!value) return { kind: "", link: "" };
+  if (value.startsWith("@") || /instagram\.com/i.test(value)) {
+    const handle = value.replace(/^@/, "").replace(/^.*instagram\.com\//i, "").replace(/\/.*$/, "").toLowerCase();
+    return { kind: "instagram", link: `https://www.instagram.com/${handle}/` };
+  }
+  if (/facebook\.com/i.test(value)) return { kind: "facebook", link: value };
+  if (/tiktok\.com/i.test(value)) return { kind: "tiktok", link: value };
+  return { kind: "website", link: /^https?:\/\//i.test(value) ? value : `https://${value}` };
+}
+
+/** PUT /onboarding/owner-context against the demo business: the same merge rules as the API. */
+function demoSaveOwnerContext(body: OwnerContextUpdate): Business {
+  const context: OwnerContext = { ...(DEMO_BUSINESS.owner_context ?? {}) };
+  if (typeof body.differentiator === "string") context.differentiator = body.differentiator.trim();
+  if (body.seasons) {
+    const busy = [...new Set(body.seasons.busy)].sort((a, b) => a - b);
+    const slow = [...new Set(body.seasons.slow)].sort((a, b) => a - b);
+    if (busy.some((m) => slow.includes(m))) throw new ApiError("חודש לא יכול להיות גם עמוס וגם שקט.", 422);
+    context.seasons = { busy, slow };
+  }
+  if (body.tried) {
+    context.tried = {
+      channels: [...new Set(body.tried.channels)],
+      what_worked: body.tried.what_worked ?? context.tried?.what_worked ?? "",
+    };
+  }
+  if (body.activity) {
+    const activity = { ...(context.activity ?? {}) };
+    for (const network of ["instagram", "facebook", "tiktok"] as const) {
+      if (!(network in body.activity)) continue;
+      const value = body.activity[network];
+      if (value) activity[network] = value;
+      else delete activity[network];
+    }
+    context.activity = activity;
+  }
+  if (body.competitors) {
+    if (body.competitors.length > 3) throw new ApiError("אפשר לשמור עד 3 מתחרים, ולכל אחד צריך שם.", 422);
+    const seen = new Set<string>();
+    const list = body.competitors
+      .map((item) => ({ name: item.name.trim(), ...demoCompetitorLink(item.link ?? "") }))
+      .filter((item) => item.name.length >= 2 && !seen.has(item.name) && Boolean(seen.add(item.name)));
+    context.competitors = list;
+    DEMO_BUSINESS.competitors = list.map((item) => ({
+      name: item.name,
+      website_url: item.kind === "website" ? item.link : "",
+    }));
+  }
+  DEMO_BUSINESS.owner_context = context;
+  return DEMO_BUSINESS;
+}
+
 /**
  * Resolves a request against the in-memory demo fixtures.
  *
@@ -2426,6 +2493,9 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       DEMO_BUSINESS.monthly_budget_ils = body.monthly_budget_ils;
     }
     return { business: DEMO_BUSINESS } as T;
+  }
+  if (path === "/onboarding/owner-context" && method === "PUT") {
+    return { business: demoSaveOwnerContext(JSON.parse(String(options.body || "{}")) as OwnerContextUpdate) } as T;
   }
   if (path === "/onboarding/palette" && method === "POST") {
     // The brand picker now exposes palette editing in demo mode too. This path used to
@@ -3198,6 +3268,7 @@ const LIVE_PATHS = new Set([
   "/integrations/ga4",
   "/integrations/meta",
   "/auth/password",
+  "/auth/account",
 ]);
 
 export async function api<T>(
@@ -3242,6 +3313,9 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ current_password, new_password }),
     }),
+  /** Irreversible: deletes the account, the business and every file, then signs out. */
+  deleteAccount: (password: string) =>
+    api<{ ok: boolean }>("/auth/account", { method: "DELETE", body: JSON.stringify({ password }) }),
   logout: async () => {
     exitDemo();
     return api("/auth/logout", { method: "POST" });
@@ -3249,6 +3323,9 @@ export const endpoints = {
   business: () => api<{ business: Business | null }>("/onboarding/me"),
   saveProfile: (body: OnboardingPayload) =>
     api<{ business: Business }>("/onboarding/profile", { method: "POST", body: JSON.stringify(body) }),
+  /** Change some of what the owner told us at /start. Answers like /onboarding/me. */
+  saveOwnerContext: (body: OwnerContextUpdate) =>
+    api<{ business: Business }>("/onboarding/owner-context", { method: "PUT", body: JSON.stringify(body) }),
   savePalette: (palette: BrandSwatch[]) =>
     api<{ business: Business }>("/onboarding/palette", {
       method: "POST",
@@ -3666,6 +3743,32 @@ export type InstagramRefreshPayload = InstagramBriefPayload & {
 
 export type Competitor = { name: string; website_url: string };
 
+type OwnerActivity = "none" | "sometimes" | "regular";
+type OwnerTriedChannel = NonNullable<OnboardingDraft["tried"]>["channels"][number];
+
+/** The first-meeting answers the API keeps in `owner_context` (see onboarding_draft.owner_context). */
+export type OwnerContext = {
+  differentiator?: string;
+  seasons?: { busy: number[]; slow: number[] };
+  activity?: { instagram?: OwnerActivity; facebook?: OwnerActivity; tiktok?: OwnerActivity };
+  tried?: { channels: OwnerTriedChannel[]; what_worked?: string };
+  /** `kind` is "website" | "instagram" | "facebook" | "tiktok" | "" (no link). */
+  competitors?: { name: string; kind?: string; link?: string }[];
+};
+
+/**
+ * A partial edit for PUT /onboarding/owner-context. A field that is not sent is kept;
+ * `seasons` and `competitors` replace, `activity` updates only the networks it names
+ * (`null` clears one), and `tried.what_worked` is kept when not sent.
+ */
+export type OwnerContextUpdate = {
+  differentiator?: string;
+  seasons?: { busy: number[]; slow: number[] };
+  activity?: { instagram?: OwnerActivity | null; facebook?: OwnerActivity | null; tiktok?: OwnerActivity | null };
+  tried?: { channels: OwnerTriedChannel[]; what_worked?: string };
+  competitors?: { name: string; link?: string }[];
+};
+
 export type Business = {
   id: number;
   name: string;
@@ -3688,8 +3791,9 @@ export type Business = {
   generate_state?: { stage?: string; error?: string };
   /** Competitor / peer Instagram usernames, normalised (no "@"). */
   instagram_handles?: string[];
-  /** Set by /onboarding/from-draft: what the /start conversation learned. */
-  owner_context?: Record<string, unknown> | null;
+  /** Set by /onboarding/from-draft: what the /start conversation learned. Editable from
+   *  /decisions (PUT /onboarding/owner-context). */
+  owner_context?: OwnerContext | null;
   brand_source?: string | null;
   first_month_seed?: Record<string, unknown> | null;
   /** First-run decisions not made yet (diagnostics, growth_targets, long_horizon_plan,

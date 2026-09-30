@@ -37,6 +37,23 @@ if settings.jwt_secret == DEFAULT_JWT_SECRET and settings.environment != "develo
         "JWT_SECRET הוא עדיין ברירת המחדל בסביבת production. הגדירו סוד אמיתי לפני עלייה."
     )
 
+def _encrypt_legacy_page_tokens() -> None:
+    """Facebook Page tokens used to be stored in plain text; encrypt any that still are.
+    Best effort: without an encryption key there is nothing to encrypt with, and
+    connecting an account is refused in that state anyway (security._fernet)."""
+    from app.db import SessionLocal
+
+    db = SessionLocal()
+    try:
+        integrations.encrypt_legacy_page_tokens(db)
+    except Exception:
+        db.rollback()
+    finally:
+        db.close()
+
+
+_encrypt_legacy_page_tokens()
+
 MEDIA_DIR = Path(__file__).resolve().parents[1] / "data" / "generated"
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 

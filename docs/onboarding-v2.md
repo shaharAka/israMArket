@@ -79,6 +79,16 @@ alone). Never invents numbers.
 scan or the style preset) and returns the same shape as `/onboarding/me`. Idempotent. The
 existing budget step and month generation follow unchanged.
 
+`PUT /onboarding/owner-context` `{differentiator?, seasons?: {busy, slow}, tried?: {channels,
+what_worked?}, activity?: {instagram?, facebook?, tiktok?}, competitors?: [{name, link?}]}` →
+same shape as `/onboarding/me`. The /start answers, edited later from `/decisions` ("מה
+סיפרתם לנו"). Partial: a field not sent is kept; `seasons` and `competitors` replace,
+`activity` updates only the networks named (`null` clears one), `tried.what_worked` is kept
+when not sent. Validated with the draft's own models; a 422 carries a Hebrew `detail`
+string. Only `owner_context` changes inside `scraped_profile_json`; competitors are also
+written to `competitors_json` and (Instagram links) the peer list, as `from-draft` does —
+a peer account that came from a removed competitor leaves with it.
+
 ## Ownership (parallel build)
 
 | Part | Owns |
@@ -184,3 +194,78 @@ hint_he: string}, why: {audience, goal_he, timing_he, reason_he}}[3]}`.
 strategy seeds the first month: the month plan follows its weeks, pillars, cadence and
 measures; the sample posts become week-1 posts.
 Both public endpoints: no auth, no DB, rate-limited and cached like `plan-preview`.
+
+## Revision 5 — the product is the PLAN (owner feedback 2026-09-30) — supersedes Revision 4's artifact
+
+Owner: "the product is the PLAN not the POST — we are not Canva, we don't give you
+repetitive post templates, we BUILD A UNIQUE MARKETING STRATEGY for your own business."
+"The WOW before the user enters the mail IS NOT THE POSTS — it is a marketing plan: how
+will the next 3 months look? what is the strategy? what is the calendar? what posts are we
+doing, where? do we start new marketing streams? with what budget? how are we measuring
+(inform the user about the required integrations)? The user can edit it after login, but
+they enter the site with an initial plan in place — that is the hook. The post editor and
+generation are a tool inside."
+
+### New questions in /start (chapter "איך משווקים היום" / new chapter "המטרה והתקציב")
+- **תקציב שיווק משוער לחודש** — chips: "בלי תקציב פרסום, רק זמן" / "עד ₪1,000" / "₪1,000–3,000" /
+  "₪3,000–7,000" / "מעל ₪7,000" / "עוד לא יודעים" + optional exact number. Explains in one
+  line why we ask ("התוכנית נבנית לפי מה שאפשר באמת לעשות בתקציב הזה"). Budget moves here
+  from the post-signup onboarding step (which is removed for /start businesses).
+- **איפה אתם רוצים לגדול?** (products / both only) — "באתר (הזמנות אונליין)" / "בחנות" / "בשניהם".
+- **מה ייחשב הצלחה?** — options depend on the model and the answer above, e.g. online shop:
+  "יותר הזמנות באתר"; store: "יותר אנשים בחנות"; services: "יותר שיחות ופניות בוואטסאפ",
+  "יותר פגישות/הזמנות מקום", "יותר טפסים באתר"; awareness: "שיכירו אותנו באזור". This
+  becomes the plan's **main measure** (KPI). Optional own target number.
+Draft additions: `budget: {range: "none"|"lt1k"|"1k-3k"|"3k-7k"|"gt7k"|"unknown", exact_ils?: number}`,
+`grow_where?: "online"|"store"|"both"`, `success: {kpi: string (key), target?: string}`.
+
+### The artifact: the 3-month plan (screens after "מה גילינו" and "הכיוון")
+One scrollable, beautiful plan ("התוכנית שלכם ל-3 החודשים הקרובים") — the hook. Sections:
+1. **האסטרטגיה בשורה אחת** + the angle and why (from insights).
+2. **המטרה ואיך נמדוד** — the main KPI from "מה ייחשב הצלחה", 1–2 supporting measures;
+   honest baseline ("עוד לא יודעים כמה יש היום — נמדוד מהשבוע הראשון"); for each measure,
+   **which integration it needs** (Google Analytics, Meta Pixel, Google Tag/GTM, Search
+   Console, Google Business Profile, WhatsApp tracked link — the last needs nothing) with a
+   status (יש לכם / צריך לחבר / צריך להתקין באתר) and a one-line why. Links to the setup guide.
+3. **הערוצים** — existing channels to strengthen + **new marketing streams to open** (e.g.
+   Google Business Profile, Meta ads, Google Search ads, WhatsApp list, email, local
+   partnerships, influencers), each with why, when it starts (month 1/2/3) and effort.
+4. **התקציב** — split of the owner's budget per channel per month (a simple stacked bar /
+   table), realistic per `cost_model` / `google_cost`; with "בלי תקציב" the plan is organic
+   only and says what budget would unlock. Never invented results; costs are ranges with
+   sources.
+5. **לוח השנה** — 3 months on a timeline: key dates (calendar_il), campaigns/pushes, when
+   each stream starts, checkpoints ("בסוף החודש הראשון בודקים…").
+6. **התוכן** — per month: the content themes (pillars), cadence per channel (editable later),
+   and 2–3 example post *titles* per month with the channel — no rendered post cards here;
+   one line says "את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת".
+7. **על מה אנחנו מהמרים** — assumptions to test, and what we'll change if they're wrong.
+Owner shaping before signup: direction choice + free-text feedback + primary audience +
+cadence + target; everything else is edited after login. CTA: "לשמור את התוכנית ולהיכנס".
+The sample-post screen with photo uploads (Revision 4 step 4) is **removed from onboarding**;
+its components move to the app's post editor later.
+
+### After signup
+from-draft stores the plan; the app opens on it: `/strategy` (התוכנית) shows the 3-month
+plan (quarter + current month), editable; Today shows this month's part of it; the first
+month's posts are generated from it in the background.
+
+### Contract
+`POST /public/quarter-plan {draft, direction, inputs?: {target?, cadence?, primary_audience?,
+feedback?, changed?: string[]}, insights?}` →
+```ts
+{ strategy: {one_liner_he, angle_he, why_he, from_insight?: number},
+  kpi: {key, name_he, how_he, target?: string, baseline_he},
+  measures: {name_he, how_he, needs: IntegrationKey[], available_now: boolean}[],
+  integrations: {key: IntegrationKey, name_he, why_he, status: "have"|"connect"|"install"|"unknown", effort_he}[],
+  channels: {key, name_he, kind: "existing"|"new", why_he, starts_month: 1|2|3, effort_he, cadence_he?}[],
+  budget: {monthly_ils: number|null, months: {month_label, lines: {channel_key, ils_range: [number, number], note_he?}[]}[], organic_only: boolean, unlock_he?: string, sources_he: string[]},
+  calendar: {month_label, weeks?: {week: 1|2|3|4, focus_he}[], dates: {date, name_he, action_he}[], checkpoint_he}[],   // 3 months
+  content: {month_label, pillars: {key, title, description_he}[], cadence: {channel_key, per_week: string}[], example_titles: {title, channel_key, format}[]}[],
+  assumptions: {bet_he, if_wrong_he}[],
+  changed_he?: string, cached: boolean }
+```
+`IntegrationKey` = `"ga4"|"meta_pixel"|"gtm"|"search_console"|"gbp"|"meta_business"|"whatsapp_link"`.
+`POST /onboarding/from-draft {draft, chosen_direction, quarter_plan}` — seeds `long_horizon_plan`
+(the quarter), the first month (weeks, pillars, cadence, budget lines, KPI), and the
+integrations checklist. `/public/strategy` and `/public/sample-posts` are superseded.
