@@ -40,7 +40,8 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
   { key: "customers", label: "הלקוחות", steps: ["audiences", "seasons"] },
   { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors"] },
   { key: "goal", label: "המטרה והתקציב", short: "המטרה", steps: ["grow", "success", "budget"] },
-  { key: "plan", label: "מה למדנו", steps: ["found", "direction", "quarter", "save"] },
+  // "מה למדנו" leads straight into the 3-month plan: that plan is the artifact.
+  { key: "plan", label: "מה למדנו", steps: ["found", "quarter", "save"] },
 ];
 
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
@@ -52,7 +53,7 @@ export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps)
  */
 export function migrateStep(value: string): string {
   if (value === "plan") return "found";
-  if (value === "strategy" || value === "preview") return "quarter";
+  if (value === "strategy" || value === "preview" || value === "direction") return "quarter";
   if (value === "goal") return "success";
   return value;
 }

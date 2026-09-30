@@ -6,6 +6,7 @@ import {
   MONTHS_HE,
   NETWORKS,
   TRIED_OPTIONS,
+  chosenDirectionOf,
   currentPlan,
   kitFor,
   presetFor,
@@ -64,7 +65,7 @@ export function cardSlots(flow: FlowState): Slot[] {
     { key: "competitors", filled: Boolean(d.competitors?.some((c) => c.name.trim())) },
     { key: "success", filled: Boolean(d.success?.kpi) },
     { key: "budget", filled: Boolean(d.budget?.range) },
-    { key: "direction", filled: flow.chosenDirection !== null && flow.chosenDirection !== undefined },
+    { key: "direction", filled: Boolean(flow.quarterPlan && chosenDirectionOf(flow)) },
     { key: "plan", filled: Boolean(currentPlan(flow)) },
   ];
 }
@@ -139,7 +140,7 @@ export function BusinessCard({
   const markBg = look.palette ? swatch(look.palette, "background", "#ffffff") : "#ffffff";
   const markInk = look.palette ? swatch(look.palette, "primary", "#191b18") : "#191b18";
   const kit = d.business_type ? kitFor(d.business_type) : null;
-  const direction = flow.chosenDirection != null ? flow.plan?.directions[flow.chosenDirection] : null;
+  const direction = flow.quarterPlan ? chosenDirectionOf(flow) : null;
   const plan = currentPlan(flow);
   const kpi = flow.successOptions?.find((o) => o.key === d.success?.kpi)?.name_he ?? (d.success?.kpi ? plan?.kpi.name_he : undefined);
   const grow = d.business_model !== "services" ? GROW_OPTIONS.find((o) => o.key === d.grow_where)?.label : undefined;

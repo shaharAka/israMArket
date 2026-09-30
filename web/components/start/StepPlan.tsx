@@ -147,8 +147,8 @@ export function StepFound(props: RevealProps) {
     <StepShell
       {...props}
       title="מה גילינו"
-      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "מהתשובות שלכם ומהמחקר. על זה נבנה את הכיוון לחודש הראשון."}
-      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבחור כיוון לחודש הראשון"}
+      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "מהתשובות שלכם ומהמחקר. על זה נבנה את התוכנית ל-3 החודשים הקרובים."}
+      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית ל-3 חודשים"}
       primaryDisabled={loading}
       onPrimary={() => (failed ? retry() : next())}
       skip={failed ? "להמשיך בלי זה ולשמור" : undefined}

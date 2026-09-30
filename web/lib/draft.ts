@@ -888,8 +888,10 @@ export async function revisePlan(draft: OnboardingDraft, feedback: string, brand
 
 /** The chosen direction in the shape the API takes. */
 export function chosenDirectionOf(flow: FlowState): PlanDirection | null {
-  const index = flow.chosenDirection;
-  return flow.plan && index != null ? (flow.plan.directions[index] ?? null) : null;
+  // There is no separate "pick a direction" step: the plan starts from the first
+  // direction, and the plan screen offers the other one.
+  const index = flow.chosenDirection ?? 0;
+  return flow.plan ? (flow.plan.directions[index] ?? flow.plan.directions[0] ?? null) : null;
 }
 
 /* --------------------------- The 3-month plan --------------------------- */

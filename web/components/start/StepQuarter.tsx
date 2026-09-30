@@ -209,6 +209,12 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     </p>
   ) : null;
 
+  // The other direction from the research, one tap away (there is no separate step).
+  const directions = flow.plan?.directions ?? [];
+  const currentIndex = flow.chosenDirection ?? 0;
+  const otherIndex = currentIndex === 0 ? 1 : 0;
+  const otherDirection = !loading && directions.length > 1 ? directions[otherIndex] : null;
+
   // The plan's own audiences when the API sends them (primary first), else the answers.
   const names = plan?.audiences?.length ? plan.audiences.map((a) => a.name) : audiencesOf(flow);
   const chosenPrimary = flow.planInputs?.primary_audience;
@@ -243,6 +249,17 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       skip={failed && !plan ? "להמשיך בלי התוכנית ולשמור" : undefined}
       onSkip={failed && !plan ? () => jump("save") : undefined}
     >
+      {otherDirection ? (
+        <p className="text-sm text-[#5e6159]">
+          יש עוד כיוון אפשרי: <span className="font-bold text-[#191b18]">{otherDirection.title}</span>.{" "}
+          <QuietLink
+            onClick={() => update((f) => ({ ...f, chosenDirection: otherIndex }))}
+            className="font-bold text-[#191b18]"
+          >
+            לבנות לפיו
+          </QuietLink>
+        </p>
+      ) : null}
       {loading ? (
         <WorkProgress
           title="בונים את התוכנית ל-3 החודשים…"
