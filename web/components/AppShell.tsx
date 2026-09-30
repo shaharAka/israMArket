@@ -2,46 +2,51 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ApiError, endpoints, isDemo } from "@/lib/api";
-import {
-  BrandMark,
-  IconChart,
-  IconCompass,
-  IconFlag,
-  IconHome,
-  IconImage,
-  IconLink,
-  IconMegaphone,
-  IconRoute,
-  IconStore,
-} from "@/lib/icons";
+import { BrandMark, IconArrowRight, IconChart, IconHome, IconImage, IconLogout, IconStore } from "@/lib/icons";
 import { BrandPicker } from "@/components/BrandPicker";
+import { ACCENT } from "@/lib/sections";
 import { SYSTEM_TONE } from "@/lib/tone";
 import { ToastHost } from "@/lib/ui";
 
-/**
- * The owner's daily loop. Deliberately five: the mobile bar is a five-column grid, and
- * this list had grown to ten, so it was silently wrapping into two rows.
- */
-const PRIMARY_NAV = [
-  { href: "/dashboard", label: "החודש שלך", icon: IconHome },
-  { href: "/strategy", label: "התוכנית", icon: IconRoute },
-  { href: "/posts", label: "הפוסטים", icon: IconImage },
-  { href: "/promotion", label: "קידום בגוגל", icon: IconMegaphone },
-  { href: "/performance", label: "תוצאות", icon: IconChart },
-];
+type Tab = {
+  href: string;
+  label: string;
+  icon: (props: { className?: string }) => React.ReactElement;
+  /** Every route that lives under this tab, so the tab stays lit on its sub-pages. */
+  owns: string[];
+};
 
 /**
- * Reached less often, so it sits under its own heading in the sidebar only. The media
- * library is not here at all — it lives in the brand picker at the top of the shell.
+ * The whole app, in four tabs. The same four on the phone's bottom bar and the desktop
+ * sidebar, so the owner learns one map.
+ *
+ * It used to be nine, and the phone only had room for five: the quarterly plan, the
+ * decisions, the connections, the account and log-out were unreachable on mobile, and
+ * the calendar and the weekly recommendation were in no menu at all. Everything that is
+ * not a daily task now lives under "העסק", a plain list of rows (app/business).
  */
-const SECONDARY_NAV = [
-  { href: "/plan", label: "התוכנית הרבעונית", icon: IconCompass },
-  { href: "/decisions", label: "ההחלטות שלי", icon: IconFlag },
-  { href: "/integrations", label: "חיבורים", icon: IconLink },
-  { href: "/account", label: "החשבון", icon: IconStore },
+export const TABS: Tab[] = [
+  { href: "/dashboard", label: "היום", icon: IconHome, owns: ["/dashboard"] },
+  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/calendar"] },
+  { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
+  {
+    href: "/business",
+    label: "העסק",
+    icon: IconStore,
+    owns: ["/business", "/strategy", "/plan", "/decisions", "/assets", "/promotion", "/instagram", "/integrations", "/account", "/help"],
+  },
 ];
+
+function underRoute(pathname: string, route: string) {
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
+
+/** The tab a route belongs to, or null for routes outside the tabs (the wizard). */
+export function tabFor(pathname: string): Tab | null {
+  return TABS.find((tab) => tab.owns.some((route) => underRoute(pathname, route))) ?? null;
+}
 
 /**
  * Routes reachable before first-run is finished. The wizard's own routes must be here
@@ -50,15 +55,37 @@ const SECONDARY_NAV = [
  * `/decisions` is here too: the wizard links to it from its last step ("לשינוי התקציב"),
  * and gating it meant that link silently bounced the owner back to step 1 of the wizard
  * with no explanation. It renders a safe empty state when there is no business yet.
+ *
+ * `/strategy` too: a business built at /start lands there right after signup, before its
+ * first month exists, because the plan it shows was stored at signup (Revision 5) and
+ * the page builds the month itself.
  */
-const FIRST_RUN_ROUTES = ["/onboarding", "/login", "/signup", "/decisions"];
+const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy"];
+
+/** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
+export function useLogOut() {
+  const router = useRouter();
+  return useCallback(async () => {
+    try {
+      await endpoints.logout();
+    } catch {
+      // The session is being thrown away either way; a failed call must not trap the
+      // owner inside the app.
+    }
+    router.replace("/");
+  }, [router]);
+}
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const logOut = useLogOut();
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [demo, setDemo] = useState(false);
+  // True while the signed-in owner has not finished the wizard. The tabs lead to pages
+  // that would only redirect back to it, so the shell hides them until it is done.
+  const [setupIncomplete, setSetupIncomplete] = useState(false);
   // Children must not render until we know whether this user finished first-run,
   // otherwise every screen fires its own requests and logs "no business configured"
   // before the redirect lands. Only the async *result* is state; whether this is a
@@ -86,8 +113,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         // error. Send them back to finish instead. Skipped on the wizard's own routes
         // (AppShell wraps them too) or this would loop forever.
         const incomplete = !res.business?.onboarding_complete;
+        setSetupIncomplete(incomplete);
         if (incomplete && !onFirstRunRoute) {
-          router.replace("/onboarding");
+          // No business at all: the /start conversation builds it. A started one finishes
+          // in /onboarding (budget and the first month).
+          router.replace(res.business ? "/onboarding" : "/start");
           return; // stay un-ready: render nothing rather than the wrong screen
         }
         setCheckedOnboarding(true);
@@ -103,36 +133,70 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     .map((part) => part[0])
     .join("");
 
+  // During the wizard there is nowhere to go yet: no tabs, no brand panel.
+  const inSetup = pathname.startsWith("/onboarding") || (setupIncomplete && !demo);
+  const activeTab = inSetup ? null : tabFor(pathname);
+  // On a page under a tab (the calendar, the monthly plan, the account…) the phone's top
+  // bar leads back to that tab. Mid-wizard, the only way back is the wizard itself.
+  const back = inSetup
+    ? pathname.startsWith("/onboarding") || pathname.startsWith("/strategy")
+      ? null
+      : { href: "/onboarding", label: "חזרה להגדרה" }
+    : activeTab && pathname !== activeTab.href
+      ? { href: activeTab.href, label: activeTab.label }
+      : null;
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4]">
-        <p className="text-sm text-[#8b8e84]">טוען…</p>
+        <p className="text-sm text-[#63665e]">טוענים…</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-[#f8f7f4] text-[#1e201d] flex flex-col md:flex-row">
-      <div className="sticky top-0 z-40 flex items-center justify-between border-b border-[#deddd8] bg-white px-4 py-3 md:hidden">
-        <div className="flex items-center gap-2">
-          <BrandMark className="h-7 w-7 text-[#20211f]" />
-          <div>
-            <span className="text-sm font-black text-[#20211f]">ישראמארקט</span>
-            {businessName ? <span className="mr-2 text-xs text-[#747570]">/ {businessName}</span> : null}
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-40 flex min-h-14 items-center justify-between gap-2 border-b border-[#deddd8] bg-white pt-[env(safe-area-inset-top)] pr-[max(0.5rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))] md:hidden">
+        {back ? (
+          <Link
+            href={back.href}
+            className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[#20211f] active:bg-[#f4f3ee]"
+          >
+            <IconArrowRight className="h-5 w-5 shrink-0" />
+            <span>{back.label}</span>
+          </Link>
+        ) : (
+          <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
+            <BrandMark className="h-7 w-7 shrink-0 text-[#20211f]" />
+            {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
+                word they would recognise. */}
+            <span className="min-w-0 truncate text-[15px] font-black text-[#20211f]">
+              {businessName || "ישראמארקט"}
+            </span>
+          </Link>
+        )}
+        <div className="flex shrink-0 items-center gap-2">
           {demo ? (
             <span
-              className="rounded-full px-2 py-0.5 text-[10px] font-black"
+              className="rounded-full px-2 py-0.5 text-[11px] font-black"
               style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
             >
-              מצב הדגמה
+              דמו
             </span>
           ) : null}
-          <BrandPicker variant="mobile" />
+          {inSetup ? (
+            <button
+              type="button"
+              onClick={logOut}
+              className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[#63665e] underline underline-offset-4"
+            >
+              יציאה
+            </button>
+          ) : (
+            <BrandPicker variant="mobile" />
+          )}
         </div>
-      </div>
+      </header>
 
       <aside
         className="sticky top-0 z-40 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
@@ -142,16 +206,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               refused to shrink, which crushed the logo to a 7px column of wrapping text
               that the trigger then sat on top of. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-4 pb-2.5">
-            <Link href="/dashboard" className="flex min-w-0 items-center gap-3">
+            <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
               <div className="min-w-0">
                 <span className="block font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
-                <span className="-mt-0.5 block text-[11px] text-[#63665e]">שיווק שעובד בישראל</span>
+                <span className="-mt-0.5 block text-xs text-[#63665e]">שיווק לעסקים קטנים</span>
               </div>
             </Link>
             {demo ? (
               <span
-                className="shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black"
+                className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-black"
                 style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
               >
                 דמו
@@ -159,104 +223,115 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             ) : null}
           </div>
           {/* The brand gets its own row, at the top, where it can be seen. */}
-          <div className="px-5 pb-3">
-            <BrandPicker variant="sidebar" />
-          </div>
+          {inSetup ? null : (
+            <div className="px-5 pb-3">
+              <BrandPicker variant="sidebar" />
+            </div>
+          )}
         </div>
 
-        <nav className="flex-1 px-3 py-6 overflow-y-auto">
-          <div className="space-y-1">
-            {PRIMARY_NAV.map((item) => (
-              <NavLink key={item.href} item={item} active={pathname === item.href} />
-            ))}
-          </div>
-
-          <p className="mt-7 mb-2 px-3.5 text-[10px] font-black tracking-wide text-[#b3b0a5]">
-            ניהול
-          </p>
-          <div className="space-y-1">
-            {SECONDARY_NAV.map((item) => (
-              <NavLink key={item.href} item={item} active={pathname === item.href} />
-            ))}
-          </div>
+        <nav aria-label="ניווט ראשי" className="flex-1 overflow-y-auto px-3 py-6">
+          {inSetup ? null : (
+            <div className="space-y-1">
+              {TABS.map((tab) => (
+                <NavLink key={tab.href} tab={tab} active={activeTab?.href === tab.href} />
+              ))}
+            </div>
+          )}
         </nav>
 
-        <div className="p-3 border-t border-[#e6e4dc] flex items-center justify-between bg-[#faf9f7]">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded border border-[#e6e4dc] bg-[#ffffff] text-[#1e201d] flex items-center justify-center font-black text-xs shrink-0">
-              {initials || "ע"}
-            </div>
-            <Link href="/onboarding" className="min-w-0">
-              <p className="truncate text-xs font-bold text-[#1e201d]">{name || "משתמש"}</p>
-              <p className="truncate text-[11px] text-[#63665e]">{businessName || "עסק ישראלי"}</p>
-            </Link>
-          </div>
-          <button
-            onClick={async () => {
-              await endpoints.logout();
-              router.replace("/");
-            }}
-            className="text-xs text-[#63665e] hover:text-[#191b18] underline underline-offset-4"
-            title="יציאה"
+        <div className="p-3 border-t border-[#e6e4dc] flex items-center justify-between gap-2 bg-[#faf9f7]">
+          <Link
+            href={inSetup ? "/onboarding" : "/account"}
+            className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-md px-1 hover:bg-[#f4f3ee]"
           >
+            <span className="w-8 h-8 rounded border border-[#e6e4dc] bg-[#ffffff] text-[#1e201d] flex items-center justify-center font-black text-xs shrink-0">
+              {initials || "ע"}
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-xs font-bold text-[#1e201d]">{name || "החשבון שלי"}</span>
+              <span className="block truncate text-xs text-[#63665e]">{businessName || "העסק שלי"}</span>
+            </span>
+          </Link>
+          <button
+            type="button"
+            onClick={logOut}
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 text-xs text-[#63665e] hover:bg-[#f4f3ee] hover:text-[#191b18]"
+          >
+            <IconLogout className="h-4 w-4" />
             יציאה
           </button>
         </div>
       </aside>
 
       <div className="dot-grid flex-1 flex flex-col min-w-0">
-        <main key={pathname} className="rise mx-auto w-full max-w-7xl flex-1 px-4 py-6 pb-24 md:px-8 md:py-8">
+        <main
+          key={pathname}
+          className={`rise mx-auto w-full max-w-7xl flex-1 px-4 py-6 md:px-8 md:py-8 ${
+            inSetup ? "pb-10" : "pb-[calc(6rem+env(safe-area-inset-bottom))] md:pb-8"
+          }`}
+        >
           {children}
         </main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#cecdc7] bg-white px-1 pb-[max(6px,env(safe-area-inset-bottom))] pt-1 md:hidden">
-        {PRIMARY_NAV.map((item) => {
-          const active = pathname === item.href;
-          const Icon = item.icon;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`nav-item flex min-h-14 flex-col items-center justify-center gap-1 text-[10px] font-bold ${
-                active ? "text-[#20211f]" : "text-[#898a85]"
-              }`}
-            >
-              <Icon className="nav-icon h-5 w-5" />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {inSetup ? null : (
+        <nav
+          aria-label="ניווט ראשי"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#cecdc7] bg-white pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] md:hidden"
+        >
+          {TABS.map((tab) => {
+            const active = activeTab?.href === tab.href;
+            const Icon = tab.icon;
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                aria-current={active ? "page" : undefined}
+                className={`nav-item relative flex min-h-14 flex-col items-center justify-center gap-1 whitespace-nowrap py-1.5 text-xs font-bold ${
+                  active ? "text-[#20211f]" : "text-[#63665e]"
+                }`}
+              >
+                {active ? (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-5 top-0 h-[3px] rounded-b"
+                    style={{ background: ACCENT.accent }}
+                  />
+                ) : null}
+                <Icon className="nav-icon h-6 w-6" />
+                <span>{tab.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      )}
 
       <ToastHost />
     </div>
   );
 }
 
-/** Sidebar row. Shared by both nav groups so they cannot drift apart. */
-function NavLink({
-  item,
-  active,
-}: {
-  item: { href: string; label: string; icon: (props: { className?: string }) => React.ReactElement };
-  active: boolean;
-}) {
-  const Icon = item.icon;
+/** Sidebar row. */
+function NavLink({ tab, active }: { tab: Tab; active: boolean }) {
+  const Icon = tab.icon;
   return (
     <Link
-      href={item.href}
-      className={`nav-item relative flex items-center gap-3 px-3.5 py-2.5 rounded-md text-sm transition-colors ${
-        active
-          ? "bg-[#e9e8e3] text-[#20211f] font-black"
-          : "text-[#63665e] hover:text-[#1e201d] hover:bg-[#f8f7f4]"
+      href={tab.href}
+      aria-current={active ? "page" : undefined}
+      className={`nav-item relative flex min-h-11 items-center gap-3 rounded-md px-3.5 py-2.5 text-[15px] transition-colors ${
+        active ? "font-black text-[#20211f]" : "text-[#63665e] hover:bg-[#f8f7f4] hover:text-[#1e201d]"
       }`}
+      style={active ? { background: ACCENT.surface } : undefined}
     >
       {active ? (
-        <span className="nav-active-bar absolute right-0 top-2 bottom-2 w-[3px] rounded-r bg-[#343632]" />
+        <span
+          className="nav-active-bar absolute right-0 top-2 bottom-2 w-[3px] rounded-r"
+          style={{ background: ACCENT.accent }}
+        />
       ) : null}
-      <Icon className={`nav-icon w-5 h-5 ${active ? "text-[#20211f]" : "text-[#63665e]"}`} />
-      <span>{item.label}</span>
+      <Icon className="nav-icon h-5 w-5" />
+      <span>{tab.label}</span>
     </Link>
   );
 }

@@ -25,30 +25,30 @@ export type BudgetStage = {
 export const BUDGET_STAGES: BudgetStage[] = [
   {
     key: "below_viable",
-    title: "רימרקטינג בלבד",
+    title: "רק למי שכבר מכיר אתכם",
     range: `עד ${RETARGETING_ONLY_BELOW_NIS.toLocaleString("he-IL")} ₪`,
-    buys: "מתחת לרף הזה לא כדאי לנסות לגייס לקוחות חדשים בכסף. עדיף להשקיע במי שכבר מכיר אתכם.",
+    buys: "בסכום כזה לא כדאי לשלם כדי להביא לקוחות חדשים. עדיף להשקיע במי שכבר מכיר אתכם.",
     suggestion: 1_800,
   },
   {
     key: "validation",
     title: "בדיקה",
     range: `${RETARGETING_ONLY_BELOW_NIS.toLocaleString("he-IL")}–${STAGE_GROWTH_NIS.toLocaleString("he-IL")} ₪`,
-    buys: "מספיק כדי לבדוק איזה מסר, קהל ומבצע עובדים — לפני שמגדילים.",
+    buys: "מספיק כדי למצוא מסר, קהל ומבצע שמביאים לקוחות. אחר כך מגדילים.",
     suggestion: 3_500,
   },
   {
     key: "growth",
     title: "צמיחה",
     range: `${STAGE_GROWTH_NIS.toLocaleString("he-IL")}–${STAGE_SCALE_FLOOR_NIS.toLocaleString("he-IL")} ₪`,
-    buys: "מספיק כדי להגדיל מה שכבר הוכיח את עצמו, ולא רק לבחון.",
+    buys: "מספיק כדי להשקיע יותר במה שכבר הוכיח את עצמו.",
     suggestion: 7_000,
   },
   {
     key: "scale",
-    title: "סקייל",
+    title: "התרחבות",
     range: `מעל ${STAGE_SCALE_FLOOR_NIS.toLocaleString("he-IL")} ₪`,
-    buys: "תקציב למשפך מלא: 60% לקרים, 30% לחמים, 10% לנאמנות.",
+    buys: "60% לקהל חדש, 30% למי שכבר מכיר אתכם, 10% ללקוחות קבועים.",
     suggestion: 12_000,
   },
 ];

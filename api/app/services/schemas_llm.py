@@ -220,9 +220,18 @@ BRAND_LANGUAGE_SCHEMA = {
                         "enum": ["primary", "accent", "background", "ink", "secondary"],
                     },
                     "name": {"type": "string", "description": "שם צבע בעברית"},
+                    "seen_in": {
+                        "type": "string",
+                        "enum": ["screenshot", "logo", "photos", "css"],
+                        "description": "איפה הצבע הזה נראה: צילום המסך, הלוגו, התמונות, או רק ב-CSS",
+                    },
                 },
                 "required": ["hex", "role", "name"],
             },
+        },
+        "card_photo_index": {
+            "type": "integer",
+            "description": "המספר של תמונת אתר נקייה (בלי טקסט ובלי לוגו) שאפשר להניח עליה כותרת, או -1 אם אין",
         },
         "typography": {
             "type": "object",
@@ -554,6 +563,33 @@ PLAN_CORE_SCHEMA = {
     ],
 }
 
+# Which Instagram source(s) a written post leans on. The refs are the labels printed in
+# the Instagram signal block (O1 = the business's own post, C1 = another account's); the
+# code maps them back to real permalinks and drops any ref that was not in the block.
+INSPIRATION_FIELDS = {
+    "inspiration_refs": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": (
+            "מזהי המקורות מבלוק האינסטגרם (למשל O1, C3) שהפוסט נשען על הדפוס שלהם. "
+            "רק מזהים שהופיעו בבלוק. אם אין נתוני אינסטגרם או שהפוסט לא נשען על אף אחד — רשימה ריקה."
+        ),
+    },
+    "inspiration_note": {
+        "type": "string",
+        "description": (
+            "משפט קצר לבעל העסק: איזה דפוס הפוסט הזה ממשיך ולמה (למשל 'רילס עם הוק של שאלה, כמו הפוסט שלך "
+            "שנשמר הכי הרבה'). בלי מספרים שלא הופיעו בבלוק. אם inspiration_refs ריק — מחרוזת ריקה."
+        ),
+    },
+}
+
+MONTHLY_POST_ITEM_SCHEMA = {
+    **ROADMAP_ITEM_SCHEMA,
+    "properties": {**ROADMAP_ITEM_SCHEMA["properties"], **INSPIRATION_FIELDS},
+    "required": [*ROADMAP_ITEM_SCHEMA["required"], *INSPIRATION_FIELDS.keys()],
+}
+
 MONTHLY_POSTS_SCHEMA = {
     "type": "object",
     "title": "MonthlyPosts",
@@ -561,10 +597,62 @@ MONTHLY_POSTS_SCHEMA = {
     "properties": {
         "posts": {
             "type": "array",
-            "items": ROADMAP_ITEM_SCHEMA,
+            "items": MONTHLY_POST_ITEM_SCHEMA,
         }
     },
     "required": ["posts"],
+}
+
+INSPIRATION_BRIEF_SCHEMA = {
+    "type": "object",
+    "title": "InspirationBrief",
+    "description": "ניתוח דפוסים קצר מתוך הפוסטים המצליחים של העסק ושל חשבונות אחרים",
+    "properties": {
+        "summary": {
+            "type": "string",
+            "description": "שניים-שלושה משפטים לבעל העסק: מה עובד ומה כדאי לנסות החודש. בלי מספרים שלא סופקו.",
+        },
+        "patterns": {
+            "type": "array",
+            "maxItems": 10,
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "enum": ["format", "hook", "caption_length", "cta", "timing", "topic"],
+                        "description": "סוג הדפוס: פורמט, הוק, אורך כיתוב, קריאה לפעולה, ימים ושעות, נושא",
+                    },
+                    "pattern": {
+                        "type": "string",
+                        "description": "הדפוס במשפט אחד פרקטי, למשל 'רילס של 10 שניות שפותח בשאלה ישירה'",
+                    },
+                    "evidence": {
+                        "type": "string",
+                        "description": "מה בנתונים מראה את זה, רק מתוך המספרים שסופקו. אם הראיה חלשה — כתוב זאת.",
+                    },
+                    "source_refs": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "minItems": 1,
+                        "description": "מזהי הפוסטים שהדפוס נלמד מהם (O1, C2...). רק מזהים שסופקו.",
+                    },
+                    "strength": {
+                        "type": "string",
+                        "enum": ["strong", "weak"],
+                        "description": "strong רק אם הדפוס חוזר ביותר מפוסט אחד או מבוסס על מדדי שמירות/שיתופים של העסק",
+                    },
+                },
+                "required": ["category", "pattern", "evidence", "source_refs", "strength"],
+            },
+        },
+        "caveats": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "מגבלות הנתונים: מעט פוסטים, אין מדדי חשיפה למתחרים, חשבון שלא נמצא וכו'",
+        },
+    },
+    "required": ["summary", "patterns", "caveats"],
 }
 
 POST_REWRITE_SCHEMA = {
@@ -589,8 +677,17 @@ POST_REWRITE_SCHEMA = {
             },
             "required": ["instagram", "facebook", "whatsapp"],
         },
+        **INSPIRATION_FIELDS,
     },
-    "required": ["title", "hook", "caption", "cta", "overlay_text", "outlet_captions"],
+    "required": [
+        "title",
+        "hook",
+        "caption",
+        "cta",
+        "overlay_text",
+        "outlet_captions",
+        *INSPIRATION_FIELDS.keys(),
+    ],
 }
 
 DIAGNOSTIC_SCHEMA = {

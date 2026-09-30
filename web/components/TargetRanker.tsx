@@ -4,6 +4,11 @@ import { useState } from "react";
 import type { GrowthTargetCandidate } from "@/lib/api";
 import { AGENT_NAME } from "@/lib/agent";
 import { IconCheck, IconSparkles } from "@/lib/icons";
+import { SECTIONS } from "@/lib/sections";
+
+/** The one section colour system, instead of this component's own sand and sage. */
+const TONE = SECTIONS.decisions;
+const TINT = { background: TONE.surface, borderColor: TONE.border, color: TONE.accent };
 
 /** A quarter carries three priorities. Four is a list, not a focus. */
 export const MAX_TARGETS = 3;
@@ -71,7 +76,7 @@ export function TargetRanker({
           <h3 className="text-sm font-black text-[#191b18]">הסדר שלי</h3>
           <span className={`text-[11px] ${atCap ? "font-bold text-[#191b18]" : "text-[#8b8e84]"}`}>
             {value.length
-              ? `${value.length} מתוך ${MAX_TARGETS} עדיפויות · הראשון הוא המוביל`
+              ? `${value.length} מתוך ${MAX_TARGETS} · הראשון הכי חשוב`
               : `אפשר לבחור עד ${MAX_TARGETS}`}
           </span>
         </div>
@@ -105,7 +110,7 @@ export function TargetRanker({
                   <span
                     aria-hidden
                     className="mt-0.5 cursor-grab select-none text-lg leading-none text-[#b3b0a5]"
-                    title="גררו כדי לשנות סדר"
+                    title="גררו כדי לשנות את הסדר"
                   >
                     ⠿
                   </span>
@@ -123,7 +128,7 @@ export function TargetRanker({
                       type="button"
                       onClick={() => move(index, index - 1)}
                       disabled={index === 0}
-                      aria-label="העבר למעלה"
+                      aria-label="להזיז למעלה"
                       className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
                     >
                       ↑
@@ -132,7 +137,7 @@ export function TargetRanker({
                       type="button"
                       onClick={() => move(index, index + 1)}
                       disabled={index === value.length - 1}
-                      aria-label="העבר למטה"
+                      aria-label="להזיז למטה"
                       className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
                     >
                       ↓
@@ -140,7 +145,7 @@ export function TargetRanker({
                     <button
                       type="button"
                       onClick={() => remove(target)}
-                      aria-label="הסר יעד"
+                      aria-label="להסיר את היעד"
                       className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] hover:bg-[#f8f7f4]"
                     >
                       ✕
@@ -157,14 +162,17 @@ export function TargetRanker({
         )}
 
         {agentCanDecide ? (
-          <div className="mt-3 flex flex-col gap-2 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div
+            className="mt-3 flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
+            style={{ background: TONE.surface, borderColor: TONE.border }}
+          >
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-xs font-bold text-[#685f47]">
+              <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
                 <IconSparkles className="h-3.5 w-3.5" />
                 יש המלצה מוכנה
               </p>
               <p className="mt-1 text-xs leading-5 text-[#5e6159]">
-                {AGENT_NAME} דירגה את שלושת היעדים שלדעתה יתנו את התוצאה הגדולה ביותר לעסק הזה.
+                {AGENT_NAME} סידרה את 3 היעדים שלדעתה יועילו לעסק הכי הרבה.
               </p>
             </div>
             {agentAlreadyPicked ? (
@@ -172,9 +180,9 @@ export function TargetRanker({
               // looked broken: the owner's manual picks usually *are* her three (she is
               // listed first), so the natural click landed on a dead control with no
               // explanation of why. An explicit confirmation says what actually happened.
-              <p className="flex shrink-0 items-center gap-2 rounded-md border border-[#c7d6c2] bg-[#f3f7f1] px-3 py-2 text-xs font-bold text-[#374b3d]">
+              <p className="flex shrink-0 items-center gap-2 rounded-md border bg-white px-3 py-2 text-xs font-bold" style={{ borderColor: TONE.border, color: TONE.accent }}>
                 <IconCheck className="h-3.5 w-3.5" />
-                הבחירה שלכם זהה להמלצה של {AGENT_NAME}
+                בחרתם בדיוק מה ש{AGENT_NAME} המליצה
               </p>
             ) : (
               <button
@@ -182,7 +190,7 @@ export function TargetRanker({
                 onClick={() => onChange(recommended.map((item) => item.target))}
                 className="shrink-0 rounded-md bg-[#20211f] px-4 py-2 text-xs font-bold text-white hover:bg-[#343632]"
               >
-                תנו ל{AGENT_NAME} להחליט
+                לתת ל{AGENT_NAME} להחליט
               </button>
             )}
           </div>
@@ -194,8 +202,8 @@ export function TargetRanker({
           <h3 className="text-sm font-black text-[#191b18]">יעדים אפשריים</h3>
           <p className="mt-1 text-xs text-[#8b8e84]">
             {atCap
-              ? `בחרתם ${MAX_TARGETS} עדיפויות — זה המקסימום לרבעון. הסירו אחת כדי להחליף.`
-              : "מבוססים על העסק, על האתר ועל האבחון. לחצו כדי להוסיף לרשימה שלכם."}
+              ? `בחרתם ${MAX_TARGETS} יעדים, וזה המקסימום לרבעון. כדי להחליף, הסירו אחד.`
+              : "לפי העסק, האתר והאבחון. לחצו על יעד כדי להוסיף אותו."}
           </p>
           <ul className="mt-3 space-y-2">
             {available.map((item) => {
@@ -217,7 +225,7 @@ export function TargetRanker({
                       <span className="mb-1 flex items-center gap-2">
                         <span className="text-[10px] font-bold text-[#8b8e84]">{item.category}</span>
                         {isRecommended ? (
-                          <span className="rounded-full bg-[#fcf9f2] px-2 py-0.5 text-[10px] font-bold text-[#685f47]">
+                          <span className="rounded-full border px-2 py-0.5 text-[10px] font-bold" style={TINT}>
                             {AGENT_NAME} ממליצה · {item.recommended_rank}
                           </span>
                         ) : null}
@@ -232,9 +240,9 @@ export function TargetRanker({
           </ul>
         </section>
       ) : value.length ? (
-        <p className="flex items-center gap-2 text-xs font-bold text-[#2d3f32]">
+        <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
           <IconCheck className="h-4 w-4" />
-          כל היעדים המוצעים נבחרו. סדרו אותם לפי סדר החשיבות.
+          בחרתם את כל היעדים. סדרו אותם לפי מה שהכי חשוב לכם.
         </p>
       ) : null}
     </div>

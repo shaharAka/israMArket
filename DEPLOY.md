@@ -65,6 +65,23 @@ Back up the `api-data` volume. It holds the SQLite database and every generated 
 there is no other copy. A plain file copy is consistent enough for SQLite if the API is
 stopped, or use `sqlite3 isramarket.db ".backup"` for an online copy.
 
+## Weekly research job
+
+The ongoing research (competitors, Google searches, the Israeli calendar, the business's
+own results and site — see `api/app/services/research.py`) runs once a week per business.
+There is no scheduler inside the API; call the job from cron on the host:
+
+```bash
+# Sundays 06:00 (host time). Skips any business researched in the last 6 days.
+0 6 * * 0  cd /srv/isramarket && docker compose exec -T api python -m app.jobs.weekly_research >> /var/log/isramarket-research.log 2>&1
+```
+
+Locally: `cd api && .venv/bin/python -m app.jobs.weekly_research` (`--business-id 1`,
+`--force`, `--dry-run`). Each run makes one strategy-model call per business, a few Google
+autocomplete requests and one small homepage read per site. Scheduled runs do not use the
+owner's 3 manual runs a day (`POST /research/run`). Exit code 1 means at least one business
+failed; the others still ran.
+
 ## Cost note
 
 Image generation defaults to `gemini-3-pro-image` at 2K — roughly 20-30s and the

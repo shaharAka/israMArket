@@ -5,6 +5,7 @@ calls in the product (`propose_audiences` and the post writer) are mocked, while
 measurement tests build their GA4/Meta payload through the real `performance._attribute`
 — so the rollup is exercised against the attribution the product actually stores.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil
@@ -636,7 +637,7 @@ class AudienceTestCase(unittest.TestCase):
         dumped = json.dumps(payload, ensure_ascii=False)
         for invented in ("rate", "roas", "roi", "average", "benchmark"):
             self.assertNotIn(invented, dumped.lower())
-        self.assertIn("סשנים", payload["method"])
+        self.assertIn("כניסות לאתר", payload["method"])
 
     def test_without_a_connection_there_are_no_metrics_only_an_explanation(self):
         audience = self.add_audience(name="זוגות צעירים")
@@ -648,7 +649,7 @@ class AudienceTestCase(unittest.TestCase):
         self.assertFalse(payload["available"])
         self.assertEqual(payload["connected"], {"ga4": False, "meta": False})
         self.assertIn("חיבור", payload["explanation"])
-        self.assertIn("Google Analytics", payload["explanation"])
+        self.assertIn("נתוני האתר", payload["explanation"])
         self.assertEqual(payload["rows"][0]["posts"], 1)  # the sample size is still honest
         self.assertEqual(payload["rows"][0]["measured_posts"], 0)
         dumped = json.dumps(payload["rows"], ensure_ascii=False)
@@ -664,7 +665,7 @@ class AudienceTestCase(unittest.TestCase):
         payload = self.rollup()
         self.assertFalse(payload["available"])
         self.assertTrue(payload["connected"]["ga4"])
-        self.assertIn("סנכרון", payload["explanation"])
+        self.assertIn("רעננו", payload["explanation"])
 
     def test_untagged_posts_are_reported_never_dropped_or_spread(self):
         self.add_strategy([post(1, "פוסט א", utm_content="p1-a"), post(2, "פוסט ב", utm_content="p2-b")])

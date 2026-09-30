@@ -31,8 +31,8 @@ CONNECTED = "connected"
 
 SETUP = "setup"
 RUNNING = "running"
-SETUP_TITLE = "הגדרה חד-פעמית"
-RUNNING_TITLE = "הרצה שוטפת"
+SETUP_TITLE = "פעם אחת, בהתחלה"
+RUNNING_TITLE = "כל חודש"
 
 # The order `next` walks when several items are still open. Ranked by what the owner
 # actually gets out of doing it now, and defined separately from `groups` so the two are
@@ -183,65 +183,65 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
         _item(
             "scan",
             title="קריאת האתר",
-            why="בלעדיה אין זהות מותג, צבעים ותמונות — והתוכן נוצר בלי החומרים שלכם.",
+            why="מהאתר אנחנו לומדים את הצבעים, התמונות והסגנון שלכם. בלי זה הפוסטים ייצאו כלליים.",
             action_href="/decisions",
-            action_label="לסריקת האתר",
+            action_label="לקרוא את האתר",
             done=_filled(stored.get("brand_language")),
         ),
         _item(
             "diagnostics",
-            title="אבחון העסק",
-            why="התשובות קובעות אילו יעדים ופוסטים מתאימים לעסק שלכם.",
+            title="כמה שאלות על העסק",
+            why="לפי התשובות נבחר יעדים ופוסטים שמתאימים לעסק שלכם.",
             action_href="/decisions",
-            action_label="למילוי האבחון",
+            action_label="לענות על השאלות",
             done=_has_answers(stored.get("diagnostics")),
         ),
         _item(
             "priorities",
-            title="יעדי צמיחה",
-            why="היעדים שבחרתם הם מה שהתוכנית החודשית מכוונת אליו.",
+            title="היעדים שלכם",
+            why="התוכנית של כל חודש נבנית סביב היעדים שבחרתם.",
             action_href="/decisions",
-            action_label="לבחירת יעדים",
+            action_label="לבחור יעדים",
             done=bool(_ranked_targets(stored.get("growth_targets"))),
         ),
         _item(
             "quarter",
-            title="תוכנית רבעונית",
-            why="התוכנית נותנת לחודש הקרוב הקשר של יעד גדול, לא רק רשימת פוסטים.",
+            title="התוכנית של הרבעון",
+            why="כך כל חודש הוא צעד לקראת יעד גדול, ולא רק רשימת פוסטים.",
             action_href="/plan",
-            action_label="לבניית התוכנית",
+            action_label="לבנות את התוכנית",
             done=_filled(stored.get("long_horizon_plan")),
         ),
         _item(
             "audiences",
-            title="קהלי יעד",
-            why="כל פוסט ידע למי הוא מדבר, והתוצאות יוצגו לפי קהל.",
+            title="למי אתם פונים",
+            why="כל פוסט ייכתב לקהל מסוים, ותראו את התוצאות לפי קהל.",
             action_href="/decisions#audiences",
-            action_label="להגדרת קהלים",
+            action_label="לבחור קהלים",
             done=_has_rows(db, Audience, business_id),
         ),
         _item(
             "media",
-            title="ספריית מדיה",
+            title="התמונות שלי",
             why="התמונות שלכם ישמשו בכל עיצוב, במקום תמונות מלאי גנריות.",
             action_href="/assets",
-            action_label="להעלאת תמונות",
+            action_label="להעלות תמונות",
             done=_has_rows(db, Asset, business_id),
         ),
         _item(
             "google",
-            title="חיבור Google Analytics",
-            why="רק כך רואים אילו פוסטים וערוצים באמת הביאו תנועה והמרות.",
+            title="חיבור נתוני האתר",
+            why="רק כך רואים אילו פוסטים באמת הביאו אנשים לאתר, ומה הם עשו שם.",
             action_href="/integrations",
-            action_label="לחיבור GA4",
+            action_label="לחבר את נתוני האתר",
             done="ga4" in connected,
         ),
         _item(
             "instagram",
             title="חיבור אינסטגרם",
-            why="מאפשר לפרסם ולמדוד את הפוסטים בלי להעתיק אותם ידנית.",
+            why="כך נמדוד את הפוסטים, ובהמשך גם נפרסם אותם בלי שתעתיקו ידנית.",
             action_href="/integrations",
-            action_label="לחיבור אינסטגרם",
+            action_label="לחבר את אינסטגרם",
             done="meta" in connected,
         ),
     ]
@@ -252,9 +252,9 @@ def _running_items(posts: list[dict]) -> list[dict]:
         _item(
             "plan",
             title="תוכנית החודש",
-            why="התוכנית היא מה שהופך את האסטרטגיה לפוסטים מוכנים לעבודה.",
+            why="כאן התוכנית הופכת לפוסטים של החודש, מוכנים לאישור.",
             action_href="/strategy",
-            action_label="ליצירת התוכנית",
+            action_label="לבנות את החודש",
             done=bool(posts),
         ),
         _item(
@@ -262,15 +262,15 @@ def _running_items(posts: list[dict]) -> list[dict]:
             title="אישור הפוסטים",
             why="רק פוסטים מאושרים נכנסים לפרסום ולמדידה.",
             action_href="/posts",
-            action_label="לאישור הפוסטים",
+            action_label="לאשר את הפוסטים",
             done=_all_approved(posts),
         ),
         _item(
             "publish",
-            title="פרסום וסימון קישור",
-            why="סימון הקישור שפורסם הוא מה שמחבר בין הפוסט לתוצאות שלו.",
+            title="סימון מה פורסם",
+            why="כשאתם מסמנים את הקישור לפוסט שפורסם, אנחנו יכולים לקשר אותו לתוצאות.",
             action_href="/posts",
-            action_label="לסימון פרסום",
+            action_label="לסמן מה פורסם",
             done=any(_filled(item.get("published_url")) for item in posts),
         ),
     ]

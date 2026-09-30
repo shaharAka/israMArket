@@ -8,6 +8,7 @@ The one thing these tests deliberately do not assert is that anything gets publi
 this product cannot post to Instagram or Facebook, and the suite pins that down as data
 (`capability["auto_publish"] is False`) instead of pretending otherwise.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import shutil
 import tempfile
@@ -482,7 +483,7 @@ class PublishTestCase(unittest.TestCase):
     def test_the_brief_names_the_audiences_and_the_tracking_convention(self):
         text = self.client.get("/publish/brief").json()["text"]
         self.assertIn("זוגות צעירים", text)
-        self.assertIn("הקהל הראשי", text)
+        self.assertIn("הקהל העיקרי", text)
         self.assertIn("אזור: תל אביב", text)
         self.assertIn("גיל: 25-40", text)
         self.assertIn("תחומי עניין: אפייה ביתית", text)

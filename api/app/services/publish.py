@@ -38,7 +38,7 @@ from app.services.jsonutil import loads
 
 # --- scheduling -----------------------------------------------------------------------
 
-SCHEDULE_FORMAT_ERROR_HE = "תאריך לא תקין. הזינו תאריך בפורמט YYYY-MM-DD, למשל 2026-03-15."
+SCHEDULE_FORMAT_ERROR_HE = "התאריך לא תקין. הזינו תאריך כמו 2026-03-15 (שנה-חודש-יום)."
 
 _ISO_DAY = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
@@ -86,33 +86,33 @@ def _stored_day(post: dict) -> date | None:
 PUBLISH_SCOPES = ("instagram_content_publish", "pages_manage_posts")
 
 SCOPE_LABELS_HE = {
-    "instagram_content_publish": "פרסום תוכן בחשבון האינסטגרם העסקי",
-    "pages_manage_posts": "פרסום בעמוד הפייסבוק",
+    "instagram_content_publish": "לפרסם פוסטים בחשבון האינסטגרם העסקי",
+    "pages_manage_posts": "לפרסם פוסטים בעמוד הפייסבוק",
 }
 
 NO_META_HE = (
-    "חשבון מטא (פייסבוק ואינסטגרם) לא מחובר, ולכן אין למערכת גישה לדפים שלכם."
+    "פייסבוק ואינסטגרם לא מחוברים, ולכן אין לנו גישה לדפים שלכם."
 )
 
 APPROVAL_HE = (
-    "פרסום אוטומטי לאינסטגרם ולפייסבוק דורש אישור של מטא לאפליקציה הזאת. "
-    "מטא בודקת אפליקציות ומאשרת הרשאת פרסום רק בסוף הבדיקה שלה, וזה לא תלוי בנו ולא בהגדרה במערכת. "
-    "עד שהאישור הזה יתקבל, למערכת אין אפשרות טכנית לפרסם בשמכם לשום רשת."
+    "כדי לפרסם אוטומטית באינסטגרם ובפייסבוק, מטא (החברה של שתיהן) צריכה לאשר את האפליקציה שלנו. "
+    "מטא נותנת הרשאת פרסום רק בסוף הבדיקה שלה, וזה לא תלוי בנו ולא בהגדרה כלשהי. "
+    "עד שהאישור יגיע, אין לנו דרך טכנית לפרסם בשמכם באף רשת."
 )
 
 RECONNECT_HE = (
-    "כשהאישור יתקבל, צריך יהיה לחבר מחדש את חשבון מטא בעמוד החיבורים, "
+    "כשהאישור יגיע, חברו מחדש את פייסבוק ואינסטגרם בעמוד החיבורים, "
     "כדי שההרשאה החדשה תיכנס לתוקף."
 )
 
 MANUAL_HE = (
-    "בינתיים מפרסמים ידנית: כל פוסט כאן מוכן עם כיתוב, תמונה וקישור עם מעקב, "
-    "ואפשר להעתיק אותו לאפליקציה של פייסבוק או אינסטגרם ולפרסם משם."
+    "בינתיים מפרסמים ידנית: כל פוסט כאן מוכן עם כיתוב, תמונה וקישור למעקב. "
+    "העתיקו אותו לאפליקציה של אינסטגרם או פייסבוק ופרסמו משם."
 )
 
-GRANTED_HE = "לחיבור מטא יש הרשאה פעילה לפרסום."
+GRANTED_HE = "יש לנו הרשאה לפרסם בשמכם באינסטגרם ובפייסבוק."
 
-PARTIAL_HE = "לפרסום בכל היעדים חסרות עדיין הרשאות: {names}."
+PARTIAL_HE = "כדי לפרסם בכל המקומות חסרות עוד הרשאות: {names}."
 
 
 def _integration(db: Session, business: Business, provider: str) -> Integration | None:
@@ -307,25 +307,25 @@ def queue_for(
 # --- the campaign brief ---------------------------------------------------------------
 
 STAGE_LABELS_HE = {
-    "below_viable": "מתחת לסף הרווחיות",
+    "below_viable": "מתחת לתקציב המינימלי",
     "validation": "שלב בדיקה",
     "growth": "שלב צמיחה",
     "scale": "שלב הרחבה",
 }
 
 ALLOCATION_LABELS = (
-    ("meta_ads_share_pct", "פרסום ממומן במטא"),
-    ("organic_production_share_pct", "הפקת תוכן אורגני"),
+    ("meta_ads_share_pct", "מודעות בפייסבוק ובאינסטגרם"),
+    ("organic_production_share_pct", "הפקת פוסטים (בלי תשלום על חשיפה)"),
     ("local_promotion_share_pct", "קידום מקומי"),
 )
 
 EMPTY_PLAN_HE = (
-    "התוכנית השמורה לא כוללת עדיין תקציב, קהלים או יעדים, "
-    "ולכן אין כאן נתונים שאפשר להעביר למפרסם."
+    "בתוכנית עוד אין תקציב, קהלים או יעדים, "
+    "ולכן אין כאן נתונים להעביר למי שמפרסם בשבילכם."
 )
 
 TRACKING_NOTE_HE = (
-    "כל פוסט מפורסם עם הקישור שלו, כדי שאפשר יהיה לשייך לחיצות ופניות לפוסט שהביא אותן."
+    "כל פוסט מתפרסם עם קישור משלו, כדי שנדע מאיזה פוסט הגיעה כל לחיצה וכל פנייה."
 )
 
 
@@ -625,7 +625,7 @@ def render_brief(data: dict) -> str:
         for item in data["audiences"]:
             line = f"- {item['name']}"
             if item.get("is_primary"):
-                line += " (הקהל הראשי)"
+                line += " (הקהל העיקרי)"
             if item.get("summary"):
                 line += f": {item['summary']}"
             sentence(line)
@@ -665,7 +665,8 @@ def render_brief(data: dict) -> str:
         expectation_lines.append(f"{unit} בחודש: " + _counts_text(expectations["expected_purchases"]))
     if expectations.get("realistic_roas"):
         expectation_lines.append(
-            f"ROAS ריאלי: {expectations['realistic_roas']['min']:g}-{expectations['realistic_roas']['max']:g}"
+            "הכנסה צפויה על כל שקל בפרסום: "
+            f"{expectations['realistic_roas']['min']:g}-{expectations['realistic_roas']['max']:g} ₪"
         )
     if expectation_lines:
         has_figures = True

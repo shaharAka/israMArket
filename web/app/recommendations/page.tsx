@@ -7,10 +7,17 @@ import { IconCheck, IconLightbulb } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 const PRIORITY_MAP = {
-  high: { label: "דחוף לשבוע זה", tone: "rose" as const },
+  high: { label: "דחוף השבוע", tone: "rose" as const },
   medium: { label: "מומלץ השבוע", tone: "blue" as const },
-  low: { label: "לשיפור כללי", tone: "slate" as const },
+  low: { label: "לא דחוף", tone: "slate" as const },
 };
+
+/** `2026-09-01` reads as a machine string; the owner reads `1.9.2026`. */
+function formatDay(iso: string) {
+  const [year, month, date] = iso.split("-");
+  if (!year || !month || !date) return iso;
+  return `${Number(date)}.${Number(month)}.${year}`;
+}
 
 export default function RecommendationsPage() {
   const [data, setData] = useState<RecommendationPayload | null>(null);
@@ -23,12 +30,12 @@ export default function RecommendationsPage() {
       .recommendations()
       .then((payload) => {
         if (payload.available === false) {
-          setError("עדיין אין המלצות שבועיות");
+          setError("עוד אין המלצות לשבוע הזה");
           return;
         }
         setData(payload);
       })
-      .catch((err) => setError(err instanceof Error ? err.message : "עדיין אין המלצות"));
+      .catch((err) => setError(err instanceof Error ? err.message : "עוד אין המלצות"));
   }, []);
 
   async function generate() {
@@ -36,9 +43,9 @@ export default function RecommendationsPage() {
     setError("");
     try {
       setData(await endpoints.generateRecommendations());
-      toast("המלצות חדשות הופקו בהצלחה על סמך הביצועים!");
+      toast("יש המלצות חדשות, לפי התוצאות האחרונות");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לייצר המלצות כרגע");
+      setError(err instanceof Error ? err.message : "לא הצלחנו להכין המלצות. נסו שוב בעוד כמה דקות.");
     } finally {
       setPending(false);
     }
@@ -48,14 +55,14 @@ export default function RecommendationsPage() {
   // One primary action per page (UI-RULES rule 1). Adopting is the point of this screen, so
   // the dark filled button is the ONE recommendation waiting to be adopted — the first one
   // still open, which is the actual next step. Every other row gets a quiet outline button,
-  // and "הפק המלצות חדשות" (a regeneration, not a step forward) is an outline button too.
+  // and "להכין המלצות חדשות" (a regeneration, not a step forward) is an outline button too.
   const nextIndex = suggestions.findIndex((item) => !accepted[item.title]);
 
   return (
     <AppShell>
       <PageHeader
         title="המלצות לשבוע הקרוב"
-        subtitle="מה כדאי לעשות השבוע, לפי מה שעבד בפועל"
+        subtitle="מה כדאי לעשות השבוע, לפי מה שבאמת הצליח"
         action={
           <button
             type="button"
@@ -64,7 +71,7 @@ export default function RecommendationsPage() {
             className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
           >
             <IconLightbulb className="w-4 h-4" />
-            <span>{pending ? "מנתח נתונים ומפיק..." : "הפק המלצות חדשות"}</span>
+            <span>{pending ? "מכינים המלצות…" : "להכין המלצות חדשות"}</span>
           </button>
         }
       />
@@ -75,12 +82,12 @@ export default function RecommendationsPage() {
         <div className="space-y-5">
           {/* The week's focus in one line — no heavy banner competing with the button. */}
           <div className="border-b border-[#e9e8e3] pb-4">
-            <p className="text-xs font-bold text-[#747570]">המיקוד של השבוע</p>
+            <p className="text-xs font-bold text-[#747570]">מה חשוב השבוע</p>
             <p className="mt-1 max-w-3xl text-lg font-bold leading-relaxed text-[#20211f]">
               {data.suggestions.week_summary}
             </p>
             <p className="mt-1.5">
-              <Badge tone="slate">שבוע {data.week_of}</Badge>
+              <Badge tone="slate">שבוע שמתחיל ב-{formatDay(data.week_of)}</Badge>
             </p>
           </div>
 
@@ -95,7 +102,7 @@ export default function RecommendationsPage() {
                 <li key={item.title} className="py-5">
                   <div className="flex flex-wrap items-center gap-2">
                     <Badge tone={priority.tone}>{priority.label}</Badge>
-                    <span className="text-xs text-slate-500 font-medium">יעד: {item.target}</span>
+                    <span className="text-xs text-slate-500 font-medium">איפה: {item.target}</span>
                     {isNext ? (
                       <span className="text-xs font-bold text-[#20211f]">· הצעד הבא</span>
                     ) : null}
@@ -111,7 +118,7 @@ export default function RecommendationsPage() {
                   {/* The reasoning is method, not the conclusion — it waits behind an expand. */}
                   <details className="mt-2 max-w-3xl">
                     <summary className="cursor-pointer text-xs font-bold text-[#62635f]">
-                      על בסיס מה ההמלצה (הנתונים שמאחוריה)
+                      למה אנחנו ממליצים
                     </summary>
                     <p className="mt-1.5 text-xs leading-6 text-slate-600">{item.evidence}</p>
                   </details>
@@ -121,17 +128,17 @@ export default function RecommendationsPage() {
                       <>
                         <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700">
                           <IconCheck className="w-3.5 h-3.5" />
-                          סומן כמבוצע
+                          בוצע
                         </span>
                         <button
                           type="button"
                           onClick={() => {
                             setAccepted((prev) => ({ ...prev, [item.title]: false }));
-                            toast("ההמלצה הוחזרה למצב פתוח");
+                            toast("ביטלנו את הסימון");
                           }}
                           className="text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
                         >
-                          החזרה למצב פתוח
+                          לבטל את הסימון
                         </button>
                       </>
                     ) : (
@@ -140,7 +147,7 @@ export default function RecommendationsPage() {
                           type="button"
                           onClick={() => {
                             setAccepted((prev) => ({ ...prev, [item.title]: true }));
-                            toast("מעולה! ההמלצה סומנה כמבוצעת ✓");
+                            toast("מעולה, סימנו שההמלצה בוצעה ✓");
                           }}
                           className={
                             isNext
@@ -149,14 +156,14 @@ export default function RecommendationsPage() {
                           }
                         >
                           <IconCheck className="w-3.5 h-3.5" />
-                          <span>{isNext ? "אמץ את ההמלצה" : "אמץ"}</span>
+                          <span>{isNext ? "לאמץ את ההמלצה" : "לאמץ"}</span>
                         </button>
                         <button
                           type="button"
-                          onClick={() => toast("נשמר לרשימת המעקב")}
+                          onClick={() => toast("שמרנו ברשימת המעקב")}
                           className="text-xs font-bold text-[#62635f] underline underline-offset-2 hover:text-[#20211f]"
                         >
-                          שמור לאחר כך
+                          לשמור להמשך
                         </button>
                       </>
                     )}

@@ -32,7 +32,7 @@ VALID_GOALS: dict[str, tuple[str, ...]] = {
 # The unit a plan is actually trying to produce. Used in copy and in prompts.
 CONVERSION_UNIT = {
     "products": "רכישה",
-    "services": "פנייה (ליד)",
+    "services": "פנייה",
     "both": "רכישה או פנייה",
 }
 

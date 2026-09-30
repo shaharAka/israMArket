@@ -11,7 +11,13 @@ from app.db import get_db
 from app.deps import get_business, get_current_user
 from app.models import Business, Integration, User, WebhookEndpoint
 from app.schemas import Ga4PropertyIn, MetaAccountIn, WebhookIn
-from app.security import create_oauth_state, decode_oauth_state, decrypt_secret, encrypt_secret
+from app.security import (
+    create_oauth_state,
+    decode_oauth_state,
+    decrypt_secret,
+    encrypt_page_tokens,
+    encrypt_secret,
+)
 from app.services import ga4, meta
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
@@ -119,7 +125,7 @@ def ga4_property(
         .first()
     )
     if not item or not item.access_token_enc:
-        raise HTTPException(status_code=400, detail="יש לחבר קודם חשבון Google Analytics")
+        raise HTTPException(status_code=400, detail="חברו קודם את נתוני האתר (גוגל אנליטיקס)")
     extra = loads(item.extra_json, {})
     extra["selected_property_id"] = body.property_id
     item.external_id = body.property_id
@@ -155,7 +161,7 @@ def meta_callback(code: str = "", state: str = "", error: str = "", db: Session 
         item.token_expires_at = tokens["expires_at"]
         item.status = "select_page"
         pages = meta.list_pages(tokens["access_token"])
-        item.extra_json = dumps({"pages": [{k: v for k, v in page.items() if k != "page_access_token"} | {"has_token": True} for page in pages], "page_tokens": {p["page_id"]: p["page_access_token"] for p in pages}, "scopes": tokens.get("scopes") or []})
+        item.extra_json = dumps({"pages": [{k: v for k, v in page.items() if k != "page_access_token"} | {"has_token": True} for page in pages], "page_tokens": encrypt_page_tokens({p["page_id"]: p["page_access_token"] for p in pages}), "scopes": tokens.get("scopes") or []})
         item.updated_at = datetime.utcnow()
         db.commit()
     except Exception as exc:
@@ -175,11 +181,11 @@ def meta_account(
         .first()
     )
     if not item or not item.access_token_enc:
-        raise HTTPException(status_code=400, detail="יש לחבר קודם חשבון מטא")
+        raise HTTPException(status_code=400, detail="חברו קודם את פייסבוק ואינסטגרם")
     extra = loads(item.extra_json, {})
     page_tokens = extra.get("page_tokens") or {}
     if body.page_id not in page_tokens:
-        raise HTTPException(status_code=400, detail="הדף שנבחר לא נמצא בחשבון שחובר")
+        raise HTTPException(status_code=400, detail="הדף שבחרתם לא נמצא בחשבון שחיברתם")
     extra["selected_page_id"] = body.page_id
     extra["selected_instagram_id"] = body.instagram_id
     extra["selected_ad_account_id"] = body.ad_account_id
@@ -227,7 +233,7 @@ def delete_integration(
     db: Session = Depends(get_db),
 ) -> dict:
     if provider not in ("ga4", "meta"):
-        raise HTTPException(status_code=400, detail="ספק לא חוקי")
+        raise HTTPException(status_code=400, detail="אין חיבור כזה")
     item = (
         db.query(Integration)
         .filter(Integration.business_id == business.id, Integration.provider == provider)
@@ -258,3 +264,29 @@ def delete_webhook(
 
 def tokens_for(item: Integration) -> tuple[str, str, datetime | None]:
     return decrypt_secret(item.access_token_enc), decrypt_secret(item.refresh_token_enc), item.token_expires_at
+
+
+def encrypt_legacy_page_tokens(db: Session) -> int:
+    """Rewrite any page token still stored in plain text (written before page tokens were
+    encrypted) with the Fernet key. Idempotent; returns how many tokens it encrypted."""
+    changed = 0
+    for item in db.query(Integration).filter(Integration.provider == "meta").all():
+        extra = loads(item.extra_json, {}) or {}
+        tokens = extra.get("page_tokens") or {}
+        if not isinstance(tokens, dict):
+            continue
+        rewritten: dict[str, str] = {}
+        for page_id, value in tokens.items():
+            value = str(value or "")
+            try:
+                decrypt_secret(value)
+                rewritten[page_id] = value
+            except ValueError:
+                rewritten[page_id] = encrypt_secret(value)
+                changed += 1
+        if rewritten != tokens:
+            extra["page_tokens"] = rewritten
+            item.extra_json = dumps(extra)
+    if changed:
+        db.commit()
+    return changed

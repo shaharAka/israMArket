@@ -16,3 +16,4 @@ google-analytics-data==0.18.19
 cryptography==45.0.6
 pyluach==2.2.0
 python-dotenv==1.1.1
+Pillow==12.3.0

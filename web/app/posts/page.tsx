@@ -1,10 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { PostEditor } from "@/components/PostEditor";
+import { CalendarView } from "@/components/posts/CalendarView";
+import { PostFeed } from "@/components/posts/PostFeed";
+import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
 import { endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
+import { IconCalendar } from "@/lib/icons";
 
 /**
  * What the header's due line depends on.
@@ -23,48 +27,75 @@ function queueSignature(strategy: StrategyPayload | null) {
     .join(",");
 }
 
-/** The one line the header owes the owner: what is due, and a way straight to it. */
-function dueLine(queue: PublishQueue | null, onFocus: (index: number) => void) {
-  // Nothing is claimed until the queue has actually answered. A failed read must not read
-  // as "nothing is due today".
-  if (!queue) return null;
-  const first = queue.due[0];
-  if (!first) {
-    return (
-      <p className="mt-2 text-xs text-[#747570]">אין פוסטים שממתינים לפרסום</p>
-    );
-  }
+/**
+ * The page's state lives in the URL, so the phone's back button does what the owner expects
+ * and other pages can link straight to a post:
+ *
+ *   /posts                 the month's feed
+ *   /posts?post=<index>    one post in the editor (index = its place in the month, from 0)
+ *   /posts?view=calendar   the month view
+ *
+ * `?i=<index>` is the older spelling of `?post=` and is still accepted.
+ */
+function readLocation(params: URLSearchParams | ReturnType<typeof useSearchParams>) {
+  const raw = params.get("post") ?? params.get("i");
+  return {
+    post: raw !== null && /^\d+$/.test(raw) ? Number(raw) : null,
+    calendar: params.get("view") === "calendar",
+  };
+}
+
+function go(query: string, mode: "push" | "replace") {
+  const url = query ? `/posts?${query}` : "/posts";
+  if (mode === "push") window.history.pushState(null, "", url);
+  else window.history.replaceState(null, "", url);
+}
+
+/** List or month — a quiet two-way switch, not a second call to action. */
+function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
+  const item = (active: boolean) =>
+    `inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition-colors ${
+      active ? "bg-white text-[#20211f] shadow-sm" : "text-[#62635f] hover:text-[#20211f]"
+    }`;
   return (
-    <Link
-      href={`/posts?i=${first.index}`}
-      onClick={() => onFocus(first.index)}
-      className="mt-2 inline-flex text-xs font-bold text-[#9f4330] underline underline-offset-4"
-    >
-      {queue.due.length === 1
-        ? "פוסט אחד ממתין לפרסום"
-        : `${queue.due.length} פוסטים ממתינים לפרסום`}
-    </Link>
+    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[#eeede8] p-1">
+      <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)} className={item(!calendar)}>
+        רשימה
+      </button>
+      <button type="button" aria-pressed={calendar} onClick={() => onChange(true)} className={item(calendar)}>
+        <IconCalendar className="h-4 w-4" />
+        לוח
+      </button>
+    </div>
   );
 }
 
 function PostsWorkspace() {
+  const params = useSearchParams();
+  const location = readLocation(params);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
-  const [requestedIndex, setRequestedIndex] = useState(0);
-  // A post is chosen by remounting the editor, so jumping to a post the editor is already
-  // showing would otherwise be a no-op. The token makes every jump a real one.
-  const [focusToken, setFocusToken] = useState(0);
   const [queue, setQueue] = useState<PublishQueue | null>(null);
+
+  // Whether the open post was reached from this page's own feed. Closing it then steps
+  // back through history, so the feed is where it was; a post opened from a link elsewhere
+  // closes onto the feed instead of leaving the app.
+  const openedHere = useRef(false);
+  const feedScroll = useRef(0);
+
+  useEffect(() => {
+    // The older `?i=` spelling becomes the current one, without a new history entry.
+    const current = new URLSearchParams(window.location.search);
+    const legacy = current.get("i");
+    if (legacy !== null && current.get("post") === null) go(`post=${legacy}`, "replace");
+  }, []);
 
   useEffect(() => {
     let active = true;
     async function loadPosts() {
-      const index = Number(new URLSearchParams(window.location.search).get("i") || 0);
-      const safeIndex = Number.isFinite(index) && index >= 0 ? index : 0;
       try {
         const current = await endpoints.strategy();
         if (!active) return;
-        setRequestedIndex(safeIndex);
         setStrategy(current);
         if (current.roadmap.posts.some((post) => !post.image_url)) {
           const prepared = await endpoints.generateAllPostImages();
@@ -74,7 +105,7 @@ function PostsWorkspace() {
           }
         }
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : "טעינת הפוסטים נכשלה");
+        if (active) setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
       }
     }
     void loadPosts();
@@ -104,35 +135,146 @@ function PostsWorkspace() {
   }, [signature]);
 
   const posts = strategy?.roadmap?.posts ?? [];
+  const openIndex =
+    location.post !== null && location.post < posts.length ? location.post : null;
+
+  // Coming back to the feed returns to the row the owner tapped, not the top of the list.
+  const editorOpen = openIndex !== null;
+  useEffect(() => {
+    if (!editorOpen) window.scrollTo(0, feedScroll.current);
+  }, [editorOpen]);
+
+  function openPost(index: number) {
+    feedScroll.current = window.scrollY;
+    openedHere.current = true;
+    go(`post=${index}`, "push");
+    window.scrollTo(0, 0);
+  }
+
+  function closeEditor() {
+    if (openedHere.current) {
+      openedHere.current = false;
+      window.history.back();
+      return;
+    }
+    feedScroll.current = 0;
+    go("", "replace");
+  }
+
+  /** The editor moving on to another post (after an approval) replaces, never stacks. */
+  function moveEditor(index: number) {
+    go(`post=${index}`, "replace");
+    window.scrollTo(0, 0);
+  }
+
+  if (location.post !== null && !strategy) {
+    return error ? (
+      <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
+    ) : (
+      <p className="text-sm text-[#63665e]">טוענים את הפוסט…</p>
+    );
+  }
+
+  if (strategy && openIndex !== null) {
+    return (
+      <PostEditor
+        key={`${strategy.id}-${openIndex}`}
+        posts={posts}
+        brandLanguage={strategy.brand_language}
+        initialIndex={openIndex}
+        onStrategyUpdated={setStrategy}
+        onNavigate={moveEditor}
+        onClose={closeEditor}
+      />
+    );
+  }
+
+  const doneCount = posts.filter(isDone).length;
+  const firstPending = nextPendingIndex(posts, -1);
+  const due = queue?.due[0];
 
   return (
-    <div className="space-y-6">
-      <header className="border-b border-[#deddd8] pb-5">
-        <p className="text-xs font-bold text-[#747570]">
-          {strategy ? `${strategy.month_name_he} ${strategy.year}` : "טוען..."}
-        </p>
-        <h1 className="mt-1 text-3xl font-black tracking-tight text-[#20211f]">הפוסטים שהכנו</h1>
-        {dueLine(queue, (index) => {
-          setRequestedIndex(index);
-          setFocusToken((token) => token + 1);
-        })}
+    // The month view needs the width; a list of rows does not, and at 1100px a row's title
+    // and its arrow ended up a screen apart.
+    <div className={`mx-auto space-y-5 ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
+      <header className="space-y-3">
+        <h1 className="text-2xl font-black tracking-tight text-[#20211f] sm:text-3xl">
+          {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
+        </h1>
+
+        <div className="flex items-center justify-between gap-3">
+          {strategy && posts.length ? (
+            <div className="flex min-w-0 flex-1 items-center gap-3">
+              <p className="shrink-0 text-sm font-bold text-[#20211f]">
+                {doneCount} מתוך {posts.length} אושרו
+              </p>
+              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[#e3e2dc]">
+                <div
+                  className="h-full rounded-full bg-[#2d5b33] transition-all"
+                  style={{ width: `${(doneCount / posts.length) * 100}%` }}
+                />
+              </div>
+            </div>
+          ) : (
+            <span />
+          )}
+          <ViewToggle
+            calendar={location.calendar}
+            onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
+          />
+        </div>
+
+        {/* A failed queue read must not read as "nothing is due", so nothing is claimed
+            until it answers. With posts still to approve, publishing is the secondary ask. */}
+        {due && firstPending >= 0 ? (
+          <button
+            type="button"
+            onClick={() => openPost(due.index)}
+            className="min-h-11 text-sm font-bold text-[#9f4330] underline underline-offset-4"
+          >
+            {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
+          </button>
+        ) : null}
       </header>
 
       {error ? (
         <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
       ) : null}
 
-      {strategy ? (
-        <PostEditor
-          key={`${strategy.id}-${Number.isFinite(requestedIndex) ? requestedIndex : 0}-${focusToken}`}
-          posts={posts}
-          brandLanguage={strategy.brand_language}
-          initialIndex={Number.isFinite(requestedIndex) ? requestedIndex : 0}
-          onStrategyUpdated={setStrategy}
-        />
-      ) : !error ? (
-        <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש...</p>
+      {/* The page's one dark button: the next thing we are asking for. */}
+      {strategy && !location.calendar ? (
+        firstPending >= 0 ? (
+          <button
+            type="button"
+            onClick={() => openPost(firstPending)}
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
+          >
+            {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
+          </button>
+        ) : due ? (
+          <button
+            type="button"
+            onClick={() => openPost(due.index)}
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
+          >
+            לפרסם את הפוסט של היום
+          </button>
+        ) : null
       ) : null}
+
+      {!strategy ? (
+        !error ? <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש…</p> : null
+      ) : location.calendar ? (
+        <CalendarView
+          initialYear={strategy.year}
+          initialMonth={strategy.month}
+          posts={posts}
+          postsMonth={{ year: strategy.year, month: strategy.month }}
+          onOpenPost={openPost}
+        />
+      ) : (
+        <PostFeed posts={posts} brand={strategy.brand_language} onOpen={openPost} />
+      )}
     </div>
   );
 }
@@ -140,7 +282,11 @@ function PostsWorkspace() {
 export default function PostsPage() {
   return (
     <AppShell>
-      <PostsWorkspace />
+      {/* The workspace reads the URL, which a prerender does not have (Next's rule for
+          useSearchParams), so it renders inside its own Suspense boundary. */}
+      <Suspense fallback={<p className="text-sm text-[#63665e]">טוענים את הפוסטים…</p>}>
+        <PostsWorkspace />
+      </Suspense>
     </AppShell>
   );
 }

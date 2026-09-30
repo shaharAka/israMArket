@@ -79,22 +79,22 @@ def _search_console(business: Business) -> tuple[dict | None, str]:
     extra = loads(item.extra_json, {})
     if not keywords.search_console_scope_granted(extra.get("scopes")):
         return None, (
-            "חשבון גוגל מחובר, אבל הרשאת Search Console לא ניתנה בו. חברו את גוגל מחדש "
-            "כדי לאשר גם את Search Console — ואז יופיעו כאן השאילתות שהאתר כבר מופיע בהן "
-            "עם קליקים, חשיפות ומיקום אמיתיים."
+            "גוגל מחובר, אבל בלי הרשאה ל-Search Console. חברו את גוגל מחדש ואשרו גם את "
+            "Search Console, ואז יופיעו כאן החיפושים שהאתר כבר מופיע בהם, עם קליקים, חשיפות "
+            "ומיקום אמיתיים."
         )
 
     try:
         access, refresh, expires = tokens_for(item)
         token = ga4.fresh_access_token(access, refresh, expires)
     except Exception:
-        return None, "חיבור גוגל לא הצליח להתחדש, ולכן אין כרגע נתוני Search Console. נסו לחבר מחדש."
+        return None, "לא הצלחנו לחדש את החיבור לגוגל, ולכן אין כרגע נתונים מ-Search Console. נסו לחבר את גוגל מחדש."
 
     payload = keywords.search_console_queries(token, business.website_url or "")
     if payload is None:
         return None, (
-            "הרשאת Search Console קיימת אבל גוגל לא החזירה נתונים — ייתכן שלאתר אין נכס "
-            "Search Console מאומת, או שאין באתר חשיפות ב-28 הימים האחרונים."
+            "יש הרשאה ל-Search Console, אבל גוגל לא החזיר נתונים. אולי האתר לא מאומת "
+            "ב-Search Console, או שהוא לא הופיע בחיפוש ב-28 הימים האחרונים."
         )
     return payload, ""
 

@@ -1,4 +1,5 @@
 """Tests for the card-image decision logic — who gets a photo, and who pays for one."""
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import unittest
 
@@ -147,12 +148,12 @@ class CostModelTest(unittest.TestCase):
 
         p = plan_from_budget(5_000)
         self.assertTrue(p.source.startswith("http"))
-        self.assertTrue(any("CPM" in a for a in p.assumptions))
-        self.assertTrue(any("CPA" in a for a in p.assumptions))
+        self.assertTrue(any("לאלף חשיפות" in a for a in p.assumptions))
+        self.assertTrue(any("להביא קונה" in a for a in p.assumptions))
 
     def test_prompt_block_forbids_invented_targets(self):
         from app.services.cost_model import plan_from_budget, prompt_block
 
         block = prompt_block(plan_from_budget(5_000))
         self.assertIn("אסור להמציא יעד", block)
-        self.assertIn("CPM", block)
+        self.assertIn("לאלף חשיפות", block)

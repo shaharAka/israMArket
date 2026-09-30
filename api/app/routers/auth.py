@@ -5,8 +5,9 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import User
-from app.schemas import LoginRequest, PasswordChangeIn, RegisterRequest, UserOut
+from app.schemas import AccountDeleteIn, LoginRequest, PasswordChangeIn, RegisterRequest, UserOut
 from app.security import COOKIE_NAME, create_access_token, hash_password, verify_password
+from app.services.account_deletion import delete_account
 from app.services.ratelimit import auth_rate_limit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -39,7 +40,7 @@ def register(
     _: None = Depends(auth_rate_limit("register", by_email=False)),
 ) -> User:
     if db.query(User).filter(User.email == body.email.lower()).first():
-        raise HTTPException(status_code=409, detail="האימייל כבר רשום")
+        raise HTTPException(status_code=409, detail="כבר יש חשבון עם האימייל הזה")
     user = User(
         email=body.email.lower(),
         password_hash=hash_password(body.password),
@@ -62,7 +63,7 @@ def login(
 ) -> User:
     user = db.query(User).filter(User.email == body.email.lower()).first()
     if not user or not verify_password(body.password, user.password_hash):
-        raise HTTPException(status_code=401, detail="אימייל או סיסמה שגויים")
+        raise HTTPException(status_code=401, detail="האימייל או הסיסמה לא נכונים")
     _set_cookie(response, user.id)
     return user
 
@@ -86,11 +87,33 @@ def change_password(
     mistyped or stale one was unrecoverable.
     """
     if not verify_password(body.current_password, user.password_hash):
-        raise HTTPException(status_code=401, detail="הסיסמה הנוכחית שגויה")
+        raise HTTPException(status_code=401, detail="הסיסמה הנוכחית לא נכונה")
     if body.current_password == body.new_password:
-        raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לנוכחית")
+        raise HTTPException(status_code=400, detail="הסיסמה החדשה זהה לישנה")
     user.password_hash = hash_password(body.new_password)
     db.commit()
+    return {"ok": True}
+
+
+@router.delete("/account")
+def delete_my_account(
+    body: AccountDeleteIn,
+    response: Response,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    _: None = Depends(auth_rate_limit("delete_account", by_email=False)),
+) -> dict:
+    """Delete the signed-in account and everything stored for it, then sign out.
+
+    Irreversible, so it asks for the current password (403 when wrong, not 401: the
+    session is valid, the confirmation is not). What gets deleted is every row of the
+    user's businesses in every table plus their media folders; see
+    services/account_deletion.py. The landing page's "אפשר למחוק את החשבון" rests on this.
+    """
+    if not verify_password(body.password, user.password_hash):
+        raise HTTPException(status_code=403, detail="הסיסמה לא נכונה. החשבון לא נמחק.")
+    delete_account(db, user)
+    response.delete_cookie(COOKIE_NAME, path="/")
     return {"ok": True}
 
 

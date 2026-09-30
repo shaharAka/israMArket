@@ -13,9 +13,10 @@
  * a designed card.
  */
 
-import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
-import { alpha, cardTokens, type CardTokens } from "@/lib/cardTokens";
+import { alpha, cardTokens, contrastRatio, readableOn, type CardTokens } from "@/lib/cardTokens";
 
 export type CardTemplate =
   | "lower_editorial"
@@ -27,12 +28,12 @@ export type CardTemplate =
 
 /** Template metadata for the editor's picker. */
 export const CARD_TEMPLATES: { key: CardTemplate; label: string; desc: string }[] = [
-  { key: "type_hero", label: "טיפוגרפיה בלבד", desc: "בלי תמונה: רקע המותג, כותרת ענקית ו-CTA" },
-  { key: "lower_editorial", label: "פתיח תחתון", desc: "תמונה מלאה עם מעבר כהה וכותרת גדולה" },
-  { key: "split_panel", label: "פאנל מפוצל", desc: "תמונה למעלה, כותרת על רקע המותג" },
-  { key: "framed_inset", label: "מסגרת מעוצבת", desc: "תמונה ממוסגרת על רקע המותג" },
+  { key: "type_hero", label: "טקסט בלבד", desc: "בלי תמונה: צבע העסק, כותרת ענקית וקריאה לפעולה" },
+  { key: "lower_editorial", label: "כותרת למטה", desc: "תמונה מלאה, הצללה כהה וכותרת גדולה" },
+  { key: "split_panel", label: "חצי־חצי", desc: "תמונה למעלה, כותרת על צבע העסק" },
+  { key: "framed_inset", label: "מסגרת", desc: "תמונה במסגרת, על צבע העסק" },
   { key: "cover_type", label: "שער מגזין", desc: "כותרת ענקית מעל התמונה" },
-  { key: "promo_ribbon", label: "סרט מבצע", desc: "פס צבעוני עם המבצע ופס תחתון" },
+  { key: "promo_ribbon", label: "פס מבצע", desc: "פס צבעוני עם המבצע, ופס נוסף למטה" },
 ];
 
 /**
@@ -100,6 +101,13 @@ function headlineSize(text: string, base = 88): number {
   return Math.round(base * 0.6);
 }
 
+/**
+ * Set by CardStage's `photoSizes`: the photo is then drawn with next/image (responsive,
+ * lazy) instead of a plain <img>. Only the landing page opts in; the editor and the PNG
+ * export keep the plain <img>, which html-to-image inlines as-is.
+ */
+const PhotoSizesContext = createContext<string | undefined>(undefined);
+
 function Photo({
   post,
   theme,
@@ -113,6 +121,19 @@ function Photo({
   // degrade to the placeholder rather than a browser broken-image icon — the card is
   // exported as an image, so an icon would be baked into the customer's artwork.
   const [failed, setFailed] = useState(false);
+  const sizes = useContext(PhotoSizesContext);
+  if (post.image_url && !failed && sizes) {
+    return (
+      <Image
+        src={post.image_url}
+        alt=""
+        fill
+        sizes={sizes}
+        onError={() => setFailed(true)}
+        style={{ objectFit: "cover", objectPosition }}
+      />
+    );
+  }
   if (post.image_url && !failed) {
     return (
       <img
@@ -147,6 +168,48 @@ function Photo({
     >
       התמונה בהכנה
     </div>
+  );
+}
+
+/**
+ * The business's own logo on a white plate, so it reads on any brand colour or photo.
+ * Only drawn when a caller passes `logoUrl` explicitly (the landing preview does): a
+ * logo hot-linked from the business's site is cross-origin, and the PNG export inlines
+ * every image, so the editor keeps the text name until logos are stored locally.
+ * A logo that fails to load falls back to `fallback` rather than a broken image.
+ */
+function LogoPlate({
+  url,
+  height = 92,
+  fallback = null,
+}: {
+  url?: string;
+  height?: number;
+  fallback?: React.ReactNode;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (!url || failed) return <>{fallback}</>;
+  return (
+    <span
+      data-card-logo
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        alignSelf: "flex-start",
+        background: "#ffffff",
+        borderRadius: 20,
+        padding: "16px 26px",
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.10)",
+      }}
+    >
+      <img
+        src={url}
+        alt=""
+        referrerPolicy="no-referrer"
+        onError={() => setFailed(true)}
+        style={{ height, width: "auto", maxWidth: 560, objectFit: "contain", display: "block" }}
+      />
+    </span>
   );
 }
 
@@ -317,12 +380,15 @@ export function CardCanvas({
   businessName,
   size,
   canvasRef,
+  logoUrl,
 }: {
   post: RoadmapPost;
   brand?: BrandLanguage | null;
   businessName: string;
   size: { w: number; h: number };
   canvasRef?: React.Ref<HTMLDivElement>;
+  /** Draw this logo instead of the business name (see LogoPlate). */
+  logoUrl?: string;
 }) {
   const t = cardTokens(brand);
   const template = resolveTemplate(post.overlay_theme);
@@ -359,6 +425,9 @@ export function CardCanvas({
   // A photo-free template needs no plate; skip straight to the typographic layout
   // even when the post has no image_url (nothing was generated, by design).
   if (template === "type_hero" && (headline || badge || stat)) {
+    // A palette without a distinct accent resolves accent to the primary itself, and the
+    // chip vanished into the card (pink on pink). Fall back to the page ground colour.
+    const heroChip = contrastRatio(t.accent, t.primary) < 1.6 ? t.background : t.accent;
     return (
       <div
         ref={canvasRef}
@@ -372,19 +441,26 @@ export function CardCanvas({
           justifyContent: "space-between",
         }}
       >
-        <div>
-          <span
-            style={{
-              width: 64,
-              height: 8,
-              background: t.accent,
-              borderRadius: 99,
-              display: "inline-block",
-            }}
+        <div style={{ display: "flex" }}>
+          <LogoPlate
+            url={logoUrl}
+            fallback={
+              <div>
+                <span
+                  style={{
+                    width: 64,
+                    height: 8,
+                    background: t.accent,
+                    borderRadius: 99,
+                    display: "inline-block",
+                  }}
+                />
+                <span style={{ marginInlineStart: 18, fontSize: 30, fontWeight: 800, color: alpha(t.onPrimary, 0.85) }}>
+                  {businessName}
+                </span>
+              </div>
+            }
           />
-          <span style={{ marginInlineStart: 18, fontSize: 30, fontWeight: 800, color: alpha(t.onPrimary, 0.85) }}>
-            {businessName}
-          </span>
         </div>
 
         {/* Message and CTA centred as one block. Pinning the CTA to the bottom
@@ -400,7 +476,7 @@ export function CardCanvas({
           <StatLine text={stat} color={t.accent} marginTop={26} />
           {cta ? (
             <div style={{ marginTop: 46 }}>
-              <CtaChip text={cta} bg={t.accent} fg={t.onAccent} />
+              <CtaChip text={cta} bg={heroChip} fg={readableOn(heroChip)} />
             </div>
           ) : null}
         </div>
@@ -427,6 +503,11 @@ export function CardCanvas({
       <div ref={canvasRef} style={{ ...root, display: "flex", flexDirection: "column" }}>
         <div style={{ position: "relative", flex: 1, minHeight: 0 }}>
           <Photo post={post} theme={t} objectPosition="50% 42%" />
+          {logoUrl ? (
+            <div style={{ position: "absolute", top: 48, right: 48 }}>
+              <LogoPlate url={logoUrl} height={78} />
+            </div>
+          ) : null}
         </div>
         <div
           style={{
@@ -621,6 +702,8 @@ export function CardStage({
   rounded = true,
   fill = false,
   ratio,
+  logoUrl,
+  photoSizes,
 }: {
   post: RoadmapPost;
   brand?: BrandLanguage | null;
@@ -632,6 +715,13 @@ export function CardStage({
   fill?: boolean;
   /** Override the format's default aspect ratio (e.g. square for a Meta feed). */
   ratio?: CardRatio;
+  /** See CardCanvas: only the landing preview passes one today. */
+  logoUrl?: string;
+  /**
+   * The rendered width of the stage as a `sizes` attribute (e.g. "280px"). When set, the
+   * photo is served by next/image at that width rather than the 1080px original.
+   */
+  photoSizes?: string;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0);
@@ -685,13 +775,16 @@ export function CardStage({
             transformOrigin: "top right",
           }}
         >
-          <CardCanvas
-            post={post}
-            brand={brand}
-            businessName={businessName}
-            size={size}
-            canvasRef={canvasRef}
-          />
+          <PhotoSizesContext.Provider value={photoSizes}>
+            <CardCanvas
+              post={post}
+              brand={brand}
+              businessName={businessName}
+              size={size}
+              canvasRef={canvasRef}
+              logoUrl={logoUrl}
+            />
+          </PhotoSizesContext.Provider>
         </div>
       ) : null}
     </div>

@@ -59,10 +59,10 @@ def assert_public_url(url: str) -> str:
     parsed = urlparse((url or "").strip())
 
     if parsed.scheme not in {"http", "https"}:
-        raise UnsafeUrlError("אפשר לסרוק רק כתובות http או https.")
+        raise UnsafeUrlError("אפשר לקרוא רק כתובות אתר רגילות (שמתחילות ב-http או https).")
     host = (parsed.hostname or "").strip().lower()
     if not host:
-        raise UnsafeUrlError("הכתובת לא כוללת שם מתחם תקין.")
+        raise UnsafeUrlError("חסר בכתובת שם של אתר.")
     if host in _BLOCKED_HOSTNAMES or host.endswith(_BLOCKED_SUFFIXES):
         raise UnsafeUrlError("לא ניתן לגשת לכתובת פנימית של השרת.")
 
@@ -74,11 +74,11 @@ def assert_public_url(url: str) -> str:
         try:
             infos = socket.getaddrinfo(host, parsed.port or (443 if parsed.scheme == "https" else 80))
         except socket.gaierror as exc:
-            raise UnsafeUrlError(f"לא הצלחנו לזהות את שם המתחם {host}.") from exc
+            raise UnsafeUrlError(f"לא מצאנו את האתר {host}. בדקו שהכתובת נכונה.") from exc
         candidates = [info[4][0] for info in infos]
 
     if not candidates:
-        raise UnsafeUrlError(f"לא הצלחנו לזהות את שם המתחם {host}.")
+        raise UnsafeUrlError(f"לא מצאנו את האתר {host}. בדקו שהכתובת נכונה.")
     for address in candidates:
         if not _is_public_ip(address):
             raise UnsafeUrlError("לא ניתן לגשת לכתובות פנימיות או מקומיות של השרת.")
@@ -106,4 +106,4 @@ def safe_get(
         if not location:
             return response
         current = assert_public_url(str(httpx.URL(current).join(location)))
-    raise UnsafeUrlError("יותר מדי הפניות בכתובת הזו.")
+    raise UnsafeUrlError("הכתובת הזו מעבירה יותר מדי פעמים לכתובות אחרות.")

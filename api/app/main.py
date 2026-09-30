@@ -13,12 +13,16 @@ from app.routers import (
     assets,
     audiences,
     auth,
+    instagram,
     integrations,
     onboarding,
     performance,
     promotion,
+    public,
+    public_onboarding,
     publish,
     recommendations,
+    research,
     setup,
     strategy,
 )
@@ -33,6 +37,23 @@ if settings.jwt_secret == DEFAULT_JWT_SECRET and settings.environment != "develo
         "JWT_SECRET הוא עדיין ברירת המחדל בסביבת production. הגדירו סוד אמיתי לפני עלייה."
     )
 
+def _encrypt_legacy_page_tokens() -> None:
+    """Facebook Page tokens used to be stored in plain text; encrypt any that still are.
+    Best effort: without an encryption key there is nothing to encrypt with, and
+    connecting an account is refused in that state anyway (security._fernet)."""
+    from app.db import SessionLocal
+
+    db = SessionLocal()
+    try:
+        integrations.encrypt_legacy_page_tokens(db)
+    except Exception:
+        db.rollback()
+    finally:
+        db.close()
+
+
+_encrypt_legacy_page_tokens()
+
 MEDIA_DIR = Path(__file__).resolve().parents[1] / "data" / "generated"
 MEDIA_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -45,9 +66,25 @@ app = FastAPI(
     redoc_url="/redoc" if _expose_docs else None,
     openapi_url="/openapi.json" if _expose_docs else None,
 )
+def _with_loopback_twins(origins: list[str]) -> set[str]:
+    """`localhost` and `127.0.0.1` are the same machine, and the web app is configured to
+    be opened on either (see web/next.config.ts). The Next proxy forwards the browser's
+    Origin, so a page opened on http://127.0.0.1:3000 had every POST — the landing
+    page's preview included — refused as a foreign origin."""
+    out = set(origins)
+    for origin in origins:
+        if "://localhost" in origin:
+            out.add(origin.replace("://localhost", "://127.0.0.1", 1))
+        elif "://127.0.0.1" in origin:
+            out.add(origin.replace("://127.0.0.1", "://localhost", 1))
+    return out
+
+
+ALLOWED_ORIGINS = _with_loopback_twins([settings.web_origin, "http://localhost:3000"])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.web_origin, "http://localhost:3000"],
+    allow_origins=sorted(ALLOWED_ORIGINS),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,6 +101,12 @@ app.include_router(performance.router)
 app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)
+app.include_router(instagram.router)
+app.include_router(research.router)
+# Anonymous on purpose (the landing-page preview); it carries its own rate limits.
+app.include_router(public.router)
+# Onboarding v2 (/start, before signup): anonymous too, with its own budgets.
+app.include_router(public_onboarding.router)
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.
@@ -75,8 +118,7 @@ async def csrf_origin_check(request: Request, call_next):
     if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
         origin = request.headers.get("origin")
         if origin:
-            allowed = {settings.web_origin, "http://localhost:3000"}
-            if origin not in allowed:
+            if origin not in ALLOWED_ORIGINS:
                 return JSONResponse(status_code=403, content={"detail": "בקשה ממקור לא מורשה."})
     return await call_next(request)
 

@@ -8,7 +8,8 @@ from app.deps import get_business
 from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
-from app.services import ga4, meta
+from app.security import decrypt_page_token
+from app.services import ga4, instagram_signal, meta
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
@@ -114,7 +115,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
     if not ga4_item and not meta_item:
         raise HTTPException(
             status_code=400,
-            detail="חברו לפחות את גוגל אנליטיקס או את אינסטגרם בעמוד החיבורים לפני סנכרון.",
+            detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
         )
 
     end = date.today()
@@ -128,13 +129,19 @@ def _sync_payload(business: Business, db: Session) -> dict:
         if meta_item:
             extra_meta = loads(meta_item.extra_json, {})
             instagram_id = extra_meta.get("selected_instagram_id") or ""
-            page_tokens = extra_meta.get("page_tokens") or {}
-            page_token = page_tokens.get(meta_item.external_id)
+            page_token = decrypt_page_token(extra_meta, meta_item.external_id)
             if not page_token:
-                raise RuntimeError("חסר טוקן לדף המטא שנבחר. חברו את מטא מחדש.")
+                raise RuntimeError("החיבור לדף הפייסבוק שבחרתם לא שלם. חברו את אינסטגרם מחדש בעמוד החיבורים.")
             meta_data = meta.fetch_insights(page_token, instagram_id, meta_item.external_id)
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
+
+    # Every synced Instagram post, with the numbers Meta returned, feeds the post writer
+    # (services/instagram_signal). The snapshot keeps the short caption as before.
+    # Committed now, so a diagnostic failure below does not throw the numbers away.
+    if instagram_signal.store_media(db, business.id, meta_data):
+        db.commit()
+    meta_data = meta.snapshot_view(meta_data)
 
     posts = _posts(business, db)
     ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data)

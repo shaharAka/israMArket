@@ -1,161 +1,128 @@
-"use client";
-
 import Link from "next/link";
-import { FormEvent, useState } from "react";
-import { BrandMark, IconCheck } from "@/lib/icons";
-import { endpoints, type BrandLanguage } from "@/lib/api";
+import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { Cycle } from "@/components/landing/Cycle";
+import { DeletedNotice } from "@/components/landing/DeletedNotice";
+import { DemoLink } from "@/components/landing/DemoLink";
+import { Faq } from "@/components/landing/Faq";
+import { LandingMotion } from "@/components/landing/LandingMotion";
+import { Pricing } from "@/components/landing/Pricing";
+import { RouteMap } from "@/components/landing/RouteMap";
+import { Security } from "@/components/landing/Security";
+import { Showcase } from "@/components/landing/Showcase";
+import "@/components/landing/landing.css";
+
+/**
+ * The landing page. Calm on purpose: it says what we do in one breath, asks for one
+ * thing ("להתחיל"), and shows examples instead of demanding a website. The site scan
+ * that used to be the hero now happens inside /start, and only if the owner has a site.
+ *
+ * The product is the PLAN, not the post: a marketing plan for 3 months built for this
+ * one business. The page tells it in order: research → strategy → the 3-month plan
+ * (hero route, showcase) → measure → adjust (Cycle). Posts appear only as titles inside
+ * a plan.
+ *
+ * Order: hero → showcase → cycle → security → pricing → FAQ → closing ask. Each section
+ * has at most one dark button. The headline is the LCP; the route beside it is inline SVG.
+ */
+
+const QUIET_LINK =
+  "inline-flex min-h-11 items-center font-bold text-[#191b18] underline decoration-[#c7c4b7] underline-offset-4 hover:decoration-[#191b18] disabled:opacity-60";
 
 export default function Home() {
-  const [website, setWebsite] = useState("");
-  const [brand, setBrand] = useState<BrandLanguage | null>(null);
-  const [error, setError] = useState("");
-  const [pending, setPending] = useState(false);
-
-  async function onScan(event: FormEvent) {
-    event.preventDefault();
-    setError("");
-    if (!/^https?:\/\/.+/i.test(website.trim())) {
-      setError("הזינו כתובת אתר מלאה, כולל https://");
-      return;
-    }
-    setPending(true);
-    try {
-      const result = await endpoints.previewScan(website.trim());
-      setBrand(result.scan.brand_language);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לקרוא את האתר");
-    } finally {
-      setPending(false);
-    }
-  }
-
   return (
     <div className="min-h-screen bg-[#f9f8f6] text-[#191b18]">
-      <header className="border-b border-[#e6e4dc] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8">
-          <div className="flex items-center gap-3">
-            <BrandMark className="h-9 w-9 text-[#191b18]" />
-            <div>
-              <span className="block text-lg font-black tracking-tight">ישראמארקט</span>
-              <span className="-mt-1 block text-[11px] text-[#5e6159]">שיווק שעובד בישראל</span>
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="/login" className="text-sm font-bold text-[#191b18] underline-offset-4 hover:underline">
-              כניסה
-            </Link>
-            <Link href="/login" className="text-sm font-bold text-[#5e6159] underline-offset-4 hover:underline">
-              דמו
-            </Link>
-          </div>
-        </div>
+      <header className="mx-auto flex max-w-7xl items-center gap-2.5 px-4 pt-4 sm:px-8 sm:pt-6">
+        <BrandMark className="h-8 w-8 text-[#191b18]" />
+        <span className="text-lg font-black tracking-tight">ישראמארקט</span>
       </header>
 
-      <main className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
-        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1.1fr]">
-          <section className="max-w-xl">
-            <p className="mb-4 text-xs font-bold tracking-wider text-[#2d3f32]">תוכנית אחת לחודש. בלי ללמוד שיווק.</p>
-            <h1 className="text-4xl font-black leading-[1.08] tracking-tight sm:text-5xl">
-              תנו לנו את האתר.
-              <br />
-              נראה איך העסק שלכם נשמע.
+      <main>
+        <section
+          aria-labelledby="hero-title"
+          data-landing-hero
+          className="mx-auto grid max-w-7xl items-center gap-7 px-4 pb-10 pt-7 sm:px-8 sm:pt-14 lg:min-h-[calc(100svh-9rem)] lg:grid-cols-[1.15fr_1fr] lg:gap-16 lg:pb-16"
+        >
+          <div className="max-w-xl">
+            <p className="text-sm font-bold text-[#2d3f32]">שיווק לעסקים קטנים</p>
+            <h1
+              id="hero-title"
+              className="mt-3 text-[2.4rem] font-black leading-[1.1] tracking-tight [text-wrap:balance] sm:text-5xl lg:text-[3.5rem]"
+            >
+              תוכנית שיווק שנבנית רק לעסק שלכם
             </h1>
-            <p className="mt-5 max-w-md text-base leading-7 text-[#5e6159]">
-              קוראים את האתר, לומדים את הצבעים והטון, ובונים חודש של פוסטים לאישור. בלי מדדים מומצאים ובלי לוח בקרה עמוס.
+            <p className="mt-4 max-w-md text-base leading-7 text-[#5e6159] sm:text-lg sm:leading-8">
+              חוקרים את העסק, הלקוחות ולוח השנה, ובונים איתכם תוכנית ל-3 החודשים הקרובים. כל חודש בודקים מה הצליח ומעדכנים.
             </p>
 
-            <form onSubmit={onScan} className="mt-8 space-y-3">
-              <label className="block text-xs font-bold text-[#191b18]">כתובת האתר של העסק</label>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <input
-                  type="url"
-                  value={website}
-                  onChange={(event) => setWebsite(event.target.value)}
-                  placeholder="https://myshop.co.il"
-                  className="flex-1 rounded-md border border-[#dedcd4] bg-white px-3 py-3 text-sm"
-                />
-                <button
-                  type="submit"
-                  disabled={pending}
-                  className="drawn-button inline-flex items-center justify-center bg-[#191b18] px-5 py-3 text-sm font-bold text-white hover:bg-[#2c2f29] disabled:opacity-50"
-                >
-                  {pending ? "קוראים את האתר…" : "הציגו את המותג"}
-                </button>
-              </div>
-              {error ? <p className="text-sm text-[#7c4036]">{error}</p> : null}
-            </form>
-
-            <p className="mt-4 text-xs text-[#8b8e84]">
-              רוצים רק להסתכל?{" "}
-              <Link href="/login" className="font-bold text-[#191b18] underline underline-offset-4">
-                פתחו את הדמו של מאפיית לחם תום
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+              <Link
+                href="/start"
+                className="drawn-button lp-press inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[#191b18] px-10 py-3 text-base font-bold text-white hover:bg-[#2c2f29] sm:w-auto"
+              >
+                להתחיל
+                <IconArrowLeft className="lp-cta-arrow h-4 w-4" />
               </Link>
+              <p className="text-center text-sm text-[#5e6159] sm:text-right">אפשר להתחיל בלי להירשם.</p>
+            </div>
+
+            <p className="mt-3 flex flex-wrap items-center justify-center gap-x-4 text-sm text-[#5e6159] sm:justify-start">
+              <span>
+                כבר יש לכם חשבון?{" "}
+                <Link href="/login" className={QUIET_LINK}>
+                  להיכנס
+                </Link>
+              </span>
+              <DemoLink className={QUIET_LINK} />
             </p>
-          </section>
+          </div>
 
-          <section className="overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
-            {brand ? (
-              <div>
-                <div className="border-b border-[#e6e4dc] px-5 py-4">
-                  <p className="text-xs font-bold text-[#2d3f32]">נלמד מהאתר שלכם</p>
-                  <h2 className="mt-1 text-xl font-black">{brand.business_name}</h2>
-                </div>
-                <div className="space-y-5 p-5">
-                  <div>
-                    <p className="mb-2 text-xs font-bold text-[#5e6159]">פלטת צבעים</p>
-                    <div className="flex gap-2">
-                      {brand.palette.map((swatch) => (
-                        <div key={swatch.hex} className="text-center">
-                          <span
-                            className="block h-10 w-10 rounded-full border border-[#dedcd4]"
-                            style={{ backgroundColor: swatch.hex }}
-                          />
-                          <span className="mt-1 block text-[10px] text-[#8b8e84]">{swatch.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-sm leading-6 text-[#5e6159]">
-                    <span className="font-bold text-[#191b18]">טון הדיבור: </span>
-                    {brand.voice}
-                  </p>
-                  {brand.offers_seen?.length ? (
-                    <p className="text-sm leading-6 text-[#5e6159]">
-                      <span className="font-bold text-[#191b18]">מה ראינו באתר: </span>
-                      {brand.offers_seen.slice(0, 4).join(" · ")}
-                    </p>
-                  ) : null}
-                  <Link
-                    href={`/signup?website=${encodeURIComponent(website.trim())}`}
-                    className="drawn-button inline-flex bg-[#191b18] px-5 py-3 text-sm font-bold text-white hover:bg-[#2c2f29]"
-                  >
-                    פתחו חשבון לעסק הזה
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="p-6 sm:p-8">
-                <p className="text-xs font-bold text-[#5e6159]">מה קורה אחרי הסריקה</p>
-                <ul className="mt-4 space-y-3 text-sm leading-6 text-[#5e6159]">
-                  <PreviewRow text="לומדים צבעים, טון ומוצרים מהאתר האמיתי" />
-                  <PreviewRow text="מציעים שלושה כיוונים לחודש — אתם בוחרים אחד" />
-                  <PreviewRow text="מכינים פוסטים ותמונות. אתם רק מאשרים" />
-                </ul>
-                <p className="mt-6 text-xs text-[#8b8e84]">אין כאן אחוזי פניות מומצאים. מספרים יופיעו רק אחרי חיבור אנליטיקס.</p>
-              </div>
-            )}
-          </section>
-        </div>
+          <RouteMap variant="wide" className="hidden lg:block" />
+          <RouteMap variant="compact" className="mx-auto w-full max-w-[520px] lg:hidden" />
+        </section>
+
+        <section aria-labelledby="examples-title" className="border-t border-[#e6e4dc]">
+          <Showcase />
+        </section>
+
+        <Cycle />
+
+        <Security />
+
+        <Pricing />
+
+        <Faq />
+
+        <section aria-labelledby="closing-title" className="lp-closing border-t border-[#ebe8e0]">
+          <div data-rv className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-20">
+            <div className="max-w-xl">
+              <h2 id="closing-title" className="text-2xl font-black leading-tight tracking-tight [text-wrap:balance] sm:text-[2rem]">
+                נבנה יחד את 3 החודשים הבאים של העסק
+              </h2>
+              <p className="mt-3 text-base leading-7 text-[#34372f] sm:text-lg">
+                ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
+              </p>
+            </div>
+            <Link
+              href="/start"
+              className="drawn-button lp-press inline-flex min-h-12 w-full shrink-0 items-center justify-center bg-[#191b18] px-10 py-3 text-base font-bold text-white hover:bg-[#2c2f29] sm:w-auto"
+            >
+              להתחיל עם העסק שלכם
+            </Link>
+          </div>
+        </section>
       </main>
-    </div>
-  );
-}
 
-function PreviewRow({ text }: { text: string }) {
-  return (
-    <li className="flex items-start gap-2.5">
-      <IconCheck className="mt-1 h-4 w-4 shrink-0 text-[#191b18]" />
-      <span>{text}</span>
-    </li>
+      <footer className="border-t border-[#ebe8e0] bg-[#f9f8f6]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-6 text-sm text-[#5e6159] sm:px-8">
+          <span className="font-bold text-[#34372f]">ישראמארקט</span>
+          <Link href="/security" className={QUIET_LINK}>
+            אבטחה ופרטיות
+          </Link>
+        </div>
+      </footer>
+
+      <DeletedNotice />
+      <LandingMotion />
+    </div>
   );
 }

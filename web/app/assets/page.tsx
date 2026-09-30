@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
-import { AssetCard } from "@/components/AssetCard";
+import { AssetSheet, AssetTile } from "@/components/AssetCard";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import { endpoints, isDemo, type Asset } from "@/lib/api";
@@ -32,7 +32,7 @@ function demoServerSnapshot() {
   return false;
 }
 
-/** Hebrew needs the verb to agree with the count, and "1 נכסים" reads as broken. */
+/** Hebrew needs the verb to agree with the count, and "1 תמונות" reads as broken. */
 function countLabel(count: number, singular: string, plural: string) {
   return `${count} ${count === 1 ? singular : plural}`;
 }
@@ -50,7 +50,11 @@ function mergeAssets(current: Asset[], incoming: Asset[]) {
 }
 
 /**
- * The asset library.
+ * התמונות שלי — the business's own photos and clips.
+ *
+ * It was called "הנכסים שלי" (my assets), which is the trade's word, not the owner's. On a
+ * phone it is now a two-across grid of thumbnails; a tap opens one file's description,
+ * tags and actions in a sheet, so four photos fit on one screen instead of two and a half.
  *
  * Businesses could generate post images but had nowhere to put their own — every post was
  * written around whatever the model invented. This screen is the supply side: upload from
@@ -63,7 +67,7 @@ function mergeAssets(current: Asset[], incoming: Asset[]) {
  * dark button in the header, on an empty library as much as a full one.
  *
  * Uploading and importing a link stay fully available, but they are the *other* ways in,
- * not a second ask: both live behind the one `הוספה בדרך אחרת` disclosure. Nothing is
+ * not a second ask: both live behind the one `להעלות מהטלפון או מקישור` disclosure. Nothing is
  * hidden from the audit — the page simply opens on the library instead of on a toolbar.
  */
 export default function AssetsPage() {
@@ -78,6 +82,7 @@ export default function AssetsPage() {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  const [openId, setOpenId] = useState<number | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const demo = useSyncExternalStore(subscribeDemo, demoSnapshot, demoServerSnapshot);
 
@@ -92,7 +97,7 @@ export default function AssetsPage() {
         setAssets(mergeAssets([], res.assets));
         setLoadError("");
       } catch (err) {
-        if (active) setLoadError(message(err, "טעינת הנכסים נכשלה"));
+        if (active) setLoadError(message(err, "לא הצלחנו לטעון את התמונות"));
       } finally {
         if (active) setLoading(false);
       }
@@ -120,14 +125,14 @@ export default function AssetsPage() {
         added.push(res.asset);
         setPending((prev) => ({ ...prev, [file.name]: "done" }));
       } catch (err) {
-        failures.push(`${file.name}: ${message(err, "ההעלאה נכשלה")}`);
+        failures.push(`${file.name}: ${message(err, "לא הצלחנו להעלות")}`);
         setPending((prev) => ({ ...prev, [file.name]: "error" }));
       }
     }
 
     if (added.length) {
       setAssets((prev) => mergeAssets(prev, added));
-      toast(countLabel(added.length, "נכס נוסף לספרייה", "נכסים נוספו לספרייה"));
+      toast(countLabel(added.length, "קובץ נוסף לתמונות שלכם", "קבצים נוספו לתמונות שלכם"));
     }
     if (failures.length) {
       setFileError(failures.join(" · "));
@@ -151,15 +156,15 @@ export default function AssetsPage() {
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setNotice(
         res.skipped
-          ? `${countLabel(res.assets.length, "נכס יובא", "נכסים יובאו")} מהקישור, ו-${res.skipped} דולגו (כבר קיימים או לא נתמכים).`
-          : `${countLabel(res.assets.length, "נכס יובא", "נכסים יובאו")} מהקישור.`
+          ? `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור. ${res.skipped} לא נוספו, כי כבר היו כאן או שאי אפשר להשתמש בהם.`
+          : `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור.`
       );
       if (res.assets.length) {
         setUrl("");
         setAddOpen(false);
       }
     } catch (err) {
-      setLoadError(message(err, "הייבוא מהקישור נכשל"));
+      setLoadError(message(err, "לא הצלחנו להביא את הקובץ מהקישור"));
     } finally {
       setImporting(false);
     }
@@ -174,16 +179,16 @@ export default function AssetsPage() {
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setScanResult(
         res.assets.length
-          ? `הסריקה מצאה ${countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות")} באתר.${
-              res.skipped ? ` ${countLabel(res.skipped, "תמונה דולגה", "תמונות דולגו")} — כבר היו בספרייה.` : ""
+          ? `מצאנו באתר ${countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות")}.${
+              res.skipped ? ` ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}, ולא הוספנו אותן שוב.` : ""
             }`
           : res.skipped
-            ? `לא נמצאו תמונות חדשות. ${countLabel(res.skipped, "תמונה שכבר יש", "תמונות שכבר יש")} בספרייה.`
-            : "לא נמצאו תמונות באתר."
+            ? `לא מצאנו תמונות חדשות. ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}.`
+            : "לא מצאנו תמונות באתר."
       );
-      toast("הסריקה הסתיימה");
+      toast("סיימנו לעבור על האתר");
     } catch (err) {
-      setLoadError(message(err, "סריקת האתר נכשלה"));
+      setLoadError(message(err, "לא הצלחנו לעבור על האתר"));
     } finally {
       setScanning(false);
     }
@@ -204,7 +209,7 @@ export default function AssetsPage() {
   async function handleDelete(id: number) {
     await endpoints.deleteAsset(id);
     setAssets((prev) => prev.filter((asset) => asset.id !== id));
-    toast("הנכס נמחק");
+    toast("נמחק");
   }
 
   const imageCount = assets.filter((asset) => asset.kind === "image").length;
@@ -215,55 +220,60 @@ export default function AssetsPage() {
     () => Array.from(new Set(assets.flatMap((asset) => asset.tags))).sort((a, b) => a.localeCompare(b, "he")),
     [assets]
   );
-  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלה…" : "העלאת קובץ מהמכשיר";
+  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלים…" : "להעלות קבצים";
+
+  const openAsset = openId === null ? null : assets.find((asset) => asset.id === openId) ?? null;
 
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl">
         <SectionHeader
-          section="assets"
-          title="הנכסים שלי"
-          subtitle="התמונות והסרטונים שלכם. על כל נכס אנחנו כותבים תיאור ותגיות, ומשם הפוסטים נבנים."
+          section="business"
+          title="התמונות שלי"
+          subtitle="אנחנו כותבים תיאור ותגיות לכל תמונה, ולפיהם בונים את הפוסטים."
           action={
             <button
               type="button"
               onClick={() => void handleScan()}
               disabled={scanning || busy}
-              className="inline-flex min-h-11 items-center gap-2 rounded-md bg-[#20211f] px-4 text-sm font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-default disabled:opacity-60"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-4 text-sm font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-default disabled:opacity-60 sm:w-auto"
             >
               <IconEye className="h-4 w-4" />
-              {scanning ? "סורק את האתר…" : "סריקה מעמיקה של האתר"}
+              {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
             </button>
           }
         />
 
         {demo ? (
-          <p className="mb-5 text-xs" style={{ color: identity.accent }}>
-            מצב הדגמה — הספרייה לדוגמה.
+          <p className="-mt-3 mb-3 text-xs" style={{ color: identity.accent }}>
+            דמו: אלה תמונות לדוגמה.
           </p>
         ) : null}
 
         {/* One disclosure holds the two other ways in. Closed by default, so the page opens
-            on the library rather than on a toolbar; open by one click for anyone who came
+            on the pictures rather than on a toolbar; open by one tap for anyone who came
             here to upload or to paste a link. */}
-        <section className="rounded-lg border border-[#e6e4dc] bg-white">
+        <section className="border-y border-[#e6e4dc]">
           <button
             type="button"
             onClick={() => setAddOpen((prev) => !prev)}
             aria-expanded={addOpen}
-            className="flex min-h-12 w-full cursor-pointer items-center justify-between gap-3 px-5 text-sm font-bold text-[#5e6159] transition-colors hover:text-[#20211f]"
+            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[#5e6159] transition-colors hover:text-[#20211f]"
           >
             <span className="flex items-center gap-2">
               <IconImage className="h-4 w-4" />
-              הוספה בדרך אחרת
+              להעלות מהטלפון או מקישור
             </span>
-            <span aria-hidden className="text-xs text-[#8b8e84]">
-              {addOpen ? "▲" : "▼"}
-            </span>
+            <span
+              aria-hidden
+              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 ${
+                addOpen ? "rotate-180" : ""
+              }`}
+            />
           </button>
 
           {addOpen ? (
-            <div className="space-y-4 border-t border-[#e6e4dc] px-5 py-4">
+            <div className="space-y-4 border-t border-[#e6e4dc] py-4">
               <div className="flex flex-wrap items-center gap-3">
                 <input
                   ref={fileInput}
@@ -288,7 +298,7 @@ export default function AssetsPage() {
 
               <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
                 <label className="sr-only" htmlFor="asset-import-url">
-                  כתובת הקישור לייבוא
+                  קישור לתמונה
                 </label>
                 <input
                   id="asset-import-url"
@@ -297,7 +307,8 @@ export default function AssetsPage() {
                   onChange={(event) => setUrl(event.target.value)}
                   placeholder="https://..."
                   dir="ltr"
-                  className="min-h-11 w-64 rounded-md border border-[#dedcd4] bg-white px-3 text-sm text-[#20211f] outline-none focus:border-[#7d4436]"
+                  className="min-h-11 w-64 max-w-full rounded-md border border-[#dedcd4] bg-white px-3 text-sm text-[#20211f] focus:outline-2"
+                  style={{ outlineColor: identity.accent }}
                 />
                 <button
                   type="submit"
@@ -306,9 +317,9 @@ export default function AssetsPage() {
                   style={{ borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" }}
                 >
                   <IconLink className="h-4 w-4" />
-                  {importing ? "מייבא…" : "ייבוא מקישור"}
+                  {importing ? "מביאים…" : "להוסיף מקישור"}
                 </button>
-                <span className="text-xs text-[#8b8e84]">קישור לתמונה בודדת מהרשת.</span>
+                <span className="text-xs text-[#8b8e84]">קישור לתמונה אחת ברשת.</span>
               </form>
             </div>
           ) : null}
@@ -318,7 +329,7 @@ export default function AssetsPage() {
             that starts them. */}
         {scanning ? (
           <p className="mt-4 text-xs leading-5" style={{ color: identity.accent }}>
-            הסריקה עוברת על דפי האתר ומאתרת תמונות. היא יכולה לקחת כמה דקות — אפשר להשאיר את החלון פתוח.
+            עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח.
           </p>
         ) : null}
         {scanResult ? <p className="mt-4 text-sm leading-6 text-[#3c3e3a]">{scanResult}</p> : null}
@@ -336,7 +347,7 @@ export default function AssetsPage() {
                 )}
                 <span className="truncate">{name}</span>
                 <span className="text-[#8b8e84]">
-                  {state === "uploading" ? "מעלה ומנתח…" : state === "done" ? "נוסף" : "נכשל"}
+                  {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
                 </span>
               </li>
             ))}
@@ -346,51 +357,52 @@ export default function AssetsPage() {
         {fileError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{fileError}</p> : null}
 
         {loading ? (
-          <LoadingMark label="טוען את הנכסים…" />
+          <LoadingMark label="טוענים את התמונות…" />
         ) : assets.length ? (
           <>
-            <div className="mt-7 flex flex-wrap items-center justify-between gap-2">
-              {/* All three counts, always — including a zero. The split is real
-                  information about what is in the library, and hiding the zero was the
-                  first draft's mistake, not a saving. */}
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+              {/* Both counts, always — including a zero. The split is real information
+                  about what is in the library; the total is the two added up. */}
               <p className="text-xs text-[#8b8e84]">
-                {countLabel(assets.length, "נכס", "נכסים")} ·{" "}
                 {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
                 {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
               </p>
               <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#20211f] underline underline-offset-4">
                 <IconArrowLeft className="h-4 w-4" />
-                לפוסטים שנבנים מהנכסים
+                לפוסטים שבנינו מהן
               </Link>
             </div>
 
-            <ul className="mt-4 space-y-4">
+            <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
               {assets.map((asset) => (
                 <li key={asset.id}>
-                  <AssetCard
-                    asset={asset}
-                    libraryTags={libraryTags}
-                    onSave={handleSave}
-                    onDelete={handleDelete}
-                    onRedescribe={handleDescribe}
-                  />
+                  <AssetTile asset={asset} onOpen={() => setOpenId(asset.id)} />
                 </li>
               ))}
             </ul>
+
+            {openAsset ? (
+              <AssetSheet
+                key={openAsset.id}
+                asset={openAsset}
+                libraryTags={libraryTags}
+                onClose={() => setOpenId(null)}
+                onSave={handleSave}
+                onDelete={handleDelete}
+                onRedescribe={handleDescribe}
+              />
+            ) : null}
           </>
         ) : loadError ? null : (
           // The empty state asks for the one thing the page asks for everywhere else and
-          // stops. It used to explain the whole feature — what an asset is, what happens
-          // after analysis, what a post does with it — which is the subtitle's job, and
-          // was most of the words on an empty screen. Upload and link import are already
-          // one click up in `הוספה בדרך אחרת`.
+          // stops. Upload and link import are one tap up, in the disclosure.
           <section className="mt-7 rounded-lg border border-[#e6e4dc] bg-white p-8 text-center">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full" style={{ background: identity.surface, color: identity.accent }}>
               <IconImage className="h-6 w-6" />
             </span>
-            <h2 className="mt-4 text-lg font-black text-[#20211f]">הספרייה עוד ריקה</h2>
+            <h2 className="mt-4 text-lg font-black text-[#20211f]">עוד אין כאן תמונות</h2>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
-              סריקה מעמיקה של האתר תאסוף מכאן את התמונות והסרטונים של העסק.
+              לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
           </section>
         )}

@@ -9,7 +9,7 @@ End-to-end marketing for Israeli small businesses. The MVP generates a monthly s
 - **Cards:** the business's own photographed content is preferred; an AI image is generated only as a fallback or when the user asks for one. Typography-only cards render no photo at all. Cards export as real PNGs at 1080x1350, 1080x1080 or 1080x1920.
 - **Optimization loop:** GA4 Data API + Meta Graph API sync, then weekly Gemini recommendations. Either source may be connected alone. Loyalty/CRM stays out of scope; events go out through signed webhooks (Smoove, Zapier).
 
-Models: `gemini-3.7-flash` for strategy and recommendations, `gemini-3.5-flash-lite` for
+Models: `gemini-3.8-flash` for strategy and recommendations, `gemini-3.5-flash-lite` for
 site extraction, `gemini-3-pro-image` (Nano Banana Pro) at 2K for images. All are
 overridable via `.env`; see `.env.example`.
 

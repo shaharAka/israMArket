@@ -24,7 +24,7 @@ const ROLE_LABELS: Record<string, string> = {
   accent: "צבע הדגשה",
   background: "רקע",
   ink: "טקסט",
-  secondary: "משני",
+  secondary: "צבע משני",
 };
 
 /** The dots are a hint, so a palette that has not loaded yet keeps the row's shape. */
@@ -96,7 +96,7 @@ function Thumb({ asset }: { asset: Asset }) {
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element -- same-origin proxy path, not an optimizable remote URL
-    <img src={asset.url} alt={asset.description || "נכס מהספרייה"} loading="lazy" className={className} />
+    <img src={asset.url} alt={asset.description || "תמונה של העסק"} loading="lazy" className={className} />
   );
 }
 
@@ -135,7 +135,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
         setState("ready");
       } catch (err) {
         if (!active) return;
-        setLoadError(message(err, "קריאת המותג נכשלה"));
+        setLoadError(message(err, "לא הצלחנו לטעון את הצבעים והסגנון"));
         setState("error");
       }
     }
@@ -159,7 +159,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
         setAssetsLoaded(true);
       } catch (err) {
         if (!active) return;
-        setAssetsError(message(err, "הספרייה לא נטענה"));
+        setAssetsError(message(err, "לא הצלחנו לטעון את התמונות"));
         setAssetsLoaded(true);
       }
     }
@@ -182,9 +182,9 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
       const res = await endpoints.assets();
       setAssets(res.assets ?? []);
       setAssetsLoaded(true);
-      toast(files.length === 1 ? "הקובץ נוסף למדיה" : `${files.length} קבצים נוספו למדיה`);
+      toast(files.length === 1 ? "הקובץ נוסף לתמונות שלכם" : `${files.length} קבצים נוספו לתמונות שלכם`);
     } catch (err) {
-      setUploadError(message(err, "העלאה נכשלה"));
+      setUploadError(message(err, "לא הצלחנו להעלות את הקובץ"));
     } finally {
       setUploading(false);
     }
@@ -258,7 +258,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
       close();
     } catch (err) {
       // The colour stays on screen so the owner can try again; the note says it did not stick.
-      setPaletteNote(`שמירת הצבע נכשלה: ${message(err, "נסו שוב")}`);
+      setPaletteNote(`לא הצלחנו לשמור את הצבע: ${message(err, "נסו שוב")}`);
     } finally {
       saving.current = false;
     }
@@ -272,7 +272,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
   const doSay = brand?.do_say ?? [];
   const dontSay = brand?.dont_say ?? [];
   const offers = brand?.offers_seen ?? [];
-  const headerName = brand?.business_name || business?.name || "המותג שלי";
+  const headerName = brand?.business_name || business?.name || "העסק שלי";
   const hasIdentity = Boolean(brand?.business_name || brand?.voice || doSay.length || dontSay.length || offers.length);
 
   return (
@@ -280,13 +280,13 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
       <button
         type="button"
         onClick={() => (open ? close() : setOpen(true))}
-        aria-label={open ? "סגירת פאנל המותג" : "פתיחת פאנל המותג"}
+        aria-label={open ? "לסגור את המותג" : "לפתוח את המותג: צבעים, סגנון ותמונות"}
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-controls={panelId}
-        title="המותג: צבעים, קול ומדיה"
+        title="המותג: צבעים, סגנון ותמונות"
         className={`inline-flex cursor-pointer items-center rounded-md border border-[#dedcd4] bg-white transition-colors hover:bg-[#f8f7f4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f] ${
-          variant === "mobile" ? "gap-1 px-2 py-1.5" : "w-full justify-between gap-2 px-2.5 py-2"
+          variant === "mobile" ? "min-h-11 min-w-11 justify-center gap-1 px-2.5" : "w-full justify-between gap-2 px-2.5 py-2"
         }`}
       >
         <span aria-hidden className={variant === "mobile" ? "flex items-center gap-0.5" : "flex items-center gap-1.5"}>
@@ -334,7 +334,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
         <div
           id={panelId}
           role="dialog"
-          aria-label="פאנל המותג"
+          aria-label="המותג של העסק"
           className={
             variant === "sidebar"
               ? // Anchored to the trigger's container, under the button, opening over the
@@ -348,12 +348,12 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
           <div className="flex items-start justify-between gap-3 border-b border-[#e6e4dc] px-4 py-3">
             <div className="min-w-0">
               <p className="truncate text-sm font-black text-[#191b18]">{headerName}</p>
-              <p className="mt-0.5 text-[11px] text-[#747570]">הצבעים, הקול והמדיה של העסק</p>
+              <p className="mt-0.5 text-[11px] text-[#747570]">הצבעים, הסגנון והתמונות של העסק</p>
             </div>
             <button
               type="button"
               onClick={close}
-              aria-label="סגירה"
+              aria-label="לסגור"
               className="-mt-1 shrink-0 cursor-pointer rounded-md p-1 text-[#747570] transition-colors hover:bg-[#f4f3ee] hover:text-[#191b18] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f]"
             >
               <svg
@@ -388,7 +388,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
               <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-4">
                 <h3 className="text-xs font-bold text-[#191b18]">עוד אין עסק בחשבון</h3>
                 <p className="mt-1.5 text-sm leading-6 text-[#5e6159]">
-                  הצבעים, הקול והמדיה נבנים מהעסק עצמו. אפשר להתחיל את ההרשמה — בסופה כל מה שנלמד יופיע כאן.
+                  את הצבעים, הסגנון והתמונות אנחנו לומדים מהעסק עצמו. בסוף ההרשמה הכול יופיע כאן.
                 </p>
                 <Link
                   href="/onboarding"
@@ -396,7 +396,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                   className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#191b18] underline underline-offset-4"
                 >
                   <IconArrowLeft className="h-3.5 w-3.5" />
-                  להתחלת ההרשמה
+                  להתחיל את ההרשמה
                 </Link>
               </section>
             ) : (
@@ -406,7 +406,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                   <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-3">
                     <h3 className="text-xs font-bold text-[#191b18]">צבעי המותג</h3>
                     <p className="mt-1 mb-2 text-[11px] leading-5 text-[#747570]">
-                      לחיצה על עיגול פותחת את בורר הצבע. השינוי נשמר לבד.
+                      לחצו על עיגול כדי לבחור צבע. השינוי נשמר לבד.
                     </p>
                     <div className="grid grid-cols-2 gap-2">
                       {palette.map((swatch, index) => (
@@ -437,7 +437,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                   <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-3">
                     <h3 className="text-xs font-bold text-[#191b18]">צבעי המותג</h3>
                     <p className="mt-1.5 text-xs leading-5 text-[#5e6159]">
-                      לא נמצאו צבעים באתר. אפשר להריץ סריקה מחדש בהרשמה כדי שנלמד את הפלטה מחדש.
+                      לא מצאנו צבעים באתר. אפשר לקרוא את האתר שוב בהרשמה, ונלמד את הצבעים מחדש.
                     </p>
                   </section>
                 )}
@@ -445,18 +445,18 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                 {/* 2. הזהות — the name, the voice, and the words the extraction produced. */}
                 {brand && hasIdentity ? (
                   <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-3">
-                    <h3 className="text-xs font-bold text-[#191b18]">זהות המותג</h3>
+                    <h3 className="text-xs font-bold text-[#191b18]">איך העסק מדבר</h3>
                     <p className="mt-1.5 text-sm font-bold leading-6 text-[#191b18]">{headerName}</p>
                     {brand.voice ? (
                       <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
-                        <span className="text-xs font-bold text-[#747570]">טון: </span>
+                        <span className="text-xs font-bold text-[#747570]">הסגנון: </span>
                         {brand.voice}
                       </p>
                     ) : null}
 
                     {doSay.length ? (
                       <div className="mt-2">
-                        <p className="text-[11px] font-bold text-[#374b3d]">מילים שכן</p>
+                        <p className="text-[11px] font-bold text-[#374b3d]">מילים שמתאימות</p>
                         <ul className="mt-1 flex flex-wrap gap-1.5">
                           {doSay.map((word, index) => (
                             <li
@@ -472,7 +472,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
 
                     {dontSay.length ? (
                       <div className="mt-2">
-                        <p className="text-[11px] font-bold text-[#9f4330]">מילים שלא</p>
+                        <p className="text-[11px] font-bold text-[#9f4330]">מילים שלא מתאימות</p>
                         <ul className="mt-1 flex flex-wrap gap-1.5">
                           {dontSay.map((word, index) => (
                             <li
@@ -487,15 +487,15 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                     ) : null}
 
                     {offers.length ? (
-                      <p className="mt-2 text-[11px] leading-5 text-[#8b8e84]">זוהה באתר: {offers.join(" · ")}</p>
+                      <p className="mt-2 text-[11px] leading-5 text-[#8b8e84]">ראינו באתר: {offers.join(" · ")}</p>
                     ) : null}
                   </section>
                 ) : (
                   <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-4">
-                    <h3 className="text-xs font-bold text-[#191b18]">זהות המותג</h3>
+                    <h3 className="text-xs font-bold text-[#191b18]">איך העסק מדבר</h3>
                     <p className="mt-1.5 text-sm leading-6 text-[#5e6159]">
-                      שפת המותג עוד לא נלמדה — אין כאן עדיין שם, טון או מילים. אפשר לסרוק את האתר בהרשמה, ומשם
-                      הצבעים, הקול והמילים יופיעו כאן לבד.
+                      עוד לא למדנו איך העסק מדבר, ולכן אין כאן שם, סגנון או מילים. אחרי שנקרא את האתר בהרשמה,
+                      הם יופיעו כאן לבד.
                     </p>
                     <Link
                       href="/onboarding"
@@ -503,7 +503,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                       className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#191b18] underline underline-offset-4"
                     >
                       <IconArrowLeft className="h-3.5 w-3.5" />
-                      ללימוד שפת המותג
+                      לקרוא את האתר
                     </Link>
                   </section>
                 )}
@@ -511,10 +511,10 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                 {/* 3. המדיה — a preview of the library, never a second library to manage. */}
                 <section className="rounded-lg border border-[#e6e4dc] bg-[#faf8f5] p-3">
                   <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-xs font-bold text-[#191b18]">המדיה</h3>
+                    <h3 className="text-xs font-bold text-[#191b18]">התמונות שלי</h3>
                     <div className="flex items-center gap-2">
                       {assetsLoaded && !assetsError && assets.length ? (
-                        <span className="text-[11px] text-[#8b8e84]">{countLabel(assets.length, "נכס", "נכסים")}</span>
+                        <span className="text-[11px] text-[#8b8e84]">{countLabel(assets.length, "קובץ", "קבצים")}</span>
                       ) : null}
                       {/* Adding a file belongs here, not one screen away. */}
                       <button
@@ -523,7 +523,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                         disabled={uploading}
                         className="cursor-pointer rounded-md border border-[#dedcd4] bg-white px-2 py-1 text-[11px] font-bold text-[#191b18] hover:bg-[#f8f7f4] disabled:opacity-50"
                       >
-                        {uploading ? "מעלים…" : "הוספת קובץ"}
+                        {uploading ? "מעלים…" : "להוסיף קובץ"}
                       </button>
                       <input
                         ref={fileInput}
@@ -544,7 +544,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                   ) : null}
 
                   {!assetsLoaded ? (
-                    <p className="mt-1.5 text-xs text-[#8b8e84]">טוענים את הספרייה…</p>
+                    <p className="mt-1.5 text-xs text-[#8b8e84]">טוענים את התמונות…</p>
                   ) : assetsError ? (
                     // A library that will not load must not take the rest of the panel with it.
                     <div className="mt-1.5">
@@ -575,7 +575,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                                 className="absolute right-1 bottom-1 rounded px-1 py-0.5 text-[9px] font-bold text-white"
                                 style={{ background: "#20211fcc" }}
                               >
-                                וידאו
+                                סרטון
                               </span>
                             ) : null}
                           </li>
@@ -587,14 +587,14 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                         className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#191b18] underline underline-offset-4"
                       >
                         <IconArrowLeft className="h-3.5 w-3.5" />
-                        לכל המדיה
+                        לכל התמונות
                       </Link>
                     </>
                   ) : (
                     <>
                       <p className="mt-1.5 text-xs leading-5 text-[#5e6159]">
-                        הספרייה עוד ריקה. אפשר להוסיף קובץ מכאן, או לעבור לספרייה כדי לייבא מקישור
-                        ולסרוק את האתר.
+                        עוד אין תמונות. הוסיפו קובץ מכאן, או הביאו תמונות מקישור או מהאתר בעמוד
+                        התמונות.
                       </p>
                       <Link
                         href="/assets"
@@ -602,7 +602,7 @@ export function BrandPicker({ variant }: { variant: "sidebar" | "mobile" }) {
                         className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold text-[#191b18] underline underline-offset-4"
                       >
                         <IconArrowLeft className="h-3.5 w-3.5" />
-                        לספרייה המלאה
+                        לעמוד התמונות
                       </Link>
                     </>
                   )}

@@ -1,4 +1,5 @@
 """Tests for auth hardening: token encryption, rate limiting, and schema validation."""
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import unittest
 

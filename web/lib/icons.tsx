@@ -155,3 +155,112 @@ export function IconEye({ className }: IconProps) {
     </Sketch>
   );
 }
+
+/** "Go into this row". Points left because the app is RTL: forward is leftward. */
+export function IconChevron({ className }: IconProps) {
+  return <Sketch className={className}><path d="M14.5 6L8.5 12l6 6" /></Sketch>;
+}
+
+/** "Back". Points right because the app is RTL: back is rightward. */
+export function IconArrowRight({ className }: IconProps) {
+  return <Sketch className={className}><path d="M4 12h16M14.7 6.7L20 12l-5.3 5.3" /></Sketch>;
+}
+
+/** A single person — the owner's account. */
+export function IconUser({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M12 12.2a3.9 3.9 0 100-7.8 3.9 3.9 0 000 7.8z" />
+      <path d="M4.8 20.5v-1.2c0-2.6 2.1-4.6 4.6-4.6h5.2c2.6 0 4.6 2.1 4.6 4.6v1.2" />
+    </Sketch>
+  );
+}
+
+/** Two stacked photos — the owner's media library. */
+export function IconPhotos({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M7 7.5h13.5v12H7z" />
+      <path d="M4 16.5v-12h13" />
+      <path d="M7.3 16.6l3.6-3.6 2.6 2.5 2-2.1 5 3.9" />
+    </Sketch>
+  );
+}
+
+/** A padlock: something stored so that only we can open it. */
+export function IconLock({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M5.5 10.5h13v10h-13z" />
+      <path d="M8.3 10.5V7.8a3.7 3.7 0 017.4 0v2.7M12 14.4v2.4" />
+    </Sketch>
+  );
+}
+
+/** A shield: access we asked for, and nothing more. */
+export function IconShield({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M12 3.2l7 2.6v5.4c0 4.6-2.9 8-7 9.6-4.1-1.6-7-5-7-9.6V5.8z" />
+      <path d="M8.9 12.1l2.2 2.2 4-4.3" />
+    </Sketch>
+  );
+}
+
+/** An eye struck through: something we never see. */
+export function IconEyeOff({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M2.5 12c2.6-4.4 5.8-6.4 9.5-6.4s6.9 2 9.5 6.4c-2.6 4.4-5.8 6.4-9.5 6.4S5.1 16.4 2.5 12z" />
+      <path d="M12 15a3 3 0 100-6 3 3 0 000 6zM4 20L20 4" />
+    </Sketch>
+  );
+}
+
+/** A globe: pages open to everyone. */
+export function IconGlobe({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
+      <path d="M3.3 9.5h17.4M3.3 14.5h17.4M12 3c-2.4 2.5-3.6 5.5-3.6 9s1.2 6.5 3.6 9c2.4-2.5 3.6-5.5 3.6-9S14.4 5.5 12 3z" />
+    </Sketch>
+  );
+}
+
+/** A price tag struck through: data that is not for sale. */
+export function IconNoSale({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M3.5 12.3V4.2h8.1l8.9 8.9-8.1 8.1z" />
+      <path d="M7.9 8.6h.2M4 20L20 4" />
+    </Sketch>
+  );
+}
+
+/** A bin: delete for good. */
+export function IconTrash({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M4.5 6.5h15M9.5 6.5V4h5v2.5M6.5 6.5l1 14h9l1-14M10.2 10.5v6.5M13.8 10.5v6.5" />
+    </Sketch>
+  );
+}
+
+/** A plus that the FAQ turns into a cross when a question is open. */
+export function IconPlus({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M12 5v14M5 12h14" />
+    </Sketch>
+  );
+}
+
+/** Leave: a door with an arrow heading out of it. */
+export function IconLogout({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <path d="M13.5 4H20v16h-6.5" />
+      <path d="M15 12H3.5M7.8 7.7L3.5 12l4.3 4.3" />
+    </Sketch>
+  );
+}

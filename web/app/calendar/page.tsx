@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppShell, Badge, Button, ErrorNote, PageHeader } from "@/components/AppShell";
-import { endpoints, type CalendarEvent, type CalendarPayload, type RoadmapPost } from "@/lib/api";
-import { IconCopy } from "@/lib/icons";
-import { monthLabel, shiftMonth } from "@/lib/months";
-import { copyText } from "@/lib/ui";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { AppShell } from "@/components/AppShell";
+import { CalendarView } from "@/components/posts/CalendarView";
+import { endpoints, type StrategyPayload } from "@/lib/api";
 
 /**
- * The month this product treats as "now", and the one the reset control returns to.
+ * The month this product treats as "now" when there is no plan yet to take it from.
  *
  * The board itself is always a civil (Gregorian) month with the Jewish holidays and the
  * Israeli shopping days pinned onto it — never a Hebrew-month calendar. That is a product
@@ -17,388 +17,52 @@ import { copyText } from "@/lib/ui";
 const CURRENT_YEAR = 2026;
 const CURRENT_MONTH = 9;
 
-const WEEKDAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
-
-/** `2026-09-01` → `יום שלישי, 1.9.2026`. The owner's own calendar language, not ISO. */
-function formatDay(iso: string) {
-  const [year, month, day] = iso.split("-");
-  if (!year || !month || !day) return iso;
-  const weekday = new Date(Number(year), Number(month) - 1, Number(day)).getDay();
-  return `יום ${WEEKDAYS[weekday]}, ${Number(day)}.${Number(month)}.${year}`;
-}
-
 /**
- * A day's event as a small tinted tag. Tint only, no border: inside a month grid every
- * border turns a day cell into another card, and then nothing on the page has priority.
+ * The calendar keeps its own URL so existing links still land, but it is the same month
+ * view the Posts tab shows behind its "לוח שנה" toggle — one implementation, two doors.
  */
-function eventChip(kind: string) {
-  if (kind === "חג") return "bg-amber-100 text-amber-800";
-  if (kind === "זיכרון") return "bg-slate-200 text-slate-800";
-  if (kind === "לאומי") return "bg-sky-100 text-sky-800";
-  if (kind === "קניות") return "bg-purple-100 text-purple-800";
-  return "bg-slate-100 text-slate-700";
-}
-
-/**
- * The civil month, Sunday first, with the holidays, the shopping days and the planned posts
- * pinned onto the days they fall on. The grid is the structure of the page, so it carries
- * hairline rules and whitespace rather than a border per day.
- */
-function MonthBoard({
-  year,
-  month,
-  daysInMonth,
-  firstWeekday,
-  events,
-  posts,
-  selected,
-  onSelect,
-}: {
-  year: number;
-  month: number;
-  daysInMonth: number;
-  firstWeekday: number;
-  events: CalendarEvent[];
-  posts: RoadmapPost[];
-  selected: string | null;
-  onSelect: (date: string) => void;
-}) {
-  const pad = (firstWeekday + 1) % 7;
-  const cells: (number | null)[] = [
-    ...Array.from({ length: pad }, () => null),
-    ...Array.from({ length: daysInMonth }, (_, index) => index + 1),
-  ];
-
-  return (
-    <section aria-label="לוח החודש" className="overflow-hidden rounded-2xl bg-white">
-      <div className="grid grid-cols-7 bg-[#f8f7f4] text-center text-[11px] font-black text-[#8b8e84]">
-        {WEEKDAYS.map((day) => (
-          <div key={day} className="py-2.5">
-            {day}
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 divide-x divide-y divide-[#eeede8] divide-x-reverse">
-        {cells.map((day, index) => {
-          if (!day) {
-            return <div key={`empty-${index}`} className="min-h-[100px] bg-[#faf9f7] p-2 sm:min-h-[110px]" />;
-          }
-
-          const iso = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-          const dayEvents = events.filter((event) => event.date === iso);
-          const dayPosts = posts.filter(
-            (post) => post.date_hint.startsWith(iso) || post.date_hint.includes(iso)
-          );
-          const isSelected = selected === iso;
-          const isWeekend = index % 7 === 5 || index % 7 === 6;
-          const hasHoliday = dayEvents.some((event) => event.kind === "חג");
-
-          return (
-            <div
-              key={iso}
-              onClick={() => onSelect(iso)}
-              className={`flex min-h-[100px] cursor-pointer flex-col p-2 transition sm:min-h-[110px] ${
-                isSelected
-                  ? "bg-[#f4f3ee]"
-                  : isWeekend
-                    ? "bg-[#faf9f7] hover:bg-[#f4f3ee]"
-                    : "bg-white hover:bg-[#f8f7f4]"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <span
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                    isSelected
-                      ? "bg-[#20211f] text-white"
-                      : hasHoliday
-                        ? "bg-amber-100 text-amber-900"
-                        : "text-[#3c3e3a]"
-                  }`}
-                >
-                  {day}
-                </span>
-                {dayPosts.length > 0 ? (
-                  <span
-                    className="h-1.5 w-1.5 rounded-full bg-blue-500"
-                    title={`${dayPosts.length} פוסטים מתוכננים`}
-                  />
-                ) : null}
-              </div>
-
-              <div className="mt-1 space-y-0.5">
-                {dayEvents.map((event) => (
-                  <div
-                    key={`${event.name}-${event.date}`}
-                    className={`truncate rounded px-1.5 py-0.5 text-[10px] font-semibold ${eventChip(event.kind)}`}
-                    title={`${event.name} (${event.kind}): ${event.note}`}
-                  >
-                    {event.name}
-                  </div>
-                ))}
-
-                {dayPosts.map((post) => (
-                  <div
-                    key={post.title}
-                    className="truncate rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-700"
-                    title={`פוסט: ${post.title}`}
-                  >
-                    {post.title}
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-/**
- * A month step. Icon-only on purpose: the month is already named in the heading next to
- * it, so a text label only repeats the word "חודש" twice more. The control keeps its
- * meaning in both an accessible label and a tooltip, which is what UI-RULES rule 6 asks
- * of an icon button.
- */
-function MonthStep({
-  dir,
-  label,
-  onClick,
-}: {
-  dir: "prev" | "next";
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      title={label}
-      className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-[#63665e] transition-colors hover:bg-[#f4f3ee] hover:text-[#20211f]"
-    >
-      <svg
-        viewBox="0 0 24 24"
-        className="h-4 w-4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        {/* In a right-to-left page "back" points right. */}
-        {dir === "prev" ? <path d="M14 6l6 6-6 6" /> : <path d="M10 6l-6 6 6 6" />}
-      </svg>
-    </button>
-  );
-}
-
 export default function CalendarPage() {
-  const [year, setYear] = useState(CURRENT_YEAR);
-  const [month, setMonth] = useState(CURRENT_MONTH);
-  const [data, setData] = useState<CalendarPayload | null>(null);
-  const [error, setError] = useState("");
-  const [selected, setSelected] = useState<string | null>(null);
+  const router = useRouter();
+  const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
+  const [ready, setReady] = useState(false);
 
+  // The plan's month, so its posts can open in the editor. A missing plan is a normal state
+  // (the board still shows the holidays), so a failed read only means "nothing to open".
   useEffect(() => {
+    let active = true;
     endpoints
-      .calendar(year, month)
-      .then((payload) => {
-        setData(payload);
-        setSelected(payload.events[0]?.date ?? `${year}-${String(month).padStart(2, "0")}-01`);
+      .strategy()
+      .then((current) => {
+        if (active) setStrategy(current);
       })
-      .catch((err) => setError(err instanceof Error ? err.message : "שגיאה בטעינת הלוח"));
-  }, [year, month]);
-
-  function move(delta: number) {
-    const next = shiftMonth(year, month, delta);
-    setYear(next.year);
-    setMonth(next.month);
-  }
-
-  const dayEvents = data?.events.filter((event) => event.date === selected) ?? [];
-  const dayPosts =
-    data?.roadmap?.posts.filter(
-      (post) =>
-        selected && (post.date_hint.startsWith(selected) || post.date_hint.includes(selected))
-    ) ?? [];
+      .catch(() => undefined)
+      .finally(() => {
+        if (active) setReady(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <AppShell>
-      <PageHeader
-        title="לוח שנה לועזי"
-        subtitle="חגי ישראל, ימי קניות ופוסטים מתוכננים"
-        action={
-          /* The one dark button on this screen: the way back to the month the owner is
-             actually in, after browsing away from it. */
-          <Button
-            size="sm"
-            tone="primary"
-            onClick={() => {
-              setYear(CURRENT_YEAR);
-              setMonth(CURRENT_MONTH);
-            }}
-          >
-            חזרה ל{monthLabel(CURRENT_YEAR, CURRENT_MONTH)}
-          </Button>
-        }
-      />
-
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <h2 className="text-2xl font-black tracking-tight text-[#20211f]">
-            {data ? `${data.month_name_he} ${data.year}` : monthLabel(year, month)}
-          </h2>
-          {/* The steps sit next to the month they move, not in the page header. */}
-          <div className="flex items-center gap-0.5">
-            <MonthStep dir="prev" label="החודש הקודם" onClick={() => move(-1)} />
-            <MonthStep dir="next" label="החודש הבא" onClick={() => move(1)} />
-          </div>
-          <span className="text-xs font-bold text-[#8b8e84]">
-            {data?.events.length ?? 0} אירועים
-          </span>
-        </div>
-
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[#8b8e84]">
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" /> חג
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-purple-400" /> קניות
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-blue-500" /> פוסט
-          </span>
-        </div>
-      </div>
-
-      <ErrorNote message={error} />
-
-      {data ? (
-        <div className="grid gap-6 lg:grid-cols-12">
-          {/* The month itself. It is the page, so it gets the width and no box. */}
-          <div className="lg:col-span-8">
-            <MonthBoard
-              year={data.year}
-              month={data.month}
-              daysInMonth={data.days_in_month}
-              firstWeekday={data.first_weekday}
-              events={data.events}
-              posts={data.roadmap?.posts ?? []}
-              selected={selected}
-              onSelect={setSelected}
-            />
-          </div>
-
-          {/* One panel for everything about a date: what happens on the chosen day, and the
-              whole month's list to jump from. Hairline dividers inside, a single border. */}
-          <aside className="lg:col-span-4">
-            <div className="overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
-              <div className="p-4 sm:p-5">
-                {/* The date is the heading: "היום הנבחר" over a date said the same thing
-                    twice. The note that explains an event is not repeated here — every
-                    event keeps its note, with its date, in the month list below. */}
-                <h2 className="text-sm font-black text-[#20211f]">
-                  {selected ? formatDay(selected) : "בחרו יום בלוח"}
-                </h2>
-
-                {dayEvents.length === 0 && dayPosts.length === 0 ? (
-                  <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
-                    אין אירוע, חג או פוסט מתוכנן ביום הזה.
-                  </p>
-                ) : (
-                  <ul className="mt-2 divide-y divide-[#eeede8]">
-                    {dayEvents.map((event) => (
-                      <li
-                        key={`${event.name}-${event.date}`}
-                        className="flex flex-wrap items-center gap-2 py-2.5"
-                      >
-                        <Badge tone={event.kind === "חג" ? "amber" : "purple"}>{event.kind}</Badge>
-                        <span className="text-xs font-bold text-[#20211f]">{event.name}</span>
-                      </li>
-                    ))}
-
-                    {dayPosts.map((post) => (
-                      <li key={post.title} className="py-2.5">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Badge tone="blue">פוסט מתוכנן</Badge>
-                          <span className="min-w-0 truncate text-xs font-bold text-[#20211f]">
-                            {post.title}
-                          </span>
-                        </div>
-                        <p className="mt-1 text-xs font-medium leading-5 text-[#5e6159]">{post.hook}</p>
-                        <button
-                          onClick={() =>
-                            void copyText(post.hook + "\n\n" + post.caption, "הטקסט הועתק!")
-                          }
-                          className="mt-1.5 inline-flex cursor-pointer items-center gap-1 text-xs font-bold text-[#3f4a5c] underline underline-offset-4 hover:text-[#20211f]"
-                        >
-                          <IconCopy className="w-3.5 h-3.5" />
-                          <span>העתקת התוכן</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {/* The whole month's list repeats what the grid already shows above it, so
-                  it folds away: the days, the holidays and every event stay exactly where
-                  they were, one click down. */}
-              <div className="border-t border-[#e6e4dc]">
-                <details className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-black text-[#20211f] hover:text-[#3c3e3a] sm:p-5">
-                    <span>כל אירועי {data.month_name_he}</span>
-                    <span className="shrink-0 text-[#8b8e84]" aria-hidden>
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-3.5 w-3.5 transition-transform group-open:rotate-90"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M14 6l-6 6 6 6" />
-                      </svg>
-                    </span>
-                  </summary>
-                  <div className="px-4 pb-4 sm:px-5 sm:pb-5">
-                    <p className="text-[11px] text-[#8b8e84]">לחיצה מעבירה ליום</p>
-                    <ul className="mt-2 max-h-[320px] divide-y divide-[#eeede8] overflow-y-auto">
-                      {data.events.map((event) => (
-                        <li key={`${event.name}-${event.date}`}>
-                          <button
-                            onClick={() => setSelected(event.date)}
-                            className={`flex w-full cursor-pointer items-center justify-between gap-3 py-2 text-right transition ${
-                              selected === event.date
-                                ? "text-[#20211f]"
-                                : "text-[#5e6159] hover:text-[#20211f]"
-                            }`}
-                          >
-                            <span className="min-w-0">
-                              <span className="block truncate text-xs font-bold">{event.name}</span>
-                              <span className="mt-0.5 block truncate text-[11px] text-[#8b8e84]">
-                                {event.note}
-                              </span>
-                            </span>
-                            <span className="shrink-0 text-xs font-bold text-[#8b8e84]">
-                              {event.date.split("-").slice(1).reverse().join(".")}
-                            </span>
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </aside>
-        </div>
-      ) : null}
+      <header className="mb-5 flex items-end justify-between gap-4 border-b border-[#e6e4dc] pb-4">
+        <h1 className="text-2xl font-black tracking-tight text-[#1e201d] sm:text-3xl">לוח שנה</h1>
+        <Link href="/posts" className="min-h-11 content-center text-sm font-bold text-[#20211f] underline underline-offset-4">
+          לכל הפוסטים
+        </Link>
+      </header>
+      {ready ? (
+        <CalendarView
+          initialYear={strategy?.year ?? CURRENT_YEAR}
+          initialMonth={strategy?.month ?? CURRENT_MONTH}
+          posts={strategy?.roadmap?.posts}
+          postsMonth={strategy ? { year: strategy.year, month: strategy.month } : null}
+          onOpenPost={(index) => router.push(`/posts?post=${index}`)}
+        />
+      ) : (
+        <p className="text-sm text-[#63665e]">טוענים את הלוח…</p>
+      )}
     </AppShell>
   );
 }

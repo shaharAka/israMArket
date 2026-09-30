@@ -37,7 +37,7 @@ from app.services.netguard import UnsafeUrlError
 
 router = APIRouter(prefix="/assets", tags=["assets"])
 
-NOT_FOUND = "הנכס לא נמצא"
+NOT_FOUND = "לא מצאנו את הקובץ הזה"
 
 
 def _business_for(db: Session, user: User) -> Business:
@@ -45,7 +45,7 @@ def _business_for(db: Session, user: User) -> Business:
         db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     )
     if not business:
-        raise HTTPException(status_code=404, detail="לא הוגדר עסק")
+        raise HTTPException(status_code=404, detail="עוד לא הגדרתם עסק")
     return business
 
 
@@ -230,17 +230,17 @@ def describe_asset(
     if asset.kind != "image":
         raise HTTPException(
             status_code=400,
-            detail="אפשר לתאר רק תמונות. סרטונים מקבלים תיאור ידני.",
+            detail="אפשר לתאר אוטומטית רק תמונות. לסרטונים כתבו תיאור בעצמכם.",
         )
     path = business_folder(business.id) / asset.filename
     if not path.is_file():
-        raise HTTPException(status_code=404, detail="קובץ הנכס לא נמצא בדיסק")
+        raise HTTPException(status_code=404, detail="לא מצאנו את הקובץ אצלנו. העלו אותו שוב.")
 
     mime = normalize_mime(asset.mime) or "image/jpeg"
     try:
         described = describe_image_bytes(path.read_bytes(), mime)
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"תיאור התמונה נכשל: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו לתאר את התמונה: {exc}") from exc
 
     if described["description"]:
         asset.description = described["description"]

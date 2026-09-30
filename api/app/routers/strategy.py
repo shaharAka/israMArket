@@ -33,6 +33,7 @@ from app.services.images import (
     read_stored_bytes,
     store_image_bytes,
 )
+from app.services.instagram_signal import signal_for
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
 from app.services.publish import parse_scheduled_for
@@ -68,6 +69,8 @@ def serialize_strategy(
         "competitors": extra.get("competitors"),
         "brand_language": extra.get("brand_language") or scraped.get("brand_language"),
         "created_at": strategy.created_at.isoformat(),
+        # Onboarding v2 revision 5 (additive): the 3-month plan saved at signup.
+        "quarter_plan": (scraped or {}).get("quarter_plan"),
     }
     if horizon:
         payload["horizon"] = horizon
@@ -263,7 +266,7 @@ def _store_post_image(
     scraped = loads(business.scraped_profile_json, {}) or {}
     brand = extra.get("brand_language") or scraped.get("brand_language") or {}
     if not brand:
-        raise HTTPException(status_code=400, detail="אין שפת מותג שמורה. סרקו את האתר לפני יצירת תמונות.")
+        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שיוצרים תמונות.")
 
     target = posts[post_index]
     usp_data = loads(strategy.usp_json, {}) or {}
@@ -321,8 +324,21 @@ def _active_strategy(db: Session, business: Business) -> Strategy:
         return civil
     strategy = _newest_strategy(db, business)
     if not strategy:
-        raise HTTPException(status_code=404, detail="עדיין אין אסטרטגיה. השלימו את מעצב האסטרטגיה.")
+        raise HTTPException(status_code=404, detail="עוד אין תוכנית. בנו את התוכנית של החודש קודם.")
     return strategy
+
+
+@router.get("/strategy/quarter")
+def quarter_plan(business: Business = Depends(get_business)) -> dict:
+    """The 3-month plan built at /start, and its integrations checklist. Readable right
+    after signup, before (and while) the first month is generated. `quarter_plan` is
+    null for businesses that did not come through /start."""
+    stored = loads(business.scraped_profile_json, {}) or {}
+    return {
+        "quarter_plan": stored.get("quarter_plan"),
+        "integrations_checklist": stored.get("integrations_checklist") or [],
+        "long_horizon_plan": stored.get("long_horizon_plan"),
+    }
 
 
 @router.get("/strategy/current")
@@ -375,7 +391,7 @@ def design_post_endpoint(
     scraped = loads(business.scraped_profile_json, {}) or {}
     brand = extra.get("brand_language") or scraped.get("brand_language") or {}
     if not brand:
-        raise HTTPException(status_code=400, detail="אין שפת מותג שמורה. סרקו את האתר לפני עיצוב פוסטים.")
+        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שמעצבים פוסטים.")
 
     target = posts[body.post_index]
     usp_data = loads(strategy.usp_json, {}) or {}
@@ -400,7 +416,7 @@ def design_post_endpoint(
             generate_image=body.generate_image,
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"עיצוב הפוסט ע״י AI נכשל: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו לעצב את הפוסט: {exc}") from exc
 
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
@@ -429,7 +445,7 @@ def attach_post_asset(
         .first()
     )
     if not asset:
-        raise HTTPException(status_code=404, detail="הנכס לא נמצא")
+        raise HTTPException(status_code=404, detail="לא מצאנו את התמונה הזו")
 
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
@@ -485,7 +501,7 @@ def suggest_post_assets(
             posts[body.post_index], business.name or "", asset_catalogue(assets)
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"התאמת הנכסים נכשלה: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו להתאים תמונות לפוסט: {exc}") from exc
     return {"suggestions": suggestions}
 
 
@@ -581,9 +597,11 @@ def rewrite_post_endpoint(
     brand = extra.get("brand_language") or (loads(business.scraped_profile_json, {}) or {}).get("brand_language") or {}
     target = posts[body.post_index]
     try:
-        rewritten = rewrite_post(target, body.tone, brand)
+        rewritten = rewrite_post(
+            target, body.tone, brand, instagram=signal_for(db, business, strategy.year, strategy.month)
+        )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=f"שגיאה בשכתוב הפוסט: {exc}") from exc
+        raise HTTPException(status_code=502, detail=f"לא הצלחנו לכתוב את הפוסט מחדש: {exc}") from exc
 
     target["title"] = rewritten.get("title") or target["title"]
     target["hook"] = rewritten.get("hook") or target["hook"]
@@ -592,6 +610,8 @@ def rewrite_post_endpoint(
     target["overlay_text"] = rewritten.get("overlay_text") or target["overlay_text"]
     if rewritten.get("outlet_captions"):
         target["outlet_captions"] = rewritten["outlet_captions"]
+    if "inspiration" in rewritten:
+        target["inspiration"] = rewritten["inspiration"]
     target["approval_status"] = "review"
     target["approved_at"] = None
 
@@ -707,7 +727,7 @@ def generate_next_month(
 
     stored = loads(business.scraped_profile_json, {}) or {}
     if not stored.get("brand_language"):
-        raise HTTPException(status_code=400, detail="אין סריקת אתר שמורה. אי אפשר לבנות חודש בלי שפת מותג.")
+        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר. בלי הצבעים והסגנון שלכם אי אפשר לבנות חודש.")
 
     snap = (
         db.query(PerformanceSnapshot)
@@ -732,6 +752,8 @@ def generate_next_month(
         {"suggestions": loads(rec.suggestions_json, {})} if rec else None,
     )
     payload = {
+        # Lets services/research.research_prompt_block find this business's latest research.
+        "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
         "business_type": business.business_type,
@@ -747,6 +769,11 @@ def generate_next_month(
         "growth_targets": (prior.get("long_horizon") or {}).get("targets") or [],
         # The segments the next month is planned for. Empty when none were defined.
         "audiences": catalogue_for(db, business),
+        # Own top Instagram posts + the month's inspiration brief (or an honest "none").
+        "instagram_signal": signal_for(db, business, year, month),
+        # What the owner told us at /start (seasons, what they tried...). Absent for
+        # businesses onboarded before v2. The first-month seed deliberately stays out.
+        "owner_context": stored.get("owner_context") or None,
     }
 
     def persist_stage(next_state: dict) -> None:
@@ -825,27 +852,27 @@ def studio_overview(business: Business = Depends(get_business), db: Session = De
             "id": "posts-ready",
             "type": "posts",
             "title": f"{len(posts)} פוסטים בתוכנית החודשית",
-            "description": f"{ready_count} מתוך {len(posts)} פוסטים כוללים תמונות מוכנות בשפת האתר",
-            "action_label": "מעבר לעורך הפוסטים",
+            "description": f"ל-{ready_count} מתוך {len(posts)} פוסטים יש כבר תמונה בסגנון של האתר",
+            "action_label": "לעבור לפוסטים",
             "action_tab": "posts",
             "status": "ready" if ready_count == len(posts) else "action_required",
         },
         {
             "id": "brand-sync",
             "type": "brand",
-            "title": "שפת מותג מסונכרנת מהאתר",
-            "description": f"פלטת צבעים, צילום וסגנון כתיבה עודכנו מ-{business.website_url or 'נכסי העסק'}",
-            "action_label": "צפייה בשפת המותג",
+            "title": "הצבעים והסגנון מהאתר",
+            "description": f"הצבעים, סגנון הצילום וסגנון הכתיבה נלקחו מ-{business.website_url or 'התמונות של העסק'}",
+            "action_label": "לראות את הסגנון",
             "action_tab": "brand",
             "status": "ready",
         },
         {
             "id": "hypothesis-approval",
             "type": "checkpoint",
-            "title": "השערת צמיחה לחודש הנוכחי",
+            "title": "ההשערה של החודש",
             "description": roadmap.get("monthly_horizon_plan", {}).get("hypothesis")
-            or "השערת חודש ספטמבר מוכנה לבדיקה",
-            "action_label": "אישור השערה" if not approved else "השערה מאושרת ✓",
+            or "ההשערה של החודש מוכנה לבדיקה",
+            "action_label": "לאשר את ההשערה" if not approved else "ההשערה אושרה ✓",
             "action_tab": "schedule",
             "status": "ready" if approved else "action_required",
         },
@@ -855,7 +882,7 @@ def studio_overview(business: Business = Depends(get_business), db: Session = De
         "strategy": serialized,
         "studio_updates": updates,
         "long_horizon_tracker": {
-            "horizon": roadmap.get("long_horizon_plan", {}).get("horizon") or "רבעון הקרוב",
+            "horizon": roadmap.get("long_horizon_plan", {}).get("horizon") or "הרבעון הקרוב",
             "hypothesis": roadmap.get("long_horizon_plan", {}).get("hypothesis") or serialized.get("usp", {}).get("growth_hypothesis", ""),
             "targets": roadmap.get("long_horizon_plan", {}).get("targets") or serialized.get("usp", {}).get("growth_targets", []),
             "milestones": roadmap.get("long_horizon_plan", {}).get("milestones") or [],
@@ -866,7 +893,7 @@ def studio_overview(business: Business = Depends(get_business), db: Session = De
             "hypothesis": roadmap.get("monthly_horizon_plan", {}).get("hypothesis") or "",
             "targets": roadmap.get("monthly_horizon_plan", {}).get("targets") or [],
             "status": "active",
-            "what_we_measure": "מעקב פניות בוואטסאפ, המרות מדפי נחיתה ואיסוף בימי שישי",
+            "what_we_measure": "פניות בוואטסאפ, הזמנות מהאתר ואיסופים בימי שישי",
         },
     }
 

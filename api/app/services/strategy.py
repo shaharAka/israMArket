@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
 import re
@@ -10,8 +11,11 @@ from app.services.audiences import (
 )
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
-from app.services.gemini import lite_json, strategy_json
+from app.services.gemini import extract_json, lite_json, strategy_json
+from app.config import get_settings
+from app.services.post_model_router import post_json
 from app.services import google_cost
+from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.schemas_llm import (
     COMPETITOR_EXTRACT_SCHEMA,
@@ -25,20 +29,40 @@ from app.services.schemas_llm import (
     USP_SCHEMA,
 )
 from app.services.cost_model import plan_from_budget, prompt_block
+from app.services.instagram_signal import attach_inspiration, prompt_block as instagram_prompt_block
 from app.services.month_loop import prior_prompt_block
-from app.services.scraper import scrape_site
+from app.services.scraper import _normalize_url, scrape_site
+from app.services.screenshot import attach_screenshot, capture_site
 
 
 def _business_brief(business: dict) -> dict:
     """The business dict without the audience catalogue.
 
-    Audiences are injected as their own compact Hebrew block (see services/audiences.py).
-    Leaving them inside the raw dict as well would print the same information twice and
-    quietly grow every prompt.
+    Audiences are injected as their own compact Hebrew block (see services/audiences.py),
+    and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
+    raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    if not business.get("audiences"):
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed"}
+    if not any(key in business for key in own_blocks):
         return business
-    return {key: value for key, value in business.items() if key != "audiences"}
+    return {key: value for key, value in business.items() if key not in own_blocks}
+
+
+def _owner_block(business: dict, include_idea: bool = False) -> str:
+    """What the owner told us at /start, and the direction (and idea) they chose.
+
+    Both keys are optional and additive: a business that never went through the v2
+    onboarding has neither, and then this is an empty string and the prompt is unchanged.
+    `first_month_seed` is only put in the payload by /onboarding/generate, so the chosen
+    direction steers the first month and nothing after it.
+    """
+    if not business.get("owner_context") and not business.get("first_month_seed"):
+        return ""
+    from app.services.onboarding_draft import owner_context_block  # avoids an import cycle
+
+    return owner_context_block(
+        business.get("owner_context"), business.get("first_month_seed"), include_idea=include_idea
+    )
 
 
 def _audience_block(business: dict, note: str = "") -> str:
@@ -61,7 +85,7 @@ URL: {scraped.get("url")}
 טקסט:
 {scraped.get("text")}
 """
-    return loads(lite_json(prompt, SITE_EXTRACT_SCHEMA), {})
+    return loads(extract_json(prompt, SITE_EXTRACT_SCHEMA, thinking_level="LOW"), {})
 
 
 def extract_competitor(scraped: dict, name: str) -> dict:
@@ -81,7 +105,16 @@ URL: {scraped.get("url")}
 
 
 def scan_website(url: str) -> dict:
-    own = scrape_site(url)
+    # The rendered screenshot (when Chrome is available) runs beside the scrape; it is
+    # guarded on its own (see services/screenshot.py) and None when it cannot be taken.
+    pool = ThreadPoolExecutor(max_workers=1)
+    try:
+        shot = pool.submit(capture_site, _normalize_url(url))
+        own = scrape_site(url)
+        attach_screenshot(own, shot.result())
+    finally:
+        # A failed scrape answers at once; a running Chrome ends on its own deadline.
+        pool.shutdown(wait=False)
     profile = extract_site_profile(own)
     brand = extract_brand_language(own)
     if not profile.get("business_name") and brand.get("business_name"):
@@ -116,11 +149,13 @@ def propose_hypotheses(
 שפת מותג: {brand}
 פרופיל מהאתר: {profile}
 אבחון: {diagnostics or {}}
+
+{HEBREW_STYLE}
 """
     parsed = loads(strategy_json(prompt, HYPOTHESES_SCHEMA), {})
     items = parsed.get("hypotheses") or []
     if len(items) != 3:
-        raise RuntimeError("Gemini לא החזיר שלוש השערות צמיחה לבחירה.")
+        raise RuntimeError("לא קיבלנו שלוש השערות לבחירה. נסו שוב.")
     return items
 
 
@@ -149,11 +184,13 @@ def propose_targets(
 שפת מותג: {brand}
 פרופיל מהאתר: {profile}
 אבחון: {diagnostics or {}}
+
+{HEBREW_STYLE}
 """
     parsed = loads(strategy_json(prompt, TARGETS_SCHEMA), {})
     items = parsed.get("targets") or []
     if len(items) < 5:
-        raise RuntimeError("Gemini לא החזיר מספיק יעדי צמיחה לדירוג.")
+        raise RuntimeError("לא קיבלנו מספיק יעדים לבחירה. נסו שוב.")
     return items
 
 
@@ -182,10 +219,12 @@ def build_long_horizon_plan(
 
 החזר הורייזון (למשל "שלושת החודשים הקרובים"), השערת צמיחה רבעונית אחת,
 2 עד 4 יעדים מדידים, ושלוש אבני דרך — אחת לכל חודש, כל אחת עם נקודת בקרה.
+
+{HEBREW_STYLE}
 """
     plan = loads(strategy_json(prompt, LONG_HORIZON_PLAN_SCHEMA), {})
     if not plan.get("hypothesis") or not plan.get("milestones"):
-        raise RuntimeError("Gemini לא החזיר תוכנית רבעונית מלאה.")
+        raise RuntimeError("לא קיבלנו תוכנית רבעונית מלאה. נסו שוב.")
     return plan
 
 
@@ -193,6 +232,7 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, "הבידול, המסרים ונקודות ההוכחה צריכים לעבוד עבור הקהל הראשי, ולתת מענה גם לשאר — בלי מסר שמדבר לכולם ולכן לאף אחד.")}
+{_owner_block(business)}
 
 בנה אסטרטגיה עסקית, בידול (USP), השערת צמיחה ושיטות עבודה מוכחות (BKMs) לעסק ישראלי.
 שפת המותג והמסרים חייבים לצאת מהאתר והנכסים האמיתיים של העסק, לא משפת סוכנות.
@@ -226,6 +266,8 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
 7. אל תשתמש במילים שהאתר נמנע מהן: {brand.get("dont_say")}.
 8. {prior_prompt_block(prior)}
 9. אם יש אופק ארוך מהחודש הקודם — קדם את אבן הדרך של החודש החדש, אל תתחיל סיפור אחר.
+
+{HEBREW_STYLE}
 """
     return loads(strategy_json(prompt, USP_SCHEMA), {})
 
@@ -265,24 +307,38 @@ def _with_query(url: str, params: dict) -> str:
     return urlunparse(parsed._replace(query=urlencode(existing)))
 
 
-def _write_posts_for_weeks(
+def posts_prompt(
     business: dict,
     usp: dict,
     core: dict,
     brand: dict,
     weeks: list[int],
     prior: dict | None = None,
-) -> list[dict]:
+    *,
+    count_line: str = "",
+    extra: str = "",
+) -> str:
+    """The post writer's prompt. One definition for the month and for the onboarding's
+    sample posts (services/strategy_reveal.py), so a sample is what the product writes.
+
+    `count_line` replaces the default "3 to 4 posts" line and `extra` is appended; both
+    empty means the prompt is exactly what it always was.
+    """
     week_text = " ו".join(str(week) for week in weeks)
     audience_note = (
         "כל פוסט משרת קהל אחד מהרשימה שלמעלה, והבחירה חייבת להשפיע על הזווית, ההוק והכיתוב — "
         "לא רק על התיוג. אל תמציא קהל שלא מופיע ברשימה."
     )
+    # What Instagram actually showed for this business: own top posts, the month's
+    # pattern brief, or an explicit "no data, claim nothing". Built by the router.
+    instagram = business.get("instagram_signal")
+    count_line = count_line or f"כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד."
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
+{_owner_block(business, include_idea=1 in weeks)}
 
-כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד.
+{count_line}
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
 
 עסק: {_business_brief(business)}
@@ -306,13 +362,57 @@ USP: {usp}
 - טון האתר: {brand.get("voice")}
 - מילים לשימוש: {brand.get("do_say")}
 - מילים שאסור: {brand.get("dont_say")}
+- inspiration_refs ו-inspiration_note: לפי בלוק האינסטגרם שלמטה בלבד
 {prior_prompt_block(prior)}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
+
+{HEBREW_STYLE}
+
+{instagram_prompt_block(instagram)}
 """
-    posts = loads(strategy_json(prompt, MONTHLY_POSTS_SCHEMA), {})
+    if extra:
+        prompt = f"{prompt}\n{extra.strip()}\n"
+    return prompt
+
+
+def _write_posts_for_weeks(
+    business: dict,
+    usp: dict,
+    core: dict,
+    brand: dict,
+    weeks: list[int],
+    prior: dict | None = None,
+) -> list[dict]:
+    week_text = " ו".join(str(week) for week in weeks)
+    instagram = business.get("instagram_signal")
+    # Onboarding v2, revision 4: a first month seeded with the strategy the owner built at
+    # /start. The cadence decides how many posts, the pillars what they are about, and
+    # the sample posts the owner chose are the month's first posts, as they were shown.
+    # Without that seed `plan` is None and this is the unchanged path.
+    from app.services import strategy_reveal  # avoids an import cycle
+
+    plan = strategy_reveal.seeded_posts_plan(business.get("first_month_seed"), weeks)
+    schema = MONTHLY_POSTS_SCHEMA
+    count_line = extra = ""
+    if plan is not None:
+        if plan["to_write"] <= 0:
+            return attach_audiences(plan["fixed"], business.get("audiences") or [])
+        count_line, extra = plan["count_line"], plan["extra"]
+        schema = strategy_reveal.SEEDED_POSTS_SCHEMA
+    prompt = posts_prompt(business, usp, core, brand, weeks, prior, count_line=count_line, extra=extra)
+    # POST_MODEL=gemini (the default) keeps the direct call, so nothing changes unless the
+    # Muse Spark experiment is switched on (see services/post_model_router.py).
+    writer = strategy_json if (get_settings().post_model or "gemini") == "gemini" else post_json
+    posts = loads(writer(prompt, schema), {})
     items = posts.get("posts") or []
-    if len(items) < 2:
-        raise RuntimeError(f"Gemini החזיר פחות מדי פוסטים לשבועות {week_text}.")
+    needed = 2 if plan is None else max(1, min(2, plan["to_write"]))
+    if len(items) < needed:
+        raise RuntimeError(f"קיבלנו פחות מדי פוסטים לשבועות {week_text}. נסו שוב.")
+    # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
+    # post with no real source carries `inspiration: None` rather than a made-up reason.
+    items = attach_inspiration(items, instagram)
+    if plan is not None:
+        items = plan["fixed"] + strategy_reveal.finish_seeded_posts(items, plan)
     # The model names a segment; only real segments exist. An unknown (or missing) name
     # falls back to the primary audience here, so a stored post can never carry a dangling
     # audience id — and a business with no audiences gets an empty field, not an invention.
@@ -335,6 +435,14 @@ def build_roadmap(
     # refusal to invent numbers. It stays small: enough to let the month plan decide
     # whether search suits this business, not a second strategy document.
     google_block = google_cost.prompt_block(google_cost.plan_for_business(business))
+    # --- research hook (services/research.py) -------------------------------------------
+    # The latest "what we learned" insights, each with its source and what it should
+    # change. "" when the business has no recent research (or the payload has no "id"),
+    # so the prompt is unchanged for them. Never raises.
+    from app.services.research import research_prompt_block
+
+    research_block = research_prompt_block(business)
+    # --- end research hook ----------------------------------------------------------------
     approved_block = ""
     if long_horizon:
         approved_block = f"""
@@ -346,6 +454,7 @@ def build_roadmap(
     plan_prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, "כיוון החודש, האירועים והפוסטים צריכים לשרת את הקהלים האלה, עם דגש על הקהל הראשי. אל תמציא קהלים חדשים.")}
+{_owner_block(business)}
 
 בנה את כיוון החודש לעסק ישראלי קטן. בלי לכתוב את הפוסטים עצמם.
 החודש הוא חודש אזרחי רגיל. חגים יהודיים וימי קניות ישראליים מופיעים כאירועים בתוך אותו חודש אזרחי.
@@ -359,6 +468,8 @@ USP והשערת צמיחה: {usp}
 
 {google_block}
 
+{research_block}
+
 אירועי החודש בישראל: {events}
 
 חובה לבנות במדויק לפי הסכימה:
@@ -368,15 +479,21 @@ USP והשערת צמיחה: {usp}
 4. management_and_checkpoints: איך המערכת מנהלת, ומתי צריך את בעל העסק.
 5. weekly_breakdown לשבועות 1 עד 4: מיקוד, מה אנחנו עושים, מה צריך מהעסק, מה מודדים, ואיפה מפרסמים.
 {approved_block}{prior_prompt_block(prior)}
+
+{HEBREW_STYLE}
 """
     core = loads(strategy_json(plan_prompt, PLAN_CORE_SCHEMA), {})
     if not core.get("theme") or not core.get("weekly_breakdown"):
-        raise RuntimeError("Gemini לא החזיר תוכנית חודשית מלאה.")
+        raise RuntimeError("לא קיבלנו תוכנית חודשית מלאה. נסו שוב.")
     if long_horizon:
         # The quarter plan is what the user read and approved during onboarding. The
         # month plan is generated afterwards and must never silently rewrite it.
         core["long_horizon_plan"] = long_horizon
-    return core
+    # The strategy the owner built at /start (if any): its weeks, measures and target
+    # are what they approved, so the month plan carries them as they were shown.
+    from app.services import strategy_reveal  # avoids an import cycle
+
+    return strategy_reveal.apply_strategy_to_core(core, business.get("first_month_seed"))
 
 
 def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prior: dict | None = None) -> list[dict]:
@@ -384,11 +501,15 @@ def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prio
     late = _write_posts_for_weeks(business, usp, core, brand, [3, 4], prior=prior)
     items = early + late
     if len(items) < 4:
-        raise RuntimeError("Gemini החזיר פחות מדי פוסטים לחודש. יש לייצר שוב את התוכנית.")
+        raise RuntimeError("קיבלנו פחות מדי פוסטים לחודש. בנו את התוכנית שוב.")
     return items
 
 
-def rewrite_post(post: dict, tone: str, brand: dict) -> dict:
+def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = None) -> dict:
+    """Rewrite one post in a tone. `instagram` is `instagram_signal.signal_for(...)`.
+
+    The result carries `inspiration` (resolved sources, or None) instead of the raw refs.
+    """
     tones_he = {
         "direct": "ישיר, חד, מכירתי, קורא לפעולה מיידית בוואטסאפ או באתר",
         "neighborhood": "שכונתי, חם, אישי, כאילו כתוב בפתק בכתב יד על הדלפק",
@@ -412,8 +533,16 @@ def rewrite_post(post: dict, tone: str, brand: dict) -> dict:
 טקסט על התמונה: {post.get("overlay_text")}
 
 ספק כותרת, Hook, כיתוב מלא (caption), CTA חד, טקסט קצרצר על התמונה (overlay_text), וגרסאות מותאמות לאינסטגרם, פייסבוק ווואטסאפ (outlet_captions).
+שמור על הפורמט המקורי ({post.get("format")}). inspiration_refs ו-inspiration_note לפי בלוק האינסטגרם בלבד.
+
+{HEBREW_STYLE}
+
+{instagram_prompt_block(instagram, rewrite=True)}
 """
-    return loads(lite_json(prompt, POST_REWRITE_SCHEMA, thinking_level="LOW"), {})
+    rewritten = loads(lite_json(prompt, POST_REWRITE_SCHEMA, thinking_level="LOW"), {})
+    if not isinstance(rewritten, dict):
+        return {}
+    return attach_inspiration([rewritten], instagram)[0]
 
 
 def generate_monthly_strategy(
@@ -464,7 +593,7 @@ def generate_monthly_strategy(
         profile = scraped_profile["extracted"]
         brand = scraped_profile["brand_language"]
     else:
-        raise RuntimeError("אין סריקת אתר שמורה ואין כתובת אתר. סרקו אתר או הזינו כתובת לפני בניית התוכנית.")
+        raise RuntimeError("עוד לא קראנו את האתר, ואין כתובת אתר. הזינו את כתובת האתר לפני שבונים את התוכנית.")
 
     if not business.get("name") and (profile.get("business_name") or brand.get("business_name")):
         business["name"] = profile.get("business_name") or brand.get("business_name")
@@ -487,6 +616,10 @@ def generate_monthly_strategy(
             business["primary_goal"],
             business.get("business_model", "products"),
         )
+        # A cadence the owner chose at /start replaces the budget-derived one.
+        from app.services import strategy_reveal  # avoids an import cycle
+
+        plan = strategy_reveal.apply_cadence_to_posting_plan(plan, business.get("first_month_seed"))
         mark(
             "plan",
             usp=usp,
@@ -522,7 +655,7 @@ def generate_monthly_strategy(
     else:
         core = state.get("roadmap_core") or {}
         if stage not in {"scan", "usp"} and not core.get("theme"):
-            raise RuntimeError("חסרה תוכנית חודשית שמורה. יש לייצר את התוכנית מחדש.")
+            raise RuntimeError("לא מצאנו את התוכנית של החודש. בנו אותה מחדש.")
 
     if stage == "posts" or (stage in {"scan", "usp", "plan"} and not one_stage):
         early = _write_posts_for_weeks(business, usp, core, brand, [1, 2], prior=prior)
@@ -534,7 +667,7 @@ def generate_monthly_strategy(
 
     if stage == "posts_late" or (stage in {"scan", "usp", "plan", "posts"} and not one_stage):
         if stage == "posts_late" and len(early) < 2:
-            raise RuntimeError("חסרים פוסטים לשבועות 1–2. יש לייצר את התוכנית מחדש.")
+            raise RuntimeError("חסרים הפוסטים של השבועיים הראשונים. בנו את התוכנית מחדש.")
         late = _write_posts_for_weeks(business, usp, core, brand, [3, 4], prior=prior)
         # Re-attached here as well as at write time: on a resumed run the early posts come
         # back from the saved generation state, and the audience list may have changed
@@ -543,7 +676,7 @@ def generate_monthly_strategy(
             attach_tracking(early + late, business, year, month), business.get("audiences") or []
         )
         if len(items) < 4:
-            raise RuntimeError("Gemini החזיר פחות מדי פוסטים לחודש. יש לייצר שוב את התוכנית.")
+            raise RuntimeError("קיבלנו פחות מדי פוסטים לחודש. בנו את התוכנית שוב.")
         mark("done", posts=items)
         return pack(complete=True, core=core, items=items, usp=usp, competitors=competitor_profiles, events=events, plan=plan)
 

@@ -8,7 +8,9 @@ from app.services.business_model import goals_for
 class RegisterRequest(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)
-    full_name: str = Field(min_length=2, max_length=120)
+    # Optional: /start signs up with email + password only, after the owner has already
+    # told us about the business. Empty means "not given"; the UI falls back to החשבון שלי.
+    full_name: str = Field(default="", max_length=120)
 
 
 class LoginRequest(BaseModel):
@@ -19,6 +21,12 @@ class LoginRequest(BaseModel):
 class PasswordChangeIn(BaseModel):
     current_password: str
     new_password: str = Field(min_length=8, max_length=200)
+
+
+class AccountDeleteIn(BaseModel):
+    """The current password, so a stolen session cookie alone cannot erase an account."""
+
+    password: str = Field(min_length=1, max_length=200)
 
 
 class UserOut(BaseModel):
@@ -86,8 +94,8 @@ class OnboardingIn(BaseModel):
         allowed = goals_for(self.business_model)
         if self.primary_goal not in allowed:
             raise ValueError(
-                f"המטרה '{self.primary_goal}' אינה מתאימה לעסק מסוג '{self.business_model}'. "
-                f"אפשרויות: {', '.join(allowed)}"
+                f"המטרה '{self.primary_goal}' לא מתאימה לעסק מסוג '{self.business_model}'. "
+                f"אפשר לבחור: {', '.join(allowed)}"
             )
         return self
 
@@ -320,3 +328,25 @@ class PostAudienceIn(BaseModel):
     post_index: int = Field(ge=0, le=50)
     # null clears the tag; the post then reports under "לא משויך" instead of being lost.
     audience_id: int | None = Field(default=None, ge=1)
+
+
+class InstagramHandlesIn(BaseModel):
+    """Competitor / peer Instagram usernames for the inspiration brief.
+
+    Raw input on purpose ("@Name", a pasted profile link): normalisation and the Hebrew
+    error for a bad name live in services/instagram_signal.normalize_handles, and the
+    five-account cap is checked there, after de-duplication.
+    """
+
+    handles: list[str] = Field(default_factory=list, max_length=20)
+
+
+class InspirationRefreshIn(BaseModel):
+    """Which month to (re)build the brief for; defaults to the current civil month.
+
+    `hashtags` is used only when INSTAGRAM_HASHTAG_SEARCH is on (Meta caps Hashtag Search
+    at 30 unique hashtags per 7 days per Instagram account)."""
+
+    year: int | None = Field(default=None, ge=2020, le=2100)
+    month: int | None = Field(default=None, ge=1, le=12)
+    hashtags: list[str] = Field(default_factory=list, max_length=5)

@@ -1,275 +1,295 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { AppShell, Badge, Button, ErrorNote } from "@/components/AppShell";
-import { TargetRanker, MAX_TARGETS } from "@/components/TargetRanker";
+import { useEffect, useRef, useState } from "react";
+import { AppShell, Button, ErrorNote } from "@/components/AppShell";
 import {
   endpoints,
   generateUntilDone,
   isDemo,
-  type BrandLanguage,
+  type Business,
   type BusinessModel,
   type Competitor,
-  type Diagnostics,
-  type GrowthHypothesis,
-  type GrowthTargetCandidate,
-  type LongHorizonPlan,
   type OnboardingPayload,
   type PrimaryGoal,
 } from "@/lib/api";
 import {
   BUSINESS_MODEL_OPTIONS,
   DEFAULT_BUSINESS_MODEL,
-  capacityCopy,
   defaultGoalFor,
-  diagnosticQuestionsFor,
-  goalsFor,
   isGoalValidFor,
-  pruneDiagnostics,
 } from "@/lib/businessModel";
-import { IconCheck, IconCompass, IconFlag, IconStore } from "@/lib/icons";
-import { AGENT_NAME } from "@/lib/agent";
 import { BUDGET_STAGES, formatNis, stageFor } from "@/lib/budget";
 import { toast } from "@/lib/ui";
+import { BUSINESS_TYPES, MODEL_SHORT, PRESENCE_MODELS } from "@/components/onboarding/constants";
+import { GenerationProgress } from "@/components/onboarding/GenerationProgress";
+import {
+  fetchSitePreview,
+  loadPreview,
+  looksLikeWebsite,
+  normalizeWebsite,
+  saveInstagramHandles,
+  savePreview,
+  siteFromLocation,
+  type PresenceType,
+  type SitePreview,
+} from "@/components/onboarding/preview";
 
-const BUSINESS_TYPES = [
-  "מאפייה / קפה / מסעדה",
-  "חנות פיזית / קמעונאות",
-  "חנות אונליין (אי-קומרס)",
-  "שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)",
-  "קליניקה, יופי ובריאות",
-  "סטודיו לאימון / ספורט",
-  "עיצוב / אדריכלות / נדל״ן",
-  "הדרכות, קורסים וחינוך",
-  "תיירות ואירוח",
-  "עסק אחר",
-];
+/**
+ * First run: three short questions, then the month is built.
+ *
+ * The old wizard had seven steps (intro, business, diagnostics, budget, targets, quarter,
+ * direction). Diagnostics, ranked targets, the quarterly plan and the month's direction
+ * are decisions an owner can make later — the planner proposes its own when they are
+ * missing, and they stay editable from /decisions and /plan. The goal defaults from the
+ * business model (a shop is planned for sales, a service business for inquiries).
+ */
+const STEPS = ["העסק", "התקציב", "המתחרים"] as const;
 
-/** How customers reach the business. Worded so it reads sensibly for a shop and for a
- *  service provider who works from a studio or remotely. */
-const PRESENCE_MODELS: {
-  key: "brick_and_mortar" | "online_only" | "hybrid";
-  title: string;
-  desc: string;
-}[] = [
-  { key: "brick_and_mortar", title: "מקום פיזי / סניף", desc: "אנשים מגיעים אליכם או פוגשים אתכם פנים אל פנים" },
-  { key: "online_only", title: "אונליין בלבד", desc: "הכל קורה מרחוק — באתר, בשיחת וידאו או בטלפון" },
-  { key: "hybrid", title: "משולב", desc: "גם פגישה או ביקור, וגם פנייה מהאתר" },
-];
+const MAX_COMPETITORS = 3;
+const MAX_HANDLES = 5;
 
-/** The seven steps, in order. The label doubles as the promise each screen makes. */
-const STEPS = [
-  { key: "intro", label: "מה נעשה יחד", hint: "איך זה עובד ומה יקרה בכל שלב" },
-  { key: "business", label: "העסק והאתר", hint: "נקרא את האתר וממלאים את הפרטים" },
-  { key: "diagnostics", label: "אבחון מהיר", hint: "כמה שאלות קצרות שקובעות סדרי עדיפויות" },
-  { key: "budget", label: "התקציב", hint: "כמה אתם משקיעים, ומה זה קונה" },
-  { key: "targets", label: "היעדים שלכם", hint: "עד שלוש עדיפויות לרבעון, לפי סדר חשיבות" },
-  { key: "quarter", label: "התוכנית הרבעונית", hint: "לאן הולכים ומה קורה בכל חודש" },
-  { key: "direction", label: "הכיוון לחודש", hint: "בוחרים מאיפה מתחילים החודש" },
-] as const;
+type ScanState = "idle" | "reading" | "done" | "failed";
 
-const STAGE_LABELS: Record<string, string> = {
-  scan: "קוראים את האתר ואת שפת המותג…",
-  usp: "מנסחים את הכיוון והבידול…",
-  plan: "בונים את תוכנית החודש…",
-  posts: "כותבים את הפוסטים לשבועות 1–2…",
-  posts_late: "כותבים את הפוסטים לשבועות 3–4…",
-  done: "התוכנית מוכנה",
-};
-
-const ROLE_LABELS: Record<string, string> = {
-  primary: "צבע ראשי",
-  accent: "צבע הדגשה",
-  background: "רקע",
-  ink: "טקסט",
-  secondary: "משני",
-};
+function splitHandles(text: string): string[] {
+  return text
+    .split(/[\s,،;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
 
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [scanNote, setScanNote] = useState("");
-  const [generateStage, setGenerateStage] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generateStage, setGenerateStage] = useState("usp");
 
+  const [website, setWebsite] = useState("");
   const [name, setName] = useState("");
   const [businessType, setBusinessType] = useState(BUSINESS_TYPES[0]);
   const [offerings, setOfferings] = useState("");
   const [businessModel, setBusinessModel] = useState<BusinessModel>(DEFAULT_BUSINESS_MODEL);
-  const [presenceType, setPresenceType] =
-    useState<"brick_and_mortar" | "online_only" | "hybrid">("brick_and_mortar");
+  const [presenceType, setPresenceType] = useState<PresenceType>("brick_and_mortar");
   const [location, setLocation] = useState("");
-  const [website, setWebsite] = useState("");
-  const [instagramLink, setInstagramLink] = useState("");
-  const [whatsappLink, setWhatsappLink] = useState("");
-  const [brand, setBrand] = useState<BrandLanguage | null>(null);
-  const [paletteNote, setPaletteNote] = useState("");
-
-  // One object instead of a hook per answer: the questions themselves now come from
-  // `lib/businessModel`, so the answers have to move as a set when the model changes.
-  const [diagnostics, setDiagnostics] = useState<Diagnostics>({});
-  const [capacity, setCapacity] = useState("");
-
-  const [targetCandidates, setTargetCandidates] = useState<GrowthTargetCandidate[]>([]);
-  const [loadingTargets, setLoadingTargets] = useState(false);
-  const [rankedTargets, setRankedTargets] = useState<string[]>([]);
-  const [plan, setPlan] = useState<LongHorizonPlan | null>(null);
-
-  const [budget, setBudget] = useState(4500);
+  const [socialLinks, setSocialLinks] = useState<Record<string, string>>({});
   const [goal, setGoal] = useState<PrimaryGoal>(() => defaultGoalFor(DEFAULT_BUSINESS_MODEL));
-  const [hypotheses, setHypotheses] = useState<GrowthHypothesis[]>([]);
-  const [selectedHypothesis, setSelectedHypothesis] = useState("");
+  const [budget, setBudget] = useState(4500);
   const [competitors, setCompetitors] = useState<Competitor[]>([{ name: "", website_url: "" }]);
+  const [handlesText, setHandlesText] = useState("");
+  const [savedHandles, setSavedHandles] = useState<string[]>([]);
+
+  const [hasBrand, setHasBrand] = useState(false);
+  const [scanState, setScanState] = useState<ScanState>("idle");
+  const [previewNote, setPreviewNote] = useState("");
+  const scanRef = useRef<{ url: string; promise: Promise<boolean> } | null>(null);
+  const previewFor = useRef("");
+  /** The site the stored brand was read from, so a changed URL is read again. */
+  const brandSite = useRef("");
+
+  /** Fill only what the owner has not typed: a guess never overwrites their answer. */
+  function applyPreview(preview: SitePreview) {
+    setName((current) => current || preview.business_name || "");
+    setLocation((current) => current || preview.location || "");
+    // The one-line summary reads like an answer; the raw list is often product names.
+    setOfferings((current) => current || preview.offerings_summary || preview.offerings.slice(0, 4).join(", ") || "");
+    if (preview.business_type && BUSINESS_TYPES.includes(preview.business_type)) {
+      setBusinessType(preview.business_type);
+    }
+    if (preview.business_model) setBusinessModel(preview.business_model);
+    if (preview.presence_type) setPresenceType(preview.presence_type);
+  }
+
+  /**
+   * Prefill from the public preview when the owner did not come through the landing
+   * page (or the stored one expired). It writes nothing, so it cannot race the profile
+   * save — and it warms the API's cache, so the real scan after step 1 is quick.
+   */
+  function prefillFromSite(url: string) {
+    const normalized = normalizeWebsite(url);
+    if (!looksLikeWebsite(normalized) || previewFor.current === normalized) return;
+    previewFor.current = normalized;
+    const stored = loadPreview(normalized);
+    if (stored) {
+      applyPreview(stored);
+      return;
+    }
+    setPreviewNote("קוראים את האתר וממלאים את הפרטים…");
+    fetchSitePreview(normalized)
+      .then((preview) => {
+        savePreview(preview, normalized);
+        applyPreview(preview);
+        setPreviewNote("");
+      })
+      // Prefill is a convenience: on any failure the owner simply types the details.
+      .catch(() => setPreviewNote(""));
+  }
+
+  /** The authenticated scan that stores the brand and the site's photos on the business.
+   *  Started only once the business row exists (after step 1), and awaited before the
+   *  month is built. */
+  function startScan(url: string): Promise<boolean> {
+    const normalized = normalizeWebsite(url);
+    if (scanRef.current?.url === normalized) return scanRef.current.promise;
+    setScanState("reading");
+    const promise = endpoints
+      .scanWebsite(normalized)
+      .then(() => {
+        brandSite.current = normalized;
+        setHasBrand(true);
+        setScanState("done");
+        return true;
+      })
+      .catch(() => {
+        setScanState("failed");
+        return false;
+      });
+    scanRef.current = { url: normalized, promise };
+    return promise;
+  }
 
   useEffect(() => {
     if (isDemo()) {
       router.replace("/dashboard");
       return;
     }
-    const params = new URLSearchParams(window.location.search);
-    const fromLanding = params.get("website") || "";
+    const site = siteFromLocation();
+    const stored = loadPreview(site || undefined);
     endpoints
       .business()
       .then((res) => {
-        const business = res.business;
+        const business: Business | null = res.business;
         if (business?.onboarding_complete) {
           router.replace("/dashboard");
           return;
         }
-        const loadedModel = business?.business_model ?? DEFAULT_BUSINESS_MODEL;
+        // First run with no business yet: the conversation at /start builds it.
+        if (!business) {
+          router.replace(site ? `/start?site=${encodeURIComponent(site)}` : "/start");
+          return;
+        }
+        // Built by /start (from-draft): the budget was asked there too (Revision 5), so
+        // nothing is left to ask here. The plan page shows the stored plan and builds the
+        // first month from it.
+        const builtFromDraft = Boolean(business.owner_context || business.first_month_seed || business.quarter_plan);
+        if ((builtFromDraft || new URLSearchParams(window.location.search).get("from") === "start") && business.name) {
+          router.replace("/strategy");
+          return;
+        }
+        // What the owner already saved wins over any guess from the site.
+        if (stored) applyPreview(stored);
+        const model = business?.business_model ?? stored?.business_model ?? DEFAULT_BUSINESS_MODEL;
         if (business?.name) setName(business.name);
         if (business?.business_type) setBusinessType(business.business_type);
         if (business?.offerings) setOfferings(business.offerings);
         if (business?.location) setLocation(business.location);
-        if (business?.business_model) setBusinessModel(loadedModel);
+        if (business?.business_model) setBusinessModel(business.business_model);
         if (business?.presence_type) setPresenceType(business.presence_type);
-        if (business?.website_url) setWebsite(business.website_url);
-        if (business?.social_links?.instagram) setInstagramLink(business.social_links.instagram);
-        if (business?.social_links?.whatsapp) setWhatsappLink(business.social_links.whatsapp);
-        if (business?.brand_language) setBrand(business.brand_language);
+        if (business?.social_links) setSocialLinks(business.social_links);
         if (business?.monthly_budget_ils) setBudget(business.monthly_budget_ils);
-        // The goal the API already stored is kept when it still fits the model, so a
-        // resumed wizard does not silently overwrite the owner's earlier choice.
-        if (business?.primary_goal && isGoalValidFor(loadedModel, business.primary_goal)) {
+        if (business?.primary_goal && isGoalValidFor(model, business.primary_goal)) {
           setGoal(business.primary_goal);
+        } else {
+          setGoal(defaultGoalFor(model));
         }
-        // Resume a partly finished wizard instead of asking again.
-        const saved = business?.diagnostics;
-        if (saved) {
-          // Pruned on the way in too: a saved answer from another model must not reappear
-          // as if it had been answered for this one.
-          setDiagnostics(pruneDiagnostics(loadedModel, saved));
-          if (saved.capacity_constraint) setCapacity(saved.capacity_constraint);
+        if (business?.competitors?.length) {
+          const rows = business.competitors.slice(0, MAX_COMPETITORS);
+          setCompetitors(rows.length < MAX_COMPETITORS ? [...rows, { name: "", website_url: "" }] : rows);
         }
-        // Sliced because rows saved before the three-priority cap could hold more, and
-        // the profile endpoint rejects a longer list outright.
-        if (business?.growth_targets?.length) {
-          setRankedTargets(business.growth_targets.slice(0, MAX_TARGETS));
+        const handles = business?.instagram_handles ?? [];
+        if (handles.length) {
+          setSavedHandles(handles);
+          setHandlesText(handles.map((item) => `@${item}`).join(" "));
         }
-        if (business?.long_horizon_plan) setPlan(business.long_horizon_plan);
-        if (!business?.website_url && fromLanding) setWebsite(fromLanding);
+        setHasBrand(Boolean(business?.brand_language));
+        if (business?.brand_language) {
+          setScanState("done");
+          brandSite.current = normalizeWebsite(business.website_url || "");
+        }
+
+        const url = business?.website_url || site || stored?.url || "";
+        if (url) setWebsite(url);
+        if (url && !stored && !business?.name) prefillFromSite(url);
+        if (stored) previewFor.current = normalizeWebsite(url);
       })
       .catch(() => {
-        if (fromLanding) setWebsite(fromLanding);
+        if (stored) applyPreview(stored);
+        const url = site || stored?.url || "";
+        if (url) setWebsite(url);
       });
+    // Runs once on mount; the helpers only touch state setters and refs.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
-  function diagnosticsPayload(): Diagnostics {
-    return { ...diagnostics, capacity_constraint: capacity };
+  function changeBusinessModel(next: BusinessModel) {
+    setBusinessModel(next);
+    // A goal the model does not offer is a 422 from the API; repair it with the model.
+    setGoal((current) => (isGoalValidFor(next, current) ? current : defaultGoalFor(next)));
   }
 
-  /** Every step re-sends the whole profile, so the payload is built in one place. */
-  function profilePayload(extra: Partial<OnboardingPayload> = {}): OnboardingPayload {
+  function profilePayload(): OnboardingPayload {
     return {
-      name,
-      website_url: website,
+      name: name.trim(),
+      website_url: normalizeWebsite(website),
       business_type: businessType,
-      offerings,
-      location,
+      offerings: offerings.trim(),
+      location: location.trim(),
       business_model: businessModel,
       presence_type: presenceType,
-      social_links: { instagram: instagramLink, whatsapp: whatsappLink },
-      monthly_budget_ils: budget,
-      competitors: competitors.filter((item) => item.name.trim()),
-      primary_goal: goal,
-      ...extra,
+      social_links: socialLinks,
+      monthly_budget_ils: Math.max(0, Math.round(budget || 0)),
+      competitors: competitors
+        .filter((item) => item.name.trim())
+        .map((item) => ({
+          name: item.name.trim(),
+          website_url: item.website_url.trim() ? normalizeWebsite(item.website_url) : "",
+        })),
+      primary_goal: isGoalValidFor(businessModel, goal) ? goal : defaultGoalFor(businessModel),
     };
-  }
-
-  /**
-   * Switching the model invalidates three things at once, and all of them have to go in
-   * the same commit: the diagnostic answers only that model asks for, a goal that no
-   * longer exists for it (the API answers a mismatched goal with a 422), and the target
-   * candidates / ranking that were generated for the previous model.
-   */
-  function changeBusinessModel(nextModel: BusinessModel) {
-    if (nextModel === businessModel) return;
-    setBusinessModel(nextModel);
-    setDiagnostics((current) => pruneDiagnostics(nextModel, current));
-    setGoal((current) => (isGoalValidFor(nextModel, current) ? current : defaultGoalFor(nextModel)));
-    // `loadTargets` skips the fetch while this list is non-empty, so the next visit to the
-    // targets step asks the API again — for the model the owner just picked.
-    setTargetCandidates([]);
-    setRankedTargets([]);
   }
 
   function goTo(next: number) {
     setError("");
     setStep(next);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0 });
   }
 
-  async function updateSwatch(index: number, hex: string) {
-    if (!brand) return;
-    const next = brand.palette.map((s, i) => (i === index ? { ...s, hex } : s));
-    setBrand({ ...brand, palette: next });
-    try {
-      await endpoints.savePalette(next);
-      setPaletteNote("הצבעים נשמרו ✓");
-      window.setTimeout(() => setPaletteNote(""), 2500);
-    } catch {
-      setPaletteNote("שמירת הצבע נכשלה");
-    }
-  }
-
-  async function handleScanWebsite() {
-    if (!/^https?:\/\/.+/i.test(website.trim())) {
-      setError("הזינו כתובת אתר מלאה שמתחילה ב-http:// או https://");
+  async function saveBusiness() {
+    setError("");
+    if (!looksLikeWebsite(website)) {
+      setError("מהאתר נלמד את הצבעים והסגנון. הזינו את הכתובת, למשל myshop.co.il");
       return;
     }
-    setError("");
+    if (name.trim().length < 2) {
+      setError("מה שם העסק?");
+      return;
+    }
+    if (offerings.trim().length < 2) {
+      setError("כתבו במשפט קצר מה אתם מוכרים או מציעים.");
+      return;
+    }
     setBusy(true);
-    setScanNote("קוראים את האתר ומחלצים צבעים, טון ומוצרים…");
     try {
-      const result = await endpoints.scanWebsite(website.trim());
-      const nextBrand = result.scan.brand_language;
-      setBrand(nextBrand);
-      if (nextBrand.business_name) setName(nextBrand.business_name);
-      if (nextBrand.offers_seen?.length) setOfferings(nextBrand.offers_seen.join(", "));
-      // City / neighbourhood is extracted from the site too, so the user does not have
-      // to retype something we already read.
-      const extracted = result.scan.extracted as { location?: string } | undefined;
-      if (extracted?.location) setLocation(extracted.location);
-      toast("שפת המותג נלמדה מהאתר");
+      await endpoints.saveProfile(profilePayload());
+      const url = normalizeWebsite(website);
+      // A changed site means the stored brand belongs to the old one: read the new one.
+      if (!hasBrand || brandSite.current !== url) {
+        setHasBrand(false);
+        void startScan(url);
+      }
+      goTo(1);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "קריאת האתר נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את הפרטים. נסו שוב.");
     } finally {
       setBusy(false);
-      setScanNote("");
     }
   }
 
-  async function saveBusinessStep() {
+  async function saveBudget() {
     setError("");
-    if (name.trim().length < 2) {
-      setError("נא להזין שם עסק.");
-      return;
-    }
-    if (offerings.trim().length < 3) {
-      setError("נא לפרט מה העסק מוכר או מציע.");
+    if (!Number.isFinite(budget) || budget < 0) {
+      setError("הזינו סכום בשקלים, במספרים.");
       return;
     }
     setBusy(true);
@@ -277,96 +297,50 @@ export default function OnboardingPage() {
       await endpoints.saveProfile(profilePayload());
       goTo(2);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "שמירת הפרופיל נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התקציב. נסו שוב.");
     } finally {
       setBusy(false);
     }
   }
 
-  async function saveDiagnosticsStep() {
+  async function buildMonth() {
     setError("");
-    setBusy(true);
-    try {
-      await endpoints.saveProfile(profilePayload({ diagnostics: diagnosticsPayload() }));
-      goTo(3);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "שמירת האבחון נכשלה");
-    } finally {
-      setBusy(false);
-    }
-    // Prefetch the candidates while the owner reads the budget screen. Deliberately not
-    // awaited by the transition and deliberately not tied to `busy`: generation takes
-    // tens of seconds, and blocking "next" on it left the button dead with no reason.
-    void loadTargets();
-  }
-
-  async function loadTargets() {
-    if (targetCandidates.length) return;
-    setLoadingTargets(true);
-    try {
-      const result = await endpoints.targets();
-      setTargetCandidates(result.targets);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "טעינת היעדים נכשלה");
-    } finally {
-      setLoadingTargets(false);
-    }
-  }
-
-  async function buildQuarterPlan() {
-    setError("");
-    if (!rankedTargets.length) {
-      setError("בחרו לפחות יעד אחד כדי שנבנה תוכנית רבעונית.");
+    const handles = splitHandles(handlesText);
+    if (handles.length > MAX_HANDLES) {
+      setError(`אפשר להוסיף עד ${MAX_HANDLES} חשבונות אינסטגרם.`);
       return;
     }
     setBusy(true);
     try {
-      await endpoints.saveProfile(profilePayload({ growth_targets: rankedTargets }));
-      const result = await endpoints.longHorizonPlan();
-      setPlan(result.long_horizon_plan);
-      goTo(5);
+      await endpoints.saveProfile(profilePayload());
+      if (handles.length || savedHandles.length) {
+        const saved = await saveInstagramHandles(handles);
+        setSavedHandles(saved.handles);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "בניית התוכנית הרבעונית נכשלה");
-    } finally {
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור. נסו שוב.");
       setBusy(false);
-    }
-  }
-
-  async function confirmPlanAndLoadDirections() {
-    setError("");
-    setBusy(true);
-    try {
-      // The plan must be saved *before* asking for directions: the backend feeds the
-      // approved quarter into the hypothesis prompt so the three options sit inside it.
-      await endpoints.saveProfile(
-        profilePayload({
-          growth_targets: rankedTargets,
-          diagnostics: diagnosticsPayload(),
-          long_horizon_plan: plan ?? undefined,
-        }),
-      );
-      const result = await endpoints.hypotheses();
-      setHypotheses(result.hypotheses);
-      setSelectedHypothesis((current) => current || result.hypotheses[0]?.hypothesis || "");
-      goTo(6);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "טעינת הכיוונים נכשלה");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function generateMonth() {
-    setError("");
-    if (!Number.isFinite(budget) || budget < 0) {
-      setError("התקציב החודשי חייב להיות מספר תקין בש״ח.");
       return;
     }
-    if (!selectedHypothesis && hypotheses.length) {
-      setError("בחרו כיוון צמיחה אחד.");
-      return;
+
+    // The month is written from the brand, so the site has to have been read first.
+    // (A business from /start never reaches this: it is sent to /strategy on load.)
+    if (!hasBrand && looksLikeWebsite(website)) {
+      const url = normalizeWebsite(website);
+      let ok = await startScan(url);
+      if (!ok) {
+        // One retry: a slow site often answers the second time.
+        scanRef.current = null;
+        ok = await startScan(url);
+      }
+      if (!ok) {
+        setBusy(false);
+        setError("לא הצלחנו לקרוא את האתר. בדקו את הכתובת בשלב הראשון ונסו שוב.");
+        return;
+      }
     }
-    setBusy(true);
+
+    setGenerating(true);
     setGenerateStage("usp");
     const poll = window.setInterval(() => {
       endpoints
@@ -378,681 +352,330 @@ export default function OnboardingPage() {
         .catch(() => {});
     }, 2500);
     try {
-      await endpoints.saveProfile(
-        profilePayload({
-          growth_targets: rankedTargets,
-          diagnostics: diagnosticsPayload(),
-          long_horizon_plan: plan ?? undefined,
-          growth_hypothesis: selectedHypothesis,
-        }),
-      );
       await generateUntilDone(endpoints.generate, setGenerateStage);
-      toast("התוכנית החודשית מוכנה");
+      toast("החודש מוכן");
       router.replace("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "בניית התוכנית נכשלה");
+      setError(err instanceof Error ? err.message : "לא הצלחנו לבנות את החודש. נסו שוב.");
+      setGenerating(false);
     } finally {
       window.clearInterval(poll);
       setBusy(false);
-      setGenerateStage("");
     }
   }
 
-  const current = STEPS[step];
-  const capacityQuestion = capacityCopy(businessModel);
+  function updateCompetitor(index: number, patch: Partial<Competitor>) {
+    setCompetitors((current) => {
+      const next = current.map((item, i) => (i === index ? { ...item, ...patch } : item));
+      const last = next[next.length - 1];
+      if (last && last.name.trim() && next.length < MAX_COMPETITORS) next.push({ name: "", website_url: "" });
+      return next;
+    });
+  }
+
+  if (generating) {
+    return (
+      <AppShell>
+        <div className="mx-auto max-w-xl space-y-4">
+          <GenerationProgress stage={generateStage} businessName={name} />
+          {error ? <ErrorNote message={error} /> : null}
+        </div>
+      </AppShell>
+    );
+  }
+
+  const stage = stageFor(budget);
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-3xl space-y-6">
-        <div className="py-2">
-          <div className="flex items-baseline justify-between">
-            <p className="text-xs font-bold text-[#5e6159]">
-              שלב {step + 1} מתוך {STEPS.length}: {current.label}
-            </p>
-            <p className="text-[11px] text-[#8b8e84]">{current.hint}</p>
-          </div>
-          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#e6e4dc]">
-            <div
-              className="h-full bg-[#191b18] transition-all"
-              style={{ width: `${((step + 1) / STEPS.length) * 100}%` }}
-            />
-          </div>
-          <ol className="mt-3 hidden flex-wrap gap-x-4 gap-y-1 text-[11px] sm:flex">
-            {STEPS.map((item, index) => (
-              <li
-                key={item.key}
-                className={
-                  index === step
-                    ? "font-bold text-[#191b18]"
-                    : index < step
-                      ? "text-[#5e6159]"
-                      : "text-[#b3b0a5]"
-                }
-              >
-                {index < step ? "✓ " : `${index + 1}. `}
-                {item.label}
-              </li>
-            ))}
-          </ol>
-        </div>
-
-        {error ? <ErrorNote message={error} /> : null}
+      <div className="mx-auto max-w-xl space-y-4">
+        <StepHeader
+          step={step}
+          onBack={step > 0 ? () => goTo(step - 1) : undefined}
+        />
 
         {step === 0 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
+          <section className="space-y-4">
             <div>
-              <h2 className="text-2xl font-black text-[#191b18]">ככה זה עובד</h2>
-              <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                רוב העסקים קופצים ישר ל״מה מפרסמים החודש״. אנחנו מתחילים מלאן הולכים,
-                ורק אז יורדים לחודש ולפוסטים. זה מה שנעשה יחד בארבעה שלבים:
-              </p>
+              <h1 className="text-2xl font-black leading-tight text-[#191b18]">זה העסק שלכם?</h1>
+              <p className="mt-1 text-sm text-[#5e6159]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
             </div>
 
-            <ol className="space-y-3">
-              {[
-                {
-                  title: "התוכנית הרבעונית",
-                  desc: "לאן הולכים בשלושת החודשים הקרובים, איזה יעד מוביל, ומה אבן הדרך בכל חודש.",
-                },
-                {
-                  title: "התוכנית החודשית",
-                  desc: "מה עושים החודש — כתוצאה ישירה של הרבעון, לא בחירה מנותקת.",
-                },
-                {
-                  title: "הפוסטים",
-                  desc: "מה מתפרסם בכל שבוע, באיזה ערוץ ובאיזה נוסח, בכרטיסים מוכנים.",
-                },
-                {
-                  title: "מדידה ותיקון",
-                  desc: "מה עבד ומה משנים בחודש הבא. בלי להמציא מספרים — רק ממה שנמדד.",
-                },
-              ].map((item, index) => (
-                <li key={item.title} className="flex gap-3 rounded-md border border-[#e6e4dc] bg-[#f8f7f4] p-4">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#191b18] text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <span>
-                    <span className="block text-sm font-black text-[#191b18]">{item.title}</span>
-                    <span className="mt-1 block text-sm leading-6 text-[#5e6159]">{item.desc}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            <p className="rounded-md border border-[#c7d6c2] bg-[#f3f7f1] px-4 py-3 text-sm leading-6 text-[#374b3d]">
-              <span className="font-bold">אתם מאשרים כל שלב.</span> שום דבר לא מתפרסם
-              בלי אישור שלכם, ואפשר לשנות הכל בהמשך.
-            </p>
-
-            <div className="flex justify-end border-t border-[#e6e4dc] pt-4">
-              <Button onClick={() => goTo(1)}>בואו נתחיל</Button>
-            </div>
-          </div>
-        ) : null}
-
-        {step === 1 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
+            <TextField
+              label="כתובת האתר"
+              value={website}
+              onChange={setWebsite}
+              onBlur={() => prefillFromSite(website)}
+              placeholder="myshop.co.il"
+              dir="ltr"
+              inputMode="url"
+              note={
+                previewNote ||
+                (scanState === "failed" ? "לא הצלחנו לקרוא את האתר. בדקו שהכתובת נכונה." : "")
+              }
+            />
+            <TextField label="שם העסק" value={name} onChange={setName} autoComplete="organization" />
             <div>
-              <h2 className="text-2xl font-black text-[#191b18]">קודם האתר. אחר כך נדייק יחד.</h2>
-              <p className="mt-1 text-sm text-[#5e6159]">
-                נקרא את האתר, נמלא את הפרטים, ואתם רק מאשרים שזה נכון.
-              </p>
+              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[#191b18]">
+                סוג העסק
+              </label>
+              <select
+                id="business-type"
+                value={businessType}
+                onChange={(event) => setBusinessType(event.target.value)}
+                className="min-h-11 w-full rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
+              >
+                {BUSINESS_TYPES.map((item) => (
+                  <option key={item}>{item}</option>
+                ))}
+              </select>
             </div>
+            <TextField label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
 
-            <div className="border-t border-[#e6e4dc] pt-4">
-              <label className="mb-1.5 block text-xs font-bold text-[#191b18]">כתובת האתר</label>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <input
-                  type="url"
-                  value={website}
-                  onChange={(event) => setWebsite(event.target.value)}
-                  placeholder="https://myshop.co.il"
-                  className="flex-1 rounded-md border border-[#dedcd4] bg-[#faf8f5] px-3 py-2 text-sm"
-                />
-                <Button onClick={() => void handleScanWebsite()} disabled={busy}>
-                  {busy && scanNote ? "קוראים אתר…" : "קראו את האתר"}
-                </Button>
-              </div>
-              {scanNote ? <p className="mt-2 text-xs font-bold text-[#2d3f32]">{scanNote}</p> : null}
-              <p className="mt-2 text-xs text-[#8b8e84]">
-                אין אתר עדיין? דלגו על הסריקה ומלאו שם ומה אתם מוכרים.
-              </p>
-            </div>
-
-            {brand ? (
-              <div className="space-y-3 rounded-md border border-[#c8d6c4] bg-[#e8eee5] p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#2d3f32]">שפת המותג מהאתר</span>
-                  <Badge tone="emerald">נלמד מהאתר</Badge>
-                </div>
-                <div>
-                  <p className="mb-1.5 text-[11px] text-[#4a5b4c]">
-                    אפשר לתקן את הצבעים — הם קובעים איך ייראו כל הכרטיסים והפוסטים.
-                  </p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    {brand.palette.map((swatch, i) => (
-                      <label key={`${swatch.role}-${i}`} className="flex items-center gap-1.5" title={swatch.role}>
-                        <input
-                          type="color"
-                          value={/^#[0-9a-fA-F]{6}$/.test(swatch.hex) ? swatch.hex : "#000000"}
-                          onChange={(e) => void updateSwatch(i, e.target.value)}
-                          className="h-7 w-7 cursor-pointer rounded-full border border-[#c7c4b8] bg-transparent p-0"
-                        />
-                        <span className="text-[10px] font-bold text-[#4a5b4c]">
-                          {ROLE_LABELS[swatch.role] || swatch.role}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                  {paletteNote ? (
-                    <p className="mt-1.5 text-[11px] font-bold text-[#2d3f32]">{paletteNote}</p>
-                  ) : null}
-                </div>
-                <p className="text-xs text-[#2d3f32]">
-                  <span className="font-bold">טון: </span>
-                  {brand.voice}
-                </p>
-              </div>
-            ) : null}
-
-            <div className="grid gap-4 border-t border-[#e6e4dc] pt-4 sm:grid-cols-2">
-              <Field label="שם העסק" value={name} onChange={setName} />
-              <div>
-                <label className="mb-1 block text-xs font-bold text-[#191b18]">סוג העסק</label>
-                <select
-                  value={businessType}
-                  onChange={(event) => setBusinessType(event.target.value)}
-                  className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
-                >
-                  {BUSINESS_TYPES.map((item) => (
-                    <option key={item}>{item}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="sm:col-span-2">
-                <Field label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
-              </div>
-              <Field label="עיר / שכונה" value={location} onChange={setLocation} />
-            </div>
-
-            <section className="border-t border-[#e6e4dc] pt-4">
-              <h3 className="text-sm font-black text-[#191b18]">מה אתם מוכרים?</h3>
-              <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-                זה משנה את כל התוכנית: חנות מתוכננת סביב רכישות, ועסק שירותים סביב פניות
-                ומיתוג אישי. התשובה קובעת אילו שאלות נשאל ואיך תיראה התוכנית.
-              </p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+            <fieldset>
+              <legend className="mb-1 text-sm font-bold text-[#191b18]">מוצרים או שירותים?</legend>
+              <div className="grid grid-cols-3 gap-2">
                 {BUSINESS_MODEL_OPTIONS.map((option) => (
-                  <ChoiceButton
+                  <Chip
                     key={option.key}
-                    title={option.title}
-                    desc={option.desc}
+                    label={MODEL_SHORT[option.key]}
+                    title={option.desc}
                     selected={businessModel === option.key}
                     onClick={() => changeBusinessModel(option.key)}
                   />
                 ))}
               </div>
-            </section>
+            </fieldset>
 
-            <section className="border-t border-[#e6e4dc] pt-4">
-              <h3 className="text-sm font-bold text-[#191b18]">איך הלקוחות מגיעים אליכם?</h3>
-              <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                {PRESENCE_MODELS.map((model) => (
-                  <button
-                    key={model.key}
-                    type="button"
-                    onClick={() => setPresenceType(model.key)}
-                    className={`rounded-md border p-3 text-right ${
-                      presenceType === model.key
-                        ? "border-[#191b18] bg-[#191b18] text-white"
-                        : "border-[#e6e4dc] bg-[#f8f7f4] text-[#191b18]"
-                    }`}
-                  >
-                    <span className="block text-xs font-bold">{model.title}</span>
-                    <span className="mt-1 block text-[11px] opacity-80">{model.desc}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-
-            <details className="border-t border-[#e6e4dc] pt-3">
-              <summary className="cursor-pointer text-xs font-bold text-[#5e6159]">
-                אינסטגרם או וואטסאפ (לא חובה)
+            <details className="group">
+              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[#5e6159] underline underline-offset-4">
+                עיר ואיך מגיעים אליכם
               </summary>
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                <Field label="אינסטגרם" value={instagramLink} onChange={setInstagramLink} />
-                <Field label="קישור וואטסאפ" value={whatsappLink} onChange={setWhatsappLink} />
-              </div>
-            </details>
-
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(0)} className="text-sm text-[#5e6159] underline">
-                חזרה
-              </button>
-              <Button onClick={() => void saveBusinessStep()} disabled={busy}>
-                {busy ? "שומרים…" : "המשך לאבחון"}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-
-        {step === 2 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
-            <div>
-              <h2 className="text-2xl font-black text-[#191b18]">כמה שאלות קצרות, וזהו.</h2>
-              <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                התשובות קובעות מה נציע לחזק קודם — לא מה ״נכון״ באופן כללי, אלא מה נכון לעסק שלכם.
-                את השאלות בחרנו לפי מה שאמרתם שאתם מוכרים.
-              </p>
-            </div>
-
-            {diagnosticQuestionsFor(businessModel).map((question) => (
-              <QuestionBlock key={question.field} title={question.title} note={question.note}>
-                <div className="grid gap-2 sm:grid-cols-3">
-                  {question.options.map((option) => (
-                    <ChoiceButton
-                      key={option.key}
-                      title={option.title}
-                      desc={option.desc}
-                      selected={diagnostics[question.field] === option.key}
-                      onClick={() =>
-                        setDiagnostics((current) => ({
-                          ...current,
-                          [question.field]: option.key,
-                        }))
-                      }
+              <div className="mt-2 space-y-3">
+                <TextField label="עיר או שכונה" value={location} onChange={setLocation} />
+                <div className="grid grid-cols-3 gap-2">
+                  {PRESENCE_MODELS.map((model) => (
+                    <Chip
+                      key={model.key}
+                      label={model.title}
+                      selected={presenceType === model.key}
+                      onClick={() => setPresenceType(model.key)}
                     />
                   ))}
                 </div>
-              </QuestionBlock>
-            ))}
+              </div>
+            </details>
 
-            <QuestionBlock title={capacityQuestion.title} note={capacityQuestion.note}>
-              <textarea
-                rows={2}
-                value={capacity}
-                onChange={(event) => setCapacity(event.target.value)}
-                placeholder={capacityQuestion.placeholder}
-                className="w-full rounded-md border border-[#dedcd4] p-3 text-sm"
-              />
-            </QuestionBlock>
-
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(1)} className="text-sm text-[#5e6159] underline">
-                חזרה
-              </button>
-              <Button onClick={() => void saveDiagnosticsStep()} disabled={busy}>
-                {busy ? "שומרים…" : "המשך לתקציב"}
-              </Button>
-            </div>
-          </div>
+            {error ? <ErrorNote message={error} /> : null}
+            <Button onClick={() => void saveBusiness()} disabled={busy} className="min-h-12 w-full justify-center">
+              {busy ? "שומרים…" : "להמשיך לתקציב"}
+            </Button>
+          </section>
         ) : null}
 
-        {step === 3 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
+        {step === 1 ? (
+          <section className="space-y-4">
             <div>
-              <h2 className="text-2xl font-black text-[#191b18]">כמה אתם משקיעים בשיווק בחודש?</h2>
-              <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                זה הסכום הכולל לחודש, וזו ההחלטה שקובעת הכי הרבה: כמה פוסטים בשבוע,
-                איזה פורמטים, והאם בכלל שווה לשלם כדי לגייס לקוחות חדשים — או שעדיף
-                להשקיע במי שכבר מכיר אתכם.
-              </p>
+              <h1 className="text-2xl font-black leading-tight text-[#191b18]">כמה תשקיעו בשיווק בחודש?</h1>
+              <p className="mt-1 text-sm text-[#5e6159]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-2">
               {BUDGET_STAGES.map((option) => {
-                const active = stageFor(budget).key === option.key;
+                const active = stage.key === option.key;
                 return (
                   <button
                     key={option.key}
                     type="button"
+                    aria-pressed={active}
                     onClick={() => setBudget(option.suggestion)}
-                    className={`rounded-md border p-4 text-right ${
-                      active ? "border-[#191b18] bg-[#191b18] text-white" : "border-[#e6e4dc] bg-[#f8f7f4] text-[#191b18]"
+                    className={`min-h-16 rounded-md border p-3 text-right text-[#191b18] ${
+                      active ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#e6e4dc] bg-white"
                     }`}
                   >
-                    <span className="flex items-baseline justify-between gap-2">
-                      <span className="text-sm font-black">{option.title}</span>
-                      <span className="text-[11px] opacity-80">{option.range}</span>
-                    </span>
-                    <span className="mt-1.5 block text-[11px] leading-5 opacity-80">{option.buys}</span>
+                    <span className="block text-sm font-black">{option.title}</span>
+                    <span className="mt-0.5 block text-xs opacity-80">{option.range}</span>
                   </button>
                 );
               })}
             </div>
 
-            <div className="rounded-md border border-[#e6e4dc] bg-white p-4">
-              <label className="mb-1.5 block text-xs font-bold text-[#191b18]">או סכום מדויק לחודש</label>
+            <div>
+              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[#191b18]">
+                או סכום מדויק
+              </label>
               <div className="flex items-center gap-2">
                 <input
+                  id="budget"
                   type="number"
-                  value={budget}
+                  inputMode="numeric"
+                  value={Number.isFinite(budget) ? budget : ""}
                   min={0}
                   step={100}
                   onChange={(event) => setBudget(Number(event.target.value))}
-                  className="w-40 rounded-md border border-[#dedcd4] px-3 py-2 text-sm font-bold"
+                  className="min-h-11 w-40 rounded-md border border-[#dedcd4] bg-white px-3 text-base font-bold sm:text-sm"
                 />
-                <span className="text-sm font-bold text-[#5e6159]">₪</span>
+                <span className="text-sm font-bold text-[#5e6159]">₪ לחודש</span>
               </div>
-              <p className="mt-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-3 py-2 text-xs leading-5 text-[#685f47]">
-                <span className="font-bold">
-                  {formatNis(budget)} → {stageFor(budget).title}.
-                </span>{" "}
-                {stageFor(budget).buys}
-              </p>
             </div>
 
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(2)} className="text-sm text-[#5e6159] underline">
-                חזרה
-              </button>
-              <Button onClick={() => goTo(4)} disabled={busy}>
-                המשך ליעדים
-              </Button>
-            </div>
-          </div>
+            <p className="text-sm leading-6 text-[#4f524b]">
+              <span className="font-bold text-[#191b18]">{formatNis(budget)}: </span>
+              {stage.buys}
+            </p>
+
+            {error ? <ErrorNote message={error} /> : null}
+            <Button onClick={() => void saveBudget()} disabled={busy} className="min-h-12 w-full justify-center">
+              {busy ? "שומרים…" : "להמשיך למתחרים"}
+            </Button>
+          </section>
         ) : null}
 
-        {step === 4 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
+        {step === 2 ? (
+          <section className="space-y-4">
             <div>
-              <h2 className="text-2xl font-black text-[#191b18]">מה חשוב לכם קודם?</h2>
-              <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                רבעון מכיל <span className="font-bold text-[#191b18]">שלוש עדיפויות בלבד</span> —
-                יותר מזה וזה כבר לא מיקוד. בחרו עד שלושה יעדים, ואז סדרו אותם לפי סדר
-                החשיבות: הראשון הוא היעד המוביל שהתוכנית הרבעונית תיבנה סביבו.
-              </p>
+              <h1 className="text-2xl font-black leading-tight text-[#191b18]">מי המתחרים שלכם?</h1>
+              <p className="mt-1 text-sm text-[#5e6159]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
             </div>
 
-            {loadingTargets && !targetCandidates.length ? (
-              <p className="flex items-center gap-2 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-4 py-3 text-sm font-bold text-[#191b18]">
-                <IconFlag className="h-4 w-4" />
-                {AGENT_NAME} בונה הצעה של יעדים מהעסק, מהאתר ומהאבחון…
-              </p>
-            ) : null}
-
-            {targetCandidates.length ? (
-              <TargetRanker
-                candidates={targetCandidates}
-                value={rankedTargets}
-                onChange={setRankedTargets}
-              />
-            ) : null}
-
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(3)} className="text-sm text-[#5e6159] underline">
-                חזרה
-              </button>
-              <Button onClick={() => void buildQuarterPlan()} disabled={busy || !targetCandidates.length}>
-                {busy ? "בונים תוכנית רבעונית…" : "בנו את התוכנית הרבעונית"}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-
-        {step === 5 && plan ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
-            <div>
-              <span className="inline-flex items-center gap-2 text-xs font-bold text-[#5e6159]">
-                <IconCompass className="h-4 w-4" />
-                {plan.horizon || "הרבעון הקרוב"}
-              </span>
-              <h2 className="mt-2 text-2xl font-black leading-8 text-[#191b18]">{plan.hypothesis}</h2>
-              <p className="mt-2 text-sm leading-6 text-[#5e6159]">
-                זו התוכנית שממנה נגזר כל השאר. כל חודש הוא אבן דרך אחת בדרך ליעד הזה.
-              </p>
-            </div>
-
-            <section className="border-t border-[#e6e4dc] pt-4">
-              <h3 className="text-sm font-black text-[#191b18]">היעדים שלכם, לפי החשיבות שקבעתם</h3>
-              <ol className="mt-3 space-y-2">
-                {plan.targets.map((target, index) => (
-                  <li key={`${target}-${index}`} className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#191b18] text-[11px] font-bold text-white">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm leading-6 text-[#191b18]">{target}</span>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
-            <section className="border-t border-[#e6e4dc] pt-4">
-              <h3 className="text-sm font-black text-[#191b18]">מה יקרה בכל חודש</h3>
-              <p className="mt-1 text-xs text-[#8b8e84]">כל חודש נסגר בנקודת בקרה, כדי שנדע אם לתקן.</p>
-              <ol className="mt-3 space-y-3">
-                {plan.milestones.map((milestone, index) => (
-                  <li key={`${milestone.month_label}-${index}`} className="rounded-md border border-[#e6e4dc] bg-[#f8f7f4] p-4">
-                    <span className="text-[11px] font-bold text-[#8b8e84]">{milestone.month_label}</span>
-                    <span className="mt-1 block text-sm font-bold leading-6 text-[#191b18]">
-                      {milestone.milestone}
-                    </span>
-                    <span className="mt-2 block text-xs leading-5 text-[#5e6159]">
-                      <span className="font-bold">נקודת בקרה: </span>
-                      {milestone.checkpoint}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </section>
-
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(4)} className="text-sm text-[#5e6159] underline">
-                שנה יעדים
-              </button>
-              <Button onClick={() => void confirmPlanAndLoadDirections()} disabled={busy}>
-                {busy ? "טוענים כיוונים…" : "מאשר — נבחר כיוון לחודש"}
-              </Button>
-            </div>
-          </div>
-        ) : null}
-
-        {step === 5 && !plan ? (
-          <div className="space-y-4 rounded-lg border border-[#e6e4dc] bg-white p-6 text-center sm:p-8">
-            <p className="text-sm text-[#5e6159]">עוד אין תוכנית רבעונית.</p>
-            <Button onClick={() => goTo(4)}>חזרה ליעדים</Button>
-          </div>
-        ) : null}
-
-        {step === 6 ? (
-          <div className="space-y-6 rounded-lg border border-[#e6e4dc] bg-white p-6 sm:p-8">
-            <div>
-              <h2 className="text-2xl font-black text-[#191b18]">מאיפה מתחילים החודש?</h2>
-              <p className="mt-1 text-sm leading-6 text-[#5e6159]">
-                שלוש דרכים לפתוח את הרבעון. כולן צעד ראשון בתוך התוכנית שאישרתם —
-                לא תוכנית חדשה.
-              </p>
-            </div>
-
-            {plan ? (
-              <div className="rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-4 py-3">
-                <span className="flex items-center gap-2 text-[11px] font-bold text-[#685f47]">
-                  <IconCompass className="h-3.5 w-3.5" />
-                  היעד המוביל שלכם
-                </span>
-                <p className="mt-1 text-sm font-bold leading-6 text-[#191b18]">{plan.targets[0]}</p>
-              </div>
-            ) : null}
-
-            {hypotheses.length ? (
-              <div className="space-y-2">
-                {hypotheses.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => setSelectedHypothesis(item.hypothesis)}
-                    className={`w-full rounded-md border p-4 text-right ${
-                      selectedHypothesis === item.hypothesis
-                        ? "border-[#191b18] bg-[#f4f3ee]"
-                        : "border-[#e6e4dc] bg-white"
-                    }`}
-                  >
-                    <span className="flex items-start justify-between gap-3">
-                      <span>
-                        <span className="block text-sm font-bold text-[#191b18]">{item.title}</span>
-                        <span className="mt-1 block text-sm leading-6 text-[#5e6159]">{item.hypothesis}</span>
-                        <span className="mt-2 block text-xs text-[#8b8e84]">{item.why_this}</span>
-                      </span>
-                      {selectedHypothesis === item.hypothesis ? (
-                        <IconCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#191b18]" />
-                      ) : null}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <p className="rounded-md border border-[#e6e4dc] bg-[#faf8f5] p-4 text-sm text-[#5e6159]">
-                לא הצלחנו להציע כיוונים אוטומטית. אפשר לכתוב כיוון אחד בעצמכם.
-              </p>
-            )}
-
-            {!hypotheses.length ? (
-              <textarea
-                rows={3}
-                value={selectedHypothesis}
-                onChange={(event) => setSelectedHypothesis(event.target.value)}
-                placeholder="אם נחזור לכל מי שפנה אלינו בעבר ונסביר מה אנחנו עושים עכשיו, נסגור עוד בלי להוציא יותר על פרסום."
-                className="w-full rounded-md border border-[#dedcd4] p-3 text-sm"
-              />
-            ) : null}
-
-            <div className="grid gap-4 border-t border-[#e6e4dc] pt-4 sm:grid-cols-2">
-              <div>
-                <label className="mb-1 block text-xs font-bold text-[#191b18]">התקציב החודשי</label>
-                <p className="rounded-md border border-[#e6e4dc] bg-[#f8f7f4] px-3 py-2 text-sm font-bold text-[#191b18]">
-                  {formatNis(budget)}
-                </p>
-                <Link
-                  href="/decisions"
-                  className="mt-1 block text-[11px] text-[#5e6159] underline underline-offset-4"
-                >
-                  {stageFor(budget).title} · לשינוי התקציב
-                </Link>
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-bold text-[#191b18]">המטרה החודש</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {goalsFor(businessModel).map((option) => (
-                    <button
-                      key={option.key}
-                      type="button"
-                      onClick={() => setGoal(option.key)}
-                      title={option.desc}
-                      className={`rounded-md border p-3 text-right text-xs font-bold ${
-                        goal === option.key ? "border-[#191b18] bg-[#191b18] text-white" : "border-[#e6e4dc]"
-                      }`}
-                    >
-                      {option.title}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <details className="border-t border-[#e6e4dc] pt-3">
-              <summary className="cursor-pointer text-xs font-bold text-[#5e6159]">מתחרים (לא חובה, מספיק שם)</summary>
-              <div className="mt-3 space-y-2">
-                {competitors.map((item, index) => (
+            <fieldset className="space-y-2">
+              <legend className="mb-1 text-sm font-bold text-[#191b18]">עסקים מתחרים</legend>
+              {competitors.map((item, index) => (
+                <div key={index} className="grid grid-cols-2 gap-2">
                   <input
-                    key={index}
+                    aria-label={`מתחרה ${index + 1}: שם`}
                     value={item.name}
-                    onChange={(event) => {
-                      const next = [...competitors];
-                      next[index] = { ...next[index], name: event.target.value };
-                      if (index === competitors.length - 1 && event.target.value && competitors.length < 3) {
-                        next.push({ name: "", website_url: "" });
-                      }
-                      setCompetitors(next);
-                    }}
-                    placeholder="שם מתחרה"
-                    className="w-full rounded-md border border-[#dedcd4] px-3 py-2 text-sm"
+                    onChange={(event) => updateCompetitor(index, { name: event.target.value })}
+                    placeholder="שם"
+                    className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
                   />
-                ))}
-              </div>
-            </details>
+                  <input
+                    aria-label={`מתחרה ${index + 1}: אתר`}
+                    value={item.website_url}
+                    onChange={(event) => updateCompetitor(index, { website_url: event.target.value })}
+                    placeholder="אתר (לא חובה)"
+                    dir="ltr"
+                    inputMode="url"
+                    autoCapitalize="none"
+                    spellCheck={false}
+                    className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-3 text-base placeholder:text-right sm:text-sm"
+                  />
+                </div>
+              ))}
+            </fieldset>
 
-            {generateStage ? (
-              <div className="flex items-center gap-3 rounded-md border border-[#e2d7c3] bg-[#fcf9f2] px-4 py-3 text-sm font-bold text-[#191b18]">
-                <IconStore className="h-4 w-4" />
-                {STAGE_LABELS[generateStage] || "בונים את החודש…"}
-              </div>
-            ) : null}
+            <TextField
+              label="חשבונות אינסטגרם שכדאי ללמוד מהם"
+              value={handlesText}
+              onChange={setHandlesText}
+              placeholder="@bakery_one @cafe_two"
+              dir="ltr"
+              note={`עד ${MAX_HANDLES}, עם רווח ביניהם. אפשר גם להדביק קישור לפרופיל.`}
+            />
 
-            <div className="flex items-center justify-between border-t border-[#e6e4dc] pt-4">
-              <button type="button" onClick={() => goTo(5)} className="text-sm text-[#5e6159] underline">
-                חזרה
-              </button>
-              <Button onClick={() => void generateMonth()} disabled={busy}>
-                {busy ? STAGE_LABELS[generateStage] || "בונים…" : "בנו את החודש"}
-              </Button>
-            </div>
-          </div>
+            {error ? <ErrorNote message={error} /> : null}
+            <Button onClick={() => void buildMonth()} disabled={busy} className="min-h-12 w-full justify-center">
+              {busy ? (scanState === "reading" ? "מסיימים לקרוא את האתר…" : "שומרים…") : "לבנות את החודש שלי"}
+            </Button>
+          </section>
         ) : null}
       </div>
     </AppShell>
   );
 }
 
-function QuestionBlock({
-  title,
-  note,
-  children,
-}: {
-  title: string;
-  note?: string;
-  children: React.ReactNode;
-}) {
+function StepHeader({ step, onBack, lastStep }: { step: number; onBack?: () => void; lastStep?: boolean }) {
+  // From /start only the budget is left, so "step 2 of 3" would be wrong.
+  const label = lastStep ? `צעד אחרון · ${STEPS[step]}` : `שלב ${step + 1} מתוך ${STEPS.length} · ${STEPS[step]}`;
+  const progress = lastStep ? 100 : ((step + 1) / STEPS.length) * 100;
   return (
-    <section className="border-t border-[#e6e4dc] pt-4">
-      <h3 className="text-sm font-bold text-[#191b18]">{title}</h3>
-      {note ? <p className="mt-1 text-xs leading-5 text-[#8b8e84]">{note}</p> : null}
-      <div className="mt-3">{children}</div>
-    </section>
+    <div>
+      <div className="flex min-h-11 items-center justify-between">
+        <p className="text-xs font-bold text-[#5e6159]">
+          {label}
+        </p>
+        {onBack ? (
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex min-h-11 items-center px-1 text-sm text-[#5e6159] underline underline-offset-4"
+          >
+            חזרה
+          </button>
+        ) : null}
+      </div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-[#e6e4dc]">
+        <div className="h-full bg-[#191b18] transition-all" style={{ width: `${progress}%` }} />
+      </div>
+    </div>
   );
 }
 
-function ChoiceButton({
+function Chip({
+  label,
   title,
-  desc,
   selected,
   onClick,
 }: {
-  title: string;
-  desc?: string;
+  label: string;
+  title?: string;
   selected: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
+      title={title}
+      aria-pressed={selected}
       onClick={onClick}
-      className={`rounded-md border p-3 text-right ${
-        selected ? "border-[#191b18] bg-[#191b18] text-white" : "border-[#e6e4dc] bg-[#f8f7f4] text-[#191b18]"
+      // Selected is an outline, not a dark fill: the page's one dark button is the ask.
+      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[#191b18] ${
+        selected ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white"
       }`}
     >
-      <span className="block text-xs font-bold">{title}</span>
-      {desc ? <span className="mt-1 block text-[11px] opacity-80">{desc}</span> : null}
+      {label}
     </button>
   );
 }
 
-function Field({
+function TextField({
   label,
   value,
   onChange,
+  onBlur,
+  placeholder,
+  dir,
+  inputMode,
+  autoComplete,
+  note,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
+  placeholder?: string;
+  dir?: "ltr" | "rtl";
+  inputMode?: "url" | "text";
+  autoComplete?: string;
+  note?: string;
 }) {
   return (
-    <div>
-      <label className="mb-1 block text-xs font-bold text-[#191b18]">{label}</label>
+    <label className="block">
+      <span className="mb-1 block text-sm font-bold text-[#191b18]">{label}</span>
+      {/* 16px on phones: iOS zooms into any field smaller than that. */}
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+        onBlur={onBlur}
+        placeholder={placeholder}
+        dir={dir}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
+        autoCapitalize={dir === "ltr" ? "none" : undefined}
+        spellCheck={dir === "ltr" ? false : undefined}
+        className="min-h-11 w-full rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
       />
-    </div>
+      {note ? <span className="mt-1 block text-xs text-[#5e6159]">{note}</span> : null}
+    </label>
   );
 }

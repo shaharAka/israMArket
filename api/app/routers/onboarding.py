@@ -1,6 +1,8 @@
 from datetime import datetime
+from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Body, Depends, HTTPException
+from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -9,7 +11,25 @@ from app.models import Business, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
 from app.services.brand import filter_usable_photos
 from app.services.audiences import catalogue_for
+from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
+from app.services.instagram_signal import handles_for, signal_for
+from app.services.onboarding_draft import (
+    OWNER_CONTEXT_FALLBACK_HE,
+    DirectionIn,
+    DraftPhotoError,
+    IdeaIn,
+    OnboardingDraft,
+    OwnerContextIn,
+    apply_draft,
+    apply_owner_context,
+    link_draft_photos,
+    owner_context_errors_he,
+    seed_from_stored,
+)
+from app.services.preview import cached_scan
+from app.services.quarter_plan import QuarterPlanIn
+from app.services.strategy_reveal import SamplePostIn, StrategyIn
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -23,6 +43,34 @@ from app.services.strategy import (
 from app.services.webhooks import deliver
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
+
+# First run asks three things: the business, the budget, the competitors. These four
+# decisions used to be wizard steps and now wait until the owner wants them — generation
+# runs without them (the model proposes a quarter and a direction itself), and they stay
+# editable from /decisions and /plan. Listed so a screen can say what is still open.
+DEFERRED_DECISIONS = ("diagnostics", "growth_targets", "long_horizon_plan", "growth_hypothesis")
+
+
+def _deferred(stored: dict) -> list[str]:
+    def filled(value) -> bool:
+        if isinstance(value, dict):
+            return any(str(item or "").strip() for item in value.values())
+        if isinstance(value, (list, tuple)):
+            return any(str(item or "").strip() for item in value)
+        return bool(str(value or "").strip())
+
+    return [key for key in DEFERRED_DECISIONS if not filled(stored.get(key))]
+
+
+def default_goal(business_model: str | None, current: str | None) -> str:
+    """The stored goal when it fits the model, else the model's first goal.
+
+    First run no longer asks for a goal: a shop is planned for sales and a service
+    business for inquiries, which is what the owner would pick nine times out of ten,
+    and /decisions changes it.
+    """
+    allowed = goals_for(business_model)
+    return current if current in allowed else allowed[0]
 
 
 def _business_payload(business: Business) -> dict:
@@ -47,6 +95,16 @@ def _business_payload(business: Business) -> dict:
         "diagnostics": stored.get("diagnostics"),
         "long_horizon_plan": stored.get("long_horizon_plan"),
         "generate_state": loads(business.generate_state_json, {}),
+        "instagram_handles": handles_for(business),
+        "deferred_decisions": _deferred(stored),
+        # Onboarding v2 (additive): the first-meeting answers, where the brand came from
+        # ("preset" when it is a style preset, not a scan) and the chosen first-month seed.
+        "owner_context": stored.get("owner_context"),
+        "brand_source": stored.get("brand_source") or ("scan" if stored.get("brand_language") else None),
+        "first_month_seed": seed_from_stored(stored),
+        # Revision 5: the 3-month plan saved at signup, and the measurement checklist it needs.
+        "quarter_plan": stored.get("quarter_plan"),
+        "integrations_checklist": stored.get("integrations_checklist") or [],
     }
 
 
@@ -58,16 +116,128 @@ def current_business(user: User = Depends(get_current_user), db: Session = Depen
     return {"business": _business_payload(business)}
 
 
+class FromDraftIn(BaseModel):
+    draft: OnboardingDraft
+    # Expected from the web flow; optional so a signup never fails because the plan
+    # preview could not be shown. Without it the first month is planned as before.
+    chosen_direction: DirectionIn | None = None
+    chosen_idea: IdeaIn | None = None
+    # Revision 4: the strategy from /public/strategy (as the owner last shaped it) and
+    # the sample posts they chose from /public/sample-posts. Both optional; with them the
+    # first month follows the strategy and the chosen posts are its first posts.
+    strategy: StrategyIn | None = None
+    chosen_posts: list[SamplePostIn] | None = Field(default=None, max_length=3)
+    # Revision 5: the 3-month plan from /public/quarter-plan, as the owner last saw it.
+    quarter_plan: QuarterPlanIn | None = None
+
+
+def _stored_plan(plan: QuarterPlanIn | None) -> dict | None:
+    if plan is None:
+        return None
+    try:
+        return plan.stored()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@router.post("/from-draft")
+def from_draft(
+    body: FromDraftIn,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Turn the pre-signup draft (/start) into the owner's business. Idempotent.
+
+    Same response as /onboarding/me. The budget step and /onboarding/generate follow
+    unchanged; generation reads the brand this stores (the cached site scan, or the
+    style preset) and the chosen direction/idea (see onboarding_draft.apply_draft).
+    """
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        business = Business(user_id=user.id)
+        db.add(business)
+    apply_draft(
+        db,
+        business,
+        body.draft,
+        body.chosen_direction.model_dump() if body.chosen_direction else None,
+        body.chosen_idea.model_dump() if body.chosen_idea else None,
+        strategy=body.strategy.stored() if body.strategy else None,
+        chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
+        quarter_plan=_stored_plan(body.quarter_plan),
+    )
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+class DraftPhotoLink(BaseModel):
+    post_index: int = Field(ge=0, le=2)
+    asset_id: int = Field(ge=1)
+
+
+@router.post("/draft-photos")
+def draft_photos(
+    body: list[DraftPhotoLink] = Body(..., max_length=3),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Link the photos uploaded right after signup (kept in the browser until then) to
+    the week-1 posts chosen at /start, so the month uses them. Idempotent. Same
+    response as /onboarding/me."""
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=404, detail="עוד אין עסק. קודם שומרים את מה שבנינו.")
+    try:
+        link_draft_photos(db, business, [item.model_dump() for item in body])
+    except DraftPhotoError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+@router.put("/owner-context")
+def update_owner_context(
+    body: Any = Body(...),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Change what the owner told us at /start, from /decisions. Partial; see OwnerContextIn.
+
+    The body is validated here rather than by FastAPI so a 422 says what is wrong in
+    Hebrew (the default is pydantic's English, prefixed with "Value error").
+    Same response as /onboarding/me.
+    """
+    if not isinstance(body, dict):
+        raise HTTPException(status_code=422, detail=OWNER_CONTEXT_FALLBACK_HE)
+    try:
+        update = OwnerContextIn.model_validate(body)
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail=owner_context_errors_he(exc.errors())) from exc
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
+    apply_owner_context(business, update)
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
 @router.post("/scan")
 def scan_business_site(
     body: WebsiteScanIn,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
-    try:
-        scanned = scan_website(body.website_url)
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    # Right after signup the landing page has usually just read this site for the public
+    # preview; reuse that scan instead of reading the site (and paying Gemini) twice.
+    scanned = cached_scan(body.website_url)
+    if scanned is None:
+        try:
+            scanned = scan_website(body.website_url)
+        except Exception as exc:
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
 
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     if not business:
@@ -102,7 +272,11 @@ def scan_business_site(
         # Storing source photos is an optimisation; never fail the scan over it.
         pass
 
-    business.scraped_profile_json = dumps(scanned)
+    # The stored profile also carries the owner's own decisions (growth hypothesis,
+    # targets, diagnostics, the /start answers and the first-month seed). A re-scan
+    # refreshes only what the scan produces; replacing the whole blob wiped them.
+    previous = loads(business.scraped_profile_json, {}) or {}
+    business.scraped_profile_json = dumps({**previous, **scanned})
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
@@ -118,7 +292,7 @@ def save_brand_language(
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     stored = loads(business.scraped_profile_json, {}) if business else {}
     if not business or not stored.get("brand_language"):
-        raise HTTPException(status_code=400, detail="קודם קוראים את האתר. אין שפת מותג לשמור לפני הסריקה.")
+        raise HTTPException(status_code=400, detail="קודם צריך לקרוא את האתר. עד אז אין סגנון לשמור.")
     brand = body.model_dump()
     stored["brand_language"] = brand
     business.scraped_profile_json = dumps(stored)
@@ -146,7 +320,7 @@ def save_palette(
     stored = loads(business.scraped_profile_json, {}) if business else {}
     brand = stored.get("brand_language") if business else None
     if not business or not brand:
-        raise HTTPException(status_code=400, detail="אין שפת מותג לשמור. סרקו את האתר קודם.")
+        raise HTTPException(status_code=400, detail="אין עדיין צבעים לשמור. קראו קודם את האתר.")
 
     brand["palette"] = [item.model_dump() for item in body.palette]
     stored["brand_language"] = brand
@@ -237,7 +411,7 @@ def hypotheses(
 def _require_business(db: Session, user: User) -> tuple[Business, dict]:
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     if not business or not business.name or not business.business_type:
-        raise HTTPException(status_code=400, detail="יש למלא את פרטי העסק לפני השלב הזה.")
+        raise HTTPException(status_code=400, detail="מלאו קודם את פרטי העסק.")
     return business, loads(business.scraped_profile_json, {}) or {}
 
 
@@ -296,7 +470,7 @@ def long_horizon_plan(
     if not ranked:
         raise HTTPException(
             status_code=400,
-            detail="בחרו ודרגו יעדי צמיחה לפני בניית התוכנית הרבעונית.",
+            detail="בחרו את היעדים וסדרו אותם לפי החשיבות, ואז נבנה את התוכנית של הרבעון.",
         )
     try:
         plan = build_long_horizon_plan(
@@ -324,16 +498,25 @@ def generate(
     if not business or not business.business_type or not business.name:
         raise HTTPException(
             status_code=400,
-            detail="יש להגדיר את פרטי העסק לפני יצירת התוכנית",
+            detail="מלאו קודם את פרטי העסק, ואז נבנה את התוכנית.",
         )
 
     stored = loads(business.scraped_profile_json, {}) or {}
     if not stored.get("brand_language") and not business.website_url:
         raise HTTPException(
             status_code=400,
-            detail="סרקו אתר ציבורי או הזינו כתובת לפני יצירת התוכנית",
+            detail="הזינו את כתובת האתר של העסק, ואז נבנה את התוכנית.",
         )
+    # Minimal first-run defaults. Everything else the old wizard asked for (diagnostics,
+    # ranked targets, the quarter, the month's direction) is optional input here: the
+    # planner proposes its own when it is missing — see DEFERRED_DECISIONS.
+    business.business_model = normalise_model(business.business_model)
+    business.primary_goal = default_goal(business.business_model, business.primary_goal)
+    if business.monthly_budget_ils is None or business.monthly_budget_ils < 0:
+        business.monthly_budget_ils = 0
     payload = {
+        # The research hook in strategy.build_roadmap looks the business up by id.
+        "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
         "business_type": business.business_type,
@@ -352,6 +535,12 @@ def generate(
         # Who the content is for. Empty list = the business never defined a segment, and
         # then the plan and the posts are generated without one.
         "audiences": catalogue_for(db, business),
+        # Usually empty at onboarding, and then the post prompt says so explicitly.
+        "instagram_signal": signal_for(db, business),
+        # From /onboarding/from-draft (absent otherwise): the first-meeting answers, and
+        # the direction + idea the owner chose, which only the first month is built on.
+        "owner_context": stored.get("owner_context") or None,
+        "first_month_seed": seed_from_stored(stored),
     }
     scan = stored if stored.get("brand_language") else None
     state = loads(business.generate_state_json, {}) or {}
@@ -361,19 +550,49 @@ def generate(
         business.updated_at = datetime.utcnow()
         db.commit()
 
-    try:
-        generated = generate_monthly_strategy(
+    # A plan built at /start names its first month (it starts two weeks out, so on the
+    # 30th it is next month); the first generation builds that month, not today's.
+    start = (payload["first_month_seed"] or {}).get("start") or {}
+    first_month = {}
+    if isinstance(start.get("year"), int) and isinstance(start.get("month"), int) and 1 <= start["month"] <= 12:
+        first_month = {"year": start["year"], "month": start["month"]}
+
+    def run() -> dict:
+        return generate_monthly_strategy(
             payload,
             scan=scan,
             state=state,
             on_stage=persist_stage,
             one_stage=True,
+            **first_month,
         )
+
+    try:
+        generated = run()
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        # First run now asks for competitor sites, and the first stage reads each one.
+        # One unreachable competitor must not block the owner's month: retry that stage
+        # once with the names only (the planner handles a site-less competitor already).
+        first_stage = (state.get("stage") or "scan") in {"scan", "usp"}
+        with_sites = [item for item in payload["competitors"] or [] if (item or {}).get("website_url")]
+        if not (first_stage and with_sites):
+            raise HTTPException(status_code=502, detail=str(exc)) from exc
+        payload["competitors"] = [
+            {"name": (item or {}).get("name") or "", "website_url": ""} for item in payload["competitors"]
+        ]
+        try:
+            generated = run()
+        except Exception as retry_exc:
+            raise HTTPException(status_code=502, detail=str(retry_exc)) from retry_exc
+
+    # Without a saved scan the planner reads the site itself and hands back a fresh scan
+    # dict. Merge it over what was stored, or the owner's saved decisions would be wiped.
+    scraped_profile = generated["scraped_profile"]
+    if scan is None:
+        scraped_profile = {**stored, **(scraped_profile or {})}
 
     if not generated.get("complete"):
-        business.scraped_profile_json = dumps(generated["scraped_profile"])
+        business.scraped_profile_json = dumps(scraped_profile)
         db.commit()
         db.refresh(business)
         return {
@@ -382,7 +601,7 @@ def generate(
             "generate_state": generated["generate_state"],
         }
 
-    business.scraped_profile_json = dumps(generated["scraped_profile"])
+    business.scraped_profile_json = dumps(scraped_profile)
     business.generate_state_json = ""
     business.onboarding_complete = 1
     business.updated_at = datetime.utcnow()

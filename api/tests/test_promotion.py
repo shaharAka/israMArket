@@ -4,6 +4,7 @@ Hermetic: no network anywhere. Autocomplete and Search Console are exercised thr
 mocked `httpx` calls or through their parsing helpers; the endpoints run against a
 throwaway SQLite file, the same pattern as the assets suite.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import json
 import shutil
@@ -125,7 +126,7 @@ class IndustryMappingTest(unittest.TestCase):
         self.assertEqual(plan.minimum_viable_budget, (15_000, 25_000))
         self.assertIsNone(plan.conversion_rate_range)
         self.assertIsNone(plan.expected_conversions)
-        self.assertTrue(any("לא מפרסם עבורו שיעור המרה" in warning for warning in plan.warnings))
+        self.assertTrue(any("לא מפרסם בו איזה חלק מהקליקים" in warning for warning in plan.warnings))
 
     def test_plan_for_business_reads_the_stored_payload(self):
         plan = plan_for_business(BUSINESS)
@@ -241,7 +242,7 @@ class WarningTest(unittest.TestCase):
         learning = [w for w in plan.warnings if "ללמוד" in w]
         self.assertEqual(len(learning), 1)
         self.assertIn("איסוף נתונים", learning[0])
-        self.assertIn("ROAS", learning[0])
+        self.assertIn("החזר על ההוצאה", learning[0])
 
     def test_learning_phase_warning_when_the_range_straddles_thirty(self):
         plan = plan_from_budget(10_000, "שירותים משפטיים", "עורך דין")
@@ -608,7 +609,7 @@ class BusinessProfileTest(unittest.TestCase):
         blob = json.dumps(guidance, ensure_ascii=False)
         for invented in ("% יותר", "אחוז יותר", "מחקרים מראים"):
             self.assertNotIn(invented, blob)
-        self.assertTrue(any("אין לנו גישה לפרופיל" in note for note in guidance["notes"]))
+        self.assertTrue(any("אין לנו גישה לכרטיס" in note for note in guidance["notes"]))
 
 
 # --- 9. endpoints --------------------------------------------------------------------

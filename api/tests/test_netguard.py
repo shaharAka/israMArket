@@ -3,6 +3,7 @@
 Hermetic on purpose: every hostname case mocks `socket.getaddrinfo` rather than doing a
 real lookup, so the suite does not depend on DNS being reachable in CI.
 """
+import _test_env  # noqa: F401  (must come before any `app` import)
 
 import socket
 import unittest

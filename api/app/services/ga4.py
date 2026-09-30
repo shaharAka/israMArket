@@ -59,10 +59,10 @@ def exchange_code(code: str) -> dict:
         timeout=20.0,
     )
     if response.status_code >= 400:
-        raise RuntimeError(f"החלפת קוד Google נכשלה: {response.text}")
+        raise RuntimeError(f"לא הצלחנו להשלים את החיבור לגוגל: {response.text}")
     payload = response.json()
     if "refresh_token" not in payload:
-        raise RuntimeError("Google לא החזיר refresh_token. יש להתחבר מחדש עם prompt=consent.")
+        raise RuntimeError("גוגל לא נתן לנו הרשאה קבועה. חברו את גוגל מחדש ואשרו את כל ההרשאות.")
     expires = datetime.now(timezone.utc) + timedelta(seconds=int(payload.get("expires_in", 3600)))
     return {
         "access_token": payload["access_token"],
@@ -108,8 +108,8 @@ def list_properties(access_token: str, refresh_token: str, expires_at: datetime 
     )
     if response.status_code >= 400:
         raise RuntimeError(
-            "לא הצלחנו למנות את נכסי GA4. ודאו ש-Google Analytics Admin API מופעל ושלחשבון יש גישה. "
-            f"תשובת Google: {response.text}"
+            "לא הצלחנו לקבל מגוגל אנליטיקס את רשימת האתרים. ודאו שלחשבון יש גישה לנתוני האתר "
+            f"(ושה-Google Analytics Admin API מופעל). התשובה של גוגל: {response.text}"
         )
     properties = []
     for account in response.json().get("accountSummaries", []):
@@ -122,7 +122,7 @@ def list_properties(access_token: str, refresh_token: str, expires_at: datetime 
                 }
             )
     if not properties:
-        raise RuntimeError("לא נמצאו נכסי GA4 בחשבון שחובר.")
+        raise RuntimeError("לא מצאנו אתרים בגוגל אנליטיקס בחשבון שחיברתם.")
     return properties
 
 
