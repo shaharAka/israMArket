@@ -74,14 +74,19 @@ text conflict: a clean merge alone does not verify the behavior.
 - `/design`: language, components, results, and transitions. Language opens with
   the storefront/sun anchor and three schematic palette choices. Components start with
   the plan; supporting examples appear on demand.
-- `/design/results`: an interactive Results component, using explicitly fictional bakery
-  data. Daily paired bars compare verified paid website orders over two complete weeks.
-  Selecting a day exposes its values; evidence opens inline. One proposed action opens
-  the plan change and a subordinate post draft. Acceptance/reversal stays in React state
-  and is explicitly labelled as local to the preview. Insufficient data and interrupted
-  connection scenarios do not invent zeroes or trends; reconnect is a labelled simulation.
-  `ResultsBrief` accepts findings, evidence, measures and actions from its caller. No
-  authenticated Results data, API, OAuth, persistence or account flow changes are included.
+- `/design/results`: an interactive recommendation component, using explicitly fictional
+  bakery data. It leads with the business meaning and a prepared next step, rather than
+  asking the owner to interpret a chart. Instagram interest, website measurements, a
+  supplied page-audit observation and owner-approved business facts inform one proposed
+  clarification to the order page and the planned post. Evidence, numbers, reporting
+  periods and uncertainty live in a disclosure. Visits and paid orders are separate
+  measures, not an assumed customer funnel. The owner can edit the prepared copy,
+  copy it for manual website insertion, approve/reverse it locally and preview the post.
+  All approval stays in React state; no site or account is changed. Sparse data retains
+  the planned step. A missing source offers recovery and continuation with prepared work.
+  `ResultsBrief` takes supplied observations and interpretations separately. This is the
+  proposed experience, not a new working page-audit/connector service: authenticated
+  Results data, APIs, OAuth, provider permissions and persistence are unchanged.
 - `/preview`: entry to the existing application with explicit example data. The plan
   opens first. Onboarding is a separate `/start?mock=1` walkthrough.
 - `/motion`: nine isolated motion assets, both moods and reduced-motion controls.
