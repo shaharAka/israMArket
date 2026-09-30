@@ -10,7 +10,10 @@ function formatDetail(detail: unknown, fallback: string) {
     return detail
       .map((item) => {
         if (typeof item === "string") return item;
-        if (item && typeof item === "object" && "msg" in item) return String((item as { msg: string }).msg);
+        // pydantic prefixes custom messages with "Value error, " — the owner should only
+        // see the Hebrew sentence after it.
+        if (item && typeof item === "object" && "msg" in item)
+          return String((item as { msg: string }).msg).replace(/^Value error,\s*/, "");
         return JSON.stringify(item);
       })
       .join(" · ");

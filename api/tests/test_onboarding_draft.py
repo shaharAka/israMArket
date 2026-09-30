@@ -741,3 +741,20 @@ class RescanKeepsOwnerDecisionsTest(unittest.TestCase):
         self.assertEqual(stored["first_month_seed"], {"direction": {"title": "t"}})
         self.assertEqual(stored["growth_hypothesis"], "h")
         self.assertEqual(stored["brand_language"]["business_name"], "new")
+
+
+class SuccessTargetTest(unittest.TestCase):
+    """A chip target like "10" is a valid answer (it broke the whole flow before)."""
+
+    def test_numeric_target_is_accepted(self):
+        from app.services.onboarding_draft import DraftSuccess
+
+        self.assertEqual(DraftSuccess(kpi="online_orders", target="10").target, "10")
+        self.assertEqual(DraftSuccess(kpi="online_orders", target="25 הזמנות").target, "25 הזמנות")
+
+    def test_junk_target_is_rejected_in_hebrew(self):
+        from app.services.onboarding_draft import DraftSuccess
+
+        with self.assertRaises(ValidationError) as ctx:
+            DraftSuccess(kpi="online_orders", target="!!!")
+        self.assertIn("היעד", str(ctx.exception))

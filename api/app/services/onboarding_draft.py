@@ -662,8 +662,14 @@ class DraftSuccess(BaseModel):
     @field_validator("target")
     @classmethod
     def _target(cls, value: str) -> str:
+        # A target is usually just a number ("10", "25 הזמנות"): the owner tapped a chip.
+        # Only reject what is neither a number nor words (e.g. "!!!").
         text = clean_text(value, 120)
-        return _readable(text, "היעד") if text else ""
+        if not text:
+            return ""
+        if re.search(r"\d", text) or _LETTER.search(text):
+            return text
+        raise ValueError("היעד: כתבו מספר או כמה מילים.")
 
 
 class OnboardingDraft(BaseModel):
