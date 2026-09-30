@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
+import { DeleteAccount } from "@/components/account/DeleteAccount";
 import { endpoints } from "@/lib/api";
 import { toast } from "@/lib/ui";
 
@@ -76,6 +77,8 @@ export default function AccountPage() {
             {pending ? "שומרים…" : "להחליף סיסמה"}
           </button>
         </form>
+
+        <DeleteAccount />
       </div>
     </AppShell>
   );

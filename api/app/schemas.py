@@ -23,6 +23,12 @@ class PasswordChangeIn(BaseModel):
     new_password: str = Field(min_length=8, max_length=200)
 
 
+class AccountDeleteIn(BaseModel):
+    """The current password, so a stolen session cookie alone cannot erase an account."""
+
+    password: str = Field(min_length=1, max_length=200)
+
+
 class UserOut(BaseModel):
     id: int
     email: EmailStr

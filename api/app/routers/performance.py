@@ -8,6 +8,7 @@ from app.deps import get_business
 from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
+from app.security import decrypt_page_token
 from app.services import ga4, instagram_signal, meta
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
@@ -128,8 +129,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
         if meta_item:
             extra_meta = loads(meta_item.extra_json, {})
             instagram_id = extra_meta.get("selected_instagram_id") or ""
-            page_tokens = extra_meta.get("page_tokens") or {}
-            page_token = page_tokens.get(meta_item.external_id)
+            page_token = decrypt_page_token(extra_meta, meta_item.external_id)
             if not page_token:
                 raise RuntimeError("החיבור לדף הפייסבוק שבחרתם לא שלם. חברו את אינסטגרם מחדש בעמוד החיבורים.")
             meta_data = meta.fetch_insights(page_token, instagram_id, meta_item.external_id)

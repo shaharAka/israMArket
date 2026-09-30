@@ -28,7 +28,7 @@ from sqlalchemy.orm import Session, object_session
 
 from app.config import get_settings
 from app.models import Business, HashtagQuery, InspirationBrief, InstagramPost, Integration
-from app.security import decrypt_secret
+from app.security import decrypt_page_token, decrypt_secret
 from app.services import meta
 from app.services.gemini import strategy_json
 from app.services.hebrew_style import HEBREW_STYLE
@@ -355,7 +355,7 @@ def meta_context(business: Business) -> dict | None:
     instagram_id = extra.get("selected_instagram_id") or ""
     if not instagram_id:
         return None
-    page_token = (extra.get("page_tokens") or {}).get(item.external_id) or ""
+    page_token = decrypt_page_token(extra, item.external_id)
     try:
         user_token = decrypt_secret(item.access_token_enc)
     except Exception:
