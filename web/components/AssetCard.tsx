@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Asset, AssetSource } from "@/lib/api";
-import { IconCheck, IconEye, IconImage, IconPen, IconSparkles } from "@/lib/icons";
-import { SECTIONS } from "@/lib/sections";
-
-const identity = SECTIONS.assets;
+import { IconCheck, IconEye, IconImage, IconPen, IconSparkles, IconTrash } from "@/lib/icons";
+import ui from "@/components/posts/chrome.module.css";
 
 /** Where each file came from, in the owner's words. */
 const SOURCE_LABEL: Record<AssetSource, string> = {
@@ -46,7 +44,7 @@ function PlayMark({ size = "md" }: { size?: "md" | "lg" }) {
   return (
     <span
       aria-hidden
-      className={`pointer-events-none absolute inset-0 m-auto flex ${box} items-center justify-center rounded-full bg-[var(--ink)]/70 text-white shadow-sm`}
+      className={`pointer-events-none absolute inset-0 m-auto flex ${box} items-center justify-center rounded-full bg-[var(--ink)]/65 text-white shadow-[var(--shadow-pop)] backdrop-blur-sm`}
     >
       <svg viewBox="0 0 24 24" className={`${glyph} translate-x-[-1px]`} fill="currentColor">
         {/* Pointing right in an RTL page too: a play symbol is not text, it does not mirror. */}
@@ -68,8 +66,7 @@ function VideoPoster() {
   return (
     <span
       aria-hidden
-      className="absolute inset-0"
-      style={{ background: `linear-gradient(160deg, ${identity.surface}, ${identity.border})` }}
+      className="absolute inset-0 bg-[linear-gradient(160deg,var(--primary-soft),var(--rule-dark))]"
     />
   );
 }
@@ -143,13 +140,13 @@ export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void 
       onClick={onOpen}
       aria-label={`${kindWord(asset)}: ${asset.description.trim() || "בלי תיאור"}. לפתוח את הפרטים`}
       title={asset.description.trim() || undefined}
-      className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-lg border bg-[var(--canvas)] transition-shadow hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)]"
-      style={{ borderColor: identity.border }}
+      className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-[14px] bg-[var(--soft)] shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(.2,.7,.2,1)] after:pointer-events-none after:absolute after:inset-0 after:rounded-[14px] after:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-pop)] active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
       <Preview asset={asset} mode="tile" />
       {/* The one status worth seeing from the grid: a file the posts cannot use yet. */}
       {described ? null : (
-        <span className="absolute right-1.5 bottom-1.5 rounded bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-[var(--ink-soft)]">
+        <span className="absolute right-2 bottom-2 z-[1] inline-flex items-center gap-1.5 rounded-full bg-[var(--paper)]/92 px-2.5 py-1 text-[11px] font-semibold text-[var(--ink-soft)] shadow-[var(--shadow-card)] backdrop-blur-sm">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--sun)]" />
           בלי תיאור
         </span>
       )}
@@ -250,11 +247,7 @@ export function AssetSheet({
     }
   }
 
-  const buttonClass =
-    "inline-flex min-h-10 items-center gap-1.5 rounded-md border px-3 text-xs font-bold transition-colors disabled:cursor-default disabled:opacity-50";
-  const quietButton: CSSProperties = { borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" };
-  const inputClass =
-    "mt-1 w-full rounded-md border border-[var(--rule)] bg-white px-2.5 py-2 text-sm text-[var(--ink)] outline-none focus:border-[var(--ink)]";
+  const inputClass = `${ui.field} mt-2`;
 
   return (
     <dialog
@@ -265,32 +258,32 @@ export function AssetSheet({
         // The backdrop is the dialog element itself; a tap on the sheet lands on a child.
         if (event.target === event.currentTarget) event.currentTarget.close();
       }}
-      className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-2xl bg-white p-0 text-right backdrop:bg-[var(--ink)]/45 sm:m-auto sm:max-w-lg sm:rounded-2xl"
+      className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-[20px] bg-[var(--paper)] p-0 text-right text-[var(--ink)] shadow-[var(--shadow-pop)] backdrop:bg-[var(--ink)]/40 sm:m-auto sm:max-w-lg sm:rounded-[20px]"
     >
-      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--rule)] bg-white px-4 py-2.5">
-        <p className="text-sm font-black text-[var(--ink)]">פרטי ה{kindWord(asset)}</p>
+      <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--rule)] bg-[var(--paper)]/95 pe-2 ps-5 py-2 backdrop-blur-sm">
+        <p className="text-base font-bold tracking-tight text-[var(--ink)]">פרטי ה{kindWord(asset)}</p>
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
           aria-label="לסגור"
           title="לסגור"
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-[var(--ink-soft)] hover:bg-[var(--canvas)] hover:text-[var(--ink)]"
+          className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[var(--ink)]"
         >
-          <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
             <path d="M6 6l12 12M18 6L6 18" />
           </svg>
         </button>
       </div>
 
-      <div className="relative h-56 w-full bg-[var(--canvas)] sm:h-72">
+      <div className="relative h-56 w-full bg-[var(--soft)] sm:h-72">
         <Preview asset={asset} mode="sheet" />
       </div>
 
-      <div className="space-y-3 p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <div className="space-y-4 px-5 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         {editing ? (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <label className="block">
-              <span className="text-xs font-bold text-[var(--ink)]">תיאור</span>
+              <span className={ui.groupTitle}>תיאור</span>
               <textarea
                 value={draftDescription}
                 onChange={(event) => setDraftDescription(event.target.value)}
@@ -299,8 +292,8 @@ export function AssetSheet({
               />
             </label>
             <label className="block">
-              <span className="text-xs font-bold text-[var(--ink)]">תגיות</span>
-              <span className="mt-0.5 block text-[11px] text-[var(--ink-muted)]">הפרידו בפסיק</span>
+              <span className={ui.groupTitle}>תגיות</span>
+              <span className={`${ui.help} block`}>הפרידו בפסיק</span>
               <input
                 value={draftTags}
                 onChange={(event) => setDraftTags(event.target.value)}
@@ -309,29 +302,28 @@ export function AssetSheet({
               />
             </label>
             {tagSuggestions.length ? (
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-[11px] text-[var(--ink-muted)]">תגיות שכבר יש:</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className={ui.help}>תגיות שכבר יש:</span>
                 {tagSuggestions.map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     onClick={() => setDraftTags((prev) => (prev.trim() ? `${prev.replace(/,\s*$/, "")}, ${tag}` : tag))}
-                    className="rounded-full border border-[var(--rule)] bg-[var(--canvas)] px-2 py-0.5 text-[11px] text-[var(--ink-soft)] hover:border-[var(--ink-muted)]"
+                    className={`${ui.chip} min-h-8 px-3 text-xs font-medium`}
                   >
                     {tag}
                   </button>
                 ))}
               </div>
             ) : null}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1">
               <button
                 type="button"
                 onClick={() => void runSave()}
                 disabled={saving}
-                className={buttonClass}
-                style={{ borderColor: identity.accent, background: identity.accent, color: "#fff" }}
+                className="drawn-button inline-flex min-h-11 items-center gap-2 bg-[var(--primary)] px-5 text-sm text-white enabled:hover:bg-[var(--primary-dark)]"
               >
-                <IconCheck className="h-3.5 w-3.5" />
+                <IconCheck className="h-4 w-4" />
                 {saving ? "שומרים…" : "לשמור"}
               </button>
               <button
@@ -343,8 +335,7 @@ export function AssetSheet({
                   setError("");
                 }}
                 disabled={saving}
-                className={buttonClass}
-                style={quietButton}
+                className={`${ui.link} ${ui.linkQuiet}`}
               >
                 לבטל
               </button>
@@ -353,9 +344,9 @@ export function AssetSheet({
         ) : (
           <>
             {asset.description.trim() ? (
-              <p className="text-sm leading-6 text-[var(--ink-soft)]">{asset.description}</p>
+              <p className="text-[15px] leading-7 text-[var(--ink)]">{asset.description}</p>
             ) : (
-              <p className="text-sm leading-6 text-[var(--ink-muted)]">
+              <p className="text-[15px] leading-7 text-[var(--ink-muted)]">
                 עדיין אין תיאור. לחצו ״לכתוב תיאור מחדש״, ונכתוב תיאור ותגיות לפי מה שרואים בתמונה.
               </p>
             )}
@@ -365,18 +356,17 @@ export function AssetSheet({
                 {asset.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full border px-2 py-0.5 text-[11px] font-bold"
-                    style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                    className="rounded-full bg-[var(--primary-soft)] px-3 py-1 text-xs font-medium text-[var(--primary-dark)]"
                   >
                     {tag}
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-[11px] text-[var(--ink-muted)]">עדיין אין תגיות.</p>
+              <p className={ui.help}>עדיין אין תגיות.</p>
             )}
 
-            <p className="text-[11px] text-[var(--ink-muted)]">
+            <p className={`${ui.meta} font-normal`}>
               {SOURCE_LABEL[asset.source]}
               {formatDate(asset.created_at) ? ` · ${formatDate(asset.created_at)}` : ""}
               {dimensions ? (
@@ -393,32 +383,30 @@ export function AssetSheet({
                 target="_blank"
                 rel="noreferrer"
                 dir="ltr"
-                className="block truncate text-[11px] text-[var(--ink-muted)] underline underline-offset-4 hover:text-[var(--ink)]"
+                className="-mt-2 block truncate text-xs text-[var(--ink-muted)] underline-offset-4 hover:text-[var(--ink)] hover:underline"
                 title={asset.source_url}
               >
                 {asset.source_url}
               </a>
             ) : null}
 
-            <div className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-3">
+            <div className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-4">
               <button
                 type="button"
                 onClick={() => setEditing(true)}
                 disabled={busy}
-                className={buttonClass}
-                style={quietButton}
+                className={ui.button}
               >
-                <IconPen className="h-3.5 w-3.5" />
+                <IconPen />
                 לערוך
               </button>
               <button
                 type="button"
                 onClick={() => void runDescribe()}
                 disabled={busy}
-                className={buttonClass}
-                style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                className={ui.button}
               >
-                {describing ? <IconEye className="h-3.5 w-3.5" /> : <IconSparkles className="h-3.5 w-3.5" />}
+                {describing ? <IconEye /> : <IconSparkles />}
                 {describing ? "כותבים תיאור…" : "לכתוב תיאור מחדש"}
               </button>
               {confirmingDelete ? (
@@ -427,8 +415,7 @@ export function AssetSheet({
                     type="button"
                     onClick={() => void runDelete()}
                     disabled={deleting}
-                    className={buttonClass}
-                    style={{ borderColor: "#eed1c9", background: "#fbf2ef", color: "#9f4330" }}
+                    className={`${ui.button} border-[var(--danger-rule)] bg-[var(--danger-soft)] text-[var(--danger)] hover:border-[var(--danger)] hover:bg-[var(--danger-soft)]`}
                   >
                     {deleting ? "מוחקים…" : "כן, למחוק"}
                   </button>
@@ -436,8 +423,7 @@ export function AssetSheet({
                     type="button"
                     onClick={() => setConfirmingDelete(false)}
                     disabled={deleting}
-                    className={buttonClass}
-                    style={quietButton}
+                    className={`${ui.link} ${ui.linkQuiet} px-2`}
                   >
                     לא, להשאיר
                   </button>
@@ -447,23 +433,23 @@ export function AssetSheet({
                   type="button"
                   onClick={() => setConfirmingDelete(true)}
                   disabled={busy}
-                  className={`${buttonClass} ms-auto`}
-                  style={{ ...quietButton, color: "#9f4330" }}
+                  className={`${ui.link} ms-auto px-2 text-[var(--danger)] hover:text-[var(--danger)]`}
                 >
+                  <IconTrash />
                   למחוק
                 </button>
               )}
             </div>
 
             {confirmingDelete ? (
-              <p className="text-[11px] leading-5 text-[var(--danger)]">
+              <p className="text-[13px] leading-6 text-[var(--danger)]">
                 {asset.kind === "video" ? "הסרטון יימחק" : "התמונה תימחק"}, ולא יהיה אפשר לשחזר.
               </p>
             ) : null}
           </>
         )}
 
-        {error ? <p className="text-[11px] leading-5 text-[var(--danger)]">{error}</p> : null}
+        {error ? <p className={ui.error}>{error}</p> : null}
       </div>
     </dialog>
   );

@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StepLink } from "@/components/trial/StepLink";
 import { ApiError } from "@/lib/api";
+import ui from "@/components/posts/chrome.module.css";
 import { IconArrowLeft } from "@/lib/icons";
 import { foundations, type VoicePayload } from "@/lib/trial";
 import { toast } from "@/lib/ui";
@@ -59,46 +60,50 @@ export default function VoicePage() {
 
         {!data ? (
           error ? (
-            <p role="alert" className="text-sm text-[var(--danger)]">{error}</p>
+            <p role="alert" className={ui.error}>{error}</p>
           ) : (
             <LoadingMark label="טוענים…" />
           )
         ) : (
-          <div className="space-y-5">
-            <section className="rounded-lg border border-[var(--rule)] bg-white p-5">
-              {data.voice_he ? <p className="text-sm leading-6 text-[color:var(--ink)]">{data.voice_he}</p> : null}
+          <div>
+            {/* The style as we read it, then the two sample lines as they would read in a
+                post: each in its own soft bubble, like a caption, not a quote with a rule. */}
+            <section className={`${ui.card} p-5 sm:p-6`}>
+              {data.voice_he ? <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">{data.voice_he}</p> : null}
               {data.examples_he.length ? (
-                <ul className="mt-3 space-y-2">
+                <ul className={`${data.voice_he ? "mt-4" : ""} space-y-2`}>
                   {data.examples_he.map((line) => (
-                    <li key={line} className="border-r-2 border-[var(--good)] pr-3 text-[15px] font-bold leading-7 text-[color:var(--ink)]">
+                    <li key={line} className={`${ui.inset} px-4 py-3 text-base font-semibold leading-7 text-[color:var(--ink)]`}>
                       {line}
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-[color:var(--ink-soft)]">עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים.</p>
+                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים.</p>
               )}
             </section>
 
             {check && !adjusting ? (
-              <p className="text-sm leading-6 text-[color:var(--ink)]">
-                {check.ok ? "אישרתם: כותבים בסגנון הזה." : `ביקשתם לשנות: ${check.note || "בלי פרטים"}.`}{" "}
-                <button type="button" onClick={() => setAdjusting(true)} className="font-bold underline underline-offset-4">
+              <p className="mt-8 flex flex-wrap items-center gap-x-3 text-[15px] leading-7 text-[color:var(--ink)]">
+                <span className={`${ui.status} text-[15px] font-medium text-[color:var(--ink)]`} data-status={check.ok ? "published" : "review"}>
+                  {check.ok ? "אישרתם: כותבים בסגנון הזה." : `ביקשתם לשנות: ${check.note || "בלי פרטים"}.`}
+                </span>{" "}
+                <button type="button" onClick={() => setAdjusting(true)} className={ui.link}>
                   לשנות
                 </button>
               </p>
             ) : (
-              <div className="space-y-3">
+              <div className="mt-8">
                 <button
                   type="button"
                   onClick={() => void answer(true)}
                   disabled={saving}
-                  className="inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[var(--primary)] px-6 text-sm font-bold text-white hover:bg-[var(--primary-dark)] disabled:opacity-40 sm:w-auto"
+                  className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
                 >
                   כן, ככה אנחנו מדברים
                 </button>
-                <div>
-                  <label htmlFor="voice-note" className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
+                <div className="mt-8 border-t border-[var(--rule)] pt-6">
+                  <label htmlFor="voice-note" className={`${ui.groupTitle} mb-2 block`}>
                     לא בדיוק? מה לשנות
                   </label>
                   <textarea
@@ -108,13 +113,13 @@ export default function VoicePage() {
                     rows={3}
                     onChange={(event) => setNote(event.target.value)}
                     placeholder="למשל: פחות רשמי, בלי אימוג׳ים, לפנות בלשון רבים"
-                    className="w-full rounded-md border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 py-2 text-sm"
+                    className={ui.field}
                   />
                   <button
                     type="button"
                     onClick={() => void answer(false)}
                     disabled={saving || !note.trim()}
-                    className="mt-2 inline-flex min-h-11 items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-40"
+                    className={`${ui.button} mt-3`}
                   >
                     לשמור את התיקון
                   </button>
@@ -123,17 +128,19 @@ export default function VoicePage() {
             )}
 
             {error ? (
-              <p role="alert" className="text-sm text-[var(--danger)]">
+              <p role="alert" className={`${ui.error} mt-6`}>
                 {error}
               </p>
             ) : null}
-            {check ? (
-              <Link href="/dashboard" className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">
-                לצעד הבא
-                <IconArrowLeft className="h-4 w-4" />
-              </Link>
-            ) : null}
-            <StepLink stepKey="voice" />
+            <div className="mt-6 flex flex-col items-start">
+              {check ? (
+                <Link href="/dashboard" className={ui.link}>
+                  לצעד הבא
+                  <IconArrowLeft data-forward="" />
+                </Link>
+              ) : null}
+              <StepLink stepKey="voice" />
+            </div>
           </div>
         )}
       </div>

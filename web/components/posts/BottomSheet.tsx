@@ -80,7 +80,7 @@ export function BottomSheet({
         type="button"
         aria-label="לסגור"
         onClick={onClose}
-        className="absolute inset-0 h-full w-full cursor-default bg-black/35"
+        className="im-editor-backdrop absolute inset-0 h-full w-full cursor-default bg-[var(--ink)]/40"
       />
       <div
         ref={panelRef}
@@ -89,21 +89,25 @@ export function BottomSheet({
         aria-label={title}
         tabIndex={-1}
 
-        className="im-editor-sheet absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-lg border-t-[3px] border-t-[var(--primary)] bg-white shadow-2xl outline-none"
+        className="im-editor-sheet absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-[20px] bg-[var(--paper)] text-[color:var(--ink)] shadow-[var(--shadow-pop)] outline-none"
       >
-        <style>{"@keyframes im-sheet-up{from{transform:translateY(20px);opacity:.5}to{transform:none;opacity:1}}.im-editor-sheet{animation:im-sheet-up .22s cubic-bezier(.2,.7,.2,1)}@media(prefers-reduced-motion:reduce){.im-editor-sheet{animation:none}}"}</style>
-        <div className="flex shrink-0 items-center justify-between border-b border-[var(--primary-soft)] px-4 pb-2 pt-3">
-          <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--rule-dark)]" />
-          <h2 className="text-base font-black text-[color:var(--ink)]">{title}</h2>
+        <style>{"@keyframes im-sheet-up{from{transform:translateY(24px);opacity:.6}to{transform:none;opacity:1}}@keyframes im-sheet-fade{from{opacity:0}to{opacity:1}}.im-editor-sheet{animation:im-sheet-up .24s cubic-bezier(.2,.7,.2,1)}.im-editor-backdrop{animation:im-sheet-fade .2s ease-out}@media(prefers-reduced-motion:reduce){.im-editor-sheet,.im-editor-backdrop{animation:none}}"}</style>
+        <div className="relative flex shrink-0 items-center justify-between gap-3 border-b border-[var(--rule)] pe-2 ps-5 pb-2 pt-4">
+          <span aria-hidden className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--rule-dark)]" />
+          <h2 className="text-[17px] font-bold tracking-tight text-[color:var(--ink)]">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="min-h-11 px-2 text-sm font-bold text-[color:var(--ink-soft)] underline underline-offset-4"
+            aria-label="לסגור"
+            title="לסגור"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
           >
-            לסגור
+            <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
           </button>
         </div>
-        <div className="overflow-y-auto overscroll-contain px-4 pb-[max(20px,env(safe-area-inset-bottom))] pt-3">
+        <div className="overflow-y-auto overscroll-contain px-5 pb-[max(24px,env(safe-area-inset-bottom))] pt-5">
           {children}
         </div>
       </div>

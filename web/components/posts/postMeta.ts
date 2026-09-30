@@ -22,12 +22,9 @@ export const STATUS_LABEL: Record<PostStatus, string> = {
   published: "פורסם",
 };
 
-/** Plain status labels: meaning comes from words, not decorative pills. */
-export const STATUS_TONE: Record<PostStatus, string> = {
-  review: "text-[var(--ink-soft)]",
-  approved: "text-[var(--primary)]",
-  published: "text-[var(--primary)]",
-};
+/* How a status looks (the words first, a small dot beside them: sun while it waits, blue
+   once approved, green once out) lives with the rest of the chrome, in chrome.module.css
+   `.status[data-status=…]`. */
 
 export function isDone(post: RoadmapPost) {
   return postStatus(post) !== "review";
