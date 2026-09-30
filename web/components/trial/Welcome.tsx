@@ -40,11 +40,12 @@ function cards(trial: TrialPayload): Card[] {
       title: "מה קורה החודש",
       body: (
         <ol className={styles.month}>
-          <li><b className="text-[color:var(--ink)]">שבוע 1, מדידה:</b> מחברים את מה שמודד, ורושמים איפה העסק היום.</li>
-          <li><b className="text-[color:var(--ink)]">שבוע 2, חומרי גלם:</b> תמונות, אילו מוצרים לקדם, ובדיקה שהסגנון נשמע כמוכם.</li>
-          <li><b className="text-[color:var(--ink)]">שבוע 3, תוכן ראשון:</b> רק עכשיו כותבים את הפוסטים. מאשרים ומפרסמים.</li>
-          <li><b className="text-[color:var(--ink)]">שבוע 4, מודדים ומתאימים:</b> התוצאות מול נקודת הפתיחה, החודש השני, ומחליטים אם להמשיך.</li>
-          <li className="pt-1 text-[color:var(--ink-soft)]">
+          {/* Each week's name is its own line now, so it carries no colon. */}
+          <li><b>שבוע 1, מדידה</b> מחברים את מה שמודד, ורושמים איפה העסק היום.</li>
+          <li><b>שבוע 2, חומרי גלם</b> תמונות, אילו מוצרים לקדם, ובדיקה שהסגנון נשמע כמוכם.</li>
+          <li><b>שבוע 3, תוכן ראשון</b> רק עכשיו כותבים את הפוסטים. מאשרים ומפרסמים.</li>
+          <li><b>שבוע 4, מודדים ומתאימים</b> התוצאות מול נקודת הפתיחה, החודש השני, ומחליטים אם להמשיך.</li>
+          <li>
             {trial.days_total} יום חינם{NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}.
           </li>
         </ol>
@@ -53,19 +54,19 @@ function cards(trial: TrialPayload): Card[] {
     {
       title: "מה צריך מכם",
       body: (
-        <div className="space-y-3 text-sm leading-6 text-[color:var(--ink)]">
+        <div className="space-y-4 text-[15px] leading-relaxed text-[color:var(--ink)]">
           <p>כמה דקות ביום, ובעיקר החלטות. את הכתיבה, העיצוב והמחקר אנחנו עושים.</p>
           {asks.length ? (
-            <ul className="space-y-1.5">
+            <ul className="divide-y divide-[var(--rule)] rounded-[14px] bg-[var(--soft)] px-4">
               {asks.map((ask) => (
-                <li key={ask} className="flex items-start gap-2.5">
-                  <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
+                <li key={ask} className="flex min-h-12 items-center gap-3 py-2.5 font-medium">
+                  <span aria-hidden className="block h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
                   {ask}
                 </li>
               ))}
             </ul>
           ) : null}
-          <p className="text-[color:var(--ink-soft)]">בעמוד ״השבוע״ תמיד יחכה לכם הצעד הבא.</p>
+          <p className="text-sm text-[color:var(--ink-soft)]">בעמוד ״השבוע״ תמיד יחכה לכם הצעד הבא.</p>
         </div>
       ),
     },
@@ -75,10 +76,8 @@ function cards(trial: TrialPayload): Card[] {
 function Row({ primary = false, title, text }: { primary?: boolean; title: string; text: string }) {
   return (
     <li data-primary={primary}>
-      <span className="min-w-0">
-        <span className="block text-sm font-black text-[color:var(--ink)]">{title}</span>
-        <span className="block text-sm leading-6 text-[color:var(--ink)]">{text}</span>
-      </span>
+      <span className="block text-[15px] font-semibold text-[color:var(--ink)]">{title}</span>
+      <span className="mt-0.5 block text-sm leading-6 text-[color:var(--ink-soft)]">{text}</span>
     </li>
   );
 }
@@ -144,41 +143,43 @@ export function TrialWelcome() {
   const last = index === all.length - 1;
 
   return createPortal(
-    <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center" dir="rtl">
-      <div aria-hidden className="absolute inset-0 bg-black/35" />
+    <div className="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" dir="rtl">
+      <div aria-hidden className={`${styles.scrim} absolute inset-0 bg-[var(--ink)]/40`} />
       <div
         ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="welcome-title"
         tabIndex={-1}
-        className={`${styles.panel} relative max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t border-t-[3px] border-t-[var(--primary)] bg-[var(--paper)] px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl outline-none sm:rounded sm:p-6`}
+        className={`${styles.panel} relative max-h-[92dvh] w-full max-w-[520px] overflow-y-auto rounded-t-[20px] bg-[var(--paper)] px-6 pt-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-[var(--shadow-pop)] outline-none sm:rounded-[20px] sm:px-8 sm:pt-6 sm:pb-8`}
       >
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-bold text-[color:var(--primary)]">ברוכים הבאים · {index + 1} מתוך {all.length}</p>
+          <p className="text-[13px] font-semibold text-[color:var(--primary)]">
+            ברוכים הבאים <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· {index + 1} מתוך {all.length}</span>
+          </p>
           <button
             type="button"
             onClick={() => close(false)}
-            className="min-h-11 px-2 text-sm font-bold text-[color:var(--ink-soft)] underline-offset-4 hover:text-[color:var(--ink)] hover:underline"
+            className="-me-2 min-h-11 rounded-md px-2 text-sm font-medium text-[color:var(--ink-soft)] underline-offset-4 transition-colors hover:text-[color:var(--ink)] hover:underline"
           >
             לדלג
           </button>
         </div>
-        <div className="flex items-center justify-between gap-4">
-          <h2 id="welcome-title" className="text-2xl font-black text-[color:var(--ink)]">{card.title}</h2>
+        <div className="mt-1 flex items-center justify-between gap-4">
+          <h2 id="welcome-title" className="text-[26px] font-bold leading-tight tracking-tight text-[color:var(--ink)]">{card.title}</h2>
           <Storefront className="h-16 w-20 shrink-0" phase={.5} />
         </div>
-        <div key={index} className={`${styles.content} mt-4 min-h-44`}>
+        <div key={index} className={`${styles.content} mt-5 min-h-44`}>
           {card.body}
         </div>
 
-        <div className="mt-5 flex items-center gap-3">
-          <div aria-hidden className="flex flex-1 gap-1.5">
+        <div className="mt-7 flex items-center gap-3">
+          <div aria-hidden className="flex flex-1 items-center gap-1.5">
             {all.map((item, dot) => (
               <span
                 key={item.title}
-                className={`h-1 w-7 ${
-                  dot === index ? "bg-[var(--primary)]" : "bg-[var(--rule-dark)]"
+                className={`h-1.5 rounded-full transition-[width,background-color] duration-200 motion-reduce:transition-none ${
+                  dot === index ? "w-6 bg-[var(--primary)]" : "w-1.5 bg-[var(--rule-dark)]"
                 }`}
               />
             ))}
@@ -187,7 +188,7 @@ export function TrialWelcome() {
             <button
               type="button"
               onClick={() => setIndex(index - 1)}
-              className="min-h-12 px-3 text-sm font-bold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
+              className="min-h-12 rounded-md px-3 text-[15px] font-medium text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
             >
               הקודם
             </button>
@@ -195,7 +196,7 @@ export function TrialWelcome() {
           <button
             type="button"
             onClick={() => (last ? close(true) : setIndex(index + 1))}
-            className="inline-flex min-h-12 items-center justify-center rounded-md bg-[var(--primary)] px-6 text-sm font-bold text-white transition-colors hover:bg-[var(--primary-dark)]"
+            className="drawn-button inline-flex min-h-12 items-center justify-center whitespace-nowrap bg-[var(--primary)] px-6 text-[15px] font-semibold text-white hover:bg-[var(--primary-dark)] sm:px-7"
           >
             {last ? "לראות את הצעד הראשון" : "הבא"}
           </button>

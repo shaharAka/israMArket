@@ -1,15 +1,22 @@
 @keyframes arrive { from { opacity: .5; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.scrim { animation: fade 200ms ease-out; }
 .panel { animation: arrive 220ms cubic-bezier(.2,.7,.2,1); }
 .panel :is(a,button):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 .content { animation: arrive 180ms ease; }
-.overview li { padding-block: 14px; }
+
+/* What is here: the plan leads in the one soft panel; the rest are hairline rows. */
+.overview li { padding: 14px 18px; }
 .overview li + li { border-top: 1px solid var(--rule); }
-.overview li[data-primary="true"] { background: var(--primary-soft); border-inline-start: 3px solid var(--primary); padding: 18px; margin-bottom: 10px; }
-.overview li[data-primary="true"] > span > span:first-child { font-size: 22px; margin-bottom: 5px; color: var(--primary); }
-.overview li:not([data-primary="true"]) { display: block; padding-inline: 18px; }
+.overview li[data-primary="true"] { margin-bottom: 6px; padding: 18px; border-radius: 14px; background: var(--primary-soft); }
+.overview li[data-primary="true"] + li { border-top: 0; }
+.overview li[data-primary="true"] > span:first-child { font-size: 17px; font-weight: 700; }
+
+/* The month: four weeks, numbered, hairlines between; the terms last and quiet. */
 .month { counter-reset: week; }
-.month li:not(:last-child) { display: grid; grid-template-columns: 1fr; gap: 3px; position: relative; padding: 10px 32px 12px 0; border-bottom: 1px solid var(--rule); color: var(--ink-soft); font-size: 13px; line-height: 1.8; counter-increment: week; }
-.month li:not(:last-child)::before { content: counter(week, decimal-leading-zero); position: absolute; inset-inline-start: 0; top: 12px; font-size: 11px; font-weight: 700; color: var(--primary); }
-.month b { font-size: 14px; }
-.month li:last-child { padding-top: 14px; font-size: 12px; }
-@media (prefers-reduced-motion: reduce) { .panel, .content { animation: none; } }
+.month li:not(:last-child) { position: relative; padding: 12px 36px 12px 0; border-bottom: 1px solid var(--rule); color: var(--ink-soft); font-size: 14px; line-height: 1.7; counter-increment: week; }
+.month li:not(:last-child)::before { content: counter(week, decimal-leading-zero); position: absolute; inset-inline-start: 0; top: 14px; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--primary); }
+.month b { display: block; font-size: 15px; font-weight: 600; color: var(--ink); }
+.month li:last-child { padding-top: 14px; font-size: 13px; color: var(--ink-muted); }
+
+@media (prefers-reduced-motion: reduce) { .scrim, .panel, .content { animation: none; } }

@@ -49,8 +49,8 @@ export function MonthBuildProgress({
 
   if (error && !running && !starting) {
     return (
-      <div role="alert" className="rounded-lg border border-[var(--danger-rule)] bg-white px-4 py-3 text-sm leading-6 text-[var(--danger)]">
-        <p className="font-bold">
+      <div role="alert" className="rounded-[14px] bg-[var(--danger-soft)] px-5 py-4 text-sm leading-6 text-[var(--danger)]">
+        <p className="text-[15px] font-semibold">
           {kind === "posts"
             ? "לא הצלחנו לסיים את הפוסטים."
             : status?.month_name_he
@@ -61,7 +61,7 @@ export function MonthBuildProgress({
         <button
           type="button"
           onClick={() => void start()}
-          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)]"
+          className="mt-3 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:border-[var(--ink-faint)]"
         >
           לנסות שוב
         </button>
@@ -78,7 +78,7 @@ export function MonthBuildProgress({
     <div
       role="status"
       aria-live="polite"
-      className="flex items-center gap-3 rounded-lg px-4 py-3"
+      className="flex items-center gap-4 rounded-[14px] px-5 py-4"
       style={{ background: TONE.surface }}
     >
       <span
@@ -86,9 +86,9 @@ export function MonthBuildProgress({
         className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full motion-reduce:animate-none"
         style={{ background: TONE.accent }}
       />
-      <p className="min-w-0 flex-1 text-sm leading-6 text-[color:var(--ink)]">
-        <b>{label}</b>
-        <span className="block text-xs text-[color:var(--ink-soft)]">
+      <p className="min-w-0 flex-1 text-[15px] leading-6 text-[color:var(--ink)]">
+        <b className="font-semibold">{label}</b>
+        <span className="mt-0.5 block text-[13px] text-[color:var(--ink-soft)]">
           שלב {step} מתוך {steps}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.
         </span>
       </p>

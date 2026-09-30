@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ComponentType } from "react";
 import type { Business, StrategyPayload } from "@/lib/api";
-import { IconArrowLeft, IconFlag, IconLightbulb } from "@/lib/icons";
+import { IconChevron, IconFlag, IconLightbulb } from "@/lib/icons";
 import { researchLatest, type TrialPayload } from "@/lib/trial";
 import { HypothesisNote } from "@/components/design/PlanBrief";
 
@@ -41,10 +41,34 @@ function learnedLine(trial: TrialPayload, headline: string): string {
   return "עוד לא מודדים כלום. לכן השבוע מתחילים מהמדידה.";
 }
 
+/** One half of the brief: an icon, a quiet label, the line itself, and where it leads. */
+function BriefCell({
+  href,
+  Icon,
+  label,
+  children,
+}: {
+  href: string;
+  Icon: ComponentType<{ className?: string }>;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link href={href} className="group flex min-h-14 items-start gap-3 px-5 py-4 transition-colors hover:bg-[var(--soft)] sm:px-6 sm:py-5">
+      <Icon className="mt-px h-[18px] w-[18px] shrink-0 text-[color:var(--ink-muted)]" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-[13px] font-semibold leading-5 text-[color:var(--ink-muted)]">{label}</span>
+        <span className="mt-1.5 block text-[15px] font-medium leading-6 text-[color:var(--ink)]">{children}</span>
+      </span>
+      <IconChevron className="mt-px h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+    </Link>
+  );
+}
+
 /**
  * The weekly brief's first two lines (Revision 8): this week's focus from the plan, and
  * what we learned. The third — what needs a decision — is the journey's next step, the
- * card right under it.
+ * card right under it. One card, side by side on a wide screen, one hairline between.
  */
 export function WeeklyBrief({
   trial,
@@ -64,28 +88,19 @@ export function WeeklyBrief({
 
   const focus = focusOf(trial, strategy, business);
   return (
-    <div className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white px-4 sm:px-5">
+    <div
+      className={`drawn-card grid overflow-hidden divide-y divide-[var(--rule)] ${
+        focus ? "sm:grid-cols-2 sm:divide-x sm:divide-y-0" : ""
+      }`}
+    >
       {focus ? (
-        <Link href="/strategy" className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[color:var(--ink)]">
-          <IconFlag className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-bold text-[color:var(--ink-muted)]">הפוקוס השבוע</span>
-            <span className="mt-0.5 block text-sm font-bold leading-6 text-[color:var(--ink)]">{focus}</span>
-          </span>
-          <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
-        </Link>
+        <BriefCell href="/strategy" Icon={IconFlag} label="הפוקוס השבוע">
+          {focus}
+        </BriefCell>
       ) : null}
-      <Link
-        href={headline ? "/performance#research" : "/performance"}
-        className="flex min-h-12 items-start gap-3 py-3 transition-colors hover:text-[color:var(--ink)]"
-      >
-        <IconLightbulb className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
-        <span className="min-w-0 flex-1">
-          <span className="block text-xs font-bold text-[color:var(--ink-muted)]">מה למדנו</span>
-          <span className="mt-0.5 block text-sm leading-6 text-[color:var(--ink)]">{learnedLine(trial, headline)}</span>
-        </span>
-        <IconArrowLeft className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
-      </Link>
+      <BriefCell href={headline ? "/performance#research" : "/performance"} Icon={IconLightbulb} label="מה למדנו">
+        {learnedLine(trial, headline)}
+      </BriefCell>
     </div>
   );
 }
@@ -101,17 +116,17 @@ export function HypothesisStatus({ trial, className = "" }: { trial: TrialPayloa
   if (!items.length) return null;
   const measuring = items.filter((item) => item.status === "measuring").length;
   return (
-    <details className={`group ${className}`}>
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
+    <details className={`group/hyp ${className}`}>
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
         <span>
-          ההשערות שבודקים · {measuring === items.length ? `${items.length} נמדדות` : `${items.length - measuring} מתוך ${items.length} הוכרעו`}
+          ההשערות שבודקים ·{" "}
+          <span className="font-normal text-[color:var(--ink-soft)]">
+            {measuring === items.length ? `${items.length} נמדדות` : `${items.length - measuring} מתוך ${items.length} הוכרעו`}
+          </span>
         </span>
-        <span
-          aria-hidden
-          className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
-        />
+        <IconChevron className="h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open/hyp:rotate-90 motion-reduce:transition-none" />
       </summary>
-      <ul className="divide-y divide-[var(--rule)] pb-2">
+      <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)] pb-1">
         {items.map((item, index) => (
           <li key={`${index}-${item.text_he}`}>
             <HypothesisNote hypothesis={item.text_he} ifWrong={item.if_wrong_he} evidence={`מצב: ${item.status_he}`} />
