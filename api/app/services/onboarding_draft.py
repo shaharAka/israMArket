@@ -549,6 +549,123 @@ ACTIVITY_HE = {"none": "לא מפרסמים", "sometimes": "מפרסמים לפ�
 NETWORK_HE = {"instagram": "אינסטגרם", "facebook": "פייסבוק", "tiktok": "טיקטוק"}
 
 
+# --- revision 5: the goal and the budget ----------------------------------------------
+
+BUDGET_RANGES: dict[str, dict] = {
+    "none": {"label_he": "בלי תקציב פרסום, רק זמן", "range": (0, 0)},
+    "lt1k": {"label_he": "עד 1,000 ₪", "range": (1, 1000)},
+    "1k-3k": {"label_he": "1,000-3,000 ₪", "range": (1000, 3000)},
+    "3k-7k": {"label_he": "3,000-7,000 ₪", "range": (3000, 7000)},
+    "gt7k": {"label_he": "מעל 7,000 ₪", "range": (7000, None)},
+    "unknown": {"label_he": "עוד לא יודעים", "range": None},
+}
+GROW_WHERE_HE = {"online": "באתר (הזמנות אונליין)", "store": "בחנות", "both": "בשניהם"}
+
+# "מה ייחשב הצלחה" — the plan's main measure. `models` / `grow` say where each option is
+# offered; `needs` are the integrations that measure it (see services/quarter_plan.py);
+# `goal` is the PrimaryGoal the month planner gets (the first that fits the model).
+KPI_OPTIONS: dict[str, dict] = {
+    "online_orders": {
+        "name_he": "יותר הזמנות באתר", "description_he": "הזמנות שמגיעות דרך האתר",
+        "models": {"products", "both"}, "grow": {"online", "both", None}, "needs": ["ga4"],
+        "goal": ("sales",),
+    },
+    "store_visits": {
+        "name_he": "יותר אנשים בחנות", "description_he": "לקוחות שמגיעים פיזית לעסק",
+        "models": {"products", "both"}, "grow": {"store", "both", None}, "needs": [],
+        "goal": ("sales",),
+    },
+    "whatsapp_inquiries": {
+        "name_he": "יותר שיחות ופניות בוואטסאפ", "description_he": "הודעות ושיחות מלקוחות חדשים",
+        "models": {"products", "services", "both"}, "grow": {"online", "store", "both", None},
+        "needs": ["whatsapp_link"], "goal": ("leads", "sales"),
+    },
+    "bookings": {
+        "name_he": "יותר פגישות והזמנות מקום", "description_he": "תורים, פגישות או שולחנות שנקבעים",
+        "models": {"services", "both"}, "grow": {"online", "store", "both", None}, "needs": [],
+        "goal": ("leads", "sales"),
+    },
+    "form_leads": {
+        "name_he": "יותר טפסים באתר", "description_he": "פניות שמשאירים בטופס באתר",
+        "models": {"services", "both"}, "grow": {"online", "store", "both", None}, "needs": ["ga4"],
+        "goal": ("leads",),
+    },
+    "local_awareness": {
+        "name_he": "שיכירו אותנו באזור", "description_he": "שיותר אנשים באזור ידעו שאתם קיימים",
+        "models": {"products", "services", "both"}, "grow": {"online", "store", "both", None},
+        "needs": ["instagram_insights", "gbp"], "goal": ("brand_awareness", "personal_brand"),
+    },
+}
+
+
+def success_options(model: str | None, grow_where: str | None = None) -> list[dict]:
+    """The "מה ייחשב הצלחה" choices for a business model and where it wants to grow."""
+    model = normalise_model(model)
+    grow = grow_where if model != "services" and grow_where in GROW_WHERE_HE else None
+    return [
+        {"key": key, "name_he": spec["name_he"], "description_he": spec["description_he"]}
+        for key, spec in KPI_OPTIONS.items()
+        if model in spec["models"] and grow in spec["grow"]
+    ]
+
+
+def default_kpi(model: str, grow_where: str | None, has_website: bool) -> str:
+    keys = [item["key"] for item in success_options(model, grow_where)]
+    if model == "services":
+        return "whatsapp_inquiries"
+    if has_website and grow_where != "store" and "online_orders" in keys:
+        return "online_orders"
+    return "store_visits" if "store_visits" in keys else keys[0]
+
+
+def goal_for_kpi(kpi: str, model: str) -> str:
+    allowed = goals_for(model)
+    for goal in (KPI_OPTIONS.get(kpi) or {}).get("goal", ()):
+        if goal in allowed:
+            return goal
+    return allowed[0]
+
+
+class DraftBudget(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    range: Literal["none", "lt1k", "1k-3k", "3k-7k", "gt7k", "unknown"] = "unknown"
+    exact_ils: int | None = Field(default=None, ge=0, le=1_000_000)
+
+    def monthly_ils(self) -> int | None:
+        """The number the plan is built on: the owner's exact figure, else the middle of
+        the range they picked (the floor for "gt7k"). None when they do not know."""
+        if self.exact_ils is not None:
+            return self.exact_ils
+        span = BUDGET_RANGES[self.range]["range"]
+        if span is None:
+            return None
+        low, high = span
+        if high is None:
+            return low
+        return 0 if high == 0 else int(round(((low if low > 1 else 0) + high) / 2, -2))
+
+
+class DraftSuccess(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+
+    kpi: str = Field(max_length=40)
+    target: str = Field(default="", max_length=200)
+
+    @field_validator("kpi")
+    @classmethod
+    def _kpi(cls, value: str) -> str:
+        if value not in KPI_OPTIONS:
+            raise ValueError("בחרו מה ייחשב הצלחה מהרשימה.")
+        return value
+
+    @field_validator("target")
+    @classmethod
+    def _target(cls, value: str) -> str:
+        text = clean_text(value, 120)
+        return _readable(text, "היעד") if text else ""
+
+
 class OnboardingDraft(BaseModel):
     """The answers from /start. Mirrors `OnboardingDraft` in web/lib/draft.ts."""
 
@@ -569,11 +686,22 @@ class OnboardingDraft(BaseModel):
     activity: DraftActivity = Field(default_factory=DraftActivity)
     tried: DraftTried = Field(default_factory=DraftTried)
     competitors: list[DraftCompetitor] = Field(default_factory=list, max_length=3)
+    # Revision 5 (all optional): the marketing budget, where to grow, what counts as success.
+    budget: DraftBudget | None = None
+    grow_where: Literal["online", "store", "both"] | None = None
+    success: DraftSuccess | None = None
 
     @field_validator("differentiator")
     @classmethod
     def _differentiator(cls, value: str) -> str:
         return _readable(clean_text(value, 300), "מה מייחד אתכם")
+
+    @property
+    def kpi_key(self) -> str:
+        """The plan's main measure: the owner's pick, else the natural one for the model."""
+        if self.success is not None:
+            return self.success.kpi
+        return default_kpi(self.model, self.grow_where, bool(self.links.website))
 
     @field_validator("business_name")
     @classmethod
@@ -637,6 +765,14 @@ class OnboardingDraft(BaseModel):
             )
         if any([self.links.website, *self.links.socials().values()]):
             self.has_none = False
+        if self.model == "services":
+            # "Where to grow" is a shop question; a service business has no store/online split.
+            self.grow_where = None
+        if self.success is not None:
+            allowed = {item["key"] for item in success_options(self.model, self.grow_where)}
+            if self.success.kpi not in allowed:
+                names = ", ".join(KPI_OPTIONS[key]["name_he"] for key in allowed)
+                raise ValueError(f"מה ייחשב הצלחה לא מתאים לעסק הזה. אפשר לבחור: {names}")
         return self
 
     # Derived values, one definition for every caller.
@@ -828,6 +964,14 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
         f"- מוכרים: {MODEL_TITLES[draft.model]}",
         f"- מה הכי חשוב להם עכשיו: {title} ({desc})",
     ]
+    if draft.grow_where:
+        lines.append(f"- איפה הם רוצים לגדול: {GROW_WHERE_HE[draft.grow_where]}")
+    if draft.success is not None:
+        target = f", והיעד שלהם: \"{draft.success.target}\"" if draft.success.target else ""
+        lines.append(f"- מה ייחשב בשבילם הצלחה: {KPI_OPTIONS[draft.success.kpi]['name_he']}{target}")
+    if draft.budget is not None:
+        exact = f" (כתבו: {draft.budget.exact_ils:,} ₪)" if draft.budget.exact_ils is not None else ""
+        lines.append(f"- תקציב שיווק לחודש: {BUDGET_RANGES[draft.budget.range]['label_he']}{exact}")
     if draft.audiences:
         lines.append("- הקהלים שהם בחרו:")
         for item in draft.audiences:
@@ -1637,6 +1781,7 @@ def apply_draft(
     chosen_idea: dict | None = None,
     strategy: dict | None = None,
     chosen_posts: list[dict] | None = None,
+    quarter_plan: dict | None = None,
 ) -> Business:
     """Write the draft onto `business` (already added to the session). Idempotent.
 
@@ -1656,10 +1801,16 @@ def apply_draft(
         guess_model = (preview_service.cached_preview(draft.links.website) or {}).get("business_model")
     business.business_model = normalise_model(draft.business_model or guess_model or draft.model)
     allowed = goals_for(business.business_model)
-    if draft.goal and draft.goal in allowed:
+    if draft.success is not None:
+        # Revision 5: "what counts as success" is the more specific answer.
+        business.primary_goal = goal_for_kpi(draft.success.kpi, business.business_model)
+    elif draft.goal and draft.goal in allowed:
         business.primary_goal = draft.goal
     elif business.primary_goal not in allowed:
         business.primary_goal = allowed[0]
+    if draft.budget is not None:
+        # The budget question moved into /start; the post-signup budget step is skipped.
+        business.monthly_budget_ils = draft.budget.monthly_ils() or 0
     if draft.city:
         business.location = draft.city
     elif scan and not business.location:
@@ -1727,6 +1878,17 @@ def apply_draft(
     # travel in the same seed; the month generation reads them (services/strategy_reveal).
     previous_seed = seed_from_stored(stored) or {}
     chosen_posts = _keep_linked_photos(chosen_posts, previous_seed.get("posts"))
+    if quarter_plan:
+        # Revision 5: the 3-month plan. Stored as the owner saw it; the quarter becomes
+        # the long-horizon plan (unless the owner wrote one), month 1 becomes the seed.
+        from app.services import quarter_plan as quarter
+
+        stored["quarter_plan"] = quarter_plan
+        strategy = strategy or quarter.plan_seed(quarter_plan, draft)
+        current = stored.get("long_horizon_plan") if isinstance(stored.get("long_horizon_plan"), dict) else None
+        if not current or current.get("source") == "quarter_plan":
+            stored["long_horizon_plan"] = quarter.long_horizon_from_plan(quarter_plan)
+        stored["integrations_checklist"] = quarter.checklist(db, business, draft, quarter_plan, scan)
     if chosen_direction or chosen_idea or strategy or chosen_posts:
         seed = {
             "direction": chosen_direction or None,
@@ -1735,6 +1897,8 @@ def apply_draft(
             "posts": list(chosen_posts or []),
             "chosen_at": datetime.utcnow().isoformat(timespec="seconds"),
         }
+        if quarter_plan and isinstance(quarter_plan.get("start"), dict):
+            seed["start"] = {"year": quarter_plan["start"].get("year"), "month": quarter_plan["start"].get("month")}
         hypothesis = _direction_hypothesis(chosen_direction) if chosen_direction else ""
         ours = previous_seed.get("hypothesis")
         if hypothesis and (not stored.get("growth_hypothesis") or stored.get("growth_hypothesis") == ours):
@@ -1742,7 +1906,7 @@ def apply_draft(
             seed["hypothesis"] = hypothesis
         elif ours and stored.get("growth_hypothesis") == ours:
             seed["hypothesis"] = ours
-        same = all(previous_seed.get(key) == seed[key] for key in ("direction", "idea", "strategy"))
+        same = all(previous_seed.get(key) == seed.get(key) for key in ("direction", "idea", "strategy", "start"))
         if previous_seed and same and (previous_seed.get("posts") or []) == seed["posts"]:
             seed["chosen_at"] = previous_seed.get("chosen_at") or seed["chosen_at"]
         stored["first_month_seed"] = seed

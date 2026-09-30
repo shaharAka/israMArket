@@ -26,7 +26,9 @@ Limits (per hour):
 | POST /public/brand    | 8      | 150    | 60 s  |
 | POST /public/audiences| 30     | 600    | 20 s  |
 | POST /public/plan-preview | 10 | 200    | 100 s |
-| POST /public/strategy | 24     | 400    | 100 s |
+| POST /public/quarter-plan | 24 | 400    | 110 s |
+| GET /public/success-options | — | —     | static |
+| POST /public/strategy | 24     | 400    | 100 s | (revision 4, superseded, unused by the web)
 | POST /public/sample-posts | 10 | 200    | 90 s  |
 | (sample posts prefetch)   | 12 | —      | background, after each strategy |
 | POST /public/links    | 120    | —      | no model, no network |
@@ -80,6 +82,10 @@ STRATEGY_PER_IP = 24
 STRATEGY_GLOBAL = 400
 STRATEGY_REQUEST_SECONDS = 100.0
 
+QUARTER_PER_IP = 24
+QUARTER_GLOBAL = 400
+QUARTER_REQUEST_SECONDS = 110.0
+
 SAMPLES_PER_IP = 10
 SAMPLES_GLOBAL = 200
 SAMPLES_REQUEST_SECONDS = 90.0
@@ -101,6 +107,7 @@ UNAVAILABLE = "השירות לא זמין כרגע, נסו שוב מאוחר י�
 BRAND_SLOW = "האתר נטען לאט. נמשיך בלעדיו בינתיים, ואם נצליח לקרוא אותו נעדכן."
 
 STRATEGY_FAILED = "לא הצלחנו לבנות את האסטרטגיה כרגע. נסו שוב בעוד דקה."
+QUARTER_FAILED = "לא הצלחנו לבנות את התוכנית כרגע. נסו שוב בעוד דקה."
 SAMPLES_FAILED = "לא הצלחנו לכתוב את הפוסטים לדוגמה כרגע. נסו שוב בעוד דקה."
 
 answers = drafts.TTLCache(ANSWER_TTL_SECONDS)
@@ -336,6 +343,21 @@ def style_presets() -> dict:
     return {"presets": drafts.public_presets()}
 
 
+# --- revision 5: the goal and the budget (static) ------------------------------------------
+
+
+@router.get("/success-options")
+def success_options(model: str = "products", grow_where: str | None = None) -> dict:
+    """The "מה ייחשב הצלחה" choices for a business model and where it wants to grow,
+    plus the budget chips. No model, no network."""
+    model = model if model in {"products", "services", "both"} else "products"
+    return {
+        "options": drafts.success_options(model, grow_where),
+        "grow_where": [{"key": k, "name_he": v} for k, v in drafts.GROW_WHERE_HE.items()] if model != "services" else [],
+        "budgets": [{"key": k, "label_he": v["label_he"]} for k, v in drafts.BUDGET_RANGES.items()],
+    }
+
+
 # --- audiences --------------------------------------------------------------------------
 
 
@@ -567,4 +589,74 @@ def public_sample_posts(body: SamplePostsRequest, request: Request) -> dict:
     except Exception as exc:
         _raise_unavailable(exc)
         raise HTTPException(status_code=502, detail=SAMPLES_FAILED) from exc
+    return {**result, "cached": False}
+
+
+# --- revision 5: the 3-month plan ---------------------------------------------------------
+
+
+class QuarterInputs(reveal.StrategyInputs):
+    changed: list[Literal["target", "cadence", "primary_audience", "feedback"]] | None = Field(
+        default=None, max_length=4
+    )
+
+
+class QuarterPlanRequest(BaseModel):
+    draft: drafts.OnboardingDraft
+    direction: drafts.DirectionIn
+    # All the owner's current inputs every time, with `changed` naming what this request
+    # changes (`changed_he` describes exactly those).
+    inputs: QuarterInputs | None = None
+    insights: list[reveal.InsightIn] | None = Field(default=None, max_length=4)
+
+
+@router.post("/quarter-plan")
+def public_quarter_plan(body: QuarterPlanRequest, request: Request) -> dict:
+    """Revision 5: "התוכנית שלכם ל-3 החודשים הקרובים" (services/quarter_plan.py).
+
+    With inputs it revises the plan last shown for this draft and direction. Cached by
+    (draft, direction, inputs, changed, day); only new work is charged.
+    """
+    from app.services import quarter_plan as quarter
+
+    draft = body.draft
+    today = date.today()
+    direction = body.direction.model_dump()
+    raw = body.inputs.model_dump(mode="json") if body.inputs else {}
+    changed = list(dict.fromkeys(raw.pop("changed", None) or [])) if raw.get("changed") is not None else None
+    raw.pop("changed", None)
+    raw.pop("pillars_removed", None)
+    inputs = {k: v for k, v in raw.items() if v not in ("", None, [])}
+    base_key = draft.fingerprint(f"quarter-base:{reveal.signature(direction)}")
+    key = draft.fingerprint(f"quarter:{today.isoformat()}:{reveal.signature([direction, inputs, changed])}")
+    insights = _plan_insights(draft, today, body.insights)
+
+    def work() -> dict:
+        last = latest.get(base_key) if (inputs or changed) else None
+        previous = last["plan"] if last and (last["inputs"] != inputs or changed) else None
+        return quarter.build_quarter_plan(
+            draft, direction, inputs=inputs, insights=insights, today=today,
+            previous=previous, previous_inputs=last["inputs"] if previous else None, changed=changed,
+        )
+
+    hit, future = _cached_or_start(
+        request,
+        gate=_models,
+        key=key,
+        name="onboarding-quarter",
+        per_ip=QUARTER_PER_IP,
+        global_cap=QUARTER_GLOBAL,
+        work=work,
+    )
+    if hit is not None:
+        latest.put(base_key, {"inputs": inputs, "plan": hit})
+        return {**hit, "cached": True}
+    try:
+        result = future.result(timeout=QUARTER_REQUEST_SECONDS)
+    except FutureTimeout as exc:
+        raise HTTPException(status_code=504, detail=PLAN_SLOW) from exc
+    except Exception as exc:
+        _raise_unavailable(exc)
+        raise HTTPException(status_code=502, detail=QUARTER_FAILED) from exc
+    latest.put(base_key, {"inputs": inputs, "plan": result})
     return {**result, "cached": False}

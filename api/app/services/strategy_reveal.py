@@ -833,7 +833,12 @@ _WHATSAPP_RE = re.compile(r"(?<![א-ת])(ב|ל|מ|ו|ה|ש|וב|ול|שב)?(?:ו
 
 
 def glossary(text: str) -> str:
-    return _WHATSAPP_RE.sub(lambda m: f"{m.group(1) or ''}וואטסאפ", text or "")
+    text = _WHATSAPP_RE.sub(lambda m: f"{m.group(1) or ''}וואטסאפ", text or "")
+    # HEBREW-COPY: an inquiry is a פנייה, never a ליד.
+    return _LEADS_RE.sub(lambda m: f"{m.group(1) or ''}פניות", text)
+
+
+_LEADS_RE = re.compile(r"(?<![א-ת])(ה|ל|ב|ו|של|מ)?לידים(?![א-ת])")
 
 
 def _walk_strings(value, fn):
@@ -1874,6 +1879,13 @@ def strategy_prompt_block(seed: dict | None) -> str:
     feedback = ((strategy.get("inputs") or {}).get("feedback") or "").strip()
     if feedback:
         lines.append(f"- מה בעל העסק ביקש כשבנינו את האסטרטגיה (להתחשב בזה): \"{feedback}\"")
+    if strategy.get("budget_lines") or strategy.get("kpi"):
+        # Revision 5: a seed built from the 3-month plan also carries month 1's money.
+        from app.services.quarter_plan import plan_prompt_block
+
+        extra = plan_prompt_block(strategy)
+        if extra:
+            lines.append(extra)
     return "\n".join(lines)
 
 

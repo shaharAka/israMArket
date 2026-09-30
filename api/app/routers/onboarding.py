@@ -28,6 +28,7 @@ from app.services.onboarding_draft import (
     seed_from_stored,
 )
 from app.services.preview import cached_scan
+from app.services.quarter_plan import QuarterPlanIn
 from app.services.strategy_reveal import SamplePostIn, StrategyIn
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
@@ -101,6 +102,9 @@ def _business_payload(business: Business) -> dict:
         "owner_context": stored.get("owner_context"),
         "brand_source": stored.get("brand_source") or ("scan" if stored.get("brand_language") else None),
         "first_month_seed": seed_from_stored(stored),
+        # Revision 5: the 3-month plan saved at signup, and the measurement checklist it needs.
+        "quarter_plan": stored.get("quarter_plan"),
+        "integrations_checklist": stored.get("integrations_checklist") or [],
     }
 
 
@@ -123,6 +127,17 @@ class FromDraftIn(BaseModel):
     # first month follows the strategy and the chosen posts are its first posts.
     strategy: StrategyIn | None = None
     chosen_posts: list[SamplePostIn] | None = Field(default=None, max_length=3)
+    # Revision 5: the 3-month plan from /public/quarter-plan, as the owner last saw it.
+    quarter_plan: QuarterPlanIn | None = None
+
+
+def _stored_plan(plan: QuarterPlanIn | None) -> dict | None:
+    if plan is None:
+        return None
+    try:
+        return plan.stored()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @router.post("/from-draft")
@@ -149,6 +164,7 @@ def from_draft(
         body.chosen_idea.model_dump() if body.chosen_idea else None,
         strategy=body.strategy.stored() if body.strategy else None,
         chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
+        quarter_plan=_stored_plan(body.quarter_plan),
     )
     db.commit()
     db.refresh(business)
@@ -534,6 +550,13 @@ def generate(
         business.updated_at = datetime.utcnow()
         db.commit()
 
+    # A plan built at /start names its first month (it starts two weeks out, so on the
+    # 30th it is next month); the first generation builds that month, not today's.
+    start = (payload["first_month_seed"] or {}).get("start") or {}
+    first_month = {}
+    if isinstance(start.get("year"), int) and isinstance(start.get("month"), int) and 1 <= start["month"] <= 12:
+        first_month = {"year": start["year"], "month": start["month"]}
+
     def run() -> dict:
         return generate_monthly_strategy(
             payload,
@@ -541,6 +564,7 @@ def generate(
             state=state,
             on_stage=persist_stage,
             one_stage=True,
+            **first_month,
         )
 
     try:
