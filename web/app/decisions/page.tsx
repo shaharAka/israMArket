@@ -681,15 +681,15 @@ export default function DecisionsPage() {
         {loading && !business ? <LoadingMark label="טוענים את ההחלטות…" /> : null}
 
         {!business && !loading && !loadError ? (
-          <section className="rounded-lg border border-[#e6e4dc] bg-white p-6 text-center">
-            <h2 className="text-sm font-black text-[#191b18]">עוד אין עסק מקושר לחשבון הזה</h2>
-            <p className="mt-1 text-sm leading-6 text-[#5e6159]">
+          <section className="rounded-lg border border-[#e1e7f2] bg-white p-6 text-center">
+            <h2 className="text-sm font-black text-[#1d2940]">עוד אין עסק מקושר לחשבון הזה</h2>
+            <p className="mt-1 text-sm leading-6 text-[#535f75]">
               התקציב, האבחון והעדיפויות שייכים לעסק. ממלאים אותם באשף, ואחר כך אפשר לשנות אותם
               כאן.
             </p>
             <Link
               href="/onboarding"
-              className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[#20211f] px-4 text-sm font-bold text-white hover:bg-[#343632]"
+              className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[#2853c7] px-4 text-sm font-bold text-white hover:bg-[#1e42a4]"
             >
               לפתוח את האשף
             </Link>
@@ -702,7 +702,7 @@ export default function DecisionsPage() {
                 and the only boxes left on the page are the controls themselves. */}
             <section
               aria-label="ההחלטות שלי"
-              className="divide-y divide-[#e6e4dc] overflow-hidden rounded-lg border bg-white"
+              className="divide-y divide-[#e1e7f2] overflow-hidden rounded-lg border bg-white"
               style={{ borderColor: ACCENT_BORDER }}
             >
               <DecisionRow
@@ -713,7 +713,7 @@ export default function DecisionsPage() {
                 open={openGroup === "model"}
                 onToggle={() => toggleGroup("model")}
               >
-                <p className="text-xs leading-5 text-[#63665e]">
+                <p className="text-xs leading-5 text-[#535f75]">
                   סוג העסק קובע מה התוכנית מנסה להביא: מכירות בחנות או פניות.
                 </p>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
@@ -744,7 +744,7 @@ export default function DecisionsPage() {
                 open={openGroup === "budget"}
                 onToggle={() => toggleGroup("budget")}
               >
-                <p className="text-xs leading-5 text-[#63665e]">
+                <p className="text-xs leading-5 text-[#535f75]">
                   התקציב קובע כמה התוכנית יכולה לעשות החודש.
                 </p>
 
@@ -761,8 +761,8 @@ export default function DecisionsPage() {
                         }}
                         className={`rounded-md border p-3 text-right ${
                           selected
-                            ? "border-[#191b18] bg-[#191b18] text-white"
-                            : "border-[#e6e4dc] bg-[#f8f7f4] text-[#191b18] hover:border-[#191b18]"
+                            ? "border-[#1d2940] bg-[#2853c7] text-white"
+                            : "border-[#e1e7f2] bg-[#fbfcff] text-[#1d2940] hover:border-[#1d2940]"
                         }`}
                       >
                         <span className="flex items-baseline justify-between gap-2">
@@ -780,7 +780,7 @@ export default function DecisionsPage() {
                 </div>
 
                 <div className="mt-4">
-                  <label htmlFor="monthly-budget" className="mb-1 block text-xs font-bold text-[#191b18]">
+                  <label htmlFor="monthly-budget" className="mb-1 block text-xs font-bold text-[#1d2940]">
                     סכום מדויק לחודש (ש״ח)
                   </label>
                   <input
@@ -830,7 +830,7 @@ export default function DecisionsPage() {
                 open={openGroup === "diagnostics"}
                 onToggle={() => toggleGroup("diagnostics")}
               >
-                <p className="text-xs leading-5 text-[#63665e]">
+                <p className="text-xs leading-5 text-[#535f75]">
                   התשובות קובעות מה {AGENT_NAME} תציע לשפר קודם. השאלות משתנות לפי סוג העסק.
                 </p>
 
@@ -895,7 +895,7 @@ export default function DecisionsPage() {
                 open={openGroup === "audiences"}
                 onToggle={() => toggleGroup("audiences")}
               >
-                <p className="text-xs leading-5 text-[#63665e]">
+                <p className="text-xs leading-5 text-[#535f75]">
                   את התוכנית ואת כל פוסט אנחנו בונים לפי הקהל שכאן: מה הוא צריך ואיפה הוא נמצא.
                 </p>
 
@@ -913,13 +913,13 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {audiencesLoading && !audiences.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
                       טוענים את הקהלים…
                     </p>
                   ) : null}
 
                   {!audiencesLoading && !audiences.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
                       עוד אין קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד בעצמכם ולחזור
                       אליו אחר כך.
                     </p>
@@ -937,7 +937,7 @@ export default function DecisionsPage() {
                           <li
                             key={audience.id}
                             className={`rounded-lg border bg-white p-4 ${
-                              audience.is_primary ? "border-[#191b18]" : "border-[#e6e4dc]"
+                              audience.is_primary ? "border-[#1d2940]" : "border-[#e1e7f2]"
                             }`}
                           >
                             {editing ? (
@@ -950,7 +950,7 @@ export default function DecisionsPage() {
                               <>
                                 <div className="flex flex-wrap items-start justify-between gap-2">
                                   <div className="min-w-0">
-                                    <h3 className="flex flex-wrap items-center gap-2 text-sm font-black text-[#191b18]">
+                                    <h3 className="flex flex-wrap items-center gap-2 text-sm font-black text-[#1d2940]">
                                       {audience.name}
                                       {audience.is_primary ? (
                                         <span
@@ -971,7 +971,7 @@ export default function DecisionsPage() {
                                       </p>
                                     ) : null}
                                   </div>
-                                  <span className="shrink-0 text-[10px] font-bold text-[#8b8e84]">
+                                  <span className="shrink-0 text-[10px] font-bold text-[#647087]">
                                     {audience.source === "generated" ? `הצעה של ${AGENT_NAME}` : "כתבתם בעצמכם"}
                                   </span>
                                 </div>
@@ -984,14 +984,14 @@ export default function DecisionsPage() {
                                 ) : null}
 
                                 {audience.description ? (
-                                  <p className="mt-3 text-xs leading-5 text-[#5e6159]">
+                                  <p className="mt-3 text-xs leading-5 text-[#535f75]">
                                     {audience.description}
                                   </p>
                                 ) : null}
                               </>
                             )}
 
-                            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#e6e4dc] pt-3">
+                            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#e1e7f2] pt-3">
                               {editing ? (
                                 <>
                                   <Button
@@ -1005,7 +1005,7 @@ export default function DecisionsPage() {
                                     type="button"
                                     onClick={() => setEditingAudienceId(null)}
                                     disabled={busy}
-                                    className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                                    className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
                                   >
                                     לבטל
                                   </button>
@@ -1015,7 +1015,7 @@ export default function DecisionsPage() {
                                   <button
                                     type="button"
                                     onClick={() => startEditAudience(audience)}
-                                    className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18]"
+                                    className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#1d2940]"
                                   >
                                     לערוך
                                   </button>
@@ -1024,7 +1024,7 @@ export default function DecisionsPage() {
                                       type="button"
                                       onClick={() => void makePrimary(audience.id)}
                                       disabled={busy}
-                                      className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#191b18] disabled:opacity-40"
+                                      className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#1d2940] disabled:opacity-40"
                                     >
                                       {primaryBusy ? "מסמנים…" : "לסמן כקהל העיקרי"}
                                     </button>
@@ -1046,7 +1046,7 @@ export default function DecisionsPage() {
                                         type="button"
                                         onClick={() => setConfirmDeleteId(null)}
                                         disabled={deleteBusy}
-                                        className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                                        className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
                                       >
                                         לא
                                       </button>
@@ -1055,7 +1055,7 @@ export default function DecisionsPage() {
                                     <button
                                       type="button"
                                       onClick={() => setConfirmDeleteId(audience.id)}
-                                      className="min-h-9 px-2 text-xs font-bold text-[#8b8e84] underline underline-offset-4 hover:text-[#9f4330]"
+                                      className="min-h-9 px-2 text-xs font-bold text-[#647087] underline underline-offset-4 hover:text-[#9f4330]"
                                     >
                                       למחוק
                                     </button>
@@ -1069,7 +1069,7 @@ export default function DecisionsPage() {
                     </ul>
                   ) : null}
 
-                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e6e4dc] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
+                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e1e7f2] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button onClick={() => void generateAudiences()} disabled={generatingAudiences}>
                       {generatingAudiences ? "מציעים קהלים…" : "להציע קהלים"}
                     </Button>
@@ -1079,11 +1079,11 @@ export default function DecisionsPage() {
                         setShowAddAudience((open) => !open);
                         setAudiencesError("");
                       }}
-                      className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#191b18] hover:border-[#191b18]"
+                      className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#1d2940] hover:border-[#1d2940]"
                     >
                       {showAddAudience ? "לסגור את הטופס" : "להוסיף קהל בעצמכם"}
                     </button>
-                    <span className="text-xs leading-5 text-[#8b8e84]">
+                    <span className="text-xs leading-5 text-[#647087]">
                       {generatingAudiences
                         ? "קוראים את פרטי העסק והאבחון. זה לוקח כמה שניות."
                         : `${AGENT_NAME} תציע קהלים רק כשתלחצו.`}
@@ -1091,9 +1091,9 @@ export default function DecisionsPage() {
                   </div>
 
                   {showAddAudience ? (
-                    <div className="mt-4 rounded-lg border border-[#dedcd4] bg-[#f8f7f4] p-4">
-                      <h3 className="text-sm font-black text-[#191b18]">קהל חדש</h3>
-                      <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+                    <div className="mt-4 rounded-lg border border-[#dedcd4] bg-[#fbfcff] p-4">
+                      <h3 className="text-sm font-black text-[#1d2940]">קהל חדש</h3>
+                      <p className="mt-1 text-xs leading-5 text-[#647087]">
                         לפי מה שתכתבו כאן נכתוב את הפוסטים ונמדוד את התוצאות. הקהל הראשון שתוסיפו יהיה
                         הקהל העיקרי.
                       </p>
@@ -1115,7 +1115,7 @@ export default function DecisionsPage() {
                             setShowAddAudience(false);
                           }}
                           disabled={audienceBusy === "new"}
-                          className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+                          className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
                         >
                           לבטל
                         </button>
@@ -1124,9 +1124,9 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {audiencesError ? null : (
-                    <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
+                    <p className="mt-3 text-xs leading-5 text-[#647087]">
                       לאיזה קהל שייך כל פוסט אפשר לשנות בעורך הפוסטים. את התוצאות של כל קהל רואים ב
-                      <Link href="/performance" className="font-bold text-[#191b18] underline underline-offset-4">
+                      <Link href="/performance" className="font-bold text-[#1d2940] underline underline-offset-4">
                         עמוד התוצאות
                       </Link>
                       .
@@ -1143,7 +1143,7 @@ export default function DecisionsPage() {
                 open={openGroup === "targets"}
                 onToggle={() => toggleGroup("targets")}
               >
-                <p className="text-xs leading-5 text-[#63665e]">
+                <p className="text-xs leading-5 text-[#535f75]">
                   עד 3 יעדים לפי סדר החשיבות. את התוכנית בונים סביב הראשון.
                 </p>
 
@@ -1153,12 +1153,12 @@ export default function DecisionsPage() {
                       {rankedTargets.map((target, index) => (
                         <li
                           key={target}
-                          className="flex items-start gap-3 rounded-md border border-[#e6e4dc] bg-white p-3"
+                          className="flex items-start gap-3 rounded-md border border-[#e1e7f2] bg-white p-3"
                         >
-                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#191b18] text-[11px] font-bold text-white">
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#2853c7] text-[11px] font-bold text-white">
                             {index + 1}
                           </span>
-                          <span className="min-w-0 flex-1 text-sm font-bold leading-6 text-[#191b18]">
+                          <span className="min-w-0 flex-1 text-sm font-bold leading-6 text-[#1d2940]">
                             {target}
                           </span>
                           <span className="flex shrink-0 items-center gap-1">
@@ -1167,7 +1167,7 @@ export default function DecisionsPage() {
                               onClick={() => moveTarget(index, index - 1)}
                               disabled={index === 0}
                               aria-label="להזיז למעלה"
-                              className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] disabled:opacity-30"
                             >
                               ↑
                             </button>
@@ -1176,7 +1176,7 @@ export default function DecisionsPage() {
                               onClick={() => moveTarget(index, index + 1)}
                               disabled={index === rankedTargets.length - 1}
                               aria-label="להזיז למטה"
-                              className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] disabled:opacity-30"
                             >
                               ↓
                             </button>
@@ -1184,7 +1184,7 @@ export default function DecisionsPage() {
                               type="button"
                               onClick={() => removeTarget(target)}
                               aria-label="להסיר את היעד"
-                              className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] hover:bg-[#f8f7f4]"
+                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] hover:bg-[#fbfcff]"
                             >
                               ✕
                             </button>
@@ -1205,13 +1205,13 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {!candidates.length && !rankedTargets.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
                       עוד לא בחרתם עדיפויות. קבלו הצעות מ{AGENT_NAME} ובחרו מהן.
                     </p>
                   ) : null}
 
                   {candidates.length && rankedTargets.length ? (
-                    <p className="mt-3 text-xs leading-5 text-[#8b8e84]">
+                    <p className="mt-3 text-xs leading-5 text-[#647087]">
                       כאן אפשר לשנות את הסדר או להסיר. כדי להוסיף יעד, קבלו הצעות חדשות.
                     </p>
                   ) : null}
@@ -1228,11 +1228,11 @@ export default function DecisionsPage() {
                     </p>
                   ) : null}
 
-                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e6e4dc] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
+                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e1e7f2] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button onClick={() => void loadCandidates()} disabled={loadingCandidates}>
                       {loadingCandidates ? "מביאים הצעות…" : "לקבל הצעות חדשות"}
                     </Button>
-                    <span className="text-xs leading-5 text-[#8b8e84]">
+                    <span className="text-xs leading-5 text-[#647087]">
                       {AGENT_NAME} מציעה לפי העסק, האתר והאבחון, רק כשתלחצו.
                     </span>
                   </div>
@@ -1265,9 +1265,9 @@ export default function DecisionsPage() {
             </section>
 
             {/* Where the decisions are read. One quiet line instead of a card of its own. */}
-            <p className="text-xs leading-5 text-[#8b8e84]">
+            <p className="text-xs leading-5 text-[#647087]">
               מההחלטות האלה נבנית{" "}
-              <Link href="/strategy" className="font-bold text-[#191b18] underline underline-offset-4">
+              <Link href="/strategy" className="font-bold text-[#1d2940] underline underline-offset-4">
                 התוכנית
               </Link>{" "}
               לחודש ולרבעון.
@@ -1288,7 +1288,7 @@ export default function DecisionsPage() {
           <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 md:px-8">
             {/* Announced only while it says something the user does not already know. */}
             <span
-              className="min-w-0 flex-1 text-[11px] leading-4 text-[#8b8e84]"
+              className="min-w-0 flex-1 text-[11px] leading-4 text-[#647087]"
               role={savePending ? "status" : undefined}
             >
               {saveState}
@@ -1352,14 +1352,14 @@ function DecisionRow({
             style={{ background: done ? ACCENT : "#d7d5cc" }}
           />
           <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-            <span className="shrink-0 text-sm font-black text-[#191b18] sm:w-32">{label}</span>
-            <span className={`min-w-0 truncate text-sm ${muted ? "text-[#9f4330]" : "text-[#5e6159]"}`}>
+            <span className="shrink-0 text-sm font-black text-[#1d2940] sm:w-32">{label}</span>
+            <span className={`min-w-0 truncate text-sm ${muted ? "text-[#9f4330]" : "text-[#535f75]"}`}>
               {value}
             </span>
           </span>
           <span
             className="shrink-0 text-[11px] font-bold"
-            style={{ color: open ? "#8b8e84" : ACCENT }}
+            style={{ color: open ? "#647087" : ACCENT }}
           >
             {open ? "לסגור" : "לשנות"}
           </span>
@@ -1388,7 +1388,7 @@ function AudienceFormFields({
   return (
     <div className="grid gap-3">
       <div>
-        <label htmlFor={`${idPrefix}-name`} className="mb-1 block text-xs font-bold text-[#191b18]">
+        <label htmlFor={`${idPrefix}-name`} className="mb-1 block text-xs font-bold text-[#1d2940]">
           שם הקהל
         </label>
         <input
@@ -1400,7 +1400,7 @@ function AudienceFormFields({
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-summary`} className="mb-1 block text-xs font-bold text-[#191b18]">
+        <label htmlFor={`${idPrefix}-summary`} className="mb-1 block text-xs font-bold text-[#1d2940]">
           במשפט אחד: מי הם?
         </label>
         <input
@@ -1412,7 +1412,7 @@ function AudienceFormFields({
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-needs`} className="mb-1 block text-xs font-bold text-[#191b18]">
+        <label htmlFor={`${idPrefix}-needs`} className="mb-1 block text-xs font-bold text-[#1d2940]">
           מה הקהל צריך (מפרידים בפסיק)
         </label>
         <input
@@ -1424,7 +1424,7 @@ function AudienceFormFields({
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-where`} className="mb-1 block text-xs font-bold text-[#191b18]">
+        <label htmlFor={`${idPrefix}-where`} className="mb-1 block text-xs font-bold text-[#1d2940]">
           איפה פוגשים אותו (מפרידים בפסיק)
         </label>
         <input
@@ -1436,7 +1436,7 @@ function AudienceFormFields({
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-description`} className="mb-1 block text-xs font-bold text-[#191b18]">
+        <label htmlFor={`${idPrefix}-description`} className="mb-1 block text-xs font-bold text-[#1d2940]">
           תיאור מלא (לא חובה)
         </label>
         <textarea
@@ -1456,7 +1456,7 @@ function AudienceFormFields({
 function ChipRow({ label, items }: { label: string; items: string[] }) {
   return (
     <div className="mt-2.5">
-      <p className="text-[10px] font-bold text-[#8b8e84]">{label}</p>
+      <p className="text-[10px] font-bold text-[#647087]">{label}</p>
       <ul className="mt-1 flex flex-wrap gap-1.5">
         {items.map((item) => (
           <li
@@ -1484,20 +1484,20 @@ function QuestionBlock({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-[#e6e4dc] pt-4 first:border-t-0 first:pt-0">
+    <section className="border-t border-[#e1e7f2] pt-4 first:border-t-0 first:pt-0">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-sm font-bold text-[#191b18]">{title}</h3>
+        <h3 className="text-sm font-bold text-[#1d2940]">{title}</h3>
         {onClear ? (
           <button
             type="button"
             onClick={onClear}
-            className="shrink-0 text-[11px] text-[#5e6159] underline underline-offset-4"
+            className="shrink-0 text-[11px] text-[#535f75] underline underline-offset-4"
           >
             לבטל את הבחירה
           </button>
         ) : null}
       </div>
-      {note ? <p className="mt-1 text-xs leading-5 text-[#8b8e84]">{note}</p> : null}
+      {note ? <p className="mt-1 text-xs leading-5 text-[#647087]">{note}</p> : null}
       <div className="mt-3">{children}</div>
     </section>
   );
@@ -1520,8 +1520,8 @@ function ChoiceButton({
       onClick={onClick}
       className={`rounded-md border p-3 text-right ${
         selected
-          ? "border-[#191b18] bg-[#191b18] text-white"
-          : "border-[#e6e4dc] bg-[#f8f7f4] text-[#191b18] hover:border-[#191b18]"
+          ? "border-[#1d2940] bg-[#2853c7] text-white"
+          : "border-[#e1e7f2] bg-[#fbfcff] text-[#1d2940] hover:border-[#1d2940]"
       }`}
     >
       <span className="block text-xs font-bold">{title}</span>

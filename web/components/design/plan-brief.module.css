@@ -1,0 +1,10 @@
+.brief { padding-block:4px 24px; color:var(--im-ink,var(--ink)); }
+.eyebrow { font-size:12px; color:var(--im-muted,var(--ink-soft)); margin-bottom:12px; }
+.brief h2 { font-size:clamp(23px,3vw,32px); font-weight:700; letter-spacing:-.6px; line-height:1.45; max-width:680px; text-wrap:pretty; }
+.brief details { margin-top:12px; font-size:13px; line-height:1.9; color:var(--im-muted,var(--ink-soft)); }.brief summary { cursor:pointer; min-height:40px; }.brief details p { padding-block:8px; }
+.measure { padding-block:17px; margin-top:18px; border-block:1px solid var(--im-rule,var(--rule)); font-size:14px; line-height:1.8; }
+.baseline { font-size:12px; color:var(--im-muted,var(--ink-soft)); margin-top:4px; }
+.decision { margin-top:17px; }.decision strong { font-size:12px; color:var(--im-muted,var(--ink-soft)); }.decision p { margin-top:5px; font-size:15px; line-height:1.8; font-weight:500; }
+.action { margin-top:20px; }
+
+.hypothesis { padding-block:14px; }.hypothesis h3 { font-size:15px; line-height:1.7; font-weight:600; }.hypothesis p { margin-top:6px; font-size:13px; line-height:1.8; color:var(--im-muted,var(--ink-soft)); }.hypothesis strong { font-weight:500; }

@@ -24,7 +24,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   }
   if (!post.image_url || broken) {
     return (
-      <span aria-hidden className={`${base} flex items-center justify-center bg-[#f0efeb] text-[#a3a29b]`}>
+      <span aria-hidden className={`${base} flex items-center justify-center bg-[#edf2ff] text-[#a3a29b]`}>
         <IconImage className="h-5 w-5" />
       </span>
     );
@@ -35,7 +35,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
       alt=""
       loading="lazy"
       onError={() => setBroken(true)}
-      className={`${base} bg-[#f0efeb] object-cover`}
+      className={`${base} bg-[#edf2ff] object-cover`}
     />
   );
 }
@@ -59,11 +59,11 @@ export function PostFeed({
 }) {
   if (!posts.length) {
     return (
-      <p className="py-10 text-center text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
+      <p className="py-10 text-center text-sm text-[#535f75]">עוד מכינים את הפוסטים של החודש.</p>
     );
   }
   return (
-    <ul className="divide-y divide-[#eeede8] overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
+    <ul className="divide-y divide-[#edf2ff] overflow-hidden border-y border-[#e1e7f2] bg-white">
       {posts.map((post, index) => {
         const status = postStatus(post);
         return (
@@ -75,15 +75,15 @@ export function PostFeed({
                 event.preventDefault();
                 onOpen(index);
               }}
-              className="flex min-h-24 items-center gap-3 px-3 py-2.5 transition-colors hover:bg-[#faf9f6] active:bg-[#f4f3ee] sm:px-4"
+              className="flex min-h-24 items-center gap-3 px-3 py-2.5 transition-colors hover:bg-[#faf9f6] active:bg-[#edf2ff] sm:px-4"
             >
               <Thumb post={post} brand={brand} />
               <span className="min-w-0 flex-1">
-                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#20211f]">
+                <span className="line-clamp-2 text-[15px] font-bold leading-6 text-[#1d2940]">
                   {post.title}
                 </span>
                 <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_TONE[status]}`}>
+                  <span className={`text-xs ${STATUS_TONE[status]}`}>
                     {STATUS_LABEL[status]}
                   </span>
                   <span className="text-xs font-bold text-[#6b6c66]">{postDateLabel(post)}</span>

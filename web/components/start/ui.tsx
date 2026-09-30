@@ -6,6 +6,7 @@ import type { HelpTopic } from "@/components/help/guides";
 import { BrandMark } from "@/lib/icons";
 import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
+import { UIAction } from "@/components/design/Controls";
 
 /**
  * Building blocks shared by the /start screens.
@@ -26,14 +27,7 @@ export function PrimaryButton({
   onClick?: () => void;
 }) {
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className="drawn-button inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 bg-[#20211f] px-5 text-base font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-not-allowed disabled:bg-[#8d8f88]"
-    >
-      {children}
-    </button>
+    <UIAction type={type} onClick={onClick} disabled={disabled} className="!min-h-12 w-full !text-base">{children}</UIAction>
   );
 }
 
@@ -50,7 +44,7 @@ export function QuietLink({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm text-[#5e6159] underline underline-offset-4 hover:text-[#191b18] ${className}`}
+      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm text-[#535f75] underline underline-offset-4 hover:text-[#1d2940] ${className}`}
     >
       {children}
     </button>
@@ -62,10 +56,10 @@ export function Reflection({ text }: { text: string | null }) {
   if (!text) return null;
   return (
     <div className={`flex items-start gap-2.5 ${styles.rise}`} aria-live="polite">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#191b18]">
+      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2853c7]">
         <BrandMark className="h-4 w-4 text-white" />
       </span>
-      <p className="rounded-2xl rounded-tr-sm bg-[#efece3] px-3.5 py-2 text-sm leading-6 text-[#2b2d28]">{text}</p>
+      <p className="rounded-2xl rounded-tr-sm bg-[#fff5d9] px-3.5 py-2 text-sm leading-6 text-[#1d2940]">{text}</p>
     </div>
   );
 }
@@ -140,17 +134,17 @@ export function StepShell({
         <h1
           ref={heading}
           tabIndex={-1}
-          className="text-[1.6rem] font-black leading-tight tracking-tight text-[#191b18] outline-none sm:text-3xl"
+          className="text-[1.6rem] font-black leading-tight tracking-tight text-[#1d2940] outline-none sm:text-3xl"
         >
           {title}
         </h1>
-        <p className="mt-1 text-sm leading-6 text-[#5e6159]">{why}</p>
+        <p className="mt-1 text-sm leading-6 text-[#535f75]">{why}</p>
       </div>
       {children}
       <div
         className={
           stickyAction
-            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
+            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#fbfcff] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
                 stickyDesktop ? "lg:mx-0 lg:px-0" : "lg:static lg:mx-0 lg:bg-none lg:p-0"
               }`
             : "space-y-1 pt-1"
@@ -192,8 +186,8 @@ export function Chip({
       disabled={disabled}
       className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
-          ? "border-[#191b18] bg-[#f1efe8] text-[#191b18] ring-1 ring-[#191b18]"
-          : "border-[#dedcd4] bg-white text-[#2b2d28] hover:border-[#b9b7ad]"
+          ? "border-[#1d2940] bg-[#f1efe8] text-[#1d2940] ring-1 ring-[#1d2940]"
+          : "border-[#dedcd4] bg-white text-[#1d2940] hover:border-[#b9b7ad]"
       } ${className}`}
     >
       {selected ? <CheckMark /> : null}
@@ -242,14 +236,14 @@ export function TextInput({
   return (
     <div data-help-topic={helpTopic}>
       <div className="mb-1 flex items-baseline justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-bold text-[#191b18]">
+        <label htmlFor={id} className="text-sm font-bold text-[#1d2940]">
           {label}
         </label>
         {helpTopic ? <HowToFind topic={helpTopic} /> : null}
       </div>
-      <div className="flex min-h-12 items-center rounded-lg border border-[#dedcd4] bg-white focus-within:border-[#191b18] focus-within:ring-1 focus-within:ring-[#191b18]">
+      <div className="flex min-h-12 items-center rounded-lg border border-[#dedcd4] bg-white focus-within:border-[#1d2940] focus-within:ring-1 focus-within:ring-[#1d2940]">
         {prefix ? (
-          <span dir="ltr" className="pl-3 text-base text-[#8a8c84]">
+          <span dir="ltr" className="pl-3 text-base text-[#647087]">
             {prefix}
           </span>
         ) : null}
@@ -265,12 +259,12 @@ export function TextInput({
           autoCapitalize={dir === "ltr" ? "none" : undefined}
           spellCheck={dir === "ltr" ? false : undefined}
           maxLength={maxLength}
-          className={`min-h-12 w-full min-w-0 rounded-lg bg-transparent text-base text-[#191b18] outline-none placeholder:text-[#a3a59c] ${
+          className={`min-h-12 w-full min-w-0 rounded-lg bg-transparent text-base text-[#1d2940] outline-none placeholder:text-[#a3a59c] ${
             prefix ? "pl-3 pr-1" : "px-3.5"
           } ${dir === "ltr" ? "text-left placeholder:text-left" : ""}`}
         />
       </div>
-      {note ? <div className="mt-1 text-xs leading-5 text-[#5e6159]">{note}</div> : null}
+      {note ? <div className="mt-1 text-xs leading-5 text-[#535f75]">{note}</div> : null}
     </div>
   );
 }
@@ -326,7 +320,7 @@ export function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[#5e6159] hover:bg-[#f1efe8] hover:text-[#191b18]"
+      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[#535f75] hover:bg-[#f1efe8] hover:text-[#1d2940]"
     >
       {children}
     </button>
@@ -349,8 +343,8 @@ export function rangeSafe(text: string): string {
 /** Dark text on a light colour, white on a dark one. */
 export function inkOn(hex: string): string {
   const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return "#191b18";
+  if (!m) return "#1d2940";
   const [r, g, b] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16) / 255);
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return lum > 0.6 ? "#191b18" : "#ffffff";
+  return lum > 0.6 ? "#1d2940" : "#ffffff";
 }

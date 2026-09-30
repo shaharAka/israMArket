@@ -62,7 +62,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
 ];
 
 const rowClass =
-  "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-[#f8f7f4] active:bg-[#f4f3ee] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#20211f]";
+  "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-[#fbfcff] active:bg-[#edf2ff] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#1d2940]";
 
 export default function BusinessPage() {
   const [businessName, setBusinessName] = useState("");
@@ -81,20 +81,20 @@ export default function BusinessPage() {
         <SectionHeader section="business" title={businessName || "העסק שלי"} />
 
         {/* One container, hairlines between rows: a list, not a grid of boxes. */}
-        <div className="overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+        <div className="overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
           {GROUPS.map((group, index) => (
-            <section key={group.title} className={index > 0 ? "border-t border-[#e6e4dc]" : undefined}>
-              <h2 className="px-4 pt-4 pb-1 text-xs font-black text-[#63665e]">{group.title}</h2>
-              <ul className="divide-y divide-[#eeede8]">
+            <section key={group.title} className={index > 0 ? "border-t border-[#e1e7f2]" : undefined}>
+              <h2 className="px-4 pt-4 pb-1 text-xs font-black text-[#535f75]">{group.title}</h2>
+              <ul className="divide-y divide-[#edf2ff]">
                 {group.rows.map((row) => (
                   <li key={row.href}>
                     <Link href={row.href} className={rowClass}>
-                      <row.icon className="h-5 w-5 shrink-0 text-[#63665e]" />
+                      <row.icon className="h-5 w-5 shrink-0 text-[#535f75]" />
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-bold text-[#1e201d]">{row.title}</span>
-                        <span className="mt-0.5 block text-sm text-[#63665e]">{row.hint}</span>
+                        <span className="block text-[15px] font-bold text-[#1d2940]">{row.title}</span>
+                        <span className="mt-0.5 block text-sm text-[#535f75]">{row.hint}</span>
                       </span>
-                      <IconChevron className="h-5 w-5 shrink-0 text-[#8b8e84]" />
+                      <IconChevron className="h-5 w-5 shrink-0 text-[#647087]" />
                     </Link>
                   </li>
                 ))}
@@ -102,10 +102,10 @@ export default function BusinessPage() {
             </section>
           ))}
 
-          <div className="border-t border-[#e6e4dc]">
+          <div className="border-t border-[#e1e7f2]">
             <button type="button" onClick={logOut} className={`${rowClass} cursor-pointer`}>
-              <IconLogout className="h-5 w-5 shrink-0 text-[#63665e]" />
-              <span className="flex-1 text-[15px] font-bold text-[#1e201d]">יציאה מהחשבון</span>
+              <IconLogout className="h-5 w-5 shrink-0 text-[#535f75]" />
+              <span className="flex-1 text-[15px] font-bold text-[#1d2940]">יציאה מהחשבון</span>
             </button>
           </div>
         </div>

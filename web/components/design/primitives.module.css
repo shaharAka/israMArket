@@ -1,6 +1,6 @@
 .scope { --im-radius: 8px; color: var(--im-ink); }
 .action { border-radius: var(--im-radius); min-height: 48px; padding: 12px 22px; justify-content: space-between; gap: 26px; font-weight: 600; font-size: 14px; }
-.primary { background: var(--im-ink); color: var(--im-paper); border-color: var(--im-ink); }
+.primary { background: var(--im-primary); color: var(--im-paper); border-color: var(--im-primary); }
 .primary:hover:not(:disabled) { background: var(--im-primary); color: var(--im-paper); border-color: var(--im-primary); }
 .quiet { background: transparent; color: var(--im-ink); border-color: var(--im-rule); }
 .actionArrow { width: 20px; height: 20px; transition: transform 180ms ease; }
@@ -42,3 +42,5 @@
 @keyframes arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
 @media (max-width: 600px) { .journey li { min-width: 0; flex-direction: column; align-items: flex-start; gap: 8px; } .journey li:not(:last-child)::after { position: absolute; top: 16px; right: 42px; left: 13px; margin: 0; } .stepLabel { font-size: 11px; } }
 @media (prefers-reduced-motion: reduce) { .photoContent { animation: none; } .actionArrow { transition: none; } .action:hover .actionArrow { transform: none; } .action:dir(ltr):hover .actionArrow { transform: rotate(180deg); } }
+
+[data-motion-reduced="true"] .photoContent { animation:none; }

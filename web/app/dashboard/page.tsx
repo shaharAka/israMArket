@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
+import { PlanBrief } from "@/components/design/PlanBrief";
 import { MonthAhead } from "@/components/MonthAhead";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -19,7 +20,7 @@ import {
   type StrategyPayload,
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
-import { IconArrowLeft, IconCheck, IconImage, IconRoute } from "@/lib/icons";
+import { IconArrowLeft, IconImage } from "@/lib/icons";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
@@ -102,52 +103,38 @@ export default function DashboardPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        <SectionHeader section="dashboard" title={`${strategy.month_name_he} ${strategy.year}`} />
-
+        <SectionHeader section="dashboard" title="השבוע בתוכנית" />
         <div className="rise-stagger space-y-7">
-          {/* 1. The one thing. */}
-          {nextPost ? (
-            <NextPostCard post={nextPost} index={nextIndex} total={posts.length} />
-          ) : allApproved ? (
-            <section className="rounded-lg border border-[#cecdc7] bg-white px-4 pt-4 sm:px-5">
-              <p className="flex items-center gap-2 text-base font-black text-[#20211f]">
-                <IconCheck className="h-4 w-4 shrink-0" />
-                כל הפוסטים של {strategy.month_name_he} אושרו
-              </p>
-              {/* With the month approved, next month *is* the ask — so here, and only
-                  here, its build button is the page's dark one. */}
-              {strategy.horizon ? (
-                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="primary" variant="row" />
-              ) : (
-                <p className="py-3 text-sm text-[#62635f]">ממשיכים לעקוב אחרי התוצאות.</p>
-              )}
-            </section>
-          ) : (
-            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
-            </section>
-          )}
-
+          <PlanBrief businessName={business?.name}
+            direction={strategy.quarter_plan?.strategy.one_liner_he || business?.quarter_plan?.strategy.one_liner_he || strategy.monthly_horizon_plan?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
+            why={strategy.quarter_plan?.strategy.why_he || business?.quarter_plan?.strategy.why_he}
+            measure={strategy.quarter_plan?.kpi.name_he || business?.quarter_plan?.kpi.name_he}
+            baseline={strategy.quarter_plan?.kpi.baseline_he || business?.quarter_plan?.kpi.baseline_he}
+            ownerAction={strategy.weekly_breakdown?.find(week => week.week === shownWeek)?.what_user_does?.[0]}
+            action={<Link href="/strategy" className="drawn-button inline-flex min-h-12 items-center gap-2 bg-[#2853c7] px-6 text-sm font-bold text-white">לעבור על התוכנית <IconArrowLeft className="h-4 w-4" /></Link>} />
+          <details className="border-y border-[#e1e7f2] py-3">
+            <summary className="min-h-11 cursor-pointer py-2 text-sm font-bold text-[#1d2940]">כלי הביצוע · הפוסטים</summary>
+            {nextPost ? <NextPostCard post={nextPost} index={nextIndex} total={posts.length} /> : <p className="py-3 text-sm text-[#535f75]">{allApproved ? "כל הפוסטים של החודש אושרו." : "עוד אין פוסטים מוכנים."}</p>}
           {/* 2. This week, and 3. how far along the month is. */}
           {posts.length ? (
             <section aria-labelledby="week-heading">
               <div className="flex items-baseline justify-between gap-3">
-                <h2 id="week-heading" className="text-base font-black text-[#20211f]">
+                <h2 id="week-heading" className="text-base font-black text-[#1d2940]">
                   {currentWeek ? "השבוע" : `שבוע ${shownWeek}`}
                 </h2>
-                <Link href="/posts" className="text-xs font-bold text-[#5e6159] underline-offset-4 hover:underline">
+                <Link href="/posts" className="text-xs font-bold text-[#535f75] underline-offset-4 hover:underline">
                   כל הפוסטים
                 </Link>
               </div>
 
               {weekPosts.length ? (
-                <ul className="mt-3 divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+                <ul className="mt-3 divide-y divide-[#e1e7f2] overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
                   {weekPosts.map(({ post, index }) => (
                     <WeekRow key={index} post={post} index={index} />
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-sm text-[#62635f]">אין פוסטים בשבוע הזה.</p>
+                <p className="mt-3 text-sm text-[#535f75]">אין פוסטים בשבוע הזה.</p>
               )}
 
               <div className="mt-3 flex items-center gap-3">
@@ -157,23 +144,24 @@ export default function DashboardPage() {
                   aria-valuemax={posts.length}
                   aria-valuenow={approvedCount}
                   aria-label="פוסטים שאושרו החודש"
-                  className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[#e1e0db]"
+                  className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[#e1e7f2]"
                 >
                   <span
-                    className="block h-full rounded-full bg-[#343632] transition-[width] duration-700 ease-out"
+                    className="block h-full rounded-full bg-[#1e42a4] transition-[width] duration-700 ease-out"
                     style={{ width: `${(approvedCount / posts.length) * 100}%` }}
                   />
                 </span>
-                <p className="text-sm text-[#5e6159]">
+                <p className="text-sm text-[#535f75]">
                   {approvedCount} מתוך {posts.length} פוסטים אושרו החודש
                 </p>
               </div>
             </section>
           ) : null}
 
+          </details>
           {/* Everything else: quiet rows in one container. */}
-          <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
-            <QuarterPlanRow strategy={strategy} business={business} />
+          <section className="divide-y divide-[#e1e7f2] rounded-lg border border-[#e1e7f2] bg-white px-4 sm:px-5">
+
             {instagram && needsInstagram(instagram) ? <InstagramNudge connected={instagram.meta_connected} /> : null}
             <SetupChecklist />
             {nearlyDone && !allApproved ? (
@@ -200,23 +188,6 @@ export default function DashboardPage() {
  * The 3-month plan, one row: the plan's one line (or, for a business from before the
  * stored plan, the quarter's hypothesis), leading to /strategy.
  */
-function QuarterPlanRow({ strategy, business }: { strategy: StrategyPayload; business: Business | null }) {
-  const plan = strategy.quarter_plan ?? business?.quarter_plan;
-  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
-  const line = plan?.strategy.one_liner_he || quarter?.hypothesis;
-  if (!line) return null;
-  return (
-    <Link href="/strategy" className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
-      <IconRoute className="h-4 w-4 shrink-0 text-[#62635f]" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-xs font-bold text-[#747570]">התוכנית ל-3 חודשים</span>
-        <span className="mt-0.5 block truncate text-sm font-bold leading-6 text-[#20211f]">{line}</span>
-      </span>
-      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
-    </Link>
-  );
-}
-
 /**
  * Instagram is not connected, or is connected with nothing synced: the posts are being
  * written without it. Not offered when the server has no Meta app at all — the owner
@@ -231,15 +202,15 @@ function InstagramNudge({ connected }: { connected: boolean }) {
   return (
     <Link
       href="/instagram"
-      className="flex min-h-12 items-center gap-3 py-3 text-sm leading-6 text-[#3c3e3a] transition-colors hover:text-[#20211f]"
+      className="flex min-h-12 items-center gap-3 py-3 text-sm leading-6 text-[#3c3e3a] transition-colors hover:text-[#1d2940]"
     >
-      <IconCamera className="h-4 w-4 shrink-0 text-[#62635f]" />
+      <IconCamera className="h-4 w-4 shrink-0 text-[#535f75]" />
       <span className="min-w-0 flex-1">
         {connected
           ? "עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם"
           : "לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם"}
       </span>
-      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#647087]" />
     </Link>
   );
 }
@@ -247,10 +218,10 @@ function InstagramNudge({ connected }: { connected: boolean }) {
 /** The single ask: the next post waiting for the owner. The only dark button on the page. */
 function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
   return (
-    <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-      <p className="text-xs font-bold text-[#747570]">מחכה לאישור שלכם</p>
+    <section className="today-ask rounded-lg border p-4 sm:p-5">
+      <p className="text-xs font-bold text-[#647087]">מחכה לאישור שלכם</p>
       <div className="mt-3 flex items-center gap-4">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f0efeb] sm:h-20 sm:w-20">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#edf2ff] sm:h-20 sm:w-20">
           {post.image_url ? (
             <Image
               src={post.image_url}
@@ -267,15 +238,15 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
           )}
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg font-black leading-7 text-[#20211f]">{post.title}</h2>
-          <p className="mt-0.5 text-xs text-[#62635f]">
+          <h2 className="text-lg font-black leading-7 text-[#1d2940]">{post.title}</h2>
+          <p className="mt-0.5 text-xs text-[#535f75]">
             {postDay(post)} · פוסט {index + 1} מתוך {total}
           </p>
         </div>
       </div>
       <Link
         href={postHref(index)}
-        className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+        className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md border border-[#c3cee5] bg-white px-6 text-sm font-bold text-[#2853c7] transition-colors hover:bg-[#edf2ff] sm:w-auto"
       >
         לבדוק ולאשר
         <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
@@ -285,9 +256,9 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
 }
 
 const STATE_STYLE: Record<PostState, string> = {
-  published: "bg-[#eaf0e6] text-[#374b3d]",
-  approved: "bg-[#eaf0e6] text-[#374b3d]",
-  waiting: "bg-[#f5efe3] text-[#6b5530]",
+  published: "text-[#2853c7]",
+  approved: "text-[#2853c7]",
+  waiting: "text-[#535f75]",
 };
 
 /** One post of the week: day, title, status. The whole row is the link. */
@@ -297,16 +268,16 @@ function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
     <li>
       <Link
         href={postHref(index)}
-        className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-[#faf9f7]"
+        className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-[#f4f7ff]"
       >
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-bold text-[#20211f]">{post.title}</span>
-          <span className="mt-0.5 block text-xs text-[#62635f]">{postDay(post)}</span>
+          <span className="block truncate text-sm font-bold text-[#1d2940]">{post.title}</span>
+          <span className="mt-0.5 block text-xs text-[#535f75]">{postDay(post)}</span>
         </span>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATE_STYLE[state]}`}>
+        <span className={`shrink-0 text-xs ${STATE_STYLE[state]}`}>
           {STATE_LABEL[state]}
         </span>
-        <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+        <IconArrowLeft className="h-4 w-4 shrink-0 text-[#647087]" />
       </Link>
     </li>
   );
@@ -340,14 +311,14 @@ function MoreAboutMonth({
 
   return (
     <details className="group">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#20211f]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#1d2940]">
         <span>עוד על החודש</span>
-        <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:-rotate-90">
+        <span aria-hidden className="shrink-0 text-[#647087] transition-transform group-open:-rotate-90">
           ‹
         </span>
       </summary>
 
-      <div className="divide-y divide-[#e9e8e3] border-t border-[#e9e8e3]">
+      <div className="divide-y divide-[#e1e7f2] border-t border-[#e1e7f2]">
         <InfoRow label="צריך מכם" href={null}>
           {nextUserAction || "כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים."}
         </InfoRow>
@@ -362,8 +333,8 @@ function MoreAboutMonth({
         </InfoRow>
 
         <div className="py-3">
-          <p className="text-xs font-bold text-[#747570]">כיוון החודש</p>
-          <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">
+          <p className="text-xs font-bold text-[#647087]">כיוון החודש</p>
+          <p className="mt-1 text-sm font-bold leading-6 text-[#1d2940]">
             {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
           </p>
           {monthly?.targets?.length ? (
@@ -379,7 +350,7 @@ function MoreAboutMonth({
         </div>
 
         <div className="py-3">
-          <p className="text-xs font-bold text-[#747570]">השבועות</p>
+          <p className="text-xs font-bold text-[#647087]">השבועות</p>
           <ol className="mt-2 space-y-2">
             {[1, 2, 3, 4].map((week) => {
               const item = weeks.find((entry) => entry.week === week);
@@ -388,14 +359,14 @@ function MoreAboutMonth({
                 <li key={week} className="flex items-start gap-3">
                   <span
                     className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                      isNow ? "bg-[#20211f] text-white" : "border border-[#dedcd4] text-[#62635f]"
+                      isNow ? "bg-[#2853c7] text-white" : "border border-[#dedcd4] text-[#535f75]"
                     }`}
                   >
                     {week}
                   </span>
-                  <span className={`min-w-0 flex-1 text-sm leading-6 ${isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}`}>
+                  <span className={`min-w-0 flex-1 text-sm leading-6 ${isNow ? "font-bold text-[#1d2940]" : "text-[#535f75]"}`}>
                     {item?.focus || "—"}
-                    {isNow ? <span className="mr-2 text-xs font-bold text-[#62635f]">(השבוע)</span> : null}
+                    {isNow ? <span className="mr-2 text-xs font-bold text-[#535f75]">(השבוע)</span> : null}
                   </span>
                 </li>
               );
@@ -413,15 +384,15 @@ function InfoRow({ label, href, children }: { label: string; href: string | null
   const body = (
     <>
       <span className="min-w-0 flex-1">
-        <span className="block text-xs font-bold text-[#747570]">{label}</span>
-        <span className="mt-0.5 block text-sm font-bold leading-6 text-[#20211f]">{children}</span>
+        <span className="block text-xs font-bold text-[#647087]">{label}</span>
+        <span className="mt-0.5 block text-sm font-bold leading-6 text-[#1d2940]">{children}</span>
       </span>
-      {href ? <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" /> : null}
+      {href ? <IconArrowLeft className="h-4 w-4 shrink-0 text-[#647087]" /> : null}
     </>
   );
   if (!href) return <div className="flex items-center gap-3 py-3">{body}</div>;
   return (
-    <Link href={href} className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
+    <Link href={href} className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#1d2940]">
       {body}
     </Link>
   );

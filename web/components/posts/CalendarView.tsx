@@ -71,7 +71,7 @@ function MonthBoard({
 
   return (
     <section aria-label="לוח החודש" className="overflow-hidden rounded-2xl bg-white">
-      <div className="grid grid-cols-7 bg-[#f8f7f4] text-center text-[11px] font-black text-[#6b6c66]">
+      <div className="grid grid-cols-7 bg-[#fbfcff] text-center text-[11px] font-black text-[#6b6c66]">
         {WEEKDAYS.map((day) => (
           <div key={day} className="py-2.5">
             {day}
@@ -79,10 +79,10 @@ function MonthBoard({
         ))}
       </div>
 
-      <div className="grid grid-cols-7 divide-x divide-y divide-[#eeede8] divide-x-reverse">
+      <div className="grid grid-cols-7 divide-x divide-y divide-[#edf2ff] divide-x-reverse">
         {cells.map((day, index) => {
           if (!day) {
-            return <div key={`empty-${index}`} className="min-h-[110px] bg-[#faf9f7] p-2" />;
+            return <div key={`empty-${index}`} className="min-h-[110px] bg-[#f4f7ff] p-2" />;
           }
 
           const iso = isoFor(year, month, day);
@@ -98,16 +98,16 @@ function MonthBoard({
               onClick={() => onSelect(iso)}
               className={`flex min-h-[110px] cursor-pointer flex-col p-2 transition ${
                 isSelected
-                  ? "bg-[#f4f3ee]"
+                  ? "bg-[#edf2ff]"
                   : isWeekend
-                    ? "bg-[#faf9f7] hover:bg-[#f4f3ee]"
-                    : "bg-white hover:bg-[#f8f7f4]"
+                    ? "bg-[#f4f7ff] hover:bg-[#edf2ff]"
+                    : "bg-white hover:bg-[#fbfcff]"
               }`}
             >
               <span
                 className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
                   isSelected
-                    ? "bg-[#20211f] text-white"
+                    ? "bg-[#2853c7] text-white"
                     : hasHoliday
                       ? "bg-amber-100 text-amber-900"
                       : "text-[#3c3e3a]"
@@ -189,11 +189,11 @@ function Agenda({
     .filter((day) => day.events.length || day.posts.length);
 
   if (!days.length) {
-    return <p className="py-8 text-center text-sm text-[#62635f]">אין חגים או פוסטים בחודש הזה.</p>;
+    return <p className="py-8 text-center text-sm text-[#535f75]">אין חגים או פוסטים בחודש הזה.</p>;
   }
 
   return (
-    <ol className="divide-y divide-[#eeede8] overflow-hidden rounded-2xl border border-[#e6e4dc] bg-white">
+    <ol className="divide-y divide-[#edf2ff] overflow-hidden rounded-2xl border border-[#e1e7f2] bg-white">
       {days.map((day) => {
         const [, , d] = day.iso.split("-");
         const weekday = new Date(`${day.iso}T12:00:00`).getDay();
@@ -202,7 +202,7 @@ function Agenda({
             {/* The date is one block: weekday over day number, like a paper diary. */}
             <span className="flex w-10 shrink-0 flex-col items-center pt-0.5 text-center">
               <span className="text-xs font-bold text-[#6b6c66]">{WEEKDAYS_SHORT[weekday]}</span>
-              <span className="text-lg font-black leading-6 text-[#20211f]">{Number(d)}</span>
+              <span className="text-lg font-black leading-6 text-[#1d2940]">{Number(d)}</span>
             </span>
             <ul className="min-w-0 flex-1 space-y-1.5">
               {day.events.map((event) => (
@@ -216,7 +216,7 @@ function Agenda({
                 const status = postStatus(post);
                 const body = (
                   <>
-                    <span className="min-w-0 flex-1 text-sm font-bold leading-6 text-[#20211f]">{post.title}</span>
+                    <span className="min-w-0 flex-1 text-sm font-bold leading-6 text-[#1d2940]">{post.title}</span>
                     <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-bold ${STATUS_TONE[status]}`}>
                       {STATUS_LABEL[status]}
                     </span>
@@ -257,7 +257,7 @@ function MonthStep({ dir, label, onClick }: { dir: "prev" | "next"; label: strin
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-md text-[#63665e] transition-colors hover:bg-[#f4f3ee] hover:text-[#20211f]"
+      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-md text-[#535f75] transition-colors hover:bg-[#edf2ff] hover:text-[#1d2940]"
     >
       <svg
         viewBox="0 0 24 24"
@@ -342,7 +342,7 @@ export function CalendarView({
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-1">
-        <h2 className="text-xl font-black tracking-tight text-[#20211f] md:text-2xl">
+        <h2 className="text-xl font-black tracking-tight text-[#1d2940] md:text-2xl">
           {data && data.year === year && data.month === month ? `${data.month_name_he} ${data.year}` : monthLabel(year, month)}
         </h2>
         <div className="flex items-center">
@@ -356,7 +356,7 @@ export function CalendarView({
               setYear(initialYear);
               setMonth(initialMonth);
             }}
-            className="min-h-11 text-sm font-bold text-[#20211f] underline underline-offset-4"
+            className="min-h-11 text-sm font-bold text-[#1d2940] underline underline-offset-4"
           >
             לחזור ל{monthLabel(initialYear, initialMonth)}
           </button>
@@ -409,35 +409,35 @@ export function CalendarView({
 
             {/* What happens on the chosen day. One border, hairlines inside. */}
             <aside className="lg:col-span-4">
-              <div className="rounded-2xl border border-[#e6e4dc] bg-white p-5">
-                <h3 className="text-sm font-black text-[#20211f]">
+              <div className="rounded-2xl border border-[#e1e7f2] bg-white p-5">
+                <h3 className="text-sm font-black text-[#1d2940]">
                   {selected ? formatDay(selected) : "בחרו יום בלוח"}
                 </h3>
 
                 {dayEvents.length === 0 && dayPosts.length === 0 ? (
                   <p className="mt-3 text-xs leading-5 text-[#6b6c66]">אין חג או פוסט ביום הזה.</p>
                 ) : (
-                  <ul className="mt-2 divide-y divide-[#eeede8]">
+                  <ul className="mt-2 divide-y divide-[#edf2ff]">
                     {dayEvents.map((event) => (
                       <li key={`${event.name}-${event.date}`} className="py-2.5">
                         <span className={`rounded px-1.5 py-0.5 text-[11px] font-bold ${eventChip(event.kind)}`}>
                           {event.kind}
                         </span>
-                        <span className="mr-2 text-sm font-bold text-[#20211f]">{event.name}</span>
-                        {event.note ? <p className="mt-1 text-xs leading-5 text-[#5e6159]">{event.note}</p> : null}
+                        <span className="mr-2 text-sm font-bold text-[#1d2940]">{event.name}</span>
+                        {event.note ? <p className="mt-1 text-xs leading-5 text-[#535f75]">{event.note}</p> : null}
                       </li>
                     ))}
 
                     {dayPosts.map(({ post, index }) => (
                       <li key={`${index}-${post.title}`} className="py-2.5">
-                        <p className="text-sm font-bold text-[#20211f]">{post.title}</p>
-                        <p className="mt-1 text-xs leading-5 text-[#5e6159]">{post.hook}</p>
+                        <p className="text-sm font-bold text-[#1d2940]">{post.title}</p>
+                        <p className="mt-1 text-xs leading-5 text-[#535f75]">{post.hook}</p>
                         <div className="mt-1.5 flex flex-wrap items-center gap-4">
                           {index !== null && openPost ? (
                             <button
                               type="button"
                               onClick={() => openPost(index)}
-                              className="text-xs font-bold text-[#20211f] underline underline-offset-4"
+                              className="text-xs font-bold text-[#1d2940] underline underline-offset-4"
                             >
                               לפתוח את הפוסט
                             </button>
@@ -445,7 +445,7 @@ export function CalendarView({
                           <button
                             type="button"
                             onClick={() => void copyText(post.hook + "\n\n" + post.caption, "הטקסט הועתק")}
-                            className="inline-flex items-center gap-1 text-xs font-bold text-[#3f4a5c] underline underline-offset-4 hover:text-[#20211f]"
+                            className="inline-flex items-center gap-1 text-xs font-bold text-[#3f4a5c] underline underline-offset-4 hover:text-[#1d2940]"
                           >
                             <IconCopy className="h-3.5 w-3.5" />
                             להעתיק את הטקסט
@@ -460,7 +460,7 @@ export function CalendarView({
           </div>
         </>
       ) : !error ? (
-        <p className="text-sm text-[#63665e]">טוענים את הלוח…</p>
+        <p className="text-sm text-[#535f75]">טוענים את הלוח…</p>
       ) : null}
     </div>
   );

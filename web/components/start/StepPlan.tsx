@@ -39,15 +39,15 @@ export function WorkProgress({ title, note, lines, pace = 5500 }: { title: strin
     return () => window.clearInterval(timer);
   }, [lines.length, pace]);
   return (
-    <div role="status" aria-live="polite" className="rounded-xl border border-[#e2e0d8] bg-white p-4">
-      <p className="text-sm font-black text-[#191b18]">{title}</p>
-      <p className="text-xs text-[#5e6159]">{note}</p>
+    <div role="status" aria-live="polite" className="rounded-xl border border-[#e1e7f2] bg-white p-4">
+      <p className="text-sm font-black text-[#1d2940]">{title}</p>
+      <p className="text-xs text-[#535f75]">{note}</p>
       <ol className="mt-3 space-y-2.5">
         {lines.map((line, index) => (
           <li
             key={line}
             className={`flex items-center gap-2.5 text-sm ${
-              index < at ? "text-[#191b18]" : index === at ? "font-bold text-[#191b18]" : "text-[#a3a59c]"
+              index < at ? "text-[#1d2940]" : index === at ? "font-bold text-[#1d2940]" : "text-[#a3a59c]"
             }`}
           >
             {index < at ? (
@@ -56,7 +56,7 @@ export function WorkProgress({ title, note, lines, pace = 5500 }: { title: strin
               </svg>
             ) : (
               <span
-                className={`mx-[3px] h-2.5 w-2.5 shrink-0 rounded-full ${index === at ? `bg-[#191b18] ${styles.shimmer}` : "bg-[#d8d6ce]"}`}
+                className={`mx-[3px] h-2.5 w-2.5 shrink-0 rounded-full ${index === at ? `bg-[#2853c7] ${styles.shimmer}` : "bg-[#d8d6ce]"}`}
               />
             )}
             {index === at ? `${line}…` : line}
@@ -130,8 +130,8 @@ function ResearchProgress({ hasSite }: { hasSite: boolean }) {
 
 function PlanFailed({ message }: { message: string }) {
   return (
-    <div role="alert" className="rounded-xl border border-[#e2e0d8] bg-white p-4 text-sm leading-6 text-[#2b2d28]">
-      <p className="font-bold text-[#191b18]">לא הצלחנו לחקור כרגע.</p>
+    <div role="alert" className="rounded-xl border border-[#e1e7f2] bg-white p-4 text-sm leading-6 text-[#1d2940]">
+      <p className="font-bold text-[#1d2940]">לא הצלחנו לחקור כרגע.</p>
       {message ? <p>{message}</p> : null}
       <p>אפשר לנסות שוב, או להמשיך ולבנות את הכיוון אחרי ההרשמה. שום דבר ממה שסיפרתם לא הולך לאיבוד.</p>
     </div>
@@ -163,14 +163,14 @@ export function StepFound(props: RevealProps) {
 
 function InsightList({ insights }: { insights: PlanInsight[] }) {
   return (
-    <ul className={`divide-y divide-[#ecebe5] rounded-xl border border-[#e2e0d8] bg-white ${styles.stagger}`}>
+    <ul className={`divide-y divide-[#ecebe5] rounded-xl border border-[#e1e7f2] bg-white ${styles.stagger}`}>
       {insights.slice(0, 4).map((insight, index) => (
         <li key={index} className="px-3.5 py-3">
-          <p className="mb-1 inline-block rounded-full bg-[#f1efe8] px-2 text-[11px] font-bold leading-5 text-[#5e6159]">
+          <p className="mb-1 inline-block rounded-full bg-[#f1efe8] px-2 text-[11px] font-bold leading-5 text-[#535f75]">
             {sourceLabel(insight.source)}
           </p>
-          <p className="text-[15px] leading-6 text-[#191b18]">{insight.text_he}</p>
-          {insight.detail_he ? <p className="mt-0.5 text-xs leading-5 text-[#5e6159]">{insight.detail_he}</p> : null}
+          <p className="text-[15px] leading-6 text-[#1d2940]">{insight.text_he}</p>
+          {insight.detail_he ? <p className="mt-0.5 text-xs leading-5 text-[#535f75]">{insight.detail_he}</p> : null}
         </li>
       ))}
     </ul>
@@ -223,7 +223,7 @@ export function StepDirection(props: RevealProps) {
                   }}
                   className={`relative cursor-pointer rounded-2xl border bg-white p-4 text-right transition-shadow ${
                     on
-                      ? "border-[#191b18] shadow-[0_10px_28px_-16px_rgba(25,27,24,0.55)] ring-2 ring-[#191b18]"
+                      ? "border-[#1d2940] shadow-[0_10px_28px_-16px_rgba(25,27,24,0.55)] ring-2 ring-[#1d2940]"
                       : "border-[#dedcd4] hover:border-[#b9b7ad]"
                   }`}
                 >
@@ -231,29 +231,29 @@ export function StepDirection(props: RevealProps) {
                     <span className="text-xs font-bold text-[#6b6e65]">כיוון {LETTERS[index]}</span>
                     <span
                       className={`flex h-6 w-6 items-center justify-center rounded-full border ${
-                        on ? "border-[#191b18] bg-[#f1efe8]" : "border-[#c7c4b8]"
+                        on ? "border-[#1d2940] bg-[#f1efe8]" : "border-[#c3cee5]"
                       }`}
                       aria-hidden
                     >
-                      {on ? <span className={`h-2.5 w-2.5 rounded-full bg-[#191b18] ${styles.pop}`} /> : null}
+                      {on ? <span className={`h-2.5 w-2.5 rounded-full bg-[#2853c7] ${styles.pop}`} /> : null}
                     </span>
                   </span>
-                  <span className="mt-1 block text-xl font-black leading-tight text-[#191b18]">{direction.title}</span>
-                  <span className="mt-1 block text-sm leading-6 text-[#2b2d28]">{direction.approach_he}</span>
+                  <span className="mt-1 block text-xl font-black leading-tight text-[#1d2940]">{direction.title}</span>
+                  <span className="mt-1 block text-sm leading-6 text-[#1d2940]">{direction.approach_he}</span>
                   <span className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-bold text-[#4f524b]">
                     <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">למי: {direction.audience}</span>
                     <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">מטרה: {direction.goal_he}</span>
                   </span>
-                  <span className="mt-2 block text-xs leading-5 text-[#5e6159]">
-                    <b className="text-[#191b18]">למה: </b>
+                  <span className="mt-2 block text-xs leading-5 text-[#535f75]">
+                    <b className="text-[#1d2940]">למה: </b>
                     {direction.why_he}
                   </span>
                   <span className={`${on ? "block" : "hidden lg:block"} mt-2 border-t border-[#ecebe5] pt-2`}>
-                    <span className="block text-[11px] font-black text-[#191b18]">הצעדים הראשונים</span>
+                    <span className="block text-[11px] font-black text-[#1d2940]">הצעדים הראשונים</span>
                     <span className="mt-1 block space-y-0.5">
                       {direction.first_steps.slice(0, 3).map((stepText, i) => (
-                        <span key={stepText} className="flex gap-1.5 text-xs leading-5 text-[#2b2d28]">
-                          <span className="font-black text-[#8a8c84]">{i + 1}.</span>
+                        <span key={stepText} className="flex gap-1.5 text-xs leading-5 text-[#1d2940]">
+                          <span className="font-black text-[#647087]">{i + 1}.</span>
                           {stepText}
                         </span>
                       ))}
@@ -326,8 +326,8 @@ function SomethingElse({
     );
   }
   return (
-    <div className="space-y-2 rounded-xl border border-[#e2e0d8] bg-white p-3.5">
-      <label htmlFor={fieldId} className="block text-sm font-bold text-[#191b18]">
+    <div className="space-y-2 rounded-xl border border-[#e1e7f2] bg-white p-3.5">
+      <label htmlFor={fieldId} className="block text-sm font-bold text-[#1d2940]">
         משהו אחר? ספרו לנו במילים שלכם
       </label>
       <textarea
@@ -340,14 +340,14 @@ function SomethingElse({
         rows={2}
         maxLength={400}
         placeholder="למשל: אנחנו רוצים להתמקד בהזמנות לאירועים"
-        className="w-full resize-none rounded-lg border border-[#dedcd4] bg-white px-3.5 py-2.5 text-base leading-6 text-[#191b18] outline-none placeholder:text-[#a3a59c] focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+        className="w-full resize-none rounded-lg border border-[#dedcd4] bg-white px-3.5 py-2.5 text-base leading-6 text-[#1d2940] outline-none placeholder:text-[#a3a59c] focus:border-[#1d2940] focus:ring-1 focus:ring-[#1d2940]"
       />
       <div className="flex flex-wrap items-center gap-2">
         <button
           type="button"
           onClick={() => void send()}
           disabled={busy}
-          className="min-h-11 cursor-pointer rounded-full border border-[#191b18] bg-white px-4 text-sm font-bold text-[#191b18] disabled:cursor-wait disabled:opacity-60"
+          className="min-h-11 cursor-pointer rounded-full border border-[#1d2940] bg-white px-4 text-sm font-bold text-[#1d2940] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? "מעדכנים את הכיוונים…" : "לעדכן את הכיוונים"}
         </button>
@@ -361,7 +361,7 @@ function SomethingElse({
           ביטול
         </QuietLink>
       </div>
-      <p aria-live="polite" className="text-sm text-[#2b2d28]">
+      <p aria-live="polite" className="text-sm text-[#1d2940]">
         {note}
       </p>
       {error ? (

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { BrandMark } from "@/lib/icons";
 import { MotionChoice, MotionIllustration } from "@/components/motion/Motion";
 import { ActionButton, DesignScope, JourneyRail, NotebookField, NotebookHeading, PaperNote, PhotoMoment, StatusLine } from "./Primitives";
 import { paletteColors, designPrinciples } from "./foundations";
@@ -10,13 +10,16 @@ import { PalettePicker } from "./PalettePicker";
 import { useDesignPalette } from "./palette";
 import { SunOverShop } from "./SunOverShop";
 import styles from "./library.module.css";
+import { ComponentWorkshop, TransitionWorkshop } from "./ComponentWorkshop";
+import { SegmentedControl, ToggleField } from "./Controls";
+import type { MotionMood } from "@/components/motion";
 
 function ProductScene({ businessName }: { businessName: string }) {
   const [step, setStep] = useState(0);
   const [tone, setTone] = useState("בגובה העיניים");
   const titles = ["נתחיל ברגע אחד מהעסק", "יש תמונה. עכשיו כמה מילים", "הטיוטה הראשונה שלכם מוכנה"];
-  return <section className={styles.product} aria-label="דוגמה חיה למסך השבוע הראשון">
-    <div className={styles.productTop}><span><BrandMark className={styles.smallMark} />{businessName}</span><span>שבוע 01 · תקופת ניסיון</span></div>
+  return <section className={styles.product} aria-label="דוגמה חיה לכלי הכנת הפוסט">
+    <div className={styles.productTop}><span><BrandMark className={styles.smallMark} />{businessName}</span><span>כלי בתוך התוכנית</span></div>
     <div className={styles.productBody}>
       <JourneyRail label="הכנת הפוסט הראשון" steps={[{ id: "photo", label: "רגע מהעסק", state: step > 0 ? "done" : "current" }, { id: "words", label: "כמה מילים", state: step > 1 ? "done" : step === 1 ? "current" : "next" }, { id: "post", label: "פוסט ראשון", state: step > 1 ? "done" : "next" }]} />
       <div className={styles.sceneContent}>
@@ -34,20 +37,21 @@ function ProductScene({ businessName }: { businessName: string }) {
 
 export function DesignLibrary() {
   const { palette } = useDesignPalette();
+  const [mood, setMood] = useState<MotionMood>("quiet");
+  const [reduced, setReduced] = useState(false);
   const [business, setBusiness] = useState("ת׳ציצי פנימה");
   const businessName = business.trim() || "העסק שלכם";
-  return <DesignScope className={styles.page} palette={palette}><div className={styles.container}>
-    <header className={styles.header}><Link href="/" className={styles.brand}><BrandMark className={styles.brandMark} />ישראמארקט</Link><span className={styles.headerLabel}>ספריית העיצוב</span><nav aria-label="מעבדות עיצוב"><a href="#foundations">השפה</a><a href="#scene">בתוך המוצר</a><Link href="/motion">תנועה <span aria-hidden="true">↗</span></Link></nav></header>
+  return <DesignScope className={styles.page} palette={palette} mood={mood} reduced={reduced}><div className={styles.container}>
+    <header className={styles.header}><Link href="/preview" className={styles.brand}><BrandMark className={styles.brandMark} />ישראמארקט</Link><span className={styles.headerLabel}>ספריית העיצוב</span><nav aria-label="מעבדות עיצוב"><a href="#components">רכיבים</a><a href="#transitions">מעברים</a><Link href="/preview">המוצר</Link><Link href="/motion">תנועה ↗</Link></nav></header>
     <main>
-      <PalettePicker />
-      <section className={styles.hero} aria-labelledby="design-title"><div><p className={styles.kicker}>שפה של ישראמארקט · כיוון ראשון</p><h1 id="design-title">המחברת<br />של <span>העסק.</span></h1><p className={styles.heroText}>מקום שקט לעשות את הצעד הבא. עם המילים שלכם, קווים שיש בהם יד, ופרטים קטנים שמכירים את העסק.</p></div><div className={styles.heroSketch}><SunOverShop key={palette.id} /></div></section>
-
-      <section id="scene" className={styles.sceneSection} aria-labelledby="scene-title"><div className={styles.sectionLabel}><h2 id="scene-title">01 / ככה זה מרגיש בתוך המוצר</h2><Link href="/motion">לנסות את אוסף התנועות <IconArrowLeft className={styles.linkArrow} /></Link></div><ProductScene businessName={businessName} /><div className={styles.personalise}><NotebookField label="איזה עסק נמצא במחברת?" value={business} onChange={setBusiness} hint="שנו את השם וראו אותו בתוך המסך." /><PaperNote label="קודם כל, להקשיב">שם, תמונה וסיפור אמיתי מהעסק. הפרטים האלה נותנים לעמוד אופי עוד לפני שמוסיפים צבע.</PaperNote></div></section>
-
-      <section id="foundations" className={styles.foundations} aria-labelledby="foundations-title"><div className={styles.sectionLabel}><h2 id="foundations-title">02 / הדברים שחוזרים בכל מסך</h2><span>מעט מרכיבים. שפה אחת.</span></div><div className={styles.foundationColumns}><div className={styles.palette}><h3>רקע, דיו, בית ושמש</h3><div className={styles.swatches}>{paletteColors(palette).map((color) => <div key={color.token}><span style={{ background: color.value }} /><strong>{color.name}</strong><small>{color.purpose}</small></div>)}</div><p>צבע עוזר להתמצא. השם והתמונות של העסק נשארים שלו.</p></div><div className={styles.typeSample}><h3>עברית שמרגישה טבעית</h3><p className={styles.typeDisplay}>צעד קטן.<br />עסק שלם מאחוריו.</p><p className={styles.typeBody}>כותרת קצרה, משקל ברור ומרווח לקריאה. ההסבר מופיע כשצריך אותו.</p></div><div className={styles.detailSample}><h3>הפרטים שלנו</h3><div className={styles.detailObjects}><BrandMark className={styles.detailMark} /><svg viewBox="0 0 140 35" fill="none" aria-hidden="true"><path d="M6 27c22-20 34 11 57-6s42-13 70-11" stroke="currentColor" strokeWidth="1.6" strokeDasharray="3 5" strokeLinecap="round" /><path d="m125 3 8 7-9 7" stroke="currentColor" strokeWidth="1.6" /></svg></div><p>דוכן עם שמש. קו של דרך. פינה מקופלת. סימן אישור שנכתב בקו אחד.</p></div></div></section>
-
-      <section className={styles.principles} aria-labelledby="principles-title"><div className={styles.sectionLabel}><h2 id="principles-title">03 / איך שומרים על האופי</h2></div><div className={styles.principleList}>{designPrinciples.map((item, index) => <div key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.title}</h3><p>{item.text}</p></div>)}</div></section>
-      <footer className={styles.footer}><span>ישראמארקט · ספרייה חיה, מהדורה ראשונה</span><details><summary>למפתחים: רכיבים ושימוש</summary><p>הספרייה נמצאת ב־<code dir="ltr">web/components/design</code>. רכיבי התנועה נמצאים ב־<code dir="ltr">web/components/motion</code>. משתני העיצוב משותפים, הדוגמאות מבודדות מהחשבון, והאנימציות מכבדות את העדפות המכשיר.</p><Link href="/motion">למעבדת התנועה ←</Link></details></footer>
+      <section className={styles.hero} aria-labelledby="design-title"><div><h1 id="design-title">כחול. שמש.<br />יום עבודה.</h1><p className={styles.heroText}>התוכנית במרכז. הכיוון, המדידה וההחלטות; כלי הביצוע באים אחריהם.</p><Link href="/preview" className={styles.productLink}>לראות את המוצר ←</Link></div><div className={styles.heroSketch}><SunOverShop key={palette.id} reduced={reduced} /></div></section>
+      <details className={styles.libraryDetails}><summary>הגדרות התצוגה · {palette.name} · {mood === "quiet" ? "עדין" : "עם אופי"}</summary><PalettePicker compact /><div className={styles.libraryControls}><SegmentedControl label="אופי התנועה" value={mood} onChange={value => setMood(value as MotionMood)} options={[{value:"quiet",label:"עדין"},{value:"playful",label:"עם אופי"}]} /><ToggleField label="הפחתת תנועה" checked={reduced} onChange={setReduced} /></div></details>
+      <ComponentWorkshop />
+      <TransitionWorkshop />
+      <details className={styles.libraryDetails}><summary>כלי הפוסטים · אחרי מדידה ובחירת חומרי הגלם</summary><section id="scene" className={styles.sceneSection}><ProductScene businessName={businessName} /><div className={styles.personalise}><NotebookField label="שם העסק בדוגמה" value={business} onChange={setBusiness} hint="שנו את השם וראו אותו בתוך המסך." /><PaperNote label="מה נותן למסך אופי">שם, תמונה וסיפור מהעסק.</PaperNote></div></section></details>
+      <details className={styles.libraryDetails}><summary>הבסיס · צבע, טיפוגרפיה ופרטים</summary><section id="foundations" className={styles.foundations}><div className={styles.foundationColumns}><div className={styles.palette}><h3>רקע, דיו, בית ושמש</h3><div className={styles.swatches}>{paletteColors(palette).map(color => <div key={color.token}><span style={{ background: color.value }} /><strong>{color.name}</strong><small>{color.purpose}</small></div>)}</div></div><div className={styles.typeSample}><h3>כותרת, הסבר, פעולה</h3><p className={styles.typeDisplay}>צעד קטן.<br />עסק שלם מאחוריו.</p><p className={styles.typeBody}>כותרת קצרה ומשקל ברור. ההסבר מופיע כשצריך אותו.</p></div><div className={styles.detailSample}><h3>הפרטים שלנו</h3><BrandMark className={styles.detailMark} /><p>השמש והעסק. הצבעים של העסק נשארים בתוכן שלו.</p></div></div></section></details>
+      <details className={styles.libraryDetails}><summary>עקרונות השימוש</summary><div className={styles.principleList}>{designPrinciples.map((item, index) => <div key={item.title}><span>{String(index + 1).padStart(2, "0")}</span><h3>{item.title}</h3><p>{item.text}</p></div>)}</div></details>
+      <footer className={styles.footer}><span>ישראמארקט · ספרייה חיה</span><Link href="/motion">אוסף התנועות ←</Link></footer>
     </main>
   </div></DesignScope>;
 }

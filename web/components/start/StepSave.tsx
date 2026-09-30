@@ -105,7 +105,7 @@ export function StepSave(
         maxLength={200}
       />
       <div>
-        <label htmlFor="signup-password" className="mb-1 block text-sm font-bold text-[#191b18]">
+        <label htmlFor="signup-password" className="mb-1 block text-sm font-bold text-[#1d2940]">
           סיסמה (לפחות 8 תווים)
         </label>
         <input
@@ -119,7 +119,7 @@ export function StepSave(
           }}
           autoComplete="new-password"
           placeholder="••••••••"
-          className="min-h-12 w-full rounded-lg border border-[#dedcd4] bg-white px-3.5 text-left text-base text-[#191b18] outline-none focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+          className="min-h-12 w-full rounded-lg border border-[#dedcd4] bg-white px-3.5 text-left text-base text-[#1d2940] outline-none focus:border-[#1d2940] focus:ring-1 focus:ring-[#1d2940]"
         />
       </div>
       {error || saveError ? (
@@ -127,9 +127,9 @@ export function StepSave(
           {error || saveError}
         </p>
       ) : null}
-      <p className="text-xs leading-5 text-[#5e6159]">
+      <p className="text-xs leading-5 text-[#535f75]">
         כבר יש לכם חשבון?{" "}
-        <Link href="/login" className="font-bold text-[#191b18] underline underline-offset-4">
+        <Link href="/login" className="font-bold text-[#1d2940] underline underline-offset-4">
           להיכנס
         </Link>
         . מה שבנינו נשמר במכשיר ויחכה לכם.

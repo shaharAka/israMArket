@@ -16,3 +16,5 @@
 .picker[data-compact="true"] .options small { display: none; }
 .picker[data-compact="true"] .options svg { width: 50px; height: 34px; }
 @media (max-width: 700px) { .heading { flex-direction: column; gap: 5px; } .options { gap: 12px; } .options button { flex-direction: column; align-items: flex-start; gap: 8px; position: relative; } .options strong { font-size: 12px; } .selected { position: absolute; left: 0; top: 12px; } .options small { font-size: 10px; } }
+
+.picker[data-compact="true"] .options svg { display:none; }.picker[data-compact="true"] .options button { min-height:44px; padding:8px 0; }.picker[data-compact="true"] .options { display:flex; flex-wrap:wrap; gap:24px; }.picker[data-compact="true"] .heading { display:none; }

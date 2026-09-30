@@ -18,11 +18,11 @@ export function WhyBlock({ idea, compact = false }: { idea: { why: PostIdea["why
   const why = idea.why;
   return (
     <div className={`rounded-lg bg-[#f4f2ec] ${compact ? "p-2.5" : "p-3"}`}>
-      <p className="text-[11px] font-black text-[#191b18]">למה הפוסט הזה</p>
+      <p className="text-[11px] font-black text-[#1d2940]">למה הפוסט הזה</p>
       <p className={`mt-1 text-[#4f524b] ${compact ? "text-[11px] leading-4" : "text-xs leading-5"}`}>
         {[why.audience, why.goal_he, why.timing_he].filter(Boolean).join(" · ")}
       </p>
-      <p className={`mt-1 text-[#191b18] ${compact ? "text-xs leading-5" : "text-sm leading-6"}`}>{why.reason_he}</p>
+      <p className={`mt-1 text-[#1d2940] ${compact ? "text-xs leading-5" : "text-sm leading-6"}`}>{why.reason_he}</p>
     </div>
   );
 }

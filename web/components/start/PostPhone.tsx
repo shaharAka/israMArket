@@ -205,7 +205,7 @@ export function PostPhone({
                 </span>
               )}
               <div className="min-w-0 leading-tight">
-                <p className="truncate text-[13px] font-black text-[#191b18]">{businessName || "העסק שלכם"}</p>
+                <p className="truncate text-[13px] font-black text-[#1d2940]">{businessName || "העסק שלכם"}</p>
                 <p className="truncate text-[11px] text-[#6d7068]">{formatLabel(post.format)} · שבוע 1</p>
               </div>
             </div>
@@ -239,7 +239,7 @@ export function PostPhone({
 
             <div className="px-3 pb-4 pt-1">
               <p id={captionId} className={`text-[12.5px] leading-[1.55] text-[#34372f] ${captionOpen ? "" : "line-clamp-3"}`}>
-                <span className="font-black text-[#191b18]">{businessName} </span>
+                <span className="font-black text-[#1d2940]">{businessName} </span>
                 {post.caption}
               </p>
               <button
@@ -261,7 +261,7 @@ export function PostPhone({
           <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">{formatLabel(post.format)}</span>
           {pillarTitle ? <span className="rounded-full bg-[#f1efe8] px-2 py-0.5">נושא: {pillarTitle}</span> : null}
         </div>
-        <p className="text-sm font-black leading-5 text-[#191b18]">{post.hook}</p>
+        <p className="text-sm font-black leading-5 text-[#1d2940]">{post.hook}</p>
         <WhyBlock idea={post} compact />
       </figcaption>
     </figure>
@@ -269,7 +269,7 @@ export function PostPhone({
 }
 
 const SMALL_BUTTON =
-  "inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-full border border-[#c7c4b8] bg-white px-3 text-[12px] font-bold text-[#191b18] hover:border-[#191b18]";
+  "inline-flex min-h-10 cursor-pointer items-center gap-1 rounded-full border border-[#c3cee5] bg-white px-3 text-[12px] font-bold text-[#1d2940] hover:border-[#1d2940]";
 
 /** The photo slot's controls, right under the card, where a feed's action row would be. */
 function PhotoBar({
@@ -359,7 +359,7 @@ function PhotoBar({
     return (
       <div className="flex flex-wrap items-center gap-1.5 px-3 pt-2.5">
         {inputs}
-        <span className="text-[12px] font-bold text-[#191b18]">ה-AI ייצור תמונה אחרי ההרשמה.</span>
+        <span className="text-[12px] font-bold text-[#1d2940]">ה-AI ייצור תמונה אחרי ההרשמה.</span>
         <button type="button" onClick={() => onAiLater(false)} aria-label={`לבטל את התמונה מ-AI בפוסט ${n}`} className="min-h-10 cursor-pointer px-1 text-[12px] text-[#6d7068] underline underline-offset-4">
           לבטל
         </button>
@@ -371,7 +371,7 @@ function PhotoBar({
     <div className="px-3 pt-2.5">
       {inputs}
       <p className="text-[12px] leading-5 text-[#34372f]">
-        <b className="text-[#191b18]">{photo.kind === "site" ? "תמונה מהאתר שלכם. " : "מה לצלם: "}</b>
+        <b className="text-[#1d2940]">{photo.kind === "site" ? "תמונה מהאתר שלכם. " : "מה לצלם: "}</b>
         {photo.kind === "site" ? "אפשר גם תמונה אחרת." : hint}
       </p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -389,7 +389,7 @@ function PhotoBar({
 
 function StatusBar() {
   return (
-    <div aria-hidden className="relative flex h-7 items-center justify-between px-5 pt-1 text-[11px] font-bold text-[#191b18]">
+    <div aria-hidden className="relative flex h-7 items-center justify-between px-5 pt-1 text-[11px] font-bold text-[#1d2940]">
       <span dir="ltr">08:30</span>
       <span className="absolute left-1/2 top-1.5 h-[16px] w-[68px] -translate-x-1/2 rounded-full bg-[#17191b]" />
       <span className="flex items-center gap-1" dir="ltr">

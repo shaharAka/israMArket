@@ -184,13 +184,13 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
   }
 
   const look = lookOf(flow);
-  const accent = look.palette?.find((s) => s.role === "primary")?.hex ?? "#191b18";
+  const accent = look.palette?.find((s) => s.role === "primary")?.hex ?? "#1d2940";
   const option = flow.successOptions?.find((o) => o.key === flow.draft.success?.kpi) ?? null;
 
   const actionNote = plan ? (
-    <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[#2b2d28]">
+    <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[#1d2940]">
       {updating ? (
-        <span className="text-[#5e6159]">מעדכנים את התוכנית…</span>
+        <span className="text-[#535f75]">מעדכנים את התוכנית…</span>
       ) : updateError ? (
         <span className="font-bold text-[#9f4330]">
           לא הצלחנו לעדכן.{" "}
@@ -250,11 +250,11 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       onSkip={failed && !plan ? () => jump("save") : undefined}
     >
       {otherDirection ? (
-        <p className="text-sm text-[#5e6159]">
-          יש עוד כיוון אפשרי: <span className="font-bold text-[#191b18]">{otherDirection.title}</span>.{" "}
+        <p className="text-sm text-[#535f75]">
+          יש עוד כיוון אפשרי: <span className="font-bold text-[#1d2940]">{otherDirection.title}</span>.{" "}
           <QuietLink
             onClick={() => update((f) => ({ ...f, chosenDirection: otherIndex }))}
-            className="font-bold text-[#191b18]"
+            className="font-bold text-[#1d2940]"
           >
             לבנות לפיו
           </QuietLink>
@@ -275,8 +275,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         />
       ) : null}
       {failed && !plan ? (
-        <div role="alert" className="rounded-xl border border-[#e2e0d8] bg-white p-4 text-sm leading-6 text-[#2b2d28]">
-          <p className="font-bold text-[#191b18]">לא הצלחנו לבנות את התוכנית כרגע.</p>
+        <div role="alert" className="rounded-xl border border-[#e1e7f2] bg-white p-4 text-sm leading-6 text-[#1d2940]">
+          <p className="font-bold text-[#1d2940]">לא הצלחנו לבנות את התוכנית כרגע.</p>
           {failMessage ? <p>{failMessage}</p> : null}
           <p>הכיוון והתשובות שמורים. אפשר לנסות שוב, או לשמור ולבנות את התוכנית אחרי ההרשמה.</p>
         </div>
@@ -292,7 +292,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
             audience:
               names.length > 1 ? (
                 <fieldset>
-                  <legend className="mb-1.5 text-xs font-bold text-[#191b18]">עם מי מתחילים?</legend>
+                  <legend className="mb-1.5 text-xs font-bold text-[#1d2940]">עם מי מתחילים?</legend>
                   <div className="flex flex-wrap gap-1.5">
                     {names.map((name) => (
                       <Chip
@@ -322,7 +322,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
             cadence: (
               <fieldset className="rounded-xl bg-[#faf9f6] px-3 py-2.5">
                 <legend className="sr-only">כמה פוסטים בשבוע</legend>
-                <p aria-hidden className="mb-1.5 text-xs font-bold text-[#191b18]">
+                <p aria-hidden className="mb-1.5 text-xs font-bold text-[#1d2940]">
                   כמה פוסטים בשבוע מתאים לכם?
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -373,14 +373,14 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
 
   if (!open) {
     return (
-      <div className="border-t border-[#e2e0d8] pt-3">
+      <div className="border-t border-[#e1e7f2] pt-3">
         <QuietLink onClick={() => setOpen(true)}>משהו לא מתאים? ספרו לנו</QuietLink>
       </div>
     );
   }
   return (
-    <div className="space-y-2 border-t border-[#e2e0d8] pt-4">
-      <label htmlFor={fieldId} className="block text-sm font-bold text-[#191b18]">
+    <div className="space-y-2 border-t border-[#e1e7f2] pt-4">
+      <label htmlFor={fieldId} className="block text-sm font-bold text-[#1d2940]">
         משהו לא מתאים? ספרו לנו במילים שלכם
       </label>
       <textarea
@@ -393,7 +393,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
         rows={2}
         maxLength={400}
         placeholder="למשל: אין לנו זמן לסרטונים, ובדצמבר אנחנו סגורים שבוע"
-        className="w-full resize-none rounded-lg border border-[#dedcd4] bg-white px-3.5 py-2.5 text-base leading-6 text-[#191b18] outline-none placeholder:text-[#a3a59c] focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+        className="w-full resize-none rounded-lg border border-[#dedcd4] bg-white px-3.5 py-2.5 text-base leading-6 text-[#1d2940] outline-none placeholder:text-[#a3a59c] focus:border-[#1d2940] focus:ring-1 focus:ring-[#1d2940]"
       />
       <div className="flex flex-wrap items-center gap-2">
         <button
@@ -407,7 +407,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
             }
             onSend(words);
           }}
-          className="min-h-11 cursor-pointer rounded-full border border-[#191b18] bg-white px-4 text-sm font-bold text-[#191b18] disabled:cursor-wait disabled:opacity-60"
+          className="min-h-11 cursor-pointer rounded-full border border-[#1d2940] bg-white px-4 text-sm font-bold text-[#1d2940] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? "מעדכנים את התוכנית…" : "לעדכן את התוכנית"}
         </button>

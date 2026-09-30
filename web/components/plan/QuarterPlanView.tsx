@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import { HypothesisNote } from "@/components/design/PlanBrief";
 import { HowToFind } from "@/components/help/HowToFind";
 import type { PlanInsight } from "@/lib/api";
 import { IconCalendar, IconCheck, IconFlag } from "@/lib/icons";
@@ -74,7 +75,7 @@ export function QuarterPlanView({
   plan,
   mode,
   insights = [],
-  accent = "#191b18",
+  accent = "#1d2940",
   busy,
   slots = {},
   navTop = "top-14 lg:top-0",
@@ -98,15 +99,15 @@ export function QuarterPlanView({
   const isBusy = (key: SectionKey) => Boolean(busy?.has(key));
 
   return (
-    <div ref={root} className="space-y-7">
+    <div ref={root} className="plan-document space-y-7">
       <SectionNav top={navTop} />
 
       {/* The conclusion first: the strategy in one line, then the plan at a glance. */}
       <Section id="strategy" index={1} busy={isBusy("strategy")} mode={mode}>
-        <StrategyBlock plan={plan} insights={insights} accent={accent} audienceSlot={slots.audience} />
+        <StrategyBlock plan={plan} insights={insights} audienceSlot={slots.audience} />
       </Section>
 
-      <Glance plan={plan} months={months} accent={accent} />
+      <Glance plan={plan} months={months} />
 
       <Section id="measure" index={2} busy={isBusy("measure")} mode={mode} summary={plan.kpi.name_he}>
         <MeasureBlock plan={plan} accent={accent} targetSlot={slots.target} />
@@ -147,7 +148,7 @@ export function QuarterPlanView({
 
 function SectionNav({ top }: { top: string }) {
   return (
-    <nav aria-label="חלקי התוכנית" className={`sticky ${top} z-20 -mx-4 bg-[#f8f7f4]/95 px-4 py-2 backdrop-blur lg:mx-0 lg:px-0`}>
+    <nav aria-label="חלקי התוכנית" className={`sticky ${top} z-20 -mx-4 bg-[#fbfcff]/95 px-4 py-2 backdrop-blur lg:mx-0 lg:px-0`}>
       <ol className={`flex gap-1.5 overflow-x-auto ${styles.nav}`}>
         {SECTIONS.map((section, index) => (
           <li key={section.key} className="shrink-0">
@@ -162,7 +163,7 @@ function SectionNav({ top }: { top: string }) {
                 const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
                 target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
               }}
-              className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[#e2e0d8] bg-white px-3 text-xs font-bold text-[#2b2d28] hover:border-[#b9b7ad]"
+              className="inline-flex min-h-11 items-center gap-1.5 px-2 text-xs text-[#535f75] hover:text-[#2853c7]"
             >
               <span className="text-[#a3a59c]">{index + 1}</span>
               {section.short}
@@ -195,14 +196,14 @@ function Section({
     <span className="flex items-baseline gap-2.5">
       <span
         aria-hidden
-        className="flex h-6 w-6 shrink-0 translate-y-[-1px] items-center justify-center self-center rounded-full bg-[#191b18] text-[11px] font-black text-white"
+        className="w-5 shrink-0 text-xs font-normal tabular-nums text-[#647087]"
       >
         {index}
       </span>
-      <span id={headingId} className="text-lg font-black leading-7 text-[#191b18] sm:text-xl">
+      <span id={headingId} className="text-lg font-black leading-7 text-[#1d2940] sm:text-xl">
         {title}
       </span>
-      {busy ? <span className={`text-xs font-bold text-[#5e6159] ${styles.busy}`}>מעדכנים…</span> : null}
+      {busy ? <span className={`text-xs font-bold text-[#535f75] ${styles.busy}`}>מעדכנים…</span> : null}
     </span>
   );
   const body = <div className={`mt-3 transition-opacity duration-300 motion-reduce:transition-none ${busy ? "opacity-50" : ""}`}>{children}</div>;
@@ -212,15 +213,15 @@ function Section({
   if (mode === "app" && index > 1) {
     return (
       <section id={`plan-${id}`} aria-labelledby={headingId} aria-busy={busy} className="scroll-mt-28">
-        <details className="group border-t border-[#e2e0d8] pt-3">
+        <details className="group border-t border-[#e1e7f2] pt-3">
           <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
             <span className="min-w-0">
               {heading}
-              {summary ? <span className="mr-8 mt-0.5 block truncate text-sm text-[#5e6159]">{summary}</span> : null}
+              {summary ? <span className="mr-8 mt-0.5 block truncate text-sm text-[#535f75]">{summary}</span> : null}
             </span>
             <span
               aria-hidden
-              className="h-0 w-0 shrink-0 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+              className="h-0 w-0 shrink-0 border-x-[5px] border-t-[6px] border-x-transparent border-t-[#647087] transition-transform duration-200 group-open:rotate-180"
             />
           </summary>
           {body}
@@ -249,18 +250,18 @@ function Why({ why, insight }: { why: string; insight?: PlanInsight }) {
         aria-expanded={open}
         aria-controls={id}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex min-h-10 cursor-pointer items-center gap-1 text-xs font-bold text-[#5e6159] underline decoration-[#c7c4b8] underline-offset-4 hover:text-[#191b18]"
+        className="inline-flex min-h-10 cursor-pointer items-center gap-1 text-xs font-bold text-[#535f75] underline decoration-[#c3cee5] underline-offset-4 hover:text-[#1d2940]"
       >
         למה?
         <svg viewBox="0 0 16 16" className={`h-3 w-3 transition-transform motion-reduce:transition-none ${open ? "rotate-180" : ""}`} fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
           <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <div id={id} hidden={!open} className="mt-1 rounded-lg bg-[#f4f2ec] px-3 py-2 text-xs leading-5 text-[#2b2d28]">
+      <div id={id} hidden={!open} className="mt-1 rounded-lg bg-[#f4f2ec] px-3 py-2 text-xs leading-5 text-[#1d2940]">
         <p>{why}</p>
         {insight ? (
-          <p className="mt-1 text-[#5e6159]">
-            <b className="text-[#191b18]">מתוך מה שגילינו: </b>
+          <p className="mt-1 text-[#535f75]">
+            <b className="text-[#1d2940]">מתוך מה שגילינו: </b>
             {insight.text_he}
           </p>
         ) : null}
@@ -290,7 +291,7 @@ function contentSummary(plan: AnyPlan): string {
   return main ? `${channelName(plan as QuarterPlan, main.channel_key)} · ${main.per_week}` : "";
 }
 
-function Glance({ plan, months, accent }: { plan: AnyPlan; months: string[]; accent: string }) {
+function Glance({ plan, months }: { plan: AnyPlan; months: string[] }) {
   const fresh = plan.channels.filter((c) => c.kind === "new");
   const tiles = [
     { label: "המדד העיקרי", value: plan.kpi.name_he, note: plan.kpi.target ? `היעד: ${plan.kpi.target}` : "היעד: לפי מה שתבחרו" },
@@ -307,20 +308,20 @@ function Glance({ plan, months, accent }: { plan: AnyPlan; months: string[]; acc
   ];
   return (
     <div data-reveal="" className={styles.reveal}>
-      <p className="mb-2 flex items-center gap-2 text-xs font-bold text-[#5e6159]">
+      <p className="mb-2 flex items-center gap-2 text-xs font-bold text-[#535f75]">
         <IconCalendar className="h-4 w-4" />
         {months.join(" · ")}
       </p>
-      <dl className="grid grid-cols-3 overflow-hidden rounded-2xl border border-[#e2e0d8] bg-white">
+      <dl className="grid grid-cols-[1.5fr_1fr_1fr] border-y border-[#e1e7f2] bg-white">
         {tiles.map((tile, index) => (
           <div key={tile.label} className={`min-w-0 px-3 py-3 sm:px-4 ${index ? "border-r border-[#ecebe5]" : ""}`}>
             <dt className="text-[11px] font-bold text-[#6b6e65]">{tile.label}</dt>
-            <dd className="mt-1 text-[15px] font-black leading-5 text-[#191b18] sm:text-base">{tile.value}</dd>
+            <dd className={`mt-1 font-bold leading-6 text-[#1d2940] ${index === 0 ? "text-base sm:text-xl" : "text-sm"}`}>{tile.value}</dd>
             <dd className="mt-1 text-[11px] leading-4 text-[#6b6e65]">{tile.note}</dd>
           </div>
         ))}
       </dl>
-      <div aria-hidden className="mx-6 h-1 rounded-b-full" style={{ background: accent, opacity: 0.85 }} />
+      <p className="mt-3 text-xs leading-6 text-[#535f75]">{plan.kpi.baseline_he}</p>
     </div>
   );
 }
@@ -330,21 +331,19 @@ function Glance({ plan, months, accent }: { plan: AnyPlan; months: string[]; acc
 function StrategyBlock({
   plan,
   insights,
-  accent,
   audienceSlot,
 }: {
   plan: AnyPlan;
   insights: PlanInsight[];
-  accent: string;
   audienceSlot?: React.ReactNode;
 }) {
   const insight = plan.strategy.from_insight != null ? insights[plan.strategy.from_insight] : undefined;
   return (
     <div className="space-y-3">
-      <div className="border-r-4 pr-3.5" style={{ borderColor: accent }}>
-        <p className="text-xl font-black leading-8 text-[#191b18] sm:text-2xl sm:leading-9">{plan.strategy.one_liner_he}</p>
-        <p className="mt-2 text-[15px] leading-7 text-[#2b2d28]">
-          <b className="text-[#191b18]">הזווית: </b>
+      <div>
+        <p className="text-xl font-black leading-8 text-[#1d2940] sm:text-2xl sm:leading-9">{plan.strategy.one_liner_he}</p>
+        <p className="mt-2 text-[15px] leading-7 text-[#1d2940]">
+          <b className="text-[#1d2940]">הזווית: </b>
           {plan.strategy.angle_he}
         </p>
         <Why why={plan.strategy.why_he} insight={insight} />
@@ -360,7 +359,7 @@ const STATUS_STYLE: Record<IntegrationStatus, string> = {
   have: "bg-[#e7f0e4] text-[#2f5d2a]",
   connect: "bg-[#fbf0dc] text-[#7a4b12]",
   install: "bg-[#e6eef6] text-[#2c4a66]",
-  unknown: "bg-[#f1efe8] text-[#5e6159]",
+  unknown: "bg-[#f1efe8] text-[#535f75]",
 };
 
 function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolean }) {
@@ -393,15 +392,15 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
     <div className="space-y-5">
       {/* The KPI leads: the one number the plan answers to. */}
       <div className="rounded-2xl px-4 py-3.5" style={{ background: `color-mix(in srgb, ${accent} 7%, #ffffff)` }}>
-        <p className="text-[11px] font-bold text-[#5e6159]">המדד העיקרי</p>
-        <p className="mt-0.5 text-xl font-black leading-7 text-[#191b18]">{plan.kpi.name_he}</p>
-        <p className="mt-1 text-sm leading-6 text-[#2b2d28]">{plan.kpi.how_he}</p>
+        <p className="text-[11px] font-bold text-[#535f75]">המדד העיקרי</p>
+        <p className="mt-0.5 text-xl font-black leading-7 text-[#1d2940]">{plan.kpi.name_he}</p>
+        <p className="mt-1 text-sm leading-6 text-[#1d2940]">{plan.kpi.how_he}</p>
         {plan.kpi.needs ? (
-          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-[#2b2d28]">
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-[#1d2940]">
             {plan.kpi.available_now ? (
               <span className="rounded-full bg-[#e7f0e4] px-2 text-[11px] font-bold leading-5 text-[#2f5d2a]">אפשר למדוד מהיום</span>
             ) : (
-              <span className="rounded-full bg-white/70 px-2 text-[11px] font-bold leading-5 text-[#5e6159]">אחרי חיבור</span>
+              <span className="rounded-full bg-white/70 px-2 text-[11px] font-bold leading-5 text-[#535f75]">אחרי חיבור</span>
             )}
             {plan.kpi.needs.length ? (
               <span>
@@ -416,33 +415,33 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
         {targetSlot ? (
           <div className="mt-2.5">{targetSlot}</div>
         ) : plan.kpi.target ? (
-          <p className="mt-2 text-sm font-bold text-[#191b18]">היעד שלכם: {plan.kpi.target}</p>
+          <p className="mt-2 text-sm font-bold text-[#1d2940]">היעד שלכם: {plan.kpi.target}</p>
         ) : null}
-        <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[#5e6159]">
+        <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[#535f75]">
           <IconFlag className="mt-0.5 h-3.5 w-3.5 shrink-0" />
           {plan.kpi.baseline_he}
         </p>
       </div>
 
       <div>
-        <h3 className="text-sm font-black text-[#191b18]">איך נמדוד</h3>
-        <ul className="mt-2 divide-y divide-[#ecebe5] rounded-xl border border-[#e2e0d8] bg-white">
+        <h3 className="text-sm font-black text-[#1d2940]">איך נמדוד</h3>
+        <ul className="mt-2 divide-y divide-[#ecebe5] rounded-xl border border-[#e1e7f2] bg-white">
           {plan.measures.map((measure) => (
             <li key={measure.name_he} className="px-3.5 py-2.5">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <p className="text-sm font-bold text-[#191b18]">{measure.name_he}</p>
+                <p className="text-sm font-bold text-[#1d2940]">{measure.name_he}</p>
                 {measure.name_he === plan.kpi.name_he ? (
-                  <span className="rounded-full bg-[#191b18] px-2 text-[11px] font-bold leading-5 text-white">המדד העיקרי</span>
+                  <span className="rounded-full bg-[#2853c7] px-2 text-[11px] font-bold leading-5 text-white">המדד העיקרי</span>
                 ) : null}
                 {measure.available_now ? (
                   <span className="rounded-full bg-[#e7f0e4] px-2 text-[11px] font-bold leading-5 text-[#2f5d2a]">אפשר למדוד מהיום</span>
                 ) : (
-                  <span className="rounded-full bg-[#f1efe8] px-2 text-[11px] font-bold leading-5 text-[#5e6159]">אחרי חיבור</span>
+                  <span className="rounded-full bg-[#f1efe8] px-2 text-[11px] font-bold leading-5 text-[#535f75]">אחרי חיבור</span>
                 )}
               </div>
-              <p className="text-xs leading-5 text-[#5e6159]">{measure.how_he}</p>
+              <p className="text-xs leading-5 text-[#535f75]">{measure.how_he}</p>
               {measure.needs.length ? (
-                <p className="mt-0.5 text-xs leading-5 text-[#2b2d28]">
+                <p className="mt-0.5 text-xs leading-5 text-[#1d2940]">
                   <b>צריך: </b>
                   {measure.needs.map(nameOf).join(" · ")}
                 </p>
@@ -454,23 +453,23 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
 
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-          <h3 className="text-sm font-black text-[#191b18]">מה צריך כדי למדוד</h3>
-          <p className="text-xs text-[#5e6159]">
+          <h3 className="text-sm font-black text-[#1d2940]">מה צריך כדי למדוד</h3>
+          <p className="text-xs text-[#535f75]">
             {ready ? `${ready} כבר עובד` : "עוד לא מחובר כלום"}
             {todo ? ` · ${todo} לחבר אחרי ההרשמה` : ""}
           </p>
         </div>
-        <ul className="mt-2 divide-y divide-[#ecebe5] rounded-xl border border-[#e2e0d8] bg-white">
+        <ul className="mt-2 divide-y divide-[#ecebe5] rounded-xl border border-[#e1e7f2] bg-white">
           {integrations.map((integration) => {
             const guide = INTEGRATION_GUIDE[integration.key];
             const live = integration.key === "whatsapp_link";
             return (
               <li key={integration.key} className="px-3.5 py-2.5">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="min-w-0 text-sm font-bold leading-6 text-[#191b18]">{integration.name_he}</p>
+                  <p className="min-w-0 text-sm font-bold leading-6 text-[#1d2940]">{integration.name_he}</p>
                   <StatusChip status={live ? "have" : integration.status} live={live} />
                 </div>
-                <p className="text-xs leading-5 text-[#2b2d28]">{integration.why_he}</p>
+                <p className="text-xs leading-5 text-[#1d2940]">{integration.why_he}</p>
                 <div className="flex flex-wrap items-center justify-between gap-x-3">
                   <p className="text-xs leading-5 text-[#6b6e65]">{integration.effort_he}</p>
                   {guide && !live ? (
@@ -492,20 +491,20 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
   const existing = plan.channels.filter((c) => c.kind === "existing");
   const fresh = plan.channels.filter((c) => c.kind === "new").sort((a, b) => a.starts_month - b.starts_month);
   const list = (items: typeof plan.channels, isNew: boolean) => (
-    <ul className="divide-y divide-[#ecebe5] rounded-xl border border-[#e2e0d8] bg-white">
+    <ul className="divide-y divide-[#ecebe5] rounded-xl border border-[#e1e7f2] bg-white">
       {items.map((channel) => (
         <li key={channel.key} className="flex gap-3 px-3.5 py-3">
           <span aria-hidden className="mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: colors[channel.key] }} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-              <p className="text-[15px] font-black text-[#191b18]">{channel.name_he}</p>
+              <p className="text-[15px] font-black text-[#1d2940]">{channel.name_he}</p>
               {isNew ? (
-                <span className="rounded-full border border-[#191b18] px-2 text-[11px] font-bold leading-5 text-[#191b18]">
+                <span className="rounded-full border border-[#1d2940] px-2 text-[11px] font-bold leading-5 text-[#1d2940]">
                   חדש · מ{months[channel.starts_month - 1] ?? `חודש ${channel.starts_month}`}
                 </span>
               ) : null}
             </div>
-            <p className="mt-0.5 text-sm leading-6 text-[#2b2d28]">{channel.why_he}</p>
+            <p className="mt-0.5 text-sm leading-6 text-[#1d2940]">{channel.why_he}</p>
             <p className="text-xs leading-5 text-[#6b6e65]">
               {channel.cadence_he ? `${channel.cadence_he} · ` : ""}
               {channel.effort_he}
@@ -519,13 +518,13 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
     <div className="space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
       {existing.length ? (
         <div>
-          <h3 className="mb-2 text-sm font-black text-[#191b18]">מחזקים את מה שיש</h3>
+          <h3 className="mb-2 text-sm font-black text-[#1d2940]">מחזקים את מה שיש</h3>
           {list(existing, false)}
         </div>
       ) : null}
       {fresh.length ? (
         <div className={existing.length ? "" : "lg:col-span-2"}>
-          <h3 className="mb-2 text-sm font-black text-[#191b18]">ערוצים חדשים שנפתח</h3>
+          <h3 className="mb-2 text-sm font-black text-[#1d2940]">ערוצים חדשים שנפתח</h3>
           {list(fresh, true)}
         </div>
       ) : null}
@@ -540,17 +539,17 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
   if (b.organic_only || !b.months.some((m) => m.lines.length)) {
     return (
       <div className="space-y-3">
-        <div className="rounded-2xl border border-dashed border-[#c7c4b8] bg-white px-4 py-3.5">
-          <p className="text-base font-black text-[#191b18]">בלי תקציב פרסום. 3 החודשים בנויים על זמן, לא על כסף.</p>
+        <div className="rounded-2xl border border-dashed border-[#c3cee5] bg-white px-4 py-3.5">
+          <p className="text-base font-black text-[#1d2940]">בלי תקציב פרסום. 3 החודשים בנויים על זמן, לא על כסף.</p>
           {plan.channels.length ? (
-            <p className="mt-1 text-sm leading-6 text-[#2b2d28]">
+            <p className="mt-1 text-sm leading-6 text-[#1d2940]">
               כל הערוצים בתוכנית עובדים בלי לשלם על פרסום: {plan.channels.map((c) => c.name_he).join(", ")}.
             </p>
           ) : null}
         </div>
         {b.unlock_he ? (
-          <p className="text-sm leading-6 text-[#2b2d28]">
-            <b className="text-[#191b18]">מה סכום קטן היה מוסיף: </b>
+          <p className="text-sm leading-6 text-[#1d2940]">
+            <b className="text-[#1d2940]">מה סכום קטן היה מוסיף: </b>
             {b.unlock_he}
           </p>
         ) : null}
@@ -563,12 +562,12 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
   return (
     <div className="space-y-3">
       {b.monthly_ils ? (
-        <p className="text-sm leading-6 text-[#2b2d28]">
-          <b className="text-[#191b18]">{formatIls(b.monthly_ils)} בחודש</b>, מחולקים לפי מה שמתחיל מתי.
-          {b.basis_he ? <span className="block text-xs text-[#5e6159]">{b.basis_he}</span> : null}
+        <p className="text-sm leading-6 text-[#1d2940]">
+          <b className="text-[#1d2940]">{formatIls(b.monthly_ils)} בחודש</b>, מחולקים לפי מה שמתחיל מתי.
+          {b.basis_he ? <span className="block text-xs text-[#535f75]">{b.basis_he}</span> : null}
         </p>
       ) : null}
-      <figure className="rounded-2xl border border-[#e2e0d8] bg-white px-4 py-3.5">
+      <figure className="rounded-2xl border border-[#e1e7f2] bg-white px-4 py-3.5">
         <figcaption className="sr-only">חלוקת התקציב לפי חודש וערוץ</figcaption>
         <ul className="space-y-3">
           {b.months.map((month, index) => {
@@ -577,8 +576,8 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
             return (
               <li key={month.month_label}>
                 <div className="flex items-baseline justify-between gap-2 text-xs">
-                  <span className="font-black text-[#191b18]">{month.month_label}</span>
-                  <span className="font-bold tabular-nums text-[#2b2d28]">{month.lines.length ? formatRange([low, high]) : "בלי פרסום"}</span>
+                  <span className="font-black text-[#1d2940]">{month.month_label}</span>
+                  <span className="font-bold tabular-nums text-[#1d2940]">{month.lines.length ? formatRange([low, high]) : "בלי פרסום"}</span>
                 </div>
                 <div className="mt-1 flex h-6 gap-[2px]" style={{ width: `${Math.max(8, (totals[index] / max) * 100)}%` }}>
                   {month.lines.length ? (
@@ -604,20 +603,20 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
         </ul>
         <ul className="mt-3 flex flex-wrap gap-x-4 gap-y-1 border-t border-[#ecebe5] pt-2.5" aria-label="מקרא">
           {keys.map((key) => (
-            <li key={key} className="flex items-center gap-1.5 text-xs text-[#2b2d28]">
+            <li key={key} className="flex items-center gap-1.5 text-xs text-[#1d2940]">
               <span aria-hidden className="h-2.5 w-2.5 rounded-sm" style={{ background: colors[key] }} />
               {channelName(plan as QuarterPlan, key)}
             </li>
           ))}
         </ul>
       </figure>
-      <p className="text-xs leading-5 text-[#5e6159]">טווחים לתכנון, לא הבטחה לתוצאה. בלי דמי ניהול.</p>
+      <p className="text-xs leading-5 text-[#535f75]">טווחים לתכנון, לא הבטחה לתוצאה. בלי דמי ניהול.</p>
       <details className="group">
-        <summary className="flex min-h-10 cursor-pointer list-none items-center gap-2 text-sm font-bold text-[#5e6159] hover:text-[#191b18]">
-          <span aria-hidden className="h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform group-open:rotate-180" />
+        <summary className="flex min-h-10 cursor-pointer list-none items-center gap-2 text-sm font-bold text-[#535f75] hover:text-[#1d2940]">
+          <span aria-hidden className="h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#647087] transition-transform group-open:rotate-180" />
           הסכומים לפי ערוץ, ומאיפה המספרים
         </summary>
-        <div className="mt-2 space-y-3 text-sm leading-6 text-[#2b2d28]">
+        <div className="mt-2 space-y-3 text-sm leading-6 text-[#1d2940]">
           <table className="w-full text-right text-xs">
             <thead>
               <tr className="text-[#6b6e65]">
@@ -630,7 +629,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
               {b.months.flatMap((month) =>
                 month.lines.map((line) => (
                   <tr key={`${month.month_label}-${line.channel_key}`}>
-                    <td className="py-1.5 font-bold text-[#191b18]">{month.month_label}</td>
+                    <td className="py-1.5 font-bold text-[#1d2940]">{month.month_label}</td>
                     <td className="py-1.5">
                       {channelName(plan as QuarterPlan, line.channel_key)}
                       {line.note_he ? <span className="block text-[#6b6e65]">{line.note_he}</span> : null}
@@ -643,20 +642,20 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
           </table>
           {b.sources?.length || b.sources_he.length ? (
             <div>
-              <p className="text-xs font-bold text-[#191b18]">המקורות</p>
-              <ul className="mt-1 space-y-1 text-xs text-[#5e6159]">
+              <p className="text-xs font-bold text-[#1d2940]">המקורות</p>
+              <ul className="mt-1 space-y-1 text-xs text-[#535f75]">
                 {b.sources?.length
                   ? b.sources.map((source) => (
                       <li key={source.url} className="flex gap-2">
-                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
-                        <a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#191b18]">
+                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#647087]" />
+                        <a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#1d2940]">
                           {source.title}
                         </a>
                       </li>
                     ))
                   : b.sources_he.map((source) => (
                       <li key={source} className="flex gap-2">
-                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
+                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#647087]" />
                         {source}
                       </li>
                     ))}
@@ -688,14 +687,14 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
               <span className={`relative z-10 mt-1 h-3.5 w-3.5 rounded-full border-2 border-white ${styles.dot}`} style={{ background: accent }} />
               {index < plan.calendar.length - 1 ? <span className="absolute bottom-[-1rem] top-4 w-px bg-[#d8d6ce]" /> : null}
             </span>
-            <div className="min-w-0 flex-1 rounded-2xl border border-[#e2e0d8] bg-white px-3.5 py-3">
+            <div className="min-w-0 flex-1 rounded-2xl border border-[#e1e7f2] bg-white px-3.5 py-3">
               <p className="flex items-center gap-2">
                 <span aria-hidden className={`hidden h-2.5 w-2.5 rounded-full lg:block ${styles.dot}`} style={{ background: accent }} />
                 <span className="text-[11px] font-bold text-[#6b6e65]">חודש {index + 1}</span>
-                <span className="text-base font-black text-[#191b18]">{month.month_label}</span>
+                <span className="text-base font-black text-[#1d2940]">{month.month_label}</span>
               </p>
               {opens.length ? (
-                <p className="mt-2 text-xs leading-5 text-[#191b18]">
+                <p className="mt-2 text-xs leading-5 text-[#1d2940]">
                   <b>נפתח: </b>
                   {opens.map((c) => c.name_he).join(", ")}
                 </p>
@@ -703,11 +702,11 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
               {month.weeks?.length ? (
                 <ol className="mt-2 space-y-1">
                   {month.weeks.map((week) => (
-                    <li key={week.week} className="flex gap-2 text-xs leading-5 text-[#2b2d28]">
-                      <span className="w-11 shrink-0 font-bold text-[#8a8c84]">שבוע {week.week}</span>
+                    <li key={week.week} className="flex gap-2 text-xs leading-5 text-[#1d2940]">
+                      <span className="w-11 shrink-0 font-bold text-[#647087]">שבוע {week.week}</span>
                       <span className="min-w-0">
                         {week.focus_he}
-                        {week.dates_he ? <span className="block text-[11px] text-[#8a8c84] tabular-nums">{week.dates_he}</span> : null}
+                        {week.dates_he ? <span className="block text-[11px] text-[#647087] tabular-nums">{week.dates_he}</span> : null}
                       </span>
                     </li>
                   ))}
@@ -718,17 +717,17 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
                   {month.dates.map((date) => (
                     <li key={`${date.date}-${date.name_he}`} className="flex gap-2 text-xs leading-5">
                       <span className="shrink-0 rounded-md bg-[#fbf0dc] px-1.5 font-black tabular-nums text-[#7a4b12]">{shortDate(date.date)}</span>
-                      <span className="min-w-0 text-[#2b2d28]">
-                        <b className="text-[#191b18]">{date.name_he}: </b>
+                      <span className="min-w-0 text-[#1d2940]">
+                        <b className="text-[#1d2940]">{date.name_he}: </b>
                         {date.action_he}
                       </span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="mt-2 text-xs text-[#8a8c84]">אין תאריכים מיוחדים. חודש של קצב קבוע.</p>
+                <p className="mt-2 text-xs text-[#647087]">אין תאריכים מיוחדים. חודש של קצב קבוע.</p>
               )}
-              <p className="mt-2.5 flex items-start gap-1.5 border-t border-[#ecebe5] pt-2 text-xs leading-5 text-[#191b18]">
+              <p className="mt-2.5 flex items-start gap-1.5 border-t border-[#ecebe5] pt-2 text-xs leading-5 text-[#1d2940]">
                 <IconCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <span>
                   <b className="block text-[11px] text-[#6b6e65]">נקודת בדיקה</b>
@@ -750,29 +749,29 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
     <div className="space-y-3">
       <ol className="grid gap-3 lg:grid-cols-3">
         {plan.content.map((month, index) => (
-          <li key={month.month_label} className="rounded-2xl border border-[#e2e0d8] bg-white px-3.5 py-3">
+          <li key={month.month_label} className="rounded-2xl border border-[#e1e7f2] bg-white px-3.5 py-3">
             <p className="text-[11px] font-bold text-[#6b6e65]">
-              חודש {index + 1} · <span className="text-[#191b18]">{month.month_label}</span>
+              חודש {index + 1} · <span className="text-[#1d2940]">{month.month_label}</span>
             </p>
             <ul className="mt-1.5 flex flex-wrap gap-1.5" aria-label="הנושאים">
               {month.pillars.map((pillar) => (
-                <li key={pillar.key} title={pillar.description_he} className="rounded-full bg-[#f1efe8] px-2.5 py-0.5 text-xs font-bold text-[#191b18]">
+                <li key={pillar.key} title={pillar.description_he} className="rounded-full bg-[#f1efe8] px-2.5 py-0.5 text-xs font-bold text-[#1d2940]">
                   {pillar.title}
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-xs leading-5 text-[#5e6159]">
+            <p className="mt-2 text-xs leading-5 text-[#535f75]">
               {month.cadence.map((c) => `${channelName(plan as QuarterPlan, c.channel_key)} ${c.per_week}`).join(" · ")}
             </p>
             <ul className="mt-2 space-y-1.5 border-t border-[#ecebe5] pt-2">
               {month.example_titles.map((example) => (
-                <li key={example.title} className="flex items-start gap-2 text-sm leading-5 text-[#191b18]">
-                  <span className="mt-px shrink-0 rounded border border-[#dedcd4] px-1 text-[10px] font-bold leading-4 text-[#5e6159]">
+                <li key={example.title} className="flex items-start gap-2 text-sm leading-5 text-[#1d2940]">
+                  <span className="mt-px shrink-0 rounded border border-[#dedcd4] px-1 text-[10px] font-bold leading-4 text-[#535f75]">
                     {FORMAT_HE[example.format] ?? example.format}
                   </span>
                   <span className="min-w-0">
                     {example.title}
-                    <span className="text-xs text-[#8a8c84]"> · {channelName(plan as QuarterPlan, example.channel_key)}</span>
+                    <span className="text-xs text-[#647087]"> · {channelName(plan as QuarterPlan, example.channel_key)}</span>
                   </span>
                 </li>
               ))}
@@ -780,7 +779,7 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
           </li>
         ))}
       </ol>
-      <p className="text-sm leading-6 text-[#2b2d28]">את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת.</p>
+      <p className="text-sm leading-6 text-[#1d2940]">את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת.</p>
       {cadenceSlot}
     </div>
   );
@@ -790,16 +789,16 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
 
 function BetsBlock({ plan }: { plan: AnyPlan }) {
   return (
-    <ul className="divide-y divide-[#ecebe5] rounded-xl border border-[#e2e0d8] bg-white">
+    <div>
+    <p className="mb-3 text-xs leading-6 text-[#535f75]">אלה ההשערות של התוכנית. אין עדיין תוצאות בדיקה מקושרות אליהן.</p>
+    <ul className="divide-y divide-[#e1e7f2] border-y border-[#e1e7f2] bg-white">
       {plan.assumptions.map((bet) => (
         <li key={bet.bet_he} className="px-3.5 py-3">
-          <p className="text-[15px] font-bold leading-6 text-[#191b18]">{bet.bet_he}</p>
-          <p className="mt-0.5 text-sm leading-6 text-[#5e6159]">
-            <b className="text-[#2b2d28]">אם היא לא תתאמת: </b>
-            {bet.if_wrong_he}
-          </p>
+          <HypothesisNote hypothesis={bet.bet_he} ifWrong={bet.if_wrong_he} />
         </li>
       ))}
     </ul>
+    <a href="/performance" className="mt-3 inline-flex min-h-11 items-center text-sm text-[#2853c7] underline underline-offset-4">לבדוק את התוצאות</a>
+    </div>
   );
 }

@@ -8,6 +8,7 @@ import { BrandMark, IconArrowRight, IconChart, IconHome, IconImage, IconLogout, 
 import { BrandPicker } from "@/components/BrandPicker";
 import { ACCENT } from "@/lib/sections";
 import { SYSTEM_TONE } from "@/lib/tone";
+import { UIAction } from "@/components/design/Controls";
 import { ToastHost } from "@/lib/ui";
 
 type Tab = {
@@ -28,15 +29,15 @@ type Tab = {
  * not a daily task now lives under "העסק", a plain list of rows (app/business).
  */
 export const TABS: Tab[] = [
-  { href: "/dashboard", label: "היום", icon: IconHome, owns: ["/dashboard"] },
-  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/calendar"] },
-  { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
+  { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
   {
-    href: "/business",
-    label: "העסק",
+    href: "/strategy",
+    label: "התוכנית",
     icon: IconStore,
     owns: ["/business", "/strategy", "/plan", "/decisions", "/assets", "/promotion", "/instagram", "/integrations", "/account", "/help"],
   },
+  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/calendar"] },
+  { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
 ];
 
 function underRoute(pathname: string, route: string) {
@@ -148,29 +149,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   if (!ready) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4]">
-        <p className="text-sm text-[#63665e]">טוענים…</p>
+      <div className="flex min-h-screen items-center justify-center bg-[#fbfcff]">
+        <p className="text-sm text-[#535f75]">טוענים…</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7f4] text-[#1e201d] flex flex-col md:flex-row">
-      <header className="sticky top-0 z-40 flex min-h-14 items-center justify-between gap-2 border-b border-[#deddd8] bg-white pt-[env(safe-area-inset-top)] pr-[max(0.5rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))] md:hidden">
+    <div className="app-blue min-h-screen bg-[#fbfcff] text-[#1d2940] flex flex-col md:flex-row">
+      <header className="sticky top-0 z-40 flex min-h-14 items-center justify-between gap-2 border-b border-[#e1e7f2] bg-white pt-[env(safe-area-inset-top)] pr-[max(0.5rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))] md:hidden">
         {back ? (
           <Link
             href={back.href}
-            className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[#20211f] active:bg-[#f4f3ee]"
+            className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[#1d2940] active:bg-[#edf2ff]"
           >
             <IconArrowRight className="h-5 w-5 shrink-0" />
             <span>{back.label}</span>
           </Link>
         ) : (
           <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
-            <BrandMark className="h-7 w-7 shrink-0 text-[#20211f]" />
+            <BrandMark className="h-7 w-7 shrink-0 text-[#2853c7]" />
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
-            <span className="min-w-0 truncate text-[15px] font-black text-[#20211f]">
+            <span className="min-w-0 truncate text-[15px] font-black text-[#1d2940]">
               {businessName || "ישראמארקט"}
             </span>
           </Link>
@@ -178,17 +179,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="flex shrink-0 items-center gap-2">
           {demo ? (
             <span
-              className="rounded-full px-2 py-0.5 text-[11px] font-black"
-              style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
+              className="px-2 py-0.5 text-[11px] font-medium"
+              style={{ color: SYSTEM_TONE.inkMuted }}
             >
-              דמו
+              <Link href="/preview">דמו</Link>
             </span>
           ) : null}
           {inSetup ? (
             <button
               type="button"
               onClick={logOut}
-              className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[#63665e] underline underline-offset-4"
+              className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[#535f75] underline underline-offset-4"
             >
               יציאה
             </button>
@@ -199,24 +200,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </header>
 
       <aside
-        className="sticky top-0 z-40 hidden h-screen w-64 shrink-0 flex-col border-l border-[#deddd8] bg-white md:flex"
+        className="sticky top-0 z-40 hidden h-screen w-64 shrink-0 flex-col border-l border-[#e1e7f2] bg-white md:flex"
       >
-        <div className="border-b border-[#e6e4dc]">
+        <div className="border-b border-[#e1e7f2]">
           {/* Identity gets the whole first row. The brand trigger used to share it and
               refused to shrink, which crushed the logo to a 7px column of wrapping text
               that the trigger then sat on top of. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-4 pb-2.5">
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
-              <BrandMark className="h-9 w-9 shrink-0 text-[#20211f]" />
+              <BrandMark className="h-9 w-9 shrink-0 text-[#2853c7]" />
               <div className="min-w-0">
-                <span className="block font-black text-[#1e201d] text-base tracking-tight">ישראמארקט</span>
-                <span className="-mt-0.5 block text-xs text-[#63665e]">שיווק לעסקים קטנים</span>
+                <span className="block font-black text-[#1d2940] text-base tracking-tight">ישראמארקט</span>
+                <span className="-mt-0.5 block text-xs text-[#535f75]">שיווק לעסקים קטנים</span>
               </div>
             </Link>
             {demo ? (
               <span
-                className="shrink-0 rounded-full px-2 py-0.5 text-[11px] font-black"
-                style={{ background: SYSTEM_TONE.base, color: SYSTEM_TONE.onBase }}
+                className="shrink-0 px-2 py-0.5 text-[11px] font-medium"
+                style={{ color: SYSTEM_TONE.inkMuted }}
               >
                 דמו
               </span>
@@ -226,6 +227,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {inSetup ? null : (
             <div className="px-5 pb-3">
               <BrandPicker variant="sidebar" />
+              {demo ? <Link href="/preview" className="mt-2 inline-flex min-h-9 items-center text-xs text-[#2853c7] underline underline-offset-4">לתצוגת המסכים</Link> : null}
             </div>
           )}
         </div>
@@ -240,23 +242,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           )}
         </nav>
 
-        <div className="p-3 border-t border-[#e6e4dc] flex items-center justify-between gap-2 bg-[#faf9f7]">
+        <div className="p-3 border-t border-[#e1e7f2] flex items-center justify-between gap-2 bg-[#f4f7ff]">
           <Link
             href={inSetup ? "/onboarding" : "/account"}
-            className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-md px-1 hover:bg-[#f4f3ee]"
+            className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-md px-1 hover:bg-[#edf2ff]"
           >
-            <span className="w-8 h-8 rounded border border-[#e6e4dc] bg-[#ffffff] text-[#1e201d] flex items-center justify-center font-black text-xs shrink-0">
+            <span className="w-8 h-8 rounded border border-[#e1e7f2] bg-[#ffffff] text-[#1d2940] flex items-center justify-center font-black text-xs shrink-0">
               {initials || "ע"}
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-xs font-bold text-[#1e201d]">{name || "החשבון שלי"}</span>
-              <span className="block truncate text-xs text-[#63665e]">{businessName || "העסק שלי"}</span>
+              <span className="block truncate text-xs font-bold text-[#1d2940]">{name || "החשבון שלי"}</span>
+              <span className="block truncate text-xs text-[#535f75]">{businessName || "העסק שלי"}</span>
             </span>
           </Link>
           <button
             type="button"
             onClick={logOut}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 text-xs text-[#63665e] hover:bg-[#f4f3ee] hover:text-[#191b18]"
+            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-md px-2 text-xs text-[#535f75] hover:bg-[#edf2ff] hover:text-[#1d2940]"
           >
             <IconLogout className="h-4 w-4" />
             יציאה
@@ -278,7 +280,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {inSetup ? null : (
         <nav
           aria-label="ניווט ראשי"
-          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#cecdc7] bg-white pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#c3cee5] bg-white pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] md:hidden"
         >
           {TABS.map((tab) => {
             const active = activeTab?.href === tab.href;
@@ -289,7 +291,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={tab.href}
                 aria-current={active ? "page" : undefined}
                 className={`nav-item relative flex min-h-14 flex-col items-center justify-center gap-1 whitespace-nowrap py-1.5 text-xs font-bold ${
-                  active ? "text-[#20211f]" : "text-[#63665e]"
+                  active ? "text-[#1d2940]" : "text-[#535f75]"
                 }`}
               >
                 {active ? (
@@ -320,7 +322,7 @@ function NavLink({ tab, active }: { tab: Tab; active: boolean }) {
       href={tab.href}
       aria-current={active ? "page" : undefined}
       className={`nav-item relative flex min-h-11 items-center gap-3 rounded-md px-3.5 py-2.5 text-[15px] transition-colors ${
-        active ? "font-black text-[#20211f]" : "text-[#63665e] hover:bg-[#f8f7f4] hover:text-[#1e201d]"
+        active ? "font-black text-[#1d2940]" : "text-[#535f75] hover:bg-[#fbfcff] hover:text-[#1d2940]"
       }`}
       style={active ? { background: ACCENT.surface } : undefined}
     >
@@ -346,10 +348,10 @@ export function PageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-7 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e6e4dc] pb-5">
+    <div className="mb-7 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#e1e7f2] pb-5">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1e201d]">{title}</h1>
-        {subtitle ? <p className="mt-1 text-sm text-[#63665e] max-w-3xl">{subtitle}</p> : null}
+        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-[#1d2940]">{title}</h1>
+        {subtitle ? <p className="mt-1 text-sm text-[#535f75] max-w-3xl">{subtitle}</p> : null}
       </div>
       {action ? <div className="flex items-center gap-2 shrink-0">{action}</div> : null}
     </div>
@@ -364,7 +366,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={`drawn-card p-5 sm:p-6 bg-[#ffffff] border border-[#e6e4dc] ${className}`}>
+    <section className={`drawn-card p-5 sm:p-6 bg-[#ffffff] border border-[#e1e7f2] ${className}`}>
       {children}
     </section>
   );
@@ -389,35 +391,9 @@ export function Button({
   variant?: "solid" | "outline";
   className?: string;
 }) {
-  const toneMap = {
-    primary: "bg-[#20211f] text-white hover:bg-[#343632]",
-    secondary: "bg-[#f2eee5] text-[#1e201d] hover:bg-[#e7e1d4]",
-    ghost: "bg-[#ffffff] text-[#1e201d] hover:bg-[#f4f3ee]",
-    success: "bg-[#eaf0e6] text-[#374b3d] hover:bg-[#dde6d7]",
-    danger: "bg-[#1e201d] text-white hover:bg-[#343630]",
-  };
-
-  const sizeMap = {
-    sm: "px-3 py-1.5 text-xs gap-1.5",
-    md: "px-4 py-2 text-sm gap-2",
-    lg: "px-5 py-2.5 text-base gap-2.5",
-  };
-  const resolvedTone = variant === "outline" ? "ghost" : tone;
-  const appearance =
-    variant === "outline"
-      ? "rounded-md border border-[#c7c4b8] bg-transparent text-[#1e201d] hover:bg-[#f4f3ee]"
-      : `drawn-button ${toneMap[resolvedTone]}`;
-
-  return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className={`inline-flex items-center justify-center font-bold cursor-pointer transition-colors ${appearance} ${sizeMap[size]} ${className}`}
-    >
-      {children}
-    </button>
-  );
+  const sizeMap = { sm: "!px-3 !text-xs", md: "!px-4 !text-sm", lg: "!px-5 !text-base" };
+  const appearance = variant === "outline" || tone === "secondary" || tone === "success" ? "secondary" : tone === "ghost" ? "text" : tone === "danger" ? "danger" : "primary";
+  return <UIAction type={type} onClick={onClick} disabled={disabled} variant={appearance} className={`${sizeMap[size]} ${className}`}>{children}</UIAction>;
 }
 
 export function Badge({
@@ -430,11 +406,11 @@ export function Badge({
   className?: string;
 }) {
   const map = {
-    slate: "bg-[#f8f7f4] text-[#63665e] border-[#e6e4dc]",
-    blue: "bg-[#eaf0e6] text-[#374b3d] border-[#c7d6c2]",
-    amber: "bg-[#f5efe3] text-[#6f654b] border-[#e2d7c3]",
-    emerald: "bg-[#eaf0e6] text-[#374b3d] border-[#c7d6c2]",
-    purple: "bg-[#f4f1ee] text-[#1e201d] border-[#e0dad3]",
+    slate: "bg-[#fbfcff] text-[#535f75] border-[#e1e7f2]",
+    blue: "bg-[#edf2ff] text-[#2853c7] border-[#c3cee5]",
+    amber: "bg-[#fff5d9] text-[#6f654b] border-[#e2d7c3]",
+    emerald: "bg-[#edf2ff] text-[#2853c7] border-[#c3cee5]",
+    purple: "bg-[#f4f1ee] text-[#1d2940] border-[#e0dad3]",
     rose: "bg-[#fbf2ef] text-[#9f4330] border-[#eed1c9]",
   };
   return (

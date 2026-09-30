@@ -2,13 +2,14 @@
 
 import { useId, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { type MotionMood } from "@/components/motion/catalog";
 import { MotionButton, MotionCheck, MotionScope } from "@/components/motion/Motion";
 import { paletteVariables } from "./palette";
 import { designPalettes, type DesignPalette } from "./foundations";
 import styles from "./primitives.module.css";
 
-export function DesignScope({ children, className = "", palette = designPalettes[0] }: { children: ReactNode; className?: string; palette?: DesignPalette }) {
-  return <MotionScope className={`${styles.scope} ${className}`} style={paletteVariables(palette)}>{children}</MotionScope>;
+export function DesignScope({ children, className = "", palette = designPalettes[0], mood = "quiet", reduced = false }: { children: ReactNode; className?: string; palette?: DesignPalette; mood?: MotionMood; reduced?: boolean }) {
+  return <MotionScope mood={mood} reduced={reduced} className={`${styles.scope} ${className}`} style={paletteVariables(palette)}>{children}</MotionScope>;
 }
 
 export function ActionButton({ children, variant = "primary", className = "", ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "quiet" }) {
@@ -16,7 +17,7 @@ export function ActionButton({ children, variant = "primary", className = "", ..
 }
 
 export function NotebookHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: ReactNode }) {
-  return <header className={styles.heading}><p>{eyebrow}</p><h2>{title}</h2><svg viewBox="0 0 120 10" fill="none" aria-hidden="true"><path d="M2 7c22-4 36-1 54-3s38-1 61 1" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>{children && <div className={styles.headingText}>{children}</div>}</header>;
+  return <header className={styles.heading}><p>{eyebrow}</p><h2>{title}</h2>{children && <div className={styles.headingText}>{children}</div>}</header>;
 }
 
 export function PaperNote({ children, label = "מחשבה קטנה" }: { children: ReactNode; label?: string }) {

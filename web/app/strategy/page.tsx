@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { GENERATE_STAGES } from "@/components/onboarding/constants";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
+import { SegmentedControl, TransitionPanel } from "@/components/design/Controls";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
   ApiError,
@@ -88,6 +89,7 @@ export default function StrategyPage() {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState("");
   const [welcome, setWelcome] = useState(false);
+  const [planRange, setPlanRange] = useState("quarter");
 
   function loadStrategy() {
     return endpoints
@@ -136,23 +138,20 @@ export default function StrategyPage() {
     return () => cancelAnimationFrame(frame);
   }, [hasStrategy]);
 
-  const accent = business?.brand_language?.palette?.find((s) => s.role === "primary")?.hex ?? TONE.accent;
-  const planFirst = welcome || !strategy;
+  const accent = TONE.accent;
 
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-3">
       <div>
-        <h2 id="quarter-plan-heading" className="text-lg font-black text-[#20211f]">
-          התוכנית ל-3 החודשים
-        </h2>
+        <h2 id="quarter-plan-heading" className="sr-only">התוכנית ל-3 החודשים</h2>
         {welcome ? (
-          <p className="mt-0.5 text-sm leading-6 text-[#5e6159]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
+          <p className="mt-0.5 text-sm leading-6 text-[#535f75]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
         ) : null}
       </div>
       <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" />
-      <p className="border-t border-[#deddd8] pt-3 text-xs leading-5 text-[#747570]">
+      <p className="border-t border-[#e1e7f2] pt-3 text-xs leading-5 text-[#647087]">
         לערוך את התוכנית עצמה יהיה אפשר בקרוב. בינתיים אפשר לשנות את מה שהיא בנויה עליו:{" "}
-        <Link href="/decisions" className="font-bold text-[#20211f] underline underline-offset-4">
+        <Link href="/decisions" className="font-bold text-[#1d2940] underline underline-offset-4">
           ההחלטות שלי
         </Link>
       </p>
@@ -162,7 +161,7 @@ export default function StrategyPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        <SectionHeader section="business" title="התוכנית" />
+        <SectionHeader section="plan" title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"} />
 
         {error ? (
           <p className="mb-4 rounded-md border border-[#d8c3bd] bg-white px-4 py-3 text-sm text-[#7c4036]">{error}</p>
@@ -173,13 +172,15 @@ export default function StrategyPage() {
         {loaded ? (
           <div className="space-y-8 pb-2">
             {needsMonth || build.state !== "idle" ? <BuildRow build={build} onRetry={start} /> : null}
-            {planFirst ? planView : null}
-            {strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
-            {planFirst ? null : planView}
+            {plan && strategy ? <SegmentedControl label="טווח התוכנית" value={planRange} onChange={setPlanRange} options={[{value:"quarter",label:"שלושה חודשים"},{value:"month",label:strategy.month_name_he}]} /> : null}
+            <TransitionPanel transitionKey={planRange}>
+              {plan && (planRange === "quarter" || !strategy) ? planView : strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
+            </TransitionPanel>
+            {strategy ? <Link href="/dashboard" className="drawn-button inline-flex min-h-12 items-center gap-2 bg-[#2853c7] px-6 text-sm font-bold text-white">השבוע בתוכנית <IconArrowLeft className="h-4 w-4" /></Link> : null}
             {!plan && !strategy && !needsMonth && !error ? (
-              <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
+              <p className="rounded-lg border border-[#e1e7f2] bg-white px-4 py-3 text-sm text-[#535f75]">
                 עוד אין תוכנית.{" "}
-                <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
+                <Link href="/onboarding" className="font-bold text-[#1d2940] underline underline-offset-4">
                   לבנות אותה
                 </Link>
               </p>
@@ -203,7 +204,7 @@ function BuildRow({ build, onRetry }: { build: Build; onRetry: () => void }) {
         <button
           type="button"
           onClick={onRetry}
-          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f]"
+          className="mt-1 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[#c3cee5] bg-white px-4 text-sm font-bold text-[#1d2940]"
         >
           לנסות שוב
         </button>
@@ -213,10 +214,10 @@ function BuildRow({ build, onRetry }: { build: Build; onRetry: () => void }) {
   return (
     <div role="status" aria-live="polite" className="flex items-center gap-3 rounded-lg px-4 py-3" style={{ background: TONE.surface }}>
       <span aria-hidden className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full motion-reduce:animate-none" style={{ background: TONE.accent }} />
-      <p className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
+      <p className="min-w-0 flex-1 text-sm leading-6 text-[#1d2940]">
         <b>בונים את החודש הראשון לפי התוכנית: </b>
         {label}…
-        <span className="block text-xs text-[#5e6159]">
+        <span className="block text-xs text-[#535f75]">
           שלב {index + 1} מתוך {GENERATE_STAGES.length}. אפשר לקרוא את התוכנית בינתיים, ולא לסגור את המסך.
         </span>
       </p>
@@ -248,15 +249,15 @@ function MonthSection({
       <section className="rounded-lg p-4 sm:p-6" style={{ background: TONE.surface }}>
         <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
           <IconFlag className="h-4 w-4" />
-          המטרה ל{strategy.month_name_he}
+          ההשערה שנבדוק ב{strategy.month_name_he}
         </p>
-        <h2 className="mt-1 text-[17px] font-black leading-7 text-[#20211f] sm:text-xl sm:leading-8">
+        <h2 className="mt-1 text-[17px] font-black leading-7 text-[#1d2940] sm:text-xl sm:leading-8">
           {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
         </h2>
         {monthly?.targets?.length ? (
           <ul className="mt-2 space-y-0.5 border-r-2 pr-3" style={{ borderColor: TONE.accent }}>
             {monthly.targets.slice(0, 3).map((target) => (
-              <li key={target} className="text-sm leading-5 text-[#5e6159]">
+              <li key={target} className="text-sm leading-5 text-[#535f75]">
                 {target}
               </li>
             ))}
@@ -267,7 +268,7 @@ function MonthSection({
           <span className="mt-1 shrink-0" style={{ color: TONE.accent }}>
             <IconBell className="h-4 w-4" />
           </span>
-          <p className="text-[15px] font-bold leading-6 text-[#20211f]">
+          <p className="text-[15px] font-bold leading-6 text-[#1d2940]">
             <span style={{ color: TONE.accent }}>מה צריך מכם: </span>
             {nextUserAction || "כרגע כלום. אנחנו ממשיכים לעבוד."}
           </p>
@@ -275,11 +276,11 @@ function MonthSection({
       </section>
 
       <section aria-labelledby="weeks-heading">
-        <h2 id="weeks-heading" className="mb-2 text-sm font-black text-[#20211f]">
+        <h2 id="weeks-heading" className="mb-2 text-sm font-black text-[#1d2940]">
           השבועות
         </h2>
         {weeks.length ? (
-          <ol className="divide-y divide-[#eeede8] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+          <ol className="divide-y divide-[#edf2ff] overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
             {weeks.map((week) => (
               <WeekRow key={week.week} week={week} currentWeek={currentWeek} />
             ))}
@@ -290,38 +291,38 @@ function MonthSection({
             ) : null}
           </ol>
         ) : (
-          <p className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm text-[#5e6159]">
+          <p className="rounded-lg border border-[#e1e7f2] bg-white px-4 py-3 text-sm text-[#535f75]">
             עדיין אין לתוכנית הזו חלוקה לשבועות.
           </p>
         )}
       </section>
       <Link
         href="/posts"
-        className="group flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:inline-flex sm:w-auto"
+        className="group inline-flex min-h-11 items-center gap-2 text-sm text-[#2853c7] underline underline-offset-4"
       >
         לבדוק את הפוסט הבא
         <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
       </Link>
 
       {showQuarter ? (
-        <section id="quarter" className="scroll-mt-24 border-t border-[#deddd8] pt-4">
+        <section id="quarter" className="scroll-mt-24 border-t border-[#e1e7f2] pt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-            <h2 className="text-lg font-black text-[#20211f]">הרבעון</h2>
-            {quarter?.horizon ? <p className="text-xs text-[#747570]">{quarter.horizon}</p> : null}
+            <h2 className="text-lg font-black text-[#1d2940]">הרבעון</h2>
+            {quarter?.horizon ? <p className="text-xs text-[#647087]">{quarter.horizon}</p> : null}
           </div>
           {quarter ? (
             <>
               <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">{quarter.hypothesis}</p>
-              <ol className="mt-2 divide-y divide-[#eeede8] border-y border-[#eeede8]">
+              <ol className="mt-2 divide-y divide-[#edf2ff] border-y border-[#edf2ff]">
                 {quarter.milestones.map((milestone, index) => (
                   <MonthRow key={`${milestone.month_label}-${index}`} milestone={milestone} index={index} />
                 ))}
               </ol>
             </>
           ) : (
-            <p className="mt-2 text-sm leading-6 text-[#5e6159]">
+            <p className="mt-2 text-sm leading-6 text-[#535f75]">
               עדיין אין תוכנית לרבעון.{" "}
-              <Link href="/onboarding" className="font-bold text-[#20211f] underline underline-offset-4">
+              <Link href="/onboarding" className="font-bold text-[#1d2940] underline underline-offset-4">
                 לבנות אותה
               </Link>
             </p>
@@ -335,25 +336,25 @@ function MonthSection({
           the plan is built on. */}
       <div className="mt-1! flex items-start justify-between gap-4">
         <details className="group min-w-0 flex-1">
-          <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#62635f] hover:text-[#20211f]">
+          <summary className="flex cursor-pointer list-none items-center gap-2 py-2 text-sm font-bold text-[#535f75] hover:text-[#1d2940]">
             <Caret />
             למה ככה, ומתי נצטרך אתכם
           </summary>
-          <div className="space-y-4 pt-1 pb-2 text-sm leading-6 text-[#62635f]">
+          <div className="space-y-4 pt-1 pb-2 text-sm leading-6 text-[#535f75]">
             <div>
-              <p className="text-[11px] font-bold text-[#8b8e84]">המסר המרכזי בפוסטים</p>
+              <p className="text-[11px] font-bold text-[#647087]">המסר המרכזי בפוסטים</p>
               <p className="mt-1 text-[#3c3e3a]">{strategy.usp.usp_one_liner}</p>
             </div>
             {events.length ? (
               <div>
-                <p className="flex items-center gap-2 text-[11px] font-bold text-[#8b8e84]">
+                <p className="flex items-center gap-2 text-[11px] font-bold text-[#647087]">
                   <IconCalendar className="h-3.5 w-3.5" />
                   המועדים שלקחנו בחשבון
                 </p>
                 <ul className="mt-1.5 space-y-1.5">
                   {events.slice(0, 4).map((event) => (
                     <li key={`${event.date}-${event.name}`}>
-                      <span className="font-bold text-[#20211f]">
+                      <span className="font-bold text-[#1d2940]">
                         {event.date} · {event.name}
                       </span>
                       {": "}
@@ -366,7 +367,7 @@ function MonthSection({
             <QuarterDetails targets={quarter?.targets || []} management={management} />
           </div>
         </details>
-        <Link href="/decisions" className="shrink-0 py-2 text-sm text-[#747570] underline underline-offset-4">
+        <Link href="/decisions" className="shrink-0 py-2 text-sm text-[#647087] underline underline-offset-4">
           לשנות את ההחלטות
         </Link>
       </div>
@@ -395,13 +396,13 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
       <span
         aria-hidden
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
-          isNow ? "text-white" : isPast ? "border-[#d7d5cc] bg-[#f0eee6] text-[#747570]" : "border-[#dedcd8] bg-white text-[#5e6159]"
+          isNow ? "text-white" : isPast ? "border-[#d7d5cc] bg-[#f0eee6] text-[#647087]" : "border-[#dedcd8] bg-white text-[#535f75]"
         }`}
         style={isNow ? { background: TONE.accent, borderColor: TONE.accent } : undefined}
       >
         {week.week}
       </span>
-      <span className="min-w-0 flex-1 text-[15px] font-bold leading-6 text-[#20211f]">
+      <span className="min-w-0 flex-1 text-[15px] font-bold leading-6 text-[#1d2940]">
         <span className="sr-only">שבוע {week.week}: </span>
         {week.focus}
       </span>
@@ -420,7 +421,7 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
   return (
     <li style={isNow ? { background: TONE.surface } : undefined}>
       <details className="group">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 px-4 py-2 hover:bg-[#f8f7f4]">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 px-4 py-2 hover:bg-[#fbfcff]">
           {face}
           <Caret />
         </summary>
@@ -436,10 +437,10 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
           </div>
 
           {week.metrics_target?.length || week.media_distribution ? (
-            <div className="mt-3 flex flex-col gap-1.5 border-t border-[#e6e4dc] pt-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
+            <div className="mt-3 flex flex-col gap-1.5 border-t border-[#e1e7f2] pt-2 sm:flex-row sm:flex-wrap sm:gap-x-6">
               {week.metrics_target?.length ? (
-                <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                  <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                <p className="flex items-start gap-2 text-xs leading-5 text-[#535f75]">
+                  <IconEye className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#647087]" />
                   <span>
                     <span className="font-bold text-[#3c3e3a]">מה מודדים: </span>
                     {week.metrics_target.join(" · ")}
@@ -447,8 +448,8 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
                 </p>
               ) : null}
               {week.media_distribution ? (
-                <p className="flex items-start gap-2 text-xs leading-5 text-[#5e6159]">
-                  <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#8b8e84]" />
+                <p className="flex items-start gap-2 text-xs leading-5 text-[#535f75]">
+                  <IconMegaphone className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#647087]" />
                   <span>
                     <span className="font-bold text-[#3c3e3a]">איפה מפרסמים: </span>
                     {week.media_distribution}
@@ -466,7 +467,7 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
 function DetailList({ title, items, accent = false }: { title: string; items: string[]; accent?: boolean }) {
   return (
     <div>
-      <p className="text-[11px] font-bold" style={{ color: accent ? TONE.accent : "#8b8e84" }}>
+      <p className="text-[11px] font-bold" style={{ color: accent ? TONE.accent : "#647087" }}>
         {title}
       </p>
       <ul className="mt-1.5 space-y-1">
@@ -504,10 +505,10 @@ function MonthRow({ milestone, index }: { milestone: LongHorizonMilestone; index
       >
         {index + 1}
       </span>
-      <span className="min-w-0 flex-1 text-sm leading-6 text-[#20211f]">
+      <span className="min-w-0 flex-1 text-sm leading-6 text-[#1d2940]">
         <span className="font-bold">{milestone.month_label}</span>
         {bareLabel && milestone.milestone ? (
-          <span className="text-[#5e6159]">
+          <span className="text-[#535f75]">
             {" · "}
             {milestone.milestone}
           </span>
@@ -521,14 +522,14 @@ function MonthRow({ milestone, index }: { milestone: LongHorizonMilestone; index
   return (
     <li>
       <details className="group">
-        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 py-2 hover:bg-[#f8f7f4]">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center gap-3 py-2 hover:bg-[#fbfcff]">
           {face}
           <Caret />
         </summary>
         <div className="space-y-1 pr-9 pb-3 text-sm leading-6">
-          {hiddenMilestone ? <p className="font-bold text-[#20211f]">{milestone.milestone}</p> : null}
+          {hiddenMilestone ? <p className="font-bold text-[#1d2940]">{milestone.milestone}</p> : null}
           {milestone.checkpoint ? (
-            <p className="text-[#5e6159]">
+            <p className="text-[#535f75]">
               <span className="font-bold text-[#3c3e3a]">איך נדע שהצלחנו: </span>
               {milestone.checkpoint}
             </p>
@@ -550,7 +551,7 @@ function QuarterDetails({
     <div className="space-y-4 text-sm leading-6 text-[#3c3e3a]">
       {targets.length ? (
         <div>
-          <p className="text-[11px] font-bold text-[#8b8e84]">היעדים לרבעון, לפי סדר חשיבות</p>
+          <p className="text-[11px] font-bold text-[#647087]">היעדים לרבעון, לפי סדר חשיבות</p>
           <ol className="mt-1.5 space-y-1">
             {targets.map((target, index) => (
               <li key={`${target}-${index}`} className="flex items-start gap-2">
@@ -566,7 +567,7 @@ function QuarterDetails({
 
       {management?.how_we_help ? (
         <div>
-          <p className="text-[11px] font-bold text-[#8b8e84]">מה אנחנו עושים</p>
+          <p className="text-[11px] font-bold text-[#647087]">מה אנחנו עושים</p>
           <p className="mt-1">{management.how_we_help}</p>
         </div>
       ) : null}
@@ -575,7 +576,7 @@ function QuarterDetails({
         <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
           {management?.when_we_need_user?.length ? (
             <div>
-              <p className="text-[11px] font-bold text-[#8b8e84]">מתי נצטרך אתכם</p>
+              <p className="text-[11px] font-bold text-[#647087]">מתי נצטרך אתכם</p>
               <ul className="mt-1.5 space-y-1">
                 {management.when_we_need_user.map((item, index) => (
                   <li key={`${item}-${index}`} className="flex items-start gap-2 text-xs leading-5">
@@ -588,12 +589,12 @@ function QuarterDetails({
           ) : null}
           {management?.checkpoints?.length ? (
             <div>
-              <p className="text-[11px] font-bold text-[#8b8e84]">מתי בודקים</p>
+              <p className="text-[11px] font-bold text-[#647087]">מתי בודקים</p>
               <ul className="mt-1.5 space-y-2">
                 {management.checkpoints.map((checkpoint, index) => (
                   <li key={`${checkpoint.timing}-${index}`} className="text-xs leading-5">
-                    <span className="font-bold text-[#20211f]">{checkpoint.timing}</span>
-                    <span className="text-[#5e6159]">
+                    <span className="font-bold text-[#1d2940]">{checkpoint.timing}</span>
+                    <span className="text-[#535f75]">
                       {": "}
                       {checkpoint.purpose}
                     </span>
@@ -622,7 +623,7 @@ function Caret() {
   return (
     <span
       aria-hidden
-      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#8b8e84] transition-transform duration-200 group-open:rotate-180"
+      className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#647087] transition-transform duration-200 group-open:rotate-180"
     />
   );
 }

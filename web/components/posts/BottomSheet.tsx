@@ -81,13 +81,13 @@ export function BottomSheet({
         className="absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-2xl bg-white shadow-2xl outline-none"
       >
         <style>{"@keyframes im-sheet-up{from{transform:translateY(32px);opacity:.5}to{transform:none;opacity:1}}"}</style>
-        <div className="flex shrink-0 items-center justify-between border-b border-[#eeede8] px-4 pb-2 pt-3">
+        <div className="flex shrink-0 items-center justify-between border-b border-[#edf2ff] px-4 pb-2 pt-3">
           <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[#dedcd4]" />
-          <h2 className="text-base font-black text-[#20211f]">{title}</h2>
+          <h2 className="text-base font-black text-[#1d2940]">{title}</h2>
           <button
             type="button"
             onClick={onClose}
-            className="min-h-11 px-2 text-sm font-bold text-[#62635f] underline underline-offset-4"
+            className="min-h-11 px-2 text-sm font-bold text-[#535f75] underline underline-offset-4"
           >
             לסגור
           </button>

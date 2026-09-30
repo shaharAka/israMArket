@@ -4,3 +4,8 @@ export { designPalette, designPalettes, designPrinciples, paletteColors } from "
 export type { DesignPalette } from "./foundations";
 export { PalettePicker } from "./PalettePicker";
 export { SunOverShop } from "./SunOverShop";
+
+export { UIAction, TextField, ChoiceCard, SegmentedControl, UITabs, ToggleField, InlineNotice, StateBadge, EmptyState, SkeletonBlock, TransitionPanel, UIDialog, FileField } from "./Controls";
+export type { ControlOption } from "./Controls";
+
+export { PlanBrief, HypothesisNote } from "./PlanBrief";

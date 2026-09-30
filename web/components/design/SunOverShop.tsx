@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import styles from "./sun.module.css";
 
 /** A sun follows an actual arc above a fixed storefront. Drag to inspect the identity at any point. */
-export function SunOverShop() {
+export function SunOverShop({ reduced = false }: { reduced?: boolean }) {
   const [phase, setPhase] = useState(.35);
   const [running, setRunning] = useState(false);
   const frame = useRef<number | null>(null);
@@ -21,6 +21,13 @@ export function SunOverShop() {
     preference.addEventListener("change", reduce);
     return () => { preference.removeEventListener("change", reduce); if (frame.current !== null) cancelAnimationFrame(frame.current); };
   }, []);
+  useEffect(() => {
+    if (!reduced) return;
+    if (frame.current !== null) cancelAnimationFrame(frame.current);
+    frame.current = null;
+    const timer = window.setTimeout(() => { setRunning(false); setPhase(.5); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [reduced]);
   const x = 150 + Math.cos(Math.PI * phase) * 102;
   const y = 158 - Math.sin(Math.PI * phase) * 116;
   const rays = Math.max(0, Math.min(1, (140 - y) / 30));
@@ -28,7 +35,7 @@ export function SunOverShop() {
   function cancel() { if (frame.current !== null) cancelAnimationFrame(frame.current); frame.current = null; setRunning(false); }
   function play() {
     cancel();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setPhase(.5); return; }
+    if (reduced || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setPhase(.5); return; }
     setRunning(true);
     let start: number | undefined;
     const tick = (time: number) => {

@@ -1,75 +1,84 @@
-# IsraMarket design library
+# IsraMarket: blue and sun
 
-First direction: **the business notebook**. Use the existing market-stall mark,
-clear ink, a colored storefront, a bright sun, drawn routes and the owner's own words.
-Product identity stays consistent; the business name, photos and content provide
-personalisation. Keep those separate from the business's own publishing palette.
+The marketing plan is the main artifact. The interface should help a business owner
+understand the direction, its reasons, the measure, the next decision and what changes
+when an assumption fails. Posts are a tool for executing that plan.
 
-## Preview
+Product source: `docs/onboarding-v2.md`, revisions 5 and 8. The first-month sequence is
+measurement → owner-selected products and materials → content → review and adjustment.
+The UI must not invent product availability, profitability, baseline numbers or evidence.
 
-- `/design`: three candidate palettes, a sun following an arc over the storefront,
-  foundations and an interactive first-post example. Change the business
-  name, add the illustrated example photo, choose the writing tone and prepare a
-  sample draft. All state stays in this page.
-- `/motion`: nine motion assets, category filters, distinct minimal/playful gestures and a
-  manual reduction control. System reduced-motion preferences always win.
+## Live review
 
-These routes have `noindex` metadata and do not appear in customer navigation.
-They do not call application APIs. Copying the example post uses the real clipboard;
-all other actions are explicitly local demonstrations.
+- `/design`: plan brief first, then an interactive component library, transitions,
+  and collapsed foundations/product examples. Palette and motion settings are behind
+  a disclosure. There is one leading example per category.
+- `/preview`: entry to the existing application with explicit example data. The plan
+  opens first. Onboarding is a separate `/start?mock=1` walkthrough.
+- `/motion`: nine isolated motion assets, both moods and reduced-motion controls.
 
-Palette candidates are blue/yellow, teal/yellow/coral, and shop-sign red/orange/navy.
-These are options for review, not an approved change to the live product. Preview
-selection is kept in local storage across both galleries. `DesignScope` accepts an
-explicit `palette`; production components do not read this preview preference.
+The blue palette is applied to product chrome in this branch. A business's publishing
+palette, post renderer and export artwork keep their own colors. Gallery palette choice
+is local; the application does not read it. The branch is a local design preview.
 
-## Use the components
+## Reusable components
 
-```tsx
-import { ActionButton, DesignScope, JourneyRail, NotebookHeading } from "@/components/design";
-import { MotionResult } from "@/components/motion";
+`Controls.tsx` exports native UIAction, TextField, ChoiceCard, SegmentedControl, UITabs,
+ToggleField, FileField, UIDialog (modal/drawer), InlineNotice, StateBadge, EmptyState,
+SkeletonBlock and TransitionPanel. UIAction and TextField are used in real onboarding;
+UIAction backs the application Button. The plan uses SegmentedControl and TransitionPanel.
 
-<DesignScope>
-  <NotebookHeading eyebrow="הצעד של היום" title="נכין את הפוסט הראשון" />
-  <JourneyRail label="הכנת הפוסט" steps={steps} />
-  <ActionButton disabled={saving} onClick={saveDraft}>לשמור טיוטה</ActionButton>
-  {saved && <MotionResult>הטיוטה נשמרה</MotionResult>}
-</DesignScope>
-```
+`PlanBrief.tsx` exports the direction/measurement/decision brief used on the weekly home,
+and HypothesisNote used in the plan's assumptions. HypothesisNote displays supplied
+evidence only; it does not infer confirmation from traffic or post approval.
 
-Wrap a screen in `DesignScope`, or use `MotionScope` for motion alone. Components
-keep native button, input and details semantics. `ActionButton` accepts normal
-button props and a `primary` or `quiet` variant. Keep one primary action per screen.
+Primitives also provide headings, notes, journey rails, photo states and status lines.
+The motion package supplies measured progress, drawn checks and contextual feedback.
+`SunProgress` receives the actual post approval count or onboarding chapter.
 
-`foundations.ts` owns the palette candidates; `DesignScope` writes their semantic values
-as CSS variables. `primitives.module.css` owns type, spacing and component treatment.
-`Motion.tsx` and `motion.module.css` own the reusable interaction assets. Galleries
-are separate from the production primitives.
+## Hierarchy and geometry
 
-## Motion rules
+One filled primary action. Plain text statuses; no decorative pills, colored panel tails,
+shadows as hierarchy, or a card around every paragraph. Hairline dividers separate real
+lists. Supporting examples and explanations live behind disclosures.
 
-- An illustration is decorative. Keep a visible, accessible result message.
-- Set `active` on `MotionIllustration` after the action has actually succeeded.
-  For `prepare`, set it while work is pending. Change `replayKey` for a new event.
-- `MotionProgress` takes a real measured value from 0–100. It clamps invalid values.
-  Use a waiting status when the backend cannot report progress.
-- `MotionChoice` is a controlled toggle button using `aria-pressed`.
-- `MotionResult` announces a confirmed result with `role="status"`.
-- `MotionDisclosure` uses native details/summary. Keyboard access works before
-  hydration, and opening the content adds a short reveal.
-- No animation delays navigation or completion. Looping dots exist only during
-  pending work. Success animations run once. Reduced motion shows final states.
-- Minimal gestures take a direct path. Playful gestures have a small anticipation,
-  a paper fold, a hand-drawn selection underline or a more expressive settling beat.
-  Switching modes replays a completed illustration while preserving its result.
-- Sending points the plane into its trajectory, flies out of frame and leaves a
-  delivery check. It never flies backward or snaps back to its starting pose.
-- Forward points left in Hebrew. Layout uses logical margins and padding; progress
-  grows from the start edge in RTL and LTR.
+Four-pixel corners for controls. Most tap targets are at least 44px. Spacing follows
+4/8/12/16/24/32/48px. Content is aligned for RTL, with logical edges and readable Hebrew.
+A heading leads; source, caveat and rationale stay accessible with their related content.
 
-## Applying the direction
+## Behavior contract
 
-Start with the trial welcome screen, the next task, empty photo states and saving
-feedback. Use a route only to explain actual steps, a note for a useful thought,
-and the market-stall sunrise for a real milestone. Keep the existing UI-RULES.md
-limits on actions, copy and density. The preview does not replace those screens.
+- Buttons react immediately; busy actions disable repeated submissions and retain labels.
+- Errors are linked to fields and announced; labels remain visible while typing.
+- Tabs use one keyboard stop, arrows in visual RTL order, Home/End and a labelled panel.
+- Native dialogs contain focus, close with Escape and return focus to the trigger.
+- File selection is distinct from an upload. Library files are never sent to a server.
+- Clipboard feedback waits for success; failure offers manual copying.
+- Approval and save feedback follow endpoint completion. Sun approval progress uses
+  returned data. Nothing delays navigation for an animation.
+- Progress reflects known values. Unknown duration uses pending dots or a skeleton.
+- Plain badges communicate status with words, not color alone.
+
+## Transitions
+
+Quiet: press 160ms, content fade 180ms, dialogs 200–240ms.
+Playful: a restrained press and paper arrival at 420ms, drawn choice confirmation.
+Sun progress: continuous 1800ms movement; completed milestone rays follow the rise.
+Sending: forward trajectory, one exit, then a delivery mark after real success.
+There are no idle celebration loops. Loops are reserved for actual waiting.
+
+System and manual reduced motion show final results without travel, bounce or shimmer.
+The result message always remains available to assistive technology.
+
+## Scope and validation
+
+This preview preserves current application APIs and account flows. Revision 8's full
+weekly foundation gating, structure-only generation and evidence-linked hypothesis
+tracking still require product/backend implementation; this UI does not fake them.
+The demo adds a stored quarterly plan via the existing explicit mock-plan builder.
+
+Verified with typecheck, lint, production build, and browser interaction checks:
+RTL keyboard tabs; dialog focus/Escape/return; validation; retry and pending states;
+manual/system reduced motion; real UI saves/approval using demo endpoints; clipboard
+success and failure through injected test outcomes; desktop/mobile overflow checks.
+Live-account content and backend writes were not exercised during this design review.

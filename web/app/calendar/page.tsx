@@ -46,9 +46,9 @@ export default function CalendarPage() {
 
   return (
     <AppShell>
-      <header className="mb-5 flex items-end justify-between gap-4 border-b border-[#e6e4dc] pb-4">
-        <h1 className="text-2xl font-black tracking-tight text-[#1e201d] sm:text-3xl">לוח שנה</h1>
-        <Link href="/posts" className="min-h-11 content-center text-sm font-bold text-[#20211f] underline underline-offset-4">
+      <header className="mb-5 flex items-end justify-between gap-4 border-b border-[#e1e7f2] pb-4">
+        <h1 className="text-2xl font-black tracking-tight text-[#1d2940] sm:text-3xl">לוח שנה</h1>
+        <Link href="/posts" className="min-h-11 content-center text-sm font-bold text-[#1d2940] underline underline-offset-4">
           לכל הפוסטים
         </Link>
       </header>
@@ -61,7 +61,7 @@ export default function CalendarPage() {
           onOpenPost={(index) => router.push(`/posts?post=${index}`)}
         />
       ) : (
-        <p className="text-sm text-[#63665e]">טוענים את הלוח…</p>
+        <p className="text-sm text-[#535f75]">טוענים את הלוח…</p>
       )}
     </AppShell>
   );
