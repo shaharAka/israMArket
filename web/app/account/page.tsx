@@ -122,6 +122,14 @@ export default function AccountPage() {
           </button>
         </form>
 
+        {/* The subscription: when the free month ends, paying with PayPal, cancelling (app/billing). */}
+        <p className="mt-6 text-sm text-[color:var(--ink-soft)]">
+          <Link href="/billing" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
+            המנוי
+          </Link>
+          {" · החודש החינמי, התשלום והביטול"}
+        </p>
+
         {/* The first-entry welcome, again, on demand (it is shown once by itself). */}
         <p className="mt-6 text-sm text-[color:var(--ink-soft)]">
           רוצים לראות שוב מה יש כאן?{" "}

@@ -15,8 +15,8 @@ export const metadata: Metadata = {
  * page (/security) and data deletion (/security#delete).
  *
  * Same rule as /security: state only what the product does. Price and trial come from
- * lib/pricing.ts. There is no billing system yet, so nothing here describes charges,
- * invoices or refunds.
+ * lib/pricing.ts. Payment is a monthly PayPal subscription (api/app/routers/billing.py),
+ * cancelled from /billing. No tax invoices are issued yet, so none are promised here.
  *
  * OPEN (owner): the legal entity, governing-law clause and a lawyer's review before launch.
  */
@@ -96,7 +96,17 @@ export default function TermsPage() {
           <p>
             {TRIAL_LABEL}. אחר כך {formatPrice()} לחודש. {VAT_NOTE}.
           </p>
-          <p>אין התחייבות. אפשר להפסיק בכל רגע, ולא נחייב על חודש שלא התחיל.</p>
+          <p>
+            בהרשמה לא מבקשים כרטיס אשראי. לקראת סוף החודש החינמי אפשר להפעיל מנוי בעמוד{" "}
+            <Link href="/billing" className={LINK}>
+              המנוי
+            </Link>
+            . משלמים דרך פייפאל, בחשבון פייפאל או בכרטיס אשראי, פעם בחודש. החיוב הראשון הוא רק אחרי שהחודש החינמי נגמר.
+          </p>
+          <p>
+            אין התחייבות. אפשר לבטל בכל רגע בעמוד המנוי. אחרי ביטול לא נחייב שוב, והשירות נשאר פתוח עד סוף החודש ששילמתם
+            עליו.
+          </p>
           <p>
             אם נשנה את המחיר או את התנאים, נודיע באימייל לפחות 30 יום מראש.
           </p>

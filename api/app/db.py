@@ -67,6 +67,10 @@ def migrate_db():
         conn.exec_driver_sql(
             "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)"
         )
+        # Billing (models.Subscription, models.Payment) arrived as whole new tables, which
+        # `Base.metadata.create_all` creates on boot with their unique indexes; there is
+        # nothing to ALTER for them. A column added to either later goes in a block here,
+        # like the ones above.
         # The business field list became industries only (keys, not Hebrew labels).
         # Rewrites old labels once; a row that already holds a key is left alone.
         from app.services.business_fields import migrate_business_types

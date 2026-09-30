@@ -15,6 +15,7 @@ from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(prefix="/performance", tags=["performance"])
 
@@ -226,7 +227,7 @@ def sync(business: Business = Depends(get_business), db: Session = Depends(get_d
     return _sync_payload(business, db)
 
 
-@router.post("/weekly")
+@router.post("/weekly", dependencies=[Depends(require_generation_access)])
 def weekly(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     snap = _sync_payload(business, db)
     strategy = _active_strategy(db, business)

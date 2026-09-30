@@ -20,3 +20,11 @@ os.environ["SITE_SCREENSHOT"] = "false"
 # runs to the end inside the request that started it, so `mock.patch` blocks and the
 # overridden test database still apply; tests of the worker threads switch it off.
 os.environ["GENERATION_JOBS_INLINE"] = "1"
+# PayPal: a developer `.env` may hold sandbox credentials. Tests that need PayPal patch the
+# settings and mock the HTTP transport (tests/test_billing.py); nothing may reach PayPal.
+os.environ["PAYPAL_ENV"] = "sandbox"
+os.environ["PAYPAL_CLIENT_ID"] = ""
+os.environ["PAYPAL_CLIENT_SECRET"] = ""
+os.environ["PAYPAL_PLAN_ID"] = ""
+os.environ["PAYPAL_WEBHOOK_ID"] = ""
+os.environ["BILLING_ENFORCE"] = "false"

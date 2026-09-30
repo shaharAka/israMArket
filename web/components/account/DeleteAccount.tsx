@@ -13,6 +13,8 @@ const DELETED = [
   "התמונות והסרטונים שהעליתם",
   "החיבורים לגוגל ולפייסבוק, והנתונים שהגיעו מהם",
   "המחקר השבועי והקהלים",
+  // services/billing.cancel_for_deletion cancels the PayPal subscription first.
+  "המנוי ורשימת התשלומים. מנוי בפייפאל מתבטל",
 ];
 
 /**

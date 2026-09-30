@@ -9,6 +9,8 @@ the next migration would silently outgrow. It walks `Base.metadata`:
 * `webhook_deliveries` (keyed by `endpoint_id`) goes before its endpoints,
 * `whatsapp_clicks` references `whatsapp_links` but also carries `business_id`, so the
   business walk (children first) removes the clicks before their links,
+* `subscriptions` and `payments` are keyed by `user_id` too, so they go with the user;
+  the PayPal subscription itself is cancelled first (best effort, `billing.cancel_for_deletion`),
 * then the businesses, then the user,
 * then anything whose owner is already gone (`purge_orphans`): a month a background build
   finished writing after its account was deleted, or rows from before this module. SQLite
@@ -40,7 +42,7 @@ from app.models import (
     purge_business_rows,
     user_scoped_tables,
 )
-from app.services import images
+from app.services import billing, images
 
 # The only foreign-key targets this module knows how to cascade from.
 # `whatsapp_links` is safe because every table pointing at it also has `business_id`.
@@ -96,6 +98,11 @@ def delete_account(db: Session, user: User) -> dict:
 
     Returns counts per table, which the tests read; the route does not expose them.
     """
+    # First, before any row goes: stop PayPal charging an account that will not exist.
+    # Best effort (services/billing.cancel_for_deletion logs a failure with the
+    # subscription id so it can be cancelled by hand); the deletion itself always proceeds.
+    billing.cancel_for_deletion(db, user)
+
     business_ids = [row[0] for row in db.query(Business.id).filter(Business.user_id == user.id).all()]
     counts: dict[str, int] = {}
 

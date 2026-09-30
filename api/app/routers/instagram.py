@@ -16,6 +16,7 @@ from app.models import Business, InstagramPost
 from app.schemas import InspirationRefreshIn, InstagramHandlesIn
 from app.services import instagram_signal, meta
 from app.services.jsonutil import dumps
+from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(prefix="/instagram", tags=["instagram"])
 
@@ -94,7 +95,7 @@ def put_handles(
     return {"handles": handles, "max_handles": instagram_signal.MAX_HANDLES}
 
 
-@router.post("/brief/refresh")
+@router.post("/brief/refresh", dependencies=[Depends(require_generation_access)])
 def refresh_brief(
     body: InspirationRefreshIn | None = None,
     business: Business = Depends(get_business),

@@ -13,6 +13,7 @@ from app.routers import (
     assets,
     audiences,
     auth,
+    billing,
     foundations,
     instagram,
     integrations,
@@ -109,6 +110,8 @@ app.include_router(research.router)
 app.include_router(trial.router)
 app.include_router(foundations.router)
 app.include_router(whatsapp.router)
+# Subscription billing (PayPal). Its webhook is anonymous and signature-verified.
+app.include_router(billing.router)
 # The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
 app.include_router(whatsapp.public_router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
@@ -137,7 +140,9 @@ async def csrf_origin_check(request: Request, call_next):
     A missing Origin is allowed on purpose: curl, scripts and server-to-server calls do
     not send one, and blocking them would break the API for no security gain.
     """
-    if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
+    if request.method in {"POST", "PUT", "PATCH", "DELETE"} and request.url.path != billing.WEBHOOK_PATH:
+        # PayPal's webhook is exempt, and only it: it is server-to-server, carries no
+        # session, and every delivery is verified with PayPal (routers/billing.webhook).
         origin = request.headers.get("origin")
         if origin:
             if origin not in ALLOWED_ORIGINS:

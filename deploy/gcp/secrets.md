@@ -20,6 +20,16 @@ container gets them from there. The web and Caddy containers never see them.
 | `meta-app-id` | `META_APP_ID` | no | Meta app > App settings > Basic. |
 | `meta-app-secret` | `META_APP_SECRET` | no | Same page. |
 | `meta-model-api-key` | `META_MODEL_API_KEY` | no | The Muse Spark experiment. It only has an effect if `POST_MODEL=muse-spark` is also set in `/etc/isramarket/extra.env` on the VM. |
+| `paypal-client-id` | `PAYPAL_CLIENT_ID` | no | developer.paypal.com > Apps & Credentials > the app (Sandbox or Live, matching `PAYPAL_ENV`) > Client ID. Public by design (the browser's PayPal buttons use it), kept here with its secret so they rotate together. |
+| `paypal-client-secret` | `PAYPAL_CLIENT_SECRET` | no | Same page > Secret. |
+| `paypal-webhook-id` | `PAYPAL_WEBHOOK_ID` | no | Same app > Webhooks > the webhook for `https://<host>/backend/billing/paypal/webhook` > Webhook ID. Without it every webhook is refused (503). |
+
+PayPal's non-secret settings go in `/etc/isramarket/extra.env` on the VM, not here:
+`PAYPAL_ENV=sandbox` (or `live`), `PAYPAL_PLAN_ID=P-…` (printed by
+`python -m app.jobs.paypal_setup`), and `BILLING_ENFORCE=false` until you decide to gate
+generation. Sandbox and live have different client ids, secrets, plans and webhooks:
+switching `PAYPAL_ENV` means replacing all four values. The full checklist is
+`docs/billing.md`.
 
 A missing optional secret renders as blank, and that integration then reports "not
 configured". A missing required secret stops the render, so the old environment stays
@@ -46,7 +56,8 @@ billed for one location.
 
 ```bash
 for name in gemini-api-key jwt-secret token-encryption-key \
-            google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key; do
+            google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key \
+            paypal-client-id paypal-client-secret paypal-webhook-id; do
   gcloud secrets create "$name" --project "$PROJECT" \
     --replication-policy=user-managed --locations=me-west1 \
     --labels=app=isramarket
@@ -70,6 +81,9 @@ read -rs v && printf %s "$v" | gcloud secrets versions add google-client-secret 
 read -rs v && printf %s "$v" | gcloud secrets versions add meta-app-id          --project "$PROJECT" --data-file=- ; unset v
 read -rs v && printf %s "$v" | gcloud secrets versions add meta-app-secret      --project "$PROJECT" --data-file=- ; unset v
 read -rs v && printf %s "$v" | gcloud secrets versions add meta-model-api-key   --project "$PROJECT" --data-file=- ; unset v
+read -rs v && printf %s "$v" | gcloud secrets versions add paypal-client-id     --project "$PROJECT" --data-file=- ; unset v
+read -rs v && printf %s "$v" | gcloud secrets versions add paypal-client-secret --project "$PROJECT" --data-file=- ; unset v
+read -rs v && printf %s "$v" | gcloud secrets versions add paypal-webhook-id    --project "$PROJECT" --data-file=- ; unset v
 
 # Keep an offline copy of the token encryption key (e.g. your password manager), then:
 rm -P /tmp/jwt-secret /tmp/token-encryption-key
@@ -81,7 +95,8 @@ A secret with no version yet, such as Meta before the app exists, is treated as 
 
 ```bash
 for name in gemini-api-key jwt-secret token-encryption-key \
-            google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key; do
+            google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key \
+            paypal-client-id paypal-client-secret paypal-webhook-id; do
   gcloud secrets add-iam-policy-binding "$name" --project "$PROJECT" \
     --member="serviceAccount:$SA" --role=roles/secretmanager.secretAccessor
 done
@@ -105,8 +120,9 @@ Checked 2026-09-30 against the Cloud Billing Catalog (Secret Manager SKUs):
 - Storage: $0.06 per active secret version per location per month, and the first 6 are free.
 - Access: $0.03 per 10,000 operations, and the first 10,000 are free.
 
-Eight secrets with one version each come to 8 − 6 = 2 billable, about **$0.12/month**.
-Access is 8 reads per boot or deploy, which stays well inside the free tier.
+Eleven secrets with one version each (the eight above plus the three PayPal ones) come to
+11 − 6 = 5 billable, about **$0.30/month**; without PayPal, 8 − 6 = 2, about $0.12.
+Access is 11 reads per boot or deploy, which stays well inside the free tier.
 
 ## Where secrets are visible on the VM
 
