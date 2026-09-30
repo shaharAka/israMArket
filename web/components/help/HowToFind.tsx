@@ -35,7 +35,7 @@ export function HowToFind({
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className={`inline-flex min-h-11 min-w-11 items-center gap-1.5 text-right text-xs font-bold text-[var(--ink-soft)] underline decoration-[var(--rule-dark)] underline-offset-4 transition-colors hover:text-[var(--ink)] hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] ${className}`}
+        className={`inline-flex min-h-11 min-w-11 items-center gap-1.5 text-right text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 transition-colors hover:text-[color:var(--primary-dark)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] ${className}`}
       >
         <span>{label}</span>
       </button>
@@ -76,22 +76,24 @@ function GuideBody({ guide }: { guide: Guide }) {
   const toggle = hasDeviceSteps(guide);
 
   return (
-    <div className="space-y-5 text-sm leading-6 text-[var(--ink-soft)]">
+    <div className="space-y-6 text-[14px] leading-7 text-[color:var(--ink-soft)]">
       <div>
-        <p className="text-[15px] font-bold leading-7 text-[var(--ink)]">{rich(guide.short)}</p>
-        <p className="mt-1 text-xs font-bold text-[var(--ink-muted)]">{minutesLabel(guide.minutes)}</p>
+        <p className="text-[16px] font-semibold leading-7 text-[color:var(--ink)]">{rich(guide.short)}</p>
+        <p className="mt-1.5 text-[13px] font-medium text-[color:var(--ink-muted)]">{minutesLabel(guide.minutes)}</p>
       </div>
 
       {toggle ? (
-        <div role="group" aria-label="ההסבר עבור" className="inline-flex rounded border border-[var(--rule)] bg-[var(--canvas)] p-1">
+        <div role="group" aria-label="ההסבר עבור" className="inline-flex gap-1 rounded-xl bg-[var(--soft)] p-1">
           {(["phone", "computer"] as const).map((value) => (
             <button
               key={value}
               type="button"
               aria-pressed={device === value}
               onClick={() => setPicked(value)}
-              className={`min-h-11 min-w-20 rounded px-4 text-sm font-bold transition-colors ${
-                device === value ? "bg-[var(--primary-soft)] text-[var(--primary)]" : "text-[var(--ink-soft)] hover:text-[var(--ink)]"
+              className={`min-h-11 min-w-20 rounded-lg px-4 text-[14px] font-semibold transition-[background-color,color,box-shadow] duration-200 ${
+                device === value
+                  ? "bg-[var(--paper)] text-[color:var(--ink)] shadow-[var(--shadow-card)]"
+                  : "text-[color:var(--ink-muted)] hover:text-[color:var(--ink)]"
               }`}
             >
               {value === "phone" ? "טלפון" : "מחשב"}
@@ -106,17 +108,17 @@ function GuideBody({ guide }: { guide: Guide }) {
 
       <SendToHelper title={guide.stuck.title} message={guide.stuck.message} copiedNote={guide.stuck.copiedNote} />
 
-      <div className="space-y-2 border-t border-[var(--rule)] pt-4">
-        <p className="text-xs leading-5 text-[var(--ink-soft)]">
-          <span className="font-bold text-[var(--ink)]">למה אנחנו צריכים את זה: </span>
+      <div className="space-y-1 border-t border-[var(--rule)] pt-5">
+        <p className="text-[13px] leading-6 text-[color:var(--ink-soft)]">
+          <span className="font-semibold text-[color:var(--ink)]">למה אנחנו צריכים את זה: </span>
           {guide.why}
         </p>
-        <p className="text-xs leading-5 text-[var(--ink-soft)]">
+        <p className="text-[13px] leading-6 text-[color:var(--ink-soft)]">
           <a
             href={guide.source.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center font-bold text-[var(--ink)] underline underline-offset-4"
+            className="inline-flex min-h-11 items-center font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
           >
             {guide.source.label}
           </a>
@@ -129,16 +131,16 @@ function GuideBody({ guide }: { guide: Guide }) {
 function Block({ block, device, first }: { block: GuideBlock; device: Device; first: boolean }) {
   const steps = block[device] ?? block.steps;
   return (
-    <section className={first ? "" : "border-t border-[var(--rule)] pt-4"}>
-      <h3 className="text-sm font-black text-[var(--ink)]">{block.title}</h3>
-      {block.text ? <p className="mt-1">{rich(block.text)}</p> : null}
+    <section className={first ? "" : "border-t border-[var(--rule)] pt-5"}>
+      <h3 className="text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{block.title}</h3>
+      {block.text ? <p className="mt-1.5">{rich(block.text)}</p> : null}
       {steps?.length ? (
-        <ol className="mt-2 space-y-2">
+        <ol className="mt-3 space-y-2.5">
           {steps.map((step, index) => (
-            <li key={step} className="flex gap-2.5">
+            <li key={step} className="flex gap-3">
               <span
                 aria-hidden
-                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-xs font-bold tabular-nums text-[var(--primary)]"
+                className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[12px] font-semibold tabular-nums text-[color:var(--primary)]"
               >
                 {index + 1}
               </span>
@@ -148,16 +150,16 @@ function Block({ block, device, first }: { block: GuideBlock; device: Device; fi
         </ol>
       ) : null}
       {block.cases?.length ? (
-        <dl className="mt-2 space-y-2">
+        <dl className="mt-3 space-y-3">
           {block.cases.map((item) => (
             <div key={item.label}>
-              <dt className="font-bold text-[var(--ink)]">{item.label}</dt>
+              <dt className="font-semibold text-[color:var(--ink)]">{item.label}</dt>
               <dd>{rich(item.text)}</dd>
             </div>
           ))}
         </dl>
       ) : null}
-      {block.note ? <p className="mt-2 text-xs leading-5 text-[var(--ink-muted)]">{rich(block.note)}</p> : null}
+      {block.note ? <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-muted)]">{rich(block.note)}</p> : null}
     </section>
   );
 }

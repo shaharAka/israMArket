@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
-import { AppShell } from "@/components/AppShell";
+import { AppShell, PageHeader } from "@/components/AppShell";
+import { SetupNotice } from "@/components/account/SetupNotice";
+import { CARD, TEXT_ACTION } from "@/components/account/setupStyles";
 import { PayPalSubscribe } from "@/components/billing/PayPalSubscribe";
-import { InlineNotice, UIAction, UIDialog } from "@/components/design/Controls";
+import { UIAction, UIDialog } from "@/components/design/Controls";
 import { ApiError } from "@/lib/api";
 import { billingEndpoints, formatBillingDate, lastFreeDay, type BillingStatus } from "@/lib/billing";
+import { IconArrowRight } from "@/lib/icons";
 import { formatPrice, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
+
+/** The subscription is one object: its state, its facts and its one action, on one card. */
+const PLAN_CARD = `${CARD} space-y-5 p-5 sm:p-7`;
 import { toast } from "@/lib/ui";
 
 /**
@@ -52,25 +58,22 @@ export default function BillingPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-lg">
-        <header className="border-b border-[var(--rule)] pb-5">
-          <h1 className="text-2xl font-black tracking-tight text-[color:var(--ink)]">המנוי</h1>
-        </header>
+      <div className="mx-auto max-w-[640px]">
+        <PageHeader title="המנוי" />
 
         {failed ? (
-          <div className="mt-6">
-            <InlineNotice tone="error" title="לא הצלחנו לטעון את פרטי המנוי. נסו לרענן את העמוד." />
-          </div>
+          <SetupNotice tone="error" title="לא הצלחנו לטעון את פרטי המנוי. נסו לרענן את העמוד." />
         ) : !status ? (
-          <p className="mt-6 text-sm text-[color:var(--ink-soft)]" role="status">
+          <p className="text-[14px] text-[color:var(--ink-soft)]" role="status">
             טוענים…
           </p>
         ) : (
           <BillingBody status={status} setStatus={setStatus} justSubscribed={justSubscribed} onConfirmed={onConfirmed} />
         )}
 
-        <p className="mt-8 text-sm text-[color:var(--ink-soft)]">
-          <Link href="/account" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
+        <p className="mt-8">
+          <Link href="/account" className={`${TEXT_ACTION} !text-[color:var(--ink-soft)] hover:!text-[color:var(--ink)]`}>
+            <IconArrowRight className="h-4 w-4" />
             חזרה לחשבון
           </Link>
         </p>
@@ -96,22 +99,22 @@ function BillingBody({
 
   if (!status.configured) {
     return (
-      <div className="mt-6 space-y-4">
-        <p className="text-base leading-7 text-[color:var(--ink)]">
+      <div className={PLAN_CARD}>
+        <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
           {TRIAL_LABEL}. אחר כך {price}
         </p>
-        <InlineNotice title="התשלום עוד לא פתוח">החודש החינמי ממשיך כרגיל. לא נבקש תשלום לפני שהוא ייפתח כאן.</InlineNotice>
+        <SetupNotice title="התשלום עוד לא פתוח">החודש החינמי ממשיך כרגיל. לא נבקש תשלום לפני שהוא ייפתח כאן.</SetupNotice>
       </div>
     );
   }
 
   if (status.state === "active" && sub) {
     return (
-      <div className="mt-6 space-y-5">
+      <div className={PLAN_CARD}>
         {justSubscribed ? (
-          <InlineNotice tone="success" title="המנוי הופעל" />
+          <SetupNotice tone="success" title="המנוי הופעל" />
         ) : (
-          <p className="text-base font-bold text-[color:var(--ink)]">המנוי פעיל.</p>
+          <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">המנוי פעיל.</p>
         )}
         <Rows
           rows={[
@@ -132,10 +135,10 @@ function BillingBody({
   if (status.state === "payment_failed" && !status.needs_payment) {
     // Still ACTIVE at PayPal, which retries the charge: a second subscription would double it.
     return (
-      <div className="mt-6 space-y-5">
-        <InlineNotice tone="attention" title="החיוב האחרון לא עבר">
+      <div className={PLAN_CARD}>
+        <SetupNotice tone="attention" title="החיוב האחרון לא עבר">
           פייפאל ינסה לחייב שוב. כדי שזה יעבור, עדכנו את אמצעי התשלום בחשבון הפייפאל שלכם.
-        </InlineNotice>
+        </SetupNotice>
         <Rows rows={[price]} />
         <CancelSubscription status={status} onCancelled={setStatus} />
       </div>
@@ -159,10 +162,10 @@ function BillingBody({
   }
 
   return (
-    <div className="mt-6 space-y-5">
-      <p className="text-base font-bold leading-7 text-[color:var(--ink)]">{lead}</p>
+    <div className={PLAN_CARD}>
+      <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">{lead}</p>
       {status.locked ? (
-        <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
+        <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
           כדי להמשיך ליצור פוסטים ותוכניות, צריך מנוי. כל מה שכבר נוצר נשאר פתוח.
         </p>
       ) : null}
@@ -185,9 +188,9 @@ function BillingBody({
 
 function Rows({ rows }: { rows: (string | null)[] }) {
   return (
-    <ul className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
+    <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
       {rows.filter(Boolean).map((row) => (
-        <li key={row} className="py-2.5 text-sm leading-6 text-[color:var(--ink)]">
+        <li key={row} className="py-3 text-[15px] leading-6 text-[color:var(--ink)]">
           {row}
         </li>
       ))}
@@ -229,7 +232,7 @@ function CancelSubscription({ status, onCancelled }: { status: BillingStatus; on
         title="לבטל את המנוי?"
         description={until ? `לא נחייב יותר. הכול נשאר פתוח עד ${formatBillingDate(until)}.` : "לא נחייב יותר."}
       >
-        {error ? <InlineNotice tone="error" title={error} /> : null}
+        {error ? <SetupNotice tone="error" title={error} /> : null}
         <div className="mt-4 flex flex-wrap gap-3">
           <UIAction variant="danger" busy={pending} busyLabel="מבטלים…" onClick={() => void cancel()}>
             לבטל את המנוי

@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AppShell, useLogOut } from "@/components/AppShell";
+import { AppShell, PageHeader, useLogOut } from "@/components/AppShell";
+import { CARD, GROUP_LABEL, LIST_ROW, ROW_CHEVRON, ROW_ICON } from "@/components/account/setupStyles";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { BrandLink } from "@/components/BrandLink";
-import { SectionHeader } from "@/components/SectionHeader";
 import { endpoints } from "@/lib/api";
 import {
   IconCalendar,
@@ -62,9 +62,6 @@ const GROUPS: { title: string; rows: Row[] }[] = [
   },
 ];
 
-const rowClass =
-  "flex min-h-16 w-full items-center gap-3 px-4 py-3 text-right transition-colors hover:bg-[var(--canvas)] active:bg-[var(--primary-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--ink)]";
-
 export default function BusinessPage() {
   const [businessName, setBusinessName] = useState("");
   const logOut = useLogOut();
@@ -78,26 +75,34 @@ export default function BusinessPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-2xl">
-        <SectionHeader section="business" title={businessName || "העסק שלי"} />
+      <div className="mx-auto max-w-[720px]">
+        {/* The business's name is the title; its brand sits beside it, as a way in. */}
+        <PageHeader
+          title={businessName || "העסק שלי"}
+          action={
+            <BrandLink className="-mx-1 font-semibold !text-[color:var(--ink)] hover:!bg-[var(--paper)] hover:shadow-[var(--shadow-card)]" />
+          }
+        />
 
-        <div className="mb-5 border-b border-[var(--rule)] pb-3"><BrandLink /></div>
-
-        {/* One container, hairlines between rows: a list, not a grid of boxes. */}
-        <div className="overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
+        {/* A label and whitespace per group, one card per group, hairlines between rows. */}
+        <div className="space-y-8">
           {GROUPS.map((group, index) => (
-            <section key={group.title} className={index > 0 ? "border-t border-[var(--rule)]" : undefined}>
-              <h2 className="px-4 pt-4 pb-1 text-xs font-black text-[color:var(--ink-soft)]">{group.title}</h2>
-              <ul className="divide-y divide-[var(--primary-soft)]">
+            <section key={group.title} aria-labelledby={`business-group-${index}`}>
+              <h2 id={`business-group-${index}`} className={GROUP_LABEL}>
+                {group.title}
+              </h2>
+              <ul className={`${CARD} divide-y divide-[var(--rule)] overflow-hidden`}>
                 {group.rows.map((row) => (
                   <li key={row.href}>
-                    <Link href={row.href} className={rowClass}>
-                      <row.icon className="h-5 w-5 shrink-0 text-[color:var(--ink-soft)]" />
-                      <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-bold text-[color:var(--ink)]">{row.title}</span>
-                        <span className="mt-0.5 block text-sm text-[color:var(--ink-soft)]">{row.hint}</span>
+                    <Link href={row.href} className={`group ${LIST_ROW}`}>
+                      <span aria-hidden className={ROW_ICON}>
+                        <row.icon className="h-5 w-5" />
                       </span>
-                      <IconChevron className="h-5 w-5 shrink-0 text-[color:var(--ink-muted)]" />
+                      <span className="min-w-0 flex-1">
+                        <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{row.title}</span>
+                        <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{row.hint}</span>
+                      </span>
+                      <IconChevron className={ROW_CHEVRON} />
                     </Link>
                   </li>
                 ))}
@@ -105,10 +110,14 @@ export default function BusinessPage() {
             </section>
           ))}
 
-          <div className="border-t border-[var(--rule)]">
-            <button type="button" onClick={logOut} className={`${rowClass} cursor-pointer`}>
-              <IconLogout className="h-5 w-5 shrink-0 text-[color:var(--ink-soft)]" />
-              <span className="flex-1 text-[15px] font-bold text-[color:var(--ink)]">יציאה מהחשבון</span>
+          <div className={`${CARD} overflow-hidden`}>
+            <button type="button" onClick={logOut} className={`group ${LIST_ROW} cursor-pointer`}>
+              <span aria-hidden className={ROW_ICON}>
+                <IconLogout className="h-5 w-5" />
+              </span>
+              <span className="flex-1 text-[15px] font-semibold text-[color:var(--ink-soft)] transition-colors group-hover:text-[color:var(--ink)]">
+                יציאה מהחשבון
+              </span>
             </button>
           </div>
         </div>
