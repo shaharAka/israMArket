@@ -216,12 +216,41 @@ class GoogleLoginTest(unittest.TestCase):
         self.assertEqual(len(users), 1)
         self.assertEqual(users[0].id, user_id)
         self.assertEqual(users[0].google_sub, "google-sub-123")
-        # Linking fills an empty name but keeps the password.
         self.assertEqual(users[0].full_name, "נועה כהן")
         self.assertEqual(self.client.get("/auth/me").json()["id"], user_id)
+
+    def test_linking_drops_an_unproven_password_and_signs_out_its_sessions(self):
+        # Pre-account-takeover: someone opened a password account with Noa's address
+        # (signup does not verify email) and is signed in. Noa then uses Google.
+        squatter = TestClient(app)
+        signup = squatter.post("/auth/register", json={"email": "noa@bakery.example", "password": PASSWORD})
+        self.assertEqual(signup.status_code, 200)
+        self.assertEqual(squatter.get("/auth/me").status_code, 200)
+
+        query = self.start()
+        self.callback(query)
+        me = self.client.get("/auth/me").json()
+        self.assertTrue(me["google_linked"])
+        self.assertFalse(me["has_password"])
+        # The squatter's session and password no longer work.
+        self.assertEqual(squatter.get("/auth/me").status_code, 401)
         fresh = TestClient(app)
         login = fresh.post("/auth/login", json={"email": "noa@bakery.example", "password": PASSWORD})
-        self.assertEqual(login.status_code, 200)
+        self.assertEqual(login.status_code, 401)
+        # Noa can set a password afterwards.
+        self.assertEqual(self.client.post("/auth/password/set", json={"new_password": "noa-own-pass-9"}).status_code, 200)
+
+    def test_changing_the_password_signs_out_other_sessions(self):
+        self.seed_password_user()
+        phone, laptop = TestClient(app), TestClient(app)
+        for client in (phone, laptop):
+            self.assertEqual(
+                client.post("/auth/login", json={"email": "noa@bakery.example", "password": PASSWORD}).status_code, 200
+            )
+        changed = laptop.post("/auth/password", json={"current_password": PASSWORD, "new_password": "brand-new-pass-7"})
+        self.assertEqual(changed.status_code, 200)
+        self.assertEqual(laptop.get("/auth/me").status_code, 200)
+        self.assertEqual(phone.get("/auth/me").status_code, 401)
 
     def test_linked_user_is_found_by_google_id_after_an_email_change(self):
         self.seed_password_user(email="old@bakery.example", google_sub="google-sub-123")

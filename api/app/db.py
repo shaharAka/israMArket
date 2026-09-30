@@ -60,6 +60,7 @@ def migrate_db():
             # Sign in with Google (routers/auth.py). SQLite cannot add a UNIQUE column, so
             # the uniqueness is the index below, the same one create_all makes.
             ("google_sub", "VARCHAR(255)"),
+            ("session_epoch", "INTEGER NOT NULL DEFAULT 0"),
         ):
             if col not in user_cols:
                 conn.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {col} {col_type}")

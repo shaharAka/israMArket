@@ -20,6 +20,10 @@ class User(Base):
     # Sign-in matches on it first, so a later change of the Google address still finds the
     # account. Unique; NULL for password-only accounts. See routers/auth.google_callback.
     google_sub: Mapped[str | None] = mapped_column(String(255), unique=True, index=True, nullable=True)
+    # Sessions carry this number (the token's `ep`); raising it signs out every session
+    # issued before. Raised when a password changes and when a Google identity takes over
+    # an email-only account (routers/auth._google_user).
+    session_epoch: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     # The free first month (docs/onboarding-v2.md, Revision 7 B). Account-level, not
     # per business: the trial is what the owner signed up for, and a second business does
