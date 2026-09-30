@@ -360,3 +360,36 @@ Owner sets the WhatsApp number once; we create per-channel/per-post short links
 clicks (bot/preview user-agents filtered, minimal logging — no IP stored, hashed day-bucket
 only), show counts per source on Results, and put the right link into each post's CTA /
 publishing kit and the bio suggestion.
+
+## Revision 8 — the experience principles (owner, 2026-09-30) — supersedes Rev 7 B's journey order
+
+**The job:** "Help my business grow without me becoming a marketer — tell me what to do
+this week, do most of it for me, and show me honestly that it's working." The plan is the
+spine; posts are its tasks, results are its measures, research is how it learns.
+
+**Rhythms, not a dashboard.** Weekly heartbeat (~5 min: the week's focus, what we
+learned, what needs a decision), monthly review (~15 min: month vs baseline & hypotheses →
+next month), quarterly checkpoint, and event-driven nudges (one message, one action). The
+home tab is **"השבוע"** (not "היום").
+
+**Foundations before posts** (owner: "posts require understanding of the business, media
+from the user, explanations, decisions; connecting the integrations for measurement is
+more important at the first step, otherwise there is no way to measure"). The first month:
+1. **שבוע 1 · מדידה** — connect Instagram, site data (or confirm detected tags), the WhatsApp
+   link, the Google business card; capture the **baseline** (from integrations where possible,
+   else the owner's numbers). Aha: "המדידה עובדת" — first real numbers against the KPI.
+2. **שבוע 2 · חומרי גלם** — photos/videos; **which products/services to feature, in what
+   order and why** (stock, margin, season — the owner decides); a quick voice check.
+3. **שבוע 3 · תוכן ראשון** — only now the first posts are written (plan + their products +
+   their media); approve and publish with tracked links.
+4. **שבוע 4 · מודדים ומתאימים** — first results vs baseline; hypothesis status; build month 2;
+   the month review = the decision to continue.
+
+**Generation after signup builds the month's structure only** (weeks, focus, content mix,
+budget lines, KPI) — **no posts**. Posts are generated when the owner completes the week-2
+foundations ("להתחיל לכתוב את הפוסטים"), per week, from their product picks and media.
+
+**Every screen answers "how does this serve the plan?"**: posts show their content type
+and plan link; results show which hypothesis they confirm; research shows what it
+changed. A **hypothesis tracker** (being measured / confirmed / not confirmed → what
+changed) closes the loop. Later: weekly brief + monthly report by email, then WhatsApp.
