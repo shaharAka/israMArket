@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { BACKUP_NOTE, CONTACT_EMAIL, GEMINI_PAID_TIER, HOSTING_NOTE } from "@/lib/company";
 import { BrandMark } from "@/lib/icons";
-import { TRUST_TILES } from "@/components/landing/Security";
+import { TRUST_PROMISES } from "@/components/landing/Security";
 import "@/components/landing/landing.css";
 
 export const metadata: Metadata = {
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * The precise version of the landing page's security tiles.
+ * The precise version of the landing page's privacy promises.
  *
  * Rule for this page: state only what the code does, name where it does it (in the
  * comments), and leave out anything not yet decided (hosting location, backup retention)
@@ -127,16 +127,11 @@ export default function SecurityPage() {
         </div>
 
         <Section id="short" title="בקצרה">
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {TRUST_TILES.map(({ icon: Icon, title, line }) => (
-              <li key={title} className="flex gap-3 rounded-lg border border-[var(--rule)] bg-white p-4">
-                <span aria-hidden className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--primary)]">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <div>
-                  <p className="font-black leading-6">{title}</p>
-                  <p className="mt-0.5 text-sm leading-6 text-[var(--ink-soft)]">{line}</p>
-                </div>
+          <ul className="grid gap-x-8 sm:grid-cols-2">
+            {TRUST_PROMISES.map(({ title, line }) => (
+              <li key={title} className="border-t border-[var(--rule)] py-4">
+                <h3 className="text-base font-bold leading-6">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{line}</p>
               </li>
             ))}
           </ul>

@@ -1,54 +1,45 @@
 import Link from "next/link";
-import type { ComponentType, CSSProperties } from "react";
-import { IconEyeOff, IconGlobe, IconLock, IconNoSale, IconShield, IconTrash } from "@/lib/icons";
-
-type Tile = { icon: ComponentType<{ className?: string }>; title: string; line: string };
+type Promise = { title: string; line: string };
 
 /**
- * "המידע של העסק שלכם": six plain promises, each one checked against the code. Every tile
- * names what backs it; /security has the precise version. Do not add a tile without a
+ * "המידע של העסק שלכם": six plain promises, each one checked against the code.
+ * /security has the precise version. Do not add a promise without a
  * line of code (or a written commitment) behind it.
  */
-export const TRUST_TILES: Tile[] = [
+export const TRUST_PROMISES: Promise[] = [
   {
     // api/app/services/meta.py META_SCOPES: no instagram_content_publish / pages_manage_posts
     // (listed separately in services/publish.py PUBLISH_SCOPES and never requested).
     // api/app/services/ga4.py GA4_SCOPES: analytics.readonly + webmasters.readonly.
-    icon: IconShield,
     title: "לא מפרסמים בשמכם",
     line: "לא ביקשנו הרשאה לפרסם, לערוך או למחוק באינסטגרם, בפייסבוק או בגוגל. אתם מפרסמים.",
   },
   {
     // Connecting goes through facebook.com / accounts.google.com (meta.authorization_url,
     // ga4.authorization_url); we receive a token, never the password.
-    icon: IconEyeOff,
     title: "לא רואים את הסיסמה לאינסטגרם",
     line: "את אינסטגרם, פייסבוק וגוגל מחברים במסך שלהם. הסיסמה לא עוברת דרכנו.",
   },
   {
     // api/app/security.py: hash_password (bcrypt), encrypt_secret (Fernet), used for every
     // stored Google/Meta token (routers/integrations.py callbacks, encrypt_page_tokens).
-    icon: IconLock,
     title: "סיסמאות וחיבורים מוגנים",
     line: "הסיסמה שלכם נשמרת בצורה שאי אפשר לשחזר. החיבורים לגוגל ולפייסבוק נשמרים מוצפנים.",
   },
   {
     // services/research.py + services/scraper.py: public pages through netguard, no
     // cookies or logins; Instagram only via Meta's API on the owner's own connection.
-    icon: IconGlobe,
     title: "קוראים רק מה שפתוח לכולם",
     line: "אתרים קוראים רק בעמודים ציבוריים. אינסטגרם ופייסבוק רק דרך החיבור שלכם.",
   },
   {
     // A commitment. Nothing in the app collects advertising data or sends data to ad networks.
-    icon: IconNoSale,
     title: "המידע לא למכירה",
     line: "לא מוכרים ולא משתפים מידע עם מפרסמים.",
   },
   {
     // DELETE /integrations/{provider} deletes the row with its tokens;
     // DELETE /auth/account (services/account_deletion.py, tests/test_account_deletion.py).
-    icon: IconTrash,
     title: "מוחקים מתי שרוצים",
     line: "ניתוק של חיבור מוחק אצלנו את הגישה. אפשר למחוק את החשבון וכל המידע בכל רגע.",
   },
@@ -74,25 +65,26 @@ export function Security() {
           </Link>
         </div>
 
-        <ul className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10 lg:grid-cols-3">
-          {TRUST_TILES.map(({ icon: Icon, title, line }, index) => (
-            <li
-              key={title}
-              data-rv
-              style={{ "--rv-i": index % 3 } as CSSProperties}
-              className="lp-lift flex gap-4 rounded-lg border border-[var(--rule)] bg-[var(--paper)] p-4 sm:p-6"
-            >
-              <span aria-hidden className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--primary)]">
-                <Icon className="h-6 w-6" />
-              </span>
-              <div className="min-w-0">
-                <h3 className="text-base font-black leading-6 text-[var(--ink)] sm:text-lg">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)] sm:text-[15px]">{line}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+        <div className="lp-privacy-access mt-8 sm:mt-10">
+          <section className="lp-privacy-reading" aria-labelledby="privacy-access-title">
+            <h3 id="privacy-access-title" className="lp-privacy-label">הגישה למידע</h3>
+            <Promises items={[TRUST_PROMISES[3], TRUST_PROMISES[1]]} />
+          </section>
+          <section className="lp-privacy-control" aria-labelledby="privacy-control-title">
+            <h3 id="privacy-control-title" className="lp-privacy-label">השליטה נשארת אצלכם</h3>
+            <Promises items={[TRUST_PROMISES[0], TRUST_PROMISES[5]]} />
+          </section>
+        </div>
+        <div className="lp-privacy-storage">
+          <Promises items={[TRUST_PROMISES[2], TRUST_PROMISES[4]]} />
+        </div>
       </div>
     </section>
   );
+}
+
+function Promises({ items }: { items: Promise[] }) {
+  return <ul>{items.map(item => <li key={item.title}>
+    <h4>{item.title}</h4><p>{item.line}</p>
+  </li>)}</ul>;
 }
