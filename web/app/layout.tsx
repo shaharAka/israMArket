@@ -19,7 +19,9 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="he" dir="rtl" className={`${heebo.variable} h-full antialiased`}>
+    // suppressHydrationWarning: the landing draft marks <html> before the first paint
+    // (data-lv2) so its scroll-driven start states never flash. Only affects this element.
+    <html lang="he" dir="rtl" className={`${heebo.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full bg-paper text-ink">{children}</body>
     </html>
   );

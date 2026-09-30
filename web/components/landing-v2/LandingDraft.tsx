@@ -1,17 +1,21 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
+import { DemoLink } from "@/components/landing/DemoLink";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
 import { MONTH, PART_SUMMARY, STORY, TRUST } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
+import { RouteHero } from "./RouteHero";
 import { ScrollScenes } from "./ScrollScenes";
 import "./lv2.css";
 
 /**
- * Landing draft: one idea per screen, large type, white space, and one pinned story in
- * which the example plan fills in as you scroll. Motion follows the scroll position
- * (ScrollScenes). One dark button on the page, in the hero; every later ask is quiet.
+ * Landing draft, in the product's own direction (blue and sun, the storefront, the plan
+ * as a route). The hero is a navigation map that draws the route as you scroll; then the
+ * plan fills in, the weekly screen, the monthly review, trust, price, questions.
+ *
+ * One filled button on the page (the hero's). Motion follows the scroll (ScrollScenes).
  */
 
 const FAQ: { q: string; a: string }[] = [
@@ -31,17 +35,23 @@ const FAQ: { q: string; a: string }[] = [
   },
 ];
 
+/** Set before the first paint, so the scroll-driven start states never flash. */
+const EARLY = 'document.documentElement.dataset.lv2="on"';
+
 export function LandingDraft() {
   return (
     <div className="lv2">
+      <script dangerouslySetInnerHTML={{ __html: EARLY }} />
+
       <header className="lv2-nav">
         <div className="lv2-wrap lv2-nav-row">
           <Link href="/" className="lv2-brand" aria-label="ישראמארקט">
-            <BrandMark className="h-7 w-7 text-[var(--lv2-ink)]" />
+            <BrandMark className="h-8 w-8 text-[var(--lv2-blue)]" />
             <span>ישראמארקט</span>
           </Link>
           <nav aria-label="בעמוד הזה" className="lv2-nav-links">
             <a href="#story">איך זה עובד</a>
+            <a href="#week">השבוע שלכם</a>
             <a href="#price">מחיר</a>
             <a href="#faq">שאלות</a>
           </nav>
@@ -55,39 +65,43 @@ export function LandingDraft() {
       </header>
 
       <main>
-        {/* Hero: one sentence, one ask, and the weekly home straightening as you scroll. */}
-        <section className="lv2-hero" data-scene="hero" aria-labelledby="lv2-title">
-          <div className="lv2-wrap lv2-hero-text">
-            <p className="lv2-eyebrow lv2-in" style={{ "--d": 0 } as CSSProperties}>
-              שיווק לעסקים קטנים
-            </p>
-            <h1 id="lv2-title" className="lv2-display lv2-in" style={{ "--d": 1 } as CSSProperties}>
-              תוכנית שיווק אמיתית
-              <br />
-              לעסק שלכם.
-            </h1>
-            <p className="lv2-lead lv2-in" style={{ "--d": 2 } as CSSProperties}>
-              מטרה עם מספרים, מסלול לשלושה חודשים, ובכל שבוע יודעים מה הצעד הבא ולמה.
-            </p>
-            <div className="lv2-hero-cta lv2-in" style={{ "--d": 3 } as CSSProperties}>
-              <Link href="/start" className="lv2-btn">
-                להתחיל בחינם
-                <IconArrowLeft className="h-4 w-4" />
-              </Link>
-              <a href="#story" className="lv2-link">
-                איך זה עובד
-              </a>
+        {/* Hero, pinned on desktop: the text stays, the route draws itself on the map. */}
+        <section className="lv2-hero" data-scene="track" data-steps="1" aria-labelledby="lv2-title">
+          <div className="lv2-hero-pin">
+            <div className="lv2-wrap lv2-hero-grid">
+              <div className="lv2-hero-text">
+                <p className="lv2-eyebrow lv2-in" style={{ "--d": 0 } as CSSProperties}>
+                  שיווק לעסקים קטנים
+                </p>
+                <h1 id="lv2-title" className="lv2-display lv2-in" style={{ "--d": 1 } as CSSProperties}>
+                  תוכנית שיווק שמתאימה לעסק שלכם.
+                </h1>
+                <p className="lv2-lead lv2-in" style={{ "--d": 2 } as CSSProperties}>
+                  מסלול לשלושה חודשים, עם מטרה במספרים. כל שבוע יודעים מה הצעד הבא, ורואים אם מתקרבים ליעד.
+                </p>
+                <div className="lv2-hero-cta lv2-in" style={{ "--d": 3 } as CSSProperties}>
+                  <Link href="/start" className="lv2-btn">
+                    להתחיל
+                    <IconArrowLeft className="h-4 w-4" />
+                  </Link>
+                  <DemoLink className="lv2-btn-quiet lv2-btn-quiet--lg" />
+                </div>
+                <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
+                  אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
+                </p>
+              </div>
+              <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
+                <RouteHero />
+              </div>
             </div>
-            <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
-              {TRIAL_LABEL} · בלי כרטיס אשראי
+            <p className="lv2-scroll-hint" aria-hidden>
+              <span />
+              גללו כדי לראות את המסלול
             </p>
-          </div>
-          <div className="lv2-hero-stage" aria-hidden>
-            <HeroWeek className="lv2-hero-sheet" />
           </div>
         </section>
 
-        {/* The story, pinned (desktop): the text changes, the plan fills in. */}
+        {/* How the plan is built, pinned (desktop): the text changes, the plan folds open. */}
         <section id="story" className="lv2-story" data-scene="track" data-steps={STORY.length} aria-label="איך בונים את התוכנית">
           <div className="lv2-story-pin">
             <div className="lv2-wrap lv2-story-grid">
@@ -133,7 +147,7 @@ export function LandingDraft() {
           </div>
         </section>
 
-        {/* The same story, stacked (phones). */}
+        {/* The same story, stacked (phones and tablets). */}
         <section className="lv2-story-stacked" aria-label="איך בונים את התוכנית">
           <div className="lv2-wrap">
             <p className="lv2-eyebrow">איך בונים את התוכנית</p>
@@ -156,14 +170,28 @@ export function LandingDraft() {
           </div>
         </section>
 
-        {/* The monthly review, on dark: what worked, what didn't, what changes. */}
-        <section className="lv2-week" aria-labelledby="lv2-month-title">
+        {/* The weekly screen: what the owner opens every week. */}
+        <section id="week" className="lv2-weekly" aria-labelledby="lv2-week-title">
+          <div className="lv2-wrap lv2-weekly-head">
+            <p className="lv2-eyebrow">השבוע שלכם</p>
+            <h2 id="lv2-week-title" className="lv2-h2">
+              כל שבוע, צעד אחד ברור.
+            </h2>
+            <p className="lv2-lead">מה עושים השבוע ולמה, הפוסטים שמחכים לאישור, והמספרים שמראים אם מתקרבים.</p>
+          </div>
+          <div className="lv2-weekly-stage" data-scene="view">
+            <HeroWeek className="lv2-weekly-card" />
+          </div>
+        </section>
+
+        {/* The monthly review, on the brand blue. */}
+        <section className="lv2-month" aria-labelledby="lv2-month-title">
           <div className="lv2-wrap" data-scene="view">
-            <p className="lv2-eyebrow lv2-eyebrow--dark">בסוף כל חודש</p>
-            <h2 id="lv2-month-title" className="lv2-h2 lv2-week-title">
+            <p className="lv2-eyebrow lv2-eyebrow--sun">בסוף כל חודש</p>
+            <h2 id="lv2-month-title" className="lv2-h2 lv2-month-title">
               מה שלמדנו משנה את החודש הבא.
             </h2>
-            <dl className="lv2-week-rows">
+            <dl className="lv2-month-rows">
               {MONTH.map((row, j) => (
                 <div key={row.k} style={{ "--j": j } as CSSProperties}>
                   <dt>{row.k}</dt>
@@ -171,7 +199,7 @@ export function LandingDraft() {
                 </div>
               ))}
             </dl>
-            <p className="lv2-fine lv2-fine--dark">דוגמה מסיכום החודש באפליקציה. אתם מחליטים מה משנים.</p>
+            <p className="lv2-fine lv2-fine--on-blue">דוגמה מסיכום החודש באפליקציה. אתם מחליטים מה משנים.</p>
           </div>
         </section>
 
@@ -201,11 +229,9 @@ export function LandingDraft() {
               <span>{PRICE_ILS}</span>
               <small>₪ לחודש</small>
             </h2>
-            <p className="lv2-lead">
-              {TRIAL_LABEL}. בלי כרטיס אשראי ובלי התחייבות.
-            </p>
+            <p className="lv2-lead">{TRIAL_LABEL}. בלי כרטיס אשראי ובלי התחייבות.</p>
             <p className="lv2-fine">{VAT_NOTE}</p>
-            <Link href="/start" className="lv2-btn-quiet lv2-btn-quiet--lg">
+            <Link href="/start" className="lv2-btn-quiet lv2-btn-quiet--lg lv2-price-cta">
               להתחיל עם העסק שלכם
             </Link>
           </div>
@@ -214,7 +240,7 @@ export function LandingDraft() {
         <section id="faq" className="lv2-faq" aria-labelledby="lv2-faq-title">
           <div className="lv2-wrap lv2-faq-grid">
             <h2 id="lv2-faq-title" className="lv2-h2">
-              שאלות.
+              שאלות ששואלים אותנו
             </h2>
             <div>
               {FAQ.map(({ q, a }) => (

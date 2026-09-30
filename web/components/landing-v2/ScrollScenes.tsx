@@ -15,6 +15,10 @@ import { useEffect } from "react";
  *   step when current, 1 past).
  * - `[data-count-to]`: text counts from `data-count-from` to `data-count-to` with the
  *   nearest `--pp` host.
+ * - A scene holding `[data-route-path]` (the hero map) gets `--q`, how far along the route
+ *   (from the pinned scroll on desktop, from the map's own position on phones); the puck
+ *   `[data-route-puck]` drives and turns along the path, stops `[data-at]` get
+ *   `data-reached`, and the `[data-next]` step matching the stops passed gets `data-on`.
  *
  * The server HTML is the finished state (numbers at their final value, everything
  * visible), so nothing depends on JavaScript. CSS only hides "future" parts once this has
@@ -29,6 +33,22 @@ export function ScrollScenes() {
     const counters = Array.from(document.querySelectorAll<HTMLElement>("[data-count-to]"));
     const progressOf = new WeakMap<Element, number>();
     let frame = 0;
+
+    const routes = scenes.flatMap((scene) => {
+      const path = scene.querySelector<SVGPathElement>("[data-route-path]");
+      if (!path) return [];
+      return [
+        {
+          scene,
+          path,
+          length: path.getTotalLength(),
+          puck: scene.querySelector<SVGGElement>("[data-route-puck]"),
+          map: scene.querySelector<HTMLElement>(".lv2-map"),
+          stops: Array.from(scene.querySelectorAll<Element>("[data-at]")),
+          next: Array.from(scene.querySelectorAll<HTMLElement>("[data-next]")),
+        },
+      ];
+    });
 
     const clamp = (value: number) => Math.min(1, Math.max(0, value));
     const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
@@ -51,6 +71,7 @@ export function ScrollScenes() {
           const within = still ? 1 : clamp(position - step);
           scene.dataset.step = String(step);
           scene.style.setProperty("--p", p.toFixed(4));
+          progressOf.set(scene, p);
           for (const part of Array.from(scene.querySelectorAll<HTMLElement>("[data-i]"))) {
             const i = Number(part.dataset.i);
             const state = i < step ? "past" : i === step ? "current" : "future";
@@ -70,6 +91,41 @@ export function ScrollScenes() {
         scene.style.setProperty("--p", p.toFixed(4));
         scene.style.setProperty("--pp", p.toFixed(4));
         progressOf.set(scene, p);
+      }
+
+      for (const route of routes) {
+        const run = route.scene.getBoundingClientRect().height - vh;
+        let q = 1;
+        if (!still) {
+          if (route.scene.dataset.scene === "track" && run > 40) {
+            q = clamp((progressOf.get(route.scene) ?? 0) / 0.85);
+          } else if (route.map) {
+            const box = route.map.getBoundingClientRect();
+            q = clamp((vh * 0.92 - box.top) / (box.height * 0.95));
+          }
+        }
+        route.scene.style.setProperty("--q", q.toFixed(4));
+        if (route.puck) {
+          const here = route.path.getPointAtLength(route.length * q);
+          const ahead = route.path.getPointAtLength(Math.min(route.length, route.length * q + 2));
+          const behind = route.path.getPointAtLength(Math.max(0, route.length * q - 2));
+          const from = q >= 0.999 ? behind : here;
+          const to = q >= 0.999 ? here : ahead;
+          const angle = (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
+          route.puck.setAttribute("transform", `translate(${here.x.toFixed(1)} ${here.y.toFixed(1)}) rotate(${angle.toFixed(1)})`);
+        }
+        let passed = 0;
+        for (const stop of route.stops) {
+          const reached = q >= Number(stop.getAttribute("data-at"));
+          if (reached && stop.hasAttribute("data-stop") && stop.tagName.toLowerCase() === "div") passed += 1;
+          const value = reached ? "true" : "false";
+          if (stop.getAttribute("data-reached") !== value) stop.setAttribute("data-reached", value);
+        }
+        const current = q >= 0.985 ? route.next.length - 1 : Math.min(passed, route.next.length - 1);
+        route.next.forEach((item, i) => {
+          if (i === current) item.dataset.on = "true";
+          else delete item.dataset.on;
+        });
       }
 
       for (const counter of counters) {
