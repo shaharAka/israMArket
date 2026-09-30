@@ -93,6 +93,7 @@ export function StepShell({
   direction,
   stickyAction = false,
   reassure,
+  actionNote,
 }: {
   title: string;
   why: string;
@@ -112,6 +113,8 @@ export function StepShell({
   focus: boolean;
   direction: "fwd" | "back";
   stickyAction?: boolean;
+  /** A short live line right above the primary button (e.g. "מה השתנה"). */
+  actionNote?: React.ReactNode;
 }) {
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
@@ -148,6 +151,7 @@ export function StepShell({
             : "space-y-1 pt-1"
         }
       >
+        {actionNote}
         <PrimaryButton disabled={primaryDisabled}>{primary}</PrimaryButton>
         {skip && onSkip ? (
           <div className="flex justify-center">
@@ -327,6 +331,14 @@ export function IconButton({
 /** "ל" joins a Hebrew name directly (למשפחות) and takes a maqaf before a Latin one (ל־Tom's). */
 export function withLamed(name: string): string {
   return /^[֐-׿]/.test(name) ? `ל${name}` : `ל־${name}`;
+}
+
+/**
+ * "3–4" with an en dash reads "4–3" in a Hebrew line (the dash is bidi-neutral, so the
+ * digits split into two runs). A hyphen keeps the range one left-to-right number run.
+ */
+export function rangeSafe(text: string): string {
+  return text.replace(/(\d)\s?[–—]\s?(\d)/g, "$1-$2");
 }
 
 /** Dark text on a light colour, white on a dark one. */

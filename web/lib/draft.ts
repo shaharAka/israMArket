@@ -6,14 +6,15 @@
  * wrapped: private mode, blocked storage or a full quota must never break the flow, it
  * only loses the resume-on-refresh.
  *
- * Mock mode. The four endpoints are built in parallel with this screen. When they are not
- * there yet (404), or in demo mode, or with NEXT_PUBLIC_DRAFT_MOCK=1 / ?mock=1, the three
- * public calls answer from the fixtures below so the conversation can be walked end to
- * end. `from-draft` is never faked against a real account: on 404 it falls back to the
+ * Mock mode. Only with NEXT_PUBLIC_DRAFT_MOCK=1 or ?mock=1 do the public calls answer from
+ * the fixtures below, so the conversation can be walked end to end while the API is built
+ * in parallel. Never implicitly: a 404 from a public endpoint is shown as a failure.
+ * `from-draft` is never faked against a real account: on 404 it falls back to the
  * existing profile + audiences endpoints, which is what it will do on the server anyway.
  */
 import {
   ApiError,
+  api,
   endpoints,
   type Business,
   type BusinessModel,
@@ -28,6 +29,7 @@ import {
   type SuggestedAudience,
 } from "./api";
 import { defaultGoalFor, goalsFor } from "./businessModel";
+import { clearPending, uploadPending, type UploadOutcome } from "./pendingUploads";
 
 /* --------------------------------- Types --------------------------------- */
 
@@ -84,11 +86,97 @@ export type FlowState = {
   plan?: PlanPreview | null;
   planFor?: string;
   chosenDirection?: number | null;
-  chosenIdea?: number | null;
+  /** "משהו אחר? ספרו לנו" at the direction step: the owner's own words. They revise the
+   *  two directions once, and travel with every strategy request after that. */
+  directionFeedback?: string;
+  /** The one-page strategy for the chosen direction, and what it was computed from. */
+  strategy?: Strategy | null;
+  strategyFor?: string;
+  /** What the owner changed on the strategy page. Never prefilled by us. */
+  strategyInputs?: StrategyInputs;
+  /** The 3 week-1 posts, and the strategy they were written from. */
+  samplePosts?: SamplePost[] | null;
+  samplePostsFor?: string;
+  /** Per sample post (by position): what the owner chose for its photo. An uploaded file
+   *  itself lives in IndexedDB (`pendingUploads.ts`), not here. */
+  postPhotos?: Record<number, PostPhotoChoice>;
   modelConfirmed?: boolean;
   /** "עוד לא ניסינו" at the tried step: an answer, not a skip. */
   triedNone?: boolean;
 };
+
+/* ------------------------ Strategy and sample posts ------------------------ */
+
+/** How many posts a week, as the owner picks it on the strategy page. */
+export type Cadence = "1-2" | "3-4" | "5+";
+
+/** What the owner shaped on the strategy page. Only what they touched is set. */
+export type StrategyInputs = {
+  target?: string;
+  cadence?: Cadence;
+  primary_audience?: string;
+  pillars_removed?: string[];
+  feedback?: string;
+};
+
+export type StrategyInputKey = keyof StrategyInputs;
+
+export type StrategyMeasure = { name_he: string; how_he: string; available_now: boolean; needs_he?: string };
+
+/**
+ * `from_insight` (optional, not in the contract yet): the index in the plan preview's
+ * insights that a block came from, so "למה?" can quote the finding itself.
+ */
+export type StrategyPillar = {
+  key: string;
+  title: string;
+  description_he: string;
+  example_he: string;
+  why_he: string;
+  from_insight?: number;
+};
+
+/** `POST /public/strategy` (docs/onboarding-v2.md, Revision 4). */
+export type Strategy = {
+  objective: { text_he: string; why_he: string; from_insight?: number };
+  success: { owner_target?: string; measures: StrategyMeasure[]; first_check_he: string };
+  angle: { text_he: string; why_he: string; from_insight?: number };
+  audiences: { name: string; role: "primary" | "secondary"; message_he: string }[];
+  pillars: StrategyPillar[];
+  channels: { network: string; role_he: string; cadence_he: string; why_he: string; from_insight?: number }[];
+  offer: { cta_he: string; mechanism_he: string; why_he: string; from_insight?: number };
+  month_plan: { week: 1 | 2 | 3 | 4; focus_he: string; event_he?: string }[];
+  quarter: { month_label: string; direction_he: string }[];
+  assumptions: string[];
+  changed_he?: string;
+  cached: boolean;
+};
+
+/** `POST /public/sample-posts`: one of the 3 real week-1 posts. */
+export type SamplePost = {
+  title: string;
+  format: PostIdea["format"];
+  hook: string;
+  caption: string;
+  cta: string;
+  overlay_headline: string;
+  template: string;
+  badge?: string;
+  pillar_key: string;
+  photo: { site_url?: string; hint_he: string };
+  why: PostIdea["why"];
+};
+
+export type PostPhotoChoice =
+  | { kind: "upload"; name: string }
+  /** "שה-AI ייצור אחר כך": marked only, nothing is generated before signup. */
+  | { kind: "ai_later" };
+
+export const CADENCE_OPTIONS: { key: Cadence; label: string }[] = [
+  { key: "1-2", label: "1-2 בשבוע" },
+  { key: "3-4", label: "3-4 בשבוע" },
+  { key: "5+", label: "5+ בשבוע" },
+];
 
 export const DRAFT_KEY = "isramarket_draft_v2";
 const MOCK_KEY = "isramarket_draft_mock";
@@ -783,16 +871,7 @@ export async function suggestAudiences(draft: OnboardingDraft): Promise<Suggeste
  */
 export async function fetchPlanPreview(draft: OnboardingDraft, brand: PublicBrand | null): Promise<PlanPreview> {
   return withMock(
-    async () => {
-      for (let attempt = 0; ; attempt += 1) {
-        try {
-          return await endpoints.publicPlanPreview(draft);
-        } catch (err) {
-          if (!(err instanceof ApiError && err.status === 504) || attempt >= 2) throw err;
-          await wait(1500);
-        }
-      }
-    },
+    () => retrying(() => endpoints.publicPlanPreview(draft)),
     async () => {
       await wait(4200);
       return mockPlanPreview(draft, brand);
@@ -820,21 +899,183 @@ export async function validateLinks(links: OnboardingDraft["links"]): Promise<Li
   );
 }
 
+/** The long model calls: a 504 means the work finished into the cache, so ask again (twice at most). */
+async function retrying<T>(call: () => Promise<T>): Promise<T> {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await call();
+    } catch (err) {
+      if (!(err instanceof ApiError && err.status === 504) || attempt >= 2) throw err;
+      await wait(1500);
+    }
+  }
+}
+
 /**
- * Turn the draft into the business. On 404 (the endpoint is not deployed yet) the same
- * result is reached through the existing endpoints: the profile, then the audiences.
- * The brand is read later by /onboarding when there is a site.
+ * "משהו אחר? ספרו לנו": the two directions again, with the owner's words.
+ * Not in the Revision 4 contract yet: sent as `feedback` next to the draft (the API
+ * ignores unknown keys today, so an unchanged answer is possible and handled by the
+ * screen). The same words always travel to `/public/strategy` as `inputs.feedback`.
  */
-export async function saveDraftToAccount(
+export async function revisePlan(draft: OnboardingDraft, feedback: string, brand: PublicBrand | null): Promise<PlanPreview> {
+  return withMock(
+    () =>
+      retrying(() =>
+        api<PlanPreview>("/public/plan-preview", { method: "POST", body: JSON.stringify({ draft, feedback }) }),
+      ),
+    async () => {
+      await wait(2600);
+      return mockRevisedPlan(draft, brand, feedback);
+    },
+  );
+}
+
+/** The chosen direction in the shape the API takes. */
+export function chosenDirectionOf(flow: FlowState): PlanDirection | null {
+  const index = flow.chosenDirection;
+  return flow.plan && index != null ? (flow.plan.directions[index] ?? null) : null;
+}
+
+/** What a strategy was computed from, apart from the owner's adjustments. */
+export function strategyBase(flow: FlowState): string {
+  return signature([draftForApi(flow), chosenDirectionOf(flow), flow.directionFeedback?.trim() || ""]);
+}
+
+/** The inputs as sent: the direction's feedback always rides along. */
+export function inputsForApi(flow: FlowState): StrategyInputs {
+  const raw = flow.strategyInputs ?? {};
+  const out: StrategyInputs = {};
+  if (raw.target?.trim()) out.target = raw.target.trim().slice(0, 120);
+  if (raw.cadence) out.cadence = raw.cadence;
+  if (raw.primary_audience?.trim()) out.primary_audience = raw.primary_audience.trim();
+  if (raw.pillars_removed?.length) out.pillars_removed = raw.pillars_removed.slice(-8);
+  const feedback = flow.directionFeedback?.trim();
+  if (feedback) out.feedback = feedback.slice(0, 400);
+  return out;
+}
+
+/**
+ * `POST /public/strategy`. `changed` (not in the contract, ignored if unknown) names the
+ * inputs this request changes, so the API can say "מה השתנה" about exactly those.
+ */
+export async function fetchStrategy(
   draft: OnboardingDraft,
-  chosenDirection: PlanDirection | null,
-  chosenIdea: PostIdea | null,
-): Promise<Business | null> {
+  direction: PlanDirection,
+  inputs: StrategyInputs,
+  changed: StrategyInputKey[] = [],
+  context: { insights?: PlanInsight[]; previous?: Strategy | null } = {},
+): Promise<Strategy> {
+  return withMock(
+    () =>
+      retrying(() =>
+        api<Strategy>("/public/strategy", {
+          method: "POST",
+          body: JSON.stringify({ draft, direction, inputs, ...(changed.length ? { changed } : {}) }),
+        }),
+      ),
+    async () => {
+      await wait(changed.length ? 1400 : 3800);
+      return mockStrategy(draft, direction, inputs, changed, context.insights ?? [], context.previous ?? null);
+    },
+  );
+}
+
+/** The strategy as sent back to the API: without the per-response fields. */
+export function strategyForApi(strategy: Strategy): Omit<Strategy, "cached" | "changed_he"> {
+  const rest: Partial<Strategy> = { ...strategy };
+  delete rest.cached;
+  delete rest.changed_he;
+  return rest as Omit<Strategy, "cached" | "changed_he">;
+}
+
+/** `POST /public/sample-posts`: the 3 real week-1 posts for this strategy. */
+export async function fetchSamplePosts(
+  draft: OnboardingDraft,
+  direction: PlanDirection,
+  strategy: Strategy,
+): Promise<SamplePost[]> {
+  return withMock(
+    async () =>
+      (
+        await retrying(() =>
+          api<{ posts: SamplePost[] }>("/public/sample-posts", {
+            method: "POST",
+            body: JSON.stringify({ draft, direction, strategy: strategyForApi(strategy) }),
+          }),
+        )
+      ).posts,
+    async () => {
+      await wait(3600);
+      return mockSamplePosts(draft, direction, strategy);
+    },
+  );
+}
+
+/** What the sample posts were written from. */
+export function samplePostsBase(flow: FlowState): string {
+  return signature([draftForApi(flow), chosenDirectionOf(flow), flow.strategy ? strategyForApi(flow.strategy) : null]);
+}
+
+/** How a sample post's photo is meant to be filled, as `from-draft` receives it. */
+export type ChosenPostPhoto = SamplePost["photo"] & { choice: "site" | "upload" | "ai_later" | "none" };
+
+export function chosenPostsForApi(flow: FlowState): (SamplePost & { photo: ChosenPostPhoto })[] {
+  return (flow.samplePosts ?? []).slice(0, 3).map((post, index) => {
+    const pick = flow.postPhotos?.[index];
+    const choice: ChosenPostPhoto["choice"] =
+      pick?.kind === "upload" ? "upload" : pick?.kind === "ai_later" ? "ai_later" : post.photo.site_url ? "site" : "none";
+    return { ...post, photo: { ...post.photo, choice } };
+  });
+}
+
+/** Library tags for a photo the owner chose for a sample post (the asset API has no post link yet). */
+export function photoTagsFor(flow: FlowState, postIndex: number): { description: string; tags: string[] } {
+  const post = flow.samplePosts?.[postIndex];
+  const pillar = post ? flow.strategy?.pillars.find((p) => p.key === post.pillar_key) : null;
+  const tags = ["מההרשמה", `פוסט ${postIndex + 1} בשבוע הראשון`];
+  if (pillar?.title) tags.push(pillar.title.slice(0, 40));
+  const description = post ? `${post.title}. ${post.photo.hint_he}`.slice(0, 280) : "";
+  return { description, tags };
+}
+
+export type SaveOutcome = { business: Business | null; photos: UploadOutcome };
+
+/**
+ * Turn the flow into the business: `from-draft` with the direction, the strategy and the
+ * sample posts, then the photos the owner picked before signup go to their library.
+ * On 404 (the endpoint is not deployed yet) the same result is reached through the
+ * existing endpoints: the profile, then the audiences. The brand is read later by
+ * /onboarding when there is a site.
+ *
+ * Photos never fail the save: the outcome says how many did not go up, and they stay in
+ * the browser so the caller can offer to try again.
+ */
+export async function saveFlowToAccount(
+  flow: FlowState,
+  onPhotoProgress?: (done: number, total: number) => void,
+): Promise<SaveOutcome> {
+  const business = await saveDraft(flow);
+  const photos = await uploadPending((postIndex) => photoTagsFor(flow, postIndex), onPhotoProgress);
+  return { business, photos };
+}
+
+/** After a finished save, or "להתחיל מחדש": nothing of the onboarding stays in this browser. */
+export async function clearSavedFlow() {
+  clearFlow();
+  await clearPending();
+}
+
+async function saveDraft(flow: FlowState): Promise<Business | null> {
+  const draft = draftForApi(flow);
   try {
-    const res = await endpoints.onboardingFromDraft({
-      draft,
-      chosen_direction: chosenDirection,
-      chosen_idea: chosenIdea,
+    const res = await api<{ business: Business | null }>("/onboarding/from-draft", {
+      method: "POST",
+      body: JSON.stringify({
+        draft,
+        chosen_direction: chosenDirectionOf(flow),
+        ...(flow.strategy ? { strategy: strategyForApi(flow.strategy) } : {}),
+        ...(flow.samplePosts?.length ? { chosen_posts: chosenPostsForApi(flow) } : {}),
+      }),
     });
     return res.business;
   } catch (err) {
@@ -1355,4 +1596,460 @@ function mockPlanPreview(d: OnboardingDraft, brand: PublicBrand | null): PlanPre
     })),
   );
   return { insights: insights.slice(0, 4), directions, ideas, brand };
+}
+
+/* ------------------------ Fixtures: strategy and posts ------------------------ */
+
+function quoteShort(text: string, max = 70): string {
+  const clean = text.trim().replace(/\s+/g, " ");
+  return clean.length > max ? `${clean.slice(0, max - 1).trim()}…` : clean;
+}
+
+function mockRevisedPlan(d: OnboardingDraft, brand: PublicBrand | null, feedback: string): PlanPreview {
+  const base = mockPlanPreview(d, brand);
+  const words = quoteShort(feedback);
+  const first = base.directions[0];
+  const own: PlanDirection = {
+    title: "הכיוון שלכם",
+    approach_he: `לבנות את החודש סביב מה שביקשתם: "${words}".`,
+    audience: first.audience,
+    goal_he: first.goal_he,
+    why_he: "אתם מכירים את העסק הכי טוב. נבנה את זה על מה שגילינו, ונמדוד אם זה עובד.",
+    first_steps: ["לחדד יחד את הרעיון במשפט אחד", "לבחור 3 נושאים שמשרתים אותו", "לבדוק אחרי שבועיים מה הביא תגובות"],
+  };
+  // The owner's idea first, next to the stronger of the two we had.
+  const directions = [own, first];
+  const ideas = [
+    ...base.ideas.filter((i) => (i.direction_index ?? 0) === 0).map((i) => ({ ...i, direction_index: 0 })),
+    ...base.ideas.filter((i) => (i.direction_index ?? 0) === 0).map((i) => ({ ...i, direction_index: 1 })),
+  ];
+  return { ...base, directions, ideas };
+}
+
+const CADENCE_HE: Record<Cadence, string> = {
+  "1-2": "1-2 פוסטים בשבוע",
+  "3-4": "3-4 פוסטים בשבוע",
+  "5+": "5 פוסטים ומעלה בשבוע",
+};
+
+/** What "one more success" is called for this goal, and the chips we offer (never preselected). */
+export function targetUnitFor(goal?: PrimaryGoal): { unit: string; steps: number[] } {
+  if (goal === "sales") return { unit: "הזמנות", steps: [5, 10, 20] };
+  if (goal === "brand_awareness") return { unit: "עוקבים חדשים", steps: [50, 100, 200] };
+  return { unit: "פניות", steps: [5, 10, 20] };
+}
+
+function defaultCadence(d: OnboardingDraft): Cadence {
+  const levels = Object.values(d.activity ?? {});
+  if (levels.includes("regular")) return "3-4";
+  return "1-2";
+}
+
+type PillarSeed = Omit<StrategyPillar, "from_insight"> & { source?: string };
+
+function pillarPool(d: OnboardingDraft, goal: PrimaryGoal, event: string): PillarSeed[] {
+  const offer = firstOffering(d.offerings) || "מה שאתם עושים";
+  const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
+  const product = model === "services" ? "העבודה מקרוב" : "המוצר מקרוב";
+  const all: Record<string, PillarSeed> = {
+    product: {
+      key: "product",
+      title: product,
+      description_he: `להראות את ${offer} כמו שהוא באמת, בלי סטודיו.`,
+      example_he: `ריל של 15 שניות: ${offer} מהרגע שהוא מוכן.`,
+      why_he: "לפני שקונים, אנשים רוצים לראות בדיוק מה יקבלו.",
+      source: "category",
+    },
+    how: {
+      key: "how",
+      title: "איך זה עובד אצלנו",
+      description_he: "מה קורה מהרגע שפונים אליכם ועד שמקבלים.",
+      example_he: "קרוסלה: 3 צעדים, מההודעה הראשונה ועד שזה אצלכם.",
+      why_he: "כשלא ברור איך מזמינים, אנשים דוחים. הסבר קצר מוריד את המחסום.",
+      source: "answers",
+    },
+    people: {
+      key: "people",
+      title: "האנשים מאחורי העסק",
+      description_he: "מי אתם, ולמה אתם עושים את זה ככה.",
+      example_he: "תמונה שלכם בעבודה, עם משפט אחד על מה שחשוב לכם.",
+      why_he: "בעסק קטן, אנשים בוחרים באנשים. זה היתרון שלכם על רשתות גדולות.",
+      source: "answers",
+    },
+    customers: {
+      key: "customers",
+      title: "מה הלקוחות אומרים",
+      description_he: "מילים של לקוחות אמיתיים, באישור שלהם.",
+      example_he: "צילום מסך של הודעה מלקוח, עם תודה קצרה.",
+      why_he: "מה שלקוח אחר כותב משכנע יותר מכל מה שנכתוב אנחנו.",
+      source: "category",
+    },
+    tips: {
+      key: "tips",
+      title: "טיפ קטן מהניסיון",
+      description_he: `משהו שימושי על ${offer}, שאפשר לנסות כבר היום.`,
+      example_he: "תמונה עם טיפ אחד, קצר, שכדאי לשמור.",
+      why_he: "טיפ טוב שומרים ומשתפים, וכך הוא מגיע לאנשים חדשים.",
+      source: "category",
+    },
+    season: {
+      key: "season",
+      title: event ? `לקראת ${event}` : "מה חדש החודש",
+      description_he: event ? `להזכיר מוקדם שאתם כאן בשביל ${event}.` : "מה הגיע, מה השתנה, מה מומלץ עכשיו.",
+      example_he: event ? `פוסט עם ההמלצה שלכם ל${event}, ומתי כדאי להזמין.` : "פוסט עם ההמלצה של השבוע.",
+      why_he: event ? "תאריך קרוב הוא סיבה טבעית לקנות, בלי להמציא מבצע." : "משהו חדש הוא סיבה לחזור ולבדוק.",
+      source: "calendar",
+    },
+  };
+  const order: Record<PrimaryGoal, string[]> = {
+    sales: ["product", "how", "season", "customers", "people", "tips"],
+    leads: ["how", "customers", "tips", "people", "product", "season"],
+    brand_awareness: ["people", "product", "tips", "season", "customers", "how"],
+    personal_brand: ["tips", "people", "customers", "how", "product", "season"],
+  };
+  return order[goal].map((key) => all[key]);
+}
+
+const CHANNEL_ROLE: Record<Network, string> = {
+  instagram: "הערוץ הראשי: פוסטים, רילס וסטורי",
+  facebook: "קבוצות באזור וקהל שמכיר אתכם",
+  tiktok: "סרטונים קצרים שמגיעים לקהל חדש",
+};
+
+/** "ל" + a name, as `withLamed` in components/start/ui.tsx (no UI import from lib). */
+function withLamedHe(name: string): string {
+  return /^[֐-׿]/.test(name) ? `ל${name}` : `ל־${name}`;
+}
+
+function mockStrategy(
+  d: OnboardingDraft,
+  direction: PlanDirection,
+  inputs: StrategyInputs,
+  changed: StrategyInputKey[],
+  insights: PlanInsight[],
+  previous: Strategy | null,
+): Strategy {
+  const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
+  const goal: PrimaryGoal = d.goal ?? defaultGoalFor(model);
+  const kit = kitFor(d.business_type);
+  const offer = firstOffering(d.offerings) || "מה שאתם עושים";
+  const next = nextIlDate();
+  const event = next && next.days <= 40 ? next.name : "";
+  const refOf = (source: string) => {
+    const index = insights.findIndex((i) => i.source === source);
+    return index >= 0 ? index : undefined;
+  };
+  const { unit } = targetUnitFor(goal);
+  const names = (d.audiences.length ? d.audiences.map((a) => a.name) : kit.audiences.map((a) => a.name)).slice(0, 3);
+  const primary =
+    (inputs.primary_audience && names.includes(inputs.primary_audience) && inputs.primary_audience) ||
+    names.find((n) => n === direction.audience) ||
+    names[0];
+  const cadence = inputs.cadence ?? defaultCadence(d);
+
+  const objectiveByGoal: Record<PrimaryGoal, string> = {
+    sales: `יותר הזמנות של ${offer} ${withLamedHe(primary)}, כבר בחודש הראשון.`,
+    leads: `יותר פניות רציניות, מאנשים שכבר מבינים מה אתם עושים.`,
+    brand_awareness: `שיותר אנשים באזור יכירו את ${d.business_name || "העסק"} ויזכרו מה מייחד אתכם.`,
+    personal_brand: `שיכירו אתכם כמי שהכי כדאי לשאול על ${offer}.`,
+  };
+
+  const measures: StrategyMeasure[] = [];
+  if (goal === "sales") {
+    measures.push({
+      name_he: "הזמנות שהגיעו מפוסט",
+      how_he: "הודעת הוואטסאפ המוכנה מזכירה את הפוסט. סופרים אותן יחד כל שבוע.",
+      available_now: true,
+    });
+  } else if (goal === "brand_awareness") {
+    measures.push({
+      name_he: "עוקבים חדשים",
+      how_he: "כמה הצטרפו מתחילת החודש, לפי הספירה בפרופיל.",
+      available_now: true,
+    });
+  } else {
+    measures.push({
+      name_he: "פניות שהגיעו מפוסט",
+      how_he: "כל פנייה בוואטסאפ או בטלפון נרשמת עם הפוסט שהביא אותה.",
+      available_now: true,
+    });
+  }
+  measures.push({
+    name_he: "אנשים ששמרו או שיתפו",
+    how_he: "שמירה ושיתוף אומרים שהפוסט היה שווה משהו, יותר מלייק.",
+    available_now: false,
+    needs_he: "אחרי שתחברו את אינסטגרם",
+  });
+  if (d.links.website) {
+    measures.push({
+      name_he: "כניסות לאתר מהרשתות",
+      how_he: "קישור מסומן בכל פוסט, כדי לדעת מאיזה פוסט הגיעו.",
+      available_now: false,
+      needs_he: "אחרי שתחברו את נתוני האתר",
+    });
+  }
+
+  const diff = d.differentiator?.trim();
+  const angle = diff
+    ? {
+        text_he: `${diff}. זה מה שיחזור בכל פוסט, במילים ובתמונות.`,
+        why_he: "סיפרתם שזה מה שמייחד אתכם. לקוחות בוחרים לפי מה שהם זוכרים.",
+        from_insight: refOf("answers"),
+      }
+    : {
+        text_he: `${kit.differentiators[0]}. נתחיל מזה, ונלמד מהתגובות אם זה מה שמושך.`,
+        why_he: "עוד לא סיפרתם מה מייחד אתכם, אז נתחיל ממה שמבדיל עסקים כמו שלכם.",
+        from_insight: refOf("category"),
+      };
+
+  const messages: Record<PrimaryGoal, [string, string, string]> = {
+    sales: [
+      `${offer} כמו שאוהבים, ואיך מזמינים בהודעה אחת.`,
+      "סיבה לחזור: מה חדש השבוע אצלנו.",
+      "תזכורת שאנחנו כאן, כשיצטרכו.",
+    ],
+    leads: ["מה קורה אחרי שפונים, ולמה אין סיבה לחכות.", "שאלה אחת ששווה לשאול אותנו.", "סיפור של לקוח כמוהם."],
+    brand_awareness: ["מי אנחנו ומה עושים אחרת, בלי למכור.", "משהו שכדאי לשתף עם חבר.", "רגע מאחורי הקלעים."],
+    personal_brand: ["טיפ אחד מהניסיון, שאפשר להשתמש בו היום.", "איך אנחנו עובדים, מקרוב.", "תשובה לשאלה ששואלים הרבה."],
+  };
+  const ordered = [primary, ...names.filter((n) => n !== primary)];
+  const audiences: Strategy["audiences"] = ordered.map((name, index) => ({
+    name,
+    role: index === 0 ? "primary" : "secondary",
+    message_he: messages[goal][Math.min(index, 2)],
+  }));
+
+  const removed = new Set(inputs.pillars_removed ?? []);
+  const pool = pillarPool(d, goal, event);
+  let chosen = pool.filter((p) => !removed.has(p.key)).slice(0, 3);
+  if (chosen.length < 3) chosen = [...chosen, ...pool.filter((p) => !chosen.includes(p))].slice(0, 3);
+  const pillars: StrategyPillar[] = chosen.map(({ source, ...pillar }) => ({
+    ...pillar,
+    from_insight: source ? refOf(source) : undefined,
+  }));
+
+  const networks = (["instagram", "facebook", "tiktok"] as Network[]).filter((n) => !d.has_none && d.links[n] !== undefined);
+  const used = networks.length ? networks : (["instagram"] as Network[]);
+  const channels: Strategy["channels"] = used.slice(0, 2).map((network, index) => ({
+    network: NETWORK_HE[network],
+    role_he: networks.length ? CHANNEL_ROLE[network] : "מתחילים כאן: הכי קל להראות בו את העסק",
+    cadence_he: index === 0 ? CADENCE_HE[cadence] : "פעם בשבוע, מה שהצליח בערוץ הראשי",
+    why_he:
+      index === 0
+        ? inputs.cadence
+          ? "זה הקצב שבחרתם. התוכנית בנויה עליו."
+          : "זה קצב שאפשר להחזיק לפי מה שסיפרתם. קבוע עדיף על הרבה ואז שקט."
+        : "אותו פוסט, קהל נוסף, בלי עבודה נוספת.",
+    from_insight: index === 0 ? refOf("social") : undefined,
+  }));
+
+  const offerByGoal: Record<PrimaryGoal, Strategy["offer"]> = {
+    sales: {
+      cta_he: "להזמין בהודעת וואטסאפ",
+      mechanism_he: "קישור לוואטסאפ בכל פוסט ובביו, עם הודעה מוכנה שמציינת את הפוסט.",
+      why_he: "הודעה אחת קלה יותר מטופס, והיא אומרת לנו איזה פוסט הביא את ההזמנה.",
+    },
+    leads: {
+      cta_he: "לשלוח הודעה ולקבוע שיחה קצרה",
+      mechanism_he: "קישור לוואטסאפ עם שאלה מוכנה, ותשובה מכם באותו יום.",
+      why_he: "מי שמקבל תשובה מהר נשאר. מי שמחכה, פונה למישהו אחר.",
+    },
+    brand_awareness: {
+      cta_he: "לעקוב ולשתף עם חבר",
+      mechanism_he: "בקשה אחת קצרה בסוף כל פוסט, בלי להתחנן.",
+      why_he: "בחודש הראשון המטרה היא שיזכרו אתכם. שיתוף מביא את מי שעוד לא מכיר.",
+    },
+    personal_brand: {
+      cta_he: "לשאול אותנו שאלה בהודעה",
+      mechanism_he: "כל שבוע עונים על שאלה אחת שהגיעה, בפוסט.",
+      why_he: "שאלה היא הצעד הקטן ביותר, והיא הופכת את מי ששואל ללקוח.",
+    },
+  };
+
+  const eventWeek = next && next.days <= 28 ? Math.min(4, Math.max(1, Math.ceil(next.days / 7))) : null;
+  const month_plan: Strategy["month_plan"] = ([1, 2, 3, 4] as const).map((week) => {
+    const focus =
+      week === 1
+        ? `פותחים ${withLamedHe(primary)}: ${pillars[0].title}.`
+        : week === 2
+          ? `${pillars[1].title}, ובודקים מה הביא תגובות.`
+          : week === 3
+            ? `${pillars[2].title}, ועוד ממה שהצליח.`
+            : "חוזרים על מה שהצליח, ומסכמים יחד מול היעד.";
+    const item: Strategy["month_plan"][number] = { week, focus_he: focus };
+    if (eventWeek === week && next) item.event_he = next.name;
+    return item;
+  });
+
+  const now = new Date();
+  const monthName = (offset: number) => MONTHS_HE[(now.getMonth() + offset) % 12];
+  const later = IL_DATES.map((x) => ({ ...x, at: new Date(`${x.date}T00:00:00`).getTime() })).filter(
+    (x) => x.at > now.getTime() + 35 * 86_400_000 && x.at < now.getTime() + 100 * 86_400_000,
+  );
+  const quarter: Strategy["quarter"] = [
+    {
+      month_label: monthName(1),
+      direction_he: `מרחיבים את מה שהצליח, ופונים גם ${withLamedHe(ordered[1] ?? "לקוחות חדשים")}.`,
+    },
+    {
+      month_label: monthName(2),
+      direction_he: later[0]
+        ? `מתכוננים ל${later[0].name} מוקדם, עם מה שלמדנו.`
+        : "מחזקים את הערוץ שהביא הכי הרבה, ומוותרים על מה שלא.",
+    },
+  ];
+
+  const assumptions = [
+    goal === "sales"
+      ? `${primary} יגיבו יותר לפוסט שמראה את ${offer} מקרוב מאשר לפוסט מבצע.`
+      : `${primary} יפנו כשיבינו בדיוק מה קורה אחרי הפנייה.`,
+    `${CADENCE_HE[cadence]} מספיקים כדי שיזכרו אתכם, בלי שזה יכביד עליכם.`,
+    `קישור ישיר לוואטסאפ יביא יותר ${unit} מקישור לאתר.`,
+  ];
+
+  const strategy: Strategy = {
+    objective: {
+      text_he: objectiveByGoal[goal],
+      why_he: direction.why_he,
+      from_insight: refOf("calendar") ?? refOf("category"),
+    },
+    success: {
+      ...(inputs.target?.trim() ? { owner_target: inputs.target.trim() } : {}),
+      measures,
+      first_check_he: "בסוף השבוע השני נבדוק יחד מה הביא הכי הרבה תגובות, ונשנה בהתאם.",
+    },
+    angle,
+    audiences,
+    pillars,
+    channels,
+    offer: { ...offerByGoal[goal], from_insight: refOf("answers") },
+    month_plan,
+    quarter,
+    assumptions,
+    cached: false,
+  };
+
+  const notes: string[] = [];
+  if (changed.includes("cadence")) notes.push(`הקצב עכשיו ${CADENCE_HE[cadence]}, והתוכנית של החודש התעדכנה.`);
+  if (changed.includes("target")) {
+    notes.push(inputs.target?.trim() ? `נמדוד מול היעד שלכם: ${inputs.target.trim()}.` : "הורדנו את היעד. נמדוד בלי מספר קבוע.");
+  }
+  if (changed.includes("primary_audience")) notes.push(`מתחילים ${withLamedHe(primary)}. המסר והשבוע הראשון התעדכנו.`);
+  if (changed.includes("pillars_removed")) {
+    const before = new Set(previous?.pillars.map((p) => p.key) ?? []);
+    const added = pillars.find((p) => !before.has(p.key));
+    notes.push(added ? `נושא חדש במקום: ${added.title}.` : "הנושאים התעדכנו.");
+  }
+  if (notes.length) strategy.changed_he = notes.join(" ");
+  return strategy;
+}
+
+const PHOTO_HINTS: Record<TypeGroup, [string, string]> = {
+  food: ["צילום קרוב של {offer} על רקע בהיר, באור יום מהחלון", "הידיים שלכם בעבודה, ליד התנור או הדלפק"],
+  retail: ["{offer} על המדף, מקרוב, באור טבעי", "לקוח (באישור) מחזיק את המוצר בחנות"],
+  ecommerce: ["{offer} ביד, על רקע בהיר ונקי", "האריזה כמו שהיא מגיעה ללקוח"],
+  professional: ["אתם ליד השולחן, מחייכים למצלמה", "צילום מסך של הודעת תודה מלקוח (בלי שם)"],
+  clinic: ["חדר הטיפולים, מסודר ומואר", "תוצאה של טיפול, רק באישור הלקוחה"],
+  fitness: ["רגע אמיתי משיעור, מהצד", "המדריך מסביר תרגיל לקבוצה קטנה"],
+  design: ["חדר גמור מפרויקט שעשיתם, באור יום", "לפני ואחרי, מאותה זווית"],
+  education: ["רגע משיעור, מאחורי המשתתפים", "חומרי הלימוד על השולחן"],
+  tourism: ["הנוף מהמרפסת בשעת בוקר", "ארוחת הבוקר מוכנה על השולחן"],
+  other: ["{offer} מקרוב, באור טבעי", "אתם בעבודה, ברגע רגיל"],
+};
+
+/** Mock only: stands in for "the scan found a usable photo on the site". */
+const SITE_PHOTOS: Record<TypeGroup, string> = {
+  food: "/examples/bakery.webp",
+  retail: "/examples/flowers.webp",
+  ecommerce: "/examples/ceramics.webp",
+  professional: "/examples/accountant.webp",
+  clinic: "/examples/beauty.webp",
+  fitness: "/examples/yoga.webp",
+  design: "/examples/interior.webp",
+  education: "/examples/carpentry.webp",
+  tourism: "/examples/cabins.webp",
+  other: "/examples/nursery.webp",
+};
+
+function mockSamplePosts(d: OnboardingDraft, direction: PlanDirection, strategy: Strategy): SamplePost[] {
+  const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
+  const goal: PrimaryGoal = d.goal ?? defaultGoalFor(model);
+  const next = nextIlDate();
+  const event = next && next.days <= 40 ? next.name : "";
+  const themes = themesFor(goal, d, event);
+  const theme = themes.find((t) => t.title === direction.title) ?? themes[0];
+  const group = typeGroup(d.business_type);
+  const offer = firstOffering(d.offerings) || "המוצר";
+  const primary = strategy.audiences.find((a) => a.role === "primary")?.name ?? direction.audience;
+  const templates = ["lower_editorial", "type_hero", "split_panel"];
+  const timings = ["יום ראשון, לפתוח את השבוע", "אמצע השבוע", event ? `לקראת ${event}` : "חמישי, לפני סוף השבוע"];
+  const hints = PHOTO_HINTS[group];
+  const name = d.business_name || "העסק";
+  const byPillar: Record<string, Omit<PostIdea, "why" | "direction_index" | "cta">> = {
+    product: {
+      title: `${offer} מקרוב`,
+      format: "reel",
+      hook: `ככה נראה ${offer} שלנו מקרוב`,
+      caption: `בלי פילטרים ובלי סטודיו. ${offer}, כמו שהוא יוצא אצלנו ב${name}.`,
+      overlay_headline: `${offer}, מקרוב`,
+    },
+    how: {
+      title: "איך מזמינים",
+      format: "carousel",
+      hook: "3 צעדים וזה אצלכם",
+      caption: "בוחרים, שולחים הודעה, ואנחנו מתאמים איסוף או משלוח. פשוט.",
+      overlay_headline: "3 צעדים וזה אצלכם",
+    },
+    people: {
+      title: "מי אנחנו",
+      format: "image",
+      hook: "הפנים מאחורי העסק",
+      caption: d.differentiator ? `${d.differentiator}. זה לא סלוגן, ככה אנחנו עובדים.` : "נעים להכיר. אלה האנשים שעושים את זה כל יום.",
+      overlay_headline: "נעים להכיר",
+    },
+    customers: {
+      title: "מה כותבים לנו",
+      format: "carousel",
+      hook: "מה לקוחות כותבים לנו",
+      caption: "צילומי מסך אמיתיים, באישור. בלי לערוך מילה.",
+      overlay_headline: "מה כותבים לנו",
+    },
+    tips: {
+      title: "טיפ לשבוע",
+      format: "image",
+      hook: `טיפ אחד על ${offer}`,
+      caption: "קצר ושימושי. שמרו לפעם הבאה.",
+      overlay_headline: "טיפ לשבוע",
+    },
+    season: {
+      title: event ? `לקראת ${event}` : "מה חדש השבוע",
+      format: "image",
+      hook: event ? `ההמלצה שלנו לקראת ${event}` : "ההמלצה של השבוע",
+      caption: event ? `אם צריך משהו אחד לקראת ${event}, זה ${offer}. שווה להזמין מוקדם.` : `השבוע אנחנו ממליצים על ${offer}.`,
+      overlay_headline: event ? `לקראת ${event}` : "ההמלצה של השבוע",
+    },
+  };
+  return strategy.pillars.slice(0, 3).map((pillar, index) => {
+    const idea = byPillar[pillar.key] ?? theme.ideas[index] ?? theme.ideas[0];
+    const hint = hints[index === 2 ? 1 : 0].replace("{offer}", offer);
+    const site = index === 0 && d.links.website ? SITE_PHOTOS[group] : undefined;
+    return {
+      title: idea.title,
+      format: idea.format,
+      hook: idea.hook,
+      caption: `${idea.caption} ${strategy.offer.cta_he}: הקישור בביו.`,
+      cta: strategy.offer.cta_he,
+      overlay_headline: idea.overlay_headline,
+      template: templates[index],
+      ...(index === 1 && event ? { badge: `לקראת ${event}` } : {}),
+      pillar_key: pillar.key,
+      photo: site ? { site_url: site, hint_he: hint } : { hint_he: hint },
+      why: {
+        audience: primary,
+        goal_he: GOAL_HE[goal],
+        timing_he: timings[index],
+        reason_he: pillar.why_he,
+      },
+    };
+  });
 }

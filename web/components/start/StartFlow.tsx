@@ -6,21 +6,34 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ApiError, endpoints, exitDemo, isDemo } from "@/lib/api";
 import {
   clearFlow,
-  draftForApi,
+  clearSavedFlow,
   emptyFlow,
   loadFlow,
   normalizeUrl,
-  saveDraftToAccount,
   saveFlow,
+  saveFlowToAccount,
   scanBrand,
   type FlowState,
   type OnboardingDraft,
 } from "@/lib/draft";
+import { clearPending } from "@/lib/pendingUploads";
 import { BrandMark, IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
-import { CHAPTERS, chapterIndexOf, isStepId, nextStep, previousStep, reflectionAfter, type StepId } from "./script";
-import { StepPlan } from "./StepPlan";
+import {
+  CHAPTERS,
+  STEP_ORDER,
+  chapterIndexOf,
+  isStepId,
+  migrateStep,
+  nextStep,
+  previousStep,
+  reflectionAfter,
+  type StepId,
+} from "./script";
+import { StepDirection, StepFound } from "./StepPlan";
+import { StepPreview } from "./StepPreview";
 import { StepSave } from "./StepSave";
+import { StepStrategy } from "./StepStrategy";
 import {
   PresetGrid,
   StepAudiences,
@@ -59,6 +72,10 @@ export function StartFlow() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
+  /** Photos going up to the library right after signup: "2 מתוך 3". */
+  const [photoProgress, setPhotoProgress] = useState<{ done: number; total: number } | null>(null);
+  /** The business is saved but some photos did not go up. */
+  const [photosFailed, setPhotosFailed] = useState(0);
   const latest = useRef<FlowState | null>(null);
 
   useEffect(() => {
@@ -71,6 +88,7 @@ export function StartFlow() {
       const saved = loadFlow();
       const loaded = saved ?? emptyFlow();
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
+      loaded.step = migrateStep(loaded.step);
       if (!isStepId(loaded.step)) loaded.step = "name";
       // Arriving from the landing page's site box: the site is already answered.
       const site = new URLSearchParams(window.location.search).get("site");
@@ -128,6 +146,8 @@ export function StartFlow() {
   /** Forget every answer in this browser and go back to the first question. */
   function startOver() {
     clearFlow();
+    // The photos picked for the sample posts wait in IndexedDB: they go too.
+    void clearPending();
     setResumed(false);
     setConfirmRestart(false);
     setNoticeDismissed(false);
@@ -166,13 +186,20 @@ export function StartFlow() {
     setSaving(true);
     setSaveError("");
     try {
-      const chosen = current.plan && current.chosenDirection != null ? current.plan.directions[current.chosenDirection] : null;
-      const idea = current.plan && current.chosenIdea != null ? current.plan.ideas[current.chosenIdea] : null;
-      await saveDraftToAccount(draftForApi(current), chosen ?? null, idea ?? null);
-      clearFlow();
-      router.replace("/onboarding?from=start");
+      const outcome = await saveFlowToAccount(current, (done, total) => setPhotoProgress({ done, total }));
+      setPhotoProgress(null);
+      if (outcome.photos.failed) {
+        // The business is saved; say so, and let the owner try the photos again or go on.
+        setSaving(false);
+        setLoggedIn(true);
+        setPhotosFailed(outcome.photos.failed);
+        if (current.step !== "save") go("save", "fwd");
+        return;
+      }
+      await finish();
     } catch (err) {
       setSaving(false);
+      setPhotoProgress(null);
       if (err instanceof ApiError && err.status === 401) {
         setLoggedIn(false);
         go("save", "fwd");
@@ -180,6 +207,13 @@ export function StartFlow() {
       }
       setSaveError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור את העסק. נסו שוב.");
     }
+  }
+
+  /** Everything is in the account: nothing of the onboarding stays in this browser. */
+  async function finish() {
+    setSaving(true);
+    await clearSavedFlow();
+    router.replace("/onboarding?from=start");
   }
 
   if (!flow) {
@@ -197,6 +231,7 @@ export function StartFlow() {
     const to = nextStep(step);
     if (to) go(to, "fwd");
   };
+  const jump = (to: StepId) => go(to, STEP_ORDER.indexOf(to) > STEP_ORDER.indexOf(step) ? "fwd" : "back");
 
   const scanFailed = flow.brandScan?.status === "failed" && !flow.draft.style_preset;
   const notice =
@@ -223,7 +258,7 @@ export function StartFlow() {
     direction,
   };
 
-  const wide = step === "plan";
+  const wide = step === "direction" || step === "strategy" || step === "preview";
   let screen: React.ReactNode;
   switch (step) {
     case "name":
@@ -253,11 +288,33 @@ export function StartFlow() {
     case "goal":
       screen = <StepGoal {...common} />;
       break;
-    case "plan":
-      screen = <StepPlan {...common} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={() => void save()} />;
+    case "found":
+      screen = <StepFound {...common} jump={jump} />;
+      break;
+    case "direction":
+      screen = <StepDirection {...common} jump={jump} />;
+      break;
+    case "strategy":
+      screen = <StepStrategy {...common} jump={jump} />;
+      break;
+    case "preview":
+      screen = (
+        <StepPreview {...common} jump={jump} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={() => void save()} />
+      );
       break;
     case "save":
-      screen = <StepSave {...common} loggedIn={loggedIn} saving={saving} saveError={saveError} onSave={save} />;
+      screen = (
+        <StepSave
+          {...common}
+          loggedIn={loggedIn}
+          saving={saving}
+          saveError={saveError}
+          onSave={save}
+          photoProgress={photoProgress}
+          photosFailed={photosFailed}
+          onFinish={() => void finish()}
+        />
+      );
       break;
   }
 
