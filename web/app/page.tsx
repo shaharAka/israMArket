@@ -96,7 +96,7 @@ export default function Home() {
           <div data-rv className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-20">
             <div className="max-w-xl">
               <h2 id="closing-title" className="text-2xl font-black leading-tight tracking-tight [text-wrap:balance] sm:text-[2rem]">
-                נבנה יחד את החודש הבא של העסק
+                נבנה יחד את 3 החודשים הבאים של העסק
               </h2>
               <p className="mt-3 text-base leading-7 text-[#34372f] sm:text-lg">
                 ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.
