@@ -53,6 +53,9 @@ export function StartFlow() {
   const [cardOpen, setCardOpen] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
+  // A saved onboarding was picked up on load: say so, and offer a clean start.
+  const [resumed, setResumed] = useState(false);
+  const [confirmRestart, setConfirmRestart] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -65,7 +68,9 @@ export function StartFlow() {
   // The draft and the URL only exist in the browser: read them after mount.
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      const loaded = loadFlow() ?? emptyFlow();
+      const saved = loadFlow();
+      const loaded = saved ?? emptyFlow();
+      if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
       if (!isStepId(loaded.step)) loaded.step = "name";
       // Arriving from the landing page's site box: the site is already answered.
       const site = new URLSearchParams(window.location.search).get("site");
@@ -117,6 +122,19 @@ export function StartFlow() {
       step: step,
       seen: dir === "fwd" && !f.seen.includes(f.step) ? [...f.seen, f.step] : f.seen,
     }));
+    window.scrollTo({ top: 0 });
+  }
+
+  /** Forget every answer in this browser and go back to the first question. */
+  function startOver() {
+    clearFlow();
+    setResumed(false);
+    setConfirmRestart(false);
+    setNoticeDismissed(false);
+    setCardOpen(false);
+    setDirection("back");
+    setNavigated(true);
+    setFlow(emptyFlow());
     window.scrollTo({ top: 0 });
   }
 
@@ -290,6 +308,24 @@ export function StartFlow() {
               {back ? <QuietLink onClick={back}>חזרה</QuietLink> : null}
             </div>
             <ChapterProgress step={step} />
+            {resumed || step !== "name" ? (
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[#5e6159]">
+                {confirmRestart ? (
+                  <>
+                    <span>כל התשובות שכאן יימחקו.</span>
+                    <QuietLink onClick={startOver} className="font-bold text-[#191b18]">
+                      למחוק ולהתחיל מחדש
+                    </QuietLink>
+                    <QuietLink onClick={() => setConfirmRestart(false)}>ביטול</QuietLink>
+                  </>
+                ) : (
+                  <>
+                    {resumed ? <span>המשכנו מאיפה שעצרתם.</span> : null}
+                    <QuietLink onClick={() => setConfirmRestart(true)}>להתחיל מחדש</QuietLink>
+                  </>
+                )}
+              </div>
+            ) : null}
           </div>
           <div key={step}>{screen}</div>
         </main>
