@@ -74,6 +74,23 @@ class Settings(BaseSettings):
     # With POST_MODEL=muse-spark, fall back to Gemini when the Meta call fails, so an
     # experiment can never leave a user without posts.
     post_model_fallback: bool = True
+    # The most one Meta post-writing call may take (retries included) before the posts
+    # are written by Gemini instead. Muse writes a week of posts in ~80-110 s, so the
+    # budget sits above that; it exists so a hung or crawling call can never stall a
+    # month. 0 = no budget (the client's own 180 s read timeout, retried once).
+    post_model_timeout_seconds: float = 180.0
+    # Wall-clock limit for one Gemini request, so a call that never answers fails (and
+    # is retried or reported) instead of holding a month's build forever. 0 = none.
+    gemini_timeout_seconds: float = 180.0
+
+    # The origin printed in front of every WhatsApp tracked link: {PUBLIC_BASE_URL}/r/{code}.
+    # Empty = WEB_ORIGIN, because in the documented deployment only the web tier is public
+    # and it forwards /r/{code} to the API (web/app/r/[code]/route.ts); API_ORIGIN is an
+    # internal address there. Set it when links should live on a different short domain.
+    public_base_url: str = ""
+    # Counted clicks per link per minute. Past this the redirect still works, it just is
+    # not counted — a stuck refresh loop or a scraper cannot inflate the owner's numbers.
+    whatsapp_clicks_per_minute: int = 30
 
     # Rate limits (requests per window, seconds).
     auth_rate_limit: int = 8

@@ -220,3 +220,5 @@
     animation: none !important;
   }
 }
+
+.planFlow { font-family:var(--font-heebo),sans-serif; }.planFlow main > div > form > div > h1 { font-size:28px; font-weight:700; line-height:1.5; }.planFlow main > div > form > div > p { font-size:13px; }.planBusiness { font-size:12px; color:var(--ink-soft); }.planBusiness > summary { min-height:44px; cursor:pointer; border-block:1px solid var(--rule); display:flex; align-items:center; }.planBusiness[open] { width:300px; max-width:100%; }.planBusiness article { margin-top:15px; }.planAlternative { border-top:1px solid var(--rule); padding-block:8px; font-size:12px; color:var(--ink-soft); }.planAlternative > summary { min-height:44px; cursor:pointer; display:flex; align-items:center; }.planAlternative > p { color:var(--ink); font-size:14px; margin-bottom:8px; }

@@ -8,6 +8,7 @@ from app.routers.strategy import _active_strategy, serialize_strategy
 from app.services.diagnostics import recommend, week_of
 from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
+from app.services.business_fields import field_label
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
@@ -53,7 +54,7 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
 
     business_payload = {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",

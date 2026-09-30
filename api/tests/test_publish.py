@@ -388,6 +388,9 @@ class PublishTestCase(unittest.TestCase):
                     "published_at",
                     "has_image",
                     "tracking_url",
+                    # The post's WhatsApp tracked link ("" until the number is set and
+                    # the CTA is WhatsApp) — see tests/test_whatsapp_link.py.
+                    "whatsapp_url",
                 ]
             ),
         )

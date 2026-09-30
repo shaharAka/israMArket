@@ -28,6 +28,7 @@ Limits (per hour):
 | POST /public/plan-preview | 10 | 200    | 100 s |
 | POST /public/quarter-plan | 24 | 400    | 110 s |
 | GET /public/success-options | — | —     | static |
+| POST /public/target-suggestion | 240 | — | no model, no network (revision 6) |
 | POST /public/strategy | 24     | 400    | 100 s | (revision 4, superseded, unused by the web)
 | POST /public/sample-posts | 10 | 200    | 90 s  |
 | (sample posts prefetch)   | 12 | —      | background, after each strategy |
@@ -45,11 +46,12 @@ import threading
 from concurrent.futures import Future, ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FutureTimeout
 from datetime import date
-from typing import Callable, Literal
+from typing import Any, Callable, Literal
 
-from fastapi import APIRouter, HTTPException, Request
-from pydantic import BaseModel, Field, field_validator
+from fastapi import APIRouter, Body, HTTPException, Request
+from pydantic import BaseModel, Field, ValidationError, field_validator
 
+from app.services import goal_numbers
 from app.services import onboarding_draft as drafts
 from app.services import preview as preview_service
 from app.services import ratelimit
@@ -75,6 +77,8 @@ PLAN_GLOBAL = 200
 PLAN_REQUEST_SECONDS = 100.0
 
 LINKS_PER_IP = 120
+# Revision 6: the target is recomputed as the owner types numbers (debounced). No model.
+TARGET_PER_IP = 240
 
 # Revision 4. The strategy is re-run on every change the owner makes (debounced on the
 # client), so its per-IP budget is higher than the plan's; a cached re-run is free.
@@ -356,6 +360,27 @@ def success_options(model: str = "products", grow_where: str | None = None) -> d
         "grow_where": [{"key": k, "name_he": v} for k, v in drafts.GROW_WHERE_HE.items()] if model != "services" else [],
         "budgets": [{"key": k, "label_he": v["label_he"]} for k, v in drafts.BUDGET_RANGES.items()],
     }
+
+
+# --- revision 6: the calculated 3-month target (no model) ---------------------------------
+
+
+@router.post("/target-suggestion")
+def public_target_suggestion(request: Request, body: Any = Body(...)) -> dict:
+    """"היעד ל-3 חודשים": the baseline said back, the lever the numbers point to, and a
+    calculated target with its math, unit economics and sources (services/goal_numbers).
+
+    Deterministic and fast: no model, no network, nothing written. The body is validated
+    here so a 422 says what is wrong in Hebrew; an invalid body costs no budget.
+    """
+    if not isinstance(body, dict) or not isinstance(body.get("draft"), dict):
+        raise HTTPException(status_code=422, detail="חסרות התשובות. רעננו את העמוד ונסו שוב.")
+    try:
+        draft = drafts.OnboardingDraft.model_validate(body["draft"])
+    except ValidationError as exc:
+        raise HTTPException(status_code=422, detail=goal_numbers.errors_he(exc.errors())) from exc
+    _charge(request, "onboarding-target", TARGET_PER_IP, None)
+    return goal_numbers.suggest(draft)
 
 
 # --- audiences --------------------------------------------------------------------------

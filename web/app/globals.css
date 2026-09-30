@@ -1,24 +1,25 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #f9f8f6;
+  --canvas: #fbfcff;
   --paper: #ffffff;
-  --ink: #191b18;
-  --ink-soft: #5e6159;
-  --ink-muted: #8b8e84;
-  --rule: #e5e3da;
-  --rule-dark: #c7c4b7;
-  --primary: #191b18;
-  --primary-dark: #2c2f29;
-  --primary-soft: #f0eee6;
-  --sage: #e8eee5;
-  --sage-dark: #2d3f32;
-  --sage-soft: #f3f7f1;
-  --sand: #f2eee5;
-  --sand-dark: #685f47;
-  --tomato: var(--primary);
-  --tomato-dark: var(--primary-dark);
-  --sun: #ede6d4;
+  --ink: #1d2940;
+  --ink-soft: #535f75;
+  --ink-muted: #647087;
+  --rule: #e1e7f2;
+  --rule-dark: #c3cee5;
+  --primary: #2853c7;
+  --primary-dark: #1e42a4;
+  --primary-soft: #edf2ff;
+  --sage: #edf2ff;
+  --sage-dark: #2853c7;
+  --sage-soft: #f4f7ff;
+  --sand: #fff5d9;
+  --sand-dark: #755315;
+  --tomato: #ba4433;
+  --tomato-dark: #963626;
+  --sun: #ffc44a;
+  --sun-edge: #ad730b;
 }
 
 @theme inline {
@@ -39,8 +40,8 @@ body {
 }
 
 ::selection {
-  background: #e8eee5;
-  color: #191b18;
+  background: #ffdf8c;
+  color: var(--ink);
 }
 
 button,
@@ -59,7 +60,7 @@ a {
   border: 1px solid transparent;
   border-radius: 6px;
   box-shadow: none;
-  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
 }
 
 .drawn-button:hover {
@@ -67,8 +68,8 @@ a {
   box-shadow: none;
 }
 
-.drawn-button:active {
-  transform: none;
+.drawn-button:active:not(:disabled) {
+  transform: translateY(1px) scale(0.985);
   box-shadow: none;
 }
 
@@ -110,7 +111,7 @@ a {
 
 /* Faint notebook dot grid behind app content. */
 .dot-grid {
-  background-image: radial-gradient(rgba(25, 27, 24, 0.085) 1px, transparent 1.3px);
+  background-image: radial-gradient(rgba(40, 83, 199, 0.035) 1px, transparent 1.3px);
   background-size: 22px 22px;
   background-position: 11px 11px;
 }
@@ -315,3 +316,34 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--ink-soft);
 }
+
+/* Blue and sun: product chrome. Business artwork keeps its own palette. */
+.sun-progress { width: 136px; flex-shrink: 0; }
+.sun-progress svg { width: 100%; display: block; overflow: visible; }
+.journey-sun { transition: transform 1800ms cubic-bezier(.32, 0, .18, 1); }
+.app-blue .nav-item[aria-current="page"] { color: var(--primary); }
+.app-blue .nav-active-bar { background: var(--sun) !important; }
+.app-blue main h1 { letter-spacing: -.045em; }
+.app-blue button, .start-blue button { touch-action: manipulation; }
+.app-blue :is(button,a,input,textarea,select):focus-visible,
+.start-blue :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.start-blue :is(input,textarea,select):focus { border-color: var(--primary); }
+.start-blue :is(button[aria-pressed="true"],label:has(input:checked)) { border-color: var(--primary); background-color: var(--primary-soft); }
+.start-blue .chapter-fill { background: var(--primary); transition: width 900ms cubic-bezier(.32,0,.18,1); }
+.today-ask { border-color: var(--rule); border-top: 3px solid var(--sun); background: linear-gradient(115deg, var(--primary-soft), var(--paper) 65%); }
+.app-feedback { animation: feedback-in 260ms ease-out both; background: var(--ink); border-inline-start: 4px solid var(--sun); }
+@keyframes feedback-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (max-width: 639px) { .sun-progress { width: 104px; } }
+@media (prefers-reduced-motion: reduce) {
+  .journey-sun, .start-blue .chapter-fill, .drawn-button { transition: none; }
+  .drawn-button:active:not(:disabled) { transform: none; }
+  .app-feedback { animation: none; }
+}
+
+/* Keep the identity in the sun and shop, rather than decorative panel tails. */
+.today-ask { border:1px solid var(--rule); background:var(--paper); }
+.app-blue .nav-active-bar { display:none; }
+.app-blue .plan-document :is(span,li).rounded-full:not([aria-hidden]) { background:transparent !important; color:var(--ink-soft) !important; border:0; padding-inline:0; font-weight:400; }
+.app-blue .plan-document dl { background:var(--paper); }
+
+.app-blue .dot-grid { background-image:none; }

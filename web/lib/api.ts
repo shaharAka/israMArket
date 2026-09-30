@@ -106,7 +106,7 @@ export const DEMO_BUSINESS: Business = {
   id: 1,
   name: "לחם תום",
   website_url: "https://lechem-tom.example.co.il",
-  business_type: "מאפייה שכונתית / בית קפה",
+  business_type: "food",
   offerings: "לחמי מחמצת באפייה יומית, חלות שישי, מאפי בוקר ומארזי חג לשולחן",
   location: "שוק הפשפשים, יפו (עולי ציון 12)",
   presence_type: "brick_and_mortar",
@@ -1915,6 +1915,31 @@ function demoCalendar(year: number, month: number): CalendarPayload {
   };
 }
 
+// The explicit demo includes the same stored-plan artifact created by /start.
+// Fixtures load lazily; real accounts never run this builder.
+let demoPlanReady: Promise<void> | null = null;
+async function ensureDemoPlan() {
+  if (DEMO_BUSINESS.quarter_plan) return;
+  demoPlanReady ??= (async () => {
+    const [{ mockQuarterPlan }, { planForApi }] = await Promise.all([import("./quarterPlanMock"), import("./quarterPlan")]);
+    const draft: OnboardingDraft = {
+      business_name: DEMO_BUSINESS.name, business_type: DEMO_BUSINESS.business_type,
+      offerings: DEMO_BUSINESS.offerings || "", business_model: "products", grow_where: "online",
+      audiences: DEMO_AUDIENCES_SEED.map(a => ({ name: a.name, description: a.description })),
+      links: { website: DEMO_BUSINESS.website_url, instagram: DEMO_BUSINESS.social_links?.instagram, facebook: DEMO_BUSINESS.social_links?.facebook },
+      budget: { range: "3k-7k", exact_ils: DEMO_BUSINESS.monthly_budget_ils }, success: { kpi: "online_orders" },
+    };
+    const plan = planForApi(mockQuarterPlan(draft, {
+      title: "לקוחות חוזרים, ביקוש צפוי", approach_he: "לבנות הרגל של הזמנה מראש אצל לקוחות המאפייה.",
+      audience: draft.audiences[0]?.name || "תושבי השכונה", goal_he: "יותר הזמנות מראש באתר",
+      why_he: "הזמנות מוקדמות עוזרות לתכנן את האפייה. בודקים את הביקוש לפני שמגדילים את הפרסום.",
+      first_steps: ["לחבר מדידה", "לבחור מוצרים וחומרי גלם עם בעל העסק"],
+    }, { cadence: "1-2" }, []));
+    DEMO_BUSINESS.quarter_plan = plan; DEMO_STRATEGY.quarter_plan = plan;
+  })();
+  await demoPlanReady;
+}
+
 function cloneDemoStrategy(): StrategyPayload {
   return {
     ...DEMO_STRATEGY,
@@ -2487,7 +2512,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     exitDemo();
     return { ok: true } as T;
   }
-  if (path === "/onboarding/me") return { business: DEMO_BUSINESS } as T;
+  if (path === "/onboarding/me") { await ensureDemoPlan(); return { business: DEMO_BUSINESS } as T; }
   if (path === "/onboarding/profile" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as OnboardingPayload;
     if (body.growth_targets) DEMO_BUSINESS.growth_targets = body.growth_targets;
@@ -2543,8 +2568,12 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     }
     return { business: DEMO_BUSINESS, scan: DEMO_BUSINESS.scraped_profile } as T;
   }
-  if (path === "/onboarding/generate" && method === "POST") return { strategy: cloneDemoStrategy() } as T;
-  if (path === "/strategy/current") return cloneDemoStrategy() as T;
+  if (path === "/onboarding/generate" && method === "POST") {
+    return { done: true, job: DEMO_GENERATION_DONE, strategy: cloneDemoStrategy() } as T;
+  }
+  if (path === "/onboarding/generate/status") return DEMO_GENERATION_DONE as T;
+  if (path === "/onboarding/posts/start" && method === "POST") return { ...DEMO_GENERATION_DONE, kind: "posts" } as T;
+  if (path === "/strategy/current") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
   }
@@ -3354,8 +3383,20 @@ export const endpoints = {
   targets: () => api<{ targets: GrowthTargetCandidate[] }>("/onboarding/targets", { method: "POST" }),
   longHorizonPlan: () =>
     api<{ long_horizon_plan: LongHorizonPlan }>("/onboarding/plan", { method: "POST" }),
+  /** Starts (or joins) the first month's background build and answers at once; poll
+   *  `generationStatus` for its progress. See lib/useMonthBuild.ts. */
   generate: () => api<GenerateResult>("/onboarding/generate", { method: "POST" }),
+  /** Same, for the month after the active one. `done` at once when it already exists. */
   generateNextMonth: () => api<GenerateResult>("/strategy/next-month", { method: "POST" }),
+  /** The business's month build (first month, its posts, or next month): stage, label, error. */
+  generationStatus: () => api<GenerationStatus>("/onboarding/generate/status"),
+  /** Write the month's posts in the background: one week, or every week still pending
+   *  (Revision 8: once the owner chose what to feature). Answers with the status. */
+  startPosts: (week?: 1 | 2 | 3 | 4) =>
+    api<GenerationStatus>("/onboarding/posts/start", {
+      method: "POST",
+      body: JSON.stringify(week ? { week } : {}),
+    }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
   generatePostImage: (
     post_index: number,
@@ -3999,6 +4040,9 @@ export type PostBrief = {
   published_at: string | null;
   has_image: boolean;
   tracking_url: string;
+  /** The post's own WhatsApp tracked link (lib/whatsapp.ts); "" when its CTA is not
+   *  WhatsApp or the number is not set. */
+  whatsapp_url?: string;
 };
 
 /**
@@ -4512,31 +4556,65 @@ export type KeywordsPayload = {
   cached?: boolean;
 };
 
+/**
+ * A month being built on the server (GET /onboarding/generate/status). The build runs in
+ * the background whether or not a page is open; pages only poll this. `stage` is the one
+ * running now ("usp" | "plan" | "posts" | "posts_late"; "done" once built).
+ */
+export type WeekPostsState = "pending" | "running" | "done" | "error";
+
+export type GenerationStatus = {
+  /** "first_month": the month's structure after signup (no posts, Revision 8);
+   *  "posts": the posts of the weeks asked for; "next_month": a later month, posts included. */
+  kind: "first_month" | "next_month" | "posts";
+  /** "idle": nothing has run yet (or it stopped before jobs existed; see `resumable`). */
+  status: "idle" | "running" | "failed" | "done";
+  running: boolean;
+  done: boolean;
+  stage: string;
+  /** e.g. "כותבים את הפוסטים לשבועות 3–4" */
+  stage_label_he: string;
+  /** e.g. "בונים את אוקטובר: כותבים את הפוסטים לשבועות 3–4…" */
+  label_he: string;
+  stage_index: number;
+  stage_count: number;
+  year: number | null;
+  month: number | null;
+  month_name_he: string;
+  started_at: string | null;
+  updated_at: string | null;
+  /** Set when the build stopped (a stage failed twice); show it with "לנסות שוב". */
+  error_he: string | null;
+  /** A saved stage and nothing running: starting again continues from it. */
+  resumable: boolean;
+  /** Each week's posts in that month ("1".."4"); null before the month exists. */
+  posts: Record<"1" | "2" | "3" | "4", WeekPostsState> | null;
+};
+
 export type GenerateResult = {
   done?: boolean;
+  job?: GenerationStatus;
   generate_state?: { stage?: string };
-  business?: Business;
+  business?: Business | { generate_state?: { stage?: string } };
   strategy?: StrategyPayload;
 };
 
-export async function generateUntilDone(
-  start: () => Promise<GenerateResult>,
-  onStage?: (stage: string) => void,
-): Promise<GenerateResult> {
-  let result: GenerateResult | null = null;
-  for (let step = 0; step < 10; step += 1) {
-    try {
-      result = await start();
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 502 && step < 9) {
-        await new Promise((resolve) => window.setTimeout(resolve, 4000 * (step + 1)));
-        continue;
-      }
-      throw err;
-    }
-    const stage = result.generate_state?.stage || result.business?.generate_state?.stage;
-    if (stage) onStage?.(stage);
-    if (result.strategy) return result;
-  }
-  throw new ApiError("בניית התוכנית נעצרה באמצע. נסו שוב, ונמשיך מהשלב שנשמר.", 502);
-}
+const DEMO_GENERATION_DONE: GenerationStatus = {
+  kind: "first_month",
+  status: "done",
+  running: false,
+  done: true,
+  stage: "done",
+  stage_label_he: "החודש מוכן",
+  label_he: "החודש מוכן",
+  stage_index: 4,
+  stage_count: 4,
+  year: null,
+  month: null,
+  month_name_he: "",
+  started_at: null,
+  updated_at: null,
+  error_he: null,
+  resumable: false,
+  posts: { "1": "done", "2": "done", "3": "done", "4": "done" },
+};

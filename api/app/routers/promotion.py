@@ -26,6 +26,7 @@ from app.routers.integrations import tokens_for
 from app.services import ga4, keywords
 from app.services.google_cost import business_profile_guidance, plan_for_business
 from app.services.jsonutil import loads
+from app.services.business_fields import field_label
 
 router = APIRouter(prefix="/promotion", tags=["promotion"])
 
@@ -41,7 +42,7 @@ def _business_payload(business: Business) -> dict:
     return {
         "name": business.name,
         "website_url": business.website_url,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,

@@ -604,7 +604,9 @@ const whatsappBusiness: Guide = {
     message: "היי, מה הקישור לוואטסאפ של העסק (wa.me)? צריך אותו לאפליקציית השיווק. תודה!",
     copiedNote: COPIED,
   },
-  why: "כך כל פוסט יכול להוביל ישר לשיחה איתכם בוואטסאפ.",
+  // In the app the owner types only the number (050-1234567 is fine); we build the
+  // wa.me links ourselves, one per place, and count the taps (web/lib/whatsapp.ts).
+  why: "בחיבורים מספיק לכתוב את המספר, למשל 050-1234567. מזה נכין קישור לכל פוסט ולביו, ונספור כמה לחצו על כל אחד.",
   source: { label: "ההסבר של וואטסאפ: קישור לשיחה", url: "https://faq.whatsapp.com/5913398998672934" },
 };
 

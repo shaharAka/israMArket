@@ -45,10 +45,12 @@ from app.services.audiences import MAX_AUDIENCES, PRIMARY, SECONDARY, match_audi
 from app.services.business_model import MODEL_TITLES, audience_framing, goals_for, model_framing, normalise_model
 from app.services.calendar_il import israeli_events_for_month
 from app.services.gemini import generate_json, lite_json
+from app.services import goal_numbers
+from app.services.goal_numbers import DraftBaseline, DraftLever, DraftTarget
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.instagram_signal import MAX_HANDLES as MAX_PEER_HANDLES, HandleError, normalize_handle
 from app.services.jsonutil import dumps, loads
-from app.services.preview import BUSINESS_TYPES
+from app.services import business_fields
 from app.services.scraper import _normalize_url
 
 # --- vocabulary -------------------------------------------------------------------------
@@ -66,20 +68,9 @@ GOAL_TITLES_HE = {
     "personal_brand": ("מיתוג אישי", "שיכירו אתכם כמומחים בתחום"),
 }
 
-# What a business type usually is, for when the draft does not say. The owner confirms
+# What a business field usually is, for when the draft does not say. The owner confirms
 # it in one tap at step 2, so this is a default, not a decision.
-MODEL_BY_TYPE = {
-    "מאפייה / קפה / מסעדה": "products",
-    "חנות פיזית / קמעונאות": "products",
-    "חנות אונליין (אי-קומרס)": "products",
-    'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)': "services",
-    "קליניקה, יופי ובריאות": "services",
-    "סטודיו לאימון / ספורט": "services",
-    "עיצוב / אדריכלות / נדל״ן": "services",
-    "הדרכות, קורסים וחינוך": "services",
-    "תיירות ואירוח": "services",
-    "עסק אחר": "products",
-}
+MODEL_BY_TYPE = business_fields.MODEL_BY_FIELD
 
 _WEEKDAYS_HE = ["שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"]
 CALENDAR_WINDOW_DAYS = 21
@@ -182,18 +173,7 @@ STYLE_PRESETS: dict[str, dict] = {
         "voice": "עדין ואישי, כמו שיחה אחד על אחד.",
     },
 }
-DEFAULT_PRESET_BY_TYPE = {
-    "מאפייה / קפה / מסעדה": "warm",
-    "חנות פיזית / קמעונאות": "playful",
-    "חנות אונליין (אי-קומרס)": "clean",
-    'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)': "clean",
-    "קליניקה, יופי ובריאות": "soft",
-    "סטודיו לאימון / ספורט": "fresh",
-    "עיצוב / אדריכלות / נדל״ן": "luxe",
-    "הדרכות, קורסים וחינוך": "fresh",
-    "תיירות ואירוח": "fresh",
-    "עסק אחר": "warm",
-}
+DEFAULT_PRESET_BY_TYPE = business_fields.PRESET_BY_FIELD
 
 
 def public_presets() -> list[dict]:
@@ -595,6 +575,23 @@ KPI_OPTIONS: dict[str, dict] = {
         "models": {"products", "services", "both"}, "grow": {"online", "store", "both", None},
         "needs": ["instagram_insights", "gbp"], "goal": ("brand_awareness", "personal_brand"),
     },
+    # Revision 6: measures that follow from a growth lever (goal_numbers.LEVER_KPI), never
+    # offered as a pick of their own. Counted in the owner's own sales system or chat.
+    "avg_order": {
+        "name_he": "סכום ממוצע לקנייה", "description_he": "כמה קונים בממוצע בכל קנייה",
+        "models": {"products", "services", "both"}, "grow": {"online", "store", "both", None}, "needs": [],
+        "goal": ("sales", "leads"), "derived": True,
+    },
+    "repeat_customers": {
+        "name_he": "לקוחות שחוזרים", "description_he": "כמה מהלקוחות חוזרים לקנות או להזמין שוב",
+        "models": {"products", "services", "both"}, "grow": {"online", "store", "both", None}, "needs": [],
+        "goal": ("sales", "leads"), "derived": True,
+    },
+    "close_rate": {
+        "name_he": "כמה מהפניות נסגרות", "description_he": "מכל 10 פניות, כמה הופכות ללקוחות",
+        "models": {"services", "both"}, "grow": {"online", "store", "both", None}, "needs": ["whatsapp_link"],
+        "goal": ("leads", "sales"), "derived": True,
+    },
 }
 
 
@@ -605,7 +602,7 @@ def success_options(model: str | None, grow_where: str | None = None) -> list[di
     return [
         {"key": key, "name_he": spec["name_he"], "description_he": spec["description_he"]}
         for key, spec in KPI_OPTIONS.items()
-        if model in spec["models"] and grow in spec["grow"]
+        if model in spec["models"] and grow in spec["grow"] and not spec.get("derived")
     ]
 
 
@@ -685,6 +682,9 @@ class OnboardingDraft(BaseModel):
     style_preset: str = Field(default="", max_length=40)
     audiences: list[DraftAudience] = Field(default_factory=list, max_length=3)
     business_model: Literal["products", "services", "both"] | None = None
+    # Where customers come. Not asked at /start; set when an old draft said "חנות
+    # אונליין" or "חנות פיזית", which the field list no longer offers.
+    presence_type: Literal["brick_and_mortar", "online_only", "hybrid"] | None = None
     goal: Literal["sales", "brand_awareness", "leads", "personal_brand"] | None = None
     city: str = Field(default="", max_length=80)
     differentiator: str = Field(default="", max_length=500)
@@ -696,6 +696,12 @@ class OnboardingDraft(BaseModel):
     budget: DraftBudget | None = None
     grow_where: Literal["online", "store", "both"] | None = None
     success: DraftSuccess | None = None
+    # Revision 6 (all optional): where the business is today, what to grow, and the
+    # 3-month target the owner accepted or edited. `target` supersedes `success.target`;
+    # the main measure follows from the lever (`kpi_key`).
+    baseline: DraftBaseline | None = None
+    lever: DraftLever | None = None
+    target: DraftTarget | None = None
 
     @field_validator("differentiator")
     @classmethod
@@ -704,10 +710,27 @@ class OnboardingDraft(BaseModel):
 
     @property
     def kpi_key(self) -> str:
-        """The plan's main measure: the owner's pick, else the natural one for the model."""
+        """The plan's main measure: from the lever (revision 6), else the owner's pick,
+        else the natural one for the model."""
+        natural = default_kpi(self.model, self.grow_where, bool(self.links.website))
+        if self.lever is not None:
+            kpi = goal_numbers.LEVER_KPI.get(self.lever.primary)
+            if kpi and self.model in KPI_OPTIONS[kpi]["models"]:
+                return kpi
+            offered = {item["key"] for item in success_options(self.model, self.grow_where)}
+            if self.success is not None and self.success.kpi in offered:
+                return self.success.kpi
+            return natural
         if self.success is not None:
             return self.success.kpi
-        return default_kpi(self.model, self.grow_where, bool(self.links.website))
+        return natural
+
+    @property
+    def target_text(self) -> str:
+        """The owner's 3-month target in one line: the revision 6 target, else the old free text."""
+        if self.target is not None and (self.target.accepted or self.target.edited_by_owner):
+            return goal_numbers.target_text(self.target)
+        return self.success.target if self.success is not None else ""
 
     @field_validator("business_name")
     @classmethod
@@ -717,12 +740,30 @@ class OnboardingDraft(BaseModel):
             raise ValueError("מה שם העסק? לפחות 2 אותיות.")
         return text
 
+    @model_validator(mode="before")
+    @classmethod
+    def _legacy_field(cls, data: Any) -> Any:
+        """A draft saved before the field list became industries only still arrives with
+        an old label. It becomes a key here, and "חנות אונליין" keeps what it said about
+        where customers come."""
+        if not isinstance(data, dict) or not isinstance(data.get("business_type"), str):
+            return data
+        resolved = business_fields.resolve_field(
+            clean_text(data["business_type"], 120), clean_text(data.get("offerings"), 900)
+        )
+        if resolved is None:
+            return data
+        data = {**data, "business_type": resolved.key}
+        if resolved.presence_type and not data.get("presence_type"):
+            data["presence_type"] = resolved.presence_type
+        return data
+
     @field_validator("business_type")
     @classmethod
     def _business_type(cls, value: str) -> str:
         text = clean_text(value, 120)
-        if text not in BUSINESS_TYPES:
-            raise ValueError("בחרו סוג עסק מהרשימה.")
+        if text not in business_fields.FIELD_KEYS:
+            raise ValueError("בחרו תחום מהרשימה.")
         return text
 
     @field_validator("offerings")
@@ -779,6 +820,11 @@ class OnboardingDraft(BaseModel):
             if self.success.kpi not in allowed:
                 names = ", ".join(KPI_OPTIONS[key]["name_he"] for key in allowed)
                 raise ValueError(f"מה ייחשב הצלחה לא מתאים לעסק הזה. אפשר לבחור: {names}")
+        if self.lever is not None:
+            for key in (self.lever.primary, self.lever.secondary):
+                if key and self.model not in goal_numbers.LEVERS[key]["models"]:
+                    names = ", ".join(item["name_he"] for item in goal_numbers.levers_for(self.model))
+                    raise ValueError(f"מה להגדיל לא מתאים לעסק הזה. אפשר לבחור: {names}")
         return self
 
     # Derived values, one definition for every caller.
@@ -963,7 +1009,7 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
     title, desc = GOAL_TITLES_HE[draft.goal_key]
     lines = [
         f"- שם העסק: {draft.business_name}",
-        f"- תחום: {draft.business_type}",
+        f"- תחום: {business_fields.field_label(draft.business_type)}",
         f"- מה הם עושים, במילים שלהם: \"{draft.offerings}\"",
         f"- מה מייחד אותם, במילים שלהם: \"{draft.differentiator}\"" if draft.differentiator else "- מה מייחד אותם: לא ענו.",
         f"- עיר או אזור: {draft.city or 'לא נמסר'}",
@@ -972,7 +1018,15 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
     ]
     if draft.grow_where:
         lines.append(f"- איפה הם רוצים לגדול: {GROW_WHERE_HE[draft.grow_where]}")
-    if draft.success is not None:
+    if draft.baseline is not None or draft.lever is not None:
+        lines.append(f"- איפה העסק היום, לדבריהם: {goal_numbers.baseline_summary(draft)}")
+        if draft.lever is not None:
+            lever = goal_numbers.lever_name(draft.lever.primary, draft.model)
+            second = goal_numbers.lever_name(draft.lever.secondary, draft.model) if draft.lever.secondary else ""
+            lines.append(f"- מה הם רוצים להגדיל: {lever}" + (f" (ועוד: {second})" if second else ""))
+        if draft.target_text:
+            lines.append(f"- היעד ל-3 חודשים שהם קיבלו: {draft.target_text}")
+    elif draft.success is not None:
         target = f", והיעד שלהם: \"{draft.success.target}\"" if draft.success.target else ""
         lines.append(f"- מה ייחשב בשבילם הצלחה: {KPI_OPTIONS[draft.success.kpi]['name_he']}{target}")
     if draft.budget is not None:
@@ -1807,9 +1861,10 @@ def apply_draft(
         guess_model = (preview_service.cached_preview(draft.links.website) or {}).get("business_model")
     business.business_model = normalise_model(draft.business_model or guess_model or draft.model)
     allowed = goals_for(business.business_model)
-    if draft.success is not None:
-        # Revision 5: "what counts as success" is the more specific answer.
-        business.primary_goal = goal_for_kpi(draft.success.kpi, business.business_model)
+    if draft.success is not None or draft.lever is not None:
+        # Revision 5/6: the main measure (from the lever, else "what counts as success") is
+        # the more specific answer.
+        business.primary_goal = goal_for_kpi(draft.kpi_key, business.business_model)
     elif draft.goal and draft.goal in allowed:
         business.primary_goal = draft.goal
     elif business.primary_goal not in allowed:
@@ -1821,8 +1876,8 @@ def apply_draft(
         business.location = draft.city
     elif scan and not business.location:
         business.location = clean_text((scan.get("extracted") or {}).get("location"), 255)
-    if draft.business_type == "חנות אונליין (אי-קומרס)":
-        business.presence_type = "online_only"
+    if draft.presence_type:
+        business.presence_type = draft.presence_type
     business.website_url = draft.links.website
 
     # The business's OWN links. `instagram_handles_json` is a different list — peer
@@ -1861,6 +1916,16 @@ def apply_draft(
     # What the owner told us that has no column of its own. The month prompts read it
     # through strategy._owner_block (see `owner_context_block`).
     stored["owner_context"] = owner_context(draft)
+    # Revision 6: the numbers (today, what to grow, the 3-month target), with the
+    # deterministic calculation the target came from. The first month plans against them.
+    if draft.baseline is not None or draft.lever is not None or draft.target is not None:
+        stored["goal_numbers"] = {
+            "baseline": draft.baseline.model_dump(exclude_none=True) if draft.baseline else {},
+            "lever": draft.lever.model_dump(exclude_none=True) if draft.lever else None,
+            "target": draft.target.model_dump() if draft.target else None,
+            "kpi": draft.kpi_key,
+            "view": goal_numbers.numbers_view(draft),
+        }
 
     # Brand: the scan we already paid for, else what is stored for the same site, else
     # the preset (the owner's pick, or the default for the business type).

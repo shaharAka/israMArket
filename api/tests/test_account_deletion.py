@@ -22,6 +22,7 @@ from app.models import (
     Asset,
     Audience,
     Business,
+    GenerationJob,
     HashtagQuery,
     InspirationBrief,
     InstagramPost,
@@ -33,6 +34,8 @@ from app.models import (
     User,
     WebhookDelivery,
     WebhookEndpoint,
+    WhatsappClick,
+    WhatsappLink,
 )
 from app.security import COOKIE_NAME, create_access_token, hash_password
 from app.services import account_deletion, images, ratelimit
@@ -85,7 +88,10 @@ class AccountDeletionTest(unittest.TestCase):
             ids.append(bid)
             endpoint = WebhookEndpoint(business_id=bid, url="https://hooks.example/x", secret="s")
             db.add(endpoint)
+            wa_link = WhatsappLink(business_id=bid, code=f"code{bid}x", source_key="default")
+            db.add(wa_link)
             db.flush()
+            db.add(WhatsappClick(business_id=bid, link_id=wa_link.id, day="2026-10-01", ua_family="ios", count=3))
             db.add_all(
                 [
                     Strategy(business_id=bid, year=2026, month=10),
@@ -99,6 +105,7 @@ class AccountDeletionTest(unittest.TestCase):
                     Asset(business_id=bid, filename="asset-photo.png"),
                     Audience(business_id=bid, name="שכונה"),
                     ResearchRun(business_id=bid, period="2026-W40"),
+                    GenerationJob(business_id=bid, kind="first_month", status="done"),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
             )
@@ -203,6 +210,52 @@ class AccountDeletionTest(unittest.TestCase):
         # The other owner can still sign in.
         response = self.client.post("/auth/login", json={"email": "other@example.com", "password": PASSWORD})
         self.assertEqual(response.status_code, 200, response.text)
+
+    def test_a_recycled_business_id_does_not_inherit_the_old_strategy(self):
+        """SQLite reuses the highest free id: after the owner's account is deleted, the next
+        business can get the same id, and must open on nothing of the deleted one's."""
+        # The other owner holds the highest business id, the one SQLite gives out again.
+        last_id = max(self.owner_businesses + self.other_businesses)
+        self.assertEqual(self.other_businesses[-1], last_id)
+        self._login_as(self.other_id)
+        self.assertEqual(self._delete(PASSWORD).status_code, 200)
+        # A month the background build finished writing after the deletion committed.
+        db = self.Session()
+        db.add(Strategy(business_id=last_id, year=2026, month=11))
+        db.commit()
+        db.close()
+
+        db = self.Session()
+        user = User(email="new@example.com", password_hash=hash_password(PASSWORD), full_name="")
+        db.add(user)
+        db.flush()
+        business = Business(user_id=user.id, name="עסק חדש")
+        db.add(business)
+        db.commit()
+        new_id = business.id
+        db.close()
+        self.assertEqual(new_id, last_id, "the test relies on SQLite handing the id out again")
+        with self.engine.connect() as conn:
+            strategies = conn.execute(select(func.count()).select_from(Strategy).where(Strategy.business_id == new_id)).scalar_one()
+        self.assertEqual(strategies, 0)
+
+    def test_deletion_sweeps_rows_left_by_earlier_deletions(self):
+        """A strategy (or any business-keyed row) whose business is already gone is removed
+        by the next account deletion, not left for a future business with that id."""
+        db = self.Session()
+        db.add(Strategy(business_id=9999, year=2026, month=9))
+        db.add(GenerationJob(business_id=9999, kind="first_month", status="running"))
+        db.add(Business(user_id=8888, name="של משתמש שנמחק"))
+        db.commit()
+        db.close()
+        self._login_as(self.owner_id)
+        self.assertEqual(self._delete(PASSWORD).status_code, 200)
+        with self.engine.connect() as conn:
+            self.assertEqual(conn.execute(select(func.count()).select_from(Strategy).where(Strategy.business_id == 9999)).scalar_one(), 0)
+            self.assertEqual(conn.execute(select(func.count()).select_from(GenerationJob).where(GenerationJob.business_id == 9999)).scalar_one(), 0)
+            self.assertEqual(conn.execute(select(func.count()).select_from(Business).where(Business.user_id == 8888)).scalar_one(), 0)
+        # The other owner's rows are not orphans and stay.
+        self.assertTrue(all(self._rows_for(self.other_id, self.other_businesses).values()))
 
     def test_account_without_a_business(self):
         db = self.Session()

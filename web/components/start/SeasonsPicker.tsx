@@ -60,7 +60,7 @@ export function SeasonsPicker({
               aria-checked={on}
               onClick={() => setMode(key)}
               className={`flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full text-sm font-bold ${
-                on ? "bg-white text-[#191b18] shadow-sm" : "text-[#5e6159]"
+                on ? "bg-white text-[#1d2940] shadow-sm" : "text-[#535f75]"
               } ${key === "slow" && nudge ? `ring-2 ring-[#7da2b8] ${styles.nudge}` : ""}`}
             >
               <span className="h-2.5 w-2.5 rounded-full" style={{ background: key === "busy" ? BUSY.dot : SLOW.dot }} />
@@ -70,7 +70,7 @@ export function SeasonsPicker({
           );
         })}
       </div>
-      <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${nudge ? "font-bold text-[#24475a]" : "text-[#5e6159]"}`}>
+      <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${nudge ? "font-bold text-[#24475a]" : "text-[#535f75]"}`}>
         {guide}
       </p>
       <div className="grid grid-cols-4 gap-2">
@@ -86,7 +86,7 @@ export function SeasonsPicker({
               aria-label={`${label}${busy ? ", עמוס" : slow ? ", שקט" : ""}`}
               onClick={() => toggle(month)}
               className={`flex min-h-[52px] cursor-pointer flex-col items-center justify-center rounded-xl border text-sm font-bold transition-colors ${
-                busy ? BUSY.tile : slow ? SLOW.tile : "border-[#dedcd4] bg-white text-[#2b2d28]"
+                busy ? BUSY.tile : slow ? SLOW.tile : "border-[#dedcd4] bg-white text-[#1d2940]"
               }`}
             >
               {label}
@@ -95,7 +95,7 @@ export function SeasonsPicker({
           );
         })}
       </div>
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#5e6159]" aria-label="מקרא">
+      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#535f75]" aria-label="מקרא">
         <Swatch className="border-[#d9824b] bg-[#fbeee3]" label="עמוס" />
         <Swatch className="border-[#7da2b8] bg-[#eaf1f5]" label="שקט" />
         <Swatch className="border-[#dedcd4] bg-white" label="לא סימנתם? חודש רגיל" />

@@ -34,7 +34,7 @@ from app.services.jsonutil import loads
 
 BAKERY = {
     "business_name": "  מאפיית הפשפשים  ",
-    "business_type": "מאפייה / קפה / מסעדה",
+    "business_type": "food",
     "offerings": "לחם מחמצת, חלות לשישי ובורקס. אופים כל בוקר מ-05:00 ליד שוק הפשפשים.",
     "differentiator": "המחמצת נאפית מול הלקוחות",
     "city": "יפו",
@@ -597,7 +597,7 @@ class FromDraftTest(DraftTestCase):
         self.assertEqual(response.json(), me)
         payload = me["business"]
         self.assertEqual(payload["name"], "מאפיית הפשפשים")
-        self.assertEqual(payload["business_type"], "מאפייה / קפה / מסעדה")
+        self.assertEqual(payload["business_type"], "food")
         self.assertEqual(payload["business_model"], "products")
         self.assertEqual(payload["primary_goal"], "sales")
         self.assertEqual(payload["location"], "יפו")

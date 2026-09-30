@@ -13,6 +13,7 @@ from app.routers import (
     assets,
     audiences,
     auth,
+    foundations,
     instagram,
     integrations,
     onboarding,
@@ -25,6 +26,8 @@ from app.routers import (
     research,
     setup,
     strategy,
+    trial,
+    whatsapp,
 )
 from app.security import DEFAULT_JWT_SECRET
 
@@ -103,10 +106,29 @@ app.include_router(setup.router)
 app.include_router(promotion.router)
 app.include_router(instagram.router)
 app.include_router(research.router)
+app.include_router(trial.router)
+app.include_router(foundations.router)
+app.include_router(whatsapp.router)
+# The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
+app.include_router(whatsapp.public_router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
 app.include_router(public.router)
 # Onboarding v2 (/start, before signup): anonymous too, with its own budgets.
 app.include_router(public_onboarding.router)
+
+
+@app.on_event("startup")
+def _resume_month_generation() -> None:
+    """A month that was being built when the API stopped continues from its saved stage
+    (services/generation_jobs.py). Never blocks or fails the startup."""
+    from app.services import generation_jobs
+
+    try:
+        generation_jobs.resume_on_startup()
+    except Exception:
+        pass
+
+
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.

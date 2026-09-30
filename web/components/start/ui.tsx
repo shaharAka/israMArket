@@ -6,6 +6,7 @@ import type { HelpTopic } from "@/components/help/guides";
 import { BrandMark } from "@/lib/icons";
 import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
+import { UIAction } from "@/components/design/Controls";
 
 /**
  * Building blocks shared by the /start screens.
@@ -26,14 +27,7 @@ export function PrimaryButton({
   onClick?: () => void;
 }) {
   return (
-    <button
-      type={type}
-      onClick={onClick}
-      disabled={disabled}
-      className="drawn-button inline-flex min-h-12 w-full cursor-pointer items-center justify-center gap-2 bg-[#20211f] px-5 text-base font-bold text-white transition-colors hover:bg-[#343632] disabled:cursor-not-allowed disabled:bg-[#8d8f88]"
-    >
-      {children}
-    </button>
+    <UIAction type={type} onClick={onClick} disabled={disabled} className="!min-h-12 w-full !text-base">{children}</UIAction>
   );
 }
 
@@ -50,7 +44,7 @@ export function QuietLink({
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm text-[#5e6159] underline underline-offset-4 hover:text-[#191b18] ${className}`}
+      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm text-[color:var(--ink-soft)] underline underline-offset-4 hover:text-[color:var(--ink)] ${className}`}
     >
       {children}
     </button>
@@ -62,10 +56,12 @@ export function Reflection({ text }: { text: string | null }) {
   if (!text) return null;
   return (
     <div className={`flex items-start gap-2.5 ${styles.rise}`} aria-live="polite">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#191b18]">
+      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary)]">
         <BrandMark className="h-4 w-4 text-white" />
       </span>
-      <p className="rounded-2xl rounded-tr-sm bg-[#efece3] px-3.5 py-2 text-sm leading-6 text-[#2b2d28]">{text}</p>
+      <p className="rounded-2xl rounded-tr-sm bg-[#fff5d9] px-3.5 py-2 text-sm leading-6 text-[color:var(--ink)]">
+        <BidiText text={text} />
+      </p>
     </div>
   );
 }
@@ -140,17 +136,17 @@ export function StepShell({
         <h1
           ref={heading}
           tabIndex={-1}
-          className="text-[1.6rem] font-black leading-tight tracking-tight text-[#191b18] outline-none sm:text-3xl"
+          className="text-[1.6rem] font-black leading-tight tracking-tight text-[color:var(--ink)] outline-none sm:text-3xl"
         >
           {title}
         </h1>
-        <p className="mt-1 text-sm leading-6 text-[#5e6159]">{why}</p>
+        <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">{why}</p>
       </div>
       {children}
       <div
         className={
           stickyAction
-            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
+            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[var(--canvas)] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
                 stickyDesktop ? "lg:mx-0 lg:px-0" : "lg:static lg:mx-0 lg:bg-none lg:p-0"
               }`
             : "space-y-1 pt-1"
@@ -163,7 +159,7 @@ export function StepShell({
             <QuietLink onClick={onSkip}>{skip}</QuietLink>
           </div>
         ) : null}
-        {reassure ? <p className="text-center text-xs leading-5 text-[#6b6e65]">{reassure}</p> : null}
+        {reassure ? <p className="text-center text-xs leading-5 text-[color:var(--ink-soft)]">{reassure}</p> : null}
       </div>
     </form>
   );
@@ -192,13 +188,13 @@ export function Chip({
       disabled={disabled}
       className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
         selected
-          ? "border-[#191b18] bg-[#f1efe8] text-[#191b18] ring-1 ring-[#191b18]"
-          : "border-[#dedcd4] bg-white text-[#2b2d28] hover:border-[#b9b7ad]"
+          ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
+          : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[#b9b7ad]"
       } ${className}`}
     >
       {selected ? <CheckMark /> : null}
       <span>{label}</span>
-      {hint ? <span className="text-xs font-normal text-[#6b6e65]">{hint}</span> : null}
+      {hint ? <span className="text-xs font-normal text-[color:var(--ink-soft)]">{hint}</span> : null}
     </button>
   );
 }
@@ -242,14 +238,14 @@ export function TextInput({
   return (
     <div data-help-topic={helpTopic}>
       <div className="mb-1 flex items-baseline justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-bold text-[#191b18]">
+        <label htmlFor={id} className="text-sm font-bold text-[color:var(--ink)]">
           {label}
         </label>
         {helpTopic ? <HowToFind topic={helpTopic} /> : null}
       </div>
-      <div className="flex min-h-12 items-center rounded-lg border border-[#dedcd4] bg-white focus-within:border-[#191b18] focus-within:ring-1 focus-within:ring-[#191b18]">
+      <div className="flex min-h-12 items-center rounded-lg border border-[var(--rule-dark)] bg-white focus-within:border-[var(--ink)] focus-within:ring-1 focus-within:ring-[var(--ink)]">
         {prefix ? (
-          <span dir="ltr" className="pl-3 text-base text-[#8a8c84]">
+          <span dir="ltr" className="pl-3 text-base text-[color:var(--ink-muted)]">
             {prefix}
           </span>
         ) : null}
@@ -265,12 +261,12 @@ export function TextInput({
           autoCapitalize={dir === "ltr" ? "none" : undefined}
           spellCheck={dir === "ltr" ? false : undefined}
           maxLength={maxLength}
-          className={`min-h-12 w-full min-w-0 rounded-lg bg-transparent text-base text-[#191b18] outline-none placeholder:text-[#a3a59c] ${
+          className={`min-h-12 w-full min-w-0 rounded-lg bg-transparent text-base text-[color:var(--ink)] outline-none placeholder:text-[color:var(--ink-muted)] ${
             prefix ? "pl-3 pr-1" : "px-3.5"
           } ${dir === "ltr" ? "text-left placeholder:text-left" : ""}`}
         />
       </div>
-      {note ? <div className="mt-1 text-xs leading-5 text-[#5e6159]">{note}</div> : null}
+      {note ? <div className="mt-1 text-xs leading-5 text-[color:var(--ink-soft)]">{note}</div> : null}
     </div>
   );
 }
@@ -326,7 +322,7 @@ export function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[#5e6159] hover:bg-[#f1efe8] hover:text-[#191b18]"
+      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] hover:text-[color:var(--ink)]"
     >
       {children}
     </button>
@@ -346,11 +342,36 @@ export function rangeSafe(text: string): string {
   return text.replace(/(\d)\s?[–—]\s?(\d)/g, "$1-$2");
 }
 
+/**
+ * A sentence with numbers in it, safe in a Hebrew line: every number run ("+9", "444-1,666",
+ * "+23%-63%", "1.2-4.5") is its own left-to-right island that never breaks across lines.
+ * Without it, "(+23%-63%)" reads "(63%-23%+)" and a range splits at its hyphen.
+ */
+const NUMBER_RUN = /(?<![\d.,])\+?\d[\d,.]*%?(?:-\+?\d[\d,.]*%?)*/g;
+
+export function BidiText({ text }: { text: string }) {
+  const clean = rangeSafe(text ?? "");
+  const parts: React.ReactNode[] = [];
+  let last = 0;
+  for (const match of clean.matchAll(NUMBER_RUN)) {
+    const at = match.index ?? 0;
+    if (at > last) parts.push(clean.slice(last, at));
+    parts.push(
+      <bdi key={at} dir="ltr" className="whitespace-nowrap">
+        {match[0]}
+      </bdi>,
+    );
+    last = at + match[0].length;
+  }
+  if (last < clean.length) parts.push(clean.slice(last));
+  return <>{parts}</>;
+}
+
 /** Dark text on a light colour, white on a dark one. */
 export function inkOn(hex: string): string {
   const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return "#191b18";
+  if (!m) return "#1d2940";
   const [r, g, b] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16) / 255);
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return lum > 0.6 ? "#191b18" : "#ffffff";
+  return lum > 0.6 ? "#1d2940" : "#ffffff";
 }

@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
+import { SunProgress } from "@/components/brand/SunProgress";
+import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { PostEditor } from "@/components/PostEditor";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
-import { endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
+import { StepLink } from "@/components/trial/StepLink";
+import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
 import { IconCalendar } from "@/lib/icons";
 
 /**
@@ -55,10 +59,10 @@ function go(query: string, mode: "push" | "replace") {
 function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
   const item = (active: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition-colors ${
-      active ? "bg-white text-[#20211f] shadow-sm" : "text-[#62635f] hover:text-[#20211f]"
+      active ? "bg-white text-[color:var(--ink)] shadow-sm" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
     }`;
   return (
-    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[#eeede8] p-1">
+    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[var(--primary-soft)] p-1">
       <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)} className={item(!calendar)}>
         רשימה
       </button>
@@ -75,6 +79,9 @@ function PostsWorkspace() {
   const location = readLocation(params);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
+  const [noMonth, setNoMonth] = useState(false);
+  // Bumped when the posts being written on the server are done: load them again.
+  const [reload, setReload] = useState(0);
   const [queue, setQueue] = useState<PublishQueue | null>(null);
 
   // Whether the open post was reached from this page's own feed. Closing it then steps
@@ -105,14 +112,19 @@ function PostsWorkspace() {
           }
         }
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
+        if (!active) return;
+        // No month yet (right after /start, while it is written) is a normal state with
+        // its own screen, not an error. A 401 is AppShell's redirect to make.
+        if (err instanceof ApiError && err.status === 404) setNoMonth(true);
+        else if (!(err instanceof ApiError && err.status === 401))
+          setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
       }
     }
     void loadPosts();
     return () => {
       active = false;
     };
-  }, []);
+  }, [reload]);
 
   const signature = queueSignature(strategy);
 
@@ -171,7 +183,7 @@ function PostsWorkspace() {
     return error ? (
       <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
     ) : (
-      <p className="text-sm text-[#63665e]">טוענים את הפוסט…</p>
+      <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסט…</p>
     );
   }
 
@@ -198,19 +210,23 @@ function PostsWorkspace() {
     // and its arrow ended up a screen apart.
     <div className={`mx-auto space-y-5 ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
       <header className="space-y-3">
-        <h1 className="text-2xl font-black tracking-tight text-[#20211f] sm:text-3xl">
-          {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
-        </h1>
+        <Link href="/strategy" className="inline-flex min-h-10 items-center text-xs text-[color:var(--ink-soft)] underline underline-offset-4">כלי הביצוע של התוכנית</Link>
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-2xl font-black tracking-tight text-[color:var(--ink)] sm:text-3xl">
+            {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
+          </h1>
+          {posts.length > 0 ? <SunProgress value={doneCount} total={posts.length} label="פוסטים שאושרו החודש" /> : null}
+        </div>
 
         <div className="flex items-center justify-between gap-3">
           {strategy && posts.length ? (
             <div className="flex min-w-0 flex-1 items-center gap-3">
-              <p className="shrink-0 text-sm font-bold text-[#20211f]">
+              <p className="shrink-0 text-sm font-bold text-[color:var(--ink)]">
                 {doneCount} מתוך {posts.length} אושרו
               </p>
-              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[#e3e2dc]">
+              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[var(--rule)]">
                 <div
-                  className="h-full rounded-full bg-[#2d5b33] transition-all"
+                  className="h-full rounded-full bg-[var(--primary)] transition-all"
                   style={{ width: `${(doneCount / posts.length) * 100}%` }}
                 />
               </div>
@@ -247,7 +263,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(firstPending)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
           </button>
@@ -255,17 +271,26 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(due.index)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#20211f] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             לפרסם את הפוסט של היום
           </button>
         ) : null
       ) : null}
 
+      {/* The posts the owner asked for ("להתחיל לכתוב") are written on the server: say so
+          while the month has none yet, never a bare "loading". */}
+      {strategy && posts.length === 0 ? <MonthBuildProgress kind="posts" onDone={() => setReload((n) => n + 1)} /> : null}
+
       {!strategy ? (
-        !error ? <p className="text-sm text-[#63665e]">טוענים את הפוסטים של החודש…</p> : null
+        noMonth ? (
+          <NoPostsYet />
+        ) : !error ? (
+          <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים של החודש…</p>
+        ) : null
       ) : location.calendar ? (
         <CalendarView
+          strategy={strategy}
           initialYear={strategy.year}
           initialMonth={strategy.month}
           posts={posts}
@@ -279,12 +304,37 @@ function PostsWorkspace() {
   );
 }
 
+/**
+ * No month yet — normal in the free month: posts are written only once the week-2
+ * foundations are in (Revision 8). Says why, and links to the step that is next.
+ */
+function NoPostsYet() {
+  return (
+    <section className="rounded-lg border border-[var(--rule)] bg-white px-6 py-8 text-center">
+      <h2 className="text-lg font-black text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[color:var(--ink-soft)]">
+        קודם מחברים מדידה ובוחרים מוצרים, ככה הפוסטים יהיו שלכם. אחר כך נכתוב אותם, והם יחכו כאן
+        לאישור שלכם.
+      </p>
+      <div className="mt-4 flex flex-col items-center gap-1">
+        <Link
+          href="/strategy"
+          className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
+        >
+          לראות את התוכנית
+        </Link>
+        <StepLink stepKey={["instagram", "site_data", "whatsapp", "gbp", "baseline", "photos", "featured", "voice", "start_posts"]} />
+      </div>
+    </section>
+  );
+}
+
 export default function PostsPage() {
   return (
     <AppShell>
       {/* The workspace reads the URL, which a prerender does not have (Next's rule for
           useSearchParams), so it renders inside its own Suspense boundary. */}
-      <Suspense fallback={<p className="text-sm text-[#63665e]">טוענים את הפוסטים…</p>}>
+      <Suspense fallback={<p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים…</p>}>
         <PostsWorkspace />
       </Suspense>
     </AppShell>

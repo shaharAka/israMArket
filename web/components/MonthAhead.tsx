@@ -1,20 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { endpoints, generateUntilDone, isDemo, type MonthHorizon, type StrategyPayload } from "@/lib/api";
+import { endpoints, isDemo, type MonthHorizon, type StrategyPayload } from "@/lib/api";
 import { IconCalendar, IconRoute } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
 import { toast } from "@/lib/ui";
+import { useMonthBuild } from "@/lib/useMonthBuild";
 
 /** The card variant's colours come from the one section system, not its own hexes. */
 const TONE = SECTIONS.strategy;
 
-const STAGE_LABELS: Record<string, string> = {
-  usp: "לומדים מהחודש שעבר…",
-  plan: "בונים את החודש הבא…",
-  posts: "כותבים את הפוסטים לשבועות 1–2…",
-  posts_late: "כותבים את הפוסטים לשבועות 3–4…",
-};
 
 export function MonthAhead({
   horizon,
@@ -44,40 +38,38 @@ export function MonthAhead({
    */
   variant?: "card" | "row" | "line";
 }) {
-  const [busy, setBusy] = useState(false);
-  const [stage, setStage] = useState("");
-  const [error, setError] = useState("");
+  // The next month is built on the server in the background (lib/useMonthBuild.ts): the
+  // button starts it, and the progress survives leaving the page and coming back.
+  const build = useMonthBuild({
+    kind: "next_month",
+    startCall: endpoints.generateNextMonth,
+    onDone: () => {
+      if (horizon) toast(`התוכנית ל${horizon.next_month_name_he} מוכנה`);
+      endpoints.strategy().then(onReady).catch(() => {});
+    },
+  });
+  const busy = build.running || build.starting;
+  const error = build.error;
+  const stageLabel = build.status?.running ? `${build.status.stage_label_he}…` : "בונים את החודש הבא…";
 
   if (!horizon) return null;
   const next = horizon;
 
-  async function buildNext() {
-    setError("");
-    setBusy(true);
-    setStage(next.next_stage || "usp");
-    try {
-      await generateUntilDone(endpoints.generateNextMonth, setStage);
-      toast(`התוכנית ל${next.next_month_name_he} מוכנה`);
-      onReady(await endpoints.strategy());
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לבנות את החודש הבא");
-    } finally {
-      setBusy(false);
-      setStage("");
-    }
+  function buildNext() {
+    void build.start();
   }
 
   const buttonClass = `inline-flex min-h-11 items-center justify-center rounded-md px-4 text-sm font-bold ${
     tone === "quiet"
-      ? "border border-[#c7c4b8] bg-transparent text-[#20211f] hover:bg-[#f4f3ee]"
-      : "bg-[#20211f] text-white hover:bg-[#343632]"
+      ? "border border-[#c3cee5] bg-transparent text-[#1d2940] hover:bg-[#edf2ff]"
+      : "bg-[#2853c7] text-white hover:bg-[#1e42a4]"
   }`;
-  const buttonLabel = next.next_in_progress ? "להמשיך לבנות" : `לבנות את ${next.next_month_name_he}`;
+  const buttonLabel = error ? "לנסות שוב" : next.next_in_progress ? "להמשיך לבנות" : `לבנות את ${next.next_month_name_he}`;
 
   if (variant === "line") {
     if (next.next_exists) {
       return (
-        <p className="flex min-h-12 items-center gap-3 text-sm font-bold text-[#20211f]">
+        <p className="flex min-h-12 items-center gap-3 text-sm font-bold text-[#1d2940]">
           <span className="shrink-0" style={{ color: TONE.accent }}>
             <IconCalendar className="h-4 w-4" />
           </span>
@@ -88,18 +80,18 @@ export function MonthAhead({
     return (
       <div className="flex items-center justify-between gap-3 py-2.5">
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[#20211f]">
+          <p className="text-sm font-bold text-[#1d2940]">
             החודש הבא: {next.next_month_name_he}
-            {next.next_in_progress ? " · נעצר באמצע" : ""}
+            {next.next_in_progress && !busy ? " · נעצר באמצע" : ""}
           </p>
-          <p className="text-xs leading-5 text-[#747570]">
+          <p className="text-xs leading-5 text-[#647087]">
             {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאישרתם, בלי להמציא מספרים."}
           </p>
           {error ? <p className="mt-1 text-sm text-[#9f4330]">{error}</p> : null}
         </div>
         {busy ? (
           <p className="max-w-[45%] text-xs leading-5" style={{ color: TONE.accent }}>
-            {STAGE_LABELS[stage] || "בונים את החודש הבא…"}
+            {stageLabel}
           </p>
         ) : (
           <button
@@ -118,8 +110,8 @@ export function MonthAhead({
     if (next.next_exists) {
       return (
         <div className="flex items-center gap-3 py-3">
-          <IconCalendar className="h-4 w-4 shrink-0 text-[#374b3d]" />
-          <p className="text-sm font-bold text-[#20211f]">
+          <IconCalendar className="h-4 w-4 shrink-0 text-[#2853c7]" />
+          <p className="text-sm font-bold text-[#1d2940]">
             {next.next_month_name_he} כבר מוכן, ויתחיל ב־1 לחודש.
           </p>
         </div>
@@ -128,17 +120,17 @@ export function MonthAhead({
     return (
       <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 py-3">
         <div className="min-w-0">
-          <p className="text-sm font-bold text-[#20211f]">
+          <p className="text-sm font-bold text-[#1d2940]">
             החודש הבא: {next.next_month_name_he}
-            {next.next_in_progress ? " · נעצר באמצע" : ""}
+            {next.next_in_progress && !busy ? " · נעצר באמצע" : ""}
           </p>
-          <p className="mt-0.5 text-xs leading-5 text-[#747570]">
+          <p className="mt-0.5 text-xs leading-5 text-[#647087]">
             {isDemo() ? "בדמו עובדים על חודש אחד." : "נבנה ממה שאישרתם, בלי להמציא מספרים."}
           </p>
           {error ? <p className="mt-1 text-sm text-[#9f4330]">{error}</p> : null}
         </div>
         {busy ? (
-          <p className="text-sm text-[#685f47]">{STAGE_LABELS[stage] || "בונים את החודש הבא…"}</p>
+          <p className="text-sm text-[#685f47]">{stageLabel}</p>
         ) : (
           <button type="button" onClick={() => void buildNext()} className={`${buttonClass} w-full sm:w-auto`}>
             {buttonLabel}
@@ -158,7 +150,7 @@ export function MonthAhead({
           <IconCalendar className="h-4 w-4" />
           החודש הבא מוכן
         </p>
-        <p className="mt-1 text-sm font-bold text-[#20211f]">
+        <p className="mt-1 text-sm font-bold text-[#1d2940]">
           התוכנית ל{next.next_month_name_he} כבר מוכנה, ותתחיל ב־1 לחודש.
         </p>
       </section>
@@ -166,23 +158,23 @@ export function MonthAhead({
   }
 
   return (
-    <section className="rounded-lg border border-[#e6e4dc] bg-white px-5 py-4">
+    <section className="rounded-lg border border-[#e1e7f2] bg-white px-5 py-4">
       <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
         <IconRoute className="h-4 w-4" />
         החודש הבא
       </p>
-      <p className="mt-1 text-sm font-bold text-[#20211f]">
+      <p className="mt-1 text-sm font-bold text-[#1d2940]">
         לבנות את {next.next_month_name_he} לפי מה שאישרתם החודש
         {next.next_in_progress ? ". נמשיך מאיפה שעצרנו" : ""}
       </p>
-      <p className="mt-1 text-sm leading-6 text-[#5e6159]">
+      <p className="mt-1 text-sm leading-6 text-[#535f75]">
         {isDemo()
           ? "בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה אותו מהפוסטים שאישרתם, ומהתוצאות אם יש."
           : "בלי להמציא מספרים. אם גוגל או מטא לא מחוברים, נבנה לפי התוכנית של הרבעון ומה שאישרתם."}
       </p>
       {error ? <p className="mt-2 text-sm text-[#9f4330]">{error}</p> : null}
       {busy ? (
-        <p className="mt-3 text-sm" style={{ color: TONE.accent }}>{STAGE_LABELS[stage] || "בונים את החודש הבא…"}</p>
+        <p className="mt-3 text-sm" style={{ color: TONE.accent }}>{stageLabel}</p>
       ) : (
         <button type="button" onClick={() => void buildNext()} className={`mt-3 ${buttonClass}`}>
           {buttonLabel}

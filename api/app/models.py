@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -14,6 +14,17 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     full_name: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # The free first month (docs/onboarding-v2.md, Revision 7 B). Account-level, not
+    # per business: the trial is what the owner signed up for, and a second business does
+    # not restart it. Set at signup (and by from-draft for older accounts); NULL on rows
+    # from before the trial existed, which /trial reads as "started when the account did".
+    trial_started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # When the first-entry welcome was seen or skipped. Server-side so a second device or
+    # a cleared browser does not show it again.
+    welcomed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # What the journey cannot read from other rows: when the plan and the results were
+    # last opened. {"plan_seen_at": iso, "plan_last_seen_at": iso, ...}. See routers/trial.py.
+    trial_events_json: Mapped[str] = mapped_column(Text, default="{}")
 
     businesses: Mapped[list["Business"]] = relationship(back_populates="owner")
 
@@ -44,6 +55,11 @@ class Business(Base):
     scraped_profile_json: Mapped[str] = mapped_column(Text, default="")
     generate_state_json: Mapped[str] = mapped_column(Text, default="")
     onboarding_complete: Mapped[int] = mapped_column(Integer, default=0)
+    # The WhatsApp tracked link (services/whatsapp.py). E.164 with the plus, e.g.
+    # "+972501234567"; NULL until the owner sets it. The default text is what the customer's
+    # message starts with — every link appends its own short source code to it.
+    whatsapp_number_e164: Mapped[str | None] = mapped_column(String(20), nullable=True, default=None)
+    whatsapp_default_text_he: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -317,3 +333,139 @@ class ResearchRun(Base):
     sources_json: Mapped[str] = mapped_column(Text, default="{}")
     model: Mapped[str] = mapped_column(String(80), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class WhatsappLink(Base):
+    """One short tracked link, /r/{code}, that redirects to wa.me with a prefilled message.
+
+    One row per (business, source): the Instagram bio, a story, the Google card, or one
+    post. `source_key` is what the owner's results group by; the code is what goes out in
+    public. The message text is resolved at redirect time (the link's own text, else the
+    business default), so editing the default updates every link already posted.
+    """
+
+    __tablename__ = "whatsapp_links"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    code: Mapped[str] = mapped_column(String(16), unique=True, index=True)
+    # e.g. "default", "ig-bio", "story", "gbp", "ig-post-202610-3"
+    source_key: Mapped[str] = mapped_column(String(64))
+    label_he: Mapped[str] = mapped_column(String(255), default="")
+    # Empty = use the business's default text.
+    prefilled_text_he: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("business_id", "source_key", name="uq_whatsapp_link_source"),)
+
+
+class WhatsappClick(Base):
+    """A daily counter of clicks on one link, split by a coarse device bucket.
+
+    Deliberately not an event log: no IP address, no full user agent, no timestamp finer
+    than the day and nothing that identifies who clicked. Preview crawlers and bots are
+    never counted (services/whatsapp.is_bot). `business_id` is carried so account
+    deletion (services/account_deletion.py) removes these rows with the business.
+    """
+
+    __tablename__ = "whatsapp_clicks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    link_id: Mapped[int] = mapped_column(ForeignKey("whatsapp_links.id"), index=True)
+    # Israel's calendar day, "YYYY-MM-DD".
+    day: Mapped[str] = mapped_column(String(10))
+    # "instagram" | "facebook" | "ios" | "android" | "desktop" | "other"
+    ua_family: Mapped[str] = mapped_column(String(20), default="other")
+    count: Mapped[int] = mapped_column(Integer, default=0)
+
+    __table_args__ = (UniqueConstraint("link_id", "day", "ua_family", name="uq_whatsapp_click_bucket"),)
+
+
+class GenerationJob(Base):
+    """The month being built for one business, in the background (services/generation_jobs.py).
+
+    One row per business (the unique constraint is the "one job per business" guard): the
+    row is claimed with a compare-and-set on `status`/`heartbeat_at`, so a double click, a
+    second tab or a second API process never starts a second writer. The month's own
+    progress stays in `Business.generate_state_json` (the stage machine in
+    services/strategy.py); this row says who is running it, since when, and how it ended.
+    """
+
+    __tablename__ = "generation_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), unique=True, index=True)
+    # "first_month" (/onboarding/generate) | "next_month" (/strategy/next-month).
+    kind: Mapped[str] = mapped_column(String(20), default="first_month")
+    # "running" | "failed" | "done".
+    status: Mapped[str] = mapped_column(String(20), default="running")
+    # Changes on every claim; a worker whose token is no longer the row's stops writing.
+    token: Mapped[str] = mapped_column(String(40), default="")
+    year: Mapped[int] = mapped_column(Integer, default=0)
+    month: Mapped[int] = mapped_column(Integer, default=0)
+    # Shown to the owner when the job stopped; the raw error is kept in `error_detail`.
+    error_he: Mapped[str] = mapped_column(Text, default="")
+    error_detail: Mapped[str] = mapped_column(Text, default="")
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # The last time a stage finished (or the job started): what "updated" means to the owner.
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # Ticked every few seconds by the process running the job, also mid-stage. A running
+    # job whose heartbeat went quiet belongs to a process that is gone, and is resumed.
+    heartbeat_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+
+
+# --- ids that come back ---------------------------------------------------------------
+#
+# SQLite hands out the highest free rowid again (these tables have no AUTOINCREMENT), so a
+# business or a user created after a deletion can get a deleted one's id. Anything still
+# keyed by that id — a month a background build wrote while the account was being deleted,
+# or a row from before services/account_deletion.py existed — would silently become the
+# new owner's: an old plan, an old token. A row that was just inserted has no children by
+# definition, so whatever already points at its id is a leftover, and goes (children
+# first). services/account_deletion.py also sweeps rows whose parent is gone.
+
+
+def business_scoped_tables():
+    """Every table keyed by `business_id`, children before parents (businesses excluded)."""
+    return [t for t in reversed(Base.metadata.sorted_tables) if t.name != "businesses" and "business_id" in t.c]
+
+
+def user_scoped_tables():
+    """Every table keyed by `user_id`, children before parents (users excluded)."""
+    return [t for t in reversed(Base.metadata.sorted_tables) if t.name != "users" and "user_id" in t.c]
+
+
+def purge_business_rows(connection, business_ids) -> dict[str, int]:
+    """Delete every row keyed by these business ids (not the businesses themselves)."""
+    ids = list(business_ids)
+    counts: dict[str, int] = {}
+    if not ids:
+        return counts
+    endpoints = WebhookEndpoint.__table__
+    deliveries = WebhookDelivery.__table__
+    result = connection.execute(
+        delete(deliveries).where(
+            deliveries.c.endpoint_id.in_(select(endpoints.c.id).where(endpoints.c.business_id.in_(ids)))
+        )
+    )
+    counts["webhook_deliveries"] = result.rowcount or 0
+    for table in business_scoped_tables():
+        result = connection.execute(delete(table).where(table.c.business_id.in_(ids)))
+        counts[table.name] = result.rowcount or 0
+    return counts
+
+
+@event.listens_for(Business, "after_insert")
+def _new_business_starts_clean(mapper, connection, target) -> None:  # noqa: ARG001
+    purge_business_rows(connection, [target.id])
+
+
+@event.listens_for(User, "after_insert")
+def _new_user_starts_clean(mapper, connection, target) -> None:  # noqa: ARG001
+    businesses = Business.__table__
+    stale = [row[0] for row in connection.execute(select(businesses.c.id).where(businesses.c.user_id == target.id))]
+    purge_business_rows(connection, stale)
+    for table in user_scoped_tables():  # `businesses` is one of these, after its children
+        connection.execute(delete(table).where(table.c.user_id == target.id))

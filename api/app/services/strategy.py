@@ -9,6 +9,7 @@ from app.services.audiences import (
     post_audience_rule,
     prompt_block as audience_prompt_block,
 )
+from app.services.business_fields import field_label
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import extract_json, lite_json, strategy_json
@@ -42,7 +43,7 @@ def _business_brief(business: dict) -> dict:
     and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
     raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed"}
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items"}
     if not any(key in business for key in own_blocks):
         return business
     return {key: value for key, value in business.items() if key not in own_blocks}
@@ -63,6 +64,47 @@ def _owner_block(business: dict, include_idea: bool = False) -> str:
     return owner_context_block(
         business.get("owner_context"), business.get("first_month_seed"), include_idea=include_idea
     )
+
+
+def featured_items_from(stored: dict | None) -> list:
+    """The products/services the owner chose to feature (Revision 8, week 2), or [].
+
+    Read from the stored profile (`featured_items`) or from the /start answers
+    (`owner_context.featured_items`); whichever the picks screen writes. Each item is a
+    string or a dict (name / why / order); anything else is ignored.
+    """
+    stored = stored or {}
+    items = stored.get("featured_items")
+    if not items:
+        items = (stored.get("owner_context") or {}).get("featured_items") if isinstance(stored.get("owner_context"), dict) else None
+    if not isinstance(items, list):
+        return []
+    return [item for item in items if isinstance(item, (str, dict)) and item][:12]
+
+
+def _featured_block(business: dict) -> str:
+    """The owner's product picks for the posts; "" when there are none (prompt unchanged)."""
+    items = business.get("featured_items") or []
+    if not items:
+        return ""
+    lines = []
+    for index, item in enumerate(items, start=1):
+        if isinstance(item, str):
+            lines.append(f"{index}. {item.strip()}")
+            continue
+        name = str(item.get("name") or item.get("title") or "").strip()
+        if not name:
+            continue
+        why = str(item.get("why") or item.get("reason") or item.get("note") or "").strip()
+        lines.append(f"{index}. {name}" + (f": {why}" if why else ""))
+    if not lines:
+        return ""
+    listed = "\n".join(lines)
+    return f"""
+המוצרים והשירותים שבעל העסק בחר להבליט, לפי הסדר שלו:
+{listed}
+הפוסטים מבליטים אותם, בסדר הזה ומהסיבות שבעל העסק נתן. אל תמציא מוצר שלא ברשימה ואל תבליט מוצר אחר במקומם.
+"""
 
 
 def _audience_block(business: dict, note: str = "") -> str:
@@ -239,7 +281,7 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
 
 פרטי העסק מהאשף:
 שם: {business.get("name")}
-סוג: {business.get("business_type")}
+סוג: {field_label(business.get("business_type"))}
 הצעות ליבה ומוצרים: {business.get("offerings")}
 מיקום: {business.get("location")}
 מודל נוכחות: {business.get("presence_type")} (חנות פיזית / רק אתר / משולב)
@@ -332,11 +374,14 @@ def posts_prompt(
     # What Instagram actually showed for this business: own top posts, the month's
     # pattern brief, or an explicit "no data, claim nothing". Built by the router.
     instagram = business.get("instagram_signal")
+    if len(weeks) == 1:
+        count_line = count_line or f"כתוב 1 עד 2 פוסטים מוכנים לפרסום לשבוע {weeks[0]} בלבד."
     count_line = count_line or f"כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד."
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
 {_owner_block(business, include_idea=1 in weeks)}
+{_featured_block(business)}
 
 {count_line}
 אל תמציא כיוון חדש. כל פוסט חייב לשרת את נושא החודש ואת אחד השבועות האלה.
@@ -405,7 +450,7 @@ def _write_posts_for_weeks(
     writer = strategy_json if (get_settings().post_model or "gemini") == "gemini" else post_json
     posts = loads(writer(prompt, schema), {})
     items = posts.get("posts") or []
-    needed = 2 if plan is None else max(1, min(2, plan["to_write"]))
+    needed = (1 if len(weeks) == 1 else 2) if plan is None else max(1, min(2, plan["to_write"]))
     if len(items) < needed:
         raise RuntimeError(f"קיבלנו פחות מדי פוסטים לשבועות {week_text}. נסו שוב.")
     # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
@@ -503,6 +548,37 @@ def build_monthly_posts(business: dict, usp: dict, core: dict, brand: dict, prio
     if len(items) < 4:
         raise RuntimeError("קיבלנו פחות מדי פוסטים לחודש. בנו את התוכנית שוב.")
     return items
+
+
+def write_week_posts(business: dict, usp: dict, core: dict, brand: dict, week: int, prior: dict | None = None) -> list[dict]:
+    """The posts of one week of a month whose structure already exists (Revision 8: the
+    first month is built without posts; they are written when the owner is ready)."""
+    return _write_posts_for_weeks(business, usp, core, brand, [week], prior=prior)
+
+
+def month_from_state(state: dict, scan: dict, posts: list[dict] | None = None) -> dict:
+    """The month (the shape `generate_monthly_strategy` returns when complete) from a saved
+    generation state whose plan stages are done — with `posts` (possibly none) as its posts.
+
+    The first month is stored this way once its structure exists: the USP, the calendar,
+    the posting plan and the weeks (`roadmap_core`), and the posts only later.
+    """
+    core = state.get("roadmap_core") or {}
+    if not core.get("theme"):
+        raise RuntimeError("לא מצאנו את התוכנית של החודש. בנו אותה מחדש.")
+    return {
+        "year": state.get("year"),
+        "month": state.get("month"),
+        "scraped_profile": scan,
+        "brand_language": (scan or {}).get("brand_language") or {},
+        "competitors": state.get("competitors") or [],
+        "usp": state.get("usp") or {},
+        "calendar": state.get("calendar") or [],
+        "posting_plan": state.get("posting_plan"),
+        "roadmap": {**core, "posts": list(posts or [])},
+        "generate_state": state,
+        "complete": True,
+    }
 
 
 def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = None) -> dict:

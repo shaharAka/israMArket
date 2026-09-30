@@ -1,0 +1,8 @@
+.scene { width: 100%; }
+.scene svg { width: 100%; overflow: visible; }
+.controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 5px; }
+.controls button { font-size: 11px; color: var(--im-primary); min-height: 40px; cursor: pointer; text-decoration: underline; text-underline-offset: 5px; white-space: nowrap; }
+.controls button:disabled { color: var(--im-muted); cursor: default; }
+.controls button:focus-visible { outline: 2px solid var(--im-primary); outline-offset: 3px; }
+.controls input { width: 110px; accent-color: var(--im-primary); cursor: pointer; direction: ltr; }
+@media (max-width: 600px) { .controls { gap: 15px; } }

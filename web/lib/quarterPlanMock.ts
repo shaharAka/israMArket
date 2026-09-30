@@ -1,5 +1,5 @@
 /**
- * Fixtures for the 3-month plan and the success options. Loaded only in mock mode
+ * Fixtures for the 3-month plan (with its numbers and content mix) and the success options. Loaded only in mock mode
  * (`?mock=1` / NEXT_PUBLIC_DRAFT_MOCK=1), by dynamic import from `draft.ts`, so they never
  * ship in the flow a real owner walks. Everything is computed from the answers: a shop with
  * a budget, a bakery with nothing yet and a service business get visibly different plans.
@@ -14,10 +14,9 @@ import {
   firstOffering,
   inferBusinessModel,
   kitFor,
-  typeGroup,
   type OnboardingDraft,
-  type TypeGroup,
 } from "./draft";
+import { mockTargetSuggestion, targetText, type LeverKey } from "./goals";
 import {
   KPI_UNITS,
   budgetIls,
@@ -25,6 +24,8 @@ import {
   type GrowWhere,
   type IntegrationKey,
   type PlanInputs,
+  type ContentType,
+  type PlanNumbers,
   type QuarterPlan,
   type SuccessOption,
 } from "./quarterPlan";
@@ -55,6 +56,42 @@ export function mockSuccessOptions(model: BusinessModel, grow: GrowWhere | undef
 /* ------------------------------- The plan ------------------------------- */
 
 const CADENCE_HE: Record<Cadence, string> = { "1-2": "1-2 בשבוע", "3-4": "3-4 בשבוע", "5+": "5 ומעלה בשבוע" };
+
+/**
+ * The mock's own coarse buckets. The field says the industry; whether a shop sells in a
+ * store or online comes from where the owner wants to grow, not from the field.
+ */
+type TypeGroup = "food" | "retail" | "ecommerce" | "professional" | "clinic" | "fitness" | "design" | "education" | "tourism" | "other";
+
+function typeGroup(d: OnboardingDraft): TypeGroup {
+  const online = d.grow_where === "online" || d.presence_type === "online_only";
+  switch (kitFor(d.business_type, d.offerings).key) {
+    case "food":
+      return "food";
+    case "fashion":
+    case "jewelry":
+    case "kids":
+    case "pets":
+    case "gifts":
+      return online ? "ecommerce" : "retail";
+    case "beauty":
+    case "health":
+      return "clinic";
+    case "fitness":
+      return "fitness";
+    case "home":
+    case "real_estate":
+      return "design";
+    case "professional":
+      return "professional";
+    case "education":
+      return "education";
+    case "hospitality":
+      return "tourism";
+    default:
+      return "other";
+  }
+}
 
 const LOCAL_GROUPS: TypeGroup[] = ["food", "retail", "clinic", "fitness", "design", "professional", "tourism", "education"];
 
@@ -114,7 +151,7 @@ export function mockQuarterPlan(
   insights: PlanInsight[],
 ): QuarterPlan {
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
-  const group = typeGroup(d.business_type);
+  const group = typeGroup(d);
   const kit = kitFor(d.business_type);
   const offer = firstOffering(d.offerings) || "מה שאתם עושים";
   const hasSite = Boolean(d.links.website);
@@ -210,7 +247,7 @@ export function mockQuarterPlan(
     integrations.push({
       key: "gbp",
       name_he: "הכרטיס של העסק בגוגל",
-      why_he: `כאן מחפשים ״${kit.chip.split(/[ ,]/)[0]} ליד הבית״. נראה כמה התקשרו וכמה ביקשו הוראות הגעה.`,
+      why_he: `כאן מחפשים ״${offer} ליד הבית״. נראה כמה התקשרו וכמה ביקשו הוראות הגעה.`,
       status: "unknown",
       effort_he: "נבדוק אם יש לכם כרטיס. אם לא, פותחים יחד בשעה.",
     });
@@ -457,34 +494,35 @@ export function mockQuarterPlan(
       { key: "season", title: "סוף השנה", description_he: "סיכום, תודה, ומה מחכה בשנה הבאה." },
     ],
   ];
-  const titles: Record<TypeGroup, string[][]> = {
-    food: [[`ככה נראה ${offer} ב-7 בבוקר`, "איך מזמינים לשישי, ב-3 צעדים", "הידיים שמאחורי הדלפק"], ["מה כתבו לנו השבוע", "המגש לחנוכה: מזמינים מראש", "המתכון שלא נגלה לכם"], ["טיפ: איך שומרים לחם טרי", "הלקוחה שמגיעה כל שישי כבר 5 שנים"]],
-    retail: [["מה הגיע השבוע למדף", "איך בוחרים מתנה ב-2 דקות", "הכירו את מי שעומד מאחורי הדלפק"], ["מה אמרו עלינו", "רעיונות למתנות לחנוכה", "3 דברים שלא תמצאו בקניון"], ["טיפ: איך בוחרים מידה נכונה", "הלקוח שחזר בשביל ההחלפה"]],
-    ecommerce: [[`${offer}, ביד, באור יום`, "מהזמנה ועד שזה אצלכם", "איך זה נעשה אצלנו"], ["מה כותבים לנו אחרי שזה מגיע", "יום הרווקים: רק לעוקבים", "בלאק פריידי: מה כדאי לקחת"], ["איך בוחרים מתנה שתתאים", "מאחורי הקלעים: אורזים את חנוכה"]],
-    professional: [["מה קורה אחרי שפונים אלינו", "השאלה שהכי שואלים אותנו", "3 סימנים שאנחנו מתאימים לכם"], ["לקוח אחד, בעיה אחת, פתרון אחד", "טעות נפוצה שכדאי להכיר", "איך נראית הפגישה הראשונה"], ["מה לסגור לפני סוף השנה", "המספרים שחשוב להכיר ב-2027"]],
-    clinic: [["ככה נראה טיפול אצלנו", "מה לשאול לפני שקובעים תור", "הכירו את המטפלת"], ["לפני ואחרי, באישור", "מה כתבו לנו השבוע", "תורים לפני החגים"], ["טיפ לשגרה בבית", "למה לקוחות חוזרים"]],
-    fitness: [["שיעור אמיתי, מהצד", "השיעור הראשון: מה מחכה לכם", "הכירו את המדריכים"], ["מה אומרים המתאמנים", "חבר מביא חבר", "תרגיל אחד לבית"], ["סיכום השנה בסטודיו", "מטרה אחת ל-2027"]],
-    design: [["חדר אחד, לפני ואחרי", "מה קורה בפגישה הראשונה", "למה בחרנו דווקא את החומר הזה"], ["פרויקט גמור, במילים של הלקוחות", "3 טעויות בתכנון מטבח", "מאחורי הקלעים באתר"], ["איך מתכננים שיפוץ בתקציב", "סיכום השנה: 5 בתים"]],
-    education: [["רגע משיעור אמיתי", "למי הקורס מתאים", "טעימה קטנה בחינם"], ["מה אמרו הבוגרים", "3 טעויות של מתחילים", "המחזור הבא נפתח"], ["תרגיל לבית", "בוגרת אחת, שנה אחרי"]],
-    tourism: [["הבוקר מהמרפסת", "מה כולל סוף שבוע אצלנו", "הכירו את המארחים"], ["מה כתבו האורחים", "חנוכה בצפון: מזמינים מוקדם", "המסלול שאנחנו ממליצים"], ["טיפ לחופשה זוגית", "אורחים שחוזרים כל שנה"]],
-    other: [[`${offer} מקרוב`, "איך מזמינים", "מי אנחנו"], ["מה הלקוחות אומרים", "לקראת התאריך הבא", "מה חדש אצלנו"], ["טיפ מהניסיון", "סיפור של לקוח"]],
+  // The content mix: structure, never products (which products to feature is the owner's call).
+  const lever: LeverKey = d.lever?.primary ?? "new_customers";
+  const MIX_NAMES: Record<ContentType, string> = {
+    product: model === "services" ? "השירותים" : "המוצרים",
+    value: "תוכן שמלמד ועוזר",
+    behind_scenes: "מאחורי הקלעים",
+    social_proof: "לקוחות מספרים",
+    offer: "מבצע או הזמנה לפעולה",
+    community: "קהילה ואירועים מקומיים",
+    seasonal: "לוח שנה וחגים",
   };
-  const formats = ["reel", "carousel", "image"];
+  const MIX_BY_LEVER: Record<LeverKey, [ContentType, string, string][]> = {
+    new_customers: [["product", "2", "להראות למי שלא מכיר מה אתם עושים הכי טוב."], ["social_proof", "1-2", "מה לקוחות אומרים, כדי להוריד חשש."], ["value", "1-2", "תשובה לשאלה שמחפשים לפני שקונים."], ["seasonal", "1", "סיבה לבוא דווקא עכשיו."]],
+    bigger_basket: [["product", "2-3", "שילובים ומארזים: מה הולך טוב ביחד."], ["offer", "1", "סף למשלוח חינם או מארז, בלי לציין מוצר מסוים."], ["social_proof", "1", "לקוחות שלקחו יותר ונהנו."], ["behind_scenes", "1", "איך מרכיבים הזמנה."]],
+    returning: [["social_proof", "2", "לקוחות קבועים מספרים, כדי שאחרים יחזרו."], ["community", "1-2", "מה קורה אצלכם ובאזור, למי שכבר מכיר."], ["product", "1-2", "מה חדש מאז הפעם הקודמת."], ["offer", "1", "משהו רק ללקוחות שחוזרים."]],
+    close_more: [["social_proof", "2", "סיפורי לקוחות שמראים את התוצאה."], ["behind_scenes", "1-2", "תהליך העבודה, שלב אחרי שלב."], ["value", "1-2", "תשובות לשאלות שלפני פנייה."], ["product", "1", "מה בדיוק מקבלים."]],
+    fill_quiet: [["seasonal", "2", "להתכונן לחודש השקט שלושה שבועות לפני."], ["offer", "1-2", "סיבה לבוא דווקא בחודש שקט."], ["community", "1", "מה קורה אצלכם כשרגוע."], ["product", "1-2", "מה אפשר להזמין עכשיו."]],
+  };
   const content: QuarterPlan["content"] = months.map((m, index) => {
     const cad: QuarterPlan["content"][number]["cadence"] = [{ channel_key: mainNet, per_week: CADENCE_HE[cadence] }];
     if (nets.includes("facebook") && mainNet !== "facebook") cad.push({ channel_key: "facebook", per_week: "1 בשבוע" });
     if (index >= 1 && channels.some((c) => c.key === "whatsapp_list")) cad.push({ channel_key: "whatsapp_list", per_week: "1 בשבוע" });
     if (index === 2 && channels.some((c) => c.key === "email")) cad.push({ channel_key: "email", per_week: "1 בשבועיים" });
-    const monthTitles = titles[group][index] ?? titles.other[index];
     return {
       month_label: m.label,
       pillars: pillarSet[index],
       cadence: cad,
-      example_titles: monthTitles.slice(0, 3).map((title, i) => ({
-        title,
-        channel_key: i === 2 && channels.some((c) => c.key === "gbp") ? "gbp" : mainNet,
-        format: i === 2 && channels.some((c) => c.key === "gbp") ? "image" : formats[i % 3],
-      })),
+      mix: MIX_BY_LEVER[lever].map(([type_key, per_month, purpose_he]) => ({ type_key, name_he: MIX_NAMES[type_key], per_month, purpose_he })),
+      products_note_he: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות.",
     };
   });
 
@@ -492,17 +530,17 @@ export function mockQuarterPlan(
   const firstNew = channels.find((c) => c.kind === "new");
   const assumptions: QuarterPlan["assumptions"] = [
     {
-      bet_he: `${primary} יגיבו יותר ל${model === "services" ? "עבודה אמיתית" : "מוצר"} מקרוב מאשר לפוסט מבצע.`,
+      bet_he: `אנחנו מניחים ש${primary} יגיבו יותר ל${model === "services" ? "עבודה אמיתית" : "מוצר"} מקרוב מאשר לפוסט מבצע, ונראה את זה בתגובות.`,
       if_wrong_he: "אם אחרי שבועיים אין תגובות, עוברים לסיפורי לקוחות ובודקים שוב.",
     },
     {
-      bet_he: `${CADENCE_HE[cadence]} מספיק כדי שיזכרו אתכם, בלי שזה יכביד עליכם.`,
+      bet_he: `אנחנו מניחים ש-${CADENCE_HE[cadence]} מספיק כדי שיזכרו אתכם, בלי שזה יכביד עליכם.`,
       if_wrong_he: "אם זה יותר מדי, יורדים לקצב נמוך יותר. קבוע עדיף על הרבה ואז שקט.",
     },
   ];
   if (firstNew) {
     assumptions.push({
-      bet_he: `${firstNew.name_he} יביא ${unit} שלא הגיעו מהרשתות.`,
+      bet_he: `אנחנו מניחים ש${firstNew.name_he} יביא ${unit} שלא הגיעו מהרשתות, ונראה את זה בקישור המסומן.`,
       if_wrong_he: paid && firstNew.key === "meta_ads"
         ? "אם אחרי חודש זה לא מביא כלום, מעבירים את הכסף לערוץ שכן הביא."
         : "אם אחרי חודש אין שום דבר משם, מוותרים ומשקיעים במה שכן הביא.",
@@ -532,8 +570,15 @@ export function mockQuarterPlan(
     calendar,
     content,
     assumptions,
+    inside: MOCK_INSIDE,
     cached: false,
   };
+  const numbers = mockNumbers(d, model);
+  if (numbers) {
+    plan.numbers = numbers;
+    if (numbers.target?.text_he && numbers.target.kind !== "qualitative") plan.kpi.target = inputs.target || numbers.target.text_he;
+    if (numbers.baseline_known) plan.kpi.baseline_he = numbers.baseline_he;
+  }
 
   const changed = inputs.changed ?? [];
   const notes: string[] = [];
@@ -545,4 +590,59 @@ export function mockQuarterPlan(
   }
   if (notes.length) plan.changed_he = notes.join(" ");
   return plan;
+}
+
+/** Mirrors quarter_plan.INSIDE: only what the app has. */
+const MOCK_INSIDE: NonNullable<QuarterPlan["inside"]> = [
+  { key: "plan", title_he: "התוכנית הזו, לעריכה", what_he: "כל חודש נפתח ממנה. אפשר לשנות ערוצים, קצב ויעד בכל רגע." },
+  { key: "posts", title_he: "פוסטים לכל שבוע", what_he: "אחרי שתבחרו אילו מוצרים להבליט ותעלו תמונות, נכתוב לפי התמהיל. אתם מאשרים." },
+  { key: "design", title_he: "עיצוב בצבעים שלכם", what_he: "כל פוסט מקבל כרטיס מעוצב בצבעים ובלוגו של העסק." },
+  { key: "assets", title_he: "התמונות שלי", what_he: "מקום אחד לתמונות ולסרטונים של העסק, שמהם בונים את הפוסטים." },
+  { key: "calendar", title_he: "לוח שנה", what_he: "מתי יוצא כל פוסט, והחגים והמועדים שכדאי להתכונן אליהם." },
+  { key: "results", title_he: "התוצאות", what_he: "מה הביא כל ערוץ, לפי הנתונים שחיברתם, מול היעד." },
+  { key: "guides", title_he: "מדריכי חיבור", what_he: "צעד אחר צעד לחבר את נתוני האתר, אינסטגרם והכרטיס בגוגל." },
+  { key: "whatsapp_link", title_he: "קישור וואטסאפ מסומן", what_he: "בכל פוסט ובביו, וסופרים כמה לחצו מכל מקום. אנחנו מכינים אותו." },
+];
+
+/** "המספרים" in mock mode: the same fixture the target step shows, plus the owner's target. */
+function mockNumbers(d: OnboardingDraft, model: BusinessModel): PlanNumbers | null {
+  if (!d.baseline && !d.lever && !d.target) return null;
+  const result = mockTargetSuggestion({
+    model,
+    grow: d.grow_where,
+    baseline: d.baseline,
+    lever: d.lever,
+    budgetIls: budgetIls(d.budget),
+    hasSite: Boolean(d.links.website),
+    slowMonths: d.seasons?.slow ?? [],
+  });
+  const owner = d.target && (d.target.accepted || d.target.edited_by_owner) ? d.target : null;
+  const s = result.suggestion;
+  const target: PlanNumbers["target"] = owner
+    ? { ...owner, text_he: targetText(owner), from: owner.edited_by_owner ? "owner" : "suggestion", ...(owner.edited_by_owner && s ? { suggested_he: s.headline_he } : {}) }
+    : s
+      ? { kind: s.kind, value_min: s.min, value_max: s.max, unit_he: s.unit_he, text_he: s.headline_he, accepted: false, edited_by_owner: false, from: "suggestion", ...(s.level_he ? { level_he: s.level_he } : {}) }
+      : result.qualitative_he
+        ? { kind: "qualitative", text_he: result.qualitative_he, accepted: false, edited_by_owner: false, from: "suggestion" }
+        : undefined;
+  return {
+    baseline_he: result.baseline_summary_he,
+    baseline_known: result.baseline_known,
+    lever: {
+      key: result.lever,
+      name_he: result.lever_name_he,
+      recommended_key: result.recommended_lever,
+      recommended_he: result.lever_hint_he,
+      recommended_name_he: result.levers.find((l) => l.key === result.recommended_lever)?.name_he ?? "",
+    },
+    ...(target ? { target } : {}),
+    math_he: result.math_he,
+    ...(result.unit_economics_he ? { unit_economics_he: result.unit_economics_he } : {}),
+    payback: result.payback ?? null,
+    assumptions_he: result.assumptions_he,
+    sources: result.sources,
+    organic_only: result.organic_only,
+    first_checkpoint_he: result.first_checkpoint_he,
+    caveat_he: result.caveat_he,
+  };
 }

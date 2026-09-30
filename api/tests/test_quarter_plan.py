@@ -32,7 +32,7 @@ from app.services.jsonutil import loads
 
 BAKERY = {
     "business_name": "מאפיית הדקל",
-    "business_type": "מאפייה / קפה / מסעדה",
+    "business_type": "food",
     "offerings": "בייגלה ירושלמי עם זעתר, פיתות מהטאבון ובורקס. פתוחים כל יום מ-06:00.",
     "differentiator": "הכול נאפה בטאבון עצים",
     "city": "יפו",
@@ -97,8 +97,9 @@ def answer(today: date | None = None, **overrides) -> dict:
             {"month": i, "pillars": [{"key": "taboon", "title": "הטאבון", "description_he": "האש."},
                                      {"key": "zaatar", "title": "הזעתר", "description_he": "התערובת."}],
              "cadence": [{"channel_key": "instagram", "per_week": "1–2"}],
-             "example_titles": [{"title": "הבייגלה הראשון יוצא", "channel_key": "instagram", "format": "reel"},
-                                {"title": "הזעתר של המשפחה", "channel_key": "instagram", "format": "image"}]}
+             "mix": [{"type_key": "product", "per_month": "2", "purpose_he": "מה יוצא מהטאבון השבוע."},
+                     {"type_key": "behind_scenes", "per_month": "2", "purpose_he": "האש והידיים בבוקר."},
+                     {"type_key": "social_proof", "per_month": "1-2", "purpose_he": "מה אומרים הקבועים."}]}
             for i in (1, 2, 3)
         ],
         "assumptions": [{"bet_he": "אנחנו מהמרים שהטאבון מושך.", "if_wrong_he": "נעבור לבייגלה לשישי."},

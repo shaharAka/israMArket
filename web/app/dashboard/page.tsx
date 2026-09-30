@@ -5,12 +5,19 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
+import { PlanBrief } from "@/components/design/PlanBrief";
 import { MonthAhead } from "@/components/MonthAhead";
+import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SetupChecklist } from "@/components/SetupChecklist";
+import { BidiText } from "@/components/start/ui";
 import { postDay, postHref, postState, STATE_LABEL, type PostState } from "@/components/today/posts";
+import { ContactLink } from "@/components/trial/StepLink";
+import { allDoneText, minutesLabel, NextStepAction, TrialGuide } from "@/components/trial/TrialGuide";
+import { HypothesisStatus, WeeklyBrief } from "@/components/trial/WeeklyBrief";
 import {
+  ApiError,
   endpoints,
   type Business,
   type InstagramBriefPayload,
@@ -19,7 +26,8 @@ import {
   type StrategyPayload,
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
-import { IconArrowLeft, IconCheck, IconImage, IconRoute } from "@/lib/icons";
+import { IconArrowLeft, IconCheck, IconImage } from "@/lib/icons";
+import { foundationsDone, loadTrial, nextStep, useTrial } from "@/lib/trial";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
@@ -43,54 +51,89 @@ function monthNearlyDone(strategy: StrategyPayload, allApproved: boolean): boole
   return planEnd.getDate() - now.getDate() < 7;
 }
 
+/** The first sentence of a Hebrew paragraph (a full stop followed by a space or the end). */
+function firstSentence(text: string): string {
+  const match = text.match(/^.*?[.?!](?=\s|$)/);
+  return (match ? match[0] : text).trim();
+}
+
+/** The month: loading, there, not built yet (404 — normal right after /start), or failed. */
+type MonthState = "loading" | "ready" | "none" | "error";
+
 /**
- * Today.
+ * השבוע (the home tab, `/dashboard`) — during the free month, the weekly brief and the
+ * guide (docs/onboarding-v2.md, Revision 7 B in the order of Revision 8).
  *
  * The one screen the owner opens without being asked to do something, read on a phone
- * between customers. So it answers three questions in order and stops:
+ * between customers. In the free month it answers, in order:
  *
- * 1. What do you need from me now? — one card, one dark button.
- * 2. What is going out this week? — a short list, each post tappable.
- * 3. How far along is the month? — one line.
+ * 1. Where is the plan going, and what is mine to do? — the plan brief (the design
+ *    library's PlanBrief): the direction, how we will know, and the one next step with
+ *    the page's only dark button.
+ * 2. This week — the week's focus and what we learned (the weekly brief).
+ * 3. What is the month made of? — "יום N מתוך 30" and the journey by week, ticking itself
+ *    as things really happen (`GET /trial`).
  *
- * Everything else that used to compete for the first screen — setup, budget, the leading
- * target, the week's one recommendation, the month's reasoning, next month — is still
- * here, one tap down in a single quiet list. Nothing was dropped.
+ * The journey replaces the setup checklist here: both are computed from the same facts
+ * (api/app/services/journey.py), and two lists of the same steps would compete. After the
+ * free month — or if `/trial` fails — the next post is the ask, and the checklist is one
+ * quiet row.
+ *
+ * Nothing here may reject unhandled: a signed-out visit gets 401s that AppShell turns into
+ * a redirect, so every call catches, and a 401 renders nothing rather than an error.
  */
 export default function DashboardPage() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
+  const [month, setMonth] = useState<MonthState>("loading");
   const [recommendation, setRecommendation] = useState<RecommendationPayload | null>(null);
   const [instagram, setInstagram] = useState<InstagramBriefPayload | null>(null);
+  const { payload: trial, failed: trialFailed } = useTrial();
 
   useEffect(() => {
-    Promise.all([endpoints.business(), endpoints.strategy()]).then(([businessResult, strategyResult]) => {
-      setBusiness(businessResult.business);
-      setStrategy(strategyResult);
-    });
+    // Today is where ticks are read, so it always asks afresh rather than trusting the
+    // copy another tab loaded minutes ago.
+    void loadTrial(true);
+    endpoints
+      .business()
+      .then((result) => setBusiness(result.business))
+      .catch(() => {});
+    endpoints
+      .strategy()
+      .then((result) => {
+        setStrategy(result);
+        setMonth("ready");
+      })
+      .catch((err: unknown) => {
+        if (err instanceof ApiError && err.status === 401) return; // AppShell redirects
+        setMonth(err instanceof ApiError && err.status === 404 ? "none" : "error");
+      });
     endpoints.recommendations().then(setRecommendation).catch(() => {});
     // Guidance only: a failed call just means no nudge.
     endpoints.instagramBrief().then(setInstagram).catch(() => {});
   }, []);
 
-  if (!strategy) {
+  const guided = Boolean(trial && !trial.ended);
+  const trialSettled = Boolean(trial) || trialFailed;
+
+  if (month === "loading" || !trialSettled) {
     return (
       <AppShell>
         <div className="mx-auto max-w-3xl">
-          <SectionHeader section="dashboard" title="היום" />
+          <SectionHeader section="dashboard" title="השבוע" />
           <LoadingMark label="טוענים את החודש…" />
         </div>
       </AppShell>
     );
   }
 
-  const posts = strategy.roadmap?.posts || [];
+  const posts = strategy?.roadmap?.posts || [];
   const nextIndex = posts.findIndex((post) => post.approval_status !== "approved");
   const nextPost = nextIndex >= 0 ? posts[nextIndex] : undefined;
   const approvedCount = posts.filter((post) => post.approval_status === "approved").length;
   const allApproved = posts.length > 0 && approvedCount === posts.length;
-  const currentWeek = currentWeekOf(strategy);
-  const nearlyDone = monthNearlyDone(strategy, allApproved);
+  const currentWeek = strategy ? currentWeekOf(strategy) : null;
+  const nearlyDone = strategy ? monthNearlyDone(strategy, allApproved) : false;
 
   // "This week" is the plan week today falls in. Outside the plan's month there is no
   // "this week", so the list shows the week of the post that is waiting instead.
@@ -99,18 +142,97 @@ export default function DashboardPage() {
     .map((post, index) => ({ post, index }))
     .filter(({ post }) => post.week === shownWeek);
 
+  // The brief reads the stored 3-month plan; a business from before it falls back to the
+  // month's hypothesis. Numbers are the owner's own (Revision 6), never invented.
+  const plan = strategy?.quarter_plan ?? business?.quarter_plan;
+  const direction =
+    plan?.strategy.one_liner_he ||
+    strategy?.monthly_horizon_plan?.hypothesis ||
+    strategy?.usp.growth_hypothesis ||
+    strategy?.usp.usp ||
+    "";
+  // One line of where the business starts; the full numbers and their math live in the plan.
+  const baselineText = firstSentence(plan?.numbers?.baseline_he || plan?.kpi.baseline_he || "");
+
+  // The one next thing: the journey's next step in the free month; after it, the week's
+  // "what we need from you" in the plan (the ask itself is the next-post card below).
+  const step = guided && trial ? nextStep(trial) : null;
+  const ownerAction: ReactNode = guided && trial
+    ? step
+      ? (
+          <>
+            {step.title_he}
+            <span className="mt-0.5 block text-[13px] font-normal leading-6 text-[color:var(--ink-soft)]">
+              {step.why_he} · {minutesLabel(step.minutes)}
+            </span>
+          </>
+        )
+      : allDoneText(trial)
+    : strategy?.weekly_breakdown?.find((week) => week.week === shownWeek)?.what_user_does?.[0];
+
+  const postsOpen = posts.length > 0 && (!guided || (trial && foundationsDone(trial)));
+
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        <SectionHeader section="dashboard" title={`${strategy.month_name_he} ${strategy.year}`} />
+        <SectionHeader section="dashboard" title="השבוע" />
 
         <div className="rise-stagger space-y-7">
-          {/* 1. The one thing. */}
-          {nextPost ? (
+          {/* Revision 7 A: the month being built on the server, above everything else. */}
+          {month === "none" ? (
+            <MonthBuildProgress
+              autoStart={Boolean(business && !business.onboarding_complete)}
+              onDone={() =>
+                void endpoints
+                  .strategy()
+                  .then((result) => {
+                    setStrategy(result);
+                    setMonth("ready");
+                  })
+                  .catch(() => {})
+              }
+            />
+          ) : null}
+          {/* The posts the owner asked for, being written on the server (Revision 8: after
+              the week-2 foundations). Renders nothing unless that job is running or failed. */}
+          {month === "ready" && posts.length === 0 ? (
+            <MonthBuildProgress
+              kind="posts"
+              onDone={() => {
+                void loadTrial(true);
+                void endpoints.strategy().then(setStrategy).catch(() => {});
+              }}
+            />
+          ) : null}
+
+          {/* 1. The plan and the one thing. */}
+          {direction ? (
+            <PlanBrief
+              businessName={business?.name}
+              direction={direction}
+              why={plan?.strategy.why_he}
+              measure={plan?.kpi.name_he}
+              baseline={baselineText ? <BidiText text={baselineText} /> : undefined}
+              ownerAction={ownerAction || undefined}
+              action={step ? <NextStepAction step={step} /> : undefined}
+            />
+          ) : null}
+
+          {/* 2. The weekly brief (Revision 8): the week's focus and what we learned. What
+              needs a decision is the brief's step above. */}
+          {guided && trial ? <WeeklyBrief trial={trial} strategy={strategy} business={business} /> : null}
+
+          {/* 3. The free month: the day and the journey. Outside it, the next post is the ask. */}
+          {guided && trial ? (
+            <>
+              {/* No plan to brief from (an older business): the guide carries the step itself. */}
+              <TrialGuide trial={trial} showNext={!direction} />
+            </>
+          ) : nextPost ? (
             <NextPostCard post={nextPost} index={nextIndex} total={posts.length} />
-          ) : allApproved ? (
-            <section className="rounded-lg border border-[#cecdc7] bg-white px-4 pt-4 sm:px-5">
-              <p className="flex items-center gap-2 text-base font-black text-[#20211f]">
+          ) : strategy && allApproved ? (
+            <section className="today-ask rounded-lg border px-4 pt-4 sm:px-5">
+              <p className="flex items-center gap-2 text-base font-black text-[color:var(--ink)]">
                 <IconCheck className="h-4 w-4 shrink-0" />
                 כל הפוסטים של {strategy.month_name_he} אושרו
               </p>
@@ -119,100 +241,129 @@ export default function DashboardPage() {
               {strategy.horizon ? (
                 <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="primary" variant="row" />
               ) : (
-                <p className="py-3 text-sm text-[#62635f]">ממשיכים לעקוב אחרי התוצאות.</p>
+                <p className="py-3 text-sm text-[color:var(--ink-soft)]">ממשיכים לעקוב אחרי התוצאות.</p>
               )}
             </section>
           ) : (
-            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-sm text-[#62635f]">עוד מכינים את הפוסטים של החודש.</p>
-            </section>
+            <MonthNotReady month={month} />
           )}
 
-          {/* 2. This week, and 3. how far along the month is. */}
-          {posts.length ? (
-            <section aria-labelledby="week-heading">
-              <div className="flex items-baseline justify-between gap-3">
-                <h2 id="week-heading" className="text-base font-black text-[#20211f]">
-                  {currentWeek ? "השבוע" : `שבוע ${shownWeek}`}
-                </h2>
-                <Link href="/posts" className="text-xs font-bold text-[#5e6159] underline-offset-4 hover:underline">
-                  כל הפוסטים
-                </Link>
-              </div>
-
-              {weekPosts.length ? (
-                <ul className="mt-3 divide-y divide-[#e9e8e3] overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
-                  {weekPosts.map(({ post, index }) => (
-                    <WeekRow key={index} post={post} index={index} />
-                  ))}
-                </ul>
-              ) : (
-                <p className="mt-3 text-sm text-[#62635f]">אין פוסטים בשבוע הזה.</p>
-              )}
-
-              <div className="mt-3 flex items-center gap-3">
-                <span
-                  role="progressbar"
-                  aria-valuemin={0}
-                  aria-valuemax={posts.length}
-                  aria-valuenow={approvedCount}
-                  aria-label="פוסטים שאושרו החודש"
-                  className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[#e1e0db]"
-                >
-                  <span
-                    className="block h-full rounded-full bg-[#343632] transition-[width] duration-700 ease-out"
-                    style={{ width: `${(approvedCount / posts.length) * 100}%` }}
-                  />
-                </span>
-                <p className="text-sm text-[#5e6159]">
-                  {approvedCount} מתוך {posts.length} פוסטים אושרו החודש
-                </p>
-              </div>
-            </section>
-          ) : null}
-
           {/* Everything else: quiet rows in one container. */}
-          <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
-            <QuarterPlanRow strategy={strategy} business={business} />
-            {instagram && needsInstagram(instagram) ? <InstagramNudge connected={instagram.meta_connected} /> : null}
-            <SetupChecklist />
-            {nearlyDone && !allApproved ? (
+          <section className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white px-4 sm:px-5">
+            <HypothesisStatus trial={guided ? trial : null} />
+            {guided ? null : instagram && needsInstagram(instagram) ? (
+              <InstagramNudge connected={instagram.meta_connected} />
+            ) : null}
+            {guided ? null : <SetupChecklist />}
+            {guided && month === "error" ? <MonthNotReadyRow month={month} /> : null}
+            {/* In the free month, building next month is a step of the journey
+                ("לבנות את החודש השני"), so it is not a second row here. */}
+            {strategy && nearlyDone && !allApproved && !guided ? (
               <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
             ) : null}
-            <MoreAboutMonth
-              strategy={strategy}
-              business={business}
-              recommendation={recommendation}
-              currentWeek={currentWeek}
-            >
-              {nearlyDone ? null : (
-                <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
-              )}
-            </MoreAboutMonth>
+            {strategy ? (
+              <MoreAboutMonth
+                strategy={strategy}
+                business={business}
+                recommendation={recommendation}
+                currentWeek={currentWeek}
+              >
+                {nearlyDone ? null : (
+                  <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="quiet" variant="row" />
+                )}
+              </MoreAboutMonth>
+            ) : null}
           </section>
+
+          {/* This week's posts, and how far along the month is — the plan's execution
+              tool, folded. In the free month they wait for the week-2 foundations: posts
+              are not pushed before measurement, the products and the owner's photos are in
+              (Revision 8). */}
+          {postsOpen ? (
+            <details className="group border-y border-[var(--rule)] py-1">
+              <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-2 text-sm font-bold text-[color:var(--ink)]">
+                <span>
+                  {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`} · {approvedCount} מתוך {posts.length} אושרו
+                </span>
+                <span
+                  aria-hidden
+                  className="h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-180"
+                />
+              </summary>
+              <section aria-labelledby="week-heading" className="pb-3">
+                <div className="flex items-baseline justify-between gap-3">
+                  <h2 id="week-heading" className="sr-only">
+                    {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`}
+                  </h2>
+                  <Link href="/posts" className="text-xs font-bold text-[color:var(--ink-soft)] underline-offset-4 hover:underline">
+                    כל הפוסטים
+                  </Link>
+                </div>
+
+                {weekPosts.length ? (
+                  <ul className="mt-3 divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
+                    {weekPosts.map(({ post, index }) => (
+                      <WeekRow key={index} post={post} index={index} />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-sm text-[color:var(--ink-soft)]">אין פוסטים בשבוע הזה.</p>
+                )}
+
+                <div className="mt-3 flex items-center gap-3">
+                  <span
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={posts.length}
+                    aria-valuenow={approvedCount}
+                    aria-label="פוסטים שאושרו החודש"
+                    className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[var(--rule)]"
+                  >
+                    <span
+                      className="block h-full rounded-full bg-[var(--primary-dark)] transition-[width] duration-700 ease-out"
+                      style={{ width: `${(approvedCount / posts.length) * 100}%` }}
+                    />
+                  </span>
+                  <p className="text-sm text-[color:var(--ink-soft)]">
+                    {approvedCount} מתוך {posts.length} פוסטים אושרו החודש
+                  </p>
+                </div>
+              </section>
+            </details>
+          ) : null}
+
+          <ContactLink className="text-center" />
         </div>
       </div>
     </AppShell>
   );
 }
 
-/**
- * The 3-month plan, one row: the plan's one line (or, for a business from before the
- * stored plan, the quarter's hypothesis), leading to /strategy.
- */
-function QuarterPlanRow({ strategy, business }: { strategy: StrategyPayload; business: Business | null }) {
-  const plan = strategy.quarter_plan ?? business?.quarter_plan;
-  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
-  const line = plan?.strategy.one_liner_he || quarter?.hypothesis;
-  if (!line) return null;
+/** No month to show, outside the free month: say why, never a blank card. */
+function MonthNotReady({ month }: { month: MonthState }) {
   return (
-    <Link href="/strategy" className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
-      <IconRoute className="h-4 w-4 shrink-0 text-[#62635f]" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-xs font-bold text-[#747570]">התוכנית ל-3 חודשים</span>
-        <span className="mt-0.5 block truncate text-sm font-bold leading-6 text-[#20211f]">{line}</span>
+    <section className="rounded-lg border border-[var(--rule-dark)] bg-white p-4 sm:p-5">
+      <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
+        {month === "error" ? "לא הצלחנו לטעון את החודש. נסו לרענן את העמוד." : "עוד מכינים את הפוסטים של החודש."}
+      </p>
+      {month === "none" ? (
+        <Link href="/strategy" className="mt-1 inline-flex min-h-11 items-center text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">
+          לתוכנית
+        </Link>
+      ) : null}
+    </section>
+  );
+}
+
+/** In the free month the journey is the ask; the missing month is one quiet row. */
+function MonthNotReadyRow({ month }: { month: MonthState }) {
+  return (
+    <Link href="/strategy" className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[color:var(--ink)]">
+      <IconImage className="h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
+      <span className="min-w-0 flex-1 text-sm leading-6 text-[color:var(--ink)]">
+        {month === "error" ? "לא הצלחנו לטעון את הפוסטים של החודש" : "הפוסטים של החודש עוד נכתבים"}
       </span>
-      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
     </Link>
   );
 }
@@ -231,26 +382,26 @@ function InstagramNudge({ connected }: { connected: boolean }) {
   return (
     <Link
       href="/instagram"
-      className="flex min-h-12 items-center gap-3 py-3 text-sm leading-6 text-[#3c3e3a] transition-colors hover:text-[#20211f]"
+      className="flex min-h-12 items-center gap-3 py-3 text-sm leading-6 text-[color:var(--ink)] transition-colors hover:text-[color:var(--ink)]"
     >
-      <IconCamera className="h-4 w-4 shrink-0 text-[#62635f]" />
+      <IconCamera className="h-4 w-4 shrink-0 text-[color:var(--ink-soft)]" />
       <span className="min-w-0 flex-1">
         {connected
           ? "עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם"
           : "לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם"}
       </span>
-      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
     </Link>
   );
 }
 
-/** The single ask: the next post waiting for the owner. The only dark button on the page. */
+/** The single ask after the free month: the next post waiting for the owner. The page's only dark button. */
 function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
   return (
-    <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-      <p className="text-xs font-bold text-[#747570]">מחכה לאישור שלכם</p>
+    <section className="today-ask rounded-lg border p-4 sm:p-5">
+      <p className="text-xs font-bold text-[color:var(--ink-muted)]">מחכה לאישור שלכם</p>
       <div className="mt-3 flex items-center gap-4">
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[#f0efeb] sm:h-20 sm:w-20">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-[var(--primary-soft)] sm:h-20 sm:w-20">
           {post.image_url ? (
             <Image
               src={post.image_url}
@@ -261,21 +412,21 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="flex h-full items-center justify-center text-[#898a85]">
+            <span className="flex h-full items-center justify-center text-[color:var(--ink-muted)]">
               <IconImage className="h-5 w-5" />
             </span>
           )}
         </div>
         <div className="min-w-0">
-          <h2 className="text-lg font-black leading-7 text-[#20211f]">{post.title}</h2>
-          <p className="mt-0.5 text-xs text-[#62635f]">
+          <h2 className="text-lg font-black leading-7 text-[color:var(--ink)]">{post.title}</h2>
+          <p className="mt-0.5 text-xs text-[color:var(--ink-soft)]">
             {postDay(post)} · פוסט {index + 1} מתוך {total}
           </p>
         </div>
       </div>
       <Link
         href={postHref(index)}
-        className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+        className="drawn-button group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-sm font-bold text-white sm:w-auto"
       >
         לבדוק ולאשר
         <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
@@ -285,9 +436,9 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
 }
 
 const STATE_STYLE: Record<PostState, string> = {
-  published: "bg-[#eaf0e6] text-[#374b3d]",
-  approved: "bg-[#eaf0e6] text-[#374b3d]",
-  waiting: "bg-[#f5efe3] text-[#6b5530]",
+  published: "text-[color:var(--primary)]",
+  approved: "text-[color:var(--primary)]",
+  waiting: "text-[color:var(--ink-soft)]",
 };
 
 /** One post of the week: day, title, status. The whole row is the link. */
@@ -297,16 +448,16 @@ function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
     <li>
       <Link
         href={postHref(index)}
-        className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-[#faf9f7]"
+        className="flex min-h-14 items-center gap-3 px-4 py-3 transition-colors hover:bg-[var(--primary-soft)]"
       >
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-bold text-[#20211f]">{post.title}</span>
-          <span className="mt-0.5 block text-xs text-[#62635f]">{postDay(post)}</span>
+          <span className="block truncate text-sm font-bold text-[color:var(--ink)]">{post.title}</span>
+          <span className="mt-0.5 block text-xs text-[color:var(--ink-soft)]">{postDay(post)}</span>
         </span>
-        <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${STATE_STYLE[state]}`}>
+        <span className={`shrink-0 text-xs ${STATE_STYLE[state]}`}>
           {STATE_LABEL[state]}
         </span>
-        <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+        <IconArrowLeft className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
       </Link>
     </li>
   );
@@ -340,14 +491,14 @@ function MoreAboutMonth({
 
   return (
     <details className="group">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#20211f]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
         <span>עוד על החודש</span>
-        <span aria-hidden className="shrink-0 text-[#8b8e84] transition-transform group-open:-rotate-90">
+        <span aria-hidden className="shrink-0 text-[color:var(--ink-muted)] transition-transform group-open:-rotate-90">
           ‹
         </span>
       </summary>
 
-      <div className="divide-y divide-[#e9e8e3] border-t border-[#e9e8e3]">
+      <div className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
         <InfoRow label="צריך מכם" href={null}>
           {nextUserAction || "כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים."}
         </InfoRow>
@@ -362,15 +513,15 @@ function MoreAboutMonth({
         </InfoRow>
 
         <div className="py-3">
-          <p className="text-xs font-bold text-[#747570]">כיוון החודש</p>
-          <p className="mt-1 text-sm font-bold leading-6 text-[#20211f]">
+          <p className="text-xs font-bold text-[color:var(--ink-muted)]">כיוון החודש</p>
+          <p className="mt-1 text-sm font-bold leading-6 text-[color:var(--ink)]">
             {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
           </p>
           {monthly?.targets?.length ? (
             <ul className="mt-2 space-y-1">
               {monthly.targets.slice(0, 3).map((target, index) => (
-                <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[#3c3e3a]">
-                  <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#b3b0a5]" />
+                <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-sm leading-6 text-[color:var(--ink)]">
+                  <span aria-hidden className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--ink-muted)]" />
                   {target}
                 </li>
               ))}
@@ -379,7 +530,7 @@ function MoreAboutMonth({
         </div>
 
         <div className="py-3">
-          <p className="text-xs font-bold text-[#747570]">השבועות</p>
+          <p className="text-xs font-bold text-[color:var(--ink-muted)]">השבועות</p>
           <ol className="mt-2 space-y-2">
             {[1, 2, 3, 4].map((week) => {
               const item = weeks.find((entry) => entry.week === week);
@@ -388,14 +539,14 @@ function MoreAboutMonth({
                 <li key={week} className="flex items-start gap-3">
                   <span
                     className={`mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                      isNow ? "bg-[#20211f] text-white" : "border border-[#dedcd4] text-[#62635f]"
+                      isNow ? "bg-[var(--primary)] text-white" : "border border-[var(--rule-dark)] text-[color:var(--ink-soft)]"
                     }`}
                   >
                     {week}
                   </span>
-                  <span className={`min-w-0 flex-1 text-sm leading-6 ${isNow ? "font-bold text-[#20211f]" : "text-[#5e6159]"}`}>
+                  <span className={`min-w-0 flex-1 text-sm leading-6 ${isNow ? "font-bold text-[color:var(--ink)]" : "text-[color:var(--ink-soft)]"}`}>
                     {item?.focus || "—"}
-                    {isNow ? <span className="mr-2 text-xs font-bold text-[#62635f]">(השבוע)</span> : null}
+                    {isNow ? <span className="mr-2 text-xs font-bold text-[color:var(--ink-soft)]">(השבוע)</span> : null}
                   </span>
                 </li>
               );
@@ -413,15 +564,15 @@ function InfoRow({ label, href, children }: { label: string; href: string | null
   const body = (
     <>
       <span className="min-w-0 flex-1">
-        <span className="block text-xs font-bold text-[#747570]">{label}</span>
-        <span className="mt-0.5 block text-sm font-bold leading-6 text-[#20211f]">{children}</span>
+        <span className="block text-xs font-bold text-[color:var(--ink-muted)]">{label}</span>
+        <span className="mt-0.5 block text-sm font-bold leading-6 text-[color:var(--ink)]">{children}</span>
       </span>
-      {href ? <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" /> : null}
+      {href ? <IconArrowLeft className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" /> : null}
     </>
   );
   if (!href) return <div className="flex items-center gap-3 py-3">{body}</div>;
   return (
-    <Link href={href} className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
+    <Link href={href} className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[color:var(--ink)]">
       {body}
     </Link>
   );

@@ -13,8 +13,8 @@ import {
   type FlowState,
 } from "@/lib/draft";
 import { CADENCE_OPTIONS, type PlanInputKey, type PlanInputs, type QuarterPlan } from "@/lib/quarterPlan";
-import { lookOf } from "./BusinessCard";
-import { TargetQuestion } from "./StepGoal";
+import { targetText, type DraftTarget } from "@/lib/goals";
+import { TargetEdit } from "./StepNumbers";
 import { WorkProgress, type RevealProps } from "./StepPlan";
 import { Chip, QuietLink, StepShell, rangeSafe } from "./ui";
 import styles from "./start.module.css";
@@ -38,7 +38,6 @@ const AFFECTS: Record<PlanInputKey, SectionKey[]> = {
 };
 
 const DEBOUNCE_MS = 700;
-const TYPING_DEBOUNCE_MS = 1200;
 
 function audiencesOf(flow: FlowState): string[] {
   const names = flow.draft.audiences.map((a) => a.name.trim()).filter(Boolean);
@@ -60,7 +59,7 @@ function describeChange(keys: PlanInputKey[], flow: FlowState): string {
     notes.push(`הקצב: ${CADENCE_OPTIONS.find((o) => o.key === flow.planInputs?.cadence)?.label}.`);
   }
   if (keys.includes("target")) {
-    const target = flow.draft.success?.target?.trim();
+    const target = targetText(flow.draft.target) || flow.draft.success?.target?.trim();
     notes.push(target ? `נמדוד מול היעד שלכם: ${target}.` : "בלי יעד מספרי. נמדוד ונראה.");
   }
   if (keys.includes("primary_audience")) notes.push(`מתחילים עם ${primaryOf(flow)}.`);
@@ -183,14 +182,12 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     );
   }
 
-  const look = lookOf(flow);
-  const accent = look.palette?.find((s) => s.role === "primary")?.hex ?? "#191b18";
-  const option = flow.successOptions?.find((o) => o.key === flow.draft.success?.kpi) ?? null;
+  const accent = "var(--primary)";
 
   const actionNote = plan ? (
-    <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[#2b2d28]">
+    <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[color:var(--ink)]">
       {updating ? (
-        <span className="text-[#5e6159]">מעדכנים את התוכנית…</span>
+        <span className="text-[color:var(--ink-soft)]">מעדכנים את התוכנית…</span>
       ) : updateError ? (
         <span className="font-bold text-[#9f4330]">
           לא הצלחנו לעדכן.{" "}
@@ -204,7 +201,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
           {rangeSafe(changeNote)}
         </span>
       ) : (
-        <span className="text-[#6b6e65]">אפשר לשנות הכול גם אחרי ההרשמה.</span>
+        <span className="text-[color:var(--ink-soft)]">התוכנית נשמרת עם פתיחת החשבון.</span>
       )}
     </p>
   ) : null;
@@ -228,8 +225,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
   return (
     <StepShell
       {...props}
-      title="התוכנית שלכם ל-3 החודשים הקרובים"
-      why={plan ? `הכיוון: ${direction.title}. כל חלק כאן נבנה מהתשובות שלכם.` : `הכיוון: ${direction.title}.`}
+      title={`התוכנית של ${flow.draft.business_name || "העסק שלכם"}`}
+      why="שלושה חודשים, צעד אחר צעד. נתחיל מהכיוון ומהמדידה."
       primary={
         loading ? "בונים את התוכנית…" : failed && !plan ? "לנסות שוב" : updating ? "מעדכנים…" : saving ? "שומרים…" : "לשמור את התוכנית ולהיכנס"
       }
@@ -249,17 +246,6 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       skip={failed && !plan ? "להמשיך בלי התוכנית ולשמור" : undefined}
       onSkip={failed && !plan ? () => jump("save") : undefined}
     >
-      {otherDirection ? (
-        <p className="text-sm text-[#5e6159]">
-          יש עוד כיוון אפשרי: <span className="font-bold text-[#191b18]">{otherDirection.title}</span>.{" "}
-          <QuietLink
-            onClick={() => update((f) => ({ ...f, chosenDirection: otherIndex }))}
-            className="font-bold text-[#191b18]"
-          >
-            לבנות לפיו
-          </QuietLink>
-        </p>
-      ) : null}
       {loading ? (
         <WorkProgress
           title="בונים את התוכנית ל-3 החודשים…"
@@ -275,8 +261,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         />
       ) : null}
       {failed && !plan ? (
-        <div role="alert" className="rounded-xl border border-[#e2e0d8] bg-white p-4 text-sm leading-6 text-[#2b2d28]">
-          <p className="font-bold text-[#191b18]">לא הצלחנו לבנות את התוכנית כרגע.</p>
+        <div role="alert" className="rounded-xl border border-[var(--rule)] bg-white p-4 text-sm leading-6 text-[color:var(--ink)]">
+          <p className="font-bold text-[color:var(--ink)]">לא הצלחנו לבנות את התוכנית כרגע.</p>
           {failMessage ? <p>{failMessage}</p> : null}
           <p>הכיוון והתשובות שמורים. אפשר לנסות שוב, או לשמור ולבנות את התוכנית אחרי ההרשמה.</p>
         </div>
@@ -285,6 +271,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         <QuarterPlanView
           plan={plan}
           mode="start"
+          directionTitle={direction.title}
           insights={insights}
           accent={accent}
           busy={busy}
@@ -292,7 +279,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
             audience:
               names.length > 1 ? (
                 <fieldset>
-                  <legend className="mb-1.5 text-xs font-bold text-[#191b18]">עם מי מתחילים?</legend>
+                  <legend className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">עם מי מתחילים?</legend>
                   <div className="flex flex-wrap gap-1.5">
                     {names.map((name) => (
                       <Chip
@@ -304,25 +291,26 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                           update((f) => ({ ...f, planInputs: { ...(f.planInputs ?? {}), primary_audience: name } }));
                           change(["primary_audience"]);
                         }}
-                        className="min-h-10 px-3"
+                        className="min-h-11 rounded px-3"
                       />
                     ))}
                   </div>
                 </fieldset>
               ) : null,
             target: (
-              <TargetQuestion
-                flow={flow}
-                update={update}
-                compact
-                option={option ?? { key: plan.kpi.key, name_he: plan.kpi.name_he }}
-                onChange={(typing) => change(["target"], typing ? TYPING_DEBOUNCE_MS : DEBOUNCE_MS)}
+              <PlanTarget
+                plan={plan}
+                target={flow.draft.target}
+                onSave={(target) => {
+                  update((f) => ({ ...f, draft: { ...f.draft, target } }));
+                  change(["target"], 0);
+                }}
               />
             ),
             cadence: (
-              <fieldset className="rounded-xl bg-[#faf9f6] px-3 py-2.5">
+              <fieldset className="border-t border-[var(--rule)] px-0 py-3">
                 <legend className="sr-only">כמה פוסטים בשבוע</legend>
-                <p aria-hidden className="mb-1.5 text-xs font-bold text-[#191b18]">
+                <p aria-hidden className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">
                   כמה פוסטים בשבוע מתאים לכם?
                 </p>
                 <div className="flex flex-wrap gap-1.5">
@@ -336,7 +324,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                         update((f) => ({ ...f, planInputs: { ...(f.planInputs ?? {}), cadence: c.key } }));
                         change(["cadence"]);
                       }}
-                      className="min-h-10 px-3"
+                      className="min-h-11 rounded px-3"
                     />
                   ))}
                 </div>
@@ -355,12 +343,51 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
           }}
         />
       ) : null}
+      {otherDirection && <details className={styles.planAlternative}><summary>לבדוק כיוון אחר</summary><p>{otherDirection.title}</p><QuietLink onClick={() => update(f => ({ ...f, chosenDirection: otherIndex }))}>לבנות תוכנית בכיוון הזה</QuietLink></details>}
       {saveError ? (
         <p role="alert" className="text-sm font-bold text-[#9f4330]">
           {saveError}
         </p>
       ) : null}
     </StepShell>
+  );
+}
+
+/** The target, editable on the plan: the owner's numbers replace ours and the plan updates. */
+function PlanTarget({
+  plan,
+  target,
+  onSave,
+}: {
+  plan: QuarterPlan;
+  target?: DraftTarget;
+  onSave: (target: DraftTarget) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const current = plan.numbers?.target;
+  const base: DraftTarget | null =
+    target && target.kind !== "qualitative"
+      ? target
+      : current && current.kind !== "qualitative" && current.value_min != null
+        ? { kind: current.kind, value_min: current.value_min, value_max: current.value_max, unit_he: current.unit_he ?? "", accepted: true, edited_by_owner: false }
+        : null;
+  if (!base) return null;
+  if (open) {
+    return (
+      <TargetEdit
+        target={base}
+        onSave={(next) => {
+          setOpen(false);
+          onSave(next);
+        }}
+        onCancel={() => setOpen(false)}
+      />
+    );
+  }
+  return (
+    <QuietLink onClick={() => setOpen(true)} className="-my-1 text-xs font-bold text-[color:var(--ink)]">
+      לשנות את היעד
+    </QuietLink>
   );
 }
 
@@ -373,14 +400,14 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
 
   if (!open) {
     return (
-      <div className="border-t border-[#e2e0d8] pt-3">
+      <div className="border-t border-[var(--rule)] pt-3">
         <QuietLink onClick={() => setOpen(true)}>משהו לא מתאים? ספרו לנו</QuietLink>
       </div>
     );
   }
   return (
-    <div className="space-y-2 border-t border-[#e2e0d8] pt-4">
-      <label htmlFor={fieldId} className="block text-sm font-bold text-[#191b18]">
+    <div className="space-y-2 border-t border-[var(--rule)] pt-4">
+      <label htmlFor={fieldId} className="block text-sm font-bold text-[color:var(--ink)]">
         משהו לא מתאים? ספרו לנו במילים שלכם
       </label>
       <textarea
@@ -393,7 +420,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
         rows={2}
         maxLength={400}
         placeholder="למשל: אין לנו זמן לסרטונים, ובדצמבר אנחנו סגורים שבוע"
-        className="w-full resize-none rounded-lg border border-[#dedcd4] bg-white px-3.5 py-2.5 text-base leading-6 text-[#191b18] outline-none placeholder:text-[#a3a59c] focus:border-[#191b18] focus:ring-1 focus:ring-[#191b18]"
+        className="w-full resize-none rounded-lg border border-[var(--rule-dark)] bg-white px-3.5 py-2.5 text-base leading-6 text-[color:var(--ink)] outline-none placeholder:text-[color:var(--ink-muted)] focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
       />
       <div className="flex flex-wrap items-center gap-2">
         <button
@@ -407,7 +434,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
             }
             onSend(words);
           }}
-          className="min-h-11 cursor-pointer rounded-full border border-[#191b18] bg-white px-4 text-sm font-bold text-[#191b18] disabled:cursor-wait disabled:opacity-60"
+          className="min-h-11 cursor-pointer rounded border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? "מעדכנים את התוכנית…" : "לעדכן את התוכנית"}
         </button>

@@ -64,6 +64,7 @@ from app.services.onboarding_draft import (
     invented_numbers,
 )
 from app.services.schemas_llm import MONTHLY_POST_ITEM_SCHEMA
+from app.services.business_fields import field_label
 
 log = logging.getLogger(__name__)
 
@@ -1351,7 +1352,7 @@ def _business_for_writer(draft: OnboardingDraft, direction: dict, strategy: dict
     location = draft.city or clean_text(((scan or {}).get("extracted") or {}).get("location"), 120)
     return {
         "name": draft.business_name,
-        "business_type": draft.business_type,
+        "business_type": field_label(draft.business_type),
         "offerings": draft.offerings,
         "location": location,
         "business_model": draft.model,

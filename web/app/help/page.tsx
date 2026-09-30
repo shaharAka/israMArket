@@ -5,6 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { GuideSheet } from "@/components/help/HowToFind";
 import { GUIDES, HELP_GROUPS, type HelpTopic } from "@/components/help/guides";
 import { SectionHeader } from "@/components/SectionHeader";
+import { ContactLink } from "@/components/trial/StepLink";
 import { IconChevron } from "@/lib/icons";
 
 const rowClass =
@@ -39,6 +40,8 @@ export default function HelpPage() {
             </section>
           ))}
         </div>
+
+        <ContactLink className="mt-5 text-center" />
       </div>
 
       {open ? <GuideSheet topic={open} open onClose={() => setOpen(null)} /> : null}

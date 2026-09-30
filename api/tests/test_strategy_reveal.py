@@ -36,7 +36,7 @@ from app.services.tracking_detect import detect_tags
 
 BAKERY = {
     "business_name": "מאפיית הפשפשים",
-    "business_type": "מאפייה / קפה / מסעדה",
+    "business_type": "food",
     "offerings": "לחם מחמצת, חלות לשישי ובורקס. אופים כל בוקר מ-05:00 ליד שוק הפשפשים.",
     "differentiator": "המחמצת נאפית מול הלקוחות",
     "city": "יפו",
