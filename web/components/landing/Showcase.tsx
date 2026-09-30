@@ -145,20 +145,22 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false);
       }}
     >
-      <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-8 sm:pb-20 sm:pt-16">
-        <header data-rv className="max-w-2xl">
+      <div className="mx-auto max-w-7xl px-4 pb-14 pt-6 sm:px-8 sm:pb-20 sm:pt-7">
+        <header className="max-w-2xl">
           <p className="text-sm font-bold text-[var(--primary)]">מחקר, אסטרטגיה ותוכנית</p>
-          <h2 id="examples-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
-            בחרו עסק וראו את התוכנית שלו
+          <h2 id="examples-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2rem]">
+            כל עסק, תוכנית משלו
           </h2>
-          <p className="mt-2 text-base leading-7 text-[var(--ink-soft)]">לכל עסק תוכנית אחרת ל-3 חודשים, לפי מה שגילינו עליו. אלה עסקים בדויים.</p>
+          <p className="mt-2 text-base leading-7 text-[var(--ink-soft)]">בחרו עסק לדוגמה וראו את הכיוון, הפעולות והתקציב שלו.</p>
+          <p className="mt-1 text-xs leading-5 text-[var(--ink-soft)]">העסקים והנתונים בדוגמאות להמחשה בלבד.</p>
         </header>
 
+        <div className="relative mt-4">
         <div
           ref={pillRowRef}
           role="tablist"
           aria-label="סוג העסק"
-          className="lp-pills -mx-4 mt-6 flex gap-1 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-7 lg:flex-wrap lg:overflow-visible lg:px-0 lg:py-1"
+          className="lp-pills -mx-4 flex gap-1 overflow-x-auto px-4 py-2 sm:-mx-8 sm:px-8 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:ps-0 lg:pe-32 lg:py-1"
         >
           {examples.map((example, index) => {
             const selected = index === current;
@@ -200,7 +202,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
             );
           })}
         </div>
-        <div className="mt-2 flex items-center justify-end gap-4 text-xs text-[var(--ink-soft)]">
+        <div className="mt-2 flex items-center justify-end gap-4 text-xs text-[var(--ink-soft)] lg:absolute lg:inset-y-0 lg:end-0 lg:mt-0">
           <span dir="ltr" className="tabular-nums">{current + 1} / {examples.length}</span>
           {motionAllowed ? <button type="button" data-rotation-control className="inline-flex min-h-11 items-center gap-2 font-bold" aria-label={autoplay ? "לעצור את המעבר האוטומטי בין העסקים" : "להפעיל מעבר אוטומטי בין העסקים"}
             onClick={() => { setPlayRequested(!autoplay); setAutoplay(!autoplay); }}>
@@ -208,6 +210,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
               {autoplay ? <path d="M5 3v10M11 3v10" /> : <path d="m5 3 7 5-7 5Z" />}
             </svg>{autoplay ? "לעצור" : "להמשיך אוטומטית"}
           </button> : null}
+        </div>
         </div>
 
         {/* Announced only when the visitor switched; auto-advance stays quiet. */}
@@ -236,7 +239,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
         </div>
 
         <p className="mt-10 max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">
-          התקציבים בדוגמאות הם טווחים משוערים. את האתר אנחנו קוראים לבד, ונתונים מאינסטגרם רק אחרי שתחברו אותו. לא נמציא לכם מספרים.
+          התקציבים בדוגמאות הם הערכות. בתוכנית שלכם נציג נתונים מהאתר ומהחשבונות שתחברו, ונציין מה עדיין לא נמדד.
         </p>
       </div>
     </div>

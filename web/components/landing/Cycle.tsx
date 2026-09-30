@@ -14,7 +14,7 @@ const ROWS = [
   },
   {
     title: "מודדים",
-    line: "בעמוד התוצאות רואים מה קרה עם מה שבחרנו למדוד. מה שעוד לא מחובר, כתוב שלא נמדד.",
+    line: "בודקים את התוצאות מול היעד שבחרתם. כשאין נתונים, מציינים מה עדיין לא נמדד.",
   },
   {
     title: "ממשיכים לחקור",
@@ -33,7 +33,7 @@ export function Cycle() {
         <header data-rv className="max-w-2xl">
           <p className="text-sm font-bold text-[var(--primary)]">איך זה עובד, חודש אחרי חודש</p>
           <h2 id="cycle-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
-            התוכנית זזה יחד עם העסק
+            בכל חודש לומדים ומשפרים
           </h2>
         </header>
 

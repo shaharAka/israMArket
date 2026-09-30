@@ -94,7 +94,7 @@ export type LandingPlan = {
 export const LANDING_PLANS: Record<string, LandingPlan> = {
   bakery: {
     strategy: "להפוך את חנוכה מתור של הרגע האחרון להזמנות מראש מהגנים.",
-    kpi: { name: "הזמנות מראש לגנים", how: "כל הזמנה בקישור הוואטסאפ נספרת" },
+    kpi: { name: "הזמנות מראש לגנים", how: "העסק סופר הזמנות בוואטסאפ, בנפרד מהלחיצות על הקישור" },
     integrations: [
       { key: "whatsapp_link", status: "ready" },
       { key: "gbp", status: "connect" },
