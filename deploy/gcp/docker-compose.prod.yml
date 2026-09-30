@@ -1,0 +1,121 @@
+# IsraMarket production stack on one GCE VM (see README.md in this folder).
+#
+# A standalone file, not an override of the repo-root docker-compose.yml: production
+# differs in ports (Caddy owns 80/443, nothing else is published), storage (a bind mount
+# on the data disk instead of a named volume) and environment (rendered from Secret
+# Manager), and a standalone file keeps `docker compose config` readable.
+#
+# Run it through the wrapper that startup.sh installs:
+#   sudo isramarket-compose ps | logs -f api | up -d | ...
+# which is:
+#   docker compose -p isramarket -f deploy/gcp/docker-compose.prod.yml \
+#     --env-file /run/isramarket/app.env ...
+#
+# Network layout:
+#   internet -> caddy (80/443) --edge--> web:3000 --backend--> api:8000
+# The API is on `backend` only and publishes no port, so it is unreachable from the
+# internet and from Caddy; the rate limiter's TRUST_FORWARDED_FOR depends on that.
+name: isramarket
+
+x-logging: &logging
+  # Rotated per container: at most 5 x 10 MB of logs each.
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  api:
+    build:
+      context: ../../api
+    restart: unless-stopped
+    # Reaps Chrome's helper processes (one headless screenshot per brand scan).
+    init: true
+    # Chrome needs more shared memory than Docker's 64 MB default.
+    shm_size: "256m"
+    mem_limit: 2500m
+    stop_grace_period: 30s
+    env_file:
+      # Secrets and origins, rendered at boot by render-env.sh (tmpfs, root only).
+      - path: ${ISRAMARKET_ENV_FILE:-/run/isramarket/app.env}
+        required: true
+    environment:
+      # Fixed production settings; these win over anything in the env file.
+      ENVIRONMENT: production
+      COOKIE_SECURE: "true"
+      # Correct only because the API is reachable solely through Caddy -> Next.js, and
+      # Caddy overwrites any client-sent X-Forwarded-For with the real address.
+      TRUST_FORWARDED_FOR: "true"
+      DATABASE_URL: sqlite:////app/data/isramarket.db
+      SITE_SCREENSHOT: "true"
+      CHROME_PATH: /usr/bin/chromium
+      CHROME_NO_SANDBOX: "true"
+    volumes:
+      # The SQLite database AND every generated/uploaded image. It lives on the separate
+      # persistent disk; create_host_path=false makes the container fail to start rather
+      # than silently create an empty database on the boot disk if that disk is missing.
+      - type: bind
+        source: ${DATA_DIR:-/mnt/disks/data}/api
+        target: /app/data
+        bind:
+          create_host_path: false
+    # Healthcheck: inherited from api/Dockerfile (GET /health every 30s).
+    networks: [backend]
+    logging: *logging
+
+  web:
+    build:
+      context: ../../web
+    restart: unless-stopped
+    mem_limit: 1g
+    environment:
+      # Server-side only: the /backend and /r proxy routes call the API by service name.
+      # (The API's own API_ORIGIN is the public https://<host>/backend, for OAuth.)
+      API_ORIGIN: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    # Healthcheck: inherited from web/Dockerfile (GET / every 30s).
+    networks: [edge, backend]
+    logging: *logging
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    mem_limit: 256m
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp" # HTTP/3
+    environment:
+      SITE_HOST: "${SITE_HOST:?SITE_HOST missing - run deploy/gcp/render-env.sh}"
+      ACME_EMAIL: "${ACME_EMAIL:?ACME_EMAIL missing - set the acme-email instance metadata}"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - type: bind
+        source: ${DATA_DIR:-/mnt/disks/data}/caddy/data
+        target: /data
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${DATA_DIR:-/mnt/disks/data}/caddy/config
+        target: /config
+        bind:
+          create_host_path: false
+    depends_on:
+      # Started, not healthy: Caddy should come up (and hold requests, see Caddyfile)
+      # even while the web tier is still booting.
+      web:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks: [edge]
+    logging: *logging
+
+networks:
+  edge: {}
+  backend: {}
