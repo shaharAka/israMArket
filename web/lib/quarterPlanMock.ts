@@ -14,9 +14,7 @@ import {
   firstOffering,
   inferBusinessModel,
   kitFor,
-  typeGroup,
   type OnboardingDraft,
-  type TypeGroup,
 } from "./draft";
 import {
   KPI_UNITS,
@@ -55,6 +53,42 @@ export function mockSuccessOptions(model: BusinessModel, grow: GrowWhere | undef
 /* ------------------------------- The plan ------------------------------- */
 
 const CADENCE_HE: Record<Cadence, string> = { "1-2": "1-2 בשבוע", "3-4": "3-4 בשבוע", "5+": "5 ומעלה בשבוע" };
+
+/**
+ * The mock's own coarse buckets. The field says the industry; whether a shop sells in a
+ * store or online comes from where the owner wants to grow, not from the field.
+ */
+type TypeGroup = "food" | "retail" | "ecommerce" | "professional" | "clinic" | "fitness" | "design" | "education" | "tourism" | "other";
+
+function typeGroup(d: OnboardingDraft): TypeGroup {
+  const online = d.grow_where === "online" || d.presence_type === "online_only";
+  switch (kitFor(d.business_type, d.offerings).key) {
+    case "food":
+      return "food";
+    case "fashion":
+    case "jewelry":
+    case "kids":
+    case "pets":
+    case "gifts":
+      return online ? "ecommerce" : "retail";
+    case "beauty":
+    case "health":
+      return "clinic";
+    case "fitness":
+      return "fitness";
+    case "home":
+    case "real_estate":
+      return "design";
+    case "professional":
+      return "professional";
+    case "education":
+      return "education";
+    case "hospitality":
+      return "tourism";
+    default:
+      return "other";
+  }
+}
 
 const LOCAL_GROUPS: TypeGroup[] = ["food", "retail", "clinic", "fitness", "design", "professional", "tourism", "education"];
 
@@ -114,7 +148,7 @@ export function mockQuarterPlan(
   insights: PlanInsight[],
 ): QuarterPlan {
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
-  const group = typeGroup(d.business_type);
+  const group = typeGroup(d);
   const kit = kitFor(d.business_type);
   const offer = firstOffering(d.offerings) || "מה שאתם עושים";
   const hasSite = Boolean(d.links.website);
@@ -210,7 +244,7 @@ export function mockQuarterPlan(
     integrations.push({
       key: "gbp",
       name_he: "הכרטיס של העסק בגוגל",
-      why_he: `כאן מחפשים ״${kit.chip.split(/[ ,]/)[0]} ליד הבית״. נראה כמה התקשרו וכמה ביקשו הוראות הגעה.`,
+      why_he: `כאן מחפשים ״${offer} ליד הבית״. נראה כמה התקשרו וכמה ביקשו הוראות הגעה.`,
       status: "unknown",
       effort_he: "נבדוק אם יש לכם כרטיס. אם לא, פותחים יחד בשעה.",
     });

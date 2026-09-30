@@ -26,6 +26,8 @@ from urllib.parse import quote, urlparse
 
 import httpx
 
+from app.services.business_fields import field_label
+
 SUGGEST_ENDPOINT = "https://suggestqueries.google.com/complete/search"
 SUGGEST_DEFAULTS = {"client": "firefox", "hl": "he", "gl": "il"}
 SUGGEST_TIMEOUT_SECONDS = 6.0
@@ -187,7 +189,7 @@ def seeds_for(business: dict) -> list[str]:
             seeds.append(value)
 
     add(business.get("name") or "")
-    add(business.get("business_type") or "")
+    add(field_label(business.get("business_type") or ""))
     location = (business.get("location") or "").strip()
     add(location)
     offerings = _split_offerings(business.get("offerings") or "")

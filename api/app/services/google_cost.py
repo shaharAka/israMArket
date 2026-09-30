@@ -37,6 +37,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
+from app.services import business_fields
 from app.services.business_model import CONVERSION_UNIT, normalise_model
 
 SOURCE_URL = (
@@ -373,6 +374,14 @@ def _contains(haystack: str, needle: str) -> bool:
     return f" {needle} " in f" {haystack} "
 
 
+def _field_text(business_type: str) -> str:
+    """The business type as matchable words: a field key ("food") becomes its Hebrew label,
+    and an old label is kept as written next to the label it maps to."""
+    resolved = business_fields.resolve_field(business_type)
+    label = business_fields.field_label(resolved.key) if resolved else ""
+    return business_type if label in {"", business_type} else f"{business_type} {label}"
+
+
 def match_industry(business_type: str = "", offerings: str = "") -> tuple[Industry | None, list[str]]:
     """Map free Hebrew text onto one of the source's priced industries.
 
@@ -381,8 +390,12 @@ def match_industry(business_type: str = "", offerings: str = "") -> tuple[Indust
     more specific evidence), and only then to the source's table order. An unclear
     business therefore does NOT drift to the cheapest or the priciest row — it comes
     back as no match at all, and the caller reports the default and says so.
+
+    The owner's words decide first. Only when they match no row does the business field
+    ("ספורט וכושר" → חינוך והדרכה) pick its row (`cost_industry` in
+    app/data/business_fields.json); a field without a published row stays unmatched.
     """
-    haystack = _normalise(f"{business_type} {offerings}")
+    haystack = _normalise(f"{_field_text(business_type)} {offerings}")
     if not haystack:
         return None, []
 
@@ -396,17 +409,38 @@ def match_industry(business_type: str = "", offerings: str = "") -> tuple[Indust
         score = (len(matched), max(len(_normalise(kw)) for kw in matched), -position)
         if best_score is None or score > best_score:
             best_score, best_industry, best_matched = score, industry, matched
+    if best_industry is None:
+        resolved = business_fields.resolve_field(business_type, offerings)
+        row = INDUSTRIES_BY_KEY.get(business_fields.cost_industry(resolved.key) or "") if resolved else None
+        if row is not None:
+            return row, [business_fields.field_label(resolved.key)]
     return best_industry, best_matched
 
 
-def match_sector(business_type: str = "", offerings: str = "", industry: Industry | None = None) -> str | None:
+def unpriced_field_label(business_type: str = "", offerings: str = "") -> str | None:
+    """The field's label when the published table has no row for it (ילדים, חיות מחמד…),
+    so a fallback price can say which field it stands in for. None for "other" or unknown."""
+    resolved = business_fields.resolve_field(business_type, offerings)
+    if not resolved or resolved.key == business_fields.OTHER:
+        return None
+    return None if business_fields.cost_industry(resolved.key) else business_fields.field_label(resolved.key)
+
+
+def match_sector(
+    business_type: str = "",
+    offerings: str = "",
+    industry: Industry | None = None,
+    online_shop: bool = False,
+) -> str | None:
     """The sector profile — conversion rate and minimum budget — for this business.
 
     An explicit signal in the business's own words ("חנות אונליין", "שירותים
-    מקצועיים") wins, because it is what the owner actually said. Otherwise the sector
-    comes from the matched industry. Otherwise: unknown, and the plan says so.
+    מקצועיים") wins, because it is what the owner actually said. Then where customers
+    come: a shop that sells only online (`online_shop`, from presence_type / grow_where —
+    the field list no longer says "online") is eCommerce. Otherwise the sector comes from
+    the matched industry. Otherwise: unknown, and the plan says so.
     """
-    haystack = _normalise(f"{business_type} {offerings}")
+    haystack = _normalise(f"{_field_text(business_type)} {offerings}")
     best_signal: tuple[int, str] | None = None
     for sector_key, signals in SECTOR_SIGNALS.items():
         for signal in signals:
@@ -416,6 +450,8 @@ def match_sector(business_type: str = "", offerings: str = "", industry: Industr
                     best_signal = (length, sector_key)
     if best_signal:
         return best_signal[1]
+    if online_shop:
+        return "ecommerce"
     return industry.sector if industry else None
 
 
@@ -448,11 +484,13 @@ def plan_from_budget(
     business_type: str = "",
     offerings: str = "",
     business_model: str | None = None,
+    presence_type: str | None = None,
 ) -> GooglePlan:
     """The Google plan for a budget, with every derived number kept as a range."""
     budget = max(int(monthly_budget_ils or 0), 0)
     industry, matched = match_industry(business_type, offerings)
-    sector_key = match_sector(business_type, offerings, industry)
+    online_shop = presence_type == "online_only" and normalise_model(business_model) != "services"
+    sector_key = match_sector(business_type, offerings, industry, online_shop=online_shop)
     sector = SECTORS.get(sector_key or "") or None
 
     warnings: list[str] = []
@@ -464,9 +502,16 @@ def plan_from_budget(
     else:
         cpc_range = CPC_TIERS[DEFAULT_CPC_TIER]
         industry_key, industry_label, tier = UNMATCHED_KEY, UNMATCHED_LABEL, DEFAULT_CPC_TIER
+        unpriced = unpriced_field_label(business_type, offerings)
+        why = (
+            f"לתחום '{unpriced}' אין שורה בטבלת המחירים שפורסמה, וב'מה העסק מציע' אין מילים "
+            "של תחום אחר מהטבלה."
+            if unpriced
+            else "לא זיהינו את התחום שלכם בטבלת המחירים שפורסמה, כי ב'סוג העסק' וב'מה העסק מציע' "
+            "אין מילים שאנחנו מכירים."
+        )
         warnings.append(
-            "לא זיהינו את התחום שלכם בטבלת המחירים שפורסמה, כי ב'סוג העסק' וב'מה העסק מציע' "
-            "אין מילים שאנחנו מכירים. המחיר לקליק שלמטה הוא רצועת הביניים של המקור "
+            f"{why} המחיר לקליק שלמטה הוא רצועת הביניים של המקור "
             f"({CPC_TIERS[DEFAULT_CPC_TIER][0]:.0f}-{CPC_TIERS[DEFAULT_CPC_TIER][1]:.0f} ₪), "
             "לא המחיר של תחום מסוים: לא הזול ולא היקר בטבלה. כתבו את התחום המדויק "
             "(למשל אופנה ואקססוריז, שיפוצים ובנייה, ביטוח ופיננסים) כדי לקבל טווח אמיתי."
@@ -645,6 +690,7 @@ def plan_for_business(business: dict) -> GooglePlan:
         business_type=business.get("business_type") or "",
         offerings=business.get("offerings") or "",
         business_model=business.get("business_model"),
+        presence_type=business.get("presence_type"),
     )
 
 

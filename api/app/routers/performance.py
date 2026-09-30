@@ -14,6 +14,7 @@ from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
+from app.services.business_fields import field_label
 
 router = APIRouter(prefix="/performance", tags=["performance"])
 
@@ -148,7 +149,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
 
     business_payload = {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",
@@ -231,7 +232,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
     strategy = _active_strategy(db, business)
     business_payload = {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",

@@ -25,6 +25,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse
 
+from app.services import business_fields
 from app.services.brand import extract_brand_language, public_scan
 from app.services.gemini import extract_json
 from app.services.hebrew_style import HEBREW_STYLE
@@ -35,21 +36,12 @@ from app.services.strategy import extract_site_profile
 
 logger = logging.getLogger(__name__)
 
-# Mirrors BUSINESS_TYPES in web/components/onboarding/constants.ts — the onboarding
-# select offers exactly these, so the guess has to be one of them to prefill it.
-BUSINESS_TYPES = (
-    "מאפייה / קפה / מסעדה",
-    "חנות פיזית / קמעונאות",
-    "חנות אונליין (אי-קומרס)",
-    'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)',
-    "קליניקה, יופי ובריאות",
-    "סטודיו לאימון / ספורט",
-    "עיצוב / אדריכלות / נדל״ן",
-    "הדרכות, קורסים וחינוך",
-    "תיירות ואירוח",
-    "עסק אחר",
-)
-FALLBACK_BUSINESS_TYPE = "עסק אחר"
+# The model picks a Hebrew label (it reads them better than keys); the response carries
+# the key, which is what the onboarding select and the draft store. One list for both
+# sides: app/data/business_fields.json.
+BUSINESS_TYPES = business_fields.FIELD_KEYS
+BUSINESS_TYPE_LABELS = tuple(field.label for field in business_fields.fields())
+FALLBACK_BUSINESS_TYPE = business_fields.OTHER
 
 CACHE_TTL_SECONDS = 30 * 60
 _CACHE_MAX = 256
@@ -61,7 +53,7 @@ SAMPLE_POST_SCHEMA = {
     "title": "PreviewGuess",
     "description": "ניחוש על העסק ופוסט אחד לדוגמה, מתוך האתר בלבד",
     "properties": {
-        "business_type": {"type": "string", "enum": list(BUSINESS_TYPES)},
+        "business_type": {"type": "string", "enum": list(BUSINESS_TYPE_LABELS)},
         "business_model": {"type": "string", "enum": ["products", "services", "both"]},
         "presence_type": {
             "type": "string",
@@ -241,7 +233,8 @@ def _sample_prompt(scraped: dict, profile: dict, brand: dict, problems: list[str
 לפניך אתר של עסק ישראלי קטן. עשה שני דברים, רק מתוך מה שכתוב באתר:
 
 1. נחש את סוג העסק (business_type מתוך הרשימה), אם הוא מוכר מוצרים, שירותים או את שניהם,
-   ואיך לקוחות מגיעים אליו (מקום פיזי / אונליין בלבד / משולב). אם לא ברור — בחר "עסק אחר".
+   ואיך לקוחות מגיעים אליו (מקום פיזי / אונליין בלבד / משולב). אם לא ברור — בחר "{business_fields.field_label(business_fields.OTHER)}".
+   התחום הוא סוג הפעילות (אוכל, אופנה, יופי…), לא איפה מוכרים: חנות או אתר הם לא תחום.
 2. כתוב פוסט אחד לאינסטגרם, מוכן לפרסום, בטון של האתר עצמו:
    - בחר מוצר, קולקציה או שירות אחד מסוים שבאמת מופיע באתר (בכותרות, בכפתורים או בטקסט) וכתוב עליו בלבד.
      כתוב את השם שלו ב-product. לא פוסט כללי על העסק.
@@ -313,9 +306,9 @@ def _public_payload(scan: dict, guess: dict) -> dict:
         if str(item or "").strip()
     ][:6]
 
-    business_type = guess.get("business_type")
-    if business_type not in BUSINESS_TYPES:
-        business_type = FALLBACK_BUSINESS_TYPE
+    summary = str(guess.get("offerings_summary") or "")
+    resolved = business_fields.resolve_field(guess.get("business_type"), summary)
+    business_type = resolved.key if resolved else (business_fields.infer_field(summary) or FALLBACK_BUSINESS_TYPE)
     model = guess.get("business_model")
     if model not in {"products", "services", "both"}:
         model = "products"

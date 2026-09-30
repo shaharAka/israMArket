@@ -1,23 +1,12 @@
 /**
  * First-run vocabulary.
  *
- * BUSINESS_TYPES is mirrored in `api/app/services/preview.py` — the public preview
- * guesses one of these so the onboarding select can be prefilled. Keep both in sync.
+ * The business field list lives in `lib/businessFields.ts` (BUSINESS_FIELDS), shared with
+ * the API through `lib/businessFields.json`. Re-exported here for the onboarding screens.
  */
 import type { PresenceType } from "./preview";
 
-export const BUSINESS_TYPES = [
-  "מאפייה / קפה / מסעדה",
-  "חנות פיזית / קמעונאות",
-  "חנות אונליין (אי-קומרס)",
-  "שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)",
-  "קליניקה, יופי ובריאות",
-  "סטודיו לאימון / ספורט",
-  "עיצוב / אדריכלות / נדל״ן",
-  "הדרכות, קורסים וחינוך",
-  "תיירות ואירוח",
-  "עסק אחר",
-];
+export { BUSINESS_FIELDS } from "@/lib/businessFields";
 
 /** How customers reach the business, worded for a shop and a service provider alike. */
 export const PRESENCE_MODELS: { key: PresenceType; title: string }[] = [

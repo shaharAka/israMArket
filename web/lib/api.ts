@@ -106,7 +106,7 @@ export const DEMO_BUSINESS: Business = {
   id: 1,
   name: "לחם תום",
   website_url: "https://lechem-tom.example.co.il",
-  business_type: "מאפייה שכונתית / בית קפה",
+  business_type: "food",
   offerings: "לחמי מחמצת באפייה יומית, חלות שישי, מאפי בוקר ומארזי חג לשולחן",
   location: "שוק הפשפשים, יפו (עולי ציון 12)",
   presence_type: "brick_and_mortar",

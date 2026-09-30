@@ -28,6 +28,17 @@ import {
   type PublicBrandResult,
   type SuggestedAudience,
 } from "./api";
+import {
+  OTHER_FIELD,
+  coerceField,
+  fieldFor,
+  inferField,
+  isFieldKey,
+  resolveField,
+  type BusinessField,
+  type FieldKey,
+  type PresenceHint,
+} from "./businessFields";
 import { defaultGoalFor, goalsFor } from "./businessModel";
 import { clearPending } from "./pendingUploads";
 import {
@@ -61,7 +72,7 @@ export type TriedChannel =
 /** What the client sends. Mirrored by the API (`services/onboarding_draft.py`). */
 export type OnboardingDraft = {
   business_name: string;
-  business_type: string; // one of BUSINESS_TYPES
+  business_type: string; // a FieldKey (lib/businessFields.ts), "" until answered
   offerings: string; // free text, "what you do / sell"
   differentiator?: string;
   audiences: { name: string; description: string }[]; // 0–3
@@ -73,6 +84,9 @@ export type OnboardingDraft = {
   tried?: { channels: TriedChannel[]; what_worked?: string };
   competitors?: { name: string; link?: string }[]; // 0–3
   business_model?: BusinessModel; // inferred from the type and the owner's words, confirmable
+  /** Where customers come. Not asked at /start: kept from an old draft whose field was
+   *  "חנות פיזית" or "חנות אונליין", which the field list no longer offers. */
+  presence_type?: PresenceHint;
   /** Derived from `success.kpi` at /start (the month planner still reads it). */
   goal?: PrimaryGoal;
   city?: string;
@@ -141,6 +155,7 @@ export function loadFlow(): FlowState | null {
     if (parsed?.v !== 2 || !parsed.draft || typeof parsed.step !== "string") return null;
     const flow = { ...emptyFlow(), ...parsed } as FlowState;
     flow.draft = { ...emptyDraft(), ...parsed.draft, links: { ...(parsed.draft.links ?? {}) } };
+    normaliseStoredField(flow);
     // A scan that was running when the page closed will never report back.
     if (flow.brandScan?.status === "reading") flow.brandScan = null;
     return flow;
@@ -199,25 +214,8 @@ export const MONTH_HINTS: Record<number, string> = {
   12: "חנוכה",
 };
 
-/**
- * A nudge for the seasons question, by kind of business: when owners like these are
- * usually busy. An example to jog the memory, never a default — nothing is pre-marked.
- */
-const SEASON_EXAMPLES: Record<TypeGroup, string> = {
-  food: "למשל: החגים וחנוכה",
-  retail: "למשל: לפני החגים ובלאק פריידי",
-  ecommerce: "למשל: בלאק פריידי ולפני החגים",
-  professional: "למשל: אחרי החגים וסוף השנה",
-  clinic: "למשל: לפני החגים ולפני הקיץ",
-  fitness: "למשל: אחרי החגים ולפני הקיץ",
-  design: "למשל: אחרי החגים ולפני פסח",
-  education: "למשל: ספטמבר וסוף החופש",
-  tourism: "למשל: הקיץ והחגים",
-  other: "למשל: החגים והקיץ",
-};
-
 export function seasonsExampleFor(businessType: string): string {
-  return SEASON_EXAMPLES[typeGroup(businessType)];
+  return kitFor(businessType).seasons;
 }
 
 export const NETWORKS: { key: Network; label: string; placeholder: string }[] = [
@@ -337,343 +335,64 @@ export function presetFor(key?: string): StylePreset | null {
   return presets.find((preset) => preset.key === key) ?? LOCAL_PRESETS.find((preset) => preset.key === key) ?? null;
 }
 
-/* ---------------------------- Business types ---------------------------- */
+/* ---------------------------- Business fields ---------------------------- */
 
-export type TypeGroup =
-  | "food"
-  | "retail"
-  | "ecommerce"
-  | "professional"
-  | "clinic"
-  | "fitness"
-  | "design"
-  | "education"
-  | "tourism"
-  | "other";
+/** What the flow knows about a field: label, chip, default model, examples, audiences.
+ *  The list and its copy live in `lib/businessFields.ts`. */
+export type TypeKit = BusinessField;
 
-/** Matched on words rather than exact strings, so a reworded BUSINESS_TYPES label still maps. */
-export function typeGroup(businessType: string): TypeGroup {
-  const t = businessType || "";
-  if (/מאפי|קפה|מסעד/.test(t)) return "food";
-  if (/אונליין|קומרס/.test(t)) return "ecommerce";
-  if (/חנות|קמעונ/.test(t)) return "retail";
-  if (/מקצועי|עו"ד|רו"ח|ייעוץ/.test(t)) return "professional";
-  if (/קליני|יופי|בריאות/.test(t)) return "clinic";
-  if (/אימון|ספורט/.test(t)) return "fitness";
-  if (/עיצוב|אדריכ|נדל/.test(t)) return "design";
-  if (/הדרכ|קורס|חינוך/.test(t)) return "education";
-  if (/תייר|אירוח/.test(t)) return "tourism";
-  return "other";
-}
-
-type TypeKit = {
-  /** Short label for a chip on a phone. */
-  chip: string;
-  model: BusinessModel;
-  placeholder: string;
-  differentiators: string[];
-  audiences: SuggestedAudience[];
-  industry: string;
-  /** What a consultant says back after hearing what the business does. */
-  heard: string;
-};
-
-export const TYPE_KITS: Record<TypeGroup, TypeKit> = {
-  food: {
-    chip: "מאפייה, קפה או מסעדה",
-    model: "products",
-    placeholder: "למשל: מחמצת, חלות לשישי ועוגות בהזמנה",
-    differentiators: ["אופים כל בוקר", "מתכון משפחתי", "חומרי גלם מקומיים", "משלוח באותו יום"],
-    audiences: [
-      {
-        name: "משפחות מהשכונה",
-        description: "קונים לשישי ולחג, בדרך כלל באותה שעה.",
-        why_he: "עסק אוכל שכונתי חי מלקוחות קבועים שגרים קרוב.",
-      },
-      {
-        name: "עובדים באזור",
-        description: "עוצרים לקפה או לארוחה מהירה באמצע היום.",
-        why_he: "הם עוברים ליד כל יום. צריך רק לתת להם סיבה להיכנס.",
-      },
-      {
-        name: "מזמינים לאירועים",
-        description: "ימי הולדת, אירוח ומגשים לשבת.",
-        why_he: "הזמנה אחת לאירוע שווה הרבה ביקורים רגילים.",
-      },
-    ],
-    industry: "בעסקי אוכל, תמונה קרובה של המוצר מושכת יותר מפוסט מבצע כללי.",
-    heard: "באוכל, מה שנראה טוב בתמונה נמכר. נתחיל מהמוצר עצמו.",
-  },
-  retail: {
-    chip: "חנות",
-    model: "products",
-    placeholder: "למשל: בגדי ילדים, צעצועים ומתנות",
-    differentiators: ["ייעוץ אישי בחנות", "מותגים שאין במקום אחר", "מחירים הוגנים", "החלפה בלי בעיה"],
-    audiences: [
-      {
-        name: "תושבי האזור",
-        description: "קונים קרוב לבית ורוצים לראות ולגעת.",
-        why_he: "חנות פיזית מנצחת את האונליין בקרבה וביחס.",
-      },
-      {
-        name: "מחפשי מתנות",
-        description: "צריכים רעיון למתנה, ומהר.",
-        why_he: "לפני חגים וימי הולדת הם מחפשים המלצה, לא מוצר מסוים.",
-      },
-      {
-        name: "לקוחות קבועים",
-        description: "כבר קנו אצלכם ויחזרו כשיש סיבה.",
-        why_he: "הכי קל למכור למי שכבר מכיר אתכם.",
-      },
-    ],
-    industry: "בחנויות, פוסט על מוצר חדש שהגיע למדף מביא אנשים לבוא לראות.",
-    heard: "בחנות, אנשים באים בשביל היחס. נראה אותו בפוסטים.",
-  },
-  ecommerce: {
-    chip: "חנות אונליין",
-    model: "products",
-    placeholder: "למשל: תכשיטים בעבודת יד, משלוח לכל הארץ",
-    differentiators: ["עבודת יד", "משלוח מהיר", "עיצוב שאין בחנויות", "שירות בוואטסאפ"],
-    audiences: [
-      {
-        name: "מחפשי משהו מיוחד",
-        description: "לא רוצים את מה שיש בכל קניון.",
-        why_he: "חנות אונליין קטנה מנצחת כשיש לה סיפור וסגנון.",
-      },
-      {
-        name: "קונים מתנה",
-        description: "קונים לאחרים ורוצים שזה יגיע בזמן.",
-        why_he: "מועד המשלוח הוא לרוב מה שסוגר את ההזמנה.",
-      },
-      {
-        name: "מי שכבר הזמין",
-        description: "קנו פעם אחת ומכירים את האיכות.",
-        why_he: "הזמנה שנייה עולה לכם הרבה פחות מלקוח חדש.",
-      },
-    ],
-    industry: "בחנות אונליין, סרטון קצר של המוצר ביד עונה על שאלות לפני שהן נשאלות.",
-    heard: "באונליין אי אפשר לגעת, אז התמונות צריכות לעשות את העבודה.",
-  },
-  professional: {
-    chip: "שירותים מקצועיים",
-    model: "services",
-    placeholder: "למשל: הנהלת חשבונות לעצמאים ולעסקים קטנים",
-    differentiators: ["זמינות מהירה", "מתמחים בתחום אחד", "מחיר קבוע ושקוף", "יחס אישי"],
-    audiences: [
-      {
-        name: "עצמאים בתחילת הדרך",
-        description: "פתחו עסק ומחפשים מישהו לסמוך עליו.",
-        why_he: "הם מחפשים הסבר פשוט לפני שהם בוחרים איש מקצוע.",
-      },
-      {
-        name: "עסקים קטנים באזור",
-        description: "רוצים מישהו קרוב וזמין.",
-        why_he: "בשירות מקצועי, קרבה וזמינות הן סיבה לבחור.",
-      },
-      {
-        name: "לקוחות שממליצים",
-        description: "לקוחות קיימים שמעבירים את השם הלאה.",
-        why_he: "המלצה היא הדרך הנפוצה להגיע לנותני שירות.",
-      },
-    ],
-    industry: "בשירותים מקצועיים, אנשים פונים למי שכבר הסביר להם משהו בחינם.",
-    heard: "בשירות, אנשים קונים אמון. נתחיל מהידע שלכם.",
-  },
-  clinic: {
-    chip: "יופי ובריאות",
-    model: "services",
-    placeholder: "למשל: טיפולי פנים, הסרת שיער ואיפור לאירועים",
-    differentiators: ["טיפול אישי ושקט", "ניסיון של שנים", "חומרים טבעיים", "תורים גם בערב"],
-    audiences: [
-      {
-        name: "מטופלים קבועים",
-        description: "רוצים מקום אחד לסמוך עליו.",
-        why_he: "טיפול קבוע הוא הבסיס של קליניקה יציבה.",
-      },
-      {
-        name: "לפני אירוע",
-        description: "כלות, מלוות ואורחות שצריכות תור בקרוב.",
-        why_he: "הן מחפשות עכשיו, ובוחרות לפי תמונות של תוצאות.",
-      },
-      {
-        name: "מי שכבר היו אצלכם",
-        description: "מכירים את היחס ויחזרו אם תזכירו.",
-        why_he: "תזכורת בזמן הנכון מביאה אותם חזרה.",
-      },
-    ],
-    industry: "בקליניקות, תמונות לפני ואחרי מביאות פניות, רק עם הסכמה של הלקוחות.",
-    heard: "בטיפולים אנשים רוצים לראות תוצאה ולהרגיש בטוחים.",
-  },
-  fitness: {
-    chip: "סטודיו לאימון",
-    model: "services",
-    placeholder: "למשל: פילאטיס מכשירים ואימונים בקבוצות קטנות",
-    differentiators: ["קבוצות קטנות", "מדריכים מוסמכים", "אווירה משפחתית", "שיעור ניסיון"],
-    audiences: [
-      {
-        name: "מתחילים",
-        description: "רוצים להתחיל לזוז, וקצת חוששים.",
-        why_he: "הם צריכים לראות שזה מתאים גם להם.",
-      },
-      {
-        name: "הורים עסוקים",
-        description: "מחפשים שעה קבועה לעצמם, קרוב לבית.",
-        why_he: "זמן ומיקום מכריעים אצלם יותר מכל מבצע.",
-      },
-      {
-        name: "מתאמנים קבועים",
-        description: "כבר מנויים ויכולים להביא חבר.",
-        why_he: "חבר שמביא חבר היא הדרך הזולה להתמלא.",
-      },
-    ],
-    industry: "בסטודיו, סרטון קצר משיעור אמיתי עוזר למתחילים להרגיש שזה בשבילם.",
-    heard: "באימון, הצעד הקשה הוא השיעור הראשון. נעזור להגיע אליו.",
-  },
-  design: {
-    chip: "עיצוב ונדל״ן",
-    model: "services",
-    placeholder: "למשל: עיצוב פנים לדירות קטנות",
-    differentiators: ["ליווי מההתחלה עד הסוף", "סגנון שמזהים", "עמידה בתקציב", "יחס אישי"],
-    audiences: [
-      {
-        name: "זוגות שעוברים דירה",
-        description: "מתכננים שיפוץ ורוצים לראות מה אפשר.",
-        why_he: "הם אוספים השראה חודשים לפני שהם פונים.",
-      },
-      {
-        name: "בעלי נכסים",
-        description: "רוצים תוצאה שמעלה את ערך הנכס.",
-        why_he: "הם בוחרים לפי עבודות קודמות, לא לפי הבטחות.",
-      },
-      {
-        name: "לקוחות מרוצים",
-        description: "גרים בבית שעיצבתם ומראים אותו לחברים.",
-        why_he: "כל פרויקט גמור הוא סיפור לקוח מוכן.",
-      },
-    ],
-    industry: "בעיצוב ונדל״ן, תמונות לפני ואחרי ותיק עבודות מסודר הם מה שמביא פניות.",
-    heard: "פה העבודות מדברות. התיק שלכם יהיה במרכז.",
-  },
-  education: {
-    chip: "קורסים והדרכות",
-    model: "services",
-    placeholder: "למשל: קורס צילום למתחילים, בזום ופרונטלי",
-    differentiators: ["קבוצות קטנות", "ליווי גם אחרי הקורס", "מלמדים מניסיון", "אפשר גם אונליין"],
-    audiences: [
-      {
-        name: "מתחילים סקרנים",
-        description: "רוצים ללמוד משהו חדש ולא יודעים מאיפה להתחיל.",
-        why_he: "הם צריכים טעימה קטנה לפני שהם נרשמים.",
-      },
-      {
-        name: "מחפשי מקצוע",
-        description: "רוצים מקצוע חדש או קידום בעבודה.",
-        why_he: "הם שואלים מה יוצא מזה בסוף. נראה להם.",
-      },
-      {
-        name: "בוגרים",
-        description: "כבר למדו אצלכם ויכולים להמשיך או להמליץ.",
-        why_he: "בוגר מרוצה הוא ההמלצה הכי משכנעת.",
-      },
-    ],
-    industry: "בהדרכות, טיפ קצר בחינם בפוסט מביא אנשים לשאול על הקורס המלא.",
-    heard: "מי שלמד מכם משהו קטן יבוא ללמוד עוד.",
-  },
-  tourism: {
-    chip: "תיירות ואירוח",
-    model: "services",
-    placeholder: "למשל: צימר זוגי בגליל עם ג׳קוזי",
-    differentiators: ["נוף שאין במקום אחר", "אירוח אישי", "ארוחת בוקר ביתית", "קרוב לאטרקציות"],
-    audiences: [
-      {
-        name: "זוגות לסוף שבוע",
-        description: "מחפשים חופשה קצרה ושקטה.",
-        why_he: "הם מזמינים לפי תמונות ולפי מה שאורחים כתבו.",
-      },
-      {
-        name: "משפחות בחופשות",
-        description: "צריכים מקום שנוח גם לילדים.",
-        why_he: "בחופשות ובחגים הם מתכננים מראש.",
-      },
-      {
-        name: "אורחים חוזרים",
-        description: "כבר היו אצלכם ויחזרו לעונה הבאה.",
-        why_he: "תזכורת לפני העונה מביאה הזמנה ישירה, בלי אתר הזמנות.",
-      },
-    ],
-    industry: "באירוח, הזמנות לחגים נסגרות שבועות מראש. מפרסמים מוקדם.",
-    heard: "באירוח מוכרים חוויה, והתמונות הן חצי מהעבודה.",
-  },
-  other: {
-    chip: "משהו אחר",
-    model: "products",
-    placeholder: "במשפט אחד: מה אתם מוכרים או עושים",
-    differentiators: ["יחס אישי", "ניסיון של שנים", "זמינות מהירה", "מחיר הוגן"],
-    audiences: [
-      {
-        name: "לקוחות מהאזור",
-        description: "גרים או עובדים קרוב אליכם.",
-        why_he: "הכי קל להתחיל ממי שנמצא קרוב.",
-      },
-      {
-        name: "מחפשים בדיוק את זה",
-        description: "צריכים את מה שאתם עושים ועוד לא מכירים אתכם.",
-        why_he: "הם מחפשים עכשיו. צריך שימצאו אתכם.",
-      },
-      {
-        name: "לקוחות קיימים",
-        description: "כבר מכירים אתכם ויכולים לחזור או להמליץ.",
-        why_he: "הכי קל למכור למי שכבר מכיר אתכם.",
-      },
-    ],
-    industry: "לעסק קטן, פוסט קבוע פעם בשבוע עדיף על הרבה פוסטים ואז שקט.",
-    heard: "נתחיל מהדבר שהכי קל להראות.",
-  },
-};
-
-export function kitFor(businessType: string): TypeKit {
-  return TYPE_KITS[typeGroup(businessType)];
+/** The field for a stored value: a key, or an old label (read with the offerings). */
+export function kitFor(businessType: string, offerings = ""): BusinessField {
+  return fieldFor(coerceField(businessType, offerings).key);
 }
 
 const PRODUCT_WORDS = /מוצר|מוכר|חנות|קולקצי|מארז|משלוח|תכשיט|בגד|עוג|מאפ|קפה|יין|גבינ/;
 const SERVICE_WORDS = /שירות|טיפול|ייעוץ|יועצ|שיעור|סדנ|קורס|פגיש|אימון|הדרכ|עיצוב|ליווי|צילום אירוע/;
 
-/** Products, services or both, from the type and the owner's own words. Confirmed at the goal step. */
 /**
- * The closest BUSINESS_TYPES entry for what the owner wrote in their own words, when they
- * did not tap a field. The field only tunes examples and cost tables; what they wrote is
- * what the plan is built from, so a rough match (or "עסק אחר") is fine.
+ * The closest field for what the owner wrote in their own words, when they did not tap
+ * one. The field only tunes examples and cost tables; what they wrote is what the plan
+ * is built from, so a rough match (or "משהו אחר") is fine.
  */
-const TYPE_WORDS: [string, RegExp][] = [
-  ["מאפייה / קפה / מסעדה", /מאפי|לחם|חלות|עוגות|קונדיטור|קפה|בית קפה|מסעד|אוכל|שף|קייטרינג|פיצ|בורגר|גלידה|bakery|cafe|coffee|restaurant|catering|food/i],
-  ["חנות אונליין (אי-קומרס)", /אונליין|אתר מכירות|חנות אינטרנט|משלוחים לכל הארץ|online|e-?commerce|shopify/i],
-  ["חנות פיזית / קמעונאות", /חנות|בוטיק|הלבשה|תחתונ|לנז׳רי|לנז'רי|חזיות|בגדים|אופנה|נעליים|תכשיט|פרחים|צעצוע|ספרים|lingerie|fashion|clothing|shop|store|boutique|jewel/i],
-  ["קליניקה, יופי ובריאות", /קליני|קוסמטי|טיפול|טיפולי|ציפורניים|מספרה|שיער|איפור|לייזר|פיזיותרפ|רופא|שיניים|דיאט|תזונ|beauty|clinic|salon|nails|hair|spa|therapy/i],
-  ["סטודיו לאימון / ספורט", /יוגה|פילאטיס|אימון|כושר|מאמן|ריצה|סטודיו לאימון|קרוספיט|yoga|pilates|fitness|gym|trainer/i],
-  ["שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)", /עורך דין|עו"ד|עו״ד|רואה חשבון|רו"ח|רו״ח|הנהלת חשבונות|ייעוץ|יועצ|ביטוח|משכנתא|lawyer|accountant|consult|insurance/i],
-  ["עיצוב / אדריכלות / נדל״ן", /עיצוב פנים|אדריכל|נדל"ן|נדל״ן|תיווך|שיפוץ|נגרות|מטבחים|interior|architect|real estate|renovation/i],
-  ["הדרכות, קורסים וחינוך", /קורס|סדנ|הדרכ|שיעורי|מורה|חוג|לימוד|course|workshop|lesson|tutor|school/i],
-  ["תיירות ואירוח", /צימר|אירוח|מלון|טיול|סיור|מדריך טיולים|חדרי אירוח|zimmer|hotel|b&b|tour|guest/i],
-];
-
-export function inferBusinessType(offerings: string): string {
-  const text = offerings || "";
-  const hit = TYPE_WORDS.find(([, words]) => words.test(text));
-  return hit ? hit[0] : "עסק אחר";
+export function inferBusinessType(offerings: string): FieldKey {
+  return inferField(offerings) ?? OTHER_FIELD;
 }
 
+/** Products, services or both, from the field and the owner's own words. Confirmed at the goal step. */
 export function inferBusinessModel(businessType: string, offerings: string): BusinessModel {
-  const base = kitFor(businessType).model;
+  const kit = kitFor(businessType, offerings);
+  const base = kit.model;
   const text = offerings || "";
   const products = PRODUCT_WORDS.test(text);
   const services = SERVICE_WORDS.test(text);
   if (base === "products" && services) return "both";
   if (base === "services" && products && !/עיצוב|צילום/.test(text)) return "both";
-  if (typeGroup(businessType) === "other") {
+  if (kit.key === OTHER_FIELD) {
     if (products && services) return "both";
     if (services) return "services";
   }
   return base;
+}
+
+/**
+ * A flow saved before the field list became industries only holds an old Hebrew label
+ * ("חנות פיזית / קמעונאות"). It becomes a key on load; an old channel label keeps what it
+ * said about where customers come, and the answers computed for the old value stay valid.
+ */
+function normaliseStoredField(flow: FlowState) {
+  const before = flow.draft.business_type;
+  if (!before || isFieldKey(before)) return;
+  const resolved = resolveField(before, flow.draft.offerings) ?? coerceField(before, flow.draft.offerings);
+  flow.draft.business_type = resolved.key;
+  if (resolved.presence_type && !flow.draft.presence_type) flow.draft.presence_type = resolved.presence_type;
+  // What was fetched for the old value (audiences, plan…) is keyed by a signature
+  // that contains it: carry those over rather than silently asking again.
+  const from = JSON.stringify(before);
+  const to = JSON.stringify(resolved.key);
+  for (const key of ["suggestionsFor", "planFor", "quarterPlanFor", "successOptionsFor"] as const) {
+    const value = flow[key];
+    if (typeof value === "string") flow[key] = value.split(from).join(to);
+  }
 }
 
 /* ------------------------------- Cleaning ------------------------------- */
@@ -747,6 +466,7 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
     .map((c) => (c.link?.trim() ? { name: c.name.trim(), link: c.link.trim() } : { name: c.name.trim() }));
   if (competitors.length) out.competitors = competitors;
   if (d.business_model) out.business_model = d.business_model;
+  if (d.presence_type) out.presence_type = d.presence_type;
   // A goal the model does not offer is a 422: drop it and let the API default it.
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
   if (d.goal && goalsFor(model).some((g) => g.key === d.goal)) out.goal = d.goal;

@@ -26,6 +26,7 @@ from app.services.audiences import (
     serialize_audience,
 )
 from app.services.jsonutil import dumps, loads
+from app.services.business_fields import field_label
 
 router = APIRouter(tags=["audiences"])
 
@@ -133,7 +134,7 @@ def _detach_posts(
 def _payload_for_prompt(business: Business, stored: dict) -> dict:
     return {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,

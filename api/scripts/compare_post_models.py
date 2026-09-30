@@ -293,6 +293,7 @@ def load_inputs(business_id: int | None, year: int | None, month: int | None) ->
     from app.db import SessionLocal
     from app.models import Business, Strategy
     from app.services.audiences import catalogue_for
+    from app.services.business_fields import field_label
     from app.services.jsonutil import loads
 
     db = SessionLocal()
@@ -315,7 +316,7 @@ def load_inputs(business_id: int | None, year: int | None, month: int | None) ->
         payload = {
             "name": business.name,
             "website_url": business.website_url,
-            "business_type": business.business_type,
+            "business_type": field_label(business.business_type),
             "offerings": business.offerings,
             "location": business.location,
             "presence_type": business.presence_type,

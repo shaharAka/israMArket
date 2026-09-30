@@ -2,6 +2,7 @@ from typing import Literal, TypedDict
 
 from pydantic import BaseModel, EmailStr, Field, HttpUrl, model_validator
 
+from app.services.business_fields import coerce_field
 from app.services.business_model import goals_for
 
 
@@ -85,6 +86,22 @@ class OnboardingIn(BaseModel):
     # The quarterly plan the user reviewed and approved in step 5. Sent back on
     # confirmation so the month plan is built inside it rather than inventing a rival.
     long_horizon_plan: dict | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def _business_field(cls, data):
+        """Store the field as a key. An older client still sends a Hebrew label (or the
+        retired "חנות אונליין"), so any text is read into the closest field, and a
+        channel label fills `presence_type` when the payload did not say."""
+        if not isinstance(data, dict) or not isinstance(data.get("business_type"), str):
+            return data
+        if not data["business_type"].strip():
+            return data
+        resolved = coerce_field(data["business_type"], str(data.get("offerings") or ""))
+        data = {**data, "business_type": resolved.key}
+        if resolved.presence_type and not data.get("presence_type"):
+            data["presence_type"] = resolved.presence_type
+        return data
 
     @model_validator(mode="after")
     def _goal_must_match_model(self) -> "OnboardingIn":

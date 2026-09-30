@@ -21,7 +21,8 @@ import {
 } from "@/lib/businessModel";
 import { BUDGET_STAGES, formatNis, stageFor } from "@/lib/budget";
 import { toast } from "@/lib/ui";
-import { BUSINESS_TYPES, MODEL_SHORT, PRESENCE_MODELS } from "@/components/onboarding/constants";
+import { BUSINESS_FIELDS, MODEL_SHORT, PRESENCE_MODELS } from "@/components/onboarding/constants";
+import { coerceField, resolveField } from "@/lib/businessFields";
 import { GenerationProgress } from "@/components/onboarding/GenerationProgress";
 import {
   fetchSitePreview,
@@ -68,7 +69,7 @@ export default function OnboardingPage() {
 
   const [website, setWebsite] = useState("");
   const [name, setName] = useState("");
-  const [businessType, setBusinessType] = useState(BUSINESS_TYPES[0]);
+  const [businessType, setBusinessType] = useState<string>(BUSINESS_FIELDS[0].key);
   const [offerings, setOfferings] = useState("");
   const [businessModel, setBusinessModel] = useState<BusinessModel>(DEFAULT_BUSINESS_MODEL);
   const [presenceType, setPresenceType] = useState<PresenceType>("brick_and_mortar");
@@ -94,9 +95,9 @@ export default function OnboardingPage() {
     setLocation((current) => current || preview.location || "");
     // The one-line summary reads like an answer; the raw list is often product names.
     setOfferings((current) => current || preview.offerings_summary || preview.offerings.slice(0, 4).join(", ") || "");
-    if (preview.business_type && BUSINESS_TYPES.includes(preview.business_type)) {
-      setBusinessType(preview.business_type);
-    }
+    // A preview stored before the field list changed may still hold an old label.
+    const field = resolveField(preview.business_type, preview.offerings_summary);
+    if (field) setBusinessType(field.key);
     if (preview.business_model) setBusinessModel(preview.business_model);
     if (preview.presence_type) setPresenceType(preview.presence_type);
   }
@@ -181,7 +182,7 @@ export default function OnboardingPage() {
         if (stored) applyPreview(stored);
         const model = business?.business_model ?? stored?.business_model ?? DEFAULT_BUSINESS_MODEL;
         if (business?.name) setName(business.name);
-        if (business?.business_type) setBusinessType(business.business_type);
+        if (business?.business_type) setBusinessType(coerceField(business.business_type, business.offerings).key);
         if (business?.offerings) setOfferings(business.offerings);
         if (business?.location) setLocation(business.location);
         if (business?.business_model) setBusinessModel(business.business_model);
@@ -417,7 +418,7 @@ export default function OnboardingPage() {
             <TextField label="שם העסק" value={name} onChange={setName} autoComplete="organization" />
             <div>
               <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[#191b18]">
-                סוג העסק
+                התחום
               </label>
               <select
                 id="business-type"
@@ -425,8 +426,10 @@ export default function OnboardingPage() {
                 onChange={(event) => setBusinessType(event.target.value)}
                 className="min-h-11 w-full rounded-md border border-[#dedcd4] bg-white px-3 text-base sm:text-sm"
               >
-                {BUSINESS_TYPES.map((item) => (
-                  <option key={item}>{item}</option>
+                {BUSINESS_FIELDS.map((field) => (
+                  <option key={field.key} value={field.key}>
+                    {field.label}
+                  </option>
                 ))}
               </select>
             </div>

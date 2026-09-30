@@ -48,6 +48,11 @@ def migrate_db():
         for col, col_type in new_cols:
             if col not in existing:
                 conn.exec_driver_sql(f"ALTER TABLE businesses ADD COLUMN {col} {col_type}")
+        # The business field list became industries only (keys, not Hebrew labels).
+        # Rewrites old labels once; a row that already holds a key is left alone.
+        from app.services.business_fields import migrate_business_types
+
+        migrate_business_types(conn)
         conn.commit()
 
 

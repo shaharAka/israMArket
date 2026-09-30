@@ -32,7 +32,7 @@ from app.services.jsonutil import loads
 
 BAKERY = {
     "business_name": "מאפיית הדקל",
-    "business_type": "מאפייה / קפה / מסעדה",
+    "business_type": "food",
     "offerings": "בייגלה ירושלמי עם זעתר, פיתות מהטאבון ובורקס. פתוחים כל יום מ-06:00.",
     "differentiator": "הכול נאפה בטאבון עצים",
     "city": "יפו",

@@ -48,7 +48,7 @@ from app.services.gemini import generate_json, lite_json
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.instagram_signal import MAX_HANDLES as MAX_PEER_HANDLES, HandleError, normalize_handle
 from app.services.jsonutil import dumps, loads
-from app.services.preview import BUSINESS_TYPES
+from app.services import business_fields
 from app.services.scraper import _normalize_url
 
 # --- vocabulary -------------------------------------------------------------------------
@@ -66,20 +66,9 @@ GOAL_TITLES_HE = {
     "personal_brand": ("מיתוג אישי", "שיכירו אתכם כמומחים בתחום"),
 }
 
-# What a business type usually is, for when the draft does not say. The owner confirms
+# What a business field usually is, for when the draft does not say. The owner confirms
 # it in one tap at step 2, so this is a default, not a decision.
-MODEL_BY_TYPE = {
-    "מאפייה / קפה / מסעדה": "products",
-    "חנות פיזית / קמעונאות": "products",
-    "חנות אונליין (אי-קומרס)": "products",
-    'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)': "services",
-    "קליניקה, יופי ובריאות": "services",
-    "סטודיו לאימון / ספורט": "services",
-    "עיצוב / אדריכלות / נדל״ן": "services",
-    "הדרכות, קורסים וחינוך": "services",
-    "תיירות ואירוח": "services",
-    "עסק אחר": "products",
-}
+MODEL_BY_TYPE = business_fields.MODEL_BY_FIELD
 
 _WEEKDAYS_HE = ["שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת", "ראשון"]
 CALENDAR_WINDOW_DAYS = 21
@@ -182,18 +171,7 @@ STYLE_PRESETS: dict[str, dict] = {
         "voice": "עדין ואישי, כמו שיחה אחד על אחד.",
     },
 }
-DEFAULT_PRESET_BY_TYPE = {
-    "מאפייה / קפה / מסעדה": "warm",
-    "חנות פיזית / קמעונאות": "playful",
-    "חנות אונליין (אי-קומרס)": "clean",
-    'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)': "clean",
-    "קליניקה, יופי ובריאות": "soft",
-    "סטודיו לאימון / ספורט": "fresh",
-    "עיצוב / אדריכלות / נדל״ן": "luxe",
-    "הדרכות, קורסים וחינוך": "fresh",
-    "תיירות ואירוח": "fresh",
-    "עסק אחר": "warm",
-}
+DEFAULT_PRESET_BY_TYPE = business_fields.PRESET_BY_FIELD
 
 
 def public_presets() -> list[dict]:
@@ -685,6 +663,9 @@ class OnboardingDraft(BaseModel):
     style_preset: str = Field(default="", max_length=40)
     audiences: list[DraftAudience] = Field(default_factory=list, max_length=3)
     business_model: Literal["products", "services", "both"] | None = None
+    # Where customers come. Not asked at /start; set when an old draft said "חנות
+    # אונליין" or "חנות פיזית", which the field list no longer offers.
+    presence_type: Literal["brick_and_mortar", "online_only", "hybrid"] | None = None
     goal: Literal["sales", "brand_awareness", "leads", "personal_brand"] | None = None
     city: str = Field(default="", max_length=80)
     differentiator: str = Field(default="", max_length=500)
@@ -717,12 +698,30 @@ class OnboardingDraft(BaseModel):
             raise ValueError("מה שם העסק? לפחות 2 אותיות.")
         return text
 
+    @model_validator(mode="before")
+    @classmethod
+    def _legacy_field(cls, data: Any) -> Any:
+        """A draft saved before the field list became industries only still arrives with
+        an old label. It becomes a key here, and "חנות אונליין" keeps what it said about
+        where customers come."""
+        if not isinstance(data, dict) or not isinstance(data.get("business_type"), str):
+            return data
+        resolved = business_fields.resolve_field(
+            clean_text(data["business_type"], 120), clean_text(data.get("offerings"), 900)
+        )
+        if resolved is None:
+            return data
+        data = {**data, "business_type": resolved.key}
+        if resolved.presence_type and not data.get("presence_type"):
+            data["presence_type"] = resolved.presence_type
+        return data
+
     @field_validator("business_type")
     @classmethod
     def _business_type(cls, value: str) -> str:
         text = clean_text(value, 120)
-        if text not in BUSINESS_TYPES:
-            raise ValueError("בחרו סוג עסק מהרשימה.")
+        if text not in business_fields.FIELD_KEYS:
+            raise ValueError("בחרו תחום מהרשימה.")
         return text
 
     @field_validator("offerings")
@@ -963,7 +962,7 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
     title, desc = GOAL_TITLES_HE[draft.goal_key]
     lines = [
         f"- שם העסק: {draft.business_name}",
-        f"- תחום: {draft.business_type}",
+        f"- תחום: {business_fields.field_label(draft.business_type)}",
         f"- מה הם עושים, במילים שלהם: \"{draft.offerings}\"",
         f"- מה מייחד אותם, במילים שלהם: \"{draft.differentiator}\"" if draft.differentiator else "- מה מייחד אותם: לא ענו.",
         f"- עיר או אזור: {draft.city or 'לא נמסר'}",
@@ -1821,8 +1820,8 @@ def apply_draft(
         business.location = draft.city
     elif scan and not business.location:
         business.location = clean_text((scan.get("extracted") or {}).get("location"), 255)
-    if draft.business_type == "חנות אונליין (אי-קומרס)":
-        business.presence_type = "online_only"
+    if draft.presence_type:
+        business.presence_type = draft.presence_type
     business.website_url = draft.links.website
 
     # The business's OWN links. `instagram_handles_json` is a different list — peer

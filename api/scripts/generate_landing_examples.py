@@ -77,7 +77,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "פרג ושמרים",
         "type_label": "מאפייה שכונתית",
-        "business_type": "מאפייה / קפה / מסעדה",
+        "business_type": "food",
         "city": "כפר סבא",
         "offerings": "לחמי מחמצת, חלות, עוגות שמרים, ובחנוכה סופגניות שמטגנים כל בוקר",
         "facts": [
@@ -117,7 +117,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "תפר עדין",
         "type_label": "הלבשה תחתונה ומידות",
-        "business_type": "חנות פיזית / קמעונאות",
+        "business_type": "fashion",
         "city": "חיפה",
         "offerings": "חזיות והלבשה תחתונה בכל המידות, מדידה אישית בחנות",
         "facts": [
@@ -156,7 +156,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "מרווה",
         "type_label": "קוסמטיקה וטיפולי פנים",
-        "business_type": "קליניקה, יופי ובריאות",
+        "business_type": "beauty",
         "city": "מודיעין",
         "offerings": "טיפולי פנים, טיפול לעור יבש ורגיש, ייעוץ לשגרת טיפוח בבית",
         "facts": [
@@ -195,7 +195,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "ספרות",
         "type_label": "הנהלת חשבונות לעצמאים",
-        "business_type": 'שירותים מקצועיים (עו"ד, רו"ח, ייעוץ)',
+        "business_type": "professional",
         "city": "תל אביב",
         "offerings": "הנהלת חשבונות ודוחות שנתיים לעוסקים פטורים ומורשים, ליווי לעצמאים חדשים",
         "facts": [
@@ -234,7 +234,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "סטודיו נשימה",
         "type_label": "יוגה ופילאטיס",
-        "business_type": "סטודיו לאימון / ספורט",
+        "business_type": "fitness",
         "city": "פרדס חנה",
         "offerings": "שיעורי יוגה ופילאטיס בקבוצות קטנות, סדרה למתחילים",
         "facts": [
@@ -273,7 +273,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "כד וכוס",
         "type_label": "קרמיקה בעבודת יד, חנות אונליין",
-        "business_type": "חנות אונליין (אי-קומרס)",
+        "business_type": "home",
         "city": "משלוחים לכל הארץ",
         "offerings": "ספלים, קערות וצלחות מקרמיקה בעבודת יד, סדרות קטנות",
         "facts": [
@@ -312,7 +312,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "קו אופק",
         "type_label": "עיצוב פנים לדירות קטנות",
-        "business_type": "עיצוב / אדריכלות / נדל״ן",
+        "business_type": "home",
         "city": "רמת גן",
         "offerings": "תכנון ועיצוב לדירות קטנות, פתרונות אחסון, ייעוץ חד פעמי",
         "facts": [
@@ -351,7 +351,7 @@ PROFILES: list[dict] = [
         ],
         "business_name": "עננה",
         "type_label": "צימרים בגליל העליון",
-        "business_type": "תיירות ואירוח",
+        "business_type": "hospitality",
         "city": "הגליל העליון",
         "offerings": "3 בקתות עץ לזוגות, עם אח ונוף להרים",
         "facts": [
