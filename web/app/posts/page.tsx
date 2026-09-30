@@ -58,11 +58,11 @@ function go(query: string, mode: "push" | "replace") {
 /** List or month — a quiet two-way switch, not a second call to action. */
 function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
   const item = (active: boolean) =>
-    `inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition-colors ${
+    `inline-flex min-h-10 items-center gap-1.5 rounded px-3 text-sm font-bold transition-colors ${
       active ? "bg-white text-[color:var(--ink)] shadow-sm" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
     }`;
   return (
-    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[var(--primary-soft)] p-1">
+    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded border border-[var(--rule)] bg-[var(--canvas)] p-1">
       <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)} className={item(!calendar)}>
         רשימה
       </button>
@@ -263,7 +263,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(firstPending)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
           </button>
@@ -271,7 +271,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(due.index)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             לפרסם את הפוסט של היום
           </button>

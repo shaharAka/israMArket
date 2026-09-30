@@ -23,9 +23,9 @@ export function SendToHelper({
   copiedNote?: string;
 }) {
   return (
-    <div className="rounded-lg bg-[#f5f3ee] p-3.5">
-      <p className="text-sm font-bold text-[#20211f]">{title}</p>
-      <div dir="rtl" className="mt-2 rounded-md border border-[#e3e0d6] bg-white p-3 text-[13px] leading-6 text-[#3c3e3a]">
+    <div className="rounded bg-[var(--primary-soft)] p-3.5">
+      <p className="text-sm font-bold text-[var(--ink)]">{title}</p>
+      <div dir="rtl" className="mt-2 border-t border-[var(--rule-dark)] pt-3 text-[13px] leading-6 text-[var(--ink-soft)]">
         {message.split("\n").map((line, index) => (
           // Blank-for-the-owner lines ("הג׳ימייל: ") keep their height.
           <p key={index} className="min-h-6">
@@ -38,7 +38,7 @@ export function SendToHelper({
           href={whatsappShareUrl(message)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[#20211f] underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[var(--ink)] underline-offset-4 hover:underline"
         >
           <IconWhatsApp className="h-4 w-4" />
           לשלוח בוואטסאפ
@@ -48,7 +48,7 @@ export function SendToHelper({
           onClick={() => {
             copyText(message, copiedNote).catch(() => undefined);
           }}
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[#20211f] underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[var(--ink)] underline-offset-4 hover:underline"
         >
           <IconCopy className="h-4 w-4" />
           להעתיק את ההודעה

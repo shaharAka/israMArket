@@ -1,0 +1,17 @@
+.figure { border-block: 1px solid var(--rule); padding-block: 20px; }
+.figure figcaption { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+.figure figcaption strong { font-size: 16px; font-weight: 800; color: var(--ink); }
+.figure figcaption > span { font-size: 12px; color: var(--ink-soft); }
+.figure ul { display: grid; gap: 18px; }
+.figure li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(60px, 1.1fr) 62px; align-items: center; gap: 18px; }
+.label { font-size: 13px; line-height: 1.7; color: var(--ink); }
+.track { display: block; height: 8px; background: var(--primary-soft); }
+.track[data-measured="false"] { height: 1px; background: var(--rule); }
+.track > span { display: block; height: 100%; background: var(--primary); }
+.value { text-align: end; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+.caption { font-size: 11px; line-height: 1.8; color: var(--ink-soft); margin-top: 20px; }
+@media (max-width: 600px) {
+  .figure li { grid-template-columns: minmax(0, 1fr) 62px; gap: 6px 12px; }
+  .label { grid-column: 1 / -1; }
+  .track { grid-column: 1; }
+}

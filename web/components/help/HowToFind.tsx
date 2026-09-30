@@ -35,9 +35,8 @@ export function HowToFind({
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
-        className={`inline-flex min-h-11 min-w-11 items-center gap-1.5 text-right text-xs font-bold text-[#62635f] underline decoration-[#c7c4b8] underline-offset-4 transition-colors hover:text-[#20211f] hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#20211f] ${className}`}
+        className={`inline-flex min-h-11 min-w-11 items-center gap-1.5 text-right text-xs font-bold text-[var(--ink-soft)] underline decoration-[var(--rule-dark)] underline-offset-4 transition-colors hover:text-[var(--ink)] hover:decoration-current focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--ink)] ${className}`}
       >
-        <IconQuestion className="h-4 w-4 shrink-0" />
         <span>{label}</span>
       </button>
       <GuideSheet topic={topic} open={open} onClose={() => setOpen(false)} />
@@ -77,22 +76,22 @@ function GuideBody({ guide }: { guide: Guide }) {
   const toggle = hasDeviceSteps(guide);
 
   return (
-    <div className="space-y-5 text-sm leading-6 text-[#3c3e3a]">
+    <div className="space-y-5 text-sm leading-6 text-[var(--ink-soft)]">
       <div>
-        <p className="text-[15px] font-bold leading-7 text-[#20211f]">{rich(guide.short)}</p>
-        <p className="mt-1 text-xs font-bold text-[#747570]">{minutesLabel(guide.minutes)}</p>
+        <p className="text-[15px] font-bold leading-7 text-[var(--ink)]">{rich(guide.short)}</p>
+        <p className="mt-1 text-xs font-bold text-[var(--ink-muted)]">{minutesLabel(guide.minutes)}</p>
       </div>
 
       {toggle ? (
-        <div role="group" aria-label="ההסבר עבור" className="inline-flex rounded-full bg-[#eeede8] p-1">
+        <div role="group" aria-label="ההסבר עבור" className="inline-flex rounded border border-[var(--rule)] bg-[var(--canvas)] p-1">
           {(["phone", "computer"] as const).map((value) => (
             <button
               key={value}
               type="button"
               aria-pressed={device === value}
               onClick={() => setPicked(value)}
-              className={`min-h-10 min-w-20 rounded-full px-4 text-sm font-bold transition-colors ${
-                device === value ? "bg-white text-[#20211f] shadow-sm" : "text-[#62635f] hover:text-[#20211f]"
+              className={`min-h-11 min-w-20 rounded px-4 text-sm font-bold transition-colors ${
+                device === value ? "bg-[var(--primary-soft)] text-[var(--primary)]" : "text-[var(--ink-soft)] hover:text-[var(--ink)]"
               }`}
             >
               {value === "phone" ? "טלפון" : "מחשב"}
@@ -107,17 +106,17 @@ function GuideBody({ guide }: { guide: Guide }) {
 
       <SendToHelper title={guide.stuck.title} message={guide.stuck.message} copiedNote={guide.stuck.copiedNote} />
 
-      <div className="space-y-2 border-t border-[#eeede8] pt-4">
-        <p className="text-xs leading-5 text-[#62635f]">
-          <span className="font-bold text-[#20211f]">למה אנחנו צריכים את זה: </span>
+      <div className="space-y-2 border-t border-[var(--rule)] pt-4">
+        <p className="text-xs leading-5 text-[var(--ink-soft)]">
+          <span className="font-bold text-[var(--ink)]">למה אנחנו צריכים את זה: </span>
           {guide.why}
         </p>
-        <p className="text-xs leading-5 text-[#62635f]">
+        <p className="text-xs leading-5 text-[var(--ink-soft)]">
           <a
             href={guide.source.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-11 items-center font-bold text-[#20211f] underline underline-offset-4"
+            className="inline-flex min-h-11 items-center font-bold text-[var(--ink)] underline underline-offset-4"
           >
             {guide.source.label}
           </a>
@@ -130,8 +129,8 @@ function GuideBody({ guide }: { guide: Guide }) {
 function Block({ block, device, first }: { block: GuideBlock; device: Device; first: boolean }) {
   const steps = block[device] ?? block.steps;
   return (
-    <section className={first ? "" : "border-t border-[#eeede8] pt-4"}>
-      <h3 className="text-sm font-black text-[#20211f]">{block.title}</h3>
+    <section className={first ? "" : "border-t border-[var(--rule)] pt-4"}>
+      <h3 className="text-sm font-black text-[var(--ink)]">{block.title}</h3>
       {block.text ? <p className="mt-1">{rich(block.text)}</p> : null}
       {steps?.length ? (
         <ol className="mt-2 space-y-2">
@@ -139,7 +138,7 @@ function Block({ block, device, first }: { block: GuideBlock; device: Device; fi
             <li key={step} className="flex gap-2.5">
               <span
                 aria-hidden
-                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#20211f] text-[11px] font-bold text-white"
+                className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-xs font-bold tabular-nums text-[var(--primary)]"
               >
                 {index + 1}
               </span>
@@ -152,23 +151,13 @@ function Block({ block, device, first }: { block: GuideBlock; device: Device; fi
         <dl className="mt-2 space-y-2">
           {block.cases.map((item) => (
             <div key={item.label}>
-              <dt className="font-bold text-[#20211f]">{item.label}</dt>
+              <dt className="font-bold text-[var(--ink)]">{item.label}</dt>
               <dd>{rich(item.text)}</dd>
             </div>
           ))}
         </dl>
       ) : null}
-      {block.note ? <p className="mt-2 text-xs leading-5 text-[#747570]">{rich(block.note)}</p> : null}
+      {block.note ? <p className="mt-2 text-xs leading-5 text-[var(--ink-muted)]">{rich(block.note)}</p> : null}
     </section>
-  );
-}
-
-function IconQuestion({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M9.6 9.3a2.5 2.5 0 014.8.9c0 1.7-2.4 2.2-2.4 3.8" strokeLinecap="round" />
-      <path d="M12 17.2h.01" strokeLinecap="round" strokeWidth="2.4" />
-    </svg>
   );
 }

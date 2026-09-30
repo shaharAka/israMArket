@@ -17,7 +17,7 @@ import { STATUS_LABEL, STATUS_TONE, postDateLabel, postStatus } from "@/componen
  */
 function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | null }) {
   const [broken, setBroken] = useState(false);
-  const base = "h-20 w-16 shrink-0 overflow-hidden rounded-lg";
+  const base = "h-20 w-16 shrink-0 overflow-hidden rounded";
   if (!needsPhoto(post.overlay_theme)) {
     // A typographic card has no photograph by design: its brand colour is its picture.
     const tokens = cardTokens(brand);

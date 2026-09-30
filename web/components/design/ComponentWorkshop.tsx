@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { HypothesisNote, PlanBrief } from "./PlanBrief";
 import { BusinessOverview } from "./BusinessOverview";
+import { MetricComparison } from "./MetricComparison";
 import { MotionDisclosure, MotionIllustration, MotionProgress } from "@/components/motion";
 import { ChoiceCard, EmptyState, FileField, InlineNotice, SegmentedControl, SkeletonBlock, StateBadge, TextField, ToggleField, TransitionPanel, UIAction, UIDialog, UITabs } from "./Controls";
 import styles from "./workshop.module.css";
@@ -47,6 +48,8 @@ export function ComponentWorkshop() {
             measure={{ name: "הזמנות מראש", note: "משווים לנקודת ההתחלה שנאספה." }}
             figure={{ title: "הזמנות שנרשמו", unit: "הזמנות לשבוע", caption: "תרחיש עיצוב · נתונים לדוגמה בלבד", points: [{ label: "שבוע 1", value: 12, display: "12" }, { label: "שבוע 2", value: 14, display: "14" }, { label: "שבוע 3", value: 11, display: "11" }, { label: "שבוע 4", value: 18, display: "18" }] }}
           />
+          <MetricComparison title="תוצאות לפי פוסט · דוגמה" unit="לחיצות" source="תרחיש עיצוב · נתונים לדוגמה בלבד" period="שבוע לדוגמה"
+            points={[{ key: "one", label: "הזמנות לסוף השבוע", value: 18 }, { key: "two", label: "מה יוצא היום מהתנור", value: 0 }, { key: "three", label: "מאחורי הקלעים" }]} />
         </div>
       </div>}
       {category === "actions" && <div className={styles.twoColumns}>
