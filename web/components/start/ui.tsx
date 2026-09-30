@@ -65,7 +65,9 @@ export function Reflection({ text }: { text: string | null }) {
       <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#191b18]">
         <BrandMark className="h-4 w-4 text-white" />
       </span>
-      <p className="rounded-2xl rounded-tr-sm bg-[#efece3] px-3.5 py-2 text-sm leading-6 text-[#2b2d28]">{text}</p>
+      <p className="rounded-2xl rounded-tr-sm bg-[#efece3] px-3.5 py-2 text-sm leading-6 text-[#2b2d28]">
+        <BidiText text={text} />
+      </p>
     </div>
   );
 }
@@ -344,6 +346,31 @@ export function withLamed(name: string): string {
  */
 export function rangeSafe(text: string): string {
   return text.replace(/(\d)\s?[–—]\s?(\d)/g, "$1-$2");
+}
+
+/**
+ * A sentence with numbers in it, safe in a Hebrew line: every number run ("+9", "444-1,666",
+ * "+23%-63%", "1.2-4.5") is its own left-to-right island that never breaks across lines.
+ * Without it, "(+23%-63%)" reads "(63%-23%+)" and a range splits at its hyphen.
+ */
+const NUMBER_RUN = /(?<![\d.,])\+?\d[\d,.]*%?(?:-\+?\d[\d,.]*%?)*/g;
+
+export function BidiText({ text }: { text: string }) {
+  const clean = rangeSafe(text ?? "");
+  const parts: React.ReactNode[] = [];
+  let last = 0;
+  for (const match of clean.matchAll(NUMBER_RUN)) {
+    const at = match.index ?? 0;
+    if (at > last) parts.push(clean.slice(last, at));
+    parts.push(
+      <bdi key={at} dir="ltr" className="whitespace-nowrap">
+        {match[0]}
+      </bdi>,
+    );
+    last = at + match[0].length;
+  }
+  if (last < clean.length) parts.push(clean.slice(last));
+  return <>{parts}</>;
 }
 
 /** Dark text on a light colour, white on a dark one. */

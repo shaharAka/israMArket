@@ -5,7 +5,6 @@ import { HowToFind } from "@/components/help/HowToFind";
 import type { PlanInsight } from "@/lib/api";
 import { IconCalendar, IconCheck, IconFlag } from "@/lib/icons";
 import {
-  FORMAT_HE,
   INTEGRATION_GUIDE,
   STATUS_LABEL,
   channelColors,
@@ -13,9 +12,12 @@ import {
   formatIls,
   formatRange,
   type IntegrationStatus,
+  type PlanNumbers,
   type QuarterPlan,
   type StoredQuarterPlan,
 } from "@/lib/quarterPlan";
+import { MathLines, SourcesAndAssumptions } from "@/components/start/StepNumbers";
+import { BidiText, rangeSafe } from "@/components/start/ui";
 import styles from "./plan.module.css";
 
 /**
@@ -28,16 +30,18 @@ import styles from "./plan.module.css";
  * ranges, a missing baseline says so, and integrations say honestly what they need.
  */
 
-export type SectionKey = "strategy" | "measure" | "channels" | "budget" | "calendar" | "content" | "bets";
+export type SectionKey = "strategy" | "measure" | "channels" | "budget" | "calendar" | "content" | "bets" | "inside";
 
 const SECTIONS: { key: SectionKey; title: string; short: string }[] = [
   { key: "strategy", title: "האסטרטגיה בשורה אחת", short: "אסטרטגיה" },
-  { key: "measure", title: "המטרה ואיך נמדוד", short: "מדידה" },
+  // Revision 6: today, the lever, the target with its math, and how each is measured.
+  { key: "measure", title: "המספרים", short: "מספרים" },
   { key: "channels", title: "הערוצים", short: "ערוצים" },
   { key: "budget", title: "התקציב", short: "תקציב" },
   { key: "calendar", title: "לוח השנה", short: "לוח שנה" },
   { key: "content", title: "התוכן", short: "תוכן" },
   { key: "bets", title: "ההשערות שנבדוק", short: "השערות" },
+  { key: "inside", title: "מה מחכה לכם בפנים", short: "בפנים" },
 ];
 
 type AnyPlan = QuarterPlan | StoredQuarterPlan;
@@ -108,7 +112,7 @@ export function QuarterPlanView({
 
       <Glance plan={plan} months={months} accent={accent} />
 
-      <Section id="measure" index={2} busy={isBusy("measure")} mode={mode} summary={plan.kpi.name_he}>
+      <Section id="measure" index={2} busy={isBusy("measure")} mode={mode} summary={measureSummary(plan)}>
         <MeasureBlock plan={plan} accent={accent} targetSlot={slots.target} />
       </Section>
 
@@ -137,6 +141,12 @@ export function QuarterPlanView({
       <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={`${plan.assumptions.length} השערות שנמדוד`}>
         <BetsBlock plan={plan} />
       </Section>
+
+      {plan.inside?.length ? (
+        <Section id="inside" index={8} busy={false} mode={mode} summary={plan.inside.map((i) => i.title_he).slice(0, 3).join(" · ")}>
+          <InsideBlock plan={plan} />
+        </Section>
+      ) : null}
 
       {slots.end}
     </div>
@@ -271,6 +281,18 @@ function Why({ why, insight }: { why: string; insight?: PlanInsight }) {
 
 /* --------------------------------- Glance --------------------------------- */
 
+function measureSummary(plan: AnyPlan): string {
+  const numbers = plan.numbers;
+  if (!numbers) return plan.kpi.name_he;
+  const target = numbers.target?.kind !== "qualitative" ? numbers.target?.text_he : "";
+  return target ? `${numbers.lever.name_he} · ${isolate(target)}` : numbers.lever.name_he;
+}
+
+/** For plain-string slots (a summary line, a tile note): number runs wrapped in LTR isolates. */
+function isolate(text: string): string {
+  return rangeSafe(text).replace(/(?<![\d.,])\+?\d[\d,.]*%?(?:-\+?\d[\d,.]*%?)*/g, (m) => `\u2066${m}\u2069`);
+}
+
 function budgetSummary(plan: AnyPlan): string {
   if (plan.budget.organic_only || !plan.budget.monthly_ils) return "בלי תקציב פרסום";
   return `${formatIls(plan.budget.monthly_ils)} בחודש`;
@@ -292,8 +314,12 @@ function contentSummary(plan: AnyPlan): string {
 
 function Glance({ plan, months, accent }: { plan: AnyPlan; months: string[]; accent: string }) {
   const fresh = plan.channels.filter((c) => c.kind === "new");
+  const numbers = plan.numbers;
+  const target = numbers?.target && numbers.target.kind !== "qualitative" ? numbers.target.text_he : "";
   const tiles = [
-    { label: "המדד העיקרי", value: plan.kpi.name_he, note: plan.kpi.target ? `היעד: ${plan.kpi.target}` : "היעד: לפי מה שתבחרו" },
+    numbers
+      ? { label: "מה מגדילים", value: numbers.lever.name_he, note: target ? `היעד: ${isolate(target)}` : "היעד: אחרי חודש של מדידה" }
+      : { label: "המדד העיקרי", value: plan.kpi.name_he, note: plan.kpi.target ? `היעד: ${plan.kpi.target}` : "היעד: לפי מה שתבחרו" },
     {
       label: "תקציב פרסום",
       value: plan.budget.organic_only || !plan.budget.monthly_ils ? "בלי תקציב" : `${formatIls(plan.budget.monthly_ils)}`,
@@ -384,16 +410,90 @@ function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolea
   );
 }
 
+const PAYBACK_STYLE: Record<string, string> = {
+  no: "border-[#e8d3b0] bg-[#fbf3e4] text-[#4a3b22]",
+  partly: "border-[#e2e0d8] bg-[#faf9f6] text-[#2b2d28]",
+  pays: "border-[#cfe0c9] bg-[#f1f7ee] text-[#23401f]",
+};
+
+/** "המספרים": where the business is today → what we grow → the target and its math → unit economics. */
+function NumbersBlock({ numbers, accent, targetSlot }: { numbers: PlanNumbers; accent: string; targetSlot?: React.ReactNode }) {
+  const target = numbers.target;
+  const lever = numbers.lever;
+  return (
+    <div className="space-y-3">
+      <ol className="overflow-hidden rounded-2xl border border-[#e2e0d8] bg-white">
+        <li className="px-4 py-3">
+          <p className="text-[11px] font-bold text-[#5e6159]">היום</p>
+          <p className="mt-0.5 text-sm leading-6 text-[#191b18]">
+            <BidiText text={numbers.baseline_he} />
+          </p>
+        </li>
+        <li className="border-t border-[#ecebe5] px-4 py-3">
+          <p className="text-[11px] font-bold text-[#5e6159]">מה מגדילים</p>
+          <p className="mt-0.5 text-base font-black leading-6 text-[#191b18]">{lever.name_he}</p>
+          <p className="text-xs leading-5 text-[#5e6159]">
+            {lever.recommended_key === lever.key ? (
+              <BidiText text={lever.recommended_he} />
+            ) : (
+              <>
+                <b className="text-[#2b2d28]">המלצנו על {lever.recommended_name_he}: </b>
+                <BidiText text={lever.recommended_he} />
+              </>
+            )}
+          </p>
+        </li>
+        <li className="border-t border-[#ecebe5] px-4 py-3" style={{ background: `color-mix(in srgb, ${accent} 7%, #ffffff)` }}>
+          <p className="text-[11px] font-bold text-[#5e6159]">היעד ל-3 חודשים</p>
+          {target?.text_he ? (
+            <p className={`mt-0.5 font-black text-[#191b18] ${target.kind === "qualitative" ? "text-base leading-6" : "text-xl leading-7"}`}>
+              <BidiText text={target.text_he} />
+            </p>
+          ) : (
+            <p className="mt-0.5 text-sm text-[#5e6159]">בלי יעד במספרים בינתיים.</p>
+          )}
+          {target?.level_he ? (
+            <p className="text-sm text-[#2b2d28]">
+              כלומר <BidiText text={target.level_he} />
+            </p>
+          ) : null}
+          {target?.edited_by_owner && target.suggested_he ? (
+            <p className="text-xs text-[#6b6e65]">
+              החישוב שלנו: <BidiText text={target.suggested_he} />
+            </p>
+          ) : null}
+          <MathLines lines={numbers.math_he} />
+          <p className="mt-2 text-xs font-bold text-[#6b6e65]">{numbers.caveat_he}</p>
+          {targetSlot ? <div className="mt-2">{targetSlot}</div> : null}
+        </li>
+      </ol>
+      {numbers.unit_economics_he ? (
+        <p className={`rounded-xl border px-3.5 py-2.5 text-[13px] leading-5 ${PAYBACK_STYLE[numbers.payback ?? "partly"] ?? PAYBACK_STYLE.partly}`}>
+          <b className="block text-[11px]">כמה עולה להביא לקוח, וכמה הוא שווה</b>
+          <BidiText text={numbers.unit_economics_he} />
+        </p>
+      ) : null}
+      <p className="flex items-start gap-1.5 text-xs leading-5 text-[#2b2d28]">
+        <IconCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+        {numbers.first_checkpoint_he}
+      </p>
+      <SourcesAndAssumptions result={numbers} />
+    </div>
+  );
+}
+
 function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: string; targetSlot?: React.ReactNode }) {
   const integrations = plan.integrations;
   const ready = integrations.filter((i) => i.status === "have").length;
   const todo = integrations.length - ready;
   const nameOf = (key: string) => integrations.find((i) => i.key === key)?.name_he ?? key;
+  const numbers = plan.numbers;
   return (
     <div className="space-y-5">
+      {numbers ? <NumbersBlock numbers={numbers} accent={accent} targetSlot={targetSlot} /> : null}
       {/* The KPI leads: the one number the plan answers to. */}
-      <div className="rounded-2xl px-4 py-3.5" style={{ background: `color-mix(in srgb, ${accent} 7%, #ffffff)` }}>
-        <p className="text-[11px] font-bold text-[#5e6159]">המדד העיקרי</p>
+      <div className="rounded-2xl px-4 py-3.5" style={{ background: numbers ? "#ffffff" : `color-mix(in srgb, ${accent} 7%, #ffffff)`, boxShadow: numbers ? "inset 0 0 0 1px #e2e0d8" : undefined }}>
+        <p className="text-[11px] font-bold text-[#5e6159]">{numbers ? "איך סופרים את זה" : "המדד העיקרי"}</p>
         <p className="mt-0.5 text-xl font-black leading-7 text-[#191b18]">{plan.kpi.name_he}</p>
         <p className="mt-1 text-sm leading-6 text-[#2b2d28]">{plan.kpi.how_he}</p>
         {plan.kpi.needs ? (
@@ -413,15 +513,17 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
             )}
           </p>
         ) : null}
-        {targetSlot ? (
+        {numbers ? null : targetSlot ? (
           <div className="mt-2.5">{targetSlot}</div>
         ) : plan.kpi.target ? (
           <p className="mt-2 text-sm font-bold text-[#191b18]">היעד שלכם: {plan.kpi.target}</p>
         ) : null}
-        <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[#5e6159]">
-          <IconFlag className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-          {plan.kpi.baseline_he}
-        </p>
+        {numbers ? null : (
+          <p className="mt-2 flex items-start gap-1.5 text-xs leading-5 text-[#5e6159]">
+            <IconFlag className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            {plan.kpi.baseline_he}
+          </p>
+        )}
       </div>
 
       <div>
@@ -764,23 +866,26 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
             <p className="mt-2 text-xs leading-5 text-[#5e6159]">
               {month.cadence.map((c) => `${channelName(plan as QuarterPlan, c.channel_key)} ${c.per_week}`).join(" · ")}
             </p>
-            <ul className="mt-2 space-y-1.5 border-t border-[#ecebe5] pt-2">
-              {month.example_titles.map((example) => (
-                <li key={example.title} className="flex items-start gap-2 text-sm leading-5 text-[#191b18]">
-                  <span className="mt-px shrink-0 rounded border border-[#dedcd4] px-1 text-[10px] font-bold leading-4 text-[#5e6159]">
-                    {FORMAT_HE[example.format] ?? example.format}
-                  </span>
-                  <span className="min-w-0">
-                    {example.title}
-                    <span className="text-xs text-[#8a8c84]"> · {channelName(plan as QuarterPlan, example.channel_key)}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {month.mix?.length ? (
+              <ul className="mt-2 space-y-1.5 border-t border-[#ecebe5] pt-2" aria-label="תמהיל הפוסטים">
+                {month.mix.map((item) => (
+                  <li key={item.type_key} className="text-sm leading-5 text-[#191b18]">
+                    <span className="flex items-baseline justify-between gap-2">
+                      <b>{item.name_he}</b>
+                      <span className="shrink-0 text-xs font-bold tabular-nums text-[#5e6159]">{rangeSafe(item.per_month)} בחודש</span>
+                    </span>
+                    {item.purpose_he ? <span className="block text-xs text-[#5e6159]">{item.purpose_he}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
           </li>
         ))}
       </ol>
-      <p className="text-sm leading-6 text-[#2b2d28]">את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת.</p>
+      <p className="text-sm leading-6 text-[#2b2d28]">
+        {plan.content.find((m) => m.products_note_he)?.products_note_he ?? "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות."}{" "}
+        את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת.
+      </p>
       {cadenceSlot}
     </div>
   );
@@ -798,6 +903,25 @@ function BetsBlock({ plan }: { plan: AnyPlan }) {
             <b className="text-[#2b2d28]">אם היא לא תתאמת: </b>
             {bet.if_wrong_he}
           </p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/* ---------------------------------- 8 ---------------------------------- */
+
+/** "מה מחכה לכם בפנים": what the app gives once inside. Fixed on the server, never invented. */
+function InsideBlock({ plan }: { plan: AnyPlan }) {
+  return (
+    <ul className="grid gap-x-4 gap-y-2.5 sm:grid-cols-2">
+      {(plan.inside ?? []).map((item) => (
+        <li key={item.key} className="flex gap-2.5">
+          <IconCheck className="mt-1 h-4 w-4 shrink-0 text-[#191b18]" />
+          <span className="min-w-0">
+            <b className="block text-sm leading-6 text-[#191b18]">{item.title_he}</b>
+            <span className="block text-xs leading-5 text-[#5e6159]">{item.what_he}</span>
+          </span>
         </li>
       ))}
     </ul>

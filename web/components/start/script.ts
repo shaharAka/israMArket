@@ -16,6 +16,8 @@ import {
   type FlowState,
   type Network,
 } from "@/lib/draft";
+import { baselineSummary, leverReflection, targetText } from "@/lib/goals";
+import { budgetIls } from "@/lib/quarterPlan";
 import { withLamed } from "./ui";
 
 export type StepId =
@@ -28,8 +30,10 @@ export type StepId =
   | "tried"
   | "competitors"
   | "grow"
-  | "success"
+  | "baseline"
+  | "lever"
   | "budget"
+  | "target"
   | "found"
   | "direction"
   | "quarter"
@@ -39,7 +43,8 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
   { key: "business", label: "העסק", steps: ["name", "what", "different"] },
   { key: "customers", label: "הלקוחות", steps: ["audiences", "seasons"] },
   { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors"] },
-  { key: "goal", label: "המטרה והתקציב", short: "המטרה", steps: ["grow", "success", "budget"] },
+  // Revision 6: where the business is today, what to grow, the budget, and the calculated target.
+  { key: "goal", label: "המטרה והתקציב", short: "המטרה", steps: ["grow", "baseline", "lever", "budget", "target"] },
   // "מה למדנו" leads straight into the 3-month plan: that plan is the artifact.
   { key: "plan", label: "מה למדנו", steps: ["found", "quarter", "save"] },
 ];
@@ -49,12 +54,12 @@ export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps)
 /**
  * A saved flow from an earlier version: "plan" was the single reveal (now "found"), the
  * one-page strategy and the sample posts became the 3-month plan, and the goal question
- * became "מה ייחשב הצלחה".
+ * became "מה ייחשב הצלחה", which revision 6 replaced with the baseline, the lever and the target.
  */
 export function migrateStep(value: string): string {
   if (value === "plan") return "found";
   if (value === "strategy" || value === "preview" || value === "direction") return "quarter";
-  if (value === "goal") return "success";
+  if (value === "goal" || value === "success") return "baseline";
   return value;
 }
 
@@ -185,26 +190,34 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
         default:
           return null;
       }
-    case "success": {
-      const option = flow.successOptions?.find((o) => o.key === d.success?.kpi);
-      if (!option) return null;
-      const target = d.success?.target?.trim();
-      return target
-        ? `זה המדד שלנו: ${option.name_he}, והיעד ${target}. כל חלק בתוכנית ישרת אותו.`
-        : `זה המדד שלנו: ${option.name_he}. כל חלק בתוכנית ישרת אותו.`;
+    case "baseline": {
+      const model = modelOf(flow);
+      const answered = Object.values(d.baseline ?? {}).some((v) => v !== undefined && v !== "unknown");
+      if (!answered) return "בסדר גמור. נמדוד מהשבוע הראשון, וזו תהיה נקודת הפתיחה.";
+      return `הבנו: ${baselineSummary(d.baseline, model, model === "services" ? undefined : d.grow_where)}`;
+    }
+    case "lever":
+      return d.lever ? leverReflection(d.lever.primary, d.baseline, modelOf(flow)) : null;
+    case "target": {
+      const text = targetText(d.target);
+      if (!text) return null;
+      if (d.target?.kind === "qualitative") return "בלי לנחש מספר: מודדים חודש, ואז קובעים יעד.";
+      return `היעד: ${text}. נבדוק מולו כל חודש.`;
     }
     case "budget": {
+      const monthly = budgetIls(d.budget);
+      const sum = monthly > 0 ? `הבנו: כ-${monthly.toLocaleString("en-US")} ₪ בחודש, כ-${(monthly * 3).toLocaleString("en-US")} ₪ ב-3 החודשים. ` : "";
       switch (d.budget?.range) {
         case "none":
           return "בלי תקציב פרסום זה בסדר. נבנה תוכנית שעובדת בזמן שלכם, ונראה מה סכום קטן היה מוסיף.";
         case "lt1k":
-          return "עם סכום קטן נשקיע רק במה שכבר הצליח, ובמי שכבר מכיר אתכם.";
+          return `${sum}עם סכום קטן נשקיע רק במה שכבר הצליח, ובמי שכבר מכיר אתכם.`;
         case "1k-3k":
-          return "זה מספיק כדי לבדוק ערוץ ממומן אחד ברצינות. נתחיל בקטן ונגדיל את מה שמביא.";
+          return `${sum}זה מספיק כדי לבדוק ערוץ ממומן אחד ברצינות.`;
         case "3k-7k":
-          return "עם הסכום הזה אפשר לפתוח ערוץ חדש ולמדוד אותו כמו שצריך.";
+          return `${sum}אפשר לפתוח ערוץ חדש ולמדוד אותו כמו שצריך.`;
         case "gt7k":
-          return "עם תקציב כזה חשוב למדוד כל שקל. נחבר את הכלים כבר בחודש הראשון.";
+          return `${sum}עם תקציב כזה חשוב למדוד כל שקל, כבר מהחודש הראשון.`;
         case "unknown":
           return "בסדר גמור. נבנה קודם תוכנית בלי פרסום, ונראה מה תקציב היה מוסיף.";
         default:

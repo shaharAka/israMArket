@@ -13,8 +13,10 @@ import {
   type FlowState,
   type LinkKey,
 } from "@/lib/draft";
+import { UNKNOWN, baselineSummary, leverName, targetText } from "@/lib/goals";
 import { GROW_OPTIONS, budgetLabel, formatIls } from "@/lib/quarterPlan";
-import { NetworkIcon, inkOn } from "./ui";
+import { modelOf } from "./script";
+import { BidiText, NetworkIcon, inkOn } from "./ui";
 import styles from "./start.module.css";
 
 /**
@@ -63,8 +65,10 @@ export function cardSlots(flow: FlowState): Slot[] {
       filled: Boolean(flow.triedNone || d.tried?.channels.length || d.tried?.what_worked?.trim()),
     },
     { key: "competitors", filled: Boolean(d.competitors?.some((c) => c.name.trim())) },
-    { key: "success", filled: Boolean(d.success?.kpi) },
+    { key: "baseline", filled: Object.values(d.baseline ?? {}).some((v) => v !== undefined && v !== UNKNOWN) },
+    { key: "lever", filled: Boolean(d.lever?.primary) },
     { key: "budget", filled: Boolean(d.budget?.range) },
+    { key: "target", filled: Boolean(targetText(d.target)) },
     { key: "direction", filled: Boolean(flow.quarterPlan && chosenDirectionOf(flow)) },
     { key: "plan", filled: Boolean(currentPlan(flow)) },
   ];
@@ -142,7 +146,13 @@ export function BusinessCard({
   const kit = d.business_type ? kitFor(d.business_type) : null;
   const direction = flow.quarterPlan ? chosenDirectionOf(flow) : null;
   const plan = currentPlan(flow);
-  const kpi = flow.successOptions?.find((o) => o.key === d.success?.kpi)?.name_he ?? (d.success?.kpi ? plan?.kpi.name_he : undefined);
+  const model = modelOf(flow);
+  const today = Object.values(d.baseline ?? {}).some((v) => v !== undefined && v !== UNKNOWN)
+    ? baselineSummary(d.baseline, model, model === "services" ? undefined : d.grow_where)
+    : "";
+  const lever = d.lever ? leverName(d.lever.primary, model) : "";
+  const secondLever = d.lever?.secondary ? leverName(d.lever.secondary, model) : "";
+  const target = targetText(d.target);
   const grow = d.business_model !== "services" ? GROW_OPTIONS.find((o) => o.key === d.grow_where)?.label : undefined;
   const budget = budgetLabel(d.budget);
   const { filled, total } = filledCount(flow);
@@ -315,7 +325,7 @@ export function BusinessCard({
           </Row>
         </Section>
 
-        <Section title="המטרה והתקציב">
+        <Section title="המספרים">
           {grow ? (
             <Row label="איפה לגדול">
               <Filled on>
@@ -323,15 +333,34 @@ export function BusinessCard({
               </Filled>
             </Row>
           ) : null}
-          <Row label="מה ייחשב הצלחה">
-            <Filled on={Boolean(kpi)}>
-              <p className="text-sm font-bold text-[#191b18]">{kpi}</p>
-              {d.success?.target ? <p className="text-xs leading-5 text-[#5e6159]">היעד: {d.success.target}</p> : null}
+          <Row label="היום">
+            <Filled on={Boolean(today)}>
+              <p className="text-sm leading-6 text-[#191b18]">
+                <BidiText text={today} />
+              </p>
+            </Filled>
+          </Row>
+          <Row label="מה מגדילים">
+            <Filled on={Boolean(lever)}>
+              <p className="text-sm font-bold text-[#191b18]">{lever}</p>
+              {secondLever ? <p className="text-xs leading-5 text-[#5e6159]">ועוד: {secondLever}</p> : null}
             </Filled>
           </Row>
           <Row label="תקציב שיווק לחודש">
             <Filled on={Boolean(budget)}>
               <p className="text-sm text-[#191b18]">{budget}</p>
+            </Filled>
+          </Row>
+          <Row label="היעד ל-3 חודשים">
+            <Filled on={Boolean(target)} empty={<Empty>נחשב יחד אחרי התקציב</Empty>}>
+              <p className="text-sm font-bold leading-6 text-[#191b18]">
+                <BidiText text={target} />
+              </p>
+              {d.target && d.target.kind !== "qualitative" ? (
+                <p className="text-xs leading-5 text-[#5e6159]">
+                  {d.target.edited_by_owner ? "היעד שלכם." : "לפי החישוב שלנו."} טווח לתכנון, לא הבטחה.
+                </p>
+              ) : null}
             </Filled>
           </Row>
         </Section>

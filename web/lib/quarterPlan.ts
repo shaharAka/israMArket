@@ -8,6 +8,7 @@
  */
 import type { HelpTopic } from "@/components/help/guides";
 import type { BusinessModel, PrimaryGoal } from "./api";
+import type { LeverKey, Source, TargetKind } from "./goals";
 
 /* --------------------------------- Types --------------------------------- */
 
@@ -81,14 +82,51 @@ export type QuarterPlan = {
     month_label: string;
     pillars: { key: string; title: string; description_he: string }[];
     cadence: { channel_key: string; per_week: string }[];
-    example_titles: { title: string; channel_key: string; format: PostFormat | string }[];
+    /** How the month's posts split by type (never specific products). */
+    mix?: { type_key: ContentType | string; name_he: string; per_month: string; purpose_he: string }[];
+    products_note_he?: string;
+    /** Plans stored before the content mix: kept, never rendered. */
+    example_titles?: { title: string; channel_key: string; format: PostFormat | string }[];
   }[];
+  /** Revision 6, "המספרים": today, the lever, the target and its math. Ours, not the model's. */
+  numbers?: PlanNumbers;
+  /** "מה מחכה לכם בפנים": what the app gives. Fixed on the server. */
+  inside?: { key: string; title_he: string; what_he: string }[];
   assumptions: { bet_he: string; if_wrong_he: string }[];
   cadence?: { key: Cadence | string; label_he?: string; posts_per_month?: number; source?: string };
   start?: { year: number; month: number };
   inputs?: Record<string, unknown>;
   changed_he?: string;
   cached: boolean;
+};
+
+export type ContentType = "product" | "value" | "behind_scenes" | "social_proof" | "offer" | "community" | "seasonal";
+
+export type PlanNumbers = {
+  baseline_he: string;
+  baseline_known: boolean;
+  lever: { key: LeverKey; name_he: string; recommended_key: LeverKey; recommended_he: string; recommended_name_he: string };
+  target?: {
+    kind: TargetKind;
+    value_min?: number;
+    value_max?: number;
+    unit_he?: string;
+    text_he: string;
+    level_he?: string;
+    suggested_he?: string;
+    accepted: boolean;
+    edited_by_owner: boolean;
+    from: "owner" | "suggestion";
+  };
+  math_he: string[];
+  budget_he?: string;
+  unit_economics_he?: string;
+  payback?: "pays" | "partly" | "no" | null;
+  assumptions_he: string[];
+  sources: Source[];
+  organic_only: boolean;
+  first_checkpoint_he: string;
+  caveat_he: string;
 };
 
 /** What the owner shapes on the plan before signup. Only what they touched is set. */

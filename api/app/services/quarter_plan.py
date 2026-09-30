@@ -31,21 +31,33 @@ What the model is not trusted with, and is decided here:
 - A number that is not in the draft, the site, the calendar, the cost ranges or the
   owner's target is invented: one retry, then the sentence carrying it is removed.
 
+- The numbers (revision 6): today's baseline, the lever and the 3-month target with its
+  math are `goal_numbers.numbers_view` — deterministic, never the model's. The model gets
+  them as facts to build the strategy around, and the response carries them as `numbers`.
+- Content is a structure, not a list of posts: per month a `mix` of content types from a
+  fixed set (product, value, behind the scenes, social proof, offer, community, seasonal)
+  with how many a month and why. The plan never names a specific product, model, brand,
+  price or offer: which products to feature is the owner's decision inside the app. A
+  Latin brand-like word, a product name from the site, or a price is sent back once and
+  then removed.
+- "מה מחכה לכם בפנים" (`inside`) is ours and fixed: only features the app has.
+
 After signup `plan_seed` turns the plan into the first month's seed, so the month
 generation (services/strategy_reveal.py hooks in strategy.py) follows its weeks,
-pillars, cadence, budget lines and KPI.
+pillars, content mix, cadence, budget lines, KPI and numbers.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import re
 from datetime import date, timedelta
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.services import cost_model, google_cost
+from app.services import cost_model, goal_numbers, google_cost
 from app.services import onboarding_draft as drafts
 from app.services import strategy_reveal as reveal
 from app.services.business_model import model_framing
@@ -134,6 +146,50 @@ MAX_NEW_STREAMS = {"regular": 3, "sometimes": 2, "none": 2, None: 2}
 PHYSICAL_FIELDS = frozenset({"food", "beauty", "health", "fitness"})
 
 FORMATS = ("reel", "carousel", "image", "story")
+
+# The content mix: the types a month's posts are split into. Fixed, so the plan speaks
+# structure ("2 פוסטים על המוצרים, 1 של לקוחות מספרים") and never picks products.
+CONTENT_TYPES: dict[str, dict] = {
+    "product": {"name_he": {"products": "המוצרים", "services": "השירותים", "both": "המוצרים והשירותים"},
+                "what_he": "מה אתם מוכרים ולמי זה מתאים. אתם בוחרים אילו"},
+    "value": {"name_he": "תוכן שמלמד ועוזר", "what_he": "טיפ, הסבר או תשובה לשאלה שלקוחות שואלים"},
+    "behind_scenes": {"name_he": "מאחורי הקלעים", "what_he": "איך זה נעשה, מי עושה את זה"},
+    "social_proof": {"name_he": "לקוחות מספרים", "what_he": "המלצה, תגובה או לפני ואחרי"},
+    "offer": {"name_he": "מבצע או הזמנה לפעולה", "what_he": "סיבה לפנות או לקנות עכשיו"},
+    "community": {"name_he": "קהילה ואירועים מקומיים", "what_he": "מה קורה באזור ומי הלקוחות"},
+    "seasonal": {"name_he": "לוח שנה וחגים", "what_he": "חג, עונה או מועד שמתקרב"},
+}
+# How the mix leans for each lever: the model is told this, and it is also a fact the owner
+# can check against the numbers section.
+MIX_BY_LEVER = {
+    "new_customers": "יותר product ו-social_proof שמציגים אתכם למי שלא מכיר, ו-value שמביא אנשים שמחפשים.",
+    "bigger_basket": "product שמראה שילובים ומארזים, ו-offer של סף או מארז (בלי מחיר ובלי מוצר מסוים).",
+    "returning": "יותר social_proof ו-community שמחזירים מי שכבר קנה, ו-offer ללקוחות קבועים. פחות פוסטים לזרים.",
+    "close_more": "social_proof ו-behind_scenes שמראים את תהליך העבודה, ו-value שעונה על השאלות שלפני פנייה.",
+    "fill_quiet": "seasonal ו-offer לקראת החודשים השקטים, ו-community. מתחילים שלושה שבועות לפני.",
+}
+PRODUCTS_ARE_YOURS_HE = "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות."
+
+# "מה מחכה לכם בפנים": what the app gives, in the owner's words. Only what exists.
+INSIDE: list[dict] = [
+    {"key": "plan", "title_he": "התוכנית הזו, לעריכה",
+     "what_he": "כל חודש נפתח ממנה. אפשר לשנות ערוצים, קצב ויעד בכל רגע."},
+    {"key": "posts", "title_he": "פוסטים לכל שבוע",
+     "what_he": "אחרי שתבחרו אילו מוצרים להבליט ותעלו תמונות, נכתוב לפי התמהיל. אתם מאשרים."},
+    {"key": "design", "title_he": "עיצוב בצבעים שלכם",
+     "what_he": "כל פוסט מקבל כרטיס מעוצב בצבעים ובלוגו של העסק."},
+    {"key": "assets", "title_he": "התמונות שלי",
+     "what_he": "מקום אחד לתמונות ולסרטונים של העסק, שמהם בונים את הפוסטים."},
+    {"key": "calendar", "title_he": "לוח שנה",
+     "what_he": "מתי יוצא כל פוסט, והחגים והמועדים שכדאי להתכונן אליהם."},
+    {"key": "results", "title_he": "התוצאות",
+     "what_he": "מה הביא כל ערוץ, לפי הנתונים שחיברתם, מול היעד."},
+    {"key": "guides", "title_he": "מדריכי חיבור",
+     "what_he": "צעד אחר צעד לחבר את נתוני האתר, אינסטגרם והכרטיס בגוגל."},
+    {"key": "whatsapp_link", "title_he": "קישור וואטסאפ מסומן",
+     "what_he": "בכל פוסט ובביו, וסופרים כמה לחצו מכל מקום. אנחנו מכינים אותו."},
+]
+
 PLAN_PROMPT_CHARS = 26000
 SITE_CHARS = 1600
 BASELINE_HE = "עוד לא יודעים כמה יש היום. נמדוד מהשבוע הראשון, וזו תהיה נקודת הפתיחה."
@@ -434,10 +490,13 @@ QUARTER_SCHEMA = {
                 "cadence": {"type": "array", "items": {"type": "object", "properties": {
                     "channel_key": _CHANNEL_REF, "per_week": {"type": "string"}},
                     "required": ["channel_key", "per_week"]}},
-                "example_titles": {"type": "array", "minItems": 2, "maxItems": 3, "items": {"type": "object", "properties": {
-                    "title": {"type": "string"}, "channel_key": _CHANNEL_REF,
-                    "format": {"type": "string", "enum": list(FORMATS)}}, "required": ["title", "channel_key", "format"]}},
-            }, "required": ["month", "pillars", "cadence", "example_titles"]},
+                "mix": {"type": "array", "minItems": 3, "maxItems": 5, "items": {"type": "object", "properties": {
+                    # A plain string, checked by parse_mix: one more enum here and Gemini
+                    # rejects the whole schema ("invalid argument").
+                    "type_key": {"type": "string", "description": "אחד מ: " + ", ".join(CONTENT_TYPES)},
+                    "per_month": {"type": "string"}, "purpose_he": {"type": "string"}},
+                    "required": ["type_key", "per_month", "purpose_he"]}},
+            }, "required": ["month", "pillars", "cadence", "mix"]},
         },
         "assumptions": {
             "type": "array", "minItems": 2, "maxItems": 3,
@@ -516,6 +575,33 @@ unlock_he: משפט אחד: מה עוד תקציב היה מאפשר (או מח�
 {google}"""
 
 
+def has_numbers(draft: OnboardingDraft) -> bool:
+    """A draft from the revision 6 goal chapter (a draft from before it has no numbers)."""
+    return any(x is not None for x in (draft.baseline, draft.lever, draft.target))
+
+
+def _numbers_block(numbers: dict | None) -> str:
+    return goal_numbers.prompt_block(numbers) if numbers else ""
+
+
+def _mix_block(draft: OnboardingDraft, inputs: dict, numbers: dict | None) -> str:
+    key, _ = reveal.cadence_key(draft, inputs)
+    per_month = reveal.cadence_view(key, "default")["posts_per_month"]
+    side = "services" if draft.model == "services" else ("both" if draft.model == "both" else "products")
+    names = "; ".join(
+        f"{k} = {(v['name_he'][side] if isinstance(v['name_he'], dict) else v['name_he'])} ({v['what_he']})"
+        for k, v in CONTENT_TYPES.items()
+    )
+    lever = ((numbers or {}).get("lever") or {}).get("key") or ""
+    lean = MIX_BY_LEVER.get(lever, "")
+    return (
+        f"תמהיל הפוסטים (mix): בערך {per_month} פוסטים בחודש בסך הכול. סוגי הפוסטים (type_key): {names}.\n"
+        + (f"לפי מה שמגדילים: {lean}\n" if lean else "")
+        + "התוכנית בונה מבנה, לא פוסטים: אסור לציין מוצר, דגם, מותג, מחיר או מבצע מסוים בשום מקום בתוכנית. "
+        "אילו מוצרים להבליט בעל העסק מחליט בתוך המערכת, לפי מלאי ורווחיות."
+    )
+
+
 def _success_block(draft: OnboardingDraft, kpi_key: str, target: str) -> str:
     spec = KPI_OPTIONS[kpi_key]
     needs = _applicable_needs(spec["needs"], draft)
@@ -544,9 +630,10 @@ def plan_prompt(
     months: list[dict],
     previous: dict | None = None,
     changes: list[str] | None = None,
+    numbers: dict | None = None,
 ) -> str:
     kpi_key = draft.kpi_key
-    target = inputs.get("target") or (draft.success.target if draft.success else "")
+    target = inputs.get("target") or draft.target_text
     cadence, source = reveal.cadence_key(draft, inputs)
     audiences_rule = (
         "audiences: מתוך הקהלים שבעל העסק בחר, בשמות המדויקים. בדיוק אחד primary."
@@ -601,6 +688,8 @@ def plan_prompt(
 
 {_months_block(months, today)}
 
+{_numbers_block(numbers)}
+
 {_success_block(draft, kpi_key, target)}
 
 {_channels_block(draft, frame, scan)}
@@ -608,7 +697,7 @@ def plan_prompt(
 {_budget_block(draft, frame)}
 {revision}{feedback}
 מה להחזיר:
-1. strategy: one_liner_he: האסטרטגיה במשפט אחד, מה עושים ולמה, כמו שבעל עסק היה אומר.
+1. strategy: one_liner_he: האסטרטגיה במשפט אחד, מה עושים ולמה, כמו שבעל עסק היה אומר. היא בנויה סביב מה שמגדילים.
    angle_he: משפט אחד, מה נגיד שאף מתחרה לא יכול, לפי מה שמייחד אותם. why_he: משפט אחד.
 2. kpi_how_he ו-measures, לפי ההנחיות למעלה.
 3. {audiences_rule} message_he: משפט אחד, מה אומרים לקהל הזה.
@@ -619,9 +708,12 @@ def plan_prompt(
 6. calendar: לכל חודש: dates מהמועדים שלו עם action_he (מה עושים סביב המועד; מועד שלא רלוונטי לא מכניסים),
    checkpoint_he: משפט אחד, מה בודקים בסוף החודש ומה מחליטים לפיו. weeks רק בחודש 1: 4 שבועות, focus_he משפט.
    בחודשים 2 ו-3 weeks ריק.
-7. content: לכל חודש 2 עד 3 נושאי תוכן (pillars; key באנגלית snake_case, title 2 עד 4 מילים, description_he משפט),
-   cadence לכל ערוץ שמפרסמים בו (per_week כמו "1-2"), ו-example_titles: 2 עד 3 כותרות של פוסטים אמיתיים לחודש,
-   עם מוצר או רגע אמיתי מהעסק, הערוץ והפורמט. זו רק כותרת, לא פוסט.
+7. content: לכל חודש 2 עד 3 נושאי תוכן כלליים (pillars; key באנגלית snake_case, title 2 עד 4 מילים, description_he משפט).
+   נושא הוא כיוון ("למה לבחור בנו", "איך זה נעשה"), אף פעם לא מוצר, דגם או מחיר.
+   cadence לכל ערוץ שמפרסמים בו (per_week כמו "1-2").
+   mix: 3 עד 5 סוגי פוסטים מהרשימה (type_key), per_month: כמה בחודש (למשל "2" או "1-2"), ו-purpose_he: משפט,
+   למה הסוג הזה משרת את האסטרטגיה ואת מה שמגדילים. הסכום מתאים לקצב.
+{_mix_block(draft, inputs, numbers)}
 8. assumptions: 2 עד 3 השערות שהחודשים האלה בודקים (לא הימורים: השערה שנמדוד ונאשר או נשנה).
    bet_he: "אנחנו מניחים ש..." ואיך נדע, למשל "…, ונראה את זה ב…". if_wrong_he: מה נשנה אם היא לא תתאמת.
 
@@ -629,7 +721,8 @@ def plan_prompt(
 מוצרים או שירותים שלא הוזכרו. גם לא מוצר "משלים" (קפה, משלוחים, מארזים, סדנאות) אם הוא לא כתוב למעלה.
 שעה רק אם נמסרה. סכומי כסף רק בשדות min_ils/max_ils ובטווחים שמופיעים למעלה.
 מועד בלוח השנה נכנס רק אם יש לעסק הזה סיבה אמיתית לעשות בו משהו.
-בכותרות לדוגמה: בלי רחובות, פרויקטים, לקוחות או מקרים מסוימים שלא סופרו לנו. כותרת מתארת פוסט שאפשר לצלם אצלם.
+בלי מוצר, דגם או מותג מסוים שהעסק מוכר, בלי מחיר ובלי מבצע מסוים: מהתוכנית לא בוחרים מוצרים.
+בלי רחובות, פרויקטים, לקוחות או מקרים מסוימים שלא סופרו לנו.
 
 איך זה נשמע: כמו מנהל לקוח שמסביר לבעל העסק ליד הדלפק. משפטים קצרים, עד 15 מילים. מילים של יום יום.
 לא "תכנים" (אומרים פוסטים), "למצב", "ביסוס", "מענה", "להניע", "אותנטי", "מודעות למותג", "מעורבות", "לידים", "המרות", "משפך".
@@ -698,7 +791,7 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
 
     kpi_key = draft.kpi_key
     kpi_needs = _applicable_needs(KPI_OPTIONS[kpi_key]["needs"], draft)
-    target = inputs.get("target") or (draft.success.target if draft.success else "")
+    target = inputs.get("target") or draft.target_text
     kpi = {"key": kpi_key, "name_he": KPI_OPTIONS[kpi_key]["name_he"],
            "how_he": clean_text(parsed.get("kpi_how_he"), 300), "baseline_he": BASELINE_HE, "needs": kpi_needs}
     if target:
@@ -865,8 +958,9 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
             problems.append(f"חסרה נקודת בדיקה לחודש {info['index']}.")
         calendar.append(entry)
 
-    # Content per month.
+    # Content per month: themes, cadence and the mix of post types. No products.
     posting = {c["key"] for c in channels if CHANNELS[c["key"]]["posting"]}
+    per_month = reveal.cadence_view(reveal.cadence_key(draft, inputs)[0], "default")["posts_per_month"]
     raw_content = {m.get("month"): m for m in parsed.get("content") or [] if isinstance(m, dict)}
     content = []
     for info in months:
@@ -878,13 +972,11 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
         cadence = [{"channel_key": c["channel_key"], "per_week": clean_text(c.get("per_week"), 20).replace("–", "-")}
                    for c in raw.get("cadence") or [] if isinstance(c, dict) and c.get("channel_key") in posting
                    and starts.get(c["channel_key"], 1) <= info["index"]]
-        titles = [{"title": clean_text(t.get("title"), 120), "channel_key": t.get("channel_key"),
-                   "format": t.get("format") if t.get("format") in FORMATS else "image"}
-                  for t in raw.get("example_titles") or [] if isinstance(t, dict) and clean_text(t.get("title"), 120)
-                  and t.get("channel_key") in starts][:3]
-        if len(pillars) < 2 or len(titles) < 2:
-            problems.append(f"בחודש {info['index']} חסרים נושאי תוכן או כותרות לדוגמה.")
-        content.append({"month_label": info["label"], "pillars": pillars, "cadence": cadence, "example_titles": titles})
+        mix = parse_mix(raw.get("mix"), draft, problems, info["index"], per_month)
+        if len(pillars) < 2 or len(mix) < 3:
+            problems.append(f"בחודש {info['index']} חסרים נושאי תוכן או תמהיל פוסטים (3 עד 5 סוגים).")
+        content.append({"month_label": info["label"], "pillars": pillars, "cadence": cadence, "mix": mix,
+                        "products_note_he": PRODUCTS_ARE_YOURS_HE})
 
     # A hypothesis to measure, never a gamble: rewrite the model's occasional "מהמרים".
     assumptions = [{"bet_he": _as_hypothesis(clean_text(a.get("bet_he"), 300)), "if_wrong_he": clean_text(a.get("if_wrong_he"), 300)}
@@ -897,11 +989,95 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
         "budget": budget, "calendar": calendar, "content": content, "assumptions": assumptions,
         "changed_he": clean_text(parsed.get("changed_he"), 400),
     }
+    specific_ok = _latin_ok(draft)
+    names = _site_product_names(scan)
     for path, text in _texts(result):
         bad = invented_numbers(text, money if path.startswith("budget") else allowed)
         if bad:
             problems.append(f"ב-{path} יש מספרים שלא נמסרו: {', '.join(bad)}.")
+        found = specifics(text, specific_ok, names, prices=not path.startswith("budget"))
+        if found:
+            problems.append(f"ב-{path} יש מוצר, מותג או מחיר מסוים ({', '.join(found[:3])}). "
+                            "התוכנית לא בוחרת מוצרים: כתוב סוג פוסט או נושא כללי.")
     return result, problems
+
+
+def _per_month(value) -> tuple[int, int] | None:
+    text = clean_text(value, 12).replace("–", "-").replace("—", "-").replace(" ", "")
+    match = re.fullmatch(r"(\d{1,2})(?:-(\d{1,2}))?", text)
+    if not match:
+        return None
+    low = int(match.group(1))
+    high = int(match.group(2) or low)
+    return (low, high) if 0 < low <= high <= 30 else None
+
+
+def content_type_name(key: str, model: str) -> str:
+    name = CONTENT_TYPES[key]["name_he"]
+    return name.get(model, name["products"]) if isinstance(name, dict) else name
+
+
+def parse_mix(raw, draft: OnboardingDraft, problems: list[str], month: int, per_month: int) -> list[dict]:
+    """The month's content mix: known types only, once each, a count that fits the cadence."""
+    mix: list[dict] = []
+    for item in raw or []:
+        if not isinstance(item, dict) or item.get("type_key") not in CONTENT_TYPES:
+            continue
+        if any(m["type_key"] == item["type_key"] for m in mix):
+            continue
+        span = _per_month(item.get("per_month"))
+        if span is None:
+            problems.append(f"בחודש {month}, per_month של {item['type_key']} צריך להיות מספר או טווח, כמו \"1-2\".")
+            continue
+        mix.append({"type_key": item["type_key"], "name_he": content_type_name(item["type_key"], draft.model),
+                    "per_month": f"{span[0]}" if span[0] == span[1] else f"{span[0]}-{span[1]}",
+                    "purpose_he": clean_text(item.get("purpose_he"), 240)})
+    mix = mix[:5]
+    if mix:
+        low = sum(_per_month(m["per_month"])[0] for m in mix)
+        high = sum(_per_month(m["per_month"])[1] for m in mix)
+        if high < per_month * 0.6 or low > per_month * 1.5:
+            problems.append(f"בחודש {month} התמהיל ({low}-{high} פוסטים) לא מתאים לקצב של כ-{per_month} פוסטים בחודש.")
+    return mix
+
+
+# --- no specific products, brands or prices -----------------------------------------------------
+
+_LATIN_WORD = re.compile(r"[A-Za-z][A-Za-z0-9'’&\-]*")
+# Latin words a Hebrew plan may carry: our own vocabulary, not something the business sells.
+_LATIN_ALLOWED = {"ai", "google", "instagram", "facebook", "tiktok", "whatsapp", "meta", "wix", "shopify", "gbp", "ga4"}
+_PRICE = re.compile(r"\d[\d,.]*\s*(₪|ש״ח|ש\"ח|שקל)|₪\s*\d|\d+\s*\+\s*\d+")
+
+
+def _latin_ok(draft: OnboardingDraft) -> set[str]:
+    """Latin words that are fine here: ours, and the business's own name."""
+    return _LATIN_ALLOWED | {w.lower() for w in _LATIN_WORD.findall(draft.business_name)}
+
+
+def _site_product_names(scan: dict | None) -> list[str]:
+    """Product names the site showed (two words or more): the plan must not pick among them."""
+    scan = scan or {}
+    raw = list((scan.get("extracted") or {}).get("offers") or []) + list((scan.get("brand_language") or {}).get("offers_seen") or [])
+    out = []
+    for item in raw:
+        name = clean_text(item, 80)
+        if len(name.split()) >= 2 and len(name) >= 6 and name not in out:
+            out.append(name)
+    return out
+
+
+def specifics(text: str, latin_ok: set[str], names: list[str], prices: bool = True) -> list[str]:
+    """What in `text` names a specific product, brand or price."""
+    found = [w for w in _LATIN_WORD.findall(text or "") if w.lower() not in latin_ok]
+    found += [name for name in names if name in (text or "")]
+    if prices:
+        found += [m.group(0) for m in _PRICE.finditer(text or "")]
+    return list(dict.fromkeys(found))
+
+
+def _drop_specific(text: str, latin_ok: set[str], names: list[str], prices: bool = True) -> str:
+    parts = drafts._SENTENCE.split(text or "")
+    return " ".join(p for p in parts if not specifics(p, latin_ok, names, prices)).strip()
 
 
 def _texts(result: dict):
@@ -928,11 +1104,44 @@ def _texts(result: dict):
     for m, month in enumerate(result["content"]):
         for i, p in enumerate(month["pillars"]):
             yield f"content.{m}.pillars.{i}", f"{p['title']} {p['description_he']}"
-        for i, t in enumerate(month["example_titles"]):
-            yield f"content.{m}.titles.{i}", t["title"]
+        for i, t in enumerate(month.get("mix") or []):
+            yield f"content.{m}.mix.{i}", t["purpose_he"]
     for i, a in enumerate(result["assumptions"]):
         yield f"assumptions.{i}", f"{a['bet_he']} {a['if_wrong_he']}"
     yield "changed_he", result.get("changed_he", "")
+
+
+def _scrub_specifics(result: dict, latin_ok: set[str], names: list[str]) -> dict:
+    """After the retry: drop sentences (or pillars) that still name a product, brand or price."""
+    def clean(text: str, prices: bool = True) -> str:
+        return _drop_specific(text, latin_ok, names, prices)
+
+    for field in ("one_liner_he", "angle_he", "why_he"):
+        result["strategy"][field] = clean(result["strategy"][field])
+    for c in result["channels"]:
+        for field in ("why_he", "effort_he"):
+            c[field] = clean(c[field])
+    for a in result["audiences"]:
+        a["message_he"] = clean(a["message_he"])
+    for month in result["budget"]["months"]:
+        for line in month["lines"]:
+            line["note_he"] = clean(line["note_he"], prices=False)
+    for month in result["calendar"]:
+        month["checkpoint_he"] = clean(month["checkpoint_he"])
+        for d in month["dates"]:
+            d["action_he"] = clean(d["action_he"])
+        for w in month.get("weeks") or []:
+            w["focus_he"] = clean(w["focus_he"])
+    for month in result["content"]:
+        month["pillars"] = [p for p in month["pillars"] if not specifics(p["title"], latin_ok, names)]
+        for p in month["pillars"]:
+            p["description_he"] = clean(p["description_he"])
+        for item in month.get("mix") or []:
+            item["purpose_he"] = clean(item["purpose_he"])
+    result["assumptions"] = [a for a in result["assumptions"] if not specifics(a["bet_he"], latin_ok, names)]
+    for a in result["assumptions"]:
+        a["if_wrong_he"] = clean(a["if_wrong_he"])
+    return result
 
 
 def _scrub(result: dict, allowed: set[str], money: set[str] | None = None) -> dict:
@@ -962,9 +1171,10 @@ def _scrub(result: dict, allowed: set[str], money: set[str] | None = None) -> di
         for w in month.get("weeks") or []:
             w["focus_he"] = drop(w["focus_he"], allowed)
     for month in result["content"]:
-        month["example_titles"] = [t for t in month["example_titles"] if not invented_numbers(t["title"], allowed)]
         for p in month["pillars"]:
             p["description_he"] = drop(p["description_he"], allowed)
+        for item in month.get("mix") or []:
+            item["purpose_he"] = drop(item["purpose_he"], allowed)
     result["assumptions"] = [a for a in result["assumptions"] if not invented_numbers(a["bet_he"], allowed)]
     for a in result["assumptions"]:
         a["if_wrong_he"] = drop(a["if_wrong_he"], allowed)
@@ -1005,16 +1215,19 @@ def build_quarter_plan(
     frame = budget_frame(draft)
     months = plan_months(today, draft.model)
     meta_block, google_block = ("", "") if frame["organic_only"] else _cost_blocks(draft, frame)
+    # Revision 6: the numbers are ours (deterministic), and facts the model may quote.
+    numbers = goal_numbers.numbers_view(draft, today) if has_numbers(draft) else None
     allowed = allowed_numbers(
         draft.model_dump(mode="json"), scan or {}, [m["events"] for m in months], today.isoformat(),
         drafts.season_notes(draft, today), inputs, direction, insights,
         [reveal._dates_he(*w) for w in reveal.week_windows(today)], [m["year"] for m in months],
+        {k: v for k, v in (numbers or {}).items() if k not in {"assumptions_he", "sources"}},
     )
     # The published cost ranges are facts for the budget lines only; elsewhere a "20" is
     # an invented number even if 15%-20% appears in the cost block.
     money = allowed | allowed_numbers(meta_block, google_block, _unlock_facts(draft))
     changes = reveal._changes(previous_inputs or {}, inputs, previous, changed) if (inputs or changed) else []
-    prompt = plan_prompt(draft, direction, scan, insights, today, inputs, frame, months, previous, changes)
+    prompt = plan_prompt(draft, direction, scan, insights, today, inputs, frame, months, previous, changes, numbers)
     parsed = loads(drafts._strategy_call(prompt, QUARTER_SCHEMA), {}) or {}
     result, problems = parse_plan(parsed, draft, scan, insights, today, inputs, frame, months, allowed, money)
     if problems:
@@ -1030,7 +1243,8 @@ def build_quarter_plan(
         except Exception:
             pass
     _fit_budget(result, frame)
-    result = reveal._walk_strings(_scrub(result, allowed, money), reveal.glossary)
+    result = _scrub_specifics(_scrub(result, allowed, money), _latin_ok(draft), _site_product_names(scan))
+    result = reveal._walk_strings(result, reveal.glossary)
     if not result["channels"] or not result["content"] or not result["strategy"]["one_liner_he"]:
         raise RuntimeError("לא קיבלנו תוכנית מלאה.")
     result["integrations"] = build_integrations(draft, scan, result["measures"], result["channels"], result["kpi"])
@@ -1044,6 +1258,17 @@ def build_quarter_plan(
     key, source = reveal.cadence_key(draft, inputs)
     result["cadence"] = reveal.cadence_view(key, source)
     result["start"] = {"year": months[0]["year"], "month": months[0]["month"]}
+    # "המספרים": today, the lever, the target with its math. Ours, not the model's.
+    if numbers is not None:
+        target = numbers.get("target") or {}
+        if inputs.get("target") and target.get("text_he") != inputs["target"] and target.get("kind") != "qualitative":
+            target["text_he"] = inputs["target"]
+        result["numbers"] = numbers
+        if target.get("text_he") and target.get("kind") != "qualitative":
+            result["kpi"]["target"] = target["text_he"]
+        if numbers.get("baseline_known"):
+            result["kpi"]["baseline_he"] = numbers["baseline_he"]
+    result["inside"] = [dict(item) for item in INSIDE]
     result["direction_title"] = direction.get("title", "")
     result["inputs"] = inputs
     if (inputs or changed) and not result["changed_he"] and changes:
@@ -1137,14 +1362,38 @@ def plan_seed(plan: dict, draft: OnboardingDraft) -> dict:
         "budget_lines": ((plan.get("budget") or {}).get("months") or [{}])[0].get("lines") or [],
         "kpi": {"key": kpi.get("key"), "name_he": kpi.get("name_he"), "target": kpi.get("target", "")},
         "events": list(events.values()),
+        # Revision 6: the month plans against the numbers and the content mix.
+        "numbers": _seed_numbers(plan.get("numbers"), draft),
+        "mix": [{"type_key": _text(m.get("type_key"), 30), "name_he": _text(m.get("name_he"), 60),
+                 "per_month": _text(m.get("per_month"), 10), "purpose_he": _text(m.get("purpose_he"), 240)}
+                for m in month1_content.get("mix") or [] if isinstance(m, dict) and m.get("type_key") in CONTENT_TYPES][:5],
     }
     return seed_strategy
+
+
+def _seed_numbers(numbers, draft: OnboardingDraft) -> dict:
+    """The numbers for month 1: from the plan as stored, else computed again from the draft."""
+    if isinstance(numbers, dict) and numbers.get("lever"):
+        view = numbers
+    elif has_numbers(draft):
+        view = goal_numbers.numbers_view(draft)
+    else:
+        return {}
+    target = view.get("target") if isinstance(view.get("target"), dict) else {}
+    lever = view.get("lever") if isinstance(view.get("lever"), dict) else {}
+    return {"baseline_he": _text(view.get("baseline_he"), 400), "lever_he": _text(lever.get("name_he"), 80),
+            "lever_key": _text(lever.get("key"), 30), "target_he": _text(target.get("text_he"), 200),
+            "first_checkpoint_he": _text(view.get("first_checkpoint_he"), 300)}
 
 
 def long_horizon_from_plan(plan: dict) -> dict:
     """The quarter, in the shape the planner and /plan already read."""
     kpi = plan.get("kpi") or {}
     targets = [kpi.get("name_he") or ""]
+    numbers = plan.get("numbers") if isinstance(plan.get("numbers"), dict) else {}
+    lever = (numbers.get("lever") or {}).get("name_he") if isinstance(numbers.get("lever"), dict) else ""
+    if lever:
+        targets.append(f"מה מגדילים: {lever}")
     if kpi.get("target"):
         targets.append(f"היעד שלכם: {kpi['target']}")
     milestones = []
@@ -1171,6 +1420,17 @@ def plan_prompt_block(seed_strategy: dict) -> str:
     kpi = seed_strategy.get("kpi") or {}
     if kpi.get("name_he"):
         lines.append(f"- המדד העיקרי שבעל העסק בחר: {kpi['name_he']}")
+    numbers = seed_strategy.get("numbers") or {}
+    if numbers.get("baseline_he"):
+        lines.append(f"- איפה העסק היום: {numbers['baseline_he']}")
+    if numbers.get("lever_he"):
+        lines.append(f"- מה מגדילים: {numbers['lever_he']}. החודש משרת את זה.")
+    if numbers.get("target_he"):
+        lines.append(f"- היעד ל-3 חודשים (טווח לתכנון, לא הבטחה): {numbers['target_he']}")
+    mix = [m for m in seed_strategy.get("mix") or [] if isinstance(m, dict) and m.get("name_he")]
+    if mix:
+        lines.append("- תמהיל הפוסטים בחודש: " + "; ".join(f"{m['name_he']} {m.get('per_month', '')}".strip() for m in mix)
+                     + ". אילו מוצרים להבליט בעל העסק בוחר, לא התוכנית.")
     for line in seed_strategy.get("budget_lines") or []:
         if isinstance(line, dict) and line.get("ils_range"):
             low, high = line["ils_range"][:2]
