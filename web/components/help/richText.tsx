@@ -9,7 +9,7 @@ export function rich(text: string) {
   return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
     if (part.startsWith("**") && part.endsWith("**")) {
       return (
-        <strong key={index} className="font-bold text-[var(--ink)]">
+        <strong key={index} className="font-semibold text-[color:var(--ink)]">
           {isolate(part.slice(2, -2))}
         </strong>
       );
