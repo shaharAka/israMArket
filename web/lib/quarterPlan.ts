@@ -11,15 +11,40 @@ import type { BusinessModel, PrimaryGoal } from "./api";
 
 /* --------------------------------- Types --------------------------------- */
 
-export type IntegrationKey = "ga4" | "meta_pixel" | "gtm" | "search_console" | "gbp" | "meta_business" | "whatsapp_link";
+export type IntegrationKey =
+  | "ga4"
+  | "meta_pixel"
+  | "gtm"
+  | "search_console"
+  | "gbp"
+  | "meta_business"
+  | "whatsapp_link"
+  | "instagram_insights"
+  | "facebook_insights"
+  | "tiktok_business";
 
 export type IntegrationStatus = "have" | "connect" | "install" | "unknown";
 
 export type PostFormat = "reel" | "carousel" | "image" | "story";
 
+/**
+ * `POST /public/quarter-plan`. Beyond the Rev 5 contract the API also sends (all optional
+ * here): `based_on` on the strategy and channels, `needs` / `available_now` on the KPI,
+ * the audiences with the primary one first, the budget's range, basis and linked sources,
+ * each calendar month's year/month and each week's dates, the cadence it planned for, the
+ * first month, and the inputs it was built from.
+ */
 export type QuarterPlan = {
-  strategy: { one_liner_he: string; angle_he: string; why_he: string; from_insight?: number };
-  kpi: { key: string; name_he: string; how_he: string; target?: string; baseline_he: string };
+  strategy: { one_liner_he: string; angle_he: string; why_he: string; from_insight?: number; based_on?: string };
+  kpi: {
+    key: string;
+    name_he: string;
+    how_he: string;
+    target?: string;
+    baseline_he: string;
+    needs?: IntegrationKey[];
+    available_now?: boolean;
+  };
   measures: { name_he: string; how_he: string; needs: IntegrationKey[]; available_now: boolean }[];
   integrations: { key: IntegrationKey; name_he: string; why_he: string; status: IntegrationStatus; effort_he: string }[];
   channels: {
@@ -30,17 +55,25 @@ export type QuarterPlan = {
     starts_month: 1 | 2 | 3;
     effort_he: string;
     cadence_he?: string;
+    from_insight?: number;
+    based_on?: string;
   }[];
+  audiences?: { name: string; role: "primary" | "secondary"; message_he: string }[];
   budget: {
     monthly_ils: number | null;
     months: { month_label: string; lines: { channel_key: string; ils_range: [number, number]; note_he?: string }[] }[];
     organic_only: boolean;
     unlock_he?: string;
     sources_he: string[];
+    sources?: { title: string; url: string }[];
+    range?: string;
+    basis_he?: string;
   };
   calendar: {
     month_label: string;
-    weeks?: { week: 1 | 2 | 3 | 4; focus_he: string }[];
+    year?: number;
+    month?: number;
+    weeks?: { week: 1 | 2 | 3 | 4; focus_he: string; dates_he?: string }[];
     dates: { date: string; name_he: string; action_he: string }[];
     checkpoint_he: string;
   }[];
@@ -51,6 +84,9 @@ export type QuarterPlan = {
     example_titles: { title: string; channel_key: string; format: PostFormat | string }[];
   }[];
   assumptions: { bet_he: string; if_wrong_he: string }[];
+  cadence?: { key: Cadence | string; label_he?: string; posts_per_month?: number; source?: string };
+  start?: { year: number; month: number };
+  inputs?: Record<string, unknown>;
   changed_he?: string;
   cached: boolean;
 };
@@ -145,6 +181,19 @@ export function budgetIls(budget?: DraftBudget | null): number {
   return mid[budget.range];
 }
 
+/**
+ * What one more success is called for each KPI key (`KPI_OPTIONS` in the API), for the
+ * optional target question. The API sends the options without a unit.
+ */
+export const KPI_UNITS: Record<string, { unit_he: string; target_steps: number[] }> = {
+  online_orders: { unit_he: "הזמנות באתר", target_steps: [10, 25, 50] },
+  store_visits: { unit_he: "לקוחות חדשים בחנות", target_steps: [20, 50, 100] },
+  whatsapp_inquiries: { unit_he: "פניות", target_steps: [5, 10, 20] },
+  bookings: { unit_he: "פגישות", target_steps: [3, 6, 10] },
+  form_leads: { unit_he: "טפסים באתר", target_steps: [5, 10, 20] },
+  local_awareness: { unit_he: "עוקבים חדשים", target_steps: [50, 100, 200] },
+};
+
 export const GROW_OPTIONS: { key: GrowWhere; label: string }[] = [
   { key: "online", label: "באתר (הזמנות אונליין)" },
   { key: "store", label: "בחנות" },
@@ -163,21 +212,12 @@ export function formatRange([low, high]: [number, number]): string {
 
 /* ------------------------------ Integrations ------------------------------ */
 
-export const INTEGRATION_NAME: Record<IntegrationKey, string> = {
-  ga4: "נתוני האתר (גוגל אנליטיקס)",
-  meta_pixel: "הפיקסל של פייסבוק ואינסטגרם",
-  gtm: "תגית גוגל באתר",
-  search_console: "החיפושים בגוגל (סרץ׳ קונסול)",
-  gbp: "הכרטיס של העסק בגוגל",
-  meta_business: "החשבון העסקי באינסטגרם ובפייסבוק",
-  whatsapp_link: "קישור וואטסאפ עם סימון",
-};
-
 /** The existing step-by-step guide for an integration, when there is one. */
 export const INTEGRATION_GUIDE: Partial<Record<IntegrationKey, HelpTopic>> = {
   ga4: "google_analytics",
   meta_business: "instagram_business",
   meta_pixel: "instagram_business",
+  instagram_insights: "instagram_business",
   gbp: "google_business_profile",
   whatsapp_link: "whatsapp_business",
 };

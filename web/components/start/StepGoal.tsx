@@ -185,7 +185,8 @@ export function StepGrow(props: StepProps) {
               desc={GROW_DESC[option.key]}
               onClick={() => {
                 setError("");
-                setDraft({ grow_where: option.key });
+                // Where to grow decides which measures fit: an old pick may no longer apply.
+                setDraft(value === option.key ? { grow_where: option.key } : { grow_where: option.key, success: undefined });
               }}
             />
           ))}
@@ -248,6 +249,12 @@ export function StepSuccess(props: StepProps) {
   const { options, loading, failed, retry } = useSuccessOptions(props);
   const [error, setError] = useState("");
   const chosen = options?.find((o) => o.key === d.success?.kpi) ?? null;
+  const stale = Boolean(options && d.success?.kpi && !chosen);
+
+  // A measure from before the answers changed does not fit them (the API answers 422).
+  useEffect(() => {
+    if (stale) update((f) => ({ ...f, draft: { ...f.draft, success: undefined } }));
+  }, [stale, update]);
 
   function pick(option: SuccessOption) {
     setError("");

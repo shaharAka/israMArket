@@ -31,6 +31,7 @@ import {
 import { defaultGoalFor, goalsFor } from "./businessModel";
 import { clearPending } from "./pendingUploads";
 import {
+  KPI_UNITS,
   budgetIls,
   planForApi,
   type DraftBudget,
@@ -952,18 +953,20 @@ export async function fetchSuccessOptions(draft: OnboardingDraft): Promise<Succe
   const grow = model === "services" ? undefined : draft.grow_where;
   return withMock(
     async () => {
-      const query = new URLSearchParams({ business_model: model });
+      const query = new URLSearchParams({ model });
       if (grow) query.set("grow_where", grow);
-      if (draft.links.website) query.set("has_website", "1");
-      if (draft.business_type) query.set("business_type", draft.business_type);
-      const res = await api<{ options: SuccessOption[] }>(`/public/success-options?${query.toString()}`);
-      return (res.options ?? []).filter(
-        (o) =>
-          o.key &&
-          o.name_he &&
-          (!o.models?.length || o.models.includes(model)) &&
-          (!grow || !o.grow_where?.length || o.grow_where.includes(grow)),
+      const res = await api<{ options: (SuccessOption & { description_he?: string })[] }>(
+        `/public/success-options?${query.toString()}`,
       );
+      return (res.options ?? [])
+        .filter(
+          (o) =>
+            o.key &&
+            o.name_he &&
+            (!o.models?.length || o.models.includes(model)) &&
+            (!grow || !o.grow_where?.length || o.grow_where.includes(grow)),
+        )
+        .map((o) => ({ ...KPI_UNITS[o.key], ...o, hint_he: o.hint_he ?? o.description_he }));
     },
     async () => {
       await wait(500);

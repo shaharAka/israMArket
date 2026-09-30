@@ -209,8 +209,15 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     </p>
   ) : null;
 
-  const names = audiencesOf(flow);
-  const primary = primaryOf(flow);
+  // The plan's own audiences when the API sends them (primary first), else the answers.
+  const names = plan?.audiences?.length ? plan.audiences.map((a) => a.name) : audiencesOf(flow);
+  const chosenPrimary = flow.planInputs?.primary_audience;
+  const primary =
+    (chosenPrimary && names.includes(chosenPrimary) && chosenPrimary) ||
+    plan?.audiences?.find((a) => a.role === "primary")?.name ||
+    primaryOf(flow);
+  // The cadence the plan was built for, until the owner picks one.
+  const cadence = flow.planInputs?.cadence ?? (plan?.cadence?.key as string | undefined);
 
   return (
     <StepShell
@@ -306,9 +313,9 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                     <Chip
                       key={c.key}
                       label={c.label}
-                      selected={flow.planInputs?.cadence === c.key}
+                      selected={cadence === c.key}
                       onClick={() => {
-                        if (flow.planInputs?.cadence === c.key) return;
+                        if (cadence === c.key) return;
                         update((f) => ({ ...f, planInputs: { ...(f.planInputs ?? {}), cadence: c.key } }));
                         change(["cadence"]);
                       }}

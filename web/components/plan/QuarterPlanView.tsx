@@ -396,6 +396,23 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
         <p className="text-[11px] font-bold text-[#5e6159]">המדד העיקרי</p>
         <p className="mt-0.5 text-xl font-black leading-7 text-[#191b18]">{plan.kpi.name_he}</p>
         <p className="mt-1 text-sm leading-6 text-[#2b2d28]">{plan.kpi.how_he}</p>
+        {plan.kpi.needs ? (
+          <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs leading-5 text-[#2b2d28]">
+            {plan.kpi.available_now ? (
+              <span className="rounded-full bg-[#e7f0e4] px-2 text-[11px] font-bold leading-5 text-[#2f5d2a]">אפשר למדוד מהיום</span>
+            ) : (
+              <span className="rounded-full bg-white/70 px-2 text-[11px] font-bold leading-5 text-[#5e6159]">אחרי חיבור</span>
+            )}
+            {plan.kpi.needs.length ? (
+              <span>
+                <b>צריך: </b>
+                {plan.kpi.needs.map(nameOf).join(" · ")}
+              </span>
+            ) : (
+              <span>סופרים בעצמכם, בלי חיבור.</span>
+            )}
+          </p>
+        ) : null}
         {targetSlot ? (
           <div className="mt-2.5">{targetSlot}</div>
         ) : plan.kpi.target ? (
@@ -548,6 +565,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
       {b.monthly_ils ? (
         <p className="text-sm leading-6 text-[#2b2d28]">
           <b className="text-[#191b18]">{formatIls(b.monthly_ils)} בחודש</b>, מחולקים לפי מה שמתחיל מתי.
+          {b.basis_he ? <span className="block text-xs text-[#5e6159]">{b.basis_he}</span> : null}
         </p>
       ) : null}
       <figure className="rounded-2xl border border-[#e2e0d8] bg-white px-4 py-3.5">
@@ -623,15 +641,27 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
               )}
             </tbody>
           </table>
-          {b.sources_he.length ? (
-            <ul className="space-y-1 text-xs text-[#5e6159]">
-              {b.sources_he.map((source) => (
-                <li key={source} className="flex gap-2">
-                  <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
-                  {source}
-                </li>
-              ))}
-            </ul>
+          {b.sources?.length || b.sources_he.length ? (
+            <div>
+              <p className="text-xs font-bold text-[#191b18]">המקורות</p>
+              <ul className="mt-1 space-y-1 text-xs text-[#5e6159]">
+                {b.sources?.length
+                  ? b.sources.map((source) => (
+                      <li key={source.url} className="flex gap-2">
+                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
+                        <a href={source.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-[#191b18]">
+                          {source.title}
+                        </a>
+                      </li>
+                    ))
+                  : b.sources_he.map((source) => (
+                      <li key={source} className="flex gap-2">
+                        <span aria-hidden className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#8a8c84]" />
+                        {source}
+                      </li>
+                    ))}
+              </ul>
+            </div>
           ) : null}
         </div>
       </details>
@@ -675,7 +705,10 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
                   {month.weeks.map((week) => (
                     <li key={week.week} className="flex gap-2 text-xs leading-5 text-[#2b2d28]">
                       <span className="w-11 shrink-0 font-bold text-[#8a8c84]">שבוע {week.week}</span>
-                      <span className="min-w-0">{week.focus_he}</span>
+                      <span className="min-w-0">
+                        {week.focus_he}
+                        {week.dates_he ? <span className="block text-[11px] text-[#8a8c84] tabular-nums">{week.dates_he}</span> : null}
+                      </span>
                     </li>
                   ))}
                 </ol>

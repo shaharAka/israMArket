@@ -19,6 +19,7 @@ import {
   type TypeGroup,
 } from "./draft";
 import {
+  KPI_UNITS,
   budgetIls,
   type Cadence,
   type GrowWhere,
@@ -30,80 +31,24 @@ import {
 
 /* ----------------------------- Success options ----------------------------- */
 
-const OPTIONS: Record<string, SuccessOption> = {
-  online_orders: {
-    key: "online_orders",
-    name_he: "יותר הזמנות באתר",
-    hint_he: "סופרים הזמנות שהגיעו מהשיווק",
-    goal: "sales",
-    unit_he: "הזמנות באתר",
-    target_steps: [10, 25, 50],
-  },
-  whatsapp_orders: {
-    key: "whatsapp_orders",
-    name_he: "יותר הזמנות בוואטסאפ ובטלפון",
-    hint_he: "כל הודעה מפוסט מגיעה עם סימון",
-    goal: "sales",
-    unit_he: "הזמנות בוואטסאפ",
-    target_steps: [10, 20, 40],
-  },
-  store_visits: {
-    key: "store_visits",
-    name_he: "יותר אנשים בחנות",
-    hint_he: "לפי הקופה ומי שמגיע בזכות פוסט",
-    goal: "sales",
-    unit_he: "לקוחות חדשים בחנות",
-    target_steps: [20, 50, 100],
-  },
-  whatsapp_inquiries: {
-    key: "whatsapp_inquiries",
-    name_he: "יותר שיחות ופניות בוואטסאפ",
-    hint_he: "כל פנייה מפוסט מגיעה עם סימון",
-    goal: "leads",
-    unit_he: "פניות",
-    target_steps: [5, 10, 20],
-  },
-  bookings: {
-    key: "bookings",
-    name_he: "יותר פגישות והזמנות מקום",
-    hint_he: "פגישות שנקבעו בזכות השיווק",
-    goal: "leads",
-    unit_he: "פגישות",
-    target_steps: [3, 6, 10],
-  },
-  site_forms: {
-    key: "site_forms",
-    name_he: "יותר טפסים באתר",
-    hint_he: "טופס יצירת קשר שמולא",
-    goal: "leads",
-    unit_he: "טפסים באתר",
-    target_steps: [5, 10, 20],
-  },
-  awareness_local: {
-    key: "awareness_local",
-    name_he: "שיכירו אותנו באזור",
-    hint_he: "אנשים שראו, עוקבים חדשים",
-    unit_he: "עוקבים חדשים",
-    target_steps: [50, 100, 200],
-  },
-};
+/** The same keys, names and rules as `KPI_OPTIONS` in api/app/services/onboarding_draft.py. */
+const OPTIONS: (SuccessOption & { grow: (GrowWhere | null)[] })[] = [
+  { key: "online_orders", name_he: "יותר הזמנות באתר", hint_he: "הזמנות שמגיעות דרך האתר", goal: "sales", models: ["products", "both"], grow: ["online", "both", null] },
+  { key: "store_visits", name_he: "יותר אנשים בחנות", hint_he: "לקוחות שמגיעים פיזית לעסק", goal: "sales", models: ["products", "both"], grow: ["store", "both", null] },
+  { key: "whatsapp_inquiries", name_he: "יותר שיחות ופניות בוואטסאפ", hint_he: "הודעות ושיחות מלקוחות חדשים", models: ["products", "services", "both"], grow: ["online", "store", "both", null] },
+  { key: "bookings", name_he: "יותר פגישות והזמנות מקום", hint_he: "תורים, פגישות או שולחנות שנקבעים", models: ["services", "both"], grow: ["online", "store", "both", null] },
+  { key: "form_leads", name_he: "יותר טפסים באתר", hint_he: "פניות שמשאירים בטופס באתר", goal: "leads", models: ["services", "both"], grow: ["online", "store", "both", null] },
+  { key: "local_awareness", name_he: "שיכירו אותנו באזור", hint_he: "שיותר אנשים באזור ידעו שאתם קיימים", models: ["products", "services", "both"], grow: ["online", "store", "both", null] },
+];
 
 export function mockSuccessOptions(model: BusinessModel, grow: GrowWhere | undefined, hasSite: boolean): SuccessOption[] {
-  const keys: string[] = [];
-  if (model !== "services") {
-    if (grow === "online") keys.push("online_orders", "whatsapp_orders");
-    else if (grow === "store") keys.push("store_visits", "whatsapp_orders");
-    else keys.push(...(hasSite ? ["online_orders"] : []), "store_visits", "whatsapp_orders");
-  }
-  if (model !== "products") {
-    keys.push("whatsapp_inquiries", "bookings");
-    if (hasSite) keys.push("site_forms");
-  }
-  keys.push("awareness_local");
-  return [...new Set(keys)].map((key) => {
-    const option = { ...OPTIONS[key] };
-    if (key === "awareness_local") option.goal = model === "services" ? "personal_brand" : "brand_awareness";
-    return option;
+  void hasSite;
+  const g = model === "services" ? null : (grow ?? null);
+  return OPTIONS.filter((o) => o.models?.includes(model) && o.grow.includes(g)).map((o) => {
+    const { grow: _grow, models: _models, ...option } = o;
+    void _grow;
+    void _models;
+    return { ...KPI_UNITS[o.key], ...option };
   });
 }
 
@@ -200,12 +145,11 @@ export function mockQuarterPlan(
   const unit = option.unit_he ?? "פניות";
   const kpiHow: Record<string, string> = {
     online_orders: "כל הזמנה באתר נספרת לפי הערוץ שממנו הגיעה.",
-    whatsapp_orders: "הקישור לוואטסאפ בכל פוסט שולח הודעה מוכנה עם שם הפוסט. סופרים אותן כל שבוע.",
     store_visits: "שואלים בקופה ״איך שמעתם עלינו?״, ומציעים קוד קטן למי שמגיע בזכות פוסט.",
     whatsapp_inquiries: "כל פנייה מפוסט מגיעה עם סימון, ונרשמת עם הפוסט שהביא אותה.",
     bookings: "כל פגישה שנקבעה נרשמת עם המקום שממנו הגיעה הפנייה.",
-    site_forms: "כל טופס שמולא באתר נספר לפי הערוץ שממנו הגיעו.",
-    awareness_local: "אנשים שראו את הפוסטים ועוקבים חדשים, לפי הנתונים של אינסטגרם.",
+    form_leads: "כל טופס שמולא באתר נספר לפי הערוץ שממנו הגיעו.",
+    local_awareness: "אנשים שראו את הפוסטים ועוקבים חדשים, לפי הנתונים של אינסטגרם.",
   };
 
   /* Integrations: what the measures need, and whether the owner has it. */
@@ -237,7 +181,7 @@ export function mockQuarterPlan(
     });
   }
   const metaAds = paid;
-  if (hasSite && metaAds && (option.key === "online_orders" || option.key === "site_forms")) {
+  if (hasSite && metaAds && (option.key === "online_orders" || option.key === "form_leads")) {
     integrations.push({
       key: "meta_pixel",
       name_he: "הפיקסל של פייסבוק ואינסטגרם",
@@ -276,9 +220,9 @@ export function mockQuarterPlan(
   const kpiNeeds: IntegrationKey[] =
     option.key === "online_orders"
       ? ["ga4", ...(has("meta_pixel") ? (["meta_pixel"] as IntegrationKey[]) : [])]
-      : option.key === "site_forms"
+      : option.key === "form_leads"
         ? ["ga4"]
-        : option.key === "awareness_local"
+        : option.key === "local_awareness"
           ? ["meta_business"]
           : option.key === "store_visits"
             ? local
@@ -293,7 +237,7 @@ export function mockQuarterPlan(
       available_now: kpiNeeds.every((k) => k === "whatsapp_link"),
     },
   ];
-  if (option.key !== "whatsapp_orders" && option.key !== "whatsapp_inquiries") {
+  if (option.key !== "whatsapp_inquiries") {
     measures.push({
       name_he: "הודעות וואטסאפ מפוסטים",
       how_he: "סופרים הודעות שהגיעו עם הסימון של פוסט.",
@@ -301,7 +245,7 @@ export function mockQuarterPlan(
       available_now: true,
     });
   }
-  if (has("meta_business") && option.key !== "awareness_local") {
+  if (has("meta_business") && option.key !== "local_awareness") {
     measures.push({
       name_he: "שמירות ושיתופים",
       how_he: "שמירה ושיתוף אומרים שהפוסט היה שווה משהו, יותר מלייק.",
