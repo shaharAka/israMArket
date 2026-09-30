@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ComponentType } from "react";
+import type { ComponentType, CSSProperties } from "react";
 import { IconEyeOff, IconGlobe, IconLock, IconNoSale, IconShield, IconTrash } from "@/lib/icons";
 
 type Tile = { icon: ComponentType<{ className?: string }>; title: string; line: string };
@@ -59,7 +59,7 @@ export function Security() {
     <section aria-labelledby="security-title" className="lp-security border-t border-[#e6e4dc]">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-8 sm:py-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <header className="max-w-2xl">
+          <header data-rv className="max-w-2xl">
             <p className="text-sm font-bold text-[#2d3f32]">אבטחה ופרטיות</p>
             <h2 id="security-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
               המידע של העסק שלכם
@@ -75,10 +75,12 @@ export function Security() {
         </div>
 
         <ul className="mt-8 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:mt-10 lg:grid-cols-3">
-          {TRUST_TILES.map(({ icon: Icon, title, line }) => (
+          {TRUST_TILES.map(({ icon: Icon, title, line }, index) => (
             <li
               key={title}
-              className="flex gap-4 rounded-[20px] border border-[#e3e8df] bg-white/85 p-4 shadow-[0_18px_40px_-34px_rgba(45,63,50,0.55)] backdrop-blur-sm sm:p-6"
+              data-rv
+              style={{ "--rv-i": index % 3 } as CSSProperties}
+              className="lp-lift flex gap-4 rounded-[20px] border border-[#e3e8df] bg-white/85 p-4 shadow-[0_18px_40px_-34px_rgba(45,63,50,0.55)] backdrop-blur-sm sm:p-6"
             >
               <span aria-hidden className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#e8eee5] text-[#2d3f32]">
                 <Icon className="h-6 w-6" />
