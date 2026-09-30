@@ -11,6 +11,7 @@ import { AFTER_SAVE, clearSavedFlow, hasSavableDraft, loadFlow, saveFlowToAccoun
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
+import auth from "../login/auth.module.css";
 
 /** "ל" joins a Hebrew name directly (למאפיית תום) and takes a maqaf before a Latin one (ל־Tom's). */
 function forName(name: string): string {
@@ -83,10 +84,10 @@ export default function SignupPage() {
       }
     >
       {draft ? (
-        <p className="-mt-3 mb-5 text-sm text-[var(--ink-soft)]">נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
+        <p className={auth.lead}>נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
       ) : preview ? (
-        <div className="-mt-3 mb-5 flex items-center justify-between gap-3">
-          <p className="text-sm text-[var(--ink-soft)]">אחרי זה נבנה את החודש הראשון.</p>
+        <div className={`${auth.lead} flex items-center justify-between gap-3`}>
+          <p>אחרי זה נבנה את החודש הראשון.</p>
           <Swatches preview={preview} size="sm" />
         </div>
       ) : null}
@@ -103,10 +104,10 @@ export default function SignupPage() {
         back="/signup"
         disabled={pending}
       />
-      <div className="my-4">
+      <div className="my-5">
         <OrDivider />
       </div>
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className={auth.form}>
         <Field name="full_name" label="שם מלא" placeholder="נועה כהן" autoComplete="name" />
         <Field
           name="email"
@@ -125,29 +126,20 @@ export default function SignupPage() {
           autoComplete="new-password"
         />
         <ErrorNote message={error} />
-        <Button type="submit" disabled={pending} tone="primary" size="md" className="min-h-12 w-full">
+        <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
           {pending ? "פותחים חשבון…" : "לפתוח חשבון"}
         </Button>
       </form>
-      <p className="mt-4 text-center text-xs leading-5 text-[var(--ink-muted)]">
+      <p className={auth.fine}>
         פתיחת חשבון, גם עם Google, היא הסכמה ל
-        <Link href="/terms" className="font-bold text-[var(--ink)] underline-offset-4 hover:underline">
-          תנאי השימוש
-        </Link>
+        <Link href="/terms">תנאי השימוש</Link>
         {" "}ול
-        <Link href="/security" className="font-bold text-[var(--ink)] underline-offset-4 hover:underline">
-          מדיניות הפרטיות
-        </Link>
+        <Link href="/security">מדיניות הפרטיות</Link>
         .
       </p>
-      <p className="mt-6 text-center text-xs text-[var(--ink-muted)]">
+      <p className={auth.foot}>
         כבר יש לכם חשבון?{" "}
-        <Link
-          href="/login"
-          className="font-bold text-[var(--ink)] underline-offset-4 hover:underline"
-        >
-          להיכנס
-        </Link>
+        <Link href="/login">להיכנס</Link>
       </p>
     </AuthCard>
   );

@@ -16,8 +16,10 @@ import { CADENCE_OPTIONS, type PlanInputKey, type PlanInputs, type QuarterPlan }
 import { targetText, type DraftTarget } from "@/lib/goals";
 import { TargetEdit } from "./StepNumbers";
 import { WorkProgress, type RevealProps } from "./StepPlan";
+import { UIAction } from "@/components/design/Controls";
 import { Chip, QuietLink, StepShell, rangeSafe } from "./ui";
 import styles from "./start.module.css";
+import form from "./form.module.css";
 
 /**
  * The owner's strategy and first steps: the hook before the email. One scrollable plan,
@@ -185,11 +187,11 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
   const accent = "var(--primary)";
 
   const actionNote = plan ? (
-    <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[color:var(--ink)]">
+    <p aria-live="polite" className="min-h-5 pb-1 text-center text-[13px] leading-5 text-[color:var(--ink)] sm:text-start">
       {updating ? (
-        <span className="text-[color:var(--ink-soft)]">מעדכנים את התוכנית…</span>
+        <span className="text-[color:var(--ink-muted)]">מעדכנים את התוכנית…</span>
       ) : updateError ? (
-        <span className="font-bold text-[var(--danger)]">
+        <span className="font-semibold text-[var(--danger)]">
           לא הצלחנו לעדכן.{" "}
           <button type="button" onClick={retryUpdate} className="cursor-pointer underline underline-offset-4">
             לנסות שוב
@@ -197,11 +199,11 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         </span>
       ) : changeNote ? (
         <span className={styles.rise}>
-          <b>מה השתנה: </b>
+          <b className="font-semibold">מה השתנה: </b>
           {rangeSafe(changeNote)}
         </span>
       ) : (
-        <span className="text-[color:var(--ink-soft)]">התוכנית נשמרת עם פתיחת החשבון.</span>
+        <span className="text-[color:var(--ink-muted)]">התוכנית נשמרת עם פתיחת החשבון.</span>
       )}
     </p>
   ) : null;
@@ -261,8 +263,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         />
       ) : null}
       {failed && !plan ? (
-        <div role="alert" className="rounded-xl border border-[var(--rule)] bg-white p-4 text-sm leading-6 text-[color:var(--ink)]">
-          <p className="font-bold text-[color:var(--ink)]">לא הצלחנו לבנות את התוכנית כרגע.</p>
+        <div role="alert" className={`${styles.work} text-[15px] leading-6 text-[color:var(--ink-soft)]`}>
+          <p className="font-semibold text-[color:var(--ink)]">לא הצלחנו לבנות את התוכנית כרגע.</p>
           {failMessage ? <p>{failMessage}</p> : null}
           <p>הכיוון והתשובות שמורים. אפשר לנסות שוב, או לשמור ולבנות את התוכנית אחרי ההרשמה.</p>
         </div>
@@ -279,8 +281,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
             audience:
               names.length > 1 ? (
                 <fieldset>
-                  <legend className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">עם מי מתחילים?</legend>
-                  <div className="flex flex-wrap gap-1.5">
+                  <legend className={form.label}>עם מי מתחילים?</legend>
+                  <div className="flex flex-wrap gap-2">
                     {names.map((name) => (
                       <Chip
                         key={name}
@@ -291,7 +293,6 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                           update((f) => ({ ...f, planInputs: { ...(f.planInputs ?? {}), primary_audience: name } }));
                           change(["primary_audience"]);
                         }}
-                        className="min-h-11 rounded px-3"
                       />
                     ))}
                   </div>
@@ -308,12 +309,12 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
               />
             ),
             cadence: (
-              <fieldset className="border-t border-[var(--rule)] px-0 py-3">
+              <fieldset className="border-t border-[var(--rule)] px-0 py-4">
                 <legend className="sr-only">כמה פוסטים בשבוע</legend>
-                <p aria-hidden className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">
+                <p aria-hidden className={form.label}>
                   כמה פוסטים בשבוע מתאים לכם?
                 </p>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {CADENCE_OPTIONS.map((c) => (
                     <Chip
                       key={c.key}
@@ -324,7 +325,6 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                         update((f) => ({ ...f, planInputs: { ...(f.planInputs ?? {}), cadence: c.key } }));
                         change(["cadence"]);
                       }}
-                      className="min-h-11 rounded px-3"
                     />
                   ))}
                 </div>
@@ -343,9 +343,9 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
           }}
         />
       ) : null}
-      {otherDirection && <details className={styles.planAlternative}><summary>לבדוק כיוון אחר</summary><p>{otherDirection.title}</p><QuietLink onClick={() => update(f => ({ ...f, chosenDirection: otherIndex }))}>לבנות תוכנית בכיוון הזה</QuietLink></details>}
+      {otherDirection && <details className={styles.planAlternative}><summary>לבדוק כיוון אחר</summary><p>{otherDirection.title}</p><QuietLink tone="action" onClick={() => update(f => ({ ...f, chosenDirection: otherIndex }))}>לבנות תוכנית בכיוון הזה</QuietLink></details>}
       {saveError ? (
-        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
+        <p role="alert" className={form.error}>
           {saveError}
         </p>
       ) : null}
@@ -385,7 +385,7 @@ function PlanTarget({
     );
   }
   return (
-    <QuietLink onClick={() => setOpen(true)} className="-my-1 text-xs font-bold text-[color:var(--ink)]">
+    <QuietLink tone="action" onClick={() => setOpen(true)} className="-my-1">
       לשנות את היעד
     </QuietLink>
   );
@@ -401,13 +401,13 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
   if (!open) {
     return (
       <div className="border-t border-[var(--rule)] pt-3">
-        <QuietLink onClick={() => setOpen(true)}>משהו לא מתאים? ספרו לנו</QuietLink>
+        <QuietLink tone="action" onClick={() => setOpen(true)}>משהו לא מתאים? ספרו לנו</QuietLink>
       </div>
     );
   }
   return (
-    <div className="space-y-2 border-t border-[var(--rule)] pt-4">
-      <label htmlFor={fieldId} className="block text-sm font-bold text-[color:var(--ink)]">
+    <div className="space-y-3 border-t border-[var(--rule)] pt-4">
+      <label htmlFor={fieldId} className={`${form.label} !mb-0`}>
         משהו לא מתאים? ספרו לנו במילים שלכם
       </label>
       <textarea
@@ -420,11 +420,11 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
         rows={2}
         maxLength={400}
         placeholder="למשל: אין לנו זמן לסרטונים, ובדצמבר אנחנו סגורים שבוע"
-        className="w-full resize-none rounded-lg border border-[var(--rule-dark)] bg-white px-3.5 py-2.5 text-base leading-6 text-[color:var(--ink)] outline-none placeholder:text-[color:var(--ink-muted)] focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
+        className={form.input}
       />
-      <div className="flex flex-wrap items-center gap-2">
-        <button
-          type="button"
+      <div className="flex flex-wrap items-center gap-3">
+        <UIAction
+          variant="secondary"
           disabled={busy}
           onClick={() => {
             const words = text.trim();
@@ -434,10 +434,9 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
             }
             onSend(words);
           }}
-          className="min-h-11 cursor-pointer rounded border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] disabled:cursor-wait disabled:opacity-60"
         >
           {busy ? "מעדכנים את התוכנית…" : "לעדכן את התוכנית"}
-        </button>
+        </UIAction>
         <QuietLink
           onClick={() => {
             setOpen(false);
@@ -449,7 +448,7 @@ function Feedback({ saved, busy, onSend }: { saved: string; busy: boolean; onSen
         </QuietLink>
       </div>
       {error ? (
-        <p role="alert" className="text-sm font-bold text-[var(--danger)]">
+        <p role="alert" className={form.error}>
           {error}
         </p>
       ) : null}

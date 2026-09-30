@@ -1,0 +1,93 @@
+/* The months grid (SeasonsPicker). Busy is the sun, quiet the soft blue, ordinary white.
+ * The rules repeat the class: the product chrome paints every pressed button blue
+ * (`.start-blue button[aria-pressed="true"]`), and a busy month must stay the sun. */
+
+.dot,
+.swatch {
+  display: inline-block;
+  flex: none;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--rule-dark);
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+}
+
+.swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+}
+
+.dot[data-kind="busy"],
+.swatch[data-kind="busy"] {
+  background: var(--sun);
+  box-shadow: none;
+}
+
+.dot[data-kind="slow"],
+.swatch[data-kind="slow"] {
+  background: color-mix(in srgb, var(--primary) 55%, var(--paper));
+  box-shadow: none;
+}
+
+.month {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 54px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.month:hover {
+  border-color: var(--ink-faint);
+}
+
+.month small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.month.month[data-kind="busy"] {
+  border-color: color-mix(in srgb, var(--sun-edge) 45%, var(--paper));
+  background: var(--sand);
+  color: var(--sand-dark);
+}
+
+.month.month[data-kind="busy"] small {
+  color: var(--sand-dark);
+  opacity: 0.8;
+}
+
+.month.month[data-kind="slow"] {
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--paper));
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+}
+
+.month.month[data-kind="slow"] small {
+  color: var(--primary-dark);
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .month {
+    transition: none;
+  }
+}

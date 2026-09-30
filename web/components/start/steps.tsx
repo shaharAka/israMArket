@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { TextField } from "@/components/design/Controls";
+import { UIAction } from "@/components/design/Controls";
 import { BUSINESS_FIELDS } from "@/lib/businessFields";
 import {
   NETWORKS,
@@ -26,8 +26,10 @@ import {
 import { HowToFind } from "@/components/help/HowToFind";
 import { ActivityPicker, TriedPicker } from "./AnswerPickers";
 import { SeasonsPicker } from "./SeasonsPicker";
+import { IconPlus } from "@/lib/icons";
 import { CHANGE_LATER, Chip, IconButton, NetworkIcon, QuietLink, StepShell, TextInput } from "./ui";
 import styles from "./start.module.css";
+import form from "./form.module.css";
 
 /** What every screen gets from the flow. */
 export type StepProps = {
@@ -47,7 +49,7 @@ export type StepProps = {
 function FieldError({ message }: { message: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="text-sm font-bold text-[var(--danger)]">
+    <p role="alert" className={form.error}>
       {message}
     </p>
   );
@@ -72,9 +74,30 @@ export function StepName(props: StepProps) {
         next();
       }}
     >
-      <TextField id="business-name" label="שם העסק" value={flow.draft.business_name} error={error || undefined}
-        onChange={event => { setError(""); setDraft({ business_name: event.target.value }); }}
-        placeholder="למשל: מאפיית השכונה" autoComplete="organization" maxLength={80} />
+      <div>
+        <label htmlFor="business-name" className={form.label}>
+          שם העסק
+        </label>
+        <input
+          id="business-name"
+          className={form.input}
+          value={flow.draft.business_name}
+          aria-invalid={Boolean(error) || undefined}
+          aria-describedby={error ? "business-name-error" : undefined}
+          onChange={(event) => {
+            setError("");
+            setDraft({ business_name: event.target.value });
+          }}
+          placeholder="למשל: מאפיית השכונה"
+          autoComplete="organization"
+          maxLength={80}
+        />
+        {error ? (
+          <p id="business-name-error" role="alert" className={`${form.error} mt-2`}>
+            {error}
+          </p>
+        ) : null}
+      </div>
     </StepShell>
   );
 }
@@ -120,8 +143,8 @@ export function StepWhat(props: StepProps) {
       />
       <FieldError message={error} />
       <fieldset>
-        <legend className="mb-2 text-sm text-[var(--ink-soft)]">
-          <span className="font-bold text-[var(--ink)]">התחום</span> (לא חובה, רק אם אחד מאלה מתאים)
+        <legend className={form.label}>
+          התחום <small>(לא חובה, רק אם אחד מאלה מתאים)</small>
         </legend>
         <div className="flex flex-wrap gap-2">
           {BUSINESS_FIELDS.map((field) => (
@@ -134,7 +157,6 @@ export function StepWhat(props: StepProps) {
                 // Tapping the selected field again clears it.
                 setDraft({ business_type: d.business_type === field.key ? "" : field.key });
               }}
-              className="px-3.5"
             />
           ))}
         </div>
@@ -179,7 +201,7 @@ export function StepDifferent(props: StepProps) {
         maxLength={200}
       />
       <div>
-        <p className="mb-2 text-xs text-[var(--ink-soft)]">אפשר להתחיל מאחד מאלה:</p>
+        <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]">אפשר להתחיל מאחד מאלה:</p>
         <div className="flex flex-wrap gap-2">
           {kit.differentiators.map((example) => (
             <Chip
@@ -187,7 +209,6 @@ export function StepDifferent(props: StepProps) {
               label={example}
               selected={text.split(/,\s*/).includes(example)}
               onClick={() => toggleExample(example)}
-              className="px-3.5"
             />
           ))}
         </div>
@@ -271,21 +292,26 @@ export function StepAudiences(props: StepProps) {
     >
       {loading ? (
         <div className="space-y-2" role="status" aria-live="polite">
-          <p className="text-sm text-[var(--ink-soft)]">מחפשים את הלקוחות שלכם…</p>
-          {[0, 1, 2].map((i) => (
-            <div key={i} className={`h-[68px] rounded-xl border border-[var(--rule)] bg-white ${styles.shimmer}`} />
-          ))}
+          <p className="text-sm text-[color:var(--ink-muted)]">מחפשים את הלקוחות שלכם…</p>
+          <div className={form.list}>
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="space-y-2 border-t border-[var(--rule)] px-4 py-4 first:border-t-0">
+                <span className={`block h-3 w-32 rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
+                <span className={`block h-2.5 w-56 max-w-full rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <>
           {flow.suggestionsFailed ? (
-            <p className="text-sm text-[var(--ink-soft)]">לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי אתם מוכרים.</p>
+            <p className="text-[15px] leading-6 text-[color:var(--ink-soft)]">לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי אתם מוכרים.</p>
           ) : null}
           {kept.length ? (
-            <ul className={`divide-y divide-[var(--rule)] rounded-xl border border-[var(--rule)] bg-white ${styles.stagger}`}>
+            <ul className={`${form.list} ${styles.stagger}`}>
               {kept.map((audience, index) =>
                 editing === index ? (
-                  <li key={`edit-${index}`} className="space-y-2 p-3">
+                  <li key={`edit-${index}`} className="space-y-3 bg-[var(--soft)] p-4">
                     <TextInput
                       id={`aud-name-${index}`}
                       label="שם הקהל"
@@ -304,22 +330,21 @@ export function StepAudiences(props: StepProps) {
                       }
                       maxLength={160}
                     />
-                    <button
-                      type="button"
+                    <UIAction
+                      variant="secondary"
                       onClick={() => {
                         if (!audience.name.trim()) setDraft({ audiences: kept.filter((_, i) => i !== index) });
                         setEditing(null);
                       }}
-                      className="min-h-11 cursor-pointer rounded-full border border-[var(--rule-dark)] px-4 text-sm font-bold text-[var(--ink)]"
                     >
                       לשמור את הקהל
-                    </button>
+                    </UIAction>
                   </li>
                 ) : (
-                  <li key={`${audience.name}-${index}`} className="flex items-start gap-1 py-2 pr-3.5 pl-1">
+                  <li key={`${audience.name}-${index}`} className="flex items-start gap-1 py-2.5 pe-1.5 ps-4">
                     <div className="min-w-0 flex-1 py-1">
-                      <p className="text-[15px] font-black text-[var(--ink)]">{audience.name}</p>
-                      <p className="text-xs leading-5 text-[var(--ink-soft)]">
+                      <p className="text-[15.5px] font-semibold leading-6 text-[color:var(--ink)]">{audience.name}</p>
+                      <p className="mt-0.5 text-[13.5px] leading-[1.55] text-[color:var(--ink-soft)]">
                         {whyFor(audience.name) || audience.description}
                       </p>
                     </div>
@@ -350,16 +375,17 @@ export function StepAudiences(props: StepProps) {
                   type="button"
                   disabled={full}
                   onClick={() => setDraft({ audiences: [...kept, { name: s.name, description: s.description }] })}
-                  className="min-h-11 cursor-pointer rounded-full border border-dashed border-[var(--ink-faint)] px-3.5 text-sm text-[var(--ink)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className={`${form.chip} ${form.chipAdd}`}
                 >
-                  + {s.name}
+                  <IconPlus className="h-3.5 w-3.5" />
+                  {s.name}
                 </button>
               ))}
             </div>
           ) : null}
 
           {showAdd && !full ? (
-            <div className="space-y-2 rounded-xl border border-[var(--rule)] bg-white p-3">
+            <div className={`${form.panel} space-y-3`}>
               <TextInput
                 id="aud-new-name"
                 label="למי עוד אתם מוכרים?"
@@ -375,19 +401,18 @@ export function StepAudiences(props: StepProps) {
                 onChange={setNewDesc}
                 maxLength={160}
               />
-              <button
-                type="button"
-                onClick={saveNew}
-                disabled={!newName.trim()}
-                className="min-h-11 cursor-pointer rounded-full border border-[var(--rule-dark)] px-4 text-sm font-bold text-[var(--ink)] disabled:opacity-50"
-              >
+              <UIAction variant="secondary" onClick={saveNew} disabled={!newName.trim()}>
                 להוסיף את הקהל
-              </button>
+              </UIAction>
             </div>
           ) : !full ? (
-            <QuietLink onClick={() => setAdding(true)}>להוסיף קהל משלכם</QuietLink>
+            <div>
+              <QuietLink tone="action" onClick={() => setAdding(true)}>
+                להוסיף קהל משלכם
+              </QuietLink>
+            </div>
           ) : (
-            <p className="text-xs text-[var(--ink-soft)]">עד 3 קהלים. כדי להוסיף, הסירו אחד.</p>
+            <p className="text-[13px] text-[color:var(--ink-muted)]">עד 3 קהלים. כדי להוסיף, הסירו אחד.</p>
           )}
         </>
       )}
@@ -451,16 +476,14 @@ export function PresetGrid({ value, onPick }: { value?: string; onPick: (key: st
             role="radio"
             aria-checked={selected}
             onClick={() => onPick(preset.key)}
-            className={`flex min-h-[60px] cursor-pointer items-center gap-2.5 rounded-xl border p-2.5 text-right ${
-              selected ? "border-[var(--ink)] bg-[var(--canvas)] ring-1 ring-[var(--ink)]" : "border-[var(--rule)] bg-white"
-            }`}
+            className={`${form.tile} !items-center !gap-3 !p-3`}
           >
             <span className="flex shrink-0 -space-x-1.5 space-x-reverse" aria-hidden>
               {preset.palette.slice(0, 4).map((s) => (
-                <span key={s.hex} className="h-6 w-6 rounded-full border-2 border-white" style={{ background: s.hex }} />
+                <span key={s.hex} className="h-6 w-6 rounded-full ring-2 ring-[var(--paper)]" style={{ background: s.hex }} />
               ))}
             </span>
-            <span className="text-sm font-bold leading-tight text-[var(--ink)]">{preset.name}</span>
+            <span className="text-sm font-semibold leading-tight text-[color:var(--ink)]">{preset.name}</span>
           </button>
         );
       })}
@@ -576,17 +599,17 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
 
       {d.has_none ? (
         <div className={`space-y-3 ${styles.rise}`}>
-          <p className="text-sm leading-6 text-[var(--ink)]">
+          <p className="text-[15px] leading-6 text-[color:var(--ink)]">
             הרבה עסקים מתחילים בדיוק ככה. בחרו סגנון שמרגיש כמוכם, ונבנה ממנו את הפוסטים הראשונים.
           </p>
           <PresetGrid
             value={d.style_preset}
             onPick={(key) => update((f) => ({ ...f, draft: { ...f.draft, style_preset: key } }))}
           />
-          <p className="text-xs text-[var(--ink-soft)]">לא בטוחים? אפשר לדלג. נבחר בשבילכם, ותמיד אפשר לשנות.</p>
+          <p className="text-[13px] text-[color:var(--ink-muted)]">לא בטוחים? אפשר לדלג. נבחר בשבילכם, ותמיד אפשר לשנות.</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {selected.includes("website") ? (
             <div className={styles.rise}>
               <TextInput
@@ -619,7 +642,7 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
             </div>
           ) : null}
           {NETWORKS.filter((n) => selected.includes(n.key)).map((network) => (
-            <div key={network.key} className={`rounded-xl border border-[var(--rule)] bg-white p-3 ${styles.rise}`}>
+            <div key={network.key} className={`${form.panel} ${styles.rise}`}>
               <TextInput
                 id={`link-${network.key}`}
                 label={network.label}
@@ -637,7 +660,7 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
                     : "לא זוכרים? אפשר להשאיר ריק."
                 }
               />
-              <div className="mt-2">
+              <div className="mt-3">
                 <ActivityPicker
                   label={`כמה אתם מפרסמים ב${network.label}`}
                   value={d.activity?.[network.key]}
@@ -649,7 +672,7 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
             </div>
           ))}
           {selected.length ? null : (
-            <p className="flex items-center gap-2 text-xs text-[var(--ink-soft)]">
+            <p className="flex items-center gap-2 text-[13px] text-[color:var(--ink-muted)]">
               <NetworkIcon network="website" className="h-4 w-4" />
               אפשר לסמן כמה. לכל אחד נשאל רק את הכתובת.
             </p>
@@ -697,7 +720,6 @@ export function StepTried(props: StepProps) {
               draft: { ...f.draft, tried: { channels: [] } },
             }))
           }
-          className="px-3.5"
         />
       </TriedPicker>
       {tried.channels.length ? (
@@ -746,10 +768,10 @@ export function StepCompetitors(props: StepProps) {
         next();
       }}
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
         {rows.map((row, index) => (
           // items-end: both boxes line up even if one label wraps to two lines.
-          <div key={index} className="grid grid-cols-[1fr_1.1fr] items-end gap-2">
+          <div key={index} className="grid grid-cols-[1fr_1.1fr] items-end gap-3">
             <TextInput
               id={`comp-name-${index}`}
               label={rows.length > 1 ? `מתחרה ${index + 1}` : "שם העסק"}
@@ -772,14 +794,16 @@ export function StepCompetitors(props: StepProps) {
         ))}
       </div>
       {rows.length < MAX_COMPETITORS && rows[rows.length - 1]?.name.trim() ? (
-        <QuietLink onClick={() => setDraft({ competitors: [...rows, { name: "", link: "" }] })}>
-          להוסיף עוד מתחרה
-        </QuietLink>
+        <div>
+          <QuietLink tone="action" onClick={() => setDraft({ competitors: [...rows, { name: "", link: "" }] })}>
+            להוסיף עוד מתחרה
+          </QuietLink>
+        </div>
       ) : null}
       {/* One help link for all rows: inside each row's label it pushed that box lower
           than the name box beside it. */}
-      <div className="flex flex-wrap items-center justify-between gap-x-3">
-        <p className="text-xs text-[var(--ink-soft)]">לא חייבים קישור. מספיק השם.</p>
+      <div className="-my-2 flex flex-wrap items-center justify-between gap-x-3">
+        <p className="text-[13px] text-[color:var(--ink-muted)]">לא חייבים קישור. מספיק השם.</p>
         <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
       </div>
     </StepShell>

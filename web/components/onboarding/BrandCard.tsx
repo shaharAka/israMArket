@@ -20,7 +20,7 @@ export function Swatches({
       {preview.palette.slice(0, 6).map((swatch, index) => (
         <li key={`${swatch.hex}-${index}`} title={swatch.name || swatch.hex}>
           <span
-            className={`block ${dot} rounded-full border border-black/10`}
+            className={`block ${dot} rounded-full shadow-[inset_0_0_0_1px_var(--rule-dark)]`}
             style={{ backgroundColor: swatch.hex }}
           />
           <span className="sr-only">{swatch.name || swatch.hex}</span>
@@ -79,9 +79,9 @@ export function BrandCard({
   return (
     <div className={`space-y-4 ${className}`}>
       <div>
-        {label ? <p className="text-xs font-bold text-[var(--good)]">{label}</p> : null}
+        {label ? <p className="text-[13px] font-semibold text-[var(--primary)]">{label}</p> : null}
         <BrandLogo brand={brand} className="mt-3" />
-        <Heading className="mt-1 text-3xl font-black leading-tight tracking-tight sm:text-5xl">
+        <Heading className="mt-1 text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
           {brand.business_name || "העסק שלכם"}
         </Heading>
       </div>

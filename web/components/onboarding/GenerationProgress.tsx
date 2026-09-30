@@ -14,27 +14,27 @@ export function GenerationProgress({ stage, businessName }: { stage: string; bus
   );
   const finished = stage === "done";
   return (
-    <div className="space-y-5" role="status" aria-live="polite">
+    <div className="space-y-6" role="status" aria-live="polite">
       <div>
-        <h2 className="text-2xl font-black text-[var(--ink)]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
-        <p className="mt-1 text-sm text-[var(--ink-soft)]">דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע.</p>
+        <h2 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
+        <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע.</p>
       </div>
-      <ol className="divide-y divide-[var(--rule)] rounded-lg border border-[var(--rule)] bg-white">
+      <ol className="divide-y divide-[var(--rule)] overflow-hidden rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
         {GENERATE_STAGES.map((item, index) => {
           const done = finished || index < current;
           const active = !finished && index === current;
           return (
             <li
               key={item.key}
-              className={`flex min-h-12 items-center gap-3 px-4 text-sm ${
-                done ? "text-[var(--ink)]" : active ? "font-bold text-[var(--ink)]" : "text-[var(--ink-muted)]"
+              className={`flex min-h-[52px] items-center gap-3 px-5 text-[15px] ${
+                done ? "text-[var(--ink-soft)]" : active ? "font-semibold text-[var(--ink)]" : "text-[var(--ink-muted)]"
               }`}
             >
               {done ? (
-                <IconCheck className="h-4 w-4 shrink-0" />
+                <IconCheck className="h-4 w-4 shrink-0 text-[var(--primary)]" />
               ) : (
                 <span
-                  className={`h-2.5 w-2.5 shrink-0 rounded-full ${active ? "animate-pulse bg-[var(--ink)]" : "bg-[var(--rule-dark)]"}`}
+                  className={`mx-[3px] h-2.5 w-2.5 shrink-0 rounded-full ${active ? "animate-pulse bg-[var(--sun)] motion-reduce:animate-none" : "bg-[var(--rule-dark)]"}`}
                 />
               )}
               {item.label}
