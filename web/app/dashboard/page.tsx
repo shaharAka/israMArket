@@ -19,7 +19,7 @@ import {
   type StrategyPayload,
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
-import { IconArrowLeft, IconCheck, IconImage } from "@/lib/icons";
+import { IconArrowLeft, IconCheck, IconImage, IconRoute } from "@/lib/icons";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
@@ -173,6 +173,7 @@ export default function DashboardPage() {
 
           {/* Everything else: quiet rows in one container. */}
           <section className="divide-y divide-[#e9e8e3] rounded-lg border border-[#e6e4dc] bg-white px-4 sm:px-5">
+            <QuarterPlanRow strategy={strategy} business={business} />
             {instagram && needsInstagram(instagram) ? <InstagramNudge connected={instagram.meta_connected} /> : null}
             <SetupChecklist />
             {nearlyDone && !allApproved ? (
@@ -192,6 +193,27 @@ export default function DashboardPage() {
         </div>
       </div>
     </AppShell>
+  );
+}
+
+/**
+ * The 3-month plan, one row: the plan's one line (or, for a business from before the
+ * stored plan, the quarter's hypothesis), leading to /strategy.
+ */
+function QuarterPlanRow({ strategy, business }: { strategy: StrategyPayload; business: Business | null }) {
+  const plan = strategy.quarter_plan ?? business?.quarter_plan;
+  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  const line = plan?.strategy.one_liner_he || quarter?.hypothesis;
+  if (!line) return null;
+  return (
+    <Link href="/strategy" className="flex min-h-12 items-center gap-3 py-3 transition-colors hover:text-[#20211f]">
+      <IconRoute className="h-4 w-4 shrink-0 text-[#62635f]" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs font-bold text-[#747570]">התוכנית ל-3 חודשים</span>
+        <span className="mt-0.5 block truncate text-sm font-bold leading-6 text-[#20211f]">{line}</span>
+      </span>
+      <IconArrowLeft className="h-4 w-4 shrink-0 text-[#8b8e84]" />
+    </Link>
   );
 }
 

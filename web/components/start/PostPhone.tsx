@@ -4,8 +4,7 @@
 
 import { useId, useRef, useState } from "react";
 import { CardStage, needsPhoto, resolveTemplate } from "@/components/CardCanvas";
-import type { BrandLanguage, BrandSwatch, RoadmapPost } from "@/lib/api";
-import type { SamplePost } from "@/lib/draft";
+import type { BrandLanguage, BrandSwatch, PostIdea, RoadmapPost } from "@/lib/api";
 import { WhyBlock, formatLabel } from "./IdeaCard";
 import { inkOn } from "./ui";
 
@@ -15,6 +14,25 @@ import { inkOn } from "./ui";
  * and a photo slot the owner can fill now. No like or view counts: we do not invent
  * engagement.
  */
+
+/**
+ * A post written for a strategy, as the (Revision 4) sample-post endpoint returned it. The
+ * onboarding no longer shows sample posts (Revision 5: the plan is the hook); this renderer
+ * and its photo slot stay for the app's post editor.
+ */
+export type SamplePost = {
+  title: string;
+  format: PostIdea["format"];
+  hook: string;
+  caption: string;
+  cta: string;
+  overlay_headline: string;
+  template: string;
+  badge?: string;
+  pillar_key: string;
+  photo: { site_url?: string; hint_he: string };
+  why: PostIdea["why"];
+};
 
 const NEUTRAL: BrandSwatch[] = [
   { hex: "#2B2D28", role: "primary", name: "" },

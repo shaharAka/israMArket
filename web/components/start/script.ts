@@ -6,9 +6,9 @@
  * appear instantly, and they only restate what the owner said plus one piece of plain
  * marketing sense. They never promise a number.
  */
-import { goalsFor } from "@/lib/businessModel";
 import {
   NETWORKS,
+  inferBusinessModel,
   TRIED_OPTIONS,
   firstOffering,
   kitFor,
@@ -27,25 +27,45 @@ export type StepId =
   | "links"
   | "tried"
   | "competitors"
-  | "goal"
+  | "grow"
+  | "success"
+  | "budget"
   | "found"
   | "direction"
-  | "strategy"
-  | "preview"
+  | "quarter"
   | "save";
 
-export const CHAPTERS: { key: string; label: string; steps: StepId[] }[] = [
+export const CHAPTERS: { key: string; label: string; short?: string; steps: StepId[] }[] = [
   { key: "business", label: "העסק", steps: ["name", "what", "different"] },
   { key: "customers", label: "הלקוחות", steps: ["audiences", "seasons"] },
-  { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors", "goal"] },
-  { key: "plan", label: "מה למדנו", steps: ["found", "direction", "strategy", "preview", "save"] },
+  { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors"] },
+  { key: "goal", label: "המטרה והתקציב", short: "המטרה", steps: ["grow", "success", "budget"] },
+  { key: "plan", label: "מה למדנו", steps: ["found", "direction", "quarter", "save"] },
 ];
 
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
 
-/** A saved flow from before the reveal was split: "plan" is now "found". */
+/**
+ * A saved flow from an earlier version: "plan" was the single reveal (now "found"), the
+ * one-page strategy and the sample posts became the 3-month plan, and the goal question
+ * became "מה ייחשב הצלחה".
+ */
 export function migrateStep(value: string): string {
-  return value === "plan" ? "found" : value;
+  if (value === "plan") return "found";
+  if (value === "strategy" || value === "preview") return "quarter";
+  if (value === "goal") return "success";
+  return value;
+}
+
+/** The model as the flow knows it: confirmed, or inferred from what the owner wrote. */
+export function modelOf(flow: FlowState) {
+  const d = flow.draft;
+  return d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
+}
+
+/** "איפה אתם רוצים לגדול?" is for shops: a service business skips it. */
+function skipped(step: StepId, flow: FlowState): boolean {
+  return step === "grow" && modelOf(flow) === "services";
 }
 
 export function isStepId(value: string): value is StepId {
@@ -56,14 +76,25 @@ export function chapterIndexOf(step: StepId): number {
   return CHAPTERS.findIndex((chapter) => chapter.steps.includes(step));
 }
 
-export function previousStep(step: StepId): StepId | null {
-  const index = STEP_ORDER.indexOf(step);
-  return index > 0 ? STEP_ORDER[index - 1] : null;
+export function previousStep(step: StepId, flow: FlowState): StepId | null {
+  for (let index = STEP_ORDER.indexOf(step) - 1; index >= 0; index -= 1) {
+    if (!skipped(STEP_ORDER[index], flow)) return STEP_ORDER[index];
+  }
+  return null;
 }
 
-export function nextStep(step: StepId): StepId | null {
-  const index = STEP_ORDER.indexOf(step);
-  return index >= 0 && index < STEP_ORDER.length - 1 ? STEP_ORDER[index + 1] : null;
+export function nextStep(step: StepId, flow: FlowState): StepId | null {
+  const start = STEP_ORDER.indexOf(step);
+  if (start < 0) return null;
+  for (let index = start + 1; index < STEP_ORDER.length; index += 1) {
+    if (!skipped(STEP_ORDER[index], flow)) return STEP_ORDER[index];
+  }
+  return null;
+}
+
+/** The steps of a chapter this business is actually asked. */
+export function chapterSteps(chapterIndex: number, flow: FlowState): StepId[] {
+  return CHAPTERS[chapterIndex].steps.filter((step) => !skipped(step, flow));
 }
 
 const NETWORK_LABEL: Record<Network, string> = Object.fromEntries(
@@ -142,36 +173,48 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       if (names.length) return `נבדוק מה ${joinHe(names)} מפרסמים, ונמצא איפה אתם יכולים לבלוט.`;
       return "נחפש בעצמנו עסקים דומים באזור, וניקח מהם השראה, לא העתקה.";
     }
-    case "goal": {
-      switch (d.goal) {
-        case "sales":
-          return "המטרה: מכירות. כל פוסט יסתיים בדרך ברורה להזמין.";
-        case "brand_awareness":
-          return "המטרה: שיכירו אתכם. קודם נגיע לאנשים חדשים, ורק אחר כך נמכור.";
-        case "leads":
-          return "המטרה: פניות. נסביר מה אתם עושים עד שיהיה קל לפנות.";
-        case "personal_brand":
-          return "המטרה: שיכירו אתכם כמומחים. נראה את הידע, לא רק את השירות.";
+    case "grow":
+      switch (d.grow_where) {
+        case "online":
+          return "הבנו: הצמיחה באתר. נמדוד הזמנות אונליין, לא רק לייקים.";
+        case "store":
+          return "הבנו: המטרה שיבואו לחנות. נדבר קודם למי שגר ועובד קרוב.";
+        case "both":
+          return "גם באתר וגם בחנות. נבדוק מה כל ערוץ מביא, בנפרד.";
+        default:
+          return null;
+      }
+    case "success": {
+      const option = flow.successOptions?.find((o) => o.key === d.success?.kpi);
+      if (!option) return null;
+      const target = d.success?.target?.trim();
+      return target
+        ? `זה המדד שלנו: ${option.name_he}, והיעד ${target}. כל חלק בתוכנית ישרת אותו.`
+        : `זה המדד שלנו: ${option.name_he}. כל חלק בתוכנית ישרת אותו.`;
+    }
+    case "budget": {
+      switch (d.budget?.range) {
+        case "none":
+          return "בלי תקציב פרסום זה בסדר. נבנה תוכנית שעובדת בזמן שלכם, ונראה מה סכום קטן היה מוסיף.";
+        case "lt1k":
+          return "עם סכום קטן נשקיע רק במה שכבר הצליח, ובמי שכבר מכיר אתכם.";
+        case "1k-3k":
+          return "זה מספיק כדי לבדוק ערוץ ממומן אחד ברצינות. נתחיל בקטן ונגדיל את מה שמביא.";
+        case "3k-7k":
+          return "עם הסכום הזה אפשר לפתוח ערוץ חדש ולמדוד אותו כמו שצריך.";
+        case "gt7k":
+          return "עם תקציב כזה חשוב למדוד כל שקל. נחבר את הכלים כבר בחודש הראשון.";
+        case "unknown":
+          return "בסדר גמור. נבנה קודם תוכנית בלי פרסום, ונראה מה תקציב היה מוסיף.";
         default:
           return null;
       }
     }
     case "direction": {
       const direction = flow.plan?.directions[flow.chosenDirection ?? -1];
-      return direction ? `בחרתם: ${direction.title}. עכשיו נפרוש את זה לתוכנית.` : null;
-    }
-    case "preview": {
-      const photos = Object.values(flow.postPhotos ?? {}).filter((p) => p.kind === "upload").length;
-      if (photos === 1) return "התמונה שהעליתם תחכה לכם ב״התמונות שלי״.";
-      if (photos > 1) return `${photos} התמונות שהעליתם יחכו לכם ב״התמונות שלי״.`;
-      return null;
+      return direction ? `בחרתם: ${direction.title}. עכשיו נפרוש את זה ל-3 חודשים.` : null;
     }
     default:
       return null;
   }
-}
-
-/** The goal options for the model, and whether `goal` is one of them. */
-export function goalOptions(flow: FlowState) {
-  return goalsFor(flow.draft.business_model ?? "products");
 }

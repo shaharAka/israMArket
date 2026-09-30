@@ -2,18 +2,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { BrandSwatch } from "@/lib/api";
-import { goalsFor } from "@/lib/businessModel";
 import {
   MONTHS_HE,
   NETWORKS,
   TRIED_OPTIONS,
+  currentPlan,
   kitFor,
   presetFor,
-  strategyBase,
   type FlowState,
   type LinkKey,
 } from "@/lib/draft";
-import { NetworkIcon, inkOn, rangeSafe } from "./ui";
+import { GROW_OPTIONS, budgetLabel, formatIls } from "@/lib/quarterPlan";
+import { NetworkIcon, inkOn } from "./ui";
 import styles from "./start.module.css";
 
 /**
@@ -62,20 +62,16 @@ export function cardSlots(flow: FlowState): Slot[] {
       filled: Boolean(flow.triedNone || d.tried?.channels.length || d.tried?.what_worked?.trim()),
     },
     { key: "competitors", filled: Boolean(d.competitors?.some((c) => c.name.trim())) },
-    { key: "goal", filled: Boolean(d.goal && flow.seen.includes("goal")) },
+    { key: "success", filled: Boolean(d.success?.kpi) },
+    { key: "budget", filled: Boolean(d.budget?.range) },
     { key: "direction", filled: flow.chosenDirection !== null && flow.chosenDirection !== undefined },
-    { key: "strategy", filled: Boolean(strategyOf(flow)) },
+    { key: "plan", filled: Boolean(currentPlan(flow)) },
   ];
 }
 
 export function filledCount(flow: FlowState): { filled: number; total: number } {
   const slots = cardSlots(flow);
   return { filled: slots.filter((s) => s.filled).length, total: slots.length };
-}
-
-/** The strategy for the chosen direction, once it was built (not a stale one from another direction). */
-function strategyOf(flow: FlowState) {
-  return flow.strategy && flow.strategyFor === strategyBase(flow) ? flow.strategy : null;
 }
 
 function Empty({ children = "עוד לא סיפרתם" }: { children?: React.ReactNode }) {
@@ -143,9 +139,11 @@ export function BusinessCard({
   const markBg = look.palette ? swatch(look.palette, "background", "#ffffff") : "#ffffff";
   const markInk = look.palette ? swatch(look.palette, "primary", "#191b18") : "#191b18";
   const kit = d.business_type ? kitFor(d.business_type) : null;
-  const goal = d.goal && flow.seen.includes("goal") ? goalsFor(d.business_model ?? "products").find((g) => g.key === d.goal) : null;
   const direction = flow.chosenDirection != null ? flow.plan?.directions[flow.chosenDirection] : null;
-  const strategy = strategyOf(flow);
+  const plan = currentPlan(flow);
+  const kpi = flow.successOptions?.find((o) => o.key === d.success?.kpi)?.name_he ?? (d.success?.kpi ? plan?.kpi.name_he : undefined);
+  const grow = d.business_model !== "services" ? GROW_OPTIONS.find((o) => o.key === d.grow_where)?.label : undefined;
+  const budget = budgetLabel(d.budget);
   const { filled, total } = filledCount(flow);
   const links = (["website", ...NETWORKS.map((n) => n.key)] as LinkKey[]).filter((key) => d.links[key] !== undefined);
   const busy = d.seasons?.busy ?? [];
@@ -316,28 +314,42 @@ export function BusinessCard({
           </Row>
         </Section>
 
-        <Section title="הכיוון">
-          <Row label="מה הכי חשוב עכשיו">
-            <Filled on={Boolean(goal)}>
-              <p className="text-sm font-bold text-[#191b18]">{goal?.title}</p>
+        <Section title="המטרה והתקציב">
+          {grow ? (
+            <Row label="איפה לגדול">
+              <Filled on>
+                <p className="text-sm text-[#191b18]">{grow}</p>
+              </Filled>
+            </Row>
+          ) : null}
+          <Row label="מה ייחשב הצלחה">
+            <Filled on={Boolean(kpi)}>
+              <p className="text-sm font-bold text-[#191b18]">{kpi}</p>
+              {d.success?.target ? <p className="text-xs leading-5 text-[#5e6159]">היעד: {d.success.target}</p> : null}
             </Filled>
           </Row>
-          <Row label="הכיוון לחודש הראשון">
+          <Row label="תקציב שיווק לחודש">
+            <Filled on={Boolean(budget)}>
+              <p className="text-sm text-[#191b18]">{budget}</p>
+            </Filled>
+          </Row>
+        </Section>
+
+        <Section title="התוכנית">
+          <Row label="הכיוון">
             <Filled on={Boolean(direction)} empty={<Empty>נבחר יחד בסוף</Empty>}>
               <p className="text-sm font-black text-[#191b18]">{direction?.title}</p>
               <p className="text-xs leading-5 text-[#5e6159]">{direction?.approach_he}</p>
             </Filled>
           </Row>
-          <Row label="האסטרטגיה">
-            <Filled on={Boolean(strategy)} empty={<Empty>נבנה יחד אחרי הכיוון</Empty>}>
-              <p className="text-sm leading-6 text-[#191b18]">{strategy?.objective.text_he}</p>
-              {strategy?.channels[0] ? (
+          <Row label="3 החודשים הקרובים">
+            <Filled on={Boolean(plan)} empty={<Empty>נבנה יחד אחרי הכיוון</Empty>}>
+              <p className="text-sm leading-6 text-[#191b18]">{plan?.strategy.one_liner_he}</p>
+              {plan ? (
                 <p className="text-xs leading-5 text-[#5e6159]">
-                  {strategy.channels[0].network} · {rangeSafe(strategy.channels[0].cadence_he)}
+                  {plan.channels.filter((c) => c.kind === "new").length} ערוצים חדשים ·{" "}
+                  {plan.budget.organic_only || !plan.budget.monthly_ils ? "בלי תקציב פרסום" : `${formatIls(plan.budget.monthly_ils)} בחודש`}
                 </p>
-              ) : null}
-              {strategy?.success.owner_target ? (
-                <p className="text-xs leading-5 text-[#5e6159]">היעד: {strategy.success.owner_target}</p>
               ) : null}
             </Filled>
           </Row>

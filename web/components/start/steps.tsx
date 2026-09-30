@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { BUSINESS_TYPES } from "@/components/onboarding/constants";
-import type { BusinessModel } from "@/lib/api";
-import { BUSINESS_MODEL_OPTIONS, defaultGoalFor, goalsFor, isGoalValidFor } from "@/lib/businessModel";
 import {
   NETWORKS,
   draftForApi,
@@ -719,7 +717,7 @@ export function StepCompetitors(props: StepProps) {
       {...props}
       title="מי המתחרים העיקריים שלכם?"
       why="לא כדי להעתיק. כדי לראות מה כבר יש, ולמצוא איפה אתם יכולים לבלוט."
-      primary="להמשיך למטרה"
+      primary="להמשיך למטרה ולתקציב"
       reassure={CHANGE_LATER}
       onPrimary={() => {
         setDraft({ competitors: rows.filter((r) => r.name.trim()) });
@@ -767,121 +765,6 @@ export function StepCompetitors(props: StepProps) {
         <p className="text-xs text-[#5e6159]">לא חייבים קישור. מספיק השם.</p>
         <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
       </div>
-    </StepShell>
-  );
-}
-
-const MODEL_QUESTION: Record<BusinessModel, string> = {
-  products: "נראה שאתם מוכרים מוצרים — נכון?",
-  services: "נראה שאתם נותנים שירות — נכון?",
-  both: "נראה שאתם מוכרים מוצרים וגם נותנים שירות — נכון?",
-};
-
-export function StepGoal(props: StepProps) {
-  const { flow, update, next } = props;
-  const d = flow.draft;
-  const model: BusinessModel = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
-  const [changing, setChanging] = useState(false);
-  const [error, setError] = useState("");
-  const goals = goalsFor(model);
-  const goal = d.goal && isGoalValidFor(model, d.goal) ? d.goal : null;
-
-  function setModel(nextModel: BusinessModel) {
-    update((f) => {
-      const current = f.draft.goal;
-      return {
-        ...f,
-        modelConfirmed: true,
-        draft: {
-          ...f.draft,
-          business_model: nextModel,
-          goal: current && isGoalValidFor(nextModel, current) ? current : undefined,
-        },
-      };
-    });
-    setChanging(false);
-  }
-
-  return (
-    <StepShell
-      {...props}
-      title="מה הכי חשוב לכם עכשיו?"
-      why="לפי זה נבנה את הכיוון לחודש הראשון."
-      primary="לראות מה למדנו"
-      reassure={CHANGE_LATER}
-      onPrimary={() => {
-        if (!goal) {
-          setError("בחרו אחד מאלה. לא בטוחים? אפשר שנבחר בשבילכם.");
-          return;
-        }
-        update((f) => ({ ...f, modelConfirmed: true, draft: { ...f.draft, business_model: model } }));
-        next();
-      }}
-      skip="לא בטוחים? תבחרו בשבילנו"
-      onSkip={() => {
-        update((f) => ({
-          ...f,
-          modelConfirmed: true,
-          draft: { ...f.draft, business_model: model, goal: defaultGoalFor(model) },
-        }));
-        next();
-      }}
-    >
-      <div className="rounded-xl bg-[#efece3] p-3">
-        {changing ? (
-          <div className="space-y-2">
-            <p className="text-sm font-bold text-[#191b18]">מה אתם מוכרים?</p>
-            <div className="grid grid-cols-3 gap-2">
-              {BUSINESS_MODEL_OPTIONS.map((option) => (
-                <Chip
-                  key={option.key}
-                  label={option.key === "both" ? "גם וגם" : option.title}
-                  selected={model === option.key}
-                  onClick={() => setModel(option.key)}
-                  className="px-2"
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm font-bold text-[#191b18]">{MODEL_QUESTION[model]}</p>
-            <div className="flex gap-2">
-              <Chip
-                label="נכון"
-                selected={Boolean(flow.modelConfirmed)}
-                onClick={() => update((f) => ({ ...f, modelConfirmed: true, draft: { ...f.draft, business_model: model } }))}
-                className="min-h-10 px-3"
-              />
-              <Chip label="לא בדיוק" selected={false} onClick={() => setChanging(true)} className="min-h-10 px-3" />
-            </div>
-          </div>
-        )}
-      </div>
-      <div role="radiogroup" aria-label="מה הכי חשוב" className={`grid gap-2 ${goals.length > 2 ? "grid-cols-2" : "grid-cols-1"}`}>
-        {goals.map((option) => {
-          const on = goal === option.key;
-          return (
-            <button
-              key={option.key}
-              type="button"
-              role="radio"
-              aria-checked={on}
-              onClick={() => {
-                setError("");
-                update((f) => ({ ...f, draft: { ...f.draft, goal: option.key, business_model: model } }));
-              }}
-              className={`min-h-[68px] cursor-pointer rounded-xl border p-3 text-right transition-colors ${
-                on ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#dedcd4] bg-white"
-              }`}
-            >
-              <span className="block text-base font-black text-[#191b18]">{option.title}</span>
-              <span className="mt-0.5 block text-xs leading-5 text-[#5e6159]">{option.desc}</span>
-            </button>
-          );
-        })}
-      </div>
-      <FieldError message={error} />
     </StepShell>
   );
 }

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
 import { endpoints } from "@/lib/api";
-import { clearSavedFlow, hasSavableDraft, loadFlow, saveFlow, saveFlowToAccount, type FlowState } from "@/lib/draft";
+import { AFTER_SAVE, clearSavedFlow, hasSavableDraft, loadFlow, saveFlowToAccount, type FlowState } from "@/lib/draft";
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
@@ -50,15 +50,10 @@ export default function SignupPage() {
       });
       if (draft) {
         try {
-          const outcome = await saveFlowToAccount(draft);
-          if (outcome.photos.failed) {
-            // The business is saved; /start's save screen offers to try the photos again.
-            saveFlow({ ...draft, step: "save" });
-            router.replace("/start");
-            return;
-          }
+          await saveFlowToAccount(draft);
           await clearSavedFlow();
-          router.replace("/onboarding?from=start");
+          // The budget was asked at /start: straight to the plan, not the old budget step.
+          router.replace(AFTER_SAVE);
         } catch {
           // The account exists; /start still holds the draft and saves it from there.
           router.replace("/start");

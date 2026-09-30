@@ -11,7 +11,7 @@ import styles from "./start.module.css";
 /**
  * The first two screens of "מה למדנו ואיך מתקדמים": what we found (the sourced insights,
  * on their own screen), and the two directions for the first month, with a way to say
- * "something else" in the owner's own words. The strategy and the posts come after.
+ * "something else" in the owner's own words. The 3-month plan comes after.
  */
 
 export type RevealProps = StepProps & { jump: (step: StepId) => void };
@@ -189,8 +189,8 @@ export function StepDirection(props: RevealProps) {
     <StepShell
       {...props}
       title="הכיוון לחודש הראשון"
-      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "שתי דרכים טובות. בחרו את זו שמרגישה לכם נכון."}
-      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את האסטרטגיה"}
+      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "שתי דרכים טובות להתחיל. בחרו אחת, ונפרוש אותה ל-3 חודשים."}
+      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית ל-3 חודשים"}
       primaryDisabled={loading}
       stickyAction
       onPrimary={() => {
@@ -310,7 +310,7 @@ function SomethingElse({
         directionFeedback: words,
         ...(same ? {} : { plan: { ...revised, brand: revised.brand ?? plan.brand }, chosenDirection: null }),
       }));
-      setNote(same ? "רשמנו. ניקח את זה בחשבון באסטרטגיה." : "עדכנו את הכיוונים לפי מה שכתבתם. בחרו אחד.");
+      setNote(same ? "רשמנו. ניקח את זה בחשבון בתוכנית." : "עדכנו את הכיוונים לפי מה שכתבתם. בחרו אחד.");
     } catch {
       setError("לא הצלחנו לעדכן את הכיוונים. נסו שוב.");
     } finally {

@@ -92,6 +92,7 @@ export function StepShell({
   focus,
   direction,
   stickyAction = false,
+  stickyDesktop = false,
   reassure,
   actionNote,
 }: {
@@ -113,6 +114,8 @@ export function StepShell({
   focus: boolean;
   direction: "fwd" | "back";
   stickyAction?: boolean;
+  /** Keep the action sticky on desktop too (the long plan page). */
+  stickyDesktop?: boolean;
   /** A short live line right above the primary button (e.g. "מה השתנה"). */
   actionNote?: React.ReactNode;
 }) {
@@ -147,7 +150,9 @@ export function StepShell({
       <div
         className={
           stickyAction
-            ? "sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 lg:static lg:mx-0 lg:bg-none lg:p-0"
+            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[#f8f7f4] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
+                stickyDesktop ? "lg:mx-0 lg:px-0" : "lg:static lg:mx-0 lg:bg-none lg:p-0"
+              }`
             : "space-y-1 pt-1"
         }
       >

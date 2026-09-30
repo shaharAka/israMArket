@@ -1,4 +1,5 @@
 import type { OnboardingDraft } from "./draft";
+import type { StoredQuarterPlan } from "./quarterPlan";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/backend";
 const DEMO_FLAG = "isramarket_demo";
@@ -3565,7 +3566,8 @@ export const endpoints = {
   onboardingFromDraft: (body: {
     draft: OnboardingDraft;
     chosen_direction: PlanDirection | null;
-    chosen_idea?: PostIdea | null;
+    /** Revision 5: the 3-month plan the owner saw and shaped at /start. */
+    quarter_plan?: StoredQuarterPlan | null;
   }) =>
     api<{ business: Business | null }>("/onboarding/from-draft", {
       method: "POST",
@@ -3796,6 +3798,8 @@ export type Business = {
   owner_context?: OwnerContext | null;
   brand_source?: string | null;
   first_month_seed?: Record<string, unknown> | null;
+  /** The 3-month plan built at /start and stored by from-draft (Revision 5). */
+  quarter_plan?: StoredQuarterPlan | null;
   /** First-run decisions not made yet (diagnostics, growth_targets, long_horizon_plan,
    *  growth_hypothesis): the month was built without them and they can be set later. */
   deferred_decisions?: string[];
@@ -4191,6 +4195,8 @@ export type StrategyPayload = {
   competitors: unknown[];
   brand_language?: BrandLanguage | null;
   horizon?: MonthHorizon;
+  /** The stored 3-month plan from /start (Revision 5), when the business has one. */
+  quarter_plan?: StoredQuarterPlan | null;
 };
 
 export type MonthHorizon = {
