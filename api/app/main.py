@@ -13,6 +13,7 @@ from app.routers import (
     assets,
     audiences,
     auth,
+    foundations,
     instagram,
     integrations,
     onboarding,
@@ -25,6 +26,7 @@ from app.routers import (
     research,
     setup,
     strategy,
+    trial,
     whatsapp,
 )
 from app.security import DEFAULT_JWT_SECRET
@@ -104,6 +106,8 @@ app.include_router(setup.router)
 app.include_router(promotion.router)
 app.include_router(instagram.router)
 app.include_router(research.router)
+app.include_router(trial.router)
+app.include_router(foundations.router)
 app.include_router(whatsapp.router)
 # The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
 app.include_router(whatsapp.public_router)

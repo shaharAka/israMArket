@@ -865,7 +865,8 @@ function WhatsappRow({
   }
 
   return (
-    <div className="border-t border-[#e9e8e3] p-5 sm:p-6">
+    // `#whatsapp`: the free month's journey links here (lib/trial.ts).
+    <div id="whatsapp" className="scroll-mt-20 border-t border-[#e9e8e3] p-5 sm:p-6">
       <RowHead
         mark="וואטסאפ"
         title="קישור הוואטסאפ"

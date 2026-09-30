@@ -1,0 +1,44 @@
+/* The free month's journey: a step that was ticked since the last visit pops once, and a
+   step reached from an empty state's link is pointed at. */
+@keyframes trial-tick {
+  0% { transform: scale(0.4); opacity: 0; }
+  60% { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); }
+}
+.trial-tick {
+  animation: trial-tick 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s both;
+}
+.trial-tick::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid #374b3d;
+  animation: ring 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s 1 both;
+}
+@keyframes trial-fade-done {
+  from { color: #20211f; text-decoration-color: transparent; }
+}
+.trial-fade-done {
+  animation: trial-fade-done 0.7s ease-out 0.35s both;
+}
+@keyframes trial-highlight {
+  0%, 60% { background-color: #eef3ea; }
+  100% { background-color: transparent; }
+}
+.trial-highlight {
+  animation: trial-highlight 2.4s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trial-tick,
+  .trial-tick::after,
+  .trial-fade-done,
+  .trial-highlight {
+    animation: none !important;
+  }
+  .trial-tick::after {
+    display: none;
+  }
+}
+

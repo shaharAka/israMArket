@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from sqlalchemy.orm import Session
 
@@ -45,6 +47,8 @@ def register(
         email=body.email.lower(),
         password_hash=hash_password(body.password),
         full_name=body.full_name,
+        # The free month starts at signup (Revision 7 B).
+        trial_started_at=datetime.utcnow(),
     )
     db.add(user)
     db.commit()

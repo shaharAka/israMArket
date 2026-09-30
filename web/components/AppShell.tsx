@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ApiError, endpoints, isDemo } from "@/lib/api";
 import { BrandMark, IconArrowRight, IconChart, IconHome, IconImage, IconLogout, IconStore } from "@/lib/icons";
 import { BrandPicker } from "@/components/BrandPicker";
+import { TrialWelcome } from "@/components/trial/Welcome";
 import { ACCENT } from "@/lib/sections";
 import { SYSTEM_TONE } from "@/lib/tone";
 import { ToastHost } from "@/lib/ui";
@@ -112,7 +113,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         // every other screen would fail with "no business configured" and show an
         // error. Send them back to finish instead. Skipped on the wizard's own routes
         // (AppShell wraps them too) or this would loop forever.
-        const incomplete = !res.business?.onboarding_complete;
+        // A business built at /start (it has the stored 3-month plan) is in the app from
+        // signup on: its free month starts there, with or without the first month's
+        // posts (Revision 7 B). Only the older wizard still gates on `onboarding_complete`.
+        const incomplete = !res.business?.onboarding_complete && !res.business?.quarter_plan;
         setSetupIncomplete(incomplete);
         if (incomplete && !onFirstRunRoute) {
           // No business at all: the /start conversation builds it. A started one finishes
@@ -307,6 +311,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
       )}
 
+      {/* The free month's first-entry welcome: once per account, on whichever page the
+          owner first lands. */}
+      {inSetup ? null : <TrialWelcome />}
       <ToastHost />
     </div>
   );

@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
+import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
+import { StepLink } from "@/components/trial/StepLink";
 import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/lib/api";
+import { markSeen } from "@/lib/trial";
 import { IconChart } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
 
@@ -670,6 +673,7 @@ function NoSnapshotYet() {
       <div className="mt-2">
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
       </div>
+      <StepLink stepKey={["site_data", "instagram", "results"]} />
     </section>
   );
 }
@@ -699,6 +703,9 @@ export default function PerformancePage() {
   }, []);
 
   useEffect(() => {
+    // Opening the results is a step of the free month (the first results, the month's
+    // review); the API decides whether this visit completes one.
+    markSeen("results");
     endpoints
       .performance()
       // "No sync yet" is not an error: the endpoint still answers with the per-audience
@@ -755,6 +762,8 @@ export default function PerformancePage() {
               )
             ) : null}
 
+            <ResearchSection />
+            <PerformanceHypotheses />
             <WhatsappClicks data={whatsapp} />
 
             <div className="divide-y divide-[#e6e4dc] border-y border-[#e6e4dc]">

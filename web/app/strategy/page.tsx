@@ -8,6 +8,7 @@ import { MonthAhead } from "@/components/MonthAhead";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
 import { SectionHeader } from "@/components/SectionHeader";
+import { StepLink } from "@/components/trial/StepLink";
 import {
   ApiError,
   endpoints,
@@ -17,6 +18,7 @@ import {
   type WeeklyBreakdownItem,
 } from "@/lib/api";
 import { mockStoredPlan } from "@/lib/draft";
+import { markSeen } from "@/lib/trial";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconCalendar, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -74,6 +76,9 @@ export default function StrategyPage() {
 
   useEffect(() => {
     const timer = window.setTimeout(() => setWelcome(new URLSearchParams(window.location.search).get("welcome") === "1"), 0);
+    // The free month's first step is reading this page; after the first research it is
+    // also "adjust the plan" (Revision 7 B). Guidance only: it never blocks the page.
+    markSeen("plan");
     Promise.all([
       loadStrategy(),
       endpoints
@@ -142,6 +147,7 @@ export default function StrategyPage() {
                 }}
               />
             ) : null}
+            {plan && !strategy && !needsMonth && !error ? <NoMonthYet /> : null}
             {planFirst ? planView : null}
             {strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
             {planFirst ? null : planView}
@@ -157,6 +163,19 @@ export default function StrategyPage() {
         ) : null}
       </div>
     </AppShell>
+  );
+}
+
+/** The plan is here and this month is not (yet): say so, and where it sits in the month. */
+function NoMonthYet() {
+  return (
+    <div className="rounded-lg border border-[#e6e4dc] bg-white px-4 py-3 text-sm leading-6 text-[#3c3e3a]">
+      <p>
+        <b className="text-[#20211f]">החודש עוד לא מוכן. </b>
+        קודם מחברים מדידה ובוחרים מוצרים, ואז כותבים את הפוסטים. הם יחכו לאישור שלכם בעמוד הפוסטים.
+      </p>
+      <StepLink stepKey={["start_posts", "approve_first"]} />
+    </div>
   );
 }
 

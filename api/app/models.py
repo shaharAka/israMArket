@@ -14,6 +14,17 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255))
     full_name: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    # The free first month (docs/onboarding-v2.md, Revision 7 B). Account-level, not
+    # per business: the trial is what the owner signed up for, and a second business does
+    # not restart it. Set at signup (and by from-draft for older accounts); NULL on rows
+    # from before the trial existed, which /trial reads as "started when the account did".
+    trial_started_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # When the first-entry welcome was seen or skipped. Server-side so a second device or
+    # a cleared browser does not show it again.
+    welcomed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    # What the journey cannot read from other rows: when the plan and the results were
+    # last opened. {"plan_seen_at": iso, "plan_last_seen_at": iso, ...}. See routers/trial.py.
+    trial_events_json: Mapped[str] = mapped_column(Text, default="{}")
 
     businesses: Mapped[list["Business"]] = relationship(back_populates="owner")
 

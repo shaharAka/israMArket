@@ -14,20 +14,15 @@ Two rules govern everything here:
   the unfinished wizard is itself the first thing to fix — instead of a 404.
 """
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.deps import get_current_user
-from app.models import Asset, Audience, Business, Integration, User
-from app.routers.strategy import _active_strategy
-from app.services.jsonutil import loads
+from app.models import Business, User
+from app.services import journey
 
 router = APIRouter(prefix="/setup", tags=["setup"])
-
-# The only status that means "this account is wired up". `pending`, `select_property`
-# and `select_page` are all mid-OAuth states where nothing can be read or published yet.
-CONNECTED = "connected"
 
 SETUP = "setup"
 RUNNING = "running"
@@ -73,96 +68,11 @@ NEXT_ORDER = (
 _RANK = {key: index for index, key in enumerate(NEXT_ORDER)}
 
 
-def _newest_business(db: Session, user: User) -> Business | None:
+def newest_business(db: Session, user: User) -> Business | None:
     """The business the rest of the app is scoped to: the caller's newest one."""
     return (
         db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
     )
-
-
-def _filled(value) -> bool:
-    """Whether a stored value actually carries something.
-
-    Blank strings and empty containers do not count. The wizard saves models as-is, so an
-    untouched field arrives as `None`, `""` or `[]` — treating any of those as an answer
-    would mark the item done for a business that answered nothing.
-    """
-    if value is None:
-        return False
-    if isinstance(value, str):
-        return bool(value.strip())
-    return bool(value)
-
-
-def _stored(business: Business | None) -> dict:
-    stored = loads(business.scraped_profile_json, {}) if business else {}
-    return stored if isinstance(stored, dict) else {}
-
-
-def _has_rows(db: Session, model, business_id: int | None) -> bool:
-    """Whether this business owns at least one row of `model`."""
-    if business_id is None:
-        return False
-    return db.query(model.id).filter(model.business_id == business_id).first() is not None
-
-
-def _connected_providers(db: Session, business: Business | None) -> set[str]:
-    if business is None:
-        return set()
-    rows = (
-        db.query(Integration.provider)
-        .filter(Integration.business_id == business.id, Integration.status == CONNECTED)
-        .all()
-    )
-    return {row[0] for row in rows}
-
-
-def _posts(db: Session, business: Business | None) -> list[dict]:
-    """The posts of the strategy the rest of the app treats as current.
-
-    Resolved through the same `_active_strategy` helper `/posts` and `/performance` use,
-    so the checklist can never point at a page that disagrees with it. "No strategy yet"
-    is simply no posts, never an error.
-    """
-    if business is None:
-        return []
-    try:
-        strategy = _active_strategy(db, business)
-    except HTTPException:
-        return []
-    extra = loads(strategy.roadmap_json, {})
-    if not isinstance(extra, dict):
-        return []
-    roadmap = extra.get("roadmap")
-    raw = roadmap.get("posts") if isinstance(roadmap, dict) else None
-    if not isinstance(raw, list):
-        return []
-    # Only well-formed post objects count. A malformed entry must not be able to make the
-    # strategy look approved or published.
-    return [item for item in raw if isinstance(item, dict)]
-
-
-def _has_answers(diagnostics) -> bool:
-    """At least one diagnostic field that was actually answered."""
-    if not isinstance(diagnostics, dict):
-        return False
-    return any(_filled(value) for value in diagnostics.values())
-
-
-def _ranked_targets(value) -> list[str]:
-    """The ranked growth targets, blank entries dropped."""
-    if not isinstance(value, list):
-        return []
-    return [str(item).strip() for item in value if str(item).strip()]
-
-
-def _all_approved(posts: list[dict]) -> bool:
-    """Every post approved — and there has to be at least one post to approve.
-
-    An empty strategy is not "all approved", and a post without `approval_status` was
-    never approved either: the approval endpoint is the only thing that writes that value.
-    """
-    return bool(posts) and all(item.get("approval_status") == "approved" for item in posts)
 
 
 def _item(key: str, title: str, why: str, action_href: str, action_label: str, done: bool) -> dict:
@@ -176,9 +86,7 @@ def _item(key: str, title: str, why: str, action_href: str, action_label: str, d
     }
 
 
-def _setup_items(db: Session, business: Business | None, stored: dict) -> list[dict]:
-    business_id = business.id if business else None
-    connected = _connected_providers(db, business)
+def _setup_items(facts: journey.Facts) -> list[dict]:
     return [
         _item(
             "scan",
@@ -186,7 +94,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="מהאתר אנחנו לומדים את הצבעים, התמונות והסגנון שלכם. בלי זה הפוסטים ייצאו כלליים.",
             action_href="/decisions",
             action_label="לקרוא את האתר",
-            done=_filled(stored.get("brand_language")),
+            done=facts.brand_scanned,
         ),
         _item(
             "diagnostics",
@@ -194,7 +102,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="לפי התשובות נבחר יעדים ופוסטים שמתאימים לעסק שלכם.",
             action_href="/decisions",
             action_label="לענות על השאלות",
-            done=_has_answers(stored.get("diagnostics")),
+            done=facts.diagnostics,
         ),
         _item(
             "priorities",
@@ -202,7 +110,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="התוכנית של כל חודש נבנית סביב היעדים שבחרתם.",
             action_href="/decisions",
             action_label="לבחור יעדים",
-            done=bool(_ranked_targets(stored.get("growth_targets"))),
+            done=bool(facts.targets),
         ),
         _item(
             "quarter",
@@ -210,7 +118,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="כך כל חודש הוא צעד לקראת יעד גדול, ולא רק רשימת פוסטים.",
             action_href="/plan",
             action_label="לבנות את התוכנית",
-            done=_filled(stored.get("long_horizon_plan")),
+            done=facts.long_horizon,
         ),
         _item(
             "audiences",
@@ -218,7 +126,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="כל פוסט ייכתב לקהל מסוים, ותראו את התוצאות לפי קהל.",
             action_href="/decisions#audiences",
             action_label="לבחור קהלים",
-            done=_has_rows(db, Audience, business_id),
+            done=facts.audiences,
         ),
         _item(
             "media",
@@ -226,7 +134,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="התמונות שלכם ישמשו בכל עיצוב, במקום תמונות מלאי גנריות.",
             action_href="/assets",
             action_label="להעלות תמונות",
-            done=_has_rows(db, Asset, business_id),
+            done=facts.asset_count > 0,
         ),
         _item(
             "google",
@@ -234,7 +142,7 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="רק כך רואים אילו פוסטים באמת הביאו אנשים לאתר, ומה הם עשו שם.",
             action_href="/integrations",
             action_label="לחבר את נתוני האתר",
-            done="ga4" in connected,
+            done="ga4" in facts.connected,
         ),
         _item(
             "instagram",
@@ -242,12 +150,13 @@ def _setup_items(db: Session, business: Business | None, stored: dict) -> list[d
             why="כך נמדוד את הפוסטים, ובהמשך גם נפרסם אותם בלי שתעתיקו ידנית.",
             action_href="/integrations",
             action_label="לחבר את אינסטגרם",
-            done="meta" in connected,
+            done="meta" in facts.connected,
         ),
     ]
 
 
-def _running_items(posts: list[dict]) -> list[dict]:
+def _running_items(facts: journey.Facts) -> list[dict]:
+    posts = facts.posts
     return [
         _item(
             "plan",
@@ -263,7 +172,7 @@ def _running_items(posts: list[dict]) -> list[dict]:
             why="רק פוסטים מאושרים נכנסים לפרסום ולמדידה.",
             action_href="/posts",
             action_label="לאשר את הפוסטים",
-            done=_all_approved(posts),
+            done=facts.all_approved,
         ),
         _item(
             "publish",
@@ -271,17 +180,16 @@ def _running_items(posts: list[dict]) -> list[dict]:
             why="כשאתם מסמנים את הקישור לפוסט שפורסם, אנחנו יכולים לקשר אותו לתוצאות.",
             action_href="/posts",
             action_label="לסמן מה פורסם",
-            done=any(_filled(item.get("published_url")) for item in posts),
+            done=bool(facts.published_posts),
         ),
     ]
 
 
-def _groups(db: Session, business: Business | None) -> list[dict]:
-    stored = _stored(business)
-    posts = _posts(db, business)
+def groups_for(facts: journey.Facts) -> list[dict]:
+    """The checklist, from the same facts the free month's journey reads (`/trial`)."""
     return [
-        {"key": SETUP, "title": SETUP_TITLE, "items": _setup_items(db, business, stored)},
-        {"key": RUNNING, "title": RUNNING_TITLE, "items": _running_items(posts)},
+        {"key": SETUP, "title": SETUP_TITLE, "items": _setup_items(facts)},
+        {"key": RUNNING, "title": RUNNING_TITLE, "items": _running_items(facts)},
     ]
 
 
@@ -293,8 +201,8 @@ def setup_checklist(user: User = Depends(get_current_user), db: Session = Depend
     kept separate from how `groups` is listed — so the UI can show one clear instruction
     instead of a wall of checkboxes. When nothing is left, `next` is null.
     """
-    business = _newest_business(db, user)
-    groups = _groups(db, business)
+    business = newest_business(db, user)
+    groups = groups_for(journey.load(db, business))
     items = [item for group in groups for item in group["items"]]
     pending = sorted(items, key=lambda item: _RANK.get(item["key"], len(NEXT_ORDER)))
     nxt = next((item for item in pending if not item["done"]), None)

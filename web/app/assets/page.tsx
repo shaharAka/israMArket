@@ -6,6 +6,7 @@ import { AppShell } from "@/components/AppShell";
 import { AssetSheet, AssetTile } from "@/components/AssetCard";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
+import { StepLink } from "@/components/trial/StepLink";
 import { endpoints, isDemo, type Asset } from "@/lib/api";
 import { IconArrowLeft, IconEye, IconImage, IconLink, IconSparkles } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
@@ -404,6 +405,7 @@ export default function AssetsPage() {
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5e6159]">
               לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
+            <StepLink stepKey="photos" className="mt-2" />
           </section>
         )}
       </div>
