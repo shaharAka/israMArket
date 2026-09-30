@@ -3198,6 +3198,7 @@ const LIVE_PATHS = new Set([
   "/integrations/ga4",
   "/integrations/meta",
   "/auth/password",
+  "/auth/account",
 ]);
 
 export async function api<T>(
@@ -3242,6 +3243,9 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ current_password, new_password }),
     }),
+  /** Irreversible: deletes the account, the business and every file, then signs out. */
+  deleteAccount: (password: string) =>
+    api<{ ok: boolean }>("/auth/account", { method: "DELETE", body: JSON.stringify({ password }) }),
   logout: async () => {
     exitDemo();
     return api("/auth/logout", { method: "POST" });

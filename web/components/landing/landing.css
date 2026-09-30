@@ -189,7 +189,34 @@
   box-shadow: 0 22px 40px -22px rgba(25, 27, 24, 0.35);
 }
 
+/* --- security, pricing, FAQ, closing ask ---------------------------------------- */
+
+/* Sage: the calm colour of "your data is safe here", in the showcase's gradient style. */
+.lp-security {
+  background:
+    radial-gradient(55% 60% at 90% 10%, rgba(45, 63, 50, 0.1), transparent 70%),
+    radial-gradient(45% 50% at 5% 90%, rgba(122, 139, 90, 0.12), transparent 70%),
+    #f4f6f1;
+}
+
+/* Warm sand behind the one plan card. */
+.lp-pricing {
+  background:
+    radial-gradient(50% 60% at 15% 30%, rgba(224, 164, 43, 0.14), transparent 70%),
+    radial-gradient(45% 55% at 95% 85%, rgba(196, 92, 38, 0.08), transparent 70%),
+    #f8f5ee;
+}
+
+.lp-closing {
+  background:
+    radial-gradient(60% 80% at 85% 50%, rgba(224, 164, 43, 0.1), transparent 70%),
+    #f9f8f6;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .lp-faq summary span {
+    transition: none;
+  }
   .lp-showcase {
     transition: none;
   }
