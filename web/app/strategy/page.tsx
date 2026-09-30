@@ -112,7 +112,7 @@ export default function StrategyPage() {
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-3">
       <div>
-        <h2 id="quarter-plan-heading" className="sr-only">התוכנית ל-3 החודשים</h2>
+        <h2 id="quarter-plan-heading" className="sr-only">האסטרטגיה והצעדים הקרובים</h2>
         {welcome ? (
           <p className="mt-0.5 text-sm leading-6 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
         ) : null}
@@ -152,7 +152,7 @@ export default function StrategyPage() {
               />
             ) : null}
             {plan && !strategy && !needsMonth && !error ? <NoMonthYet /> : null}
-            {plan && strategy ? <SegmentedControl label="טווח התוכנית" value={range} onChange={setPlanRange} options={[{value:"quarter",label:"שלושה חודשים"},{value:"month",label:strategy.month_name_he}]} /> : null}
+            {plan && strategy ? <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{value:"quarter",label:"התמונה הרחבה"},{value:"month",label:strategy.month_name_he}]} /> : null}
             <TransitionPanel transitionKey={range}>
               {plan && (range === "quarter" || !strategy) ? planView : strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
             </TransitionPanel>
@@ -269,8 +269,8 @@ function MonthSection({
       {showQuarter ? (
         <section id="quarter" className="scroll-mt-24 border-t border-[var(--rule)] pt-4">
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
-            <h2 className="text-lg font-black text-[color:var(--ink)]">הרבעון</h2>
-            {quarter?.horizon ? <p className="text-xs text-[color:var(--ink-muted)]">{quarter.horizon}</p> : null}
+            <h2 className="text-lg font-black text-[color:var(--ink)]">הצעדים הבאים</h2>
+            {quarter?.milestones.length ? <p className="text-xs text-[color:var(--ink-muted)]">{quarter.milestones.map(milestone => milestone.month_label).join(" · ")}</p> : null}
           </div>
           {quarter ? (
             <>
@@ -283,7 +283,7 @@ function MonthSection({
             </>
           ) : (
             <p className="mt-2 text-sm leading-6 text-[color:var(--ink-soft)]">
-              עדיין אין תוכנית לרבעון.{" "}
+              עדיין אין כיוון להמשך התוכנית.{" "}
               <Link href="/onboarding" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
                 לבנות אותה
               </Link>
@@ -513,7 +513,7 @@ function QuarterDetails({
     <div className="space-y-4 text-sm leading-6 text-[color:var(--ink)]">
       {targets.length ? (
         <div>
-          <p className="text-[11px] font-bold text-[color:var(--ink-muted)]">היעדים לרבעון, לפי סדר חשיבות</p>
+          <p className="text-[11px] font-bold text-[color:var(--ink-muted)]">יעדי העבודה, לפי סדר חשיבות</p>
           <ol className="mt-1.5 space-y-1">
             {targets.map((target, index) => (
               <li key={`${target}-${index}`} className="flex items-start gap-2">

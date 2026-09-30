@@ -353,7 +353,7 @@ export function BusinessCard({
               <p className="text-sm text-[#191b18]">{budget}</p>
             </Filled>
           </Row>
-          <Row label="היעד ל-3 חודשים">
+          <Row label="יעד העבודה">
             <Filled on={Boolean(target)} empty={<Empty>נחשב יחד אחרי התקציב</Empty>}>
               <p className="text-sm font-bold leading-6 text-[#191b18]">
                 <BidiText text={target} />
@@ -374,7 +374,7 @@ export function BusinessCard({
               <p className="text-xs leading-5 text-[#5e6159]">{direction?.approach_he}</p>
             </Filled>
           </Row>
-          <Row label="3 החודשים הקרובים">
+          <Row label="האסטרטגיה והצעדים הקרובים">
             <Filled on={Boolean(plan)} empty={<Empty>נבנה יחד אחרי הכיוון</Empty>}>
               <p className="text-sm leading-6 text-[#191b18]">{plan?.strategy.one_liner_he}</p>
               {plan ? (

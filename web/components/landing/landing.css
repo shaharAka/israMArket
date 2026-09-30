@@ -316,7 +316,7 @@ html:has(.lp-home) { scroll-behavior: smooth; }
   animation: rm-dot 2.8s linear both;
 }
 
-/* The route ends at our storefront. The sun rises once as the plan arrives. */
+/* Arriving at the store starts the ongoing work. The sun rises once; the caption continues. */
 .rm-store { overflow: visible; }
 .rm-store-art { width: 100%; height: 100%; }
 @keyframes lp-sunrise {
@@ -328,6 +328,8 @@ html:has(.lp-home) { scroll-behavior: smooth; }
   100% { transform: translate(100px, 23px); }
 }
 .lp-route .journey-sun { animation: lp-sunrise 5s linear var(--rm-arrival) both; }
+.rm-caption-first { animation: rm-out 300ms ease var(--rm-arrival) both; }
+.rm-caption-next { animation: rm-in 420ms ease calc(var(--rm-arrival) + .35s) both; }
 
 /* --- scroll reveals, hover lifts, button presses ---------------------------------- */
 
@@ -525,6 +527,8 @@ html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
   }
 
   .lp-route .journey-sun { animation: none; }
+  .rm-caption-first { display: none; }
+  .rm-caption-next { animation: none; }
 
   .lp-lift,
   .lp-lift:hover,

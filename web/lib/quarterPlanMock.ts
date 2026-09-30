@@ -471,7 +471,7 @@ export function mockQuarterPlan(
             ? opened.length
               ? `בסוף ${m.label} בודקים אם ${opened[0]} מביא ${unit}, ומחליטים אם להגדיל.`
               : `בסוף ${m.label} משווים לחודש הראשון, ומוותרים על מה שלא הביא כלום.`
-            : `סיכום 3 החודשים: מה הביא ${unit}, ומה בונים לרבעון הבא.`,
+            : `בודקים מה הביא ${unit}, ומעדכנים את הצעדים הבאים לפי מה שלמדנו.`,
     };
   });
 
@@ -582,7 +582,7 @@ export function mockQuarterPlan(
 
   const changed = inputs.changed ?? [];
   const notes: string[] = [];
-  if (changed.includes("cadence")) notes.push(`הקצב עכשיו ${CADENCE_HE[cadence]}, והתוכן של 3 החודשים התעדכן.`);
+  if (changed.includes("cadence")) notes.push(`הקצב עכשיו ${CADENCE_HE[cadence]}, והתוכן בתוכנית התעדכן.`);
   if (changed.includes("target")) notes.push(inputs.target ? `נמדוד מול היעד שלכם: ${inputs.target}.` : "הורדנו את היעד. נמדוד בלי מספר קבוע.");
   if (changed.includes("primary_audience")) notes.push(`מתחילים ${lamed(primary)}. השבוע הראשון והפוסטים התעדכנו.`);
   if (changed.includes("feedback")) {

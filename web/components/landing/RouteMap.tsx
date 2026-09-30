@@ -71,10 +71,13 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
     <figure
       style={{ "--rm-arrival": `${TRAVEL_BEGIN + TRAVEL_DURATION}s` } as CSSProperties}
       role="img"
-      aria-label="מכירים את העסק, בונים תוכנית, כותבים פוסטים, מודדים ומשפרים. המסלול מסתיים בחנות שלכם, עם שמש שעולה מעליה."
+      aria-label="מכירים את העסק, בונים תוכנית, כותבים פוסטים, מודדים ומשפרים. מגיעים לחנות שלכם, השמש עולה, וממשיכים ללמוד ולעדכן את התוכנית."
       className={`lp-route relative overflow-hidden rounded border border-[var(--rule)] bg-[var(--paper)] ${className}`}
     >
-      <figcaption className="px-5 pt-4 text-sm font-bold text-[var(--ink-soft)]">תוכנית אחת. 3 חודשים של עבודה.</figcaption>
+      <figcaption className="grid px-5 pt-4 text-sm font-bold text-[var(--ink-soft)]">
+        <span className="rm-caption-first [grid-area:1/1]">מכירים את העסק, ובונים תוכנית.</span>
+        <span className="rm-caption-next [grid-area:1/1]">מכאן ממשיכים ללמוד ולשפר.</span>
+      </figcaption>
       <div aria-hidden className="relative" style={{ aspectRatio: `${width} / ${height}` }}>
         <svg viewBox={`0 0 ${width} ${height}`} className="absolute inset-0 h-full w-full" fill="none">
           <path d={d} stroke="var(--rule)" strokeWidth={wide ? 9 : 7} />

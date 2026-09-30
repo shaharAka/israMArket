@@ -22,7 +22,7 @@ import { BidiText, rangeSafe } from "@/components/start/ui";
 import styles from "./plan.module.css";
 
 /**
- * "התוכנית שלכם ל-3 החודשים הקרובים": the plan as one scannable document.
+ * The ongoing strategy as one scannable document, with a dated initial lookahead.
  *
  * The same component is the hook at the end of /start (with the owner's controls slotted
  * into the sections they change) and the plan on /strategy after signup. Sections are
@@ -449,7 +449,7 @@ function NumbersBlock({ numbers, accent, targetSlot }: { numbers: PlanNumbers; a
           </p>
         </li>
         <li className="border-t border-[var(--rule)] px-4 py-3" style={{ background: `color-mix(in srgb, ${accent} 7%, #ffffff)` }}>
-          <p className="text-[11px] font-bold text-[color:var(--ink-soft)]">היעד ל-3 חודשים</p>
+          <p className="text-[11px] font-bold text-[color:var(--ink-soft)]">יעד העבודה</p>
           {target?.text_he ? (
             <p className={`mt-0.5 font-black text-[color:var(--ink)] ${target.kind === "qualitative" ? "text-base leading-6" : "text-xl leading-7"}`}>
               <BidiText text={target.text_he} />
@@ -648,7 +648,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
     return (
       <div className="space-y-3">
         <div className="rounded-2xl border border-dashed border-[var(--rule-dark)] bg-white px-4 py-3.5">
-          <p className="text-base font-black text-[color:var(--ink)]">בלי תקציב פרסום. 3 החודשים בנויים על זמן, לא על כסף.</p>
+          <p className="text-base font-black text-[color:var(--ink)]">בלי תקציב פרסום. התוכנית בנויה על הזמן שתוכלו להשקיע.</p>
           {plan.channels.length ? (
             <p className="mt-1 text-sm leading-6 text-[color:var(--ink)]">
               כל הערוצים בתוכנית עובדים בלי לשלם על פרסום: {plan.channels.map((c) => c.name_he).join(", ")}.

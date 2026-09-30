@@ -68,7 +68,7 @@ export function StepSave(
       <StepShell
         {...props}
         title="נשמור את התוכנית"
-        why="אתם מחוברים לחשבון. נשמור את העסק ואת התוכנית ל-3 החודשים, ונתחיל מהמדידה."
+        why="אתם מחוברים לחשבון. נשמור את העסק ואת התוכנית שלכם, ונתחיל מהמדידה."
         primary={saving ? savingLabel : "לשמור את התוכנית ולהיכנס"}
         primaryDisabled={saving}
         onPrimary={() => void onSave()}

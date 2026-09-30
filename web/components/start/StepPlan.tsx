@@ -147,8 +147,8 @@ export function StepFound(props: RevealProps) {
     <StepShell
       {...props}
       title="מה גילינו"
-      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "מהתשובות שלכם ומהמחקר. על זה נבנה את התוכנית ל-3 החודשים הקרובים."}
-      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית ל-3 חודשים"}
+      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "מהתשובות שלכם ומהמחקר. מכאן נבנה את האסטרטגיה והצעדים הראשונים."}
+      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית שלכם"}
       primaryDisabled={loading}
       onPrimary={() => (failed ? retry() : next())}
       skip={failed ? "להמשיך בלי זה ולשמור" : undefined}
@@ -189,8 +189,8 @@ export function StepDirection(props: RevealProps) {
     <StepShell
       {...props}
       title="הכיוון לחודש הראשון"
-      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "שתי דרכים טובות להתחיל. בחרו אחת, ונפרוש אותה ל-3 חודשים."}
-      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית ל-3 חודשים"}
+      why={loading ? "רגע, מחברים את כל מה שסיפרתם." : "שתי דרכים טובות להתחיל. בחרו אחת, ונבנה ממנה את הצעדים הראשונים."}
+      primary={loading ? "חוקרים…" : failed ? "לנסות שוב" : "לבנות את התוכנית שלכם"}
       primaryDisabled={loading}
       stickyAction
       onPrimary={() => {

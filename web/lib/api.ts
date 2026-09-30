@@ -173,14 +173,14 @@ const DEMO_TARGET_CANDIDATES: GrowthTargetCandidate[] = [
   {
     id: "t1",
     category: "נאמנות",
-    target: "להקים מועדון לקוחות של 300 חברים עד סוף הרבעון",
+    target: "להקים מועדון לקוחות של 300 חברים עד סוף נובמבר",
     why_this: "אין היום מועדון לקוחות, ולחם קונים שוב ושוב. הכי זול לחזור למי שכבר קנה",
     recommended_rank: 1,
   },
   {
     id: "t2",
     category: "מכירות",
-    target: "למכור 25% יותר חלות בשישי תוך שלושה חודשים",
+    target: "למכור 25% יותר חלות בשישי עד סוף נובמבר",
     why_this: "החלות כבר נמכרות, וכל הביקוש מגיע ביום אחד. אפשר למכור בו יותר",
     recommended_rank: 0,
   },
@@ -1100,7 +1100,7 @@ const DEMO_STRATEGY: StrategyPayload = {
     { date: "2026-09-26", name: "סוכות", business_relevance: "חשוב: מארזי פיקניק, בגטים ופוקצ׳ות לאירוח בחוץ בחול המועד", relevance_tier: "high" },
   ],
   long_horizon_plan: {
-    horizon: "סתיו–חורף 2026 (3 חודשים)",
+    horizon: "סתיו–חורף 2026",
     hypothesis: "שלחם תום תהיה המקום של החלות והאירוח ביפו ובדרום תל אביב. במקום לחכות למי שעובר ברחוב, נבנה רשימה של 400 לקוחות קבועים שמזמינים לשישי בוואטסאפ.",
     targets: ["400 לקוחות קבועים ברשימת הוואטסאפ", "25% יותר חלות בשישי", "אפס מאפים שנזרקים בסופי שבוע"],
     milestones: [
@@ -1556,7 +1556,7 @@ function demoSetup(): SetupPayload {
         },
         {
           key: "quarter",
-          title: "התוכנית של הרבעון",
+          title: "האסטרטגיה והצעדים הבאים",
           why: "כך כל חודש הוא צעד לקראת יעד גדול, ולא רק רשימת פוסטים.",
           done: filled(DEMO_BUSINESS.long_horizon_plan),
           action_href: "/plan",
@@ -2611,7 +2611,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/onboarding/plan" && method === "POST") {
     const ranked = DEMO_BUSINESS.growth_targets || [];
     const base = DEMO_STRATEGY.long_horizon_plan;
-    if (!base) throw new ApiError("בדמו אין תוכנית רבעונית.", 500);
+    if (!base) throw new ApiError("בדמו אין עדיין תוכנית.", 500);
     // Echo the owner's ranking back so step 4 demonstrably changes the quarter plan.
     return {
       long_horizon_plan: {

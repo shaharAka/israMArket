@@ -202,7 +202,7 @@ export function TargetRanker({
           <h3 className="text-sm font-black text-[#191b18]">יעדים אפשריים</h3>
           <p className="mt-1 text-xs text-[#8b8e84]">
             {atCap
-              ? `בחרתם ${MAX_TARGETS} יעדים, וזה המקסימום לרבעון. כדי להחליף, הסירו אחד.`
+              ? `בחרתם ${MAX_TARGETS} יעדים להתמקד בהם. כדי להחליף, הסירו אחד.`
               : "לפי העסק, האתר והאבחון. לחצו על יעד כדי להוסיף אותו."}
           </p>
           <ul className="mt-3 space-y-2">

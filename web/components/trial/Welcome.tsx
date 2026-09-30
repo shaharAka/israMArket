@@ -30,7 +30,7 @@ function cards(trial: TrialPayload): Card[] {
       title: "מה יש כאן",
       body: (
         <ul className={styles.overview}>
-          <Row primary title="התוכנית" text="מה עושים ב-3 החודשים הקרובים, ואיך נמדוד." />
+          <Row primary title="התוכנית" text="האסטרטגיה, הצעדים הקרובים ומה נבדוק כדי להתקדם." />
           <Row title="הפוסטים" text="נכתבים אחרי שתבחרו מוצרים ותמונות, ומחכים לאישור שלכם." />
           <Row title="התוצאות והמחקר" text="מה הצליח, ומה למדנו השבוע על המתחרים והחיפושים." />
         </ul>
