@@ -40,6 +40,16 @@ import {
   type PresenceHint,
 } from "./businessFields";
 import { defaultGoalFor, goalsFor } from "./businessModel";
+import {
+  baselineForApi,
+  isLeverFor,
+  mockTargetSuggestion,
+  targetText,
+  type DraftBaseline,
+  type DraftLever,
+  type DraftTarget,
+  type TargetSuggestion,
+} from "./goals";
 import { clearPending } from "./pendingUploads";
 import {
   KPI_UNITS,
@@ -93,7 +103,13 @@ export type OnboardingDraft = {
   /** Revision 5: the marketing budget, where to grow (products / both) and the main KPI. */
   budget?: DraftBudget;
   grow_where?: GrowWhere;
+  /** Revision 5's "מה ייחשב הצלחה". Still read from old drafts; superseded by `lever` + `target`. */
   success?: DraftSuccess;
+  /** Revision 6 (lib/goals.ts): where the business is today, what to grow, and the 3-month
+   *  target the owner accepted or edited. The main measure follows from the lever. */
+  baseline?: DraftBaseline;
+  lever?: DraftLever;
+  target?: DraftTarget;
 };
 
 export type BrandScan = {
@@ -128,9 +144,12 @@ export type FlowState = {
   planInputs?: Pick<PlanInputs, "cadence" | "primary_audience">;
   /** "משהו לא מתאים? ספרו לנו" on the plan: the owner's own words. */
   planFeedback?: string;
-  /** "מה ייחשב הצלחה?" options, and the answers they were fetched for. */
+  /** "מה ייחשב הצלחה?" options, and the answers they were fetched for (revision 5). */
   successOptions?: SuccessOption[] | null;
   successOptionsFor?: string;
+  /** `POST /public/target-suggestion` for the current answers (revision 6). */
+  targetSuggestion?: TargetSuggestion | null;
+  targetSuggestionFor?: string;
   modelConfirmed?: boolean;
   /** "עוד לא ניסינו" at the tried step: an answer, not a skip. */
   triedNone?: boolean;
@@ -479,9 +498,28 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
   }
   // Where to grow is asked of shops only: a service business has no "online or in store".
   if (d.grow_where && model !== "services") out.grow_where = d.grow_where;
-  if (d.success?.kpi) {
+  if (d.success?.kpi && !d.lever) {
     out.success = { kpi: d.success.kpi };
     if (d.success.target?.trim()) out.success.target = d.success.target.trim().slice(0, 120);
+  }
+  // Revision 6: the numbers. A lever the model does not offer is a 422: drop it.
+  const baseline = baselineForApi(d.baseline);
+  if (baseline) out.baseline = baseline;
+  if (d.lever && isLeverFor(d.lever.primary, model)) {
+    out.lever = { primary: d.lever.primary };
+    if (d.lever.secondary && d.lever.secondary !== d.lever.primary && isLeverFor(d.lever.secondary, model)) {
+      out.lever.secondary = d.lever.secondary;
+    }
+  }
+  if (d.target?.kind && (d.target.accepted || d.target.edited_by_owner)) {
+    const t = d.target;
+    out.target = { kind: t.kind, unit_he: (t.unit_he ?? "").slice(0, 60), accepted: t.accepted, edited_by_owner: t.edited_by_owner };
+    if (t.kind === "qualitative") out.target.text_he = (t.text_he ?? "").slice(0, 300);
+    else {
+      if (t.value_min != null && Number.isFinite(t.value_min)) out.target.value_min = Math.max(0, t.value_min);
+      if (t.value_max != null && Number.isFinite(t.value_max)) out.target.value_max = Math.max(0, t.value_max);
+      if (out.target.value_min == null && out.target.value_max == null) delete out.target;
+    }
   }
   return out;
 }
@@ -624,6 +662,8 @@ export function chosenDirectionOf(flow: FlowState): PlanDirection | null {
 export function planBase(flow: FlowState): string {
   const draft = draftForApi(flow);
   if (draft.success) draft.success = { kpi: draft.success.kpi };
+  // The revision 6 target travels as `inputs.target` too: a new target updates the plan.
+  delete draft.target;
   return signature([draft, chosenDirectionOf(flow), flow.directionFeedback?.trim() || ""]);
 }
 
@@ -631,7 +671,7 @@ export function planBase(flow: FlowState): string {
 export function planInputsForApi(flow: FlowState): PlanInputs {
   const raw = flow.planInputs ?? {};
   const out: PlanInputs = {};
-  const target = flow.draft.success?.target?.trim();
+  const target = (targetText(flow.draft.target) || flow.draft.success?.target || "").trim();
   if (target) out.target = target.slice(0, 120);
   if (raw.cadence) out.cadence = raw.cadence;
   if (raw.primary_audience?.trim()) out.primary_audience = raw.primary_audience.trim();
@@ -662,6 +702,29 @@ export async function fetchQuarterPlan(
       await wait(inputs.changed?.length ? 1400 : 4200);
       const { mockQuarterPlan } = await import("./quarterPlanMock");
       return mockQuarterPlan(draft, direction, inputs, context.insights ?? []);
+    },
+  );
+}
+
+/**
+ * "היעד ל-3 חודשים" (revision 6): `POST /public/target-suggestion`. Deterministic on the
+ * server (no model), so it is asked again whenever a number changes.
+ */
+export async function fetchTargetSuggestion(draft: OnboardingDraft): Promise<TargetSuggestion> {
+  return withMock(
+    () => api<TargetSuggestion>("/public/target-suggestion", { method: "POST", body: JSON.stringify({ draft }) }),
+    async () => {
+      await wait(300);
+      const model = draft.business_model ?? inferBusinessModel(draft.business_type, draft.offerings);
+      return mockTargetSuggestion({
+        model,
+        grow: draft.grow_where,
+        baseline: draft.baseline,
+        lever: draft.lever,
+        budgetIls: budgetIls(draft.budget),
+        hasSite: Boolean(draft.links.website),
+        slowMonths: draft.seasons?.slow ?? [],
+      });
     },
   );
 }

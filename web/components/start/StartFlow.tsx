@@ -30,7 +30,8 @@ import {
   reflectionAfter,
   type StepId,
 } from "./script";
-import { StepBudget, StepGrow, StepSuccess } from "./StepGoal";
+import { StepBudget, StepGrow } from "./StepGoal";
+import { StepBaseline, StepLever, StepTarget } from "./StepNumbers";
 import { StepDirection, StepFound } from "./StepPlan";
 import { StepQuarter } from "./StepQuarter";
 import { StepSave } from "./StepSave";
@@ -275,11 +276,17 @@ export function StartFlow() {
     case "grow":
       screen = <StepGrow {...common} />;
       break;
-    case "success":
-      screen = <StepSuccess {...common} />;
+    case "baseline":
+      screen = <StepBaseline {...common} />;
+      break;
+    case "lever":
+      screen = <StepLever {...common} />;
       break;
     case "budget":
       screen = <StepBudget {...common} />;
+      break;
+    case "target":
+      screen = <StepTarget {...common} />;
       break;
     case "found":
       screen = <StepFound {...common} jump={jump} />;

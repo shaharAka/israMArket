@@ -14,7 +14,8 @@ import {
 } from "@/lib/draft";
 import { CADENCE_OPTIONS, type PlanInputKey, type PlanInputs, type QuarterPlan } from "@/lib/quarterPlan";
 import { lookOf } from "./BusinessCard";
-import { TargetQuestion } from "./StepGoal";
+import { targetText, type DraftTarget } from "@/lib/goals";
+import { TargetEdit } from "./StepNumbers";
 import { WorkProgress, type RevealProps } from "./StepPlan";
 import { Chip, QuietLink, StepShell, rangeSafe } from "./ui";
 import styles from "./start.module.css";
@@ -38,7 +39,6 @@ const AFFECTS: Record<PlanInputKey, SectionKey[]> = {
 };
 
 const DEBOUNCE_MS = 700;
-const TYPING_DEBOUNCE_MS = 1200;
 
 function audiencesOf(flow: FlowState): string[] {
   const names = flow.draft.audiences.map((a) => a.name.trim()).filter(Boolean);
@@ -60,7 +60,7 @@ function describeChange(keys: PlanInputKey[], flow: FlowState): string {
     notes.push(`הקצב: ${CADENCE_OPTIONS.find((o) => o.key === flow.planInputs?.cadence)?.label}.`);
   }
   if (keys.includes("target")) {
-    const target = flow.draft.success?.target?.trim();
+    const target = targetText(flow.draft.target) || flow.draft.success?.target?.trim();
     notes.push(target ? `נמדוד מול היעד שלכם: ${target}.` : "בלי יעד מספרי. נמדוד ונראה.");
   }
   if (keys.includes("primary_audience")) notes.push(`מתחילים עם ${primaryOf(flow)}.`);
@@ -185,7 +185,6 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
 
   const look = lookOf(flow);
   const accent = look.palette?.find((s) => s.role === "primary")?.hex ?? "#191b18";
-  const option = flow.successOptions?.find((o) => o.key === flow.draft.success?.kpi) ?? null;
 
   const actionNote = plan ? (
     <p aria-live="polite" className="min-h-5 px-1 pb-1 text-center text-[13px] leading-5 text-[#2b2d28]">
@@ -311,12 +310,13 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
                 </fieldset>
               ) : null,
             target: (
-              <TargetQuestion
-                flow={flow}
-                update={update}
-                compact
-                option={option ?? { key: plan.kpi.key, name_he: plan.kpi.name_he }}
-                onChange={(typing) => change(["target"], typing ? TYPING_DEBOUNCE_MS : DEBOUNCE_MS)}
+              <PlanTarget
+                plan={plan}
+                target={flow.draft.target}
+                onSave={(target) => {
+                  update((f) => ({ ...f, draft: { ...f.draft, target } }));
+                  change(["target"], 0);
+                }}
               />
             ),
             cadence: (
@@ -361,6 +361,44 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
         </p>
       ) : null}
     </StepShell>
+  );
+}
+
+/** The target, editable on the plan: the owner's numbers replace ours and the plan updates. */
+function PlanTarget({
+  plan,
+  target,
+  onSave,
+}: {
+  plan: QuarterPlan;
+  target?: DraftTarget;
+  onSave: (target: DraftTarget) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const current = plan.numbers?.target;
+  const base: DraftTarget | null =
+    target && target.kind !== "qualitative"
+      ? target
+      : current && current.kind !== "qualitative" && current.value_min != null
+        ? { kind: current.kind, value_min: current.value_min, value_max: current.value_max, unit_he: current.unit_he ?? "", accepted: true, edited_by_owner: false }
+        : null;
+  if (!base) return null;
+  if (open) {
+    return (
+      <TargetEdit
+        target={base}
+        onSave={(next) => {
+          setOpen(false);
+          onSave(next);
+        }}
+        onCancel={() => setOpen(false)}
+      />
+    );
+  }
+  return (
+    <QuietLink onClick={() => setOpen(true)} className="-my-1 text-xs font-bold text-[#191b18]">
+      לשנות את היעד
+    </QuietLink>
   );
 }
 
