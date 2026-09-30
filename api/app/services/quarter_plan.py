@@ -123,6 +123,8 @@ CHANNELS: dict[str, dict] = {
 _TRIED_TO_CHANNEL = {"paid_social": "meta_ads", "google": "google_ads", "influencers": "influencers",
                      "whatsapp": "whatsapp"}
 MAX_NEW_STREAMS = {"regular": 3, "sometimes": 2, "none": 2, None: 2}
+# Fields that nearly always have a place customers walk into (business_fields keys).
+PHYSICAL_FIELDS = frozenset({"food", "beauty", "health", "fitness"})
 
 FORMATS = ("reel", "carousel", "image", "story")
 PLAN_PROMPT_CHARS = 26000
@@ -181,19 +183,31 @@ def budget_frame(draft: OnboardingDraft) -> dict:
     }
 
 
+def _presence(draft: OnboardingDraft) -> str | None:
+    """Where customers come, for the cost tables: an online-only shop is priced as
+    eCommerce whatever its field."""
+    if draft.presence_type:
+        return draft.presence_type
+    return "online_only" if draft.grow_where == "online" else None
+
+
 def _cost_blocks(draft: OnboardingDraft, frame: dict) -> tuple[str, str]:
     """The published cost ranges for this budget (Meta and Google), for the prompt."""
     monthly = frame["monthly_ils"] or 0
     meta = cost_model.prompt_block(cost_model.plan_from_budget(monthly, draft.goal_key, draft.model))
     google = google_cost.prompt_block(
-        google_cost.plan_from_budget(monthly, draft.business_type, draft.offerings, draft.model)
+        google_cost.plan_from_budget(
+            monthly, draft.business_type, draft.offerings, draft.model, presence_type=_presence(draft)
+        )
     )
     return meta, google
 
 
 def _unlock_facts(draft: OnboardingDraft) -> str:
     """The thresholds a "what budget would unlock" line may quote."""
-    plan = google_cost.plan_from_budget(0, draft.business_type, draft.offerings, draft.model)
+    plan = google_cost.plan_from_budget(
+        0, draft.business_type, draft.offerings, draft.model, presence_type=_presence(draft)
+    )
     lines = [
         f"- פרסום ממומן באינסטגרם ובפייסבוק: מתחת ל-{cost_model.RETARGETING_ONLY_BELOW_NIS:,} ₪ בחודש "
         "עדיף לפרסם רק למי שכבר מכיר אתכם. שלב הבדיקה לפי המקור: "
@@ -445,8 +459,13 @@ def _channels_block(draft: OnboardingDraft, frame: dict, scan: dict | None = Non
         + ("ערוץ חדש אחד לכל היותר בכל חודש, " if level != "regular" else "")
         + "ומתחילים בערוץ שהכי קל להם ושהכי קרוב לקהל. ערוץ חדש צריך סיבה מתוך מה שנמסר."
     )
-    physical = draft.grow_where in {"store", "both"} or draft.business_type in {
-        "מאפייה / קפה / מסעדה", "חנות פיזית / קמעונאות", "קליניקה, יופי ובריאות", "סטודיו לאימון / ספורט"}
+    # A place customers come to: the owner said so (grow_where / an old "חנות פיזית"
+    # draft), or the field nearly always has one.
+    physical = (
+        draft.grow_where in {"store", "both"}
+        or draft.presence_type in {"brick_and_mortar", "hybrid"}
+        or draft.business_type in PHYSICAL_FIELDS
+    )
     if physical and "gbp" not in have:
         lines.append("יש להם מקום שלקוחות מגיעים אליו: הכרטיס של העסק בגוגל (gbp) הוא בדרך כלל הערוץ החדש "
                      "הראשון, כי הוא חינמי ומביא אנשים שמחפשים באזור.")
@@ -794,6 +813,12 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
             f"לפי {frame['exact_ils']:,} ₪ בחודש, כמו שכתבתם." if frame["exact_ils"] is not None
             else f"לפי כ-{frame['monthly_ils']:,} ₪ בחודש, לפי הטווח שבחרתם ({frame['label_he']})."
         )
+        unpriced = google_cost.unpriced_field_label(draft.business_type, draft.offerings)
+        google_spend = any(line["channel_key"] == "google_ads" for month in budget_months for line in month["lines"])
+        if unpriced and google_spend and google_cost.match_industry(draft.business_type, draft.offerings)[0] is None:
+            budget["basis_he"] += (
+                f" לתחום {unpriced} אין מחיר לקליק בגוגל בטבלה שפורסמה, אז בגוגל הערכנו לפי רצועת הביניים."
+            )
     for month in budget_months:
         for line in month["lines"]:
             money.update(str(v) for v in line["ils_range"])

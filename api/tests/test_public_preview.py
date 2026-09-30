@@ -92,7 +92,7 @@ SITE_PROFILE = {
 }
 
 GUESS = {
-    "business_type": "מאפייה / קפה / מסעדה",
+    "business_type": "אוכל ושתייה",
     "business_model": "products",
     "presence_type": "brick_and_mortar",
     "offerings_summary": "חלות ולחם מחמצת",
@@ -202,7 +202,7 @@ class PublicPreviewTest(PreviewTestCase):
         self.assertEqual(body["business_name"], "מאפיית לחם תום")
         self.assertEqual([s["hex"] for s in body["palette"]], ["#c0392b", "#e8a33d", "#f4efe6"])
         self.assertEqual(body["voice"], "חם, שכונתי וישיר")
-        self.assertEqual(body["business_type"], "מאפייה / קפה / מסעדה")
+        self.assertEqual(body["business_type"], "food")
         self.assertEqual(body["business_model"], "products")
         self.assertEqual(body["location"], "יפו")
         self.assertEqual(body["offerings"][:2], ["חלות", "לחם מחמצת"])
@@ -321,13 +321,26 @@ class PublicPreviewTest(PreviewTestCase):
         self.assertEqual(body["business_type"], preview_service.FALLBACK_BUSINESS_TYPE)
 
     def test_invented_business_type_falls_back(self):
-        weird = {**GUESS, "business_type": "חללית", "business_model": "x", "presence_type": "y"}
-        payload = preview_service._public_payload(
-            {"brand_language": BRAND, "extracted": SITE_PROFILE, "raw": {"url": "https://a.example/"}}, weird
-        )
+        site = {"brand_language": BRAND, "extracted": SITE_PROFILE, "raw": {"url": "https://a.example/"}}
+        weird = {**GUESS, "business_type": "חללית", "business_model": "x", "presence_type": "y",
+                 "offerings_summary": "משהו שאין לו תחום"}
+        payload = preview_service._public_payload(site, weird)
         self.assertEqual(payload["business_type"], preview_service.FALLBACK_BUSINESS_TYPE)
         self.assertEqual(payload["business_model"], "products")
         self.assertEqual(payload["presence_type"], "brick_and_mortar")
+        # An invented label is never passed through; the site's own summary picks the field.
+        read = preview_service._public_payload(site, {**GUESS, "business_type": "חללית"})
+        self.assertEqual(read["business_type"], "food")
+
+    def test_the_guess_is_a_label_and_the_answer_is_a_key(self):
+        enum = preview_service.SAMPLE_POST_SCHEMA["properties"]["business_type"]["enum"]
+        self.assertIn("אוכל ושתייה", enum)
+        self.assertNotIn("חנות פיזית / קמעונאות", enum)
+        site = {"brand_language": BRAND, "extracted": SITE_PROFILE, "raw": {"url": "https://a.example/"}}
+        for label, key in (("אופנה והלבשה", "fashion"), ("נדל״ן", "real_estate"), ("jewelry", "jewelry")):
+            with self.subTest(label=label):
+                payload = preview_service._public_payload(site, {**GUESS, "business_type": label})
+                self.assertEqual(payload["business_type"], key)
 
     def test_slow_site_answers_504_and_finishes_into_the_cache(self):
         def slow(url):

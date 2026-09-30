@@ -1,0 +1,152 @@
+{
+  "_about": "The business-field taxonomy: industries only, never a sales channel (where the business sells lives in links, grow_where, presence_type and business_model). Stored and sent as `key`; `label` and `chip` are display text and can change without a data migration. This file is copied byte for byte to web/lib/businessFields.json; api/tests/test_business_fields.py fails if the two differ. `keywords` are lowercase substrings (Hebrew and English) matched against the owner's own words: most hits wins, ties go to the earlier field. Write gershayim as \" and geresh as ' in keywords; text is normalised the same way before matching. `cost_industry` is the row in api/app/services/google_cost.py INDUSTRIES used when the owner's words match no row; null means there is no published row for this field. `legacy` maps every value the old list stored: `key` is a fixed answer, `among` limits inference from the offerings to those fields (then `fallback`), neither means infer from any field. `presence_type` is what the old value said about where customers come.",
+  "fields": [
+    {
+      "key": "food",
+      "label": "אוכל ושתייה",
+      "chip": "אוכל ושתייה",
+      "model": "products",
+      "preset": "warm",
+      "cost_industry": "food",
+      "keywords": ["מאפייה", "מאפיית", "מאפים", "מאפה", "לחם", "לחמי", "חלות", "עוגות", "עוגה", "עוגיות", "קונדיטור", "קפה", "מסעד", "אוכל", "קייטרינג", "פיצה", "פיצרי", "בורגר", "גלידה", "שוקולד", "יינות", "יקב", "מבשלת", "מעדני", "חומוס", "סושי", "ארוחות", "מזנון", "bakery", "cafe", "coffee", "restaurant", "catering", "food", "pizza", "burger", "chocolate", "winery"]
+    },
+    {
+      "key": "fashion",
+      "label": "אופנה והלבשה",
+      "chip": "אופנה",
+      "model": "products",
+      "preset": "playful",
+      "cost_industry": "fashion",
+      "keywords": ["אופנה", "הלבשה", "בגד", "ביגוד", "לבוש", "תחתונ", "לנז'רי", "לנזרי", "חזיות", "חזייה", "חזיה", "פיג'מ", "נעלי", "שמלות", "שמלה", "חולצות", "ג'ינס", "בוטיק", "lingerie", "underwear", "fashion", "clothing", "apparel", "boutique", "shoes", "dresses", "swimwear"]
+    },
+    {
+      "key": "jewelry",
+      "label": "תכשיטים ואקססוריז",
+      "chip": "תכשיטים",
+      "model": "products",
+      "preset": "luxe",
+      "cost_industry": "fashion",
+      "keywords": ["תכשיט", "צמיד", "שרשר", "עגיל", "טבעות", "טבעת", "אקססוריז", "אבני חן", "תיקים", "משקפי שמש", "שעונים", "jewel", "necklace", "bracelet", "earring", "accessor", "handbag"]
+    },
+    {
+      "key": "beauty",
+      "label": "יופי וטיפוח",
+      "chip": "יופי וטיפוח",
+      "model": "services",
+      "preset": "soft",
+      "cost_industry": "beauty",
+      "keywords": ["יופי", "טיפוח", "קוסמטי", "ציפורני", "מניקור", "פדיקור", "מספרה", "שיער", "תספורת", "איפור", "לייזר", "ריסים", "גבות", "ספא", "טיפולי פנים", "beauty", "cosmetic", "salon", "nails", "manicure", "makeup", "barber", "lashes"]
+    },
+    {
+      "key": "health",
+      "label": "בריאות וטיפול",
+      "chip": "בריאות וטיפול",
+      "model": "services",
+      "preset": "soft",
+      "cost_industry": "health",
+      "keywords": ["בריאות", "רפואה", "רפואי", "קליניק", "מרפא", "רופא", "שיניים", "פיזיותרפ", "דיאטנ", "תזונ", "פסיכולוג", "פסיכותרפ", "טיפול רגשי", "נטורופת", "רפלקסולוג", "דיקור", "שיאצו", "קלינאית", "אופטומטר", "health", "clinic", "therapy", "therapist", "physio", "dentist", "dental", "nutrition", "psycholog"]
+    },
+    {
+      "key": "fitness",
+      "label": "ספורט וכושר",
+      "chip": "ספורט וכושר",
+      "model": "services",
+      "preset": "fresh",
+      "cost_industry": "education",
+      "keywords": ["ספורט", "כושר", "יוגה", "פילאטיס", "אימון", "אימוני", "מאמן", "מאמנת", "קרוספיט", "ריצה", "שחייה", "אומנויות לחימה", "קרב מגע", "fitness", "gym", "yoga", "pilates", "trainer", "crossfit", "workout", "sports"]
+    },
+    {
+      "key": "home",
+      "label": "בית, עיצוב ושיפוצים",
+      "chip": "בית ושיפוצים",
+      "model": "services",
+      "preset": "luxe",
+      "cost_industry": "renovation",
+      "keywords": ["עיצוב פנים", "עיצוב הבית", "אדריכל", "שיפוץ", "שיפוצים", "נגר", "מטבחים", "ריהוט", "רהיט", "כלי בית", "מוצרי בית", "קבלן", "אינסטלצ", "חשמלאי", "ריצוף", "וילונות", "גינון", "הום סטיילינג", "interior", "architect", "renovation", "furniture", "kitchens", "home decor", "contractor", "plumber"]
+    },
+    {
+      "key": "real_estate",
+      "label": "נדל״ן",
+      "chip": "נדל״ן",
+      "model": "services",
+      "preset": "clean",
+      "cost_industry": "real_estate",
+      "keywords": ["נדל\"ן", "נדלן", "תיווך", "מתווך", "מתווכת", "נכסים", "דירות למכירה", "דירות להשכרה", "שמאי", "יזמות", "real estate", "realtor", "realty", "property", "properties"]
+    },
+    {
+      "key": "professional",
+      "label": "שירותים מקצועיים (עו״ד, רו״ח, ייעוץ)",
+      "chip": "שירותים מקצועיים",
+      "model": "services",
+      "preset": "clean",
+      "cost_industry": "legal",
+      "keywords": ["עורך דין", "עורכת דין", "עו\"ד", "משרד עורכי", "רואה חשבון", "רואת חשבון", "רו\"ח", "הנהלת חשבונות", "ייעוץ", "יועץ", "יועצת", "ביטוח", "משכנתא", "תכנון פיננסי", "נוטריון", "lawyer", "attorney", "law firm", "accountant", "bookkeep", "consult", "insurance", "mortgage"]
+    },
+    {
+      "key": "education",
+      "label": "חינוך וסדנאות",
+      "chip": "חינוך וסדנאות",
+      "model": "services",
+      "preset": "fresh",
+      "cost_industry": "education",
+      "keywords": ["חינוך", "קורס", "סדנ", "הדרכ", "שיעורי", "חוגים", "לימוד", "ללמוד", "הכשרה", "מכינה", "בית ספר", "course", "workshop", "lesson", "tutor", "school", "academy", "training"]
+    },
+    {
+      "key": "hospitality",
+      "label": "תיירות, אירוח ואירועים",
+      "chip": "תיירות ואירוח",
+      "model": "services",
+      "preset": "fresh",
+      "cost_industry": "tourism",
+      "keywords": ["תיירות", "צימר", "אירוח", "מלון", "טיול", "סיור", "נופש", "וילה", "אטרקצי", "אירוע", "אולם", "חתונ", "בר מצווה", "בת מצווה", "zimmer", "hotel", "b&b", "guest house", "tour", "vacation", "events", "wedding", "venue"]
+    },
+    {
+      "key": "kids",
+      "label": "ילדים ותינוקות",
+      "chip": "ילדים ותינוקות",
+      "model": "products",
+      "preset": "playful",
+      "cost_industry": null,
+      "keywords": ["ילדים", "ילדות", "תינוק", "פעוט", "צעצוע", "משחקים", "עגלות", "kids", "baby", "babies", "toddler", "toys", "children"]
+    },
+    {
+      "key": "pets",
+      "label": "חיות מחמד",
+      "chip": "חיות מחמד",
+      "model": "products",
+      "preset": "playful",
+      "cost_industry": null,
+      "keywords": ["חיות מחמד", "חיית מחמד", "כלב", "חתול", "גורים", "וטרינר", "אילוף", "pets", "pet shop", "pet food", "dog", "puppy", "kitten", "grooming", "veterinar"]
+    },
+    {
+      "key": "gifts",
+      "label": "מתנות ופרחים",
+      "chip": "מתנות ופרחים",
+      "model": "products",
+      "preset": "soft",
+      "cost_industry": null,
+      "keywords": ["מתנות", "מתנה ל", "מארזי מתנה", "פרח", "בלונים", "סלסלות", "gift", "flower", "florist", "bouquet", "balloons"]
+    },
+    {
+      "key": "other",
+      "label": "משהו אחר",
+      "chip": "משהו אחר",
+      "model": "products",
+      "preset": "warm",
+      "cost_industry": null,
+      "keywords": []
+    }
+  ],
+  "legacy": [
+    { "value": "מאפייה / קפה / מסעדה", "key": "food" },
+    { "value": "חנות פיזית / קמעונאות", "fallback": "other", "presence_type": "brick_and_mortar" },
+    { "value": "חנות אונליין (אי-קומרס)", "fallback": "other", "presence_type": "online_only" },
+    { "value": "שירותים מקצועיים (עו\"ד, רו\"ח, ייעוץ)", "key": "professional" },
+    { "value": "קליניקה, יופי ובריאות", "among": ["beauty", "health"], "fallback": "beauty" },
+    { "value": "סטודיו לאימון / ספורט", "key": "fitness" },
+    { "value": "עיצוב / אדריכלות / נדל״ן", "among": ["home", "real_estate"], "fallback": "home" },
+    { "value": "הדרכות, קורסים וחינוך", "key": "education" },
+    { "value": "תיירות ואירוח", "key": "hospitality" },
+    { "value": "עסק אחר", "key": "other" }
+  ]
+}

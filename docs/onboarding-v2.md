@@ -19,7 +19,7 @@ compact pull-down summary on mobile. Answers live in a client-side draft
 | # | Question | Input | Notes |
 |---|---|---|---|
 | 1 | איך קוראים לעסק? | text | |
-| 2 | מה אתם עושים? | business-type chips + free text ("במילים שלכם") | types = `BUSINESS_TYPES` |
+| 2 | מה אתם עושים? | field chips (industries only, optional) + free text ("במילים שלכם") | fields = `BUSINESS_FIELDS` (`web/lib/businessFields.ts`, shared list in `businessFields.json`) |
 | 3 | יש לכם אתר או אינסטגרם? | אתר / אינסטגרם / שניהם / עוד לא + the address/handle | site → background brand scan, the card updates when ready; "עוד לא" → pick a colour style (4–6 presets) |
 | 4 | למי אתם מוכרים? | suggested audience chips (keep/edit/add), up to 3 | from `POST /public/audiences` |
 | 5 | מה הכי חשוב לכם עכשיו? | one choice from `GOALS_BY_MODEL[business_model]` (`web/lib/businessModel.ts`) | existing goal keys; business_model is inferred from step 2 (products / services / both) and shown as a one-tap confirm |
@@ -34,7 +34,7 @@ Every step: one primary button, a back link, fits one 390×844 screen, Hebrew pe
 ```ts
 type OnboardingDraft = {
   business_name: string;
-  business_type: string;              // one of BUSINESS_TYPES
+  business_type: string;              // a field key (food, fashion, …), see web/lib/businessFields.ts
   offerings: string;                  // free text, "what you do / sell"
   presence: "website" | "instagram" | "both" | "none";
   website?: string;                   // normalized later by the API

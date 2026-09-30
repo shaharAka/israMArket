@@ -8,6 +8,7 @@ Decides:
 3. The graphic text & overlay: whether an overlay is even fitting (has_overlay), the headline, badge, placement, and visual theme.
 """
 
+from app.services.business_fields import field_label
 from app.services.gemini import strategy_json
 from app.services.images import generate_and_store
 from app.services.jsonutil import loads
@@ -48,7 +49,7 @@ def plan_post_design(
 
 פרטי העסק:
 שם: {business.get("name")}
-סוג עסק: {business.get("business_type")}
+סוג עסק: {field_label(business.get("business_type"))}
 הצעות ומוצרים: {business.get("offerings")}
 מיקום: {business.get("location")}
 מודל נוכחות: {business.get("presence_type")}

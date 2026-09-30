@@ -62,6 +62,7 @@ from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import prior_month_review
 from app.services.netguard import UnsafeUrlError, assert_public_url
+from app.services.business_fields import field_label
 
 SOURCES = ("competitors", "search", "calendar", "own_results", "presence")
 SOURCE_LABEL_HE = {
@@ -695,7 +696,7 @@ def _business_payload(business: Business) -> dict:
     return {
         "name": business.name,
         "website_url": business.website_url,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,
@@ -1485,7 +1486,7 @@ def insights_prompt(db: Session, business: Business, findings: list[dict], sourc
 אתם אסטרטג שיווק בכיר שעובד עם עסק ישראלי קטן. קיבלתם את ממצאי המחקר השבועי. הפיקו {MIN_INSIGHTS} עד {MAX_INSIGHTS} תובנות ("מה למדנו"),
 וכל אחת עם השינוי הקונקרטי שהיא מחייבת בתוכנית ("מה זה משנה").
 
-העסק: {business.name} — {business.business_type}. מה הם מוכרים: {business.offerings or '—'}.
+העסק: {business.name} — {field_label(business.business_type)}. מה הם מוכרים: {business.offerings or '—'}.
 מודל: {business.business_model or 'products'}. מטרה: {business.primary_goal or '—'}. תקציב חודשי: {business.monthly_budget_ils or 0} ₪.
 עיר: {business.location or 'לא צוינה'}. קהלים: {', '.join(audiences) or 'לא הוגדרו'}.
 {_plan_context(db, business)}

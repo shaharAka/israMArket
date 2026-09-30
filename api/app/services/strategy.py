@@ -9,6 +9,7 @@ from app.services.audiences import (
     post_audience_rule,
     prompt_block as audience_prompt_block,
 )
+from app.services.business_fields import field_label
 from app.services.business_model import model_framing
 from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import extract_json, lite_json, strategy_json
@@ -239,7 +240,7 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
 
 פרטי העסק מהאשף:
 שם: {business.get("name")}
-סוג: {business.get("business_type")}
+סוג: {field_label(business.get("business_type"))}
 הצעות ליבה ומוצרים: {business.get("offerings")}
 מיקום: {business.get("location")}
 מודל נוכחות: {business.get("presence_type")} (חנות פיזית / רק אתר / משולב)

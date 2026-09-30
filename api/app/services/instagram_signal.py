@@ -34,6 +34,7 @@ from app.services.gemini import strategy_json
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import dumps, loads
 from app.services.schemas_llm import INSPIRATION_BRIEF_SCHEMA
+from app.services.business_fields import field_label
 
 try:  # tzdata is not guaranteed on slim images; Israel time is a nicety, not a need.
     from zoneinfo import ZoneInfo
@@ -665,7 +666,7 @@ def brief_prompt(business: dict, own: list[dict], competitors: list[dict], hasht
     return f"""
 נתח את הפוסטים הבאים באינסטגרם והפק ניתוח דפוסים קצר לעסק ישראלי קטן, שישמש לכתיבת הפוסטים של החודש.
 
-עסק: {business.get("name")} — {business.get("business_type")}
+עסק: {business.get("name")} — {field_label(business.get("business_type"))}
 
 הפוסטים של העסק עצמו שהכי עבדו (מדורגים לפי שמירות ושיתופים ביחס לאנשים שהגיעו):
 {own_block}
@@ -766,7 +767,7 @@ def build_inspiration_brief(
     if not catalogue:
         return None
 
-    payload = {"name": business.name, "business_type": business.business_type}
+    payload = {"name": business.name, "business_type": field_label(business.business_type)}
     raw = loads(strategy_json(brief_prompt(payload, own, competitors, tag_posts), INSPIRATION_BRIEF_SCHEMA), {})
     brief = clean_brief(raw, set(catalogue))
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BUSINESS_TYPES } from "@/components/onboarding/constants";
+import { BUSINESS_FIELDS } from "@/lib/businessFields";
 import {
   NETWORKS,
   draftForApi,
@@ -131,15 +131,15 @@ export function StepWhat(props: StepProps) {
           <span className="font-bold text-[#191b18]">התחום</span> (לא חובה, רק אם אחד מאלה מתאים)
         </legend>
         <div className="flex flex-wrap gap-2">
-          {BUSINESS_TYPES.map((type) => (
+          {BUSINESS_FIELDS.map((field) => (
             <Chip
-              key={type}
-              label={kitFor(type).chip}
-              selected={d.business_type === type}
+              key={field.key}
+              label={field.chip}
+              selected={d.business_type === field.key}
               onClick={() => {
                 setError("");
                 // Tapping the selected field again clears it.
-                setDraft({ business_type: d.business_type === type ? "" : type });
+                setDraft({ business_type: d.business_type === field.key ? "" : field.key });
               }}
               className="px-3.5"
             />

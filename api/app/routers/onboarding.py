@@ -41,6 +41,7 @@ from app.services.strategy import (
     scan_website,
 )
 from app.services.webhooks import deliver
+from app.services.business_fields import field_label
 
 router = APIRouter(prefix="/onboarding", tags=["onboarding"])
 
@@ -418,7 +419,7 @@ def _require_business(db: Session, user: User) -> tuple[Business, dict]:
 def _wizard_payload(business: Business, stored: dict) -> dict:
     return {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,
@@ -519,7 +520,7 @@ def generate(
         "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,

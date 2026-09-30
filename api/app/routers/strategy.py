@@ -39,6 +39,7 @@ from app.services.month_loop import horizon_payload, next_civil_month, prior_mon
 from app.services.publish import parse_scheduled_for
 from app.services.scraper import fetch_photo_candidates
 from app.services.strategy import generate_monthly_strategy, rewrite_post
+from app.services.business_fields import field_label
 
 router = APIRouter(tags=["strategy"])
 
@@ -272,7 +273,7 @@ def _store_post_image(
     usp_data = loads(strategy.usp_json, {}) or {}
     biz_dict = {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,
@@ -397,7 +398,7 @@ def design_post_endpoint(
     usp_data = loads(strategy.usp_json, {}) or {}
     biz_dict = {
         "name": business.name,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,
@@ -756,7 +757,7 @@ def generate_next_month(
         "id": business.id,
         "name": business.name,
         "website_url": business.website_url,
-        "business_type": business.business_type,
+        "business_type": field_label(business.business_type),
         "offerings": business.offerings,
         "location": business.location,
         "presence_type": business.presence_type,
