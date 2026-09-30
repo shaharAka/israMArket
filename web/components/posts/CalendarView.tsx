@@ -7,6 +7,7 @@ import { monthLabel, shiftMonth } from "@/lib/months";
 import { copyText } from "@/lib/ui";
 import { STATUS_LABEL, postDay, postStatus } from "./postMeta";
 import { UIAction, TextField } from "@/components/design/Controls";
+import { IconArrowLeft, IconChevron, IconPlus, IconTrash } from "@/lib/icons";
 import styles from "./calendar.module.css";
 
 const WEEKDAYS = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
@@ -61,7 +62,7 @@ function PersonalTasks({ scope, selected, onTasks }: { scope: string; selected: 
     <p className={styles.localNote}>משימות אישיות נשמרות בדפדפן הזה.</p>
     {tasks.filter(t => t.date === selected).map(task => <div className={styles.taskRow} key={task.id}>
       <label><input type="checkbox" checked={task.done} disabled={!ready} onChange={e => save(tasks.map(t => t.id === task.id ? { ...t, done: e.target.checked } : t))} /><span className={task.done ? styles.done : undefined}>{task.title}</span></label>
-      <button type="button" disabled={!ready} title={`למחוק את המשימה: ${task.title}`} aria-label={`למחוק את המשימה: ${task.title}`} onClick={() => save(tasks.filter(t => t.id !== task.id))}>×</button>
+      <button type="button" disabled={!ready} title={`למחוק את המשימה: ${task.title}`} aria-label={`למחוק את המשימה: ${task.title}`} onClick={() => save(tasks.filter(t => t.id !== task.id))}><IconTrash /></button>
     </div>)}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {editing ? <form className={styles.taskForm} onSubmit={e => {
@@ -70,7 +71,7 @@ function PersonalTasks({ scope, selected, onTasks }: { scope: string; selected: 
     }}>
       <TextField label={`משימה ל-${Number(selected.slice(-2))}.${Number(selected.slice(5, 7))}`} value={title} onChange={e => setTitle(e.target.value)} maxLength={120} required autoFocus placeholder="למשל, לבחור תמונות למוצר החדש" />
       <div><UIAction type="submit" variant="secondary" disabled={!title.trim()}>להוסיף משימה</UIAction><UIAction variant="text" onClick={() => { setEditing(false); setTitle(""); }}>ביטול</UIAction></div>
-    </form> : <UIAction variant="text" disabled={!ready} onClick={() => setEditing(true)}>+ משימה ליום הזה</UIAction>}
+    </form> : <UIAction variant="text" disabled={!ready} onClick={() => setEditing(true)}><span className={styles.add}><IconPlus />משימה ליום הזה</span></UIAction>}
   </div>;
 }
 
@@ -93,8 +94,14 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
   const strategyId = strategy?.id;
   const storedPlan = strategy?.quarter_plan;
   const [scope, setScope] = useState<string | null>(null);
+  /** Today's date, for the marker on the board. Read on the client only, after mount. */
+  const [today, setToday] = useState("");
   const id = useId();
   const board = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { const now = new Date(); setToday(isoFor(now.getFullYear(), now.getMonth() + 1, now.getDate())); }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   useEffect(() => {
     const timer = window.setTimeout(() => { setTasks([]); setScope(strategyId != null ? (isDemo() ? "demo" : `plan-${strategyId}`) : null); }, 0);
     return () => window.clearTimeout(timer);
@@ -123,7 +130,9 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
   const showEvents = filter === "all" || filter === "events";
   const daysInMonth = new Date(year, month, 0).getDate();
   const pad = new Date(year, month - 1, 1).getDay();
-  const cells: (number | null)[] = [...Array.from({ length: pad }, () => null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
+  // Blank cells fill the first and the last week, so the hairline grid closes on both ends.
+  const trail = (7 - ((pad + daysInMonth) % 7)) % 7;
+  const cells: (number | null)[] = [...Array.from({ length: pad }, () => null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1), ...Array.from({ length: trail }, () => null)];
   const dayPosts = showPosts ? boardPosts.filter(t => postDay(t.post) === selected) : [];
   const dayEvents = showEvents ? events.filter(t => t.date === selected) : [];
   const dayPlanTasks = showTasks ? planTasks.filter(t => t.date === selected) : [];
@@ -146,7 +155,7 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
   return <div className={styles.calendar}>
     <header className={styles.toolbar}>
       <h2>{monthLabel(year, month)}</h2>
-      <div className={styles.monthNav}><button type="button" onClick={() => move(-1)} title="החודש הקודם" aria-label="החודש הקודם">→</button><button type="button" onClick={() => move(1)} title="החודש הבא" aria-label="החודש הבא">←</button></div>
+      <div className={styles.monthNav}><button type="button" onClick={() => move(-1)} title="החודש הקודם" aria-label="החודש הקודם"><IconChevron className="rotate-180" /></button><button type="button" onClick={() => move(1)} title="החודש הבא" aria-label="החודש הבא"><IconChevron /></button></div>
       {(year !== initialYear || month !== initialMonth) && <button className={styles.return} type="button" onClick={() => { setPeriod({ year: initialYear, month: initialMonth }); setSelected(isoFor(initialYear, initialMonth, 1)); }}>לחודש התוכנית</button>}
       <div className={styles.filters} role="group" aria-label="מה להציג בלוח">{FILTERS.map(item => <button type="button" key={item.id} aria-pressed={filter === item.id} onClick={() => setFilter(item.id)}>{item.name}</button>)}</div>
     </header>
@@ -154,6 +163,7 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
     {error && <p className={styles.error} role="alert">המועדים לא נטענו. הפוסטים והמשימות שלכם עדיין כאן. <button type="button" onClick={() => setAttempt(n => n + 1)}>לנסות שוב</button></p>}
     <div className={styles.layout}>
       <section className={styles.board} aria-label="לוח החודש">
+        <div className={styles.sheet}>
         <div className={styles.weekdays}>{WEEKDAYS.map(day => <span key={day}><span className={styles.fullDay}>{day}</span><span className={styles.shortDay}>{day === "שבת" ? "ש׳" : day.slice(0, 1) + "׳"}</span></span>)}</div>
         <div className={styles.days} ref={board}>{cells.map((day, index) => {
           if (!day) return <div key={`empty-${index}`} className={styles.blank} aria-hidden="true" />;
@@ -162,19 +172,20 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
           const ee = showEvents ? events.filter(t => t.date === date) : [];
           const tt = showTasks ? [...planTasks.filter(t => t.date === date).map(t => ({ title: t.action_he, done: false })), ...tasks.filter(t => t.date === date)] : [];
           const count = pp.length + ee.length + tt.length;
-          return <button type="button" key={date} data-date={date} aria-pressed={selected === date} aria-controls={`${id}-day`} tabIndex={selected === date ? 0 : -1} aria-label={`${formatDay(date)}${count ? `, ${pp.length} פוסטים, ${tt.length} משימות, ${ee.length} מועדים` : ", אין פריטים"}`} onKeyDown={e => keyDay(e, day)} onClick={() => setSelected(date)}>
+          return <button type="button" key={date} data-date={date} data-today={date === today ? "" : undefined} aria-current={date === today ? "date" : undefined} aria-pressed={selected === date} aria-controls={`${id}-day`} tabIndex={selected === date ? 0 : -1} aria-label={`${formatDay(date)}${count ? `, ${pp.length} פוסטים, ${tt.length} משימות, ${ee.length} מועדים` : ", אין פריטים"}`} onKeyDown={e => keyDay(e, day)} onClick={() => setSelected(date)}>
             <span className={styles.number}>{day}</span>
             <span className={styles.cellItems}>{pp.slice(0, 2).map((t, i) => <span key={`post-${i}`} data-kind="post">{t.post.title}</span>)}{tt.slice(0, 2).map((t, i) => <span key={`task-${i}`} data-kind="task" className={t.done ? styles.done : undefined}>{t.title}</span>)}{ee.slice(0, 1).map(t => <span key={t.name} data-kind="event">{t.name}</span>)}</span>
             <span className={styles.marks} aria-hidden="true">{pp.length > 0 && <i data-kind="post" />}{tt.length > 0 && <i data-kind="task" />}{ee.length > 0 && <i data-kind="event" />}</span>
           </button>;
         })}</div>
+        </div>
         <p className={styles.legend}><span data-kind="post">פוסט</span><span data-kind="task">משימה</span><span data-kind="event">מועד</span></p>
       </section>
       <aside id={`${id}-day`} className={styles.inspector} aria-label="פרטי היום">
         <h3>{formatDay(selected)}</h3>
         {!dayPosts.length && !dayEvents.length && !dayPlanTasks.length && !dayTasks.length && <p className={styles.empty}>אין פריטים ביום הזה.</p>}
-        {dayPlanTasks.map((task, i) => <article key={`${task.date}-${i}`} className={styles.item} data-kind="task"><span>מהתוכנית · {task.name_he}</span><h4>{task.action_he}</h4><a href="/strategy#plan-calendar">לראות בתוכנית ←</a></article>)}
-        {dayPosts.map(({ post, index }, i) => <article key={`${post.title}-${i}`} className={styles.item} data-kind="post"><span>פוסט · {STATUS_LABEL[postStatus(post)]}</span><h4>{post.title}</h4><p>{post.hook}</p><div>{index !== null && onPlanMonth && onOpenPost && <UIAction variant="text" onClick={() => onOpenPost(index)}>לפתוח את הפוסט ←</UIAction>}<UIAction variant="text" onClick={() => void copyPost(post)}>להעתיק טקסט</UIAction></div></article>)}
+        {dayPlanTasks.map((task, i) => <article key={`${task.date}-${i}`} className={styles.item} data-kind="task"><span>מהתוכנית · {task.name_he}</span><h4>{task.action_he}</h4><a href="/strategy#plan-calendar">לראות בתוכנית<IconArrowLeft className={styles.arrow} /></a></article>)}
+        {dayPosts.map(({ post, index }, i) => <article key={`${post.title}-${i}`} className={styles.item} data-kind="post"><span>פוסט · {STATUS_LABEL[postStatus(post)]}</span><h4>{post.title}</h4><p>{post.hook}</p><div>{index !== null && onPlanMonth && onOpenPost && <UIAction variant="text" onClick={() => onOpenPost(index)}><span className={styles.add}>לפתוח את הפוסט<IconArrowLeft className={styles.arrow} /></span></UIAction>}<UIAction variant="text" onClick={() => void copyPost(post)}>להעתיק טקסט</UIAction></div></article>)}
         {copyFallback?.date === selected && <div className={styles.copyFallback}><p role="alert">ההעתקה לא הצליחה. אפשר לסמן ולהעתיק את הטקסט כאן:</p><textarea aria-label="טקסט הפוסט להעתקה ידנית" readOnly rows={4} value={copyFallback.text} onFocus={e => e.currentTarget.select()} /></div>}
         {dayEvents.map((event, i) => <article key={`${event.name}-${i}`} className={styles.item} data-kind="event"><span>{event.kind}</span><h4>{event.name}</h4>{event.note && <p>{event.note}</p>}{event.source && <details><summary>מקור</summary><p>{event.source}</p></details>}</article>)}
         {showTasks && scope && <PersonalTasks key={scope} scope={scope} selected={selected} onTasks={setTasks} />}

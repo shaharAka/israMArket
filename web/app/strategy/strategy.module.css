@@ -1,0 +1,206 @@
+/* התוכנית (/strategy): the month as a plan sheet, the weeks as one calm list.
+   Surfaces are depth, not frames (DESIGN-STANDARD.md §3); the page's reference is the plan
+   sheet on the landing page (components/landing-v2/PlanSheet). */
+
+/* The view switch sits in the header, opposite the title. The shared SegmentedControl is
+   restyled here only: a quiet tray, the chosen view lifted on paper, ink rather than blue
+   (the page's one blue belongs to its button). */
+.range [role="group"] {
+  padding: 3px;
+  gap: 2px;
+  border-radius: 12px;
+  background: var(--soft);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.range [role="group"] button {
+  min-height: 44px;
+  padding: 8px 16px;
+  border-radius: 9px;
+  color: var(--ink-muted);
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.range [role="group"] button:hover:not([aria-pressed="true"]) {
+  color: var(--ink);
+}
+
+.range [role="group"] button[aria-pressed="true"] {
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow:
+    0 0 0 1px rgba(20, 32, 58, 0.06),
+    0 1px 2px rgba(20, 32, 58, 0.08),
+    0 4px 10px -6px rgba(20, 32, 58, 0.25);
+}
+
+/* The month's hypothesis: the hero of the page. */
+.sheet {
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--paper);
+  box-shadow: var(--shadow-pop);
+}
+
+.sheetBody {
+  padding: 28px 24px 8px;
+}
+
+.hypothesis {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.targets {
+  margin-top: 20px;
+}
+
+.targets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-block: 12px;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* The same ring as the months on the landing page's route. */
+.ring {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  margin-top: 7px;
+  border-radius: 999px;
+  border: 2px solid var(--primary);
+  background: var(--paper);
+}
+
+/* What we need from the owner: the page's one sun highlight. */
+.ask {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 16px 24px;
+  background: var(--sand);
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.ask strong {
+  font-weight: 600;
+  color: var(--sand-dark);
+}
+
+.askIcon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  color: var(--sand-dark);
+}
+
+/* A list that is one object: paper, depth, hairlines between rows. */
+.list {
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+
+.list > li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.row {
+  display: flex;
+  min-height: 60px;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 20px;
+  list-style: none;
+  cursor: pointer;
+  transition: background 180ms ease;
+}
+
+.row::-webkit-details-marker {
+  display: none;
+}
+
+summary.row:hover {
+  background: var(--soft);
+}
+
+.num {
+  display: inline-flex;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1.5px var(--rule-dark);
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.num[data-state="past"] {
+  background: var(--soft);
+  box-shadow: none;
+  color: var(--ink-muted);
+}
+
+/* "This week" wears the sun, like "you are here" on the landing page's map. */
+.num[data-state="now"] {
+  background: var(--sun);
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.detail {
+  padding: 4px 20px 24px;
+}
+
+@media (min-width: 640px) {
+  .sheetBody {
+    padding: 36px 36px 8px;
+  }
+  .hypothesis {
+    font-size: 27px;
+    line-height: 1.4;
+  }
+  .ask {
+    padding-inline: 36px;
+  }
+  .row {
+    padding-inline: 24px;
+  }
+  .detail {
+    padding: 4px 24px 28px;
+    padding-inline-start: 68px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .range [role="group"] button,
+  .row {
+    transition: none;
+  }
+}
