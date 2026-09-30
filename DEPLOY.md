@@ -23,6 +23,9 @@ then S3-compatible object storage for `generated/`, then the API becomes statele
 
 ## Recommended first deployment
 
+On Google Cloud (one e2-medium VM in me-west1, Caddy HTTPS, Secret Manager, nightly GCS
+backups), follow [`deploy/gcp/README.md`](deploy/gcp/README.md). The generic version:
+
 One small VM running `docker-compose.yml`. Only the web tier publishes a port.
 
 ```bash
