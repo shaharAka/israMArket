@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/lib/icons";
+import { PalettePicker } from "@/components/design/PalettePicker";
+import { paletteVariables, useDesignPalette } from "@/components/design/palette";
 import { MotionButton, MotionChoice, MotionDisclosure, MotionIllustration, MotionProgress, MotionResult, MotionScope } from "./Motion";
-import { motionAssets, type MotionCategory, type MotionMood } from "./catalog";
+import { motionAssets, motionDuration, type MotionCategory, type MotionMood } from "./catalog";
 import styles from "./gallery.module.css";
 
 type Asset = (typeof motionAssets)[number];
@@ -14,7 +16,7 @@ const categories: { id: MotionCategory | "all"; label: string }[] = [
 ];
 const samplePost = "משהו קטן וטוב באמצע היום. בואו לגלות מה חדש אצלנו השבוע 🌿";
 
-function AssetDemo({ asset }: { asset: Asset }) {
+function AssetDemo({ asset, mood }: { asset: Asset; mood: MotionMood }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [replay, setReplay] = useState(0);
   const [choice, setChoice] = useState("");
@@ -51,7 +53,7 @@ function AssetDemo({ asset }: { asset: Asset }) {
   const result: Record<Asset["id"], string> = { press: "הרגשתם את הלחיצה?", choose: `בחרתם: ${choice}`, save: "הטיוטה נשמרה בתצוגה", copy: "הטקסט הועתק", upload: "התמונה נוספה בתצוגה", prepare: "הרעיון לדוגמה מוכן", reveal: "", publish: "השליחה הושלמה בתצוגה", milestone: "הצעד הראשון הושלם בתצוגה" };
 
   return <div className={styles.demo} data-demo={asset.id}>
-    <MotionIllustration kind={asset.id} active={active} replayKey={replay} className={styles.heroIllustration} />
+    <MotionIllustration kind={asset.id} active={active} replayKey={`${replay}-${mood}`} className={styles.heroIllustration} />
     <div className={styles.demoContent}>
       {asset.id === "save" && <label className={styles.draftLabel}>כותרת הפוסט<input value={draft} disabled={pending} maxLength={80} onChange={(e) => { setDraft(e.target.value); setPhase("idle"); }} /></label>}
       {asset.id === "copy" && <p className={styles.post}>{samplePost}</p>}
@@ -60,7 +62,7 @@ function AssetDemo({ asset }: { asset: Asset }) {
         : <MotionButton onClick={run} disabled={pending || (asset.id === "save" && !draft.trim())}>{pending ? asset.id === "prepare" ? "מכינים רעיון לדוגמה…" : "רגע קטן…" : asset.action}</MotionButton>}
       {asset.id === "milestone" && <div className={styles.milestoneProgress}><span>{success ? "1 מתוך 1 — הפוסט הראשון" : "0 מתוך 1 — הפוסט הראשון"}</span><MotionProgress value={success ? 100 : 0} label="השלמת המשימה לדוגמה" /></div>}
       {asset.id !== "reveal" && <div className={styles.resultSlot}>
-        {success && <MotionResult replayKey={replay}>{result[asset.id]}</MotionResult>}
+        {success && <MotionResult replayKey={`${replay}-${mood}`}>{result[asset.id]}</MotionResult>}
         {pending && <span className={styles.pending} role="status">{asset.id === "prepare" ? "הדגמה של מצב המתנה" : "הפעולה מתבצעת…"}</span>}
         {phase === "error" && <span className={styles.error} role="alert">לא הצלחנו להעתיק. אפשר לנסות שוב.</span>}
         {phase === "idle" && <span className={styles.hint}>{asset.id === "choose" ? "בחרו אפשרות וראו מה קורה" : "לחצו וראו מה קורה"}</span>}
@@ -70,6 +72,7 @@ function AssetDemo({ asset }: { asset: Asset }) {
 }
 
 export function MotionGallery() {
+  const { palette } = useDesignPalette();
   const [selectedId, setSelectedId] = useState("milestone");
   const [category, setCategory] = useState<MotionCategory | "all">("all");
   const [mood, setMood] = useState<MotionMood>("quiet");
@@ -83,7 +86,7 @@ export function MotionGallery() {
     if (next !== "all" && selected.category !== next) setSelectedId(motionAssets.find((asset) => asset.category === next)!.id);
   }
 
-  return <MotionScope mood={mood} reduced={reduced} className={styles.page}>
+  return <MotionScope mood={mood} reduced={reduced} style={paletteVariables(palette)} className={styles.page}>
     <div className={styles.container}>
       <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark className={styles.brandMark} /><span>ישראמארקט</span></Link><span className={styles.labBadge}><span />מעבדת תנועה</span><Link href="/design" className={styles.version}>לספריית העיצוב ←</Link></header>
       <main>
@@ -92,14 +95,15 @@ export function MotionGallery() {
           <div className={styles.introNote}><span className={styles.noteStar} aria-hidden="true">✳</span><p>תנועה שמגיבה אליכם.<br />רק כשמשהו קורה.</p><span className={styles.previewBadge}>תצוגה בלבד · בלי שינוי בחשבון</span></div>
         </section>
 
+        <PalettePicker compact />
         <div className={styles.toolbar}>
           <div className={styles.filters} role="group" aria-label="סוג התנועה">{categories.map((item) => <button type="button" key={item.id} aria-pressed={category === item.id} onClick={() => filter(item.id)}>{item.label}</button>)}</div>
-          <div className={styles.preferences}><div className={styles.mood} role="group" aria-label="אופי התנועה"><button type="button" aria-pressed={mood === "quiet"} onClick={() => setMood("quiet")}>עדין</button><button type="button" aria-pressed={mood === "playful"} onClick={() => setMood("playful")}>שובב</button></div><label className={styles.reduced}><input type="checkbox" checked={reduced} onChange={(e) => setReduced(e.target.checked)} />ללא תנועה</label></div>
+          <div className={styles.preferences}><div className={styles.mood} role="group" aria-label="אופי התנועה"><button type="button" aria-pressed={mood === "quiet"} onClick={() => setMood("quiet")}>מינימליסטי</button><button type="button" aria-pressed={mood === "playful"} onClick={() => setMood("playful")}>שובב</button></div><label className={styles.reduced}><input type="checkbox" checked={reduced} onChange={(e) => setReduced(e.target.checked)} />ללא תנועה</label></div>
         </div>
 
         <section className={styles.stage} aria-labelledby="asset-title">
-          <div className={styles.stageCanvas}><span className={styles.canvasLabel} dir="ltr">LIVE PREVIEW</span><AssetDemo key={`${selected.id}-${replay}`} asset={selected} /><span className={styles.canvasCorner} aria-hidden="true">↖</span></div>
-          <div className={styles.stageInfo}><span className={styles.assetNumber} dir="ltr">{String(motionAssets.indexOf(selected) + 1).padStart(2, "0")} / 09</span><h2 id="asset-title">{selected.title}</h2><p>{selected.description}</p><div className={styles.where}><span>הרגע המתאים</span><p>{selected.where}</p></div><div className={styles.duration}><span>משך התגובה</span><span dir="ltr">{selected.duration}</span></div><button type="button" className={styles.reset} onClick={() => setReplay((n) => n + 1)}><span aria-hidden="true">↻</span>להתחיל שוב</button><span className={styles.motionNote}>העדפת המכשיר להפחתת תנועה נשמרת תמיד.</span></div>
+          <div className={styles.stageCanvas}><span className={styles.canvasLabel} dir="ltr">LIVE PREVIEW</span><AssetDemo key={`${selected.id}-${replay}`} asset={selected} mood={mood} /><span className={styles.canvasCorner} aria-hidden="true">↖</span></div>
+          <div className={styles.stageInfo}><span className={styles.assetNumber} dir="ltr">{String(motionAssets.indexOf(selected) + 1).padStart(2, "0")} / 09</span><h2 id="asset-title">{selected.title}</h2><p>{selected.description}</p><p className={styles.modeNote}>{mood === "quiet" ? "מינימליסטי: תנועה קצרה וישירה." : "שובב: ציפייה קטנה, תנועה רחבה ופרט מסיים."}</p><div className={styles.where}><span>הרגע המתאים</span><p>{selected.where}</p></div><div className={styles.duration}><span>משך התגובה</span><span dir="ltr">{motionDuration(selected.id, mood)}</span></div><button type="button" className={styles.reset} onClick={() => setReplay((n) => n + 1)}><span aria-hidden="true">↻</span>להתחיל שוב</button><span className={styles.motionNote}>העדפת המכשיר להפחתת תנועה נשמרת תמיד.</span></div>
         </section>
 
         <section className={styles.collection} aria-label="אוסף התנועות"><div className={styles.collectionHeading}><h2>לבחור רגע</h2><span>{visible.length} תנועות באוסף</span></div><div className={styles.assetGrid}>{visible.map((asset) => <button type="button" key={asset.id} className={styles.asset} aria-pressed={selected.id === asset.id} onClick={() => setSelectedId(asset.id)}><MotionIllustration kind={asset.id} className={styles.thumbnail} /><span><strong>{asset.title}</strong><small>{asset.where}</small></span><span className={styles.assetArrow} aria-hidden="true">↗</span></button>)}</div></section>

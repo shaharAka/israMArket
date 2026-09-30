@@ -1,0 +1,18 @@
+.picker { padding: 24px 0; border-bottom: 1px solid var(--im-rule); }
+.heading { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 13px; color: var(--im-muted); }
+.heading span { font-size: 12px; font-weight: 600; color: var(--im-ink); }
+.heading small { font-size: 11px; }
+.options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.options button { display: flex; align-items: center; gap: 12px; border-bottom: 2px solid transparent; padding: 8px 0 12px; cursor: pointer; text-align: start; color: var(--im-ink); }
+.options button[aria-pressed="true"] { border-bottom-color: var(--im-primary); }
+.options button:hover { border-bottom-color: var(--im-rule); }
+.options button[aria-pressed="true"]:hover { border-bottom-color: var(--im-primary); }
+.options button:focus-visible { outline: 2px solid var(--im-primary); outline-offset: 4px; }
+.options svg { width: 67px; height: 44px; flex-shrink: 0; }
+.options strong { display: block; font-size: 13px; font-weight: 500; }
+.options small { display: block; font-size: 10px; color: var(--im-muted); margin-top: 4px; line-height: 1.5; }
+.selected { color: var(--im-primary); font-size: 14px; margin-inline-start: auto; }
+.picker[data-compact="true"] { padding: 18px 0; }
+.picker[data-compact="true"] .options small { display: none; }
+.picker[data-compact="true"] .options svg { width: 50px; height: 34px; }
+@media (max-width: 700px) { .heading { flex-direction: column; gap: 5px; } .options { gap: 12px; } .options button { flex-direction: column; align-items: flex-start; gap: 8px; position: relative; } .options strong { font-size: 12px; } .selected { position: absolute; left: 0; top: 12px; } .options small { font-size: 10px; } }

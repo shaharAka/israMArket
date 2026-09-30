@@ -1,14 +1,14 @@
 "use client";
 
-import { useId, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from "react";
+import { useId, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { MotionButton, MotionCheck, MotionScope } from "@/components/motion/Motion";
-import { designPalette } from "./foundations";
+import { paletteVariables } from "./palette";
+import { designPalettes, type DesignPalette } from "./foundations";
 import styles from "./primitives.module.css";
 
-export function DesignScope({ children, className = "" }: { children: ReactNode; className?: string }) {
-  const palette = Object.fromEntries(designPalette.map(({ token, value }) => [token, value]));
-  return <MotionScope className={`${styles.scope} ${className}`} style={{ ...palette, "--motion-accent": "var(--im-sun)" } as CSSProperties}>{children}</MotionScope>;
+export function DesignScope({ children, className = "", palette = designPalettes[0] }: { children: ReactNode; className?: string; palette?: DesignPalette }) {
+  return <MotionScope className={`${styles.scope} ${className}`} style={paletteVariables(palette)}>{children}</MotionScope>;
 }
 
 export function ActionButton({ children, variant = "primary", className = "", ...props }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "quiet" }) {

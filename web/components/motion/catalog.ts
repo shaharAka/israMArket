@@ -2,6 +2,15 @@ export type MotionAssetId = "press" | "choose" | "save" | "copy" | "upload" | "p
 export type MotionCategory = "feedback" | "progress" | "delight";
 export type MotionMood = "quiet" | "playful";
 
+export function motionDuration(id: MotionAssetId, mood: MotionMood) {
+  const durations: Record<MotionAssetId, [string, string]> = {
+    press: ["160 ms", "400 ms"], choose: ["340 ms", "420 ms"], save: ["280 ms", "560 ms"],
+    copy: ["240 ms", "560 ms"], upload: ["220 ms", "580 ms"], prepare: ["1.2 s", "1.2 s"],
+    reveal: ["260 ms", "260 ms"], publish: ["1.06 s", "1.42 s"], milestone: ["1.8 s", "2.08 s"],
+  };
+  return durations[id][mood === "quiet" ? 0 : 1];
+}
+
 export const motionAssets: { id: MotionAssetId; title: string; description: string; category: MotionCategory; duration: string; where: string; action: string }[] = [
   { id: "press", title: "לחיצה עם אופי", description: "לחיצה קטנה, תגובה מיידית.", category: "feedback", duration: "160 ms", where: "כפתורים ופעולות יומיומיות", action: "לנסות לחיצה" },
   { id: "choose", title: "זאת הבחירה שלי", description: "האפשרות שבחרתם מקבלת סימן קטן.", category: "feedback", duration: "320 ms", where: "בחירת קהל, סגנון או רעיון", action: "לבחור סגנון" },
