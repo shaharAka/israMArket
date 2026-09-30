@@ -12,4 +12,4 @@ export { PlanBrief, HypothesisNote } from "./PlanBrief";
 export { BusinessOverview } from "./BusinessOverview";
 export type { OverviewConnection, OverviewPost, OverviewFigure } from "./BusinessOverview";
 export { ResultsBrief } from "./ResultsBrief";
-export type { ResultsBriefData, ResultsDay } from "./ResultsBrief";
+export type { ResultsBriefData, ResultsEvidence } from "./ResultsBrief";
