@@ -170,7 +170,7 @@ export function TrialWelcome() {
               <span
                 key={item.title}
                 className={`h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
-                  dot === index ? "w-6 bg-[var(--primary)]" : "w-1.5 bg-[#d6d4cc]"
+                  dot === index ? "w-6 bg-[var(--primary)]" : "w-1.5 bg-[var(--rule-dark)]"
                 }`}
               />
             ))}

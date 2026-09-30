@@ -1,27 +1,14 @@
 /*
- * Landing page motion, CSS only (no animation library): the hero's route being planned
- * (`.rm-*`), the showcase (tabs, the 3-month plan assembling), scroll reveals
+ * Landing page motion, CSS only (no animation library): the map and storefront
+ * sunrise, the showcase (tabs, the 3-month plan assembling), scroll reveals
  * (`[data-rv]`, driven by LandingMotion.tsx), hover lifts and button presses. Only
  * transform and opacity move, so nothing shifts the layout. Everything here stops under
  * prefers-reduced-motion and shows its finished state.
  */
 
-/* The business's accent, animated between businesses (the gradient behind the stage
-   follows it). Registered so the colour itself can transition. */
-@property --lp-accent {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: #6b3f24;
-}
-
 .lp-showcase {
   overflow-x: clip;
-  transition: --lp-accent 700ms ease;
-  background:
-    radial-gradient(60% 55% at 85% 20%, color-mix(in oklab, var(--lp-accent) 22%, transparent), transparent 70%),
-    radial-gradient(50% 50% at 10% 75%, color-mix(in oklab, var(--lp-accent) 14%, transparent), transparent 70%),
-    radial-gradient(40% 40% at 50% 100%, rgba(224, 164, 43, 0.1), transparent 70%),
-    #f7f5f0;
+  background: var(--primary-soft);
 }
 
 /* --- tabs ------------------------------------------------------------------------ */
@@ -178,7 +165,7 @@
 /* Sticky business tabs on phones, so the plan below always says whose it is. */
 @media (max-width: 1023.98px) {
   .lp-pills {
-    background: color-mix(in oklab, #f7f5f0 86%, transparent);
+    background: color-mix(in srgb, var(--primary-soft) 92%, transparent);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
   }
@@ -254,18 +241,18 @@
   24%,
   48%,
   72% {
-    background-color: #d9a441;
+    background-color: var(--sun);
     opacity: 1;
   }
   12%,
   36%,
   60% {
-    background-color: #d9a441;
+    background-color: var(--sun);
     opacity: 0.35;
   }
   90%,
   100% {
-    background-color: #2d3f32;
+    background-color: var(--primary);
     opacity: 1;
   }
 }
@@ -307,10 +294,22 @@
 .rm-status-b {
   animation: rm-in 420ms ease 2.75s both;
 }
-/* Amber and blinking while planning, then settles on the route's green. */
+/* Blinks in sun yellow while planning, then settles on the route blue. */
 .rm-status-dot {
   animation: rm-dot 2.8s linear both;
 }
+
+/* The route ends at our storefront. The sun rises once as the plan arrives. */
+.rm-store { overflow: visible; }
+.rm-store-art { width: 100%; height: 100%; }
+@keyframes lp-sunrise {
+  0% { transform: translate(35px, 77px); }
+  25% { transform: translate(40px, 56px); }
+  50% { transform: translate(54px, 39px); }
+  75% { transform: translate(75px, 27px); }
+  100% { transform: translate(100px, 23px); }
+}
+.lp-route .journey-sun { animation: lp-sunrise 3.6s linear 2.65s both; }
 
 /* --- scroll reveals, hover lifts, button presses ---------------------------------- */
 
@@ -340,8 +339,7 @@ html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
       border-color 260ms ease;
   }
   .lp-lift:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 26px 48px -30px rgba(25, 27, 24, 0.4);
+    border-color: var(--rule-dark);
   }
   .lp-cta-arrow {
     transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -382,28 +380,9 @@ html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
 
 /* --- security, pricing, FAQ, closing ask ---------------------------------------- */
 
-/* Sage: the calm colour of "your data is safe here", in the showcase's gradient style. */
-.lp-security {
-  background:
-    radial-gradient(55% 60% at 90% 10%, rgba(45, 63, 50, 0.1), transparent 70%),
-    radial-gradient(45% 50% at 5% 90%, rgba(122, 139, 90, 0.12), transparent 70%),
-    #f4f6f1;
-}
-
-/* Warm sand behind the one plan card. */
-.lp-pricing {
-  background:
-    radial-gradient(50% 60% at 15% 30%, rgba(224, 164, 43, 0.14), transparent 70%),
-    radial-gradient(45% 55% at 95% 85%, rgba(196, 92, 38, 0.08), transparent 70%),
-    #f8f5ee;
-}
-
-.lp-closing {
-  background:
-    radial-gradient(60% 80% at 85% 50%, rgba(224, 164, 43, 0.1), transparent 70%),
-    #f9f8f6;
-}
-
+.lp-security, .lp-closing { background: var(--paper); }
+.lp-pricing { background: var(--canvas); }
+.lp-home :is(a,button,summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
   .lp-faq summary span {
@@ -447,6 +426,8 @@ html[data-lp-motion="on"] [data-rv][data-rv-in="true"] {
   .rm-status-a {
     display: none;
   }
+
+  .lp-route .journey-sun { animation: none; }
 
   .lp-lift,
   .lp-lift:hover,

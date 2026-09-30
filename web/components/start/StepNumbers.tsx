@@ -93,7 +93,7 @@ function SmallChip({ label, selected, onClick }: { label: string; selected: bool
       aria-pressed={selected}
       onClick={onClick}
       className={`inline-flex h-10 cursor-pointer items-center gap-1 rounded-full border px-3 text-sm font-bold tabular-nums transition-colors ${
-        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[#b9b7ad]"
+        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[var(--primary)]"
       }`}
     >
       {selected ? (

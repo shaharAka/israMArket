@@ -21,25 +21,25 @@ export const metadata: Metadata = {
  * OPEN (owner): the legal entity, governing-law clause and a lawyer's review before launch.
  */
 
-const LINK = "font-bold text-[#191b18] underline decoration-[#c7c4b7] underline-offset-4 hover:decoration-[#191b18]";
+const LINK = "font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-[var(--ink)]";
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section aria-labelledby={id} className="border-t border-[#e6e4dc] py-8 sm:py-10">
-      <h2 id={id} className="text-xl font-black tracking-tight text-[#191b18] sm:text-2xl">
+    <section aria-labelledby={id} className="border-t border-[var(--rule)] py-8 sm:py-10">
+      <h2 id={id} className="text-xl font-black tracking-tight text-[var(--ink)] sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-4 space-y-3 text-[15px] leading-7 text-[#34372f] sm:text-base sm:leading-8">{children}</div>
+      <div className="mt-4 space-y-3 text-[15px] leading-7 text-[var(--ink-soft)] sm:text-base sm:leading-8">{children}</div>
     </section>
   );
 }
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#f9f8f6] text-[#191b18]">
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
       <header className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
         <Link href="/" className="inline-flex min-h-11 items-center gap-2.5">
-          <BrandMark className="h-8 w-8 text-[#191b18]" />
+          <BrandMark className="h-8 w-8 text-[var(--primary)]" />
           <span className="text-lg font-black tracking-tight">ישראמארקט</span>
         </Link>
         <Link href="/" className={`${LINK} inline-flex min-h-11 items-center text-sm`}>
@@ -49,11 +49,11 @@ export default function TermsPage() {
 
       <main className="mx-auto max-w-3xl px-4 pb-16 sm:px-8">
         <div className="pb-8 pt-8 sm:pt-12">
-          <p className="text-sm font-bold text-[#2d3f32]">תנאי שימוש</p>
+          <p className="text-sm font-bold text-[var(--primary)]">תנאי שימוש</p>
           <h1 className="mt-2 text-[2rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
             מה אנחנו עושים, ומה נשאר אצלכם
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-[#5e6159] sm:text-lg sm:leading-8">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
             השימוש בישראמארקט אומר שאתם מסכימים לתנאים האלה. כתבנו אותם קצר ובפשטות.
           </p>
         </div>

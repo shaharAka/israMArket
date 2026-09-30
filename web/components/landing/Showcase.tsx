@@ -141,11 +141,11 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
     >
       <div className="mx-auto max-w-7xl px-4 pb-14 pt-12 sm:px-8 sm:pb-20 sm:pt-16">
         <header data-rv className="max-w-2xl">
-          <p className="text-sm font-bold text-[#2d3f32]">מחקר, אסטרטגיה ותוכנית</p>
+          <p className="text-sm font-bold text-[var(--primary)]">מחקר, אסטרטגיה ותוכנית</p>
           <h2 id="examples-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
             בחרו עסק וראו את התוכנית שלו
           </h2>
-          <p className="mt-2 text-base leading-7 text-[#5e6159]">לכל עסק תוכנית אחרת ל-3 חודשים, לפי מה שגילינו עליו. אלה עסקים בדויים.</p>
+          <p className="mt-2 text-base leading-7 text-[var(--ink-soft)]">לכל עסק תוכנית אחרת ל-3 חודשים, לפי מה שגילינו עליו. אלה עסקים בדויים.</p>
         </header>
 
         <div
@@ -171,10 +171,10 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
                 tabIndex={selected ? 0 : -1}
                 onClick={() => choose(index)}
                 onKeyDown={onTabKeyDown}
-                className={`relative inline-flex min-h-11 shrink-0 items-center gap-2 overflow-hidden rounded-full border px-4 text-sm font-bold transition-[background-color,color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#191b18] focus-visible:ring-offset-2 focus-visible:ring-offset-[#f7f5f0] ${
+                className={`relative inline-flex min-h-11 shrink-0 items-center gap-2 overflow-hidden rounded-md border px-4 text-sm font-bold transition-[background-color,color,border-color,box-shadow] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--canvas)] ${
                   selected
-                    ? "border-transparent text-white shadow-[0_10px_24px_-12px_rgba(25,27,24,0.6)]"
-                    : "border-[#e1ded4] bg-white/80 text-[#34372f] hover:border-[#c7c4b7] hover:bg-white"
+                    ? "border-transparent text-white"
+                    : "border-[var(--rule)] bg-white/80 text-[var(--ink-soft)] hover:border-[var(--rule-dark)] hover:bg-white"
                 }`}
                 style={selected ? { backgroundColor: color } : undefined}
               >
@@ -211,7 +211,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
           role="tabpanel"
           aria-labelledby={`lp-tab-${active.slug}`}
           tabIndex={0}
-          className="lp-stack mt-4 rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#191b18] focus-visible:ring-offset-8 focus-visible:ring-offset-[#f7f5f0] lg:mt-8"
+          className="lp-stack mt-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ink)] focus-visible:ring-offset-8 focus-visible:ring-offset-[var(--canvas)] lg:mt-8"
         >
           {examples.map((example, index) => (
             <PlanPanel
@@ -224,7 +224,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
           ))}
         </div>
 
-        <p className="mt-10 max-w-2xl text-sm leading-6 text-[#5e6159]">
+        <p className="mt-10 max-w-2xl text-sm leading-6 text-[var(--ink-soft)]">
           התקציבים בדוגמאות הם טווחים משוערים. את האתר אנחנו קוראים לבד, ונתונים מאינסטגרם רק אחרי שתחברו אותו. לא נמציא לכם מספרים.
         </p>
       </div>
