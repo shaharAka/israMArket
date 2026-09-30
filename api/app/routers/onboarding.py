@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from fastapi import APIRouter, Body, Depends, HTTPException
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.db import get_db
@@ -13,8 +13,17 @@ from app.services.audiences import catalogue_for
 from app.services.business_model import goals_for, normalise_model
 from app.services.images import store_image_bytes
 from app.services.instagram_signal import handles_for, signal_for
-from app.services.onboarding_draft import DirectionIn, IdeaIn, OnboardingDraft, apply_draft, seed_from_stored
+from app.services.onboarding_draft import (
+    DirectionIn,
+    DraftPhotoError,
+    IdeaIn,
+    OnboardingDraft,
+    apply_draft,
+    link_draft_photos,
+    seed_from_stored,
+)
 from app.services.preview import cached_scan
+from app.services.strategy_reveal import SamplePostIn, StrategyIn
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -104,6 +113,11 @@ class FromDraftIn(BaseModel):
     # preview could not be shown. Without it the first month is planned as before.
     chosen_direction: DirectionIn | None = None
     chosen_idea: IdeaIn | None = None
+    # Revision 4: the strategy from /public/strategy (as the owner last shaped it) and
+    # the sample posts they chose from /public/sample-posts. Both optional; with them the
+    # first month follows the strategy and the chosen posts are its first posts.
+    strategy: StrategyIn | None = None
+    chosen_posts: list[SamplePostIn] | None = Field(default=None, max_length=3)
 
 
 @router.post("/from-draft")
@@ -128,7 +142,35 @@ def from_draft(
         body.draft,
         body.chosen_direction.model_dump() if body.chosen_direction else None,
         body.chosen_idea.model_dump() if body.chosen_idea else None,
+        strategy=body.strategy.stored() if body.strategy else None,
+        chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
     )
+    db.commit()
+    db.refresh(business)
+    return {"business": _business_payload(business)}
+
+
+class DraftPhotoLink(BaseModel):
+    post_index: int = Field(ge=0, le=2)
+    asset_id: int = Field(ge=1)
+
+
+@router.post("/draft-photos")
+def draft_photos(
+    body: list[DraftPhotoLink] = Body(..., max_length=3),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    """Link the photos uploaded right after signup (kept in the browser until then) to
+    the week-1 posts chosen at /start, so the month uses them. Idempotent. Same
+    response as /onboarding/me."""
+    business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if not business:
+        raise HTTPException(status_code=404, detail="עוד אין עסק. קודם שומרים את מה שבנינו.")
+    try:
+        link_draft_photos(db, business, [item.model_dump() for item in body])
+    except DraftPhotoError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
     db.commit()
     db.refresh(business)
     return {"business": _business_payload(business)}
