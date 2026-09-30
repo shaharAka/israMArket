@@ -26,8 +26,8 @@
 // Confirmed by the owner 2026-09-30: the key is on a paid (prepaid billing) account.
 export const GEMINI_PAID_TIER = true;
 
-/** PLACEHOLDER. Replace with the real address before launch. */
-export const CONTACT_EMAIL = "privacy@isramarket.example";
+/** The owner's address for now (2026-09-30); a dedicated mailbox comes with the domain. */
+export const CONTACT_EMAIL = "shaharro@gmail.com";
 
 /** Null until the owner decides where the data is hosted. */
 export const HOSTING_NOTE: string | null =
