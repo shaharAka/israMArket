@@ -18,6 +18,7 @@ export function MetricComparison({ title, unit, source, period, points }: {
         <span className={styles.value}>{measured ? point.value?.toLocaleString("he-IL") : "לא נמדד"}</span>
       </li>;
     })}</ul>
-    <p className={styles.caption}>{source}{period ? ` · ${period}` : ""}</p>
+    {/* The period stays in one piece: a date range broken across lines reads as two dates. */}
+    <p className={styles.caption}>{source}{period ? <> · <span className={styles.period}>{period}</span></> : null}</p>
   </figure>;
 }
