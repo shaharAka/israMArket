@@ -69,8 +69,11 @@ export function tabFor(pathname: string): Tab | null {
  * `/strategy` too: a business built at /start lands there right after signup, before its
  * first month exists, because the plan it shows was stored at signup (Revision 5) and
  * the page builds the month itself.
+ *
+ * `/account` and `/billing` too: they belong to the account, not the business. Paying,
+ * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy"];
+const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
