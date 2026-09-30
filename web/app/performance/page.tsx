@@ -6,6 +6,7 @@ import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
 import { StepLink } from "@/components/trial/StepLink";
+import { MetricComparison } from "@/components/design/MetricComparison";
 import { SegmentedControl } from "@/components/design/Controls";
 import {
   endpoints,
@@ -213,6 +214,17 @@ function PostResults({ results }: { results: PostResult[] }) {
       ) : null}
     </section>
   );
+}
+
+/** Compare the same metric across posts, using the existing attribution and ranking. */
+function PostComparison({ results, payload }: { results: PostResult[]; payload: PerformancePayload }) {
+  const metric = (["conversions", "sessions", "likes"] as const).find(key => results.some(row => row[key] !== undefined));
+  if (!metric) return null;
+  const labels = { conversions: "פניות והזמנות", sessions: "כניסות לאתר", likes: "לייקים" };
+  return <MetricComparison title="התוצאות לפי פוסט" unit={labels[metric]}
+    source={metric === "likes" ? "אינסטגרם · לפי ההתאמה לפוסטים בתוכנית" : "גוגל אנליטיקס · לפי הקישורים של הפוסטים"}
+    period={formatPeriod(payload.period_start, payload.period_end)}
+    points={[...results].sort(byResult).slice(0, 5).map(row => ({ key: row.key, label: row.title, value: row[metric] }))} />;
 }
 
 /* ------------------------------------------------------------------------------------ */
@@ -984,7 +996,10 @@ export default function PerformancePage() {
 
             {available ? (
               results ? (
-                <Expand title="התוצאות לפי פוסט"><PostResults results={results} /></Expand>
+                <div>
+                  <PostComparison results={results} payload={data} />
+                  <Expand title="פירוט התוצאות לפי פוסט"><PostResults results={results} /></Expand>
+                </div>
               ) : (
                 // A snapshot from before per-post matching existed: the diagnosis's own
                 // verdict is the best "what worked" there is, so it takes the list's place.

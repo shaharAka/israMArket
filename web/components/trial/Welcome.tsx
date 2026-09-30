@@ -3,7 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { IconChart, IconImage, IconRoute } from "@/lib/icons";
+import { Storefront } from "@/components/brand/Storefront";
+import styles from "./welcome.module.css";
 import { NO_CARD_AT_SIGNUP } from "@/lib/pricing";
 import { markWelcomed, useTrial, type TrialPayload } from "@/lib/trial";
 
@@ -28,17 +29,17 @@ function cards(trial: TrialPayload): Card[] {
     {
       title: "מה יש כאן",
       body: (
-        <ul className="space-y-3">
-          <Row icon={<IconRoute className="h-5 w-5" />} title="התוכנית" text="מה עושים ב-3 החודשים הקרובים, ואיך נמדוד." />
-          <Row icon={<IconImage className="h-5 w-5" />} title="הפוסטים" text="נכתבים אחרי שתבחרו מוצרים ותמונות, ומחכים לאישור שלכם." />
-          <Row icon={<IconChart className="h-5 w-5" />} title="התוצאות והמחקר" text="מה הצליח, ומה למדנו השבוע על המתחרים והחיפושים." />
+        <ul className={styles.overview}>
+          <Row primary title="התוכנית" text="מה עושים ב-3 החודשים הקרובים, ואיך נמדוד." />
+          <Row title="הפוסטים" text="נכתבים אחרי שתבחרו מוצרים ותמונות, ומחכים לאישור שלכם." />
+          <Row title="התוצאות והמחקר" text="מה הצליח, ומה למדנו השבוע על המתחרים והחיפושים." />
         </ul>
       ),
     },
     {
       title: "מה קורה החודש",
       body: (
-        <ol className="space-y-2 text-sm leading-6 text-[color:var(--ink)]">
+        <ol className={styles.month}>
           <li><b className="text-[color:var(--ink)]">שבוע 1, מדידה:</b> מחברים את מה שמודד, ורושמים איפה העסק היום.</li>
           <li><b className="text-[color:var(--ink)]">שבוע 2, חומרי גלם:</b> תמונות, אילו מוצרים לקדם, ובדיקה שהסגנון נשמע כמוכם.</li>
           <li><b className="text-[color:var(--ink)]">שבוע 3, תוכן ראשון:</b> רק עכשיו כותבים את הפוסטים. מאשרים ומפרסמים.</li>
@@ -71,12 +72,9 @@ function cards(trial: TrialPayload): Card[] {
   ];
 }
 
-function Row({ icon, title, text }: { icon: React.ReactNode; title: string; text: string }) {
+function Row({ primary = false, title, text }: { primary?: boolean; title: string; text: string }) {
   return (
-    <li className="flex items-start gap-3">
-      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
-        {icon}
-      </span>
+    <li data-primary={primary}>
       <span className="min-w-0">
         <span className="block text-sm font-black text-[color:var(--ink)]">{title}</span>
         <span className="block text-sm leading-6 text-[color:var(--ink)]">{text}</span>
@@ -105,11 +103,13 @@ export function TrialWelcome() {
 
   useEffect(() => {
     if (!open) return;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     panelRef.current?.focus();
     return () => {
       document.body.style.overflow = previous;
+      opener?.focus();
     };
   }, [open]);
 
@@ -124,6 +124,14 @@ export function TrialWelcome() {
     if (!open) return;
     function onKey(event: KeyboardEvent) {
       if (event.key === "Escape") close(false);
+      if (event.key === "Tab") {
+        const panel = panelRef.current;
+        const nodes = Array.from(panel?.querySelectorAll<HTMLElement>('button:not([disabled]),a[href],[tabindex="0"]') || []).filter(node => node.getClientRects().length > 0);
+        const first = nodes[0], last = nodes.at(-1);
+        if (!first) { event.preventDefault(); return; }
+        if (event.shiftKey && (document.activeElement === first || document.activeElement === panel)) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && (document.activeElement === last || !panel?.contains(document.activeElement))) { event.preventDefault(); first.focus(); }
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -144,8 +152,7 @@ export function TrialWelcome() {
         aria-modal="true"
         aria-labelledby="welcome-title"
         tabIndex={-1}
-        className="relative w-full max-w-md rounded-t-2xl bg-white px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl outline-none sm:rounded-2xl sm:p-6"
-        style={{ animation: "rise 0.35s cubic-bezier(0.2, 0.7, 0.2, 1) both" }}
+        className={`${styles.panel} relative max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t border-t-[3px] border-t-[var(--primary)] bg-[var(--paper)] px-5 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-xl outline-none sm:rounded sm:p-6`}
       >
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-bold text-[color:var(--primary)]">ברוכים הבאים · {index + 1} מתוך {all.length}</p>
@@ -157,10 +164,11 @@ export function TrialWelcome() {
             לדלג
           </button>
         </div>
-        <h2 id="welcome-title" className="mt-1 text-xl font-black text-[color:var(--ink)]">
-          {card.title}
-        </h2>
-        <div key={index} className="rise mt-4 min-h-44">
+        <div className="flex items-center justify-between gap-4">
+          <h2 id="welcome-title" className="text-2xl font-black text-[color:var(--ink)]">{card.title}</h2>
+          <Storefront className="h-16 w-20 shrink-0" phase={.5} />
+        </div>
+        <div key={index} className={`${styles.content} mt-4 min-h-44`}>
           {card.body}
         </div>
 
@@ -169,8 +177,8 @@ export function TrialWelcome() {
             {all.map((item, dot) => (
               <span
                 key={item.title}
-                className={`h-1.5 rounded-full transition-all duration-300 motion-reduce:transition-none ${
-                  dot === index ? "w-6 bg-[var(--primary)]" : "w-1.5 bg-[var(--rule-dark)]"
+                className={`h-1 w-7 ${
+                  dot === index ? "bg-[var(--primary)]" : "bg-[var(--rule-dark)]"
                 }`}
               />
             ))}

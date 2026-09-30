@@ -1,0 +1,6 @@
+@keyframes arrive { from { transform: translateY(20px); opacity: .5; } to { transform: none; opacity: 1; } }
+@keyframes arriveSide { from { transform: translateX(-20px); opacity: .5; } to { transform: none; opacity: 1; } }
+.panel { animation: arrive 220ms cubic-bezier(.2,.7,.2,1); }
+.panel[data-side="true"] { animation-name: arriveSide; }
+.panel :is(a,button):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { .panel { animation: none; } }

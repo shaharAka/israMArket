@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import {
   AppShell,
-  Badge,
   Button,
   ErrorNote,
 } from "@/components/AppShell";
@@ -269,7 +268,7 @@ export default function IntegrationsPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <SectionHeader
           section="business"
           title="חיבורים"
@@ -415,10 +414,8 @@ export default function IntegrationsPage() {
               note="מכאן אנחנו לומדים את הצבעים, הסגנון והניסוחים."
             />
 
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-              <label htmlFor="business-website" className="sr-only">
-                כתובת האתר
-              </label>
+            <label htmlFor="business-website" className="mb-2 mt-4 block text-xs font-bold text-[var(--ink-soft)]">כתובת האתר</label>
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 id="business-website"
                 type="url"
@@ -426,7 +423,7 @@ export default function IntegrationsPage() {
                 onChange={(e) => setWebsiteInput(e.target.value)}
                 placeholder="https://myshop.co.il"
                 dir="ltr"
-                className="flex-1 rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
+                className="min-h-11 min-w-0 flex-1 rounded border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
               />
               <Button
                 size="md"
@@ -476,15 +473,13 @@ export default function IntegrationsPage() {
                     אישרתם את הכניסה לגוגל. נשאר לבחור את האתר מהרשימה (בגוגל הוא נקרא
                     ״נכס״):
                   </p>
-                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                    <label htmlFor="ga4-property" className="sr-only">
-                      בחירת האתר
-                    </label>
+                  <label htmlFor="ga4-property" className="mb-2 mt-3 block text-xs font-bold text-[var(--ink-soft)]">בחירת האתר</label>
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <select
                       id="ga4-property"
                       value={selectedGa4Property}
                       onChange={(e) => setSelectedGa4Property(e.target.value)}
-                      className="flex-1 rounded-md border border-[var(--rule-dark)] bg-white px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
+                      className="min-h-11 min-w-0 flex-1 rounded border border-[var(--rule-dark)] bg-[var(--paper)] px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
                     >
                       <option value="">-- בחרו את האתר --</option>
                       {ga4Item?.properties?.map((prop) => (
@@ -625,15 +620,13 @@ export default function IntegrationsPage() {
                     אישרתם את הכניסה. נשאר לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם
                     החשבון ייבחר איתו.
                   </p>
-                  <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-                    <label htmlFor="meta-page" className="sr-only">
-                      בחירת דף עסקי
-                    </label>
+                  <label htmlFor="meta-page" className="mb-2 mt-3 block text-xs font-bold text-[var(--ink-soft)]">בחירת דף עסקי</label>
+                  <div className="flex flex-col gap-2 sm:flex-row">
                     <select
                       id="meta-page"
                       value={selectedMetaPage}
                       onChange={(e) => setSelectedMetaPage(e.target.value)}
-                      className="flex-1 rounded-md border border-[var(--rule-dark)] bg-white px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
+                      className="min-h-11 min-w-0 flex-1 rounded border border-[var(--rule-dark)] bg-[var(--paper)] px-3 py-2 text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
                     >
                       <option value="">-- בחרו דף מהרשימה --</option>
                       {metaItem?.pages?.map((page) => (
@@ -888,7 +881,7 @@ function WhatsappRow({
 
       {showForm ? (
         <div className="mt-4">
-          <label htmlFor="whatsapp-number" className="sr-only">
+          <label htmlFor="whatsapp-number" className="mb-2 block text-xs font-bold text-[var(--ink-soft)]">
             מספר הוואטסאפ של העסק
           </label>
           <div className="flex flex-col gap-2 sm:flex-row">
@@ -901,7 +894,7 @@ function WhatsappRow({
               onChange={(e) => setNumber(e.target.value)}
               placeholder="050-1234567"
               dir="ltr"
-              className="flex-1 rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 py-2 text-right text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
+              className="min-h-11 min-w-0 flex-1 rounded border border-[var(--rule-dark)] bg-[var(--canvas)] px-3 py-2 text-right text-sm text-[#1d2940] focus:border-[#1d2940] focus:outline-none"
             />
             <Button
               size="md"
@@ -1109,19 +1102,14 @@ function RowHead({
   note: string;
 }) {
   return (
-    <div className="flex items-start gap-3.5">
-      <span
-        aria-hidden
-        className="flex h-10 w-12 shrink-0 items-center justify-center rounded-md bg-[#f4f1ea] text-[10px] font-black whitespace-nowrap text-[#1d2940]"
-      >
-        {mark}
-      </span>
-      <div className="min-w-0">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-base font-bold text-[#1d2940]">{title}</h2>
-          <Badge tone={tone}>{status}</Badge>
+    <div className="flex items-start gap-4">
+      <span aria-hidden className="mt-1 w-12 shrink-0 border-b-2 border-[var(--sun)] pb-2 text-[10px] font-bold text-[var(--primary)]">{mark}</span>
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+          <h2 className="text-lg font-bold text-[var(--ink)]">{title}</h2>
+          <span className={`text-xs font-bold ${tone === "emerald" ? "text-[var(--primary)]" : tone === "amber" ? "text-[var(--sand-dark)]" : "text-[var(--ink-muted)]"}`}>{status}</span>
         </div>
-        <p className="mt-0.5 text-xs leading-5 text-[#535f75]">{note}</p>
+        <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{note}</p>
       </div>
     </div>
   );
@@ -1131,7 +1119,7 @@ function RowHead({
 function RowDetails({ summary, children }: { summary: string; children: React.ReactNode }) {
   return (
     <details className="group mt-4 border-t border-[#e1e7f2] pt-3">
-      <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#535f75] hover:text-[#1d2940]">
+      <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#535f75] hover:text-[#1d2940]">
         <Caret />
         {summary}
       </summary>

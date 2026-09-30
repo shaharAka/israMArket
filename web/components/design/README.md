@@ -120,6 +120,18 @@ the library's selected palette.
 Wiring this component into the owner's plan/dashboard belongs to Claude's flow work;
 use authenticated integration and publication state, not pre-signup plan assumptions.
 
+`MetricComparison.tsx` compares one supplied metric across named posts. It keeps measured
+zeroes and missing readings distinct, with visible values, units, source and period. The
+results screen supplies its existing per-post attribution and ranking; it does not add a
+timeline, forecast, rate or evidence not already returned by the API. The library fixture
+includes a positive count, a measured zero and a missing reading.
+
+The first-entry welcome keeps its existing three steps and server completion. Its visual
+hierarchy leads with the plan, and its modal now contains keyboard focus and restores it
+on close. Connection guides use the shared blue/sun tokens, compact corners and reduced
+motion on both desktop drawers and phone sheets. Connection state, resource selection,
+provider consent and post-generation prerequisites remain Claude's behavior contract.
+
 Primitives also provide headings, notes, journey rails, photo states and status lines.
 The motion package supplies measured progress, drawn checks and contextual feedback.
 `SunProgress` receives the actual post approval count or onboarding chapter.

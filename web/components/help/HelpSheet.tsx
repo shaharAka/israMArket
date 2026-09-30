@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import styles from "./help-sheet.module.css";
 import { useIsDesktop } from "@/components/posts/BottomSheet";
 
 const FOCUSABLE =
@@ -87,10 +88,6 @@ export function HelpSheet({
 
   return createPortal(
     <div className="fixed inset-0 z-[60]" dir="rtl">
-      <style>
-        {"@keyframes im-help-up{from{transform:translateY(32px);opacity:.5}to{transform:none;opacity:1}}" +
-          "@keyframes im-help-side{from{transform:translateX(-24px);opacity:.5}to{transform:none;opacity:1}}"}
-      </style>
       <button
         type="button"
         tabIndex={-1}
@@ -104,28 +101,24 @@ export function HelpSheet({
         aria-modal="true"
         aria-labelledby="help-sheet-title"
         tabIndex={-1}
-        style={{
-          animation: desktop
-            ? "im-help-side 0.22s cubic-bezier(0.2, 0.7, 0.2, 1)"
-            : "im-help-up 0.22s cubic-bezier(0.2, 0.7, 0.2, 1)",
-        }}
+        data-side={desktop}
         className={
-          desktop
-            ? "absolute inset-y-0 left-0 flex w-[440px] max-w-[92vw] flex-col bg-white shadow-2xl outline-none"
-            : "absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-2xl bg-white shadow-2xl outline-none"
+          `${styles.panel} ${desktop
+            ? "absolute inset-y-0 left-0 flex w-[460px] max-w-[92vw] flex-col border-e-[3px] border-e-[var(--primary)] bg-[var(--paper)] shadow-2xl outline-none"
+            : "absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t border-t-[3px] border-t-[var(--primary)] bg-[var(--paper)] shadow-2xl outline-none"}`
         }
       >
-        <div className="relative flex shrink-0 items-center justify-between gap-3 border-b border-[#eeede8] px-4 pb-2 pt-3 sm:px-5">
+        <div className="relative flex shrink-0 items-center justify-between gap-3 border-b border-[var(--rule)] px-4 pb-2 pt-3 sm:px-5">
           {desktop ? null : (
-            <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[#dedcd4]" />
+            <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--rule-dark)]" />
           )}
-          <h2 id="help-sheet-title" className="min-w-0 text-base font-black leading-6 text-[#20211f]">
+          <h2 id="help-sheet-title" className="min-w-0 text-base font-black leading-6 text-[var(--ink)]">
             {title}
           </h2>
           <button
             type="button"
             onClick={() => closeRef.current()}
-            className="min-h-11 shrink-0 px-2 text-sm font-bold text-[#62635f] underline underline-offset-4 hover:text-[#20211f]"
+            className="min-h-11 shrink-0 px-2 text-sm font-bold text-[var(--ink-soft)] underline underline-offset-4 hover:text-[var(--ink)]"
           >
             לסגור
           </button>
