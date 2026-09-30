@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { LANDING_EXAMPLES, type LandingExample } from "./examples";
 import { PlanPanel } from "./PlanPanel";
+import { swatch } from "./cards";
 import { LANDING_PLANS } from "./plans";
 
 /** Long enough to read the strategy, the measure and the three months once. */
@@ -126,7 +127,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
 
   const paused = ((hovered || focused) && !playRequested) || touching || readingDetails || !visible || pageHidden;
   const active = examples[current];
-  const accent = "var(--primary)";
+  const accent = swatch(active.palette, "primary", "#2853c7");
 
   return (
     <div
@@ -161,7 +162,7 @@ export function Showcase({ examples: all = LANDING_EXAMPLES }: { examples?: Land
         >
           {examples.map((example, index) => {
             const selected = index === current;
-            const color = "var(--primary)";
+            const color = swatch(example.palette, "primary", "#2853c7");
             return (
               <button
                 key={example.slug}
