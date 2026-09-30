@@ -1,3 +1,4 @@
+import logging
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -18,6 +19,7 @@ from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
 
 router = APIRouter(prefix="/performance", tags=["performance"])
+logger = logging.getLogger(__name__)
 
 
 def _optional(business: Business, provider: str) -> Integration | None:
@@ -111,6 +113,14 @@ def _audience_payload(
     )
 
 
+def _account_block(page_token: str, instagram_id: str) -> dict:
+    try:
+        return meta.account_overview(page_token, instagram_id)
+    except Exception:  # noqa: BLE001 - the per-post numbers must still be stored
+        logger.exception("Instagram account insights failed")
+        return {"windows": {}, "followers_count": None, "errors": {"account": meta.MISSING_METRIC_HE}}
+
+
 def _sync_payload(business: Business, db: Session) -> dict:
     ga4_item = _optional(business, "ga4")
     meta_item = _optional(business, "meta")
@@ -135,6 +145,9 @@ def _sync_payload(business: Business, db: Session) -> dict:
             if not page_token:
                 raise RuntimeError("החיבור לדף הפייסבוק שבחרתם לא שלם. חברו את אינסטגרם מחדש בעמוד החיבורים.")
             meta_data = meta.fetch_insights(page_token, instagram_id, meta_item.external_id)
+            # The account's own totals (followers, reach, profile taps) next to the
+            # per-post numbers. Best effort: they never fail the sync.
+            meta_data["account"] = _account_block(page_token, instagram_id)
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 

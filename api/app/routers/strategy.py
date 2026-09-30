@@ -36,6 +36,7 @@ from app.services.images import (
 )
 from app.services.instagram_signal import signal_for
 from app.services.jsonutil import dumps, loads
+from app.services.meta import account_digest
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
 from app.services.publish import parse_scheduled_for
 from app.services.scraper import fetch_photo_candidates
@@ -751,6 +752,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         {
             "ga4": loads(snap.ga4_json, {}),
             "diagnostic": loads(snap.diagnostic_json, {}),
+            "instagram_account": account_digest((loads(snap.meta_json, {}) or {}).get("account")),
         }
         if snap
         else None,

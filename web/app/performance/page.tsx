@@ -7,7 +7,14 @@ import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
 import { StepLink } from "@/components/trial/StepLink";
 import { MetricComparison } from "@/components/design/MetricComparison";
-import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/lib/api";
+import { SegmentedControl } from "@/components/design/Controls";
+import {
+  endpoints,
+  type AudiencePerformance,
+  type InstagramAccount,
+  type InstagramAccountWindow,
+  type PerformancePayload,
+} from "@/lib/api";
 import { markSeen } from "@/lib/trial";
 import { IconChart } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
@@ -300,6 +307,220 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" className="-mb-2" />
       ) : null}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* The Instagram account                                                                 */
+/* ------------------------------------------------------------------------------------ */
+
+type AccountKey = keyof InstagramAccountWindow["values"];
+
+/** The three numbers on the face, after followers. Every label is the owner's word. */
+const ACCOUNT_FACE: { key: AccountKey; label: string }[] = [
+  { key: "reach", label: "אנשים שראו" },
+  { key: "accounts_engaged", label: "הגיבו לתוכן" },
+  { key: "profile_links_taps", label: "לחיצות בפרופיל" },
+];
+
+/** One level down: every account number with what it means. */
+const ACCOUNT_ROWS: { key: AccountKey; label: string; note: string }[] = [
+  { key: "reach", label: "אנשים שראו", note: "כמה אנשים שונים ראו את התוכן. כל אדם נספר פעם אחת." },
+  { key: "views", label: "צפיות", note: "כמה פעמים צפו בתוכן. אותו אדם יכול להיספר יותר מפעם אחת." },
+  { key: "accounts_engaged", label: "הגיבו לתוכן", note: "כמה אנשים עשו לייק, תגובה, שמירה או שיתוף." },
+  { key: "total_interactions", label: "לייקים, תגובות, שמירות ושיתופים", note: "כולם יחד, על כל התוכן." },
+  { key: "profile_links_taps", label: "לחיצות בפרופיל", note: "על הכפתורים בפרופיל: חיוג, ניווט, מייל והודעה." },
+  { key: "follows", label: "התחילו לעקוב", note: "" },
+  { key: "unfollows", label: "הפסיקו לעקוב", note: "" },
+];
+
+const CONTACT_BUTTON_HE: Record<string, string> = {
+  CALL: "חיוג",
+  DIRECTION: "ניווט",
+  EMAIL: "מייל",
+  TEXT: "הודעה",
+  BOOK_NOW: "הזמנת תור",
+};
+
+const ACCOUNT_WINDOWS = [
+  { value: "7", label: "7 ימים" },
+  { value: "28", label: "28 ימים" },
+];
+
+const NOT_RETURNED = "אינסטגרם לא החזיר את המספר הזה";
+
+function count(value: number | undefined) {
+  return value === undefined ? undefined : value.toLocaleString("he-IL");
+}
+
+/** "+17%" against the window before, only when both windows have the number. */
+function changeOf(now: number | undefined, before: number | undefined) {
+  if (now === undefined || before === undefined || before === 0) return "";
+  const pct = Math.round(((now - before) / before) * 100);
+  return `${pct > 0 ? "+" : ""}${pct}%`;
+}
+
+/** A signed figure keeps its sign on the left of the digits inside Hebrew text. */
+function Signed({ text }: { text: string }) {
+  return <bdi dir="ltr">{text}</bdi>;
+}
+
+function signed(value: number) {
+  return `${value > 0 ? "+" : ""}${value.toLocaleString("he-IL")}`;
+}
+
+/**
+ * The account as a whole — the business, not one post: followers and how they changed,
+ * how many people saw and reacted, and taps on the profile's buttons, for the last 7 or 28
+ * days against the same length of time before. Every number is Meta's; a missing one says
+ * why, on the face, and a small account is told it needs 100 followers rather than shown
+ * a zero.
+ */
+function InstagramAccountBlock({ account }: { account: InstagramAccount }) {
+  const [days, setDays] = useState("28");
+  const windows = account.windows || {};
+  const pair = windows[days] || windows[Object.keys(windows)[0]];
+  const current = pair?.current;
+  const previous = pair?.previous;
+  const values = current?.values || {};
+  const before = previous?.values || {};
+  const errors = current?.errors || {};
+  const blockErrors = account.errors || {};
+
+  const followers = account.followers_count ?? undefined;
+  const net = values.net_followers;
+  const newFollowers = account.new_followers?.[days];
+  const followersNote: ReactNode = account.few_followers ? (
+    "צריך לפחות 100 עוקבים כדי לראות כמה הצטרפו."
+  ) : net !== undefined ? (
+    <>
+      <Signed text={signed(net)} /> בתקופה
+    </>
+  ) : newFollowers !== undefined ? (
+    `${newFollowers.toLocaleString("he-IL")} חדשים`
+  ) : null;
+  // Nothing at all came back: the one reason is the whole message (a dead connection,
+  // Meta asking us to slow down), stated instead of a grid of "not measured".
+  const nothing = followers === undefined && !Object.keys(values).length;
+  const reason =
+    blockErrors.account || blockErrors.followers_count || Object.values(errors)[0] || NOT_RETURNED;
+
+  return (
+    <section aria-labelledby="account-heading">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="account-heading" className="text-base font-black text-[color:var(--ink)]">
+          החשבון באינסטגרם
+        </h2>
+        {!nothing && Object.keys(windows).length > 1 ? (
+          <SegmentedControl label="תקופה" value={days} options={ACCOUNT_WINDOWS} onChange={setDays} />
+        ) : null}
+      </div>
+      {nothing ? (
+        <p className="mt-2 text-sm leading-6 text-[color:var(--ink-soft)]">{reason}</p>
+      ) : (
+        <>
+          <dl className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            <AccountFigure
+              label="עוקבים"
+              value={count(followers)}
+              sub={followersNote}
+              missing={blockErrors.followers_count}
+            />
+            {ACCOUNT_FACE.map((item) => {
+              const change = changeOf(values[item.key], before[item.key]);
+              return (
+                <AccountFigure
+                  key={item.key}
+                  label={item.label}
+                  value={count(values[item.key])}
+                  sub={change ? <Signed text={change} /> : null}
+                  missing={errors[item.key]}
+                />
+              );
+            })}
+          </dl>
+          {previous ? (
+            <p className="mt-2 text-xs text-[color:var(--ink-soft)]">האחוז: לעומת {current?.days ?? days} הימים שלפני.</p>
+          ) : null}
+        </>
+      )}
+    </section>
+  );
+}
+
+/** A number, or "לא נמדד" with Meta's reason under it — on the face, not in a tooltip. */
+function AccountFigure({ label, value, sub, missing }: { label: string; value?: string; sub?: ReactNode; missing?: string }) {
+  const note = value !== undefined ? sub : missing || NOT_RETURNED;
+  return (
+    <div>
+      <dt className="text-xs font-bold text-[color:var(--ink-soft)]">{label}</dt>
+      {value !== undefined ? (
+        <dd className="metric-number mt-1 text-2xl font-black text-[color:var(--ink)]">{value}</dd>
+      ) : (
+        <dd className="mt-1.5 text-sm font-bold text-[color:var(--ink-muted)]">לא נמדד</dd>
+      )}
+      {note ? <dd className="mt-0.5 text-xs leading-5 text-[color:var(--ink-soft)]">{note}</dd> : null}
+    </div>
+  );
+}
+
+/** Every account number, both windows, what each means, and what Meta no longer reports. */
+function AccountMetrics({ account }: { account: InstagramAccount }) {
+  const windows = Object.entries(account.windows || {});
+  if (!windows.length) return null;
+  return (
+    <Expand title="כל המספרים מאינסטגרם">
+      {windows.map(([days, pair]) => {
+        const values = pair.current?.values || {};
+        const before = pair.previous?.values || {};
+        const errors = pair.current?.errors || {};
+        const taps = pair.current?.breakdowns?.profile_links_taps || {};
+        const tapsLine = Object.entries(taps)
+          .filter(([, value]) => value > 0)
+          .map(([button, value]) => `${CONTACT_BUTTON_HE[button] || "אחר"}: ${value.toLocaleString("he-IL")}`)
+          .join(" · ");
+        return (
+          <div key={days} className="pb-3">
+            <p className="text-xs font-bold text-[color:var(--ink-soft)]">
+              {days} ימים · {formatPeriod(pair.current?.start, pair.current?.end)}
+            </p>
+            <dl className="mt-1 divide-y divide-[var(--rule)]">
+              {ACCOUNT_ROWS.map((row) => {
+                const value = values[row.key];
+                const prior = before[row.key];
+                const why = errors[row.key] || (row.key === "follows" || row.key === "unfollows" ? errors.follows_and_unfollows : "");
+                return (
+                  <div key={row.key} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-2.5">
+                    <dt className="text-sm font-bold text-[color:var(--ink)]">
+                      {row.label}
+                      {row.note ? <span className="mt-0.5 block text-xs font-normal text-[color:var(--ink-soft)]">{row.note}</span> : null}
+                      {row.key === "profile_links_taps" && tapsLine ? (
+                        <span className="mt-0.5 block text-xs font-normal text-[color:var(--ink-soft)]">{tapsLine}</span>
+                      ) : null}
+                    </dt>
+                    <dd className="text-end">
+                      {value !== undefined ? (
+                        <span className="metric-number text-lg font-black text-[color:var(--ink)]">{value.toLocaleString("he-IL")}</span>
+                      ) : (
+                        <span className="text-xs text-[color:var(--ink-muted)]">{why || NOT_RETURNED}</span>
+                      )}
+                      {prior !== undefined ? (
+                        <span className="block text-xs text-[color:var(--ink-soft)]">לפני כן: {prior.toLocaleString("he-IL")}</span>
+                      ) : null}
+                    </dd>
+                  </div>
+                );
+              })}
+            </dl>
+          </div>
+        );
+      })}
+      <p className="text-xs leading-6 text-[color:var(--ink-soft)]">
+        לחיצות על הקישור בביו וכניסות לפרופיל: אינסטגרם כבר לא מוסר את המספרים האלה. את
+        הלחיצות על קישור הוואטסאפ אנחנו סופרים בעצמנו. המספרים של אינסטגרם מתעדכנים באיחור של
+        עד יומיים, ולכן היום לא נספר.
+      </p>
+    </Expand>
   );
 }
 
@@ -748,6 +969,8 @@ export default function PerformancePage() {
   const results = data && available ? postResults(data) : null;
   const hasVerdict = Boolean(data?.diagnostic?.top_content?.length || data?.diagnostic?.bottom_content?.length);
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
+  // Only from a refresh that read the account; an older snapshot simply has none.
+  const account = available && data?.meta?.account ? data.meta.account : null;
 
   return (
     <AppShell>
@@ -769,6 +992,7 @@ export default function PerformancePage() {
             {available ? <Answer payload={data} /> : <NoSnapshotYet />}
             {planMeasure ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">המדד בתוכנית: {planMeasure}. <Link href="/strategy" className="text-[color:var(--primary)] underline underline-offset-4">לתוכנית</Link></p> : null}
             <MeasurementGaps payload={data} />
+            {account ? <InstagramAccountBlock account={account} /> : null}
 
             {available ? (
               results ? (
@@ -801,6 +1025,7 @@ export default function PerformancePage() {
                 </Expand>
               ) : null}
               {available ? <TrafficMetrics payload={data} /> : null}
+              {account ? <AccountMetrics account={account} /> : null}
               {data.audiences ? <AudienceBreakdown data={data.audiences} /> : null}
               <Method data={data.audiences} />
             </div>
