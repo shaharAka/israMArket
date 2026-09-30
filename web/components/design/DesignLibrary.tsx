@@ -8,6 +8,7 @@ import { PalettePicker } from "./PalettePicker";
 import { useDesignPalette } from "./palette";
 import { SunOverShop } from "./SunOverShop";
 import { ComponentWorkshop, TransitionWorkshop } from "./ComponentWorkshop";
+import { ResultsWorkshop } from "./ResultsWorkshop";
 import { SegmentedControl, ToggleField } from "./Controls";
 import { EditorIcon, type EditorIconKind } from "@/components/posts/EditorIcon";
 import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
@@ -24,7 +25,7 @@ export function DesignLibrary() {
   const [reduced, setReduced] = useState(false);
   return <DesignScope className={styles.page} palette={palette} mood={mood} reduced={reduced}><div className={styles.container}>
     <header className={styles.header}><Link href="/preview" className={styles.brand}><BrandMark className={styles.brandMark} />ישראמארקט</Link><span className={styles.headerLabel}>ספריית העיצוב</span><Link href="/preview" className={styles.openProduct}>למוצר ←</Link></header>
-    <nav className={styles.libraryNav} aria-label="חלקי ספריית העיצוב">{[{id:"language",label:"השפה"},{id:"components",label:"רכיבים"},{id:"transitions",label:"מעברים ותנועה"}].map(item => <button key={item.id} type="button" aria-pressed={area === item.id} onClick={() => setArea(item.id)}>{item.label}</button>)}</nav>
+    <nav className={styles.libraryNav} aria-label="חלקי ספריית העיצוב">{[{id:"language",label:"השפה"},{id:"components",label:"רכיבים"},{id:"results",label:"תוצאות"},{id:"transitions",label:"מעברים ותנועה"}].map(item => <button key={item.id} type="button" aria-pressed={area === item.id} onClick={() => setArea(item.id)}>{item.label}</button>)}</nav>
     <main>
       {area === "language" && <>
         <section className={styles.hero} aria-labelledby="design-title"><div><p className={styles.kicker}>כיוון, מדידה, צעד הבא</p><h1 id="design-title">תוכנית ברורה.<br /><span>קצת שמש בדרך.</span></h1><p className={styles.heroText}>דיו חד, מרווח לקרוא, ונגיעות של צבע ועומק. העסק והסיפור שלו נותנים את האישיות.</p></div><div className={styles.heroSketch}><SunOverShop reduced={reduced} /></div></section>
@@ -43,6 +44,7 @@ export function DesignLibrary() {
         <div className={styles.motionIdentity}><div><h1>תנועה עם סיבה.</h1><p>פעולה, שינוי ותוצאה. בזמן שקוראים, התוכן נשאר יציב.</p><Link href="/motion">לכל התנועות ←</Link></div><SunOverShop reduced={reduced} /></div>
         <TransitionWorkshop />
       </>}
+      {area === "results" && <ResultsWorkshop />}
       <div className={styles.libraryControls}><SegmentedControl label="אופי התנועה" value={mood} onChange={value => setMood(value as MotionMood)} options={[{value:"quiet",label:"עדין"},{value:"playful",label:"עם אופי"}]} /><ToggleField label="הפחתת תנועה" checked={reduced} onChange={setReduced} /></div>
       <footer className={styles.footer}><span>ישראמארקט · ספרייה חיה</span><Link href="/preview">למסכי המוצר ←</Link></footer>
     </main>

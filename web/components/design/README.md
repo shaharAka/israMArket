@@ -71,9 +71,17 @@ text conflict: a clean merge alone does not verify the behavior.
 
 ## Live review
 
-- `/design`: three areas — language, components, and transitions. Language opens with
+- `/design`: language, components, results, and transitions. Language opens with
   the storefront/sun anchor and three schematic palette choices. Components start with
   the plan; supporting examples appear on demand.
+- `/design/results`: an interactive Results component, using explicitly fictional bakery
+  data. Daily paired bars compare verified paid website orders over two complete weeks.
+  Selecting a day exposes its values; evidence opens inline. One proposed action opens
+  the plan change and a subordinate post draft. Acceptance/reversal stays in React state
+  and is explicitly labelled as local to the preview. Insufficient data and interrupted
+  connection scenarios do not invent zeroes or trends; reconnect is a labelled simulation.
+  `ResultsBrief` accepts findings, evidence, measures and actions from its caller. No
+  authenticated Results data, API, OAuth, persistence or account flow changes are included.
 - `/preview`: entry to the existing application with explicit example data. The plan
   opens first. Onboarding is a separate `/start?mock=1` walkthrough.
 - `/motion`: nine isolated motion assets, both moods and reduced-motion controls.
