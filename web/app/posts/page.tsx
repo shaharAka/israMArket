@@ -57,10 +57,10 @@ function go(query: string, mode: "push" | "replace") {
 function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
   const item = (active: boolean) =>
     `inline-flex min-h-10 items-center gap-1.5 rounded-full px-3 text-sm font-bold transition-colors ${
-      active ? "bg-white text-[#1d2940] shadow-sm" : "text-[#535f75] hover:text-[#1d2940]"
+      active ? "bg-white text-[color:var(--ink)] shadow-sm" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
     }`;
   return (
-    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[#edf2ff] p-1">
+    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded-full bg-[var(--primary-soft)] p-1">
       <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)} className={item(!calendar)}>
         רשימה
       </button>
@@ -173,7 +173,7 @@ function PostsWorkspace() {
     return error ? (
       <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
     ) : (
-      <p className="text-sm text-[#535f75]">טוענים את הפוסט…</p>
+      <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסט…</p>
     );
   }
 
@@ -200,9 +200,9 @@ function PostsWorkspace() {
     // and its arrow ended up a screen apart.
     <div className={`mx-auto space-y-5 ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
       <header className="space-y-3">
-        <Link href="/strategy" className="inline-flex min-h-10 items-center text-xs text-[#535f75] underline underline-offset-4">כלי הביצוע של התוכנית</Link>
+        <Link href="/strategy" className="inline-flex min-h-10 items-center text-xs text-[color:var(--ink-soft)] underline underline-offset-4">כלי הביצוע של התוכנית</Link>
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-black tracking-tight text-[#1d2940] sm:text-3xl">
+          <h1 className="text-2xl font-black tracking-tight text-[color:var(--ink)] sm:text-3xl">
             {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
           </h1>
           {posts.length > 0 ? <SunProgress value={doneCount} total={posts.length} label="פוסטים שאושרו החודש" /> : null}
@@ -211,12 +211,12 @@ function PostsWorkspace() {
         <div className="flex items-center justify-between gap-3">
           {strategy && posts.length ? (
             <div className="flex min-w-0 flex-1 items-center gap-3">
-              <p className="shrink-0 text-sm font-bold text-[#1d2940]">
+              <p className="shrink-0 text-sm font-bold text-[color:var(--ink)]">
                 {doneCount} מתוך {posts.length} אושרו
               </p>
-              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[#e1e7f2]">
+              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[var(--rule)]">
                 <div
-                  className="h-full rounded-full bg-[#2853c7] transition-all"
+                  className="h-full rounded-full bg-[var(--primary)] transition-all"
                   style={{ width: `${(doneCount / posts.length) * 100}%` }}
                 />
               </div>
@@ -253,7 +253,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(firstPending)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#2853c7] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
           </button>
@@ -261,7 +261,7 @@ function PostsWorkspace() {
           <button
             type="button"
             onClick={() => openPost(due.index)}
-            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[#2853c7] px-6 text-base font-bold text-white sm:w-auto"
+            className="flex min-h-12 w-full items-center justify-center rounded-xl bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
           >
             לפרסם את הפוסט של היום
           </button>
@@ -269,9 +269,10 @@ function PostsWorkspace() {
       ) : null}
 
       {!strategy ? (
-        !error ? <p className="text-sm text-[#535f75]">טוענים את הפוסטים של החודש…</p> : null
+        !error ? <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים של החודש…</p> : null
       ) : location.calendar ? (
         <CalendarView
+          strategy={strategy}
           initialYear={strategy.year}
           initialMonth={strategy.month}
           posts={posts}
@@ -290,7 +291,7 @@ export default function PostsPage() {
     <AppShell>
       {/* The workspace reads the URL, which a prerender does not have (Next's rule for
           useSearchParams), so it renders inside its own Suspense boundary. */}
-      <Suspense fallback={<p className="text-sm text-[#535f75]">טוענים את הפוסטים…</p>}>
+      <Suspense fallback={<p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים…</p>}>
         <PostsWorkspace />
       </Suspense>
     </AppShell>

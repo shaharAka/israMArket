@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type CSSProperties } from "react";
 import { MotionIllustration, MotionScope } from "@/components/motion";
 import type { MotionAssetId } from "@/components/motion";
 
@@ -32,7 +32,7 @@ export function ToastHost() {
   return (
     <div role="status" className="app-feedback pointer-events-none fixed bottom-20 left-1/2 z-[80] w-max max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-lg px-5 py-3 text-sm text-white shadow-sm md:bottom-6">
       <div className="flex items-center gap-3">
-        {state.kind ? <MotionScope mood="playful" className="shrink-0"><MotionIllustration kind={state.kind} active replayKey={state.sequence} className="!h-10 !w-10" /></MotionScope> : null}
+        {state.kind ? <MotionScope mood="playful" className="shrink-0" style={{ "--motion-paper": "var(--paper)", "--motion-ink": "var(--primary)", "--motion-accent": "var(--sun)", "--motion-halo": "var(--primary-soft)" } as CSSProperties}><MotionIllustration kind={state.kind} active replayKey={state.sequence} className="!h-10 !w-10" /></MotionScope> : null}
         <span>{state.message}</span>
       </div>
     </div>

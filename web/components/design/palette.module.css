@@ -18,3 +18,12 @@
 @media (max-width: 700px) { .heading { flex-direction: column; gap: 5px; } .options { gap: 12px; } .options button { flex-direction: column; align-items: flex-start; gap: 8px; position: relative; } .options strong { font-size: 12px; } .selected { position: absolute; left: 0; top: 12px; } .options small { font-size: 10px; } }
 
 .picker[data-compact="true"] .options svg { display:none; }.picker[data-compact="true"] .options button { min-height:44px; padding:8px 0; }.picker[data-compact="true"] .options { display:flex; flex-wrap:wrap; gap:24px; }.picker[data-compact="true"] .heading { display:none; }
+
+.art { display:block; width:104px; flex-shrink:0; background:var(--im-canvas); border-bottom:2px solid var(--im-primary); box-shadow:3px 3px 0 var(--im-soft); }
+.art svg { width:100%; height:auto; }
+.options button { padding:12px 0 18px; }
+.options strong { font-weight:650; }
+.picker[data-compact="true"] .art { display:none; }
+@media(max-width:700px) { .art { width:100%; max-width:120px; }.options button { gap:12px; }.options .selected { top:auto; bottom:20px; } }
+
+.colorSamples { display:flex; align-items:center; gap:3px; flex-shrink:0; }.colorSamples i { display:block; width:15px; height:25px; }.colorSamples i:last-child { width:9px; }.options button { min-height:80px; }.picker[data-compact="true"] .colorSamples { display:none; }

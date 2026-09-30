@@ -8,3 +8,7 @@
 .action { margin-top:20px; }
 
 .hypothesis { padding-block:14px; }.hypothesis h3 { font-size:15px; line-height:1.7; font-weight:600; }.hypothesis p { margin-top:6px; font-size:13px; line-height:1.8; color:var(--im-muted,var(--ink-soft)); }.hypothesis strong { font-weight:500; }
+
+.brief { background:var(--im-paper,var(--paper)); padding:24px 26px; border:1px solid var(--im-rule,var(--rule)); border-top:3px solid var(--im-primary,var(--primary)); box-shadow:4px 5px 0 var(--im-soft,var(--primary-soft)); }
+.decision { border-inline-start:3px solid var(--im-sun,var(--sun)); padding-inline-start:14px; }
+@media(max-width:600px) { .brief { padding:20px 18px; box-shadow:3px 4px 0 var(--im-soft,var(--primary-soft)); } }

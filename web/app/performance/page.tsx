@@ -49,9 +49,9 @@ function toNumber(value: unknown): number | undefined {
 function Expand({ title, children }: { title: string; children: ReactNode }) {
   return (
     <details className="group">
-      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[#1d2940]">
+      <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 py-3 text-sm font-bold text-[color:var(--ink)]">
         <span className="min-w-0">{title}</span>
-        <span aria-hidden className="shrink-0 text-[#647087] transition-transform group-open:-rotate-90">
+        <span aria-hidden className="shrink-0 text-[color:var(--ink-muted)] transition-transform group-open:-rotate-90">
           ‹
         </span>
       </summary>
@@ -123,13 +123,13 @@ function byResult(a: PostResult, b: PostResult) {
 }
 
 function ResultFigures({ result }: { result: PostResult }) {
-  if (!result.measured) return <span className="text-xs text-[#647087]">לא נמדד</span>;
+  if (!result.measured) return <span className="text-xs text-[color:var(--ink-muted)]">לא נמדד</span>;
   const parts = [
     result.conversions !== undefined ? `${result.conversions.toLocaleString("he-IL")} פניות` : "",
     result.sessions !== undefined ? `${result.sessions.toLocaleString("he-IL")} כניסות` : "",
     result.likes !== undefined ? `${result.likes.toLocaleString("he-IL")} לייקים` : "",
   ].filter(Boolean);
-  return <span className="metric-number text-xs text-[#3c3e3a]">{parts.join(" · ")}</span>;
+  return <span className="metric-number text-xs text-[color:var(--ink)]">{parts.join(" · ")}</span>;
 }
 
 function ResultRow({ result, best }: { result: PostResult; best?: boolean }) {
@@ -137,9 +137,9 @@ function ResultRow({ result, best }: { result: PostResult; best?: boolean }) {
     <li className="flex items-center gap-3 px-4 py-3">
       <span className="min-w-0 flex-1">
         <span className="flex items-center gap-2">
-          <span className="truncate text-sm font-bold text-[#1d2940]">{result.title}</span>
+          <span className="truncate text-sm font-bold text-[color:var(--ink)]">{result.title}</span>
           {best ? (
-            <span className="shrink-0 rounded-full bg-[#edf2ff] px-2 py-0.5 text-[11px] font-bold text-[#2853c7]">
+            <span className="shrink-0 rounded-full bg-[var(--primary-soft)] px-2 py-0.5 text-[11px] font-bold text-[color:var(--primary)]">
               הכי טוב
             </span>
           ) : null}
@@ -169,20 +169,20 @@ function PostResults({ results }: { results: PostResult[] }) {
 
   return (
     <section aria-labelledby="posts-heading">
-      <h2 id="posts-heading" className="text-base font-black text-[#1d2940]">
+      <h2 id="posts-heading" className="text-base font-black text-[color:var(--ink)]">
         אילו פוסטים הצליחו
       </h2>
       {visible.length ? (
-        <ul className="mt-3 divide-y divide-[#e1e7f2] overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
+        <ul className="mt-3 divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
           {visible.map((result, index) => (
             <ResultRow key={result.key} result={result} best={index === 0 && visible.length > 1} />
           ))}
         </ul>
       ) : (
-        <p className="mt-3 text-sm text-[#535f75]">עוד לא מדדנו תוצאות לאף פוסט.</p>
+        <p className="mt-3 text-sm text-[color:var(--ink-soft)]">עוד לא מדדנו תוצאות לאף פוסט.</p>
       )}
       {unmeasured.length ? (
-        <p className="mt-2 text-xs leading-5 text-[#535f75]">
+        <p className="mt-2 text-xs leading-5 text-[color:var(--ink-soft)]">
           {unmeasured.length === 1
             ? "פוסט אחד עוד לא נמדד. זה לא אומר שהוא הביא אפס."
             : `${unmeasured.length} פוסטים עוד לא נמדדו. זה לא אומר שהם הביאו אפס.`}
@@ -190,11 +190,11 @@ function PostResults({ results }: { results: PostResult[] }) {
       ) : null}
       {rest.length ? (
         <details className="group mt-1">
-          <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold text-[#535f75] hover:text-[#1d2940]">
+          <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-xs font-bold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]">
             {rest.length === 1 ? "עוד פוסט אחד" : `עוד ${rest.length} פוסטים`}
             <span aria-hidden className="transition-transform group-open:-rotate-90">‹</span>
           </summary>
-          <ul className="divide-y divide-[#e1e7f2] overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
+          <ul className="divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
             {rest.map((result) => (
               <ResultRow key={result.key} result={result} />
             ))}
@@ -226,8 +226,8 @@ function Answer({ payload }: { payload: PerformancePayload }) {
 
   return (
     <section>
-      {period ? <p className="text-xs font-bold text-[#535f75]">{period}</p> : null}
-      <h2 className="mt-1 max-w-3xl text-xl font-black leading-8 text-[#1d2940] sm:text-2xl sm:leading-9">
+      {period ? <p className="text-xs font-bold text-[color:var(--ink-soft)]">{period}</p> : null}
+      <h2 className="mt-1 max-w-3xl text-xl font-black leading-8 text-[color:var(--ink)] sm:text-2xl sm:leading-9">
         {sentence}
       </h2>
       <dl className="mt-5 grid grid-cols-2 gap-4 sm:max-w-md">
@@ -235,7 +235,7 @@ function Answer({ payload }: { payload: PerformancePayload }) {
         <BigNumber label="כניסות לאתר" value={sessions !== undefined ? formatMetricValue("sessions", sessions) : undefined} />
       </dl>
       {conversions !== undefined ? (
-        <p className="mt-2 text-xs text-[#535f75]">פנייה: רכישה באתר או לחיצה על וואטסאפ.</p>
+        <p className="mt-2 text-xs text-[color:var(--ink-soft)]">פנייה: רכישה באתר או לחיצה על וואטסאפ.</p>
       ) : null}
     </section>
   );
@@ -244,11 +244,11 @@ function Answer({ payload }: { payload: PerformancePayload }) {
 function BigNumber({ label, value }: { label: string; value?: string }) {
   return (
     <div>
-      <dt className="text-xs font-bold text-[#535f75]">{label}</dt>
+      <dt className="text-xs font-bold text-[color:var(--ink-soft)]">{label}</dt>
       {value !== undefined ? (
-        <dd className="metric-number mt-1 text-4xl font-black text-[#1d2940]">{value}</dd>
+        <dd className="metric-number mt-1 text-4xl font-black text-[color:var(--ink)]">{value}</dd>
       ) : (
-        <dd className="mt-2 text-sm font-bold text-[#647087]">לא נמדד</dd>
+        <dd className="mt-2 text-sm font-bold text-[color:var(--ink-muted)]">לא נמדד</dd>
       )}
     </div>
   );
@@ -275,7 +275,7 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
               data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
             }`
           : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
-        <Link href="/integrations" className="font-bold text-[#1d2940] underline underline-offset-4">
+        <Link href="/integrations" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
           לחבר
         </Link>
       </p>
@@ -298,19 +298,19 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
   if (!entries.length) return null;
   return (
     <Expand title="כל המספרים מהאתר">
-      <p className="text-xs leading-5 text-[#535f75]">
+      <p className="text-xs leading-5 text-[color:var(--ink-soft)]">
         המספרים מגוגל אנליטיקס, הכלי שסופר מה קורה באתר.
       </p>
-      <dl className="mt-2 divide-y divide-[#e1e7f2]">
+      <dl className="mt-2 divide-y divide-[var(--rule)]">
         {entries.map(([key, value]) => {
           const meta = METRIC_LABELS[key];
           return (
             <div key={key} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-3">
-              <dt className="text-sm font-bold text-[#1d2940]">
+              <dt className="text-sm font-bold text-[color:var(--ink)]">
                 {meta?.label ?? key}
-                {meta?.note ? <span className="mt-0.5 block text-xs font-normal text-[#535f75]">{meta.note}</span> : null}
+                {meta?.note ? <span className="mt-0.5 block text-xs font-normal text-[color:var(--ink-soft)]">{meta.note}</span> : null}
               </dt>
-              <dd className="metric-number text-lg font-black text-[#1d2940]">{formatMetricValue(key, value)}</dd>
+              <dd className="metric-number text-lg font-black text-[color:var(--ink)]">{formatMetricValue(key, value)}</dd>
             </div>
           );
         })}
@@ -331,16 +331,16 @@ function ContentVerdict({ payload }: { payload: PerformancePayload }) {
     <div className="grid gap-6 md:grid-cols-2 md:gap-10">
       {groups.map((group) => (
         <section key={group.id} aria-labelledby={`${group.id}-heading`}>
-          <h3 id={`${group.id}-heading`} className="text-sm font-black text-[#1d2940]">
+          <h3 id={`${group.id}-heading`} className="text-sm font-black text-[color:var(--ink)]">
             {group.title}
           </h3>
-          <ul className="mt-1 divide-y divide-[#e1e7f2]">
+          <ul className="mt-1 divide-y divide-[var(--rule)]">
             {group.items.map((item) => (
               <li key={item.label} className="flex gap-3 py-3">
                 <span aria-hidden className={`mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full ${group.mark}`} />
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-[#1d2940]">{item.label}</p>
-                  <p className="mt-1 text-sm leading-6 text-[#535f75]">{item.why}</p>
+                  <p className="text-sm font-bold text-[color:var(--ink)]">{item.label}</p>
+                  <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">{item.why}</p>
                 </div>
               </li>
             ))}
@@ -357,12 +357,12 @@ function Friction({ payload }: { payload: PerformancePayload }) {
   if (!issues.length) return null;
   return (
     <section aria-labelledby="friction-heading">
-      <h3 id="friction-heading" className="text-sm font-black text-[#1d2940]">
+      <h3 id="friction-heading" className="text-sm font-black text-[color:var(--ink)]">
         מה עוצר אנשים בדרך לקנייה
       </h3>
-      <ul className="mt-1 divide-y divide-[#e1e7f2]">
+      <ul className="mt-1 divide-y divide-[var(--rule)]">
         {issues.map((issue) => (
-          <li key={issue} className="flex items-start gap-2.5 py-3 text-sm leading-6 text-[#3c3e3a]">
+          <li key={issue} className="flex items-start gap-2.5 py-3 text-sm leading-6 text-[color:var(--ink)]">
             <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-[#b3b0a5]" />
             <span>{issue}</span>
           </li>
@@ -422,8 +422,8 @@ function columnsFor(data: AudiencePerformance) {
  * result of nothing. The two are different facts and the table keeps them apart.
  */
 function MetricCell({ value }: { value: number | undefined }) {
-  if (value === undefined || value === null) return <span className="text-[11px] text-[#647087]">לא נמדד</span>;
-  return <span className="metric-number font-bold text-[#1d2940]">{value.toLocaleString("he-IL")}</span>;
+  if (value === undefined || value === null) return <span className="text-[11px] text-[color:var(--ink-muted)]">לא נמדד</span>;
+  return <span className="metric-number font-bold text-[color:var(--ink)]">{value.toLocaleString("he-IL")}</span>;
 }
 
 /**
@@ -439,12 +439,12 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
   return (
     <Expand title="לפי קהל">
       {!rows.length ? (
-        <p className="text-sm text-[#535f75]">עוד אין פוסטים בתוכנית, אז אין מה להראות לפי קהל.</p>
+        <p className="text-sm text-[color:var(--ink-soft)]">עוד אין פוסטים בתוכנית, אז אין מה להראות לפי קהל.</p>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-[#e1e7f2] bg-white">
+        <div className="overflow-x-auto rounded-lg border border-[var(--rule)] bg-white">
           <table className="w-full min-w-[560px] border-collapse text-right">
             <thead>
-              <tr className="text-[11px] text-[#535f75]">
+              <tr className="text-[11px] text-[color:var(--ink-soft)]">
                 <th scope="col" className="px-4 py-2.5 font-bold">קהל</th>
                 <th scope="col" className="px-3 py-2.5 text-center font-bold">פוסטים</th>
                 {columns.map((column) => (
@@ -461,15 +461,15 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                 return (
                   <tr
                     key={row.audience_id === null ? "unassigned" : row.audience_id}
-                    className={`border-t border-[#edf2ff] align-top ${
-                      unassigned ? "bg-[#edf2ff]" : index % 2 ? "bg-[#f4f7ff]" : ""
+                    className={`border-t border-[var(--primary-soft)] align-top ${
+                      unassigned ? "bg-[var(--primary-soft)]" : index % 2 ? "bg-[var(--primary-soft)]" : ""
                     }`}
                   >
                     <td className="px-4 py-2.5">
-                      <span className={`block text-xs font-bold ${unassigned ? "text-[#535f75]" : "text-[#1d2940]"}`}>
+                      <span className={`block text-xs font-bold ${unassigned ? "text-[color:var(--ink-soft)]" : "text-[color:var(--ink)]"}`}>
                         {row.name || UNASSIGNED_NAME}
                         {row.is_primary ? (
-                          <span className="ms-2 rounded-full bg-[#edf2ff] px-2 py-0.5 text-[10px] font-bold text-[#2853c7]">
+                          <span className="ms-2 rounded-full bg-[var(--primary-soft)] px-2 py-0.5 text-[10px] font-bold text-[color:var(--primary)]">
                             הקהל העיקרי
                           </span>
                         ) : null}
@@ -477,13 +477,13 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                       <span className="mt-1 flex items-center gap-2">
                         {/* The sample size also draws the bar, so a one-post row cannot
                             read as a trend at a glance. */}
-                        <span className="block h-1 w-16 shrink-0 overflow-hidden rounded-full bg-[#e1e7f2]">
+                        <span className="block h-1 w-16 shrink-0 overflow-hidden rounded-full bg-[var(--rule)]">
                           <span
                             className={`block h-full rounded-full ${unassigned ? "bg-[#b3b0a5]" : "bg-[#3f4a5c]"}`}
                             style={{ width: `${maxPosts ? Math.max(8, ((row.posts || 0) / maxPosts) * 100) : 0}%` }}
                           />
                         </span>
-                        <span className="text-[10px] leading-4 text-[#535f75]">
+                        <span className="text-[10px] leading-4 text-[color:var(--ink-soft)]">
                           {!unassigned && row.posts && measured < row.posts
                             ? measured === 0
                               ? row.posts === 1
@@ -495,7 +495,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
                       </span>
                     </td>
                     <td className="px-3 py-2.5 text-center">
-                      <span className="metric-number font-bold text-[#1d2940]">
+                      <span className="metric-number font-bold text-[color:var(--ink)]">
                         {(row.posts || 0).toLocaleString("he-IL")}
                       </span>
                       {row.posts === 1 ? <span className="mt-0.5 block whitespace-nowrap text-[10px] text-[#9f4330]">רק פוסט אחד</span> : null}
@@ -518,7 +518,7 @@ function AudienceBreakdown({ data }: { data: AudiencePerformance }) {
         </div>
       )}
       {data.explanation && (data.connected?.ga4 || data.connected?.meta) ? (
-        <p className="mt-3 text-xs leading-6 text-[#535f75]">{data.explanation}</p>
+        <p className="mt-3 text-xs leading-6 text-[color:var(--ink-soft)]">{data.explanation}</p>
       ) : null}
     </Expand>
   );
@@ -529,18 +529,18 @@ function Method({ data }: { data?: AudiencePerformance | null }) {
   const columns = data ? columnsFor(data) : [];
   return (
     <Expand title="איך חישבנו">
-      {data?.method ? <p className="text-xs leading-6 text-[#535f75]">{data.method}</p> : null}
-      <p className="mt-2 text-xs leading-6 text-[#535f75]">
+      {data?.method ? <p className="text-xs leading-6 text-[color:var(--ink-soft)]">{data.method}</p> : null}
+      <p className="mt-2 text-xs leading-6 text-[color:var(--ink-soft)]">
         לכל פוסט יש קישור מיוחד משלו, וכך אנחנו יודעים אילו כניסות ופניות הגיעו ממנו. פוסט
         שלא הצלחנו לקשר לתוצאות מסומן &quot;לא נמדד&quot;. ככל שיש לקהל יותר פוסטים, המספרים
         שלו אמינים יותר. קהל עם פוסט אחד נותן כיוון, לא מגמה.
       </p>
       {columns.length ? (
-        <dl className="mt-3 divide-y divide-[#e1e7f2]">
+        <dl className="mt-3 divide-y divide-[var(--rule)]">
           {columns.map((column) => (
             <div key={column.key} className="py-2.5">
-              <dt className="text-xs font-bold text-[#1d2940]">{column.label}</dt>
-              <dd className="mt-0.5 text-xs leading-5 text-[#535f75]">{METRIC_NOTES[column.key] ?? ""}</dd>
+              <dt className="text-xs font-bold text-[color:var(--ink)]">{column.label}</dt>
+              <dd className="mt-0.5 text-xs leading-5 text-[color:var(--ink-soft)]">{METRIC_NOTES[column.key] ?? ""}</dd>
             </div>
           ))}
         </dl>
@@ -563,7 +563,7 @@ const WA_VISIBLE = 3;
 function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
   if (!data) return null;
   const heading = (
-    <h2 id="wa-heading" className="text-base font-black text-[#1d2940]">
+    <h2 id="wa-heading" className="text-base font-black text-[color:var(--ink)]">
       לחיצות על וואטסאפ
     </h2>
   );
@@ -571,9 +571,9 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
     return (
       <section aria-labelledby="wa-heading">
         {heading}
-        <p className="mt-2 text-sm leading-6 text-[#535f75]">
+        <p className="mt-2 text-sm leading-6 text-[color:var(--ink-soft)]">
           לא נמדד, כי עוד אין קישור וואטסאפ.{" "}
-          <Link href="/integrations" className="font-bold text-[#1d2940] underline underline-offset-4">
+          <Link href="/integrations" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
             להכין את הקישור
           </Link>
         </p>
@@ -593,24 +593,24 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
   // place and the number, and the title is in the tooltip (UI-RULES rule 7).
   const shortLabel = (label: string) => label.split(":")[0];
   const table = (items: typeof rows) => (
-    <ul className="divide-y divide-[#e1e7f2]">
+    <ul className="divide-y divide-[var(--rule)]">
       {items.map((link) => (
         <li key={link.code} className="grid grid-cols-[1fr_4rem_4rem] items-center gap-2 px-4 py-2.5 text-sm">
-          <span className="min-w-0 truncate font-bold text-[#1d2940]" title={link.label_he}>
+          <span className="min-w-0 truncate font-bold text-[color:var(--ink)]" title={link.label_he}>
             {shortLabel(link.label_he)}
           </span>
-          <span className="text-center tabular-nums text-[#1d2940]">{(link.clicks_7d || 0).toLocaleString("he-IL")}</span>
-          <span className="text-center tabular-nums text-[#535f75]">{(link.clicks_total || 0).toLocaleString("he-IL")}</span>
+          <span className="text-center tabular-nums text-[color:var(--ink)]">{(link.clicks_7d || 0).toLocaleString("he-IL")}</span>
+          <span className="text-center tabular-nums text-[color:var(--ink-soft)]">{(link.clicks_total || 0).toLocaleString("he-IL")}</span>
         </li>
       ))}
     </ul>
   );
   const devices = families.length ? (
     <div className="px-4 pb-3 pt-1">
-      <p className="text-xs leading-5 text-[#535f75]">
+      <p className="text-xs leading-5 text-[color:var(--ink-soft)]">
         {families.map(([family, count]) => `${FAMILY_HE[family] || family}: ${count.toLocaleString("he-IL")}`).join(" · ")}
       </p>
-      <p className="mt-1 text-xs leading-5 text-[#647087]">
+      <p className="mt-1 text-xs leading-5 text-[color:var(--ink-muted)]">
         אותו אדם שלחץ פעמיים נספר פעמיים. תצוגות מקדימות של הקישור ורובוטים לא נספרים.
       </p>
     </div>
@@ -620,16 +620,16 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
     <section aria-labelledby="wa-heading">
       {heading}
       {rows.length ? (
-        <div className="mt-3 overflow-hidden rounded-lg border border-[#e1e7f2] bg-white">
-          <div className="grid grid-cols-[1fr_4rem_4rem] gap-2 border-b border-[#e1e7f2] px-4 py-2 text-xs font-bold text-[#535f75]">
+        <div className="mt-3 overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
+          <div className="grid grid-cols-[1fr_4rem_4rem] gap-2 border-b border-[var(--rule)] px-4 py-2 text-xs font-bold text-[color:var(--ink-soft)]">
             <span aria-hidden />
             <span className="text-center">7 ימים</span>
             <span className="text-center">מההתחלה</span>
           </div>
           {table(visible)}
           {rest.length || devices ? (
-            <details className="group border-t border-[#e1e7f2]">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 text-xs font-bold text-[#535f75] hover:text-[#1d2940]">
+            <details className="group border-t border-[var(--rule)]">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 text-xs font-bold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]">
                 {rest.length ? "עוד מקורות ומכשירים" : "מאיזה מכשיר לחצו"}
                 <span aria-hidden className="transition-transform group-open:-rotate-90">‹</span>
               </summary>
@@ -639,9 +639,9 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
           ) : null}
         </div>
       ) : (
-        <p className="mt-2 text-sm leading-6 text-[#535f75]">עוד אין לחיצות. שימו את הקישור בביו ובפוסטים.</p>
+        <p className="mt-2 text-sm leading-6 text-[color:var(--ink-soft)]">עוד אין לחיצות. שימו את הקישור בביו ובפוסטים.</p>
       )}
-      <p className="mt-2 text-xs leading-5 text-[#535f75]">
+      <p className="mt-2 text-xs leading-5 text-[color:var(--ink-soft)]">
         לחיצות על הקישור, לא הודעות שנשלחו ולא מכירות.
       </p>
     </section>
@@ -651,18 +651,18 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
 /** Nothing has been synced yet. A normal state on this screen, and not an error. */
 function NoSnapshotYet() {
   return (
-    <section className="rounded-lg border border-[#e1e7f2] bg-white px-6 py-8 text-center">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fff5d9] text-[#1d2940]">
+    <section className="rounded-lg border border-[var(--rule)] bg-white px-6 py-8 text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#fff5d9] text-[color:var(--ink)]">
         <IconChart className="h-6 w-6" />
       </div>
-      <h2 className="mt-4 text-lg font-black text-[#1d2940]">עוד אין תוצאות</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#535f75]">
+      <h2 className="mt-4 text-lg font-black text-[color:var(--ink)]">עוד אין תוצאות</h2>
+      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[color:var(--ink-soft)]">
         כדי לראות כמה נכנסו לאתר, כמה פנו ומה קרה באינסטגרם, חברו את נתוני האתר ואת
         האינסטגרם.
       </p>
       <Link
         href="/integrations"
-        className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-[#c3cee5] bg-white px-4 text-sm font-bold text-[#1d2940] hover:bg-[#edf2ff]"
+        className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
       >
         לחבר את גוגל ואינסטגרם
         <span aria-hidden>←</span>
@@ -748,7 +748,7 @@ export default function PerformancePage() {
         {data ? (
           <div className="space-y-8">
             {available ? <Answer payload={data} /> : <NoSnapshotYet />}
-            {planMeasure ? <p className="text-sm leading-6 text-[#535f75]">המדד בתוכנית: {planMeasure}. <Link href="/strategy" className="text-[#2853c7] underline underline-offset-4">לתוכנית</Link></p> : null}
+            {planMeasure ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">המדד בתוכנית: {planMeasure}. <Link href="/strategy" className="text-[color:var(--primary)] underline underline-offset-4">לתוכנית</Link></p> : null}
             <MeasurementGaps payload={data} />
 
             {available ? (
@@ -763,7 +763,7 @@ export default function PerformancePage() {
 
             <WhatsappClicks data={whatsapp} />
 
-            <div className="divide-y divide-[#e1e7f2] border-y border-[#e1e7f2]">
+            <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
               {available && results && (hasVerdict || hasFriction) ? (
                 <Expand title="מה הצליח ומה לשפר">
                   <div className="space-y-6">

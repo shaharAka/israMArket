@@ -23,9 +23,9 @@ export type SectionIdentity = {
 
 /** The app's one accent. Everything section-coloured reads from here. */
 export const ACCENT = {
-  accent: "#2853c7",
-  surface: "#edf2ff",
-  border: "#c3cee5",
+  accent: "var(--primary)",
+  surface: "var(--primary-soft)",
+  border: "var(--rule-dark)",
 } as const;
 
 export const SECTIONS: Record<SectionKey, SectionIdentity> = {

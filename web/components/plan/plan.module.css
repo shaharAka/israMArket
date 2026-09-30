@@ -97,3 +97,17 @@
     animation: none !important;
   }
 }
+
+/* One document vocabulary: title, body, caption; ink and the interface accent. */
+.document { display:flex; flex-direction:column; gap:14px; font-family:var(--font-heebo),sans-serif; color:var(--ink); }
+.document :is(p,li,dd) { line-height:1.85; }
+.direction { padding:24px; border:1px solid var(--rule); border-top:3px solid var(--primary); background:var(--paper); box-shadow:4px 5px 0 var(--primary-soft); }
+.direction > span { display:none; }.direction > div { margin-top:0; }
+.direction > div > div > p:first-child { font-size:26px; line-height:1.5; font-weight:700; letter-spacing:-.5px; }
+.direction p { font-weight:400; }.direction b { font-weight:600; }
+.glance { padding:16px 0; }.glance > p:first-child { font-size:12px; color:var(--ink-soft); }.glance h3 { font-size:20px; line-height:1.65; font-weight:600; margin:5px 0; }.glance .baseline { font-size:13px; color:var(--ink-soft); margin-top:8px; }.glance > div { display:flex; flex-wrap:wrap; gap:10px 24px; margin-top:14px; padding-top:12px; border-top:1px solid var(--rule); font-size:12px; color:var(--ink-soft); }
+.firstStep { border-inline-start:3px solid var(--sun); padding:2px 16px 10px; margin-bottom:12px; }.firstStep > p { color:var(--ink-soft); font-size:12px; }.firstStep h3 { font-size:16px; line-height:1.8; font-weight:600; margin:5px 0; }.firstStep > span { font-size:12px; color:var(--ink-soft); }
+.fold > details { padding-top:12px; }.fold > details > summary { padding-bottom:10px; }.fold > details > summary > span:first-child > span:first-child > span[id] { font-size:16px; font-weight:600; }.fold > details > summary > span:first-child > span:last-child:not(:first-child) { font-size:12px; font-weight:400; white-space:normal; line-height:1.8; }.fold > details > div { padding-bottom:18px; }
+.adjustment { border-top:1px solid var(--rule); margin-top:14px; }.adjustment > summary { min-height:44px; display:flex; align-items:center; cursor:pointer; font-size:12px; color:var(--primary); }.adjustment fieldset { padding:10px 0; }
+.document[data-mode="start"] .fold :is(h3,h4) { font-size:16px; font-weight:600; }.document[data-mode="start"] :is(.fold p,.fold li) { font-size:13px; }.document[data-mode="start"] .fold :is(dt,small) { font-size:12px; }.document[data-mode="start"] :global(.font-black) { font-weight:600; }
+@media(max-width:600px) { .direction { padding:18px; box-shadow:3px 4px 0 var(--primary-soft); }.direction > div > div > p:first-child { font-size:23px; }.document { gap:10px; }.glance h3 { font-size:19px; } }
