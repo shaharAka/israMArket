@@ -44,6 +44,9 @@ def migrate_db():
             ("business_model", "VARCHAR(20) DEFAULT 'products'"),
             # Competitor / peer Instagram usernames for the inspiration brief.
             ("instagram_handles_json", "TEXT DEFAULT '[]'"),
+            # The WhatsApp tracked link (services/whatsapp.py).
+            ("whatsapp_number_e164", "VARCHAR(20)"),
+            ("whatsapp_default_text_he", "TEXT DEFAULT ''"),
         ]
         for col, col_type in new_cols:
             if col not in existing:

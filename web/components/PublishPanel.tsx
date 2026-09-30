@@ -10,6 +10,7 @@ import {
 } from "@/lib/api";
 import { IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
+import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { shortDay } from "@/components/posts/postMeta";
 
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
@@ -107,6 +108,25 @@ export function PublishPanel({
       active = false;
     };
   }, []);
+
+  // The post's own WhatsApp tracked link, when its call to action is WhatsApp. The server
+  // creates it on first read and returns the same link after that. A failure here only
+  // hides the block; the rest of the kit does not depend on it.
+  const [waLink, setWaLink] = useState<WhatsappPostLink | null>(null);
+  useEffect(() => {
+    let active = true;
+    whatsappEndpoints
+      .forPost(postIndex, post.cta || "")
+      .then((result) => {
+        if (active) setWaLink(result);
+      })
+      .catch(() => {
+        if (active) setWaLink(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [postIndex, post.cta]);
 
   // The field is seeded from the server's post and kept in step by every write below. The
   // editor remounts this panel when the owner switches post, so there is no second copy of
@@ -244,6 +264,47 @@ export function PublishPanel({
           </p>
         )}
       </div>
+
+      {/* The post's WhatsApp link: only for a post that asks people to write on WhatsApp. */}
+      {waLink?.cta_is_whatsapp ? (
+        <div className="mt-3 border-t border-[#f0efeb] pt-3">
+          <p className="flex items-center gap-1.5 text-[13px] font-bold text-[#62635f]">
+            <IconWhatsApp className="h-4 w-4 text-[#0b7a3d]" />
+            קישור הוואטסאפ של הפוסט
+          </p>
+          {waLink.link ? (
+            <>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p title={waLink.link.url} className="min-w-0 truncate font-mono text-xs leading-4 text-[#5e6159]" dir="ltr">
+                  {waLink.link.url.replace(/^https?:\/\//, "")}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void copyText(waLink.link!.url, "קישור הוואטסאפ הועתק.")}
+                  className="inline-flex min-h-11 shrink-0 items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
+                >
+                  <IconCopy className="h-3.5 w-3.5" />
+                  להעתיק
+                </button>
+              </div>
+              <p className="text-xs leading-5 text-[#8b8e84]">
+                {/* Instagram does not make links in a feed caption tappable, so the honest
+                    place there is the story's link sticker. */}
+                בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו
+                במדבקת קישור בסטורי. נספור כמה לחצו, וההודעה תגיע עם הקוד{" "}
+                <span dir="ltr">{waLink.link.tag}</span>. אם נשלחה הודעה, רואים רק בוואטסאפ.
+              </p>
+            </>
+          ) : (
+            <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
+              הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו.{" "}
+              <a href="/integrations" className="font-bold text-[#191b18] underline underline-offset-2">
+                להגדיר את מספר הוואטסאפ
+              </a>
+            </p>
+          )}
+        </div>
+      ) : null}
 
       {/* ---- when it goes out ---- */}
       <div className="mt-3 border-t border-[#f0efeb] pt-3">

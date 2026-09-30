@@ -33,6 +33,8 @@ from app.models import (
     User,
     WebhookDelivery,
     WebhookEndpoint,
+    WhatsappClick,
+    WhatsappLink,
 )
 from app.security import COOKIE_NAME, create_access_token, hash_password
 from app.services import account_deletion, images, ratelimit
@@ -85,7 +87,10 @@ class AccountDeletionTest(unittest.TestCase):
             ids.append(bid)
             endpoint = WebhookEndpoint(business_id=bid, url="https://hooks.example/x", secret="s")
             db.add(endpoint)
+            wa_link = WhatsappLink(business_id=bid, code=f"code{bid}x", source_key="default")
+            db.add(wa_link)
             db.flush()
+            db.add(WhatsappClick(business_id=bid, link_id=wa_link.id, day="2026-10-01", ua_family="ios", count=3))
             db.add_all(
                 [
                     Strategy(business_id=bid, year=2026, month=10),

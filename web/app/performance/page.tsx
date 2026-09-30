@@ -6,6 +6,7 @@ import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
 import { endpoints, type AudiencePerformance, type PerformancePayload } from "@/lib/api";
 import { IconChart } from "@/lib/icons";
+import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
   sessions: { label: "כניסות לאתר", note: "כמה פעמים נכנסו לאתר" },
@@ -548,6 +549,105 @@ function Method({ data }: { data?: AudiencePerformance | null }) {
   );
 }
 
+/* ------------------------------------------------------------------------------------ */
+/* WhatsApp taps                                                                          */
+/* ------------------------------------------------------------------------------------ */
+
+const WA_VISIBLE = 3;
+
+/**
+ * Taps on the WhatsApp tracked links, per source (lib/whatsapp.ts). Our own count, so it
+ * works with nothing connected. The label says taps, never messages or sales: a redirect
+ * cannot see whether the customer pressed send, and the caveat stays on the face.
+ */
+function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
+  if (!data) return null;
+  const heading = (
+    <h2 id="wa-heading" className="text-base font-black text-[#20211f]">
+      לחיצות על וואטסאפ
+    </h2>
+  );
+  if (!data.number_e164) {
+    return (
+      <section aria-labelledby="wa-heading">
+        {heading}
+        <p className="mt-2 text-sm leading-6 text-[#62635f]">
+          לא נמדד, כי עוד אין קישור וואטסאפ.{" "}
+          <Link href="/integrations" className="font-bold text-[#191b18] underline underline-offset-4">
+            להכין את הקישור
+          </Link>
+        </p>
+      </section>
+    );
+  }
+  const rows = data.links
+    .filter((link) => (link.clicks_total || 0) > 0)
+    .sort((a, b) => (b.clicks_7d || 0) - (a.clicks_7d || 0) || (b.clicks_total || 0) - (a.clicks_total || 0));
+  const visible = rows.slice(0, WA_VISIBLE);
+  const rest = rows.slice(WA_VISIBLE);
+  const families = Object.entries(data.clicks_by_family || {})
+    .filter(([, count]) => count > 0)
+    .sort((a, b) => b[1] - a[1]);
+
+  // A post's label carries its title ("פוסט 2 באינסטגרם: חלות לשבת…"); the face shows the
+  // place and the number, and the title is in the tooltip (UI-RULES rule 7).
+  const shortLabel = (label: string) => label.split(":")[0];
+  const table = (items: typeof rows) => (
+    <ul className="divide-y divide-[#e9e8e3]">
+      {items.map((link) => (
+        <li key={link.code} className="grid grid-cols-[1fr_4rem_4rem] items-center gap-2 px-4 py-2.5 text-sm">
+          <span className="min-w-0 truncate font-bold text-[#20211f]" title={link.label_he}>
+            {shortLabel(link.label_he)}
+          </span>
+          <span className="text-center tabular-nums text-[#20211f]">{(link.clicks_7d || 0).toLocaleString("he-IL")}</span>
+          <span className="text-center tabular-nums text-[#62635f]">{(link.clicks_total || 0).toLocaleString("he-IL")}</span>
+        </li>
+      ))}
+    </ul>
+  );
+  const devices = families.length ? (
+    <div className="px-4 pb-3 pt-1">
+      <p className="text-xs leading-5 text-[#62635f]">
+        {families.map(([family, count]) => `${FAMILY_HE[family] || family}: ${count.toLocaleString("he-IL")}`).join(" · ")}
+      </p>
+      <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+        אותו אדם שלחץ פעמיים נספר פעמיים. תצוגות מקדימות של הקישור ורובוטים לא נספרים.
+      </p>
+    </div>
+  ) : null;
+
+  return (
+    <section aria-labelledby="wa-heading">
+      {heading}
+      {rows.length ? (
+        <div className="mt-3 overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+          <div className="grid grid-cols-[1fr_4rem_4rem] gap-2 border-b border-[#e9e8e3] px-4 py-2 text-xs font-bold text-[#62635f]">
+            <span aria-hidden />
+            <span className="text-center">7 ימים</span>
+            <span className="text-center">מההתחלה</span>
+          </div>
+          {table(visible)}
+          {rest.length || devices ? (
+            <details className="group border-t border-[#e9e8e3]">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-4 text-xs font-bold text-[#5e6159] hover:text-[#20211f]">
+                {rest.length ? "עוד מקורות ומכשירים" : "מאיזה מכשיר לחצו"}
+                <span aria-hidden className="transition-transform group-open:-rotate-90">‹</span>
+              </summary>
+              {rest.length ? table(rest) : null}
+              {devices}
+            </details>
+          ) : null}
+        </div>
+      ) : (
+        <p className="mt-2 text-sm leading-6 text-[#62635f]">עוד אין לחיצות. שימו את הקישור בביו ובפוסטים.</p>
+      )}
+      <p className="mt-2 text-xs leading-5 text-[#62635f]">
+        לחיצות על הקישור, לא הודעות שנשלחו ולא מכירות.
+      </p>
+    </section>
+  );
+}
+
 /** Nothing has been synced yet. A normal state on this screen, and not an error. */
 function NoSnapshotYet() {
   return (
@@ -587,6 +687,16 @@ export default function PerformancePage() {
   const [data, setData] = useState<PerformancePayload | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  // Our own count of WhatsApp taps. Loaded apart from the synced results: it needs no
+  // connection, and a failure here must not hide them.
+  const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
+
+  useEffect(() => {
+    whatsappEndpoints
+      .get()
+      .then(setWhatsapp)
+      .catch(() => setWhatsapp(null));
+  }, []);
 
   useEffect(() => {
     endpoints
@@ -644,6 +754,8 @@ export default function PerformancePage() {
                 <ContentVerdict payload={data} />
               )
             ) : null}
+
+            <WhatsappClicks data={whatsapp} />
 
             <div className="divide-y divide-[#e6e4dc] border-y border-[#e6e4dc]">
               {available && results && (hasVerdict || hasFriction) ? (
