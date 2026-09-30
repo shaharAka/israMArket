@@ -56,8 +56,8 @@ const STEP_DESTINATIONS: Record<StepId, string> = {
   audiences: "ללקוחות", seasons: "לעונות השנה", links: "לאתר ולרשתות",
   tried: "למה שכבר ניסיתם", competitors: "למתחרים", grow: "למטרת הצמיחה",
   baseline: "למצב העסק היום", lever: "להמלצה לצמיחה", budget: "לתקציב",
-  target: "ליעד ל־3 חודשים", found: "למה שגילינו", direction: "לכיוון התוכנית",
-  quarter: "לתוכנית ל־3 חודשים", save: "לשמירת התוכנית",
+  target: "ליעד העבודה", found: "למה שגילינו", direction: "לכיוון התוכנית",
+  quarter: "לתוכנית שלכם", save: "לשמירת התוכנית",
 };
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
@@ -240,7 +240,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     }
     case "direction": {
       const direction = flow.plan?.directions[flow.chosenDirection ?? -1];
-      return direction ? `בחרתם: ${direction.title}. עכשיו נפרוש את זה ל-3 חודשים.` : null;
+      return direction ? `בחרתם: ${direction.title}. עכשיו נבנה את הצעדים הראשונים.` : null;
     }
     default:
       return null;

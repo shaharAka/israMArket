@@ -41,8 +41,8 @@ export const SECTIONS: Record<SectionKey, SectionIdentity> = {
   },
   plan: {
     ...ACCENT,
-    eyebrow: "התוכנית הרבעונית",
-    purpose: "לאן הולכים, ומה היעד של כל חודש",
+    eyebrow: "האסטרטגיה והתוכנית",
+    purpose: "הכיוון, הצעדים הקרובים ומה נבדוק כדי להתקדם",
   },
   decisions: {
     ...ACCENT,

@@ -20,7 +20,7 @@ import { Chip, QuietLink, StepShell, rangeSafe } from "./ui";
 import styles from "./start.module.css";
 
 /**
- * "התוכנית שלכם ל-3 החודשים הקרובים": the hook before the email. One scrollable plan,
+ * The owner's strategy and first steps: the hook before the email. One scrollable plan,
  * built from the answers and the chosen direction by `POST /public/quarter-plan`.
  *
  * The owner shapes it here, in the section each control changes: who comes first, the
@@ -172,7 +172,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     return (
       <StepShell
         {...props}
-        title="התוכנית ל-3 החודשים"
+        title="התוכנית שלכם"
         why="קודם בוחרים כיוון, ואז נבנה ממנו את התוכנית."
         primary="לבחור כיוון"
         onPrimary={() => jump("direction")}
@@ -226,7 +226,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     <StepShell
       {...props}
       title={`התוכנית של ${flow.draft.business_name || "העסק שלכם"}`}
-      why="שלושה חודשים, צעד אחר צעד. נתחיל מהכיוון ומהמדידה."
+      why="נתחיל מהכיוון ומהמדידה. נתקדם צעד אחר צעד, לפי מה שנלמד."
       primary={
         loading ? "בונים את התוכנית…" : failed && !plan ? "לנסות שוב" : updating ? "מעדכנים…" : saving ? "שומרים…" : "לשמור את התוכנית ולהיכנס"
       }
@@ -248,7 +248,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
     >
       {loading ? (
         <WorkProgress
-          title="בונים את התוכנית ל-3 החודשים…"
+          title="בונים את התוכנית שלכם…"
           note="בערך חצי דקה. אפשר להשאיר את המסך פתוח."
           pace={4500}
           lines={[
@@ -256,7 +256,7 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
             "קובעים את המדד ואיך נמדוד",
             "בוחרים ערוצים, ישנים וחדשים",
             "מחלקים את התקציב לפי חודשים",
-            "פורשים את 3 החודשים על לוח השנה",
+            "מסדרים את הצעדים הקרובים על לוח השנה",
           ]}
         />
       ) : null}

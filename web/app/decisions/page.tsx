@@ -418,7 +418,7 @@ export default function DecisionsPage() {
     setCandidatesError("");
     setCapNote("");
     setModelNotice(
-      "העדיפויות והתוכנית לרבעון נבנו לסוג העסק הקודם. הן נשארות כמו שהן, אבל כדאי לבנות אותן מחדש באשף כדי שיתאימו.",
+      "העדיפויות והתוכנית נבנו לסוג העסק הקודם. הן נשארות כמו שהן, אבל כדאי לבנות אותן מחדש באשף כדי שיתאימו.",
     );
     markChanged();
   }
@@ -623,7 +623,7 @@ export default function DecisionsPage() {
     markChanged();
     if (next.length > MAX_TARGETS) {
       setRankedTargets(next.slice(0, MAX_TARGETS));
-      setCapNote(`אפשר לבחור עד ${MAX_TARGETS} עדיפויות לרבעון, ולכן היעד האחרון לא נוסף.`);
+      setCapNote(`אפשר להתמקד בעד ${MAX_TARGETS} עדיפויות, ולכן היעד האחרון לא נוסף.`);
       return;
     }
     setCapNote("");
@@ -1137,7 +1137,7 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="targets"
-                label="עדיפויות הרבעון"
+                label="העדיפויות שלנו"
                 value={targetsSummary}
                 done={rankedTargets.length > 0}
                 open={openGroup === "targets"}
@@ -1270,7 +1270,7 @@ export default function DecisionsPage() {
               <Link href="/strategy" className="font-bold text-[#1d2940] underline underline-offset-4">
                 התוכנית
               </Link>{" "}
-              לחודש ולרבעון.
+              לצעדים הקרובים ולהמשך הדרך.
             </p>
           </div>
         ) : null}

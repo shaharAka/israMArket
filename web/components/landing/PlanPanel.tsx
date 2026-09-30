@@ -30,7 +30,7 @@ export function PlanPanel({ example, plan, current, reveal, onDetailsChange }: {
           <h3 className="text-lg font-black leading-tight">{example.businessName}</h3>
           <p className="text-sm text-white">{example.typeLabel} · {example.city}</p>
         </div>
-        <span className="ms-auto hidden text-xs text-white sm:inline">התוכנית ל-3 חודשים</span>
+        <span className="ms-auto hidden text-xs text-white sm:inline">אסטרטגיה ותוכנית עבודה</span>
       </header>
 
       <section className="lp-reveal p-5 sm:px-7 sm:py-6" style={{ "--i": 1 } as CSSProperties}>
@@ -58,7 +58,7 @@ export function PlanPanel({ example, plan, current, reveal, onDetailsChange }: {
       </div>
 
       <section className="lp-reveal px-5 py-4 sm:px-7" style={{ "--i": 3, backgroundColor: tint } as CSSProperties}>
-        <div className="mb-4"><Label>3 החודשים</Label></div>
+        <div className="mb-4"><Label>הצעדים הקרובים · מתעדכנים לפי התוצאות</Label></div>
         <ol className="grid grid-cols-3 gap-4 sm:gap-6">{plan.months.map((month, m) => <Month key={m} month={month} m={m} />)}</ol>
       </section>
 

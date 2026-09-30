@@ -38,7 +38,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
   {
     title: "התכנון",
     rows: [
-      { href: "/strategy", title: "התוכנית", hint: "החודש שבוע אחר שבוע, והרבעון", icon: IconRoute },
+      { href: "/strategy", title: "התוכנית", hint: "האסטרטגיה והצעדים הקרובים", icon: IconRoute },
       { href: "/calendar", title: "לוח התוכנית", hint: "פוסטים, משימות ותאריכים חשובים", icon: IconCalendar },
       { href: "/recommendations", title: "המלצות לשבוע", hint: "מה כדאי לעשות השבוע", icon: IconLightbulb },
     ],

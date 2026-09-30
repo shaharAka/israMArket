@@ -10,7 +10,7 @@ import { SunProgress } from "@/components/brand/SunProgress";
 
 const screens = [
   { href: "/dashboard", name: "השבוע", detail: "הכיוון בתוכנית, המדד וההחלטה שצריך מכם." },
-  { href: "/strategy", name: "התוכנית", detail: "החודש הקרוב והתוכנית לשלושה חודשים, עם פירוט לפי צורך." },
+  { href: "/strategy", name: "התוכנית", detail: "האסטרטגיה, הצעדים הקרובים ומה נבדוק כדי להתקדם." },
   { href: "/posts", name: "הפוסטים", detail: "לבדוק, לערוך ולאשר. השמש מתקדמת עם האישורים." },
   { href: "/calendar", name: "לוח התוכנית", detail: "פוסטים, משימות ותאריכים מהתוכנית, לפי יום." },
   { href: "/brand", name: "המותג", detail: "הלוגו, צבעי העסק וסגנון הכתיבה שלו." },

@@ -496,7 +496,7 @@ def long_horizon_plan(
     if not ranked:
         raise HTTPException(
             status_code=400,
-            detail="בחרו את היעדים וסדרו אותם לפי החשיבות, ואז נבנה את התוכנית של הרבעון.",
+            detail="בחרו את היעדים וסדרו אותם לפי החשיבות, ואז נבנה את האסטרטגיה והצעדים הראשונים.",
         )
     try:
         plan = build_long_horizon_plan(

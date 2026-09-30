@@ -16,8 +16,8 @@ import "@/components/landing/landing.css";
  * thing ("להתחיל"), and shows examples instead of demanding a website. The site scan
  * that used to be the hero now happens inside /start, and only if the owner has a site.
  *
- * The product is the PLAN, not the post: a marketing plan for 3 months built for this
- * one business. The page tells it in order: research → strategy → the 3-month plan
+ * The product is an ongoing strategy and plan for this business. The initial calendar
+ * is a lookahead, not a service duration. Research → strategy → plan
  * (hero route, showcase) → execute with posts → measure → adjust (Cycle).
  *
  * Order: hero → showcase → cycle → security → pricing → FAQ → closing ask. Each section
@@ -63,7 +63,7 @@ export default function Home() {
               תוכנית שיווק שמתאימה לעסק שלכם
             </h1>
             <p className="mt-4 max-w-md text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
-              בונים יחד תוכנית ל־3 חודשים לפי העסק שלכם. כותבים פוסטים, מודדים תוצאות ומשפרים בכל חודש.
+              בונים יחד אסטרטגיה ותוכנית לפי העסק שלכם. כותבים פוסטים, לומדים מהתוצאות ומעדכנים את הצעדים הבאים.
             </p>
 
             <div className="mt-7 grid grid-cols-2 gap-3 sm:flex sm:gap-4">
@@ -99,7 +99,7 @@ export default function Home() {
           <div data-rv className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-20">
             <div className="max-w-xl">
               <h2 id="closing-title" className="text-2xl font-black leading-tight tracking-tight [text-wrap:balance] sm:text-[2rem]">
-                נבנה יחד את 3 החודשים הבאים של העסק
+                נבחר יחד את הצעד הבא של העסק
               </h2>
               <p className="mt-3 text-base leading-7 text-[var(--ink-soft)] sm:text-lg">
                 ספרו לנו איפה העסק נמצא: אתר, אינסטגרם, פייסבוק או טיקטוק. גם בלי אתר אפשר להתחיל.

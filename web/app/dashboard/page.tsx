@@ -508,7 +508,7 @@ function MoreAboutMonth({
         <InfoRow label="הכי חשוב השבוע" href="/recommendations">
           {oneThing || "נעדכן כשיהיו נתונים"}
         </InfoRow>
-        <InfoRow label="היעד העיקרי ברבעון" href="/plan">
+        <InfoRow label="יעד העבודה העיקרי" href="/plan">
           {leadingTarget || "עוד לא בחרנו יעדים"}
         </InfoRow>
         <InfoRow label="תקציב חודשי" href="/decisions">

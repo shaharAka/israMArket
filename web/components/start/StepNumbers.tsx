@@ -537,7 +537,7 @@ export function StepTarget(props: StepProps) {
   return (
     <StepShell
       {...props}
-      title="היעד ל-3 חודשים"
+      title="יעד העבודה שלנו"
       why={loading ? "בודקים את המספרים והתקציב שבחרתם." : failed ? "התשובות נשמרו. אפשר לנסות שוב או לקבוע יעד בהמשך." : suggestion ? "הערכה לפי המספרים שלכם והתקציב. אפשר לקבל או לשנות." : "כשחסרים נתונים, מתחילים למדוד וקובעים יעד בהמשך."}
       primary={loading ? "מחשבים…" : failed && !result ? "לנסות שוב לחשב" : owner ? "לשמור את היעד ולעבור למחקר" : suggestion ? "לקבל את היעד ולעבור למחקר" : "לעבור למחקר"}
       primaryDisabled={loading || editing}
