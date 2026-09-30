@@ -75,10 +75,10 @@ class Settings(BaseSettings):
     # experiment can never leave a user without posts.
     post_model_fallback: bool = True
     # The most one Meta post-writing call may take (retries included) before the posts
-    # are written by Gemini instead. Muse writes a fortnight of posts in ~80 s, so the
+    # are written by Gemini instead. Muse writes a week of posts in ~80-110 s, so the
     # budget sits above that; it exists so a hung or crawling call can never stall a
     # month. 0 = no budget (the client's own 180 s read timeout, retried once).
-    post_model_timeout_seconds: float = 120.0
+    post_model_timeout_seconds: float = 180.0
     # Wall-clock limit for one Gemini request, so a call that never answers fails (and
     # is retried or reported) instead of holding a month's build forever. 0 = none.
     gemini_timeout_seconds: float = 180.0
