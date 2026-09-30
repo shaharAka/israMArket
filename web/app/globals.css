@@ -363,7 +363,7 @@ a {
 .app-main > :where(*) { margin-inline: auto; }
 .app-blue button, .start-blue button { touch-action: manipulation; }
 .app-blue :is(button,a,input,textarea,select):focus-visible,
-.start-blue :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.start-blue :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .start-blue :is(input,textarea,select):focus { border-color: var(--primary); }
 .start-blue :is(button[aria-pressed="true"],label:has(input:checked)) { border-color: var(--primary); background-color: var(--primary-soft); }
 .start-blue .chapter-fill { background: var(--primary); transition: width 900ms cubic-bezier(.32,0,.18,1); }
@@ -384,7 +384,7 @@ a {
 .app-blue .dot-grid { background-image:none; }
 
 /* Public account screens share the product's focus treatment. */
-.auth-blue :is(a,button,input):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.auth-blue :is(a,button,input):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .auth-blue input:focus { border-color: var(--primary); }
 
 /* Disclosures (DESIGN-STANDARD.md §4): one refined chevron instead of the browser's
