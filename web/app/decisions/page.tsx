@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SystemNote } from "@/components/SystemNote";
 import { TargetRanker, MAX_TARGETS } from "@/components/TargetRanker";
+import { ANSWER_IDS, OwnerAnswers } from "@/components/decisions/OwnerAnswers";
 import { AGENT_NAME } from "@/lib/agent";
 import {
   endpoints,
@@ -100,7 +101,7 @@ function payloadFromForm(form: AudienceForm): AudiencePayload {
  * editor links to `/decisions#audiences`, so every row has to stay addressable — and a
  * hash has to open the row it names, or the link lands on a collapsed list.
  */
-const ROW_IDS = ["model", "budget", "diagnostics", "audiences", "targets"] as const;
+const ROW_IDS = ["model", "budget", "diagnostics", "audiences", "targets", "told"] as const;
 
 /**
  * The section accent ("settings" grey-blue) marks the rows and the open editor; the
@@ -182,6 +183,8 @@ export default function DecisionsPage() {
    * (the default) is the whole list on one screen.
    */
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  /** An answer inside "מה סיפרתם לנו" named by the hash (`#seasons`), opened with its group. */
+  const [answerFocus, setAnswerFocus] = useState<string | null>(null);
 
   useEffect(() => {
     // isDemo() reads localStorage, so it cannot run during the prerender — same reason
@@ -268,6 +271,12 @@ export default function DecisionsPage() {
     if (!business) return;
     const openFromHash = () => {
       const hash = window.location.hash.replace("#", "");
+      if ((ANSWER_IDS as readonly string[]).includes(hash)) {
+        setOpenGroup("told");
+        setAnswerFocus(hash);
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
       if (!hash || !(ROW_IDS as readonly string[]).includes(hash)) return;
       setOpenGroup(hash);
       document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -319,6 +328,8 @@ export default function DecisionsPage() {
     : audiences.length
       ? `${audiences.length} קהלים${leadAudience ? ` · העיקרי: ${leadAudience}` : ""}`
       : "לא הוגדרו";
+  /** Names what is inside, in three words: the budget allows no more (UI-RULES §7). */
+  const toldSummary = "עונות, מתחרים ועוד";
   const targetsSummary = rankedTargets.length
     ? `${rankedTargets.length} מתוך ${MAX_TARGETS} · הראשונה: ${leadTarget}`
     : "לא נבחרו";
@@ -1226,6 +1237,30 @@ export default function DecisionsPage() {
                     </span>
                   </div>
                 </div>
+              </DecisionRow>
+
+              {/* The /start answers, behind one row: the page's word budget (UI-RULES) has
+                  room for one more line, not six. Each answer is its own row inside. */}
+              <DecisionRow
+                id="told"
+                label="מה סיפרתם לנו"
+                value={toldSummary}
+                done={Boolean(business.owner_context)}
+                open={openGroup === "told"}
+                onToggle={() => toggleGroup("told")}
+              >
+                <OwnerAnswers
+                  key={answerFocus ?? "none"}
+                  business={business}
+                  businessModel={businessModel}
+                  primaryGoal={primaryGoal}
+                  initialOpen={answerFocus}
+                  onGoal={(goal) => {
+                    setPrimaryGoal(goal);
+                    markChanged();
+                  }}
+                  onSaved={setBusiness}
+                />
               </DecisionRow>
             </section>
 

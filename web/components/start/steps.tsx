@@ -5,17 +5,14 @@ import { BUSINESS_TYPES } from "@/components/onboarding/constants";
 import type { BusinessModel } from "@/lib/api";
 import { BUSINESS_MODEL_OPTIONS, defaultGoalFor, goalsFor, isGoalValidFor } from "@/lib/businessModel";
 import {
-  ACTIVITY_OPTIONS,
-  MONTHS_HE,
-  MONTH_HINTS,
   NETWORKS,
-  TRIED_OPTIONS,
   draftForApi,
   inferBusinessModel,
   inferBusinessType,
   kitFor,
   loadStylePresets,
   looksLikeUrl,
+  seasonsExampleFor,
   signature,
   stylePresets,
   suggestAudiences,
@@ -28,7 +25,9 @@ import {
   type TriedChannel,
 } from "@/lib/draft";
 import { HowToFind } from "@/components/help/HowToFind";
-import { Chip, IconButton, NetworkIcon, QuietLink, StepShell, TextInput } from "./ui";
+import { ActivityPicker, TriedPicker } from "./AnswerPickers";
+import { SeasonsPicker } from "./SeasonsPicker";
+import { CHANGE_LATER, Chip, IconButton, NetworkIcon, QuietLink, StepShell, TextInput } from "./ui";
 import styles from "./start.module.css";
 
 /** What every screen gets from the flow. */
@@ -172,6 +171,7 @@ export function StepDifferent(props: StepProps) {
       title="מה מבדיל אתכם מאחרים?"
       why="זה מה שנשים בחזית. לקוחות צריכים סיבה לבחור דווקא בכם."
       primary="להמשיך ללקוחות"
+      reassure={CHANGE_LATER}
       onPrimary={next}
       skip="לא בטוחים? לדלג, ונמצא את זה יחד"
       onSkip={() => {
@@ -270,6 +270,7 @@ export function StepAudiences(props: StepProps) {
       title="מי קונה מכם?"
       why="ככה נדע למי לכתוב. הצענו 3 קהלים לפי מה שסיפרתם, ואפשר לשנות."
       primary="להמשיך לעונות השנה"
+      reassure={CHANGE_LATER}
       onPrimary={() => {
         if (newName.trim()) saveNew();
         next();
@@ -405,26 +406,13 @@ export function StepAudiences(props: StepProps) {
 
 export function StepSeasons(props: StepProps) {
   const { flow, setDraft, next } = props;
-  const [mode, setMode] = useState<"busy" | "slow">("busy");
   const seasons = flow.draft.seasons ?? { busy: [], slow: [] };
-
-  function toggle(month: number) {
-    const other = mode === "busy" ? "slow" : "busy";
-    const list = seasons[mode];
-    const nextList = list.includes(month) ? list.filter((m) => m !== month) : [...list, month];
-    setDraft({
-      seasons: { ...seasons, [mode]: nextList, [other]: seasons[other].filter((m) => m !== month) } as {
-        busy: number[];
-        slow: number[];
-      },
-    });
-  }
 
   return (
     <StepShell
       {...props}
       title="מתי עמוס ומתי שקט?"
-      why="ככה נתכונן לעונה לפני שהיא מגיעה, ונמלא את החודשים השקטים."
+      why="חשבו על השנה האחרונה. סמנו מתי היה הכי הרבה עבודה, ואז עברו ל״שקט״ וסמנו מתי היה פחות."
       primary="להמשיך לאתר ולרשתות"
       onPrimary={next}
       skip="לא בטוחים? לדלג"
@@ -432,50 +420,13 @@ export function StepSeasons(props: StepProps) {
         setDraft({ seasons: { busy: [], slow: [] } });
         next();
       }}
+      reassure="לא צריך לדייק. אפשר לשנות את זה בכל רגע ב״ההחלטות שלי״."
     >
-      <div role="radiogroup" aria-label="מה מסמנים" className="grid grid-cols-2 gap-1 rounded-full bg-[#ecebe5] p-1">
-        {(["busy", "slow"] as const).map((key) => (
-          <button
-            key={key}
-            type="button"
-            role="radio"
-            aria-checked={mode === key}
-            onClick={() => setMode(key)}
-            className={`flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full text-sm font-bold ${
-              mode === key ? "bg-white text-[#191b18] shadow-sm" : "text-[#5e6159]"
-            }`}
-          >
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: key === "busy" ? "#d9824b" : "#7da2b8" }} />
-            {key === "busy" ? "חודשים עמוסים" : "חודשים שקטים"}
-          </button>
-        ))}
-      </div>
-      <div className="grid grid-cols-4 gap-2">
-        {MONTHS_HE.map((label, index) => {
-          const month = index + 1;
-          const busy = seasons.busy.includes(month);
-          const slow = seasons.slow.includes(month);
-          return (
-            <button
-              key={label}
-              type="button"
-              aria-pressed={busy || slow}
-              aria-label={`${label}${busy ? ", עמוס" : slow ? ", שקט" : ""}`}
-              onClick={() => toggle(month)}
-              className={`flex min-h-[52px] cursor-pointer flex-col items-center justify-center rounded-xl border text-sm font-bold transition-colors ${
-                busy
-                  ? "border-[#d9824b] bg-[#fbeee3] text-[#6b3517]"
-                  : slow
-                    ? "border-[#7da2b8] bg-[#eaf1f5] text-[#24475a]"
-                    : "border-[#dedcd4] bg-white text-[#2b2d28]"
-              }`}
-            >
-              {label}
-              <span className="text-[10px] font-normal opacity-70">{MONTH_HINTS[month] ?? " "}</span>
-            </button>
-          );
-        })}
-      </div>
+      <SeasonsPicker
+        value={seasons}
+        onChange={(value) => setDraft({ seasons: value })}
+        example={seasonsExampleFor(flow.draft.business_type)}
+      />
     </StepShell>
   );
 }
@@ -671,24 +622,14 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
                     : "לא זוכרים? אפשר להשאיר ריק."
                 }
               />
-              <div role="radiogroup" aria-label={`כמה אתם מפרסמים ב${network.label}`} className="mt-2 grid grid-cols-3 gap-1.5">
-                {ACTIVITY_OPTIONS.map((option) => {
-                  const on = d.activity?.[network.key] === option.key;
-                  return (
-                    <button
-                      key={option.key}
-                      type="button"
-                      role="radio"
-                      aria-checked={on}
-                      onClick={() => setActivity(network.key, option.key)}
-                      className={`min-h-10 cursor-pointer rounded-lg border px-1 text-xs font-bold ${
-                        on ? "border-[#191b18] bg-[#f1efe8] text-[#191b18] ring-1 ring-[#191b18]" : "border-[#dedcd4] text-[#4f524b]"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  );
-                })}
+              <div className="mt-2">
+                <ActivityPicker
+                  label={`כמה אתם מפרסמים ב${network.label}`}
+                  value={d.activity?.[network.key]}
+                  onChange={(value) => {
+                    if (value) setActivity(network.key, value);
+                  }}
+                />
               </div>
             </div>
           ))}
@@ -722,6 +663,7 @@ export function StepTried(props: StepProps) {
       title="מה ניסיתם עד היום?"
       why="לא נמציא את הגלגל מחדש. נחזק את מה שכבר הצליח."
       primary="להמשיך למתחרים"
+      reassure={CHANGE_LATER}
       onPrimary={next}
       skip="לדלג"
       onSkip={() => {
@@ -729,16 +671,7 @@ export function StepTried(props: StepProps) {
         next();
       }}
     >
-      <div className="flex flex-wrap gap-2">
-        {TRIED_OPTIONS.map((option) => (
-          <Chip
-            key={option.key}
-            label={option.label}
-            selected={tried.channels.includes(option.key)}
-            onClick={() => toggle(option.key)}
-            className="px-3.5"
-          />
-        ))}
+      <TriedPicker channels={tried.channels} onToggle={toggle}>
         <Chip
           label="עוד לא ניסינו"
           selected={Boolean(flow.triedNone)}
@@ -751,7 +684,7 @@ export function StepTried(props: StepProps) {
           }
           className="px-3.5"
         />
-      </div>
+      </TriedPicker>
       {tried.channels.length ? (
         <div className={styles.rise}>
           <TextInput
@@ -787,6 +720,7 @@ export function StepCompetitors(props: StepProps) {
       title="מי המתחרים העיקריים שלכם?"
       why="לא כדי להעתיק. כדי לראות מה כבר יש, ולמצוא איפה אתם יכולים לבלוט."
       primary="להמשיך למטרה"
+      reassure={CHANGE_LATER}
       onPrimary={() => {
         setDraft({ competitors: rows.filter((r) => r.name.trim()) });
         next();
@@ -874,6 +808,7 @@ export function StepGoal(props: StepProps) {
       title="מה הכי חשוב לכם עכשיו?"
       why="לפי זה נבנה את הכיוון לחודש הראשון."
       primary="לראות מה למדנו"
+      reassure={CHANGE_LATER}
       onPrimary={() => {
         if (!goal) {
           setError("בחרו אחד מאלה. לא בטוחים? אפשר שנבחר בשבילכם.");

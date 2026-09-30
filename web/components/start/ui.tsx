@@ -70,6 +70,9 @@ export function Reflection({ text }: { text: string | null }) {
   );
 }
 
+/** The reassurance on the judgement screens. One wording everywhere. */
+export const CHANGE_LATER = "אפשר לשנות הכול אחר כך.";
+
 /**
  * One screen of the conversation: reflection, question, why we ask, the input, one
  * primary button and (when the question is optional) a quiet way past it.
@@ -89,9 +92,15 @@ export function StepShell({
   focus,
   direction,
   stickyAction = false,
+  reassure,
 }: {
   title: string;
   why: string;
+  /**
+   * One quiet line under the actions on screens that ask for judgement: the answer is
+   * not final. Only where it is true — each of these answers is editable in /decisions.
+   */
+  reassure?: string;
   reflection?: string | null;
   notice?: React.ReactNode;
   children: React.ReactNode;
@@ -145,6 +154,7 @@ export function StepShell({
             <QuietLink onClick={onSkip}>{skip}</QuietLink>
           </div>
         ) : null}
+        {reassure ? <p className="text-center text-xs leading-5 text-[#6b6e65]">{reassure}</p> : null}
       </div>
     </form>
   );

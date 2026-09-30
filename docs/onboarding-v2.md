@@ -79,6 +79,16 @@ alone). Never invents numbers.
 scan or the style preset) and returns the same shape as `/onboarding/me`. Idempotent. The
 existing budget step and month generation follow unchanged.
 
+`PUT /onboarding/owner-context` `{differentiator?, seasons?: {busy, slow}, tried?: {channels,
+what_worked?}, activity?: {instagram?, facebook?, tiktok?}, competitors?: [{name, link?}]}` →
+same shape as `/onboarding/me`. The /start answers, edited later from `/decisions` ("מה
+סיפרתם לנו"). Partial: a field not sent is kept; `seasons` and `competitors` replace,
+`activity` updates only the networks named (`null` clears one), `tried.what_worked` is kept
+when not sent. Validated with the draft's own models; a 422 carries a Hebrew `detail`
+string. Only `owner_context` changes inside `scraped_profile_json`; competitors are also
+written to `competitors_json` and (Instagram links) the peer list, as `from-draft` does —
+a peer account that came from a removed competitor leaves with it.
+
 ## Ownership (parallel build)
 
 | Part | Owns |
