@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { BACKUP_NOTE, CONTACT_EMAIL, GEMINI_PAID_TIER, HOSTING_NOTE } from "@/lib/company";
-import { BrandMark } from "@/lib/icons";
 import { TRUST_PROMISES } from "@/components/landing/Security";
-import "@/components/landing/landing.css";
+import {
+  LEGAL_LINK as LINK,
+  LegalMore,
+  LegalPage,
+  LegalPromises,
+  LegalRows as Rows,
+  LegalSection as Section,
+  LegalSubhead,
+} from "@/components/landing/LegalPage";
 
 export const metadata: Metadata = {
   title: "אבטחה ופרטיות · ישראמארקט",
@@ -20,36 +26,22 @@ export const metadata: Metadata = {
  * No compliance or certification claims: we describe what we do, nothing more.
  */
 
-const LINK = "font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-[var(--ink)]";
+/** The sections, in order: the contents rail and the section titles below. */
+const CONTENTS = [
+  { id: "short", title: "בקצרה" },
+  { id: "stored", title: "מה אנחנו שומרים ולמה" },
+  { id: "access", title: "מה ההרשאות שלנו בגוגל ובמטא" },
+  { id: "reading", title: "מה אנחנו קוראים ברשת" },
+  { id: "whatsapp", title: "מה קישור הוואטסאפ שומר" },
+  { id: "processors", title: "מי עוד מעבד את המידע" },
+  { id: "retention", title: "כמה זמן שומרים" },
+  { id: "delete", title: "איך מוחקים" },
+  { id: "claims", title: "מה אנחנו לא טוענים" },
+  { id: "contact", title: "שאלות" },
+] as const;
 
-function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
-  return (
-    <section aria-labelledby={id} className="border-t border-[var(--rule)] py-8 sm:py-10">
-      <h2 id={id} className="text-xl font-black tracking-tight text-[var(--ink)] sm:text-2xl">
-        {title}
-      </h2>
-      <div className="mt-4 text-[15px] leading-7 text-[var(--ink-soft)] sm:text-base sm:leading-8">{children}</div>
-    </section>
-  );
-}
-
-function Rows({ rows }: { rows: { title: string; body: ReactNode; code?: string }[] }) {
-  return (
-    <ul className="divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
-      {rows.map((row) => (
-        <li key={row.title} className="px-4 py-3.5 sm:px-5">
-          <p className="font-bold text-[var(--ink)]">{row.title}</p>
-          <p className="mt-0.5 text-[var(--ink-soft)]">{row.body}</p>
-          {row.code ? (
-            <p dir="ltr" className="mt-1 text-right font-mono text-xs text-[var(--ink-muted)]">
-              {row.code}
-            </p>
-          ) : null}
-        </li>
-      ))}
-    </ul>
-  );
-}
+type SectionId = (typeof CONTENTS)[number]["id"];
+const TITLE = Object.fromEntries(CONTENTS.map((item) => [item.id, item.title])) as Record<SectionId, string>;
 
 // api/app/models.py — every table, grouped the way an owner thinks about it.
 const STORED = [
@@ -104,42 +96,20 @@ const META_SCOPES = [
 
 export default function SecurityPage() {
   return (
-    <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
-      <header className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
-        <Link href="/" className="inline-flex min-h-11 items-center gap-2.5">
-          <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-          <span className="text-lg font-black tracking-tight">ישראמארקט</span>
-        </Link>
-        <Link href="/" className={`${LINK} inline-flex min-h-11 items-center text-sm`}>
-          לעמוד הראשי
-        </Link>
-      </header>
-
-      <main className="mx-auto max-w-3xl px-4 pb-16 sm:px-8">
-        <div className="pb-8 pt-8 sm:pt-12">
-          <p className="text-sm font-bold text-[var(--primary)]">אבטחה ופרטיות</p>
-          <h1 className="mt-2 text-[2rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
-            המידע של העסק שלכם
-          </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
-            מה אנחנו שומרים, למה, מי עוד רואה את זה ואיך מוחקים הכול. כתבנו כאן רק מה שהמערכת עושה בפועל.
-          </p>
-        </div>
-
-        <Section id="short" title="בקצרה">
-          <ul className="grid gap-x-8 sm:grid-cols-2">
-            {TRUST_PROMISES.map(({ title, line }) => (
-              <li key={title} className="border-t border-[var(--rule)] py-4">
-                <h3 className="text-base font-bold leading-6">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{line}</p>
-              </li>
-            ))}
-          </ul>
+    <LegalPage
+      eyebrow="אבטחה ופרטיות"
+      title="המידע של העסק שלכם"
+      lead="מה אנחנו שומרים, למה, מי עוד רואה את זה ואיך מוחקים הכול. כתבנו כאן רק מה שהמערכת עושה בפועל."
+      contents={[...CONTENTS]}
+      current="/security"
+    >
+        <Section id="short" title={TITLE.short}>
+          <LegalPromises items={TRUST_PROMISES} />
         </Section>
 
-        <Section id="stored" title="מה אנחנו שומרים ולמה">
+        <Section id="stored" title={TITLE.stored}>
           <Rows rows={STORED} />
-          <p className="mt-4 text-[var(--ink-soft)]">
+          <p>
             {/* web/lib/draft.ts: the /start draft lives in localStorage until signup. */}
             לפני ההרשמה, מה שאתם כותבים בשאלות הפתיחה נשמר רק בדפדפן שלכם.
             {" "}
@@ -148,8 +118,8 @@ export default function SecurityPage() {
           </p>
         </Section>
 
-        <Section id="access" title="מה ההרשאות שלנו בגוגל ובמטא">
-          <p className="mb-4">
+        <Section id="access" title={TITLE.access}>
+          <p>
             {/* meta.authorization_url / ga4.authorization_url: facebook.com and accounts.google.com. */}
             מחברים במסך של גוגל או של פייסבוק עצמם. אנחנו לא רואים את הסיסמה שלכם שם, ומקבלים רק את ההרשאות שברשימה. החיבור לא חובה.
           </p>
@@ -157,18 +127,15 @@ export default function SecurityPage() {
             {/* services/publish.py PUBLISH_SCOPES: instagram_content_publish, pages_manage_posts — never requested. */}
             <strong>מה לא ביקשנו:</strong> הרשאה לפרסם, לערוך או למחוק פוסטים. בלי ההרשאה הזו אין לנו דרך טכנית לפרסם בשמכם. את הפוסטים אתם מפרסמים בעצמכם.
           </p>
-          <details className="lp-faq group mt-5">
-            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 [&::-webkit-details-marker]:hidden">
-              כל ההרשאות, אחת אחת
-            </summary>
-            <h3 className="mb-2 mt-4 text-sm font-black text-[var(--ink-muted)]">גוגל</h3>
+          <LegalMore summary="כל ההרשאות, אחת אחת">
+            <LegalSubhead>גוגל</LegalSubhead>
             <Rows rows={GOOGLE_SCOPES} />
-            <h3 className="mb-2 mt-6 text-sm font-black text-[var(--ink-muted)]">פייסבוק ואינסטגרם</h3>
+            <LegalSubhead>פייסבוק ואינסטגרם</LegalSubhead>
             <Rows rows={META_SCOPES} />
-          </details>
+          </LegalMore>
         </Section>
 
-        <Section id="reading" title="מה אנחנו קוראים ברשת">
+        <Section id="reading" title={TITLE.reading}>
           <p>
             {/* services/scraper.py + services/research.py: public fetch through services/netguard.py, no cookies or logins. */}
             את האתר שלכם ואת האתרים של המתחרים אנחנו קוראים רק בעמודים שפתוחים לכל אחד. לא נכנסים לשום מקום עם סיסמה.
@@ -178,18 +145,18 @@ export default function SecurityPage() {
           </p>
         </Section>
 
-        <Section id="whatsapp" title="מה קישור הוואטסאפ שומר">
+        <Section id="whatsapp" title={TITLE.whatsapp}>
           <p>
             {/* routers/whatsapp.py redirect + services/whatsapp.record_click: one daily counter row. */}
             כשלקוח לוחץ על קישור הוואטסאפ של העסק, הוא עובר דרכנו לוואטסאפ. על הלחיצה אנחנו שומרים רק את היום, את הקישור שעליו לחץ, ואת סוג המכשיר בערך: אייפון, אנדרואיד, מחשב, או הדפדפן שבתוך אינסטגרם או פייסבוק.
           </p>
-          <p className="mt-3">
+          <p>
             {/* No IP column, no user-agent column: tests/test_whatsapp_link.py test_no_ip_or_user_agent_is_stored. */}
             <strong>מה לא נשמר:</strong> כתובת הרשת של המכשיר (IP), פרטי הדפדפן המלאים, ומי לחץ. את ההודעה עצמה אנחנו לא רואים, והיא עוברת ישר בוואטסאפ. תצוגות מקדימות של קישורים ורובוטים לא נספרים.
           </p>
         </Section>
 
-        <Section id="processors" title="מי עוד מעבד את המידע">
+        <Section id="processors" title={TITLE.processors}>
           <Rows
             rows={[
               {
@@ -228,10 +195,10 @@ export default function SecurityPage() {
               },
             ]}
           />
-          <p className="mt-4">לא מוכרים ולא משתפים מידע עם מפרסמים.</p>
+          <p>לא מוכרים ולא משתפים מידע עם מפרסמים.</p>
         </Section>
 
-        <Section id="retention" title="כמה זמן שומרים">
+        <Section id="retention" title={TITLE.retention}>
           <p>
             כל עוד החשבון קיים. כשמוחקים את החשבון, המידע נמחק מהמערכת מיד.
             {BACKUP_NOTE ? ` ${BACKUP_NOTE}` : null}
@@ -239,7 +206,7 @@ export default function SecurityPage() {
           </p>
         </Section>
 
-        <Section id="delete" title="איך מוחקים">
+        <Section id="delete" title={TITLE.delete}>
           <Rows
             rows={[
               {
@@ -272,11 +239,11 @@ export default function SecurityPage() {
           />
         </Section>
 
-        <Section id="claims" title="מה אנחנו לא טוענים">
+        <Section id="claims" title={TITLE.claims}>
           <p>אין לנו כרגע הסמכה או תקן אבטחה חיצוני. לא כתבנו שאנחנו עומדים בחוק או בתקן מסוים, רק מה שאנחנו עושים.</p>
         </Section>
 
-        <Section id="contact" title="שאלות">
+        <Section id="contact" title={TITLE.contact}>
           <p>
             כתבו לנו:{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} dir="ltr" className={LINK}>
@@ -284,7 +251,6 @@ export default function SecurityPage() {
             </a>
           </p>
         </Section>
-      </main>
-    </div>
+    </LegalPage>
   );
 }

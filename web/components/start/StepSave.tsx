@@ -6,6 +6,7 @@ import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { ApiError, endpoints } from "@/lib/api";
 import type { StepProps } from "./steps";
 import { StepShell, TextInput } from "./ui";
+import form from "./form.module.css";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -74,7 +75,7 @@ export function StepSave(
         onPrimary={() => void onSave()}
       >
         {saveError ? (
-          <p role="alert" className="text-sm font-bold text-[#9f4330]">
+          <p role="alert" className={form.error}>
             {saveError}
           </p>
         ) : null}
@@ -111,8 +112,8 @@ export function StepSave(
         maxLength={200}
       />
       <div>
-        <label htmlFor="signup-password" className="mb-1 block text-sm font-bold text-[#1d2940]">
-          סיסמה (לפחות 8 תווים)
+        <label htmlFor="signup-password" className={form.label}>
+          סיסמה <small>(לפחות 8 תווים)</small>
         </label>
         <input
           id="signup-password"
@@ -125,17 +126,17 @@ export function StepSave(
           }}
           autoComplete="new-password"
           placeholder="••••••••"
-          className="min-h-12 w-full rounded-lg border border-[#dedcd4] bg-white px-3.5 text-left text-base text-[#1d2940] outline-none focus:border-[#1d2940] focus:ring-1 focus:ring-[#1d2940]"
+          className={`${form.input} text-left`}
         />
       </div>
       {error || saveError ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className={form.error}>
           {error || saveError}
         </p>
       ) : null}
-      <p className="text-xs leading-5 text-[#535f75]">
+      <p className="text-[13.5px] leading-6 text-[color:var(--ink-muted)]">
         כבר יש לכם חשבון?{" "}
-        <Link href="/login" className="font-bold text-[#1d2940] underline underline-offset-4">
+        <Link href="/login" className="font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-[5px]">
           להיכנס
         </Link>
         . מה שבנינו נשמר במכשיר ויחכה לכם.

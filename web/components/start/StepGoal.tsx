@@ -14,6 +14,7 @@ import { modelOf } from "./script";
 import type { StepProps } from "./steps";
 import { CHANGE_LATER, Chip, StepShell } from "./ui";
 import styles from "./start.module.css";
+import form from "./form.module.css";
 
 /**
  * The chapter "המטרה והתקציב": where to grow (shops only) and the monthly budget. Revision
@@ -30,7 +31,7 @@ const MODEL_QUESTION: Record<BusinessModel, string> = {
 function FieldError({ message }: { message: string }) {
   if (!message) return null;
   return (
-    <p role="alert" className="text-sm font-bold text-[#9f4330]">
+    <p role="alert" className={form.error}>
       {message}
     </p>
   );
@@ -64,10 +65,10 @@ export function ModelConfirm({ flow, update }: Pick<StepProps, "flow" | "update"
   }
 
   return (
-    <div className="rounded-xl bg-[#fff5d9] p-3">
+    <div className={form.panel}>
       {changing ? (
-        <div className="space-y-2">
-          <p className="text-sm font-bold text-[color:var(--ink)]">מה אתם מוכרים?</p>
+        <div className="space-y-3">
+          <p className="text-[15px] font-semibold text-[color:var(--ink)]">מה אתם מוכרים?</p>
           <div className="grid grid-cols-3 gap-2">
             {BUSINESS_MODEL_OPTIONS.map((option) => (
               <Chip
@@ -75,22 +76,24 @@ export function ModelConfirm({ flow, update }: Pick<StepProps, "flow" | "update"
                 label={option.key === "both" ? "גם וגם" : option.title}
                 selected={model === option.key}
                 onClick={() => setModel(option.key)}
-                className="px-2"
+                className="!px-2"
               />
             ))}
           </div>
         </div>
       ) : (
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-sm font-bold text-[color:var(--ink)]">{MODEL_QUESTION[model]}</p>
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+          <p className="flex items-center gap-3 text-[15px] font-semibold text-[color:var(--ink)]">
+            <span aria-hidden className={styles.sunDot} />
+            {MODEL_QUESTION[model]}
+          </p>
           <div className="flex gap-2">
             <Chip
               label="נכון"
               selected={Boolean(flow.modelConfirmed)}
               onClick={() => update((f) => ({ ...f, modelConfirmed: true, draft: { ...f.draft, business_model: model } }))}
-              className="min-h-10 px-3"
             />
-            <Chip label="לא בדיוק" selected={false} onClick={() => setChanging(true)} className="min-h-10 px-3" />
+            <Chip label="לא בדיוק" selected={false} onClick={() => setChanging(true)} />
           </div>
         </div>
       )}
@@ -118,25 +121,16 @@ export function Tile({
       role="radio"
       aria-checked={on}
       onClick={onClick}
-      className={`min-h-[60px] w-full cursor-pointer rounded-xl border p-3 text-right transition-colors ${
-        on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"
-      }`}
+      className={form.tile}
     >
-      <span className="flex items-center gap-2.5">
-        <span
-          aria-hidden
-          className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${on ? "border-[var(--ink)]" : "border-[var(--rule-dark)]"}`}
-        >
-          {on ? <span className={`h-2.5 w-2.5 rounded-full bg-[var(--primary)] ${styles.pop}`} /> : null}
+      <span aria-hidden className={form.radio} />
+      <span className="min-w-0">
+        <span className={form.tileTitle}>
+          {title}
+          {/* A plain text status, not a filled pill: the screen's one filled control is its primary action. */}
+          {badge ? <small>{badge}</small> : null}
         </span>
-        <span className="min-w-0">
-          <span className="flex flex-wrap items-center gap-x-2 text-base font-black leading-6 text-[color:var(--ink)]">
-            {title}
-            {/* A plain text status, not a filled pill: the screen's one filled control is its primary action. */}
-            {badge ? <span className="text-[11px] font-bold leading-5 text-[color:var(--primary)]">{badge}</span> : null}
-          </span>
-          {desc ? <span className="block text-xs leading-5 text-[color:var(--ink-soft)]">{desc}</span> : null}
-        </span>
+        {desc ? <span className={form.tileDesc}>{desc}</span> : null}
       </span>
     </button>
   );
@@ -182,7 +176,7 @@ export function StepGrow(props: StepProps) {
     >
       <ModelConfirm flow={flow} update={update} />
       {services ? (
-        <p className={`text-sm leading-6 text-[color:var(--ink)] ${styles.rise}`}>בשירות אין ״באתר או בחנות״. נדלג על השאלה הזו.</p>
+        <p className={`text-[15px] leading-6 text-[color:var(--ink-soft)] ${styles.rise}`}>בשירות אין ״באתר או בחנות״. נדלג על השאלה הזו.</p>
       ) : (
         <div role="radiogroup" aria-label="איפה לגדול" className="grid gap-2">
           {GROW_OPTIONS.map((option) => (
@@ -254,9 +248,7 @@ export function StepBudget(props: StepProps) {
               role="radio"
               aria-checked={on}
               onClick={() => pick(option.key)}
-              className={`min-h-14 cursor-pointer rounded-xl border px-3 py-2 text-right text-sm font-bold leading-5 text-[color:var(--ink)] transition-colors ${
-                option.key === "none" || option.key === "unknown" ? "" : "tabular-nums"
-              } ${on ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white hover:border-[#b9b7ad]"}`}
+              className={`${form.option} ${option.key === "none" || option.key === "unknown" ? "" : "tabular-nums"}`}
             >
               {option.label}
             </button>
@@ -265,10 +257,10 @@ export function StepBudget(props: StepProps) {
       </div>
       <FieldError message={error} />
       <div>
-        <label htmlFor={fieldId} className="mb-1 block text-sm font-bold text-[color:var(--ink)]">
-          או סכום מדויק <span className="font-normal text-[color:var(--ink-soft)]">(לא חובה)</span>
+        <label htmlFor={fieldId} className={form.label}>
+          או סכום מדויק <small>(לא חובה)</small>
         </label>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <input
             id={fieldId}
             type="number"
@@ -286,9 +278,9 @@ export function StepBudget(props: StepProps) {
             }}
             placeholder="2500"
             dir="ltr"
-            className="min-h-12 w-36 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
+            className={`${form.input} ${form.number}`}
           />
-          <span className="text-sm font-bold text-[color:var(--ink-soft)]">₪ לחודש</span>
+          <span className="text-sm font-medium text-[color:var(--ink-soft)]">₪ לחודש</span>
         </div>
       </div>
     </StepShell>

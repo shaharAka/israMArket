@@ -1,0 +1,14 @@
+/*
+ * The two folded rows from the plan side (ResearchSection, HypothesisStatus) are shared
+ * components; this wrapper gives them the page's own row size and label weight.
+ */
+.planRows > details > summary {
+  min-height: 56px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+
+.planRows > details > summary:hover {
+  color: var(--primary);
+}

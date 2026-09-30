@@ -2,6 +2,7 @@
 
 import { ACTIVITY_OPTIONS, TRIED_OPTIONS, type Activity, type TriedChannel } from "@/lib/draft";
 import { Chip } from "./ui";
+import form from "./form.module.css";
 
 /**
  * The /start answer controls that /decisions reuses, so an answer is changed with the
@@ -21,7 +22,7 @@ export function ActivityPicker({
   clearable?: boolean;
 }) {
   return (
-    <div role="radiogroup" aria-label={label} className="grid grid-cols-3 gap-1.5">
+    <div role="radiogroup" aria-label={label} className="grid grid-cols-3 gap-2">
       {ACTIVITY_OPTIONS.map((option) => {
         const on = value === option.key;
         return (
@@ -31,9 +32,7 @@ export function ActivityPicker({
             role="radio"
             aria-checked={on}
             onClick={() => onChange(on && clearable ? undefined : option.key)}
-            className={`min-h-10 cursor-pointer rounded-lg border px-1 text-xs font-bold ${
-              on ? "border-[#1d2940] bg-[#f1efe8] text-[#1d2940] ring-1 ring-[#1d2940]" : "border-[#dedcd4] bg-white text-[#4f524b]"
-            }`}
+            className={`${form.option} !min-h-11 items-center !px-2 !text-center !text-[13.5px]`}
           >
             {option.label}
           </button>
@@ -61,7 +60,6 @@ export function TriedPicker({
           label={option.label}
           selected={channels.includes(option.key)}
           onClick={() => onToggle(option.key)}
-          className="px-3.5"
         />
       ))}
       {children}

@@ -23,9 +23,13 @@ export function SendToHelper({
   copiedNote?: string;
 }) {
   return (
-    <div className="rounded bg-[var(--primary-soft)] p-3.5">
-      <p className="text-sm font-bold text-[var(--ink)]">{title}</p>
-      <div dir="rtl" className="mt-2 border-t border-[var(--rule-dark)] pt-3 text-[13px] leading-6 text-[var(--ink-soft)]">
+    <div className="rounded-xl bg-[var(--soft)] px-4 pb-1 pt-4">
+      <p className="text-[14px] font-semibold text-[color:var(--ink)]">{title}</p>
+      {/* The message itself, on paper: the thing that gets sent. */}
+      <div
+        dir="rtl"
+        className="mt-3 rounded-lg bg-[var(--paper)] px-3.5 py-3 text-[13px] leading-6 text-[color:var(--ink-soft)] shadow-[var(--shadow-card)]"
+      >
         {message.split("\n").map((line, index) => (
           // Blank-for-the-owner lines ("הג׳ימייל: ") keep their height.
           <p key={index} className="min-h-6">
@@ -33,12 +37,12 @@ export function SendToHelper({
           </p>
         ))}
       </div>
-      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+      <div className="mt-1 flex flex-wrap items-center gap-x-5">
         <a
           href={whatsappShareUrl(message)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[var(--ink)] underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[color:var(--primary)] underline-offset-4 transition-colors hover:text-[color:var(--primary-dark)] hover:underline"
         >
           <IconWhatsApp className="h-4 w-4" />
           לשלוח בוואטסאפ
@@ -48,7 +52,7 @@ export function SendToHelper({
           onClick={() => {
             copyText(message, copiedNote).catch(() => undefined);
           }}
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-[var(--ink)] underline-offset-4 hover:underline"
+          className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[color:var(--primary)] underline-offset-4 transition-colors hover:text-[color:var(--primary-dark)] hover:underline"
         >
           <IconCopy className="h-4 w-4" />
           להעתיק את ההודעה

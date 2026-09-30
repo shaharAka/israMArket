@@ -62,10 +62,10 @@ export default function InstagramPage() {
   if (!data) {
     return (
       <AppShell>
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-3xl">
           {header}
           {loadError ? (
-            <p role="alert" className="text-sm text-[#9f4330]">
+            <p role="alert" className="text-[15px] text-[color:var(--danger)]">
               {loadError}
             </p>
           ) : (
@@ -89,6 +89,7 @@ export default function InstagramPage() {
       .map((entry) => [entry.handle, entry.error_he])
   );
 
+  // The filled state is the product's one blue button (DESIGN-STANDARD §4), not a dark one.
   const refreshButton = connected ? (
     <button
       type="button"
@@ -97,8 +98,8 @@ export default function InstagramPage() {
       aria-busy={refreshing}
       className={
         refreshIsPrimary
-          ? "mt-3 inline-flex min-h-12 w-full items-center justify-center rounded-md bg-[#20211f] px-6 text-sm font-bold text-white disabled:bg-[#c7c6c0] sm:w-auto"
-          : "inline-flex min-h-10 shrink-0 items-center rounded-full border border-[#cecdc7] bg-white px-3.5 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-50"
+          ? "drawn-button mt-4 inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)] sm:w-auto"
+          : "inline-flex min-h-11 shrink-0 items-center rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-50"
       }
     >
       {refreshing ? "לומדים…" : refreshIsPrimary ? "ללמוד מהאינסטגרם" : "ללמוד מחדש"}
@@ -107,32 +108,32 @@ export default function InstagramPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto max-w-3xl">
         {header}
 
-        <div className="space-y-7">
+        <div className="space-y-10 sm:space-y-12">
           {connected ? null : (
-            <section className="rounded-lg border border-[#cecdc7] bg-white p-4 sm:p-5">
-              <p className="text-base font-black text-[#20211f]">האינסטגרם עוד לא מחובר</p>
+            <section className="paper px-5 py-6 sm:px-7 sm:py-7">
+              <p className="text-lg font-bold tracking-tight text-[color:var(--ink)]">האינסטגרם עוד לא מחובר</p>
               {data.meta_ready ? (
                 <>
-                  <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
+                  <p className="mt-1.5 max-w-[40em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
                     אחרי החיבור נלמד ממה שכבר הצליח לכם ומהחשבונות שתבחרו.
                   </p>
                   <Link
                     href="/integrations"
-                    className="group mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-md bg-[#20211f] px-6 text-sm font-bold text-white transition-colors hover:bg-[#343632] sm:w-auto"
+                    className="drawn-button group mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)] sm:w-auto"
                   >
                     לחבר את האינסטגרם
-                    <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+                    <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
                   </Link>
-                  <div className="mt-1">
+                  <div className="mt-2 flex flex-wrap items-center gap-x-5">
                     <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
+                    <StepLink stepKey="instagram" />
                   </div>
-                  <StepLink stepKey="instagram" />
                 </>
               ) : (
-                <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>
+                <p className="mt-1.5 text-[15px] leading-7 text-[color:var(--ink-soft)]">{data.empty_reason}</p>
               )}
             </section>
           )}
@@ -140,7 +141,7 @@ export default function InstagramPage() {
           {connected || brief ? (
             <section aria-labelledby="learned-heading">
               <div className="flex items-center justify-between gap-3">
-                <h2 id="learned-heading" className="text-base font-black text-[#20211f]">
+                <h2 id="learned-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
                   מה למדנו
                 </h2>
                 {brief ? refreshButton : null}
@@ -149,12 +150,12 @@ export default function InstagramPage() {
                 <LearnedList brief={brief} />
               ) : (
                 <>
-                  <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">{data.empty_reason}</p>
+                  <p className="mt-1.5 text-[15px] leading-7 text-[color:var(--ink-soft)]">{data.empty_reason}</p>
                   {refreshButton}
                 </>
               )}
               {refreshNote ? (
-                <p role="status" className="mt-2 text-sm leading-6 text-[#7a5216]">
+                <p role="status" className="mt-3 rounded-[12px] bg-[var(--sand)] px-4 py-3 text-[14px] leading-6 text-[color:var(--sand-dark)]">
                   {refreshNote}
                 </p>
               ) : null}

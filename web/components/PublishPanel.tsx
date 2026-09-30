@@ -8,20 +8,42 @@ import {
   type RoadmapPost,
   type StrategyPayload,
 } from "@/lib/api";
-import { IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
+import { IconChevron, IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
 import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { shortDay } from "@/components/posts/postMeta";
+import ui from "@/components/posts/chrome.module.css";
 
 type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
+
+/** The two platforms' marks, drawn in the icon set's own line (24px grid, 1.6 stroke) so
+ *  they sit with the rest of the controls instead of as emoji. */
+function InstagramGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="3.8" />
+      <circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M14.6 8.2h-1.3a1.9 1.9 0 0 0-1.9 1.9v10.3M9.4 13h4.8" />
+    </svg>
+  );
+}
 
 /** The platforms the owner actually posts to by hand. Each one is opened, not filled:
  *  neither Instagram nor Facebook lets another site pre-fill a caption, so the honest
  *  control is a link to the app plus the instruction to paste. WhatsApp is the exception
  *  and gets its own pre-filled link below. */
-const COMPOSERS: { key: OutletKey; label: string; href: string; icon: string }[] = [
-  { key: "instagram", label: "אינסטגרם", href: "https://www.instagram.com/", icon: "📸" },
-  { key: "facebook", label: "פייסבוק", href: "https://www.facebook.com/", icon: "📘" },
+const COMPOSERS: { key: OutletKey; label: string; href: string; Icon: () => React.JSX.Element }[] = [
+  { key: "instagram", label: "אינסטגרם", href: "https://www.instagram.com/", Icon: InstagramGlyph },
+  { key: "facebook", label: "פייסבוק", href: "https://www.facebook.com/", Icon: FacebookGlyph },
 ];
 
 export type PublishPanelProps = {
@@ -174,120 +196,120 @@ export function PublishPanel({
   }
 
   return (
-    // No border of its own: it lives inside the editor's sheet or side panel, which is the box.
-    <div>
+    // No box of its own: it lives inside the editor's sheet or side panel, which is the card.
+    // Groups are divided by hairlines, each with one title and its controls under it.
+    <div className="divide-y divide-[var(--rule)]">
       {/* ---- what the owner needs in hand to post by hand ---- */}
-      <p className="text-[13px] font-bold text-[#62635f]">מה צריך כדי לפרסם</p>
-      <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
-        {storedDate ? `מתוכנן ליום ${shortDay(storedDate)}` : "עוד לא נקבע תאריך"}
-        {published ? " · סומן כפורסם" : ""}
-      </p>
+      <section className="pb-5">
+        <h3 className={ui.groupTitle}>מה צריך כדי לפרסם</h3>
+        <p className={`${ui.meta} mt-0.5 font-normal`}>
+          {storedDate ? `מתוכנן ליום ${shortDay(storedDate)}` : "עוד לא נקבע תאריך"}
+          {published ? " · סומן כפורסם" : ""}
+        </p>
 
-      <div className="mt-2.5 flex flex-wrap gap-2">
-        <button
-          type="button"
-          disabled={exportDisabled}
-          onClick={onExportCard}
-          className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5] disabled:opacity-40"
-        >
-          <IconImage className="h-3.5 w-3.5" />
-          {exporting ? "מורידים את הכרטיס…" : "להוריד את הכרטיס"}
-        </button>
-        <a
-          href={whatsappShareUrl(whatsappText)}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#25d366] bg-white px-3 text-xs font-bold text-[#0b7a3d] hover:bg-[#f1fbf5]"
-        >
-          <IconWhatsApp className="h-4 w-4" />
-          לשלוח בוואטסאפ
-        </a>
-        {composers.map((composer) => (
+        <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <button type="button" disabled={exportDisabled} onClick={onExportCard} className={ui.button}>
+            <IconImage />
+            {exporting ? "מורידים את הכרטיס…" : "להוריד את הכרטיס"}
+          </button>
           <a
-            key={composer.key}
-            href={composer.href}
+            href={whatsappShareUrl(whatsappText)}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5]"
+            className={ui.button}
           >
-            <span aria-hidden>{composer.icon}</span>
-            לפתוח את {composer.label}
+            <IconWhatsApp className="text-[color:var(--good)]" />
+            לשלוח בוואטסאפ
           </a>
-        ))}
-      </div>
-      <p className="mt-1.5 text-xs leading-5 text-[#8b8e84]">
-        וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה. באינסטגרם ובפייסבוק אי אפשר למלא
-        כיתוב מבחוץ, אז פותחים את האפליקציה ומדביקים.
-      </p>
+          {composers.map((composer) => (
+            <a
+              key={composer.key}
+              href={composer.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={ui.button}
+            >
+              <composer.Icon />
+              לפתוח את {composer.label}
+            </a>
+          ))}
+        </div>
+        <p className={`${ui.help} mt-3`}>
+          וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה. באינסטגרם ובפייסבוק אי אפשר למלא
+          כיתוב מבחוץ, אז פותחים את האפליקציה ומדביקים.
+        </p>
+      </section>
 
       {/* The caption for the channel being looked at, ready to paste. The text itself is
           under the preview and in the editor's "טקסט" section; a third full copy here only
           made the panel longer. */}
-      <div className="mt-3 flex items-center justify-between gap-2 border-t border-[#f0efeb] pt-3">
-        <p className="text-[13px] font-bold text-[#62635f]">הכיתוב ל{outletLabel}</p>
+      <section className="flex items-center justify-between gap-3 py-3">
+        <h3 className={ui.groupTitle}>הכיתוב ל{outletLabel}</h3>
         <button
           type="button"
           onClick={() => void copyText(caption, "הכיתוב הועתק.")}
-          className="inline-flex min-h-11 items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
+          className={ui.link}
         >
-          <IconCopy className="h-3.5 w-3.5" />
+          <IconCopy />
           להעתיק את הכיתוב
         </button>
-      </div>
+      </section>
 
       {/* The tracked link — or the reason there is none, never a dead button. */}
-      <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[13px] font-bold text-[#62635f]">קישור עם מעקב</p>
+      <section className="py-5">
+        <h3 className={ui.groupTitle}>קישור עם מעקב</h3>
         {trackingUrl ? (
           <>
             {/* A tracked URL is long and unreadable; two lines show it is there, the copy
                 button hands over all of it, and the tooltip carries the rest. */}
-            <p title={trackingUrl} className="mt-1 line-clamp-2 break-all font-mono text-xs leading-4 text-[#5e6159]" dir="ltr">
-              {trackingUrl}
-            </p>
-            <button
-              type="button"
-              onClick={() => void copyText(trackingUrl, "הקישור הועתק.")}
-              className="mt-1.5 inline-flex items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
-            >
-              <IconLink className="h-3 w-3" />
-              להעתיק את הקישור
-            </button>
-            <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
+            <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
+              <p title={trackingUrl} className="min-w-0 flex-1 truncate font-mono text-xs leading-5 text-[var(--ink-soft)]" dir="ltr">
+                {trackingUrl}
+              </p>
+              <button
+                type="button"
+                onClick={() => void copyText(trackingUrl, "הקישור הועתק.")}
+                className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
+              >
+                <IconLink />
+                להעתיק את הקישור
+              </button>
+            </div>
+            <p className={`${ui.help} mt-2`}>
               כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט.
             </p>
           </>
         ) : (
-          <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
+          <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
             לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״,
             וניצור קישור לכל פוסט.
           </p>
         )}
-      </div>
+      </section>
 
       {/* The post's WhatsApp link: only for a post that asks people to write on WhatsApp. */}
       {waLink?.cta_is_whatsapp ? (
-        <div className="mt-3 border-t border-[#f0efeb] pt-3">
-          <p className="flex items-center gap-1.5 text-[13px] font-bold text-[#62635f]">
-            <IconWhatsApp className="h-4 w-4 text-[#0b7a3d]" />
+        <section className="py-5">
+          <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
+            <IconWhatsApp className="h-[18px] w-[18px] text-[var(--good)]" />
             קישור הוואטסאפ של הפוסט
-          </p>
+          </h3>
           {waLink.link ? (
             <>
-              <div className="mt-1 flex items-center justify-between gap-2">
-                <p title={waLink.link.url} className="min-w-0 truncate font-mono text-xs leading-4 text-[#5e6159]" dir="ltr">
+              <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
+                <p title={waLink.link.url} className="min-w-0 flex-1 truncate font-mono text-xs leading-5 text-[var(--ink-soft)]" dir="ltr">
                   {waLink.link.url.replace(/^https?:\/\//, "")}
                 </p>
                 <button
                   type="button"
                   onClick={() => void copyText(waLink.link!.url, "קישור הוואטסאפ הועתק.")}
-                  className="inline-flex min-h-11 shrink-0 items-center gap-1 text-[13px] font-bold text-[#191b18] underline underline-offset-2"
+                  className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
                 >
-                  <IconCopy className="h-3.5 w-3.5" />
+                  <IconCopy />
                   להעתיק
                 </button>
               </div>
-              <p className="text-xs leading-5 text-[#8b8e84]">
+              <p className={`${ui.help} mt-2`}>
                 {/* Instagram does not make links in a feed caption tappable, so the honest
                     place there is the story's link sticker. */}
                 בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו
@@ -296,121 +318,120 @@ export function PublishPanel({
               </p>
             </>
           ) : (
-            <p className="mt-1 text-[13px] leading-5 text-[#62635f]">
+            <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
               הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו.{" "}
-              <a href="/integrations" className="font-bold text-[#191b18] underline underline-offset-2">
+              <a href="/integrations" className={`${ui.link} min-h-0`}>
                 להגדיר את מספר הוואטסאפ
               </a>
             </p>
           )}
-        </div>
+        </section>
       ) : null}
 
       {/* ---- when it goes out ---- */}
-      <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <label htmlFor="post-scheduled-for" className="block text-[13px] font-bold text-[#62635f]">
+      <section className="py-5">
+        <label htmlFor="post-scheduled-for" className={`${ui.groupTitle} block`}>
           מתי לפרסם
         </label>
-        <div className="mt-1.5 flex flex-wrap items-center gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
           <input
             id="post-scheduled-for"
             type="date"
             value={scheduleDate}
             disabled={imageLocked || savingSchedule}
             onChange={(event) => changeSchedule(event.target.value)}
-            className="h-10 rounded-md border border-[#cecdc7] bg-white px-2.5 text-xs font-bold text-[#20211f] disabled:opacity-40"
+            className={`${ui.field} w-auto min-w-44 text-sm font-medium tabular-nums`}
           />
           {storedDate ? (
             <button
               type="button"
               disabled={imageLocked || savingSchedule}
               onClick={() => void saveSchedule("")}
-              className="min-h-10 px-1 text-[13px] font-bold text-[#62635f] underline underline-offset-2 disabled:opacity-40"
+              className={`${ui.link} ${ui.linkQuiet} text-[13px]`}
             >
               להסיר את התאריך
             </button>
           ) : null}
-          {savingSchedule ? (
-            <span className="text-[13px] text-[#747570]">שומרים…</span>
-          ) : null}
+          {savingSchedule ? <span className={ui.help}>שומרים…</span> : null}
         </div>
-        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-          {storedDate ? "" : "בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום."}
-        </p>
+        {storedDate ? null : (
+          <p className={`${ui.help} mt-2`}>בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום.</p>
+        )}
         {scheduleError ? (
-          <p className="mt-1 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
+          <p className={`${ui.error} mt-3`}>
             {scheduleError}
           </p>
         ) : null}
-      </div>
+      </section>
 
       {/* ---- closing the loop after posting by hand ---- */}
-      <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[13px] font-bold text-[#62635f]">אחרי שפרסמתם ב{outletLabel}</p>
-        <p className="mt-1 text-xs leading-5 text-[#8b8e84]">
-          הדביקו כאן את הקישור לפוסט שפורסם, ונמדוד אותו בתוצאות.
-        </p>
-        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+      <section className="py-5">
+        <h3 className={ui.groupTitle}>אחרי שפרסמתם ב{outletLabel}</h3>
+        <p className={`${ui.help} mt-0.5`}>הדביקו כאן את הקישור לפוסט שפורסם, ונמדוד אותו בתוצאות.</p>
+        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
           <input
             aria-label="הקישור לפוסט שפורסם"
             value={publishUrl}
             onChange={(event) => onPublishUrlChange(event.target.value)}
             placeholder="https://..."
-            className="flex-1 rounded-md border border-[#dedcd4] px-3 py-2 text-xs"
+            dir="ltr"
+            className={`${ui.field} min-w-0 flex-1 text-left text-sm`}
           />
           <button
             type="button"
             disabled={publishing}
             onClick={onMarkPublished}
-            className="min-h-10 rounded-md border border-[#c7c4b8] bg-transparent px-3 text-xs font-bold text-[#1e201d] hover:bg-[#f4f3ee] disabled:opacity-40"
+            className={`${ui.button} ${ui.matchField} shrink-0`}
           >
             {published ? "לעדכן את הקישור" : "לסמן שפורסם"}
           </button>
         </div>
-      </div>
+      </section>
 
       {/* ---- why there is no publish button ---- */}
-      <div className="mt-3 border-t border-[#f0efeb] pt-3">
-        <p className="text-[13px] font-bold text-[#62635f]">
+      <section className="pt-5">
+        <h3 className="text-sm font-semibold leading-6 text-[var(--ink-soft)]">
           {capability?.auto_publish
             ? "יש הרשאה לפרסום אוטומטי"
             : "אין לנו הרשאה ממטא לפרסם אוטומטית באינסטגרם ובפייסבוק"}
-        </p>
+        </h3>
 
         {capabilityError ? (
-          <p className="mt-1.5 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
+          <p className={`${ui.error} mt-2`}>
             {capabilityError}
           </p>
         ) : !capability ? (
-          <p className="mt-1.5 text-[13px] text-[#747570]">בודקים מה מותר לנו לפרסם…</p>
+          <p className={`${ui.help} mt-1`}>בודקים מה מותר לנו לפרסם…</p>
         ) : (
           // The conclusion is the heading above and stays on the face; the API's reasons are
           // the explanation of it, one tap down (UI-RULES rule 2 and 7).
-          <details className="mt-1">
-            <summary className="min-h-11 cursor-pointer content-center text-[13px] font-bold text-[#62635f] underline underline-offset-2">
+          <details>
+            <summary className={`${ui.summary} text-[13px] font-semibold text-[var(--primary)] hover:text-[var(--primary-dark)]`}>
               למה
+              <IconChevron />
             </summary>
             {/* The API's own sentences, shown as written. Paraphrasing them into
                 "permissions" and "scopes" would be the jargon this panel exists to avoid,
                 and softening them would be a promise nobody can keep. */}
-            <ul className="mt-1.5 space-y-1">
+            <ul className="space-y-1.5">
               {capability.reasons.map((reason, index) => (
-                <li key={index} className="flex items-start gap-2 text-[13px] leading-5 text-[#5e6159]">
-                  <span aria-hidden className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[#b3b0a5]" />
+                <li key={index} className="flex items-start gap-2.5 text-[13px] leading-6 text-[var(--ink-soft)]">
+                  <span aria-hidden className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-[var(--ink-faint)]" />
                   <span>{reason}</span>
                 </li>
               ))}
             </ul>
             {capability.missing.length ? (
-              <details className="mt-2">
-                <summary className="cursor-pointer text-[13px] font-bold text-[#62635f] underline underline-offset-2">
+              <details className="mt-1">
+                <summary className={`${ui.summary} text-[13px] font-semibold text-[var(--ink-soft)] hover:text-[var(--ink)]`}>
                   מה בדיוק חסר (למי שמנהל את החשבון במטא)
+                  <IconChevron />
                 </summary>
-                <ul className="mt-1.5 space-y-1">
+                <ul className="space-y-1">
                   {capability.missing.map((scope) => (
-                    <li key={scope} className="text-[13px] leading-5 text-[#5e6159]">
+                    <li key={scope} className="text-[13px] leading-6 text-[var(--ink-soft)]">
                       {PUBLISH_SCOPE_LABELS[scope] || scope}{" "}
-                      <span className="font-mono text-xs text-[#8b8e84]">({scope})</span>
+                      <span className="font-mono text-xs text-[var(--ink-muted)]">({scope})</span>
                     </li>
                   ))}
                 </ul>
@@ -418,7 +439,7 @@ export function PublishPanel({
             ) : null}
           </details>
         )}
-      </div>
+      </section>
     </div>
   );
 }

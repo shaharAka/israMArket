@@ -93,7 +93,7 @@ export function HelpSheet({
         tabIndex={-1}
         aria-label="לסגור"
         onClick={() => closeRef.current()}
-        className="absolute inset-0 h-full w-full cursor-default bg-black/35"
+        className={`${styles.backdrop} absolute inset-0 h-full w-full cursor-default`}
       />
       <div
         ref={panelRef}
@@ -104,26 +104,26 @@ export function HelpSheet({
         data-side={desktop}
         className={
           `${styles.panel} ${desktop
-            ? "absolute inset-y-0 left-0 flex w-[460px] max-w-[92vw] flex-col border-e-[3px] border-e-[var(--primary)] bg-[var(--paper)] shadow-2xl outline-none"
-            : "absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t border-t-[3px] border-t-[var(--primary)] bg-[var(--paper)] shadow-2xl outline-none"}`
+            ? "absolute inset-y-0 left-0 flex w-[460px] max-w-[92vw] flex-col bg-[var(--paper)] shadow-[var(--shadow-pop)] outline-none"
+            : "absolute inset-x-0 bottom-0 flex max-h-[88dvh] flex-col rounded-t-[20px] bg-[var(--paper)] shadow-[var(--shadow-pop)] outline-none"}`
         }
       >
-        <div className="relative flex shrink-0 items-center justify-between gap-3 border-b border-[var(--rule)] px-4 pb-2 pt-3 sm:px-5">
+        <div className="relative flex shrink-0 items-center justify-between gap-3 border-b border-[var(--rule)] px-5 pb-3 pt-4 sm:px-6 sm:pt-5">
           {desktop ? null : (
-            <span aria-hidden className="absolute left-1/2 top-1.5 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--rule-dark)]" />
+            <span aria-hidden className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-[var(--rule-dark)]" />
           )}
-          <h2 id="help-sheet-title" className="min-w-0 text-base font-black leading-6 text-[var(--ink)]">
+          <h2 id="help-sheet-title" className="min-w-0 text-[17px] font-bold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
             {title}
           </h2>
           <button
             type="button"
             onClick={() => closeRef.current()}
-            className="min-h-11 shrink-0 px-2 text-sm font-bold text-[var(--ink-soft)] underline underline-offset-4 hover:text-[var(--ink)]"
+            className="inline-flex min-h-11 shrink-0 items-center rounded-lg px-3 text-[14px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
           >
             לסגור
           </button>
         </div>
-        <div className="overflow-y-auto overscroll-contain px-4 pb-[max(24px,env(safe-area-inset-bottom))] pt-4 sm:px-5">
+        <div className="overflow-y-auto overscroll-contain px-5 pb-[max(28px,env(safe-area-inset-bottom))] pt-5 sm:px-6">
           {children}
         </div>
       </div>

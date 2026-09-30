@@ -32,7 +32,7 @@ export function StepLink({
   return (
     <Link
       href={`/dashboard#step-${step.key}`}
-      className={`inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[color:var(--primary)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-current ${className}`}
+      className={`inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline ${className}`}
     >
       <span>
         צעד בשבוע {step.week} של החודש החינמי
@@ -50,7 +50,7 @@ export function ContactLink({ className = "" }: { className?: string }) {
       שאלות?{" "}
       <a
         href={`mailto:${CONTACT_EMAIL}`}
-        className="font-bold text-[color:var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-current"
+        className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
       >
         כתבו לנו
       </a>

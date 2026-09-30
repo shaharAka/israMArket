@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { InlineNotice } from "@/components/design/Controls";
+import { SetupNotice } from "@/components/account/SetupNotice";
 import { ApiError } from "@/lib/api";
 import { billingEndpoints, loadPayPalSdk, type BillingStatus } from "@/lib/billing";
 
@@ -100,18 +100,18 @@ export function PayPalSubscribe({
   return (
     <div className="space-y-3">
       {phase === "loading" && !error ? (
-        <p className="text-sm text-[color:var(--ink-soft)]" role="status">
+        <p className="text-[14px] text-[color:var(--ink-soft)]" role="status">
           טוענים את התשלום של פייפאל…
         </p>
       ) : null}
       {phase === "confirming" ? (
-        <p className="text-sm text-[color:var(--ink-soft)]" role="status">
+        <p className="text-[14px] text-[color:var(--ink-soft)]" role="status">
           שומרים את המנוי…
         </p>
       ) : null}
       <div ref={container} aria-busy={phase !== "ready"} hidden={phase === "confirming"} />
-      {error ? <InlineNotice tone="error" title={error} /> : null}
-      {note ? <p className="text-sm text-[color:var(--ink-soft)]">{note}</p> : null}
+      {error ? <SetupNotice tone="error" title={error} /> : null}
+      {note ? <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">{note}</p> : null}
     </div>
   );
 }

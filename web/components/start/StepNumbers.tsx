@@ -21,8 +21,11 @@ import { budgetLabel } from "@/lib/quarterPlan";
 import { modelOf } from "./script";
 import { ModelConfirm, Tile } from "./StepGoal";
 import type { StepProps } from "./steps";
-import { BidiText, QuietLink, StepShell } from "./ui";
+import { IconChevron } from "@/lib/icons";
+import { UIAction } from "@/components/design/Controls";
+import { BidiText, CheckMark, QuietLink, StepShell } from "./ui";
 import styles from "./start.module.css";
+import form from "./form.module.css";
 
 /**
  * Revision 6, the goal chapter: "איפה העסק היום" (the baseline), "מה הכי נכון להגדיל" (the
@@ -93,19 +96,8 @@ export function useTargetSuggestion({ flow, update }: Pick<StepProps, "flow" | "
 
 function SmallChip({ label, selected, onClick }: { label: string; selected: boolean; onClick: () => void }) {
   return (
-    <button
-      type="button"
-      aria-pressed={selected}
-      onClick={onClick}
-      className={`inline-flex h-10 cursor-pointer items-center gap-1 rounded-full border px-3 text-sm font-bold tabular-nums transition-colors ${
-        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[var(--primary)]"
-      }`}
-    >
-      {selected ? (
-        <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
-          <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      ) : null}
+    <button type="button" aria-pressed={selected} onClick={onClick} className={`${form.chip} ${form.chipSmall}`}>
+      {selected ? <CheckMark /> : null}
       <span>{label}</span>
     </button>
   );
@@ -130,9 +122,9 @@ function BaselineRow({
   const unknown = value === UNKNOWN;
 
   return (
-    <div role="group" aria-labelledby={labelId}>
-      <div className="flex items-center justify-between gap-2">
-        <p id={labelId} className="text-sm font-bold leading-5 text-[color:var(--ink)]">
+    <div role="group" aria-labelledby={labelId} className="py-4 first:pt-0">
+      <div className="flex items-center justify-between gap-3">
+        <p id={labelId} className="text-[15px] font-semibold leading-6 text-[color:var(--ink)]">
           {question.label}
         </p>
         <button
@@ -142,15 +134,18 @@ function BaselineRow({
             setTyping(false);
             onChange(unknown ? undefined : UNKNOWN);
           }}
-          className={`-my-2 min-h-9 shrink-0 cursor-pointer px-1 text-xs underline underline-offset-4 ${
-            unknown ? "font-bold text-[color:var(--ink)]" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
+          className={`-my-2.5 inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 px-1 text-[13px] ${
+            unknown
+              ? "!bg-transparent font-semibold text-[color:var(--primary)]"
+              : "text-[color:var(--ink-soft)] underline decoration-[var(--rule-dark)] underline-offset-[5px] hover:text-[color:var(--ink)]"
           }`}
         >
-          {unknown ? "✓ לא בטוחים" : "לא בטוחים"}
+          {unknown ? <CheckMark /> : null}
+          לא בטוחים
         </button>
       </div>
       {typing && exact ? (
-        <div className="mt-1 flex items-center gap-2">
+        <div className="mt-2.5 flex items-center gap-3">
           <label htmlFor={inputId} className="sr-only">
             {question.label}, מספר מדויק
           </label>
@@ -173,22 +168,22 @@ function BaselineRow({
             }}
             placeholder={exact.placeholder}
             dir="ltr"
-            className="min-h-10 w-28 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]"
+            className={`${form.input} ${form.number} !w-28`}
           />
-          <span className="text-sm font-bold text-[color:var(--ink-soft)]">{exact.unit}</span>
+          <span className="text-sm font-medium text-[color:var(--ink-soft)]">{exact.unit}</span>
           <QuietLink
             onClick={() => {
               setTyping(false);
               setText("");
               if (typeof value === "number") onChange(undefined);
             }}
-            className="mr-auto text-xs"
+            className="ms-auto !text-[13px]"
           >
             לבחור טווח
           </QuietLink>
         </div>
       ) : (
-        <div className="mt-1 flex flex-wrap gap-1.5">
+        <div className="mt-2.5 flex flex-wrap gap-2">
           {question.chips.map((chip) => (
             <SmallChip
               key={chip.key}
@@ -241,7 +236,7 @@ export function StepBaseline(props: StepProps) {
       }}
     >
       {flow.modelConfirmed ? null : <ModelConfirm flow={flow} update={update} />}
-      <div className="space-y-2.5">
+      <div className="divide-y divide-[var(--rule)]">
         {questions.map((question) => (
           <BaselineRow
             key={question.field}
@@ -307,20 +302,23 @@ export function StepLever(props: StepProps) {
       }}
     >
       {selected ? (
-        <div className="border-s-2 border-[var(--primary)] bg-[var(--primary-soft)] px-4 py-4">
-          <p className="text-xs font-bold text-[color:var(--ink-soft)]">{chosen && recommended && chosen !== recommended ? "הכיוון שבחרתם" : "ההמלצה שלנו"}</p>
-          <h2 className="mt-1 text-xl font-black text-[color:var(--ink)]">{selected.name_he}</h2>
-          <p className="mt-2 text-sm leading-6 text-[color:var(--ink)]">{selected.key === recommended && result ? result.lever_hint_he : selected.when_he}</p>
+        <div className="rounded-2xl bg-[var(--primary-soft)] px-5 py-5 sm:px-6">
+          <p className="flex items-center gap-2.5 text-[13px] font-semibold text-[color:var(--primary)]">
+            <span aria-hidden className={styles.sunDot} />
+            {chosen && recommended && chosen !== recommended ? "הכיוון שבחרתם" : "ההמלצה שלנו"}
+          </p>
+          <h2 className="mt-2 text-[22px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{selected.name_he}</h2>
+          <p className="mt-2 text-[15px] leading-[1.65] text-[color:var(--ink-soft)]">{selected.key === recommended && result ? result.lever_hint_he : selected.when_he}</p>
         </div>
       ) : failed ? (
-        <div role="alert" className="space-y-2 text-sm leading-6">
+        <div role="alert" className="space-y-2 text-[15px] leading-6 text-[color:var(--ink)]">
           <p>{failed}</p>
-          <QuietLink onClick={retry}>לנסות שוב לקבל המלצה</QuietLink>
+          <QuietLink tone="action" onClick={retry}>לנסות שוב לקבל המלצה</QuietLink>
         </div>
-      ) : <p role="status" className="text-sm text-[color:var(--ink-soft)]">בודקים איזה כיוון מתאים לעסק…</p>}
-      <details open={alternativesOpen} onToggle={(event) => setAlternativesOpen(event.currentTarget.open)}>
-        <summary className="min-h-11 cursor-pointer py-3 text-sm font-bold text-[color:var(--ink)] underline underline-offset-4">לבחור כיוון אחר</summary>
-        <div role="radiogroup" aria-label="כיוון אחר לצמיחה" className={`grid gap-2 ${styles.stagger}`}>
+      ) : <p role="status" className="text-[15px] text-[color:var(--ink-muted)]">בודקים איזה כיוון מתאים לעסק…</p>}
+      <details open={alternativesOpen} onToggle={(event) => setAlternativesOpen(event.currentTarget.open)} className="-my-2">
+        <summary className="min-h-11 py-2.5 text-sm font-semibold text-[color:var(--primary)]">לבחור כיוון אחר</summary>
+        <div role="radiogroup" aria-label="כיוון אחר לצמיחה" className={`mt-2 grid gap-2 ${styles.stagger}`}>
         {levers.map((lever) => {
           const isRecommended = lever.key === recommended;
           return (
@@ -339,10 +337,10 @@ export function StepLever(props: StepProps) {
       {chosen ? (
         secondaryOpen ? (
           <div className={styles.rise}>
-            <p className="mb-1.5 text-xs font-bold text-[color:var(--ink)]">
-              ועוד משהו? <span className="font-normal text-[color:var(--ink-soft)]">(לא חובה)</span>
+            <p className={form.label}>
+              ועוד משהו? <small>(לא חובה)</small>
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {levers
                 .filter((l) => l.key !== chosen)
                 .map((lever) => (
@@ -356,9 +354,9 @@ export function StepLever(props: StepProps) {
             </div>
           </div>
         ) : (
-          <QuietLink onClick={() => setSecondaryOpen(true)} className="-my-2 text-xs">
-            להוסיף כיוון שני (לא חובה)
-          </QuietLink>
+          <div className="-my-2">
+            <QuietLink onClick={() => setSecondaryOpen(true)}>להוסיף כיוון שני (לא חובה)</QuietLink>
+          </div>
         )
       ) : null}
     </StepShell>
@@ -372,9 +370,9 @@ export function MathLines({ lines }: { lines: string[] }) {
   const shown = lines.filter((line) => !line.startsWith("היעד:"));
   if (!shown.length) return null;
   return (
-    <ol className="mt-2 space-y-1 border-t border-[var(--rule)] pt-2">
+    <ol className="mt-3 space-y-1.5 border-t border-[var(--rule)] pt-3">
       {shown.map((line) => (
-        <li key={line} className="text-[13px] leading-5 text-[color:var(--ink)]">
+        <li key={line} className="text-[13.5px] leading-[1.55] text-[color:var(--ink-soft)]">
           <BidiText text={line} />
         </li>
       ))}
@@ -383,9 +381,9 @@ export function MathLines({ lines }: { lines: string[] }) {
 }
 
 const PAYBACK_STYLE: Record<string, string> = {
-  no: "border-[#e8d3b0] bg-[#fbf3e4] text-[#4a3b22]",
-  partly: "border-[var(--rule)] bg-[var(--canvas)] text-[color:var(--ink)]",
-  pays: "border-[#cfe0c9] bg-[#f1f7ee] text-[#23401f]",
+  no: "bg-[var(--sand)] text-[var(--sand-dark)]",
+  partly: "bg-[var(--soft)] text-[color:var(--ink-soft)]",
+  pays: "bg-[var(--good-soft)] text-[var(--good)]",
 };
 
 type SourcesInput = Pick<TargetSuggestion, "assumptions_he" | "sources"> & { budget_he?: string };
@@ -397,7 +395,7 @@ function hasSources(result: SourcesInput): boolean {
 /** The sources, the budget line and every assumption, one level down (UI-RULES rule 2); never dropped. */
 export function SourcesPanel({ result, id }: { result: SourcesInput; id?: string }) {
   return (
-    <div id={id} className={`space-y-2 rounded-xl bg-[var(--primary-soft)] px-3.5 py-2.5 text-xs leading-5 text-[color:var(--ink)] ${styles.rise}`}>
+    <div id={id} className={`space-y-2 rounded-xl bg-[var(--soft)] px-4 py-3 text-[13px] leading-[1.6] text-[color:var(--ink-soft)] ${styles.rise}`}>
         {result.budget_he ? (
           <p>
             <BidiText text={result.budget_he} />
@@ -443,10 +441,10 @@ export function SourcesToggle({ result }: { result: SourcesInput }) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-1 text-sm font-bold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
+        className="inline-flex min-h-11 cursor-pointer items-center gap-1.5 px-1 text-sm font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
       >
         מאיפה המספרים
-        <span aria-hidden className={`h-0 w-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[var(--ink-muted)] transition-transform ${open ? "rotate-180" : ""}`} />
+        <IconChevron className={`h-3.5 w-3.5 text-[color:var(--ink-muted)] transition-transform duration-200 ${open ? "rotate-90" : "-rotate-90"}`} />
       </button>
       {open ? <div className="basis-full"><SourcesPanel result={result} id={panelId} /></div> : null}
     </>
@@ -478,20 +476,19 @@ export function TargetEdit({
   const [error, setError] = useState("");
   const lowId = useId();
   const highId = useId();
-  const field =
-    "min-h-11 w-24 rounded-lg border border-[var(--rule-dark)] bg-white px-3 text-left text-base font-bold text-[color:var(--ink)] outline-none focus:border-[var(--ink)] focus:ring-1 focus:ring-[var(--ink)]";
+  const field = `${form.input} ${form.number} !w-24`;
   return (
-    <div className={`space-y-2 rounded-xl bg-[var(--canvas)] p-3 ${styles.rise}`}>
-      <p className="text-xs font-bold text-[color:var(--ink)]">היעד שלכם, בתוספת על היום ({target.unit_he})</p>
-      <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-[color:var(--ink-soft)]">
+    <div className={`${form.panel} space-y-3 ${styles.rise}`}>
+      <p className="text-sm font-semibold text-[color:var(--ink)]">היעד שלכם, בתוספת על היום ({target.unit_he})</p>
+      <div className="flex flex-wrap items-center gap-2.5 text-sm font-medium text-[color:var(--ink-soft)]">
         <label htmlFor={lowId}>מ-+</label>
         <input id={lowId} type="number" inputMode="decimal" min={0} dir="ltr" value={low} onChange={(e) => setLow(e.target.value)} className={field} />
         <label htmlFor={highId}>עד +</label>
         <input id={highId} type="number" inputMode="decimal" min={0} dir="ltr" value={high} onChange={(e) => setHigh(e.target.value)} className={field} />
       </div>
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
+      <div className="flex items-center gap-3">
+        <UIAction
+          variant="secondary"
           onClick={() => {
             const a = low.trim() ? Number(low) : NaN;
             const b = high.trim() ? Number(high) : NaN;
@@ -507,14 +504,13 @@ export function TargetEdit({
             }
             onSave({ ...target, value_min: min, value_max: max, accepted: true, edited_by_owner: true });
           }}
-          className="min-h-11 cursor-pointer rounded-full border border-[var(--ink)] bg-white px-4 text-sm font-bold text-[color:var(--ink)]"
         >
           לשמור את היעד
-        </button>
+        </UIAction>
         <QuietLink onClick={onCancel}>ביטול</QuietLink>
       </div>
       {error ? (
-        <p role="alert" className="text-sm font-bold text-[#9f4330]">
+        <p role="alert" className={form.error}>
           {error}
         </p>
       ) : null}
@@ -557,52 +553,59 @@ export function StepTarget(props: StepProps) {
     >
       {loading ? (
         <div className="space-y-2" role="status" aria-live="polite">
-          <p className="text-sm text-[color:var(--ink-soft)]">מחשבים את היעד…</p>
-          <div className={`h-40 rounded-2xl border border-[var(--rule)] bg-white ${styles.shimmer}`} />
+          <p className="text-sm text-[color:var(--ink-muted)]">מחשבים את היעד…</p>
+          <div className={`${styles.work} space-y-3`}>
+            <span className={`block h-5 w-2/3 rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
+            <span className={`block h-3 w-full rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
+            <span className={`block h-3 w-5/6 rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
+          </div>
         </div>
       ) : null}
       {failed && !result ? (
-        <div role="alert" className="rounded-xl border border-[var(--rule)] bg-white p-3.5 text-sm leading-6 text-[color:var(--ink)]">
-          <p className="font-bold text-[color:var(--ink)]">לא הצלחנו לחשב את היעד.</p>
+        <div role="alert" className={`${styles.work} text-[15px] leading-6 text-[color:var(--ink-soft)]`}>
+          <p className="font-semibold text-[color:var(--ink)]">לא הצלחנו לחשב את היעד.</p>
           <p>{failed}</p>
-          {props.editLinks && failed.includes("קישור") ? <QuietLink onClick={props.editLinks}>לתקן את הקישור באתר וברשתות</QuietLink> : null}
+          {props.editLinks && failed.includes("קישור") ? <QuietLink tone="action" onClick={props.editLinks}>לתקן את הקישור באתר וברשתות</QuietLink> : null}
         </div>
       ) : null}
       {result ? (
-        <div className={`space-y-3 transition-opacity ${stale ? "opacity-60" : ""}`} aria-busy={stale}>
+        <div className={`space-y-4 transition-opacity ${stale ? "opacity-60" : ""}`} aria-busy={stale}>
           {flow.draft.budget && !["none", "unknown"].includes(flow.draft.budget.range) ? (
-            <p className="text-sm leading-6 text-[color:var(--ink-soft)]">התקציב שבחרתם: <BidiText text={budgetLabel(flow.draft.budget)} />{flow.draft.budget.exact_ils == null ? " בחודש. החישוב משתמש באמצע הטווח כהנחת עבודה." : "."}</p>
+            <p className="text-[14.5px] leading-6 text-[color:var(--ink-soft)]">התקציב שבחרתם: <BidiText text={budgetLabel(flow.draft.budget)} />{flow.draft.budget.exact_ils == null ? " בחודש. החישוב משתמש באמצע הטווח כהנחת עבודה." : "."}</p>
           ) : null}
-          <div className="rounded-2xl bg-white px-4 py-3 ring-1 ring-[var(--rule)]">
+          <div className={`${styles.work} !px-5 sm:!px-6`}>
             {suggestion || owner ? (
               <>
-                {owner ? <p className="text-[11px] font-bold text-[color:var(--ink-soft)]">היעד שלכם</p> : null}
-                <p className="text-xl font-black leading-7 text-[color:var(--ink)]">
+                {owner ? <p className="mb-1 text-[13px] font-semibold text-[color:var(--primary)]">היעד שלכם</p> : null}
+                <p className="text-[22px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">
                   <BidiText text={owner ? targetText(owner) : suggestion!.headline_he} />
                 </p>
                 {!owner && suggestion?.level_he ? (
-                  <p className="text-sm text-[color:var(--ink)]">
+                  <p className="mt-1 text-[15px] text-[color:var(--ink-soft)]">
                     כלומר <BidiText text={suggestion.level_he} />
                   </p>
                 ) : null}
                 {owner && suggestion ? (
-                  <p className="text-xs text-[color:var(--ink-soft)]">
+                  <p className="mt-1 text-[13px] text-[color:var(--ink-muted)]">
                     החישוב שלנו: <BidiText text={suggestion.headline_he} />
                   </p>
                 ) : null}
               </>
             ) : (
-              <p className="text-base font-black leading-7 text-[color:var(--ink)]">{result.qualitative_he}</p>
+              <p className="text-[17px] font-semibold leading-7 text-[color:var(--ink)]">{result.qualitative_he}</p>
             )}
             <MathLines lines={result.math_he} />
-            <p className="mt-1.5 text-xs font-bold text-[color:var(--ink-soft)]">{result.caveat_he}</p>
+            <p className="mt-3 flex items-center gap-2.5 text-[13px] font-semibold text-[color:var(--ink)]">
+              <span aria-hidden className={styles.sunDot} />
+              {result.caveat_he}
+            </p>
           </div>
           {result.unit_economics_he ? (
-            <p className={`rounded-xl border px-3.5 py-2 text-[13px] leading-5 ${PAYBACK_STYLE[result.payback ?? "partly"] ?? PAYBACK_STYLE.partly}`}>
+            <p className={`rounded-xl px-4 py-3 text-[13.5px] leading-[1.6] ${PAYBACK_STYLE[result.payback ?? "partly"] ?? PAYBACK_STYLE.partly}`}>
               <BidiText text={result.unit_economics_he} />
             </p>
           ) : null}
-          {!suggestion ? <p className="text-[13px] leading-5 text-[color:var(--ink)]">{result.first_checkpoint_he}</p> : null}
+          {!suggestion ? <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">{result.first_checkpoint_he}</p> : null}
           {editing && (suggestion || owner) ? (
             <TargetEdit
               target={owner ?? (targetFromSuggestion(result) as DraftTarget)}
@@ -613,8 +616,8 @@ export function StepTarget(props: StepProps) {
               onCancel={() => setEditing(false)}
             />
           ) : (
-            <div className="-my-1 flex flex-wrap items-center justify-between gap-x-3">
-              {suggestion || owner ? <QuietLink onClick={() => setEditing(true)}>לשנות את היעד</QuietLink> : null}
+            <div className="-my-2 flex flex-wrap items-center justify-between gap-x-3">
+              {suggestion || owner ? <QuietLink tone="action" onClick={() => setEditing(true)}>לשנות את היעד</QuietLink> : null}
               {owner ? <QuietLink onClick={() => accept(null)}>לחזור לחישוב שלנו</QuietLink> : null}
               <SourcesToggle result={result} />
             </div>

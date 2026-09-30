@@ -3,11 +3,10 @@
 import { useState } from "react";
 import { MONTHS_HE, MONTH_HINTS } from "@/lib/draft";
 import styles from "./start.module.css";
+import form from "./form.module.css";
+import seasons from "./seasons.module.css";
 
 export type Seasons = { busy: number[]; slow: number[] };
-
-const BUSY = { dot: "#d9824b", tile: "border-[#d9824b] bg-[#fbeee3] text-[#6b3517]" };
-const SLOW = { dot: "#7da2b8", tile: "border-[#7da2b8] bg-[#eaf1f5] text-[#24475a]" };
 
 /**
  * The busy / quiet months grid, shared by the /start step and /decisions.
@@ -17,6 +16,8 @@ const SLOW = { dot: "#7da2b8", tile: "border-[#7da2b8] bg-[#eaf1f5] text-[#24475
  * line under the switch says what to do next (and, once a busy month is marked, points at
  * "2. שקט" while that button pulses), and a legend says that a month left unmarked is an
  * ordinary month — not a question left unanswered.
+ *
+ * Busy months are the sun (the product's highlight), quiet months the soft blue.
  */
 export function SeasonsPicker({
   value,
@@ -47,8 +48,8 @@ export function SeasonsPicker({
         : "לחיצה נוספת על חודש מבטלת את הסימון.";
 
   return (
-    <div className="space-y-2">
-      <div role="radiogroup" aria-label="מה מסמנים" className="grid grid-cols-2 gap-1 rounded-full bg-[#ecebe5] p-1">
+    <div className="space-y-3">
+      <div role="radiogroup" aria-label="מה מסמנים" className={form.segmented}>
         {(["busy", "slow"] as const).map((key, index) => {
           const on = mode === key;
           const count = value[key].length;
@@ -59,18 +60,16 @@ export function SeasonsPicker({
               role="radio"
               aria-checked={on}
               onClick={() => setMode(key)}
-              className={`flex min-h-10 cursor-pointer items-center justify-center gap-1.5 rounded-full text-sm font-bold ${
-                on ? "bg-white text-[#1d2940] shadow-sm" : "text-[#535f75]"
-              } ${key === "slow" && nudge ? `ring-2 ring-[#7da2b8] ${styles.nudge}` : ""}`}
+              className={key === "slow" && nudge ? styles.nudge : ""}
             >
-              <span className="h-2.5 w-2.5 rounded-full" style={{ background: key === "busy" ? BUSY.dot : SLOW.dot }} />
+              <span aria-hidden className={seasons.dot} data-kind={key} />
               {index + 1}. {key === "busy" ? "עמוס" : "שקט"}
-              {count ? <span className="text-xs font-normal text-[#6b6e65]">({count})</span> : null}
+              {count ? <span className="text-xs font-normal tabular-nums text-[color:var(--ink-muted)]">({count})</span> : null}
             </button>
           );
         })}
       </div>
-      <p aria-live="polite" className={`min-h-5 text-xs leading-5 ${nudge ? "font-bold text-[#24475a]" : "text-[#535f75]"}`}>
+      <p aria-live="polite" className={`min-h-5 text-[13px] leading-5 ${nudge ? "font-semibold text-[color:var(--primary-dark)]" : "text-[color:var(--ink-muted)]"}`}>
         {guide}
       </p>
       <div className="grid grid-cols-4 gap-2">
@@ -85,29 +84,28 @@ export function SeasonsPicker({
               aria-pressed={busy || slow}
               aria-label={`${label}${busy ? ", עמוס" : slow ? ", שקט" : ""}`}
               onClick={() => toggle(month)}
-              className={`flex min-h-[52px] cursor-pointer flex-col items-center justify-center rounded-xl border text-sm font-bold transition-colors ${
-                busy ? BUSY.tile : slow ? SLOW.tile : "border-[#dedcd4] bg-white text-[#1d2940]"
-              }`}
+              className={seasons.month}
+              data-kind={busy ? "busy" : slow ? "slow" : undefined}
             >
               {label}
-              <span className="text-[10px] font-normal opacity-70">{MONTH_HINTS[month] ?? " "}</span>
+              <small>{MONTH_HINTS[month] ?? " "}</small>
             </button>
           );
         })}
       </div>
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-[#535f75]" aria-label="מקרא">
-        <Swatch className="border-[#d9824b] bg-[#fbeee3]" label="עמוס" />
-        <Swatch className="border-[#7da2b8] bg-[#eaf1f5]" label="שקט" />
-        <Swatch className="border-[#dedcd4] bg-white" label="לא סימנתם? חודש רגיל" />
+      <p className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[13px] text-[color:var(--ink-muted)]" aria-label="מקרא">
+        <Swatch kind="busy" label="עמוס" />
+        <Swatch kind="slow" label="שקט" />
+        <Swatch label="לא סימנתם? חודש רגיל" />
       </p>
     </div>
   );
 }
 
-function Swatch({ className, label }: { className: string; label: string }) {
+function Swatch({ kind, label }: { kind?: "busy" | "slow"; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
-      <span aria-hidden className={`h-3 w-3 rounded-[4px] border ${className}`} />
+      <span aria-hidden className={seasons.swatch} data-kind={kind} />
       {label}
     </span>
   );

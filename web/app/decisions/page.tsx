@@ -32,7 +32,7 @@ import {
   type DiagnosticQuestion,
 } from "@/lib/businessModel";
 import { BUDGET_STAGES, formatNis, stageFor } from "@/lib/budget";
-import { SECTIONS } from "@/lib/sections";
+import { IconCheck, IconChevron, IconPlus } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 /** The three-priority cap is shared with the ranker so the rule has one source. */
@@ -104,13 +104,26 @@ function payloadFromForm(form: AudienceForm): AudiencePayload {
 const ROW_IDS = ["model", "budget", "diagnostics", "audiences", "targets", "told"] as const;
 
 /**
- * The section accent ("settings" grey-blue) marks the rows and the open editor; the
- * surface is the quiet tint an open editor sits on. Pulled from the shared identity so
- * this screen cannot drift from the rest of the set.
+ * The page's visual vocabulary (DESIGN-STANDARD.md): the list is one card with hairlines,
+ * an open row is a quiet soft panel, and inside it the controls are the only objects.
+ * Depth instead of frames; one blue for actions and selection.
  */
-const ACCENT = SECTIONS.decisions.accent;
-const SURFACE = SECTIONS.decisions.surface;
-const ACCENT_BORDER = SECTIONS.decisions.border;
+const CARD = "rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]";
+const INPUT =
+  "min-h-[46px] w-full rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-[15px] text-[var(--ink)] transition-colors duration-150 focus:border-[var(--primary)]";
+const FIELD_LABEL = "mb-1.5 block text-[13px] font-semibold text-[var(--ink)]";
+/** The row's own introduction line, above its controls. */
+const INTRO = "text-sm leading-6 text-[var(--ink-soft)]";
+const SECONDARY =
+  "inline-flex min-h-11 items-center justify-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--ink-muted)] disabled:opacity-40";
+const QUIET =
+  "inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-[var(--ink-muted)] underline-offset-4 transition-colors hover:text-[var(--ink)] hover:underline disabled:opacity-40";
+const NOTE = "rounded-xl bg-[var(--primary-soft)] px-4 py-3 text-[13px] leading-6 text-[var(--primary-dark)]";
+const ERROR = "rounded-xl bg-[var(--danger-soft)] px-4 py-3 text-[13px] leading-6 text-[var(--danger)]";
+const EMPTY = "rounded-xl bg-[var(--paper)] px-5 py-6 text-center text-sm leading-6 text-[var(--ink-muted)]";
+/** A small icon-only control (reorder, remove): 44px to tap, quiet until hovered. */
+const ICON_BUTTON =
+  "inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[var(--ink)] disabled:opacity-30 disabled:hover:bg-transparent";
 
 /**
  * All the decisions in one place.
@@ -681,15 +694,15 @@ export default function DecisionsPage() {
         {loading && !business ? <LoadingMark label="טוענים את ההחלטות…" /> : null}
 
         {!business && !loading && !loadError ? (
-          <section className="rounded-lg border border-[#e1e7f2] bg-white p-6 text-center">
-            <h2 className="text-sm font-black text-[#1d2940]">עוד אין עסק מקושר לחשבון הזה</h2>
-            <p className="mt-1 text-sm leading-6 text-[#535f75]">
+          <section className={`${CARD} px-6 py-10 text-center`}>
+            <h2 className="text-[17px] font-bold text-[var(--ink)]">עוד אין עסק מקושר לחשבון הזה</h2>
+            <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[var(--ink-soft)]">
               התקציב, האבחון והעדיפויות שייכים לעסק. ממלאים אותם באשף, ואחר כך אפשר לשנות אותם
               כאן.
             </p>
             <Link
               href="/onboarding"
-              className="mt-4 inline-flex min-h-11 items-center rounded-md bg-[#2853c7] px-4 text-sm font-bold text-white hover:bg-[#1e42a4]"
+              className="drawn-button mt-6 inline-flex min-h-12 items-center bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"
             >
               לפתוח את האשף
             </Link>
@@ -702,8 +715,7 @@ export default function DecisionsPage() {
                 and the only boxes left on the page are the controls themselves. */}
             <section
               aria-label="ההחלטות שלי"
-              className="divide-y divide-[#e1e7f2] overflow-hidden rounded-lg border bg-white"
-              style={{ borderColor: ACCENT_BORDER }}
+              className={`divide-y divide-[var(--rule)] overflow-hidden ${CARD}`}
             >
               <DecisionRow
                 id="model"
@@ -713,10 +725,10 @@ export default function DecisionsPage() {
                 open={openGroup === "model"}
                 onToggle={() => toggleGroup("model")}
               >
-                <p className="text-xs leading-5 text-[#535f75]">
+                <p className={INTRO}>
                   סוג העסק קובע מה התוכנית מנסה להביא: מכירות בחנות או פניות.
                 </p>
-                <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   {BUSINESS_MODEL_OPTIONS.map((option) => (
                     <ChoiceButton
                       key={option.key}
@@ -728,11 +740,7 @@ export default function DecisionsPage() {
                   ))}
                 </div>
 
-                {modelNotice ? (
-                  <p className="mt-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
-                    {modelNotice}
-                  </p>
-                ) : null}
+                {modelNotice ? <p className={`mt-4 ${NOTE}`}>{modelNotice}</p> : null}
               </DecisionRow>
 
               <DecisionRow
@@ -744,11 +752,11 @@ export default function DecisionsPage() {
                 open={openGroup === "budget"}
                 onToggle={() => toggleGroup("budget")}
               >
-                <p className="text-xs leading-5 text-[#535f75]">
+                <p className={INTRO}>
                   התקציב קובע כמה התוכנית יכולה לעשות החודש.
                 </p>
 
-                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {BUDGET_STAGES.map((stage) => {
                     const selected = !budgetInvalid && currentStage.key === stage.key;
                     return (
@@ -759,18 +767,14 @@ export default function DecisionsPage() {
                           setBudgetText(String(stage.suggestion));
                           markChanged();
                         }}
-                        className={`rounded-md border p-3 text-right ${
-                          selected
-                            ? "border-[#1d2940] bg-[#2853c7] text-white"
-                            : "border-[#e1e7f2] bg-[#fbfcff] text-[#1d2940] hover:border-[#1d2940]"
-                        }`}
+                        className={choiceClass(selected)}
                       >
                         <span className="flex items-baseline justify-between gap-2">
-                          <span className="text-xs font-bold">{stage.title}</span>
-                          <span className="text-[11px] opacity-80">{stage.range}</span>
+                          <span className="text-sm font-semibold text-[var(--ink)]">{stage.title}</span>
+                          <span className="text-xs tabular-nums text-[var(--ink-muted)]">{stage.range}</span>
                         </span>
-                        <span className="mt-1 block text-[11px] leading-5 opacity-80">{stage.buys}</span>
-                        <span className="mt-2 block text-[11px] font-bold opacity-90">
+                        <span className="mt-1 block text-[13px] leading-5 text-[var(--ink-soft)]">{stage.buys}</span>
+                        <span className={`mt-3 block text-xs font-semibold tabular-nums ${selected ? "text-[var(--primary-dark)]" : "text-[var(--ink-muted)]"}`}>
                           {selected ? "השלב הנוכחי · " : "בחירה מהירה · "}
                           {formatNis(stage.suggestion)}
                         </span>
@@ -779,8 +783,8 @@ export default function DecisionsPage() {
                   })}
                 </div>
 
-                <div className="mt-4">
-                  <label htmlFor="monthly-budget" className="mb-1 block text-xs font-bold text-[#1d2940]">
+                <div className="mt-6">
+                  <label htmlFor="monthly-budget" className={FIELD_LABEL}>
                     סכום מדויק לחודש (ש״ח)
                   </label>
                   <input
@@ -795,28 +799,26 @@ export default function DecisionsPage() {
                       setBudgetText(event.target.value);
                       markChanged();
                     }}
-                    className={`w-full rounded-md border bg-[#faf8f5] px-3 py-2 text-sm font-bold ${
-                      budgetInvalid ? "border-[#eed1c9]" : "border-[#dedcd4]"
-                    }`}
+                    className={`${INPUT} font-semibold tabular-nums ${budgetInvalid ? "border-[var(--danger-rule)]" : ""}`}
                   />
                 </div>
 
-                <div className="mt-4 rounded-md border px-4 py-3" style={{ background: SURFACE, borderColor: ACCENT_BORDER }}>
+                <div className={`mt-4 px-5 py-4 ${CARD}`}>
                   {budgetInvalid ? (
-                    <p className="text-sm leading-6 text-[#9f4330]">
+                    <p className="text-sm leading-6 text-[var(--danger)]">
                       הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו.
                     </p>
                   ) : (
                     <>
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="metric-number text-xs font-bold" style={{ color: ACCENT }}>
+                        <span className="metric-number text-lg font-bold text-[var(--ink)]">
                           {formatNis(budgetValue)} בחודש
                         </span>
-                        <span className="text-[11px] font-bold" style={{ color: ACCENT }}>
+                        <span className="text-xs font-semibold text-[var(--primary-dark)]">
                           שלב: {currentStage.title} · {currentStage.range}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm leading-6 text-[#3c3e3a]">{currentStage.buys}</p>
+                      <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{currentStage.buys}</p>
                     </>
                   )}
                 </div>
@@ -830,11 +832,11 @@ export default function DecisionsPage() {
                 open={openGroup === "diagnostics"}
                 onToggle={() => toggleGroup("diagnostics")}
               >
-                <p className="text-xs leading-5 text-[#535f75]">
+                <p className={INTRO}>
                   התשובות קובעות מה {AGENT_NAME} תציע לשפר קודם. השאלות משתנות לפי סוג העסק.
                 </p>
 
-                <div className="mt-4 space-y-6">
+                <div className="mt-6 space-y-6">
                   {/* The questions come from the fork, not from this file: a shop is asked
                       about its customer club, a service business about where inquiries
                       come from — and each answer is written to its own Diagnostics field. */}
@@ -852,7 +854,7 @@ export default function DecisionsPage() {
                           : undefined
                       }
                     >
-                      <div className="grid gap-2 sm:grid-cols-3">
+                      <div className="grid gap-3 sm:grid-cols-3">
                         {question.options.map((option) => (
                           <ChoiceButton
                             key={option.key}
@@ -881,7 +883,7 @@ export default function DecisionsPage() {
                         }));
                         markChanged();
                       }}
-                      className="w-full rounded-md border border-[#dedcd4] bg-white p-3 text-sm"
+                      className={`${INPUT} leading-6`}
                     />
                   </QuestionBlock>
                 </div>
@@ -895,38 +897,30 @@ export default function DecisionsPage() {
                 open={openGroup === "audiences"}
                 onToggle={() => toggleGroup("audiences")}
               >
-                <p className="text-xs leading-5 text-[#535f75]">
+                <p className={INTRO}>
                   את התוכנית ואת כל פוסט אנחנו בונים לפי הקהל שכאן: מה הוא צריך ואיפה הוא נמצא.
                 </p>
 
-                <div className="mt-4">
-                  {audiencesNotice ? (
-                    <p className="mb-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
-                      {audiencesNotice}
-                    </p>
-                  ) : null}
+                <div className="mt-5">
+                  {audiencesNotice ? <p className={`mb-4 ${NOTE}`}>{audiencesNotice}</p> : null}
 
-                  {audiencesError ? (
-                    <p className="mb-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs leading-5 text-[#9f4330]">
-                      {audiencesError}
-                    </p>
-                  ) : null}
+                  {audiencesError ? <p className={`mb-4 ${ERROR}`}>{audiencesError}</p> : null}
 
                   {audiencesLoading && !audiences.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
+                    <p className={EMPTY}>
                       טוענים את הקהלים…
                     </p>
                   ) : null}
 
                   {!audiencesLoading && !audiences.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
+                    <p className={EMPTY}>
                       עוד אין קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד בעצמכם ולחזור
                       אליו אחר כך.
                     </p>
                   ) : null}
 
                   {audiences.length ? (
-                    <ul className="space-y-3">
+                    <ul className="space-y-4">
                       {audiences.map((audience) => {
                         const editing = editingAudienceId === audience.id;
                         const busy = audienceBusy.startsWith(String(audience.id));
@@ -936,9 +930,7 @@ export default function DecisionsPage() {
                         return (
                           <li
                             key={audience.id}
-                            className={`rounded-lg border bg-white p-4 ${
-                              audience.is_primary ? "border-[#1d2940]" : "border-[#e1e7f2]"
-                            }`}
+                            className={`p-5 ${CARD} ${audience.is_primary ? "ring-[1.5px] ring-[var(--primary)]" : ""}`}
                           >
                             {editing ? (
                               <AudienceFormFields
@@ -950,28 +942,21 @@ export default function DecisionsPage() {
                               <>
                                 <div className="flex flex-wrap items-start justify-between gap-2">
                                   <div className="min-w-0">
-                                    <h3 className="flex flex-wrap items-center gap-2 text-sm font-black text-[#1d2940]">
+                                    <h3 className="flex flex-wrap items-center gap-x-3 gap-y-1 text-base font-semibold text-[var(--ink)]">
                                       {audience.name}
                                       {audience.is_primary ? (
-                                        <span
-                                          className="rounded-full border px-2 py-0.5 text-[10px] font-bold"
-                                          style={{
-                                            background: SURFACE,
-                                            borderColor: ACCENT_BORDER,
-                                            color: ACCENT,
-                                          }}
-                                        >
+                                        <span className="rounded-full bg-[var(--primary-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--primary-dark)]">
                                           הקהל העיקרי
                                         </span>
                                       ) : null}
                                     </h3>
                                     {audience.summary ? (
-                                      <p className="mt-1 text-sm leading-6 text-[#3c3e3a]">
+                                      <p className="mt-1 text-[15px] leading-7 text-[var(--ink-soft)]">
                                         {audience.summary}
                                       </p>
                                     ) : null}
                                   </div>
-                                  <span className="shrink-0 text-[10px] font-bold text-[#647087]">
+                                  <span className="shrink-0 text-xs font-medium text-[var(--ink-muted)]">
                                     {audience.source === "generated" ? `הצעה של ${AGENT_NAME}` : "כתבתם בעצמכם"}
                                   </span>
                                 </div>
@@ -984,14 +969,14 @@ export default function DecisionsPage() {
                                 ) : null}
 
                                 {audience.description ? (
-                                  <p className="mt-3 text-xs leading-5 text-[#535f75]">
+                                  <p className="mt-4 text-[13px] leading-6 text-[var(--ink-soft)]">
                                     {audience.description}
                                   </p>
                                 ) : null}
                               </>
                             )}
 
-                            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-[#e1e7f2] pt-3">
+                            <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-4">
                               {editing ? (
                                 <>
                                   <Button
@@ -1005,7 +990,7 @@ export default function DecisionsPage() {
                                     type="button"
                                     onClick={() => setEditingAudienceId(null)}
                                     disabled={busy}
-                                    className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
+                                    className={QUIET}
                                   >
                                     לבטל
                                   </button>
@@ -1015,7 +1000,7 @@ export default function DecisionsPage() {
                                   <button
                                     type="button"
                                     onClick={() => startEditAudience(audience)}
-                                    className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#1d2940]"
+                                    className={SECONDARY}
                                   >
                                     לערוך
                                   </button>
@@ -1024,21 +1009,21 @@ export default function DecisionsPage() {
                                       type="button"
                                       onClick={() => void makePrimary(audience.id)}
                                       disabled={busy}
-                                      className="min-h-9 rounded-md border border-[#dedcd4] px-3 text-xs font-bold text-[#3c3e3a] hover:border-[#1d2940] disabled:opacity-40"
+                                      className={SECONDARY}
                                     >
                                       {primaryBusy ? "מסמנים…" : "לסמן כקהל העיקרי"}
                                     </button>
                                   )}
                                   {confirming ? (
                                     <>
-                                      <span className="text-xs font-bold text-[#9f4330]">
+                                      <span className="px-1 text-[13px] font-semibold text-[var(--danger)]">
                                         למחוק את הקהל?
                                       </span>
                                       <button
                                         type="button"
                                         onClick={() => void deleteAudience(audience.id)}
                                         disabled={deleteBusy}
-                                        className="min-h-9 rounded-md border border-[#9f4330] px-3 text-xs font-bold text-[#9f4330] disabled:opacity-40"
+                                        className="inline-flex min-h-11 items-center rounded-md border border-[var(--danger-rule)] bg-[var(--paper)] px-4 text-[13px] font-semibold text-[var(--danger)] transition-colors hover:bg-[var(--danger-soft)] disabled:opacity-40"
                                       >
                                         {deleteBusy ? "מוחקים…" : "כן, למחוק"}
                                       </button>
@@ -1046,7 +1031,7 @@ export default function DecisionsPage() {
                                         type="button"
                                         onClick={() => setConfirmDeleteId(null)}
                                         disabled={deleteBusy}
-                                        className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
+                                        className={QUIET}
                                       >
                                         לא
                                       </button>
@@ -1055,7 +1040,7 @@ export default function DecisionsPage() {
                                     <button
                                       type="button"
                                       onClick={() => setConfirmDeleteId(audience.id)}
-                                      className="min-h-9 px-2 text-xs font-bold text-[#647087] underline underline-offset-4 hover:text-[#9f4330]"
+                                      className="inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-[var(--ink-muted)] underline-offset-4 transition-colors hover:text-[var(--danger)] hover:underline"
                                     >
                                       למחוק
                                     </button>
@@ -1069,8 +1054,8 @@ export default function DecisionsPage() {
                     </ul>
                   ) : null}
 
-                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e1e7f2] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                    <Button onClick={() => void generateAudiences()} disabled={generatingAudiences}>
+                  <div className="mt-6 flex flex-col gap-3 border-t border-[var(--rule)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
+                    <Button tone="secondary" onClick={() => void generateAudiences()} disabled={generatingAudiences}>
                       {generatingAudiences ? "מציעים קהלים…" : "להציע קהלים"}
                     </Button>
                     <button
@@ -1079,11 +1064,12 @@ export default function DecisionsPage() {
                         setShowAddAudience((open) => !open);
                         setAudiencesError("");
                       }}
-                      className="min-h-11 rounded-md border border-[#dedcd4] bg-white px-4 text-sm font-bold text-[#1d2940] hover:border-[#1d2940]"
+                      className={`${SECONDARY} gap-2`}
                     >
+                      {showAddAudience ? null : <IconPlus className="h-4 w-4" />}
                       {showAddAudience ? "לסגור את הטופס" : "להוסיף קהל בעצמכם"}
                     </button>
-                    <span className="text-xs leading-5 text-[#647087]">
+                    <span className="text-[13px] leading-6 text-[var(--ink-muted)]">
                       {generatingAudiences
                         ? "קוראים את פרטי העסק והאבחון. זה לוקח כמה שניות."
                         : `${AGENT_NAME} תציע קהלים רק כשתלחצו.`}
@@ -1091,20 +1077,20 @@ export default function DecisionsPage() {
                   </div>
 
                   {showAddAudience ? (
-                    <div className="mt-4 rounded-lg border border-[#dedcd4] bg-[#fbfcff] p-4">
-                      <h3 className="text-sm font-black text-[#1d2940]">קהל חדש</h3>
-                      <p className="mt-1 text-xs leading-5 text-[#647087]">
+                    <div className={`mt-5 p-5 ${CARD}`}>
+                      <h3 className="text-base font-semibold text-[var(--ink)]">קהל חדש</h3>
+                      <p className="mt-1 text-[13px] leading-6 text-[var(--ink-muted)]">
                         לפי מה שתכתבו כאן נכתוב את הפוסטים ונמדוד את התוצאות. הקהל הראשון שתוסיפו יהיה
                         הקהל העיקרי.
                       </p>
-                      <div className="mt-3">
+                      <div className="mt-4">
                         <AudienceFormFields
                           form={newAudience}
                           onChange={setNewAudience}
                           idPrefix="new-audience"
                         />
                       </div>
-                      <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <div className="mt-4 flex flex-wrap items-center gap-2">
                         <Button size="sm" onClick={() => void addAudience()} disabled={audienceBusy === "new"}>
                           {audienceBusy === "new" ? "מוסיפים…" : "להוסיף את הקהל"}
                         </Button>
@@ -1115,7 +1101,7 @@ export default function DecisionsPage() {
                             setShowAddAudience(false);
                           }}
                           disabled={audienceBusy === "new"}
-                          className="min-h-9 px-2 text-xs font-bold text-[#535f75] underline underline-offset-4 disabled:opacity-40"
+                          className={QUIET}
                         >
                           לבטל
                         </button>
@@ -1124,9 +1110,9 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {audiencesError ? null : (
-                    <p className="mt-3 text-xs leading-5 text-[#647087]">
+                    <p className="mt-4 text-[13px] leading-6 text-[var(--ink-muted)]">
                       לאיזה קהל שייך כל פוסט אפשר לשנות בעורך הפוסטים. את התוצאות של כל קהל רואים ב
-                      <Link href="/performance" className="font-bold text-[#1d2940] underline underline-offset-4">
+                      <Link href="/performance" className="font-semibold text-[var(--primary)] underline-offset-4 hover:underline">
                         עמוד התוצאות
                       </Link>
                       .
@@ -1143,50 +1129,53 @@ export default function DecisionsPage() {
                 open={openGroup === "targets"}
                 onToggle={() => toggleGroup("targets")}
               >
-                <p className="text-xs leading-5 text-[#535f75]">
+                <p className={INTRO}>
                   עד 3 יעדים לפי סדר החשיבות. את התוכנית בונים סביב הראשון.
                 </p>
 
-                <div className="mt-4">
+                <div className="mt-5">
                   {rankedTargets.length && !candidates.length ? (
-                    <ol className="space-y-2">
+                    <ol className={`divide-y divide-[var(--rule)] overflow-hidden ${CARD}`}>
                       {rankedTargets.map((target, index) => (
                         <li
                           key={target}
-                          className="flex items-start gap-3 rounded-md border border-[#e1e7f2] bg-white p-3"
+                          className="flex items-center gap-3 py-2 pr-4 pl-2"
                         >
-                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#2853c7] text-[11px] font-bold text-white">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-xs font-semibold tabular-nums text-[var(--primary-dark)]">
                             {index + 1}
                           </span>
-                          <span className="min-w-0 flex-1 text-sm font-bold leading-6 text-[#1d2940]">
+                          <span className="min-w-0 flex-1 text-[15px] font-semibold leading-6 text-[var(--ink)]">
                             {target}
                           </span>
-                          <span className="flex shrink-0 items-center gap-1">
+                          <span className="flex shrink-0 items-center">
                             <button
                               type="button"
                               onClick={() => moveTarget(index, index - 1)}
                               disabled={index === 0}
                               aria-label="להזיז למעלה"
-                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] disabled:opacity-30"
+                              title="להזיז למעלה"
+                              className={ICON_BUTTON}
                             >
-                              ↑
+                              <IconChevron className="h-[18px] w-[18px] rotate-90" />
                             </button>
                             <button
                               type="button"
                               onClick={() => moveTarget(index, index + 1)}
                               disabled={index === rankedTargets.length - 1}
                               aria-label="להזיז למטה"
-                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] disabled:opacity-30"
+                              title="להזיז למטה"
+                              className={ICON_BUTTON}
                             >
-                              ↓
+                              <IconChevron className="h-[18px] w-[18px] -rotate-90" />
                             </button>
                             <button
                               type="button"
                               onClick={() => removeTarget(target)}
                               aria-label="להסיר את היעד"
-                              className="h-7 w-7 rounded border border-[#e1e7f2] text-xs text-[#535f75] hover:bg-[#fbfcff]"
+                              title="להסיר את היעד"
+                              className={ICON_BUTTON}
                             >
-                              ✕
+                              <IconPlus className="h-[18px] w-[18px] rotate-45" />
                             </button>
                           </span>
                         </li>
@@ -1205,34 +1194,26 @@ export default function DecisionsPage() {
                   ) : null}
 
                   {!candidates.length && !rankedTargets.length ? (
-                    <p className="rounded-md border border-dashed border-[#dedcd4] bg-[#fbfcff] px-4 py-6 text-center text-sm text-[#647087]">
+                    <p className={EMPTY}>
                       עוד לא בחרתם עדיפויות. קבלו הצעות מ{AGENT_NAME} ובחרו מהן.
                     </p>
                   ) : null}
 
                   {candidates.length && rankedTargets.length ? (
-                    <p className="mt-3 text-xs leading-5 text-[#647087]">
+                    <p className="mt-4 text-[13px] leading-6 text-[var(--ink-muted)]">
                       כאן אפשר לשנות את הסדר או להסיר. כדי להוסיף יעד, קבלו הצעות חדשות.
                     </p>
                   ) : null}
 
-                  {capNote ? (
-                    <p className="mt-3 rounded-md border px-3 py-2 text-xs leading-5" style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}>
-                      {capNote}
-                    </p>
-                  ) : null}
+                  {capNote ? <p className={`mt-4 ${NOTE}`}>{capNote}</p> : null}
 
-                  {candidatesError ? (
-                    <p className="mt-3 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs leading-5 text-[#9f4330]">
-                      {candidatesError}
-                    </p>
-                  ) : null}
+                  {candidatesError ? <p className={`mt-4 ${ERROR}`}>{candidatesError}</p> : null}
 
-                  <div className="mt-4 flex flex-col gap-3 border-t border-[#e1e7f2] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
-                    <Button onClick={() => void loadCandidates()} disabled={loadingCandidates}>
+                  <div className="mt-6 flex flex-col gap-3 border-t border-[var(--rule)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
+                    <Button tone="secondary" onClick={() => void loadCandidates()} disabled={loadingCandidates}>
                       {loadingCandidates ? "מביאים הצעות…" : "לקבל הצעות חדשות"}
                     </Button>
-                    <span className="text-xs leading-5 text-[#647087]">
+                    <span className="text-[13px] leading-6 text-[var(--ink-muted)]">
                       {AGENT_NAME} מציעה לפי העסק, האתר והאבחון, רק כשתלחצו.
                     </span>
                   </div>
@@ -1265,9 +1246,9 @@ export default function DecisionsPage() {
             </section>
 
             {/* Where the decisions are read. One quiet line instead of a card of its own. */}
-            <p className="text-xs leading-5 text-[#647087]">
+            <p className="text-[13px] leading-6 text-[var(--ink-muted)]">
               מההחלטות האלה נבנית{" "}
-              <Link href="/strategy" className="font-bold text-[#1d2940] underline underline-offset-4">
+              <Link href="/strategy" className="font-semibold text-[var(--primary)] underline-offset-4 hover:underline">
                 התוכנית
               </Link>{" "}
               לצעדים הקרובים ולהמשך הדרך.
@@ -1284,24 +1265,26 @@ export default function DecisionsPage() {
           animation, which makes it the containing block for fixed children — a `fixed` bar
           here renders at the foot of the document instead of the foot of the screen. */}
       {business && showSaveBar ? (
-        <div className="sticky bottom-[68px] z-40 -mx-4 border-t border-[#dedcd4] bg-white/95 backdrop-blur md:bottom-0 md:-mx-8">
-          <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 md:px-8">
-            {/* Announced only while it says something the user does not already know. */}
-            <span
-              className="min-w-0 flex-1 text-[11px] leading-4 text-[#647087]"
-              role={savePending ? "status" : undefined}
-            >
-              {saveState}
-            </span>
-            <Button size="sm" onClick={() => void save()} disabled={saving}>
-              {saving ? "שומרים…" : "לשמור את ההחלטות"}
-            </Button>
-          </div>
-          {saveError ? (
-            <div className="mx-auto max-w-3xl px-4 pb-2.5 md:px-8">
-              <ErrorNote message={saveError} />
+        <div className="sticky bottom-[72px] z-40 mt-8 md:bottom-5">
+          <div className="mx-auto max-w-3xl rounded-2xl bg-[var(--paper)]/95 shadow-[var(--shadow-pop)] backdrop-blur">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 pr-5 pl-3">
+              {/* Announced only while it says something the user does not already know. */}
+              <span
+                className="min-w-0 flex-1 text-[13px] leading-5 text-[var(--ink-soft)]"
+                role={savePending ? "status" : undefined}
+              >
+                {saveState}
+              </span>
+              <Button onClick={() => void save()} disabled={saving}>
+                {saving ? "שומרים…" : "לשמור את ההחלטות"}
+              </Button>
             </div>
-          ) : null}
+            {saveError ? (
+              <div className="px-3 pb-3">
+                <ErrorNote message={saveError} />
+              </div>
+            ) : null}
+          </div>
         </div>
       ) : null}
     </AppShell>
@@ -1342,30 +1325,29 @@ function DecisionRow({
           aria-expanded={open}
           aria-controls={`${id}-editor`}
           onClick={onToggle}
-          className={`flex w-full items-center gap-3 px-4 py-3.5 text-right transition-colors ${
-            open ? "" : "hover:bg-[#fafaf8]"
+          className={`flex min-h-[60px] w-full items-center gap-4 px-5 py-3.5 text-right transition-colors duration-150 sm:px-6 ${
+            open ? "bg-[var(--soft)]" : "hover:bg-[var(--soft)]"
           }`}
         >
           <span
             aria-hidden
-            className="h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{ background: done ? ACCENT : "#d7d5cc" }}
+            className={`h-2 w-2 shrink-0 rounded-full ${done ? "bg-[var(--primary)]" : "bg-[var(--rule-dark)]"}`}
           />
-          <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-            <span className="shrink-0 text-sm font-black text-[#1d2940] sm:w-32">{label}</span>
-            <span className={`min-w-0 truncate text-sm ${muted ? "text-[#9f4330]" : "text-[#535f75]"}`}>
+          <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-4">
+            <span className="shrink-0 text-[15px] font-semibold text-[var(--ink)] sm:w-36">{label}</span>
+            <span className={`min-w-0 truncate text-[15px] ${muted ? "text-[var(--danger)]" : "text-[var(--ink-soft)]"}`}>
               {value}
             </span>
           </span>
           <span
-            className="shrink-0 text-[11px] font-bold"
-            style={{ color: open ? "#647087" : ACCENT }}
+            className={`inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold ${open ? "text-[var(--ink-muted)]" : "text-[var(--primary)]"}`}
           >
             {open ? "לסגור" : "לשנות"}
+            <IconChevron className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-90" : "-rotate-90"}`} />
           </span>
         </button>
       </h2>
-      <div id={`${id}-editor`} hidden={!open} className="px-4 pb-5 pt-1" style={{ background: SURFACE }}>
+      <div id={`${id}-editor`} hidden={!open} className="bg-[var(--soft)] px-5 pb-7 pt-2 sm:px-6">
         {children}
       </div>
     </section>
@@ -1386,9 +1368,9 @@ function AudienceFormFields({
   idPrefix: string;
 }) {
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-4">
       <div>
-        <label htmlFor={`${idPrefix}-name`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+        <label htmlFor={`${idPrefix}-name`} className={FIELD_LABEL}>
           שם הקהל
         </label>
         <input
@@ -1396,11 +1378,11 @@ function AudienceFormFields({
           value={form.name}
           onChange={(event) => onChange({ ...form, name: event.target.value })}
           placeholder="משפחות מיפו שקונות לשישי"
-          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-summary`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+        <label htmlFor={`${idPrefix}-summary`} className={FIELD_LABEL}>
           במשפט אחד: מי הם?
         </label>
         <input
@@ -1408,11 +1390,11 @@ function AudienceFormFields({
           value={form.summary}
           onChange={(event) => onChange({ ...form, summary: event.target.value })}
           placeholder="מי שקונה לשולחן של שישי וחוזר כל שבוע"
-          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-needs`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+        <label htmlFor={`${idPrefix}-needs`} className={FIELD_LABEL}>
           מה הקהל צריך (מפרידים בפסיק)
         </label>
         <input
@@ -1420,11 +1402,11 @@ function AudienceFormFields({
           value={form.needs}
           onChange={(event) => onChange({ ...form, needs: event.target.value })}
           placeholder="חלה טרייה לשישי, מארז חג, שעות פתיחה מדויקות"
-          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-where`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+        <label htmlFor={`${idPrefix}-where`} className={FIELD_LABEL}>
           איפה פוגשים אותו (מפרידים בפסיק)
         </label>
         <input
@@ -1432,11 +1414,11 @@ function AudienceFormFields({
           value={form.where}
           onChange={(event) => onChange({ ...form, where: event.target.value })}
           placeholder="שוק הפשפשים, קבוצות השכונה, אינסטגרם"
-          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
+          className={INPUT}
         />
       </div>
       <div>
-        <label htmlFor={`${idPrefix}-description`} className="mb-1 block text-xs font-bold text-[#1d2940]">
+        <label htmlFor={`${idPrefix}-description`} className={FIELD_LABEL}>
           תיאור מלא (לא חובה)
         </label>
         <textarea
@@ -1445,7 +1427,7 @@ function AudienceFormFields({
           value={form.description}
           onChange={(event) => onChange({ ...form, description: event.target.value })}
           placeholder="מי הם, מה חשוב להם, ומה גורם להם לחזור"
-          className="w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm leading-6"
+          className={`${INPUT} leading-6`}
         />
       </div>
     </div>
@@ -1455,14 +1437,13 @@ function AudienceFormFields({
 /** A row of chips with its own label — needs and "where" read the same way on every card. */
 function ChipRow({ label, items }: { label: string; items: string[] }) {
   return (
-    <div className="mt-2.5">
-      <p className="text-[10px] font-bold text-[#647087]">{label}</p>
-      <ul className="mt-1 flex flex-wrap gap-1.5">
+    <div className="mt-4">
+      <p className="text-xs font-semibold text-[var(--ink-muted)]">{label}</p>
+      <ul className="mt-2 flex flex-wrap gap-1.5">
         {items.map((item) => (
           <li
             key={item}
-            className="rounded-full border px-2.5 py-0.5 text-[11px] font-bold"
-            style={{ background: SURFACE, borderColor: ACCENT_BORDER, color: ACCENT }}
+            className="rounded-full bg-[var(--soft)] px-3 py-1 text-[13px] font-medium text-[var(--ink-soft)]"
           >
             {item}
           </li>
@@ -1484,23 +1465,36 @@ function QuestionBlock({
   children: React.ReactNode;
 }) {
   return (
-    <section className="border-t border-[#e1e7f2] pt-4 first:border-t-0 first:pt-0">
+    <section className="border-t border-[var(--rule)] pt-6 first:border-t-0 first:pt-0">
       <div className="flex items-start justify-between gap-3">
-        <h3 className="text-sm font-bold text-[#1d2940]">{title}</h3>
+        <h3 className="pt-2.5 text-[15px] font-semibold text-[var(--ink)]">{title}</h3>
         {onClear ? (
           <button
             type="button"
             onClick={onClear}
-            className="shrink-0 text-[11px] text-[#535f75] underline underline-offset-4"
+            className={`shrink-0 ${QUIET}`}
           >
             לבטל את הבחירה
           </button>
         ) : null}
       </div>
-      {note ? <p className="mt-1 text-xs leading-5 text-[#647087]">{note}</p> : null}
-      <div className="mt-3">{children}</div>
+      {note ? <p className="mt-1 text-[13px] leading-6 text-[var(--ink-muted)]">{note}</p> : null}
+      <div className="mt-4">{children}</div>
     </section>
   );
+}
+
+/**
+ * A choice among a few (DESIGN-STANDARD §1): paper with a quiet edge; the chosen one is the
+ * one blue — a soft fill, a blue edge and a check — never a filled block competing with
+ * the page's save button.
+ */
+function choiceClass(selected: boolean) {
+  return `relative rounded-xl p-4 text-right transition-[background-color,box-shadow] duration-150 ${
+    selected
+      ? "bg-[var(--primary-soft)] ring-[1.5px] ring-inset ring-[var(--primary)]"
+      : "bg-[var(--paper)] ring-1 ring-inset ring-[var(--rule-dark)] hover:ring-[var(--ink-muted)]"
+  }`;
 }
 
 function ChoiceButton({
@@ -1518,14 +1512,12 @@ function ChoiceButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-md border p-3 text-right ${
-        selected
-          ? "border-[#1d2940] bg-[#2853c7] text-white"
-          : "border-[#e1e7f2] bg-[#fbfcff] text-[#1d2940] hover:border-[#1d2940]"
-      }`}
+      aria-pressed={selected}
+      className={choiceClass(selected)}
     >
-      <span className="block text-xs font-bold">{title}</span>
-      {desc ? <span className="mt-1 block text-[11px] opacity-80">{desc}</span> : null}
+      <span className="block pl-6 text-sm font-semibold text-[var(--ink)]">{title}</span>
+      {desc ? <span className="mt-1 block text-[13px] leading-5 text-[var(--ink-soft)]">{desc}</span> : null}
+      {selected ? <IconCheck className="absolute top-4 left-4 h-4 w-4 text-[var(--primary)]" /> : null}
     </button>
   );
 }

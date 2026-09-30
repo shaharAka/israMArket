@@ -18,10 +18,9 @@ import {
   type Network,
   type TriedChannel,
 } from "@/lib/draft";
-import { SECTIONS } from "@/lib/sections";
+import { IconCheck, IconChevron } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
-const ACCENT = SECTIONS.decisions.accent;
 const MAX_COMPETITORS = 3;
 
 /** The row ids inside "מה סיפרתם לנו", also usable as hashes (`/decisions#seasons`). */
@@ -149,7 +148,7 @@ export function OwnerAnswers({
   const kit = kitFor(business.business_type);
 
   const actions = (onSave: () => void) => (
-    <div className="mt-3 flex flex-wrap items-center gap-2">
+    <div className="mt-4 flex flex-wrap items-center gap-2">
       <Button size="sm" onClick={onSave} disabled={saving}>
         {saving ? "שומרים…" : "לשמור"}
       </Button>
@@ -157,12 +156,12 @@ export function OwnerAnswers({
         type="button"
         onClick={() => setOpen(null)}
         disabled={saving}
-        className="min-h-9 px-2 text-xs font-bold text-[#62635f] underline underline-offset-4 disabled:opacity-40"
+        className="inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-[var(--ink-muted)] underline-offset-4 transition-colors hover:text-[var(--ink)] hover:underline disabled:opacity-40"
       >
         לבטל
       </button>
       {error ? (
-        <p role="alert" className="w-full text-xs font-bold leading-5 text-[#9f4330]">
+        <p role="alert" className="w-full text-[13px] font-semibold leading-6 text-[var(--danger)]">
           {error}
         </p>
       ) : null}
@@ -170,7 +169,7 @@ export function OwnerAnswers({
   );
 
   return (
-    <ul className="divide-y divide-[#e6e4dc] rounded-md border border-[#e6e4dc] bg-white">
+    <ul className="divide-y divide-[var(--rule)] overflow-hidden rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
       <AnswerRow id="seasons" label="עונות השנה" value={seasonsSummary} open={open === "seasons"} onToggle={() => toggle("seasons")}>
         <SeasonsPicker value={seasons} onChange={setSeasons} example={seasonsExampleFor(business.business_type)} />
         {actions(() => void save({ seasons }))}
@@ -228,7 +227,7 @@ export function OwnerAnswers({
         <div className="space-y-3">
           {NETWORKS.map((network) => (
             <div key={network.key}>
-              <p className="mb-1 text-xs font-bold text-[#191b18]">{network.label}</p>
+              <p className="mb-1.5 text-[13px] font-semibold text-[var(--ink)]">{network.label}</p>
               <ActivityPicker
                 label={`כמה אתם מפרסמים ב${network.label}`}
                 value={activity[network.key]}
@@ -283,7 +282,7 @@ export function OwnerAnswers({
         {competitors.length < MAX_COMPETITORS ? (
           <QuietLink onClick={() => setCompetitors((list) => [...list, { name: "", link: "" }])}>להוסיף עוד מתחרה</QuietLink>
         ) : null}
-        <p className="text-xs text-[#5e6159]">כדי להסיר מתחרה, מחקו את השם.</p>
+        <p className="text-[13px] text-[var(--ink-muted)]">כדי להסיר מתחרה, מחקו את השם.</p>
         {actions(() =>
           void save({
             competitors: competitors
@@ -294,7 +293,7 @@ export function OwnerAnswers({
       </AnswerRow>
 
       <AnswerRow id="goal" label="מה הכי חשוב" value={goalTitle} open={open === "goal"} onToggle={() => toggle("goal")}>
-        <div role="radiogroup" aria-label="מה הכי חשוב" className="grid gap-2 sm:grid-cols-2">
+        <div role="radiogroup" aria-label="מה הכי חשוב" className="grid gap-3 sm:grid-cols-2">
           {goals.map((option) => {
             const on = primaryGoal === option.key;
             return (
@@ -304,17 +303,20 @@ export function OwnerAnswers({
                 role="radio"
                 aria-checked={on}
                 onClick={() => onGoal(option.key)}
-                className={`rounded-md border p-3 text-right ${
-                  on ? "border-[#191b18] bg-[#f1efe8] ring-1 ring-[#191b18]" : "border-[#e6e4dc] bg-white hover:border-[#191b18]"
+                className={`relative rounded-xl p-4 text-right transition-[background-color,box-shadow] duration-150 ${
+                  on
+                    ? "bg-[var(--primary-soft)] ring-[1.5px] ring-inset ring-[var(--primary)]"
+                    : "bg-[var(--paper)] ring-1 ring-inset ring-[var(--rule-dark)] hover:ring-[var(--ink-muted)]"
                 }`}
               >
-                <span className="block text-xs font-bold text-[#191b18]">{option.title}</span>
-                <span className="mt-1 block text-[11px] text-[#5e6159]">{option.desc}</span>
+                <span className="block pl-6 text-sm font-semibold text-[var(--ink)]">{option.title}</span>
+                <span className="mt-1 block text-[13px] leading-5 text-[var(--ink-soft)]">{option.desc}</span>
+                {on ? <IconCheck className="absolute top-4 left-4 h-4 w-4 text-[var(--primary)]" /> : null}
               </button>
             );
           })}
         </div>
-        <p className="mt-2 text-xs text-[#5e6159]">נשמר עם ״לשמור את ההחלטות״ למטה.</p>
+        <p className="mt-3 text-[13px] text-[var(--ink-muted)]">נשמר עם ״לשמור את ההחלטות״ למטה.</p>
       </AnswerRow>
     </ul>
   );
@@ -342,17 +344,18 @@ function AnswerRow({
         aria-expanded={open}
         aria-controls={`${id}-answer`}
         onClick={onToggle}
-        className="flex w-full items-center gap-3 px-3 py-3 text-right hover:bg-[#fafaf8]"
+        className="flex min-h-14 w-full items-center gap-3 px-4 py-3 text-right transition-colors duration-150 hover:bg-[var(--soft)] sm:px-5"
       >
-        <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-3">
-          <span className="shrink-0 text-sm font-bold text-[#191b18] sm:w-32">{label}</span>
-          <span className={`min-w-0 truncate text-sm ${value === NOT_SET ? "text-[#8b8e84]" : "text-[#5e6159]"}`}>{value}</span>
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-4">
+          <span className="shrink-0 text-sm font-semibold text-[var(--ink)] sm:w-32">{label}</span>
+          <span className={`min-w-0 truncate text-sm ${value === NOT_SET ? "text-[var(--ink-muted)]" : "text-[var(--ink-soft)]"}`}>{value}</span>
         </span>
-        <span className="shrink-0 text-[11px] font-bold" style={{ color: open ? "#8b8e84" : ACCENT }}>
+        <span className={`inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold ${open ? "text-[var(--ink-muted)]" : "text-[var(--primary)]"}`}>
           {open ? "לסגור" : "לשנות"}
+          <IconChevron className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-90" : "-rotate-90"}`} />
         </span>
       </button>
-      <div id={`${id}-answer`} hidden={!open} className="space-y-2 border-t border-[#efeee9] px-3 pb-4 pt-3">
+      <div id={`${id}-answer`} hidden={!open} className="space-y-3 border-t border-[var(--rule)] px-4 pb-5 pt-4 sm:px-5">
         {children}
       </div>
     </li>

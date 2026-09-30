@@ -4,15 +4,15 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { SunProgress } from "@/components/brand/SunProgress";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { PostEditor } from "@/components/PostEditor";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
 import { StepLink } from "@/components/trial/StepLink";
+import ui from "@/components/posts/chrome.module.css";
 import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
-import { IconCalendar } from "@/lib/icons";
+import { IconArrowLeft, IconChevron } from "@/lib/icons";
 
 /**
  * What the header's due line depends on.
@@ -57,17 +57,12 @@ function go(query: string, mode: "push" | "replace") {
 
 /** List or month — a quiet two-way switch, not a second call to action. */
 function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
-  const item = (active: boolean) =>
-    `inline-flex min-h-10 items-center gap-1.5 rounded px-3 text-sm font-bold transition-colors ${
-      active ? "bg-white text-[color:var(--ink)] shadow-sm" : "text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]"
-    }`;
   return (
-    <div role="group" aria-label="תצוגה" className="inline-flex shrink-0 rounded border border-[var(--rule)] bg-[var(--canvas)] p-1">
-      <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)} className={item(!calendar)}>
+    <div role="group" aria-label="תצוגה" className={`${ui.segmented} shrink-0`}>
+      <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)}>
         רשימה
       </button>
-      <button type="button" aria-pressed={calendar} onClick={() => onChange(true)} className={item(calendar)}>
-        <IconCalendar className="h-4 w-4" />
+      <button type="button" aria-pressed={calendar} onClick={() => onChange(true)}>
         לוח
       </button>
     </div>
@@ -181,9 +176,11 @@ function PostsWorkspace() {
 
   if (location.post !== null && !strategy) {
     return error ? (
-      <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
+      <p className={`${ui.error} mx-auto max-w-3xl`}>
+        {error}
+      </p>
     ) : (
-      <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסט…</p>
+      <p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">טוענים את הפוסט…</p>
     );
   }
 
@@ -204,29 +201,46 @@ function PostsWorkspace() {
   const doneCount = posts.filter(isDone).length;
   const firstPending = nextPendingIndex(posts, -1);
   const due = queue?.due[0];
+  // A failed queue read must not read as "nothing is due", so nothing is claimed until it
+  // answers. With posts still to approve, publishing is the secondary ask.
+  const showDue = Boolean(due && firstPending >= 0);
+  const primary =
+    strategy && !location.calendar
+      ? firstPending >= 0
+        ? { label: doneCount ? "להמשיך לאשר" : "להתחיל לאשר", index: firstPending }
+        : due
+          ? { label: "לפרסם את הפוסט של היום", index: due.index }
+          : null
+      : null;
 
   return (
     // The month view needs the width; a list of rows does not, and at 1100px a row's title
     // and its arrow ended up a screen apart.
-    <div className={`mx-auto space-y-5 ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
-      <header className="space-y-3">
-        <Link href="/strategy" className="inline-flex min-h-10 items-center text-xs text-[color:var(--ink-soft)] underline underline-offset-4">כלי הביצוע של התוכנית</Link>
-        <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-black tracking-tight text-[color:var(--ink)] sm:text-3xl">
-            {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
-          </h1>
-          {posts.length > 0 ? <SunProgress value={doneCount} total={posts.length} label="פוסטים שאושרו החודש" /> : null}
-        </div>
+    <div className={`mx-auto ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
+      <header>
+        <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
+          כלי הביצוע של התוכנית
+        </Link>
+        <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">
+          {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
+        </h1>
 
-        <div className="flex items-center justify-between gap-3">
+        <div className="mt-5 flex items-center justify-between gap-4">
           {strategy && posts.length ? (
             <div className="flex min-w-0 flex-1 items-center gap-3">
-              <p className="shrink-0 text-sm font-bold text-[color:var(--ink)]">
+              <p className="shrink-0 text-sm font-semibold tabular-nums text-[color:var(--ink)]">
                 {doneCount} מתוך {posts.length} אושרו
               </p>
-              <div className="h-1.5 max-w-40 flex-1 overflow-hidden rounded-full bg-[var(--rule)]">
+              <div
+                role="progressbar"
+                aria-label="פוסטים שאושרו החודש"
+                aria-valuemin={0}
+                aria-valuemax={posts.length}
+                aria-valuenow={doneCount}
+                className="h-1.5 max-w-36 flex-1 overflow-hidden rounded-full bg-[var(--rule)]"
+              >
                 <div
-                  className="h-full rounded-full bg-[var(--primary)] transition-all"
+                  className="h-full rounded-full bg-[var(--primary)] transition-[width] duration-500"
                   style={{ width: `${(doneCount / posts.length) * 100}%` }}
                 />
               </div>
@@ -239,67 +253,70 @@ function PostsWorkspace() {
             onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
           />
         </div>
-
-        {/* A failed queue read must not read as "nothing is due", so nothing is claimed
-            until it answers. With posts still to approve, publishing is the secondary ask. */}
-        {due && firstPending >= 0 ? (
-          <button
-            type="button"
-            onClick={() => openPost(due.index)}
-            className="min-h-11 text-sm font-bold text-[#9f4330] underline underline-offset-4"
-          >
-            {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
-          </button>
-        ) : null}
       </header>
 
       {error ? (
-        <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-4 py-3 text-sm text-[#9f4330]">{error}</p>
+        <p className={`${ui.error} mt-6`}>
+          {error}
+        </p>
       ) : null}
 
-      {/* The page's one dark button: the next thing we are asking for. */}
-      {strategy && !location.calendar ? (
-        firstPending >= 0 ? (
-          <button
-            type="button"
-            onClick={() => openPost(firstPending)}
-            className="flex min-h-12 w-full items-center justify-center rounded bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
-          >
-            {doneCount ? "להמשיך לאשר" : "להתחיל לאשר"}
-          </button>
-        ) : due ? (
-          <button
-            type="button"
-            onClick={() => openPost(due.index)}
-            className="flex min-h-12 w-full items-center justify-center rounded bg-[var(--primary)] px-6 text-base font-bold text-white sm:w-auto"
-          >
-            לפרסם את הפוסט של היום
-          </button>
-        ) : null
+      {/* The page's one filled button — the next thing we are asking for — and beside it the
+          quieter "waiting to go out" line, in the sun because it is about today. */}
+      {primary || showDue ? (
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+          {primary ? (
+            <button
+              type="button"
+              onClick={() => openPost(primary.index)}
+              className="drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white hover:bg-[var(--primary-dark)] sm:w-auto"
+            >
+              {primary.label}
+              <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+            </button>
+          ) : null}
+          {showDue && due ? (
+            <button
+              type="button"
+              onClick={() => openPost(due.index)}
+              className="group inline-flex min-h-11 items-center gap-2.5 self-start rounded-full bg-[var(--sand)] ps-4 pe-3 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[var(--sand-rule)] sm:self-auto"
+            >
+              <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)] shadow-[0_0_0_3px_var(--paper)]" />
+              {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
+              <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--sand-dark)] transition-transform duration-200 group-hover:-translate-x-0.5" />
+            </button>
+          ) : null}
+        </div>
       ) : null}
 
       {/* The posts the owner asked for ("להתחיל לכתוב") are written on the server: say so
           while the month has none yet, never a bare "loading". */}
-      {strategy && posts.length === 0 ? <MonthBuildProgress kind="posts" onDone={() => setReload((n) => n + 1)} /> : null}
+      {strategy && posts.length === 0 ? (
+        <div className="mt-8">
+          <MonthBuildProgress kind="posts" onDone={() => setReload((n) => n + 1)} />
+        </div>
+      ) : null}
 
-      {!strategy ? (
-        noMonth ? (
-          <NoPostsYet />
-        ) : !error ? (
-          <p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים של החודש…</p>
-        ) : null
-      ) : location.calendar ? (
-        <CalendarView
-          strategy={strategy}
-          initialYear={strategy.year}
-          initialMonth={strategy.month}
-          posts={posts}
-          postsMonth={{ year: strategy.year, month: strategy.month }}
-          onOpenPost={openPost}
-        />
-      ) : (
-        <PostFeed posts={posts} brand={strategy.brand_language} onOpen={openPost} />
-      )}
+      <div className="mt-8">
+        {!strategy ? (
+          noMonth ? (
+            <NoPostsYet />
+          ) : !error ? (
+            <p className="text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים של החודש…</p>
+          ) : null
+        ) : location.calendar ? (
+          <CalendarView
+            strategy={strategy}
+            initialYear={strategy.year}
+            initialMonth={strategy.month}
+            posts={posts}
+            postsMonth={{ year: strategy.year, month: strategy.month }}
+            onOpenPost={openPost}
+          />
+        ) : (
+          <PostFeed posts={posts} brand={strategy.brand_language} onOpen={openPost} />
+        )}
+      </div>
     </div>
   );
 }
@@ -310,17 +327,14 @@ function PostsWorkspace() {
  */
 function NoPostsYet() {
   return (
-    <section className="rounded-lg border border-[var(--rule)] bg-white px-6 py-8 text-center">
-      <h2 className="text-lg font-black text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
-      <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[color:var(--ink-soft)]">
+    <section className={`${ui.card} px-6 py-12 text-center sm:px-10`}>
+      <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
+      <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
         קודם מחברים מדידה ובוחרים מוצרים, ככה הפוסטים יהיו שלכם. אחר כך נכתוב אותם, והם יחכו כאן
         לאישור שלכם.
       </p>
-      <div className="mt-4 flex flex-col items-center gap-1">
-        <Link
-          href="/strategy"
-          className="inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)]"
-        >
+      <div className="mt-6 flex flex-col items-center gap-2">
+        <Link href="/strategy" className={ui.button}>
           לראות את התוכנית
         </Link>
         <StepLink stepKey={["instagram", "site_data", "whatsapp", "gbp", "baseline", "photos", "featured", "voice", "start_posts"]} />
@@ -334,7 +348,7 @@ export default function PostsPage() {
     <AppShell>
       {/* The workspace reads the URL, which a prerender does not have (Next's rule for
           useSearchParams), so it renders inside its own Suspense boundary. */}
-      <Suspense fallback={<p className="text-sm text-[color:var(--ink-soft)]">טוענים את הפוסטים…</p>}>
+      <Suspense fallback={<p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים…</p>}>
         <PostsWorkspace />
       </Suspense>
     </AppShell>

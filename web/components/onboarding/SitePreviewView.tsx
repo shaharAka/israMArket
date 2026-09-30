@@ -52,7 +52,7 @@ export function SamplePostCard({
   const photo = useLoadable(sample?.photo_url);
   if (!sample) return null;
   return (
-    <figure className="overflow-hidden rounded-lg border border-[#e6e4dc] bg-white">
+    <figure className="overflow-hidden rounded-xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {photo.ready ? (
         <CardStage
           post={previewCardPost(sample, photo.url)}
@@ -62,12 +62,12 @@ export function SamplePostCard({
           rounded={false}
         />
       ) : (
-        <div className="aspect-[4/5] w-full animate-pulse bg-[#eceae4]" aria-hidden />
+        <div className="aspect-[4/5] w-full animate-pulse bg-[var(--rule)]" aria-hidden />
       )}
       {showCaption ? (
-        <figcaption className="space-y-1 px-4 py-3 text-sm leading-6 text-[#191b18]">
+        <figcaption className="space-y-1 px-4 py-3 text-sm leading-6 text-[var(--ink)]">
           <p className="font-bold">{sample.hook}</p>
-          <p className="line-clamp-2 text-[#4f524b]">{sample.caption}</p>
+          <p className="line-clamp-2 text-[var(--ink-soft)]">{sample.caption}</p>
         </figcaption>
       ) : null}
     </figure>

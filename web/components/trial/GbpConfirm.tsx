@@ -30,7 +30,7 @@ export function GbpConfirm() {
         setBusy(true);
         void confirmStep("gbp").finally(() => setBusy(false));
       }}
-      className="mt-2 inline-flex min-h-11 items-center rounded-md border border-[var(--rule-dark)] bg-white px-4 text-sm font-bold text-[color:var(--ink)] hover:bg-[var(--primary-soft)] disabled:opacity-50"
+      className="mt-2 inline-flex min-h-11 items-center rounded-xl border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[var(--soft)] disabled:opacity-50"
     >
       בדקנו, הכרטיס קיים ומעודכן
     </button>

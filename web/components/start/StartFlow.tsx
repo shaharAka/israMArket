@@ -278,8 +278,8 @@ export function StartFlow() {
 
   if (!flow) {
     return (
-      <div className="flex min-h-dvh items-center justify-center bg-[var(--canvas)]">
-        <p className="text-sm text-[color:var(--ink-soft)]">טוענים…</p>
+      <div className="flex min-h-dvh items-center justify-center bg-[var(--paper)]">
+        <p className="text-sm text-[color:var(--ink-muted)]">טוענים…</p>
       </div>
     );
   }
@@ -297,10 +297,13 @@ export function StartFlow() {
   const scanFailed = flow.brandScan?.status === "failed" && !flow.draft.style_preset;
   const scanNotice =
     scanFailed && !noticeDismissed && step !== "links" ? (
-      <div role="status" className={`rounded-xl border border-[#e8d9c2] bg-[#fbf5ea] px-3.5 py-3 text-sm leading-6 text-[#4a3b22] ${styles.rise}`}>
-        <p>לא הצלחנו לקרוא את האתר. זה קורה, ולא צריך לתקן כלום עכשיו. אפשר לבחור סגנון במקום.</p>
-        <div className="flex gap-3">
-          <QuietLink onClick={() => setStyleOpen(true)} className="font-bold text-[color:var(--ink)]">
+      <div role="status" className={`${styles.notice} ${styles.rise}`}>
+        <p>
+          <span aria-hidden className={styles.sunDot} />
+          <span>לא הצלחנו לקרוא את האתר. זה קורה, ולא צריך לתקן כלום עכשיו. אפשר לבחור סגנון במקום.</span>
+        </p>
+        <div className="flex gap-4 ps-6">
+          <QuietLink tone="action" onClick={() => setStyleOpen(true)}>
             לבחור סגנון
           </QuietLink>
           <QuietLink onClick={() => setNoticeDismissed(true)}>לא עכשיו</QuietLink>
@@ -319,12 +322,15 @@ export function StartFlow() {
     notice: <>
       {scanNotice}
       {!flow.draft.has_none && (flow.deferredLinks ?? []).length && step !== "links" ? (
-        <div role="status" className="border-s-2 border-[var(--sun)] ps-3 text-sm leading-6 text-[color:var(--ink-soft)]">
-          <p>ממשיכים בלי לקרוא את {(flow.deferredLinks ?? []).map((key) => key === "website" ? "האתר" : NETWORKS.find((network) => network.key === key)?.label).join(" ו")}. הקישורים נשמרו לתיקון בהמשך.</p>
-          <details>
-            <summary className="min-h-11 cursor-pointer py-2 font-bold text-[color:var(--ink)]">מה צריך לתקן?</summary>
+        <div role="status" className={styles.notice}>
+          <p>
+            <span aria-hidden className={styles.sunDot} />
+            <span>ממשיכים בלי לקרוא את {(flow.deferredLinks ?? []).map((key) => key === "website" ? "האתר" : NETWORKS.find((network) => network.key === key)?.label).join(" ו")}. הקישורים נשמרו לתיקון בהמשך.</span>
+          </p>
+          <details className="ps-6">
+            <summary className="min-h-11 cursor-pointer py-2 font-semibold text-[color:var(--ink)]">מה צריך לתקן?</summary>
             {(flow.deferredLinks ?? []).map((key) => <p key={key}>{flow.deferredLinkErrors?.[key]}</p>)}
-            <QuietLink onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink>
+            <QuietLink tone="action" onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink>
           </details>
         </div>
       ) : null}
@@ -334,6 +340,7 @@ export function StartFlow() {
   };
 
   const wide = step === "direction" || step === "quarter";
+  const showRestart = step !== "quarter" && (resumed || step !== "name");
   let screen: React.ReactNode;
   switch (step) {
     case "name":
@@ -392,78 +399,77 @@ export function StartFlow() {
   }
 
   return (
-    <div style={mockPreview ? productPaletteVariables(palette) : undefined} className={`start-blue min-h-dvh bg-[var(--canvas)] text-[color:var(--ink)] ${step === "quarter" ? styles.planFlow : ""}`}>
-      {mockPreview ? <div className="border-b border-[var(--rule)] bg-[var(--sand)] px-4 py-2 text-center text-xs text-[color:var(--sand-dark)]">תצוגה עם נתוני דוגמה · <Link href="/preview" className="font-bold underline underline-offset-4">למסכים האחרים</Link></div> : null}
+    <div
+      style={mockPreview ? productPaletteVariables(palette) : undefined}
+      className={`start-blue ${styles.flow} ${step === "quarter" ? styles.planFlow : ""}`}
+    >
+      {mockPreview ? <div className="border-b border-[var(--sand-rule)] bg-[var(--sand)] px-4 py-2 text-center text-xs text-[color:var(--sand-dark)]">תצוגה עם נתוני דוגמה · <Link href="/preview" className="font-semibold underline underline-offset-4">למסכים האחרים</Link></div> : null}
       {/* Phones: back (or home) and the business card, in one bar. */}
-      <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b border-[var(--rule)] bg-white/95 px-3 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
+      <header className={styles.phonebar}>
         {back ? (
-          <button
-            type="button"
-            onClick={back}
-            className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1 rounded-md px-1.5 text-sm font-bold text-[color:var(--ink)]"
-          >
+          <button type="button" onClick={back} className={`${styles.back} shrink-0 !px-1.5`}>
             <IconArrowRight className="h-5 w-5" />
             חזרה
           </button>
         ) : (
           <Link href="/" aria-label="לעמוד הבית" className="flex min-h-11 shrink-0 items-center px-1">
-            <BrandMark className="h-7 w-7 text-[color:var(--ink)]" />
+            <BrandMark className="h-7 w-7 text-[color:var(--primary)]" />
           </Link>
         )}
         <CardBar flow={flow} open={cardOpen} onToggle={toggleCard} onPickStyle={() => setStyleOpen(true)} />
       </header>
 
-      {/* Desktop */}
-      <header className="mx-auto hidden max-w-6xl items-center justify-between px-8 pt-6 lg:flex">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="לעמוד הבית">
-          <BrandMark className="h-9 w-9 text-[color:var(--ink)]" />
-          <span>
-            <span className="block text-base font-black">ישראמארקט</span>
-            <span className="-mt-0.5 block text-xs text-[color:var(--ink-soft)]">שיווק לעסקים קטנים</span>
-          </span>
-        </Link>
-        {loggedIn ? null : (
-          <p className="text-sm text-[color:var(--ink-soft)]">
-            כבר יש לכם חשבון?{" "}
-            <Link href="/login" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
-              להיכנס
-            </Link>
-          </p>
-        )}
+      {/* Desktop: the landing's bar, so this reads as the next page of the same site. */}
+      <header className={styles.topbar}>
+        <div className={`${styles.wrap} ${styles.topbarRow}`}>
+          <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
+            <BrandMark className="h-8 w-8 text-[color:var(--primary)]" />
+            <span>ישראמארקט</span>
+          </Link>
+          {loggedIn ? null : (
+            <p className={styles.signin}>
+              כבר יש לכם חשבון?
+              <Link href="/login">להיכנס</Link>
+            </p>
+          )}
+        </div>
       </header>
 
-      <div className={`mx-auto max-w-6xl px-4 lg:grid lg:gap-12 lg:px-8 ${step === "quarter" ? "lg:grid-cols-[minmax(0,1fr)_220px]" : "lg:grid-cols-[minmax(0,1fr)_360px]"}`}>
-        <main className={`mx-auto w-full py-4 lg:mx-0 lg:py-8 ${wide ? "max-w-3xl" : "max-w-xl"}`}>
-          <div className="mb-4 space-y-2">
-            <div className="hidden min-h-11 items-center lg:flex">
-              {back ? <QuietLink onClick={back}>חזרה</QuietLink> : null}
+      <div className={`${styles.wrap} ${styles.layout} ${step === "quarter" ? styles.layoutPlan : ""}`}>
+        <main className={`${styles.main} ${wide ? styles.mainWide : ""}`}>
+          {back || showRestart ? (
+            <div className={`${styles.topRow} ${showRestart ? "" : "max-lg:!hidden"}`}>
+              {back ? (
+                <button type="button" onClick={back} className={`${styles.back} max-lg:!hidden`}>
+                  <IconArrowRight className="h-[18px] w-[18px]" />
+                  חזרה
+                </button>
+              ) : null}
+              {showRestart ? (
+                <div className={styles.restart}>
+                  {confirmRestart ? (
+                    <>
+                      <span>כל התשובות שכאן יימחקו.</span>
+                      <QuietLink tone="action" onClick={startOver}>
+                        למחוק ולהתחיל מחדש
+                      </QuietLink>
+                      <QuietLink onClick={() => setConfirmRestart(false)}>ביטול</QuietLink>
+                    </>
+                  ) : (
+                    <>
+                      {resumed ? <span>המשכנו מאיפה שעצרתם.</span> : null}
+                      <QuietLink onClick={() => setConfirmRestart(true)}>להתחיל מחדש</QuietLink>
+                    </>
+                  )}
+                </div>
+              ) : null}
             </div>
-            <ChapterProgress step={step} flow={flow} />
-            {step !== "quarter" && (resumed || step !== "name") ? (
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-[color:var(--ink-soft)]">
-                {confirmRestart ? (
-                  <>
-                    <span>כל התשובות שכאן יימחקו.</span>
-                    <QuietLink onClick={startOver} className="font-bold text-[color:var(--ink)]">
-                      למחוק ולהתחיל מחדש
-                    </QuietLink>
-                    <QuietLink onClick={() => setConfirmRestart(false)}>ביטול</QuietLink>
-                  </>
-                ) : (
-                  <>
-                    {resumed ? <span>המשכנו מאיפה שעצרתם.</span> : null}
-                    <QuietLink onClick={() => setConfirmRestart(true)}>להתחיל מחדש</QuietLink>
-                  </>
-                )}
-              </div>
-            ) : null}
-          </div>
+          ) : null}
+          <ChapterProgress step={step} flow={flow} />
           <div key={step}>{screen}</div>
         </main>
-        <aside className="hidden lg:block" aria-label="העסק שלכם">
-          <div className="sticky top-6 max-h-[calc(100dvh-7.5rem)] overflow-y-auto pt-8">
-            {step === "quarter" ? <details className={styles.planBusiness}><summary>פרטי העסק שבנינו</summary><BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} /></details> : <BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} />}
-          </div>
+        <aside className={styles.aside} aria-label="העסק שלכם">
+          {step === "quarter" ? <details className={styles.planBusiness}><summary>פרטי העסק שבנינו</summary><BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} /></details> : <BusinessCard flow={flow} onPickStyle={() => setStyleOpen(true)} />}
         </aside>
       </div>
 
@@ -485,34 +491,32 @@ export function StartFlow() {
 function ChapterProgress({ step, flow }: { step: StepId; flow: FlowState }) {
   const current = chapterIndexOf(step);
   return (
-    <nav aria-label="איפה אנחנו בשיחה">
-      <div className="mb-2 flex items-center justify-between gap-4">
-        <p className="text-sm font-bold text-[color:var(--primary)]">{CHAPTERS[current].label}</p>
-        {step !== "quarter" && <SunProgress value={current} total={CHAPTERS.length - 1} label="התקדמות ההיכרות" />}
-      </div>
-      <ol className="grid grid-cols-5 gap-1.5">
+    <nav aria-label="איפה אנחנו בשיחה" className={styles.rail}>
+      <ol className={styles.railSteps}>
         {CHAPTERS.map((chapter, index) => {
           const steps = chapterSteps(index, flow);
           const within = steps.indexOf(step);
           const fill = index < current ? 1 : index === current ? (within + 1) / Math.max(1, steps.length) : 0;
           return (
-            <li key={chapter.key} aria-current={index === current ? "step" : undefined}>
-              <span className="block h-1.5 overflow-hidden rounded-full bg-[var(--rule)]">
-                <span
-                  className="chapter-fill block h-full rounded-full"
-                  style={{ width: `${fill * 100}%` }}
-                />
+            <li
+              key={chapter.key}
+              aria-current={index === current ? "step" : undefined}
+              data-state={index < current ? "done" : index === current ? "current" : "next"}
+            >
+              <span className={styles.railBar} aria-hidden>
+                <i className={styles.railFill} style={{ transform: `scaleX(${fill})` }} />
               </span>
-              <span
-                className={`mt-1 block truncate text-[11px] ${index === current ? "font-black text-[color:var(--ink)]" : "text-[color:var(--ink-muted)]"}`}
-              >
+              <span className={styles.railLabel}>
                 <span className="lg:hidden">{chapter.short ?? chapter.label}</span>
-                <span className="hidden lg:inline">{chapter.label}</span>
+                <span className="max-lg:hidden">{chapter.label}</span>
               </span>
             </li>
           );
         })}
       </ol>
+      {step !== "quarter" && (
+        <SunProgress value={current} total={CHAPTERS.length - 1} label="התקדמות ההיכרות" className={styles.railSun} />
+      )}
     </nav>
   );
 }
@@ -541,7 +545,7 @@ function StyleSheet({
         type="button"
         aria-label="לסגור"
         onClick={onClose}
-        className={`absolute inset-0 cursor-default bg-[var(--primary)]/40 ${styles.backdrop}`}
+        className={`absolute inset-0 cursor-default bg-[var(--ink)]/35 ${styles.backdrop}`}
       />
       <div
         ref={panel}
@@ -549,12 +553,14 @@ function StyleSheet({
         aria-modal="true"
         aria-label="לבחור סגנון"
         tabIndex={-1}
-        className={`relative w-full space-y-3 rounded-t-3xl bg-white p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] outline-none lg:max-w-lg lg:rounded-3xl ${styles.sheet}`}
+        className={`relative w-full rounded-t-[20px] bg-[var(--paper)] px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-6 shadow-[var(--shadow-pop)] outline-none lg:max-w-lg lg:rounded-[20px] lg:p-7 ${styles.sheet}`}
       >
-        <h2 className="text-lg font-black text-[color:var(--ink)]">איזה סגנון מרגיש כמוכם?</h2>
-        <p className="text-sm text-[color:var(--ink-soft)]">נצבע בו את הפוסטים. אפשר לשנות בכל רגע.</p>
+        <h2 className="text-xl font-bold tracking-tight text-[color:var(--ink)]">איזה סגנון מרגיש כמוכם?</h2>
+        <p className="mb-5 mt-1.5 text-[15px] leading-6 text-[color:var(--ink-soft)]">נצבע בו את הפוסטים. אפשר לשנות בכל רגע.</p>
         <PresetGrid value={value} onPick={onPick} />
-        <QuietLink onClick={onClose}>לסגור</QuietLink>
+        <div className="mt-3">
+          <QuietLink onClick={onClose}>לסגור</QuietLink>
+        </div>
       </div>
     </div>
   );

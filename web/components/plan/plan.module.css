@@ -98,16 +98,275 @@
   }
 }
 
-/* One document vocabulary: title, body, caption; ink and the interface accent. */
-.document { display:flex; flex-direction:column; gap:14px; font-family:var(--font-heebo),sans-serif; color:var(--ink); }
-.document :is(p,li,dd) { line-height:1.85; }
-.direction { padding:24px; border:1px solid var(--rule); border-top:3px solid var(--primary); background:var(--paper); box-shadow:4px 5px 0 var(--primary-soft); }
-.direction > span { display:none; }.direction > div { margin-top:0; }
-.direction > div > div > p:first-child { font-size:26px; line-height:1.5; font-weight:700; letter-spacing:-.5px; }
-.direction p { font-weight:400; }.direction b { font-weight:600; }
-.glance { padding:16px 0; }.glance > p:first-child { font-size:12px; color:var(--ink-soft); }.glance h3 { font-size:20px; line-height:1.65; font-weight:600; margin:5px 0; }.glance .baseline { font-size:13px; color:var(--ink-soft); margin-top:8px; }.glance > div { display:flex; flex-wrap:wrap; gap:10px 24px; margin-top:14px; padding-top:12px; border-top:1px solid var(--rule); font-size:12px; color:var(--ink-soft); }
-.firstStep { border-inline-start:3px solid var(--sun); padding:2px 16px 10px; margin-bottom:12px; }.firstStep > p { color:var(--ink-soft); font-size:12px; }.firstStep h3 { font-size:16px; line-height:1.8; font-weight:600; margin:5px 0; }.firstStep > span { font-size:12px; color:var(--ink-soft); }
-.fold > details { padding-top:12px; }.fold > details > summary { padding-bottom:10px; }.fold > details > summary > span:first-child > span:first-child > span[id] { font-size:16px; font-weight:600; }.fold > details > summary > span:first-child > span:last-child:not(:first-child) { font-size:12px; font-weight:400; white-space:normal; line-height:1.8; }.fold > details > div { padding-bottom:18px; }
-.adjustment { border-top:1px solid var(--rule); margin-top:14px; }.adjustment > summary { min-height:44px; display:flex; align-items:center; cursor:pointer; font-size:12px; color:var(--primary); }.adjustment fieldset { padding:10px 0; }
-.document[data-mode="start"] .fold :is(h3,h4) { font-size:16px; font-weight:600; }.document[data-mode="start"] :is(.fold p,.fold li) { font-size:13px; }.document[data-mode="start"] .fold :is(dt,small) { font-size:12px; }.document[data-mode="start"] :global(.font-black) { font-weight:600; }
-@media(max-width:600px) { .direction { padding:18px; box-shadow:3px 4px 0 var(--primary-soft); }.direction > div > div > p:first-child { font-size:23px; }.document { gap:10px; }.glance h3 { font-size:19px; } }
+/* ---- One document vocabulary --------------------------------------------------------
+   The plan reads like the plan sheet on the landing page (components/landing-v2): the
+   direction and how we will know share one sheet; the rest is a calm list of sections,
+   headings and hairlines, each opening in place. Depth instead of frames. */
+
+.document {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-heebo), sans-serif;
+  color: var(--ink);
+}
+
+.document :is(p, li, dd) {
+  line-height: 1.7;
+}
+
+/* The direction and the glance: one sheet, two parts. */
+.sheet {
+  overflow: hidden;
+  margin-top: 16px;
+  border-radius: 20px;
+  background: var(--paper);
+  box-shadow: var(--shadow-pop);
+}
+
+.direction {
+  padding: 32px 36px 24px;
+}
+
+.direction > span {
+  display: none;
+}
+
+.direction > div {
+  margin-top: 0;
+}
+
+/* The strategy in one line: the hero statement of the plan. */
+.oneLiner {
+  font-size: 26px;
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.direction b {
+  font-weight: 600;
+}
+
+.glance {
+  padding: 24px 36px 0;
+  border-top: 1px solid var(--rule);
+}
+
+.glance > p:first-child {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.glance h3 {
+  margin: 6px 0 4px;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.glance > p:not(:first-child) {
+  font-size: 15px;
+  color: var(--ink-soft);
+}
+
+.glance .baseline {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* The months and the budget, as the sheet's quiet footer. */
+.glance > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 20px -36px 0;
+  padding: 14px 36px;
+  background: var(--soft);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.firstStep {
+  padding: 24px 0 8px;
+}
+
+.firstStep > p {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.firstStep > p::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--sun);
+}
+
+.firstStep h3 {
+  margin: 6px 0 4px;
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+.firstStep > span {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* The supporting sections: one list, hairlines between. */
+.folds {
+  margin-top: 40px;
+  border-block: 1px solid var(--rule);
+}
+
+.folds > section + section {
+  border-top: 1px solid var(--rule);
+}
+
+.foldHead {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block: 16px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.foldHead::-webkit-details-marker {
+  display: none;
+}
+
+.foldTitle {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.5;
+  color: var(--ink);
+  transition: color 180ms ease;
+}
+
+.foldHead:hover .foldTitle {
+  color: var(--primary);
+}
+
+.foldSummary {
+  display: block;
+  margin-top: 2px;
+  margin-inline-start: 32px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+.foldBody {
+  padding-bottom: 40px;
+}
+
+.chevron {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--ink-muted);
+  transform: rotate(-90deg);
+  transition: transform 220ms var(--ease);
+}
+
+details[open] > summary .chevron,
+details[open] > .foldHead .chevron {
+  transform: rotate(90deg);
+}
+
+/* A list that is one object: paper, depth, hairlines between rows. */
+.card {
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+}
+
+.adjustment {
+  margin-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.adjustment > summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.adjustment fieldset {
+  padding: 10px 0;
+}
+
+/* /start shows the same document a little smaller, beside its own controls. */
+.document[data-mode="start"] .foldTitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.document[data-mode="start"] :is(.fold p, .fold li) {
+  font-size: 13px;
+}
+
+.document[data-mode="start"] .fold :is(dt, small) {
+  font-size: 12px;
+}
+
+.document[data-mode="start"] :global(.font-black) {
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .direction {
+    padding: 24px 20px 20px;
+  }
+  .oneLiner {
+    font-size: 21px;
+    line-height: 1.5;
+  }
+  .glance {
+    padding: 20px 20px 0;
+  }
+  .glance > div {
+    margin-inline: -20px;
+    padding-inline: 20px;
+  }
+  .glance h3 {
+    font-size: 19px;
+  }
+  .folds {
+    margin-top: 32px;
+  }
+  .foldHead {
+    min-height: 68px;
+  }
+  .foldTitle {
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron,
+  .foldTitle {
+    transition: none;
+  }
+}

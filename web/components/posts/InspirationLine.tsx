@@ -1,6 +1,7 @@
 import { SourceLink } from "@/components/instagram/SourceLink";
 import { sourceWho } from "@/components/instagram/sources";
 import type { PostInspiration } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 
 /**
  * "Why this post": one quiet line under the preview naming the real Instagram post(s) the
@@ -15,16 +16,14 @@ export function InspirationLine({ inspiration }: { inspiration: PostInspiration 
   if (!inspiration || !inspiration.sources.length) return null;
   const note = inspiration.note || `בהשראת ${sourceWho(inspiration.sources[0])}`;
   return (
-    <details className="group mt-1.5 text-xs leading-5 text-[#535f75]">
-      <summary className="flex min-h-9 cursor-pointer list-none items-center gap-1 px-1">
+    <details className="group mt-1.5 text-[13px] leading-5 text-[var(--ink-muted)]">
+      <summary className="flex min-h-9 cursor-pointer list-none items-center gap-2 rounded-[10px] px-1.5 transition-colors duration-200 hover:text-[var(--ink-soft)] [&::-webkit-details-marker]:hidden">
         <span className="min-w-0 flex-1 truncate group-open:whitespace-normal">
-          <span className="font-bold text-[#3c3e3a]">למה הפוסט הזה:</span> {note}
+          <span className="font-semibold text-[var(--ink-soft)]">למה הפוסט הזה:</span> {note}
         </span>
-        <span aria-hidden className="shrink-0 text-[#647087] transition-transform group-open:-rotate-90">
-          ‹
-        </span>
+        <IconChevron className="h-3.5 w-3.5 shrink-0 -rotate-90 transition-transform duration-200 group-open:rotate-90" />
       </summary>
-      <ul className="space-y-0.5 px-1 pb-1">
+      <ul className="space-y-0.5 px-1.5 pb-1">
         {inspiration.sources.map((source) => (
           <li key={source.ref}>
             <SourceLink source={source} />

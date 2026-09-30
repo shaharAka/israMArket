@@ -16,6 +16,7 @@ import {
 } from "@/lib/draft";
 import { UNKNOWN, baselineSummary, leverName, targetText } from "@/lib/goals";
 import { GROW_OPTIONS, budgetLabel, formatIls } from "@/lib/quarterPlan";
+import { IconChevron, IconLock } from "@/lib/icons";
 import { modelOf } from "./script";
 import { BidiText, NetworkIcon, inkOn } from "./ui";
 import styles from "./start.module.css";
@@ -24,9 +25,9 @@ import styles from "./start.module.css";
  * "העסק שלכם": the business card we fill in together, one answer at a time.
  *
  * It is the portal the owner is building, so every answer lands here visibly: a slot
- * that was just answered rises in on a warm wash, and a slot not answered yet stays soft
- * ("עוד לא סיפרתם") instead of disappearing. Desktop shows it as a sticky side panel;
- * phones get `CardBar`, a compact summary that opens into this card.
+ * that was just answered rises in on a sun wash, and a slot not answered yet stays as one
+ * quiet line ("עוד לא סיפרתם") instead of disappearing. Desktop shows it as a sticky side
+ * panel; phones get `CardBar`, a compact summary that opens into this card.
  */
 
 export type CardLook = {
@@ -47,6 +48,13 @@ export function lookOf(flow: FlowState): CardLook {
 
 function swatch(palette: BrandSwatch[] | null, role: BrandSwatch["role"], fallback: string): string {
   return palette?.find((s) => s.role === role)?.hex ?? palette?.[0]?.hex ?? fallback;
+}
+
+/** The monogram in the business's own colour once we have it; our soft blue until then. */
+function markColours(look: CardLook): { bg: string; ink: string } {
+  if (!look.palette) return { bg: "var(--primary-soft)", ink: "var(--primary)" };
+  const bg = swatch(look.palette, "primary", "#ffffff");
+  return { bg, ink: inkOn(bg) };
 }
 
 type Slot = { key: string; filled: boolean };
@@ -80,49 +88,61 @@ export function filledCount(flow: FlowState): { filled: number; total: number } 
   return { filled: slots.filter((s) => s.filled).length, total: slots.length };
 }
 
-function Empty({ children = "עוד לא סיפרתם" }: { children?: React.ReactNode }) {
-  return <span className="text-sm text-[#a3a59c]">{children}</span>;
-}
-
-/** Animates only a slot that fills while the card is on screen, not every slot on open. */
-function Filled({ on, children, empty }: { on: boolean; children: React.ReactNode; empty?: React.ReactNode }) {
+/**
+ * One row of the card. Answered: the label over the answer. Not yet: one short line, the
+ * label and "עוד לא סיפרתם" side by side. Only a slot that fills while the card is on
+ * screen animates, not every slot on open.
+ */
+function Row({
+  label,
+  on,
+  empty,
+  children,
+}: {
+  label: string;
+  on: boolean;
+  /** What comes instead ("נבחר יחד בסוף"). Without one: "עוד לא סיפרתם". */
+  empty?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
   const [filledAtMount] = useState(on);
-  return on ? (
-    <div key="filled" className={`-mx-1 px-1 ${filledAtMount ? "" : styles.fill}`}>
-      {children}
-    </div>
-  ) : (
-    <div key="empty">{empty ?? <Empty />}</div>
-  );
-}
-
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+  if (!on) {
+    return (
+      <div className={`${styles.row} ${styles.rowEmpty}`}>
+        <p className={styles.rowLabel}>{label}</p>
+        {empty ? (
+          <p className={styles.rowValue}>{empty}</p>
+        ) : (
+          <p className={styles.rowValue}>
+            <span aria-hidden className={styles.rowPending} />
+            <span className="sr-only">עוד לא סיפרתם</span>
+          </p>
+        )}
+      </div>
+    );
+  }
   return (
-    <div className="py-2.5">
-      <p className="mb-0.5 text-[11px] font-bold tracking-wide text-[#8a8c84]">{label}</p>
-      {children}
+    <div className={styles.row}>
+      <p className={styles.rowLabel}>{label}</p>
+      <div className={`${styles.rowValue} -mx-1 px-1 ${filledAtMount ? "" : styles.fill}`}>{children}</div>
     </div>
   );
 }
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="px-5 pt-3">
-      <h3 className="border-b border-[#ecebe5] pb-1.5 text-xs font-black text-[#191b18]">{title}</h3>
-      <div className="divide-y divide-[#f1f0ea]">{children}</div>
+    <section className={styles.cardSection}>
+      <h3 className={styles.cardSectionTitle}>{title}</h3>
+      {children}
     </section>
   );
 }
 
 function Monogram({ name, bg, ink, size = "lg" }: { name: string; bg: string; ink: string; size?: "sm" | "lg" }) {
   const letter = name.trim().charAt(0) || "·";
-  const box = size === "sm" ? "h-7 w-7 text-sm" : "h-12 w-12 text-xl";
+  const box = size === "sm" ? "h-8 w-8 !rounded-[10px] text-sm" : "h-12 w-12 text-xl";
   return (
-    <span
-      className={`flex ${box} shrink-0 items-center justify-center rounded-full border border-black/10 font-black`}
-      style={{ background: bg, color: ink }}
-      aria-hidden
-    >
+    <span className={`${styles.monogram} ${box}`} style={{ background: bg, color: ink }} aria-hidden>
       {letter}
     </span>
   );
@@ -140,10 +160,7 @@ export function BusinessCard({
   const d = flow.draft;
   const look = lookOf(flow);
   const scan = flow.brandScan;
-  const band = look.palette ? swatch(look.palette, "primary", "#ecebe5") : "#ecebe5";
-  const bandInk = look.palette ? inkOn(band) : "#191b18";
-  const markBg = look.palette ? swatch(look.palette, "background", "#ffffff") : "#ffffff";
-  const markInk = look.palette ? swatch(look.palette, "primary", "#191b18") : "#191b18";
+  const mark = markColours(look);
   const kit = d.business_type ? kitFor(d.business_type) : null;
   const direction = flow.quarterPlan ? chosenDirectionOf(flow) : null;
   const plan = currentPlan(flow);
@@ -164,230 +181,187 @@ export function BusinessCard({
   const competitors = (d.competitors ?? []).filter((c) => c.name.trim());
 
   return (
-    <article aria-label="העסק שלכם" className="overflow-hidden rounded-2xl border border-[#e2e0d8] bg-white shadow-[0_1px_0_rgba(0,0,0,0.03),0_12px_32px_-18px_rgba(25,27,24,0.35)]">
-      {/* The band paints in the business's colours as soon as we have them. */}
-      <div
-        className="relative px-5 pb-4 pt-4 transition-colors duration-700"
-        style={{ background: band, color: bandInk }}
-      >
+    <article aria-label="העסק שלכם" className={styles.card}>
+      <div className={styles.cardHead}>
         {compactHeader ? null : (
-          <div className="mb-3 flex items-center justify-between text-[11px] font-bold opacity-80">
-            <span>העסק שלכם</span>
-            <span>
-              {filled} מתוך {total}
+          <>
+            <div className={styles.cardMeta}>
+              <span>העסק שלכם</span>
+              <b>
+                {filled} מתוך {total}
+              </b>
+            </div>
+            <span className={styles.cardProgress} aria-hidden>
+              <i style={{ transform: `scaleX(${filled / total})` }} />
             </span>
-          </div>
+          </>
         )}
-        <div className="flex items-center gap-3">
+        <div className={styles.cardIdentity}>
           {look.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element -- a remote logo from the scan, any host
             <img
               src={look.logoUrl}
               alt=""
-              className={`h-12 w-12 shrink-0 rounded-full border border-black/10 bg-white object-contain p-1 ${styles.pop}`}
+              className={`h-12 w-12 shrink-0 rounded-[14px] bg-[var(--paper)] object-contain p-1 ring-1 ring-[var(--rule)] ${styles.pop}`}
             />
           ) : (
-            <Monogram name={d.business_name} bg={markBg} ink={markInk} />
+            <Monogram name={d.business_name} bg={mark.bg} ink={mark.ink} />
           )}
           <div className="min-w-0">
             {d.business_name.trim() ? (
-              <p className={`truncate text-xl font-black leading-tight ${styles.rise}`}>
-                {d.business_name.trim()}
-              </p>
+              <p className={`${styles.cardName} ${styles.rise}`}>{d.business_name.trim()}</p>
             ) : (
-              <p className="text-xl font-black leading-tight opacity-40">שם העסק</p>
+              <p className={`${styles.cardName} text-[color:var(--ink-faint)]`}>שם העסק</p>
             )}
-            <p className="mt-0.5 truncate text-xs opacity-80">{kit ? kit.chip : "עוד לא סיפרתם מה אתם עושים"}</p>
+            <p className={styles.cardKind}>{kit ? kit.chip : "עוד לא סיפרתם מה אתם עושים"}</p>
           </div>
         </div>
-        <div className="mt-3 flex min-h-6 items-center gap-1.5">
+        <div className={styles.cardLook}>
           {scan?.status === "reading" && !look.palette ? (
             <>
               {[0, 1, 2, 3].map((i) => (
-                <span key={i} className={`h-5 w-5 rounded-full border border-black/10 bg-white/60 ${styles.shimmer}`} />
+                <span key={i} className={`${styles.swatch} bg-[var(--soft)] ${styles.shimmer}`} />
               ))}
-              <span className="mr-1 text-xs opacity-80">קוראים את האתר…</span>
+              <span className="ms-1">קוראים את האתר…</span>
             </>
           ) : look.palette ? (
             <>
               {look.palette.slice(0, 5).map((s, i) => (
-                <span
-                  key={`${s.hex}-${i}`}
-                  title={s.name}
-                  className={`h-5 w-5 rounded-full border border-black/15 ${styles.pop}`}
-                  style={{ background: s.hex }}
-                />
+                <span key={`${s.hex}-${i}`} title={s.name} className={`${styles.swatch} ${styles.pop}`} style={{ background: s.hex }} />
               ))}
-              <span className="mr-1 text-xs opacity-80">
-                {look.source === "site" ? "הצבעים מהאתר שלכם" : presetFor(d.style_preset)?.name}
-              </span>
+              <span className="ms-1">{look.source === "site" ? "הצבעים מהאתר שלכם" : presetFor(d.style_preset)?.name}</span>
             </>
           ) : scan?.status === "failed" ? (
-            <span className="text-xs opacity-80">
+            <span>
               לא הצלחנו לקרוא את האתר.{" "}
               {onPickStyle ? (
-                <button type="button" onClick={onPickStyle} className="cursor-pointer font-bold underline underline-offset-2">
+                <button type="button" onClick={onPickStyle} className="min-h-6 cursor-pointer font-semibold text-[color:var(--primary)] hover:underline">
                   לבחור סגנון
                 </button>
               ) : null}
             </span>
           ) : (
-            <span className="text-xs opacity-60">הצבעים יופיעו כאן</span>
+            <span>הצבעים יופיעו כאן</span>
           )}
         </div>
       </div>
 
-      <div className="pb-4">
+      <div className={styles.cardBody}>
         <Section title="העסק">
-          <Row label="מה אתם עושים">
-            <Filled on={Boolean(d.offerings.trim())}>
-              <p className="text-sm leading-6 text-[#191b18]">{d.offerings.trim()}</p>
-            </Filled>
+          <Row label="מה אתם עושים" on={Boolean(d.offerings.trim())}>
+            {d.offerings.trim()}
           </Row>
-          <Row label="מה מייחד אתכם">
-            <Filled on={Boolean(d.differentiator?.trim())}>
-              <p className="text-sm leading-6 text-[#191b18]">{d.differentiator?.trim()}</p>
-            </Filled>
+          <Row label="מה מייחד אתכם" on={Boolean(d.differentiator?.trim())}>
+            {d.differentiator?.trim()}
           </Row>
         </Section>
 
         <Section title="הלקוחות">
-          <Row label="למי אתם מוכרים">
-            <Filled on={d.audiences.length > 0}>
-              <ul className="flex flex-wrap gap-1.5">
-                {d.audiences.map((a) => (
-                  <li key={a.name} className={`rounded-full bg-[#f1efe8] px-2.5 py-1 text-xs font-bold text-[#191b18] ${styles.pop}`}>
-                    {a.name}
-                  </li>
-                ))}
-              </ul>
-            </Filled>
+          <Row label="למי אתם מוכרים" on={d.audiences.length > 0}>
+            <ul className="mt-1 flex flex-wrap gap-1.5">
+              {d.audiences.map((a) => (
+                <li key={a.name} className={`${styles.tag} ${styles.pop}`}>
+                  {a.name}
+                </li>
+              ))}
+            </ul>
           </Row>
-          <Row label="עונות">
-            <Filled on={busy.length + slow.length > 0}>
-              <p className="text-sm leading-6 text-[#191b18]">
-                {busy.length ? (
-                  <span>
-                    <SeasonDot kind="busy" /> עמוס: {busy.map((m) => MONTHS_HE[m - 1]).join(", ")}
-                  </span>
-                ) : null}
-                {busy.length && slow.length ? <br /> : null}
-                {slow.length ? (
-                  <span>
-                    <SeasonDot kind="slow" /> שקט: {slow.map((m) => MONTHS_HE[m - 1]).join(", ")}
-                  </span>
-                ) : null}
-              </p>
-            </Filled>
+          <Row label="עונות" on={busy.length + slow.length > 0}>
+            {busy.length ? (
+              <span className="flex items-center gap-2">
+                <SeasonDot kind="busy" /> עמוס: {busy.map((m) => MONTHS_HE[m - 1]).join(", ")}
+              </span>
+            ) : null}
+            {slow.length ? (
+              <span className="flex items-center gap-2">
+                <SeasonDot kind="slow" /> שקט: {slow.map((m) => MONTHS_HE[m - 1]).join(", ")}
+              </span>
+            ) : null}
           </Row>
         </Section>
 
         <Section title="איפה אתם">
-          <Row label="אתר ורשתות">
-            <Filled on={links.length > 0 || Boolean(d.has_none)}>
-              {d.has_none ? (
-                <p className="text-sm text-[#191b18]">עוד לא. מתחילים מכאן.</p>
-              ) : (
-                <ul className="flex flex-wrap gap-1.5">
-                  {links.map((key) => (
-                    <li
-                      key={key}
-                      className={`inline-flex items-center gap-1.5 rounded-full border border-[#e2e0d8] px-2.5 py-1 text-xs text-[#191b18] ${styles.pop}`}
-                    >
-                      <NetworkIcon network={key} className="h-3.5 w-3.5" />
-                      <span dir="ltr" className="max-w-full break-all">
-                        {linkLabel(key, d.links[key] ?? "")}
-                      </span>
-                      {flow.deferredLinks?.includes(key) ? <span className="shrink-0 text-[#5e6159]">בהמשך</span> : null}
-                      {key !== "website" && d.activity?.[key] ? <ActivityDots level={d.activity[key]} /> : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </Filled>
+          <Row label="אתר ורשתות" on={links.length > 0 || Boolean(d.has_none)}>
+            {d.has_none ? (
+              "עוד לא. מתחילים מכאן."
+            ) : (
+              <ul className="mt-1 flex flex-wrap gap-1.5">
+                {links.map((key) => (
+                  <li key={key} className={`${styles.tag} max-w-full ${styles.pop}`}>
+                    <NetworkIcon network={key} className="h-3.5 w-3.5 shrink-0 text-[color:var(--ink-muted)]" />
+                    <span dir="ltr" className="min-w-0 break-all">
+                      {linkLabel(key, d.links[key] ?? "")}
+                    </span>
+                    {flow.deferredLinks?.includes(key) ? <span className="shrink-0 text-[color:var(--ink-muted)]">בהמשך</span> : null}
+                    {key !== "website" && d.activity?.[key] ? <ActivityDots level={d.activity[key]} /> : null}
+                  </li>
+                ))}
+              </ul>
+            )}
           </Row>
-          <Row label="מה ניסיתם">
-            <Filled on={tried.length > 0 || Boolean(flow.triedNone) || Boolean(d.tried?.what_worked?.trim())}>
-              {flow.triedNone ? (
-                <p className="text-sm text-[#191b18]">עוד לא ניסיתם. נתחיל בקטן.</p>
-              ) : (
-                <div className="space-y-1">
-                  {tried.length ? <p className="text-sm text-[#191b18]">{tried.map((t) => t.label).join(" · ")}</p> : null}
-                  {d.tried?.what_worked?.trim() ? (
-                    <p className="text-xs leading-5 text-[#5e6159]">הצליח: {d.tried.what_worked.trim()}</p>
-                  ) : null}
-                </div>
-              )}
-            </Filled>
+          <Row label="מה ניסיתם" on={tried.length > 0 || Boolean(flow.triedNone) || Boolean(d.tried?.what_worked?.trim())}>
+            {flow.triedNone ? (
+              "עוד לא ניסיתם. נתחיל בקטן."
+            ) : (
+              <>
+                {tried.length ? <span className="block">{tried.map((t) => t.label).join(" · ")}</span> : null}
+                {d.tried?.what_worked?.trim() ? (
+                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">הצליח: {d.tried.what_worked.trim()}</span>
+                ) : null}
+              </>
+            )}
           </Row>
-          <Row label="מתחרים">
-            <Filled on={competitors.length > 0}>
-              <p className="text-sm text-[#191b18]">{competitors.map((c) => c.name).join(" · ")}</p>
-            </Filled>
+          <Row label="מתחרים" on={competitors.length > 0}>
+            {competitors.map((c) => c.name).join(" · ")}
           </Row>
         </Section>
 
         <Section title="המספרים">
           {grow ? (
-            <Row label="איפה לגדול">
-              <Filled on>
-                <p className="text-sm text-[#191b18]">{grow}</p>
-              </Filled>
+            <Row label="איפה לגדול" on>
+              {grow}
             </Row>
           ) : null}
-          <Row label="היום">
-            <Filled on={Boolean(today)}>
-              <p className="text-sm leading-6 text-[#191b18]">
-                <BidiText text={today} />
-              </p>
-            </Filled>
+          <Row label="היום" on={Boolean(today)}>
+            <BidiText text={today} />
           </Row>
-          <Row label="מה מגדילים">
-            <Filled on={Boolean(lever)}>
-              <p className="text-sm font-bold text-[#191b18]">{lever}</p>
-              {secondLever ? <p className="text-xs leading-5 text-[#5e6159]">ועוד: {secondLever}</p> : null}
-            </Filled>
+          <Row label="מה מגדילים" on={Boolean(lever)}>
+            <span className="block font-semibold">{lever}</span>
+            {secondLever ? <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">ועוד: {secondLever}</span> : null}
           </Row>
-          <Row label="תקציב שיווק לחודש">
-            <Filled on={Boolean(budget)}>
-              <p className="text-sm text-[#191b18]">{budget}</p>
-            </Filled>
+          <Row label="תקציב שיווק לחודש" on={Boolean(budget)}>
+            {budget}
           </Row>
-          <Row label="יעד העבודה">
-            <Filled on={Boolean(target)} empty={<Empty>נחשב יחד אחרי התקציב</Empty>}>
-              <p className="text-sm font-bold leading-6 text-[#191b18]">
-                <BidiText text={target} />
-              </p>
-              {d.target && d.target.kind !== "qualitative" ? (
-                <p className="text-xs leading-5 text-[#5e6159]">
-                  {d.target.edited_by_owner ? "היעד שלכם." : "לפי החישוב שלנו."} טווח לתכנון, לא הבטחה.
-                </p>
-              ) : null}
-            </Filled>
+          <Row label="יעד העבודה" on={Boolean(target)} empty="נחשב יחד אחרי התקציב">
+            <span className="block font-semibold">
+              <BidiText text={target} />
+            </span>
+            {d.target && d.target.kind !== "qualitative" ? (
+              <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">
+                {d.target.edited_by_owner ? "היעד שלכם." : "לפי החישוב שלנו."} טווח לתכנון, לא הבטחה.
+              </span>
+            ) : null}
           </Row>
         </Section>
 
         <Section title="התוכנית">
-          <Row label="הכיוון">
-            <Filled on={Boolean(direction)} empty={<Empty>נבחר יחד בסוף</Empty>}>
-              <p className="text-sm font-black text-[#191b18]">{direction?.title}</p>
-              <p className="text-xs leading-5 text-[#5e6159]">{direction?.approach_he}</p>
-            </Filled>
+          <Row label="הכיוון" on={Boolean(direction)} empty="נבחר יחד בסוף">
+            <span className="block font-semibold">{direction?.title}</span>
+            <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{direction?.approach_he}</span>
           </Row>
-          <Row label="האסטרטגיה והצעדים הקרובים">
-            <Filled on={Boolean(plan)} empty={<Empty>נבנה יחד אחרי הכיוון</Empty>}>
-              <p className="text-sm leading-6 text-[#191b18]">{plan?.strategy.one_liner_he}</p>
-              {plan ? (
-                <p className="text-xs leading-5 text-[#5e6159]">
-                  {plan.channels.filter((c) => c.kind === "new").length} ערוצים חדשים ·{" "}
-                  {plan.budget.organic_only || !plan.budget.monthly_ils ? "בלי תקציב פרסום" : `${formatIls(plan.budget.monthly_ils)} בחודש`}
-                </p>
-              ) : null}
-            </Filled>
+          <Row label="האסטרטגיה והצעדים הקרובים" on={Boolean(plan)} empty="נבנה יחד אחרי הכיוון">
+            <span className="block">{plan?.strategy.one_liner_he}</span>
+            {plan ? (
+              <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">
+                {plan.channels.filter((c) => c.kind === "new").length} ערוצים חדשים ·{" "}
+                {plan.budget.organic_only || !plan.budget.monthly_ils ? "בלי תקציב פרסום" : `${formatIls(plan.budget.monthly_ils)} בחודש`}
+              </span>
+            ) : null}
           </Row>
         </Section>
       </div>
-      <p className="border-t border-[#ecebe5] bg-[#faf9f6] px-5 py-2.5 text-[11px] text-[#8a8c84]">
+      <p className={styles.cardFoot}>
+        <IconLock className="h-3.5 w-3.5 shrink-0" />
         נשמר רק במכשיר הזה, עד שתפתחו חשבון.
       </p>
     </article>
@@ -403,12 +377,12 @@ function linkLabel(key: LinkKey, value: string): string {
   return `@${v.replace(/^@/, "")}`;
 }
 
+/** Busy months are the sun (the highlight); quiet months the soft blue. */
 function SeasonDot({ kind }: { kind: "busy" | "slow" }) {
   return (
     <span
       aria-hidden
-      className="inline-block h-2 w-2 rounded-full align-middle"
-      style={{ background: kind === "busy" ? "#d9824b" : "#7da2b8" }}
+      className={`inline-block h-2 w-2 shrink-0 rounded-full ${kind === "busy" ? "bg-[var(--sun)]" : "bg-[var(--primary)] opacity-50"}`}
     />
   );
 }
@@ -419,7 +393,7 @@ function ActivityDots({ level }: { level: "none" | "sometimes" | "regular" }) {
   return (
     <span className="inline-flex gap-0.5" title={label} aria-label={label}>
       {[1, 2, 3].map((i) => (
-        <span key={i} className={`h-1.5 w-1.5 rounded-full ${i <= n && level !== "none" ? "bg-[#191b18]" : "bg-[#d8d6ce]"}`} />
+        <span key={i} className={`h-1.5 w-1.5 rounded-full ${i <= n && level !== "none" ? "bg-[var(--primary)]" : "bg-[var(--rule-dark)]"}`} />
       ))}
     </span>
   );
@@ -443,8 +417,7 @@ export function CardBar({
   const look = lookOf(flow);
   const { filled, total } = filledCount(flow);
   const panel = useRef<HTMLDivElement>(null);
-  const bg = look.palette ? swatch(look.palette, "primary", "#ffffff") : "#ffffff";
-  const ink = look.palette ? inkOn(bg) : "#191b18";
+  const mark = markColours(look);
 
   useEffect(() => {
     if (!open) return;
@@ -463,31 +436,22 @@ export function CardBar({
         aria-expanded={open}
         aria-controls="business-card-panel"
         onClick={() => onToggle(!open)}
-        className="flex min-h-11 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border border-[#e2e0d8] bg-white py-1 pl-3 pr-1 text-right"
+        className="flex min-h-11 min-w-0 flex-1 cursor-pointer items-center gap-2.5 rounded-xl bg-[var(--soft)] py-1.5 pe-3 ps-1.5 text-start transition-colors active:bg-[var(--rule)]"
       >
-        <Monogram name={flow.draft.business_name} bg={bg} ink={ink} size="sm" />
-        <span className="min-w-0 flex-1 truncate text-sm font-bold text-[#191b18]">
+        <Monogram name={flow.draft.business_name} bg={mark.bg} ink={mark.ink} size="sm" />
+        <span className="min-w-0 flex-1 truncate text-sm font-semibold text-[color:var(--ink)]">
           העסק שלכם
-          <span key={filled} className={`inline-block font-normal text-[#6b6e65] ${styles.pop}`}>
-            {"\u00a0"}· {filled} מתוך {total}
+          <span key={filled} className={`inline-block font-normal tabular-nums text-[color:var(--ink-muted)] ${styles.pop}`}>
+            {" "}· {filled} מתוך {total}
           </span>
         </span>
-        <span className="h-1.5 w-12 shrink-0 overflow-hidden rounded-full bg-[#e2e0d8]" aria-hidden>
+        <span className="relative h-[3px] w-10 shrink-0 overflow-hidden rounded-full bg-[var(--rule-dark)]" aria-hidden>
           <span
-            className="block h-full rounded-full bg-[#191b18] transition-[width] duration-500"
-            style={{ width: `${(filled / total) * 100}%` }}
+            className="absolute inset-0 origin-right rounded-full bg-[var(--primary)] transition-transform duration-500"
+            style={{ transform: `scaleX(${filled / total})` }}
           />
         </span>
-        <svg
-          viewBox="0 0 16 16"
-          className={`h-4 w-4 shrink-0 text-[#5e6159] transition-transform ${open ? "rotate-180" : ""}`}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          aria-hidden
-        >
-          <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <IconChevron className={`h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform ${open ? "rotate-90" : "-rotate-90"}`} />
       </button>
       {open ? (
         <div className="fixed inset-0 top-14 z-50 lg:hidden">
@@ -495,7 +459,7 @@ export function CardBar({
             type="button"
             aria-label="לסגור את הכרטיס"
             onClick={() => onToggle(false)}
-            className={`absolute inset-0 cursor-default bg-[#191b18]/30 ${styles.backdrop}`}
+            className={`absolute inset-0 cursor-default bg-[var(--ink)]/30 ${styles.backdrop}`}
           />
           <div
             id="business-card-panel"
@@ -504,14 +468,14 @@ export function CardBar({
             role="dialog"
             aria-modal="true"
             aria-label="העסק שלכם"
-            className={`relative mx-3 mt-2 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-2xl outline-none ${styles.drop}`}
+            className={`relative mx-3 mt-2 max-h-[calc(100dvh-5rem)] overflow-y-auto rounded-[18px] outline-none ${styles.drop}`}
           >
             <BusinessCard flow={flow} onPickStyle={onPickStyle} />
-            <div className="sticky bottom-0 flex justify-center bg-gradient-to-t from-white via-white/90 to-transparent pb-2 pt-3">
+            <div className="sticky bottom-0 flex justify-center bg-gradient-to-t from-[var(--paper)] via-[var(--paper)]/90 to-transparent pb-3 pt-4">
               <button
                 type="button"
                 onClick={() => onToggle(false)}
-                className="min-h-11 cursor-pointer rounded-full border border-[#c7c4b8] bg-white px-5 text-sm font-bold text-[#191b18]"
+                className="min-h-11 cursor-pointer rounded-xl border border-[var(--rule-dark)] bg-[var(--paper)] px-6 text-sm font-semibold text-[color:var(--ink)] shadow-[var(--shadow-card)]"
               >
                 לסגור
               </button>

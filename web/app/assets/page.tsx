@@ -8,11 +8,9 @@ import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StepLink } from "@/components/trial/StepLink";
 import { endpoints, isDemo, type Asset } from "@/lib/api";
-import { IconArrowLeft, IconEye, IconImage, IconLink, IconSparkles } from "@/lib/icons";
-import { SECTIONS } from "@/lib/sections";
+import ui from "@/components/posts/chrome.module.css";
+import { IconArrowLeft, IconCheck, IconChevron, IconEye, IconImage, IconLink } from "@/lib/icons";
 import { toast } from "@/lib/ui";
-
-const identity = SECTIONS.assets;
 
 /**
  * The demo flag lives in localStorage, so it may only be read on the client — a server
@@ -237,16 +235,16 @@ export default function AssetsPage() {
               type="button"
               onClick={() => void handleScan()}
               disabled={scanning || busy}
-              className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md bg-[#2853c7] px-4 text-sm font-bold text-white transition-colors hover:bg-[#1e42a4] disabled:cursor-default disabled:opacity-60 sm:w-auto"
+              className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
             >
-              <IconEye className="h-4 w-4" />
+              <IconEye className="h-[18px] w-[18px]" />
               {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
             </button>
           }
         />
 
         {demo ? (
-          <p className="-mt-3 mb-3 text-xs" style={{ color: identity.accent }}>
+          <p className={`${ui.meta} -mt-3 mb-4 font-normal`}>
             דמו: אלה תמונות לדוגמה.
           </p>
         ) : null}
@@ -254,28 +252,27 @@ export default function AssetsPage() {
         {/* One disclosure holds the two other ways in. Closed by default, so the page opens
             on the pictures rather than on a toolbar; open by one tap for anyone who came
             here to upload or to paste a link. */}
-        <section className="border-y border-[#e1e7f2]">
+        <section className={`${ui.card} overflow-hidden`}>
           <button
             type="button"
             onClick={() => setAddOpen((prev) => !prev)}
             aria-expanded={addOpen}
-            className="group flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 text-sm font-bold text-[#535f75] transition-colors hover:text-[#1d2940]"
+            className="group flex min-h-14 w-full cursor-pointer items-center justify-between gap-3 px-5 text-[15px] font-semibold text-[var(--ink)] transition-colors duration-200 hover:bg-[var(--soft)]"
           >
-            <span className="flex items-center gap-2">
-              <IconImage className="h-4 w-4" />
+            <span className="flex items-center gap-3">
+              <span aria-hidden className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--primary-soft)] text-[var(--primary)]">
+                <IconImage className="h-[18px] w-[18px]" />
+              </span>
               להעלות מהטלפון או מקישור
             </span>
-            <span
-              aria-hidden
-              className={`h-0 w-0 shrink-0 border-x-[4px] border-t-[5px] border-x-transparent border-t-[#647087] transition-transform duration-200 ${
-                addOpen ? "rotate-180" : ""
-              }`}
+            <IconChevron
+              className={`h-4 w-4 shrink-0 text-[var(--ink-muted)] transition-transform duration-200 ${addOpen ? "rotate-90" : "-rotate-90"}`}
             />
           </button>
 
           {addOpen ? (
-            <div className="space-y-4 border-t border-[#e1e7f2] py-4">
-              <div className="flex flex-wrap items-center gap-3">
+            <div className="space-y-5 border-t border-[var(--rule)] px-5 py-5">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                 <input
                   ref={fileInput}
                   type="file"
@@ -288,16 +285,15 @@ export default function AssetsPage() {
                   type="button"
                   onClick={() => fileInput.current?.click()}
                   disabled={busy}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-bold transition-colors disabled:cursor-default disabled:opacity-50"
-                  style={{ borderColor: identity.border, background: identity.surface, color: identity.accent }}
+                  className={ui.button}
                 >
-                  <IconImage className="h-4 w-4" />
+                  <IconImage />
                   {uploadLabel}
                 </button>
-                <span className="text-xs text-[#647087]">אפשר לבחור כמה קבצים בבת אחת</span>
+                <span className={ui.help}>אפשר לבחור כמה קבצים בבת אחת</span>
               </div>
 
-              <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2">
+              <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-5">
                 <label className="sr-only" htmlFor="asset-import-url">
                   קישור לתמונה
                 </label>
@@ -308,19 +304,17 @@ export default function AssetsPage() {
                   onChange={(event) => setUrl(event.target.value)}
                   placeholder="https://..."
                   dir="ltr"
-                  className="min-h-11 w-64 max-w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-sm text-[#1d2940] focus:outline-2"
-                  style={{ outlineColor: identity.accent }}
+                  className={`${ui.field} w-72 max-w-full text-left text-sm`}
                 />
                 <button
                   type="submit"
                   disabled={importing || busy || !url.trim()}
-                  className="inline-flex min-h-11 items-center gap-2 rounded-md border px-4 text-sm font-bold transition-colors disabled:cursor-default disabled:opacity-50"
-                  style={{ borderColor: "#dedcd4", background: "#fff", color: "#3c3e3a" }}
+                  className={`${ui.button} ${ui.matchField}`}
                 >
-                  <IconLink className="h-4 w-4" />
+                  <IconLink />
                   {importing ? "מביאים…" : "להוסיף מקישור"}
                 </button>
-                <span className="text-xs text-[#647087]">קישור לתמונה אחת ברשת.</span>
+                <span className={`${ui.help} basis-full`}>קישור לתמונה אחת ברשת.</span>
               </form>
             </div>
           ) : null}
@@ -329,25 +323,28 @@ export default function AssetsPage() {
         {/* Everything the scan and the import have to say, in one place under the button
             that starts them. */}
         {scanning ? (
-          <p className="mt-4 text-xs leading-5" style={{ color: identity.accent }}>
+          <p className="mt-5 flex items-center gap-2.5 text-sm leading-6 text-[color:var(--ink-soft)]">
+            <span aria-hidden className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--primary)] motion-reduce:animate-none" />
             עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח.
           </p>
         ) : null}
-        {scanResult ? <p className="mt-4 text-sm leading-6 text-[color:var(--ink)]">{scanResult}</p> : null}
-        {notice ? <p className="mt-3 text-sm leading-6 text-[color:var(--ink)]">{notice}</p> : null}
-        {loadError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{loadError}</p> : null}
+        {scanResult ? <p className="mt-5 text-[15px] leading-7 text-[color:var(--ink)]">{scanResult}</p> : null}
+        {notice ? <p className="mt-4 text-[15px] leading-7 text-[color:var(--ink)]">{notice}</p> : null}
+        {loadError ? <p className={`${ui.error} mt-4`}>{loadError}</p> : null}
 
         {Object.keys(pending).length ? (
-          <ul className="mt-4 space-y-1.5">
+          <ul className="mt-5 space-y-2">
             {Object.entries(pending).map(([name, state]) => (
-              <li key={name} className="flex items-center gap-2 text-xs text-[#535f75]">
+              <li key={name} className="flex items-center gap-2.5 text-[13px] text-[var(--ink-soft)]">
                 {state === "uploading" ? (
-                  <span aria-hidden className="h-2 w-2 rounded-full" style={{ background: identity.accent }} />
+                  <span aria-hidden className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--primary)] motion-reduce:animate-none" />
+                ) : state === "done" ? (
+                  <IconCheck className="h-3.5 w-3.5 shrink-0 text-[var(--good)]" />
                 ) : (
-                  <IconSparkles className="h-3.5 w-3.5" />
+                  <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--danger)]" />
                 )}
                 <span className="truncate">{name}</span>
-                <span className="text-[#647087]">
+                <span className="text-[var(--ink-muted)]">
                   {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
                 </span>
               </li>
@@ -355,26 +352,26 @@ export default function AssetsPage() {
           </ul>
         ) : null}
 
-        {fileError ? <p className="mt-3 text-sm leading-6 text-[#9f4330]">{fileError}</p> : null}
+        {fileError ? <p className={`${ui.error} mt-4`}>{fileError}</p> : null}
 
         {loading ? (
           <LoadingMark label="טוענים את התמונות…" />
         ) : assets.length ? (
           <>
-            <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="mt-10 flex flex-wrap items-center justify-between gap-x-4">
               {/* Both counts, always — including a zero. The split is real information
                   about what is in the library; the total is the two added up. */}
-              <p className="text-xs text-[#647087]">
+              <p className={ui.meta}>
                 {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
                 {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
               </p>
-              <Link href="/posts" className="inline-flex items-center gap-2 text-sm font-bold text-[#1d2940] underline underline-offset-4">
-                <IconArrowLeft className="h-4 w-4" />
+              <Link href="/posts" className={ui.link}>
                 לפוסטים שבנינו מהן
+                <IconArrowLeft data-forward="" />
               </Link>
             </div>
 
-            <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+            <ul className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               {assets.map((asset) => (
                 <li key={asset.id}>
                   <AssetTile asset={asset} onOpen={() => setOpenId(asset.id)} />
@@ -397,12 +394,12 @@ export default function AssetsPage() {
         ) : loadError ? null : (
           // The empty state asks for the one thing the page asks for everywhere else and
           // stops. Upload and link import are one tap up, in the disclosure.
-          <section className="mt-7 rounded-lg border border-[#e1e7f2] bg-white p-8 text-center">
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full" style={{ background: identity.surface, color: identity.accent }}>
+          <section className={`${ui.card} mt-8 px-6 py-12 text-center`}>
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-[14px] bg-[var(--primary-soft)] text-[var(--primary)]">
               <IconImage className="h-6 w-6" />
             </span>
-            <h2 className="mt-4 text-lg font-black text-[#1d2940]">עוד אין כאן תמונות</h2>
-            <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#535f75]">
+            <h2 className="mt-4 text-lg font-bold tracking-tight text-[var(--ink)]">עוד אין כאן תמונות</h2>
+            <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[var(--ink-soft)]">
               לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
             </p>
             <StepLink stepKey="photos" className="mt-2" />

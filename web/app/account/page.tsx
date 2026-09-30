@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { AppShell } from "@/components/AppShell";
+import { AppShell, PageHeader } from "@/components/AppShell";
 import { DeleteAccount } from "@/components/account/DeleteAccount";
+import { CARD, FIELD, LABEL, LIST_ROW, ROW_CHEVRON } from "@/components/account/setupStyles";
+import { UIAction } from "@/components/design/Controls";
 import { endpoints, type AuthUser } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 export default function AccountPage() {
@@ -68,75 +71,87 @@ export default function AccountPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-lg">
-        <header className="border-b border-[#e1e7f2] pb-5">
-          <h1 className="text-2xl font-black tracking-tight text-[#1d2940]">החשבון</h1>
-        </header>
+      <div className="mx-auto max-w-[640px]">
+        <PageHeader title="החשבון" />
 
-        {me?.google_linked ? (
-          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border border-[#e1e7f2] bg-white p-5 text-sm text-[#1d2940]">
-            <span className="font-bold">מחובר עם Google</span>
-            <span dir="ltr" className="text-[#647087]">
-              {me.email}
-            </span>
-          </p>
-        ) : null}
-
-        <form onSubmit={submit} className="mt-6 space-y-4 rounded-lg border border-[#e1e7f2] bg-white p-5">
-          {settingFirst ? (
-            <div>
-              <h2 className="text-sm font-bold text-[#1d2940]">לקבוע סיסמה (לא חובה)</h2>
-              <p className="mt-1 text-xs leading-5 text-[#647087]">
-                נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google.
-              </p>
-            </div>
-          ) : null}
-          {fields.map((field, index) => (
-            <div key={field.label}>
-              <label htmlFor={`pw-${index}`} className="mb-1 block text-xs font-bold text-[#1d2940]">
-                {field.label}
-              </label>
-              <input
-                id={`pw-${index}`}
-                type="password"
-                value={field.value}
-                onChange={(e) => field.set(e.target.value)}
-                autoComplete={field.label.includes("הנוכחית") ? "current-password" : "new-password"}
-                className="w-full rounded-md border border-[var(--rule-dark)] bg-[#faf8f5] px-3 py-2 text-sm"
-              />
-            </div>
-          ))}
-
-          {error ? (
-            <p className="rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-3 py-2 text-xs text-[#9f4330]">
-              {error}
+        <div className="space-y-4">
+          {me?.google_linked ? (
+            <p className={`${CARD} flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-4 text-[15px] text-[color:var(--ink)] sm:px-6`}>
+              <span className="inline-flex items-center gap-2 font-semibold">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--good)] shadow-[0_0_0_3px_var(--good-soft)]" />
+                מחובר עם Google
+              </span>
+              <span dir="ltr" className="min-w-0 truncate text-[14px] text-[color:var(--ink-muted)]">
+                {me.email}
+              </span>
             </p>
           ) : null}
 
-          <button
-            type="submit"
-            disabled={pending || (!settingFirst && !current) || !next}
-            className="w-full rounded-md bg-[#2853c7] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
-          >
-            {pending ? "שומרים…" : settingFirst ? "לשמור סיסמה" : "להחליף סיסמה"}
-          </button>
-        </form>
+          <form onSubmit={submit} className={`${CARD} space-y-5 p-5 sm:p-7`}>
+            {settingFirst ? (
+              <div>
+                <h2 className="text-[17px] font-bold leading-7 text-[color:var(--ink)]">לקבוע סיסמה (לא חובה)</h2>
+                <p className="mt-1 text-[14px] leading-6 text-[color:var(--ink-soft)]">
+                  נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google.
+                </p>
+              </div>
+            ) : null}
+            {fields.map((field, index) => (
+              <div key={field.label}>
+                <label htmlFor={`pw-${index}`} className={LABEL}>
+                  {field.label}
+                </label>
+                <input
+                  id={`pw-${index}`}
+                  type="password"
+                  value={field.value}
+                  onChange={(e) => field.set(e.target.value)}
+                  autoComplete={field.label.includes("הנוכחית") ? "current-password" : "new-password"}
+                  className={FIELD}
+                />
+              </div>
+            ))}
 
-        {/* The subscription: when the free month ends, paying with PayPal, cancelling (app/billing). */}
-        <p className="mt-6 text-sm text-[color:var(--ink-soft)]">
-          <Link href="/billing" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
-            המנוי
-          </Link>
-          {" · החודש החינמי, התשלום והביטול"}
-        </p>
+            {error ? (
+              <p role="alert" className="rounded-lg bg-[var(--danger-soft)] px-3.5 py-2.5 text-[13px] leading-5 text-[color:var(--danger)]">
+                {error}
+              </p>
+            ) : null}
 
-        {/* The first-entry welcome, again, on demand (it is shown once by itself). */}
-        <p className="mt-6 text-sm text-[color:var(--ink-soft)]">
-          רוצים לראות שוב מה יש כאן?{" "}
-          <Link href="/dashboard?tour=1" className="font-bold text-[color:var(--ink)] underline underline-offset-4">
-            לסייר שוב
-          </Link>
-        </p>
+            <div className="pt-1">
+              <UIAction
+                type="submit"
+                disabled={pending || (!settingFirst && !current) || !next}
+                className="w-full sm:w-auto sm:!px-7"
+              >
+                {pending ? "שומרים…" : settingFirst ? "לשמור סיסמה" : "להחליף סיסמה"}
+              </UIAction>
+            </div>
+          </form>
+
+          {/* The subscription (app/billing) and the first-entry welcome again, on demand: two
+              ways out of this page, so a list with a hairline between them. */}
+          <ul className={`${CARD} divide-y divide-[var(--rule)] overflow-hidden`}>
+            <li>
+              <Link href="/billing" className={`group ${LIST_ROW}`}>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">המנוי</span>
+                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">החודש החינמי, התשלום והביטול</span>
+                </span>
+                <IconChevron className={ROW_CHEVRON} />
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard?tour=1" className={`group ${LIST_ROW}`}>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">לסייר שוב</span>
+                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">רוצים לראות שוב מה יש כאן?</span>
+                </span>
+                <IconChevron className={ROW_CHEVRON} />
+              </Link>
+            </li>
+          </ul>
+        </div>
 
         <DeleteAccount googleOnly={settingFirst} email={me?.email ?? ""} />
       </div>

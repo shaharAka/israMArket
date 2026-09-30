@@ -1,3 +1,24 @@
+/* The journey's steps hang under their week: hairlines between steps start where the text
+   does (the mark sits under the week's number), so the list reads as one map, not boxes. */
+.journey-steps > li {
+  position: relative;
+}
+.journey-steps > li + li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline-start: 60px;
+  inset-inline-end: 0;
+  height: 1px;
+  background: var(--rule);
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .journey-steps > li + li::before {
+    inset-inline-start: 64px;
+  }
+}
+
 /* The free month's journey: a step that was ticked since the last visit pops once, and a
    step reached from an empty state's link is pointed at. */
 @keyframes trial-tick {

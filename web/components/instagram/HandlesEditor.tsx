@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { HowToFind } from "@/components/help/HowToFind";
 import { endpoints } from "@/lib/api";
+import { IconPlus } from "@/lib/icons";
 
 /**
  * Up to five Instagram accounts the owner likes — competitors, neighbours, anyone whose
@@ -53,11 +54,11 @@ export function HandlesEditor({
 
   return (
     <section aria-labelledby="handles-heading">
-      <h2 id="handles-heading" className="text-base font-black text-[#20211f]">
+      <h2 id="handles-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
         חשבונות להשראה
       </h2>
       <div className="mt-0.5 flex flex-wrap items-center justify-between gap-x-3">
-        <p className="text-sm text-[#62635f]">עסקים שאתם אוהבים, עד {max}.</p>
+        <p className="text-[15px] text-[color:var(--ink-soft)]">עסקים שאתם אוהבים, עד {max}.</p>
         <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
       </div>
 
@@ -67,20 +68,23 @@ export function HandlesEditor({
             <li
               key={handle}
               dir="ltr"
-              className={`inline-flex min-h-10 items-center gap-1 rounded-full py-1 pl-3 pr-1 text-sm font-bold ${
-                failures[handle] ? "bg-[#fbf2ef] text-[#9f4330]" : "bg-[#eeede8] text-[#20211f]"
+              className={`inline-flex min-h-11 items-center gap-0.5 rounded-full py-1 pl-4 pr-1 text-[14px] font-medium ${
+                failures[handle]
+                  ? "bg-[var(--danger-soft)] text-[color:var(--danger)] shadow-[inset_0_0_0_1px_var(--danger-rule)]"
+                  : "bg-[var(--paper)] text-[color:var(--ink)] shadow-[var(--shadow-card)]"
               }`}
             >
               @{handle}
+              {/* An icon, not a typed "×": a glyph is read as a word on every chip. */}
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void save(handles.filter((item) => item !== handle))}
                 aria-label={`להסיר את @${handle}`}
                 title={`להסיר את @${handle}`}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full text-base leading-none text-[#62635f] hover:bg-white hover:text-[#20211f] disabled:opacity-40"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)] disabled:opacity-40"
               >
-                ×
+                <IconPlus className="h-4 w-4 rotate-45" />
               </button>
             </li>
           ))}
@@ -88,7 +92,7 @@ export function HandlesEditor({
       ) : null}
 
       {failed.length ? (
-        <ul className="mt-2 space-y-1 text-xs leading-5 text-[#9f4330]">
+        <ul className="mt-2 space-y-1 text-[13px] leading-6 text-[color:var(--danger)]">
           {failed.map((handle) => (
             <li key={handle}>{failures[handle]}</li>
           ))}
@@ -96,7 +100,7 @@ export function HandlesEditor({
       ) : null}
 
       {full ? null : (
-        <form onSubmit={(event) => void add(event)} className="mt-3 flex gap-2">
+        <form onSubmit={(event) => void add(event)} className="mt-4 flex gap-2">
           <label htmlFor="handle-input" className="sr-only">
             שם משתמש באינסטגרם או קישור לפרופיל
           </label>
@@ -114,12 +118,12 @@ export function HandlesEditor({
             spellCheck={false}
             aria-invalid={Boolean(error)}
             aria-describedby={error ? "handle-error" : undefined}
-            className="min-h-11 min-w-0 flex-1 rounded-md border border-[#dedcd4] bg-white px-3 text-sm placeholder:text-[#9a9b95] focus:border-[#20211f] focus:outline-none"
+            className="h-[46px] min-w-0 flex-1 rounded-[10px] border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 text-[15px] text-[color:var(--ink)] transition-[border-color,box-shadow] duration-200 placeholder:text-[color:var(--ink-faint)] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--primary-soft)] focus:outline-none aria-[invalid=true]:border-[var(--danger)]"
           />
           <button
             type="submit"
             disabled={busy || !draft.trim()}
-            className="min-h-11 shrink-0 rounded-md border border-[#cecdc7] bg-white px-4 text-sm font-bold text-[#20211f] hover:bg-[#f4f3ee] disabled:opacity-40"
+            className="h-[46px] shrink-0 rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-5 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-45"
           >
             {busy ? "שומרים…" : "להוסיף"}
           </button>
@@ -127,7 +131,7 @@ export function HandlesEditor({
       )}
 
       {error ? (
-        <p id="handle-error" role="alert" className="mt-2 text-xs leading-5 text-[#9f4330]">
+        <p id="handle-error" role="alert" className="mt-2 text-[13px] leading-6 text-[color:var(--danger)]">
           {error}
         </p>
       ) : null}

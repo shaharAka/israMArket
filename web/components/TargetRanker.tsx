@@ -3,12 +3,11 @@
 import { useState } from "react";
 import type { GrowthTargetCandidate } from "@/lib/api";
 import { AGENT_NAME } from "@/lib/agent";
-import { IconCheck, IconSparkles } from "@/lib/icons";
-import { SECTIONS } from "@/lib/sections";
+import { IconCheck, IconChevron, IconPlus, IconSparkles } from "@/lib/icons";
 
-/** The one section colour system, instead of this component's own sand and sage. */
-const TONE = SECTIONS.decisions;
-const TINT = { background: TONE.surface, borderColor: TONE.border, color: TONE.accent };
+/** A small icon-only control (reorder, remove): 44px to tap, quiet until hovered. */
+const ICON_BUTTON =
+  "inline-flex h-11 w-11 items-center justify-center rounded-md text-[var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[var(--ink)] disabled:opacity-30 disabled:hover:bg-transparent";
 
 /** A quarter carries three priorities. Four is a list, not a focus. */
 export const MAX_TARGETS = 3;
@@ -70,11 +69,11 @@ export function TargetRanker({
     recommended.every((item, index) => item.target === value[index]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <section>
-        <div className="flex items-baseline justify-between">
-          <h3 className="text-sm font-black text-[#191b18]">הסדר שלי</h3>
-          <span className={`text-[11px] ${atCap ? "font-bold text-[#191b18]" : "text-[#8b8e84]"}`}>
+        <div className="flex items-baseline justify-between gap-3">
+          <h3 className="text-[15px] font-semibold text-[var(--ink)]">הסדר שלי</h3>
+          <span className={`text-xs ${atCap ? "font-semibold text-[var(--ink)]" : "text-[var(--ink-muted)]"}`}>
             {value.length
               ? `${value.length} מתוך ${MAX_TARGETS} · הראשון הכי חשוב`
               : `אפשר לבחור עד ${MAX_TARGETS}`}
@@ -82,7 +81,7 @@ export function TargetRanker({
         </div>
 
         {value.length ? (
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-3 divide-y divide-[var(--rule)] overflow-hidden rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
             {value.map((target, index) => {
               const meta = byTarget.get(target);
               const isOver = overIndex === index && dragIndex !== null && dragIndex !== index;
@@ -103,52 +102,54 @@ export function TargetRanker({
                     setDragIndex(null);
                     setOverIndex(null);
                   }}
-                  className={`flex items-start gap-3 rounded-md border bg-white p-3 transition-colors ${
-                    isOver ? "border-[#191b18] bg-[#f4f3ee]" : "border-[#e6e4dc]"
+                  className={`flex items-center gap-3 py-2 pr-3 pl-2 transition-colors ${
+                    isOver ? "bg-[var(--primary-soft)]" : ""
                   } ${dragIndex === index ? "opacity-50" : ""}`}
                 >
+                  {/* The drag handle: six dots drawn in CSS, not a "⠿" glyph. */}
                   <span
                     aria-hidden
-                    className="mt-0.5 cursor-grab select-none text-lg leading-none text-[#b3b0a5]"
+                    className="h-4 w-2.5 shrink-0 cursor-grab bg-[radial-gradient(circle,var(--ink-faint)_1.2px,transparent_1.6px)] bg-[length:5px_5.5px]"
                     title="גררו כדי לשנות את הסדר"
-                  >
-                    ⠿
-                  </span>
-                  <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#191b18] text-[11px] font-bold text-white">
+                  />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-xs font-semibold tabular-nums text-[var(--primary-dark)]">
                     {index + 1}
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <span className="min-w-0 flex-1 py-1">
                     {meta ? (
-                      <span className="mb-1 block text-[10px] font-bold text-[#8b8e84]">{meta.category}</span>
+                      <span className="block text-xs font-medium text-[var(--ink-muted)]">{meta.category}</span>
                     ) : null}
-                    <span className="block text-sm font-bold leading-6 text-[#191b18]">{target}</span>
+                    <span className="block text-[15px] font-semibold leading-6 text-[var(--ink)]">{target}</span>
                   </span>
-                  <span className="flex shrink-0 items-center gap-1">
+                  <span className="flex shrink-0 items-center">
                     <button
                       type="button"
                       onClick={() => move(index, index - 1)}
                       disabled={index === 0}
                       aria-label="להזיז למעלה"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                      title="להזיז למעלה"
+                      className={ICON_BUTTON}
                     >
-                      ↑
+                      <IconChevron className="h-[18px] w-[18px] rotate-90" />
                     </button>
                     <button
                       type="button"
                       onClick={() => move(index, index + 1)}
                       disabled={index === value.length - 1}
                       aria-label="להזיז למטה"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] disabled:opacity-30"
+                      title="להזיז למטה"
+                      className={ICON_BUTTON}
                     >
-                      ↓
+                      <IconChevron className="h-[18px] w-[18px] -rotate-90" />
                     </button>
                     <button
                       type="button"
                       onClick={() => remove(target)}
                       aria-label="להסיר את היעד"
-                      className="h-7 w-7 rounded border border-[#e6e4dc] text-xs text-[#5e6159] hover:bg-[#f8f7f4]"
+                      title="להסיר את היעד"
+                      className={ICON_BUTTON}
                     >
-                      ✕
+                      <IconPlus className="h-[18px] w-[18px] rotate-45" />
                     </button>
                   </span>
                 </li>
@@ -156,22 +157,19 @@ export function TargetRanker({
             })}
           </ul>
         ) : (
-          <p className="mt-3 rounded-md border border-dashed border-[#dedcd4] bg-[#f8f7f4] px-4 py-6 text-center text-sm text-[#8b8e84]">
+          <p className="mt-3 rounded-xl bg-[var(--paper)] px-5 py-6 text-center text-sm leading-6 text-[var(--ink-muted)]">
             בחרו עד {MAX_TARGETS} יעדים מהרשימה למטה, ואז סדרו אותם לפי מה שהכי חשוב לכם.
           </p>
         )}
 
         {agentCanDecide ? (
-          <div
-            className="mt-3 flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
-            style={{ background: TONE.surface, borderColor: TONE.border }}
-          >
+          <div className="mt-4 flex flex-col gap-3 rounded-xl bg-[var(--primary-soft)] px-4 py-3.5 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-w-0">
-              <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
-                <IconSparkles className="h-3.5 w-3.5" />
+              <p className="flex items-center gap-2 text-[13px] font-semibold text-[var(--primary-dark)]">
+                <IconSparkles className="h-4 w-4" />
                 יש המלצה מוכנה
               </p>
-              <p className="mt-1 text-xs leading-5 text-[#5e6159]">
+              <p className="mt-1 text-[13px] leading-6 text-[var(--ink-soft)]">
                 {AGENT_NAME} סידרה את 3 היעדים שלדעתה יועילו לעסק הכי הרבה.
               </p>
             </div>
@@ -180,15 +178,15 @@ export function TargetRanker({
               // looked broken: the owner's manual picks usually *are* her three (she is
               // listed first), so the natural click landed on a dead control with no
               // explanation of why. An explicit confirmation says what actually happened.
-              <p className="flex shrink-0 items-center gap-2 rounded-md border bg-white px-3 py-2 text-xs font-bold" style={{ borderColor: TONE.border, color: TONE.accent }}>
-                <IconCheck className="h-3.5 w-3.5" />
+              <p className="flex shrink-0 items-center gap-2 text-[13px] font-semibold text-[var(--primary-dark)]">
+                <IconCheck className="h-4 w-4" />
                 בחרתם בדיוק מה ש{AGENT_NAME} המליצה
               </p>
             ) : (
               <button
                 type="button"
                 onClick={() => onChange(recommended.map((item) => item.target))}
-                className="shrink-0 rounded-md bg-[#20211f] px-4 py-2 text-xs font-bold text-white hover:bg-[#343632]"
+                className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[13px] font-semibold text-[var(--ink)] transition-colors hover:border-[var(--primary)] hover:text-[var(--primary-dark)]"
               >
                 לתת ל{AGENT_NAME} להחליט
               </button>
@@ -199,13 +197,13 @@ export function TargetRanker({
 
       {available.length ? (
         <section>
-          <h3 className="text-sm font-black text-[#191b18]">יעדים אפשריים</h3>
-          <p className="mt-1 text-xs text-[#8b8e84]">
+          <h3 className="text-[15px] font-semibold text-[var(--ink)]">יעדים אפשריים</h3>
+          <p className="mt-1 text-[13px] leading-6 text-[var(--ink-muted)]">
             {atCap
               ? `בחרתם ${MAX_TARGETS} יעדים להתמקד בהם. כדי להחליף, הסירו אחד.`
               : "לפי העסק, האתר והאבחון. לחצו על יעד כדי להוסיף אותו."}
           </p>
-          <ul className="mt-3 space-y-2">
+          <ul className="mt-3 space-y-3">
             {available.map((item) => {
               const isRecommended = (item.recommended_rank ?? 0) > 0;
               return (
@@ -214,24 +212,24 @@ export function TargetRanker({
                     type="button"
                     onClick={() => add(item.target)}
                     disabled={atCap}
-                    className={`flex w-full items-start gap-3 rounded-md border bg-white p-3 text-right ${
-                      atCap ? "cursor-not-allowed border-[#e6e4dc] opacity-50" : "border-[#e6e4dc] hover:border-[#191b18]"
+                    className={`group flex w-full items-start gap-3 rounded-xl bg-[var(--paper)] p-4 text-right ring-1 ring-inset ring-[var(--rule-dark)] transition-[box-shadow] duration-150 ${
+                      atCap ? "cursor-not-allowed opacity-50" : "hover:ring-[var(--primary)]"
                     }`}
                   >
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded border border-[#dedcd4] text-[#8b8e84]">
-                      +
+                    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--soft)] text-[var(--ink-muted)] transition-colors group-hover:bg-[var(--primary-soft)] group-hover:text-[var(--primary)]">
+                      <IconPlus className="h-4 w-4" />
                     </span>
                     <span className="min-w-0 flex-1">
-                      <span className="mb-1 flex items-center gap-2">
-                        <span className="text-[10px] font-bold text-[#8b8e84]">{item.category}</span>
+                      <span className="mb-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="text-xs font-medium text-[var(--ink-muted)]">{item.category}</span>
                         {isRecommended ? (
-                          <span className="rounded-full border px-2 py-0.5 text-[10px] font-bold" style={TINT}>
+                          <span className="rounded-full bg-[var(--primary-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--primary-dark)]">
                             {AGENT_NAME} ממליצה · {item.recommended_rank}
                           </span>
                         ) : null}
                       </span>
-                      <span className="block text-sm font-bold leading-6 text-[#191b18]">{item.target}</span>
-                      <span className="mt-1 block text-xs leading-5 text-[#5e6159]">{item.why_this}</span>
+                      <span className="block text-[15px] font-semibold leading-6 text-[var(--ink)]">{item.target}</span>
+                      <span className="mt-1 block text-[13px] leading-6 text-[var(--ink-soft)]">{item.why_this}</span>
                     </span>
                   </button>
                 </li>
@@ -240,7 +238,7 @@ export function TargetRanker({
           </ul>
         </section>
       ) : value.length ? (
-        <p className="flex items-center gap-2 text-xs font-bold" style={{ color: TONE.accent }}>
+        <p className="flex items-center gap-2 text-[13px] font-semibold text-[var(--primary-dark)]">
           <IconCheck className="h-4 w-4" />
           בחרתם את כל היעדים. סדרו אותם לפי מה שהכי חשוב לכם.
         </p>

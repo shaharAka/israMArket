@@ -4,8 +4,9 @@ import { continueWithGoogle, googleStartUrl } from "@/lib/googleAuth";
 
 /**
  * "להמשיך עם Google", drawn to Google's sign-in branding rules rather than our own button
- * tones: the unmodified four-colour "G" on white, a #747775 hairline, #1F1F1F medium-weight
- * text, and the word "Google" in Latin letters as Google requires. The label stays in the
+ * tones: the unmodified four-colour "G" on white, a grey hairline (our --ink-muted, the
+ * nearest token to Google's #747775), dark medium-weight text, and the word "Google" in
+ * Latin letters as Google requires. The label stays in the
  * app's Hebrew font: Roboto has no Hebrew, and a label in two fonts reads worse. The mark
  * sits at the start of the line (the right, in RTL), as Google's own Hebrew button does.
  * Sized to the email button next to it, which the rules allow.
@@ -38,7 +39,7 @@ export function GoogleButton({
         continueWithGoogle(next, back);
       }}
       aria-disabled={disabled || undefined}
-      className={`flex min-h-12 w-full items-center justify-center gap-2.5 rounded-md border border-[#747775] bg-white px-3 text-sm font-medium text-[#1f1f1f] no-underline transition-colors hover:bg-[#f2f2f2] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f1f1f] active:bg-[#e8e8e8] ${
+      className={`flex min-h-12 w-full items-center justify-center gap-3 rounded-lg border border-[var(--ink-muted)] bg-white px-4 text-[15px] font-medium text-[var(--ink)] no-underline transition-colors hover:bg-[var(--soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--primary)] active:bg-[var(--rule)] ${
         disabled ? "pointer-events-none opacity-40" : ""
       } ${className}`}
     >
@@ -77,7 +78,7 @@ export function OrDivider({ label = "או עם אימייל" }: { label?: string
   return (
     <div className="relative flex items-center py-1" role="separator" aria-label={label}>
       <div className="flex-grow border-t border-[var(--rule)]" />
-      <span aria-hidden="true" className="mx-4 flex-shrink text-xs text-[var(--ink-muted)]">
+      <span aria-hidden="true" className="mx-4 flex-shrink text-[13px] text-[var(--ink-muted)]">
         {label}
       </span>
       <div className="flex-grow border-t border-[var(--rule)]" />

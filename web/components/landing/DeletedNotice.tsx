@@ -32,7 +32,8 @@ export function DeletedNotice() {
   return (
     <div role="status" aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-6 z-[80] flex justify-center px-4">
       {visible ? (
-        <p className="rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-bold text-white shadow-lg">
+        <p className="inline-flex items-center gap-3 rounded-xl bg-[var(--ink)] px-5 py-3 text-sm font-semibold text-white shadow-[var(--shadow-pop)]">
+          <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
           החשבון וכל המידע נמחקו
         </p>
       ) : null}

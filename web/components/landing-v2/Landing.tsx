@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { DemoLink } from "@/components/landing/DemoLink";
+import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
-import { MONTH, PART_SUMMARY, STORY, TRUST } from "./content";
+import { MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
 import { RouteHero } from "./RouteHero";
@@ -11,7 +11,7 @@ import { ScrollScenes } from "./ScrollScenes";
 import "./lv2.css";
 
 /**
- * Landing draft, in the product's own direction (blue and sun, the storefront, the plan
+ * The landing page, in the product's own direction (blue and sun, the storefront, the plan
  * as a route). The hero is a navigation map that draws the route as you scroll; then the
  * plan fills in, the weekly screen, the monthly review, trust, price, questions.
  *
@@ -38,7 +38,7 @@ const FAQ: { q: string; a: string }[] = [
 /** Set before the first paint, so the scroll-driven start states never flash. */
 const EARLY = 'document.documentElement.dataset.lv2="on"';
 
-export function LandingDraft() {
+export function Landing() {
   return (
     <div className="lv2">
       <script dangerouslySetInnerHTML={{ __html: EARLY }} />
@@ -84,7 +84,6 @@ export function LandingDraft() {
                     להתחיל
                     <IconArrowLeft className="h-4 w-4" />
                   </Link>
-                  <DemoLink className="lv2-btn-quiet lv2-btn-quiet--lg" />
                 </div>
                 <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
                   אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
@@ -170,17 +169,32 @@ export function LandingDraft() {
           </div>
         </section>
 
-        {/* The weekly screen: what the owner opens every week. */}
-        <section id="week" className="lv2-weekly" aria-labelledby="lv2-week-title">
-          <div className="lv2-wrap lv2-weekly-head">
-            <p className="lv2-eyebrow">השבוע שלכם</p>
-            <h2 id="lv2-week-title" className="lv2-h2">
-              כל שבוע, צעד אחד ברור.
-            </h2>
-            <p className="lv2-lead">מה עושים השבוע ולמה, הפוסטים שמחכים לאישור, והמספרים שמראים אם מתקרבים.</p>
-          </div>
-          <div className="lv2-weekly-stage" data-scene="view">
-            <HeroWeek className="lv2-weekly-card" />
+        {/* The weekly screen, as a short tour (pinned on desktop): each point lights up
+            its part of the card. */}
+        <section id="week" className="lv2-tour" data-scene="track" data-steps={WEEK_TOUR.length} aria-labelledby="lv2-week-title">
+          <div className="lv2-tour-pin">
+            <div className="lv2-wrap lv2-tour-grid">
+              <div className="lv2-tour-text">
+                <p className="lv2-eyebrow">השבוע שלכם</p>
+                <h2 id="lv2-week-title" className="lv2-h2">
+                  כל שבוע, צעד אחד ברור.
+                </h2>
+                <ol className="lv2-tour-points">
+                  {WEEK_TOUR.map((point, i) => (
+                    <li key={point.k} data-i={i}>
+                      <span className="lv2-tour-bar" aria-hidden>
+                        <i />
+                      </span>
+                      <strong>{point.k}</strong>
+                      <span>{point.v}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="lv2-tour-stage">
+                <HeroWeek tour className="lv2-tour-card" />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -262,6 +276,7 @@ export function LandingDraft() {
         </div>
       </footer>
 
+      <DeletedNotice />
       <ScrollScenes />
     </div>
   );
