@@ -8,6 +8,67 @@ Product source: `docs/onboarding-v2.md`, revisions 5 and 8. The first-month sequ
 measurement → owner-selected products and materials → content → review and adjustment.
 The UI must not invent product availability, profitability, baseline numbers or evidence.
 
+## Integration with Claude
+
+Ownership agreed on 30 September 2026:
+
+- Codex owns colors, typography, styles, CSS, motion, visual assets and shared UI components.
+- Claude owns APIs, data, product flows, business rules and product copy.
+- Future Codex edits must preserve Claude's handlers, payloads, persistence, generation,
+  authentication and flow decisions. Presentation components should receive the data and
+  actions supplied by Claude. Changes to behavior need to be handed back to Claude.
+- Before each new design pass, fetch `origin` and check both the local integrated
+  `ux-simplification` branch and `origin/ux-simplification` for new commits. Sync completed
+  integration commits into `codex/motion-pool`; do not integrate individual running tasks.
+- Claude first merges its three behavior tasks into `ux-simplification`, then merges
+  `codex/motion-pool`, tests the complete flow, and handles PR #2. Resolve mixed files
+  hunk by hunk, retaining Codex's presentation and Claude's behavior. A whole-file
+  “ours/theirs” choice can discard either side's work.
+
+The design worktree already contains local `ux-simplification` at `4ff09da`. Both that
+branch and the fetched remote branch were checked when adopting this split; neither had
+unmerged commits at that checkpoint. The visual implementation checkpoint is `8d1a085`.
+
+### Existing behavior to review during integration
+
+The earlier design requests produced some behavior changes before the ownership split.
+They remain explicit handoff items for Claude; the design branch is not a CSS-only patch:
+
+- `web/lib/api.ts`: `ensureDemoPlan` builds a stored quarterly plan for the explicit demo
+  and includes it in mock business/current-strategy responses. No backend source or real
+  API contract was changed.
+- `web/components/AppShell.tsx`, `web/app/business/page.tsx`, `web/app/brand/page.tsx`,
+  `web/components/BrandLink.tsx`: route ownership, calendar under the plan, brand utility
+  navigation, existing logo display and brand refresh events. `/brand` replaces the deleted
+  `BrandPicker.tsx` popup and saves the full brand draft explicitly through `saveBrand`.
+- `web/components/posts/CalendarView.tsx`, `web/app/calendar/page.tsx`,
+  `web/app/posts/page.tsx`: shared month/date selection, filters, active-plan post opening,
+  dated quarterly actions, fallback business-plan loading, browser-local personal tasks
+  with read/write protection, and manual copying after clipboard failure. Local tasks
+  are a preview implementation, not a server-backed task service.
+- `web/components/PostEditor.tsx`: direct photograph upload followed by asset attachment,
+  validation, pending/error states and returned-strategy updates. Existing editing,
+  approval and publishing handlers must be reconciled with Claude's final implementation.
+  `web/components/posts/BottomSheet.tsx` also adds focus trapping and focus return.
+- `web/components/start/StartFlow.tsx`: explicit `?mock=1` preview state and bypass of
+  account-based redirects for that walkthrough. Keep Claude's real onboarding and auth flow.
+- `web/components/plan/QuarterPlanView.tsx`, `web/components/start/StepQuarter.tsx`:
+  folded supporting sections, abbreviated direction heading with the full statement
+  preserved in the explanation, and a derived first action from integration status.
+  Claude owns the final sequencing and prerequisite rules.
+- `web/app/strategy/page.tsx`, `web/app/dashboard/page.tsx`: quarter/month selection,
+  plan-first presentation, current-data fallbacks, and placement of execution/month-ahead
+  actions. Keep Claude's final Today logic, generation triggers and setup gating while
+  wiring them to the visual components.
+- Existing page headings and instructional copy were also adjusted. Claude's final
+  product wording takes precedence; design-library demonstration copy remains local.
+
+For the complete file manifest at the implementation checkpoint, run
+`git diff --name-status 4ff09da 8d1a085`. The principal shared surfaces are AppShell,
+SetupChecklist, the dashboard/strategy/editor, QuarterPlanView, StartFlow and the goal,
+plan and quarter steps. The integration must include these even when Git finds no
+text conflict: a clean merge alone does not verify the behavior.
+
 ## Live review
 
 - `/design`: three areas — language, components, and transitions. Language opens with
