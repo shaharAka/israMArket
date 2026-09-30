@@ -53,26 +53,26 @@ export default function LoginPage() {
           router.replace("/dashboard");
         }}
         disabled={pending}
-        className="drawn-button mb-7 flex w-full items-center justify-between gap-3 border border-[#dedcd4] bg-[#f4f1ea] p-4 text-right text-[#191b18] hover:bg-[#ebe6db] transition-colors"
+        className="drawn-button mb-7 flex w-full items-center justify-between gap-3 border border-[var(--rule-dark)] bg-[var(--primary-soft)] p-4 text-right text-[var(--ink)] hover:bg-[var(--primary-soft)] transition-colors"
       >
         <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[#c8c5b8] bg-white rounded">
-            <IconSparkles className="w-5 h-5 text-[#191b18]" />
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[var(--rule-dark)] bg-white rounded">
+            <IconSparkles className="w-5 h-5 text-[var(--ink)]" />
           </div>
           <div className="min-w-0">
-            <span className="block font-bold text-sm text-[#191b18]">לראות את הדמו</span>
-            <span className="block text-xs text-[#5e6159]">מאפיית לחם תום, בלי הרשמה</span>
+            <span className="block font-bold text-sm text-[var(--ink)]">לראות את הדמו</span>
+            <span className="block text-xs text-[var(--ink-soft)]">מאפיית לחם תום, בלי הרשמה</span>
           </div>
         </div>
-        <span className="shrink-0 whitespace-nowrap text-xs font-bold text-[#191b18] underline underline-offset-4">
+        <span className="shrink-0 whitespace-nowrap text-xs font-bold text-[var(--ink)] underline underline-offset-4">
           לפתוח ←
         </span>
       </button>
 
       <div className="relative mb-6 flex items-center py-2">
-        <div className="flex-grow border-t border-[#e6e4dc]"></div>
-        <span className="mx-4 flex-shrink text-xs text-[#63665e]">או עם החשבון שלכם</span>
-        <div className="flex-grow border-t border-[#e6e4dc]"></div>
+        <div className="flex-grow border-t border-[var(--rule)]"></div>
+        <span className="mx-4 flex-shrink text-xs text-[var(--ink-muted)]">או עם החשבון שלכם</span>
+        <div className="flex-grow border-t border-[var(--rule)]"></div>
       </div>
 
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
@@ -104,9 +104,9 @@ export default function LoginPage() {
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-[#63665e]">
+      <p className="mt-6 text-center text-xs text-[var(--ink-muted)]">
         עדיין אין לכם חשבון?{" "}
-        <Link href="/signup" className="font-bold text-[#191b18] hover:underline underline-offset-4">
+        <Link href="/signup" className="font-bold text-[var(--ink)] hover:underline underline-offset-4">
           לפתוח חשבון
         </Link>
       </p>
@@ -116,17 +116,17 @@ export default function LoginPage() {
 
 export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f8f7f4] px-4 py-8 sm:py-12">
-      <div className="bg-[#ffffff] border border-[#e6e4dc] rounded-lg shadow-sm w-full max-w-md p-5 sm:p-8">
+    <div className="auth-blue flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4 py-8 sm:py-12">
+      <div className="bg-[var(--paper)] border border-[var(--rule)] rounded-lg w-full max-w-md p-5 sm:p-8">
         <Link href="/" className="mb-6 flex items-center gap-2.5" aria-label="לעמוד הבית">
-          <BrandMark className="h-9 w-9 text-[#191b18]" />
+          <BrandMark className="h-9 w-9 text-[var(--primary)]" />
           <div>
-            <span className="font-black text-base text-[#1e201d]">ישראמארקט</span>
-            <span className="-mt-0.5 block text-[11px] text-[#63665e]">שיווק לעסקים קטנים</span>
+            <span className="font-black text-base text-[var(--ink)]">ישראמארקט</span>
+            <span className="-mt-0.5 block text-[11px] text-[var(--ink-muted)]">שיווק לעסקים קטנים</span>
           </div>
         </Link>
 
-        <h1 className="mb-6 text-2xl font-black tracking-tight text-[#1e201d]">{title}</h1>
+        <h1 className="mb-6 text-2xl font-black tracking-tight text-[var(--ink)]">{title}</h1>
         {children}
       </div>
     </div>
@@ -153,7 +153,7 @@ export function Field({
 }) {
   return (
     <label className="block text-sm">
-      <span className="mb-1.5 block text-sm font-bold text-[#1e201d]">{label}</span>
+      <span className="mb-1.5 block text-sm font-bold text-[var(--ink)]">{label}</span>
       {/* 16px on phones: iOS zooms the page into any field smaller than that. */}
       <input
         name={name}
@@ -163,7 +163,7 @@ export function Field({
         dir={dir}
         autoComplete={autoComplete}
         required
-        className="min-h-12 w-full rounded-md border border-[#dedcd4] bg-[#ffffff] px-3.5 py-2.5 text-base text-[#1e201d] sm:text-sm"
+        className="min-h-12 w-full rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-base text-[var(--ink)] sm:text-sm"
       />
     </label>
   );

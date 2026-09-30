@@ -347,3 +347,7 @@ a {
 .app-blue .plan-document dl { background:var(--paper); }
 
 .app-blue .dot-grid { background-image:none; }
+
+/* Public account screens share the product's focus treatment. */
+.auth-blue :is(a,button,input):focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.auth-blue input:focus { border-color: var(--primary); }

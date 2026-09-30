@@ -13,17 +13,17 @@
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1px solid #374b3d;
+  border: 1px solid var(--primary);
   animation: ring 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s 1 both;
 }
 @keyframes trial-fade-done {
-  from { color: #20211f; text-decoration-color: transparent; }
+  from { color: var(--ink); text-decoration-color: transparent; }
 }
 .trial-fade-done {
   animation: trial-fade-done 0.7s ease-out 0.35s both;
 }
 @keyframes trial-highlight {
-  0%, 60% { background-color: #eef3ea; }
+  0%, 60% { background-color: var(--primary-soft); }
   100% { background-color: transparent; }
 }
 .trial-highlight {

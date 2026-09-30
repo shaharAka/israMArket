@@ -83,10 +83,10 @@ export default function SignupPage() {
       }
     >
       {draft ? (
-        <p className="-mt-3 mb-5 text-sm text-[#5e6159]">נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
+        <p className="-mt-3 mb-5 text-sm text-[var(--ink-soft)]">נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
       ) : preview ? (
         <div className="-mt-3 mb-5 flex items-center justify-between gap-3">
-          <p className="text-sm text-[#5e6159]">אחרי זה נבנה את החודש הראשון.</p>
+          <p className="text-sm text-[var(--ink-soft)]">אחרי זה נבנה את החודש הראשון.</p>
           <Swatches preview={preview} size="sm" />
         </div>
       ) : null}
@@ -129,22 +129,22 @@ export default function SignupPage() {
           {pending ? "פותחים חשבון…" : "לפתוח חשבון"}
         </Button>
       </form>
-      <p className="mt-4 text-center text-xs leading-5 text-[#63665e]">
+      <p className="mt-4 text-center text-xs leading-5 text-[var(--ink-muted)]">
         פתיחת חשבון, גם עם Google, היא הסכמה ל
-        <Link href="/terms" className="font-bold text-[#191b18] underline-offset-4 hover:underline">
+        <Link href="/terms" className="font-bold text-[var(--ink)] underline-offset-4 hover:underline">
           תנאי השימוש
         </Link>
         {" "}ול
-        <Link href="/security" className="font-bold text-[#191b18] underline-offset-4 hover:underline">
+        <Link href="/security" className="font-bold text-[var(--ink)] underline-offset-4 hover:underline">
           מדיניות הפרטיות
         </Link>
         .
       </p>
-      <p className="mt-6 text-center text-xs text-[#63665e]">
+      <p className="mt-6 text-center text-xs text-[var(--ink-muted)]">
         כבר יש לכם חשבון?{" "}
         <Link
           href="/login"
-          className="font-bold text-[#191b18] underline-offset-4 hover:underline"
+          className="font-bold text-[var(--ink)] underline-offset-4 hover:underline"
         >
           להיכנס
         </Link>

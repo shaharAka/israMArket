@@ -1,13 +1,15 @@
 import type { CSSProperties } from "react";
+import { Storefront } from "@/components/brand/Storefront";
 
 /**
  * The hero's visual: a route being planned across a quiet street map, from "העסק שלכם"
  * through research and the plan to three months of work. It reads the way a navigation
  * app plots a trip (a faint alternative, then the chosen line drawing itself, stops
- * appearing as it reaches them), but it is our own drawing: no pins, colours, icons or
+ * appearing as it reaches them), then arrives at the shared storefront and sunrise.
+ * It is our own drawing: no pins, colours, icons or
  * chrome from any real map or navigation product.
  *
- * Server-rendered, no JavaScript. The draw-in is CSS (stroke-dashoffset on a
+ * Server-rendered. The draw-in is CSS (stroke-dashoffset on a
  * pathLength=1 path, landing.css `.rm-*`), each stop's delay is computed here from its
  * distance along the route so it pops exactly when the line reaches it, and the small
  * dot that keeps travelling afterwards is SVG <animateMotion>. Under
@@ -111,7 +113,7 @@ const LAYOUTS: Record<"wide" | "compact", Layout> = {
       { at: [190, 62], label: LABELS[2], place: "above" },
       { at: [140, 62], label: LABELS[3], place: "below" },
       { at: [72, 128], label: LABELS[4], place: "below" },
-      { at: [40, 62], label: LABELS[5], place: "above", kind: "end" },
+      { at: [40, 62], label: LABELS[5], place: "below", kind: "end" },
     ],
   },
 };
@@ -192,11 +194,11 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
     <figure
       role="img"
       aria-label={`המסלול: ${LABELS.join(", ")}`}
-      className={`lp-route relative overflow-hidden rounded-[28px] border border-[#e6e3da] bg-[#fcfbf8] shadow-[0_40px_80px_-56px_rgba(25,27,24,0.5),0_2px_6px_-3px_rgba(25,27,24,0.06)] ${className}`}
+      className={`lp-route relative overflow-hidden rounded-lg border border-[var(--rule)] bg-[var(--paper)] ${className}`}
     >
       <div aria-hidden className={`flex items-center gap-2 ${wide ? "px-6 pt-5" : "px-4 pt-3.5"}`}>
-        <span className="rm-status-dot relative inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#2d3f32]" />
-        <span className="grid text-[13px] font-bold text-[#34372f]">
+        <span className="rm-status-dot relative inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--primary)]" />
+        <span className="grid text-[13px] font-bold text-[var(--ink-soft)]">
           <span className="rm-status-a [grid-area:1/1]">בונים את המסלול…</span>
           <span className="rm-status-b [grid-area:1/1]">המסלול ל-3 החודשים מוכן</span>
         </span>
@@ -206,7 +208,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
         <svg viewBox={`0 0 ${width} ${height}`} className="absolute inset-0 h-full w-full" fill="none">
           <defs>
             <pattern id={`${id}-dots`} width="20" height="20" patternUnits="userSpaceOnUse">
-              <circle cx="10" cy="10" r="1.1" fill="#dcd8cc" />
+              <circle cx="10" cy="10" r="1.1" fill="var(--rule-dark)" />
             </pattern>
           </defs>
 
@@ -214,10 +216,10 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
           <g className="rm-map">
             <rect width={width} height={height} fill={`url(#${id}-dots)`} opacity="0.7" />
             {layout.park ? (
-              <rect x={layout.park.x} y={layout.park.y} width={layout.park.w} height={layout.park.h} rx="18" fill="#e3eadf" opacity="0.8" />
+              <rect x={layout.park.x} y={layout.park.y} width={layout.park.w} height={layout.park.h} rx="18" fill="var(--primary-soft)" opacity="0.8" />
             ) : null}
             {layout.streets.map((street, index) => (
-              <path key={index} d={polyline(street)} stroke="#ece9e1" strokeWidth={wide ? 16 : 11} strokeLinecap="round" />
+              <path key={index} d={polyline(street)} stroke="var(--rule)" strokeWidth={wide ? 16 : 11} strokeLinecap="round" />
             ))}
           </g>
 
@@ -225,7 +227,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
           <path
             className="rm-ghost"
             d={roundedPath(layout.ghost, radius)}
-            stroke="#b9b5a8"
+            stroke="var(--rule-dark)"
             strokeWidth={wide ? 3 : 2.5}
             strokeDasharray={wide ? "2 9" : "2 7"}
             strokeLinecap="round"
@@ -248,7 +250,7 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
             className="rm-draw"
             d={d}
             pathLength={1}
-            stroke="#2d3f32"
+            stroke="var(--primary)"
             strokeWidth={wide ? 5.5 : 4.5}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -261,25 +263,23 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
             if (stop.kind === "start") {
               return (
                 <g key={stop.label} transform={`translate(${x} ${y})`}>
-                  <circle className="rm-halo" r={wide ? 11 : 9} fill="#2d3f32" opacity="0.18" />
-                  <circle className="rm-pop" style={style} r={wide ? 9 : 7.5} fill="#191b18" stroke="#fff" strokeWidth="3" />
+                  <circle className="rm-halo" r={wide ? 11 : 9} fill="var(--primary)" opacity="0.18" />
+                  <circle className="rm-pop" style={style} r={wide ? 9 : 7.5} fill="var(--primary)" stroke="#fff" strokeWidth="3" />
                 </g>
               );
             }
             if (stop.kind === "end") {
               return (
                 <g key={stop.label} transform={`translate(${x} ${y})`}>
-                  <circle className="rm-pulse" style={style} r={wide ? 12 : 10} fill="#e0a42b" opacity="0.35" />
-                  <g className="rm-pop" style={style}>
-                    <circle r={wide ? 13 : 10.5} fill="#fff" stroke="#e0a42b" strokeWidth="3" />
-                    <circle r={wide ? 5.5 : 4.5} fill="#e0a42b" />
-                  </g>
+                  <svg x={wide ? -80 : -50} y={wide ? -95 : -65} width={wide ? 160 : 100} height={wide ? 117 : 73} className="rm-store">
+                    <Storefront phase={.5} animated className="rm-store-art" />
+                  </svg>
                 </g>
               );
             }
             return (
               <g key={stop.label} transform={`translate(${x} ${y})`}>
-                <circle className="rm-pop" style={style} r={wide ? 8 : 6.5} fill="#fff" stroke="#2d3f32" strokeWidth={wide ? 3.5 : 3} />
+                <circle className="rm-pop" style={style} r={wide ? 8 : 6.5} fill="#fff" stroke="var(--primary)" strokeWidth={wide ? 3.5 : 3} />
               </g>
             );
           })}
@@ -287,8 +287,8 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
           {/* Your business, moving along the plan. Starts after the draw, rests at the end,
               fades, and goes again. Hidden under reduced motion (landing.css). */}
           <g className="rm-traveler" opacity="0">
-            <circle r={wide ? 11 : 9} fill="#e0a42b" opacity="0.28" />
-            <circle r={wide ? 6 : 5} fill="#e0a42b" stroke="#fff" strokeWidth="2.5" />
+            <circle r={wide ? 11 : 9} fill="var(--sun)" opacity="0.28" />
+            <circle r={wide ? 6 : 5} fill="var(--sun)" stroke="#fff" strokeWidth="2.5" />
             <animateMotion
               dur={`${TRAVEL_DURATION}s`}
               begin={`${TRAVEL_BEGIN}s`}
@@ -318,14 +318,14 @@ export function RouteMap({ variant, className = "" }: { variant: "wide" | "compa
             style={{ left: `${(stop.at[0] / width) * 100}%`, top: `${(stop.at[1] / height) * 100}%` }}
           >
             <span
-              className={`rm-label block whitespace-nowrap rounded-full border font-bold ${
+              className={`rm-label block whitespace-nowrap rounded-sm border font-bold ${
                 wide ? "px-3 py-1 text-sm" : "px-2 py-0.5 text-[12px]"
               } ${
                 stop.kind === "start"
-                  ? "border-[#191b18] bg-[#191b18] text-white"
+                  ? "border-[var(--ink)] bg-[var(--ink)] text-white"
                   : stop.kind === "end"
-                    ? "border-[#ecd9ad] bg-[#fbf3e1] text-[#6b4a0e]"
-                    : "border-[#e6e3da] bg-white/95 text-[#34372f]"
+                    ? "border-[var(--sun)] bg-[var(--sand)] text-[var(--sand-dark)]"
+                    : "border-[var(--rule)] bg-white/95 text-[var(--ink-soft)]"
               }`}
               style={{ "--rm-delay": `${(stop.delay + 0.08).toFixed(2)}s` } as CSSProperties}
             >

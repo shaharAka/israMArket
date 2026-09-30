@@ -32,7 +32,7 @@ export function StepLink({
   return (
     <Link
       href={`/dashboard#step-${step.key}`}
-      className={`inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[color:var(--primary)] underline decoration-[#c7d6c2] underline-offset-4 hover:decoration-current ${className}`}
+      className={`inline-flex min-h-11 items-center gap-1.5 text-xs font-bold text-[color:var(--primary)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-current ${className}`}
     >
       <span>
         צעד בשבוע {step.week} של החודש החינמי

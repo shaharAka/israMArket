@@ -20,28 +20,28 @@ export const metadata: Metadata = {
  * No compliance or certification claims: we describe what we do, nothing more.
  */
 
-const LINK = "font-bold text-[#191b18] underline decoration-[#c7c4b7] underline-offset-4 hover:decoration-[#191b18]";
+const LINK = "font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-[var(--ink)]";
 
 function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section aria-labelledby={id} className="border-t border-[#e6e4dc] py-8 sm:py-10">
-      <h2 id={id} className="text-xl font-black tracking-tight text-[#191b18] sm:text-2xl">
+    <section aria-labelledby={id} className="border-t border-[var(--rule)] py-8 sm:py-10">
+      <h2 id={id} className="text-xl font-black tracking-tight text-[var(--ink)] sm:text-2xl">
         {title}
       </h2>
-      <div className="mt-4 text-[15px] leading-7 text-[#34372f] sm:text-base sm:leading-8">{children}</div>
+      <div className="mt-4 text-[15px] leading-7 text-[var(--ink-soft)] sm:text-base sm:leading-8">{children}</div>
     </section>
   );
 }
 
 function Rows({ rows }: { rows: { title: string; body: ReactNode; code?: string }[] }) {
   return (
-    <ul className="divide-y divide-[#eeede8] overflow-hidden rounded-[18px] border border-[#e6e4dc] bg-white">
+    <ul className="divide-y divide-[var(--rule)] overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
       {rows.map((row) => (
         <li key={row.title} className="px-4 py-3.5 sm:px-5">
-          <p className="font-bold text-[#191b18]">{row.title}</p>
-          <p className="mt-0.5 text-[#4f524b]">{row.body}</p>
+          <p className="font-bold text-[var(--ink)]">{row.title}</p>
+          <p className="mt-0.5 text-[var(--ink-soft)]">{row.body}</p>
           {row.code ? (
-            <p dir="ltr" className="mt-1 text-right font-mono text-xs text-[#8b8e84]">
+            <p dir="ltr" className="mt-1 text-right font-mono text-xs text-[var(--ink-muted)]">
               {row.code}
             </p>
           ) : null}
@@ -104,10 +104,10 @@ const META_SCOPES = [
 
 export default function SecurityPage() {
   return (
-    <div className="min-h-screen bg-[#f9f8f6] text-[#191b18]">
+    <div className="min-h-screen bg-[var(--canvas)] text-[var(--ink)]">
       <header className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 pt-4 sm:px-8 sm:pt-6">
         <Link href="/" className="inline-flex min-h-11 items-center gap-2.5">
-          <BrandMark className="h-8 w-8 text-[#191b18]" />
+          <BrandMark className="h-8 w-8 text-[var(--primary)]" />
           <span className="text-lg font-black tracking-tight">ישראמארקט</span>
         </Link>
         <Link href="/" className={`${LINK} inline-flex min-h-11 items-center text-sm`}>
@@ -117,11 +117,11 @@ export default function SecurityPage() {
 
       <main className="mx-auto max-w-3xl px-4 pb-16 sm:px-8">
         <div className="pb-8 pt-8 sm:pt-12">
-          <p className="text-sm font-bold text-[#2d3f32]">אבטחה ופרטיות</p>
+          <p className="text-sm font-bold text-[var(--primary)]">אבטחה ופרטיות</p>
           <h1 className="mt-2 text-[2rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
             המידע של העסק שלכם
           </h1>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-[#5e6159] sm:text-lg sm:leading-8">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--ink-soft)] sm:text-lg sm:leading-8">
             מה אנחנו שומרים, למה, מי עוד רואה את זה ואיך מוחקים הכול. כתבנו כאן רק מה שהמערכת עושה בפועל.
           </p>
         </div>
@@ -129,13 +129,13 @@ export default function SecurityPage() {
         <Section id="short" title="בקצרה">
           <ul className="grid gap-3 sm:grid-cols-2">
             {TRUST_TILES.map(({ icon: Icon, title, line }) => (
-              <li key={title} className="flex gap-3 rounded-[18px] border border-[#e3e8df] bg-white p-4">
-                <span aria-hidden className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] bg-[#e8eee5] text-[#2d3f32]">
+              <li key={title} className="flex gap-3 rounded-lg border border-[var(--rule)] bg-white p-4">
+                <span aria-hidden className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--primary)]">
                   <Icon className="h-5 w-5" />
                 </span>
                 <div>
                   <p className="font-black leading-6">{title}</p>
-                  <p className="mt-0.5 text-sm leading-6 text-[#4f524b]">{line}</p>
+                  <p className="mt-0.5 text-sm leading-6 text-[var(--ink-soft)]">{line}</p>
                 </div>
               </li>
             ))}
@@ -144,7 +144,7 @@ export default function SecurityPage() {
 
         <Section id="stored" title="מה אנחנו שומרים ולמה">
           <Rows rows={STORED} />
-          <p className="mt-4 text-[#4f524b]">
+          <p className="mt-4 text-[var(--ink-soft)]">
             {/* web/lib/draft.ts: the /start draft lives in localStorage until signup. */}
             לפני ההרשמה, מה שאתם כותבים בשאלות הפתיחה נשמר רק בדפדפן שלכם.
             {" "}
@@ -163,12 +163,12 @@ export default function SecurityPage() {
             <strong>מה לא ביקשנו:</strong> הרשאה לפרסם, לערוך או למחוק פוסטים. בלי ההרשאה הזו אין לנו דרך טכנית לפרסם בשמכם. את הפוסטים אתם מפרסמים בעצמכם.
           </p>
           <details className="lp-faq group mt-5">
-            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-bold text-[#191b18] underline decoration-[#c7c4b7] underline-offset-4 [&::-webkit-details-marker]:hidden">
+            <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-2 font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 [&::-webkit-details-marker]:hidden">
               כל ההרשאות, אחת אחת
             </summary>
-            <h3 className="mb-2 mt-4 text-sm font-black text-[#63665e]">גוגל</h3>
+            <h3 className="mb-2 mt-4 text-sm font-black text-[var(--ink-muted)]">גוגל</h3>
             <Rows rows={GOOGLE_SCOPES} />
-            <h3 className="mb-2 mt-6 text-sm font-black text-[#63665e]">פייסבוק ואינסטגרם</h3>
+            <h3 className="mb-2 mt-6 text-sm font-black text-[var(--ink-muted)]">פייסבוק ואינסטגרם</h3>
             <Rows rows={META_SCOPES} />
           </details>
         </Section>

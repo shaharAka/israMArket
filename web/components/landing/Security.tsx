@@ -56,19 +56,19 @@ export const TRUST_TILES: Tile[] = [
 
 export function Security() {
   return (
-    <section aria-labelledby="security-title" className="lp-security border-t border-[#e6e4dc]">
+    <section aria-labelledby="security-title" className="lp-security border-t border-[var(--rule)]">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-8 sm:py-20">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <header data-rv className="max-w-2xl">
-            <p className="text-sm font-bold text-[#2d3f32]">אבטחה ופרטיות</p>
+            <p className="text-sm font-bold text-[var(--primary)]">אבטחה ופרטיות</p>
             <h2 id="security-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
               המידע של העסק שלכם
             </h2>
-            <p className="mt-2 text-base leading-7 text-[#5e6159]">מה אנחנו רואים, מה לא, ואיך מוחקים.</p>
+            <p className="mt-2 text-base leading-7 text-[var(--ink-soft)]">מה אנחנו רואים, מה לא, ואיך מוחקים.</p>
           </header>
           <Link
             href="/security"
-            className="inline-flex min-h-11 items-center self-start font-bold text-[#191b18] underline decoration-[#c7c4b7] underline-offset-4 hover:decoration-[#191b18] sm:self-auto"
+            className="inline-flex min-h-11 items-center self-start font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-[var(--ink)] sm:self-auto"
           >
             כל הפרטים
           </Link>
@@ -80,14 +80,14 @@ export function Security() {
               key={title}
               data-rv
               style={{ "--rv-i": index % 3 } as CSSProperties}
-              className="lp-lift flex gap-4 rounded-[20px] border border-[#e3e8df] bg-white/85 p-4 shadow-[0_18px_40px_-34px_rgba(45,63,50,0.55)] backdrop-blur-sm sm:p-6"
+              className="lp-lift flex gap-4 rounded-lg border border-[var(--rule)] bg-[var(--paper)] p-4 sm:p-6"
             >
-              <span aria-hidden className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] bg-[#e8eee5] text-[#2d3f32]">
+              <span aria-hidden className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md bg-[var(--primary-soft)] text-[var(--primary)]">
                 <Icon className="h-6 w-6" />
               </span>
               <div className="min-w-0">
-                <h3 className="text-base font-black leading-6 text-[#191b18] sm:text-lg">{title}</h3>
-                <p className="mt-1 text-sm leading-6 text-[#4f524b] sm:text-[15px]">{line}</p>
+                <h3 className="text-base font-black leading-6 text-[var(--ink)] sm:text-lg">{title}</h3>
+                <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)] sm:text-[15px]">{line}</p>
               </div>
             </li>
           ))}

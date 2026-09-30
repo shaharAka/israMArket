@@ -76,11 +76,11 @@ function GoogleMark() {
 export function OrDivider({ label = "או עם אימייל" }: { label?: string }) {
   return (
     <div className="relative flex items-center py-1" role="separator" aria-label={label}>
-      <div className="flex-grow border-t border-[#e6e4dc]" />
-      <span aria-hidden="true" className="mx-4 flex-shrink text-xs text-[#63665e]">
+      <div className="flex-grow border-t border-[var(--rule)]" />
+      <span aria-hidden="true" className="mx-4 flex-shrink text-xs text-[var(--ink-muted)]">
         {label}
       </span>
-      <div className="flex-grow border-t border-[#e6e4dc]" />
+      <div className="flex-grow border-t border-[var(--rule)]" />
     </div>
   );
 }
