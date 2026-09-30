@@ -22,6 +22,8 @@ services:
       # origin check must match it exactly (scheme included).
       WEB_ORIGIN: ${WEB_ORIGIN:?set WEB_ORIGIN in .env}
       API_ORIGIN: ${API_ORIGIN:-http://localhost:8000}
+      # WhatsApp tracked links are printed as {PUBLIC_BASE_URL}/r/{code}; blank = WEB_ORIGIN.
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       META_APP_ID: ${META_APP_ID:-}

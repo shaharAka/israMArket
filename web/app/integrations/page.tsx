@@ -20,10 +20,17 @@ import {
 } from "@/lib/api";
 import {
   IconCheck,
+  IconCopy,
   IconLink,
 } from "@/lib/icons";
 import { SECTIONS } from "@/lib/sections";
-import { toast } from "@/lib/ui";
+import { copyText, toast } from "@/lib/ui";
+import {
+  FIXED_SOURCES,
+  SOURCE_HINT_HE,
+  whatsappEndpoints,
+  type WhatsappPayload,
+} from "@/lib/whatsapp";
 
 /** The one section colour system — this page used to carry its own sand and sage. */
 const TONE = SECTIONS.business;
@@ -70,6 +77,9 @@ export default function IntegrationsPage() {
   const [websiteInput, setWebsiteInput] = useState("");
   const [scanningWebsite, setScanningWebsite] = useState(false);
 
+  // The WhatsApp tracked link. Loaded on its own so a failure here never blanks the page.
+  const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
+
   async function reload(forceLive = false) {
     await endpoints
       .integrations(forceLive)
@@ -78,6 +88,13 @@ export default function IntegrationsPage() {
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.");
+      });
+
+    await whatsappEndpoints
+      .get()
+      .then(setWhatsapp)
+      .catch(() => {
+        // The row shows its own empty state; the other connections still load.
       });
 
     await endpoints
@@ -237,13 +254,18 @@ export default function IntegrationsPage() {
   // in the order the rows appear. When everything is connected (the demo, or a finished
   // setup) the page is asking for nothing, so nothing competes: the actions that remain —
   // re-scanning the site, switching the demo off — are outlines and links.
-  const primaryKey: "website" | "ga4" | "meta" | null = !business?.website_url
+  // The WhatsApp link comes right after the site: it takes a minute, needs no account and
+  // no approval, and it is the measurement the plan promises from day one.
+  const whatsappSet = Boolean(whatsapp?.number_e164);
+  const primaryKey: "website" | "whatsapp" | "ga4" | "meta" | null = !business?.website_url
     ? "website"
-    : !ga4Connected
-      ? "ga4"
-      : !metaConnected
-        ? "meta"
-        : null;
+    : whatsapp && !whatsappSet
+      ? "whatsapp"
+      : !ga4Connected
+        ? "ga4"
+        : !metaConnected
+          ? "meta"
+          : null;
 
   return (
     <AppShell>
@@ -429,7 +451,12 @@ export default function IntegrationsPage() {
           </div>
 
           {/* ============================================================== */}
-          {/* CONNECTION 2: Google Analytics */}
+          {/* CONNECTION 2: the WhatsApp tracked link (ours, nothing to connect) */}
+          {/* ============================================================== */}
+          <WhatsappRow data={whatsapp} primary={primaryKey === "whatsapp"} onChange={setWhatsapp} />
+
+          {/* ============================================================== */}
+          {/* CONNECTION 3: Google Analytics */}
           {/* ============================================================== */}
           <div className="border-t border-[#e9e8e3] p-5 sm:p-6">
             <RowHead
@@ -515,7 +542,8 @@ export default function IntegrationsPage() {
                     <span>לחבר את נתוני האתר</span>
                   </Button>
                   <span className="text-xs text-[#8b8e84]">
-                    נכנסים עם חשבון הגוגל שלכם, בלי לתת לנו סיסמה.
+                    {/* Shortened for the word budget; the full sentence is in the expand. */}
+                    בלי לתת לנו סיסמה.
                   </span>
                 </div>
               )}
@@ -570,7 +598,7 @@ export default function IntegrationsPage() {
           </div>
 
           {/* ============================================================== */}
-          {/* CONNECTION 3: Instagram & Facebook */}
+          {/* CONNECTION 4: Instagram & Facebook */}
           {/* ============================================================== */}
           <div className="border-t border-[#e9e8e3] p-5 sm:p-6">
             <RowHead
@@ -655,7 +683,7 @@ export default function IntegrationsPage() {
                     <span>לחבר את אינסטגרם ופייסבוק</span>
                   </Button>
                   <span className="text-xs text-[#8b8e84]">
-                    נכנסים עם חשבון הפייסבוק שמנהל את הדף.
+                    עם החשבון שמנהל את הדף.
                   </span>
                 </div>
               )}
@@ -786,6 +814,260 @@ export default function IntegrationsPage() {
     </AppShell>
   );
 }
+
+/**
+ * קישור הוואטסאפ — the owner types the number once and gets one short link per place a
+ * customer can tap "write to us". The face says what is counted and what is not in one
+ * line (the honesty rule keeps it visible); the message text, the post links and the
+ * privacy detail are one tap down.
+ */
+function WhatsappRow({
+  data,
+  primary,
+  onChange,
+}: {
+  data: WhatsappPayload | null;
+  primary: boolean;
+  onChange: (next: WhatsappPayload) => void;
+}) {
+  const isSet = Boolean(data?.number_e164);
+  const [editing, setEditing] = useState(false);
+  // null = untouched, so the field shows the stored (or suggested) value until typed in.
+  const [number, setNumber] = useState<string | null>(null);
+  const [text, setText] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const isFixed = (key: string) => (FIXED_SOURCES as readonly string[]).includes(key);
+  const fixed = (data?.links || [])
+    .filter((link) => isFixed(link.source_key))
+    .sort((a, b) => WHATSAPP_COPY_ORDER.indexOf(a.source_key) - WHATSAPP_COPY_ORDER.indexOf(b.source_key));
+  const postLinks = (data?.links || []).filter((link) => !isFixed(link.source_key));
+  const showForm = !isSet || editing;
+  const numberValue = number ?? (editing ? data?.number_display || "" : data?.suggested_number || "");
+  const textValue = text ?? data?.default_text_he ?? "";
+
+  async function save(body: { number: string; default_text_he?: string }, done: string) {
+    setSaving(true);
+    setError("");
+    try {
+      const next = await whatsappEndpoints.save(body);
+      onChange(next);
+      setEditing(false);
+      setNumber(null);
+      setText(null);
+      toast(done);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את המספר. נסו שוב.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="border-t border-[#e9e8e3] p-5 sm:p-6">
+      <RowHead
+        mark="וואטסאפ"
+        title="קישור הוואטסאפ"
+        status={isSet ? "פעיל" : "לא הוגדר"}
+        tone={isSet ? "emerald" : "slate"}
+        // What is counted and what is not, as the row's one line: on the face, never
+        // behind the expand (UI-RULES rule 7 never drops a "we cannot measure this").
+        note="סופרים לחיצות, לא הודעות שנשלחו. הקוד בהודעה מראה מאיפה הגיעה הפנייה."
+      />
+
+      {showForm ? (
+        <div className="mt-4">
+          <label htmlFor="whatsapp-number" className="sr-only">
+            מספר הוואטסאפ של העסק
+          </label>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <input
+              id="whatsapp-number"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={numberValue}
+              onChange={(e) => setNumber(e.target.value)}
+              placeholder="050-1234567"
+              dir="ltr"
+              className="flex-1 rounded-md border border-[#dedcd4] bg-[#faf8f5] px-3 py-2 text-right text-sm text-[#191b18] focus:border-[#191b18] focus:outline-none"
+            />
+            <Button
+              size="md"
+              tone="primary"
+              variant={primary ? "solid" : "outline"}
+              disabled={saving || !numberValue.trim()}
+              onClick={() => void save({ number: numberValue }, isSet ? "המספר עודכן" : "הקישורים מוכנים")}
+            >
+              {saving ? "שומרים…" : isSet ? "לשמור את המספר" : "ליצור את הקישורים"}
+            </Button>
+          </div>
+          {editing ? (
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(false);
+                setNumber(null);
+                setError("");
+              }}
+              className="mt-2 min-h-11 text-xs text-[#5e6159] underline underline-offset-4"
+            >
+              לבטל
+            </button>
+          ) : null}
+        </div>
+      ) : (
+        // One copy button per place, the place as its label: the owner's job here is "copy
+        // the bio link", and a list of four rows with four URLs cost the page 40 words
+        // (UI-RULES rule 7). The URL is in each button's tooltip, and the number moved
+        // into the expand below — it is set once.
+        <div className="mt-4">
+          <p className="text-xs font-bold text-[#62635f]">להעתיק קישור:</p>
+          <div className="mt-1.5 flex flex-wrap gap-2">
+            {fixed.map((link) => (
+              <button
+                key={link.code}
+                type="button"
+                onClick={() => void copyText(link.url, `הקישור ל${link.label_he} הועתק`)}
+                aria-label={`להעתיק את הקישור ל${link.label_he}`}
+                title={link.url}
+                className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-[#cecdc7] bg-white px-3 text-xs font-bold text-[#20211f] hover:bg-[#faf8f5]"
+              >
+                <IconCopy className="h-3.5 w-3.5" />
+                {WHATSAPP_SHORT[link.source_key] || link.label_he}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {error ? (
+        <p className="mt-2 rounded-md border border-[#eed1c9] bg-[#fbf2ef] px-2.5 py-1.5 text-[13px] leading-5 text-[#9f4330]">
+          {error}
+        </p>
+      ) : null}
+
+      {isSet ? null : <HowToFind topic="whatsapp_business" label="איך כותבים את המספר?" className="mt-1" />}
+
+      <RowDetails summary={isSet ? "המספר וההודעה" : "מה נספר ומה לא"}>
+        {isSet && !editing ? (
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span>
+              המספר:{" "}
+              <strong dir="ltr" className="text-[#191b18]">
+                {data?.number_display}
+              </strong>
+            </span>
+            <button
+              type="button"
+              onClick={() => setEditing(true)}
+              className="min-h-11 font-bold text-[#191b18] underline underline-offset-4"
+            >
+              לשנות את המספר
+            </button>
+          </p>
+        ) : null}
+        {isSet ? (
+          <div className="border-t border-[#e5e3da] pt-3">
+            <label htmlFor="whatsapp-text" className="block font-bold text-[#191b18]">
+              ההודעה שהלקוח שולח
+            </label>
+            <textarea
+              id="whatsapp-text"
+              value={textValue}
+              maxLength={300}
+              rows={2}
+              onChange={(e) => setText(e.target.value)}
+              placeholder={data?.default_text_fallback_he}
+              className="mt-1.5 w-full rounded-md border border-[#dedcd4] bg-[#faf8f5] px-3 py-2 text-sm text-[#191b18] focus:border-[#191b18] focus:outline-none"
+            />
+            <p className="mt-1">
+              בסוף ההודעה נוסיף קוד קצר לפי המקום, למשל <bdi>(קוד: IG-BIO)</bdi>. אם הלקוח
+              מוחק אותו, לא נדע מאיפה הגיע.
+            </p>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={saving || text === null}
+              onClick={() =>
+                void save({ number: data?.number_e164 || "", default_text_he: textValue }, "ההודעה נשמרה")
+              }
+              className="mt-2"
+            >
+              {saving ? "שומרים…" : "לשמור את ההודעה"}
+            </Button>
+          </div>
+        ) : null}
+        <div className={isSet ? "border-t border-[#e5e3da] pt-3" : ""}>
+          <p className="font-bold text-[#191b18]">איפה שמים כל קישור</p>
+          <ul className="mt-1 space-y-0.5">
+            {FIXED_SOURCES.map((key) => (
+              <li key={key}>
+                <strong>{WHATSAPP_LABELS[key]}:</strong> {SOURCE_HINT_HE[key]}
+              </li>
+            ))}
+            <li>
+              <strong>פוסטים:</strong> כל פוסט שמזמין לכתוב בוואטסאפ מקבל קישור משלו, בערכת הפרסום של
+              הפוסט.
+            </li>
+          </ul>
+        </div>
+        {postLinks.length ? (
+          <div className="border-t border-[#e5e3da] pt-3">
+            <p className="font-bold text-[#191b18]">הקישורים של הפוסטים</p>
+            <ul className="mt-1 space-y-1">
+              {postLinks.map((link) => (
+                <li key={link.code} className="flex items-center justify-between gap-3">
+                  <span className="min-w-0 truncate">{link.label_he}</span>
+                  <button
+                    type="button"
+                    onClick={() => void copyText(link.url, "הקישור הועתק")}
+                    className="min-h-11 shrink-0 font-bold text-[#191b18] underline underline-offset-2"
+                  >
+                    להעתיק
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <div className="border-t border-[#e5e3da] pt-3">
+          <p className="font-bold text-[#191b18]">מה נספר ומה לא</p>
+          <p className="mt-1">
+            נספרת כל לחיצה על הקישור, ואם אותו אדם לחץ פעמיים, זה נספר פעמיים. לא נדע אם ההודעה
+            נשלחה או אם נסגרה עסקה. את זה רק אתם רואים בוואטסאפ.
+          </p>
+          <p className="mt-1">
+            תצוגה מקדימה של הקישור, למשל כשמדביקים אותו בצ׳אט, לא נספרת. על כל לחיצה אנחנו שומרים רק
+            את היום, את הקישור ואת סוג המכשיר בערך. לא את כתובת הרשת של המכשיר, ולא מי לחץ.{" "}
+            <a href="/security#whatsapp" className="font-bold text-[#191b18] underline">
+              עוד על הפרטיות
+            </a>
+          </p>
+        </div>
+      </RowDetails>
+    </div>
+  );
+}
+
+/** The copy buttons' labels: the place, as short as it can be and still be read. */
+const WHATSAPP_SHORT: Record<string, string> = {
+  "ig-bio": "ביו באינסטגרם",
+  story: "סטורי",
+  gbp: "הכרטיס בגוגל",
+  default: "כללי",
+};
+
+/** Bio first: it is the link most owners paste first. */
+const WHATSAPP_COPY_ORDER = ["ig-bio", "story", "gbp", "default"];
+
+const WHATSAPP_LABELS: Record<string, string> = {
+  default: "הקישור הכללי",
+  "ig-bio": "הביו באינסטגרם",
+  story: "סטורי",
+  gbp: "הכרטיס של העסק בגוגל",
+};
 
 /**
  * Which guide answers a failed connection. Only sign-in failures get one: "the server is not

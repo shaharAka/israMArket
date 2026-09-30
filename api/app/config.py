@@ -75,6 +75,15 @@ class Settings(BaseSettings):
     # experiment can never leave a user without posts.
     post_model_fallback: bool = True
 
+    # The origin printed in front of every WhatsApp tracked link: {PUBLIC_BASE_URL}/r/{code}.
+    # Empty = WEB_ORIGIN, because in the documented deployment only the web tier is public
+    # and it forwards /r/{code} to the API (web/app/r/[code]/route.ts); API_ORIGIN is an
+    # internal address there. Set it when links should live on a different short domain.
+    public_base_url: str = ""
+    # Counted clicks per link per minute. Past this the redirect still works, it just is
+    # not counted — a stuck refresh loop or a scraper cannot inflate the owner's numbers.
+    whatsapp_clicks_per_minute: int = 30
+
     # Rate limits (requests per window, seconds).
     auth_rate_limit: int = 8
     auth_rate_window_seconds: int = 300

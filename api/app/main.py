@@ -25,6 +25,7 @@ from app.routers import (
     research,
     setup,
     strategy,
+    whatsapp,
 )
 from app.security import DEFAULT_JWT_SECRET
 
@@ -103,6 +104,9 @@ app.include_router(setup.router)
 app.include_router(promotion.router)
 app.include_router(instagram.router)
 app.include_router(research.router)
+app.include_router(whatsapp.router)
+# The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
+app.include_router(whatsapp.public_router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
 app.include_router(public.router)
 # Onboarding v2 (/start, before signup): anonymous too, with its own budgets.

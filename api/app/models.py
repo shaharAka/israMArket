@@ -44,6 +44,11 @@ class Business(Base):
     scraped_profile_json: Mapped[str] = mapped_column(Text, default="")
     generate_state_json: Mapped[str] = mapped_column(Text, default="")
     onboarding_complete: Mapped[int] = mapped_column(Integer, default=0)
+    # The WhatsApp tracked link (services/whatsapp.py). E.164 with the plus, e.g.
+    # "+972501234567"; NULL until the owner sets it. The default text is what the customer's
+    # message starts with — every link appends its own short source code to it.
+    whatsapp_number_e164: Mapped[str | None] = mapped_column(String(20), nullable=True, default=None)
+    whatsapp_default_text_he: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -317,3 +322,50 @@ class ResearchRun(Base):
     sources_json: Mapped[str] = mapped_column(Text, default="{}")
     model: Mapped[str] = mapped_column(String(80), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class WhatsappLink(Base):
+    """One short tracked link, /r/{code}, that redirects to wa.me with a prefilled message.
+
+    One row per (business, source): the Instagram bio, a story, the Google card, or one
+    post. `source_key` is what the owner's results group by; the code is what goes out in
+    public. The message text is resolved at redirect time (the link's own text, else the
+    business default), so editing the default updates every link already posted.
+    """
+
+    __tablename__ = "whatsapp_links"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    code: Mapped[str] = mapped_column(String(16), unique=True, index=True)
+    # e.g. "default", "ig-bio", "story", "gbp", "ig-post-202610-3"
+    source_key: Mapped[str] = mapped_column(String(64))
+    label_he: Mapped[str] = mapped_column(String(255), default="")
+    # Empty = use the business's default text.
+    prefilled_text_he: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    __table_args__ = (UniqueConstraint("business_id", "source_key", name="uq_whatsapp_link_source"),)
+
+
+class WhatsappClick(Base):
+    """A daily counter of clicks on one link, split by a coarse device bucket.
+
+    Deliberately not an event log: no IP address, no full user agent, no timestamp finer
+    than the day and nothing that identifies who clicked. Preview crawlers and bots are
+    never counted (services/whatsapp.is_bot). `business_id` is carried so account
+    deletion (services/account_deletion.py) removes these rows with the business.
+    """
+
+    __tablename__ = "whatsapp_clicks"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    link_id: Mapped[int] = mapped_column(ForeignKey("whatsapp_links.id"), index=True)
+    # Israel's calendar day, "YYYY-MM-DD".
+    day: Mapped[str] = mapped_column(String(10))
+    # "instagram" | "facebook" | "ios" | "android" | "desktop" | "other"
+    ua_family: Mapped[str] = mapped_column(String(20), default="other")
+    count: Mapped[int] = mapped_column(Integer, default=0)
+
+    __table_args__ = (UniqueConstraint("link_id", "day", "ua_family", name="uq_whatsapp_click_bucket"),)

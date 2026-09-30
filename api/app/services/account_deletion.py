@@ -7,6 +7,8 @@ the next migration would silently outgrow. It walks `Base.metadata`:
 * every table with a `business_id` column loses the rows of the user's businesses,
 * every table with a `user_id` column loses the user's rows,
 * `webhook_deliveries` (keyed by `endpoint_id`) goes before its endpoints,
+* `whatsapp_clicks` references `whatsapp_links` but also carries `business_id`, so the
+  business walk (children first) removes the clicks before their links,
 * then the businesses, then the user.
 
 `tests/test_account_deletion.py` fails if a table ever references anything other than
@@ -29,7 +31,8 @@ from app.models import Business, User, WebhookDelivery, WebhookEndpoint
 from app.services import images
 
 # The only foreign-key targets this module knows how to cascade from.
-HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints"}
+# `whatsapp_links` is safe because every table pointing at it also has `business_id`.
+HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links"}
 
 
 def delete_account(db: Session, user: User) -> dict:

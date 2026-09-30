@@ -35,6 +35,7 @@ from app.models import Business, Integration, Strategy
 from app.services.audiences import catalogue_for
 from app.services.calendar_il import gregorian_month_meta
 from app.services.jsonutil import loads
+from app.services import whatsapp
 
 # --- scheduling -----------------------------------------------------------------------
 
@@ -237,6 +238,9 @@ def post_brief(index: int, post: dict) -> dict:
         "published_at": _text(post.get("published_at")) or None,
         "has_image": bool(_text(post.get("image_url"))),
         "tracking_url": _text(post.get("tracking_url")),
+        # The post's own WhatsApp tracked link, filled in by `queue_for` when the post's
+        # call to action is WhatsApp and the number is set (services/whatsapp.py).
+        "whatsapp_url": "",
     }
 
 
@@ -295,13 +299,34 @@ def queue_for(
     today: date | None = None,
 ) -> dict:
     """Everything the publishing screen needs, in one response."""
+    posts = _posts(strategy)
+    queue = split_queue(posts, today=today)
+    _attach_whatsapp_links(db, business, strategy, posts, queue)
     return {
         "year": strategy.year,
         "month": strategy.month,
         "month_name_he": gregorian_month_meta(strategy.year, strategy.month)["month_name_he"],
-        **split_queue(_posts(strategy), today=today),
+        **queue,
         "capability": capability_for(db, business),
     }
+
+
+def _attach_whatsapp_links(db: Session, business: Business, strategy: Strategy, posts: list[dict], queue: dict) -> None:
+    """Give every post whose call to action is WhatsApp its own tracked link. Links are
+    created on first read and stable after that, so the kit never hands out two links for
+    one post."""
+    if not business.whatsapp_number_e164:
+        return
+    created = False
+    for key in ("due", "upcoming", "unscheduled", "awaiting_approval", "published"):
+        for brief in queue.get(key) or []:
+            index = brief["index"]
+            link = whatsapp.link_for_post(db, business, strategy, index, posts[index])
+            if link:
+                brief["whatsapp_url"] = whatsapp.link_url(link.code)
+                created = True
+    if created:
+        db.commit()
 
 
 # --- the campaign brief ---------------------------------------------------------------
