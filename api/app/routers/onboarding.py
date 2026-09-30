@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Annotated, Literal
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel, Field, ValidationError
@@ -27,6 +27,7 @@ from app.services.onboarding_draft import (
     apply_owner_context,
     link_draft_photos,
     owner_context_errors_he,
+    normalize_links,
     seed_from_stored,
 )
 from app.services.preview import cached_scan
@@ -137,6 +138,7 @@ class FromDraftIn(BaseModel):
     chosen_posts: list[SamplePostIn] | None = Field(default=None, max_length=3)
     # Revision 5: the 3-month plan from /public/quarter-plan, as the owner last saw it.
     quarter_plan: QuarterPlanIn | None = None
+    deferred_links: dict[Literal["website", "instagram", "facebook", "tiktok"], Annotated[str, Field(max_length=300)]] = Field(default_factory=dict)
 
 
 def _stored_plan(plan: QuarterPlanIn | None) -> dict | None:
@@ -174,6 +176,18 @@ def from_draft(
         chosen_posts=[post.model_dump(mode="json") for post in body.chosen_posts or []],
         quarter_plan=_stored_plan(body.quarter_plan),
     )
+    # Keep deferred public links as owner reminders, away from planner inputs.
+    # Invalid optional sources must not prevent signup or erase the original answer.
+    if body.deferred_links:
+        _, errors = normalize_links(body.deferred_links)
+        stored = loads(business.scraped_profile_json, {}) or {}
+        context = stored.get("owner_context") or {}
+        context["pending_links"] = {
+            key: {"url": value, "error": errors.get(key, "הקישור נשמר לבדיקה בהמשך. אפשר לאשר או להחליף אותו כאן.")}
+            for key, value in body.deferred_links.items() if value.strip()
+        }
+        stored["owner_context"] = context
+        business.scraped_profile_json = dumps(stored)
     # The free month (Revision 7 B) starts at signup; an account from before the trial
     # existed starts it here, the first time it brings a plan in.
     if user.trial_started_at is None:

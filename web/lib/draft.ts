@@ -126,6 +126,9 @@ export type FlowState = {
   draft: OnboardingDraft;
   /** Which screens were answered or skipped: the card only fills what was asked. */
   seen: string[];
+  /** Links the owner explicitly chose to fix later. Keep the raw answers to resume. */
+  deferredLinks?: LinkKey[];
+  deferredLinkErrors?: LinkErrors;
   brandScan?: BrandScan | null;
   suggestions?: SuggestedAudience[] | null;
   suggestionsFor?: string;
@@ -447,12 +450,12 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
   const d = flow.draft;
   const links: OnboardingDraft["links"] = {};
   if (!d.has_none) {
-    if (d.links.website?.trim()) links.website = normalizeUrl(d.links.website);
+    if (d.links.website?.trim() && !flow.deferredLinks?.includes("website")) links.website = normalizeUrl(d.links.website);
     for (const net of ["instagram", "tiktok"] as const) {
       const handle = normalizeHandle(d.links[net] ?? "");
-      if (handle) links[net] = handle;
+      if (handle && !flow.deferredLinks?.includes(net)) links[net] = handle;
     }
-    if (d.links.facebook?.trim()) links.facebook = d.links.facebook.trim();
+    if (d.links.facebook?.trim() && !flow.deferredLinks?.includes("facebook")) links.facebook = d.links.facebook.trim();
   }
   const activity: OnboardingDraft["activity"] = {};
   // Activity counts for every selected network, even when the owner did not know the handle.
@@ -837,6 +840,7 @@ async function saveDraft(flow: FlowState): Promise<Business | null> {
       method: "POST",
       body: JSON.stringify({
         draft,
+        deferred_links: Object.fromEntries((flow.deferredLinks ?? []).map((key) => [key, flow.draft.links[key] ?? ""])),
         chosen_direction: chosenDirectionOf(flow),
         quarter_plan: plan ? planForApi(plan) : null,
       }),

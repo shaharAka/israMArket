@@ -17,7 +17,7 @@ import {
   type Network,
 } from "@/lib/draft";
 import { baselineSummary, leverReflection, targetText } from "@/lib/goals";
-import { budgetIls } from "@/lib/quarterPlan";
+import { budgetLabel } from "@/lib/quarterPlan";
 import { withLamed } from "./ui";
 
 export type StepId =
@@ -50,6 +50,20 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
 ];
 
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
+
+const STEP_DESTINATIONS: Record<StepId, string> = {
+  name: "לשם העסק", what: "לתיאור העסק", different: "למה שמייחד את העסק",
+  audiences: "ללקוחות", seasons: "לעונות השנה", links: "לאתר ולרשתות",
+  tried: "למה שכבר ניסיתם", competitors: "למתחרים", grow: "למטרת הצמיחה",
+  baseline: "למצב העסק היום", lever: "להמלצה לצמיחה", budget: "לתקציב",
+  target: "ליעד ל־3 חודשים", found: "למה שגילינו", direction: "לכיוון התוכנית",
+  quarter: "לתוכנית ל־3 חודשים", save: "לשמירת התוכנית",
+};
+
+export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
+  const destination = nextStep(step, flow);
+  return destination ? `לעבור ${STEP_DESTINATIONS[destination]}` : undefined;
+}
 
 /**
  * A saved flow from an earlier version: "plan" was the single reveal (now "found"), the
@@ -205,8 +219,8 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       return `היעד: ${text}. נבדוק מולו כל חודש.`;
     }
     case "budget": {
-      const monthly = budgetIls(d.budget);
-      const sum = monthly > 0 ? `הבנו: כ-${monthly.toLocaleString("en-US")} ₪ בחודש, כ-${(monthly * 3).toLocaleString("en-US")} ₪ ב-3 החודשים. ` : "";
+      const label = budgetLabel(d.budget);
+      const sum = label ? `בחרתם תקציב של ${label}${d.budget?.exact_ils != null ? "" : " בחודש"}. ` : "";
       switch (d.budget?.range) {
         case "none":
           return "בלי תקציב פרסום זה בסדר. נבנה תוכנית שעובדת בזמן שלכם, ונראה מה סכום קטן היה מוסיף.";

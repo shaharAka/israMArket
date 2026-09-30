@@ -9,6 +9,7 @@ import {
   chosenDirectionOf,
   currentPlan,
   kitFor,
+  normalizeHandle,
   presetFor,
   type FlowState,
   type LinkKey,
@@ -294,9 +295,10 @@ export function BusinessCard({
                       className={`inline-flex items-center gap-1.5 rounded-full border border-[#e2e0d8] px-2.5 py-1 text-xs text-[#191b18] ${styles.pop}`}
                     >
                       <NetworkIcon network={key} className="h-3.5 w-3.5" />
-                      <span dir="ltr" className="max-w-[9rem] truncate">
+                      <span dir="ltr" className="max-w-full break-all">
                         {linkLabel(key, d.links[key] ?? "")}
                       </span>
+                      {flow.deferredLinks?.includes(key) ? <span className="shrink-0 text-[#5e6159]">בהמשך</span> : null}
                       {key !== "website" && d.activity?.[key] ? <ActivityDots level={d.activity[key]} /> : null}
                     </li>
                   ))}
@@ -397,6 +399,7 @@ function linkLabel(key: LinkKey, value: string): string {
   if (!v) return key === "website" ? "אתר" : NETWORKS.find((n) => n.key === key)?.label ?? key;
   if (key === "website") return v.replace(/^https?:\/\//, "").replace(/\/$/, "");
   if (key === "facebook") return v.replace(/^https?:\/\/(www\.)?/, "");
+  if (key === "instagram") return `instagram.com/${normalizeHandle(v)}`;
   return `@${v.replace(/^@/, "")}`;
 }
 

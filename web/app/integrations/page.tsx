@@ -10,6 +10,7 @@ import { GUIDES } from "@/components/help/guides";
 import { HowToFind } from "@/components/help/HowToFind";
 import { SendToHelper } from "@/components/help/SendToHelper";
 import { SectionHeader } from "@/components/SectionHeader";
+import { PendingLinks } from "@/components/integrations/PendingLinks";
 import {
   endpoints,
   exitDemo,
@@ -331,6 +332,7 @@ export default function IntegrationsPage() {
           </div>
         )}
 
+        {business ? <PendingLinks key={business.id} business={business} onSaved={setBusiness} /> : null}
         {error ? (
           <div className="mb-6">
             <ErrorNote message={error} />

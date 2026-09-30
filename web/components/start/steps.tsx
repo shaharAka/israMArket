@@ -36,6 +36,8 @@ export type StepProps = {
   setDraft: (patch: Partial<OnboardingDraft>) => void;
   /** Mark this screen answered and move on. */
   next: () => void;
+  nextLabel?: string;
+  editLinks?: () => void;
   reflection: string | null;
   notice?: React.ReactNode;
   focus: boolean;
@@ -482,7 +484,8 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
     });
   }
   function setLink(key: LinkKey, value: string) {
-    update((f) => ({ ...f, draft: { ...f.draft, links: { ...f.draft.links, [key]: value } } }));
+    setLinkErrors({});
+    update((f) => ({ ...f, deferredLinks: f.deferredLinks?.filter((item) => item !== key), draft: { ...f.draft, links: { ...f.draft.links, [key]: value } } }));
   }
   function setActivity(key: "instagram" | "facebook" | "tiktok", value: Activity) {
     update((f) => ({ ...f, draft: { ...f.draft, activity: { ...(f.draft.activity ?? {}), [key]: value } } }));
@@ -491,13 +494,16 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
   const nothingChosen = !d.has_none && selected.length === 0;
   const [error, setError] = useState("");
   const [linkErrors, setLinkErrors] = useState<LinkErrors>({});
-  const linksKey = signature(d.links);
+  const [checking, setChecking] = useState(false);
+  const activeLinks = Object.fromEntries(Object.entries(d.links).filter(([key]) => !flow.deferredLinks?.includes(key as LinkKey)));
+  const linksKey = signature(activeLinks);
 
-  // Checked as they type (debounced), never blocking: a wrong handle is a hint, not a wall.
+  // Check beside the input. Submit checks the current value again, so a late debounce
+  // cannot let an invalid profile surface as an unrelated goal/plan failure later.
   useEffect(() => {
     let live = true;
     const timer = window.setTimeout(() => {
-      validateLinks(d.links)
+      validateLinks(activeLinks)
         .then((errors) => {
           if (live) setLinkErrors(errors);
         })
@@ -511,21 +517,39 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [linksKey]);
 
+  async function continueWithLinks() {
+    if (nothingChosen) {
+      setError("סמנו איפה אתם נמצאים, או ״עוד לא״.");
+      return;
+    }
+    setChecking(true);
+    try {
+      const errors = d.has_none ? {} : await validateLinks(activeLinks);
+      setLinkErrors(errors);
+      const invalid = Object.keys(errors) as LinkKey[];
+      if (invalid.length) update((f) => ({ ...f, deferredLinks: [...new Set([...(f.deferredLinks ?? []), ...invalid])], deferredLinkErrors: { ...f.deferredLinkErrors, ...errors } }));
+      const site = d.links.website?.trim();
+      if (site && looksLikeUrl(site) && !invalid.includes("website") && !flow.deferredLinks?.includes("website")) onWebsite(site);
+      next();
+    } catch {
+      const unchecked = Object.keys(activeLinks).filter((key) => activeLinks[key]?.trim()) as LinkKey[];
+      const errors = Object.fromEntries(unchecked.map((key) => [key, "לא הצלחנו לבדוק את הקישור כרגע. אפשר להחליף או לבדוק אותו שוב בחיבורים אחרי ההרשמה."]));
+      update((f) => ({ ...f, deferredLinks: [...new Set([...(f.deferredLinks ?? []), ...unchecked])], deferredLinkErrors: { ...f.deferredLinkErrors, ...errors } }));
+      next();
+    } finally {
+      setChecking(false);
+    }
+  }
+
   return (
     <StepShell
       {...props}
       title="איפה אפשר למצוא אתכם?"
       why="מהאתר נלמד את הסגנון שלכם, ומהרשתות מה כבר קורה. אין עדיין? מתחילים בלי."
-      primary="להמשיך למה שניסיתם"
-      onPrimary={() => {
-        if (nothingChosen) {
-          setError("סמנו איפה אתם נמצאים, או ״עוד לא״.");
-          return;
-        }
-        const site = d.links.website?.trim();
-        if (site && looksLikeUrl(site)) onWebsite(site);
-        next();
-      }}
+      primary={checking ? "בודקים את הקישורים…" : "להמשיך למה שניסיתם"}
+      primaryDisabled={checking}
+      onPrimary={() => { void continueWithLinks(); }}
+      reassure={Object.keys(linkErrors).length ? "אפשר להמשיך. קישור שלא נוכל לקרוא נשמר לתיקון בהמשך." : undefined}
     >
       <div className="flex flex-wrap gap-2">
         {LINK_OPTIONS.map((option) => (
@@ -606,7 +630,9 @@ export function StepLinks(props: StepProps & { onWebsite: (url: string) => void 
                 inputMode="url"
                 helpTopic={network.key}
                 note={
-                  linkErrors[network.key] && d.links[network.key]?.trim()
+                  flow.deferredLinks?.includes(network.key)
+                    ? `${flow.deferredLinkErrors?.[network.key] ?? "צריך קישור לפרופיל של העסק."} ממשיכים בינתיים בלי לקרוא אותו. אפשר לתקן כאן בכל רגע.`
+                    : linkErrors[network.key] && d.links[network.key]?.trim()
                     ? linkErrors[network.key]
                     : "לא זוכרים? אפשר להשאיר ריק."
                 }

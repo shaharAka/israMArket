@@ -3869,6 +3869,7 @@ type OwnerTriedChannel = NonNullable<OnboardingDraft["tried"]>["channels"][numbe
 
 /** The first-meeting answers the API keeps in `owner_context` (see onboarding_draft.owner_context). */
 export type OwnerContext = {
+  pending_links?: Partial<Record<"website" | "instagram" | "facebook" | "tiktok", { url: string; error: string }>>;
   differentiator?: string;
   seasons?: { busy: number[]; slow: number[] };
   activity?: { instagram?: OwnerActivity; facebook?: OwnerActivity; tiktok?: OwnerActivity };
@@ -3883,6 +3884,7 @@ export type OwnerContext = {
  * (`null` clears one), and `tried.what_worked` is kept when not sent.
  */
 export type OwnerContextUpdate = {
+  links?: Partial<Record<"website" | "instagram" | "facebook" | "tiktok", string>>;
   differentiator?: string;
   seasons?: { busy: number[]; slow: number[] };
   activity?: { instagram?: OwnerActivity | null; facebook?: OwnerActivity | null; tiktok?: OwnerActivity | null };

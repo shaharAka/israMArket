@@ -2011,6 +2011,20 @@ class OwnerContextIn(BaseModel):
     tried: DraftTried | None = None
     activity: DraftActivity | None = None
     competitors: list[DraftCompetitor] | None = Field(default=None, max_length=3)
+    # Partial repair of public research links; this never grants provider access.
+    links: dict[Literal["website", "instagram", "facebook", "tiktok"], str] | None = None
+
+    @field_validator("links")
+    @classmethod
+    def _links(cls, value: dict | None) -> dict | None:
+        if value is None:
+            return None
+        if any(len(v) > 300 for v in value.values()):
+            raise ValueError("הקישור ארוך מדי. הדביקו את כתובת הפרופיל של העסק.")
+        links, errors = normalize_links(value)
+        if errors:
+            raise ValueError(" ".join(errors.values()))
+        return {key: (links.get(key, "") if key == "website" else (links.get(key) or {}).get("url", "")) for key in value}
 
     @field_validator("differentiator")
     @classmethod
@@ -2088,6 +2102,20 @@ def apply_owner_context(business: Business, update: OwnerContextIn) -> Business:
     current = stored.get("owner_context") if isinstance(stored.get("owner_context"), dict) else {}
     context = {**_empty_owner_context(), **current}
     sent = update.model_fields_set
+
+    if "links" in sent and update.links is not None:
+        social = loads(business.social_links_json, {}) or {}
+        pending = dict(context.get("pending_links") or {})
+        for key, value in update.links.items():
+            if key == "website":
+                business.website_url = value
+            elif value:
+                social[key] = value
+            else:
+                social.pop(key, None)
+            pending.pop(key, None)
+        business.social_links_json = dumps(social)
+        context["pending_links"] = pending
 
     if "differentiator" in sent and update.differentiator is not None:
         context["differentiator"] = update.differentiator
