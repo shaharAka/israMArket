@@ -16,6 +16,17 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends build-essential libxml2-dev libxslt1-dev curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Chromium for the one rendered screenshot per brand scan (services/screenshot.py).
+# The app finds it through CHROME_PATH; the container user has no user namespaces, so
+# Chrome's own sandbox must be off (CHROME_NO_SANDBOX=true, set by the deployment).
+# Hebrew-capable fonts (Culmus, DejaVu) so a Hebrew site is not captured as empty boxes.
+# Run the container with a larger /dev/shm (docker-compose: shm_size) and an init
+# process (init: true) so Chrome's helper processes are reaped.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends chromium fonts-dejavu-core fonts-liberation fonts-culmus \
+    && rm -rf /var/lib/apt/lists/*
+ENV CHROME_PATH=/usr/bin/chromium
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

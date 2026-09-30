@@ -18,9 +18,10 @@ const DELETED = [
 /**
  * "מחיקת החשבון": set apart at the bottom of /account, closed by default, and a second
  * step that asks for the password before anything is deleted. The server checks the
- * password too (403 when wrong), so a stolen session alone cannot erase an account.
+ * password too (403 when wrong), so a stolen session alone cannot erase an account. An account
+ * opened with Google has no password: it types its email address instead.
  */
-export function DeleteAccount() {
+export function DeleteAccount({ googleOnly = false, email = "" }: { googleOnly?: boolean; email?: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -45,7 +46,7 @@ export function DeleteAccount() {
     setError("");
     setPending(true);
     try {
-      await endpoints.deleteAccount(password);
+      await endpoints.deleteAccount(googleOnly ? { confirm_email: password } : { password });
       exitDemo();
       try {
         window.sessionStorage.setItem(ACCOUNT_DELETED_FLAG, "1");
@@ -55,7 +56,8 @@ export function DeleteAccount() {
       router.replace("/");
     } catch (err) {
       setPending(false);
-      if (err instanceof ApiError && err.status === 403) setError("הסיסמה לא נכונה. החשבון לא נמחק.");
+      if (err instanceof ApiError && err.status === 403)
+        setError(googleOnly ? "האימייל לא תואם לחשבון. החשבון לא נמחק." : "הסיסמה לא נכונה. החשבון לא נמחק.");
       else setError(err instanceof Error ? err.message : "לא הצלחנו למחוק את החשבון. נסו שוב.");
     }
   }
@@ -96,15 +98,17 @@ export function DeleteAccount() {
           </p>
 
           <label htmlFor="delete-password" className="mt-5 block text-xs font-bold text-[#191b18]">
-            כדי לאשר, הקלידו את הסיסמה שלכם
+            {googleOnly ? "כדי לאשר, הקלידו את האימייל של החשבון" : "כדי לאשר, הקלידו את הסיסמה שלכם"}
           </label>
           <input
             ref={inputRef}
             id="delete-password"
-            type="password"
+            type={googleOnly ? "email" : "password"}
+            dir={googleOnly ? "ltr" : undefined}
+            placeholder={googleOnly ? email : undefined}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
+            autoComplete={googleOnly ? "off" : "current-password"}
             className="mt-1 w-full rounded-md border border-[#dedcd4] bg-white px-3 py-2 text-sm"
           />
 

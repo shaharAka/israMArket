@@ -1,0 +1,8 @@
+# A host node_modules/.next (possibly built for another OS) must never overwrite the
+# ones built inside the image by `npm ci` / `npm run build`.
+node_modules
+.next
+out
+.env
+.env.*
+*.log

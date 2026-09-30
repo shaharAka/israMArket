@@ -386,7 +386,9 @@ export default function IntegrationsPage() {
                   <div># Google Analytics 4 (Google Cloud Console OAuth 2.0 Web Client)</div>
                   <div>GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com</div>
                   <div>GOOGLE_CLIENT_SECRET=your-google-client-secret</div>
-                  <div className="text-[#647087]"># Authorized redirect URI: http://localhost:8000/integrations/ga4/callback</div>
+                  <div className="text-[#647087]"># Authorized redirect URIs (deploy/gcp/google-oauth.md):</div>
+                  <div className="text-[#647087]">#   http://localhost:3000/backend/integrations/ga4/callback</div>
+                  <div className="text-[#647087]">#   http://localhost:3000/backend/auth/google/callback</div>
                   <div className="pt-2"># Meta Graph API (Meta for Developers - Business App)</div>
                   <div>META_APP_ID=your-facebook-app-id</div>
                   <div>META_APP_SECRET=your-facebook-app-secret</div>
@@ -548,6 +550,13 @@ export default function IntegrationsPage() {
                 </div>
               )}
             </div>
+            {/* Connected from a different Google account than the one used to sign in:
+                allowed, and said, with the account's address (routers/integrations.py). */}
+            {ga4Item?.account_note_he ? (
+              <p role="note" className="mt-2 text-xs leading-5 text-[#6b5a2e]">
+                {ga4Item.account_note_he}
+              </p>
+            ) : null}
             {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
 
             <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">

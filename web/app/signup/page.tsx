@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
+import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { endpoints } from "@/lib/api";
+import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { AFTER_SAVE, clearSavedFlow, hasSavableDraft, loadFlow, saveFlowToAccount, type FlowState } from "@/lib/draft";
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
@@ -33,6 +35,8 @@ export default function SignupPage() {
       setPreview(stored);
       const flow = loadFlow();
       setDraft(hasSavableDraft(flow) ? flow : null);
+      const googleError = googleErrorFromLocation();
+      if (googleError) setError(googleError);
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
@@ -86,6 +90,22 @@ export default function SignupPage() {
           <Swatches preview={preview} size="sm" />
         </div>
       ) : null}
+      {/* A draft from /start is saved by /start itself once Google sends the owner back,
+          exactly as it is after an email signup (StartFlow's resume=save). */}
+      <GoogleButton
+        next={
+          draft
+            ? "/start?resume=save"
+            : site
+              ? `/onboarding?site=${encodeURIComponent(site)}`
+              : "/onboarding"
+        }
+        back="/signup"
+        disabled={pending}
+      />
+      <div className="my-4">
+        <OrDivider />
+      </div>
       <form onSubmit={onSubmit} className="space-y-4">
         <Field name="full_name" label="שם מלא" placeholder="נועה כהן" autoComplete="name" />
         <Field
@@ -109,6 +129,17 @@ export default function SignupPage() {
           {pending ? "פותחים חשבון…" : "לפתוח חשבון"}
         </Button>
       </form>
+      <p className="mt-4 text-center text-xs leading-5 text-[#63665e]">
+        פתיחת חשבון, גם עם Google, היא הסכמה ל
+        <Link href="/terms" className="font-bold text-[#191b18] underline-offset-4 hover:underline">
+          תנאי השימוש
+        </Link>
+        {" "}ול
+        <Link href="/security" className="font-bold text-[#191b18] underline-offset-4 hover:underline">
+          מדיניות הפרטיות
+        </Link>
+        .
+      </p>
       <p className="mt-6 text-center text-xs text-[#63665e]">
         כבר יש לכם חשבון?{" "}
         <Link

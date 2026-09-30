@@ -1,0 +1,42 @@
+# IsraMarket edge: TLS termination and the only public listener (80/443).
+#
+# SITE_HOST comes from /run/isramarket/app.env (render-env.sh): the instance metadata
+# value `site-host`, or "<ip-with-dashes>.sslip.io" when it is empty. Changing the domain
+# is that one value; Caddy then obtains a certificate for the new name on its own.
+#
+# Certificates: Let's Encrypt over HTTP-01/TLS-ALPN (ports 80/443 must be open). If Let's
+# Encrypt refuses (sslip.io is one registered domain shared by everyone who uses it, so
+# its weekly limit can be exhausted), Caddy falls back to ZeroSSL automatically.
+# Certificates and the ACME account live on the data disk (/data), so recreating the VM
+# does not re-issue them.
+{
+	email {$ACME_EMAIL}
+	# Clients connect to Caddy directly (no load balancer in front), so Caddy trusts no
+	# incoming X-Forwarded-For and sets it to the real client address itself. The API's
+	# rate limiter reads the first X-Forwarded-For entry (TRUST_FORWARDED_FOR=true), which
+	# is therefore the client's IP and cannot be spoofed.
+}
+
+{$SITE_HOST} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		?X-Content-Type-Options "nosniff"
+		?Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Everything goes to Next.js, including /backend/* (proxied by Next to the API on the
+	# internal network) and /r/{code}. The API itself is never reachable from here.
+	reverse_proxy web:3000 {
+		# While `web` restarts during an update, hold requests for up to 30s instead of
+		# answering 502, so a deploy looks like a slow page rather than an error.
+		lb_try_duration 30s
+		lb_try_interval 500ms
+	}
+
+	# No access log on purpose: it would record every visitor's IP, including each tap on
+	# a WhatsApp tracked link, which the app promises not to keep (routers/whatsapp.py).
+	# Caddy's own errors and certificate events still go to stdout (docker logs caddy).
+}

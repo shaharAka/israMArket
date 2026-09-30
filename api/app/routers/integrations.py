@@ -18,7 +18,7 @@ from app.security import (
     encrypt_page_tokens,
     encrypt_secret,
 )
-from app.services import ga4, meta
+from app.services import ga4, google_login, meta
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
 
@@ -39,6 +39,11 @@ def _public_integration(item: Integration) -> dict:
         # same grant, so the UI can tell the owner to reconnect rather than showing an
         # empty panel with no explanation.
         "scopes": extra.get("scopes") or [],
+        # Which Google account granted it (Google only), and a Hebrew note when that is not
+        # the account the owner signs in with. Allowed, just said out loud.
+        "account_email": (extra.get("google_account") or {}).get("email") or None,
+        "account_mismatch": bool(extra.get("account_mismatch")),
+        "account_note_he": extra.get("account_note_he") or None,
     }
 
 
@@ -83,7 +88,11 @@ def list_integrations(business: Business = Depends(get_business)) -> dict:
 @router.get("/ga4/start")
 def ga4_start(business: Business = Depends(get_business), user: User = Depends(get_current_user)) -> dict:
     try:
-        url = ga4.authorization_url(create_oauth_state(user.id, business.id, "ga4"))
+        # The account the owner signed in with: its Google id when linked, else the email.
+        url = ga4.authorization_url(
+            create_oauth_state(user.id, business.id, "ga4"),
+            login_hint=user.google_sub or user.email,
+        )
     except RuntimeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return {"url": url}
@@ -104,13 +113,36 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         item.token_expires_at = tokens["expires_at"]
         item.status = "select_property"
         properties = ga4.list_properties(tokens["access_token"], tokens["refresh_token"], tokens["expires_at"])
-        item.extra_json = dumps({"properties": properties, "scopes": tokens.get("scopes") or []})
+        extra = {"properties": properties, "scopes": tokens.get("scopes") or []}
+        mismatch = _note_google_account(db, claims["user_id"], tokens.get("id_token"), extra)
+        item.extra_json = dumps(extra)
         item.updated_at = datetime.utcnow()
         db.commit()
         _invalidate_promotion_cache(claims["business_id"])
     except Exception as exc:
         return RedirectResponse(f"{dest}?{urlencode({'error': str(exc)})}")
-    return RedirectResponse(f"{dest}?ga4=connected")
+    suffix = "&ga4_account=other" if mismatch else ""
+    return RedirectResponse(f"{dest}?ga4=connected{suffix}")
+
+
+def _note_google_account(db: Session, user_id: int, id_token: str | None, extra: dict) -> bool:
+    """Record which Google account granted Analytics, and whether it differs from the one
+    the owner signs in with ("להמשיך עם Google", `User.google_sub`). A different account
+    is allowed (the site's data may well live on a work account), but the owner is told
+    which one is connected. Returns True on a mismatch."""
+    account = google_login.account_of(id_token)
+    if not account:
+        return False
+    extra["google_account"] = {"email": account["email"], "sub": account["sub"]}
+    user = db.get(User, user_id)
+    mismatch = bool(user and user.google_sub and account["sub"] != user.google_sub)
+    extra["account_mismatch"] = mismatch
+    if mismatch:
+        extra["account_note_he"] = (
+            f"נתוני האתר חוברו מחשבון גוגל אחר: {account['email']}. "
+            f"אתם נכנסים עם {user.email}. זה בסדר, אם נתוני האתר נמצאים בחשבון הזה."
+        )
+    return mismatch
 
 
 @router.post("/ga4/property")

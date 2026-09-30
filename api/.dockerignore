@@ -1,0 +1,8 @@
+# Keep the build context small and never bake local data or secrets into the image.
+.venv
+data
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.env
+.env.*

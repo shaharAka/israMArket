@@ -52,7 +52,22 @@ export function exitDemo() {
   window.localStorage.removeItem(DEMO_FLAG);
 }
 
-const DEMO_USER = { id: 1, email: "demo@isramarket.local", full_name: "נועה כהן" };
+const DEMO_USER: AuthUser = {
+  id: 1,
+  email: "demo@isramarket.local",
+  full_name: "נועה כהן",
+  has_password: true,
+  google_linked: false,
+};
+
+/** GET /auth/me. `has_password` is false for an account opened with Google only. */
+export type AuthUser = {
+  id: number;
+  email: string;
+  full_name: string;
+  has_password: boolean;
+  google_linked: boolean;
+};
 
 export type BrandSwatch = { hex: string; role: "primary" | "accent" | "background" | "ink" | "secondary"; name: string };
 
@@ -3301,6 +3316,7 @@ const LIVE_PATHS = new Set([
   "/integrations/ga4",
   "/integrations/meta",
   "/auth/password",
+  "/auth/password/set",
   "/auth/account",
 ]);
 
@@ -3332,7 +3348,7 @@ export async function api<T>(
 }
 
 export const endpoints = {
-  me: () => api<{ id: number; email: string; full_name: string }>("/auth/me"),
+  me: () => api<AuthUser>("/auth/me"),
   register: (body: { email: string; password: string; full_name?: string }) =>
     api("/auth/register", { method: "POST", body: JSON.stringify(body) }),
   login: (body: { email: string; password: string }) =>
@@ -3346,9 +3362,15 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ current_password, new_password }),
     }),
-  /** Irreversible: deletes the account, the business and every file, then signs out. */
-  deleteAccount: (password: string) =>
-    api<{ ok: boolean }>("/auth/account", { method: "DELETE", body: JSON.stringify({ password }) }),
+  /** A first password for an account opened with Google (409 when it already has one). */
+  setPassword: (new_password: string) =>
+    api<{ ok: boolean }>("/auth/password/set", { method: "POST", body: JSON.stringify({ new_password }) }),
+  /**
+   * Irreversible: deletes the account, the business and every file, then signs out.
+   * Confirmed by the password, or by the account's email for a Google-only account.
+   */
+  deleteAccount: (confirm: { password?: string; confirm_email?: string }) =>
+    api<{ ok: boolean }>("/auth/account", { method: "DELETE", body: JSON.stringify(confirm) }),
   logout: async () => {
     exitDemo();
     return api("/auth/logout", { method: "POST" });
@@ -4308,6 +4330,10 @@ export type IntegrationsPayload = {
     connected: boolean;
     properties?: { property_id: string; display_name: string; account: string }[];
     pages?: { page_id: string; display_name: string; instagram_id: string }[];
+    /** Google only: which Google account granted it, and a note when it is not the sign-in one. */
+    account_email?: string | null;
+    account_mismatch?: boolean;
+    account_note_he?: string | null;
   }[];
   webhooks: { id: number; url: string; events: string; created_at: string }[];
 };
