@@ -122,3 +122,65 @@ generation reads it.
 - **Ongoing research** feeds the plan: competitors, search demand in Israel, calendar &
   seasons, the business's own results — plus the platforms the business uses and its site.
   Each finding is sourced and dated, and the plan says what it changed.
+
+## Revision 4 — the end of onboarding is a strategy, built together (owner feedback 2026-09-30)
+
+Owner: "the direction for the first month feels rushed — where is the strategy? what are
+we after, where is the plan? how does the user affect it? only by picking A/B? what are
+the metrics? why are we doing this?" and "the preview posts are very generic — they need to
+be similar to what we will actually post, with placeholders to upload real product images."
+
+The single reveal screen becomes four short screens (chapter "מה למדנו ואיך מתקדמים"):
+
+1. **מה גילינו** — the sourced insights (as today), on their own screen.
+2. **הכיוון** — the 2 directions (as today, richer "why"); pick one. Free-text "משהו אחר?
+   ספרו לנו" is always available and revises the options.
+3. **האסטרטגיה** — a one-page consultant strategy for the chosen direction, each block with
+   a short "למה" tied to insights, and each block adjustable by the owner:
+   | Block | What it says | How the owner shapes it |
+   |---|---|---|
+   | המטרה | the objective in one sentence | — |
+   | איך נדע שהצלחנו | 2–3 measures, how each is measured, which are measurable today vs after connecting (honest) | optional own target ("כמה פניות נוספות בחודש ירגישו הצלחה?" — chips + free), never invented by us |
+   | הזווית | the angle / positioning (from the differentiator) | — |
+   | למי קודם | audiences with a primary one and the message for each | reorder / pick primary |
+   | על מה נדבר | 3 content pillars, each with an example | swap/remove a pillar |
+   | איפה וכמה | channels + realistic cadence for their activity level | cadence chips (1–2 / 3–4 / 5+ בשבוע) |
+   | מה מבקשים מהלקוח | the offer / call to action and its mechanism (e.g. WhatsApp link) | — |
+   | התוכנית | month 1 as 4 weeks (focus + calendar event) + months 2–3 in one line each | — |
+   | על מה אנחנו מהמרים | 2–3 assumptions this month tests | — |
+   Any change re-runs the strategy (debounced; only changed inputs), with a short
+   "מה השתנה" note. "אפשר לשנות הכול אחר כך" is stated here.
+4. **ככה זה ייראה** — 3 real posts for week 1, written by the same post writer the product
+   uses (Muse via `post_model_router`, `HEBREW_STYLE`), rendered with the real card
+   templates in the brand colours + logo, with caption, format and "למה הפוסט הזה". Each has
+   a photo slot: the site's own photo when the scan found a usable one, otherwise a
+   placeholder with a clear hint of what to shoot ("צילום של … על רקע בהיר") and small
+   buttons **להעלות תמונה** / **לצלם עכשיו** (mobile camera) / **שה-AI ייצור** (later).
+   Uploads before signup are kept in the browser (IndexedDB) and uploaded to the asset
+   library right after signup, tagged to the post they were chosen for.
+5. **נשמור את מה שבנינו** — signup, then `from-draft` with the full strategy.
+
+### Contract additions
+
+`POST /public/strategy {draft, direction: Direction, inputs?: {target?: string, cadence?:
+"1-2"|"3-4"|"5+", primary_audience?: string, pillars_removed?: string[], feedback?: string}}` →
+```ts
+{ objective: {text_he, why_he},
+  success: {owner_target?: string, measures: {name_he, how_he, available_now: boolean, needs_he?: string}[], first_check_he},
+  angle: {text_he, why_he},
+  audiences: {name, role: "primary"|"secondary", message_he}[],
+  pillars: {key, title, description_he, example_he, why_he}[],          // 3
+  channels: {network, role_he, cadence_he, why_he}[],
+  offer: {cta_he, mechanism_he, why_he},
+  month_plan: {week: 1|2|3|4, focus_he, event_he?}[],
+  quarter: {month_label, direction_he}[],                                 // months 2–3
+  assumptions: string[],
+  changed_he?: string, cached: boolean }
+```
+`POST /public/sample-posts {draft, direction, strategy}` → `{posts: {title, format, hook,
+caption, cta, overlay_headline, template, badge?, pillar_key, photo: {site_url?: string,
+hint_he: string}, why: {audience, goal_he, timing_he, reason_he}}[3]}`.
+`POST /onboarding/from-draft {draft, chosen_direction, strategy, chosen_posts?}` — the
+strategy seeds the first month: the month plan follows its weeks, pillars, cadence and
+measures; the sample posts become week-1 posts.
+Both public endpoints: no auth, no DB, rate-limited and cached like `plan-preview`.
