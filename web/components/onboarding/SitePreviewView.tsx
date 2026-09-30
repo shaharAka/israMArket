@@ -52,7 +52,7 @@ export function SamplePostCard({
   const photo = useLoadable(sample?.photo_url);
   if (!sample) return null;
   return (
-    <figure className="overflow-hidden rounded-lg border border-[var(--rule)] bg-white">
+    <figure className="overflow-hidden rounded-xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
       {photo.ready ? (
         <CardStage
           post={previewCardPost(sample, photo.url)}

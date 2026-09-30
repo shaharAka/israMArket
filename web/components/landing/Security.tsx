@@ -1,9 +1,8 @@
-import Link from "next/link";
 type Promise = { title: string; line: string };
 
 /**
  * "המידע של העסק שלכם": six plain promises, each one checked against the code.
- * /security has the precise version. Do not add a promise without a
+ * /security shows them first ("בקצרה") and then the precise version. Do not add a promise without a
  * line of code (or a written commitment) behind it.
  */
 export const TRUST_PROMISES: Promise[] = [
@@ -44,47 +43,3 @@ export const TRUST_PROMISES: Promise[] = [
     line: "ניתוק של חיבור מוחק אצלנו את הגישה. אפשר למחוק את החשבון וכל המידע בכל רגע.",
   },
 ];
-
-export function Security() {
-  return (
-    <section id="security" aria-labelledby="security-title" className="lp-security border-t border-[var(--rule)]">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-8 sm:py-20">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <header data-rv className="max-w-2xl">
-            <p className="text-sm font-bold text-[var(--primary)]">אבטחה ופרטיות</p>
-            <h2 id="security-title" className="mt-2 text-[1.9rem] font-black leading-[1.15] tracking-tight [text-wrap:balance] sm:text-[2.6rem]">
-              המידע של העסק שלכם
-            </h2>
-            <p className="mt-2 text-base leading-7 text-[var(--ink-soft)]">מה אנחנו רואים, מה לא, ואיך מוחקים.</p>
-          </header>
-          <Link
-            href="/security"
-            className="inline-flex min-h-11 items-center self-start font-bold text-[var(--ink)] underline decoration-[var(--rule-dark)] underline-offset-4 hover:decoration-[var(--ink)] sm:self-auto"
-          >
-            כל הפרטים
-          </Link>
-        </div>
-
-        <div className="lp-privacy-access mt-8 sm:mt-10">
-          <section className="lp-privacy-reading" aria-labelledby="privacy-access-title">
-            <h3 id="privacy-access-title" className="lp-privacy-label">הגישה למידע</h3>
-            <Promises items={[TRUST_PROMISES[3], TRUST_PROMISES[1]]} />
-          </section>
-          <section className="lp-privacy-control" aria-labelledby="privacy-control-title">
-            <h3 id="privacy-control-title" className="lp-privacy-label">השליטה נשארת אצלכם</h3>
-            <Promises items={[TRUST_PROMISES[0], TRUST_PROMISES[5]]} />
-          </section>
-        </div>
-        <div className="lp-privacy-storage">
-          <Promises items={[TRUST_PROMISES[2], TRUST_PROMISES[4]]} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Promises({ items }: { items: Promise[] }) {
-  return <ul>{items.map(item => <li key={item.title}>
-    <h4>{item.title}</h4><p>{item.line}</p>
-  </li>)}</ul>;
-}

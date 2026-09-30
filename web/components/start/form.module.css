@@ -1,0 +1,427 @@
+/* The public screens' controls: /start, /onboarding, /login and /signup (and /decisions,
+ * which reuses the /start pickers). One look for every input, chip and choice tile, so the
+ * first screens after the landing page read as one product (DESIGN-STANDARD.md §4).
+ *
+ * Focus rules repeat the class (`.input.input`) on purpose: the product chrome's global
+ * focus outline (`.start-blue :is(input):focus-visible`, `.auth-blue …`) is more specific
+ * than one class, and an input gets a ring, not an outline 4px away from it.
+ */
+
+/* ---- Labels and notes --------------------------------------------------- */
+
+.label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.label small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+.note {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+/* ---- Text inputs -------------------------------------------------------- */
+
+.input,
+.inputBox {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  /* 16px on phones: iOS zooms into any field smaller than that. */
+  font-size: 16px;
+  transition:
+    border-color 160ms ease,
+    box-shadow 200ms var(--ease);
+}
+
+.input {
+  padding: 10px 14px;
+}
+
+.input::placeholder {
+  color: var(--ink-faint);
+}
+
+.input:hover,
+.inputBox:hover {
+  border-color: var(--ink-faint);
+}
+
+.input.input:focus,
+.input.input:focus-visible,
+.inputBox:focus-within {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* A box holding an input and a prefix: the box takes the ring, the input none. */
+.inputBox {
+  display: flex;
+  align-items: center;
+}
+
+.inputBox > input {
+  min-height: 44px;
+  flex: 1;
+  min-width: 0;
+  padding-inline: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+}
+
+.inputBox.inputBox > input:focus,
+.inputBox.inputBox > input:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.inputBox > input::placeholder {
+  color: var(--ink-faint);
+}
+
+textarea.input {
+  min-height: 0;
+  line-height: 1.6;
+  resize: none;
+}
+
+/* A select draws its own chevron (a sibling `.selectChevron`), not the browser's. */
+select.input {
+  appearance: none;
+  padding-inline-end: 40px;
+  cursor: pointer;
+}
+
+.select {
+  position: relative;
+}
+
+.selectChevron {
+  position: absolute;
+  inset-inline-end: 14px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-muted);
+  transform: translateY(-50%) rotate(-90deg);
+  pointer-events: none;
+}
+
+.number {
+  width: 9rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  .input,
+  .inputBox,
+  .inputBox > input {
+    font-size: 15px;
+  }
+}
+
+/* ---- Chips: one tap, one answer ---------------------------------------- */
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding-inline: 16px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.3;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 200ms var(--ease);
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--ink-faint);
+}
+
+.chip:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.chip[aria-pressed="true"],
+.chip[aria-checked="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
+.chip svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.chip small {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+/* A suggestion to add back: quieter than an answer. */
+.chipAdd {
+  border-style: dashed;
+  color: var(--ink-soft);
+}
+
+.chipSmall {
+  padding-inline: 14px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Choice tiles: a radio with a title and a line ---------------------- */
+
+.tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 14px;
+  background: var(--paper);
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 200ms ease;
+}
+
+.tile:hover {
+  border-color: var(--ink-faint);
+}
+
+.tile[aria-checked="true"],
+.tile[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.tileTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.tileTitle small {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.tileDesc {
+  display: block;
+  margin-top: 2px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* The radio mark. */
+.radio {
+  position: relative;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border: 1.5px solid var(--rule-dark);
+  border-radius: 999px;
+  background: var(--paper);
+  transition: border-color 160ms ease;
+}
+
+[aria-checked="true"] > .radio,
+[aria-pressed="true"] > .radio {
+  border-color: var(--primary);
+}
+
+[aria-checked="true"] > .radio::after,
+[aria-pressed="true"] > .radio::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: inherit;
+  background: var(--primary);
+  animation: radio-in 240ms var(--ease) both;
+}
+
+@keyframes radio-in {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* A compact tile: an amount, a mode. */
+.option {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 52px;
+  padding: 10px 14px;
+  border: 1px solid var(--rule-dark);
+  border-radius: 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: start;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+
+.option:hover {
+  border-color: var(--ink-faint);
+}
+
+.option[aria-checked="true"],
+.option[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.option small {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+/* A segmented switch (two or three modes). */
+.segmented {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--ink) 5%, var(--paper));
+}
+
+.segmented > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border-radius: 10px;
+  color: var(--ink-soft);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 200ms ease;
+}
+
+.segmented.segmented > button[aria-checked="true"],
+.segmented.segmented > button[aria-pressed="true"] {
+  border-color: transparent;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow:
+    0 0 0 1px var(--rule),
+    0 1px 3px rgba(20, 32, 58, 0.08);
+}
+
+/* ---- A quiet panel inside a step (a nested question, a network's fields) - */
+
+.panel {
+  padding: 16px;
+  border-radius: 14px;
+  background: var(--soft);
+}
+
+/* A list of answers: one surface, hairlines between rows. */
+.list {
+  border-radius: 14px;
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.list > li + li {
+  border-top: 1px solid var(--rule);
+}
+
+.error {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .tile,
+  .option,
+  .input,
+  .inputBox {
+    transition: none;
+  }
+  [aria-checked="true"] > .radio::after,
+  [aria-pressed="true"] > .radio::after {
+    animation: none;
+  }
+}

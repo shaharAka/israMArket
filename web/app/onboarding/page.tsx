@@ -22,6 +22,8 @@ import { BUDGET_STAGES, formatNis, stageFor } from "@/lib/budget";
 import { toast } from "@/lib/ui";
 import { useMonthBuild } from "@/lib/useMonthBuild";
 import { BUSINESS_FIELDS, MODEL_SHORT, PRESENCE_MODELS } from "@/components/onboarding/constants";
+import form from "@/components/start/form.module.css";
+import { IconArrowRight, IconChevron } from "@/lib/icons";
 import { coerceField, resolveField } from "@/lib/businessFields";
 import { GenerationProgress } from "@/components/onboarding/GenerationProgress";
 import {
@@ -371,7 +373,7 @@ export default function OnboardingPage() {
   if (generating) {
     return (
       <AppShell>
-        <div className="mx-auto max-w-xl space-y-4">
+        <div className="mx-auto max-w-xl space-y-4 pt-2">
           <GenerationProgress stage={generateStage} businessName={name} />
           {error ? <ErrorNote message={error} /> : null}
         </div>
@@ -383,17 +385,17 @@ export default function OnboardingPage() {
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-xl space-y-4">
+      <div className="mx-auto max-w-xl space-y-8 pb-12 pt-2">
         <StepHeader
           step={step}
           onBack={step > 0 ? () => goTo(step - 1) : undefined}
         />
 
         {step === 0 ? (
-          <section className="space-y-4">
+          <section className="space-y-6">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">זה העסק שלכם?</h1>
-              <p className="mt-1 text-sm text-[var(--ink-soft)]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
+              <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[30px]">זה העסק שלכם?</h1>
+              <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">מילאנו ממה שראינו באתר. תקנו מה שצריך.</p>
             </div>
 
             <TextField
@@ -411,26 +413,29 @@ export default function OnboardingPage() {
             />
             <TextField label="שם העסק" value={name} onChange={setName} autoComplete="organization" />
             <div>
-              <label htmlFor="business-type" className="mb-1 block text-sm font-bold text-[var(--ink)]">
+              <label htmlFor="business-type" className={form.label}>
                 התחום
               </label>
-              <select
-                id="business-type"
-                value={businessType}
-                onChange={(event) => setBusinessType(event.target.value)}
-                className="min-h-11 w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
-              >
-                {BUSINESS_FIELDS.map((field) => (
-                  <option key={field.key} value={field.key}>
-                    {field.label}
-                  </option>
-                ))}
-              </select>
+              <div className={form.select}>
+                <select
+                  id="business-type"
+                  value={businessType}
+                  onChange={(event) => setBusinessType(event.target.value)}
+                  className={form.input}
+                >
+                  {BUSINESS_FIELDS.map((field) => (
+                    <option key={field.key} value={field.key}>
+                      {field.label}
+                    </option>
+                  ))}
+                </select>
+                <IconChevron className={form.selectChevron} />
+              </div>
             </div>
             <TextField label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
 
             <fieldset>
-              <legend className="mb-1 text-sm font-bold text-[var(--ink)]">מוצרים או שירותים?</legend>
+              <legend className={form.label}>מוצרים או שירותים?</legend>
               <div className="grid grid-cols-3 gap-2">
                 {BUSINESS_MODEL_OPTIONS.map((option) => (
                   <Chip
@@ -445,10 +450,10 @@ export default function OnboardingPage() {
             </fieldset>
 
             <details className="group">
-              <summary className="flex min-h-11 cursor-pointer items-center text-sm font-bold text-[var(--ink-soft)] underline underline-offset-4">
+              <summary className="min-h-11 text-sm font-semibold text-[var(--primary)]">
                 עיר ואיך מגיעים אליכם
               </summary>
-              <div className="mt-2 space-y-3">
+              <div className="mt-3 space-y-4 pb-2">
                 <TextField label="עיר או שכונה" value={location} onChange={setLocation} />
                 <div className="grid grid-cols-3 gap-2">
                   {PRESENCE_MODELS.map((model) => (
@@ -464,17 +469,17 @@ export default function OnboardingPage() {
             </details>
 
             {error ? <ErrorNote message={error} /> : null}
-            <Button onClick={() => void saveBusiness()} disabled={busy} className="min-h-12 w-full justify-center">
+            <Button onClick={() => void saveBusiness()} disabled={busy} className="!min-h-[50px] w-full justify-center !text-[15px]">
               {busy ? "שומרים…" : "להמשיך לתקציב"}
             </Button>
           </section>
         ) : null}
 
         {step === 1 ? (
-          <section className="space-y-4">
+          <section className="space-y-6">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">כמה תשקיעו בשיווק בחודש?</h1>
-              <p className="mt-1 text-sm text-[var(--ink-soft)]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
+              <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[30px]">כמה תשקיעו בשיווק בחודש?</h1>
+              <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">הסכום קובע כמה פוסטים ואם שווה לשלם על פרסום.</p>
             </div>
 
             <div className="grid grid-cols-2 gap-2">
@@ -486,22 +491,20 @@ export default function OnboardingPage() {
                     type="button"
                     aria-pressed={active}
                     onClick={() => setBudget(option.suggestion)}
-                    className={`min-h-16 rounded-md border p-3 text-right text-[var(--ink)] ${
-                      active ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule)] bg-white"
-                    }`}
+                    className={`${form.option} !min-h-16`}
                   >
-                    <span className="block text-sm font-black">{option.title}</span>
-                    <span className="mt-0.5 block text-xs opacity-80">{option.range}</span>
+                    <span className="block">{option.title}</span>
+                    <small className="tabular-nums">{option.range}</small>
                   </button>
                 );
               })}
             </div>
 
             <div>
-              <label htmlFor="budget" className="mb-1 block text-sm font-bold text-[var(--ink)]">
+              <label htmlFor="budget" className={form.label}>
                 או סכום מדויק
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <input
                   id="budget"
                   type="number"
@@ -510,41 +513,41 @@ export default function OnboardingPage() {
                   min={0}
                   step={100}
                   onChange={(event) => setBudget(Number(event.target.value))}
-                  className="min-h-11 w-40 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base font-bold sm:text-sm"
+                  className={`${form.input} ${form.number} !w-40`}
                 />
-                <span className="text-sm font-bold text-[var(--ink-soft)]">₪ לחודש</span>
+                <span className="text-sm font-medium text-[var(--ink-soft)]">₪ לחודש</span>
               </div>
             </div>
 
-            <p className="text-sm leading-6 text-[var(--ink-soft)]">
-              <span className="font-bold text-[var(--ink)]">{formatNis(budget)}: </span>
+            <p className="rounded-[14px] bg-[var(--soft)] px-4 py-3 text-[15px] leading-6 text-[var(--ink-soft)]">
+              <span className="font-semibold tabular-nums text-[var(--ink)]">{formatNis(budget)}: </span>
               {stage.buys}
             </p>
 
             {error ? <ErrorNote message={error} /> : null}
-            <Button onClick={() => void saveBudget()} disabled={busy} className="min-h-12 w-full justify-center">
+            <Button onClick={() => void saveBudget()} disabled={busy} className="!min-h-[50px] w-full justify-center !text-[15px]">
               {busy ? "שומרים…" : "להמשיך למתחרים"}
             </Button>
           </section>
         ) : null}
 
         {step === 2 ? (
-          <section className="space-y-4">
+          <section className="space-y-6">
             <div>
-              <h1 className="text-2xl font-black leading-tight text-[var(--ink)]">מי המתחרים שלכם?</h1>
-              <p className="mt-1 text-sm text-[var(--ink-soft)]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
+              <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[30px]">מי המתחרים שלכם?</h1>
+              <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">לא חובה. נלמד מה עובד אצלם, בלי להעתיק.</p>
             </div>
 
-            <fieldset className="space-y-2">
-              <legend className="mb-1 text-sm font-bold text-[var(--ink)]">עסקים מתחרים</legend>
+            <fieldset className="space-y-3">
+              <legend className={form.label}>עסקים מתחרים</legend>
               {competitors.map((item, index) => (
-                <div key={index} className="grid grid-cols-2 gap-2">
+                <div key={index} className="grid grid-cols-2 gap-3">
                   <input
                     aria-label={`מתחרה ${index + 1}: שם`}
                     value={item.name}
                     onChange={(event) => updateCompetitor(index, { name: event.target.value })}
                     placeholder="שם"
-                    className="min-h-11 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
+                    className={form.input}
                   />
                   <input
                     aria-label={`מתחרה ${index + 1}: אתר`}
@@ -555,7 +558,7 @@ export default function OnboardingPage() {
                     inputMode="url"
                     autoCapitalize="none"
                     spellCheck={false}
-                    className="min-h-11 rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base placeholder:text-right sm:text-sm"
+                    className={`${form.input} placeholder:text-right`}
                   />
                 </div>
               ))}
@@ -571,7 +574,7 @@ export default function OnboardingPage() {
             />
 
             {error || buildError ? <ErrorNote message={error || buildError} /> : null}
-            <Button onClick={() => void buildMonth()} disabled={busy} className="min-h-12 w-full justify-center">
+            <Button onClick={() => void buildMonth()} disabled={busy} className="!min-h-[50px] w-full justify-center !text-[15px]">
               {busy ? (scanState === "reading" ? "מסיימים לקרוא את האתר…" : "שומרים…") : "לבנות את החודש שלי"}
             </Button>
           </section>
@@ -587,22 +590,24 @@ function StepHeader({ step, onBack, lastStep }: { step: number; onBack?: () => v
   const progress = lastStep ? 100 : ((step + 1) / STEPS.length) * 100;
   return (
     <div>
-      <div className="flex min-h-11 items-center justify-between">
-        <p className="text-xs font-bold text-[var(--ink-soft)]">
-          {label}
-        </p>
+      <div className="mb-2 flex min-h-11 items-center justify-between gap-4">
         {onBack ? (
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex min-h-11 items-center px-1 text-sm text-[var(--ink-soft)] underline underline-offset-4"
+            className="inline-flex min-h-11 items-center gap-1.5 px-0.5 text-[14.5px] font-semibold text-[var(--ink)]"
           >
+            <IconArrowRight className="h-[18px] w-[18px]" />
             חזרה
           </button>
         ) : null}
+        <p className="ms-auto text-[13px] font-medium tabular-nums text-[var(--ink-muted)]">{label}</p>
       </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-[var(--rule)]">
-        <div className="h-full bg-[var(--primary)] transition-all" style={{ width: `${progress}%` }} />
+      <div className="relative h-[3px] overflow-hidden rounded-full bg-[var(--rule)]">
+        <div
+          className="absolute inset-0 origin-right rounded-full bg-[var(--primary)] transition-transform duration-700"
+          style={{ transform: `scaleX(${progress / 100})` }}
+        />
       </div>
     </div>
   );
@@ -625,10 +630,8 @@ function Chip({
       title={title}
       aria-pressed={selected}
       onClick={onClick}
-      // Selected is an outline, not a dark fill: the page's one dark button is the ask.
-      className={`min-h-11 rounded-md border px-2 text-sm font-bold text-[var(--ink)] ${
-        selected ? "border-[var(--ink)] bg-[var(--primary-soft)] ring-1 ring-[var(--ink)]" : "border-[var(--rule-dark)] bg-white"
-      }`}
+      // Selected is a soft fill, not a dark one: the page's one filled button is the ask.
+      className={`${form.chip} !px-2`}
     >
       {label}
     </button>
@@ -658,8 +661,8 @@ function TextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-bold text-[var(--ink)]">{label}</span>
-      {/* 16px on phones: iOS zooms into any field smaller than that. */}
+      <span className={form.label}>{label}</span>
+      {/* 16px on phones: iOS zooms into any field smaller than that (form.input). */}
       <input
         value={value}
         onChange={(event) => onChange(event.target.value)}
@@ -670,9 +673,9 @@ function TextField({
         autoComplete={autoComplete}
         autoCapitalize={dir === "ltr" ? "none" : undefined}
         spellCheck={dir === "ltr" ? false : undefined}
-        className="min-h-11 w-full rounded-md border border-[var(--rule-dark)] bg-white px-3 text-base sm:text-sm"
+        className={`${form.input} ${dir === "ltr" ? "text-left" : ""}`}
       />
-      {note ? <span className="mt-1 block text-xs text-[var(--ink-soft)]">{note}</span> : null}
+      {note ? <span className={form.note}>{note}</span> : null}
     </label>
   );
 }

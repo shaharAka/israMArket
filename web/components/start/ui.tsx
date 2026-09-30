@@ -3,16 +3,18 @@
 import { useEffect, useRef } from "react";
 import { HowToFind } from "@/components/help/HowToFind";
 import type { HelpTopic } from "@/components/help/guides";
-import { BrandMark } from "@/lib/icons";
+import { IconArrowLeft } from "@/lib/icons";
 import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
+import form from "./form.module.css";
 import { UIAction } from "@/components/design/Controls";
 
 /**
  * Building blocks shared by the /start screens.
  *
- * One dark button per screen: `PrimaryButton` is the only dark fill in this folder.
- * Everything selectable (chips, tiles, directions) is an outline when selected.
+ * One filled button per screen: `PrimaryButton` is the only filled control in this folder.
+ * Everything selectable (chips, tiles, directions) takes a soft blue fill when selected.
+ * The look lives in form.module.css, shared with /onboarding and the account screens.
  */
 
 export function PrimaryButton({
@@ -20,14 +22,25 @@ export function PrimaryButton({
   disabled,
   type = "submit",
   onClick,
+  forward = false,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
   type?: "submit" | "button";
   onClick?: () => void;
+  /** Moves the conversation on: an arrow that points the RTL way. */
+  forward?: boolean;
 }) {
   return (
-    <UIAction type={type} onClick={onClick} disabled={disabled} className="!min-h-12 w-full !text-base">{children}</UIAction>
+    <UIAction
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`${styles.primary} !min-h-[50px] w-full !px-7 !text-base sm:w-auto sm:min-w-[240px]`}
+    >
+      {children}
+      {forward ? <IconArrowLeft className="h-4 w-4 shrink-0" /> : null}
+    </UIAction>
   );
 }
 
@@ -35,16 +48,23 @@ export function QuietLink({
   children,
   onClick,
   className = "",
+  tone = "quiet",
 }: {
   children: React.ReactNode;
   onClick: () => void;
   className?: string;
+  /** "action": a text action in blue (DESIGN-STANDARD §4). "quiet": a way past, in grey. */
+  tone?: "quiet" | "action";
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm text-[color:var(--ink-soft)] underline underline-offset-4 hover:text-[color:var(--ink)] ${className}`}
+      className={`inline-flex min-h-11 cursor-pointer items-center px-1 text-sm transition-colors ${
+        tone === "action"
+          ? "font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-[5px]"
+          : "text-[color:var(--ink-soft)] underline decoration-[var(--rule-dark)] underline-offset-[5px] hover:text-[color:var(--ink)] hover:decoration-current"
+      } ${className}`}
     >
       {children}
     </button>
@@ -55,14 +75,12 @@ export function QuietLink({
 export function Reflection({ text }: { text: string | null }) {
   if (!text) return null;
   return (
-    <div className={`flex items-start gap-2.5 ${styles.rise}`} aria-live="polite">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--primary)]">
-        <BrandMark className="h-4 w-4 text-white" />
-      </span>
-      <p className="rounded-2xl rounded-tr-sm bg-[var(--sand)] px-3.5 py-2 text-sm leading-6 text-[color:var(--ink)]">
+    <p className={`${styles.reflection} ${styles.rise}`} aria-live="polite">
+      <span aria-hidden className={styles.sunDot} />
+      <span>
         <BidiText text={text} />
-      </p>
-    </div>
+      </span>
+    </p>
   );
 }
 
@@ -124,6 +142,9 @@ export function StepShell({
     heading.current?.focus({ preventScroll: true });
   }, [focus]);
 
+  const label = nextLabel && primary.startsWith("להמשיך") ? nextLabel : primary;
+  const forward = !primaryDisabled && /^(לעבור|להמשיך)/.test(label);
+
   return (
     <form
       noValidate
@@ -131,38 +152,28 @@ export function StepShell({
         event.preventDefault();
         if (!primaryDisabled) onPrimary();
       }}
-      className={`space-y-4 ${direction === "fwd" ? styles.stepFwd : styles.stepBack}`}
+      className={`${styles.step} ${direction === "fwd" ? styles.stepFwd : styles.stepBack}`}
     >
       <Reflection text={reflection ?? null} />
       {notice}
-      <div>
-        <h1
-          ref={heading}
-          tabIndex={-1}
-          className="text-[1.6rem] font-black leading-tight tracking-tight text-[color:var(--ink)] outline-none sm:text-3xl"
-        >
+      <div className={styles.question}>
+        <h1 ref={heading} tabIndex={-1} className={styles.title}>
           {title}
         </h1>
-        <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">{why}</p>
+        <p className={styles.why}>{why}</p>
       </div>
-      {children}
+      <div className={styles.answer}>{children}</div>
       <div
-        className={
-          stickyAction
-            ? `sticky bottom-0 z-10 -mx-4 space-y-1 bg-gradient-to-t from-[var(--canvas)] from-70% to-transparent px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-4 ${
-                stickyDesktop ? "lg:mx-0 lg:px-0" : "lg:static lg:mx-0 lg:bg-none lg:p-0"
-              }`
-            : "space-y-1 pt-1"
-        }
+        className={`${styles.actions} ${stickyAction ? styles.sticky : ""} ${stickyAction && stickyDesktop ? styles.stickyDesktop : ""}`}
       >
         {actionNote}
-        <PrimaryButton disabled={primaryDisabled}>{nextLabel && primary.startsWith("להמשיך") ? nextLabel : primary}</PrimaryButton>
-        {skip && onSkip ? (
-          <div className="flex justify-center">
-            <QuietLink onClick={onSkip}>{skip}</QuietLink>
-          </div>
-        ) : null}
-        {reassure ? <p className="text-center text-xs leading-5 text-[color:var(--ink-soft)]">{reassure}</p> : null}
+        <div className={styles.actionRow}>
+          <PrimaryButton disabled={primaryDisabled} forward={forward}>
+            {label}
+          </PrimaryButton>
+          {skip && onSkip ? <QuietLink onClick={onSkip}>{skip}</QuietLink> : null}
+        </div>
+        {reassure ? <p className={styles.reassure}>{reassure}</p> : null}
       </div>
     </form>
   );
@@ -189,22 +200,18 @@ export function Chip({
       aria-pressed={selected}
       onClick={onClick}
       disabled={disabled}
-      className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border px-4 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
-        selected
-          ? "border-[var(--ink)] bg-[var(--primary-soft)] text-[color:var(--ink)] ring-1 ring-[var(--ink)]"
-          : "border-[var(--rule-dark)] bg-white text-[color:var(--ink)] hover:border-[var(--ink-faint)]"
-      } ${className}`}
+      className={`${form.chip} ${className}`}
     >
       {selected ? <CheckMark /> : null}
       <span>{label}</span>
-      {hint ? <span className="text-xs font-normal text-[color:var(--ink-soft)]">{hint}</span> : null}
+      {hint ? <small>{hint}</small> : null}
     </button>
   );
 }
 
-function CheckMark() {
+export function CheckMark({ className = "h-3.5 w-3.5 shrink-0" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 16 16" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+    <svg viewBox="0 0 16 16" className={className} fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
       <path d="M3.5 8.5l3 3 6-7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
@@ -240,19 +247,22 @@ export function TextInput({
 }) {
   return (
     <div data-help-topic={helpTopic}>
-      <div className="mb-1 flex items-baseline justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-bold text-[color:var(--ink)]">
+      <div className="flex items-end justify-between gap-3">
+        <label htmlFor={id} className={form.label}>
           {label}
         </label>
-        {helpTopic ? <HowToFind topic={helpTopic} /> : null}
+        {helpTopic ? (
+          <span className="-my-2.5">
+            <HowToFind topic={helpTopic} />
+          </span>
+        ) : null}
       </div>
-      <div className="flex min-h-12 items-center rounded-lg border border-[var(--rule-dark)] bg-white focus-within:border-[var(--ink)] focus-within:ring-1 focus-within:ring-[var(--ink)]">
+      <div className={form.inputBox}>
         {prefix ? (
-          <span dir="ltr" className="pl-3 text-base text-[color:var(--ink-muted)]">
+          <span dir="ltr" className="ps-3.5 text-base text-[color:var(--ink-muted)]">
             {prefix}
           </span>
         ) : null}
-        {/* 16px on phones: iOS zooms into any field smaller than that. */}
         <input
           id={id}
           value={value}
@@ -264,12 +274,10 @@ export function TextInput({
           autoCapitalize={dir === "ltr" ? "none" : undefined}
           spellCheck={dir === "ltr" ? false : undefined}
           maxLength={maxLength}
-          className={`min-h-12 w-full min-w-0 rounded-lg bg-transparent text-base text-[color:var(--ink)] outline-none placeholder:text-[color:var(--ink-muted)] ${
-            prefix ? "pl-3 pr-1" : "px-3.5"
-          } ${dir === "ltr" ? "text-left placeholder:text-left" : ""}`}
+          className={dir === "ltr" ? "text-left placeholder:text-left" : ""}
         />
       </div>
-      {note ? <div className="mt-1 text-xs leading-5 text-[color:var(--ink-soft)]">{note}</div> : null}
+      {note ? <div className={form.note}>{note}</div> : null}
     </div>
   );
 }
@@ -325,7 +333,7 @@ export function IconButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[color:var(--ink-soft)] hover:bg-[var(--primary-soft)] hover:text-[color:var(--ink)]"
+      className="inline-flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
     >
       {children}
     </button>
@@ -373,8 +381,8 @@ export function BidiText({ text }: { text: string }) {
 /** Dark text on a light colour, white on a dark one. */
 export function inkOn(hex: string): string {
   const m = hex.replace("#", "").match(/^([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
-  if (!m) return "#1d2940";
+  if (!m) return "var(--ink)";
   const [r, g, b] = [m[1], m[2], m[3]].map((x) => parseInt(x, 16) / 255);
   const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  return lum > 0.6 ? "#1d2940" : "#ffffff";
+  return lum > 0.6 ? "var(--ink)" : "#ffffff";
 }

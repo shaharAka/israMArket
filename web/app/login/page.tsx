@@ -7,7 +7,9 @@ import { Button, ErrorNote } from "@/components/AppShell";
 import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { endpoints } from "@/lib/api";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
-import { BrandMark, IconSparkles } from "@/lib/icons";
+import { BrandMark } from "@/lib/icons";
+import form from "@/components/start/form.module.css";
+import auth from "./auth.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,44 +46,13 @@ export default function LoginPage() {
 
   return (
     <AuthCard title="כניסה לחשבון">
-      {/* 1-Click Demo Login Button */}
-      <button
-        type="button"
-        onClick={async () => {
-          setPending(true);
-          await endpoints.enterDemo();
-          router.replace("/dashboard");
-        }}
-        disabled={pending}
-        className="drawn-button mb-7 flex w-full items-center justify-between gap-3 border border-[var(--rule-dark)] bg-[var(--primary-soft)] p-4 text-right text-[var(--ink)] hover:bg-[var(--primary-soft)] transition-colors"
-      >
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center border border-[var(--rule-dark)] bg-white rounded">
-            <IconSparkles className="w-5 h-5 text-[var(--ink)]" />
-          </div>
-          <div className="min-w-0">
-            <span className="block font-bold text-sm text-[var(--ink)]">לראות את הדמו</span>
-            <span className="block text-xs text-[var(--ink-soft)]">מאפיית לחם תום, בלי הרשמה</span>
-          </div>
-        </div>
-        <span className="shrink-0 whitespace-nowrap text-xs font-bold text-[var(--ink)] underline underline-offset-4">
-          לפתוח ←
-        </span>
-      </button>
-
-      <div className="relative mb-6 flex items-center py-2">
-        <div className="flex-grow border-t border-[var(--rule)]"></div>
-        <span className="mx-4 flex-shrink text-xs text-[var(--ink-muted)]">או עם החשבון שלכם</span>
-        <div className="flex-grow border-t border-[var(--rule)]"></div>
-      </div>
-
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
       <GoogleButton next="/dashboard" back="/login" disabled={pending} />
-      <div className="my-4">
+      <div className="my-5">
         <OrDivider />
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className={auth.form}>
         <Field
           name="email"
           label="אימייל"
@@ -99,16 +70,14 @@ export default function LoginPage() {
           autoComplete="current-password"
         />
         <ErrorNote message={error} />
-        <Button type="submit" disabled={pending} tone="primary" size="md" className="min-h-12 w-full">
+        <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
           {pending ? "נכנסים…" : "להיכנס"}
         </Button>
       </form>
 
-      <p className="mt-6 text-center text-xs text-[var(--ink-muted)]">
+      <p className={auth.foot}>
         עדיין אין לכם חשבון?{" "}
-        <Link href="/signup" className="font-bold text-[var(--ink)] hover:underline underline-offset-4">
-          לפתוח חשבון
-        </Link>
+        <Link href="/signup">לפתוח חשבון</Link>
       </p>
     </AuthCard>
   );
@@ -116,19 +85,21 @@ export default function LoginPage() {
 
 export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="auth-blue flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4 py-8 sm:py-12">
-      <div className="bg-[var(--paper)] border border-[var(--rule)] rounded-lg w-full max-w-md p-5 sm:p-8">
-        <Link href="/" className="mb-6 flex items-center gap-2.5" aria-label="לעמוד הבית">
-          <BrandMark className="h-9 w-9 text-[var(--primary)]" />
-          <div>
-            <span className="font-black text-base text-[var(--ink)]">ישראמארקט</span>
-            <span className="-mt-0.5 block text-[11px] text-[var(--ink-muted)]">שיווק לעסקים קטנים</span>
-          </div>
-        </Link>
-
-        <h1 className="mb-6 text-2xl font-black tracking-tight text-[var(--ink)]">{title}</h1>
-        {children}
-      </div>
+    <div className={`auth-blue ${auth.page}`}>
+      <header className={auth.bar}>
+        <div className={auth.barRow}>
+          <Link href="/" className={auth.brand} aria-label="ישראמארקט, לעמוד הבית">
+            <BrandMark className="h-8 w-8 text-[var(--primary)]" />
+            <span>ישראמארקט</span>
+          </Link>
+        </div>
+      </header>
+      <main className={auth.main}>
+        <div className={auth.card}>
+          <h1 className={auth.title}>{title}</h1>
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
@@ -152,9 +123,9 @@ export function Field({
   autoComplete?: string;
 }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1.5 block text-sm font-bold text-[var(--ink)]">{label}</span>
-      {/* 16px on phones: iOS zooms the page into any field smaller than that. */}
+    <label className="block">
+      <span className={form.label}>{label}</span>
+      {/* 16px on phones: iOS zooms the page into any field smaller than that (form.input). */}
       <input
         name={name}
         type={type}
@@ -163,7 +134,7 @@ export function Field({
         dir={dir}
         autoComplete={autoComplete}
         required
-        className="min-h-12 w-full rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-base text-[var(--ink)] sm:text-sm"
+        className={`${form.input} ${dir === "ltr" ? "text-left" : ""}`}
       />
     </label>
   );
