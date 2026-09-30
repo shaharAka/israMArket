@@ -321,3 +321,42 @@ sources: {title, url}[], organic_only: boolean}`.
 The quarter plan uses all of it: the strategy is built around the lever; section "המטרה
 ואיך נמדוד" becomes "המספרים" — baseline, lever, target with its math, unit economics, and
 how each number will be measured (integrations as today).
+
+## Revision 7 — the first month inside the app (the trial), owner feedback 2026-09-30
+
+Owner: "I finished onboarding and entered the website and there is nothing there but the
+plan — now we need the user guidance after entry: the 1-month free trial experience."
+Also found: the first month's generation never finished for the owner's account — the last
+stage (weeks 3–4 posts on Muse) takes ~80 s and the browser-driven, step-by-step
+`generateUntilDone` gave up; the account had a plan, no month, onboarding incomplete.
+
+### A. Generation that always finishes
+Month generation runs **on the server in the background** (a job per business, resumable
+from the saved stage after a restart), never tied to an open tab. The page only polls
+state and shows honest progress ("בונים את אוקטובר: כותבים את הפוסטים לשבועות 3–4…").
+Slow/failed post writing falls back (Muse timeout → Gemini) instead of stalling. Failures
+surface with a clear Hebrew retry, never silently.
+
+### B. "החודש הראשון שלכם" — the guided trial
+- **First entry**: a short welcome (3 cards, skippable, once): what's here (התוכנית, הפוסטים,
+  התוצאות, המחקר), what happens this month, what we need from you.
+- **Today = the guide.** Top: "יום N מתוך 30 בחודש החינמי" + one next best action. Below: the
+  trial journey, grouped by week, generated from the plan + the integrations checklist +
+  real state (auto-ticking when done):
+  - השבוע הראשון: לעבור על התוכנית · לחבר את האינסטגרם · לחבר את נתוני האתר (אם יש) · להכין
+    את קישור הוואטסאפ · להעלות כמה תמונות של העסק · לאשר את הפוסטים של השבוע הראשון ·
+    לפרסם את הראשון (ערכת פרסום).
+  - שבוע 2: "מה למדנו השבוע" (first research run) · לבדוק את התוצאות הראשונות.
+  - שבוע 3: להתאים את התוכנית לפי מה שלמדנו.
+  - שבוע 4: סיכום החודש מול המדד · לבנות את החודש השני · להחליט אם להמשיך (price, no payment
+    flow yet — "בקרוב").
+  Each step: why (one line, tied to the plan/KPI), time estimate, deep link, done state.
+- **Every tab's empty state** points to its step in the journey (no blank pages).
+- One "שאלות? כתבו לנו" link (contact email from `web/lib/company.ts`).
+
+### C. The WhatsApp tracked link (promised as "works from day one")
+Owner sets the WhatsApp number once; we create per-channel/per-post short links
+`/{r}/{code}` that redirect to `wa.me/<number>?text=<prefilled text + source code>`, count
+clicks (bot/preview user-agents filtered, minimal logging — no IP stored, hashed day-bucket
+only), show counts per source on Results, and put the right link into each post's CTA /
+publishing kit and the bio suggestion.
