@@ -272,7 +272,7 @@ def split_queue(posts: list[dict], today: date | None = None) -> dict:
 
     for index, post in enumerate(posts):
         brief = post_brief(index, post)
-        if brief["published_url"]:
+        if brief["published_url"] or post.get("published_at"):
             buckets["published"].append(brief)
             continue
         if brief["approval_status"] != "approved":

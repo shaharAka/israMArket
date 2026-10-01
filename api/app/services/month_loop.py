@@ -19,7 +19,7 @@ def prior_month_review(
     """Facts only. No invented metrics."""
     posts = list(((strategy.get("roadmap") or {}).get("posts") or []))
     approved = [post for post in posts if post.get("approval_status") == "approved"]
-    published = [post for post in posts if post.get("published_url")]
+    published = [post for post in posts if post.get("published_url") or post.get("published_at")]
     attribution = ((snapshot or {}).get("ga4") or {}).get("post_attribution") or []
     usp = strategy.get("usp") or {}
     monthly = strategy.get("monthly_horizon_plan") or (strategy.get("roadmap") or {}).get("monthly_horizon_plan") or {}

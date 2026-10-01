@@ -227,8 +227,11 @@ class PostImageIn(BaseModel):
 
 
 class PostPublishIn(BaseModel):
+    """"פרסמתי": marks the post published. The link is optional (it adds Instagram
+    matching); WhatsApp taps are measured by the post's own code either way."""
+
     post_index: int = Field(ge=0, le=50)
-    published_url: str = Field(min_length=8, max_length=800)
+    published_url: str = Field(default="", max_length=800)
 
 
 class PostScheduleIn(BaseModel):

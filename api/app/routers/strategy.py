@@ -762,8 +762,14 @@ def publish_post(
     if body.post_index >= len(posts):
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
     target = posts[body.post_index]
-    target["published_url"] = body.published_url
-    target["published_at"] = datetime.utcnow().isoformat()
+    url = body.published_url.strip()
+    if url and not url.startswith(("http://", "https://")):
+        raise HTTPException(status_code=422, detail="הקישור צריך להתחיל ב-https://")
+    if url:
+        target["published_url"] = url
+    # The first "פרסמתי" sets the time; adding the link later keeps it.
+    if not target.get("published_at"):
+        target["published_at"] = datetime.utcnow().isoformat()
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)

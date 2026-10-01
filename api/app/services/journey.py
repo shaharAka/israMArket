@@ -65,8 +65,9 @@ def all_approved(posts: list[dict]) -> bool:
 
 
 def is_published(post: dict) -> bool:
-    """A post the owner marked as published: the publish endpoint writes a real URL."""
-    return filled(post.get("published_url"))
+    """A post the owner marked as published ("פרסמתי"). The link is optional: the publish
+    endpoint always writes `published_at`, and a pasted URL only adds Instagram matching."""
+    return filled(post.get("published_url")) or filled(post.get("published_at"))
 
 
 def parse_time(value) -> datetime | None:
