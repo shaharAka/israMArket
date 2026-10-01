@@ -1,33 +1,15 @@
-import type { RoadmapPost } from "@/lib/api";
+import type { RoadmapPost, StrategyPayload } from "@/lib/api";
+import { isPending, lifecycleOf } from "@/lib/postLifecycle";
 
-/**
- * Where a post stands, in the three states the owner actually thinks in.
- *
- * Derived only from fields the server already stores: a pasted published link means it went
- * out, an approval means it is ready, anything else is waiting for the owner. There is no
- * fourth "scheduled" state on purpose — the date is shown next to the chip, and a date on its
- * own does not change what the owner has to do.
- */
-export type PostStatus = "review" | "approved" | "published";
-
-export function postStatus(post: RoadmapPost): PostStatus {
-  if (post.published_url) return "published";
-  if (post.approval_status === "approved") return "approved";
-  return "review";
-}
-
-export const STATUS_LABEL: Record<PostStatus, string> = {
-  review: "מחכה לאישור",
-  approved: "אושר",
-  published: "פורסם",
-};
-
-/* How a status looks (the words first, a small dot beside them: sun while it waits, blue
-   once approved, green once out) lives with the rest of the chrome, in chrome.module.css
+/* Where a post stands is its lifecycle (lib/postLifecycle.ts): one vocabulary on the feed,
+   the editor, the calendar and the dashboard. How each state looks (the word first, a small
+   dot beside it) lives with the rest of the chrome, in chrome.module.css
    `.status[data-status=…]`. */
+export { LIFECYCLE_LABEL, lifecycleOf } from "@/lib/postLifecycle";
 
+/** Approved or further along: nothing left for the owner before it goes out. */
 export function isDone(post: RoadmapPost) {
-  return postStatus(post) !== "review";
+  return !isPending(lifecycleOf(post));
 }
 
 const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})/;
@@ -74,4 +56,27 @@ export function nextPendingIndex(posts: RoadmapPost[], from: number): number {
     if (index !== from && !isDone(posts[index])) return index;
   }
   return -1;
+}
+
+/** The plan week a post belongs to: its plan link's, else the week it was written for. */
+export function postWeek(post: RoadmapPost): number {
+  const week = post.plan_link?.week ?? post.week;
+  return typeof week === "number" && Number.isFinite(week) && week > 0 ? week : 0;
+}
+
+/**
+ * The week's focus in the plan's own words: the post's plan link first, then the month's
+ * weekly focus, then the weekly breakdown. "" when the plan never named one.
+ */
+export function weekFocus(
+  week: number,
+  post?: RoadmapPost | null,
+  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown"> | null
+): string {
+  return (
+    post?.plan_link?.week_focus?.trim() ||
+    strategy?.roadmap?.weekly_focus?.find((item) => item.week === week)?.focus?.trim() ||
+    strategy?.weekly_breakdown?.find((item) => item.week === week)?.focus?.trim() ||
+    ""
+  );
 }

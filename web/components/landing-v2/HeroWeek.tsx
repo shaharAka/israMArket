@@ -40,7 +40,7 @@ export function HeroWeek({ className = "", tour = false }: { className?: string;
                 </div>
                 <p className="lv2-wk-post">
                   <span>{THIS_WEEK.posts[0].where}</span>
-                  <span className="lv2-wk-pill">מחכה לאישור</span>
+                  <span className="lv2-wk-pill">מוכן לאישור</span>
                 </p>
               </li>
               <li>
@@ -50,7 +50,7 @@ export function HeroWeek({ className = "", tour = false }: { className?: string;
                 </div>
                 <p className="lv2-wk-post">
                   <span>{THIS_WEEK.posts[1].where}</span>
-                  <span className="lv2-wk-pill">מחכה לאישור</span>
+                  <span className="lv2-wk-pill">מוכן לאישור</span>
                 </p>
               </li>
             </ul>

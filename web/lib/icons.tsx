@@ -274,3 +274,34 @@ export function IconRefresh({ className }: IconProps) {
 export function IconClose({ className }: IconProps) {
   return <Sketch className={className}><path d="M6.5 6.5l11 11M17.5 6.5l-11 11" /></Sketch>;
 }
+
+/** Instagram, drawn in the set's own line (a rounded square and a lens), not the logo. */
+export function IconInstagram({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="3.8" />
+      <circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none" />
+    </Sketch>
+  );
+}
+
+/** Facebook, drawn in the set's own line: an "f" in a circle. */
+export function IconFacebook({ className }: IconProps) {
+  return (
+    <Sketch className={className}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M14.6 8.2h-1.3a1.9 1.9 0 00-1.9 1.9v10.3M9.4 13h4.8" />
+    </Sketch>
+  );
+}
+
+/** A number that went up against its comparison. Drawn right to left, the way time runs in RTL. */
+export function IconTrendUp({ className }: IconProps) {
+  return <Sketch className={className}><path d="M20.5 17l-5.7-5.7-3.6 3.6L4 7.7M9.2 7.7H4v5.2" /></Sketch>;
+}
+
+/** A number that went down against its comparison. */
+export function IconTrendDown({ className }: IconProps) {
+  return <Sketch className={className}><path d="M20.5 7.5l-5.7 5.7-3.6-3.6L4 16.8M9.2 16.8H4v-5.2" /></Sketch>;
+}
