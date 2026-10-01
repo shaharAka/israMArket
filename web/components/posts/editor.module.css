@@ -6,3 +6,14 @@
 .photoOptions { margin-block:4px 0; }.photoOptions[open] { padding-bottom:4px; }
 .editor button:focus-visible { outline:2px solid var(--primary); outline-offset:3px; }
 @media(max-width:600px) { .placeholder { gap:8px; padding:16px 12px; }.placeholderDrawing { width:78px; }.placeholder h3 { font-size:14px; }.placeholder p { font-size:12px; } }
+/* The design step's three looks: the real post, small, with its name under it. The artwork
+   keeps its own colours; only the selection ring and the label are app chrome. */
+.looks { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.look { display:flex; flex-direction:column; gap:8px; min-width:0; padding:0; border:0; background:none; text-align:center; cursor:pointer; }
+.lookThumb { display:block; position:relative; border-radius:12px; overflow:hidden; box-shadow:var(--shadow-card); transition:box-shadow 200ms cubic-bezier(.2,.7,.2,1), transform 200ms cubic-bezier(.2,.7,.2,1); }
+.look:hover:not(:disabled) .lookThumb { transform:translateY(-1px); box-shadow:var(--shadow-pop); }
+.look[aria-checked="true"] .lookThumb { box-shadow:0 0 0 2px var(--paper), 0 0 0 4px var(--primary); }
+.lookLabel { display:inline-flex; align-items:center; justify-content:center; gap:4px; min-height:20px; font-size:13px; font-weight:600; line-height:1.4; color:var(--ink-soft); }
+.look[aria-checked="true"] .lookLabel { color:var(--primary-dark); }
+.look:disabled { opacity:.5; cursor:not-allowed; }
+@media (prefers-reduced-motion: reduce) { .lookThumb { transition:none; } .look:hover:not(:disabled) .lookThumb { transform:none; } }

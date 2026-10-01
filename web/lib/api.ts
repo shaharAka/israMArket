@@ -1,4 +1,6 @@
 import type { OnboardingDraft } from "./draft";
+import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign } from "./dna/library";
+import { DEMO_DNA, DEMO_DNA_ALTERNATIVES } from "./dna/samples";
 import type { StoredQuarterPlan } from "./quarterPlan";
 import { deriveLifecycle } from "./postLifecycle";
 
@@ -146,6 +148,7 @@ export const DEMO_BUSINESS: Business = {
     brand_language: DEMO_BRAND,
   },
   brand_language: DEMO_BRAND,
+  brand_dna: DEMO_DNA,
   diagnostics: {
     has_customer_club: "no",
     repeat_vs_new: "mostly_repeat",
@@ -2239,6 +2242,8 @@ function demoInstructionRewrite(
 function cloneDemoStrategy(): StrategyPayload {
   return {
     ...DEMO_STRATEGY,
+    // Like serialize_strategy: the month carries the business's Design DNA.
+    brand_dna: DEMO_BUSINESS.brand_dna ?? null,
     usp: {
       ...DEMO_STRATEGY.usp,
       growth_targets: [...(DEMO_STRATEGY.usp.growth_targets || [])],
@@ -2818,6 +2823,20 @@ function demoSaveOwnerContext(body: OwnerContextUpdate): Business {
  * like the real work they stand in for — an instantly-resolved list would hide every
  * loading state the screens are supposed to prove. Callers already await `api()`.
  */
+/** WCAG contrast of two hex colours, for the demo's copy of the server's colour rule. */
+function demoContrast(a: string, b: string): number {
+  const lum = (hex: string) => {
+    const h = hex.replace("#", "");
+    const [r, g, bl] = [0, 2, 4].map((i) => {
+      const v = parseInt(h.slice(i, i + 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}
+
 async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {  const method = (options.method || "GET").toUpperCase();
   if (path === "/auth/me") return DEMO_USER as T;
   if (path === "/auth/logout" && method === "POST") {
@@ -2865,6 +2884,60 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       },
     } as T;
   }
+  // The Design DNA (api/app/routers/brand_dna.py). The real first read builds the DNA and
+  // can take seconds; the demo waits a little so the brand page's loading state is real.
+  if (path === "/brand/dna" && method === "GET") {
+    await new Promise((resolve) => window.setTimeout(resolve, 600));
+    return { brand_dna: DEMO_BUSINESS.brand_dna ?? null, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna" && method === "PUT") {
+    const edit = JSON.parse(String(options.body || "{}")) as BrandDnaEdit;
+    const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
+    const next: BrandDna = structuredClone(current);
+    const locked = new Set(current.locked ?? []);
+    if (edit.type && Object.keys(edit.type).length) {
+      next.type = { ...next.type, ...edit.type };
+      locked.add("type");
+    }
+    if (edit.motif && Object.keys(edit.motif).length) {
+      next.motif = { ...next.motif, ...edit.motif };
+      locked.add("motif");
+    }
+    if (edit.colors && Object.keys(edit.colors).length) {
+      const colors = { ...next.colors, ...edit.colors };
+      // Same rule as the server (MIN_TEXT_CONTRAST).
+      if (demoContrast(colors.ink, colors.paper) < 4.5) {
+        throw new ApiError("צבע הטקסט לא נקרא על צבע הרקע. בחרו טקסט כהה יותר או רקע בהיר יותר.", 422);
+      }
+      next.colors = colors;
+      locked.add("colors");
+    }
+    if (edit.keep) locked.add("all");
+    if (locked.size) next.locked = [...locked].sort();
+    DEMO_BUSINESS.brand_dna = next;
+    return { brand_dna: next, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna/regenerate" && method === "POST") {
+    // Feels like the real call (a model picks within the business's signals) and walks
+    // through hand-made alternatives. Like the server it is stored at once, keeps the
+    // genes the owner set, and clears "kept" (the owner is trying something else).
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
+    const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
+    const cycle = [...DEMO_DNA_ALTERNATIVES, DEMO_DNA];
+    const at = cycle.findIndex((dna) => dna.seed === current.seed);
+    const next: BrandDna = structuredClone(cycle[(at + 1) % cycle.length]);
+    const genes = (current.locked ?? []).filter((gene) => gene === "type" || gene === "motif" || gene === "colors");
+    for (const gene of genes) {
+      if (gene === "type") next.type = structuredClone(current.type);
+      if (gene === "motif") next.motif = structuredClone(current.motif);
+      if (gene === "colors") next.colors = structuredClone(current.colors);
+    }
+    next.locked = genes.length ? genes : undefined;
+    next.created_at = new Date().toISOString();
+    DEMO_BUSINESS.brand_dna = next;
+    return { brand_dna: next, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna/library") return DNA_LIBRARY as T;
   if (path === "/onboarding/scan" && method === "POST") {
     return {
       business: DEMO_BUSINESS,
@@ -2981,50 +3054,29 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       vibe?: string;
       custom_prompt?: string;
       generate_image?: boolean;
+      composition?: string;
+      text_position?: string;
     };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    // The result follows the business's DNA: the composition asked for, or the next of the
+    // DNA's own compositions; the words stay, the way the real designer reads the DNA.
+    await new Promise((resolve) => window.setTimeout(resolve, 700));
+    const dnaCompositions = DEMO_BUSINESS.brand_dna?.compositions ?? [];
+    const current = POSTS[index].design?.composition;
     const vibe = body.vibe || "";
-    let has_overlay = vibe !== "hero_clean";
-    let overlay_position: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card" = "bottom_pill";
-    let overlay_theme: "paper_badge" | "ink_pill" | "accent_banner" | "frosted_glass" | "minimal_text" = "ink_pill";
-    let concept = "צילום אמיתי של מאפי חג ומחמצת טרייה, באור בוקר טבעי";
-    let style = "צילום חם בסגנון מגזין · רקע מטושטש · שולחן עץ כפרי";
-    let headline = POSTS[index].overlay_text || POSTS[index].title.slice(0, 20);
-    let badge = "לחג";
-
-    if (vibe === "hero_clean") {
-      has_overlay = false;
-      concept = "צילום נקי של המוצר, בלי כיתוב בכלל. כל תשומת הלב על הבצק והקרום הטרי";
-      style = "צילום תקריב · אור טבעי מהחלון · בלי שום דבר מסביב";
-      headline = "";
-      badge = "";
-    } else if (vibe === "announcement_card") {
-      has_overlay = true;
-      overlay_position = "center_card";
-      overlay_theme = "paper_badge";
-      concept = "כרטיס הודעה על רקע של נייר חם, עם מסגרת עדינה ואותיות ברורות";
-      headline = POSTS[index].title.slice(0, 24);
-      badge = "חשוב לחג";
-    } else if (vibe === "corner_badge") {
-      has_overlay = true;
-      overlay_position = "top_right";
-      overlay_theme = "paper_badge";
-      concept = "תווית קטנה בפינה הימנית העליונה, על צילום מלא";
-      headline = POSTS[index].overlay_text || "טרי הבוקר";
-      badge = "שישי ביפו";
-    }
-
+    const next =
+      body.composition ||
+      ((dnaCompositions as string[]).includes(vibe)
+        ? vibe
+        : dnaCompositions[(Math.max(-1, dnaCompositions.indexOf(current ?? "")) + 1) % Math.max(1, dnaCompositions.length)]);
+    const prompt = (body.custom_prompt || "").trim();
     POSTS[index] = {
       ...POSTS[index],
-      has_overlay,
-      overlay_headline: headline,
-      overlay_badge: badge,
-      overlay_position,
-      overlay_theme,
-      overlay_text: headline,
-      creative_concept: concept,
-      visual_style: style,
+      has_overlay: true,
+      overlay_headline: POSTS[index].overlay_headline || POSTS[index].overlay_text || POSTS[index].title.slice(0, 24),
+      design: next ? { composition: next, text_position: body.text_position || "", crop: POSTS[index].format === "reel" || POSTS[index].format === "story" ? "9:16" : "4:5" } : POSTS[index].design,
+      creative_concept: prompt ? `לפי מה שביקשתם: ${prompt}` : POSTS[index].creative_concept,
       image_url: POSTS[index].image_url || DEMO_IMAGES[index] || DEMO_IMAGES[0],
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
@@ -3055,7 +3107,9 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       overlay_headline: headline,
       overlay_badge: body.overlay_badge !== undefined ? body.overlay_badge : (POSTS[index].overlay_badge || ""),
       overlay_position: body.overlay_position || POSTS[index].overlay_position || "bottom_pill",
-      overlay_theme: body.overlay_theme || POSTS[index].overlay_theme || "ink_pill",
+      // Like the server: the old field changes only when it is sent.
+      overlay_theme: body.overlay_theme !== undefined ? body.overlay_theme : POSTS[index].overlay_theme,
+      design: body.design?.composition ? { ...body.design, crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5" } : POSTS[index].design,
       overlay_text: has_overlay ? headline : "",
       creative_concept: body.creative_concept || POSTS[index].creative_concept,
       visual_style: body.visual_style || POSTS[index].visual_style,
@@ -3742,6 +3796,17 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify(brand_language),
     }),
+  /** The business's Design DNA. The first read builds it (up to ~12 s on a real account). */
+  brandDna: () => api<{ brand_dna: BrandDna | null; business_id?: number }>("/brand/dna"),
+  /** "לנסות סגנון אחר": a new DNA from the same signals, stored at once. Genes the owner
+   *  set stay. Billing-gated, like every generation. */
+  regenerateBrandDna: () =>
+    api<{ brand_dna: BrandDna; business_id?: number }>("/brand/dna/regenerate", { method: "POST" }),
+  /** The owner's own fonts, motif or colours (each one then locked), or `keep` ("לשמור"). */
+  editBrandDna: (edit: BrandDnaEdit) =>
+    api<{ brand_dna: BrandDna; business_id?: number }>("/brand/dna", { method: "PUT", body: JSON.stringify(edit) }),
+  /** The keys the renderer can draw (fonts, compositions, motifs, signatures). No account needed. */
+  brandDnaLibrary: () => api<DnaLibrary>("/brand/dna/library"),
   previewScan: (website_url: string) =>
     api<{ scan: ScanPayload }>("/onboarding/preview-scan", {
       method: "POST",
@@ -4207,6 +4272,8 @@ export type Business = {
   onboarding_complete: boolean;
   scraped_profile: unknown;
   brand_language?: BrandLanguage | null;
+  /** The business's Design DNA (docs/design-dna.md), once generated. */
+  brand_dna?: BrandDna | null;
   growth_targets?: string[];
   diagnostics?: Diagnostics | null;
   long_horizon_plan?: LongHorizonPlan | null;
@@ -4341,6 +4408,9 @@ export type RoadmapPost = {
   overlay_badge?: string;
   overlay_position?: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card";
   overlay_theme?: OverlayTheme;
+  /** Which of the business's DNA compositions the post uses, its crop and text position.
+   *  Absent on posts written before the DNA: the renderer maps `overlay_theme` instead. */
+  design?: PostDesign;
   creative_concept?: string;
   visual_style?: string;
   scene_description?: string;
@@ -4728,6 +4798,8 @@ export type StrategyPayload = {
   weekly_breakdown?: WeeklyBreakdownItem[];
   competitors: unknown[];
   brand_language?: BrandLanguage | null;
+  /** The business's Design DNA, when the server sends it with the month. */
+  brand_dna?: BrandDna | null;
   horizon?: MonthHorizon;
   /** The stored 3-month plan from /start (Revision 5), when the business has one. */
   quarter_plan?: StoredQuarterPlan | null;
