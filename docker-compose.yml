@@ -15,8 +15,13 @@ services:
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
       TOKEN_ENCRYPTION_KEY: ${TOKEN_ENCRYPTION_KEY:?set TOKEN_ENCRYPTION_KEY in .env}
       GEMINI_API_KEY: ${GEMINI_API_KEY:?set GEMINI_API_KEY in .env}
-      GEMINI_IMAGE_MODEL: ${GEMINI_IMAGE_MODEL:-gemini-3-pro-image}
-      GEMINI_IMAGE_SIZE: ${GEMINI_IMAGE_SIZE:-2K}
+      GEMINI_IMAGE_MODEL: ${GEMINI_IMAGE_MODEL:-gemini-3.1-flash-image}
+      GEMINI_IMAGE_SIZE: ${GEMINI_IMAGE_SIZE:-1K}
+      IMAGE_GENERATE_PROVIDER: ${IMAGE_GENERATE_PROVIDER:-muse}
+      IMAGE_EDIT_PROVIDER: ${IMAGE_EDIT_PROVIDER:-muse}
+      IMAGE_FALLBACK_MODEL: ${IMAGE_FALLBACK_MODEL:-gemini-3.1-flash-image}
+      # Muse Image (and the Muse Spark experiment). Blank = every image goes to the fallback.
+      META_MODEL_API_KEY: ${META_MODEL_API_KEY:-}
       REAL_PHOTO_FIRST: ${REAL_PHOTO_FIRST:-true}
       # The browser reaches the app on this origin, so OAuth redirects and the CSRF
       # origin check must match it exactly (scheme included).

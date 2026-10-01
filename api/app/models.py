@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -79,6 +79,10 @@ class Business(Base):
     # message starts with — every link appends its own short source code to it.
     whatsapp_number_e164: Mapped[str | None] = mapped_column(String(20), nullable=True, default=None)
     whatsapp_default_text_he: Mapped[str] = mapped_column(Text, default="")
+    # The business's Design DNA (docs/design-dna.md, the `brand_dna` contract): its type
+    # pair, colours, compositions, motif, signature and photo direction. "" until built
+    # (services/design_dna.py, at the end of the site scan or on the first read).
+    brand_dna_json: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -274,6 +278,35 @@ class Asset(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="assets")
+
+
+class ImageUsage(Base):
+    """One image-model call made for a business's post, and what it cost (estimated).
+
+    Every attempt is a row, refusals and errors included, so a fallback is visible: a
+    Muse refusal (not billed) followed by the Nano Banana 2 image that replaced it. The
+    cost is the list price from docs/image-models.md (services/image_usage.py), not an
+    invoice line.
+    """
+
+    __tablename__ = "image_usage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    post_uid: Mapped[str] = mapped_column(String(40), default="")
+    # "generate" | "edit"
+    task: Mapped[str] = mapped_column(String(20), default="generate")
+    # "muse" | "gemini"
+    provider: Mapped[str] = mapped_column(String(20), default="")
+    model: Mapped[str] = mapped_column(String(80), default="")
+    image_size: Mapped[str] = mapped_column(String(10), default="")
+    # "ok" | "refused" | "error" | "timeout"
+    outcome: Mapped[str] = mapped_column(String(20), default="ok")
+    # Why this attempt happened instead of the preferred one ("" for the first try).
+    fallback_reason: Mapped[str] = mapped_column(Text, default="")
+    est_cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 
 
 class Audience(Base):

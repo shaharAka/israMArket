@@ -304,6 +304,7 @@ def queue_for(
 ) -> dict:
     """Everything the publishing screen needs, in one response."""
     from app.services import connected_posts  # avoids an import cycle
+    from app.services.design_dna import load_dna
 
     roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
     posts = connected_posts.connect_posts(
@@ -313,6 +314,7 @@ def queue_for(
         month=strategy.month,
         core=connected_posts.strategy_core(roadmap if isinstance(roadmap, dict) else {}),
         website=business.website_url or "",
+        dna=load_dna(business),
     )
     queue = split_queue(posts, today=today)
     _attach_whatsapp_links(db, business, strategy, posts, queue)
