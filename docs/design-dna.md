@@ -64,7 +64,10 @@ its field and voice) and checked for distance from other businesses in the same 
 | **D3. Variety & check** | composition rotation per business, same-field distance check, a visual QA script that renders N businesses side by side |
 
 ## Model routing (from docs/image-models.md, 2026-10-01)
-- Generate from scratch: `gemini-3.1-flash-image` (Nano Banana 2) at 1K — matched Pro at half the price.
+**Owner decision (2026-10-01): Muse Image is the default for generation AND edits ($0.01/image),
+with automatic fallback to Nano Banana 2 when Muse refuses (it refuses e.g. lingerie generation)
+or fails.** Providers are config settings (`image_generate_provider`, `image_edit_provider`).
+- (Bench default, superseded) Generate from scratch: `gemini-3.1-flash-image` (Nano Banana 2) at 1K — matched Pro at half the price.
 - Edit / improve the owner's real photo: Muse Image edits (`/v1/images/edits`, $0.01) → fallback Nano Banana 2 with the photo as a labelled reference (Muse refuses some categories, e.g. lingerie generation).
 - Drafts while the owner waits: `gemini-3.1-flash-lite-image`; background drafts: Muse.
 - Retire `gemini-2.5-flash-image`. Keep `gemini-3-pro-image` only as an explicit "best" option.
