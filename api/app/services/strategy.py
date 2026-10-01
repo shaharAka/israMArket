@@ -29,7 +29,7 @@ from app.services.schemas_llm import (
     USP_SCHEMA,
 )
 from app.services.cost_model import plan_from_budget, prompt_block
-from app.services import connected_posts
+from app.services import connected_posts, post_rewrite
 from app.services.instagram_signal import attach_inspiration, prompt_block as instagram_prompt_block
 from app.services.month_loop import prior_prompt_block
 from app.services.scraper import _normalize_url, scrape_site
@@ -622,6 +622,15 @@ def _rewrite_context_block(context: dict | None) -> str:
         lines.append(f"- המטרה של החודש: {link['goal']}.")
     if link.get("week") and link.get("week_focus"):
         lines.append(f"- שבוע {link['week']} בתוכנית: {link['week_focus']}.")
+    if context.get("why_line"):
+        lines.append(f"- למה הפוסט הזה: {context['why_line']}")
+    mix = connected_posts.mix_name(context.get("mix_type") or "", context.get("business_model") or "products")
+    if mix:
+        lines.append(f"- סוג הפוסט בתמהיל: {mix}. השכתוב נשאר מהסוג הזה.")
+    featured = context.get("featured") if isinstance(context.get("featured"), dict) else {}
+    if featured.get("name"):
+        why = f" ({featured['why']})" if featured.get("why") else ""
+        lines.append(f"- המוצר שבעל העסק בחר להבליט בפוסט: {featured['name']}{why}.")
     channel = connected_posts.CHANNEL_HE.get(context.get("channel") or "")
     if channel:
         lines.append(f"- הערוץ של הפוסט: {channel}. caption נכתב לערוץ הזה.")
@@ -633,21 +642,31 @@ def _rewrite_context_block(context: dict | None) -> str:
         lines.append(f"- מה כבר נמדד בפוסט הזה: {connected_posts.count_he(measure['metric'], results['value'])}.")
     worked = connected_posts.what_worked_block(context.get("what_worked"))
     head = ("הפוסט הזה הוא צעד בתוכנית של החודש:\n" + "\n".join(lines)) if lines else ""
-    return "\n".join(part for part in (head, worked) if part)
+    facts = str(context.get("facts") or "")
+    facts = ("עובדות ומחירים:\n" + facts) if facts else ""
+    return "\n".join(part for part in (head, facts, worked) if part)
 
 
 def rewrite_post(
     post: dict,
-    tone: str,
+    tone: str | None,
     brand: dict,
     instagram: dict | None = None,
     context: dict | None = None,
+    instruction: str = "",
 ) -> dict:
-    """Rewrite one post in a tone. `instagram` is `instagram_signal.signal_for(...)`.
+    """Rewrite one post by one instruction, or in a tone. `instagram` is
+    `instagram_signal.signal_for(...)`.
 
-    `context` (optional) is the post's plan card: {plan_link, channel, measure, results,
-    what_worked}. The rewrite keeps the post's place in the plan and may follow what
-    worked; the caller checks `applied_learning` with connected_posts.informed_note.
+    `instruction` (docs/posts-v2.md, Phase C) is the owner's one instruction: a chip's
+    words ("קצר יותר") or their own (at most 200 characters); `services/post_rewrite`
+    turns it into the writer's line. Without it, `tone` decides, as before.
+
+    `context` (optional) is the post's plan card: {plan_link, why_line, mix_type,
+    featured, channel, measure, results, what_worked, facts}. The rewrite keeps the
+    post's place in the plan and may follow what worked; the caller checks
+    `applied_learning` with connected_posts.informed_note, and the money with
+    post_rewrite.guard.
 
     The result carries `inspiration` (resolved sources, or None) instead of the raw refs.
     """
@@ -658,9 +677,15 @@ def rewrite_post(
         "holiday": "אווירת חג ישראלי, דחיפות סביב השולחן המשפחתי והכנות מוקדמות",
         "story": "סיפור קצר ואותנטי מאחורי הקלעים או מהעשייה היומית",
     }
-    tone_desc = tones_he.get(tone, tone)
+    if instruction:
+        head = f"שכתב את הפוסט הבא לפי בקשה אחת של בעל העסק. {post_rewrite.guidance(instruction)}"
+        if tone:
+            head += f"\nהסגנון: {tones_he.get(tone, tone)}."
+        head += "\nכל השאר נשאר: המסר, הקריאה לפעולה, הערוץ והעובדות."
+    else:
+        head = f"שכתב את הפוסט הבא לסושיאל בסגנון: {tones_he.get(tone or 'direct', tone or 'direct')}."
     prompt = f"""
-שכתב את הפוסט הבא לסושיאל בסגנון: {tone_desc}.
+{head}
 השתמש בשפת המותג של העסק:
 טון כללי: {brand.get("voice")}
 מילים להשתמש בהן: {brand.get("do_say")}

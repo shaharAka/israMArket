@@ -693,7 +693,9 @@ class WhatWorkedTest(ConnectedTestCase):
         # Already published (and measured): nothing is asked of the owner any more.
         self.assertEqual(post["owner_needs"], [])
         self.assertEqual(post["lifecycle"], "measured")
-        self.assertEqual(post["outlet_captions"]["instagram"], "מארז ב-90 ₪")
+        # Phase C: a price nobody gave is never kept. The writer's "90 ₪" became the
+        # placeholder, and the owner is asked about it (tests/test_post_rewrite.py).
+        self.assertEqual(post["outlet_captions"]["instagram"], "מארז ב-[מחיר]")
 
 
 # --- 6. posts from before all this --------------------------------------------------------

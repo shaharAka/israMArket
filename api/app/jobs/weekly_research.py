@@ -9,6 +9,9 @@ A business is due when its newest research run is older than six days (or it has
 Scheduled runs are stored with `trigger="scheduled"` and do not use the owner's three
 manual runs a day. No scheduler lives inside the API: cron (or the platform's scheduled
 job) calls this module — see DEPLOY.md. Exit code 1 if any business failed.
+
+Each business run also refreshes the month's hypothesis statuses (services/hypotheses.py),
+best effort: a failure there is logged and never counts as the business failing.
 """
 
 from __future__ import annotations
@@ -19,7 +22,7 @@ from datetime import datetime
 
 from app.db import Base, SessionLocal, engine, migrate_db
 from app.models import Business
-from app.services import billing, research
+from app.services import billing, hypotheses, research
 
 
 def due(db, business: Business, now: datetime, force: bool = False) -> bool:
@@ -67,6 +70,13 @@ def main(argv: list[str] | None = None) -> int:
                 db.rollback()
                 failures += 1
                 print(f"fail  business={business.id}: {type(exc).__name__}: {exc}", file=sys.stderr)
+            # The week's look at the month's hypotheses (docs/posts-v2.md, Phase C): the
+            # statuses move with this week's numbers. Best effort, never fails the job.
+            review = hypotheses.refresh_for_business(db, business)
+            if review is not None:
+                db.commit()
+                moved = sum(1 for item in review.get("items") or [] if item.get("status") != "measuring")
+                print(f"hyp   business={business.id} items={len(review.get('items') or [])} decided={moved}")
     finally:
         db.close()
     return 1 if failures else 0

@@ -316,6 +316,8 @@ def _is_approved(post: dict) -> bool:
 
 
 def _fact_text(fact: str) -> str:
+    if fact.endswith("?"):  # a question for the owner ("מה המחיר?") is asked as it is
+        return fact
     return f"לבדוק את {fact}" if fact.startswith("ה") else f"לבדוק: {fact}"
 
 
@@ -390,6 +392,8 @@ def connected_view(
     view["results"] = post.get("results") if isinstance(post.get("results"), dict) else None
     view["learning"] = _clean(post.get("learning"), 300) or None
     view["informed_by_note"] = _clean(post.get("informed_by_note"), 200) or None
+    # "שונה לפי: קצר יותר": the last one-instruction rewrite, until the text is saved or approved.
+    view["rewrite_instruction"] = _clean(post.get("rewrite_instruction"), 60) or None
     view["lifecycle"] = lifecycle(view, view["owner_needs"])
     return view
 

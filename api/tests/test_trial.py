@@ -479,7 +479,8 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(self.payload()["hypotheses"], [])
         self.save_profile({"quarter_plan": PLAN, "hypothesis_status": {"2": "confirmed", "0": "bogus"}})
         hypotheses = self.payload()["hypotheses"]
-        self.assertEqual([h["status_he"] for h in hypotheses], ["נמדדת", "אושרה"])
+        # A confirmed hypothesis "התאמתה" (the counterpart of "אם היא לא תתאמת").
+        self.assertEqual([h["status_he"] for h in hypotheses], ["נמדדת", "התאמתה"])
         self.assertEqual(hypotheses[0]["if_wrong_he"], "נעבור למבצע בחנות")
 
     def test_next_skips_what_cannot_be_done_yet(self):

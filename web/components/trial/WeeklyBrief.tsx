@@ -6,6 +6,7 @@ import type { Business, StrategyPayload } from "@/lib/api";
 import { IconChevron, IconFlag, IconLightbulb } from "@/lib/icons";
 import { researchLatest, type TrialPayload } from "@/lib/trial";
 import { HypothesisNote } from "@/components/design/PlanBrief";
+import { HypothesisStatusLine, statusSummary } from "@/components/plan/HypothesisStatusLine";
 
 const SOURCE_HE: Record<string, string> = { instagram: "אינסטגרם", site: "נתוני האתר", whatsapp: "קישור הוואטסאפ" };
 
@@ -106,30 +107,31 @@ export function WeeklyBrief({
 }
 
 /**
- * The plan's hypotheses and where each stands: נמדדת / אושרה / לא אושרה. Folded to one
- * line; the monthly review sets the statuses, so until then every one reads "נמדדת".
- * Each is the design library's HypothesisNote; its status is the supplied evidence line,
- * in words (plain status text, not a coloured pill).
+ * What the month tests and where each stands (docs/posts-v2.md, Phase C): the month's
+ * hypothesis and the plan's assumptions, each with its status word, a small dot and one
+ * evidence line, as the server wrote them (performance refresh, weekly job, month close).
+ * Folded to one line that counts them; each is the design library's HypothesisNote.
  */
 export function HypothesisStatus({ trial, className = "" }: { trial: TrialPayload | null; className?: string }) {
   const items = trial?.hypotheses ?? [];
   if (!items.length) return null;
-  const measuring = items.filter((item) => item.status === "measuring").length;
   return (
     <details className={`group/hyp ${className}`}>
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
         <span>
           ההשערות שבודקים ·{" "}
-          <span className="font-normal text-[color:var(--ink-soft)]">
-            {measuring === items.length ? `${items.length} נמדדות` : `${items.length - measuring} מתוך ${items.length} הוכרעו`}
-          </span>
+          <span className="font-normal text-[color:var(--ink-soft)]">{statusSummary(items)}</span>
         </span>
         <IconChevron className="h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open/hyp:rotate-90 motion-reduce:transition-none" />
       </summary>
       <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)] pb-1">
         {items.map((item, index) => (
-          <li key={`${index}-${item.text_he}`}>
-            <HypothesisNote hypothesis={item.text_he} ifWrong={item.if_wrong_he} evidence={`מצב: ${item.status_he}`} />
+          <li key={item.key ?? `${index}-${item.text_he}`}>
+            <HypothesisNote
+              hypothesis={item.text_he}
+              ifWrong={item.if_wrong_he}
+              status={<HypothesisStatusLine status={item.status} statusHe={item.status_he} evidence={item.evidence_he} />}
+            />
           </li>
         ))}
       </ul>
