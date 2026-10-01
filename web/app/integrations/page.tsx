@@ -590,8 +590,7 @@ export default function IntegrationsPage() {
             />
 
             <div className={ROW_BODY}>
-              <MetaConnection item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => reload(true)} />
-              {metaConnected && <button type="button" onClick={() => handleDisconnect("meta")} className={QUIET_ACTION}>לנתק</button>}
+              <MetaConnection item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => reload(true)} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
             </div>
 
             <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">

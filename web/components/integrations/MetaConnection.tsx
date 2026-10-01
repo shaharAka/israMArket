@@ -18,9 +18,8 @@ const EXAMPLE_ASSETS: MetaAssets = {
   scopes: ["ads_read"], errors: {},
 };
 
-export function MetaConnection({ item, ready, demo, website, onChanged }: {
-  item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>;
-}) {
+export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect }: {
+  item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"connect" | "choose" | "done">("connect");
   const [assets, setAssets] = useState<MetaAssets | null>(null);
@@ -156,13 +155,23 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
   const needsChoice = item?.status === "select_assets" || item?.status === "select_page";
   const tracking = verification || item?.pixel_verification;
   return <div className={styles.connection}>
-    {item?.connected && <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>}
-    <UIAction variant={item?.connected ? "secondary" : "primary"} onClick={() => {
-      setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = "";
-      if (item?.connected || needsChoice) { setBusy(true); void loadAssets(); } else setStage("connect");
-    }}>{item?.connected ? "ניהול החיבור" : needsChoice ? "לבחור את העסק שלי" : "לחבר את Meta"}</UIAction>
-    {item?.pixel_id && <UIAction variant="text" onClick={() => { setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב באתר</UIAction>}
-    <p className={styles.hint}>פייסבוק, אינסטגרם ונתוני המודעות — מחברים פעם אחת, עם החשבון שמנהל את העסק.</p>
+    {item?.connected ? (
+      // Same shape as the other connections: who is connected, and the actions beside it.
+      <div className={styles.connected}>
+        <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>
+        <div className={styles.actions}>
+          <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>ניהול החיבור</button>
+          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב</button>}
+          {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}>לנתק</button>}
+        </div>
+      </div>
+    ) : <>
+      <UIAction variant="primary" onClick={() => {
+        setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = "";
+        if (needsChoice) { setBusy(true); void loadAssets(); } else setStage("connect");
+      }}>{needsChoice ? "לבחור את העסק שלי" : "לחבר את Meta"}</UIAction>
+      <p className={styles.hint}>פייסבוק, אינסטגרם ונתוני המודעות: מחברים פעם אחת, עם החשבון שמנהל את העסק.</p>
+    </>}
     {note && !open && <p role="status">{note}</p>}
     <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק למטא" : stage === "choose" ? "איזה עסק לחבר?" : "החיבור מוכן"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
       <div className={styles.wizard}>
