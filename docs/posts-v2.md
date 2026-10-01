@@ -44,7 +44,7 @@ So:
 - One filled button: the next thing that needs the owner.
 
 ### Lifecycle words (one vocabulary everywhere)
-`מחכה לכם` (needs a photo or a fact) → `מוכן לאישור` → `מאושר` → `פורסם` → `נמדד`.
+`מחכה לכם` (needs a photo or a fact) → `מוכן לאישור` → `אושר` → `פורסם` → `נמדד` (HEBREW-COPY: "אושר", not "מאושר"). Publishing does not require a link: "פרסמתי" marks it published; pasting the link stays optional (it adds Instagram reach); WhatsApp clicks are measured either way.
 
 ### Contract: new fields on each post (additive, old posts degrade gracefully)
 | Field | Type | Meaning |
