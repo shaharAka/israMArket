@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- same-origin post images, not optimizable remote URLs */
 
 import { useState } from "react";
-import { needsPhoto } from "@/components/CardCanvas";
+import { postNeedsPhoto } from "@/components/CardCanvas";
 import type { BrandLanguage, RoadmapPost, StrategyPayload } from "@/lib/api";
 import { cardTokens } from "@/lib/cardTokens";
 import { IconChevron } from "@/lib/icons";
@@ -25,7 +25,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   const [broken, setBroken] = useState(false);
   const frame =
     "relative block h-20 w-16 shrink-0 overflow-hidden rounded-[12px] bg-[var(--primary-soft)] after:pointer-events-none after:absolute after:inset-0 after:rounded-[12px] after:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)]";
-  if (!needsPhoto(post.overlay_theme)) {
+  if (!postNeedsPhoto(post)) {
     // A typographic card has no photograph by design: its brand colour is its picture.
     const tokens = cardTokens(brand);
     return <span aria-hidden className={frame} style={{ background: tokens.primary }} />;

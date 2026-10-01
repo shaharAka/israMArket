@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, model_validator
+from pydantic import BaseModel, EmailStr, Field, HttpUrl, field_validator, model_validator
 
 from app.services.business_fields import coerce_field
 from app.services.business_model import goals_for
@@ -145,10 +145,49 @@ class PostUpdateIn(BaseModel):
     has_overlay: bool = True
     overlay_headline: str = Field(default="", max_length=200)
     overlay_badge: str = Field(default="", max_length=100)
+    # The old renderer's layout. Stored only when sent explicitly (routers/strategy.save_post).
     overlay_theme: str = Field(default="ink_pill", max_length=40)
     creative_concept: str = Field(default="", max_length=1000)
     visual_style: str = Field(default="", max_length=500)
     image_prompt: str = Field(default="", max_length=4000)
+    # The post's Design DNA layout (docs/design-dna.md); crop follows the format.
+    design: "PostDesignChoice | None" = None
+
+
+def _library_composition(value: str) -> str:
+    from app.services.dna_library import COMPOSITIONS
+
+    if value and value not in COMPOSITIONS:
+        raise ValueError("הקומפוזיציה הזו לא נמצאת בספרייה.")
+    return value
+
+
+def _library_position(value: str) -> str:
+    from app.services.dna_library import TEXT_POSITIONS
+
+    if value and value not in TEXT_POSITIONS:
+        raise ValueError("מיקום הטקסט לא מוכר.")
+    return value
+
+
+class PostDesignChoice(BaseModel):
+    """A composition from the DNA library (GET /brand/dna/library) and where its text sits."""
+
+    composition: str = Field(min_length=1, max_length=40)
+    text_position: str = Field(default="", max_length=10)
+
+    @field_validator("composition")
+    @classmethod
+    def _composition(cls, value: str) -> str:
+        return _library_composition(value)
+
+    @field_validator("text_position")
+    @classmethod
+    def _position(cls, value: str) -> str:
+        return _library_position(value)
+
+
+PostUpdateIn.model_rebuild()
 
 
 class PostDesignIn(BaseModel):
@@ -156,6 +195,52 @@ class PostDesignIn(BaseModel):
     vibe: str = Field(default="", max_length=120)
     custom_prompt: str = Field(default="", max_length=1000)
     generate_image: bool = True
+    # The editor's design step: one of the DNA's compositions (empty = the DNA's rotation).
+    composition: str = Field(default="", max_length=40)
+    text_position: str = Field(default="", max_length=10)
+
+    @field_validator("composition")
+    @classmethod
+    def _composition(cls, value: str) -> str:
+        return _library_composition(value)
+
+    @field_validator("text_position")
+    @classmethod
+    def _position(cls, value: str) -> str:
+        return _library_position(value)
+
+
+class BrandDnaTypeIn(BaseModel):
+    display: str | None = Field(default=None, max_length=40)
+    text: str | None = Field(default=None, max_length=40)
+    display_weight: int | None = Field(default=None, ge=100, le=900)
+    text_weight: int | None = Field(default=None, ge=100, le=900)
+
+
+class BrandDnaMotifIn(BaseModel):
+    kind: str | None = Field(default=None, max_length=40)
+    color: str | None = Field(default=None, max_length=20)
+    density: str | None = Field(default=None, max_length=10)
+
+
+class BrandDnaColorsIn(BaseModel):
+    ink: str | None = Field(default=None, max_length=9)
+    paper: str | None = Field(default=None, max_length=9)
+    accent: str | None = Field(default=None, max_length=9)
+    accent_2: str | None = Field(default=None, max_length=9)
+    on_photo: str | None = Field(default=None, max_length=9)
+    tint: str | None = Field(default=None, max_length=9)
+
+
+class BrandDnaEditIn(BaseModel):
+    """PUT /brand/dna: the genes the owner keeps or changes. Each is validated against
+    the library (services/design_dna.edit_dna). `keep` = "לשמור": the whole style stays
+    as it is through later site scans."""
+
+    type: BrandDnaTypeIn | None = None
+    motif: BrandDnaMotifIn | None = None
+    colors: BrandDnaColorsIn | None = None
+    keep: bool = False
 
 
 class PostRewriteIn(BaseModel):

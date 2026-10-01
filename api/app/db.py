@@ -47,6 +47,9 @@ def migrate_db():
             # The WhatsApp tracked link (services/whatsapp.py).
             ("whatsapp_number_e164", "VARCHAR(20)"),
             ("whatsapp_default_text_he", "TEXT DEFAULT ''"),
+            # Design DNA (services/design_dna.py). Empty on existing rows: built on the
+            # first read of /brand/dna or the next site scan.
+            ("brand_dna_json", "TEXT DEFAULT ''"),
         ]
         for col, col_type in new_cols:
             if col not in existing:
