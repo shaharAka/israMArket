@@ -10,7 +10,7 @@
  * cache below (every tab reads the same journey) has no business in the generic client.
  */
 import { useEffect, useSyncExternalStore } from "react";
-import { ApiError, api, endpoints, isDemo } from "./api";
+import { ApiError, api, endpoints, isDemo, type HypothesisReviewStatus } from "./api";
 import { whatsappEndpoints } from "./whatsapp";
 
 /* --------------------------------- Types --------------------------------- */
@@ -50,9 +50,20 @@ export type TrialStep = {
   note_he?: string;
 };
 
-export type HypothesisStatus = "measuring" | "confirmed" | "not_confirmed";
+/** docs/posts-v2.md, Phase C: the same statuses as the plan's (api/app/services/hypotheses.py). */
+export type HypothesisStatus = HypothesisReviewStatus;
 
-export type TrialHypothesis = { text_he: string; if_wrong_he: string; status: HypothesisStatus; status_he: string };
+/** The month's hypothesis (`kind: "month"`) and the 3-month plan's assumptions, each with
+ *  its status word and one evidence line. */
+export type TrialHypothesis = {
+  key?: string;
+  kind?: "month" | "assumption";
+  text_he: string;
+  if_wrong_he: string;
+  status: HypothesisStatus;
+  status_he: string;
+  evidence_he?: string;
+};
 
 export type TrialPayload = {
   day: number;
@@ -496,10 +507,18 @@ async function demoTrial(): Promise<TrialPayload> {
       first_numbers_at: null,
       baseline,
     },
-    hypotheses: [
-      { text_he: "אנחנו מניחים שהזמנות מראש לחגים יביאו יותר הזמנות באתר מפוסטים של מוצר מוכן.", if_wrong_he: "נעבור למבצע בחנות.", status: "measuring", status_he: "נמדדת" },
-      { text_he: "רילס מהתנור בבוקר יביא יותר שמירות ושיתופים מתמונות מדף.", if_wrong_he: "נחזור לתמונות מוצר.", status: "measuring", status_he: "נמדדת" },
-    ],
+    // Like the server: the month's hypothesis and the plan's assumptions, from the review.
+    hypotheses: (strategy?.hypothesis_review?.items ?? [])
+      .filter((item) => item.kind === "month" || item.kind === "assumption")
+      .map((item) => ({
+        key: item.key,
+        kind: item.kind as "month" | "assumption",
+        text_he: item.text_he,
+        if_wrong_he: item.if_wrong_he,
+        status: item.status,
+        status_he: item.status_he,
+        evidence_he: item.evidence_he,
+      })),
   });
 }
 

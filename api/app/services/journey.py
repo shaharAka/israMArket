@@ -65,8 +65,9 @@ def all_approved(posts: list[dict]) -> bool:
 
 
 def is_published(post: dict) -> bool:
-    """A post the owner marked as published: the publish endpoint writes a real URL."""
-    return filled(post.get("published_url"))
+    """A post the owner marked as published ("פרסמתי"). The link is optional: the publish
+    endpoint always writes `published_at`, and a pasted URL only adds Instagram matching."""
+    return filled(post.get("published_url")) or filled(post.get("published_at"))
 
 
 def parse_time(value) -> datetime | None:
@@ -96,6 +97,10 @@ class Facts:
     # The posts of the strategy the rest of the app treats as current (`_active_strategy`).
     posts: list[dict] = field(default_factory=list)
     has_month: bool = False
+    # That month's plan (the roadmap without its posts) and its stored hypothesis review
+    # (docs/posts-v2.md, Phase C: services/hypotheses.py). Empty without a month.
+    month_core: dict = field(default_factory=dict)
+    hypothesis_review: dict = field(default_factory=dict)
     # How many months exist, and the first one — "month 2 is built" is a second row.
     month_count: int = 0
     first_month: tuple[int, int] | None = None
@@ -172,8 +177,9 @@ class Facts:
         return min(times) if times else None
 
 
-def _active_posts(db: Session, business: Business) -> tuple[bool, list[dict]]:
-    """The posts of the month `/posts` and `/performance` treat as current.
+def _active_month(db: Session, business: Business) -> tuple[bool, list[dict], dict, dict]:
+    """The posts of the month `/posts` and `/performance` treat as current, with its plan
+    (the roadmap without the posts) and its stored hypothesis review.
 
     Resolved through the same `_active_strategy` helper those routes use, so the lists
     can never point at a page that disagrees with them. "No month yet" is simply no posts.
@@ -184,17 +190,19 @@ def _active_posts(db: Session, business: Business) -> tuple[bool, list[dict]]:
     try:
         strategy = _active_strategy(db, business)
     except HTTPException:
-        return False, []
+        return False, [], {}, {}
     extra = loads(strategy.roadmap_json, {})
     if not isinstance(extra, dict):
-        return True, []
+        return True, [], {}, {}
+    review = extra.get("hypothesis_review") if isinstance(extra.get("hypothesis_review"), dict) else {}
     roadmap = extra.get("roadmap")
+    core = {key: value for key, value in roadmap.items() if key != "posts"} if isinstance(roadmap, dict) else {}
     raw = roadmap.get("posts") if isinstance(roadmap, dict) else None
     if not isinstance(raw, list):
-        return True, []
+        return True, [], core, review
     # Only well-formed post objects count. A malformed entry must not be able to make the
     # month look approved or published.
-    return True, [item for item in raw if isinstance(item, dict)]
+    return True, [item for item in raw if isinstance(item, dict)], core, review
 
 
 def load(db: Session, business: Business | None) -> Facts:
@@ -235,7 +243,7 @@ def load(db: Session, business: Business | None) -> Facts:
         .order_by(PerformanceSnapshot.created_at.asc())
         .first()
     )
-    has_month, posts = _active_posts(db, business)
+    has_month, posts, month_core, review = _active_month(db, business)
     return Facts(
         business=business,
         stored=stored if isinstance(stored, dict) else {},
@@ -246,6 +254,8 @@ def load(db: Session, business: Business | None) -> Facts:
         third_asset_at=asset_times[2] if len(asset_times) >= 3 else None,
         posts=posts,
         has_month=has_month,
+        month_core=month_core,
+        hypothesis_review=review,
         month_count=len(months),
         first_month=(months[0][0], months[0][1]) if months else None,
         second_month_at=months[1][2] if len(months) >= 2 else None,

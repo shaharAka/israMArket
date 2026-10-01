@@ -1,59 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   PUBLISH_SCOPE_LABELS,
   endpoints,
+  type PostChannel,
   type PublishCapability,
   type RoadmapPost,
   type StrategyPayload,
 } from "@/lib/api";
-import { IconChevron, IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
+import { CHANNEL_LABEL } from "@/lib/postLifecycle";
+import { IconCheck, IconChevron, IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
 import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
+import { ChannelIcon } from "@/components/posts/ChannelIcon";
 import { shortDay } from "@/components/posts/postMeta";
 import ui from "@/components/posts/chrome.module.css";
 
-type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
-
-/** The two platforms' marks, drawn in the icon set's own line (24px grid, 1.6 stroke) so
- *  they sit with the rest of the controls instead of as emoji. */
-function InstagramGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
-      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
-      <circle cx="12" cy="12" r="3.8" />
-      <circle cx="17.1" cy="6.9" r="1" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
-
-function FacebookGlyph() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M14.6 8.2h-1.3a1.9 1.9 0 0 0-1.9 1.9v10.3M9.4 13h4.8" />
-    </svg>
-  );
-}
-
-/** The platforms the owner actually posts to by hand. Each one is opened, not filled:
- *  neither Instagram nor Facebook lets another site pre-fill a caption, so the honest
- *  control is a link to the app plus the instruction to paste. WhatsApp is the exception
- *  and gets its own pre-filled link below. */
-const COMPOSERS: { key: OutletKey; label: string; href: string; Icon: () => React.JSX.Element }[] = [
-  { key: "instagram", label: "אינסטגרם", href: "https://www.instagram.com/", Icon: InstagramGlyph },
-  { key: "facebook", label: "פייסבוק", href: "https://www.facebook.com/", Icon: FacebookGlyph },
-];
+/** The apps the owner posts to by hand. Each one is opened, not filled: neither Instagram
+ *  nor Facebook lets another site pre-fill a caption, so the honest control is a link to
+ *  the app plus the instruction to paste. WhatsApp is the exception and opens pre-filled. */
+const COMPOSER_HREF: Record<Exclude<PostChannel, "whatsapp">, string> = {
+  instagram: "https://www.instagram.com/",
+  facebook: "https://www.facebook.com/",
+};
 
 export type PublishPanelProps = {
   post: RoadmapPost;
   /** The post's place in the month — what every write addresses. */
   postIndex: number;
-  /** The channel being looked at — the caption and the composer links follow it. */
-  outlet: OutletKey;
-  outletLabel: string;
-  /** The caption resolved for that channel: `outlet_captions[outlet]`, else `caption`. */
+  /** The one channel the plan chose for this post. The kit is for it; the others are a
+   *  quiet "אותו פוסט גם ל…" further down (posts-v2, Revision 1). */
+  channel: PostChannel;
+  /** The caption for that channel: `outlet_captions[channel]`, else `caption`. */
   caption: string;
   /** True while an image operation is rewriting the same post on the server. */
   imageLocked: boolean;
@@ -66,13 +45,23 @@ export type PublishPanelProps = {
   exporting: boolean;
   exportDisabled: boolean;
 
-  // The pasted-URL flow, moved in here unchanged: the state stays in PostEditor so
-  // switching posts keeps resetting it the way it always did.
+  // "פרסמתי" and the optional link: the state stays in PostEditor so switching posts keeps resetting
+  // it the way it always did.
   publishUrl: string;
   onPublishUrlChange: (value: string) => void;
   publishing: boolean;
   onMarkPublished: () => void;
+  /** Open on the pasted link: the post is out and the link is what is missing. */
+  linkFirst?: boolean;
 };
+
+async function copy(text: string, success: string) {
+  try {
+    await copyText(text, success);
+  } catch {
+    toast("לא הצלחנו להעתיק. אפשר לסמן את הטקסט ולהעתיק ידנית.");
+  }
+}
 
 /**
  * The publishing handoff.
@@ -83,16 +72,16 @@ export type PublishPanelProps = {
  * reviews the app. Nothing here can change that, so nothing here pretends to: there is no
  * publish button, and the capability note says why in the API's own words.
  *
- * What is left is the part that genuinely works today — the kit. The card downloads, the
- * caption and the tracked link copy, WhatsApp opens with the whole message already in it,
- * and the two platforms that cannot be pre-filled open next to the instruction to paste.
- * A date can be set so nothing is forgotten, and the pasted URL still closes the loop.
+ * What is left is the part that genuinely works today — the kit, for the post's one
+ * channel. The card downloads, the caption and the tracked link copy, WhatsApp opens with
+ * the whole message already in it, and Instagram and Facebook open next to the instruction
+ * to paste. A date can be set so nothing is forgotten, and "פרסמתי" closes the loop (the
+ * post's link is optional; it adds Instagram's reach to what is measured).
  */
 export function PublishPanel({
   post,
   postIndex,
-  outlet,
-  outletLabel,
+  channel,
   caption,
   imageLocked,
   onStrategy,
@@ -103,12 +92,14 @@ export function PublishPanel({
   onPublishUrlChange,
   publishing,
   onMarkPublished,
+  linkFirst = false,
 }: PublishPanelProps) {
   const [scheduleDate, setScheduleDate] = useState(post.scheduled_for || "");
   const [savingSchedule, setSavingSchedule] = useState(false);
   const [scheduleError, setScheduleError] = useState("");
   const [capability, setCapability] = useState<PublishCapability | null>(null);
   const [capabilityError, setCapabilityError] = useState("");
+  const linkInput = useRef<HTMLInputElement>(null);
 
   // One cheap read, when the panel is first opened. It answers "what is actually
   // permitted" from the stored Meta grant — never from a flag in the app.
@@ -150,18 +141,26 @@ export function PublishPanel({
     };
   }, [postIndex, post.cta]);
 
+  useEffect(() => {
+    if (linkFirst) linkInput.current?.focus({ preventScroll: true });
+  }, [linkFirst]);
+
   // The field is seeded from the server's post and kept in step by every write below. The
   // editor remounts this panel when the owner switches post, so there is no second copy of
   // "which post is this" to keep in sync — and a failed save restores `storedDate` rather
   // than leaving a date on screen that was never stored.
   const storedDate = post.scheduled_for || "";
   const trackingUrl = post.tracking_url || "";
-  const whatsappText = trackingUrl ? `${caption}\n\n${trackingUrl}` : caption;
+  const whatsappText = (text: string) => (trackingUrl ? `${text}\n\n${trackingUrl}` : text);
   const published = Boolean(post.published_url);
-  // The channel being looked at leads: it is the one the owner is about to post to.
-  const composers = [...COMPOSERS].sort(
-    (a, b) => Number(b.key === outlet) - Number(a.key === outlet)
-  );
+  // Out: "פרסמתי" was tapped, with or without a link.
+  const out = published || Boolean(post.published_at);
+  const channelLabel = CHANNEL_LABEL[channel];
+  // The same post for the plan's other channels, when the plan wrote a caption for them.
+  const crossPosts = (Object.keys(CHANNEL_LABEL) as PostChannel[]).flatMap((key) => {
+    const text = key === channel ? "" : (post.outlet_captions?.[key] || "").trim();
+    return text ? [{ key, text }] : [];
+  });
 
   async function saveSchedule(value: string) {
     if (savingSchedule || imageLocked) return;
@@ -195,16 +194,73 @@ export function PublishPanel({
     if (previous) void saveSchedule("");
   }
 
+  // ---- closing the loop after posting by hand ----
+  // "פרסמתי" is the whole ask: WhatsApp taps are counted by the post's own code either way.
+  // The link is optional and says what it adds (Instagram's reach), never a demand.
+  const linkField = channel === "whatsapp" ? null : (
+    <div className={out ? "" : "mt-4"}>
+      <label htmlFor="post-published-url" className={`${ui.help} block`}>
+        {published ? "הקישור לפוסט" : "להדביק קישור לפוסט, כדי לראות גם כמה ראו"}
+      </label>
+      <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
+        <input
+          ref={linkInput}
+          id="post-published-url"
+          value={publishUrl}
+          onChange={(event) => onPublishUrlChange(event.target.value)}
+          placeholder="https://..."
+          dir="ltr"
+          className={`${ui.field} min-w-0 flex-1 text-left text-sm`}
+        />
+        {out ? (
+          <button
+            type="button"
+            disabled={publishing || !publishUrl.trim()}
+            onClick={onMarkPublished}
+            className={`${ui.button} ${ui.matchField} shrink-0`}
+          >
+            {publishing ? "שומרים…" : published ? "לעדכן את הקישור" : "לשמור את הקישור"}
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+  const doneSection = (
+    <section key="done" className={linkFirst ? "pb-5" : "py-5"}>
+      {out ? (
+        linkField ?? <p className="text-sm leading-6 text-[var(--ink-soft)]">סומן כפורסם. את הלחיצות בוואטסאפ נספור לפי הקוד של הפוסט.</p>
+      ) : (
+        <>
+          <button
+            type="button"
+            disabled={publishing}
+            onClick={onMarkPublished}
+            className="drawn-button inline-flex min-h-13 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white enabled:hover:bg-[var(--primary-dark)]"
+          >
+            <IconCheck className="h-5 w-5" />
+            {publishing ? "שומרים…" : "פרסמתי"}
+          </button>
+          {linkField}
+        </>
+      )}
+    </section>
+  );
+
   return (
     // No box of its own: it lives inside the editor's sheet or side panel, which is the card.
     // Groups are divided by hairlines, each with one title and its controls under it.
     <div className="divide-y divide-[var(--rule)]">
-      {/* ---- what the owner needs in hand to post by hand ---- */}
-      <section className="pb-5">
-        <h3 className={ui.groupTitle}>מה צריך כדי לפרסם</h3>
+      {linkFirst ? doneSection : null}
+
+      {/* ---- what the owner needs in hand to post by hand, for the one channel ---- */}
+      <section className={linkFirst ? "py-5" : "pb-5"}>
+        <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
+          <ChannelIcon channel={channel} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
+          מה צריך כדי לפרסם ב{channelLabel}
+        </h3>
         <p className={`${ui.meta} mt-0.5 font-normal`}>
           {storedDate ? `מתוכנן ליום ${shortDay(storedDate)}` : "עוד לא נקבע תאריך"}
-          {published ? " · סומן כפורסם" : ""}
+          {out ? " · סומן כפורסם" : ""}
         </p>
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -212,47 +268,29 @@ export function PublishPanel({
             <IconImage />
             {exporting ? "מורידים את הכרטיס…" : "להוריד את הכרטיס"}
           </button>
-          <a
-            href={whatsappShareUrl(whatsappText)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={ui.button}
-          >
-            <IconWhatsApp className="text-[color:var(--good)]" />
-            לשלוח בוואטסאפ
-          </a>
-          {composers.map((composer) => (
-            <a
-              key={composer.key}
-              href={composer.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={ui.button}
-            >
-              <composer.Icon />
-              לפתוח את {composer.label}
+          {channel === "whatsapp" ? (
+            <a href={whatsappShareUrl(whatsappText(caption))} target="_blank" rel="noopener noreferrer" className={ui.button}>
+              <IconWhatsApp className="text-[color:var(--good)]" />
+              לשלוח בוואטסאפ
             </a>
-          ))}
+          ) : (
+            <>
+              <button type="button" onClick={() => void copy(caption, "הכיתוב הועתק.")} className={ui.button}>
+                <IconCopy />
+                להעתיק את הכיתוב
+              </button>
+              <a href={COMPOSER_HREF[channel]} target="_blank" rel="noopener noreferrer" className={`${ui.button} sm:col-span-2`}>
+                <ChannelIcon channel={channel} />
+                לפתוח את {channelLabel}
+              </a>
+            </>
+          )}
         </div>
         <p className={`${ui.help} mt-3`}>
-          וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה. באינסטגרם ובפייסבוק אי אפשר למלא
-          כיתוב מבחוץ, אז פותחים את האפליקציה ומדביקים.
+          {channel === "whatsapp"
+            ? "וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה."
+            : `ב${channelLabel} אי אפשר למלא כיתוב מבחוץ: מורידים את הכרטיס, מעתיקים את הכיתוב ומדביקים באפליקציה.`}
         </p>
-      </section>
-
-      {/* The caption for the channel being looked at, ready to paste. The text itself is
-          under the preview and in the editor's "טקסט" section; a third full copy here only
-          made the panel longer. */}
-      <section className="flex items-center justify-between gap-3 py-3">
-        <h3 className={ui.groupTitle}>הכיתוב ל{outletLabel}</h3>
-        <button
-          type="button"
-          onClick={() => void copyText(caption, "הכיתוב הועתק.")}
-          className={ui.link}
-        >
-          <IconCopy />
-          להעתיק את הכיתוב
-        </button>
       </section>
 
       {/* The tracked link — or the reason there is none, never a dead button. */}
@@ -268,7 +306,7 @@ export function PublishPanel({
               </p>
               <button
                 type="button"
-                onClick={() => void copyText(trackingUrl, "הקישור הועתק.")}
+                onClick={() => void copy(trackingUrl, "הקישור הועתק.")}
                 className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
               >
                 <IconLink />
@@ -302,7 +340,7 @@ export function PublishPanel({
                 </p>
                 <button
                   type="button"
-                  onClick={() => void copyText(waLink.link!.url, "קישור הוואטסאפ הועתק.")}
+                  onClick={() => void copy(waLink.link!.url, "קישור הוואטסאפ הועתק.")}
                   className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
                 >
                   <IconCopy />
@@ -327,6 +365,9 @@ export function PublishPanel({
           )}
         </section>
       ) : null}
+
+      {/* "פרסמתי", once the post is up (and the optional link). */}
+      {linkFirst ? null : doneSection}
 
       {/* ---- when it goes out ---- */}
       <section className="py-5">
@@ -364,29 +405,39 @@ export function PublishPanel({
         ) : null}
       </section>
 
-      {/* ---- closing the loop after posting by hand ---- */}
-      <section className="py-5">
-        <h3 className={ui.groupTitle}>אחרי שפרסמתם ב{outletLabel}</h3>
-        <p className={`${ui.help} mt-0.5`}>הדביקו כאן את הקישור לפוסט שפורסם, ונמדוד אותו בתוצאות.</p>
-        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-          <input
-            aria-label="הקישור לפוסט שפורסם"
-            value={publishUrl}
-            onChange={(event) => onPublishUrlChange(event.target.value)}
-            placeholder="https://..."
-            dir="ltr"
-            className={`${ui.field} min-w-0 flex-1 text-left text-sm`}
-          />
-          <button
-            type="button"
-            disabled={publishing}
-            onClick={onMarkPublished}
-            className={`${ui.button} ${ui.matchField} shrink-0`}
-          >
-            {published ? "לעדכן את הקישור" : "לסמן שפורסם"}
-          </button>
-        </div>
-      </section>
+      {/* ---- the same post elsewhere: a quiet option, never a choice up front ---- */}
+      {crossPosts.length ? (
+        <section className="py-2">
+          {crossPosts.map(({ key, text }) => (
+            <details key={key} className="group">
+              <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
+                <ChannelIcon channel={key} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
+                <span className="flex-1">אותו פוסט גם ל{CHANNEL_LABEL[key]}</span>
+                <IconChevron />
+              </summary>
+              <p className={`${ui.inset} whitespace-pre-line px-4 py-3 text-sm leading-6 text-[color:var(--ink)]`}>{text}</p>
+              <div className="mb-2 mt-1 flex flex-wrap gap-x-5">
+                {key === "whatsapp" ? (
+                  <a href={whatsappShareUrl(whatsappText(text))} target="_blank" rel="noopener noreferrer" className={ui.link}>
+                    <IconWhatsApp />
+                    לשלוח בוואטסאפ
+                  </a>
+                ) : (
+                  <>
+                    <button type="button" onClick={() => void copy(text, "הכיתוב הועתק.")} className={ui.link}>
+                      <IconCopy />
+                      להעתיק את הכיתוב
+                    </button>
+                    <a href={COMPOSER_HREF[key]} target="_blank" rel="noopener noreferrer" className={`${ui.link} ${ui.linkQuiet}`}>
+                      לפתוח את {CHANNEL_LABEL[key]}
+                    </a>
+                  </>
+                )}
+              </div>
+            </details>
+          ))}
+        </section>
+      ) : null}
 
       {/* ---- why there is no publish button ---- */}
       <section className="pt-5">

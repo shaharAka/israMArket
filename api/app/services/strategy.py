@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 from urllib.parse import urlencode, urlparse, urlunparse, parse_qsl
-import re
 
 from app.services.brand import extract_brand_language, public_scan
 from app.services.audiences import (
@@ -30,6 +29,7 @@ from app.services.schemas_llm import (
     USP_SCHEMA,
 )
 from app.services.cost_model import plan_from_budget, prompt_block
+from app.services import connected_posts, post_rewrite
 from app.services.instagram_signal import attach_inspiration, prompt_block as instagram_prompt_block
 from app.services.month_loop import prior_prompt_block
 from app.services.scraper import _normalize_url, scrape_site
@@ -43,7 +43,7 @@ def _business_brief(business: dict) -> dict:
     and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
     raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items"}
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items", "what_worked"}
     if not any(key in business for key in own_blocks):
         return business
     return {key: value for key, value in business.items() if key not in own_blocks}
@@ -66,20 +66,49 @@ def _owner_block(business: dict, include_idea: bool = False) -> str:
     )
 
 
+def _featured_list(value) -> list | None:
+    """A list of picks from either stored shape: the list itself, or what the picks
+    screen saves (`PUT /business/featured-items`): {"items": [...], "saved_at": ...}."""
+    if isinstance(value, dict):
+        value = value.get("items")
+    return value if isinstance(value, list) else None
+
+
+def _featured_item(item):
+    """A string stays a string; a dict gets its id and a Hebrew "why" (the reason key the
+    picks screen stores, e.g. "best_seller", becomes "הכי נמכר", plus the owner's note)."""
+    if isinstance(item, str):
+        return item.strip() or None
+    if not isinstance(item, dict):
+        return None
+    name = connected_posts.featured_name(item)
+    if not name:
+        return None
+    raw_reason = str(item.get("reason") or "").strip()
+    reason = connected_posts.FEATURED_REASONS_HE.get(raw_reason, raw_reason)
+    why = str(item.get("why") or "").strip() or ", ".join(
+        part for part in (reason, str(item.get("note") or "").strip()) if part
+    )
+    return {"id": connected_posts.featured_item_id(name), "name": name, "why": why}
+
+
 def featured_items_from(stored: dict | None) -> list:
     """The products/services the owner chose to feature (Revision 8, week 2), or [].
 
     Read from the stored profile (`featured_items`) or from the /start answers
-    (`owner_context.featured_items`); whichever the picks screen writes. Each item is a
-    string or a dict (name / why / order); anything else is ignored.
+    (`owner_context.featured_items`); whichever the picks screen writes. The picks
+    screen stores {"items": [...], "saved_at": ...}; a plain list is accepted too. Each
+    item is a string or a dict (name / why / reason / note); anything else is ignored.
     """
     stored = stored or {}
-    items = stored.get("featured_items")
+    items = _featured_list(stored.get("featured_items"))
     if not items:
-        items = (stored.get("owner_context") or {}).get("featured_items") if isinstance(stored.get("owner_context"), dict) else None
-    if not isinstance(items, list):
+        context = stored.get("owner_context") if isinstance(stored.get("owner_context"), dict) else {}
+        items = _featured_list(context.get("featured_items"))
+    if not items:
         return []
-    return [item for item in items if isinstance(item, (str, dict)) and item][:12]
+    cleaned = [_featured_item(item) for item in items]
+    return [item for item in cleaned if item][:12]
 
 
 def _featured_block(business: dict) -> str:
@@ -315,27 +344,19 @@ def build_usp(profile: dict, competitors: list[dict], business: dict, brand: dic
     return loads(strategy_json(prompt, USP_SCHEMA), {})
 
 
-def _slug(value: str) -> str:
-    cleaned = re.sub(r"[^\w]+", "-", value or "", flags=re.UNICODE).strip("-")
-    return (cleaned[:32] or "post").lower()
-
-
 def attach_tracking(posts: list[dict], business: dict, year: int, month: int) -> list[dict]:
+    """UTM, tracking link, WhatsApp source key and measure for each post.
+
+    docs/posts-v2.md: the codes come from the post's stable `uid` (`utm_content` =
+    "p-{uid}", WhatsApp source key "ig-post-{uid}"), and are stored on the post, so
+    editing its title or moving it never breaks matching. A post that already has a UTM
+    content (written before uids: "p3-<title slug>") keeps it.
+    """
     website = (business.get("website_url") or "").strip()
     campaign = f"isramarket-{year}-{month:02d}"
     tagged = []
-    for index, post in enumerate(posts):
-        item = dict(post)
-        source = item.get("primary_outlet") or "instagram"
-        content = f"p{index + 1}-{_slug(item.get('title') or '')}"
-        utm = {
-            "utm_source": source,
-            "utm_medium": "organic",
-            "utm_campaign": campaign,
-            "utm_content": content,
-        }
-        item["utm"] = utm
-        item["tracking_url"] = _with_query(website, utm) if website else ""
+    for post in posts:
+        item = connected_posts.tracking_fields(dict(post), website, campaign, _with_query)
         item.setdefault("approval_status", "review")
         item.setdefault("published_url", "")
         item.setdefault("published_at", None)
@@ -378,6 +399,9 @@ def posts_prompt(
     if len(weeks) == 1:
         count_line = count_line or f"כתוב 1 עד 2 פוסטים מוכנים לפרסום לשבוע {weeks[0]} בלבד."
     count_line = count_line or f"כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד."
+    # docs/posts-v2.md: one post per channel the plan chose, and what worked so far.
+    channels_line = connected_posts.plan_channels_line(core, weeks)
+    worked = connected_posts.what_worked_block(business.get("what_worked"))
     prompt = f"""
 {model_framing(business.get("business_model"))}
 {_audience_block(business, audience_note)}
@@ -402,15 +426,17 @@ USP: {usp}
 {post_audience_rule(business.get("audiences") or [])}
 - image_prompt באנגלית לפי שפת העיצוב של האתר. בלי טקסט עברי בתוך התמונה.
 - overlay_text עד 6 מילים בעברית — לכיתוב מעל התמונה באפליקציה, לא בתוך הפיקסלים
-- primary_outlet, outlets, metrics_to_watch
+- outlets, metrics_to_watch
 - stat_highlight: מספר קונקרטי אחד שמופיע בחומר המקור (למשל "100 חלות כל שישי", "מהתנור ב-07:00") שיוצג גדול על הכרטיס. אם אין מספר אמיתי — החזר מחרוזת ריקה. אסור להמציא נתון.
-- outlet_captions לאינסטגרם, פייסבוק ווואטסאפ
+{connected_posts.prompt_rules()}
 - טון האתר: {brand.get("voice")}
 - מילים לשימוש: {brand.get("do_say")}
 - מילים שאסור: {brand.get("dont_say")}
 - inspiration_refs ו-inspiration_note: לפי בלוק האינסטגרם שלמטה בלבד
+{channels_line}
 {prior_prompt_block(prior)}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
+{worked}
 
 {HEBREW_STYLE}
 
@@ -442,7 +468,8 @@ def _write_posts_for_weeks(
     count_line = extra = ""
     if plan is not None:
         if plan["to_write"] <= 0:
-            return attach_audiences(plan["fixed"], business.get("audiences") or [])
+            fixed = attach_audiences(plan["fixed"], business.get("audiences") or [])
+            return connected_posts.finish_written(fixed, business, core)
         count_line, extra = plan["count_line"], plan["extra"]
         schema = strategy_reveal.SEEDED_POSTS_SCHEMA
     prompt = posts_prompt(business, usp, core, brand, weeks, prior, count_line=count_line, extra=extra)
@@ -462,7 +489,10 @@ def _write_posts_for_weeks(
     # The model names a segment; only real segments exist. An unknown (or missing) name
     # falls back to the primary audience here, so a stored post can never carry a dangling
     # audience id — and a business with no audiences gets an empty field, not an invention.
-    return attach_audiences(items, business.get("audiences") or [])
+    items = attach_audiences(items, business.get("audiences") or [])
+    # docs/posts-v2.md: the post's uid, its one channel, its place in the plan, and the
+    # mix type / featured item / owner fact / applied learning the writer named, checked.
+    return connected_posts.finish_written(items, business, core)
 
 
 def build_roadmap(
@@ -521,7 +551,7 @@ USP והשערת צמיחה: {usp}
 חובה לבנות במדויק לפי הסכימה:
 1. relevant_events: זהה מתוך אירועי החודש את המועדים הרלוונטיים ספציפית למוצרי העסק, הסבר למה זה קריטי, ודרג critical/high/medium.
 2. long_horizon_plan: השערת צמיחה לרבעון, יעדים, ואבני דרך חודשיות.
-3. monthly_horizon_plan: השערת החודש ויעדים לחודש.
+3. monthly_horizon_plan: השערת החודש, יעדים לחודש, ו-goal_he: המטרה של החודש בשתיים עד חמש מילים (למשל "הזמנות מראש לחנוכה").
 4. management_and_checkpoints: איך המערכת מנהלת, ומתי צריך את בעל העסק.
 5. weekly_breakdown לשבועות 1 עד 4: מיקוד, מה אנחנו עושים, מה צריך מהעסק, מה מודדים, ואיפה מפרסמים.
 {approved_block}{prior_prompt_block(prior)}
@@ -582,8 +612,61 @@ def month_from_state(state: dict, scan: dict, posts: list[dict] | None = None) -
     }
 
 
-def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = None) -> dict:
-    """Rewrite one post in a tone. `instagram` is `instagram_signal.signal_for(...)`.
+def _rewrite_context_block(context: dict | None) -> str:
+    """The plan card and results of the post being rewritten, and what worked so far."""
+    if not context:
+        return ""
+    lines = []
+    link = context.get("plan_link") or {}
+    if link.get("goal"):
+        lines.append(f"- המטרה של החודש: {link['goal']}.")
+    if link.get("week") and link.get("week_focus"):
+        lines.append(f"- שבוע {link['week']} בתוכנית: {link['week_focus']}.")
+    if context.get("why_line"):
+        lines.append(f"- למה הפוסט הזה: {context['why_line']}")
+    mix = connected_posts.mix_name(context.get("mix_type") or "", context.get("business_model") or "products")
+    if mix:
+        lines.append(f"- סוג הפוסט בתמהיל: {mix}. השכתוב נשאר מהסוג הזה.")
+    featured = context.get("featured") if isinstance(context.get("featured"), dict) else {}
+    if featured.get("name"):
+        why = f" ({featured['why']})" if featured.get("why") else ""
+        lines.append(f"- המוצר שבעל העסק בחר להבליט בפוסט: {featured['name']}{why}.")
+    channel = connected_posts.CHANNEL_HE.get(context.get("channel") or "")
+    if channel:
+        lines.append(f"- הערוץ של הפוסט: {channel}. caption נכתב לערוץ הזה.")
+    measure = context.get("measure") or {}
+    if measure.get("label_he"):
+        lines.append(f"- איך נדע אם הצליח: {measure['label_he']}. הקריאה לפעולה צריכה לשרת את זה.")
+    results = context.get("results") or {}
+    if results.get("value") is not None and measure.get("metric"):
+        lines.append(f"- מה כבר נמדד בפוסט הזה: {connected_posts.count_he(measure['metric'], results['value'])}.")
+    worked = connected_posts.what_worked_block(context.get("what_worked"))
+    head = ("הפוסט הזה הוא צעד בתוכנית של החודש:\n" + "\n".join(lines)) if lines else ""
+    facts = str(context.get("facts") or "")
+    facts = ("עובדות ומחירים:\n" + facts) if facts else ""
+    return "\n".join(part for part in (head, facts, worked) if part)
+
+
+def rewrite_post(
+    post: dict,
+    tone: str | None,
+    brand: dict,
+    instagram: dict | None = None,
+    context: dict | None = None,
+    instruction: str = "",
+) -> dict:
+    """Rewrite one post by one instruction, or in a tone. `instagram` is
+    `instagram_signal.signal_for(...)`.
+
+    `instruction` (docs/posts-v2.md, Phase C) is the owner's one instruction: a chip's
+    words ("קצר יותר") or their own (at most 200 characters); `services/post_rewrite`
+    turns it into the writer's line. Without it, `tone` decides, as before.
+
+    `context` (optional) is the post's plan card: {plan_link, why_line, mix_type,
+    featured, channel, measure, results, what_worked, facts}. The rewrite keeps the
+    post's place in the plan and may follow what worked; the caller checks
+    `applied_learning` with connected_posts.informed_note, and the money with
+    post_rewrite.guard.
 
     The result carries `inspiration` (resolved sources, or None) instead of the raw refs.
     """
@@ -594,9 +677,15 @@ def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = No
         "holiday": "אווירת חג ישראלי, דחיפות סביב השולחן המשפחתי והכנות מוקדמות",
         "story": "סיפור קצר ואותנטי מאחורי הקלעים או מהעשייה היומית",
     }
-    tone_desc = tones_he.get(tone, tone)
+    if instruction:
+        head = f"שכתב את הפוסט הבא לפי בקשה אחת של בעל העסק. {post_rewrite.guidance(instruction)}"
+        if tone:
+            head += f"\nהסגנון: {tones_he.get(tone, tone)}."
+        head += "\nכל השאר נשאר: המסר, הקריאה לפעולה, הערוץ והעובדות."
+    else:
+        head = f"שכתב את הפוסט הבא לסושיאל בסגנון: {tones_he.get(tone or 'direct', tone or 'direct')}."
     prompt = f"""
-שכתב את הפוסט הבא לסושיאל בסגנון: {tone_desc}.
+{head}
 השתמש בשפת המותג של העסק:
 טון כללי: {brand.get("voice")}
 מילים להשתמש בהן: {brand.get("do_say")}
@@ -611,6 +700,9 @@ def rewrite_post(post: dict, tone: str, brand: dict, instagram: dict | None = No
 
 ספק כותרת, Hook, כיתוב מלא (caption), CTA חד, טקסט קצרצר על התמונה (overlay_text), וגרסאות מותאמות לאינסטגרם, פייסבוק ווואטסאפ (outlet_captions).
 שמור על הפורמט המקורי ({post.get("format")}). inspiration_refs ו-inspiration_note לפי בלוק האינסטגרם בלבד.
+owner_fact: פרט שרק בעל העסק יודע ושהפוסט תלוי בו (מחיר, תאריך, שעות), בקצרה מה לבדוק. אל תמציא אותו בטקסט. אם אין — ריק.
+applied_learning: מזהה מבלוק "מה הצליח אצלכם" אם השכתוב ממשיך דפוס שלו. אחרת ריק.
+{_rewrite_context_block(context)}
 
 {HEBREW_STYLE}
 
