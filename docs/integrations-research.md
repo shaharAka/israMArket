@@ -1,5 +1,9 @@
 # Measurement integrations: what we need, what we can do for the owner, simplest route
 
+Updated 2026-10-01: [Meta measurement implementation and approval plan](meta-approval-plan.md)
+contains the current scope, customer flow, approval drafts and remaining live tests.
+The research below includes proposals; it is not an implementation-status checklist.
+
 Research as of 2026-09-30, against official docs (links inline). "Not verified" means the
 official docs were silent, contradictory or did not render; treat those as open questions,
 not facts. Our own tests on live sites are marked **(tested)**.
@@ -16,7 +20,8 @@ own and may come first.
 1. **Social comes first.** Almost every owner has Instagram; not every owner has a site with
    analytics. Instagram insights need no website at all.
    - Make **Instagram API with Instagram Login** the default connection. It needs no Facebook
-     Page, only a professional account.
+     Page, only a professional account. This remains a future route; the current combined
+     Page/Instagram/Ads flow uses Facebook Login.
    - Keep **Facebook Login** as an optional second step. Competitor data (Business
      Discovery, hashtag search) and the Story insights webhook exist only there.
 2. **Day 1 needs no integration at all:**
@@ -30,15 +35,15 @@ own and may come first.
    the Site Kit marker **(tested)**. The exception is Wix's *native* Meta pixel: it is
    injected at runtime, so its absence in raw HTML means "unknown", not "missing"
    **(tested)**.
-4. **One Google sign-in does both jobs.** It reads site data and Search Console. If the site
-   has no Google Analytics, it creates the property and data stream for the owner (Admin API,
-   `analytics.edit`) and hands back **one `G-` ID** with a 2-minute, platform-specific paste
-   guide. Search Console can then often be verified automatically through that same tag,
-   with no site edits.
+4. **One Google grant reads site data and Search Console (implemented).** Automatic GA
+   property creation, `analytics.edit` and Search Console ownership verification are
+   future proposals, not current capabilities. The current grant is read-only.
 5. **Meta pixel: use the platform's own app, not our API.** That means Wix Marketing
    Integrations, the Shopify "Facebook & Instagram" app, or the Meta plugin on WordPress.
-   Creating pixels or sending Conversions API events for clients needs `ads_management` Full
-   Access plus volume thresholds. It is not worth it for us now.
+   The current delivery discovers existing Pixels and reads receipt/domain evidence.
+   Creating Pixels or sending Conversions API events is outside its scope. Requirements
+   for those writes must be verified before proposing them; no volume threshold is
+   assumed from this earlier research.
 6. **GTM is not the default.** It only wins on developer-built sites.
 7. **Submit these THIS WEEK.** Every one has a lead time we cannot compress (table in §6):
    - Meta Business Verification, then App Review;

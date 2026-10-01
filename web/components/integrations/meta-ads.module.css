@@ -1,0 +1,21 @@
+.section { border-block: 1px solid var(--rule); padding-block: 26px; display: grid; gap: 20px; }
+.section header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 12px; }
+.section h2 { margin: 0; font-size: 22px; font-weight: 700; }
+.section header span { font-size: 13px; color: var(--ink-soft); }
+.section p { margin: 0; line-height: 1.8; }
+.lead { font-size: 17px; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin: 0; padding-block: 12px; }
+.metrics dt { font-size: 13px; color: var(--ink-soft); line-height: 1.7; }
+.metrics dd { margin: 10px 0 0; font-size: clamp(22px, 3vw, 30px); font-weight: 700; color: var(--primary); }
+.note { font-size: 13px; color: var(--ink-soft); }
+.campaigns { border-block: 1px solid var(--rule); }
+.campaigns summary { cursor: pointer; padding-block: 14px; font-weight: 600; }
+.campaigns div { padding-block: 12px; border-top: 1px solid var(--rule); display: grid; gap: 6px; }
+.campaigns span { font-size: 14px; color: var(--ink-soft); }
+.tracking { display: flex; gap: 12px; border-inline-start: 3px solid var(--sun, #f2b544); padding-inline-start: 16px; }
+.tracking[data-ready="true"] { border-color: var(--primary); }
+.tracking p, .tracking small { font-size: 13px; }
+.tracking small { color: var(--ink-soft); }
+.section footer { display: flex; flex-wrap: wrap; gap: 24px; }
+.section footer a { color: var(--primary); text-decoration: underline; text-underline-offset: 4px; font-size: 14px; min-height: 44px; display: flex; align-items: center; }
+@media (max-width: 520px) { .metrics { grid-template-columns: 1fr; gap: 0; }.metrics div { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-block: 12px; border-top: 1px solid var(--rule); }.metrics dd { margin: 0; }.metrics dt { max-width: 60%; } }

@@ -13,6 +13,7 @@ import { GUIDES } from "@/components/help/guides";
 import { HowToFind } from "@/components/help/HowToFind";
 import { SendToHelper } from "@/components/help/SendToHelper";
 import { IconCamera } from "@/components/instagram/SourceLink";
+import { MetaConnection } from "@/components/integrations/MetaConnection";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
 import {
   endpoints,
@@ -94,9 +95,7 @@ export default function IntegrationsPage() {
   // Which account/page was chosen, right after the owner approved the connection at the
   // provider. "נכס" is Google's word for the owner's site, so the copy explains it.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");
-  const [selectedMetaPage, setSelectedMetaPage] = useState("");
   const [savingGa4, setSavingGa4] = useState(false);
-  const [savingMeta, setSavingMeta] = useState(false);
 
   // Website scanner state
   const [websiteInput, setWebsiteInput] = useState("");
@@ -148,7 +147,7 @@ export default function IntegrationsPage() {
   const metaConnected = Boolean(metaItem?.connected);
 
   const ga4NeedsSelection = ga4Item?.status === "select_property" && Boolean(ga4Item.properties?.length);
-  const metaNeedsSelection = metaItem?.status === "select_page" && Boolean(ga4Item ? metaItem?.pages?.length : false);
+  const metaNeedsSelection = ["select_page", "select_assets"].includes(metaItem?.status || "");
 
   async function handleStartGa4() {
     setError("");
@@ -172,28 +171,6 @@ export default function IntegrationsPage() {
     }
   }
 
-  async function handleStartMeta() {
-    setError("");
-    setSuccessNote("");
-    if (demo) {
-      toast("בדמו מוצגים נתונים של מאפייה לדוגמה. כדי לחבר את האינסטגרם, עברו לעסק שלכם.");
-      return;
-    }
-    if (!data?.meta_ready) {
-      setError(
-        "אי אפשר עדיין להתחבר לפייסבוק בלחיצה, כי החיבור לא הוגדר בשרת. מי שהקים לכם את המערכת ימצא הנחיות למטה."
-      );
-      setDevConfigOpen(true);
-      return;
-    }
-    try {
-      const { url } = await endpoints.metaStart();
-      window.location.href = url;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו להתחיל את החיבור לפייסבוק");
-    }
-  }
-
   async function handleSaveGa4Property() {
     if (!selectedGa4Property) {
       setError("בחרו את האתר מהרשימה");
@@ -214,30 +191,6 @@ export default function IntegrationsPage() {
       setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את האתר שבחרתם");
     } finally {
       setSavingGa4(false);
-    }
-  }
-
-  async function handleSaveMetaPage() {
-    if (!selectedMetaPage) {
-      setError("בחרו דף מהרשימה");
-      return;
-    }
-    const page = metaItem?.pages?.find((p) => p.page_id === selectedMetaPage);
-    setSavingMeta(true);
-    setError("");
-    try {
-      await endpoints.metaAccount({
-        page_id: selectedMetaPage,
-        instagram_id: page?.instagram_id || "",
-        display_name: page?.display_name || selectedMetaPage,
-      });
-      setSuccessNote("הדף בפייסבוק והאינסטגרם מחוברים.");
-      toast("אינסטגרם ופייסבוק מחוברים");
-      await reload();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את הדף בפייסבוק");
-    } finally {
-      setSavingMeta(false);
     }
   }
 
@@ -630,92 +583,21 @@ export default function IntegrationsPage() {
           <section className={ROW_CARD}>
             <RowHead
               icon={IconCamera}
-              title="אינסטגרם ופייסבוק"
+              title="פייסבוק, אינסטגרם ומודעות"
               status={metaConnected ? "מחובר" : metaNeedsSelection ? "נשאר לבחור" : "לא מחובר"}
               tone={metaConnected ? "good" : metaNeedsSelection ? "waiting" : "muted"}
-              note="מי ראה את הפוסטים, ומה אהבו."
+              note="מה עובד בפוסטים ובמודעות, והאם האתר מודד את התוצאות."
             />
 
             <div className={ROW_BODY}>
-              {metaNeedsSelection ? (
-                <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
-                  <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
-                    אישרתם את הכניסה. נשאר לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם
-                    החשבון ייבחר איתו.
-                  </p>
-                  <label htmlFor="meta-page" className={`${LABEL} mt-4`}>בחירת דף עסקי</label>
-                  <div className="flex flex-col gap-2.5 sm:flex-row">
-                    <SelectFrame>
-                    <select
-                      id="meta-page"
-                      value={selectedMetaPage}
-                      onChange={(e) => setSelectedMetaPage(e.target.value)}
-                      className={SELECT}
-                    >
-                      <option value="">-- בחרו דף מהרשימה --</option>
-                      {metaItem?.pages?.map((page) => (
-                        <option key={page.page_id} value={page.page_id}>
-                          {page.display_name} {page.instagram_id ? "(עם אינסטגרם מקושר)" : "(בלי אינסטגרם מקושר)"}
-                        </option>
-                      ))}
-                    </select>
-                    </SelectFrame>
-
-                    <Button
-                      size="md"
-                      tone="primary"
-                      variant={primaryKey === "meta" ? "solid" : "outline"}
-                      disabled={savingMeta || !selectedMetaPage}
-                      onClick={handleSaveMetaPage}
-                      className="shrink-0 whitespace-nowrap"
-                    >
-                      {savingMeta ? "שומרים…" : "זה הדף שלי"}
-                    </Button>
-                  </div>
-                </div>
-              ) : metaConnected ? (
-                <ConnectedLine
-                  account={
-                    <>
-                      מחובר לדף:{" "}
-                      <strong className="font-semibold text-[color:var(--ink)]">
-                        {metaItem?.display_name || metaItem?.external_id}
-                      </strong>
-                    </>
-                  }
-                >
-                  <button type="button" onClick={handleStartMeta} className={TEXT_ACTION}>
-                    להחליף דף
-                  </button>
-                  <button type="button" onClick={() => handleDisconnect("meta")} className={QUIET_ACTION}>
-                    לנתק
-                  </button>
-                </ConnectedLine>
-              ) : (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <Button
-                    size="md"
-                    tone="primary"
-                    variant={primaryKey === "meta" ? "solid" : "outline"}
-                    onClick={handleStartMeta}
-                  >
-                    <IconLink className="h-4 w-4" />
-                    <span>לחבר את אינסטגרם ופייסבוק</span>
-                  </Button>
-                  <span className="text-[13px] text-[color:var(--ink-muted)]">
-                    עם החשבון שמנהל את הדף.
-                  </span>
-                </div>
-              )}
-              {metaConnected ? null : (
-                <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" className="mt-1" />
-              )}
+              <MetaConnection item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => reload(true)} />
+              {metaConnected && <button type="button" onClick={() => handleDisconnect("meta")} className={QUIET_ACTION}>לנתק</button>}
             </div>
 
             <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
               <p>
                 מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה
-                הגיבו. את מה שעבד נעשה שוב בתוכנית של החודש הבא.
+                הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית.
               </p>
               <p>
                 מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה

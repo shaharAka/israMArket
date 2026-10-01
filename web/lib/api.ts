@@ -1340,6 +1340,13 @@ const DEMO_PERFORMANCE: PerformancePayload = {
     post_attribution: DEMO_POST_ATTRIBUTION,
   },
   meta: {
+    ads: {
+      status: "available", period: { start: "2026-08-08", end: "2026-09-04" },
+      note_he: "נתוני דוגמה בלבד.",
+      overview: { spend: 480, currency: "ILS", link_clicks: 160, website_purchases: 12 },
+      campaigns: [],
+    },
+    tracking: { status: "receiving", note_he: "נתוני דוגמה: מטא מקבלת אירועים מהאתר.", checked_at: "2026-09-30T12:00:00Z" },
     page: { name: "לחם תום", fan_count: 4120 },
     posts: [{ id: "1", caption: "החלות נגמרות לפני הצהריים", media_type: "REEL", like_count: 640 }],
     account: DEMO_ACCOUNT,
@@ -3541,10 +3548,13 @@ export const endpoints = {
   calendar: (year: number, month: number) => api<CalendarPayload>(`/calendar?year=${year}&month=${month}`),
   integrations: (forceLive = false) => api<IntegrationsPayload>("/integrations", {}, forceLive),
   ga4Start: () => api<{ url: string }>("/integrations/ga4/start"),
-  metaStart: () => api<{ url: string }>("/integrations/meta/start"),
+  metaStart: (ads = false, popup = false) => api<{ url: string }>(`/integrations/meta/start?ads=${ads}&popup=${popup}`),
+  metaAssets: () => api<MetaAssets>("/integrations/meta/assets"),
+  metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
+  metaVerify: () => api<PixelVerification>("/integrations/meta/verify", { method: "POST" }),
   ga4Property: (body: { property_id: string; display_name: string }) =>
     api("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
-  metaAccount: (body: { page_id: string; instagram_id: string; display_name: string; ad_account_id?: string }) =>
+  metaAccount: (body: { page_id: string; instagram_id?: string; display_name?: string; ad_account_id?: string; pixel_id?: string }) =>
     api("/integrations/meta/account", { method: "POST", body: JSON.stringify(body) }),
   disconnectIntegration: (provider: "ga4" | "meta") =>
     api<{ ok: boolean }>(`/integrations/${provider}`, { method: "DELETE" }),
@@ -4383,6 +4393,10 @@ export type IntegrationsPayload = {
     external_id: string;
     display_name: string;
     connected: boolean;
+    scopes?: string[];
+    ad_account_id?: string;
+    pixel_id?: string;
+    pixel_verification?: PixelVerification | null;
     properties?: { property_id: string; display_name: string; account: string }[];
     pages?: { page_id: string; display_name: string; instagram_id: string }[];
     /** Google only: which Google account granted it, and a note when it is not the sign-in one. */
@@ -4391,6 +4405,38 @@ export type IntegrationsPayload = {
     account_note_he?: string | null;
   }[];
   webhooks: { id: number; url: string; events: string; created_at: string }[];
+};
+
+export type MetaReadState = { status: string; note_he?: string };
+export type MetaPixel = { id: string; name: string; last_fired_time?: string | null };
+export type MetaAssets = {
+  pages: { page_id: string; display_name: string; instagram_id: string }[];
+  ad_accounts: { id: string; name: string; currency: string; status?: number }[];
+  scopes: string[];
+  errors: Record<string, MetaReadState>;
+};
+export type PixelVerification = MetaReadState & {
+  pixel_id?: string;
+  name?: string;
+  checked_at?: string;
+  last_fired_time?: string | null;
+  website_match?: boolean | null;
+  events?: string[];
+  checks?: Record<string, boolean | null>;
+};
+export type MetaAdsRow = {
+  id: string; name: string; currency: string;
+  spend: number | null; impressions: number | null; reach: number | null;
+  link_clicks: number | null; website_purchases: number | null;
+  website_purchase_value: number | null; leads: number | null;
+  cost_per_link_click: number | null; cost_per_purchase: number | null; purchase_roas: number | null;
+};
+export type MetaAdsReport = MetaReadState & {
+  account_id?: string;
+  period?: { start: string; end: string };
+  attribution?: { click_days: number; view_days: number; report_time: string };
+  overview?: Partial<MetaAdsRow>;
+  campaigns?: MetaAdsRow[];
 };
 
 export type PerformancePayload = {
@@ -4405,6 +4451,8 @@ export type PerformancePayload = {
     post_attribution?: Record<string, unknown>[];
   };
   meta: {
+    ads?: MetaAdsReport;
+    tracking?: PixelVerification;
     page?: { name?: string; fan_count?: number };
     posts?: Record<string, unknown>[];
     /** The account's own totals. Absent on snapshots from before it was read. */
