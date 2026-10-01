@@ -32,5 +32,12 @@ os.environ["BILLING_ENFORCE"] = "false"
 # call. Off here so no scan or signup test can make one; tests of that path turn it on and
 # mock the model (tests/test_design_dna.py).
 os.environ["DESIGN_DNA_ON_SCAN"] = "false"
+# Image routing at the code defaults, whatever a developer's .env says (a local .env with
+# GEMINI_IMAGE_MODEL=gemini-3-pro-image / 2K would otherwise reach the routing tests).
+os.environ["IMAGE_GENERATE_PROVIDER"] = "muse"
+os.environ["IMAGE_EDIT_PROVIDER"] = "muse"
+os.environ["IMAGE_FALLBACK_MODEL"] = "gemini-3.1-flash-image"
+os.environ["GEMINI_IMAGE_MODEL"] = "gemini-3.1-flash-image"
+os.environ["GEMINI_IMAGE_SIZE"] = "1K"
 # Images go to Muse first. META_MODEL_API_KEY is blank above, so Muse fails before any
 # request; tests that exercise the routing patch services/muse_image.py.
