@@ -62,3 +62,30 @@ its field and voice) and checked for distance from other businesses in the same 
 | **D1. DNA + renderer** | `brand_dna` per business (generation + uniqueness check), parametric CardCanvas (fonts, motif, signature, compositions), logo on every post and in the export; brand page "הסגנון שלכם" |
 | **D2. Photos real-first** | per-post photo choice from the owner's library/Instagram/site; AI edit of real photos as default; field-specific art direction; model per task from `docs/image-models.md` |
 | **D3. Variety & check** | composition rotation per business, same-field distance check, a visual QA script that renders N businesses side by side |
+
+## Model routing (from docs/image-models.md, 2026-10-01)
+- Generate from scratch: `gemini-3.1-flash-image` (Nano Banana 2) at 1K — matched Pro at half the price.
+- Edit / improve the owner's real photo: Muse Image edits (`/v1/images/edits`, $0.01) → fallback Nano Banana 2 with the photo as a labelled reference (Muse refuses some categories, e.g. lingerie generation).
+- Drafts while the owner waits: `gemini-3.1-flash-lite-image`; background drafts: Muse.
+- Retire `gemini-2.5-flash-image`. Keep `gemini-3-pro-image` only as an explicit "best" option.
+
+## Contract: `brand_dna` (stored on the business; versioned)
+```json
+{
+  "version": 1, "seed": 41827, "created_at": "…", "field": "bakery",
+  "type": {"display": "frank-ruhl-libre", "display_weight": 700, "text": "assistant", "text_weight": 500,
+           "headline_case": "sentence", "scale": "large|medium|editorial"},
+  "colors": {"ink": "#…", "paper": "#…", "accent": "#…", "accent_2": "#…", "on_photo": "#…", "tint": "#…"},
+  "compositions": ["arch_window", "editorial_column", "ticket", "split"],
+  "motif": {"kind": "scalloped_edge|stripes|arches|dots|grain|stamp|underline|tape|thread", "color": "accent", "density": "low|mid"},
+  "signature": {"kind": "corner_mark|footer_band|stamp|tab", "use_logo": true},
+  "photo": {"grade": "warm film, lifted blacks", "light": "…", "angle": "…", "props": ["…"], "background": "…",
+            "never": ["…"]},
+  "copy": {"price_style": "tag|inline|circle", "cta_style": "underline|pill|arrow"},
+  "rationale_he": "…one line for the owner…",
+  "distance_checked_against": 7
+}
+```
+Fonts are a fixed, licensed (Google Fonts, OFL) library with Hebrew support; the web loads only the
+business's two families. Composition and motif keys are the renderer's library (≈12 compositions,
+≈9 motifs, ≈4 signatures); the server only picks keys the renderer knows (`/brand/dna/library`).
