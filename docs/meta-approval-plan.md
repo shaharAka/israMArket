@@ -26,6 +26,12 @@ After the owner completed Facebook sign-in, the Meta app console was accessible:
 - Saved `https://34-165-93-157.sslip.io/data-deletion` as the **Data deletion instructions
   URL**, then reloaded the form and confirmed it persisted. It replaces an unrelated
   Facebook homepage value. This remains an instructions page, not a deletion callback.
+- Added the Website platform with `https://34-165-93-157.sslip.io/` and uploaded a
+  transparent 1024px PNG export of the existing blue storefront/sun brand mark.
+  Reload confirmed both settings persisted and the missing-icon eligibility notice
+  disappeared. Saved the Web testing walkthrough with the live login URL and explicitly
+  pending reviewer credentials, demonstration assets, API tests and screencasts.
+  This is a truthful draft, not proof that reviewers can yet exercise all permissions.
 - Identified IsraMarket as a **Tech Provider**. The dashboard now exposes Review →
   Testing, Verification and App Review. Identification is not access-verification approval.
 - Added the **Create & manage ads with Marketing API** use case. Its permissions table
@@ -43,8 +49,25 @@ After the owner completed Facebook sign-in, the Meta app console was accessible:
   and Marketing API Access Tier. Removed 21 unused requests from the draft, including
   messaging, publishing, ad management and alternative Instagram Login permissions.
   This does not revoke existing grants or remove features from the app. Meta's form
-  still requires permission-specific explanations, actual screencasts/API tests,
+  still requires complete permission evidence, actual screencasts/API tests,
   reviewer access, data-handling answers and business/access verification.
+- Saved partial allowed-usage explanations for the five application permissions and
+  Marketing API Access Tier. The Page-list explanation was reopened and confirmed
+  persisted. For `ads_read`, selected the custom dashboards/data analytics use, not
+  sending web events. No permission agreement checkbox was accepted and no review was
+  submitted; real recordings and test evidence remain missing.
+- The current console requires one successful test API call for `ads_read`,
+  `pages_read_engagement`, `instagram_manage_insights` and `instagram_basic` (all show
+  0 of 1). Marketing API Access Tier shows 0 of 500 required calls, with at least 85%
+  success. These need genuine authorised pilot activity, not fabricated calls or
+  labelled demo receipts presented as real measurements.
+- Data handling correctly declares that processors/service providers have access:
+  Google Cloud hosts the service and Gemini receives selected Meta report context in
+  `diagnostics.py`. Processor countries are not assumed to be Israel merely because
+  the VM is in Tel Aviv: Gemini's API-key client has no regional endpoint configured.
+  Confirm the actual provider contracts, processing locations and paid Gemini project
+  before completing that list. The controller identity, authority-disclosure history
+  and existing request-handling procedures await the owner's factual answers.
 
 Local validation: all 30 Meta measurement/connection tests, web typecheck, lint and
 production build passed. Browser checks cover all four installation guides, refreshing
@@ -55,8 +78,9 @@ labelled demo fixtures; they do not prove that a real Meta grant can read Pixel 
 Owner requested ads reporting, Pixel verification and a simple customer connection. This
 explicitly authorises the API and flow changes in this delivery; it is a scoped exception
 to the earlier Codex visuals / Claude behaviour division. Landing and Google flows are
-preserved. No Meta permissions or business assets were changed in the console by this
-implementation. No ads are created, budgets changed, or conversion events submitted.
+preserved. The console changes above affect the app and its review draft; no customer's
+consent or business assets were changed. No ads are created, budgets changed, or
+conversion events submitted.
 
 ## What the customer does
 
@@ -177,6 +201,13 @@ as a shortcut if read access fails.
   between browser profiles.
 
 ## Data-handling answers prepared for verification
+
+Provider details need checking against the current [Gemini API terms](https://ai.google.dev/gemini-api/terms)
+and [Google Cloud subprocessors](https://cloud.google.com/terms/subprocessors). The paid
+Gemini API terms allow transient storage/caching wherever Google or its agents maintain
+facilities; do not declare Israel-only processing. Paid status depends on the API key's
+Cloud project having an active billing account, not merely on the VM project being paid.
+The owner's confirmation remains pending in the shared plan.
 
 IsraMarket helps the customer understand their marketing data and improve an ongoing
 marketing plan. They initiate the Meta connection in Connections, approve in Meta's

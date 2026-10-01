@@ -6,7 +6,7 @@ owner, add it under their name rather than doing it in their lane.
 
 - **Live:** https://34-165-93-157.sslip.io (main `56021d2`, 2 Oct 2026). Domain `isramarket.co.il`
   is registered but not live yet (see Blocked).
-- **Updated:** 2 Oct 2026 by Claude.
+- **Updated:** 2 Oct 2026 by Claude and Codex.
 
 ## Who owns what
 
@@ -30,9 +30,9 @@ owner, add it under their name rather than doing it in their lane.
 | # | Item | Owner | Status | Links |
 |---|---|---|---|---|
 | N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | 2 agents building (server + renderer) | `docs/design-dna.md` Revision 1 |
-| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | PR open, waiting for Claude's design pass (C1) | [#33](https://github.com/shaharAka/israMArket/pull/33) |
+| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | Implemented; 30 Meta tests and web checks pass, desktop + 390px checked. PR open, awaiting Claude's design pass (C1); not deployed. Two-customer tests prove separate grants, Pixels and verification. | [#33](https://github.com/shaharAka/israMArket/pull/33) |
 | N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
-| N4 | **Meta app approval**: Tech Provider done, `ads_read` ready for testing, data-deletion URL saved | Codex + Shahar | Blocked on a business portfolio (portfolio limit) and IsraMarket's legal entity | `docs/meta-approval-plan.md` |
+| N4 | **Meta app approval**: Tech Provider identified, Marketing use case, deletion URL, website platform and brand icon saved; review narrowed to 7 requests, six usage explanations and Web walkthrough drafted | Codex + Shahar | Unsubmitted. Needs an IsraMarket portfolio/entity, owner data-handling answers, processor locations, real API tests/recordings and reviewer access. Tier shows 0/500 calls, 85% success required. | `docs/meta-approval-plan.md` |
 
 ## Next (ready, in order)
 
@@ -59,7 +59,7 @@ owner, add it under their name rather than doing it in their lane.
 |---|---|---|
 | B1 | `isramarket.co.il` is on **serverHold** at the .il registry. Ask LiveDNS / ISOC-IL why. Don't disable the transfer lock. | N3 |
 | B2 | Meta: a **business portfolio** for IsraMarket (Meta says the portfolio limit is reached) and the legal entity details | N4 |
-| B3 | Meta / Facebook identity check on your account | N4 |
+| B3 | Meta sign-in completed. App Review still needs genuine authorised tests, recordings and usable reviewer access. Four read scopes show 0/1 calls; Marketing tier shows 0/500. | N4 |
 | B4 | Store-manager Meta access for tazizi, so its real Pixel shows up | N2 test |
 
 ## Decisions needed from Shahar
@@ -69,9 +69,11 @@ owner, add it under their name rather than doing it in their lane.
 | D1 | Results page: fold the WhatsApp table + Instagram numbers behind "more"? | Fold |
 | D2 | Price ₪99/month: VAT included or on top? | Included |
 | D3 | After account deletion: keep payment records for bookkeeping? | Keep payments only, anonymised |
-| D4 | Gemini paid tier, to confirm for the privacy wording (`web/lib/company.ts`) | Paid tier |
+| D4 | Gemini paid tier, to confirm for the privacy wording (`web/lib/company.ts`): active billing on the project behind the actual API key | Wait for confirmation; VM billing alone is not proof |
 | D5 | Tazizi's Google Business Profile: verified for how long? | Wait |
 | D6 | Israeli tax invoices: connect Morning / Green Invoice or iCount, and when? | Later |
+| D7 | Meta data controller: Shahar Rosentraub, Israel, or which actual registered entity? | Wait for factual confirmation |
+| D8 | Meta authority-request form: actual national-security disclosures in the past 12 months and existing review/challenge/minimisation/recording procedures? | Wait; do not invent declarations |
 
 ## Later
 - Shop platform integrations (Wix / Shopify / WooCommerce orders), owner: "later". Codex.
