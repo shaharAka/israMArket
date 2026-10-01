@@ -14,6 +14,7 @@ from app.routers import (
     audiences,
     auth,
     billing,
+    brand_dna,
     foundations,
     instagram,
     integrations,
@@ -97,6 +98,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(onboarding.router)
 app.include_router(assets.router)
+app.include_router(brand_dna.router)
 app.include_router(audiences.router)
 app.include_router(strategy.router)
 app.include_router(publish.router)

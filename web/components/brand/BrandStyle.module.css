@@ -1,0 +1,63 @@
+/* "הסגנון שלכם" on /brand. App chrome by DESIGN-STANDARD.md (depth, hairlines, tokens);
+   the three sample posts are the business's own artwork and keep their own colours. */
+
+.card { background: var(--paper); border-radius: 16px; box-shadow: var(--shadow-card); padding: 24px 28px 8px; margin-bottom: 16px; scroll-margin-top: 24px; }
+
+.head h2 { font-size: 17px; font-weight: 650; line-height: 1.5; letter-spacing: -.01em; }
+.line { margin-top: 4px; font-size: 15px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
+
+.samples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+.sample { min-width: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-card); }
+.skeleton { aspect-ratio: 4 / 5; background: var(--soft); animation: pulse 1.4s ease-in-out infinite; }
+@keyframes pulse { 50% { opacity: .55; } }
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 24px; }
+.actions[hidden] { display: none; }
+.kept { font-size: 14px; font-weight: 500; color: var(--ink-muted); }
+.error { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--danger); }
+.note { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--good); }
+
+.details { margin-top: 20px; border-top: 1px solid var(--rule); }
+.details > summary { justify-content: space-between; min-height: 52px; font-size: 14px; font-weight: 600; color: var(--ink-soft); transition: color 180ms ease; }
+.details > summary:hover { color: var(--ink); }
+.details > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+
+.pickers { display: grid; gap: 24px; padding: 4px 0 24px; }
+.pickers fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.pickers legend { font-size: 13px; font-weight: 600; color: var(--ink-muted); margin-bottom: 8px; }
+
+.fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.font, .motif {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 64px;
+  border: 1px solid var(--rule-dark); border-radius: 12px; background: var(--paper); color: var(--ink); cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+}
+.font span { font-size: 26px; line-height: 1.2; }
+.font small { font-size: 12px; color: var(--ink-muted); }
+.font:hover, .motif:hover { border-color: color-mix(in srgb, var(--ink) 24%, var(--rule-dark)); }
+.font[aria-pressed="true"], .motif[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+.font[aria-pressed="true"] small { color: var(--primary-dark); }
+.font:focus-visible, .motif:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+.motifs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.motif { min-height: 44px; font-size: 14px; font-weight: 600; }
+
+.colors { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+.colors label { display: flex; flex-direction: column; gap: 6px; min-width: 0; cursor: pointer; font-size: 12px; color: var(--ink-muted); }
+.colors input { width: 100%; height: 52px; padding: 0; border: 0; border-radius: 12px; background: transparent; cursor: pointer; box-shadow: var(--shadow-card); }
+.colors input::-webkit-color-swatch-wrapper { padding: 0; }
+.colors input::-webkit-color-swatch { border: 0; border-radius: 12px; }
+.colors input::-moz-color-swatch { border: 0; border-radius: 12px; }
+.colors input:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+@media (max-width: 600px) {
+  .card { padding: 20px 20px 4px; }
+  /* Three posts side by side are too small on a phone: a row that scrolls inside the card. */
+  .samples { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; margin-inline: -20px; padding: 2px 20px 8px; }
+  .sample { flex: 0 0 68%; scroll-snap-align: center; }
+  .colors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+}

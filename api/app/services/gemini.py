@@ -100,11 +100,13 @@ def generate_json(
     schema: dict[str, Any],
     thinking_level: str,
     images: list[ImageBlob] | None = None,
+    system: str | None = None,
+    attempts: int = 5,
 ) -> str:
     settings = get_settings()
     client = _client()
     config = types.GenerateContentConfig(
-        system_instruction=SYSTEM_HE,
+        system_instruction=system or SYSTEM_HE,
         response_mime_type="application/json",
         response_json_schema=schema,
         thinking_config=types.ThinkingConfig(thinking_level=thinking_level),
@@ -126,7 +128,7 @@ def generate_json(
             raise RuntimeError("קיבלנו תשובה ריקה מה-AI. נסו שוב.")
         return response.text
 
-    return _call_with_retry(_run)
+    return _call_with_retry(_run, attempts=attempts)
 
 
 def lite_json(
@@ -167,35 +169,81 @@ def extract_json(
     )
 
 
+# A reference photo is the business's OWN photograph. Each one is sent right after a text
+# part saying what it is, so the model edits it instead of reading it as a loose style hint
+# (the "unlabelled references" problem in docs/design-dna.md).
+LabelledImage = tuple[bytes, str, str]
+
+
+def _image_usage(response) -> dict:
+    usage = getattr(response, "usage_metadata", None)
+    if usage is None:
+        return {}
+    out = {
+        "prompt_tokens": getattr(usage, "prompt_token_count", 0) or 0,
+        "output_tokens": getattr(usage, "candidates_token_count", 0) or 0,
+        "thinking_tokens": getattr(usage, "thoughts_token_count", 0) or 0,
+        "output_image_tokens": 0,
+    }
+    for detail in getattr(usage, "candidates_tokens_details", None) or []:
+        modality = getattr(detail, "modality", None)
+        name = str(getattr(modality, "name", modality) or "")
+        if name.upper().endswith("IMAGE"):
+            out["output_image_tokens"] = getattr(detail, "token_count", 0) or 0
+    return out
+
+
 def generate_image_bytes(
     prompt: str,
     aspect_ratio: str,
     references: list[ImageBlob] | None = None,
 ) -> tuple[bytes, str]:
-    """Render one image.
+    """Render one image with the configured Gemini image model; (bytes, mime)."""
+    result = generate_image(prompt, aspect_ratio, references=references)
+    return result["data"], result["mime"]
 
-    `references` are the business's OWN photographs, scraped from their site. Feeding
-    them back in is the cheapest way to stop the model falling back to its default
-    look, and to keep a set of cards consistent with each other — see the "kill the
-    default look" / "keep the set consistent" rules this implements.
+
+def generate_image(
+    prompt: str,
+    aspect_ratio: str,
+    *,
+    model: str | None = None,
+    image_size: str | None = None,
+    references: list[ImageBlob] | None = None,
+    labelled: list[LabelledImage] | None = None,
+) -> dict:
+    """Render one image: {"data", "mime", "model", "image_size", "usage"}.
+
+    `labelled` are (bytes, mime, label) photos, each sent after its label: how the
+    business's real photo is handed over to be edited. `references` (unlabelled) are kept
+    for older callers.
     """
     settings = get_settings()
     client = _client()
+    model = model or settings.gemini_image_model
+    size = image_size or settings.gemini_image_size
 
     contents: Any = prompt
-    if references:
+    if references or labelled:
         parts: list[types.Part] = [types.Part.from_text(text=prompt)]
-        for data, mime in references:
+        for data, mime, label in labelled or []:
+            parts.append(types.Part.from_text(text=label))
+            parts.append(types.Part.from_bytes(data=data, mime_type=mime))
+        for data, mime in references or []:
             parts.append(types.Part.from_bytes(data=data, mime_type=mime))
         contents = parts
 
-    def _run() -> tuple[bytes, str]:
+    image_config: dict[str, Any] = {"aspect_ratio": aspect_ratio}
+    if size:
+        image_config["image_size"] = size
+
+    def _run() -> dict:
         response = client.models.generate_content(
-            model=settings.gemini_image_model,
+            model=model,
             contents=contents,
             config=types.GenerateContentConfig(
                 response_modalities=["IMAGE"],
-                image_config=types.ImageConfig(aspect_ratio=aspect_ratio, image_size=settings.gemini_image_size),
+                image_config=types.ImageConfig(**image_config),
                 thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
             ),
         )
@@ -212,7 +260,13 @@ def generate_image_bytes(
                 continue
             inline = getattr(part, "inline_data", None)
             if inline and inline.data:
-                return bytes(inline.data), inline.mime_type or "image/png"
+                return {
+                    "data": bytes(inline.data),
+                    "mime": inline.mime_type or "image/png",
+                    "model": model,
+                    "image_size": size,
+                    "usage": _image_usage(response),
+                }
         raise RuntimeError("לא הצלחנו ליצור תמונה. בדקו את מודל התמונות ואת המפתח.")
 
     try:
@@ -220,7 +274,6 @@ def generate_image_bytes(
     except Exception as exc:
         text = str(exc)
         if "429" in text or "RESOURCE_EXHAUSTED" in text:
-            model = settings.gemini_image_model
             if "limit: 0" in text:
                 raise RuntimeError(
                     f"למודל {model} אין מכסה במפתח הזה (limit 0). "

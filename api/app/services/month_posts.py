@@ -71,9 +71,13 @@ def next_queued(strategy: Strategy) -> int | None:
     return None
 
 
-def add_week_posts(strategy: Strategy, week: int, posts: list[dict]) -> None:
-    """Append the week's posts (never reorder: posts are addressed by index) and mark it done."""
+def add_week_posts(strategy: Strategy, week: int, posts: list[dict], dna: dict | None = None) -> None:
+    """Append the week's posts (never reorder: posts are addressed by index) and mark it done.
+
+    The new posts get their design from the business's DNA (`dna`), rotating on from the
+    posts already in the month, so neighbours never share a composition."""
     from app.services.connected_posts import ensure_uids  # avoids an import cycle
+    from app.services.post_design import assign_designs
 
     extra = _extra(strategy)
     roadmap = dict(extra.get("roadmap") or {})
@@ -81,6 +85,8 @@ def add_week_posts(strategy: Strategy, week: int, posts: list[dict]) -> None:
     # Posts written before uids get theirs stored now (the same id every read gave them).
     ensure_uids(existing, strategy.business_id, strategy.year, strategy.month)
     roadmap["posts"] = existing + list(posts)
+    if dna is not None:
+        assign_designs(roadmap["posts"], dna)
     extra["roadmap"] = roadmap
     strategy.roadmap_json = dumps(extra)
     status = posts_status(strategy)

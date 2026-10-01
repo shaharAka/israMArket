@@ -33,8 +33,8 @@ import uuid
 from datetime import datetime
 
 from app.services.gemini import lite_json
-from app.services.images import needs_photo
 from app.services.jsonutil import dumps, loads
+from app.services.post_design import post_needs_photo, view_designs
 from app.services.schemas_llm import LEARNING_LINES_SCHEMA, MIX_TYPE_KEYS, POST_CHANNELS
 from app.services.whatsapp import post_cta_is_whatsapp, post_key_for, uid_post_source_key
 
@@ -333,7 +333,7 @@ def owner_needs(post: dict) -> list[dict]:
     if _is_approved(post) or _is_published(post):
         return []
     needs: list[dict] = []
-    if needs_photo(post.get("overlay_theme")):
+    if post_needs_photo(post):
         has_image = bool(_clean(post.get("image_url"), 800))
         own = has_image and str(post.get("image_source") or "") in OWNER_PHOTO_SOURCES
         chose_ai = has_image and str(post.get("image_preference") or "") == "ai"
@@ -375,9 +375,14 @@ def connected_view(
     month,
     core: dict | None = None,
     website: str = "",
+    design: dict | None = None,
 ) -> dict:
-    """The post with every contract field (docs/posts-v2.md), old posts included."""
+    """The post with every contract field (docs/posts-v2.md), old posts included.
+
+    `design` is the post's Design DNA layout as `post_design.view_designs` computed it
+    for the whole month (an old post's `overlay_theme` mapped onto a composition)."""
     view = {key: value for key, value in post.items() if key != "learning_key"}  # internal
+    view["design"] = design or view_designs([post], None)[0]
     view["uid"] = _clean(post.get("uid"), 40) or backfill_uid(business_id, year, month, index)
     view["channel"] = channel_of(post)
     stored_link = post.get("plan_link") if isinstance(post.get("plan_link"), dict) else None
@@ -398,9 +403,12 @@ def connected_view(
     return view
 
 
-def connect_posts(posts: list, *, business_id, year, month, core: dict | None = None, website: str = "") -> list:
+def connect_posts(posts: list, *, business_id, year, month, core: dict | None = None, website: str = "",
+                  dna: dict | None = None) -> list:
+    designs = view_designs(posts or [], dna)
     return [
-        connected_view(post, index=index, business_id=business_id, year=year, month=month, core=core, website=website)
+        connected_view(post, index=index, business_id=business_id, year=year, month=month, core=core, website=website,
+                       design=designs[index])
         if isinstance(post, dict)
         else post
         for index, post in enumerate(posts or [])
