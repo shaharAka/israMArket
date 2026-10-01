@@ -1,0 +1,19 @@
+.connection { display: grid; gap: 12px; justify-items: start; padding-block-end: 16px; }
+.connection p { margin: 0; }
+.hint { font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
+.wizard { display: grid; gap: 20px; padding-block: 12px 8px; }
+.wizard p { margin: 0; line-height: 1.8; }
+.check { display: flex; align-items: start; gap: 12px; padding-block: 14px; border-block: 1px solid var(--rule); }
+.check input { width: 20px; height: 20px; margin-top: 4px; accent-color: var(--primary); }
+.check small { display: block; font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
+.field { display: grid; gap: 8px; font-weight: 600; }
+.field small { font-weight: 400; color: var(--ink-soft); }
+.field select { width: 100%; min-height: 48px; border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; background: var(--paper, white); color: var(--ink); font: inherit; font-weight: 400; }
+.field select:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.tracking { display: grid; gap: 14px; padding-block: 20px; border-block: 1px solid var(--rule); }
+.tracking h3 { margin: 0; font-size: 18px; }
+.tracking small { color: var(--ink-soft); }
+.tracking details { font-size: 14px; line-height: 1.8; }
+.tracking summary { cursor: pointer; padding-block: 10px; }
+.tracking a, .next { color: var(--primary); text-decoration: underline; text-underline-offset: 4px; }
+.next { font-weight: 600; min-height: 44px; display: flex; align-items: center; }

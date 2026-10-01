@@ -267,9 +267,10 @@ class Ga4PropertyIn(BaseModel):
 
 
 class MetaAccountIn(BaseModel):
-    page_id: str = Field(min_length=3, max_length=40)
+    page_id: str = Field(default="", max_length=40)
     instagram_id: str = Field(default="", max_length=40)
     ad_account_id: str = Field(default="", max_length=40)
+    pixel_id: str = Field(default="", max_length=40)
     display_name: str = Field(default="", max_length=160)
 
 

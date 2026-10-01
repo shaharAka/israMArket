@@ -6,6 +6,7 @@ import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
 import { StepLink } from "@/components/trial/StepLink";
+import { MetaAdsSummary } from "@/components/integrations/MetaAdsSummary";
 import { MetricComparison } from "@/components/design/MetricComparison";
 import { SegmentedControl } from "@/components/design/Controls";
 import {
@@ -1102,6 +1103,7 @@ export default function PerformancePage() {
             </div>
             <MeasurementGaps payload={data} />
             <AnalysisAction recommendation={recommendation} payload={data} />
+            {available ? <MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /> : null}
             {account ? <InstagramAccountBlock account={account} /> : null}
 
             {available ? (

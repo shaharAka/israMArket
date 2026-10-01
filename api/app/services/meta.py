@@ -19,10 +19,8 @@ GRAPH = f"https://graph.facebook.com/{GRAPH_VERSION}"
 META_SCOPES = [
     "pages_show_list",
     "pages_read_engagement",
-    "pages_read_user_content",
     "instagram_basic",
     "instagram_manage_insights",
-    "business_management",
 ]
 
 
@@ -31,7 +29,7 @@ def meta_configured() -> bool:
     return bool(settings.meta_app_id and settings.meta_app_secret)
 
 
-def authorization_url(state: str) -> str:
+def authorization_url(state: str, *, ads: bool = False) -> str:
     settings = get_settings()
     if not meta_configured():
         raise RuntimeError("חסרים META_APP_ID ו-META_APP_SECRET לחיבור מטא.")
@@ -41,8 +39,9 @@ def authorization_url(state: str) -> str:
             "client_id": settings.meta_app_id,
             "redirect_uri": redirect,
             "state": state,
-            "scope": ",".join(META_SCOPES),
+            "scope": ",".join(META_SCOPES + (["ads_read"] if ads else [])),
             "response_type": "code",
+            "auth_type": "rerequest",
         }
     )
     return f"https://www.facebook.com/{GRAPH_VERSION}/dialog/oauth?{query}"
@@ -117,15 +116,11 @@ def granted_scopes(access_token: str) -> list[str]:
 
 
 def list_pages(access_token: str) -> list[dict]:
-    response = httpx.get(
-        f"{GRAPH}/me/accounts",
-        params={"fields": "id,name,access_token,instagram_business_account", "access_token": access_token},
-        timeout=20.0,
-    )
-    if response.status_code >= 400:
-        raise RuntimeError(f"לא הצלחנו לקבל מפייסבוק את הדפים שלכם: {response.text}")
+    from app.services.meta_marketing import collection
+
+    rows = collection("me/accounts", {"fields": "id,name,access_token,instagram_business_account"}, access_token)
     pages = []
-    for page in response.json().get("data", []):
+    for page in rows:
         ig = (page.get("instagram_business_account") or {}).get("id", "")
         pages.append(
             {
@@ -135,8 +130,6 @@ def list_pages(access_token: str) -> list[dict]:
                 "instagram_id": ig,
             }
         )
-    if not pages:
-        raise RuntimeError("לא מצאנו דפי פייסבוק בחשבון שחיברתם.")
     return pages
 
 
