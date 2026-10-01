@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, PageHeader } from "@/components/AppShell";
 import { SetupNotice } from "@/components/account/SetupNotice";
+import { BrandStyle } from "@/components/brand/BrandStyle";
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
 import { SwatchFan } from "@/components/brand/SwatchFan";
 import { UIAction } from "@/components/design/Controls";
@@ -56,6 +57,8 @@ export default function BrandPage() {
     {loading && <p role="status" className={styles.note}>טוענים את המותג…</p>}
     {!loading && !business && !error && <SetupNotice title="עוד לא הגדרתם עסק"><Link href="/start" className={styles.link}>להכיר את העסק ולבנות תוכנית</Link></SetupNotice>}
     {error && <SetupNotice tone="error" title="לא הצלחנו להשלים את הפעולה">{error}{!draft && <UIAction variant="text" onClick={() => { setLoading(true); setAttempt(n => n + 1); }}>לנסות שוב</UIAction>}</SetupNotice>}
+    {/* The business's Design DNA, as its own posts: the first thing the brand is for. */}
+    {business && <BrandStyle business={business} brand={saved} />}
     {draft && business && <form className={styles.form} onSubmit={e => { e.preventDefault(); void save(); }}>
       {/* The identity and its colours are one object: one card, a hairline between them. */}
       <div className={styles.card}>
