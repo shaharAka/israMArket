@@ -197,11 +197,13 @@ export function compareOf(post: RoadmapPost): { direction: "up" | "down" | "same
   if (value === null || !compare || !Number.isFinite(compare.value)) return null;
   const label = (compare.label || "").trim() || "בפוסט דומה";
   const count = formatCount(compare.value);
+  // The server decides the direction; the local band is only a fallback for older data.
   const diff = value - compare.value;
-  if (Math.abs(diff) <= Math.max(1, Math.round(0.15 * compare.value))) {
-    return { direction: "same", text: `בערך כמו ${label} (${count})` };
-  }
-  return diff > 0
+  const direction =
+    compare.direction ??
+    (Math.abs(diff) <= Math.max(1, Math.round(0.15 * compare.value)) ? "similar" : diff > 0 ? "above" : "below");
+  if (direction === "similar") return { direction: "same", text: `בערך כמו ${label} (${count})` };
+  return direction === "above"
     ? { direction: "up", text: `יותר מאשר ${label} (${count})` }
     : { direction: "down", text: `פחות מאשר ${label} (${count})` };
 }

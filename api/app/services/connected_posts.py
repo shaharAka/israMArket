@@ -938,14 +938,17 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
         if post is None:
             continue
         other = _similar_earlier(record, records)
-        compare = ({"label": COMPARE_LABEL_HE, "value": int(other["value"]), "uid": other["view"]["uid"]}
+        facts = learning_facts(record, other)
+        # `direction` (above / below / similar) is decided here once, so the screen never
+        # repeats the 15% rule.
+        compare = ({"label": COMPARE_LABEL_HE, "value": int(other["value"]), "uid": other["view"]["uid"],
+                    "direction": facts["direction"]}
                    if other is not None else None)
         results = dict(post.get("results") or {})
         if "compare" not in results or results.get("compare") != compare:
             results["compare"] = compare
             post["results"] = results
             _mark(stored, record)
-        facts = learning_facts(record, other)
         signature = dumps(facts)
         if post.get("learning_key") != signature or not post.get("learning"):
             phrases.append(facts)

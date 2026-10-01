@@ -4331,7 +4331,7 @@ export type PostResults = {
   /** The measure's number. Null while it was not counted, which is never shown as 0. */
   value: number | null;
   /** The most recent earlier similar post ("בפוסט דומה"), when there is one. */
-  compare?: { label: string; value: number; uid?: string } | null;
+  compare?: { label: string; value: number; uid?: string; direction?: "above" | "below" | "similar" } | null;
   whatsapp_clicks?: number;
   visits?: number;
   conversions?: number;

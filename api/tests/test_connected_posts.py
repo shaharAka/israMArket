@@ -501,7 +501,7 @@ class ResultsTest(ConnectedTestCase):
         self.assertEqual(box["results"]["matched_by"], ["whatsapp_code"])
         self.assertTrue(box["results"]["updated_at"])
         # Same mix type and channel, measured the same way, an earlier month.
-        self.assertEqual(box["results"]["compare"], {"label": "בפוסט דומה", "value": 14, "uid": "aaaaaaaaa1"})
+        self.assertEqual(box["results"]["compare"], {"label": "בפוסט דומה", "value": 14, "uid": "aaaaaaaaa1", "direction": "above"})
         self.assertEqual(box["lifecycle"], "measured")
         self.assertEqual(box["learning"], "21 לחיצות לוואטסאפ, יותר מהפוסט הדומה (14). מה היה רק בפוסט הזה: מחיר בטקסט.")
         self.assertEqual((workshop["results"]["value"], workshop["results"]["visits"], workshop["results"]["conversions"]),
