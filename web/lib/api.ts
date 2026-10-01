@@ -2097,9 +2097,52 @@ async function ensureDemoPlan() {
       why_he: "הזמנות מוקדמות עוזרות לתכנן את האפייה. בודקים את הביקוש לפני שמגדילים את הפרסום.",
       first_steps: ["לחבר מדידה", "לבחור מוצרים וחומרי גלם עם בעל העסק"],
     }, { cadence: "1-2" }, []));
+    // The bakery's own two hypotheses (the ones Today lists), so the plan, Today and their
+    // statuses tell one story.
+    plan.assumptions = DEMO_ASSUMPTIONS.map((item) => ({ ...item }));
     DEMO_BUSINESS.quarter_plan = plan; DEMO_STRATEGY.quarter_plan = plan;
+    DEMO_STRATEGY.hypothesis_review = demoHypothesisReview();
   })();
   await demoPlanReady;
+}
+
+const DEMO_ASSUMPTIONS = [
+  { bet_he: "אנחנו מניחים שהזמנות מראש לחגים יביאו יותר הזמנות באתר מפוסטים של מוצר מוכן.", if_wrong_he: "נעבור למבצע בחנות." },
+  { bet_he: "רילס מהתנור בבוקר יביא יותר שמירות ושיתופים מתמונות מדף.", if_wrong_he: "נחזור לתמונות מוצר." },
+];
+
+/**
+ * Where the demo month's tests stand, in the server's shape (`review_view` in
+ * api/app/services/hypotheses.py). Every status is on screen somewhere: the month and its
+ * WhatsApp target are on track, the shop's sales are something we cannot see (measuring),
+ * one target was changed by the plan, the pre-order hypothesis held and the reels one is not
+ * holding so far. The lines are the server's templates, with numbers the demo posts carry.
+ */
+function demoHypothesisReview(): HypothesisReview {
+  const monthly = DEMO_STRATEGY.monthly_horizon_plan;
+  const targets = monthly?.targets ?? [];
+  const whatsapp = "96 לחיצות לוואטסאפ החודש, מול יעד של 120.";
+  const items: HypothesisReviewItem[] = [];
+  if (monthly?.hypothesis) {
+    items.push({ key: "month", kind: "month", text_he: monthly.hypothesis, if_wrong_he: "", status: "on_track", status_he: "בדרך", evidence_he: whatsapp });
+  }
+  const targetStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
+    { status: "measuring", status_he: "נמדד", evidence_he: "את זה אנחנו לא רואים במספרים. נשאל אתכם בסיכום החודש." },
+    { status: "on_track", status_he: "בדרך", evidence_he: whatsapp },
+    { status: "changed", status_he: "השתנה", evidence_he: "היעד השתנה, אז מתחילים למדוד אותו מחדש." },
+  ];
+  targets.forEach((text, index) => {
+    const state = targetStates[index] ?? targetStates[0];
+    items.push({ key: `target:${index}`, kind: "target", text_he: text, if_wrong_he: "", ...state });
+  });
+  const assumptionStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
+    { status: "confirmed", status_he: "התאמתה", evidence_he: "3 מתוך 4 פוסטים של הזמנה מראש ומבצע הביאו יותר הזמנות באתר מהפוסטים של מוצר." },
+    { status: "not_yet", status_he: "בינתיים לא", evidence_he: "רק 1 מתוך 3 רילס נשמר יותר מהפוסטים של תמונה." },
+  ];
+  DEMO_ASSUMPTIONS.forEach((item, index) => {
+    items.push({ key: `assumption:${index}`, kind: "assumption", text_he: item.bet_he, if_wrong_he: item.if_wrong_he, ...assumptionStates[index] });
+  });
+  return { updated_at: "2026-09-21T06:00:00", closed: false, items };
 }
 
 /** Mix types whose post shows a real product, place or person (`PRODUCT_IMAGE_MIX`). */
@@ -2127,9 +2170,63 @@ function demoOwnerNeeds(post: RoadmapPost): PostOwnerNeed[] {
   }
   const fact = (post.owner_fact || "").trim();
   if (fact && !post.owner_fact_done) {
-    needs.push({ kind: "fact", text: fact.startsWith("ה") ? `לבדוק את ${fact}` : `לבדוק: ${fact}` });
+    // A question for the owner ("מה המחיר?") is asked as it is.
+    const text = fact.endsWith("?") ? fact : fact.startsWith("ה") ? `לבדוק את ${fact}` : `לבדוק: ${fact}`;
+    needs.push({ kind: "fact", text });
   }
   return needs;
+}
+
+/* ---- The one-instruction rewrite, demo side (api/app/services/post_rewrite.py). ---- */
+
+const DEMO_TONE_LABEL: Record<string, string> = {
+  direct: "ברור יותר",
+  neighborhood: "יותר חם",
+  punchy: "קצר יותר",
+  holiday: "אווירת חג",
+  story: "סיפור קצר",
+};
+
+function demoWantsPrice(instruction: string): boolean {
+  return /מחיר|כמה עולה|₪|ש"ח|ש״ח|שקל/.test(instruction);
+}
+
+/** The shekel amounts in a text, as digits ("1,200 ₪" -> "1200"). */
+function demoMoney(text: string | undefined): string[] {
+  const out = new Set<string>();
+  for (const match of (text || "").matchAll(/₪\s*(\d[\d,]*)|(\d[\d,]*)\s*(?:₪|ש"ח|ש״ח|שקלים|שקל)/g)) {
+    out.add((match[1] || match[2] || "").replace(/,/g, ""));
+  }
+  return [...out].filter(Boolean);
+}
+
+/** Prices the owner typed or confirmed, and the ones already in the post. */
+function demoKnownPrices(post: RoadmapPost, instruction: string): string[] {
+  const text = [post.title, post.hook, post.caption, post.cta, post.overlay_text].join("\n");
+  return Array.from(new Set([...(post.owner_prices || []), ...demoMoney(instruction), ...demoMoney(text)]));
+}
+
+/** A canned new version per instruction: the demo cannot write, so it shows the shape. */
+function demoInstructionRewrite(
+  post: RoadmapPost,
+  instruction: string
+): Pick<RoadmapPost, "hook" | "caption" | "cta" | "overlay_text"> {
+  const caption = (post.caption || "").trim();
+  const firstSentence = caption.split(/(?<=[.!?])\s+|\n/)[0] || caption;
+  const base = { hook: post.hook, caption, cta: post.cta, overlay_text: post.overlay_text };
+  if (instruction === "קצר יותר") {
+    const short = firstSentence.length > 70 ? `${firstSentence.split(/[,،]/)[0].trim()}.` : firstSentence;
+    return { ...base, caption: short };
+  }
+  if (demoWantsPrice(instruction)) {
+    const price = demoKnownPrices(post, instruction)[0];
+    return demoMoney(caption).length ? base : { ...base, caption: `${caption}\nהמחיר: ${price} ₪.` };
+  }
+  if (instruction === "עם שאלה ללקוחות") {
+    return { ...base, hook: "מה אתם הכי אוהבים לקחת מהתנור שלנו?", caption: `${caption}\nספרו לנו בתגובה.` };
+  }
+  // "יותר חם", and the owner's own words: a warmer opening, the same facts.
+  return { ...base, caption: `בוקר טוב, שכנים. ${caption}` };
 }
 
 function cloneDemoStrategy(): StrategyPayload {
@@ -2960,66 +3057,102 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       outlets: body.outlets || POSTS[index].outlets,
       approval_status: "review",
       approved_at: null,
-      // Like the server: the owner went over the text, so the fact we asked about is theirs.
+      // Like the server: the owner went over the text, so the fact we asked about is theirs,
+      // the prices in it are confirmed, and "שונה לפי" is over.
       ...(POSTS[index].owner_fact ? { owner_fact_done: true } : {}),
+      owner_prices: Array.from(
+        new Set([...(POSTS[index].owner_prices || []), ...demoMoney(body.caption ?? POSTS[index].caption)])
+      ),
+      rewrite_instruction: null,
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
   }
   if (path === "/strategy/posts/rewrite" && method === "POST") {
-    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; tone?: string };
+    // Mirrors the API's one-instruction rewrite (docs/posts-v2.md, Phase C): a chip or the
+    // owner's own words; "להוסיף מחיר" with no known price leaves the post as it is and asks.
+    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; tone?: string; instruction?: string };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
-    const tone = body.tone || "direct";
-    const rewrites: Record<string, { hook: string; caption: string; cta: string; overlay_text: string }> = {
-      direct: {
-        hook: "צריכים חלות לשולחן החג? ההזמנות נסגרות הערב.",
-        caption: "בלי תור של שישי ובלי הפתעות. שלחו לנו וואטסאפ, ונשמור לכם חלה לערב החג.",
-        cta: "להזמנה בוואטסאפ",
-        overlay_text: "ההזמנות נסגרות הערב",
-      },
-      neighborhood: {
-        hook: "בשישי בבוקר הריח מהמאפייה מגיע עד השוק.",
-        caption: "שמרנו לכם בצד חלה קלועה, עוד חמה, עם קרום שמתפצח. עברו אצלנו בדרך לשוק וקחו אותה.",
-        cta: "קפצו לדלפק",
-        overlay_text: "חם מהתנור",
-      },
-      punchy: {
-        hook: "חלה חמה. אפס תורים. שישי ביפו.",
-        caption: "מזמינים ב-10 שניות בוואטסאפ ואוספים בדקה אחת.",
-        cta: "הקישור בפרופיל",
-        overlay_text: "בלי תור",
-      },
-      holiday: {
-        hook: "חלה עגולה, דבש, ושנה טובה על השולחן.",
-        caption: "ערב החג מתקרב, והתנורים עובדים בלי הפסקה. שריינו חלה עגולה עכשיו, כדי שלא תישארו בלי.",
-        cta: "שריינו חלה לחג",
-        overlay_text: "שנה מתוקה",
-      },
-      story: {
-        hook: "סבא שלי תמיד אמר שהלחם הכי טוב הוא זה שאופים באור ראשון.",
-        caption: "כל בוקר ב-04:00 אנחנו מדליקים את התנור הגדול ביפו, ולשים את המחמצת בדיוק כמו שסבא לימד.",
-        cta: "פתוחים מ-07:00",
-        overlay_text: "מאחורי הלחם",
-      },
-    };
-    const chosen = rewrites[tone] || rewrites.direct;
+    const instruction = (body.instruction || "").replace(/\s+/g, " ").trim().slice(0, 200);
+    const tone = body.tone || "";
+    if (!instruction && !tone) throw new ApiError("כתבו מה לשנות בפוסט.", 422);
+    const label = instruction ? (instruction.length <= 40 ? instruction : "הבקשה שלכם") : DEMO_TONE_LABEL[tone] || "";
+    const current = POSTS[index];
+    if (demoWantsPrice(instruction)) {
+      const known = demoKnownPrices(current, instruction);
+      if (!known.length) {
+        POSTS[index] = {
+          ...current,
+          owner_fact: "מה המחיר?",
+          owner_fact_done: false,
+          approval_status: "review",
+          approved_at: null,
+          rewrite_instruction: null,
+        };
+        DEMO_STRATEGY.roadmap.posts = POSTS;
+        return {
+          post: { ...POSTS[index] },
+          strategy: cloneDemoStrategy(),
+          changed: false,
+          message: "לא מצאנו מחיר שאישרתם, אז הפוסט נשאר כמו שהוא. כתבו את המחיר במילים שלכם, למשל: להוסיף מחיר 45 ₪.",
+          instruction: label,
+        } as T;
+      }
+    }
+    let next: Pick<RoadmapPost, "hook" | "caption" | "cta" | "overlay_text">;
+    if (instruction) {
+      next = demoInstructionRewrite(current, instruction);
+    } else {
+      const rewrites: Record<string, { hook: string; caption: string; cta: string; overlay_text: string }> = {
+        direct: {
+          hook: "צריכים חלות לשולחן החג? ההזמנות נסגרות הערב.",
+          caption: "בלי תור של שישי ובלי הפתעות. שלחו לנו וואטסאפ, ונשמור לכם חלה לערב החג.",
+          cta: "להזמנה בוואטסאפ",
+          overlay_text: "ההזמנות נסגרות הערב",
+        },
+        neighborhood: {
+          hook: "בשישי בבוקר הריח מהמאפייה מגיע עד השוק.",
+          caption: "שמרנו לכם בצד חלה קלועה, עוד חמה, עם קרום שמתפצח. עברו אצלנו בדרך לשוק וקחו אותה.",
+          cta: "קפצו לדלפק",
+          overlay_text: "חם מהתנור",
+        },
+        punchy: {
+          hook: "חלה חמה. אפס תורים. שישי ביפו.",
+          caption: "מזמינים ב-10 שניות בוואטסאפ ואוספים בדקה אחת.",
+          cta: "הקישור בפרופיל",
+          overlay_text: "בלי תור",
+        },
+        holiday: {
+          hook: "חלה עגולה, דבש, ושנה טובה על השולחן.",
+          caption: "ערב החג מתקרב, והתנורים עובדים בלי הפסקה. שריינו חלה עגולה עכשיו, כדי שלא תישארו בלי.",
+          cta: "שריינו חלה לחג",
+          overlay_text: "שנה מתוקה",
+        },
+        story: {
+          hook: "סבא שלי תמיד אמר שהלחם הכי טוב הוא זה שאופים באור ראשון.",
+          caption: "כל בוקר ב-04:00 אנחנו מדליקים את התנור הגדול ביפו, ולשים את המחמצת בדיוק כמו שסבא לימד.",
+          cta: "פתוחים מ-07:00",
+          overlay_text: "מאחורי הלחם",
+        },
+      };
+      next = rewrites[tone] || rewrites.direct;
+    }
+    const channel = current.channel || current.primary_outlet || "instagram";
+    const typed = demoMoney(instruction);
     POSTS[index] = {
-      ...POSTS[index],
-      hook: chosen.hook,
-      caption: chosen.caption,
-      cta: chosen.cta,
-      overlay_text: chosen.overlay_text,
-      outlet_captions: {
-        instagram: chosen.caption,
-        facebook: chosen.caption,
-        whatsapp: `${chosen.hook}\n${chosen.cta}`,
-      },
+      ...current,
+      ...next,
+      outlet_captions: { ...(current.outlet_captions || {}), [channel]: next.caption },
       approval_status: "review",
       approved_at: null,
+      rewrite_instruction: label || null,
+      ...(typed.length
+        ? { owner_prices: Array.from(new Set([...(current.owner_prices || []), ...typed])), owner_fact_done: true }
+        : {}),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
-    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy(), changed: true, message: null, instruction: label } as T;
   }
   if (path === "/strategy/posts/approve" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; approved?: boolean };
@@ -3030,6 +3163,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       approval_status: body.approved === false ? "review" : "approved",
       approved_at: body.approved === false ? null : new Date().toISOString(),
       ...(body.approved !== false && POSTS[index].owner_fact ? { owner_fact_done: true } : {}),
+      ...(body.approved !== false ? { rewrite_instruction: null } : {}),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
@@ -3674,10 +3808,13 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ post_index, ...post }),
     }),
-  rewritePost: (post_index: number, tone: "direct" | "neighborhood" | "punchy" | "holiday" | "story") =>
-    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/rewrite", {
+  /** One instruction (a chip's words or the owner's own, at most 200 characters), or the
+   *  older tone. `changed: false` with a `message` when the post stayed as it was (no known
+   *  price for "להוסיף מחיר", or a confirmed fact would have been lost). */
+  rewritePost: (post_index: number, request: PostRewriteRequest) =>
+    api<PostRewriteResult>("/strategy/posts/rewrite", {
       method: "POST",
-      body: JSON.stringify({ post_index, tone }),
+      body: JSON.stringify({ post_index, ...request }),
     }),
   approvePost: (post_index: number, approved = true) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/approve", {
@@ -4287,10 +4424,29 @@ export type RoadmapPost = {
   image_preference?: "real" | "ai";
   /** The uids of the measured posts whose lesson was applied to this one. */
   informed_by?: string[];
+  /** The last one-instruction rewrite ("קצר יותר"), until the text is saved or approved:
+   *  the editor says "שונה לפי: …". */
+  rewrite_instruction?: string | null;
+  /** Prices the owner typed, saved or approved (normalised digits): a rewrite keeps them. */
+  owner_prices?: string[];
 };
 
 /** The channels a plan writes a post for. */
 export type PostChannel = "instagram" | "facebook" | "whatsapp";
+
+export type PostRewriteTone = "direct" | "neighborhood" | "punchy" | "holiday" | "story";
+
+export type PostRewriteRequest = { instruction?: string; tone?: PostRewriteTone };
+
+export type PostRewriteResult = {
+  post: RoadmapPost;
+  strategy: StrategyPayload;
+  /** False when the post stayed as it was; `message` says why and what to do. */
+  changed: boolean;
+  message: string | null;
+  /** What the editor shows after it: "שונה לפי: {instruction}". */
+  instruction: string;
+};
 
 /** One vocabulary everywhere: מחכה לכם → מוכן לאישור → אושר → פורסם → נמדד. */
 export type PostLifecycle = "needs_owner" | "ready" | "approved" | "published" | "measured";
@@ -4565,6 +4721,33 @@ export type StrategyPayload = {
   horizon?: MonthHorizon;
   /** The stored 3-month plan from /start (Revision 5), when the business has one. */
   quarter_plan?: StoredQuarterPlan | null;
+  /** Where the month's hypothesis, its targets and the plan's assumptions stand
+   *  (docs/posts-v2.md, Phase C: api/app/services/hypotheses.py). */
+  hypothesis_review?: HypothesisReview | null;
+};
+
+/** measuring (not enough data, the line says what is missing) → on_track / confirmed (the
+ *  evidence supports it) · not_yet (against it so far) · changed (the plan changed it). */
+export type HypothesisReviewStatus = "measuring" | "on_track" | "confirmed" | "not_yet" | "changed";
+
+export type HypothesisReviewItem = {
+  /** "month", "target:{index}" or "assumption:{index}" (the index in the stored list). */
+  key: string;
+  kind: "month" | "target" | "assumption";
+  text_he: string;
+  if_wrong_he: string;
+  status: HypothesisReviewStatus;
+  /** The word beside the dot, in the item's grammar ("בדרך", "התאמתה", "הושג"…). */
+  status_he: string;
+  /** One line of evidence, with the server's numbers only. */
+  evidence_he: string;
+};
+
+export type HypothesisReview = {
+  updated_at: string | null;
+  /** The month is over (or the next one was built): the statuses are its verdict. */
+  closed: boolean;
+  items: HypothesisReviewItem[];
 };
 
 export type MonthHorizon = {

@@ -41,7 +41,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.routers.setup import newest_business
 from app.routers import foundations
-from app.services import ga4, journey, meta
+from app.services import ga4, hypotheses as hypothesis_review, journey, meta
 from app.services.jsonutil import dumps, loads
 
 try:  # tzdata is not guaranteed on slim images; the day number only needs Israel's date.
@@ -131,7 +131,6 @@ WEEKS = [
     {"week": 4, "title_he": "מודדים ומתאימים"},
 ]
 
-HYPOTHESIS_STATUS_HE = {"measuring": "נמדדת", "confirmed": "אושרה", "not_confirmed": "לא אושרה"}
 
 
 def _kpi_name(facts: journey.Facts) -> str:
@@ -412,23 +411,25 @@ def build_steps(
 
 
 def hypotheses(facts: journey.Facts) -> list[dict]:
-    """The plan's assumptions and where each stands. "נמדדת" until a monthly review sets
-    it (`hypothesis_status` in the stored profile: {index: "confirmed"|"not_confirmed"})."""
-    raw = (facts.quarter_plan or {}).get("assumptions")
-    statuses = facts.stored.get("hypothesis_status") if isinstance(facts.stored.get("hypothesis_status"), dict) else {}
-    out = []
-    for index, item in enumerate(raw if isinstance(raw, list) else []):
-        if not isinstance(item, dict) or not str(item.get("bet_he") or "").strip():
-            continue
-        status = statuses.get(str(index))
-        status = status if status in HYPOTHESIS_STATUS_HE else "measuring"
-        out.append({
-            "text_he": str(item.get("bet_he")).strip(),
-            "if_wrong_he": str(item.get("if_wrong_he") or "").strip(),
-            "status": status,
-            "status_he": HYPOTHESIS_STATUS_HE[status],
-        })
-    return out
+    """What the month tests, and where each stands (docs/posts-v2.md, Phase C): the month's
+    hypothesis, then the 3-month plan's assumptions, each with a status word and one
+    evidence line. The statuses are written by services/hypotheses.py (performance refresh,
+    weekly job, month close); until then an item is "נמדדת", or what the monthly review
+    once set by hand (`hypothesis_status` in the stored profile)."""
+    view = hypothesis_review.review_view(facts.hypothesis_review, facts.month_core, facts.quarter_plan, facts.stored)
+    return [
+        {
+            "key": item["key"],
+            "kind": item["kind"],
+            "text_he": item["text_he"],
+            "if_wrong_he": item["if_wrong_he"],
+            "status": item["status"],
+            "status_he": item["status_he"],
+            "evidence_he": item["evidence_he"],
+        }
+        for item in view["items"]
+        if item["kind"] in ("month", "assumption")
+    ]
 
 
 def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:

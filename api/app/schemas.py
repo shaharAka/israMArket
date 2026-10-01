@@ -159,8 +159,18 @@ class PostDesignIn(BaseModel):
 
 
 class PostRewriteIn(BaseModel):
+    """One instruction (docs/posts-v2.md, Phase C): a chip's words or the owner's own, at
+    most 200 characters. The older tone-only call still works; one of the two is needed."""
+
     post_index: int = Field(ge=0, le=50)
-    tone: Literal["direct", "neighborhood", "punchy", "holiday", "story"]
+    tone: Literal["direct", "neighborhood", "punchy", "holiday", "story"] | None = None
+    instruction: str | None = Field(default=None, max_length=200)
+
+    @model_validator(mode="after")
+    def _one_of(self) -> "PostRewriteIn":
+        if not (self.instruction or "").strip() and not self.tone:
+            raise ValueError("כתבו מה לשנות בפוסט.")
+        return self
 
 
 class PostApprovalIn(BaseModel):

@@ -74,13 +74,16 @@ import { productPaletteVariables, useDesignPalette } from "@/components/design/p
 import editorStyles from "@/components/posts/editor.module.css";
 import ui from "@/components/posts/chrome.module.css";
 
-type RewriteTone = "direct" | "neighborhood" | "punchy";
-
-const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[] = [
-  { key: "punchy", label: "קצר יותר", description: "נשמור את המסר ונקצר אותו" },
-  { key: "neighborhood", label: "פחות מכירתי", description: "ננסח בטון טבעי וחם יותר" },
-  { key: "direct", label: "ברור יותר", description: "נגיד ללקוח בדיוק מה לעשות" },
-];
+/**
+ * One instruction, one new version (docs/posts-v2.md, Phase C): a few one-tap chips and the
+ * owner's own words. The server writes with the plan, what worked and the facts the owner
+ * confirmed, and never invents a price: "להוסיף מחיר" with no known price asks for it.
+ */
+const INSTRUCTION_CHIPS = ["קצר יותר", "להוסיף מחיר", "יותר חם", "עם שאלה ללקוחות"] as const;
+const MAX_INSTRUCTION = 200;
+/** The free-text field's own busy key, beside the chips' labels. */
+const OWN_WORDS = "own-words";
+const PRICE_WORDS = /מחיר|כמה עולה|₪|ש"ח|ש״ח|שקל/;
 
 /**
  * The tools behind the panel's quiet links, each in the step it belongs to (posts-v2,
@@ -245,7 +248,12 @@ export function PostEditor({
   // An unsaved edit of the caption; `null` when the box shows what is stored.
   const [captionDraft, setCaptionDraft] = useState<string | null>(null);
   const [savingCaption, setSavingCaption] = useState(false);
-  const [rewriting, setRewriting] = useState<RewriteTone | null>(null);
+  // Which instruction is being written (a chip's label or OWN_WORDS), the owner's own words,
+  // and the server's word when the post stayed as it was ("מה המחיר?").
+  const [rewriting, setRewriting] = useState<string | null>(null);
+  const [instructionDraft, setInstructionDraft] = useState("");
+  const [rewriteMessage, setRewriteMessage] = useState("");
+  const instructionInput = useRef<HTMLInputElement>(null);
   const [approving, setApproving] = useState(false);
   const [imageBusy, setImageBusy] = useState<number | null>(null);
   const [imageError, setImageError] = useState("");
@@ -415,6 +423,8 @@ export function PostEditor({
     setActive(null);
     setPublishFocus("kit");
     setCaptionDraft(null);
+    setInstructionDraft("");
+    setRewriteMessage("");
     setImageError("");
     setPublishUrl(posts[index]?.published_url || "");
     setCustomDesignPrompt("");
@@ -613,16 +623,30 @@ export function PostEditor({
     }
   }
 
-  async function requestRewrite(tone: RewriteTone) {
-    setRewriting(tone);
+  /** One instruction: a chip's words, or the owner's own (`key` says which is busy). */
+  async function requestRewrite(instruction: string, key: string) {
+    const text = instruction.replace(/\s+/g, " ").trim().slice(0, MAX_INSTRUCTION);
+    if (!text || rewriting !== null) return;
+    setRewriting(key);
+    setRewriteMessage("");
     try {
-      const result = await endpoints.rewritePost(selectedIndex, tone);
-      setPosts(result.strategy.roadmap.posts);
-      onStrategyUpdated?.(result.strategy);
-      // Show the new version: the side panel's text on a desktop, the preview on a phone.
-      setActive(isDesktop ? "text" : null);
+      const result = await endpoints.rewritePost(selectedIndex, { instruction: text });
+      applyStrategy(result.strategy);
       setCaptionDraft(null);
-      toast("הכנו גרסה חדשה");
+      if (result.changed) {
+        // Show the new version: the side panel's text on a desktop, the preview on a phone.
+        setActive(isDesktop ? "text" : null);
+        setInstructionDraft("");
+        toast("הכנו גרסה חדשה");
+        return;
+      }
+      // The post stayed as it was, and the server said why. A missing price is one the
+      // owner can type right here, so the field is ready for it.
+      setRewriteMessage(result.message || "הפוסט נשאר כמו שהוא.");
+      if (PRICE_WORDS.test(text) && !/\d/.test(text)) {
+        setInstructionDraft("להוסיף מחיר ");
+        window.requestAnimationFrame(() => instructionInput.current?.focus());
+      }
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו להכין גרסה חדשה");
     } finally {
@@ -1287,6 +1311,19 @@ export function PostEditor({
     }
   }
 
+  /** "שונה לפי: קצר יותר": the last one-instruction rewrite, until the text is saved or
+   *  approved (the server clears it then). */
+  function renderRewriteNote(className = "") {
+    const label = (currentPost.rewrite_instruction || "").trim();
+    if (!label) return null;
+    return (
+      <p className={`flex items-center gap-1.5 text-[13px] font-medium leading-5 text-[color:var(--ink-muted)] ${className}`}>
+        <EditorIcon kind="text" className="h-4 w-4 shrink-0" />
+        <span className="min-w-0">שונה לפי: {label}</span>
+      </p>
+    );
+  }
+
   function renderTextStep() {
     // The server stores one editable caption per post: the primary outlet's, which is the
     // plan's channel. Should the two ever differ, the channel's text stays read-only here
@@ -1306,6 +1343,7 @@ export function PostEditor({
               להעתיק
             </button>
           </div>
+          {renderRewriteNote("-mt-1 mb-1.5")}
           {editable ? (
             <textarea
               id="post-caption"
@@ -1384,29 +1422,66 @@ export function PostEditor({
           </div>
         ) : null}
 
-        {/* The tone, as one more way to change the words. A new version is written with
-            what already worked for this business, the same as the first one was. */}
+        {/* One instruction, one new version: quiet chips, or the owner's own words. It is
+            written with the plan and what already worked, and keeps what they confirmed. */}
         <div className="py-5">
-          <p className={ui.groupTitle}>לנסח מחדש</p>
-          <div className="mt-3 space-y-2">
-            {CHANGE_OPTIONS.map((option) => (
+          <p id="post-rewrite-title" className={ui.groupTitle}>
+            לנסח מחדש
+          </p>
+          <div role="group" aria-labelledby="post-rewrite-title" className="mt-3 flex flex-wrap gap-2">
+            {INSTRUCTION_CHIPS.map((label) => (
               <button
-                key={option.key}
+                key={label}
                 type="button"
                 disabled={rewriting !== null}
-                onClick={() => void requestRewrite(option.key)}
-                className={`${ui.option} group w-full justify-between gap-3 px-4 py-3 text-right`}
+                aria-busy={rewriting === label}
+                onClick={() => void requestRewrite(label, label)}
+                className={ui.chip}
               >
-                <span className="flex min-w-0 flex-col">
-                  <span className="text-[15px] font-semibold text-[color:var(--ink)]">
-                    {rewriting === option.key ? "מכינים…" : option.label}
-                  </span>
-                  <span className="mt-0.5 text-[13px] font-normal leading-5 text-[color:var(--ink-muted)]">{option.description}</span>
-                </span>
-                <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-faint)] transition-transform duration-200 group-hover:-translate-x-0.5" />
+                {rewriting === label ? "כותבים…" : label}
               </button>
             ))}
           </div>
+          <form
+            className="mt-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void requestRewrite(instructionDraft, OWN_WORDS);
+            }}
+          >
+            <label htmlFor="post-instruction" className={`${ui.help} block`}>
+              או במילים שלכם
+            </label>
+            <div className="mt-1.5 flex gap-2">
+              <input
+                id="post-instruction"
+                ref={instructionInput}
+                value={instructionDraft}
+                maxLength={MAX_INSTRUCTION}
+                disabled={rewriting !== null}
+                onChange={(event) => setInstructionDraft(event.target.value)}
+                placeholder="למשל: להזכיר שפתוחים גם בשבת"
+                className={`${ui.field} min-w-0 flex-1 text-sm`}
+              />
+              <button
+                type="submit"
+                disabled={rewriting !== null || !instructionDraft.trim()}
+                aria-busy={rewriting === OWN_WORDS}
+                className={`${ui.button} ${ui.matchField} shrink-0`}
+              >
+                {rewriting === OWN_WORDS ? "כותבים…" : "לשנות"}
+              </button>
+            </div>
+            {instructionDraft.length > MAX_INSTRUCTION - 40 ? (
+              <p className={`${ui.help} mt-1.5`}>נשארו {MAX_INSTRUCTION - instructionDraft.length} תווים</p>
+            ) : null}
+          </form>
+          {rewriteMessage ? (
+            <p role="status" className="mt-3 flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink)]">
+              <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sun)]" />
+              {rewriteMessage}
+            </p>
+          ) : null}
         </div>
 
         <div className="pt-5">{renderAudience()}</div>
@@ -1806,6 +1881,7 @@ export function PostEditor({
           <p className="text-[16px] font-semibold leading-7 text-[color:var(--ink)] md:text-[17px]">{why}</p>
         ) : null}
         <InspirationLine inspiration={currentPost.inspiration} note={currentPost.informed_by_note} />
+        {renderRewriteNote("mt-2")}
         {showNeeds ? renderNeeds() : null}
         {out ? renderResults() : null}
         {linkOptional ? renderLinkField() : null}

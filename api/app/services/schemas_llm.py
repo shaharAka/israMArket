@@ -669,6 +669,27 @@ LEARNING_LINES_SCHEMA = {
     "required": ["lines"],
 }
 
+# docs/posts-v2.md, Phase C: the cheap model only re-phrases the evidence line of a
+# hypothesis status the server already decided (services/hypotheses.py).
+HYPOTHESIS_LINES_SCHEMA = {
+    "type": "object",
+    "title": "HypothesisEvidenceLines",
+    "properties": {
+        "lines": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ref": {"type": "string"},
+                    "text": {"type": "string", "description": "משפט אחד קצר בעברית, עד 18 מילים, אותם מספרים בדיוק"},
+                },
+                "required": ["ref", "text"],
+            },
+        }
+    },
+    "required": ["lines"],
+}
+
 MONTHLY_POSTS_SCHEMA = {
     "type": "object",
     "title": "MonthlyPosts",

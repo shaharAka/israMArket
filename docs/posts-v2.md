@@ -96,4 +96,27 @@ So:
 | **B. Results on the post** | Results + "מה לומדים" in the editor and the list; WhatsApp clicks per post; the next post marked "עודכן לפי מה שלמדנו" |
 | **C. Smart suggestion** | One grounded suggestion per post with a one-click targeted rewrite; rewrites with context; hypothesis statuses move |
 
+### Phase C as built (Revision 1 applies: no suggestion box)
+- **One-instruction rewrite.** The text step has quiet chips (`קצר יותר` · `להוסיף מחיר` ·
+  `יותר חם` · `עם שאלה ללקוחות`) and "או במילים שלכם" (≤200). `POST /strategy/posts/rewrite`
+  takes `instruction` (the old `tone` still works) and answers `{post, strategy, changed,
+  message, instruction}`. The writer gets the plan link, why line, mix type, channel, measure,
+  featured item, what worked, brand voice and HEBREW_STYLE. Money is decided by the server
+  (`services/post_rewrite.py`): a price is known only when the owner typed, saved or approved
+  it (`owner_prices`, `owner_fact_done`, the instruction, a featured item's note) or it is
+  already in the post. `להוסיף מחיר` with no known price never reaches the writer: the post
+  stays, asks "מה המחיר?" and says so. A new price becomes `[מחיר]` (and is asked about); a
+  new discount, or a confirmed fact the new version dropped, keeps the old text.
+  `rewrite_instruction` on the post drives "שונה לפי: …" until the text is saved or approved.
+- **Hypothesis statuses** (`services/hypotheses.py`): the month's hypothesis, its targets and
+  the 3-month plan's assumptions get `measuring / on_track / confirmed / not_yet / changed`
+  and one evidence line, decided by rules (measured posts split by a visible trait, WhatsApp
+  taps this month, the latest refresh's site and Instagram numbers, the targets' numbers);
+  the cheap model may only re-phrase the line (same numbers, no cause). Written by
+  `/performance/sync`, the weekly job and next-month generation (the month's last word,
+  also handed to the next month's planner), stored as `hypothesis_review` beside the
+  roadmap, and read as `strategy.hypothesis_review` (/strategy) and `trial.hypotheses`
+  (Today). A tap is never confirmed as an order: a count that only stands for the target
+  is at most on track.
+
 Copy follows HEBREW-COPY.md; visuals follow DESIGN-STANDARD.md; word budgets in UI-RULES.md.

@@ -19,7 +19,7 @@ from app.schemas import (
     PostUpdateIn,
     StrategyApproveIn,
 )
-from app.services import connected_posts, generation_jobs
+from app.services import connected_posts, generation_jobs, hypotheses, post_rewrite
 from app.services.assets import (
     asset_catalogue,
     suggest_assets,
@@ -79,6 +79,14 @@ def serialize_strategy(
         "created_at": strategy.created_at.isoformat(),
         # Onboarding v2 revision 5 (additive): the 3-month plan saved at signup.
         "quarter_plan": (scraped or {}).get("quarter_plan"),
+        # docs/posts-v2.md, Phase C: where the month's hypothesis, its targets and the
+        # plan's assumptions stand, each with one evidence line (services/hypotheses.py).
+        "hypothesis_review": hypotheses.review_view(
+            extra.get(hypotheses.REVIEW_KEY),
+            connected_posts.strategy_core(roadmap) if isinstance(roadmap, dict) else {},
+            (scraped or {}).get("quarter_plan"),
+            scraped,
+        ),
     }
     if horizon:
         payload["horizon"] = horizon
@@ -607,9 +615,12 @@ def save_post(
     if "outlet_captions" not in target or not isinstance(target["outlet_captions"], dict):
         target["outlet_captions"] = {}
     target["outlet_captions"][body.primary_outlet] = body.caption
-    # The owner went over the text: a fact we asked them to check is theirs now.
+    # The owner went over the text: a fact we asked them to check is theirs now, and so is
+    # every price in it (a later rewrite keeps them as they are).
     if target.get("owner_fact"):
         target["owner_fact_done"] = True
+    post_rewrite.confirm_prices(target, post_rewrite.post_text(target))
+    target.pop("rewrite_instruction", None)
 
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
@@ -633,42 +644,100 @@ def rewrite_post_endpoint(
     if body.post_index >= len(posts):
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
-    brand = extra.get("brand_language") or (loads(business.scraped_profile_json, {}) or {}).get("brand_language") or {}
+    stored = loads(business.scraped_profile_json, {}) or {}
+    brand = extra.get("brand_language") or stored.get("brand_language") or {}
     target = posts[body.post_index]
+    instruction = post_rewrite.clean_instruction(body.instruction)
+    label = post_rewrite.label_for(instruction, body.tone)
+    featured = _featured_for(stored, target)
+
+    def answer(*, changed: bool, message: str | None = None) -> dict:
+        posts[body.post_index] = target
+        extra["roadmap"] = {**roadmap, "posts": posts}
+        strategy.roadmap_json = dumps(extra)
+        business.updated_at = datetime.utcnow()
+        db.commit()
+        db.refresh(strategy)
+        return {
+            "post": _post_view(strategy, business, body.post_index, target),
+            "strategy": serialize_strategy(strategy, business),
+            "changed": changed,
+            "message": message,
+            "instruction": label,
+        }
+
+    # "להוסיף מחיר" and no price the owner gave or confirmed: the writer would have to
+    # invent one. The post stays as it is and asks the owner (docs/posts-v2.md, Phase C).
+    if post_rewrite.wants_price(instruction) and not post_rewrite.known_money(target, instruction, featured):
+        target["owner_fact"] = post_rewrite.PRICE_QUESTION_HE
+        target["owner_fact_done"] = False
+        target["approval_status"] = "review"
+        target["approved_at"] = None
+        target.pop("rewrite_instruction", None)
+        return answer(changed=False, message=post_rewrite.NO_PRICE_MESSAGE_HE)
+
     # docs/posts-v2.md: a rewrite knows the post's place in the plan, how it is measured,
     # what it got so far, and what worked for this business (the post itself excluded).
     view = _post_view(strategy, business, body.post_index, target)
     worked = connected_posts.what_worked(db, business, exclude_uid=view["uid"])
     context = {
         "plan_link": view["plan_link"],
+        "why_line": view["why_line"],
+        "mix_type": view["mix_type"],
+        "business_model": business.business_model or "products",
+        "featured": featured,
         "channel": view["channel"],
         "measure": view["measure"],
         "results": view["results"],
         "what_worked": worked,
+        "facts": post_rewrite.facts_block(target, instruction, featured),
     }
     try:
         rewritten = rewrite_post(
-            target, body.tone, brand, instagram=signal_for(db, business, strategy.year, strategy.month), context=context
+            target,
+            body.tone,
+            brand,
+            instagram=signal_for(db, business, strategy.year, strategy.month),
+            context=context,
+            instruction=instruction,
         )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"לא הצלחנו לכתוב את הפוסט מחדש: {exc}") from exc
 
     # .get: a post stored without one of these (an old or a chosen sample post) still rewrites.
-    target["title"] = rewritten.get("title") or target.get("title") or ""
-    target["hook"] = rewritten.get("hook") or target.get("hook") or ""
-    target["caption"] = rewritten.get("caption") or target.get("caption") or ""
-    target["cta"] = rewritten.get("cta") or target.get("cta") or ""
-    target["overlay_text"] = rewritten.get("overlay_text") or target.get("overlay_text") or ""
+    proposed = {name: rewritten.get(name) or target.get(name) or "" for name in post_rewrite.TEXT_FIELDS}
     if rewritten.get("outlet_captions"):
-        target["outlet_captions"] = rewritten["outlet_captions"]
+        proposed["outlet_captions"] = rewritten["outlet_captions"]
+    checked = post_rewrite.guard(target, proposed, instruction, featured)
+    if checked.rejected:
+        # A confirmed fact went missing, or a discount appeared: the old text stays.
+        return answer(changed=False, message=checked.message)
+
+    for name in post_rewrite.TEXT_FIELDS:
+        target[name] = checked.fields[name]
+    if checked.fields.get("outlet_captions"):
+        target["outlet_captions"] = checked.fields["outlet_captions"]
     if isinstance(target.get("outlet_captions"), dict):
         # The post is the one for its channel; the other copies stay a cross-post option.
         target["outlet_captions"][view["channel"]] = target["caption"]
     if "inspiration" in rewritten:
         target["inspiration"] = rewritten["inspiration"]
     target["uid"] = view["uid"]
+    # A price the owner typed in the instruction is theirs from now on.
+    typed = post_rewrite.money_in(instruction)
+    post_rewrite.confirm_prices(target, instruction)
     fact = str(rewritten.get("owner_fact") or "").strip()[:120]
-    if fact:
+    if checked.placeholders or post_rewrite.has_placeholder(checked.fields):
+        # The writer reached for a price nobody gave (and it became [מחיר]), or left the
+        # placeholder itself: the owner fills it in. The writer's own words for what to
+        # check are kept when they are about the price.
+        target["owner_fact"] = fact if "מחיר" in fact else post_rewrite.PRICE_FACT_HE
+        target["owner_fact_done"] = False
+    elif typed and typed <= post_rewrite.money_in(post_rewrite.post_text(target)):
+        # The owner typed the price, and it is in the post now: nothing left to check.
+        target["owner_fact_done"] = True
+    elif fact and not target.get("owner_fact_done"):
+        # A fact the owner already went over stays theirs; a new one is asked about.
         target["owner_fact"] = fact
         target["owner_fact_done"] = False
     note, sources = connected_posts.informed_note(target, worked, rewritten.get("applied_learning"))
@@ -676,14 +745,22 @@ def rewrite_post_endpoint(
     target["informed_by"] = sources
     target["approval_status"] = "review"
     target["approved_at"] = None
+    # "שונה לפי: קצר יותר" until the owner saves or approves the text.
+    target["rewrite_instruction"] = label or None
+    return answer(changed=True)
 
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
-    business.updated_at = datetime.utcnow()
-    db.commit()
-    db.refresh(strategy)
-    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
+
+def _featured_for(stored: dict, post: dict) -> dict | None:
+    """The owner's featured item this post is about ({id, name, why}), or None."""
+    wanted_id = str(post.get("featured_item_id") or "")
+    wanted_name = str(post.get("featured_item_name") or "").strip().lower()
+    if not wanted_id and not wanted_name:
+        return None
+    for item in featured_items_from(stored):
+        entry = item if isinstance(item, dict) else {"id": connected_posts.featured_item_id(item), "name": item, "why": ""}
+        if (wanted_id and entry.get("id") == wanted_id) or (wanted_name and str(entry.get("name") or "").lower() == wanted_name):
+            return entry
+    return {"id": wanted_id, "name": post.get("featured_item_name") or "", "why": ""} if wanted_name else None
 
 
 @router.post("/strategy/posts/approve")
@@ -704,6 +781,9 @@ def approve_post(
     target["approved_at"] = datetime.utcnow().isoformat() if body.approved else None
     if body.approved and target.get("owner_fact"):
         target["owner_fact_done"] = True
+    if body.approved:
+        post_rewrite.confirm_prices(target, post_rewrite.post_text(target))
+        target.pop("rewrite_instruction", None)
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
@@ -801,6 +881,12 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
     if not stored.get("brand_language"):
         raise RuntimeError("עוד לא קראנו את האתר. בלי הצבעים והסגנון שלכם אי אפשר לבנות חודש.")
 
+    # The month closes: its hypothesis, targets and the plan's assumptions get their last
+    # word (docs/posts-v2.md, Phase C), and the next month is planned knowing it.
+    closing_review = hypotheses.refresh_for_business(db, business, closing=True, strategy=source)
+    if closing_review is not None:
+        db.commit()
+
     snap = (
         db.query(PerformanceSnapshot)
         .filter(PerformanceSnapshot.business_id == business.id)
@@ -824,6 +910,8 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         else None,
         {"suggestions": loads(rec.suggestions_json, {})} if rec else None,
     )
+    if closing_review is not None:
+        prior["hypotheses"] = hypotheses.for_prompt(closing_review)
     payload = {
         # Lets services/research.research_prompt_block find this business's latest research.
         "id": business.id,
