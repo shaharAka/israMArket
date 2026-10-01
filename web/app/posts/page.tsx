@@ -9,6 +9,7 @@ import { PostEditor } from "@/components/PostEditor";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
+import { ownerNeedsOf } from "@/lib/postLifecycle";
 import { StepLink } from "@/components/trial/StepLink";
 import ui from "@/components/posts/chrome.module.css";
 import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
@@ -26,7 +27,7 @@ function queueSignature(strategy: StrategyPayload | null) {
   return (strategy?.roadmap?.posts ?? [])
     .map(
       (post) =>
-        `${post.approval_status || ""}|${post.scheduled_for || ""}|${post.published_url || ""}`
+        `${post.approval_status || ""}|${post.scheduled_for || ""}|${post.published_url || ""}|${post.published_at || ""}`
     )
     .join(",");
 }
@@ -189,6 +190,7 @@ function PostsWorkspace() {
       <PostEditor
         key={`${strategy.id}-${openIndex}`}
         posts={posts}
+        strategy={strategy}
         brandLanguage={strategy.brand_language}
         initialIndex={openIndex}
         onStrategyUpdated={setStrategy}
@@ -204,10 +206,18 @@ function PostsWorkspace() {
   // A failed queue read must not read as "nothing is due", so nothing is claimed until it
   // answers. With posts still to approve, publishing is the secondary ask.
   const showDue = Boolean(due && firstPending >= 0);
+  // The page's one ask is the next post that needs the owner, worded as what it needs.
   const primary =
     strategy && !location.calendar
       ? firstPending >= 0
-        ? { label: doneCount ? "להמשיך לאשר" : "להתחיל לאשר", index: firstPending }
+        ? {
+            label: ownerNeedsOf(posts[firstPending]).some((need) => need.kind === "photo")
+              ? "להוסיף תמונה לפוסט"
+              : doneCount
+                ? "להמשיך לאשר"
+                : "להתחיל לאשר",
+            index: firstPending,
+          }
         : due
           ? { label: "לפרסם את הפוסט של היום", index: due.index }
           : null
@@ -314,7 +324,7 @@ function PostsWorkspace() {
             onOpenPost={openPost}
           />
         ) : (
-          <PostFeed posts={posts} brand={strategy.brand_language} onOpen={openPost} />
+          <PostFeed posts={posts} brand={strategy.brand_language} strategy={strategy} onOpen={openPost} />
         )}
       </div>
     </div>

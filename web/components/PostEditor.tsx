@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
@@ -17,12 +17,30 @@ import { downloadCardPng } from "@/lib/cardExport";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
 import { InspirationLine } from "@/components/posts/InspirationLine";
+import { ChannelIcon } from "@/components/posts/ChannelIcon";
 import {
-  STATUS_LABEL,
+  LIFECYCLE_LABEL,
+  isDone,
+  lifecycleOf,
   nextPendingIndex,
   postDateLabel,
-  postStatus,
+  postWeek,
+  weekFocus,
 } from "@/components/posts/postMeta";
+import {
+  CHANNEL_LABEL,
+  channelOf,
+  compareOf,
+  formatCount,
+  isOut,
+  isPending,
+  matchedByLabel,
+  metricLabel,
+  otherResults,
+  ownerNeedsOf,
+  resultValue,
+  shortDate,
+} from "@/lib/postLifecycle";
 import {
   endpoints,
   isDemo,
@@ -32,6 +50,7 @@ import {
   type Audience,
   type BrandLanguage,
   type OverlayTheme,
+  type PostChannel,
   type RoadmapPost,
   type StrategyPayload,
 } from "@/lib/api";
@@ -41,7 +60,11 @@ import {
   IconCheck,
   IconChevron,
   IconCopy,
+  IconEye,
+  IconLink,
   IconPhotos,
+  IconTrendDown,
+  IconTrendUp,
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -51,41 +74,25 @@ import { productPaletteVariables, useDesignPalette } from "@/components/design/p
 import editorStyles from "@/components/posts/editor.module.css";
 import ui from "@/components/posts/chrome.module.css";
 
-type OutletKey = "instagram" | "facebook" | "whatsapp" | "tiktok";
-type RewriteTone = "direct" | "neighborhood" | "punchy";
+/**
+ * One instruction, one new version (docs/posts-v2.md, Phase C): a few one-tap chips and the
+ * owner's own words. The server writes with the plan, what worked and the facts the owner
+ * confirmed, and never invents a price: "להוסיף מחיר" with no known price asks for it.
+ */
+const INSTRUCTION_CHIPS = ["קצר יותר", "להוסיף מחיר", "יותר חם", "עם שאלה ללקוחות"] as const;
+const MAX_INSTRUCTION = 200;
+/** The free-text field's own busy key, beside the chips' labels. */
+const OWN_WORDS = "own-words";
+const PRICE_WORDS = /מחיר|כמה עולה|₪|ש"ח|ש״ח|שקל/;
 
 /**
- * The outlet control is a picker of channels: its options are the icon alone, and the
- * mockup below is the format spec that each old badge and spec line used to repeat.
- * `label` is still what the copy column and the publish row call the outlet.
+ * The tools behind the panel's quiet links, each in the step it belongs to (posts-v2,
+ * Revision 1): the words and their tone, the picture and its design, and publishing. On a
+ * phone a step opens as a bottom sheet over the post; from 768px up it takes the side
+ * panel's place. Either way the screen itself holds the post, one sentence of why, what we
+ * need from the owner, and the one thing we are asking for.
  */
-const OUTLETS: { key: OutletKey; label: string }[] = [
-  { key: "instagram", label: "אינסטגרם" },
-  { key: "facebook", label: "פייסבוק" },
-  { key: "whatsapp", label: "וואטסאפ" },
-  { key: "tiktok", label: "טיקטוק" },
-];
-
-const CHANGE_OPTIONS: { key: RewriteTone; label: string; description: string }[] = [
-  { key: "punchy", label: "קצר יותר", description: "נשמור את המסר ונקצר אותו" },
-  { key: "neighborhood", label: "פחות מכירתי", description: "ננסח בטון טבעי וחם יותר" },
-  { key: "direct", label: "ברור יותר", description: "נגיד ללקוח בדיוק מה לעשות" },
-];
-
-/**
- * Everything the owner can do to a post besides approving it. On a phone each one opens a
- * bottom sheet over the preview; from 768px up they fill a side panel next to it. Either way
- * the screen itself holds only the post and the one thing we are asking for.
- */
-type Section = "text" | "tone" | "photo" | "download" | "publish";
-
-const SECTIONS: { key: Section; label: string; title: string }[] = [
-  { key: "text", label: "טקסט", title: "הטקסט של הפוסט" },
-  { key: "tone", label: "טון", title: "לשנות את הטון" },
-  { key: "photo", label: "תמונה", title: "התמונה והעיצוב" },
-  { key: "download", label: "הורדה", title: "הורדת הכרטיס" },
-  { key: "publish", label: "פרסום", title: "פרסום ידני" },
-];
+type Step = "text" | "photo" | "publish";
 
 const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: EditorIconKind }[] = [
   { key: "hero_clean", label: "צילום נקי", desc: "בלי שום כיתוב, רק המוצר והמרקם", icon: "photo" },
@@ -154,15 +161,22 @@ const THEME_OPTIONS: { key: OverlayTheme; label: string }[] = CARD_TEMPLATES.map
   label: t.label,
 }));
 
-function primaryOutletOf(post: RoadmapPost): OutletKey {
-  return (post.primary_outlet as OutletKey) || "instagram";
+function primaryOutletOf(post: RoadmapPost): string {
+  return post.primary_outlet || "instagram";
 }
 
-function captionFor(post: RoadmapPost, outlet: OutletKey) {
-  if (outlet !== "tiktok" && post.outlet_captions?.[outlet]) {
-    return post.outlet_captions[outlet] || post.caption;
-  }
-  return post.caption;
+function captionFor(post: RoadmapPost, channel: string) {
+  const own = post.outlet_captions?.[channel as PostChannel];
+  return own || post.caption;
+}
+
+/** The why sentence. A post written before `why_line` says it with the older fields. */
+function whyOf(post: RoadmapPost): string {
+  const line = (post.why_line || "").trim();
+  if (line) return line;
+  const goal = (post.goal_fit || "").trim();
+  if (goal) return `בשביל ${goal.replace(/[.\s]+$/, "")}.`;
+  return (post.why_now || "").trim();
 }
 
 /**
@@ -198,6 +212,7 @@ function previewCaption(caption: string, max = 60): string {
 
 export function PostEditor({
   posts: initialPosts,
+  strategy,
   brandLanguage,
   initialIndex = 0,
   onStrategyUpdated,
@@ -205,10 +220,12 @@ export function PostEditor({
   onClose,
 }: {
   posts: RoadmapPost[];
+  /** The month the posts belong to, for the week's focus when a post has no plan link. */
+  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown"> | null;
   brandLanguage?: BrandLanguage | null;
   initialIndex?: number;
   onStrategyUpdated?: (strategy: StrategyPayload) => void;
-  /** Move the page to another post (after an approval). Without it the editor switches
+  /** Move the page to another post ("הבא בתור"). Without it the editor switches
    *  internally, the way it did when it had its own post picker. */
   onNavigate?: (index: number) => void;
   /** Back to the month's feed. */
@@ -220,19 +237,23 @@ export function PostEditor({
   const [selectedIndex, setSelectedIndex] = useState(() =>
     Math.min(Math.max(initialIndex, 0), Math.max(initialPosts.length - 1, 0))
   );
-  const [outlet, setOutlet] = useState<OutletKey>(
-    (initialPosts[initialIndex]?.primary_outlet as OutletKey) || "instagram"
-  );
-  // Which secondary section is open. `null` on a phone means none (the sheet is closed); on a
-  // desktop the side panel falls back to the text, which is what the owner reads to approve.
-  const [active, setActive] = useState<Section | null>(null);
+  // Which step is open. `null` means the post and its panel: on a phone the sheet is closed,
+  // on a desktop the side panel shows the why, the need, the one button and the results.
+  const [active, setActive] = useState<Step | null>(null);
+  // The publish step opens on the kit, or — when the post is out and its link is what is
+  // missing — on the pasted link.
+  const [publishFocus, setPublishFocus] = useState<"kit" | "link">("kit");
   const isDesktop = useIsDesktop();
-  const shownSection: Section | null = active ?? (isDesktop ? "text" : null);
   const closeSection = useCallback(() => setActive(null), []);
   // An unsaved edit of the caption; `null` when the box shows what is stored.
   const [captionDraft, setCaptionDraft] = useState<string | null>(null);
   const [savingCaption, setSavingCaption] = useState(false);
-  const [rewriting, setRewriting] = useState<RewriteTone | null>(null);
+  // Which instruction is being written (a chip's label or OWN_WORDS), the owner's own words,
+  // and the server's word when the post stayed as it was ("מה המחיר?").
+  const [rewriting, setRewriting] = useState<string | null>(null);
+  const [instructionDraft, setInstructionDraft] = useState("");
+  const [rewriteMessage, setRewriteMessage] = useState("");
+  const instructionInput = useRef<HTMLInputElement>(null);
   const [approving, setApproving] = useState(false);
   const [imageBusy, setImageBusy] = useState<number | null>(null);
   const [imageError, setImageError] = useState("");
@@ -310,15 +331,6 @@ export function PostEditor({
   const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null || uploadingPhoto;
 
   const currentPost = posts[selectedIndex];
-  const availableOutlets = useMemo(
-    () =>
-      OUTLETS.filter((item) =>
-        (currentPost?.outlets?.length ? currentPost.outlets : [currentPost?.primary_outlet || "instagram"]).includes(
-          item.key
-        )
-      ),
-    [currentPost]
-  );
 
   if (!currentPost) {
     return (
@@ -408,9 +420,11 @@ export function PostEditor({
 
   function selectPost(index: number) {
     setSelectedIndex(index);
-    setOutlet((posts[index]?.primary_outlet as OutletKey) || "instagram");
     setActive(null);
+    setPublishFocus("kit");
     setCaptionDraft(null);
+    setInstructionDraft("");
+    setRewriteMessage("");
     setImageError("");
     setPublishUrl(posts[index]?.published_url || "");
     setCustomDesignPrompt("");
@@ -554,19 +568,36 @@ export function PostEditor({
     onStrategyUpdated?.(strategy);
   }
 
+  /**
+   * "פרסמתי": marks the post published. The link is optional — it adds Instagram's reach —
+   * and the same call adds it later; WhatsApp taps are counted by the post's own code
+   * either way. Only a link added after the fact has to be there to be saved.
+   */
   async function markPublished() {
-    if (!publishUrl.trim()) {
-      toast("הדביקו את הקישור לפוסט באינסטגרם או בפייסבוק");
+    const url = publishUrl.trim();
+    const alreadyOut = Boolean(currentPost.published_url || currentPost.published_at);
+    if (alreadyOut && !url) {
+      toast("הדביקו את הקישור לפוסט");
+      return;
+    }
+    if (url && !/^https?:\/\//i.test(url)) {
+      toast("הקישור צריך להתחיל ב-https://");
       return;
     }
     setPublishing(true);
     try {
-      const result = await endpoints.publishPost(selectedIndex, publishUrl.trim());
+      const result = await endpoints.publishPost(selectedIndex, url);
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast("סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא.");
+      // Back to the post, which now says "פורסם" and what it will be measured by.
+      setActive(null);
+      toast(
+        alreadyOut
+          ? "הקישור נשמר. נראה לפיו גם כמה ראו."
+          : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
+      );
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו לשמור את הקישור");
+      toast(err instanceof Error ? err.message : "לא הצלחנו לסמן שהפוסט פורסם");
     } finally {
       setPublishing(false);
     }
@@ -579,16 +610,12 @@ export function PostEditor({
       const updatedPosts = result.strategy.roadmap.posts;
       setPosts(updatedPosts);
       onStrategyUpdated?.(result.strategy);
-      // The flow moves on by itself: the next post still waiting (wrapping round to one
-      // that was skipped earlier), and back to the feed once the month is done.
-      const nextIndex = nextPendingIndex(updatedPosts, selectedIndex);
-      if (nextIndex >= 0) {
-        toast("הפוסט אושר. הנה הבא בתור.", "milestone");
-        goTo(nextIndex);
-      } else {
-        toast("הפוסט אושר. כל הפוסטים של החודש אושרו.", "milestone");
-        onClose?.();
-      }
+      // The post stays on screen and its one button moves on to "לפרסם" (posts-v2,
+      // Revision 1). The next post waiting is one tap away in the header ("הבא בתור").
+      toast(
+        updatedPosts.every(isDone) ? "הפוסט אושר. כל הפוסטים של החודש אושרו." : "הפוסט אושר.",
+        "milestone"
+      );
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו לאשר את הפוסט");
     } finally {
@@ -596,16 +623,30 @@ export function PostEditor({
     }
   }
 
-  async function requestRewrite(tone: RewriteTone) {
-    setRewriting(tone);
+  /** One instruction: a chip's words, or the owner's own (`key` says which is busy). */
+  async function requestRewrite(instruction: string, key: string) {
+    const text = instruction.replace(/\s+/g, " ").trim().slice(0, MAX_INSTRUCTION);
+    if (!text || rewriting !== null) return;
+    setRewriting(key);
+    setRewriteMessage("");
     try {
-      const result = await endpoints.rewritePost(selectedIndex, tone);
-      setPosts(result.strategy.roadmap.posts);
-      onStrategyUpdated?.(result.strategy);
-      // Show the new version: the side panel's text on a desktop, the preview on a phone.
-      setActive(isDesktop ? "text" : null);
+      const result = await endpoints.rewritePost(selectedIndex, { instruction: text });
+      applyStrategy(result.strategy);
       setCaptionDraft(null);
-      toast("הכנו גרסה חדשה");
+      if (result.changed) {
+        // Show the new version: the side panel's text on a desktop, the preview on a phone.
+        setActive(isDesktop ? "text" : null);
+        setInstructionDraft("");
+        toast("הכנו גרסה חדשה");
+        return;
+      }
+      // The post stayed as it was, and the server said why. A missing price is one the
+      // owner can type right here, so the field is ready for it.
+      setRewriteMessage(result.message || "הפוסט נשאר כמו שהוא.");
+      if (PRICE_WORDS.test(text) && !/\d/.test(text)) {
+        setInstructionDraft("להוסיף מחיר ");
+        window.requestAnimationFrame(() => instructionInput.current?.focus());
+      }
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו להכין גרסה חדשה");
     } finally {
@@ -702,10 +743,13 @@ export function PostEditor({
     else selectPost(index);
   }
 
-  const activeCaption = captionFor(currentPost, outlet);
+  // The one channel the plan chose. There is no channel switch: the plan already knows
+  // where this post goes, and the same post elsewhere is a quiet option when publishing.
+  const channel = channelOf(currentPost);
+  const channelLabel = CHANNEL_LABEL[channel];
+  const activeCaption = captionFor(currentPost, channel);
   const businessName = brandLanguage?.business_name || "העסק";
   const isPreparingImage = imageBusy === selectedIndex;
-  const currentOutletMeta = OUTLETS.find((item) => item.key === outlet) || OUTLETS[0];
   const cardNeedsPhoto = needsPhoto(currentPost.overlay_theme);
   // Posts created before provenance tracking have no image_source. Every legacy path
   // generated its image, so "generated" is the accurate label — not "no image yet", which
@@ -746,8 +790,35 @@ export function PostEditor({
     exportRatio === "auto" ? undefined : exportRatio,
   );
   const primaryOutlet = primaryOutletOf(currentPost);
-  const primaryOutletLabel = OUTLETS.find((item) => item.key === primaryOutlet)?.label || "";
-  const status = postStatus(currentPost);
+  const primaryOutletLabel = CHANNEL_LABEL[primaryOutlet as PostChannel] || "";
+
+  // Where the post stands, and what that asks of the owner.
+  const stage = lifecycleOf(currentPost);
+  const pending = isPending(stage);
+  const out = isOut(stage);
+  const needs = ownerNeedsOf(currentPost);
+  // A photo need is what the one button asks for while the post waits. Once it is approved
+  // the owner has decided, and the need is history.
+  const photoNeeded = pending && needs.some((need) => need.kind === "photo");
+  const showNeeds = pending && needs.length > 0;
+  const why = whyOf(currentPost);
+  const workedNote = (currentPost.informed_by_note || "").trim() || (currentPost.inspiration?.note || "").trim();
+  const week = postWeek(currentPost);
+  const focus = week ? weekFocus(week, currentPost, strategy) : "";
+  // Out without its link: the link is an optional field on the panel, never the ask.
+  const linkOptional = out && !currentPost.published_url && channel !== "whatsapp";
+  const nextPending = nextPendingIndex(posts, selectedIndex);
+
+  function openStep(step: Step, focusOn: "kit" | "link" = "kit") {
+    setPublishFocus(focusOn);
+    setActive(step);
+  }
+
+  function openLibrary() {
+    setActive("photo");
+    setShowAssets(true);
+    void loadAssets();
+  }
 
   // Visual Image Media Slot — the card itself renders inside CardStage.
   function renderMediaSlot() {
@@ -759,8 +830,8 @@ export function PostEditor({
           <h3>{isPreparingImage || uploadingPhoto ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
           <p>{isPreparingImage || uploadingPhoto ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
           {imageError && <p role="alert">{imageError}</p>}
-          <button type="button" disabled={imageLocked} onClick={() => { setActive("photo"); setShowAssets(true); void loadAssets(); }}>
-            לבחור או להעלות תמונה
+          <button type="button" disabled={imageLocked} onClick={openLibrary}>
+            לבחור מהתמונות שלי
             <IconArrowLeft className="h-4 w-4" />
           </button>
         </div>
@@ -788,50 +859,60 @@ export function PostEditor({
    * headline baked into it, the owner saw the headline three times. The card is the only
    * thing that draws the headline now.
    *
-   * Sized to fit the screen, not the column: the width is whatever lets the whole card, the
-   * approve button and the action row fit in one phone screen (`--reserve` is the height of
-   * everything else), so a 9:16 reel no longer pushes the one action below the fold.
+   * Sized to fit the screen, not the column: the width is whatever lets the whole card and
+   * the panel under it, up to the one button, fit in one phone screen (`--reserve` is the
+   * height of everything else, counted from what this post's panel actually shows). On a
+   * desktop the panel sits beside the card, so only the header is held back.
    */
   function renderPreview() {
     const captionLine = (
       <button
         type="button"
-        onClick={() => setActive("text")}
-        aria-label="לקרוא את הטקסט המלא"
-        className="block w-full px-3.5 py-2.5 text-right text-[13px] leading-5 text-[color:var(--ink-soft)] transition-colors duration-200 hover:bg-[var(--soft)]"
+        onClick={() => openStep("text")}
+        aria-label="לקרוא ולשנות את הטקסט"
+        className="block min-h-11 w-full px-3.5 py-2.5 text-right text-[13px] leading-5 text-[color:var(--ink-soft)] transition-colors duration-200 hover:bg-[var(--soft)]"
       >
-        <span className="line-clamp-2">
+        <span className="line-clamp-1 md:line-clamp-2">
           <span className="ml-1.5 font-semibold text-[color:var(--ink)]">{businessName}</span>{" "}
           {previewCaption(activeCaption)}
         </span>
       </button>
     );
+    // Measured at 390x844: 325px is the header, the caption line, the gaps and the tab bar;
+    // the rest is the panel this post actually shows. After publishing the number leads, so
+    // the card gives it room.
+    const hasPrimary = pending || stage === "approved";
+    const reservePhone =
+      325 +
+      (why ? 52 : 0) +
+      (workedNote ? 48 : 0) +
+      (showNeeds ? 56 + 28 * needs.length : 0) +
+      (out ? (resultValue(currentPost) !== null ? 200 : 110) : 0) +
+      (linkOptional ? 92 : 0) +
+      (hasPrimary ? 72 : 0) +
+      64;
     return (
       <div
-        className={`mx-auto ${
-          currentPost.inspiration?.sources?.length
-            ? "[--reserve:518px] md:[--reserve:422px]"
-            : "[--reserve:476px] md:[--reserve:380px]"
-        }`}
+        className="mx-auto [--reserve:var(--reserve-phone)] md:[--reserve:290px]"
         style={{
-          // The floor gives a little when the "why this post" line is shown, so a 9:16 reel
-          // does not push the approve row under the tab bar on a 390x844 phone.
-          width: `min(100%, max(${currentPost.inspiration?.sources?.length ? 176 : 200}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
+          ["--reserve-phone" as string]: `${reservePhone}px`,
+          // The floor: a 4:5 card never under 176px wide, a 9:16 reel never under 164px.
+          width: `min(100%, max(${previewSize.w / previewSize.h < 0.7 ? 164 : 176}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
         }}
       >
         <div className="overflow-hidden rounded-[16px] bg-[var(--paper)] shadow-[var(--shadow-pop)]">
-          {outlet === "facebook" ? captionLine : null}
+          {channel === "facebook" ? captionLine : null}
           {renderMediaSlot()}
-          {outlet !== "facebook" ? captionLine : null}
+          {channel !== "facebook" ? captionLine : null}
         </div>
       </div>
     );
   }
 
   /* ------------------------------------------------------------------ *
-   * The screen has exactly one dark filled button: approving the post. *
-   * Everything else below is a link, a quiet outline button, or one    *
-   * collapsed affordance per group (UI-RULES rule 1 + 3).              *
+   * The screen has at most one dark filled button, and it changes with *
+   * the post's state. Everything else is a link, a quiet outline       *
+   * button, or lives inside its step (UI-RULES rule 1 + 3).            *
    * ------------------------------------------------------------------ */
 
   /** The owner's own photographs, the AI generation paths and the source switch — all of
@@ -1098,6 +1179,25 @@ export function PostEditor({
           </div>
         </div>
 
+        {/* The card's shape. It changes the preview as well as the download, so it is a
+            design choice, not a download setting. */}
+        <div>
+          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">גודל הכרטיס:</p>
+          <div className="mt-2 grid grid-cols-2 gap-2">
+            {([{ key: "auto" as const, label: "אוטומטי" }, ...CARD_RATIOS]).map((r) => (
+              <button
+                key={r.key}
+                type="button"
+                aria-pressed={exportRatio === r.key}
+                onClick={() => setExportRatio(r.key)}
+                className={ui.option}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div>
           <label
             htmlFor="custom-design-prompt"
@@ -1191,30 +1291,44 @@ export function PostEditor({
     exporting || (!currentPost.image_url && needsPhoto(currentPost.overlay_theme));
 
   /* ------------------------------------------------------------------ *
-   * The sections behind the action row. Each is what used to be one   *
-   * of the collapsed rows under the preview, moved as-is: the same     *
-   * handlers, the same states, now one tap away in a sheet or panel.   *
+   * The steps behind the quiet links. Each holds the tools that belong *
+   * to it, with the same handlers and states as before: the words and  *
+   * their tone, the picture and its design, and publishing.            *
    * ------------------------------------------------------------------ */
 
   async function copyCaption() {
     // WhatsApp gets the whole formatted message (bold title, caption, call to action and
     // link), which is what the WhatsApp mockup's copy button used to hand over.
     const text =
-      outlet === "whatsapp"
+      channel === "whatsapp"
         ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${currentPost.tracking_url || ""}`.trim()
         : activeCaption;
     try {
       await navigator.clipboard.writeText(text);
-      toast(`נוסח ה${currentOutletMeta.label} הועתק.`, "copy");
+      toast(`נוסח ה${channelLabel} הועתק.`, "copy");
     } catch {
       toast("לא הצלחנו להעתיק. אפשר לסמן את הנוסח ולהעתיק ידנית.");
     }
   }
 
-  function renderTextSection() {
-    // The server stores one editable caption per post: the primary outlet's. The other
-    // channels' versions are written by the plan and stay read-only here.
-    const editable = outlet === primaryOutlet;
+  /** "שונה לפי: קצר יותר": the last one-instruction rewrite, until the text is saved or
+   *  approved (the server clears it then). */
+  function renderRewriteNote(className = "") {
+    const label = (currentPost.rewrite_instruction || "").trim();
+    if (!label) return null;
+    return (
+      <p className={`flex items-center gap-1.5 text-[13px] font-medium leading-5 text-[color:var(--ink-muted)] ${className}`}>
+        <EditorIcon kind="text" className="h-4 w-4 shrink-0" />
+        <span className="min-w-0">שונה לפי: {label}</span>
+      </p>
+    );
+  }
+
+  function renderTextStep() {
+    // The server stores one editable caption per post: the primary outlet's, which is the
+    // plan's channel. Should the two ever differ, the channel's text stays read-only here
+    // rather than being saved over the wrong caption.
+    const editable = channel === primaryOutlet;
     const draft = captionDraft ?? activeCaption;
     const dirty = captionDraft !== null && captionDraft !== activeCaption;
     return (
@@ -1222,13 +1336,14 @@ export function PostEditor({
         <div className="pb-5">
           <div className="-mt-2 flex items-center justify-between gap-2">
             <label htmlFor="post-caption" className={ui.groupTitle}>
-              הנוסח ל{currentOutletMeta.label}
+              הנוסח ל{channelLabel}
             </label>
             <button type="button" onClick={copyCaption} className={ui.link}>
               <IconCopy />
               להעתיק
             </button>
           </div>
+          {renderRewriteNote("-mt-1 mb-1.5")}
           {editable ? (
             <textarea
               id="post-caption"
@@ -1307,58 +1422,74 @@ export function PostEditor({
           </div>
         ) : null}
 
-        {currentPost.why_now ? (
-          <details className="pt-2">
-            <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
-              <span className="flex-1">למה עכשיו</span>
-              <IconChevron />
-            </summary>
-            <p className="pb-1 text-sm leading-7 text-[color:var(--ink-soft)]">{currentPost.why_now}</p>
-          </details>
-        ) : currentPost.calendar_tie || currentPost.goal_fit ? (
-          <details className="pt-2">
-            <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
-              <span className="flex-1">למה הפוסט הזה</span>
-              <IconChevron />
-            </summary>
-            <p className="pb-1 text-sm leading-7 text-[color:var(--ink-soft)]">
-              {currentPost.calendar_tie ? `${currentPost.calendar_tie}. ` : ""}
-              {currentPost.goal_fit}
+        {/* One instruction, one new version: quiet chips, or the owner's own words. It is
+            written with the plan and what already worked, and keeps what they confirmed. */}
+        <div className="py-5">
+          <p id="post-rewrite-title" className={ui.groupTitle}>
+            לנסח מחדש
+          </p>
+          <div role="group" aria-labelledby="post-rewrite-title" className="mt-3 flex flex-wrap gap-2">
+            {INSTRUCTION_CHIPS.map((label) => (
+              <button
+                key={label}
+                type="button"
+                disabled={rewriting !== null}
+                aria-busy={rewriting === label}
+                onClick={() => void requestRewrite(label, label)}
+                className={ui.chip}
+              >
+                {rewriting === label ? "כותבים…" : label}
+              </button>
+            ))}
+          </div>
+          <form
+            className="mt-4"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void requestRewrite(instructionDraft, OWN_WORDS);
+            }}
+          >
+            <label htmlFor="post-instruction" className={`${ui.help} block`}>
+              או במילים שלכם
+            </label>
+            <div className="mt-1.5 flex gap-2">
+              <input
+                id="post-instruction"
+                ref={instructionInput}
+                value={instructionDraft}
+                maxLength={MAX_INSTRUCTION}
+                disabled={rewriting !== null}
+                onChange={(event) => setInstructionDraft(event.target.value)}
+                placeholder="למשל: להזכיר שפתוחים גם בשבת"
+                className={`${ui.field} min-w-0 flex-1 text-sm`}
+              />
+              <button
+                type="submit"
+                disabled={rewriting !== null || !instructionDraft.trim()}
+                aria-busy={rewriting === OWN_WORDS}
+                className={`${ui.button} ${ui.matchField} shrink-0`}
+              >
+                {rewriting === OWN_WORDS ? "כותבים…" : "לשנות"}
+              </button>
+            </div>
+            {instructionDraft.length > MAX_INSTRUCTION - 40 ? (
+              <p className={`${ui.help} mt-1.5`}>נשארו {MAX_INSTRUCTION - instructionDraft.length} תווים</p>
+            ) : null}
+          </form>
+          {rewriteMessage ? (
+            <p role="status" className="mt-3 flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink)]">
+              <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sun)]" />
+              {rewriteMessage}
             </p>
-          </details>
-        ) : null}
-      </div>
-    );
-  }
-
-  function renderToneSection() {
-    return (
-      <div>
-        <p className="text-sm leading-6 text-[color:var(--ink-soft)]">בחרו כיוון, ונכין גרסה חדשה.</p>
-        <div className="mt-4 space-y-2">
-          {CHANGE_OPTIONS.map((option) => (
-            <button
-              key={option.key}
-              type="button"
-              disabled={rewriting !== null}
-              onClick={() => void requestRewrite(option.key)}
-              className={`${ui.option} group w-full justify-between gap-3 px-4 py-3 text-right`}
-            >
-              <span className="flex min-w-0 flex-col">
-                <span className="text-[15px] font-semibold text-[color:var(--ink)]">
-                  {rewriting === option.key ? "מכינים…" : option.label}
-                </span>
-                <span className="mt-0.5 text-[13px] font-normal leading-5 text-[color:var(--ink-muted)]">{option.description}</span>
-              </span>
-              <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-faint)] transition-transform duration-200 group-hover:-translate-x-0.5" />
-            </button>
-          ))}
+          ) : null}
         </div>
+
+        <div className="pt-5">{renderAudience()}</div>
       </div>
     );
   }
 
-  function renderPhotoSection() {
+  function renderPhotoStep() {
     return (
       <div>
         {renderImageTools()}
@@ -1385,40 +1516,10 @@ export function PostEditor({
     );
   }
 
-  function renderDownloadSection() {
-    return (
-      <div>
-        <p className={ui.groupTitle}>גודל</p>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          {([{ key: "auto" as const, label: "אוטומטי" }, ...CARD_RATIOS]).map((r) => (
-            <button
-              key={r.key}
-              type="button"
-              aria-pressed={exportRatio === r.key}
-              onClick={() => setExportRatio(r.key)}
-              className={ui.option}
-            >
-              {r.label}
-            </button>
-          ))}
-        </div>
-        <button
-          type="button"
-          disabled={downloadDisabled}
-          onClick={() => void handleExportCard()}
-          className={`${ui.button} ${ui.buttonLg} mt-6 w-full`}
-        >
-          <EditorIcon kind="download" />
-          {exporting ? "מורידים את הכרטיס…" : <span>להוריד את הכרטיס <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· <bdi dir="ltr">{exportSize.w}×{exportSize.h}</bdi></span></span>}
-        </button>
-      </div>
-    );
-  }
-
-  /** Who the post is for — the choice the old collapsed "קהל" row held. */
+  /** Who the post is for — the plan wrote it; the owner can point it elsewhere. */
   function renderAudience() {
     return (
-      <div className="mb-5 border-b border-[var(--rule)] pb-5">
+      <div>
         <div className="-mt-2 flex items-center justify-between gap-2">
           <label htmlFor="post-audience-select" className={`${ui.groupTitle} inline-flex items-center gap-2`}>
             <IconUsers className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
@@ -1471,47 +1572,59 @@ export function PostEditor({
     );
   }
 
-  function renderPublishSection() {
+  function renderPublishStep() {
     return (
-      <div>
-        {renderAudience()}
-        <PublishPanel
-          key={selectedIndex}
-          post={currentPost}
-          postIndex={selectedIndex}
-          outlet={outlet}
-          outletLabel={currentOutletMeta.label}
-          caption={activeCaption}
-          imageLocked={imageLocked}
-          onStrategy={applyStrategy}
-          onExportCard={() => void handleExportCard()}
-          exporting={exporting}
-          exportDisabled={downloadDisabled}
-          publishUrl={publishUrl}
-          onPublishUrlChange={setPublishUrl}
-          publishing={publishing}
-          onMarkPublished={() => void markPublished()}
-        />
-      </div>
+      <PublishPanel
+        key={`${selectedIndex}-${publishFocus}`}
+        post={currentPost}
+        postIndex={selectedIndex}
+        channel={channel}
+        caption={activeCaption}
+        imageLocked={imageLocked}
+        onStrategy={applyStrategy}
+        onExportCard={() => void handleExportCard()}
+        exporting={exporting}
+        exportDisabled={downloadDisabled}
+        publishUrl={publishUrl}
+        onPublishUrlChange={setPublishUrl}
+        publishing={publishing}
+        onMarkPublished={() => void markPublished()}
+        linkFirst={publishFocus === "link"}
+      />
     );
   }
 
-  function renderSection(key: Section) {
-    if (key === "text") return renderTextSection();
-    if (key === "tone") return renderToneSection();
-    if (key === "photo") return renderPhotoSection();
-    if (key === "download") return renderDownloadSection();
-    return renderPublishSection();
+  function renderStep(step: Step) {
+    if (step === "text") return renderTextStep();
+    if (step === "photo") return renderPhotoStep();
+    return renderPublishStep();
   }
 
-  const sectionMeta = SECTIONS.find((item) => item.key === shownSection) ?? null;
-  const nextPending = nextPendingIndex(posts, selectedIndex);
+  function stepTitle(step: Step) {
+    if (step === "text") return "לשנות את הטקסט";
+    if (step === "photo") return cardNeedsPhoto ? (currentPost.image_url ? "להחליף תמונה" : "לבחור תמונה") : "לשנות עיצוב";
+    return publishFocus === "link" ? "הקישור לפוסט" : `לפרסם ב${channelLabel}`;
+  }
 
-  /** THE one dark button: approve this post, or — once it is approved — the next one. */
+  /* ------------------------------------------------------------------ *
+   * The panel: why, what we need, the one button, and what happened.   *
+   * ------------------------------------------------------------------ */
+
+  const primaryClass =
+    "drawn-button inline-flex min-h-13 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white enabled:hover:bg-[var(--primary-dark)]";
+
+  /** THE one dark button, by state: להעלות תמונה → לאשר → לפרסם. "פרסמתי" is the publish
+   *  step's own action; after it nothing more is asked. */
   function renderPrimary() {
-    const primaryClass =
-      "drawn-button inline-flex min-h-13 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white enabled:hover:bg-[var(--primary-dark)]";
-    if (status === "review") {
+    if (photoNeeded) {
+      return (
+        <button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()} className={primaryClass}>
+          <EditorIcon kind="photo" className="h-5 w-5" />
+          {uploadingPhoto ? "מעלים את התמונה…" : "להעלות תמונה"}
+        </button>
+      );
+    }
+    if (pending) {
       return (
         <button
           type="button"
@@ -1525,132 +1638,345 @@ export function PostEditor({
           className={primaryClass}
         >
           <IconCheck className="h-5 w-5" />
-          {approving ? "מאשרים…" : "לאשר ולהמשיך"}
+          {approving ? "מאשרים…" : "לאשר"}
         </button>
       );
     }
-    if (nextPending >= 0) {
+    if (stage === "approved") {
       return (
-        <button type="button" onClick={() => goTo(nextPending)} className={primaryClass}>
-          לעבור לפוסט הבא
+        <button type="button" onClick={() => openStep("publish")} className={primaryClass}>
+          {/* Mirrored: in RTL, "forward" flies left. */}
+          <EditorIcon kind="publish" className="h-5 w-5 -scale-x-100" />
+          לפרסם
         </button>
       );
     }
-    if (onClose) {
-      return (
-        <button type="button" onClick={onClose} className={primaryClass}>
-          לחזור לכל הפוסטים
-        </button>
-      );
-    }
+    // Out: nothing more is asked. The link, when it is missing, is an optional field.
     return null;
+  }
+
+  /** The optional link for a post marked "פרסמתי" without one: what it adds, and a field. */
+  function renderLinkField() {
+    return (
+      <div className="mt-5">
+        <label htmlFor="post-link-later" className={`${ui.help} block`}>
+          להדביק קישור לפוסט, כדי לראות גם כמה ראו
+        </label>
+        <div className="mt-1.5 flex gap-2">
+          <input
+            id="post-link-later"
+            value={publishUrl}
+            onChange={(event) => setPublishUrl(event.target.value)}
+            placeholder="https://..."
+            dir="ltr"
+            className={`${ui.field} min-w-0 flex-1 text-left text-sm`}
+          />
+          <button
+            type="button"
+            disabled={publishing || !publishUrl.trim()}
+            onClick={() => void markPublished()}
+            className={`${ui.button} ${ui.matchField} shrink-0`}
+          >
+            {publishing ? "שומרים…" : "לשמור"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  type Quiet = { key: string; label: string; icon: React.ReactNode; onClick?: () => void; href?: string; disabled?: boolean };
+
+  /** The quiet actions beside the button: never more than three, and only the ones that
+   *  mean something in this state. */
+  function quietActions(): Quiet[] {
+    const icon = "h-[18px] w-[18px]";
+    const download: Quiet = {
+      key: "download",
+      label: exporting ? "מורידים…" : "להוריד",
+      icon: <EditorIcon kind="download" className={icon} />,
+      onClick: () => void handleExportCard(),
+      disabled: downloadDisabled,
+    };
+    const text: Quiet = {
+      key: "text",
+      label: "לשנות את הטקסט",
+      icon: <EditorIcon kind="text" className={icon} />,
+      onClick: () => openStep("text"),
+    };
+    if (out) {
+      return [
+        ...(currentPost.published_url
+          ? [{ key: "view", label: "לראות את הפוסט", icon: <IconEye className={icon} />, href: currentPost.published_url }]
+          : []),
+        download,
+        ...(currentPost.published_url
+          ? [{ key: "link", label: "לעדכן את הקישור", icon: <IconLink className={icon} />, onClick: () => openStep("publish", "link") }]
+          : []),
+      ];
+    }
+    if (photoNeeded) {
+      return [
+        { key: "library", label: "לבחור מהתמונות שלי", icon: <IconPhotos className={icon} />, onClick: openLibrary, disabled: imageLocked },
+        text,
+        // The plan asked for the owner's own photo, but the post already has a picture: the
+        // owner may decide it is good enough. Never a dead end.
+        ...(currentPost.image_url || !cardNeedsPhoto
+          ? [
+              {
+                key: "approve",
+                label: approving ? "מאשרים…" : "לאשר עם התמונה הזו",
+                icon: <IconCheck className={icon} />,
+                onClick: () => void approveCurrentPost(),
+                disabled: approving || imageLocked,
+              },
+            ]
+          : []),
+      ];
+    }
+    return [
+      text,
+      {
+        key: "photo",
+        label: cardNeedsPhoto ? (currentPost.image_url ? "להחליף תמונה" : "לבחור תמונה") : "לשנות עיצוב",
+        icon: <EditorIcon kind="photo" className={icon} />,
+        onClick: () => openStep("photo"),
+      },
+      download,
+    ];
+  }
+
+  function renderQuiet(centered: boolean) {
+    const actions = quietActions();
+    if (!actions.length) return null;
+    // A phone gets one row of icons over short labels (three always fit at 390px); from
+    // 768px up they are plain text actions in a line.
+    const cls =
+      "flex min-h-14 flex-col items-center justify-center gap-1 rounded-[12px] px-1 text-center text-[13px] font-semibold leading-4 text-[color:var(--ink-soft)] transition-colors duration-200 hover:bg-[var(--soft)] hover:text-[color:var(--ink)] active:bg-[var(--primary-soft)] disabled:cursor-not-allowed disabled:opacity-45 md:min-h-11 md:flex-row md:gap-1.5 md:rounded-none md:px-0 md:text-[14px] md:leading-5 md:hover:bg-transparent md:hover:underline md:underline-offset-[5px] md:active:bg-transparent";
+    return (
+      <div
+        role="toolbar"
+        aria-label="עוד פעולות על הפוסט"
+        className={`mt-2 grid gap-1 md:flex md:flex-wrap md:items-center md:gap-x-6 md:gap-y-0 ${
+          actions.length === 3 ? "grid-cols-3" : actions.length === 2 ? "grid-cols-2" : "grid-cols-1"
+        } ${centered ? "md:justify-center" : "md:justify-start"}`}
+      >
+        {actions.map((action) =>
+          action.href ? (
+            <a key={action.key} href={action.href} target="_blank" rel="noopener noreferrer" className={cls}>
+              {action.icon}
+              {action.label}
+            </a>
+          ) : (
+            <button key={action.key} type="button" disabled={action.disabled} onClick={action.onClick} className={cls}>
+              {action.icon}
+              {action.label}
+            </button>
+          )
+        )}
+      </div>
+    );
+  }
+
+  /** What only the owner can add: a photo of something specific, or a fact to check. */
+  function renderNeeds() {
+    return (
+      <section aria-labelledby="post-needs" className="mt-3 rounded-[14px] bg-[var(--soft)] px-4 py-3 md:mt-5 md:py-3.5">
+        <h2 id="post-needs" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
+          מה צריך מכם
+        </h2>
+        <ul className="mt-1 space-y-1 md:mt-1.5 md:space-y-1.5">
+          {needs.map((need, index) => (
+            <li key={`${need.kind}-${index}`} className="flex items-start gap-2.5 text-[15px] leading-6 text-[color:var(--ink)]">
+              <EditorIcon
+                kind={need.kind === "photo" ? "photo" : "badge"}
+                className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--ink-muted)]"
+              />
+              <span className="min-w-0">{need.text}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
+
+  /** After publishing: the one number (against a similar post when there is one) and one
+   *  line of what we learn. Never a zero for a number nobody counted. */
+  function renderResults() {
+    const value = resultValue(currentPost);
+    const label = metricLabel(currentPost);
+    const compare = compareOf(currentPost);
+    const others = otherResults(currentPost);
+    const updated = shortDate(currentPost.results?.updated_at);
+    const source = matchedByLabel(currentPost.results);
+    const meta = [updated ? `עודכן ${updated}` : "", source].filter(Boolean).join(" · ");
+    const learning = (currentPost.learning || "").trim();
+    return (
+      <section aria-labelledby="post-results" className="mt-6 border-t border-[var(--rule)] pt-5">
+        <h2 id="post-results" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
+          מה קרה
+        </h2>
+        {value !== null ? (
+          <>
+            <p className="mt-1 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
+              <span className="text-[40px] font-bold leading-none tracking-tight tabular-nums text-[color:var(--ink)]">
+                {formatCount(value)}
+              </span>
+              {label ? <span className="text-[15px] font-medium text-[color:var(--ink-soft)]">{label}</span> : null}
+            </p>
+            {compare ? (
+              <p
+                className={`mt-2 flex items-center gap-1.5 text-[13px] font-semibold ${
+                  compare.direction === "up" ? "text-[color:var(--good)]" : "text-[color:var(--ink-soft)]"
+                }`}
+              >
+                {compare.direction === "up" ? (
+                  <IconTrendUp className="h-4 w-4 shrink-0" />
+                ) : compare.direction === "down" ? (
+                  <IconTrendDown className="h-4 w-4 shrink-0" />
+                ) : null}
+                {compare.text}
+              </p>
+            ) : null}
+            {meta ? <p className="mt-1 text-[12px] text-[color:var(--ink-muted)]">{meta}</p> : null}
+            {others.length ? (
+              <details className="mt-1">
+                <summary className={`${ui.summary} text-[13px] font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
+                  עוד מספרים
+                  <IconChevron />
+                </summary>
+                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 pb-1">
+                  {others.map((item) => (
+                    <div key={item.label}>
+                      <dt className="text-[12px] text-[color:var(--ink-muted)]">{item.label}</dt>
+                      <dd className="text-[17px] font-bold tracking-tight tabular-nums text-[color:var(--ink)]">{formatCount(item.value)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]">לא נמדד עדיין</p>
+            <p className={`${ui.help} mt-0.5`}>
+              {label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא."}
+            </p>
+          </>
+        )}
+        {learning ? (
+          <div className="mt-5">
+            <h3 className="text-[13px] font-semibold text-[color:var(--ink-muted)]">מה לומדים</h3>
+            <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink)]">{learning}</p>
+          </div>
+        ) : null}
+      </section>
+    );
+  }
+
+  function renderPanel() {
+    const primary = renderPrimary();
+    return (
+      <div>
+        {why ? (
+          <p className="text-[16px] font-semibold leading-7 text-[color:var(--ink)] md:text-[17px]">{why}</p>
+        ) : null}
+        <InspirationLine inspiration={currentPost.inspiration} note={currentPost.informed_by_note} />
+        {renderRewriteNote("mt-2")}
+        {showNeeds ? renderNeeds() : null}
+        {out ? renderResults() : null}
+        {linkOptional ? renderLinkField() : null}
+        {primary ? <div className={why || showNeeds || out ? "mt-5 md:mt-6" : ""}>{primary}</div> : null}
+        <div className={primary ? "" : "mt-4"}>{renderQuiet(Boolean(primary))}</div>
+      </div>
+    );
   }
 
   return (
     <div className={`${editorStyles.editor} mx-auto max-w-5xl`}>
       <input ref={photoInput} type="file" accept="image/*" aria-label="להעלות תמונה לפוסט" hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
-      <div className="md:grid md:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] md:items-start md:gap-10 lg:grid-cols-[minmax(0,28rem)_minmax(0,1fr)]">
-        <div className="min-w-0">
-          {/* Where this is and how to get back — one row, so the card gets the height. */}
-          <div className="flex items-center justify-between gap-3">
+
+      {/* Where this post sits in the plan, its title and its state. */}
+      <header className="mb-4 md:mb-7">
+        <div className="flex items-center justify-between gap-3">
+          <nav aria-label="איפה הפוסט בתוכנית" className="flex min-w-0 items-center text-[13px]">
             {onClose ? (
               <button
                 type="button"
                 onClick={onClose}
-                className={`${ui.link} ${ui.linkQuiet} group -ms-1 px-1`}
+                className={`${ui.link} ${ui.linkQuiet} group -ms-1 shrink-0 px-1 text-[13px]`}
               >
                 <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                כל הפוסטים
+                הפוסטים
               </button>
-            ) : (
-              <span />
-            )}
-            <span className="flex items-center gap-3">
-              <span className={ui.status} data-status={status}>
-                {STATUS_LABEL[status]}
+            ) : null}
+            {week ? (
+              <span className="min-w-0 truncate text-[color:var(--ink-muted)]">
+                {onClose ? " · " : ""}שבוע {week}
+                {focus ? ` · ${focus}` : ""}
               </span>
-              <span className={`${ui.meta} font-normal`}>{postDateLabel(currentPost)}</span>
-            </span>
-          </div>
-
-          <h1 className="mb-3 line-clamp-1 text-[22px] font-bold leading-8 tracking-tight text-[color:var(--ink)] md:mb-4 md:line-clamp-2 md:text-[28px] md:leading-9">
-            {currentPost.title}
-          </h1>
-
-          {/* Which channel the preview shows. A control, not a call to action. */}
-          {availableOutlets.length > 1 ? (
-            <div className="mb-3 flex justify-center md:mb-4">
-              <div role="tablist" aria-label="תצוגה לפי ערוץ" className={ui.segmented}>
-                {availableOutlets.map((item) => (
-                  <button
-                    key={item.key}
-                    type="button"
-                    role="tab"
-                    aria-selected={outlet === item.key}
-                    disabled={imageLocked}
-                    onClick={() => {
-                      setOutlet(item.key);
-                      setCaptionDraft(null);
-                    }}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
+            ) : null}
+          </nav>
+          {nextPending >= 0 && nextPending !== selectedIndex ? (
+            <button
+              type="button"
+              onClick={() => goTo(nextPending)}
+              className={`${ui.link} ${ui.linkQuiet} group shrink-0 text-[13px]`}
+            >
+              הבא בתור
+              <IconChevron className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+            </button>
           ) : null}
-
-          {renderPreview()}
-
-          {/* Which real Instagram post this one follows. Its height is in the preview's
-              --reserve, so the approve button stays on the first screen. */}
-          <InspirationLine inspiration={currentPost.inspiration} />
-
-          <div className="mt-3">{renderPrimary()}</div>
-
-          {/* Everything else, one row of quiet actions. */}
-          <div role="toolbar" aria-label="עוד פעולות על הפוסט" className="mt-2 grid grid-cols-5 gap-1">
-            {SECTIONS.map(({ key, label, title }) => {
-              const on = isDesktop && shownSection === key;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  title={title}
-                  aria-pressed={isDesktop ? on : undefined}
-                  aria-haspopup={isDesktop ? undefined : "dialog"}
-                  onClick={() => setActive(key)}
-                  className={`flex min-h-14 flex-col items-center justify-center gap-1 rounded-[12px] text-xs font-semibold transition-colors duration-200 ${
-                    on
-                      ? "bg-[var(--primary-soft)] text-[color:var(--primary)]"
-                      : "text-[color:var(--ink-muted)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)] active:bg-[var(--primary-soft)]"
-                  }`}
-                >
-                  <EditorIcon kind={key} className={editorStyles.toolIcon} />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
         </div>
+        <h1 className="line-clamp-2 text-[24px] font-bold leading-8 tracking-tight text-[color:var(--ink)] md:text-[30px] md:leading-10">
+          {currentPost.title}
+        </h1>
+        <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 md:mt-2">
+          <span className={ui.status} data-status={stage}>
+            {LIFECYCLE_LABEL[stage]}
+          </span>
+          <span className={`${ui.meta} inline-flex items-center gap-1.5 font-normal`}>
+            <ChannelIcon channel={channel} className="h-4 w-4" />
+            {channelLabel}
+            {postDateLabel(currentPost) ? ` · ${postDateLabel(currentPost)}` : ""}
+          </span>
+        </div>
+      </header>
 
-        {/* From 768px up the same sections sit beside the preview instead of over it. */}
-        {isDesktop && sectionMeta ? (
-          <aside className={`${ui.card} min-w-0 rounded-[18px] p-6 lg:p-7`}>
-            <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">{sectionMeta.title}</h2>
-            {sectionMeta.key === "text" && <p className={editorStyles.stepNote}>2. קראו את הנוסח, תקנו פרטים לפי הצורך, ואז אשרו את הפוסט.</p>}
-            <div className={sectionMeta.key === "text" ? "" : "mt-5"}>{renderSection(sectionMeta.key)}</div>
+      <div className="md:grid md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] md:items-start md:gap-10 lg:grid-cols-[minmax(0,27rem)_minmax(0,1fr)] lg:gap-12">
+        <div className="min-w-0">{renderPreview()}</div>
+
+        {/* From 768px up the panel — or the step that replaced it — sits beside the post. */}
+        {isDesktop ? (
+          <aside className={`${ui.card} min-w-0 rounded-[18px] p-6 lg:p-8`}>
+            {active ? (
+              <>
+                <button
+                  type="button"
+                  onClick={closeSection}
+                  className={`${ui.link} ${ui.linkQuiet} group -ms-1 -mt-2 px-1 text-[13px]`}
+                >
+                  <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  לחזור לפוסט
+                </button>
+                <h2 className="mt-1 text-lg font-bold tracking-tight text-[color:var(--ink)]">{stepTitle(active)}</h2>
+                <div className="mt-5">{renderStep(active)}</div>
+              </>
+            ) : (
+              renderPanel()
+            )}
           </aside>
-        ) : null}
+        ) : (
+          <div className="mt-4">{renderPanel()}</div>
+        )}
       </div>
 
       <BottomSheet
         style={demo ? productPaletteVariables(palette) : undefined}
-        open={!isDesktop && sectionMeta !== null}
-        title={sectionMeta?.title ?? ""}
+        open={!isDesktop && active !== null}
+        title={active ? stepTitle(active) : ""}
         onClose={closeSection}
       >
-        {sectionMeta ? renderSection(sectionMeta.key) : null}
+        {active ? renderStep(active) : null}
       </BottomSheet>
 
       {/* Off-screen card at true export size, so the PNG matches the preview exactly.

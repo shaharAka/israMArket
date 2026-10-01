@@ -430,13 +430,24 @@
     background: currentColor;
   }
 
-  .status[data-status="review"] {
+  /* The lifecycle (lib/postLifecycle.ts). The sun marks what waits on the owner, with a
+     halo when it is something only they can add; blue once approved; green once out, with
+     a halo once it has a number. */
+  .status[data-status="needs_owner"] {
+    color: var(--ink);
+  }
+
+  .status[data-status="needs_owner"]::before {
+    background: var(--sun);
+    box-shadow: 0 0 0 3px var(--sand);
+  }
+
+  .status[data-status="ready"] {
     color: var(--ink-soft);
   }
 
-  .status[data-status="review"]::before {
+  .status[data-status="ready"]::before {
     background: var(--sun);
-    box-shadow: 0 0 0 3px var(--sand);
   }
 
   .status[data-status="approved"] {
@@ -445,6 +456,21 @@
 
   .status[data-status="published"] {
     color: var(--good);
+  }
+
+  .status[data-status="measured"] {
+    color: var(--good);
+  }
+
+  .status[data-status="measured"]::before {
+    box-shadow: 0 0 0 3px var(--good-soft);
+  }
+
+  /* What comes after the word ("· תמונה"), quieter than it. */
+  .status > small {
+    font-size: inherit;
+    font-weight: 500;
+    color: var(--ink-muted);
   }
 
   /* ---- Disclosure ---------------------------------------------------------- */

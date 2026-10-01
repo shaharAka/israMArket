@@ -12,7 +12,8 @@ import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { SetupChecklist } from "@/components/SetupChecklist";
 import { BidiText } from "@/components/start/ui";
-import { postDay, postHref, postState, STATE_LABEL, type PostState } from "@/components/today/posts";
+import { LIFECYCLE_LABEL, lifecycleOf, postDay, postHref } from "@/components/today/posts";
+import type { PostLifecycle } from "@/lib/api";
 import { ContactLink } from "@/components/trial/StepLink";
 import { allDoneText, minutesLabel, NextStepAction, TrialDay, TrialGuide } from "@/components/trial/TrialGuide";
 import { HypothesisStatus, WeeklyBrief } from "@/components/trial/WeeklyBrief";
@@ -427,7 +428,7 @@ function InstagramNudge({ connected }: { connected: boolean }) {
 function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number; total: number }) {
   return (
     <section className="drawn-card p-6 sm:p-8">
-      <p className="text-[13px] font-semibold text-[color:var(--primary)]">מחכה לאישור שלכם</p>
+      <p className="text-[13px] font-semibold text-[color:var(--primary)]">{LIFECYCLE_LABEL[lifecycleOf(post)]}</p>
       <div className="mt-4 flex items-center gap-4 sm:gap-5">
         <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[var(--primary-soft)] sm:h-20 sm:w-20">
           {post.image_url ? (
@@ -463,15 +464,17 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
   );
 }
 
-const STATE_STYLE: Record<PostState, string> = {
-  published: "text-[color:var(--primary)]",
+const STATE_STYLE: Record<PostLifecycle, string> = {
+  needs_owner: "text-[color:var(--ink)]",
+  ready: "text-[color:var(--ink-soft)]",
   approved: "text-[color:var(--primary)]",
-  waiting: "text-[color:var(--ink-soft)]",
+  published: "text-[color:var(--good)]",
+  measured: "text-[color:var(--good)]",
 };
 
 /** One post of the week: day, title, status. The whole row is the link. */
 function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
-  const state = postState(post);
+  const state = lifecycleOf(post);
   return (
     <li>
       <Link
@@ -484,8 +487,8 @@ function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
         </span>
         <span className={`flex shrink-0 items-center gap-1.5 text-[13px] font-medium ${STATE_STYLE[state]}`}>
           {/* Words first, the dot second: the sun marks what waits on the owner. */}
-          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${state === "waiting" ? "bg-[var(--sun)]" : "bg-current"}`} />
-          {STATE_LABEL[state]}
+          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${state === "needs_owner" || state === "ready" ? "bg-[var(--sun)]" : "bg-current"}`} />
+          {LIFECYCLE_LABEL[state]}
         </span>
         <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
       </Link>

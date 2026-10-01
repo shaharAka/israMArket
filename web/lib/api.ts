@@ -1,5 +1,6 @@
 import type { OnboardingDraft } from "./draft";
 import type { StoredQuarterPlan } from "./quarterPlan";
+import { deriveLifecycle } from "./postLifecycle";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "/backend";
 const DEMO_FLAG = "isramarket_demo";
@@ -854,6 +855,35 @@ const POSTS: RoadmapPost[] = [
     metrics_to_watch: ["פניות בוואטסאפ", "שמירות של הפוסט"],
     audience_id: 1,
     audience_name: "משפחות מיפו והשכונות הסמוכות",
+    // Connected posts (docs/posts-v2.md). The demo month is part-way through, so every
+    // lifecycle state is on screen at once: week 1 is out and measured (one number up, one
+    // honestly down), week 2 is out and approved, week 3 waits for an approval and week 4
+    // for the owner's own photos.
+    uid: "demo-p1",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 1, week_focus: "סגירת הזמנות לחג" },
+    mix_type: "offer",
+    why_line: "בשביל הזמנות מראש לראש השנה, למשפחות מיפו.",
+    measure: { metric: "whatsapp_clicks", label_he: "לחיצות לוואטסאפ", link_code: "IG-POST-3F9A1" },
+    approval_status: "approved",
+    scheduled_for: "2026-09-07",
+    published_url: "https://www.instagram.com/p/demo-lechem-tom-1/",
+    published_at: "2026-09-07T07:40:00",
+    results: {
+      updated_at: "2026-09-14T06:00:00",
+      value: 21,
+      metric: "whatsapp_clicks",
+      compare: { label: "בפוסט דומה", value: 14, uid: "demo-aug-3" },
+      whatsapp_clicks: 21,
+      visits: 412,
+      conversions: 19,
+      reach: 1240,
+      saves: 36,
+      matched_by: ["instagram_link", "utm", "whatsapp_code"],
+    },
+    // In the server's own terms (`learning_facts`): the numbers and one visible difference,
+    // never a cause or advice.
+    learning: "יותר לחיצות מהפוסט הדומה. מה היה רק בפוסט הזה: עד מתי מזמינים, כבר בשורה הראשונה.",
     outlet_captions: {
       instagram: "בשישי ב-11:00 המדף כבר ריק. לראש השנה לא סומכים על המזל: הזמינו חלה עגולה בוואטסאפ, הקישור בפרופיל 🥖",
       facebook: "פתחנו הזמנות לחגי תשרי. כדי שלא תעמדו בתור של שישי, שריינו חלות מראש בוואטסאפ, ונשמור לכם אותן עם השם.",
@@ -880,12 +910,30 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["דפדופים בקרוסלה", "לחיצות על הקישור"],
-    // The demo month is a real month part-way through: one post is already approved and
-    // dated (so the publishing queue has something genuinely due), one is approved with no
-    // date, and the rest are still waiting for the owner. A demo where every post sits in
-    // the same state cannot show what the queue is for.
+    uid: "demo-p2",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 1, week_focus: "סגירת הזמנות לחג" },
+    mix_type: "product",
+    why_line: "בשביל הזמנות מראש לראש השנה, למי שמארח בחג.",
+    measure: { metric: "site_visits", label_he: "כניסות לאתר", link_code: "p2-מה-יש-במארז-של-ראש-השנה" },
     approval_status: "approved",
     scheduled_for: "2026-09-09",
+    published_url: "https://www.instagram.com/p/demo-lechem-tom-2/",
+    published_at: "2026-09-09T08:10:00",
+    // Down against the comparison on purpose: a demo where every number rises would teach
+    // the owner to distrust the screen.
+    results: {
+      updated_at: "2026-09-16T06:00:00",
+      value: 251,
+      metric: "site_visits",
+      compare: { label: "בפוסט דומה", value: 310, uid: "demo-jul-5" },
+      visits: 251,
+      conversions: 9,
+      reach: 980,
+      saves: 41,
+      matched_by: ["instagram_link", "utm"],
+    },
+    learning: "פחות כניסות לאתר מהפוסט הדומה. מה היה רק בפוסט הדומה: המחיר על התמונה.",
     outlet_captions: {
       instagram: "מה שמים על השולחן כשהאורחים כבר בדרך? דפדפו לראות מה יש במארז ראש השנה שלנו.",
       facebook: "מארז ראש השנה של לחם תום פתוח להזמנה מראש. מה שבפנים מופיע בתמונות.",
@@ -910,6 +958,19 @@ const POSTS: RoadmapPost[] = [
     metrics_to_watch: ["שמירות של הפוסט", "שיתופים"],
     audience_id: 1,
     audience_name: "משפחות מיפו והשכונות הסמוכות",
+    uid: "demo-p3",
+    channel: "facebook",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 2, week_focus: "ראש השנה ושעות החג" },
+    mix_type: "value",
+    why_line: "כדי שאף אחד לא יגיע לדלת סגורה בחג, ללקוחות הקבועים.",
+    measure: { metric: "reach", label_he: "אנשים שראו", link_code: "" },
+    approval_status: "approved",
+    scheduled_for: "2026-09-10",
+    // "פרסמתי" without a link, and the sync has not counted it yet: "לא נמדד עדיין",
+    // never a zero, and the link is an optional field, not a demand.
+    published_at: "2026-09-10T17:20:00",
+    results: null,
+    learning: null,
     outlet_captions: {
       instagram: "מתי פתוחים בראש השנה? שמרו את הפוסט, ולא תגיעו לדלת סגורה 📌",
       facebook: "שעות הפתיחה של לחם תום בחגי תשרי. לאיסוף הזמנות כדאי להגיע מוקדם.",
@@ -933,6 +994,15 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["צפיות ברילס", "ביקורים בפרופיל"],
+    uid: "demo-p4",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 2, week_focus: "ראש השנה ושעות החג" },
+    mix_type: "behind_scenes",
+    why_line: "בשביל שהלקוחות יחזרו לבוא כל בוקר אחרי החג, לשכונה.",
+    measure: { metric: "reach", label_he: "אנשים שראו", link_code: "" },
+    // Approved and dated, so the publishing queue has something genuinely due.
+    approval_status: "approved",
+    scheduled_for: "2026-09-16",
     outlet_captions: {
       instagram: "החג נגמר, המחמצת חזרה לתנור. בוקר רגיל ביפו, בדיוק כמו שאנחנו אוהבים ☕",
       facebook: "חזרנו לשגרה: מחמצת, מאפים חמים וקפה, כל בוקר מ-07:00.",
@@ -955,9 +1025,12 @@ const POSTS: RoadmapPost[] = [
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["תגובות חמות"],
-    // Approved, but the owner has not decided which day it goes out — the `unscheduled`
-    // bucket the queue has to be able to show.
-    approval_status: "approved",
+    uid: "demo-p5",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 3, week_focus: "יום כיפור, בלי למכור" },
+    mix_type: "community",
+    why_line: "בשביל אמון של השכונה, בלי למכור כלום, לכל מי שעוקב.",
+    measure: { metric: "reach", label_he: "אנשים שראו", link_code: "" },
     outlet_captions: {
       instagram: "מכבים את התנורים ליום כיפור. גמר חתימה טובה.",
       facebook: "בערב כיפור סוגרים מוקדם, וביום כיפור סגורים. צום קל למי שצם.",
@@ -982,6 +1055,20 @@ const POSTS: RoadmapPost[] = [
     metrics_to_watch: ["שמירות של הפוסט", "הזמנות של מארזים"],
     audience_id: 3,
     audience_name: "שולחי מתנות לעמיתים",
+    uid: "demo-p6",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 4, week_focus: "סוכות ופיקניק" },
+    mix_type: "offer",
+    why_line: "בשביל הזמנות של מארזי פיקניק לחול המועד, למשפחות שאוכלות בסוכה.",
+    // A photo and a fact: the two things only the owner can give. The needs themselves
+    // are computed from these, the way the server does (demoOwnerNeeds).
+    featured_item_name: "מארז פיקניק משפחתי",
+    photo_hint_he: "תמונה של מארז הפיקניק, מלמעלה",
+    owner_fact: "המחיר של המארז המשפחתי: 120 ₪",
+    owner_fact_done: false,
+    measure: { metric: "whatsapp_clicks", label_he: "לחיצות לוואטסאפ", link_code: "IG-POST-7C2D4" },
+    // What the first measured post taught, already applied to this one.
+    informed_by_note: "עודכן לפי מה שהצליח אצלכם: עד מתי מזמינים, כבר בשורה הראשונה",
     outlet_captions: {
       instagram: "יוצאים לסוכה? קחו איתכם פוקצ׳ה שרק יצאה מהתנור. מה יש במארז, בקרוסלה.",
       facebook: "אפשר לאסוף מארזי סוכות ופיקניק מהמאפייה ביפו כל חול המועד.",
@@ -1010,6 +1097,13 @@ const POSTS: RoadmapPost[] = [
     metrics_to_watch: ["זמן צפייה ממוצע", "שיתופים"],
     audience_id: 2,
     audience_name: "מזמיני חג חד-פעמיים",
+    uid: "demo-p7",
+    channel: "instagram",
+    plan_link: { goal: "הזמנות מראש לחגים", week: 4, week_focus: "סוכות ופיקניק" },
+    mix_type: "behind_scenes",
+    why_line: "בשביל שיכירו את המאפייה מקרוב, לקהל חדש ביפו.",
+    photo_hint_he: "תמונה מהמשמרת של הבוקר, ליד התנור",
+    measure: { metric: "reach", label_he: "אנשים שראו", link_code: "" },
     outlet_captions: {
       instagram: "05:00 בבוקר ביפו, כשהעיר עוד ישנה. ככה נראית משמרת סוכות 🥖✨",
       facebook: "הבצק תופח, התנור לוהט. מוזמנים לקפה ומאפה חם כל הבוקר.",
@@ -2010,9 +2104,136 @@ async function ensureDemoPlan() {
       why_he: "הזמנות מוקדמות עוזרות לתכנן את האפייה. בודקים את הביקוש לפני שמגדילים את הפרסום.",
       first_steps: ["לחבר מדידה", "לבחור מוצרים וחומרי גלם עם בעל העסק"],
     }, { cadence: "1-2" }, []));
+    // The bakery's own two hypotheses (the ones Today lists), so the plan, Today and their
+    // statuses tell one story.
+    plan.assumptions = DEMO_ASSUMPTIONS.map((item) => ({ ...item }));
     DEMO_BUSINESS.quarter_plan = plan; DEMO_STRATEGY.quarter_plan = plan;
+    DEMO_STRATEGY.hypothesis_review = demoHypothesisReview();
   })();
   await demoPlanReady;
+}
+
+const DEMO_ASSUMPTIONS = [
+  { bet_he: "אנחנו מניחים שהזמנות מראש לחגים יביאו יותר הזמנות באתר מפוסטים של מוצר מוכן.", if_wrong_he: "נעבור למבצע בחנות." },
+  { bet_he: "רילס מהתנור בבוקר יביא יותר שמירות ושיתופים מתמונות מדף.", if_wrong_he: "נחזור לתמונות מוצר." },
+];
+
+/**
+ * Where the demo month's tests stand, in the server's shape (`review_view` in
+ * api/app/services/hypotheses.py). Every status is on screen somewhere: the month and its
+ * WhatsApp target are on track, the shop's sales are something we cannot see (measuring),
+ * one target was changed by the plan, the pre-order hypothesis held and the reels one is not
+ * holding so far. The lines are the server's templates, with numbers the demo posts carry.
+ */
+function demoHypothesisReview(): HypothesisReview {
+  const monthly = DEMO_STRATEGY.monthly_horizon_plan;
+  const targets = monthly?.targets ?? [];
+  const whatsapp = "96 לחיצות לוואטסאפ החודש, מול יעד של 120.";
+  const items: HypothesisReviewItem[] = [];
+  if (monthly?.hypothesis) {
+    items.push({ key: "month", kind: "month", text_he: monthly.hypothesis, if_wrong_he: "", status: "on_track", status_he: "בדרך", evidence_he: whatsapp });
+  }
+  const targetStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
+    { status: "measuring", status_he: "נמדד", evidence_he: "את זה אנחנו לא רואים במספרים. נשאל אתכם בסיכום החודש." },
+    { status: "on_track", status_he: "בדרך", evidence_he: whatsapp },
+    { status: "changed", status_he: "השתנה", evidence_he: "היעד השתנה, אז מתחילים למדוד אותו מחדש." },
+  ];
+  targets.forEach((text, index) => {
+    const state = targetStates[index] ?? targetStates[0];
+    items.push({ key: `target:${index}`, kind: "target", text_he: text, if_wrong_he: "", ...state });
+  });
+  const assumptionStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
+    { status: "confirmed", status_he: "התאמתה", evidence_he: "3 מתוך 4 פוסטים של הזמנה מראש ומבצע הביאו יותר הזמנות באתר מהפוסטים של מוצר." },
+    { status: "not_yet", status_he: "בינתיים לא", evidence_he: "רק 1 מתוך 3 רילס נשמר יותר מהפוסטים של תמונה." },
+  ];
+  DEMO_ASSUMPTIONS.forEach((item, index) => {
+    items.push({ key: `assumption:${index}`, kind: "assumption", text_he: item.bet_he, if_wrong_he: item.if_wrong_he, ...assumptionStates[index] });
+  });
+  return { updated_at: "2026-09-21T06:00:00", closed: false, items };
+}
+
+/** Mix types whose post shows a real product, place or person (`PRODUCT_IMAGE_MIX`). */
+const DEMO_PRODUCT_IMAGE_MIX = new Set(["product", "offer", "behind_scenes", "social_proof"]);
+
+/**
+ * Mirrors `owner_needs()` in api/app/services/connected_posts.py: a photo when the card
+ * draws one and there is none, or when the post shows a real product and its picture is not
+ * the owner's own (and they did not choose AI on purpose); a fact the writer flagged that the
+ * owner has not gone over. Nothing once the post is approved or out.
+ */
+function demoOwnerNeeds(post: RoadmapPost): PostOwnerNeed[] {
+  if (post.approval_status === "approved" || (post.published_url || "").trim() || post.published_at) return [];
+  const needs: PostOwnerNeed[] = [];
+  if (post.overlay_theme !== "type_hero") {
+    const hasImage = Boolean((post.image_url || "").trim());
+    const own = hasImage && (post.image_source === "asset" || post.image_source === "real_photo");
+    const choseAi = hasImage && post.image_preference === "ai";
+    const productLike = DEMO_PRODUCT_IMAGE_MIX.has(post.mix_type || "") || Boolean(post.featured_item_id);
+    if (!hasImage || (productLike && !own && !choseAi)) {
+      const subject = (post.featured_item_name || "").trim();
+      const hint = (post.photo_hint_he || "").trim();
+      needs.push({ kind: "photo", text: hint || (subject ? `תמונה של ${subject}` : "תמונה שמתאימה לפוסט") });
+    }
+  }
+  const fact = (post.owner_fact || "").trim();
+  if (fact && !post.owner_fact_done) {
+    // A question for the owner ("מה המחיר?") is asked as it is.
+    const text = fact.endsWith("?") ? fact : fact.startsWith("ה") ? `לבדוק את ${fact}` : `לבדוק: ${fact}`;
+    needs.push({ kind: "fact", text });
+  }
+  return needs;
+}
+
+/* ---- The one-instruction rewrite, demo side (api/app/services/post_rewrite.py). ---- */
+
+const DEMO_TONE_LABEL: Record<string, string> = {
+  direct: "ברור יותר",
+  neighborhood: "יותר חם",
+  punchy: "קצר יותר",
+  holiday: "אווירת חג",
+  story: "סיפור קצר",
+};
+
+function demoWantsPrice(instruction: string): boolean {
+  return /מחיר|כמה עולה|₪|ש"ח|ש״ח|שקל/.test(instruction);
+}
+
+/** The shekel amounts in a text, as digits ("1,200 ₪" -> "1200"). */
+function demoMoney(text: string | undefined): string[] {
+  const out = new Set<string>();
+  for (const match of (text || "").matchAll(/₪\s*(\d[\d,]*)|(\d[\d,]*)\s*(?:₪|ש"ח|ש״ח|שקלים|שקל)/g)) {
+    out.add((match[1] || match[2] || "").replace(/,/g, ""));
+  }
+  return [...out].filter(Boolean);
+}
+
+/** Prices the owner typed or confirmed, and the ones already in the post. */
+function demoKnownPrices(post: RoadmapPost, instruction: string): string[] {
+  const text = [post.title, post.hook, post.caption, post.cta, post.overlay_text].join("\n");
+  return Array.from(new Set([...(post.owner_prices || []), ...demoMoney(instruction), ...demoMoney(text)]));
+}
+
+/** A canned new version per instruction: the demo cannot write, so it shows the shape. */
+function demoInstructionRewrite(
+  post: RoadmapPost,
+  instruction: string
+): Pick<RoadmapPost, "hook" | "caption" | "cta" | "overlay_text"> {
+  const caption = (post.caption || "").trim();
+  const firstSentence = caption.split(/(?<=[.!?])\s+|\n/)[0] || caption;
+  const base = { hook: post.hook, caption, cta: post.cta, overlay_text: post.overlay_text };
+  if (instruction === "קצר יותר") {
+    const short = firstSentence.length > 70 ? `${firstSentence.split(/[,،]/)[0].trim()}.` : firstSentence;
+    return { ...base, caption: short };
+  }
+  if (demoWantsPrice(instruction)) {
+    const price = demoKnownPrices(post, instruction)[0];
+    return demoMoney(caption).length ? base : { ...base, caption: `${caption}\nהמחיר: ${price} ₪.` };
+  }
+  if (instruction === "עם שאלה ללקוחות") {
+    return { ...base, hook: "מה אתם הכי אוהבים לקחת מהתנור שלנו?", caption: `${caption}\nספרו לנו בתגובה.` };
+  }
+  // "יותר חם", and the owner's own words: a warmer opening, the same facts.
+  return { ...base, caption: `בוקר טוב, שכנים. ${caption}` };
 }
 
 function cloneDemoStrategy(): StrategyPayload {
@@ -2062,6 +2283,21 @@ function cloneDemoStrategy(): StrategyPayload {
         outlets: [...(post.outlets || [])],
         metrics_to_watch: [...(post.metrics_to_watch || [])],
         outlet_captions: { ...(post.outlet_captions || {}) },
+        ...(post.plan_link ? { plan_link: { ...post.plan_link } } : {}),
+        owner_needs: demoOwnerNeeds(post),
+        ...(post.measure ? { measure: { ...post.measure } } : {}),
+        ...(post.results
+          ? {
+              results: {
+                ...post.results,
+                compare: post.results.compare ? { ...post.results.compare } : post.results.compare,
+                matched_by: Array.isArray(post.results.matched_by) ? [...post.results.matched_by] : post.results.matched_by,
+              },
+            }
+          : {}),
+        // The server computes the state; the demo computes it the same way, on every read,
+        // so approving or publishing a post moves it along.
+        lifecycle: deriveLifecycle({ ...post, owner_needs: demoOwnerNeeds(post) }),
       })),
       weekly_focus: (DEMO_STRATEGY.roadmap.weekly_focus || []).map((item) => ({ ...item })),
       relevant_events: DEMO_STRATEGY.relevant_events,
@@ -2219,7 +2455,8 @@ function demoSplitQueue(): Omit<PublishQueue, "year" | "month" | "month_name_he"
 
   POSTS.forEach((post, index) => {
     const brief = demoPostBrief(index, post);
-    if (brief.published_url) {
+    // "פרסמתי" without a link is out too.
+    if (brief.published_url || brief.published_at) {
       buckets.published.push(brief);
       return;
     }
@@ -2664,7 +2901,10 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     return { strategy: cloneDemoStrategy(), errors: [] } as T;
   }
   if (path === "/strategy/posts/image" && method === "POST") {
-    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number };
+    const body = JSON.parse(String(options.body || "{}")) as {
+      post_index?: number;
+      image_preference?: "real" | "ai";
+    };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
     const generated: RoadmapPost = {
@@ -2672,9 +2912,11 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0],
       // Same as the real route: a regenerated image is no longer the owner's own library
       // file, so the asset it replaced must not stay attached to the post.
-      image_source: "generated",
+      image_source: body.image_preference === "real" ? "real_photo" : "generated",
       image_source_url: "",
-      image_action: "generated",
+      image_action: body.image_preference === "real" ? "real_photo" : "generated",
+      // Choosing AI on purpose meets a photo need, the way the server records it.
+      ...(body.image_preference ? { image_preference: body.image_preference } : {}),
     };
     delete generated.image_asset_id;
     POSTS[index] = generated;
@@ -2822,64 +3064,102 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       outlets: body.outlets || POSTS[index].outlets,
       approval_status: "review",
       approved_at: null,
+      // Like the server: the owner went over the text, so the fact we asked about is theirs,
+      // the prices in it are confirmed, and "שונה לפי" is over.
+      ...(POSTS[index].owner_fact ? { owner_fact_done: true } : {}),
+      owner_prices: Array.from(
+        new Set([...(POSTS[index].owner_prices || []), ...demoMoney(body.caption ?? POSTS[index].caption)])
+      ),
+      rewrite_instruction: null,
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
   }
   if (path === "/strategy/posts/rewrite" && method === "POST") {
-    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; tone?: string };
+    // Mirrors the API's one-instruction rewrite (docs/posts-v2.md, Phase C): a chip or the
+    // owner's own words; "להוסיף מחיר" with no known price leaves the post as it is and asks.
+    const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; tone?: string; instruction?: string };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
-    const tone = body.tone || "direct";
-    const rewrites: Record<string, { hook: string; caption: string; cta: string; overlay_text: string }> = {
-      direct: {
-        hook: "צריכים חלות לשולחן החג? ההזמנות נסגרות הערב.",
-        caption: "בלי תור של שישי ובלי הפתעות. שלחו לנו וואטסאפ, ונשמור לכם חלה לערב החג.",
-        cta: "להזמנה בוואטסאפ",
-        overlay_text: "ההזמנות נסגרות הערב",
-      },
-      neighborhood: {
-        hook: "בשישי בבוקר הריח מהמאפייה מגיע עד השוק.",
-        caption: "שמרנו לכם בצד חלה קלועה, עוד חמה, עם קרום שמתפצח. עברו אצלנו בדרך לשוק וקחו אותה.",
-        cta: "קפצו לדלפק",
-        overlay_text: "חם מהתנור",
-      },
-      punchy: {
-        hook: "חלה חמה. אפס תורים. שישי ביפו.",
-        caption: "מזמינים ב-10 שניות בוואטסאפ ואוספים בדקה אחת.",
-        cta: "הקישור בפרופיל",
-        overlay_text: "בלי תור",
-      },
-      holiday: {
-        hook: "חלה עגולה, דבש, ושנה טובה על השולחן.",
-        caption: "ערב החג מתקרב, והתנורים עובדים בלי הפסקה. שריינו חלה עגולה עכשיו, כדי שלא תישארו בלי.",
-        cta: "שריינו חלה לחג",
-        overlay_text: "שנה מתוקה",
-      },
-      story: {
-        hook: "סבא שלי תמיד אמר שהלחם הכי טוב הוא זה שאופים באור ראשון.",
-        caption: "כל בוקר ב-04:00 אנחנו מדליקים את התנור הגדול ביפו, ולשים את המחמצת בדיוק כמו שסבא לימד.",
-        cta: "פתוחים מ-07:00",
-        overlay_text: "מאחורי הלחם",
-      },
-    };
-    const chosen = rewrites[tone] || rewrites.direct;
+    const instruction = (body.instruction || "").replace(/\s+/g, " ").trim().slice(0, 200);
+    const tone = body.tone || "";
+    if (!instruction && !tone) throw new ApiError("כתבו מה לשנות בפוסט.", 422);
+    const label = instruction ? (instruction.length <= 40 ? instruction : "הבקשה שלכם") : DEMO_TONE_LABEL[tone] || "";
+    const current = POSTS[index];
+    if (demoWantsPrice(instruction)) {
+      const known = demoKnownPrices(current, instruction);
+      if (!known.length) {
+        POSTS[index] = {
+          ...current,
+          owner_fact: "מה המחיר?",
+          owner_fact_done: false,
+          approval_status: "review",
+          approved_at: null,
+          rewrite_instruction: null,
+        };
+        DEMO_STRATEGY.roadmap.posts = POSTS;
+        return {
+          post: { ...POSTS[index] },
+          strategy: cloneDemoStrategy(),
+          changed: false,
+          message: "לא מצאנו מחיר שאישרתם, אז הפוסט נשאר כמו שהוא. כתבו את המחיר במילים שלכם, למשל: להוסיף מחיר 45 ₪.",
+          instruction: label,
+        } as T;
+      }
+    }
+    let next: Pick<RoadmapPost, "hook" | "caption" | "cta" | "overlay_text">;
+    if (instruction) {
+      next = demoInstructionRewrite(current, instruction);
+    } else {
+      const rewrites: Record<string, { hook: string; caption: string; cta: string; overlay_text: string }> = {
+        direct: {
+          hook: "צריכים חלות לשולחן החג? ההזמנות נסגרות הערב.",
+          caption: "בלי תור של שישי ובלי הפתעות. שלחו לנו וואטסאפ, ונשמור לכם חלה לערב החג.",
+          cta: "להזמנה בוואטסאפ",
+          overlay_text: "ההזמנות נסגרות הערב",
+        },
+        neighborhood: {
+          hook: "בשישי בבוקר הריח מהמאפייה מגיע עד השוק.",
+          caption: "שמרנו לכם בצד חלה קלועה, עוד חמה, עם קרום שמתפצח. עברו אצלנו בדרך לשוק וקחו אותה.",
+          cta: "קפצו לדלפק",
+          overlay_text: "חם מהתנור",
+        },
+        punchy: {
+          hook: "חלה חמה. אפס תורים. שישי ביפו.",
+          caption: "מזמינים ב-10 שניות בוואטסאפ ואוספים בדקה אחת.",
+          cta: "הקישור בפרופיל",
+          overlay_text: "בלי תור",
+        },
+        holiday: {
+          hook: "חלה עגולה, דבש, ושנה טובה על השולחן.",
+          caption: "ערב החג מתקרב, והתנורים עובדים בלי הפסקה. שריינו חלה עגולה עכשיו, כדי שלא תישארו בלי.",
+          cta: "שריינו חלה לחג",
+          overlay_text: "שנה מתוקה",
+        },
+        story: {
+          hook: "סבא שלי תמיד אמר שהלחם הכי טוב הוא זה שאופים באור ראשון.",
+          caption: "כל בוקר ב-04:00 אנחנו מדליקים את התנור הגדול ביפו, ולשים את המחמצת בדיוק כמו שסבא לימד.",
+          cta: "פתוחים מ-07:00",
+          overlay_text: "מאחורי הלחם",
+        },
+      };
+      next = rewrites[tone] || rewrites.direct;
+    }
+    const channel = current.channel || current.primary_outlet || "instagram";
+    const typed = demoMoney(instruction);
     POSTS[index] = {
-      ...POSTS[index],
-      hook: chosen.hook,
-      caption: chosen.caption,
-      cta: chosen.cta,
-      overlay_text: chosen.overlay_text,
-      outlet_captions: {
-        instagram: chosen.caption,
-        facebook: chosen.caption,
-        whatsapp: `${chosen.hook}\n${chosen.cta}`,
-      },
+      ...current,
+      ...next,
+      outlet_captions: { ...(current.outlet_captions || {}), [channel]: next.caption },
       approval_status: "review",
       approved_at: null,
+      rewrite_instruction: label || null,
+      ...(typed.length
+        ? { owner_prices: Array.from(new Set([...(current.owner_prices || []), ...typed])), owner_fact_done: true }
+        : {}),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
-    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
+    return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy(), changed: true, message: null, instruction: label } as T;
   }
   if (path === "/strategy/posts/approve" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as { post_index?: number; approved?: boolean };
@@ -2889,6 +3169,8 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       ...POSTS[index],
       approval_status: body.approved === false ? "review" : "approved",
       approved_at: body.approved === false ? null : new Date().toISOString(),
+      ...(body.approved !== false && POSTS[index].owner_fact ? { owner_fact_done: true } : {}),
+      ...(body.approved !== false ? { rewrite_instruction: null } : {}),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
@@ -3317,8 +3599,8 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/strategy/posts/publish" && method === "POST") {
     // This route had no demo branch at all, so marking a post as published failed in the
     // demo with "no demo path for /strategy/posts/publish" — a dead end the owner only
-    // meets after they have already posted by hand. Same contract as the API: the URL is
-    // written as given and the post moves into the queue's published bucket.
+    // meets after they have already posted by hand. Same contract as the API ("פרסמתי"):
+    // the link is optional, the first call sets the time and a later link keeps it.
     const body = JSON.parse(String(options.body || "{}")) as {
       post_index?: number;
       published_url?: string;
@@ -3326,8 +3608,12 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא בתוכנית", 404);
     const url = (body.published_url || "").trim();
-    if (!url) throw new ApiError("צריך קישור לפוסט שפורסם.", 422);
-    POSTS[index] = { ...POSTS[index], published_url: url, published_at: new Date().toISOString() };
+    if (url && !/^https?:\/\//.test(url)) throw new ApiError("הקישור צריך להתחיל ב-https://", 422);
+    POSTS[index] = {
+      ...POSTS[index],
+      ...(url ? { published_url: url } : {}),
+      published_at: POSTS[index].published_at || new Date().toISOString(),
+    };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
   }
@@ -3529,10 +3815,13 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ post_index, ...post }),
     }),
-  rewritePost: (post_index: number, tone: "direct" | "neighborhood" | "punchy" | "holiday" | "story") =>
-    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/rewrite", {
+  /** One instruction (a chip's words or the owner's own, at most 200 characters), or the
+   *  older tone. `changed: false` with a `message` when the post stayed as it was (no known
+   *  price for "להוסיף מחיר", or a confirmed fact would have been lost). */
+  rewritePost: (post_index: number, request: PostRewriteRequest) =>
+    api<PostRewriteResult>("/strategy/posts/rewrite", {
       method: "POST",
-      body: JSON.stringify({ post_index, tone }),
+      body: JSON.stringify({ post_index, ...request }),
     }),
   approvePost: (post_index: number, approved = true) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/approve", {
@@ -4106,6 +4395,117 @@ export type RoadmapPost = {
   /** Which real Instagram post(s) this post follows and why, or null when the writer had
    *  no Instagram signal to lean on. Absent on posts written before the signal existed. */
   inspiration?: PostInspiration | null;
+
+  /* ---- Connected posts (docs/posts-v2.md, field contract). All additive: a post written
+   *      before them has none, and every screen falls back to the fields above. ---- */
+
+  /** Stable id, not the list index. UTM `utm_content` and the WhatsApp code use it, so an
+   *  edit or a reorder never breaks the match between a click and its post. */
+  uid?: string;
+  /** The one channel the plan chose for this post (= `primary_outlet`). */
+  channel?: PostChannel;
+  /** Which part of the plan this post serves. */
+  plan_link?: PostPlanLink;
+  mix_type?: PostMixType;
+  /** One sentence: "בשביל {goal}, ל{audience}." */
+  why_line?: string;
+  /** What only the owner can add. Empty = nothing needed. */
+  owner_needs?: PostOwnerNeed[];
+  /** How we will know if it worked: the one number, and where it is counted. */
+  measure?: PostMeasure;
+  /** Written back by the performance sync; null until there is something to show. */
+  results?: PostResults | null;
+  /** One line of "מה לומדים", after measuring. */
+  learning?: string | null;
+  /** "עודכן לפי מה שהצליח אצלכם: …" when what worked was applied to this post. */
+  informed_by_note?: string | null;
+  /** Computed by the server. `lifecycleOf()` in lib/postLifecycle.ts derives it when absent. */
+  lifecycle?: PostLifecycle;
+  /** The featured item the post is about, when it features one. */
+  featured_item_id?: string | null;
+  featured_item_name?: string;
+  /** Something only the owner knows that the post depends on (a price, a date), and
+   *  whether they went over it (saved or approved the text since). */
+  owner_fact?: string;
+  owner_fact_done?: boolean;
+  /** What the photo should show, when the writer said ("תמונה של המארז, מלמעלה"). */
+  photo_hint_he?: string;
+  /** The owner chose a picture made with AI on purpose, which meets a photo need. */
+  image_preference?: "real" | "ai";
+  /** The uids of the measured posts whose lesson was applied to this one. */
+  informed_by?: string[];
+  /** The last one-instruction rewrite ("קצר יותר"), until the text is saved or approved:
+   *  the editor says "שונה לפי: …". */
+  rewrite_instruction?: string | null;
+  /** Prices the owner typed, saved or approved (normalised digits): a rewrite keeps them. */
+  owner_prices?: string[];
+};
+
+/** The channels a plan writes a post for. */
+export type PostChannel = "instagram" | "facebook" | "whatsapp";
+
+export type PostRewriteTone = "direct" | "neighborhood" | "punchy" | "holiday" | "story";
+
+export type PostRewriteRequest = { instruction?: string; tone?: PostRewriteTone };
+
+export type PostRewriteResult = {
+  post: RoadmapPost;
+  strategy: StrategyPayload;
+  /** False when the post stayed as it was; `message` says why and what to do. */
+  changed: boolean;
+  message: string | null;
+  /** What the editor shows after it: "שונה לפי: {instruction}". */
+  instruction: string;
+};
+
+/** One vocabulary everywhere: מחכה לכם → מוכן לאישור → אושר → פורסם → נמדד. */
+export type PostLifecycle = "needs_owner" | "ready" | "approved" | "published" | "measured";
+
+export type PostMixType =
+  | "product"
+  | "value"
+  | "behind_scenes"
+  | "social_proof"
+  | "offer"
+  | "community"
+  | "seasonal";
+
+export type PostPlanLink = {
+  /** The month hypothesis, in a few words. */
+  goal: string;
+  week: number;
+  week_focus: string;
+};
+
+/** A photo of something specific, or a fact to check ("המחיר: 12 ₪, נכון?"). */
+export type PostOwnerNeed = { kind: "photo" | "fact"; text: string };
+
+export type PostMetric = "whatsapp_clicks" | "site_visits" | "saves" | "reach";
+
+export type PostMeasure = {
+  metric: PostMetric;
+  /** The number's name for the owner: "לחיצות לוואטסאפ". */
+  label_he: string;
+  /** The post's own code in its tracked links and WhatsApp message. */
+  link_code: string;
+};
+
+export type PostResults = {
+  updated_at: string;
+  /** Which measure `value` is (the post's `measure.metric` when it was counted). */
+  metric?: PostMetric;
+  /** The measure's number. Null while it was not counted, which is never shown as 0. */
+  value: number | null;
+  /** The most recent earlier similar post ("בפוסט דומה"), when there is one. */
+  compare?: { label: string; value: number; uid?: string; direction?: "above" | "below" | "similar" } | null;
+  whatsapp_clicks?: number;
+  visits?: number;
+  conversions?: number;
+  reach?: number;
+  saves?: number;
+  /** How the numbers were tied to this post: "whatsapp_code", "utm", "instagram_link",
+   *  "instagram_caption". A missing metric key means it was not measured, never 0. */
+  matched_by: string[] | string;
 };
 
 /**
@@ -4331,6 +4731,33 @@ export type StrategyPayload = {
   horizon?: MonthHorizon;
   /** The stored 3-month plan from /start (Revision 5), when the business has one. */
   quarter_plan?: StoredQuarterPlan | null;
+  /** Where the month's hypothesis, its targets and the plan's assumptions stand
+   *  (docs/posts-v2.md, Phase C: api/app/services/hypotheses.py). */
+  hypothesis_review?: HypothesisReview | null;
+};
+
+/** measuring (not enough data, the line says what is missing) → on_track / confirmed (the
+ *  evidence supports it) · not_yet (against it so far) · changed (the plan changed it). */
+export type HypothesisReviewStatus = "measuring" | "on_track" | "confirmed" | "not_yet" | "changed";
+
+export type HypothesisReviewItem = {
+  /** "month", "target:{index}" or "assumption:{index}" (the index in the stored list). */
+  key: string;
+  kind: "month" | "target" | "assumption";
+  text_he: string;
+  if_wrong_he: string;
+  status: HypothesisReviewStatus;
+  /** The word beside the dot, in the item's grammar ("בדרך", "התאמתה", "הושג"…). */
+  status_he: string;
+  /** One line of evidence, with the server's numbers only. */
+  evidence_he: string;
+};
+
+export type HypothesisReview = {
+  updated_at: string | null;
+  /** The month is over (or the next one was built): the statuses are its verdict. */
+  closed: boolean;
+  items: HypothesisReviewItem[];
 };
 
 export type MonthHorizon = {
@@ -4443,6 +4870,9 @@ export type MetaAdsReport = MetaReadState & {
 export type PerformancePayload = {
   /** False when nothing has been synced yet — a normal state, not an error. */
   available?: boolean;
+  /** From `/performance/sync`: how many posts got results written back, and how many of
+   *  the business's posts are measured in all. */
+  post_results?: { updated: number; measured: number };
   period_start: string;
   period_end: string;
   ga4: {

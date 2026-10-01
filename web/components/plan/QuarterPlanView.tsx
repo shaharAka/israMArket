@@ -2,8 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { HypothesisNote } from "@/components/design/PlanBrief";
+import { HypothesisStatusLine, reviewByKey, reviewFor, statusSummary } from "@/components/plan/HypothesisStatusLine";
 import { HowToFind } from "@/components/help/HowToFind";
-import type { PlanInsight } from "@/lib/api";
+import type { HypothesisReview, PlanInsight } from "@/lib/api";
 import { IconCheck, IconChevron, IconFlag } from "@/lib/icons";
 import {
   INTEGRATION_GUIDE,
@@ -84,6 +85,7 @@ export function QuarterPlanView({
   busy,
   slots = {},
   navTop = "top-14 lg:top-0",
+  review,
 }: {
   plan: AnyPlan;
   /** Both contexts lead with direction and fold supporting sections for readable scanning. */
@@ -97,6 +99,8 @@ export function QuarterPlanView({
   slots?: PlanSlots;
   /** Where the sticky section index sits under the page's own sticky header. */
   navTop?: string;
+  /** Where each assumption stands (docs/posts-v2.md, Phase C), once there is a month. */
+  review?: HypothesisReview | null;
 }) {
   const root = useRef<HTMLDivElement>(null);
   useReveal(root, plan);
@@ -146,8 +150,8 @@ export function QuarterPlanView({
         <ContentBlock plan={plan} cadenceSlot={slots.cadence} />
       </Section>
 
-      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={`${plan.assumptions.length} השערות שנמדוד`}>
-        <BetsBlock plan={plan} mode={mode} />
+      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={betsSummary(plan, review)}>
+        <BetsBlock plan={plan} mode={mode} review={review} />
       </Section>
 
       {plan.inside?.length ? (
@@ -908,16 +912,36 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
 
 /* ---------------------------------- 7 ---------------------------------- */
 
-function BetsBlock({ plan, mode }: { plan: AnyPlan; mode: "start" | "app" }) {
+/** The section's one line: how many, and, once measured, where they stand. */
+function betsSummary(plan: AnyPlan, review?: HypothesisReview | null): string {
+  const items = reviewByKey(review);
+  const states = plan.assumptions.flatMap((bet, index) => reviewFor(items, `assumption:${index}`, bet.bet_he) ?? []);
+  const decided = states.some((state) => state.status !== "measuring");
+  return decided ? `${plan.assumptions.length} השערות · ${statusSummary(states)}` : `${plan.assumptions.length} השערות שנמדוד`;
+}
+
+function BetsBlock({ plan, mode, review }: { plan: AnyPlan; mode: "start" | "app"; review?: HypothesisReview | null }) {
+  const items = reviewByKey(review);
+  const states = plan.assumptions.map((bet, index) => reviewFor(items, `assumption:${index}`, bet.bet_he));
   return (
     <div>
-      <p className="mb-4 text-[13px] leading-6 text-[color:var(--ink-muted)]">אלה ההשערות של התוכנית. אין עדיין תוצאות בדיקה מקושרות אליהן.</p>
+      {/* Before there is a month (and at /start) nothing is measured yet, and it says so. */}
+      {states.some(Boolean) ? null : (
+        <p className="mb-4 text-[13px] leading-6 text-[color:var(--ink-muted)]">אלה ההשערות של התוכנית. אין עדיין תוצאות בדיקה מקושרות אליהן.</p>
+      )}
       <ul className={styles.card}>
-        {plan.assumptions.map((bet, index) => (
-          <li key={bet.bet_he} className={`px-5 py-4 ${index ? "border-t border-[var(--rule)]" : ""}`}>
-            <HypothesisNote hypothesis={bet.bet_he} ifWrong={bet.if_wrong_he} />
-          </li>
-        ))}
+        {plan.assumptions.map((bet, index) => {
+          const state = states[index];
+          return (
+            <li key={bet.bet_he} className={`px-5 py-4 ${index ? "border-t border-[var(--rule)]" : ""}`}>
+              <HypothesisNote
+                hypothesis={bet.bet_he}
+                ifWrong={bet.if_wrong_he}
+                status={state ? <HypothesisStatusLine status={state.status} statusHe={state.status_he} evidence={state.evidence_he} /> : undefined}
+              />
+            </li>
+          );
+        })}
       </ul>
       {/* Before signup there are no results to open. */}
       {mode === "app" && <a href="/performance" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">לבדוק את התוצאות</a>}

@@ -922,7 +922,7 @@ def _history_for(event: dict, strategies: list[Strategy], snapshots: list[Perfor
             "relevance_tier": (match or {}).get("relevance_tier") or "",
             "posts_planned": len(posts),
             "posts_approved": sum(1 for post in posts if post.get("approval_status") == "approved"),
-            "posts_published": sum(1 for post in posts if post.get("published_url")),
+            "posts_published": sum(1 for post in posts if post.get("published_url") or post.get("published_at")),
             "measured": measured,
         }
     return None

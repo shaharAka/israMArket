@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
+import { HypothesisStatusLine, reviewByKey, reviewFor } from "@/components/plan/HypothesisStatusLine";
 import { SegmentedControl, TransitionPanel } from "@/components/design/Controls";
 import { SectionHeader } from "@/components/SectionHeader";
 import { StepLink } from "@/components/trial/StepLink";
@@ -124,7 +125,7 @@ export default function StrategyPage() {
       {welcome ? (
         <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
       ) : null}
-      <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" />
+      <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" review={strategy?.hypothesis_review} />
       <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
         לערוך את התוכנית עצמה יהיה אפשר בקרוב. בינתיים אפשר לשנות את מה שהיא בנויה עליו:{" "}
         <Link href="/decisions" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
@@ -242,6 +243,17 @@ function MonthSection({
   const management = strategy.management_and_checkpoints || strategy.roadmap?.management_and_checkpoints;
   const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
   const currentWeek = currentWeekOf(strategy);
+  // Where the hypothesis and each target stand (docs/posts-v2.md, Phase C), from the
+  // server's review. Shown under the line it belongs to, only while its text is the one here.
+  const review = reviewByKey(strategy.hypothesis_review);
+  const shownTargets = (monthly?.targets ?? []).slice(0, 3);
+  const targetStates = shownTargets.map((target, index) => reviewFor(review, `target:${index}`, target));
+  const monthState = monthly?.hypothesis ? reviewFor(review, "month", monthly.hypothesis) : null;
+  // The month follows its one measurable target: its line is already right below, once.
+  const monthEvidence =
+    monthState && !targetStates.some((state) => state?.evidence_he === monthState.evidence_he)
+      ? monthState.evidence_he
+      : undefined;
 
   return (
     <div className="rise-stagger space-y-10">
@@ -256,14 +268,35 @@ function MonthSection({
           <h2 id="month-hypothesis" className={styles.hypothesis}>
             {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
           </h2>
-          {monthly?.targets?.length ? (
+          {monthState ? (
+            <HypothesisStatusLine
+              className="mt-2"
+              status={monthState.status}
+              statusHe={monthState.status_he}
+              evidence={monthEvidence}
+            />
+          ) : null}
+          {shownTargets.length ? (
             <ul className={styles.targets}>
-              {monthly.targets.slice(0, 3).map((target) => (
-                <li key={target}>
-                  <span aria-hidden className={styles.ring} />
-                  {target}
-                </li>
-              ))}
+              {shownTargets.map((target, index) => {
+                const state = targetStates[index];
+                return (
+                  <li key={target}>
+                    <span aria-hidden className={styles.ring} />
+                    <div className="min-w-0">
+                      {target}
+                      {state ? (
+                        <HypothesisStatusLine
+                          className="mt-0.5"
+                          status={state.status}
+                          statusHe={state.status_he}
+                          evidence={state.evidence_he}
+                        />
+                      ) : null}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           ) : null}
         </div>

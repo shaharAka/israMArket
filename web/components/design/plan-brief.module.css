@@ -202,6 +202,10 @@
   font-weight: 500;
 }
 
+.hypothesis .status {
+  margin-top: 2px;
+}
+
 .hypothesis .evidence {
   font-size: 13px;
   color: var(--ink-muted);

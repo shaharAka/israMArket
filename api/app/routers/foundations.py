@@ -28,6 +28,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.deps import get_business
 from app.models import Business, PerformanceSnapshot
+from app.services.connected_posts import FEATURED_REASONS_HE, featured_item_id
 from app.services.jsonutil import dumps, loads
 
 router = APIRouter(prefix="/business", tags=["foundations"])
@@ -35,13 +36,8 @@ router = APIRouter(prefix="/business", tags=["foundations"])
 MIN_FEATURED = 3
 MAX_FEATURED = 10
 
-REASONS: dict[str, str] = {
-    "in_stock": "במלאי",
-    "profitable": "רווחי",
-    "seasonal": "עונתי",
-    "new": "חדש",
-    "best_seller": "הכי נמכר",
-}
+# One list for the picks screen and the post writer (services/connected_posts.py).
+REASONS: dict[str, str] = FEATURED_REASONS_HE
 
 # The baseline fields per business model. Keys match the goal-setting baseline (Rev 6).
 BASELINE_FIELDS: dict[str, dict] = {
@@ -187,7 +183,14 @@ def _featured_payload(business: Business) -> dict:
     model = _model(business)
     return {
         "items": [
-            {"name": item["name"], "priority": index + 1, "reason": item.get("reason"), "note": item.get("note") or ""}
+            {
+                # The id a post that features this item carries (`featured_item_id`).
+                "id": featured_item_id(item["name"]),
+                "name": item["name"],
+                "priority": index + 1,
+                "reason": item.get("reason"),
+                "note": item.get("note") or "",
+            }
             for index, item in enumerate(items)
         ],
         "saved_at": raw.get("saved_at"),

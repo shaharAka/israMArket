@@ -22,16 +22,6 @@ export function postDay(post: RoadmapPost): string {
   return `יום ${WEEKDAYS[weekday]} ${day}.${month}`;
 }
 
-export type PostState = "published" | "approved" | "waiting";
-
-export function postState(post: RoadmapPost): PostState {
-  if (post.published_url) return "published";
-  if (post.approval_status === "approved") return "approved";
-  return "waiting";
-}
-
-export const STATE_LABEL: Record<PostState, string> = {
-  published: "פורסם",
-  approved: "אושר",
-  waiting: "מחכה לאישור",
-};
+/* A post's state is its lifecycle (lib/postLifecycle.ts), the same words the posts screen,
+   the editor and the calendar use: מחכה לכם · מוכן לאישור · מאושר · פורסם · נמדד. */
+export { LIFECYCLE_LABEL, lifecycleOf } from "@/lib/postLifecycle";

@@ -36,7 +36,9 @@ export function PlanBrief({ businessName, direction, measure, baseline, ownerAct
   </section>;
 }
 
-/** One hypothesis of the plan. `evidence` is supplied (a status set by the monthly review), never inferred. */
-export function HypothesisNote({ hypothesis, ifWrong, evidence }: { hypothesis: string; ifWrong: string; evidence?: string }) {
-  return <div className={styles.hypothesis}><h3>{hypothesis}</h3><p><strong>אם היא לא תתאמת: </strong>{ifWrong}</p>{evidence && <p className={styles.evidence}>{evidence}</p>}</div>;
+/** One hypothesis of the plan. `evidence` and `status` are supplied (the server's review,
+ *  docs/posts-v2.md Phase C), never inferred: `status` is the word + dot + evidence line,
+ *  right under the hypothesis. A hypothesis with no "if wrong" (the month's) skips that line. */
+export function HypothesisNote({ hypothesis, ifWrong, evidence, status }: { hypothesis: string; ifWrong?: string; evidence?: string; status?: ReactNode }) {
+  return <div className={styles.hypothesis}><h3>{hypothesis}</h3>{status && <div className={styles.status}>{status}</div>}{ifWrong && <p><strong>אם היא לא תתאמת: </strong>{ifWrong}</p>}{evidence && <p className={styles.evidence}>{evidence}</p>}</div>;
 }
