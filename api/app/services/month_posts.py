@@ -73,9 +73,14 @@ def next_queued(strategy: Strategy) -> int | None:
 
 def add_week_posts(strategy: Strategy, week: int, posts: list[dict]) -> None:
     """Append the week's posts (never reorder: posts are addressed by index) and mark it done."""
+    from app.services.connected_posts import ensure_uids  # avoids an import cycle
+
     extra = _extra(strategy)
     roadmap = dict(extra.get("roadmap") or {})
-    roadmap["posts"] = list(roadmap.get("posts") or []) + list(posts)
+    existing = list(roadmap.get("posts") or [])
+    # Posts written before uids get theirs stored now (the same id every read gave them).
+    ensure_uids(existing, strategy.business_id, strategy.year, strategy.month)
+    roadmap["posts"] = existing + list(posts)
     extra["roadmap"] = roadmap
     strategy.roadmap_json = dumps(extra)
     status = posts_status(strategy)

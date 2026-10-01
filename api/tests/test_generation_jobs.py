@@ -325,9 +325,11 @@ class PostsLaterTest(JobTestCase):
         strategy = self.month()
         posts = month_posts.month_posts(strategy)
         self.assertEqual([post["week"] for post in posts], [1, 1, 2, 2, 3, 3, 4, 4])
-        # Tracking and review state as for any month's posts; indices are stable.
-        self.assertEqual(posts[0]["utm"]["utm_content"][:3], "p1-")
-        self.assertEqual(posts[7]["utm"]["utm_content"][:3], "p8-")
+        # Tracking and review state as for any month's posts; indices are stable, and the
+        # tracking codes come from each post's own uid (docs/posts-v2.md), all different.
+        self.assertEqual(posts[0]["utm"]["utm_content"], f"p-{posts[0]['uid']}")
+        self.assertEqual(posts[7]["utm"]["utm_content"], f"p-{posts[7]['uid']}")
+        self.assertEqual(len({post["uid"] for post in posts}), 8)
         self.assertEqual({post["approval_status"] for post in posts}, {"review"})
         status = self.client.get("/onboarding/generate/status").json()
         self.assertEqual(status["posts"], {"1": "done", "2": "done", "3": "done", "4": "done"})

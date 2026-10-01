@@ -58,6 +58,10 @@ MAX_TEXT = 300
 
 SOURCE_KEY_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,47}$")
 POST_KEY_RE = re.compile(r"^(ig|fb|wa|tt)-post-(\d{6})-(\d{1,3})$")
+# docs/posts-v2.md: a post's code comes from its stable `uid`, so an edit, a reorder or a
+# changed channel never breaks the link already handed out. Posts written before uids keep
+# the index-based key above (`legacy_post_source_key`), so their clicks keep counting.
+POST_UID_KEY_RE = re.compile(r"^(ig|fb|wa|tt)-post-([a-z0-9]{6,20})$")
 OUTLET_PREFIX = {"instagram": "ig", "facebook": "fb", "whatsapp": "wa", "tiktok": "tt"}
 OUTLET_HE = {"ig": "אינסטגרם", "fb": "פייסבוק", "wa": "וואטסאפ", "tt": "טיקטוק"}
 
@@ -160,6 +164,9 @@ def source_tag(source_key: str) -> str:
     post = POST_KEY_RE.match(source_key)
     if post:
         return f"{post.group(1).upper()}-POST-{int(post.group(3))}"
+    by_uid = POST_UID_KEY_RE.match(source_key)
+    if by_uid:
+        return f"{by_uid.group(1).upper()}-POST-{by_uid.group(2)[:5].upper()}"
     return source_key.upper()[:20]
 
 
@@ -196,6 +203,9 @@ def default_label(source_key: str) -> str:
     post = POST_KEY_RE.match(source_key)
     if post:
         return f"פוסט {int(post.group(3))} ב{OUTLET_HE[post.group(1)]}"
+    by_uid = POST_UID_KEY_RE.match(source_key)
+    if by_uid:
+        return f"פוסט ב{OUTLET_HE[by_uid.group(1)]}"
     return source_key
 
 
@@ -269,9 +279,28 @@ def post_cta_is_whatsapp(post: dict) -> bool:
     return bool(_WHATSAPP_WORDS.search(str(post.get("cta") or "")))
 
 
-def post_source_key(strategy: Strategy, index: int, post: dict) -> str:
+def uid_post_source_key(post: dict) -> str:
+    """The key a post written with a `uid` carries from the start: "ig-post-3f9a1c2b7d"."""
     prefix = OUTLET_PREFIX.get(str(post.get("primary_outlet") or "").lower(), "ig")
-    return f"{prefix}-post-{strategy.year}{strategy.month:02d}-{index + 1}"
+    return f"{prefix}-post-{post.get('uid')}"
+
+
+def legacy_post_source_key(year: int, month: int, index: int, post: dict) -> str:
+    """The key of a post from before uids: month + position, "ig-post-202610-3"."""
+    prefix = OUTLET_PREFIX.get(str(post.get("primary_outlet") or "").lower(), "ig")
+    return f"{prefix}-post-{year}{month:02d}-{index + 1}"
+
+
+def post_key_for(year: int, month: int, index: int, post: dict) -> str:
+    """The post's own source key: the one stored on it, else the legacy index-based one."""
+    stored = str(post.get("whatsapp_source_key") or "")
+    if stored and SOURCE_KEY_RE.fullmatch(stored):
+        return stored
+    return legacy_post_source_key(year, month, index, post)
+
+
+def post_source_key(strategy: Strategy, index: int, post: dict) -> str:
+    return post_key_for(strategy.year, strategy.month, index, post)
 
 
 def post_label(strategy: Strategy, index: int, post: dict) -> str:

@@ -392,8 +392,18 @@ ROADMAP_SCHEMA = {
             "properties": {
                 "hypothesis": {"type": "string"},
                 "targets": {"type": "array", "items": {"type": "string"}},
+                # docs/posts-v2.md: every post says "בשביל {goal}, ל{audience}." The goal
+                # is the month's hypothesis in a few words; the planner writes it once,
+                # so no post has to guess it (services/connected_posts.month_goal).
+                "goal_he": {
+                    "type": "string",
+                    "description": (
+                        "המטרה של החודש בשתיים עד חמש מילים, כמו שבעל העסק היה אומר אותה "
+                        "(למשל 'הזמנות מראש לחנוכה'). בלי מספרים, בלי פועל ובלי נקודה."
+                    ),
+                },
             },
-            "required": ["hypothesis", "targets"],
+            "required": ["hypothesis", "targets", "goal_he"],
         },
         "management_and_checkpoints": {
             "type": "object",
@@ -584,10 +594,79 @@ INSPIRATION_FIELDS = {
     },
 }
 
+# The content mix's types (services/quarter_plan.CONTENT_TYPES; a test keeps them equal).
+# Every connected post names one (docs/posts-v2.md, field contract: `mix_type`).
+MIX_TYPE_KEYS = ("product", "value", "behind_scenes", "social_proof", "offer", "community", "seasonal")
+
+# docs/posts-v2.md, Revision 1: one post, for the one channel the plan chose. The writer
+# picks it from the plan's channels; the server checks it against them.
+POST_CHANNELS = ("instagram", "facebook", "whatsapp")
+
+# What the writer returns so the server can connect the post to the plan
+# (services/connected_posts.finish_written). The model names; the server validates.
+CONNECTED_POST_FIELDS = {
+    "mix_type": {
+        "type": "string",
+        "enum": list(MIX_TYPE_KEYS),
+        "description": "סוג הפוסט בתמהיל התוכן של החודש. מפתח אחד מהרשימה.",
+    },
+    "featured_item": {
+        "type": "string",
+        "description": (
+            "אם הפוסט מבליט מוצר או שירות מהרשימה שבעל העסק בחר להבליט: השם שלו בדיוק כמו ברשימה. "
+            "אם אין רשימה או שהפוסט לא מבליט אף אחד מהם — מחרוזת ריקה."
+        ),
+    },
+    "owner_fact": {
+        "type": "string",
+        "description": (
+            "פרט שרק בעל העסק יודע, שהפוסט תלוי בו ושלא מופיע בחומר (מחיר, תאריך, שעות, כמות): "
+            "בקצרה מה לבדוק, למשל 'המחיר של מארז החג'. אם אין — מחרוזת ריקה."
+        ),
+    },
+    "applied_learning": {
+        "type": "string",
+        "description": (
+            "המזהה מבלוק 'מה הצליח אצלכם' (למשל B1) אם הפוסט ממשיך דפוס של פוסט שהצליח. "
+            "רק מזהה שהופיע בבלוק. אם אין בלוק או שהפוסט לא ממשיך אף אחד — מחרוזת ריקה."
+        ),
+    },
+}
+
 MONTHLY_POST_ITEM_SCHEMA = {
     **ROADMAP_ITEM_SCHEMA,
-    "properties": {**ROADMAP_ITEM_SCHEMA["properties"], **INSPIRATION_FIELDS},
-    "required": [*ROADMAP_ITEM_SCHEMA["required"], *INSPIRATION_FIELDS.keys()],
+    "properties": {
+        **ROADMAP_ITEM_SCHEMA["properties"],
+        "primary_outlet": {
+            "type": "string",
+            "enum": list(POST_CHANNELS),
+            "description": "הערוץ האחד שהתוכנית בחרה לפוסט הזה. זה הפוסט שבעל העסק יראה ויאשר.",
+        },
+        **INSPIRATION_FIELDS,
+        **CONNECTED_POST_FIELDS,
+    },
+    "required": [*ROADMAP_ITEM_SCHEMA["required"], *INSPIRATION_FIELDS.keys(), *CONNECTED_POST_FIELDS.keys()],
+}
+
+# One line of "מה לומדים" per measured post, phrased by the cheap model from facts the
+# server computed (services/connected_posts.phrase_learnings). Never a new fact.
+LEARNING_LINES_SCHEMA = {
+    "type": "object",
+    "title": "PostLearningLines",
+    "properties": {
+        "lines": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "ref": {"type": "string"},
+                    "text": {"type": "string", "description": "משפט אחד קצר בעברית, עד 16 מילים"},
+                },
+                "required": ["ref", "text"],
+            },
+        }
+    },
+    "required": ["lines"],
 }
 
 MONTHLY_POSTS_SCHEMA = {
@@ -678,6 +757,8 @@ POST_REWRITE_SCHEMA = {
             "required": ["instagram", "facebook", "whatsapp"],
         },
         **INSPIRATION_FIELDS,
+        "owner_fact": CONNECTED_POST_FIELDS["owner_fact"],
+        "applied_learning": CONNECTED_POST_FIELDS["applied_learning"],
     },
     "required": [
         "title",
@@ -687,6 +768,8 @@ POST_REWRITE_SCHEMA = {
         "overlay_text",
         "outlet_captions",
         *INSPIRATION_FIELDS.keys(),
+        "owner_fact",
+        "applied_learning",
     ],
 }
 
