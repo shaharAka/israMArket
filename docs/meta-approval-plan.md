@@ -37,6 +37,14 @@ After the owner completed Facebook sign-in, the Meta app console was accessible:
   returns **“You've reached the limit of Meta Business Suite accounts that you can
   create.”** No unrelated portfolio was connected, renamed or deleted. A valid IsraMarket
   portfolio and the owner's actual entity details are still required to proceed.
+- Narrowed the unsubmitted App Review draft from 28 requests to the five application
+  permissions (`pages_show_list`, `pages_read_engagement`, `instagram_basic`,
+  `instagram_manage_insights`, `ads_read`), the automatic `public_profile` permission,
+  and Marketing API Access Tier. Removed 21 unused requests from the draft, including
+  messaging, publishing, ad management and alternative Instagram Login permissions.
+  This does not revoke existing grants or remove features from the app. Meta's form
+  still requires permission-specific explanations, actual screencasts/API tests,
+  reviewer access, data-handling answers and business/access verification.
 
 Local validation: all 30 Meta measurement/connection tests, web typecheck, lint and
 production build passed. Browser checks cover all four installation guides, refreshing
