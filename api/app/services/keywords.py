@@ -466,7 +466,7 @@ def search_console_queries(
             return None
 
         query_response = httpx.post(
-            f"{SEARCH_CONSOLE_API}/sites/{quote(site_url, safe='')}/searchanalytics/query",
+            f"{SEARCH_CONSOLE_API}/sites/{quote(site_url, safe='')}/searchAnalytics/query",
             headers=headers,
             json={
                 "startDate": start.isoformat(),

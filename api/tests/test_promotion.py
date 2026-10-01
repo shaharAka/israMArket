@@ -474,7 +474,11 @@ class SearchConsoleTest(unittest.TestCase):
         self.assertEqual(payload["queries"][0]["query"], "מאפייה תל אביב")
         self.assertEqual(payload["queries"][0]["impressions"], 480)
         self.assertEqual([row["query"] for row in payload["quick_wins"]], ["מאפייה תל אביב"])
-        self.assertIn("sc-domain", captured["url"])
+        # Google's REST path is case-sensitive; lowercase searchanalytics returns 404.
+        self.assertEqual(
+            captured["url"],
+            "https://www.googleapis.com/webmasters/v3/sites/sc-domain%3Aexample.co.il/searchAnalytics/query",
+        )
         self.assertEqual(captured["json"]["dimensions"], ["query"])
         self.assertEqual(payload["period"]["days"], 28)
 
