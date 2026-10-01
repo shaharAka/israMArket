@@ -27,3 +27,9 @@
 .tracking a, .next { color: var(--primary); font-weight: 600; text-decoration: none; text-underline-offset: 4px; }
 .tracking a:hover, .next:hover { text-decoration: underline; }
 .next { font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.setupGuide { font-size: 14px; line-height: 1.8; border-block-start: 1px solid var(--rule); }
+.setupGuide summary { padding-block: 12px; cursor: pointer; font-weight: 600; color: var(--ink); }
+.setupBody { display: grid; gap: 14px; padding-block: 4px 12px; }
+.setupBody a { color: var(--primary); font-weight: 600; text-underline-offset: 4px; }
+.tracking bdi { overflow-wrap: anywhere; }
+.textAction:disabled { cursor: wait; color: var(--ink-muted); }

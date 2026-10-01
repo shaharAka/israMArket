@@ -1,4 +1,48 @@
-# Meta measurement and customer approval plan — 1 October 2026
+# Meta measurement and customer approval plan — updated 2 October 2026
+
+## Customer rollout and console progress — 2 October 2026
+
+Tazizi is one pilot customer. Every business uses its own encrypted Meta grant,
+authorised Page/ad account/Pixel choices, website and verification result. There is no
+global customer Pixel or app-admin token fallback. Three additional two-customer
+regressions prove separate asset lists, reject cross-customer selection/reads, use each
+customer's token and website for verification, isolate cached Pixel lists, and preserve
+the first customer's connection when the second disconnects.
+
+The customer setup now offers short, collapsed instructions for Wix, Shopify,
+WordPress/WooCommerce and other website systems. Existing Pixels are reused, and the
+customer can refresh their authorised list after website installation. The verification
+screen identifies the selected Pixel and the business website being checked. The current
+route discovers Pixels through an authorised ad account; a customer with a standalone
+dataset must arrange account association/access in Meta before it can appear here.
+Selecting a Pixel does not install it, and missing Pixel access does not block the plan.
+
+Official installation references checked on 2 October:
+- [Wix Meta Pixel & CAPI](https://support.wix.com/en/article/connecting-a-facebook-pixel-and-the-conversions-api-to-your-wix-site)
+- [Shopify Meta Pixel](https://help.shopify.com/en/manual/promoting-marketing/analyze-marketing/meta-pixel)
+- [Meta pixel for WordPress, published by Facebook](https://wordpress.org/plugins/official-facebook-pixel/)
+
+After the owner completed Facebook sign-in, the Meta app console was accessible:
+- Saved `https://34-165-93-157.sslip.io/data-deletion` as the **Data deletion instructions
+  URL**, then reloaded the form and confirmed it persisted. It replaces an unrelated
+  Facebook homepage value. This remains an instructions page, not a deletion callback.
+- Identified IsraMarket as a **Tech Provider**. The dashboard now exposes Review →
+  Testing, Verification and App Review. Identification is not access-verification approval.
+- Added the **Create & manage ads with Marketing API** use case. Its permissions table
+  shows `ads_read` **Ready for testing**, API calls **0**, and Marketing API Access Tier
+  **Limited access**. No public approval is inferred. The console also offers write
+  permissions; our application still requests only the four social scopes and optional
+  `ads_read`, and does not manage ads or send conversion events.
+- Verification requires an attached business portfolio. Attempting to create one still
+  returns **“You've reached the limit of Meta Business Suite accounts that you can
+  create.”** No unrelated portfolio was connected, renamed or deleted. A valid IsraMarket
+  portfolio and the owner's actual entity details are still required to proceed.
+
+Local validation: all 30 Meta measurement/connection tests, web typecheck, lint and
+production build passed. Browser checks cover all four installation guides, refreshing
+the Pixel list, skipping a Pixel and returning to select it, verification identity/site,
+keyboard Escape and a 390px dialog without horizontal overflow. UI checks use explicitly
+labelled demo fixtures; they do not prove that a real Meta grant can read Pixel stats.
 
 Owner requested ads reporting, Pixel verification and a simple customer connection. This
 explicitly authorises the API and flow changes in this delivery; it is a scoped exception
