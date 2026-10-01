@@ -73,7 +73,7 @@ Use these consistently. A term changes only if it changes everywhere.
 | click-through rate / cost per click | אחוז הקלקה / המחיר לקליק | CTR, CPC |
 | a heading that "worked" | הצליח | עבד, עובד |
 | the main audience / target | הקהל העיקרי / היעד העיקרי | המוביל, הראשי |
-| status of a post | מחכה לאישור / אושר / פורסם | ממתין, מאושר |
+| status of a post (docs/posts-v2.md) | מחכה לכם / מוכן לאישור / אושר / פורסם / נמדד | ממתין, מאושר, מחכה לאישור |
 | an error | לא הצלחנו + verb (+ נסו שוב) | …נכשל, שגיאה ב… |
 | a video | סרטון | וידאו, קליפ |
 | a reel | ריל (one), רילס (many) | |

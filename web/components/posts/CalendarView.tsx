@@ -5,7 +5,7 @@ import { endpoints, isDemo, type CalendarPayload, type RoadmapPost, type Strateg
 import type { StoredQuarterPlan } from "@/lib/quarterPlan";
 import { monthLabel, shiftMonth } from "@/lib/months";
 import { copyText } from "@/lib/ui";
-import { STATUS_LABEL, postDay, postStatus } from "./postMeta";
+import { LIFECYCLE_LABEL, lifecycleOf, postDay } from "./postMeta";
 import { UIAction, TextField } from "@/components/design/Controls";
 import { IconArrowLeft, IconChevron, IconPlus, IconTrash } from "@/lib/icons";
 import styles from "./calendar.module.css";
@@ -185,7 +185,7 @@ export function CalendarView({ initialYear, initialMonth, posts, postsMonth, onO
         <h3>{formatDay(selected)}</h3>
         {!dayPosts.length && !dayEvents.length && !dayPlanTasks.length && !dayTasks.length && <p className={styles.empty}>אין פריטים ביום הזה.</p>}
         {dayPlanTasks.map((task, i) => <article key={`${task.date}-${i}`} className={styles.item} data-kind="task"><span>מהתוכנית · {task.name_he}</span><h4>{task.action_he}</h4><a href="/strategy#plan-calendar">לראות בתוכנית<IconArrowLeft className={styles.arrow} /></a></article>)}
-        {dayPosts.map(({ post, index }, i) => <article key={`${post.title}-${i}`} className={styles.item} data-kind="post"><span>פוסט · {STATUS_LABEL[postStatus(post)]}</span><h4>{post.title}</h4><p>{post.hook}</p><div>{index !== null && onPlanMonth && onOpenPost && <UIAction variant="text" onClick={() => onOpenPost(index)}><span className={styles.add}>לפתוח את הפוסט<IconArrowLeft className={styles.arrow} /></span></UIAction>}<UIAction variant="text" onClick={() => void copyPost(post)}>להעתיק טקסט</UIAction></div></article>)}
+        {dayPosts.map(({ post, index }, i) => <article key={`${post.title}-${i}`} className={styles.item} data-kind="post"><span>פוסט · {LIFECYCLE_LABEL[lifecycleOf(post)]}</span><h4>{post.title}</h4><p>{post.hook}</p><div>{index !== null && onPlanMonth && onOpenPost && <UIAction variant="text" onClick={() => onOpenPost(index)}><span className={styles.add}>לפתוח את הפוסט<IconArrowLeft className={styles.arrow} /></span></UIAction>}<UIAction variant="text" onClick={() => void copyPost(post)}>להעתיק טקסט</UIAction></div></article>)}
         {copyFallback?.date === selected && <div className={styles.copyFallback}><p role="alert">ההעתקה לא הצליחה. אפשר לסמן ולהעתיק את הטקסט כאן:</p><textarea aria-label="טקסט הפוסט להעתקה ידנית" readOnly rows={4} value={copyFallback.text} onFocus={e => e.currentTarget.select()} /></div>}
         {dayEvents.map((event, i) => <article key={`${event.name}-${i}`} className={styles.item} data-kind="event"><span>{event.kind}</span><h4>{event.name}</h4>{event.note && <p>{event.note}</p>}{event.source && <details><summary>מקור</summary><p>{event.source}</p></details>}</article>)}
         {showTasks && scope && <PersonalTasks key={scope} scope={scope} selected={selected} onTasks={setTasks} />}
