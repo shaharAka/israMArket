@@ -67,14 +67,50 @@ function samplePost(brand: BrandLanguage | null, name: string, i: number, photo?
   };
 }
 
-function samplesOf(posts: RoadmapPost[], photos: string[], brand: BrandLanguage | null, name: string): RoadmapPost[] {
+type Photo = { url: string; text: string };
+
+/** Hebrew-aware words for matching a post to a photo: one-letter prefixes (ה ו ב ל מ ש כ) off. */
+function words(text: string): Set<string> {
+  return new Set(
+    text
+      .replace(/[^\u0590-\u05FFa-zA-Z0-9]+/g, " ")
+      .split(" ")
+      .map((w) => w.replace(/^[והבלמשכ](?=[\u0590-\u05FF]{3,})/, ""))
+      .filter((w) => w.length > 1),
+  );
+}
+
+/** How well a photo fits a post: headline words count double, caption words once. */
+function fit(post: RoadmapPost, photo: Photo): number {
+  const head = words([post.title, post.overlay_headline, post.overlay_text].filter(Boolean).join(" "));
+  const body = words([post.angle, post.caption].filter(Boolean).join(" "));
+  let score = 0;
+  words(photo.text).forEach((w) => { score += head.has(w) ? 2 : body.has(w) ? 1 : 0; });
+  return score;
+}
+
+function samplesOf(posts: RoadmapPost[], photos: Photo[], brand: BrandLanguage | null, name: string): RoadmapPost[] {
   const written = posts.filter((p) => (p.overlay_headline || p.overlay_text || "").trim() && p.has_overlay !== false);
   // Posts with a photo first: a sample says more with the business's own picture.
-  const ordered = [...written.filter((p) => p.image_url), ...written.filter((p) => !p.image_url)];
+  const ordered = [...written.filter((p) => p.image_url), ...written.filter((p) => !p.image_url)].slice(0, 3);
+  // Photos for the posts that have none: best fits first across all three, so one post's
+  // loose match never takes the photo another post is about; the rest in library order.
+  const chosen = new Map<number, string>();
+  const used = new Set(ordered.map((p) => p.image_url).filter(Boolean) as string[]);
+  const pairs = ordered.flatMap((post, i) => (post.image_url ? [] : photos.map((photo) => ({ i, photo, score: fit(post, photo) }))));
+  pairs.sort((x, y) => y.score - x.score);
+  for (const { i, photo, score } of pairs) {
+    if (score > 0 && !chosen.has(i) && !used.has(photo.url)) { chosen.set(i, photo.url); used.add(photo.url); }
+  }
   return [0, 1, 2].map((i) => {
-    const photo = photos.length ? photos[i % photos.length] : undefined;
     const post = ordered[i];
-    return post ? { ...post, image_url: post.image_url || photo } : samplePost(brand, name, i, photo);
+    if (post?.image_url) return post;
+    let photo = chosen.get(i);
+    if (!photo) {
+      photo = (photos.find((p) => !used.has(p.url)) || photos[i % Math.max(photos.length, 1)])?.url;
+      if (photo) used.add(photo);
+    }
+    return post ? { ...post, image_url: photo } : samplePost(brand, name, i, photo);
   });
 }
 
@@ -95,7 +131,7 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
   const [dna, setDna] = useState<BrandDna | null>(null);
   const [dnaLoaded, setDnaLoaded] = useState(false);
   const [posts, setPosts] = useState<RoadmapPost[]>([]);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<Photo[]>([]);
   const [edits, setEdits] = useState<Edits>({});
   const [busy, setBusy] = useState<"regen" | "save" | null>(null);
   const [error, setError] = useState("");
@@ -119,7 +155,13 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
     Promise.allSettled([endpoints.strategy(), endpoints.assets()]).then(([strategy, assets]) => {
       if (!active) return;
       setPosts(strategy.status === "fulfilled" ? strategy.value.roadmap?.posts ?? [] : []);
-      setPhotos(assets.status === "fulfilled" ? assets.value.assets.filter((a) => a.kind === "image" && a.url).map((a) => a.url) : []);
+      setPhotos(
+        assets.status === "fulfilled"
+          ? assets.value.assets
+              .filter((a) => a.kind === "image" && a.url)
+              .map((a) => ({ url: a.url, text: [a.description, ...(a.tags || [])].join(" ") }))
+          : [],
+      );
     });
     return () => {
       active = false;
