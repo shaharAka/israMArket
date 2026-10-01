@@ -3548,7 +3548,7 @@ export const endpoints = {
   calendar: (year: number, month: number) => api<CalendarPayload>(`/calendar?year=${year}&month=${month}`),
   integrations: (forceLive = false) => api<IntegrationsPayload>("/integrations", {}, forceLive),
   ga4Start: () => api<{ url: string }>("/integrations/ga4/start"),
-  metaStart: (ads = false, popup = false) => api<{ url: string }>(`/integrations/meta/start?ads=${ads}&popup=${popup}`),
+  metaStart: (ads = false, popup = false) => api<{ url: string; attempt: string }>(`/integrations/meta/start?ads=${ads}&popup=${popup}`),
   metaAssets: () => api<MetaAssets>("/integrations/meta/assets"),
   metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
   metaVerify: () => api<PixelVerification>("/integrations/meta/verify", { method: "POST" }),
@@ -4410,6 +4410,7 @@ export type IntegrationsPayload = {
 export type MetaReadState = { status: string; note_he?: string };
 export type MetaPixel = { id: string; name: string; last_fired_time?: string | null };
 export type MetaAssets = {
+  connection_attempt?: string;
   pages: { page_id: string; display_name: string; instagram_id: string }[];
   ad_accounts: { id: string; name: string; currency: string; status?: number }[];
   scopes: string[];

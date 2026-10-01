@@ -34,7 +34,9 @@ def start(response: Response, ads: bool = False, popup: bool = False,
           business: Business = Depends(get_business), user: User = Depends(get_current_user)):
     settings = get_settings()
     nonce = secrets.token_urlsafe(32)
+    attempt = secrets.token_urlsafe(16)
     state = jwt.encode({"sub": str(user.id), "biz": business.id, "p": "meta", "popup": popup,
+                        "attempt": attempt,
                         "nonce": hashlib.sha256(nonce.encode()).hexdigest(),
                         "exp": datetime.now(timezone.utc) + timedelta(minutes=20)},
                        settings.jwt_secret, algorithm=ALGORITHM)
@@ -45,7 +47,7 @@ def start(response: Response, ads: bool = False, popup: bool = False,
     secure = settings.cookie_secure if settings.cookie_secure is not None else settings.web_origin.startswith("https://")
     response.set_cookie(FLOW_COOKIE, nonce, max_age=1200, httponly=True, secure=secure, samesite="lax", path="/")
     response.headers["Cache-Control"] = "no-store"
-    return {"url": url}
+    return {"url": url, "attempt": attempt}
 
 
 def finish(result: str, popup: bool) -> RedirectResponse:
@@ -107,7 +109,8 @@ def callback(request: Request, code: str = "", state: str = "", error: str = "",
         item.display_name = ""
         item.extra_json = dumps({"pages": [{k: v for k, v in p.items() if k != "page_access_token"} for p in pages],
                                 "page_tokens": encrypt_page_tokens({p["page_id"]: p["page_access_token"] for p in pages}),
-                                "ad_accounts": accounts, "scopes": scopes, "asset_errors": asset_errors})
+                                "ad_accounts": accounts, "scopes": scopes, "asset_errors": asset_errors,
+                                "connection_attempt": claims["attempt"]})
         item.updated_at = datetime.utcnow()
         db.commit()
     except Exception:
@@ -123,7 +126,8 @@ def assets(business: Business = Depends(get_business), db: Session = Depends(get
     extra = loads(item.extra_json, {})
     # These are the assets discovered for this customer's token, never app-admin assets.
     return {"pages": extra.get("pages") or [], "ad_accounts": extra.get("ad_accounts") or [],
-            "scopes": extra.get("scopes") or [], "errors": extra.get("asset_errors") or {}}
+            "scopes": extra.get("scopes") or [], "errors": extra.get("asset_errors") or {},
+            "connection_attempt": extra.get("connection_attempt") or ""}
 
 
 @router.get("/meta/pixels")

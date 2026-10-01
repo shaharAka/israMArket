@@ -127,6 +127,7 @@ class CustomerConnectionTest(unittest.TestCase):
 
     def start(self, ads=True):
         response = self.client.get("/integrations/meta/start", params={"ads": ads, "popup": True}); self.assertEqual(response.status_code, 200)
+        self.attempt = response.json()["attempt"]
         return parse_qs(urlsplit(response.json()["url"]).query)
 
     def callback(self, query, scopes=None, pages=None, accounts=None, error=""):
@@ -143,6 +144,11 @@ class CustomerConnectionTest(unittest.TestCase):
         for unnecessary in ("ads_read", "business_management", "pages_read_user_content", "ads_management", "instagram_content_publish"): self.assertNotIn(unnecessary, scopes)
         self.assertIn("isramarket_meta_flow", self.client.cookies)
         self.assertIn("ads_read", self.start()["scope"][0])
+
+    def test_start_cannot_make_existing_grant_look_like_completed_consent(self):
+        self.seed(); self.start()
+        offers = self.client.get("/integrations/meta/assets").json()
+        self.assertNotEqual(offers["connection_attempt"], self.attempt)
 
     def test_missing_nonce_rejects_before_token_exchange(self):
         query = self.start(); self.client.cookies.delete("isramarket_meta_flow")
@@ -161,7 +167,7 @@ class CustomerConnectionTest(unittest.TestCase):
     def test_ads_only_grant_can_connect_without_page_and_tokens_not_public(self):
         response = self.callback(self.start(), scopes=["ads_read"], accounts=[{"id": "act_333", "name": "My ads", "currency": "USD"}])
         self.assertIn("/integrations/meta/complete?meta_result=success", response.headers["location"])
-        offers = self.client.get("/integrations/meta/assets").json(); self.assertEqual(offers["pages"], []); self.assertNotIn("customer-secret", dumps(offers))
+        offers = self.client.get("/integrations/meta/assets").json(); self.assertEqual(offers["connection_attempt"], self.attempt); self.assertEqual(offers["pages"], []); self.assertNotIn("customer-secret", dumps(offers))
         saved = self.client.post("/integrations/meta/account", json={"ad_account_id": "act_333"})
         self.assertEqual(saved.status_code, 200, saved.text); self.assertTrue(self.client.get("/integrations").json()["integrations"][0]["connected"])
 

@@ -34,10 +34,12 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
   const [busy, setBusy] = useState(false);
   const [loadingPixels, setLoadingPixels] = useState(false);
   const [waiting, setWaiting] = useState(false);
+  const [canResume, setCanResume] = useState(false);
   const [note, setNote] = useState("");
   const popup = useRef<Window | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const returned = useRef(false);
+  const expectedAttempt = useRef("");
   const changed = useRef(onChanged);
   const pixelRequest = useRef(0);
   const latestItem = useRef(item);
@@ -46,12 +48,16 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
   async function loadAssets() {
     try {
       const result = await (demo ? Promise.resolve(EXAMPLE_ASSETS) : endpoints.metaAssets());
+      if (expectedAttempt.current && result.connection_attempt !== expectedAttempt.current) {
+        throw new Error("האישור במטא עדיין לא התקבל. השלימו אותו בחלון של מטא ולחצו כאן להמשיך, או נסו לחבר שוב.");
+      }
       setNote("");
       const current = latestItem.current;
       setAssets(result);
       setPage(result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : result.pages.length === 1 ? result.pages[0].page_id : "");
       void chooseAccount(result.ad_accounts.some(a => a.id === current?.ad_account_id) ? current!.ad_account_id! : result.ad_accounts.length === 1 ? result.ad_accounts[0].id : "");
       setStage("choose"); setOpen(true);
+      setCanResume(false);
     } catch (err) {
       setNote(err instanceof Error ? err.message : "לא הצלחנו להביא את החשבונות. נסו לחבר מחדש.");
       setStage("connect"); setOpen(true);
@@ -65,7 +71,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
       returned.current = true;
       if (timer.current) clearInterval(timer.current);
       setWaiting(false); setBusy(false);
-      if (RETURN_NOTES[result]) { setNote(RETURN_NOTES[result]); return; }
+      if (RETURN_NOTES[result]) { expectedAttempt.current = ""; setCanResume(false); setNote(RETURN_NOTES[result]); return; }
       await changed.current();
       await loadAssets();
     }
@@ -106,7 +112,9 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
     popup.current = child; returned.current = false;
     setBusy(true); setNote("");
     try {
-      const { url } = await endpoints.metaStart(ads, Boolean(child));
+      const { url, attempt } = await endpoints.metaStart(ads, Boolean(child));
+      expectedAttempt.current = attempt;
+      setCanResume(true);
       if (!child) { window.location.assign(url); return; }
       child.location.href = url; setWaiting(true);
       timer.current = setInterval(() => {
@@ -150,7 +158,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
   return <div className={styles.connection}>
     {item?.connected && <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>}
     <UIAction variant={item?.connected ? "secondary" : "primary"} onClick={() => {
-      setNote(""); setOpen(true);
+      setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = "";
       if (item?.connected || needsChoice) { setBusy(true); void loadAssets(); } else setStage("connect");
     }}>{item?.connected ? "ניהול החיבור" : needsChoice ? "לבחור את העסק שלי" : "לחבר את Meta"}</UIAction>
     {item?.pixel_id && <UIAction variant="text" onClick={() => { setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב באתר</UIAction>}
@@ -164,7 +172,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged }: {
           <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי להבין כמה הוצאתם ומה המודעות הביאו.</small></span></label>
           <p className={styles.hint}>גישה לקריאת נתונים בלבד. פרסום פוסטים ושינוי מודעות דורשים אישור נפרד.</p>
           <UIAction onClick={connect} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של מטא" : "להמשיך למטא"}</UIAction>
-          {waiting && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
+          {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
         </>}
         {stage === "choose" && assets && <>
           <label className={styles.field}>הדף העסקי<select value={page} onChange={e => setPage(e.target.value)}><option value="">בלי דף כרגע</option>{assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}</select></label>

@@ -29,6 +29,8 @@ for onboarding paying customers.
 
 - Browser-bound, authenticated OAuth state with expiry, nonce cookie and callback owner
   checks; same-origin/window-checked popup return, same-window fallback if popup blocked.
+  A returned grant must match this connection attempt; a closed/severed popup is not
+  taken as proof of approval.
 - Optional `ads_read` plus social measurement scopes. Not requested: `ads_management`,
   publishing, messaging, `business_management`, `pages_read_user_content`.
 - Cursor pagination for Pages, ad accounts, Pixels and reports; truncation is a failure,
@@ -115,7 +117,7 @@ remain usable throughout review. The draft contains no fabricated account or suc
 
 ## Release checks and remaining work
 
-- Validation passed: 808 backend tests (26 new), web typecheck/lint/production build,
+- Validation passed: 809 backend tests (27 new), web typecheck/lint/production build,
   desktop and 390px consent/selection preview and keyboard Escape/focus return.
 - Offline regression coverage: nonce/owner/replay/cancellation, failed reconnect preserves
   grant, asset boundaries, pagination, missing values, attribution and Pixel unknown states.
