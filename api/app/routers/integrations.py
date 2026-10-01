@@ -15,12 +15,12 @@ from app.security import (
     create_oauth_state,
     decode_oauth_state,
     decrypt_secret,
-    encrypt_page_tokens,
     encrypt_secret,
 )
 from app.services import ga4, google_login, meta
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
+from app.routers import meta_connections
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
 
@@ -39,6 +39,9 @@ def _public_integration(item: Integration) -> dict:
         # same grant, so the UI can tell the owner to reconnect rather than showing an
         # empty panel with no explanation.
         "scopes": extra.get("scopes") or [],
+        "ad_account_id": extra.get("selected_ad_account_id") or "",
+        "pixel_id": extra.get("selected_pixel_id") or "",
+        "pixel_verification": extra.get("pixel_verification"),
         # Which Google account granted it (Google only), and a Hebrew note when that is not
         # the account the owner signs in with. Allowed, just said out loud.
         "account_email": (extra.get("google_account") or {}).get("email") or None,
@@ -169,36 +172,7 @@ def ga4_property(
     return {"integration": _public_integration(item)}
 
 
-@router.get("/meta/start")
-def meta_start(business: Business = Depends(get_business), user: User = Depends(get_current_user)) -> dict:
-    try:
-        url = meta.authorization_url(create_oauth_state(user.id, business.id, "meta"))
-    except RuntimeError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
-    return {"url": url}
-
-
-@router.get("/meta/callback")
-def meta_callback(code: str = "", state: str = "", error: str = "", db: Session = Depends(get_db)):
-    settings = get_settings()
-    dest = f"{settings.web_origin}/integrations"
-    if error:
-        return RedirectResponse(f"{dest}?{urlencode({'error': error})}")
-    try:
-        claims = decode_oauth_state(state)
-        tokens = meta.exchange_code(code)
-        item = _upsert(db, claims["business_id"], "meta")
-        item.access_token_enc = encrypt_secret(tokens["access_token"])
-        item.refresh_token_enc = encrypt_secret(tokens["refresh_token"])
-        item.token_expires_at = tokens["expires_at"]
-        item.status = "select_page"
-        pages = meta.list_pages(tokens["access_token"])
-        item.extra_json = dumps({"pages": [{k: v for k, v in page.items() if k != "page_access_token"} | {"has_token": True} for page in pages], "page_tokens": encrypt_page_tokens({p["page_id"]: p["page_access_token"] for p in pages}), "scopes": tokens.get("scopes") or []})
-        item.updated_at = datetime.utcnow()
-        db.commit()
-    except Exception as exc:
-        return RedirectResponse(f"{dest}?{urlencode({'error': str(exc)})}")
-    return RedirectResponse(f"{dest}?meta=connected")
+router.include_router(meta_connections.router)
 
 
 @router.post("/meta/account")
@@ -207,26 +181,8 @@ def meta_account(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
 ) -> dict:
-    item = (
-        db.query(Integration)
-        .filter(Integration.business_id == business.id, Integration.provider == "meta")
-        .first()
-    )
-    if not item or not item.access_token_enc:
-        raise HTTPException(status_code=400, detail="חברו קודם את פייסבוק ואינסטגרם")
-    extra = loads(item.extra_json, {})
-    page_tokens = extra.get("page_tokens") or {}
-    if body.page_id not in page_tokens:
-        raise HTTPException(status_code=400, detail="הדף שבחרתם לא נמצא בחשבון שחיברתם")
-    extra["selected_page_id"] = body.page_id
-    extra["selected_instagram_id"] = body.instagram_id
-    extra["selected_ad_account_id"] = body.ad_account_id
-    item.external_id = body.page_id
-    item.display_name = body.display_name or body.page_id
-    item.extra_json = dumps(extra)
-    item.status = "connected"
-    item.updated_at = datetime.utcnow()
-    db.commit()
+    meta_connections.save_assets(body, business, db)
+    item = meta_connections.integration(business, db)
     return {"integration": _public_integration(item)}
 
 

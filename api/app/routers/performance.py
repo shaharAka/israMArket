@@ -10,7 +10,7 @@ from app.models import Audience, Business, Integration, PerformanceSnapshot, Rec
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
 from app.security import decrypt_page_token
-from app.services import ga4, instagram_signal, meta
+from app.services import ga4, instagram_signal, meta, meta_marketing
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
@@ -141,13 +141,23 @@ def _sync_payload(business: Business, db: Session) -> dict:
         if meta_item:
             extra_meta = loads(meta_item.extra_json, {})
             instagram_id = extra_meta.get("selected_instagram_id") or ""
-            page_token = decrypt_page_token(extra_meta, meta_item.external_id)
-            if not page_token:
-                raise RuntimeError("החיבור לדף הפייסבוק שבחרתם לא שלם. חברו את אינסטגרם מחדש בעמוד החיבורים.")
-            meta_data = meta.fetch_insights(page_token, instagram_id, meta_item.external_id)
-            # The account's own totals (followers, reach, profile taps) next to the
-            # per-post numbers. Best effort: they never fail the sync.
-            meta_data["account"] = _account_block(page_token, instagram_id)
+            page_id = extra_meta.get("selected_page_id") or (meta_item.external_id if not meta_item.external_id.startswith("act_") else "")
+            page_token = decrypt_page_token(extra_meta, page_id)
+            if page_id and page_token:
+                try:
+                    meta_data = meta.fetch_insights(page_token, instagram_id, page_id)
+                    meta_data["account"] = _account_block(page_token, instagram_id)
+                except RuntimeError as exc:
+                    # A social-permission problem must not discard accessible ad/site data.
+                    meta_data["social_error"] = meta_marketing.failure(exc)
+            elif page_id:
+                meta_data["social_error"] = {"status": "reconnect", "note_he": "חברו מחדש את הדף כדי לקרוא את נתוני הפוסטים."}
+            # The user grant is needed only for selected ad/site measurement. Social
+            # reports use their Page grant, including connections made before this flow.
+            access = ""
+            if extra_meta.get("selected_ad_account_id") or extra_meta.get("selected_pixel_id"):
+                access, _, _ = tokens_for(meta_item)
+            meta_data.update(meta_marketing.measurement(access, extra_meta, business.website_url, start.isoformat(), end.isoformat()))
     except RuntimeError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
