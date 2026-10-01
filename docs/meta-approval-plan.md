@@ -112,11 +112,10 @@ as a shortcut if read access fails.
 - `/security` is being corrected to the actual four social scopes plus optional
   `ads_read`. Old references to `business_management` and `pages_read_user_content`
   are removed. It now describes ads reports and Pixel evidence.
-- Events Manager for this personal login lists one ad account and unrelated Debounce
-  datasets, plus an entry named IsraMarket whose ID equals the **app ID**. All visible
-  entries have no integrations and zero activity in the last 28 days. That app entry
-  is not evidence of an installed store Pixel. No Tazizi dataset or ad account is
-  available in the account selector. Nothing was created or changed in Events Manager.
+- No authorised Tazizi dataset or ad account is available in this login's Events Manager
+  account selector. An entry named IsraMarket uses the **app ID** and is not evidence
+  of an installed store Pixel. Nothing was created or changed in Events Manager.
+  Unrelated account names, identifiers and event activity stay out of this review packet.
 - Final review submission still needs actual authorised store consent and evidence,
   usable reviewer access and the entity/portfolio prerequisites. No demo screenshots
   or fabricated successful event receipts are submitted as real integration proof.
