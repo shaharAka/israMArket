@@ -277,6 +277,25 @@ def _asset_key(url: str) -> str:
     return _TRANSFORM_SPLIT_RE.split(url.split("?")[0], 1)[0]
 
 
+def _image_alts(base: str, soup: BeautifulSoup) -> dict[str, str]:
+    """The alt text the site gives each <img>, keyed by asset (CDN sizes ignored).
+    Lets a post find the site photo of its subject (services/photo_choice.py)."""
+    alts: dict[str, str] = {}
+    for img in soup.find_all("img"):
+        alt = " ".join(str(img.get("alt") or "").split())
+        url = _abs(base, img.get("src") or img.get("data-src") or img.get("data-lazy-src"))
+        if alt and url and not _LOGO_HINT_RE.search(url):
+            alts.setdefault(_asset_key(url), alt[:160])
+    return dict(list(alts.items())[:60])
+
+
+def image_alt_for(alts: dict | None, url: str) -> str:
+    """The alt text recorded for a photo's URL (or one of its CDN size variants)."""
+    if not alts or not url:
+        return ""
+    return str(alts.get(_asset_key(url)) or "")
+
+
 def _variant_width(url: str) -> int:
     match = _SIZE_RE.search(url)
     return int(match.group(1)) if match else 0
@@ -1056,6 +1075,7 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
         "colors": colors,
         "fonts": fonts,
         "image_urls": [item["url"] for item in downloaded] or image_urls[:4],
+        "image_alts": _image_alts(page_url, soup),
         "images": downloaded,
         "platform": platform,
         # `logo` carries bytes (for the vision model) and never leaves the server or

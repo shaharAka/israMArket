@@ -28,3 +28,9 @@ os.environ["PAYPAL_CLIENT_SECRET"] = ""
 os.environ["PAYPAL_PLAN_ID"] = ""
 os.environ["PAYPAL_WEBHOOK_ID"] = ""
 os.environ["BILLING_ENFORCE"] = "false"
+# Design DNA is (re)built in the background after a site scan and at signup, with a model
+# call. Off here so no scan or signup test can make one; tests of that path turn it on and
+# mock the model (tests/test_design_dna.py).
+os.environ["DESIGN_DNA_ON_SCAN"] = "false"
+# Images go to Muse first. META_MODEL_API_KEY is blank above, so Muse fails before any
+# request; tests that exercise the routing patch services/muse_image.py.

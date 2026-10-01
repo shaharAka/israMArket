@@ -850,7 +850,7 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "visual_style": {
             "type": "string",
             "title": "Visual Style",
-            "description": "הגדרת סגנון הצילום והאסתטיקה (למשל: צילום עריכתי חם של מוצרי מאפה, צילום אווירה אותנטי מאחורי הקלעים, מינימליזם נקי ומודרני, אווירת חג עשירה על שולחן עץ כפרי).",
+            "description": "הגדרת סגנון הצילום והאסתטיקה של הפוסט הזה, במילים של העסק הזה ולפי כיוון הצילום הקבוע שלו.",
         },
         "scene_description": {
             "type": "string",
@@ -865,30 +865,16 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "overlay_headline": {
             "type": "string",
             "title": "Overlay Headline",
-            "description": "כותרת קצרה, מעוצבת וקולעת בעברית בת 2 עד 5 מילים (למשל: 'החלות החמות של שישי', 'סוגרים הזמנות לסוכות', 'טרי מהתנור ב-07:00'). אם has_overlay הוא false, החזר מחרוזת ריקה.",
+            "description": "כותרת קצרה וקולעת בעברית בת 2 עד 5 מילים: ההבטחה הקונקרטית של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). אם has_overlay הוא false, החזר מחרוזת ריקה.",
         },
         "overlay_badge": {
             "type": "string",
             "title": "Overlay Badge",
-            "description": "תגית קטנה או קיקר של מילה עד שתיים (למשל: 'מהדורת חג', 'בשישי בלבד', 'חדש', 'עד 13:00'). אם has_overlay הוא false, החזר מחרוזת ריקה.",
-        },
-        "overlay_theme": {
-            "type": "string",
-            "title": "Card Template",
-            "description": (
-                "תבנית הכרטיס — היא קובעת גם את הפריסה וגם איפה התמונה חייבת להיות נקייה מכיתוב. "
-                "בחר לפי סוג הפוסט:\n"
-                "- lower_editorial: תמונה מלאה עם מעבר כהה בתחתית וכותרת גדולה. ברירת המחדל לפוסט רגיל, "
-                "ו-scene_description חייב להשאיר את השליש התחתון שקט וכהה.\n"
-                "- split_panel: תמונה למעלה (60% בלבד) ופאנל בצבע המותג למטה עם כותרת ו-CTA. "
-                "הקריא ביותר — מתאים כשרוצים שהמסר יעבור בוודאות.\n"
-                "- framed_inset: תמונה ממוסגרת על רקע צבע המותג והכותרת מתחתיה. "
-                "טוב כשיש פחות טקסט והתמונה עצמה חזקה.\n"
-                "- cover_type: כותרת ענקית על החלק העליון של התמונה. להכרזות ולעדכוני שעות.\n"
-                "- promo_ribbon: פס צבעוני למעלה עם המבצע ופאנל כהה למטה. למבצעים ולדדליינים."
-            ),
+            "description": "תגית קטנה של מילה עד שתיים שמסמנת את ההקשר (מועד, חידוש, הגבלה). אם has_overlay הוא false, החזר מחרוזת ריקה.",
         },
     },
+    # The layout is the business's Design DNA composition (services/post_design.py), no
+    # longer a per-post template choice.
     "required": [
         "creative_concept",
         "visual_style",
@@ -896,7 +882,6 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "has_overlay",
         "overlay_headline",
         "overlay_badge",
-        "overlay_theme",
     ],
 }
 

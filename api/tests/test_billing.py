@@ -693,6 +693,8 @@ GATED = {
     ("POST", "/performance/weekly"),
     ("POST", "/audiences/generate"),
     ("POST", "/instagram/brief/refresh"),
+    # "לנסות סגנון אחר" writes a new Design DNA with the model.
+    ("POST", "/brand/dna/regenerate"),
 }
 
 

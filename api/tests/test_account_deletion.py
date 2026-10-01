@@ -24,6 +24,7 @@ from app.models import (
     Business,
     GenerationJob,
     HashtagQuery,
+    ImageUsage,
     InspirationBrief,
     InstagramPost,
     Integration,
@@ -112,6 +113,8 @@ class AccountDeletionTest(unittest.TestCase):
                     Audience(business_id=bid, name="שכונה"),
                     ResearchRun(business_id=bid, period="2026-W40"),
                     GenerationJob(business_id=bid, kind="first_month", status="done"),
+                    ImageUsage(business_id=bid, task="generate", provider="muse", model="muse-image-1.0",
+                               est_cost_usd=0.01),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
             )
