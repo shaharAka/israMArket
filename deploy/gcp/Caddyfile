@@ -3,6 +3,7 @@
 # SITE_HOST comes from /run/isramarket/app.env (render-env.sh): the instance metadata
 # value `site-host`, or "<ip-with-dashes>.sslip.io" when it is empty. Changing the domain
 # is that one value; Caddy then obtains a certificate for the new name on its own.
+# SITE_ALIASES lists old/apex hosts to keep reachable and redirect to SITE_HOST.
 #
 # Certificates: Let's Encrypt over HTTP-01/TLS-ALPN (ports 80/443 must be open). If Let's
 # Encrypt refuses (sslip.io is one registered domain shared by everyone who uses it, so
@@ -17,8 +18,12 @@
 	# is therefore the client's IP and cannot be spoofed.
 }
 
-{$SITE_HOST} {
+{$SITE_HOST} {$SITE_ALIASES} {
 	encode zstd gzip
+
+	# Keep old shared links working after a domain change, including paths and queries.
+	@alias not host {$SITE_HOST}
+	redir @alias https://{$SITE_HOST}{uri} 308
 
 	header {
 		Strict-Transport-Security "max-age=31536000"

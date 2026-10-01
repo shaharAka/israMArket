@@ -393,25 +393,27 @@ startup, so every update first takes a DB-only backup to `gs://$BUCKET/pre-updat
 - Caddy writes **no access log** on purpose. It would record every visitor's IP,
   including taps on WhatsApp tracked links.
 
-### Switch to a real domain (one variable)
+### Switch to a real domain
 
-1. Register the domain (for example `isramarket.co.il`). Add an `A` record for `@` pointing
-   to `$IP` and wait until `dig +short isramarket.co.il` returns it.
-2. Set the variable and redeploy:
+1. Register the domain. Point both the apex and `www` A records to `$IP` and confirm
+   both resolve publicly. A registry `serverHold` must be resolved with the registrar;
+   changing an A record alone cannot activate the domain. Keep the transfer lock enabled.
+2. Add the new HTTPS origin and callback URLs to Google and Meta **before** changing
+   the server origin (step 13). Retain old callback URLs during the transition.
+3. Set the canonical host and any old/apex aliases, then redeploy:
    ```bash
    gcloud compute instances add-metadata isramarket-vm --project isramarket --zone me-west1-a \
-     --metadata site-host=isramarket.co.il
+     --metadata 'site-host=www.isramarket.co.il,site-aliases=isramarket.co.il 34-165-93-157.sslip.io'
    gcloud compute ssh isramarket-vm --project isramarket --zone me-west1-a --tunnel-through-iap \
      --command 'sudo /srv/isramarket/deploy/gcp/update.sh --recreate'
    ```
-   Caddy obtains the new certificate within seconds. `WEB_ORIGIN`, `API_ORIGIN` and
-   `PUBLIC_BASE_URL` all follow.
-3. Replace the OAuth URIs in Google and Meta (step 13) with the new host.
-4. The sslip.io host stops being served, so existing sessions and any links printed with
-   it break. **Switch before owners post WhatsApp links.** If links already went out, add
-   a redirect block for the old host to `deploy/gcp/Caddyfile`:
-   `34-165-x-x.sslip.io { redir https://isramarket.co.il{uri} permanent }`.
-   `www.` needs its own DNS record and a block like it.
+   Use the VM's actual old host in `site-aliases`. Caddy obtains certificates for every
+   host; `WEB_ORIGIN`, `API_ORIGIN` and the default `PUBLIC_BASE_URL` follow `site-host`.
+   If `public-base-url` was explicitly set, update it to the new origin as well.
+4. Verify HTTPS, health, sign-in and each integration on the new host. Verify that
+   aliases redirect with status 308 and preserve the full path/query. Users sign in
+   again because their session cookie belongs to the previous host; stored integration
+   grants stay in the database. Retry any sign-in interrupted by the migration.
 
 ### Restore from a backup
 
