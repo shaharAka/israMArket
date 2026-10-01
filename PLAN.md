@@ -30,14 +30,14 @@ owner, add it under their name rather than doing it in their lane.
 | # | Item | Owner | Status | Links |
 |---|---|---|---|---|
 | N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | 2 agents building (server + renderer) | `docs/design-dna.md` Revision 1 |
-| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | Branch `codex/customer-pixel-setup`, no PR yet | `docs/meta-approval-plan.md` |
+| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | PR open, waiting for Claude's design pass (C1) | [#33](https://github.com/shaharAka/israMArket/pull/33) |
 | N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
 | N4 | **Meta app approval**: Tech Provider done, `ads_read` ready for testing, data-deletion URL saved | Codex + Shahar | Blocked on a business portfolio (portfolio limit) and IsraMarket's legal entity | `docs/meta-approval-plan.md` |
 
 ## Next (ready, in order)
 
 **Claude**
-- C1 **Design pass on N2** (Pixel setup guide) when Codex opens the PR.
+- C1 **Design pass on N2** (Pixel setup guide, [#33](https://github.com/shaharAka/israMArket/pull/33)), before it merges.
 - C2 **Results page word budget:** 200 words vs 140. Fold the WhatsApp table and the Instagram numbers into "more" (needs D1).
 - C3 **Today word budget:** 162 vs 150.
 - C4 **Plan page** is ~284 words once a month exists. Tighten it.
