@@ -227,6 +227,10 @@ def post_brief(index: int, post: dict) -> dict:
     """One post as the queue shows it: identity, timing, approval and what exists."""
     return {
         "index": index,
+        # docs/posts-v2.md: the post's stable id and its state word ("" / None for a post
+        # that did not go through `queue_for`'s connected view).
+        "uid": _text(post.get("uid")),
+        "lifecycle": _text(post.get("lifecycle")) or None,
         "title": _text(post.get("title")),
         "format": _text(post.get("format")),
         "primary_outlet": _text(post.get("primary_outlet")),
@@ -299,7 +303,17 @@ def queue_for(
     today: date | None = None,
 ) -> dict:
     """Everything the publishing screen needs, in one response."""
-    posts = _posts(strategy)
+    from app.services import connected_posts  # avoids an import cycle
+
+    roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
+    posts = connected_posts.connect_posts(
+        _posts(strategy),
+        business_id=strategy.business_id,
+        year=strategy.year,
+        month=strategy.month,
+        core=connected_posts.strategy_core(roadmap if isinstance(roadmap, dict) else {}),
+        website=business.website_url or "",
+    )
     queue = split_queue(posts, today=today)
     _attach_whatsapp_links(db, business, strategy, posts, queue)
     return {

@@ -63,7 +63,7 @@ from app.services.onboarding_draft import (
     clean_text,
     invented_numbers,
 )
-from app.services.schemas_llm import MONTHLY_POST_ITEM_SCHEMA
+from app.services.schemas_llm import MIX_TYPE_KEYS, MONTHLY_POST_ITEM_SCHEMA
 from app.services.business_fields import field_label
 
 log = logging.getLogger(__name__)
@@ -383,6 +383,13 @@ class SamplePostIn(BaseModel):
     outlets: list[str] = Field(default_factory=list, max_length=4)
     metrics_to_watch: list[str] = Field(default_factory=list, max_length=5)
     outlet_captions: dict[str, str] = Field(default_factory=dict, max_length=3)
+    # docs/posts-v2.md: the content-mix type the writer named (validated on the way in).
+    mix_type: str = Field(default="", max_length=20)
+
+    @field_validator("mix_type")
+    @classmethod
+    def _mix_type(cls, value: str) -> str:
+        return value if value in MIX_TYPE_KEYS else ""
 
     @field_validator("template")
     @classmethod
@@ -1303,7 +1310,10 @@ _SAMPLE_EXTRA_PROPERTIES = {
 # English image prompt (the designer writes the scene when an image is made) and the
 # Instagram inspiration refs (there is no Instagram data before signup). Muse writes
 # ~40 tokens a second, and those fields were half of every answer.
-_SAMPLE_DROPPED = {"outlet_captions", "image_prompt", "inspiration_refs", "inspiration_note"}
+# The connected-post fields a sample cannot use yet (no featured items, no owner facts to
+# check, nothing measured) are dropped too; its mix type is kept and carried into the month.
+_SAMPLE_DROPPED = {"outlet_captions", "image_prompt", "inspiration_refs", "inspiration_note",
+                   "featured_item", "owner_fact", "applied_learning"}
 SAMPLE_POST_SCHEMA = {
     "type": "object",
     "title": "WeekOnePost",
@@ -1528,6 +1538,7 @@ def _parse_one(parsed: dict, slot: int, strategy: dict, photos: list[dict], scan
         "primary_outlet": clean_text(item.get("primary_outlet"), 20) or "instagram",
         "outlets": [clean_text(o, 20) for o in item.get("outlets") or [] if clean_text(o, 20)][:4],
         "metrics_to_watch": [clean_text(m, 120) for m in item.get("metrics_to_watch") or [] if clean_text(m, 120)][:4],
+        "mix_type": item.get("mix_type") if item.get("mix_type") in MIX_TYPE_KEYS else "",
         "outlet_captions": {
             k: clean_text(v, 2200) for k, v in (item.get("outlet_captions") or {}).items()
             if k in {"instagram", "facebook", "whatsapp"} and isinstance(v, str)
@@ -1724,6 +1735,7 @@ def product_post(chosen: dict, week: int) -> dict:
         "audience_name": why.get("audience", ""),
         "inspiration": None,
         "pillar_key": chosen.get("pillar_key", ""),
+        "mix_type": chosen.get("mix_type") if chosen.get("mix_type") in MIX_TYPE_KEYS else None,
         "product": chosen.get("product", ""),
         "photo_site_url": photo.get("site_url", ""),
         "photo_hint_he": photo.get("hint_he", ""),

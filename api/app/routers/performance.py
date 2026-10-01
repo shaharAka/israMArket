@@ -10,7 +10,7 @@ from app.models import Audience, Business, Integration, PerformanceSnapshot, Rec
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
 from app.security import decrypt_page_token
-from app.services import ga4, instagram_signal, meta
+from app.services import connected_posts, ga4, instagram_signal, meta
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
@@ -121,10 +121,29 @@ def _account_block(page_token: str, instagram_id: str) -> dict:
         return {"windows": {}, "followers_count": None, "errors": {"account": meta.MISSING_METRIC_HE}}
 
 
+def _refresh_post_results(business: Business, db: Session, ga4_data: dict | None, meta_data: dict | None) -> dict:
+    """Write each post's results (and its learning line) back onto the post.
+
+    docs/posts-v2.md: WhatsApp taps per post code, GA4 visits by UTM, Instagram reach and
+    saves by the post's link. Best effort: a failure here never costs the sync its numbers.
+    """
+    try:
+        outcome = connected_posts.refresh_results(db, business, ga4_data=ga4_data, meta_data=meta_data)
+        db.commit()
+        return outcome
+    except Exception:  # noqa: BLE001
+        db.rollback()
+        logger.exception("writing post results failed for business %s", business.id)
+        return {"updated": 0, "measured": 0}
+
+
 def _sync_payload(business: Business, db: Session) -> dict:
     ga4_item = _optional(business, "ga4")
     meta_item = _optional(business, "meta")
     if not ga4_item and not meta_item:
+        if business.whatsapp_number_e164:
+            # WhatsApp taps need no connected account: the posts still get theirs.
+            _refresh_post_results(business, db, None, None)
         raise HTTPException(
             status_code=400,
             detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
@@ -160,6 +179,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
 
     posts = _posts(business, db)
     ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data)
+    post_results = _refresh_post_results(business, db, ga4_data if ga4_item else None, meta_data)
 
     business_payload = {
         "name": business.name,
@@ -193,6 +213,8 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "meta": meta_data,
         "diagnostic": diagnostic,
         "created_at": snap.created_at.isoformat(),
+        # How many posts got numbers from this refresh, and how many are measured overall.
+        "post_results": post_results,
     }
 
 

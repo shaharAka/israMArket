@@ -19,7 +19,7 @@ from app.schemas import (
     PostUpdateIn,
     StrategyApproveIn,
 )
-from app.services import generation_jobs
+from app.services import connected_posts, generation_jobs
 from app.services.assets import (
     asset_catalogue,
     suggest_assets,
@@ -55,6 +55,10 @@ def serialize_strategy(
     extra = loads(strategy.roadmap_json, {})
     scraped = loads(business.scraped_profile_json, {}) if business else {}
     roadmap = extra.get("roadmap") or {}
+    if isinstance(roadmap, dict) and isinstance(roadmap.get("posts"), list):
+        # docs/posts-v2.md: every post with the contract fields (uid, channel, plan_link,
+        # why_line, owner_needs, measure, results, lifecycle...), old posts included.
+        roadmap = {**roadmap, "posts": _connected(strategy, roadmap, business)}
     usp = loads(strategy.usp_json, {})
     payload = {
         "id": strategy.id,
@@ -79,6 +83,31 @@ def serialize_strategy(
     if horizon:
         payload["horizon"] = horizon
     return payload
+
+
+def _connected(strategy: Strategy, roadmap: dict, business: Business | None) -> list:
+    return connected_posts.connect_posts(
+        roadmap.get("posts") or [],
+        business_id=strategy.business_id,
+        year=strategy.year,
+        month=strategy.month,
+        core=connected_posts.strategy_core(roadmap),
+        website=(business.website_url if business else "") or "",
+    )
+
+
+def _post_view(strategy: Strategy, business: Business, index: int, post: dict) -> dict:
+    """The post an endpoint just changed, as every reader sees it (with lifecycle etc.)."""
+    roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
+    return connected_posts.connected_view(
+        post,
+        index=index,
+        business_id=strategy.business_id,
+        year=strategy.year,
+        month=strategy.month,
+        core=connected_posts.strategy_core(roadmap),
+        website=business.website_url or "",
+    )
 
 
 def upsert_generated_strategy(db: Session, business: Business, generated: dict) -> Strategy:
@@ -315,6 +344,8 @@ def _store_post_image(
     else:
         target["image_url"] = provide(target)
 
+    if preference in ("real", "ai"):
+        target["image_preference"] = preference
     posts[post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
@@ -376,7 +407,7 @@ def generate_post_image(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": post, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, post), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/design", dependencies=[Depends(require_generation_access)])
@@ -428,7 +459,7 @@ def design_post_endpoint(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/asset")
@@ -469,7 +500,7 @@ def attach_post_asset(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/suggest-assets")
@@ -569,12 +600,16 @@ def save_post(
     if body.date_hint:
         target["date_hint"] = body.date_hint
     target["primary_outlet"] = body.primary_outlet
+    target["channel"] = connected_posts.channel_of({"primary_outlet": body.primary_outlet})
     target["outlets"] = body.outlets
     target["approval_status"] = "review"
     target["approved_at"] = None
     if "outlet_captions" not in target or not isinstance(target["outlet_captions"], dict):
         target["outlet_captions"] = {}
     target["outlet_captions"][body.primary_outlet] = body.caption
+    # The owner went over the text: a fact we asked them to check is theirs now.
+    if target.get("owner_fact"):
+        target["owner_fact_done"] = True
 
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
@@ -582,7 +617,7 @@ def save_post(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/rewrite", dependencies=[Depends(require_generation_access)])
@@ -600,22 +635,45 @@ def rewrite_post_endpoint(
 
     brand = extra.get("brand_language") or (loads(business.scraped_profile_json, {}) or {}).get("brand_language") or {}
     target = posts[body.post_index]
+    # docs/posts-v2.md: a rewrite knows the post's place in the plan, how it is measured,
+    # what it got so far, and what worked for this business (the post itself excluded).
+    view = _post_view(strategy, business, body.post_index, target)
+    worked = connected_posts.what_worked(db, business, exclude_uid=view["uid"])
+    context = {
+        "plan_link": view["plan_link"],
+        "channel": view["channel"],
+        "measure": view["measure"],
+        "results": view["results"],
+        "what_worked": worked,
+    }
     try:
         rewritten = rewrite_post(
-            target, body.tone, brand, instagram=signal_for(db, business, strategy.year, strategy.month)
+            target, body.tone, brand, instagram=signal_for(db, business, strategy.year, strategy.month), context=context
         )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"לא הצלחנו לכתוב את הפוסט מחדש: {exc}") from exc
 
-    target["title"] = rewritten.get("title") or target["title"]
-    target["hook"] = rewritten.get("hook") or target["hook"]
-    target["caption"] = rewritten.get("caption") or target["caption"]
-    target["cta"] = rewritten.get("cta") or target["cta"]
-    target["overlay_text"] = rewritten.get("overlay_text") or target["overlay_text"]
+    # .get: a post stored without one of these (an old or a chosen sample post) still rewrites.
+    target["title"] = rewritten.get("title") or target.get("title") or ""
+    target["hook"] = rewritten.get("hook") or target.get("hook") or ""
+    target["caption"] = rewritten.get("caption") or target.get("caption") or ""
+    target["cta"] = rewritten.get("cta") or target.get("cta") or ""
+    target["overlay_text"] = rewritten.get("overlay_text") or target.get("overlay_text") or ""
     if rewritten.get("outlet_captions"):
         target["outlet_captions"] = rewritten["outlet_captions"]
+    if isinstance(target.get("outlet_captions"), dict):
+        # The post is the one for its channel; the other copies stay a cross-post option.
+        target["outlet_captions"][view["channel"]] = target["caption"]
     if "inspiration" in rewritten:
         target["inspiration"] = rewritten["inspiration"]
+    target["uid"] = view["uid"]
+    fact = str(rewritten.get("owner_fact") or "").strip()[:120]
+    if fact:
+        target["owner_fact"] = fact
+        target["owner_fact_done"] = False
+    note, sources = connected_posts.informed_note(target, worked, rewritten.get("applied_learning"))
+    target["informed_by_note"] = note
+    target["informed_by"] = sources
     target["approval_status"] = "review"
     target["approved_at"] = None
 
@@ -625,7 +683,7 @@ def rewrite_post_endpoint(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/approve")
@@ -644,13 +702,15 @@ def approve_post(
     target = posts[body.post_index]
     target["approval_status"] = "approved" if body.approved else "review"
     target["approved_at"] = datetime.utcnow().isoformat() if body.approved else None
+    if body.approved and target.get("owner_fact"):
+        target["owner_fact_done"] = True
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/schedule")
@@ -686,7 +746,7 @@ def schedule_post(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/publish")
@@ -710,7 +770,7 @@ def publish_post(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
-    return {"post": target, "strategy": serialize_strategy(strategy, business)}
+    return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
 
 def _next_month_target(db: Session, business: Business) -> tuple[Strategy, int, int, dict, bool]:
@@ -783,6 +843,8 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         "owner_context": stored.get("owner_context") or None,
         # Revision 8: the products/services the owner chose to feature, when they have.
         "featured_items": featured_items_from(stored),
+        # docs/posts-v2.md: this business's measured posts, best and worst ("" when none).
+        "what_worked": connected_posts.what_worked(db, business),
     }
 
     def persist_stage(next_state: dict) -> None:
@@ -942,8 +1004,11 @@ def calendar(year: int, month: int, business: Business = Depends(get_business), 
         .filter(Strategy.business_id == business.id, Strategy.year == year, Strategy.month == month)
         .first()
     )
+    roadmap = loads(strategy.roadmap_json, {}).get("roadmap") if strategy else None
+    if strategy and isinstance(roadmap, dict) and isinstance(roadmap.get("posts"), list):
+        roadmap = {**roadmap, "posts": _connected(strategy, roadmap, business)}
     return {
         **gregorian_month_meta(year, month),
         "events": events,
-        "roadmap": loads(strategy.roadmap_json, {}).get("roadmap") if strategy else None,
+        "roadmap": roadmap,
     }

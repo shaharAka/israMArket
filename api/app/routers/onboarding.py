@@ -9,7 +9,7 @@ from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, Strategy, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
-from app.services import generation_jobs, month_posts
+from app.services import connected_posts, generation_jobs, month_posts
 from app.services.audiences import attach_audiences
 from app.services.brand import filter_usable_photos
 from app.services.audiences import catalogue_for
@@ -571,6 +571,9 @@ def _first_month_payload(db: Session, business: Business, stored: dict, *, with_
         "first_month_seed": seed_from_stored(stored) if with_seed else None,
         # Revision 8: what the owner chose to feature (week 2). [] until they choose.
         "featured_items": featured_items_from(stored),
+        # docs/posts-v2.md: this business's measured posts, best and worst. Empty until a
+        # first post is measured; from then on every week's posts are written with it.
+        "what_worked": connected_posts.what_worked(db, business),
     }
 
 

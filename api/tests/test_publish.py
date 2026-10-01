@@ -391,9 +391,14 @@ class PublishTestCase(unittest.TestCase):
                     # The post's WhatsApp tracked link ("" until the number is set and
                     # the CTA is WhatsApp) — see tests/test_whatsapp_link.py.
                     "whatsapp_url",
+                    # docs/posts-v2.md: the stable id and the state word.
+                    "uid",
+                    "lifecycle",
                 ]
             ),
         )
+        self.assertTrue(brief["uid"])
+        self.assertEqual(brief["lifecycle"], "approved")
         self.assertTrue(brief["has_image"])
         self.assertEqual(brief["primary_outlet"], "facebook")
         self.assertEqual(brief["outlets"], ["instagram", "facebook"])
