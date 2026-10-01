@@ -25,7 +25,7 @@ export function LegalPage({
   lead: string;
   /** The sections, for the contents rail (same ids and titles as the sections). */
   contents: { id: string; title: string }[];
-  current: "/security" | "/terms";
+  current: "/security" | "/terms" | "/data-deletion";
   children: ReactNode;
 }) {
   return (
