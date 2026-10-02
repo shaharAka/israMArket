@@ -278,6 +278,24 @@ class SetupChecklistTestCase(unittest.TestCase):
         self.assertEqual(payload["next"]["action_href"], ACTION_HREFS["scan"])
         self.assertEqual(payload["next"], {k: payload["next"][k] for k in ("key", "title", "action_href", "action_label")})
 
+    def test_saved_plan_only_asks_for_its_sources(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}]}})
+        by_key = self.by_key()
+        self.assertIn("google", by_key)
+        self.assertNotIn("instagram", by_key)
+        self.assertTrue(by_key["quarter"]["done"])
+        self.assertFalse(by_key["google"]["done"])
+        self.connect("ga4", business=self.rival)
+        self.assertFalse(self.by_key()["google"]["done"])
+        self.connect("ga4")
+        self.assertTrue(self.by_key()["google"]["done"])
+
+    def test_plan_without_external_sources_does_not_add_connectors(self):
+        self.save_profile({"quarter_plan": {"strategy": "recommendations", "integrations": []}})
+        by_key = self.by_key()
+        self.assertNotIn("google", by_key)
+        self.assertNotIn("instagram", by_key)
+
     def test_groups_are_the_setup_and_running_groups(self):
         groups = self.payload()["groups"]
         self.assertEqual([group["key"] for group in groups], ["setup", "running"])

@@ -229,15 +229,16 @@ def build_steps(
     steps: list[dict] = []
 
     # --- week 1 · measurement: without it there is no way to know anything works ------
-    status = _connect(facts, "meta", meta_ready)
-    steps.append(_step(
-        "instagram", 1, "לחבר את האינסטגרם",
-        "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
-        3, "/integrations", "לחבר את האינסטגרם",
-        status, facts.connected_at.get("meta"),
-        "החיבור לאינסטגרם ייפתח כאן בקרוב." if status == "soon" else None,
-    ))
-
+    required = _plan_integration_keys(facts)
+    if required is None or required & {"meta_business", "instagram_insights", "facebook_insights", "meta_pixel"}:
+        status = _connect(facts, "meta", meta_ready)
+        steps.append(_step(
+            "instagram", 1, "לחבר את האינסטגרם",
+            "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
+            3, "/integrations", "לחבר את האינסטגרם",
+            status, facts.connected_at.get("meta"),
+            "החיבור לאינסטגרם ייפתח כאן בקרוב." if status == "soon" else None,
+        ))
     if _needs_site_data(facts):
         status = _connect(facts, "ga4", ga4_ready)
         steps.append(_step(
@@ -250,18 +251,18 @@ def build_steps(
             "החיבור לנתוני האתר ייפתח כאן בקרוב." if status == "soon" else None,
         ))
 
-    whatsapp_ready, whatsapp_set = whatsapp
-    status = "done" if whatsapp_set else ("todo" if whatsapp_ready else "soon")
-    steps.append(_step(
-        "whatsapp", 1, "להכין את קישור הוואטסאפ",
-        f"קישור עם הודעה מוכנה. נמדוד לחיצות לקישור, שעשויות להוביל ליעד שבחרתם: {kpi}. שליחת הודעה אינה נמדדת כאן."
-        if "whatsapp_link" in kpi_needs and kpi
-        else "קישור עם הודעה מוכנה. נמדוד לחיצות מכל פוסט; שליחת הודעה אינה נמדדת כאן.",
-        2, "/integrations#whatsapp", "להכין את הקישור",
-        status, None,
-        "הקישור יהיה מוכן כאן בקרוב." if status == "soon" else None,
-    ))
-
+    if required is None or "whatsapp_link" in required:
+        whatsapp_ready, whatsapp_set = whatsapp
+        status = "done" if whatsapp_set else ("todo" if whatsapp_ready else "soon")
+        steps.append(_step(
+            "whatsapp", 1, "להכין את קישור הוואטסאפ",
+            f"קישור עם הודעה מוכנה. נמדוד לחיצות לקישור, שעשויות להוביל ליעד שבחרתם: {kpi}. שליחת הודעה אינה נמדדת כאן."
+            if "whatsapp_link" in kpi_needs and kpi
+            else "קישור עם הודעה מוכנה. נמדוד לחיצות מכל פוסט; שליחת הודעה אינה נמדדת כאן.",
+            2, "/integrations#whatsapp", "להכין את הקישור",
+            status, None,
+            "הקישור יהיה מוכן כאן בקרוב." if status == "soon" else None,
+        ))
     if _needs_gbp(facts):
         confirmed = _event(events, "gbp_confirmed_at")
         steps.append(_step(
@@ -271,8 +272,9 @@ def build_steps(
             "done" if confirmed else "todo", confirmed,
         ))
 
-    if foundations.baseline_filled(facts.baseline) or facts.first_snapshot_at:
-        # From the owner's numbers, or measured: a connected source already gave numbers.
+    if foundations.baseline_filled(facts.baseline) or journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at:
+        # Completion of the answer also includes explicitly saved unknowns. This does
+        # not mark an unknown baseline as measured; measurement readiness stays separate.
         baseline_status = "done"
         baseline_done = journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at
     else:
@@ -286,24 +288,27 @@ def build_steps(
     ))
 
     # --- week 2 · raw materials: what the posts are made of ---------------------------
-    photos_done = facts.asset_count >= MIN_PHOTOS
+    minimum_photos = MIN_PHOTOS if products else 1
+    minimum_featured = foundations.minimum_featured("products" if products else "services")
+    photos_done = facts.asset_count >= minimum_photos
     have = facts.asset_count
     steps.append(_step(
         "photos", 2, "להעלות תמונות וסרטונים של העסק",
-        f"לפחות {MIN_PHOTOS}, כדי שהפוסטים ייראו כמו העסק שלכם."
-        + (f" כבר העליתם {have}." if 0 < have < MIN_PHOTOS else ""),
+        (f"לפחות {minimum_photos}, כדי שהפוסטים ייראו כמו העסק שלכם." if products
+         else "תמונה אחת של עבודה, תהליך או שלכם בעסק מספיקה להתחלה. אפשר להוסיף עוד בהמשך.")
+        + (f" כבר העליתם {have}." if 0 < have < minimum_photos else ""),
         5, "/assets", "להעלות תמונות",
-        "done" if photos_done else "todo", facts.third_asset_at,
+        "done" if photos_done else "todo", facts.third_asset_at if products else facts.first_asset_at,
     ))
 
     featured = facts.featured_items
-    featured_done = len(featured) >= foundations.MIN_FEATURED
+    featured_done = len(featured) >= minimum_featured
     featured_raw = facts.stored.get("featured_items") if isinstance(facts.stored.get("featured_items"), dict) else {}
     steps.append(_step(
         "featured", 2, "לבחור אילו מוצרים לקדם" if products else "לבחור אילו שירותים לקדם",
         ("מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
-         if products else "אילו שירותים מתאימים ללקוחות שאתם רוצים ולזמן הפנוי שלכם. בחרו מה להבליט ואיזו עבודה ממחישה אותו.")
-        + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < foundations.MIN_FEATURED else ""),
+         if products else "בחרו שירות אחד שמתאים ללקוחות שאתם רוצים ולזמן הפנוי שלכם. אפשר להוסיף שירותים בהמשך.")
+        + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < minimum_featured else ""),
         5, "/featured", "לבחור",
         "done" if featured_done else "todo", journey.parse_time(featured_raw.get("saved_at")),
     ))

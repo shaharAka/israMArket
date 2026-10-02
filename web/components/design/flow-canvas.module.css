@@ -12,6 +12,8 @@
 .nodeTitle span { font-size: 10px; color: var(--ink-muted); }
 .thumbnail { width: 100%; height: 184px; display: flex; flex-direction: column; background: var(--paper); border: 1px solid var(--rule-dark); padding: 12px; border-radius: 8px; text-align: start; color: var(--ink); font-family: inherit; cursor: pointer; }
 .thumbnail:hover { border-color: var(--primary); }
+.thumbnail:has(.capture) { padding: 0; overflow: hidden; justify-content: center; }
+.capture { width: 100%; height: auto; }
 .screenNode[data-selected] .thumbnail { outline: 2px solid var(--primary); outline-offset: 3px; }
 .screenNode[data-proposed] .thumbnail { border-style: dashed; }
 .miniHeader { display: flex; gap: 4px; align-items: center; width: 100%; padding-block-end: 8px; border-block-end: 1px solid var(--rule); font-size: 7px; color: var(--ink-muted); }

@@ -36,6 +36,11 @@ router = APIRouter(prefix="/business", tags=["foundations"])
 MIN_FEATURED = 3
 MAX_FEATURED = 10
 
+
+def minimum_featured(model: str) -> int:
+    """One service is enough to establish a first content focus; shops need variety."""
+    return 1 if model == "services" else MIN_FEATURED
+
 # One list for the picks screen and the post writer (services/connected_posts.py).
 REASONS: dict[str, str] = FEATURED_REASONS_HE
 
@@ -195,7 +200,7 @@ def _featured_payload(business: Business) -> dict:
         ],
         "saved_at": raw.get("saved_at"),
         "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items()],
-        "min": MIN_FEATURED,
+        "min": minimum_featured(model),
         "max": MAX_FEATURED,
         "kind_he": "שירותים" if model == "services" else "מוצרים",
         "suggestions": _suggestions(business, {item["name"] for item in items}),

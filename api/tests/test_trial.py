@@ -48,7 +48,7 @@ DEFAULT_KEYS = [key for key in ALL_KEYS if key != "gbp"]
 PLAN = {
     "strategy": {"one_liner_he": "לחם של בוקר לשכונה"},
     "kpi": {"key": "online_orders", "name_he": "יותר הזמנות באתר", "needs": ["ga4"]},
-    "integrations": [{"key": "ga4"}, {"key": "whatsapp_link"}, {"key": "gbp"}],
+    "integrations": [{"key": "ga4"}, {"key": "whatsapp_link"}, {"key": "gbp"}, {"key": "instagram_insights"}],
     "assumptions": [
         {"bet_he": "אנחנו מניחים שהזמנות מראש לחג יעבדו", "if_wrong_he": "נעבור למבצע בחנות"},
         {"bet_he": "  ", "if_wrong_he": ""},
@@ -294,7 +294,8 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual([f["key"] for f in form["fields"]], ["orders_month", "avg_order_ils"])
         self.assertIs(form["from_integrations"], False)
         saved = self.post_json("/business/baseline", {"orders_month": None, "avg_order_ils": None}, "PUT")
-        self.assertEqual(self.status("baseline"), "todo", "all 'not sure' is not a baseline")
+        self.assertEqual(self.status("baseline"), "done", "an explicit unknown answer need not be asked again")
+        self.assertFalse(self.payload()["measurement"]["baseline"])
         saved = self.post_json("/business/baseline", {"orders_month": 40, "avg_order_ils": 180, "close_rate": 30}, "PUT")
         self.assertEqual(saved["baseline"], {"orders_month": 40, "avg_order_ils": 180})
         self.assertEqual(self.status("baseline"), "done")
@@ -332,6 +333,63 @@ class TrialTestCase(unittest.TestCase):
             self.assertNotIn("נספור כל פנייה", why)
 
     # --- week 2 · raw materials ---------------------------------------------------------
+
+    def test_services_can_start_with_one_real_asset_one_service_and_voice(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.assertEqual(self.client.get("/business/featured-items").json()["min"], 1)
+        self.add_assets(1)
+        self.post_json("/business/featured-items", {"items": [{"name": "עיצוב מותג"}]}, "PUT")
+        self.assertEqual(self.status("start_posts"), "locked")
+        self.post_json("/business/voice-check", {"ok": True}, "PUT")
+        steps = self.steps()
+        self.assertEqual(steps["photos"]["status"], "done")
+        self.assertIn("done_at", steps["photos"])
+        self.assertEqual(steps["featured"]["status"], "done")
+        self.assertEqual(steps["start_posts"]["status"], "todo")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_other_customer_materials_do_not_unlock_service_content(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.add_assets(3, self.rival)
+        self.rival.scraped_profile_json = dumps({"featured_items": {"items": [{"name": "מיתוג"}]}, "voice_check": {"at": datetime.utcnow().isoformat()}})
+        self.db.commit()
+        self.connect("meta", self.rival)
+        self.connect("ga4", self.rival)
+        self.add_snapshot(self.rival)
+        steps = self.steps()
+        for key in ("photos", "featured", "voice"):
+            self.assertEqual(steps[key]["status"], "todo")
+        self.assertEqual(steps["start_posts"]["status"], "locked")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_service_focus_can_be_removed_and_resumed(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.add_assets(1)
+        self.post_json("/business/voice-check", {"ok": False, "note": "טון אישי יותר"}, "PUT")
+        self.post_json("/business/featured-items", {"items": [{"name": "מיתוג"}]}, "PUT")
+        self.assertEqual(self.status("start_posts"), "todo")
+        self.post_json("/business/featured-items", {"items": []}, "PUT")
+        self.assertEqual(self.status("start_posts"), "locked")
+
+    def test_only_plan_sources_are_asked_and_links_are_not_grants(self):
+        self.save_profile({"quarter_plan": PLAN, "integrations_checklist": [{"key": "ga4", "status": "have"}]})
+        steps = self.steps()
+        self.assertNotIn("instagram", steps)
+        self.assertNotIn("whatsapp", steps)
+        self.assertEqual(steps["site_data"]["status"], "todo")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_explicit_unknown_baseline_is_saved_without_inventing_numbers(self):
+        self.post_json("/business/baseline", {}, "PUT")
+        self.assertEqual(self.status("baseline"), "done")
+        measurement = self.payload()["measurement"]
+        self.assertFalse(measurement["has_numbers"])
+        self.assertFalse(measurement["baseline"])
+        baseline = self.client.get("/business/baseline").json()
+        self.assertIsNone(baseline["baseline"]["orders_month"])
 
     def test_photos_need_three(self):
         self.add_assets(2)

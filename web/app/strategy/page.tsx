@@ -20,7 +20,8 @@ import {
   type WeeklyBreakdownItem,
 } from "@/lib/api";
 import { mockStoredPlan } from "@/lib/draft";
-import { markSeen } from "@/lib/trial";
+import { markSeen, nextStep, useTrial } from "@/lib/trial";
+import { NextStepAction } from "@/components/trial/TrialGuide";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconCalendar, IconChevron, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -65,6 +66,8 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
 }
 
 export default function StrategyPage() {
+  const { payload: trial } = useTrial();
+  const firstAction = trial && !trial.ended ? nextStep(trial) : null;
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -170,6 +173,7 @@ export default function StrategyPage() {
 
         {loaded ? (
           <div className="space-y-10 pb-2">
+            {welcome && plan ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">התוכנית נשמרה בחשבון. אפשר לחזור אליה בכל זמן; אין צורך לחבר את כל הכלים כדי להתחיל.</p> : null}
             {/* Arrived from /start with the plan and no month yet: the server builds it now. */}
             {needsMonth ? (
               <MonthBuildProgress
@@ -194,7 +198,7 @@ export default function StrategyPage() {
             ) : null}
             {/* The page's one filled button, beside the calendar that belongs to the plan. */}
             <footer className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-8">
-              {strategy ? (
+              {firstAction ? <div className="w-full space-y-3"><p className="text-base font-semibold">הצעד הקרוב: {firstAction.title_he}</p><p className="max-w-xl text-sm leading-6 text-[color:var(--ink-soft)]">{firstAction.why_he}</p><NextStepAction step={firstAction} /></div> : strategy ? (
                 <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
                   השבוע בתוכנית
                   <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
@@ -218,7 +222,7 @@ function NoMonthYet() {
     <div className="paper px-5 py-4 text-[15px] leading-7 text-[color:var(--ink-soft)] sm:px-6">
       <p>
         <b className="font-semibold text-[color:var(--ink)]">החודש עוד לא מוכן. </b>
-        קודם מחברים מדידה ובוחרים מוצרים, ואז כותבים את הפוסטים. הם יחכו לאישור שלכם בעמוד הפוסטים.
+        בונים את צעדי העבודה מתוך התוכנית. בוחרים מה לקדם ומוסיפים חומרים, ואז כותבים פוסטים לאישור שלכם.
       </p>
       <StepLink stepKey={["start_posts", "approve_first"]} />
     </div>
