@@ -29,7 +29,7 @@ owner, add it under their name rather than doing it in their lane.
 
 | # | Item | Owner | Status | Links |
 |---|---|---|---|---|
-| N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | 2 agents building (server + renderer) | `docs/design-dna.md` Revision 1 |
+| N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | Server done (994 tests, tazizi style built from its real logo + site), merged into `ux-simplification`; renderer agent still building; then review → PR → publish | `docs/design-dna.md` Revision 1 |
 | N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | PR open, waiting for Claude's design pass (C1) | [#33](https://github.com/shaharAka/israMArket/pull/33) |
 | N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
 | N4 | **Meta app approval**: Tech Provider done, `ads_read` ready for testing, data-deletion URL saved | Codex + Shahar | Blocked on a business portfolio (portfolio limit) and IsraMarket's legal entity | `docs/meta-approval-plan.md` |
@@ -45,6 +45,7 @@ owner, add it under their name rather than doing it in their lane.
 - C6 **Setup checklist** should read the plan's `integrations_checklist`. The tazizi WhatsApp is labelled "new" by mistake.
 - C7 **Jargon:** "רימרקטינג" in `web/lib/budget.ts`.
 - C8 **Quick image drafts while the owner waits** (`gemini-3.1-flash-lite-image`). Not built.
+- C9 **SVG logos:** copy them safely as PNG (rasterise in a sandbox). Today an SVG logo signs with the name only.
 
 **Codex**
 - X1 **Security check:** the per-IP limit trusts the client's `X-Forwarded-For` through the Next proxy, which also affects login limits. Verify and fix.
@@ -61,6 +62,7 @@ owner, add it under their name rather than doing it in their lane.
 | B2 | Meta: a **business portfolio** for IsraMarket (Meta says the portfolio limit is reached) and the legal entity details | N4 |
 | B3 | Meta / Facebook identity check on your account | N4 |
 | B4 | Store-manager Meta access for tazizi, so its real Pixel shows up | N2 test |
+| B5 | **Real product photos for tazizi** (5–10, uploaded in "התמונות של העסק"). The site photos are not usable (one is a blurry video still), so posts fall back to generated images. | N1 quality |
 
 ## Decisions needed from Shahar
 
