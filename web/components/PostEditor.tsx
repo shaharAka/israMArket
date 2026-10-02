@@ -12,8 +12,9 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
-import { COMPOSITION_LIBRARY, type CompositionKey } from "@/lib/dna/library";
-import { offeredCompositions, resolveComposition, resolveDna } from "@/lib/dna/resolve";
+import { COMPOSITION_LIBRARY } from "@/lib/dna/library";
+import { resolveDna } from "@/lib/dna/resolve";
+import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions";
 import { useBrandDna } from "@/lib/dna/useBrandDna";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
@@ -338,9 +339,8 @@ export function PostEditor({
       ? Boolean(currentPost.has_overlay)
       : Boolean(currentPost.overlay_text && currentPost.overlay_text.trim());
   const overlayHeadline = currentPost.overlay_headline || currentPost.overlay_text || "";
-  const overlayBadge = currentPost.overlay_badge || "";
+  const overlaySub = currentPost.overlay_sub || "";
   const resolvedDna = resolveDna(brandDna, brandLanguage);
-  const activeComposition = resolveComposition(currentPost, resolvedDna);
   const exportSize = cardSize(
     currentPost.format,
     exportRatio === "auto" ? undefined : exportRatio,
@@ -687,13 +687,19 @@ export function PostEditor({
         outlets: updated.outlets,
         has_overlay: updated.has_overlay,
         overlay_headline: updated.overlay_headline,
+        overlay_sub: updated.overlay_sub,
         overlay_badge: updated.overlay_badge,
         overlay_position: updated.overlay_position,
-        // Which of the DNA's compositions the post uses (docs/design-dna.md); the server
-        // validates it and sets the crop from the format. `overlay_theme` is never sent:
-        // the server keeps it only for older posts, and only when told explicitly.
+        // How the post uses the DNA (docs/design-dna.md): its composition, text mode and text
+        // position. The server validates them and sets the crop from the format; the photo's
+        // empty area and subject (`safe_area`, `focal`) belong to the photo and are never
+        // sent. `overlay_theme` is never sent: the server keeps it only for older posts.
         design: updated.design?.composition
-          ? { composition: updated.design.composition, text_position: updated.design.text_position || "" }
+          ? {
+              composition: updated.design.composition,
+              text_position: updated.design.text_position || "",
+              ...(updated.design.text_mode ? { text_mode: updated.design.text_mode } : {}),
+            }
           : undefined,
         overlay_text: updated.has_overlay ? updated.overlay_headline : "",
         creative_concept: updated.creative_concept,
@@ -717,16 +723,15 @@ export function PostEditor({
   }
 
   /**
-   * One of the DNA's compositions for this post. Saved like any other edit (no model call);
-   * the text keeps its position when the new composition takes it, otherwise the server
-   * uses that composition's default.
+   * One of the three designs of the DNA for this post. Saved like any other edit (no model
+   * call). The photo stays, and with it its empty area and subject; the text keeps its
+   * position when the new composition takes it, otherwise the composition's default.
    */
-  function chooseComposition(key: CompositionKey) {
-    if (key === activeComposition) return;
+  function chooseDesign({ mode, composition }: DesignChoice) {
     const position = currentPost.design?.text_position;
-    const keeps = Boolean(position) && (COMPOSITION_LIBRARY[key].text_positions as string[]).includes(position as string);
+    const keeps = Boolean(position) && (COMPOSITION_LIBRARY[composition].text_positions as string[]).includes(position as string);
     void updateDesignField({
-      design: { composition: key, text_position: keeps ? position : "" },
+      design: { ...currentPost.design, composition, text_mode: mode, text_position: keeps ? position : "" },
       has_overlay: true,
     });
   }
@@ -1152,13 +1157,11 @@ export function PostEditor({
   }
 
   /**
-   * The design step: three compositions of the business's own DNA, each drawn by the real
-   * renderer with this post's words and photo, then the card's shape, the free-text
-   * instruction and the one manual switch. The old presets promised looks the renderer
-   * could not draw; every thumbnail here is exactly what the post becomes.
+   * The design step: three designs of the business's own DNA, each drawn by the real
+   * renderer with this post's words and photo and named by what it draws, then the card's
+   * shape and the free-text instruction. Every thumbnail is exactly what the post becomes.
    */
   function renderDesignerPanel() {
-    const offered = offeredCompositions(resolvedDna, activeComposition);
     const thumbRatio = exportRatio === "auto" ? undefined : exportRatio;
     return (
       <div className="mt-2 space-y-6 pb-1">
@@ -1171,38 +1174,15 @@ export function PostEditor({
               {resolvedDna.isDefault ? "לבחור סגנון לעסק" : "לשנות את הסגנון"}
             </Link>
           </div>
-          <div role="radiogroup" aria-label="העיצוב של הפוסט" className={`${editorStyles.looks} mt-2.5`}>
-            {offered.map((key) => {
-              const on = key === activeComposition;
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  role="radio"
-                  aria-checked={on}
-                  disabled={imageLocked}
-                  onClick={() => chooseComposition(key)}
-                  className={editorStyles.look}
-                >
-                  <span className={editorStyles.lookThumb} aria-hidden>
-                    <CardStage
-                      post={{ ...currentPost, design: { ...currentPost.design, composition: key } }}
-                      brand={brandLanguage}
-                      dna={brandDna}
-                      businessName={businessName}
-                      rounded={false}
-                      ratio={thumbRatio}
-                      quietPlaceholder
-                    />
-                  </span>
-                  <span className={editorStyles.lookLabel}>
-                    {on ? <IconCheck className="h-3.5 w-3.5 shrink-0" /> : null}
-                    {COMPOSITION_LIBRARY[key].label_he}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <DesignOptions
+            post={currentPost}
+            brand={brandLanguage}
+            dna={brandDna}
+            businessName={businessName}
+            ratio={thumbRatio}
+            disabled={imageLocked}
+            onChoose={chooseDesign}
+          />
         </div>
 
         {/* The card's shape. It changes the preview as well as the download, so it is a
@@ -1271,19 +1251,7 @@ export function PostEditor({
             ) : null}
           </div>
         ) : null}
-
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-sm font-semibold text-[color:var(--ink)]">כיתוב על התמונה</span>
-          <button
-            type="button"
-            onClick={() => void updateDesignField({ has_overlay: !hasOverlay })}
-            aria-pressed={hasOverlay}
-            // Outlined even when on: a filled toggle here was a second dark button.
-            className={ui.chip}
-          >
-            {hasOverlay ? "כן, עם כיתוב" : "לא, צילום נקי"}
-          </button>
-        </div>
+        {/* No separate "words on the image" switch: "רק התמונה" above is that choice. */}
       </div>
     );
   }
@@ -1404,19 +1372,19 @@ export function PostEditor({
                   })
                 }
                 className={ui.field}
-                placeholder="2–5 מילים"
+                placeholder="עד 6 מילים"
               />
             </div>
             <div>
-              <label htmlFor="post-overlay-badge" className={`${ui.groupTitle} mb-2 block`}>
-                תגית
+              <label htmlFor="post-overlay-sub" className={`${ui.groupTitle} mb-2 block`}>
+                שורה קצרה
               </label>
               <input
-                id="post-overlay-badge"
-                value={overlayBadge}
-                onChange={(e) => void updateDesignField({ overlay_badge: e.target.value })}
+                id="post-overlay-sub"
+                value={overlaySub}
+                onChange={(e) => void updateDesignField({ overlay_sub: e.target.value })}
                 className={ui.field}
-                placeholder="למשל: מיוחד לחג / רק בשישי"
+                placeholder="לא חובה. למשל: רק בשישי"
               />
             </div>
           </div>

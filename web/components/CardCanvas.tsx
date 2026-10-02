@@ -3,40 +3,39 @@
 /**
  * CardCanvas — the post renderer.
  *
- * Every post is drawn from the business's Design DNA (`brand_dna`, docs/design-dna.md):
- * its type pair, colours, motif, signature and copy treatment, in one of the DNA's
- * compositions (`post.design.composition`, or a stable rotation through the DNA's set).
- * Two bakeries with the same photo come out looking like two different designers made them.
+ * Every post is drawn from the business's Design DNA (`brand_dna`, docs/design-dna.md) as
+ * an art direction, not a template: the photo is the hero, cropped around its subject; at
+ * most a headline and one short line sit in the photo's own empty area (`design.safe_area`),
+ * or on a band of the brand's paper beside it; the logo is small. There is no shared
+ * skeleton — no kicker, no call to action on the image, no stickers, no list ornaments.
+ * The layout is planned by `planCard` (lib/dna/layout.ts), which also enforces the phone
+ * minimums; this file draws the plan.
  *
- * Cards are drawn at their TRUE pixel size (1080 wide) and scaled down with a CSS
- * transform for preview, so the 380px preview and the 1080px export are the same pixels.
+ * Cards are drawn at their TRUE pixel size (1080 wide) and scaled down with a CSS transform
+ * for preview, so the 380px preview and the 1080px export are the same pixels.
  *
- * Old posts keep rendering: an `overlay_theme` from the six fixed layouts maps to the
- * nearest composition, and a business without a DNA gets a neutral one from its palette.
+ * Old posts keep rendering: an `overlay_theme` from the six fixed layouts and a v1
+ * composition map to the nearest v2 composition, and a business without a DNA gets a
+ * neutral one from its palette.
  */
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
 import { fontStack } from "@/lib/dna/fonts";
-import { findPrice, typesetHebrew } from "@/lib/dna/hebrew";
-import { compositionDrawsPhoto, type BrandDna } from "@/lib/dna/library";
-import { resolveComposition, resolveCrop, resolveDna, resolveTextPosition, type ResolvedDna } from "@/lib/dna/resolve";
-import { COMPOSITIONS } from "@/components/dna/compositions";
-import type { CardCtx, CardWords } from "@/components/dna/context";
-import { PhotoSizesContext, Photo } from "@/components/dna/parts";
-import { FooterBand, footerHeight, SignatureSlot } from "@/components/dna/Signature";
+import { typesetHebrew } from "@/lib/dna/hebrew";
+import { planCard, type CardPlan, type CardWords, type Channel } from "@/lib/dna/layout";
+import { compositionDrawsPhoto, type BrandDna, type TextMode } from "@/lib/dna/library";
+import { useFontEpoch } from "@/lib/dna/measure";
+import { usePhotoInfo } from "@/lib/dna/photoInfo";
+import { resolveDesign, resolveDna, type ResolvedDna } from "@/lib/dna/resolve";
+import { Motif, Photo, PhotoSizesContext, Shade, TextBlock, type Stacks } from "@/components/dna/parts";
+import { FooterView, SignatureView } from "@/components/dna/Signature";
 
 /* ------------------------------------------------------------------ */
 /* Legacy template API (kept for existing callers)                     */
 /* ------------------------------------------------------------------ */
 
-export type CardTemplate =
-  | "lower_editorial"
-  | "split_panel"
-  | "framed_inset"
-  | "cover_type"
-  | "promo_ribbon"
-  | "type_hero";
+export type CardTemplate = "lower_editorial" | "split_panel" | "framed_inset" | "cover_type" | "promo_ribbon" | "type_hero";
 
 /** The six fixed layouts the renderer used to draw. Kept so stored values still resolve. */
 export const CARD_TEMPLATES: { key: CardTemplate; label: string; desc: string }[] = [
@@ -66,10 +65,7 @@ export function resolveTemplate(theme?: string | null): CardTemplate {
   return CARD_TEMPLATES.some((t) => t.key === theme) ? (theme as CardTemplate) : "lower_editorial";
 }
 
-export const ALL_TEMPLATE_KEYS: string[] = [
-  ...CARD_TEMPLATES.map((t) => t.key),
-  ...Object.keys(LEGACY_TEMPLATES),
-];
+export const ALL_TEMPLATE_KEYS: string[] = [...CARD_TEMPLATES.map((t) => t.key), ...Object.keys(LEGACY_TEMPLATES)];
 
 /**
  * Whether the card draws a photograph. Takes the old `overlay_theme` and, when the post
@@ -80,8 +76,9 @@ export function needsPhoto(theme?: string | null, composition?: string | null): 
   return !PHOTO_FREE_TEMPLATES.has(resolveTemplate(theme));
 }
 
-/** `needsPhoto` for a whole post. */
+/** `needsPhoto` for a whole post: a type-led post draws none (it keeps its photo for later). */
 export function postNeedsPhoto(post: Pick<RoadmapPost, "overlay_theme" | "design">): boolean {
+  if (post.design?.text_mode === "type_led") return false;
   return needsPhoto(post.overlay_theme, post.design?.composition);
 }
 
@@ -105,82 +102,79 @@ export function cardSize(format: RoadmapPost["format"], ratio?: CardRatio): { w:
   return format === "reel" || format === "story" ? { w: 1080, h: 1920 } : { w: 1080, h: 1350 };
 }
 
-/**
- * `cta` comes back from the model as a full sentence ("שריון חלות לשישי: נכנסים
- * לקבוצה..."), but it lands in a line sized for a few words. Take the leading clause when
- * it reads as a standalone label; skip a clause that merely repeats the headline; drop the
- * CTA when nothing short qualifies — the caption already carries it.
- */
-export function shortCta(raw?: string, headline = ""): string {
-  const raw_ = (raw || "").trim();
-  if (!raw_) return "";
-  const norm = (s: string) => s.replace(/[\s"'״׳.,:!?-]+/g, "");
-  const head = norm(headline);
-  const clauses = raw_
-    .split(/[:.·|\n]/)
-    .map((c) => c.trim())
-    .filter(Boolean);
-  for (const clause of clauses) {
-    if (clause.length > 28) continue;
-    if (head && (norm(clause) === head || head.includes(norm(clause)))) continue;
-    return clause;
-  }
-  return "";
-}
-
 /* ------------------------------------------------------------------ */
 /* The renderer                                                        */
 /* ------------------------------------------------------------------ */
 
-/** The post's words, typeset, de-duplicated, with any price pulled out of the copy. */
-function wordsOf(post: RoadmapPost): CardWords {
-  const headline = typesetHebrew((post.overlay_headline || post.overlay_text || "").trim());
-  const rawBadge = (post.overlay_badge || "").trim();
-  // The model often puts the number in BOTH the headline and stat_highlight, which
-  // printed the same figure twice. The stat shows only when it adds something.
-  const statRaw = (post.stat_highlight || "").trim();
-  const norm = (v: string) => v.replace(/[\s\u00A0"'״׳.,:!?%₪-]+/g, "");
-  let stat = statRaw && !norm(headline).includes(norm(statRaw)) && !norm(statRaw).includes(norm(headline)) ? statRaw : "";
-  let kicker = rawBadge;
-  let price = "";
-  const inBadge = findPrice(rawBadge);
-  const inStat = findPrice(stat);
-  if (inBadge) {
-    price = inBadge.price;
-    kicker = inBadge.rest;
-  } else if (inStat) {
-    price = inStat.price;
-    stat = inStat.rest;
-  }
-  return {
-    headline,
-    kicker: typesetHebrew(kicker, { bindLast: false }),
-    stat: typesetHebrew(stat, { bindLast: false }),
-    cta: shortCta(post.cta, headline),
-    price,
-  };
+/** "120" → "120", 1200 → "1,200", "₪ 89.90" → "89.90". */
+function amountOf(raw: unknown): string {
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const s = String(raw ?? "").replace(/[₪\s]|ש"ח|ש״ח/g, "");
+  return /^\d[\d,.]*$/.test(s) ? s : "";
 }
 
-function formatOf(size: { w: number; h: number }): CardCtx["format"] {
-  const r = size.h / size.w;
-  if (r >= 1.6) return "story";
-  if (r <= 1.05) return "square";
-  return "portrait";
+/**
+ * The post's words for the image: the headline, one short line, and the price when the
+ * post has one. The call to action, the kicker and the stat of older posts stay in the
+ * caption: one message per post.
+ */
+export function wordsOf(post: RoadmapPost, mode: TextMode, businessName = ""): CardWords {
+  let headline = typesetHebrew((post.overlay_headline || post.overlay_text || "").trim());
+  if (!headline && mode === "type_led") headline = typesetHebrew(businessName);
+  const amount = mode === "photo_only" ? "" : amountOf(post.price?.amount);
+  const note = amount ? typesetHebrew((post.price?.note || "").trim(), { bindLast: false }) : "";
+  const sub = typesetHebrew((post.overlay_sub || "").trim(), { bindLast: false }) || note;
+  return { headline, sub: mode === "photo_only" ? "" : sub, price: amount ? { amount, note } : undefined };
 }
 
-function radiusFor(dna: ResolvedDna) {
-  return (s: "s" | "m" | "l") => {
-    if (dna.shape === "round") return s === "s" ? 28 : s === "m" ? 44 : 80;
-    if (dna.shape === "soft") return s === "s" ? 12 : s === "m" ? 22 : 40;
-    return s === "s" ? 0 : s === "m" ? 2 : 4;
-  };
-}
-
-/** The logo to draw: the DNA's same-origin copy first, then the one found on the site. */
+/** The logo to draw: the one asked for, then the DNA's same-origin copy, then the site's. */
 export function logoFor(dna: ResolvedDna, brand?: BrandLanguage | null, explicit?: string): string | undefined {
   if (explicit) return explicit;
   if (!dna.signature.useLogo) return undefined;
   return dna.signature.logoUrl || brand?.logo_url || undefined;
+}
+
+function channelOf(post: RoadmapPost): Channel {
+  const outlet = post.channel || post.primary_outlet;
+  if (outlet === "whatsapp") return "whatsapp";
+  return post.format === "story" ? "story" : "feed";
+}
+
+export type CardInput = {
+  post: RoadmapPost;
+  brand?: BrandLanguage | null;
+  dna?: BrandDna | null;
+  businessName: string;
+  size: { w: number; h: number };
+  logoUrl?: string;
+};
+
+/**
+ * The plan for one card, from the same inputs CardCanvas takes (and the photo's and the
+ * logo's shape and light, once loaded). The editor uses it to describe a design in words.
+ */
+export function useCardPlan({ post, brand, dna: dnaIn, businessName, size, logoUrl }: CardInput): { plan: CardPlan; dna: ResolvedDna } {
+  // Re-plans when the faces finish loading: the measure is then exact. The first render
+  // (and the server's) estimates, so hydration matches.
+  const exact = useFontEpoch() > 0;
+  const dna = resolveDna(dnaIn, brand);
+  const design = resolveDesign(post, dna);
+  const info = usePhotoInfo(post.image_url || undefined);
+  const logo = logoFor(dna, brand, logoUrl);
+  const logoInfo = usePhotoInfo(logo);
+  const plan = planCard({
+    W: size.w,
+    H: size.h,
+    dna,
+    design,
+    words: wordsOf(post, design.mode, businessName),
+    photo: { url: post.image_url || undefined, info },
+    channel: channelOf(post),
+    logo: logo ? { src: logo, aspect: logoInfo?.aspect } : undefined,
+    name: businessName,
+    exact,
+  });
+  return { plan, dna };
 }
 
 export function CardCanvas({
@@ -205,67 +199,48 @@ export function CardCanvas({
   /** No "התמונה בהכנה" label on a missing photo (samples, thumbnails). */
   quietPlaceholder?: boolean;
 }) {
-  const dna = resolveDna(dnaIn, brand);
-  const composition = resolveComposition(post, dna);
-  const { w, h } = size;
-  const format = formatOf(size);
-  const words = wordsOf(post);
-  const show =
-    post.has_overlay !== undefined ? Boolean(post.has_overlay) : Boolean((post.overlay_headline || post.overlay_text || "").trim());
-  const footer = dna.signature.kind === "footer_band" ? footerHeight({ format }) : 0;
-  const story = format === "story";
-  const pad = Math.round((dna.scale === "editorial" ? 92 : dna.scale === "medium" ? 80 : 72) * (format === "square" ? 0.9 : 1));
-  const ctx: CardCtx = {
-    W: w,
-    H: h - footer,
-    fullH: h,
-    format,
-    composition,
-    dna,
-    c: dna.colors,
-    pad,
-    safeTop: story ? 200 : 0,
-    safeBottom: story ? Math.max(0, 290 - footer) : 0,
-    words: { ...words, headline: words.headline || (composition === "type_led" ? businessName : "") },
-    photo: { url: post.image_url || undefined, crop: resolveCrop(post.design?.crop) },
-    logo: logoFor(dna, brand, logoUrl),
-    name: businessName,
-    textPos: resolveTextPosition(post, composition),
-    displayStack: fontStack(dna.display.key, dna.display.meta.category === "serif" ? "serif" : "sans"),
-    textStack: fontStack(dna.text.key, dna.text.meta.category === "serif" ? "serif" : "sans"),
-    motif: { kind: dna.motif.kind, color: dna.colors.motif, alt: dna.colors.paper, paper: dna.colors.paper, dense: dna.motif.density === "mid" },
-    radius: radiusFor(dna),
-    quietPlaceholder,
+  const { plan, dna } = useCardPlan({ post, brand, dna: dnaIn, businessName, size, logoUrl });
+  const { W, H } = plan;
+  const stacks: Stacks = {
+    display: fontStack(dna.display.key, dna.display.meta.category === "serif" ? "serif" : "sans"),
+    text: fontStack(dna.text.key, dna.text.meta.category === "serif" ? "serif" : "sans"),
   };
-
+  const layoutH = plan.footer ? plan.footer.y : H;
   const root: CSSProperties = {
     position: "relative",
-    width: w,
-    height: h,
+    width: W,
+    height: H,
     overflow: "hidden",
-    background: dna.colors.paper,
-    fontFamily: ctx.textStack,
+    background: plan.background,
+    fontFamily: stacks.text,
     // Hebrew needs the bidi base direction set explicitly.
     direction: "rtl",
     textAlign: "right",
     WebkitFontSmoothing: "antialiased",
   };
-
-  // No overlay requested: the photograph is the post, with the signature on it.
-  const plain = !show || (!words.headline && !words.kicker && composition !== "type_led");
-  const body = plain ? (
-    <div style={{ position: "absolute", left: 0, top: 0, width: w, height: ctx.H, overflow: "hidden" }}>
-      <Photo ctx={ctx} />
-      <SignatureSlot ctx={ctx} at="top-start" ground="photo" />
-    </div>
-  ) : (
-    COMPOSITIONS[composition](ctx)
-  );
-
   return (
-    <div ref={canvasRef} style={root} data-card-composition={composition} data-card-dna={dna.isDefault ? "default" : dna.display.key}>
-      {body}
-      {footer ? <FooterBand ctx={ctx} y={ctx.H} h={footer} /> : null}
+    <div
+      ref={canvasRef}
+      style={root}
+      data-card-composition={plan.composition}
+      data-card-outcome={plan.outcome}
+      data-card-mode={plan.mode}
+      data-card-fellback={plan.fellBack ? "1" : undefined}
+      data-card-min-text={plan.minText}
+      data-card-min-headline={plan.minHeadline}
+      data-card-dna={dna.isDefault ? "default" : dna.display.key}
+    >
+      {plan.bands.map((b, i) => (
+        <div key={`band-${i}`} style={{ position: "absolute", left: b.box.x, top: b.box.y, width: b.box.w, height: b.box.h, background: b.color }} />
+      ))}
+      {plan.photo ? <Photo plan={plan.photo} url={post.image_url || undefined} dna={dna} stacks={stacks} quiet={quietPlaceholder} /> : null}
+      {plan.motifs.map((m, i) => (
+        <Motif key={`motif-${i}`} motif={m} />
+      ))}
+      {plan.text ? <Shade text={plan.text} H={layoutH} /> : null}
+      {plan.text ? <TextBlock text={plan.text} dna={dna} stacks={stacks} /> : null}
+      {plan.signature ? <SignatureView plan={plan.signature} W={W} dna={dna} name={businessName} display={stacks.display} /> : null}
+      {plan.footer ? <FooterView plan={plan.footer} W={W} pad={Math.round(W * 0.066)} dna={dna} name={businessName} display={stacks.display} /> : null}
     </div>
   );
 }
@@ -329,40 +304,14 @@ export function CardStage({
 
   const hostStyle: CSSProperties = fill
     ? { position: "absolute", inset: 0, overflow: "hidden", background: "#eceae4" }
-    : {
-        position: "relative",
-        width: "100%",
-        overflow: "hidden",
-        borderRadius: rounded ? 14 : 0,
-        background: "#eceae4",
-        aspectRatio: `${size.w} / ${size.h}`,
-      };
+    : { position: "relative", width: "100%", overflow: "hidden", borderRadius: rounded ? 14 : 0, background: "#eceae4", aspectRatio: `${size.w} / ${size.h}` };
 
   return (
     <div ref={hostRef} className={className} data-card-stage={resolveTemplate(post.overlay_theme)} style={hostStyle}>
       {scale > 0 ? (
-        <div
-          style={{
-            position: fill ? "absolute" : "relative",
-            top: 0,
-            right: 0,
-            width: size.w,
-            height: size.h,
-            transform: `scale(${scale})`,
-            transformOrigin: "top right",
-          }}
-        >
+        <div style={{ position: fill ? "absolute" : "relative", top: 0, right: 0, width: size.w, height: size.h, transform: `scale(${scale})`, transformOrigin: "top right" }}>
           <PhotoSizesContext.Provider value={photoSizes}>
-            <CardCanvas
-              post={post}
-              brand={brand}
-              dna={dna}
-              businessName={businessName}
-              size={size}
-              canvasRef={canvasRef}
-              logoUrl={logoUrl}
-              quietPlaceholder={quietPlaceholder}
-            />
+            <CardCanvas post={post} brand={brand} dna={dna} businessName={businessName} size={size} canvasRef={canvasRef} logoUrl={logoUrl} quietPlaceholder={quietPlaceholder} />
           </PhotoSizesContext.Provider>
         </div>
       ) : null}
