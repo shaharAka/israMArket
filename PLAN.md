@@ -1,105 +1,65 @@
-# IsraMarket: the plan
+# IsraMarket: the shared work plan
 
-One shared plan for the owner, Claude and Codex. **Read it before starting; update it in the
-same PR that changes the work.** Each item has one owner. If you need something from another
-owner, add it under their name rather than doing it in their lane.
+Open work and progress now live in the [private GitHub Project](https://github.com/users/shaharAka/projects/2) and [linked repository issues](https://github.com/shaharAka/israMArket/issues). Read [the project workflow](docs/project-workflow.md) before taking a task. This file is the index and ownership agreement, not a second status board.
 
-- **Live:** https://34-165-93-157.sslip.io (main, 2 Oct 2026: Design DNA v2). Domain `isramarket.co.il`
-  is registered but not live yet (see Blocked).
-- **Updated:** 2 Oct 2026 by Claude and Codex.
+- **Updated:** 2 Oct 2026 by Codex, at Shahar’s request.
+- **Live:** the existing deployment; the owned-domain migration is tracked separately below.
+- Repository issues are public. Keep sensitive owner prerequisites and security findings in private Project drafts.
 
 ## Who owns what
 
-| Owner | Lane |
-|---|---|
-| **Shahar (owner)** | Decisions, accounts and consoles (Google, Meta, PayPal, LiveDNS), anything needing his identity, sign-in or payment. |
-| **Claude** | Product and design of every screen (DESIGN-STANDARD.md, including screens Codex builds), the landing, plan / strategy / posts features, the post designer (Design DNA), image models. Branch `ux-simplification` (+ agent worktrees). |
-| **Codex** | Integrations (Google: GA4, Search Console, GBP; Meta: Pages, Instagram, ads, Pixel; future shop platforms), provider reviews and approvals, privacy / legal pages, deploy, infra and the domain. Branches `codex/*`. |
+- **Shahar:** business decisions, identity, accounts, agreements and paid-resource approval.
+- **Claude:** product and design of every screen, landing, ongoing plan, posts and Design DNA.
+- **Codex:** integrations, provider reviews, privacy pages, deployment, infrastructure and the domain.
 
-**How we work**
-- Every change is a PR to `main`. Whoever merges deploys:
-  `gcloud compute ssh isramarket-vm --project isramarket --zone=me-west1-a --tunnel-through-iap --quiet --command 'sudo /srv/isramarket/deploy/gcp/update.sh'`.
-  Then the item moves to Done here.
-- **UI built by Codex** follows `web/DESIGN-STANDARD.md`, and Claude does a design pass before or right after merge. Add the item under Claude → "Design pass".
-- **Shared files** (`web/app/globals.css`, `web/components/AppShell.tsx`, `web/lib/api.ts` types, `api/app/schemas.py`, `api/app/db.py`): small, additive changes. Pull main first.
-- **Never in chat, code or logs:** secrets, tokens, passwords. Keys go into Secret Manager or `.env` by the owner.
-- **Paid resources:** show the cost to the owner first.
+A lane owner is not an active claim. Claim a task with your agent name, real branch and scope, then re-read for competing claims before editing. Keep one status label and mirror the Project status. Pull current main before editing shared files. UI built by Codex follows `web/DESIGN-STANDARD.md` and receives a Claude design pass before or right after merge.
 
-## Now (in progress)
+Code work is Done after merge, deployment and verification. Documentation-only coordination work is Done after merge and accessibility verification; no production restart is required. Never put credentials or customer data into code, logs, chat or public issues.
 
-| # | Item | Owner | Status | Links |
-|---|---|---|---|---|
-| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | Implemented; 30 Meta tests and web checks pass, desktop + 390px checked. Claude reviewed C1; merge/deploy and then apply the design pass. Two-customer tests prove separate grants, Pixels and verification. | [#33](https://github.com/shaharAka/israMArket/pull/33) |
-| N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
-| N4 | **Meta app approval**: Tech Provider identified, Marketing use case, deletion URL, website platform and brand icon saved; review narrowed to 7 requests, six usage explanations and Web walkthrough drafted | Codex + Shahar | Unsubmitted. Needs an IsraMarket portfolio/entity, owner data-handling answers, processor locations, real API tests/recordings and reviewer access. Tier shows 0/500 calls, 85% success required. | `docs/meta-approval-plan.md` |
+## Open-work index
 
-## Next (ready, in order)
+### Codex
 
-**Claude**
-- C1 **Design pass on N2** ([#33](https://github.com/shaharAka/israMArket/pull/33)), right after it merges. Reviewed:
-  - show the setup guide only when tracking isn't receiving
-  - the Pixel's name without the raw ID
-  - check time without seconds
-  - one short disclaimer line
-  - guide links underline on hover only
-  - no em dash in "חיברתי באתר"
-  - fewer actions in the "is tracking working?" step
-- C2 **Results page word budget:** 200 words vs 140. Fold the WhatsApp table and the Instagram numbers into "more" (needs D1).
-- C3 **Today word budget:** 162 vs 150.
-- C4 **Plan page** is ~284 words once a month exists. Tighten it.
-- C5 **Plan editing after login:** today it shows "בקרוב".
-- C6 **Setup checklist** should read the plan's `integrations_checklist`. The tazizi WhatsApp is labelled "new" by mistake.
-- C7 **Jargon:** "רימרקטינג" in `web/lib/budget.ts`.
-- C8 **Quick image drafts while the owner waits** (`gemini-3.1-flash-lite-image`). Not built.
-- C9 **SVG logos:** copy them safely as PNG (rasterise in a sandbox). Today an SVG logo signs with the name only.
+- [#37 — Set up the shared GitHub work tracker and task-claiming workflow](https://github.com/shaharAka/israMArket/issues/37)
+- [#38 — Ship and verify customer-specific Pixel setup](https://github.com/shaharAka/israMArket/issues/38)
+- [#40 — Activate isramarket.co.il and migrate site and provider callbacks together](https://github.com/shaharAka/israMArket/issues/40)
+- [#41 — Complete Meta App Review for public customer connections](https://github.com/shaharAka/israMArket/issues/41)
+- [#42 — Complete Google OAuth verification on the owned domain](https://github.com/shaharAka/israMArket/issues/42)
+- [#45 — Distinguish permission granted from usable data and guide connection recovery](https://github.com/shaharAka/israMArket/issues/45)
+- [#46 — Turn connected analytics into plain-language findings and plan/post actions](https://github.com/shaharAka/israMArket/issues/46)
+- [#50 — Add clear Facebook and TikTok data/setup guides](https://github.com/shaharAka/israMArket/issues/50)
+- [#51 — Prepare Google Business Profile integration when eligibility is met](https://github.com/shaharAka/israMArket/issues/51)
+- [#52 — Finish the Muse small-business connector application when a supported API exists](https://github.com/shaharAka/israMArket/issues/52)
+- [#56 — Evaluate order integrations for Wix, Shopify and WooCommerce](https://github.com/shaharAka/israMArket/issues/56)
+- [#57 — Investigate the Instagram Edits assistant and supported personalisation APIs](https://github.com/shaharAka/israMArket/issues/57)
+- [#58 — Evaluate fast analysis and low-noise proactive updates](https://github.com/shaharAka/israMArket/issues/58)
+- [#59 — Plan shared caching and rate limits before multi-instance deployment](https://github.com/shaharAka/israMArket/issues/59)
 
-**Codex**
-- X1 **Security check:** the per-IP limit trusts the client's `X-Forwarded-For` through the Next proxy, which also affects login limits. Verify and fix.
-- X2 **Facebook / TikTok data guides** are missing on the connections page. Claude does the design pass.
-- X3 **Google OAuth verification**, after N3. Uses the new domain and policy URLs.
-- X4 **GBP (Google Business Profile) API**, once a profile is verified for 60+ days (needs D5).
-- X5 **Muse connector draft** is blocked until a real restricted connector API exists.
+### Claude
 
-## Blocked / waiting on Shahar
+- [#39 — Apply the reviewed design pass to the customer Pixel flow](https://github.com/shaharAka/israMArket/issues/39)
+- [#43 — Make the post-signup checklist follow the actual business plan](https://github.com/shaharAka/israMArket/issues/43)
+- [#44 — Design and preview a guided, minimal connection journey after signup](https://github.com/shaharAka/israMArket/issues/44)
+- [#47 — Simplify Results, Today and Plan copy and remove jargon](https://github.com/shaharAka/israMArket/issues/47)
+- [#48 — Enable editing the ongoing plan after signup](https://github.com/shaharAka/israMArket/issues/48)
+- [#49 — Use customer SVG logos safely in brand and post design](https://github.com/shaharAka/israMArket/issues/49)
+- [#54 — Explore quick image drafts while a full post design is generated](https://github.com/shaharAka/israMArket/issues/54)
+- [#55 — Benchmark an additional image model for post design](https://github.com/shaharAka/israMArket/issues/55)
 
-| # | What | For |
-|---|---|---|
-| B1 | `isramarket.co.il` is on **serverHold** at the .il registry. Ask LiveDNS / ISOC-IL why. Don't disable the transfer lock. | N3 |
-| B2 | Meta: a **business portfolio** for IsraMarket (Meta says the portfolio limit is reached) and the legal entity details | N4 |
-| B3 | Meta sign-in completed. App Review still needs genuine authorised tests, recordings and usable reviewer access. Four read scopes show 0/1 calls; Marketing tier shows 0/500. | N4 |
-| B4 | Store-manager Meta access for tazizi, so its real Pixel shows up | N2 test |
-| B5 | **Real product photos for tazizi** (5–10, uploaded in "התמונות של העסק"). The site photos are not usable (one is a blurry video still), so posts fall back to generated images. | N1 quality |
+### Shahar
 
-## Decisions needed from Shahar
+- [#53 — Validate brand/post design with real owner-provided product photos](https://github.com/shaharAka/israMArket/issues/53)
 
-| # | Question | Default if no answer |
-|---|---|---|
-| D1 | Results page: fold the WhatsApp table + Instagram numbers behind "more"? | Fold |
-| D2 | Price ₪99/month: VAT included or on top? | Included |
-| D3 | After account deletion: keep payment records for bookkeeping? | Keep payments only, anonymised |
-| D4 | Gemini paid tier, to confirm for the privacy wording (`web/lib/company.ts`): active billing on the project behind the actual API key | Wait for confirmation; VM billing alone is not proof |
-| D5 | Tazizi's Google Business Profile: verified for how long? | Wait |
-| D6 | Israeli tax invoices: connect Morning / Green Invoice or iCount, and when? | Later |
-| D7 | Meta data controller: Shahar Rosentraub, Israel, or which actual registered entity? | Wait for factual confirmation |
-| D8 | Meta authority-request form: actual national-security disclosures in the past 12 months and existing review/challenge/minimisation/recording procedures? | Wait; do not invent declarations |
+## Private prerequisites
 
-## Later
-- Shop platform integrations (Wix / Shopify / WooCommerce orders), owner: "later". Codex.
-- An OpenAI image model in the bench, when a key exists. Claude.
-- Rate limits and cache are in-memory per process. Fine on one VM; revisit when scaling. Codex.
+The private Project also contains the immediate client-IP/rate-limit security verification, owner provider/privacy prerequisites, and commercial/invoice/payment-retention decisions. Read their latest state there. Do not put private factual answers into public issue comments.
 
-## Done (recent)
-| PR | What | Owner |
-|---|---|---|
-| [#36](https://github.com/shaharAka/israMArket/pull/36) | Design DNA v2: style as an art direction in words, the real logo, colours from logo + site, one message per post, text in the photo's empty area, designer-review script (template look 3.8 → 1.7) | Claude |
-| [#32](https://github.com/shaharAka/israMArket/pull/32) | Design DNA v1: own style per business, photos real first, Muse Image default with NB2 fallback, cost log, brand page "הסגנון שלכם", demo bakery photos | Claude |
-| [#31](https://github.com/shaharAka/israMArket/pull/31) | Cookie disclosure for Google and Meta security cookies | Codex |
-| [#30](https://github.com/shaharAka/israMArket/pull/30) | Meta screens to the design standard | Claude |
-| [#29](https://github.com/shaharAka/israMArket/pull/29) | Meta privacy and data-deletion page | Codex |
-| [#27](https://github.com/shaharAka/israMArket/pull/27) | Simple Meta setup, ads reporting, Pixel checks | Codex |
-| [#26](https://github.com/shaharAka/israMArket/pull/26) | Connected posts + instruction rewrite + hypothesis statuses | Claude |
-| [#25](https://github.com/shaharAka/israMArket/pull/25) | Search Console reports after Google connection | Codex |
-| [#24](https://github.com/shaharAka/israMArket/pull/24) | Finesse pass: new landing, design standard, every screen | Claude |
-| [#23](https://github.com/shaharAka/israMArket/pull/23) | Recommendations ready to act on | Codex |
+## Earlier plan references
 
-Older history: git log, and the design docs in `docs/`.
+Legacy N2 → #38; N3/B1 → #40; N4/B2/B3/B4 and D7/D8 → #41 plus private owner prerequisites. C1 → #39; C2/C3/C4/C7/D1 → #47; C5 → #48; C6 → #43; C8 → #54; C9 → #49. X1 → private security draft; X2 → #50; X3 → #42; X4/D5 → #51; X5 → #52; B5 → #53. D2/D3/D6 → private commercial decisions; D4 → private provider/privacy prerequisites. Later platform/model/scaling work → #55, #56 and #59.
+
+## Recent delivered work
+
+See merged PRs and deployment evidence for history: [Design DNA v2 #36](https://github.com/shaharAka/israMArket/pull/36), [Design DNA v1 #32](https://github.com/shaharAka/israMArket/pull/32), [cookie disclosure #31](https://github.com/shaharAka/israMArket/pull/31), [Meta UI #30](https://github.com/shaharAka/israMArket/pull/30), [privacy/deletion #29](https://github.com/shaharAka/israMArket/pull/29), [Meta/ads/Pixel baseline #27](https://github.com/shaharAka/israMArket/pull/27), [Search Console #25](https://github.com/shaharAka/israMArket/pull/25), and [actionable recommendations #23](https://github.com/shaharAka/israMArket/pull/23).
+
+Older history is in git and `docs/`.
