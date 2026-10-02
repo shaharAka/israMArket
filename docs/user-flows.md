@@ -148,6 +148,13 @@ The landing, dashboard and Posts captures were refreshed on 2 October against
 its Posts capture does not demonstrate the first-ever publication priority. That condition
 is covered by the trial regressions; the actual customer pilot remains #66.
 
+The integrations and Results captures were refreshed on 2 October against
+`ebfe6c245dab731bcf230f663e245e22303cb51d`, through the synthetic bakery demo. GA4
+selection now performs an initial read and records its source state. These captures show
+the demo route, not evidence of a live customer's OAuth grant or report. The actual
+connection-state component can also be rehearsed at `/design/connections`. Meta readiness
+and the live customer read remain open under #45.
+
 Routes: `/`, `/login`, `/signup`, `/strategy?welcome=1` (plan), `/strategy?tour=1`
 (optional welcome), `/dashboard`, `/integrations`, `/baseline`, `/featured`, `/assets`,
 `/voice`, `/posts`, `/performance`, `/decisions`, `/strategy`, `/billing`. Capture the
