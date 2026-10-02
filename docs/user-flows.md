@@ -107,16 +107,32 @@ from the review examples.
 The first service wording correction is tracked in #67. The real customer pilot and its
 remaining identity/asset/measurement requirements are tracked in #66.
 
-## Shorter pre-signup proposal (#69)
+## First useful publication
 
-`/design/flows/shorter` is a local review diagram, not a changed `/start` implementation.
-Five input screens lead to the full plan: business, customers/uniqueness, links, baseline
-and budget/capacity. A provisional direction appears after the first three inputs.
-The growth recommendation and numeric working target come only after their inputs exist.
-Competitors, seasonal context and previous marketing are proposed after signup, alongside
-the decision they inform. Every answer remains in the future planner contract; implementation
-requires dependency changes and regression checks first. Approval of the preview is tracked
-in #69 before adopting it.
+Setup groups are presented as readiness stages rather than calendar weeks. The free
+account's 30-day period is unchanged. Existing usable content can be reviewed, an approved
+first post can be published, and ready materials can start generation while other
+connections remain unfinished. The guide prioritises that first content action when it
+is actually available. After first publication, missing measurement is still shown.
+The Posts page uses the real publishing queue to prioritise the first due publication
+over approving the rest of the batch; future scheduled posts are not made due early.
+This does not install tracking, grant consent, publish automatically or claim attribution.
+
+## Optional first-look proposal (#69)
+
+`/design/flows/shorter` is a review diagram, not a changed `/start` implementation. Following
+the owner's feedback, full discovery remains the default. A quiet “just show me how it looks”
+action offers three proposed input screens (business, initial customer, optional links)
+followed by an explicitly provisional draft. It does not claim a verified marketing plan,
+a calculated goal or connected analytics. No duration or conversion improvement is claimed.
+
+The full map groups existing screens for readability: 3 business questions, 6 context screens
+for shops / 5 for services, and 4 baseline/recommendation/budget/goal screens. These are groups,
+not a claim that production onboarding has fewer screens. Summary, plan and save follow.
+The quick route rejoins discovery without repeating answered questions; all remaining inputs
+are needed before the full recommendation/goal. The review simulates navigation, not research,
+saved answers or resumable account state. Adopting it requires explicit planner/state-contract
+changes and meaningful regression checks. Owner preview approval is tracked in #69.
 
 ## Repeatable real-screen captures
 
@@ -126,6 +142,11 @@ choose “לראות את התוכנית”; then capture the actual routes belo
 is settled. The atlas lives in `web/public/flow-screens/` and the node mapping in
 `web/lib/flowScreens.ts`. Use the browser's screenshot API and write the returned PNG bytes
 to those paths; do not manipulate the DOM, authentication or storage to fabricate a state.
+
+The landing, dashboard and Posts captures were refreshed on 2 October against
+`24a1ed8a071d61d3d52528aff7f6c5e76bfc5e54`. The bakery already has published posts:
+its Posts capture does not demonstrate the first-ever publication priority. That condition
+is covered by the trial regressions; the actual customer pilot remains #66.
 
 Routes: `/`, `/login`, `/signup`, `/strategy?welcome=1` (plan), `/strategy?tour=1`
 (optional welcome), `/dashboard`, `/integrations`, `/baseline`, `/featured`, `/assets`,

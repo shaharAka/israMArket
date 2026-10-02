@@ -34,6 +34,7 @@ Code work is Done after merge, deployment and verification. Documentation-only c
 - [#57 — Investigate the Instagram Edits assistant and supported personalisation APIs](https://github.com/shaharAka/israMArket/issues/57)
 - [#58 — Evaluate fast analysis and low-noise proactive updates](https://github.com/shaharAka/israMArket/issues/58)
 - [#59 — Plan shared caching and rate limits before multi-instance deployment](https://github.com/shaharAka/israMArket/issues/59)
+- [#73 — Launch readiness: replace test setup and verify every release gate](https://github.com/shaharAka/israMArket/issues/73)
 
 ### Claude
 
@@ -45,6 +46,7 @@ Code work is Done after merge, deployment and verification. Documentation-only c
 - [#49 — Use customer SVG logos safely in brand and post design](https://github.com/shaharAka/israMArket/issues/49)
 - [#54 — Explore quick image drafts while a full post design is generated](https://github.com/shaharAka/israMArket/issues/54)
 - [#55 — Benchmark an additional image model for post design](https://github.com/shaharAka/israMArket/issues/55)
+- [#74 — Build IsraMarket’s launch campaign and first-month reels/posts](https://github.com/shaharAka/israMArket/issues/74)
 
 ### Shahar
 

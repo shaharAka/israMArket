@@ -129,7 +129,9 @@ export function TrialGuide({
   }, [target]);
 
   const targetWeek = target ? trial.steps.find((step) => step.key === target)?.week : undefined;
-  const openWeek = targetWeek ?? (next && next.week > trial.week ? next.week : trial.week);
+  // These groups are readiness stages, not a timetable. Billing days stay in TrialDay.
+  const currentStage = next?.week ?? 4;
+  const openWeek = targetWeek ?? currentStage;
 
   return (
     <section aria-labelledby="trial-heading" className="space-y-8">
@@ -151,7 +153,7 @@ export function TrialGuide({
                 week={week}
                 steps={steps}
                 open={openWeek === week}
-                current={trial.week === week}
+                current={currentStage === week}
                 nextKey={next?.key ?? null}
                 fresh={fresh}
                 target={target}

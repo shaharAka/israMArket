@@ -1,5 +1,5 @@
 /** A source-grounded review map, not an alternative onboarding implementation. */
-export const FLOW_SOURCE = "462429a55d48218d716aa201e0658a2736cfd5ee";
+export const FLOW_SOURCE = "24a1ed8a071d61d3d52528aff7f6c5e76bfc5e54";
 export type FlowPersona = "store" | "designer" | "isramarket";
 export type FlowPhase = "before" | "after" | "ongoing";
 export type FlowCase = "normal" | "cancel" | "failure" | "missing";

@@ -123,12 +123,12 @@ def _whatsapp_state(request: Request, business: Business | None) -> tuple[bool, 
 
 # --- the steps ----------------------------------------------------------------------
 
-# Revision 8: foundations before posts. Each week has one job.
+# Readiness stages retain the legacy week numbers in the API contract.
 WEEKS = [
-    {"week": 1, "title_he": "מדידה"},
-    {"week": 2, "title_he": "חומרי גלם"},
-    {"week": 3, "title_he": "תוכן ראשון"},
-    {"week": 4, "title_he": "מודדים ומתאימים"},
+    {"week": 1, "title_he": "חיבורים ונקודת פתיחה"},
+    {"week": 2, "title_he": "מכינים פוסט ראשון"},
+    {"week": 3, "title_he": "מאשרים ומפרסמים"},
+    {"week": 4, "title_he": "לומדים ומתאימים"},
 ]
 
 
@@ -455,13 +455,20 @@ def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
 
 
 def next_step(steps: list[dict]) -> dict | None:
-    """The one thing to do now: the first step that can be done, in the journey's order.
+    """Finish the first ready content action, then follow the remaining journey.
 
-    Never past a week that is still waiting (a locked step: week 3 while its posts are
-    being written). Otherwise "לבנות את החודש השני", open as soon as the month's structure
-    exists, became the ask on day 1 while the first posts were still being written
-    (Revision 8: foundations, then content, then measure and adjust).
+    The fallback never advances past a locked stage: next-month work must not become
+    the primary ask while the first posts are still being written.
     """
+    # Finish the first usable content cycle before expanding setup or the batch. A
+    # connector that still needs work remains visible; it is not a publication gate.
+    # Each content status was derived from actual foundations/approval above.
+    by_key = {step["key"]: step for step in steps}
+    if by_key.get("publish_first", {}).get("status") != "done":
+        for key in ("publish_first", "approve_first", "start_posts"):
+            step = by_key.get(key)
+            if step and step["status"] == "todo":
+                return step
     waiting = [step["week"] for step in steps if step["status"] == "locked"]
     horizon = min(waiting) if waiting else None
     return next(
