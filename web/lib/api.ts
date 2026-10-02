@@ -1,6 +1,6 @@
 import type { OnboardingDraft } from "./draft";
-import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign } from "./dna/library";
-import { DEMO_DNA, DEMO_DNA_ALTERNATIVES } from "./dna/samples";
+import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign, type PostPrice } from "./dna/library";
+import { DEMO_DNA, DEMO_DNA_ALTERNATIVES, DEMO_PHOTO_AREAS, adjustDna } from "./dna/samples";
 import type { StoredQuarterPlan } from "./quarterPlan";
 import { deriveLifecycle } from "./postLifecycle";
 
@@ -26,10 +26,28 @@ function formatDetail(detail: unknown, fallback: string) {
 
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  /** A machine-readable reason when the server sends one (e.g. `plan_required` on a 402). */
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
+}
+
+/** The server's `{code, detail_he}` error body, at the top level or inside FastAPI's `detail`. */
+function errorCode(data: unknown): { code?: string; message?: string } {
+  if (!data || typeof data !== "object") return {};
+  const top = data as { code?: unknown; detail_he?: unknown; detail?: unknown };
+  const inner = top.detail && typeof top.detail === "object" && !Array.isArray(top.detail) ? (top.detail as { code?: unknown; detail_he?: unknown }) : null;
+  const code = typeof top.code === "string" ? top.code : typeof inner?.code === "string" ? inner.code : undefined;
+  const message = typeof top.detail_he === "string" ? top.detail_he : typeof inner?.detail_he === "string" ? inner.detail_he : undefined;
+  return { code, message };
+}
+
+/** A 402: this action needs a paid plan (`plan_required`), or the trial's access ended. */
+export function isPlanRequired(err: unknown): err is ApiError {
+  return err instanceof ApiError && (err.status === 402 || err.code === "plan_required");
 }
 
 export function isDemo(): boolean {
@@ -852,7 +870,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "הכנות לחגי תשרי",
     goal_fit: "הזמנות מראש לחג",
     image_prompt: "Warm close-up of golden challah loaves on a floured Jaffa bakery counter at morning light",
-    overlay_text: "החלות נגמרות",
+    overlay_text: "החלות נגמרות לפני הצהריים",
+    // One message on the image (docs/design-dna.md, Revision 1); the order deadline is in
+    // the caption. The words sit on the empty wall above the challahs.
+    has_overlay: true,
+    overlay_headline: "החלות נגמרות לפני הצהריים",
+    design: { composition: "full_bleed", text_mode: "headline", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-1.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["פניות בוואטסאפ", "שמירות של הפוסט"],
@@ -910,6 +933,10 @@ const POSTS: RoadmapPost[] = [
     goal_fit: "שמי שרואה את הפוסט גם יזמין",
     image_prompt: "Holiday bakery box with challah, jam, and a savory pastry on kraft paper",
     overlay_text: "מארז ראש השנה",
+    // The box fills the frame: the photo alone carries it, the words are in the caption.
+    has_overlay: false,
+    overlay_headline: "מארז ראש השנה",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-2.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["דפדופים בקרוסלה", "לחיצות על הקישור"],
@@ -955,7 +982,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "ראש השנה",
     goal_fit: "שאף אחד לא יגיע לדלת סגורה",
     image_prompt: "Handwritten bakery hours card on dark wood, cream paper, rust ink",
-    overlay_text: "סגורים 12–13.9",
+    overlay_text: "פתוחים עד 13:00",
+    // The hours go on the blank card in the photo itself.
+    has_overlay: true,
+    overlay_headline: "פתוחים עד 13:00",
+    overlay_sub: "בערב החג, לאיסוף הזמנות",
+    design: { composition: "full_bleed", text_mode: "headline", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-3.webp"] },
     primary_outlet: "facebook",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["שמירות של הפוסט", "שיתופים"],
@@ -993,7 +1025,11 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "",
     goal_fit: "שהלקוחות יחזרו לבוא כל יום",
     image_prompt: "Sliced sourdough and a sandwich on a neighborhood counter after the holiday",
-    overlay_text: "הלחם היומי חוזר",
+    overlay_text: "חזרנו.",
+    // Photo-led: one word on the dark wall, the rest in the caption.
+    has_overlay: true,
+    overlay_headline: "חזרנו.",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-4.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["צפיות ברילס", "ביקורים בפרופיל"],
@@ -1024,7 +1060,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "יום כיפור",
     goal_fit: "אמון של השכונה",
     image_prompt: "Quiet dark bakery interior, oven off, no sale graphics",
-    overlay_text: "סגורים. בלי מבצע.",
+    overlay_text: "גמר חתימה טובה",
+    // Nothing to sell: type on the bakery's paper, quiet.
+    has_overlay: true,
+    overlay_headline: "גמר חתימה טובה",
+    overlay_sub: "ב-21.9 סגורים כל היום",
+    design: { composition: "type_led", text_mode: "type_led", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-5.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["תגובות חמות"],
@@ -1052,7 +1093,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "סוכות",
     goal_fit: "מכירות לחול המועד",
     image_prompt: "Picnic breads, baguettes and focaccia on a outdoor table under sukkah shade",
-    overlay_text: "לחם לפיקניק",
+    overlay_text: "מארז פיקניק לסוכה",
+    // The offer post, the only one with a price on the image: here the price is the message.
+    has_overlay: true,
+    overlay_headline: "מארז פיקניק לסוכה",
+    price: { amount: 120, currency: "ILS", note: "לכל המשפחה" },
+    design: { composition: "full_bleed", text_mode: "headline", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-6.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["שמירות של הפוסט", "הזמנות של מארזים"],
@@ -1095,6 +1141,10 @@ const POSTS: RoadmapPost[] = [
     goal_fit: "שיכירו אתכם ויבואו לחנות",
     image_prompt: "Night bakery shift, warm oven glow, baker's hands, no luxury styling",
     overlay_text: "מאחורי התנור",
+    // The hands and the fire are the post.
+    has_overlay: false,
+    overlay_headline: "מאחורי התנור",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-7.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["זמן צפייה ממוצע", "שיתופים"],
@@ -2167,7 +2217,8 @@ const DEMO_PRODUCT_IMAGE_MIX = new Set(["product", "offer", "behind_scenes", "so
 function demoOwnerNeeds(post: RoadmapPost): PostOwnerNeed[] {
   if (post.approval_status === "approved" || (post.published_url || "").trim() || post.published_at) return [];
   const needs: PostOwnerNeed[] = [];
-  if (post.overlay_theme !== "type_hero") {
+  // A type-led post draws no photo (it keeps the one it has for a later change of design).
+  if (post.overlay_theme !== "type_hero" && post.design?.text_mode !== "type_led") {
     const hasImage = Boolean((post.image_url || "").trim());
     const own = hasImage && (post.image_source === "asset" || post.image_source === "real_photo");
     const choseAi = hasImage && post.image_preference === "ai";
@@ -2237,6 +2288,33 @@ function demoInstructionRewrite(
   }
   // "יותר חם", and the owner's own words: a warmer opening, the same facts.
   return { ...base, caption: `בוקר טוב, שכנים. ${caption}` };
+}
+
+/**
+ * A new photo brings its own empty area and subject (the server's vision pass; measured by
+ * eye for the demo photos). A photo the demo has not measured has neither: the words go
+ * on a band beside it.
+ */
+function demoDesignFor(post: RoadmapPost, url: string): RoadmapPost["design"] {
+  const area = DEMO_PHOTO_AREAS[url];
+  return { ...post.design, safe_area: area?.safe_area ?? null, focal: area?.focal ?? null, subject: null };
+}
+
+/** The server's compositions that can carry a photo alone (`text_modes` has photo_only). */
+const DEMO_PHOTO_ONLY = new Set(["full_bleed", "inset_frame", "arch_window", "circle_crop", "collage_grid"]);
+
+/**
+ * Mirrors `sync_text_mode` (api/app/services/post_design.py): a photo-free composition is
+ * type-led; the words switched off is photo only (where the composition can carry a photo
+ * alone); switched on, a photo-only or missing mode becomes a headline.
+ */
+function demoSyncTextMode(design: RoadmapPost["design"], hasOverlay: boolean): RoadmapPost["design"] {
+  if (!design?.composition) return design;
+  const current = design.text_mode;
+  if (design.composition === "type_led") return { ...design, text_mode: "type_led" };
+  if (!hasOverlay && DEMO_PHOTO_ONLY.has(String(design.composition))) return { ...design, text_mode: "photo_only" };
+  if (hasOverlay && (!current || current === "photo_only" || current === "type_led")) return { ...design, text_mode: "headline" };
+  return design;
 }
 
 function cloneDemoStrategy(): StrategyPayload {
@@ -2893,6 +2971,14 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/brand/dna" && method === "PUT") {
     const edit = JSON.parse(String(options.body || "{}")) as BrandDnaEdit;
     const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
+    // Choices in words first ("יותר שקט", "יותר תמונה"): the server re-derives the genes
+    // from them and stores the result at once, like a regeneration that keeps the style.
+    if (edit.adjust && (edit.adjust.tone || edit.adjust.text)) {
+      await new Promise((resolve) => window.setTimeout(resolve, 500));
+      const adjusted = adjustDna(current, edit.adjust);
+      DEMO_BUSINESS.brand_dna = adjusted;
+      return { brand_dna: adjusted, business_id: DEMO_BUSINESS.id } as T;
+    }
     const next: BrandDna = structuredClone(current);
     const locked = new Set(current.locked ?? []);
     if (edit.type && Object.keys(edit.type).length) {
@@ -2922,6 +3008,11 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     // through hand-made alternatives. Like the server it is stored at once, keeps the
     // genes the owner set, and clears "kept" (the owner is trying something else).
     await new Promise((resolve) => window.setTimeout(resolve, 900));
+    // The plan gate (402 `plan_required`). The demo account is on its free month, so it
+    // only answers this way when asked to: localStorage `isramarket_demo_plan` = "locked".
+    if (window.localStorage.getItem("isramarket_demo_plan") === "locked") {
+      throw new ApiError("כדי לנסות סגנון אחר צריך מנוי פעיל.", 402, "plan_required");
+    }
     const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
     const cycle = [...DEMO_DNA_ALTERNATIVES, DEMO_DNA];
     const at = cycle.findIndex((dna) => dna.seed === current.seed);
@@ -2990,6 +3081,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       image_action: body.image_preference === "real" ? "real_photo" : "generated",
       // Choosing AI on purpose meets a photo need, the way the server records it.
       ...(body.image_preference ? { image_preference: body.image_preference } : {}),
+      design: demoDesignFor(POSTS[index], DEMO_IMAGES[index] || DEMO_IMAGES[0]),
     };
     delete generated.image_asset_id;
     POSTS[index] = generated;
@@ -3009,6 +3101,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       image_asset_id: asset.id,
       image_source_url: asset.source_url || "",
       image_action: "asset",
+      design: demoDesignFor(POSTS[index], asset.url),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
@@ -3075,7 +3168,16 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       ...POSTS[index],
       has_overlay: true,
       overlay_headline: POSTS[index].overlay_headline || POSTS[index].overlay_text || POSTS[index].title.slice(0, 24),
-      design: next ? { composition: next, text_position: body.text_position || "", crop: POSTS[index].format === "reel" || POSTS[index].format === "story" ? "9:16" : "4:5" } : POSTS[index].design,
+      // A new design keeps the photo, and with it the photo's empty area and subject.
+      design: next
+        ? {
+            ...POSTS[index].design,
+            composition: next,
+            text_mode: next === "type_led" ? "type_led" : "headline",
+            text_position: body.text_position || "",
+            crop: POSTS[index].format === "reel" || POSTS[index].format === "story" ? "9:16" : "4:5",
+          }
+        : POSTS[index].design,
       creative_concept: prompt ? `לפי מה שביקשתם: ${prompt}` : POSTS[index].creative_concept,
       image_url: POSTS[index].image_url || DEMO_IMAGES[index] || DEMO_IMAGES[0],
     };
@@ -3109,7 +3211,25 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       overlay_position: body.overlay_position || POSTS[index].overlay_position || "bottom_pill",
       // Like the server: the old field changes only when it is sent.
       overlay_theme: body.overlay_theme !== undefined ? body.overlay_theme : POSTS[index].overlay_theme,
-      design: body.design?.composition ? { ...body.design, crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5" } : POSTS[index].design,
+      // Like the server (save_post): the composition changes, the photo's measured empty
+      // area and subject stay (the photo did not change), and the text mode follows the
+      // composition and the words switch (`sync_text_mode`), not what the editor sent.
+      design: demoSyncTextMode(
+        body.design?.composition
+          ? {
+              ...POSTS[index].design,
+              ...body.design,
+              text_mode: POSTS[index].design?.text_mode,
+              safe_area: POSTS[index].design?.safe_area ?? null,
+              focal: POSTS[index].design?.focal ?? null,
+              subject: POSTS[index].design?.subject ?? null,
+              crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5",
+            }
+          : POSTS[index].design,
+        has_overlay,
+      ),
+      // The one short line goes with the words: off clears it.
+      overlay_sub: !has_overlay ? "" : body.overlay_sub !== undefined ? body.overlay_sub : POSTS[index].overlay_sub,
       overlay_text: has_overlay ? headline : "",
       creative_concept: body.creative_concept || POSTS[index].creative_concept,
       visual_style: body.visual_style || POSTS[index].visual_style,
@@ -3742,7 +3862,8 @@ export async function api<T>(
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(formatDetail(data.detail, res.statusText), res.status);
+    const coded = errorCode(data);
+    throw new ApiError(coded.message || formatDetail(data.detail, res.statusText), res.status, coded.code);
   }
   return data as T;
 }
@@ -4404,7 +4525,13 @@ export type RoadmapPost = {
   image_action?: "generated" | "real_photo" | "asset" | "kept_existing" | "no_photo_theme" | "pending";
   overlay_text?: string;
   has_overlay?: boolean;
+  /** The words on the image: at most 6 (docs/design-dna.md, Revision 1). */
   overlay_headline?: string;
+  /** v2: at most one short line under (or over) the headline. Optional. */
+  overlay_sub?: string;
+  /** v2: the offer's price, when the plan's offer has one. On the image only when it is the message. */
+  price?: PostPrice | null;
+  /** v1: a small line over the headline. No longer drawn on the image (one message). */
   overlay_badge?: string;
   overlay_position?: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card";
   overlay_theme?: OverlayTheme;
