@@ -1,0 +1,31 @@
+name: Suggestion
+description: An idea to evaluate before committing to delivery
+labels: ["status:suggestion", "priority:P3"]
+body:
+  - type: markdown
+    attributes:
+      value: "Suggestions are proposals, not active work. This issue is public; use a private Project draft for sensitive details."
+  - type: dropdown
+    id: owner
+    attributes:
+      label: Proposed lane owner
+      options: [Claude, Codex, Shahar]
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Customer problem and expected benefit
+    validations:
+      required: true
+  - type: textarea
+    id: experiment
+    attributes:
+      label: Smallest useful evaluation
+      description: What evidence would justify shipping, deferring or rejecting this idea?
+    validations:
+      required: true
+  - type: textarea
+    id: references
+    attributes:
+      label: Related work and dependencies
