@@ -1,0 +1,44 @@
+name: Task
+description: Scoped work with an owner, outcome and completion criteria
+title: ""
+labels: ["status:ready"]
+body:
+  - type: markdown
+    attributes:
+      value: "This is a public issue. Keep credentials, customer data, private owner declarations and security details out. Read docs/project-workflow.md before claiming."
+  - type: dropdown
+    id: owner
+    attributes:
+      label: Lane owner
+      options: [Claude, Codex, Shahar]
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options: ["P1 — core value / next work", "P2 — important follow-up", "P3 — later"]
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What should the owner or customer be able to do after this is delivered?
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Observable completion criteria, including relevant validation
+      value: "- [ ] "
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Current state, next action and dependencies
+      description: Identify blockers, the person who can resolve them and related issues/PRs.
+    validations:
+      required: true

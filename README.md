@@ -1,5 +1,8 @@
 # IsraMarket
 
+Project work: [shared GitHub Project](https://github.com/users/shaharAka/projects/2),
+[open issues](https://github.com/shaharAka/israMArket/issues), and [task workflow](docs/project-workflow.md).
+
 End-to-end marketing for Israeli small businesses. The MVP generates a monthly strategy and then iterates from live performance data.
 
 ## What ships in the MVP
