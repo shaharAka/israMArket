@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { UIDialog, UIAction, InlineNotice } from "@/components/design/Controls";
 import { endpoints, type IntegrationsPayload, type MetaAssets, type MetaPixel, type PixelVerification } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
+import { PixelSetupGuide } from "./PixelSetupGuide";
 
 type Item = IntegrationsPayload["integrations"][number];
 const RETURN_NOTES: Record<string, string> = {
@@ -152,6 +154,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   }
 
   const selectedPage = assets?.pages.find(p => p.page_id === page);
+  const selectedPixel = pixels.find(p => p.id === pixel);
   const needsChoice = item?.status === "select_assets" || item?.status === "select_page";
   const tracking = verification || item?.pixel_verification;
   return <div className={styles.connection}>
@@ -161,7 +164,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
         <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>
         <div className={styles.actions}>
           <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>ניהול החיבור</button>
-          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב</button>}
+          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב</button>}
           {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}>לנתק</button>}
         </div>
       </div>
@@ -192,21 +195,35 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {account && <>
             <label className={styles.field}>המעקב באתר (Meta Pixel)<select value={pixel} onChange={e => setPixel(e.target.value)} disabled={loadingPixels}><option value="">{loadingPixels ? "מחפשים את המעקב…" : "לבחור בהמשך"}</option>{pixels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
             {pixelNote ? <p className={styles.hint}>{pixelNote}</p> : !loadingPixels && !pixels.length ? <p className={styles.hint}>לא נמצא מעקב בחשבון הזה. תוכלו לחבר אותו דרך מערכת האתר; החיבור לפרסום לא תלוי בכך.</p> : null}
+            {!loadingPixels && !pixels.length && <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
           </>}
+          {!account && <p className={styles.hint}>כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף.</p>}
           <UIAction onClick={save} busy={busy} disabled={loadingPixels || (!page && !account)}>אלה החשבונות של העסק שלי</UIAction>
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>
-          <p>נתוני העסק זמינים לרענון בעמוד התוצאות. משם נגזור מה כדאי לשנות בתוכנית ובפוסט הבא.</p>
-          {account && !pixel && <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, חברו Meta דרך מערכת האתר ואז בחרו את המעקב כאן. <a href="https://support.wix.com/en/article/connecting-a-facebook-pixel-and-the-conversions-api-to-your-wix-site" target="_blank" rel="noopener noreferrer">הוראות לחיבור ב־Wix</a></p>}
+          <p>החשבונות נשמרו. בעמוד התוצאות תוכלו לרענן את הנתונים ולראות מה כדאי לשנות בתוכנית ובפוסט הבא.</p>
+          {account && !pixel && <>
+            <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
+            <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב שלי</UIAction>
+            <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />
+          </>}
           {pixel && <div className={styles.tracking}>
             <h3>האם המעקב באתר עובד?</h3>
+            <p className={styles.hint}><strong>{selectedPixel?.name || tracking?.name || "המעקב של העסק"}</strong><br />האתר לבדיקה: {website ? <bdi>{website}</bdi> : <>לא הוגדר אתר. <Link href="/business">להוסיף את כתובת האתר</Link></>}</p>
             <p>{tracking?.note_he || "נבדוק אם מטא מקבלת אירועים מהכתובת של העסק."}</p>
-            {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL")}</small>}
-            <UIAction variant="secondary" onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
-            <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור מעקב אחר</UIAction>
+            {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
+            <UIAction onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
             {tracking && tracking.status !== "receiving" && website && <a href={website} target="_blank" rel="noopener noreferrer">לפתוח את האתר ולנסות שוב</a>}
-            <details><summary>איך מחברים מעקב לאתר?</summary><p>במערכת האתר, פתחו את חיבורי השיווק ובחרו Meta. היכנסו עם מנהל העסק ובחרו את אותו מעקב שבחרתם כאן. אחר כך חזרו לבדיקה.</p><a href="https://support.wix.com/en/article/connecting-a-facebook-pixel-and-the-conversions-api-to-your-wix-site" target="_blank" rel="noopener noreferrer">הוראות לחיבור דרך Wix</a><p className={styles.hint}>הבדיקה מאשרת קבלת אירועים ושיוך לאתר. תקינות סכומי רכישות, מעקב מהשרת ומניעת ספירה כפולה נבדקות בנפרד.</p></details>
+            {tracking?.status !== "receiving" && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
+            <details className={styles.trackingDetails}>
+              <summary>פרטי המעקב ושינוי הבחירה<IconChevron className={styles.disclosureIcon} /></summary>
+              <div className={styles.setupBody}>
+                <p>מזהה המעקב: <bdi>{pixel}</bdi></p>
+                <button type="button" className={styles.textAction} onClick={() => { setBusy(true); void loadAssets(); }} disabled={busy}>לבחור מעקב אחר</button>
+              </div>
+            </details>
+            <p className={styles.hint}>הבדיקה אינה מאשרת סכומי רכישה, מעקב מהשרת או מניעת ספירה כפולה.</p>
           </div>}
           <Link href="/performance" className={styles.next}>לראות את התוצאות ←</Link>
           <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>

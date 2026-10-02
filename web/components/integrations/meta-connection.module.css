@@ -27,3 +27,15 @@
 .tracking a, .next { color: var(--primary); font-weight: 600; text-decoration: none; text-underline-offset: 4px; }
 .tracking a:hover, .next:hover { text-decoration: underline; }
 .next { font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.setupGuide { font-size: 14px; line-height: 1.8; border-block-start: 1px solid var(--rule); }
+.setupGuide summary, .trackingDetails summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding-block: 12px; cursor: pointer; font-weight: 600; color: var(--ink); list-style: none; }
+.setupGuide summary::-webkit-details-marker, .trackingDetails summary::-webkit-details-marker { display: none; }
+.disclosureIcon { width: 18px; height: 18px; flex-shrink: 0; color: var(--ink-muted); transition: transform 180ms cubic-bezier(.2,.7,.2,1); }
+.setupGuide[open] > summary .disclosureIcon, .trackingDetails[open] > summary .disclosureIcon { transform: rotate(-90deg); }
+.trackingDetails { border-block-start: 1px solid var(--rule); }
+.setupBody { display: grid; gap: 14px; padding-block: 4px 12px; }
+.setupBody a { color: var(--primary); font-weight: 600; text-decoration: none; text-underline-offset: 4px; }
+.setupBody a:hover { text-decoration: underline; }
+.tracking bdi { overflow-wrap: anywhere; }
+.textAction:disabled { cursor: wait; color: var(--ink-muted); }
+@media (prefers-reduced-motion: reduce) { .disclosureIcon { transition: none; } }
