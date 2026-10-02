@@ -4,7 +4,7 @@ One shared plan for the owner, Claude and Codex. **Read it before starting; upda
 same PR that changes the work.** Each item has one owner. If you need something from another
 owner, add it under their name rather than doing it in their lane.
 
-- **Live:** https://34-165-93-157.sslip.io (main `56021d2`, 2 Oct 2026). Domain `isramarket.co.il`
+- **Live:** https://34-165-93-157.sslip.io (main, 2 Oct 2026: Design DNA v2). Domain `isramarket.co.il`
   is registered but not live yet (see Blocked).
 - **Updated:** 2 Oct 2026 by Claude and Codex.
 
@@ -29,15 +29,21 @@ owner, add it under their name rather than doing it in their lane.
 
 | # | Item | Owner | Status | Links |
 |---|---|---|---|---|
-| N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | 2 agents building (server + renderer) | `docs/design-dna.md` Revision 1 |
-| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | Implemented; 30 Meta tests and web checks pass, desktop + 390px checked. PR open, awaiting Claude's design pass (C1); not deployed. Two-customer tests prove separate grants, Pixels and verification. | [#33](https://github.com/shaharAka/israMArket/pull/33) |
+| N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | Implemented; 30 Meta tests and web checks pass, desktop + 390px checked. Claude reviewed C1; merge/deploy and then apply the design pass. Two-customer tests prove separate grants, Pixels and verification. | [#33](https://github.com/shaharAka/israMArket/pull/33) |
 | N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
 | N4 | **Meta app approval**: Tech Provider identified, Marketing use case, deletion URL, website platform and brand icon saved; review narrowed to 7 requests, six usage explanations and Web walkthrough drafted | Codex + Shahar | Unsubmitted. Needs an IsraMarket portfolio/entity, owner data-handling answers, processor locations, real API tests/recordings and reviewer access. Tier shows 0/500 calls, 85% success required. | `docs/meta-approval-plan.md` |
 
 ## Next (ready, in order)
 
 **Claude**
-- C1 **Design pass on N2** (Pixel setup guide, [#33](https://github.com/shaharAka/israMArket/pull/33)), before it merges.
+- C1 **Design pass on N2** ([#33](https://github.com/shaharAka/israMArket/pull/33)), right after it merges. Reviewed:
+  - show the setup guide only when tracking isn't receiving
+  - the Pixel's name without the raw ID
+  - check time without seconds
+  - one short disclaimer line
+  - guide links underline on hover only
+  - no em dash in "חיברתי באתר"
+  - fewer actions in the "is tracking working?" step
 - C2 **Results page word budget:** 200 words vs 140. Fold the WhatsApp table and the Instagram numbers into "more" (needs D1).
 - C3 **Today word budget:** 162 vs 150.
 - C4 **Plan page** is ~284 words once a month exists. Tighten it.
@@ -45,6 +51,7 @@ owner, add it under their name rather than doing it in their lane.
 - C6 **Setup checklist** should read the plan's `integrations_checklist`. The tazizi WhatsApp is labelled "new" by mistake.
 - C7 **Jargon:** "רימרקטינג" in `web/lib/budget.ts`.
 - C8 **Quick image drafts while the owner waits** (`gemini-3.1-flash-lite-image`). Not built.
+- C9 **SVG logos:** copy them safely as PNG (rasterise in a sandbox). Today an SVG logo signs with the name only.
 
 **Codex**
 - X1 **Security check:** the per-IP limit trusts the client's `X-Forwarded-For` through the Next proxy, which also affects login limits. Verify and fix.
@@ -61,6 +68,7 @@ owner, add it under their name rather than doing it in their lane.
 | B2 | Meta: a **business portfolio** for IsraMarket (Meta says the portfolio limit is reached) and the legal entity details | N4 |
 | B3 | Meta sign-in completed. App Review still needs genuine authorised tests, recordings and usable reviewer access. Four read scopes show 0/1 calls; Marketing tier shows 0/500. | N4 |
 | B4 | Store-manager Meta access for tazizi, so its real Pixel shows up | N2 test |
+| B5 | **Real product photos for tazizi** (5–10, uploaded in "התמונות של העסק"). The site photos are not usable (one is a blurry video still), so posts fall back to generated images. | N1 quality |
 
 ## Decisions needed from Shahar
 
@@ -83,6 +91,7 @@ owner, add it under their name rather than doing it in their lane.
 ## Done (recent)
 | PR | What | Owner |
 |---|---|---|
+| [#36](https://github.com/shaharAka/israMArket/pull/36) | Design DNA v2: style as an art direction in words, the real logo, colours from logo + site, one message per post, text in the photo's empty area, designer-review script (template look 3.8 → 1.7) | Claude |
 | [#32](https://github.com/shaharAka/israMArket/pull/32) | Design DNA v1: own style per business, photos real first, Muse Image default with NB2 fallback, cost log, brand page "הסגנון שלכם", demo bakery photos | Claude |
 | [#31](https://github.com/shaharAka/israMArket/pull/31) | Cookie disclosure for Google and Meta security cookies | Codex |
 | [#30](https://github.com/shaharAka/israMArket/pull/30) | Meta screens to the design standard | Claude |

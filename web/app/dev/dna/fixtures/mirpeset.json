@@ -1,0 +1,177 @@
+{
+  "id": "mirpeset",
+  "name": "מרפסת",
+  "field": "fitness",
+  "field_he": "סטודיו ליוגה · חיפה",
+  "website": "",
+  "logo": "",
+  "brand_dna": {
+    "version": 2,
+    "seed": 79061,
+    "created_at": "2026-10-02T00:19:05+00:00",
+    "field": "fitness",
+    "direction": {
+      "feel_he": "שקט של בוקר צלול על ההר, תנועה נקייה בלי קישוטים מיותרים.",
+      "world_he": "חלונות ברזל בלגי שמשקיפים למפרץ, רצפת בטון מוחלק, שעם ובדי כותנה לא מעובדים.",
+      "photo_he": "אור שחר חד שנכנס באלכסון דרך מסגרות מתכת, קווים ישרים וחלל ריק שמחכה לאנשים.",
+      "text_he": "משפט אחד קצר בפינת התמונה או מילה אחת בלבד, תמיד באותיות דקות ומדויקות.",
+      "never_he": [
+        "פרחי לוטוס, נרות דולקים או פסלוני בודהה",
+        "צילומים של פוזות יוגה מסובכות שמיועדות להרשים",
+        "פילטרים כתומים או תאורת סטודיו מלאכותית ומבריקה",
+        "קריאות מוטיבציה ומשפטי השראה ניו אייג'יים"
+      ]
+    },
+    "type": {
+      "display": "assistant",
+      "display_weight": 300,
+      "text": "playpen-sans-hebrew",
+      "text_weight": 400,
+      "headline_case": "sentence",
+      "scale": "editorial"
+    },
+    "colors": {
+      "ink": "#1f2326",
+      "paper": "#e9e2d4",
+      "accent": "#3d5a6c",
+      "accent_2": "#b08a5b",
+      "on_photo": "#e9e2d4",
+      "tint": "#d1ecff"
+    },
+    "colors_source": {
+      "ink": "site",
+      "paper": "site",
+      "accent": "site",
+      "accent_2": "site",
+      "on_photo": "site",
+      "tint": "derived"
+    },
+    "colors_base": {
+      "tint": "#3d5a6c"
+    },
+    "compositions": [
+      "full_bleed",
+      "inset_frame",
+      "corner_tab"
+    ],
+    "mix": {
+      "photo_only": 0.6,
+      "headline": 0.4,
+      "type_led": 0.0
+    },
+    "motif": {
+      "kind": "none",
+      "from": "",
+      "note_he": "",
+      "color": "accent",
+      "density": "low"
+    },
+    "signature": {
+      "kind": "name_only",
+      "use_logo": false,
+      "logo_url": "",
+      "logo_on": "any",
+      "logo_colors": []
+    },
+    "photo": {
+      "grade": "Cool Mediterranean morning, muted tones, crisp contrast, desaturated shadows",
+      "light": "Low directional morning sunlight entering through gridded steel windows, casting sharp linear shadows",
+      "angle": "Eye level or low floor level, straight architectural perspective with 35mm lens",
+      "background": "Smooth grey concrete floor, bare white lime plaster wall, Mount Carmel foliage visible through window glass",
+      "props": [
+        "cork yoga blocks",
+        "folded natural wool blankets",
+        "rolled plain linen mat",
+        "black steel window frame"
+      ],
+      "never": [
+        "text, letters or numbers in any language",
+        "logos, watermarks or price tags",
+        "people's faces",
+        "a white studio sweep or a generic marble backdrop",
+        "waxy or plastic-looking surfaces",
+        "drawn frames, borders or panels",
+        "incense smoke",
+        "smiling faces looking directly at lens",
+        "saturated neon sportswear",
+        "cluttered gym machines",
+        "tropical indoor plants"
+      ]
+    },
+    "copy": {
+      "headline_accent": false,
+      "price_style": "inline",
+      "cta_on_image": false
+    },
+    "rationale_he": "שקט של בוקר צלול על ההר, תנועה נקייה בלי קישוטים מיותרים.",
+    "distance_checked_against": 3,
+    "source": "model"
+  },
+  "brand_language": {
+    "business_name": "מרפסת",
+    "palette": [
+      {
+        "hex": "#b08a5b",
+        "role": "primary",
+        "name": "שעם"
+      },
+      {
+        "hex": "#3d5a6c",
+        "role": "accent",
+        "name": "כחול פלדה"
+      },
+      {
+        "hex": "#e9e2d4",
+        "role": "background",
+        "name": "צמר"
+      },
+      {
+        "hex": "#1f2326",
+        "role": "ink",
+        "name": "פחם"
+      }
+    ],
+    "typography": {
+      "primary": "Assistant",
+      "mood": "רגוע, מדויק, בלי קלישאות של ספא"
+    },
+    "visual_style": "באוהאוס על הכרמל, שעם וצמר, חלון פלדה, קווים ישרים",
+    "photography": "הסטודיו הריק לפני שיעור, אור שחר נמוך דרך חלון הפלדה",
+    "voice": "רגוע, מדויק, בלי קלישאות של ספא",
+    "audience": "תושבי האזור",
+    "logo_description": "ריבוע כחול עם קו אופק דק",
+    "logo_url": ""
+  },
+  "color_evidence": [
+    {
+      "hex": "#b08a5b",
+      "source": "site",
+      "role": "primary",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#3d5a6c",
+      "source": "site",
+      "role": "accent",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#e9e2d4",
+      "source": "site",
+      "role": "background",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#1f2326",
+      "source": "site",
+      "role": "ink",
+      "origin": "palette",
+      "share": 0.0
+    }
+  ],
+  "generated_at": "2026-10-02T00:19:05+00:00",
+  "generated_by": "api/scripts/dna_smoke.py"
+}

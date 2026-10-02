@@ -83,6 +83,9 @@ class Business(Base):
     # pair, colours, compositions, motif, signature and photo direction. "" until built
     # (services/design_dna.py, at the end of the site scan or on the first read).
     brand_dna_json: Mapped[str] = mapped_column(Text, default="")
+    # The same-origin copy of the business's logo and what its pixels say (colours, the
+    # ground it reads on): services/brand_logo.py. "" until the logo is fetched.
+    brand_logo_json: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -307,6 +310,26 @@ class ImageUsage(Base):
     est_cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
     latency_ms: Mapped[int] = mapped_column(Integer, default=0)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class PhotoAnalysis(Base):
+    """Where a post photo's subject is and where text may sit (services/photo_analysis.py).
+
+    One cheap vision call per photo, cached by the photo's content hash, so the same photo
+    is never analysed twice for a business (a month reuses photos; an edit is a new file).
+    """
+
+    __tablename__ = "photo_analyses"
+    __table_args__ = (UniqueConstraint("business_id", "content_hash", name="uq_photo_analysis_hash"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    # sha256 of the image bytes.
+    content_hash: Mapped[str] = mapped_column(String(64))
+    # {subject{x,y,w,h}, focal{x,y}, safe_area{x,y,w,h} | null}, all 0-1 of the photo.
+    result_json: Mapped[str] = mapped_column(Text, default="{}")
+    model: Mapped[str] = mapped_column(String(80), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class Audience(Base):

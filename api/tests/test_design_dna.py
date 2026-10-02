@@ -42,8 +42,8 @@ SHARED_FONTS = ["frank-ruhl-libre", "noto-serif-hebrew", "david-libre", "bellefa
                 "playpen-sans-hebrew"]
 SHARED_COMPOSITIONS = ["full_bleed", "inset_frame", "split", "type_led", "stacked_bands", "corner_tab", "arch_window",
                        "circle_crop", "ticket", "collage_grid", "handwritten_note", "editorial_column"]
-SHARED_MOTIFS = ["scalloped_edge", "stripes", "arches", "dots", "grain", "stamp", "underline", "tape", "thread"]
-SHARED_SIGNATURES = ["corner_mark", "footer_band", "stamp", "tab"]
+SHARED_MOTIFS = ["none", "scalloped_edge", "stripes", "arches", "dots", "grain", "stamp", "underline", "tape", "thread"]
+SHARED_SIGNATURES = ["corner_mark", "footer_band", "name_only", "none"]
 
 
 def assert_library_only(test: unittest.TestCase, dna: dict) -> None:
@@ -63,7 +63,17 @@ def assert_library_only(test: unittest.TestCase, dna: dict) -> None:
     test.assertIn(dna["signature"]["kind"], SIGNATURES)
     for role in ("ink", "paper", "accent", "accent_2", "on_photo", "tint"):
         test.assertRegex(dna["colors"][role], r"^#[0-9a-f]{6}$")
+        test.assertIn(dna["colors_source"][role], ("logo", "site", "derived", "owner"))
     test.assertGreaterEqual(contrast(dna["colors"]["ink"], dna["colors"]["paper"]), 4.5)
+    # v2: an art direction in Hebrew, a photo-led mix, no shared skeleton.
+    test.assertEqual(dna["version"], 2)
+    for key in ("feel_he", "world_he", "photo_he", "text_he"):
+        test.assertRegex(dna["direction"][key], r"[֐-׿]")
+    test.assertTrue(3 <= len(dna["direction"]["never_he"]) <= 5)
+    test.assertAlmostEqual(sum(dna["mix"].values()), 1.0, places=2)
+    test.assertFalse(dna["copy"]["cta_on_image"])
+    if not dna["signature"]["use_logo"]:
+        test.assertIn(dna["signature"]["kind"], ("name_only", "none"), "never an invented mark")
 
 
 class LibraryTest(unittest.TestCase):
@@ -134,7 +144,9 @@ class ValidationTest(DnaTestCase, unittest.TestCase):
         signals = signals_for(self.db, business)
         dna = validate_dna({"colors": {"accent": "#00ff00", "paper": "#f7f0e6", "ink": "#2b211c"}}, signals,
                            candidates(5, signals), 5)
-        self.assertEqual(dna["colors"]["accent"], "#e0a43a")
+        # v2: the logo's own colour is the accent (the fixture's logo measures #c0643b).
+        self.assertEqual(dna["colors"]["accent"], "#c0643b")
+        self.assertEqual(dna["colors_source"]["accent"], "logo")
         self.assertEqual(dna["colors"]["paper"], "#f7f0e6")
 
     def test_the_site_font_is_preferred_when_the_model_names_none(self):
@@ -271,7 +283,9 @@ class UniquenessTest(DnaTestCase, unittest.TestCase):
         self.assertGreater(len(calls), 1, "the first answer was too close, so it was asked again")
         self.assertIn("frank-ruhl-libre", calls[0]["display"])
         self.assertNotIn("frank-ruhl-libre", calls[1]["display"])
-        self.assertNotIn(taken["motif"]["kind"], calls[1]["motif"])
+        # v2: "none" is the default motif and is never excluded.
+        self.assertEqual(taken["motif"]["kind"], "none")
+        self.assertIn("none", calls[1]["motif"])
         self.assertRegex(calls[1]["prompt"], r"Excluded this time \(too close to someone else\): [^\n]*"
                                              r"display: frank-ruhl-libre")
         self.assertIn(f"display frank-ruhl-libre + text assistant, motif {taken['motif']['kind']}", calls[0]["prompt"],
@@ -339,7 +353,7 @@ class EndpointTest(DnaTestCase, unittest.TestCase):
         self.assertEqual(first.status_code, 200, first.text)
         dna = first.json()["brand_dna"]
         assert_library_only(self, dna)
-        self.assertEqual(dna["version"], 1)
+        self.assertEqual(dna["version"], 2)
         self.assertEqual(dna["field"], "food")
         self.assertEqual(dna["seed"], design_dna.seed_for(self.business))
         calls = len(self.model.calls)
@@ -406,7 +420,8 @@ class EndpointTest(DnaTestCase, unittest.TestCase):
         strategy = self.client.get("/strategy/current").json()
         self.assertEqual(strategy["brand_dna"], dna)
         post = strategy["roadmap"]["posts"][0]
-        self.assertEqual(post["design"], {"composition": "split", "crop": "4:5", "text_position": "bottom"})
+        self.assertEqual(post["design"], {"composition": "split", "crop": "4:5", "text_position": "bottom",
+                                          "text_mode": "headline"})
 
 
 class ScanHookTest(DnaTestCase, unittest.TestCase):
