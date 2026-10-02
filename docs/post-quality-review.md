@@ -67,3 +67,73 @@ until a concrete campaign needs it and a shared example shows its value.
 First engineering gap to scope after real-output review: a reviewable brief → rendered
 candidate → quality findings → targeted revision loop, retaining owner approval before
 publication. A model's self-assigned score is not proof of excellent content.
+
+## Second tool review: practical shortlist, 2 October 2026
+
+This is a sourced engineering shortlist, not an output-quality ranking. No new paid
+vendor was enabled, no benchmark result is invented, and no customer material was
+submitted to a new provider.
+
+First prototype: a short vertical reel assembled from owner clips/stills or IsraMarket’s
+own app demonstration. Keep the Hebrew caption layer editable and separate from generated
+footage; show the intended audience and action from the plan, then retain owner approval.
+Test one portfolio/process format and one product explanation before increasing scope.
+
+For **assembly**, compare a React composition with a hosted template renderer:
+
+- [Remotion](https://www.remotion.dev/docs/license/pricing) fits code-defined layouts,
+  captions and an app preview. The published free commercial license applies to individuals
+  and organisations of up to three people, subject to its terms; four or more requires
+  the company license. Automators pricing is $0.01/render with a $100/month minimum,
+  excluding our compute/storage. Confirm eligibility rather than assuming “open source”
+  means free production use.
+- [Creatomate](https://creatomate.com/docs/api/quick-start/create-a-video-by-template)
+  provides template rendering through an API with named content modifications. Its
+  [pricing page](https://creatomate.com/pricing) offers a 50-credit trial; it describes
+  credits and temporary output hosting. Current dollar plan amounts were not exposed
+  in the retrieved page, so no exact monthly price is recorded here. Verify Hebrew RTL,
+  line breaks, fonts and required preview features before committing to a plan; store
+  accepted exports ourselves rather than depending on temporary vendor hosting.
+
+For **optional generated shots**, benchmark one candidate first:
+
+- [Veo](https://ai.google.dev/gemini-api/docs/veo) supports reference-based video generation.
+  The [official price](https://ai.google.dev/gemini-api/docs/pricing) for Veo 3.1 Fast is
+  $0.10/second at 720p and $0.12 at 1080p; Standard is $0.40 at either resolution. An
+  eight-second Fast 720p generation is $0.80. Three successful generations cost $2.40,
+  even if only one is accepted; editing, storage and tax are extra. This is a calculated
+  example, not our observed campaign cost. Existing Google credentials do not prove
+  this paid capability is enabled for the project.
+- [Runway](https://docs.dev.runwayml.com/guides/pricing/) is an alternate shot-generation
+  benchmark: credits cost $0.01, Gen-4.5 is 12 credits/second and Gen-4 Turbo is 5.
+  Those correspond to $0.12 and $0.05 per generated second. Compare the same allowed
+  reference, duration and brief; a lower per-second price is not proof of a better
+  accepted reel.
+
+For **brand illustrations**, [Recraft’s API](https://www.recraft.ai/docs/api-reference/getting-started)
+can generate raster/vector assets and control palettes/styles. Keep it as a candidate
+for a specific brand-asset gap, not a new default photo editor. Exact current API cost
+and faithful real-product handling still need validation.
+
+For **optional narration**, [ElevenLabs’ current models](https://elevenlabs.io/docs/overview/models)
+include Hebrew. Test pronunciation and pacing with a stock voice or the owner’s own
+recording; voice cloning is outside this prototype. No voice account, paid plan or
+recording upload was created by this review.
+
+Decision order: existing Muse/Nano image-quality baseline → finished branded reel
+composition/export → optional generated shot → optional narration/illustration. Defer
+3D until a specific brief shows why it helps. Retain the customer’s palette and real
+proof throughout; the generator does not decide the business facts.
+
+## Bounded low-cost review work
+
+DeepSeek may review public copy, propose regression cases or check a supplied brief for
+missing acceptance criteria. Give it one task, explicit input boundaries, a small output
+limit and no tools or write access. Its suggestions must be checked against source and
+real tests; the first activation review included unsupported concerns which were rejected.
+The successful review used the official `deepseek-flash` endpoint alias; refer to the
+[current API contract](https://api-docs.deepseek.com/api/create-chat-completion/) when
+updating the runner. Credentials stay local and ignored, never in these docs or prompts.
+Do not send customer assets, analytics, tokens or private owner declarations as routine
+review context. Report actual token usage; do not invent an exact cost without the
+current account/model pricing.
