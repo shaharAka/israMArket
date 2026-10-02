@@ -32,6 +32,7 @@ from app.routers import (
     whatsapp,
 )
 from app.security import DEFAULT_JWT_SECRET
+from app.services import billing as billing_service
 
 Base.metadata.create_all(bind=engine)
 migrate_db()
@@ -120,6 +121,13 @@ app.include_router(whatsapp.public_router)
 app.include_router(public.router)
 # Onboarding v2 (/start, before signup): anonymous too, with its own budgets.
 app.include_router(public_onboarding.router)
+
+
+@app.exception_handler(billing_service.PlanRequiredError)
+async def _plan_required(_request: Request, exc: billing_service.PlanRequiredError) -> JSONResponse:
+    """The billing gate's 402: `detail` as before (every client shows it), plus
+    `code: "plan_required"` and `detail_he` (docs/design-dna.md, contract v2)."""
+    return JSONResponse(status_code=402, content=exc.body())
 
 
 @app.on_event("startup")

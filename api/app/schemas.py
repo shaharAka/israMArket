@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator, model_validator
 
 from app.services.business_fields import coerce_field
 from app.services.business_model import goals_for
@@ -144,6 +144,8 @@ class PostUpdateIn(BaseModel):
     outlets: list[str] = Field(default_factory=lambda: ["instagram", "facebook"])
     has_overlay: bool = True
     overlay_headline: str = Field(default="", max_length=200)
+    # Design DNA v2, one message per post: at most one short line under the headline.
+    overlay_sub: str = Field(default="", max_length=120)
     overlay_badge: str = Field(default="", max_length=100)
     # The old renderer's layout. Stored only when sent explicitly (routers/strategy.save_post).
     overlay_theme: str = Field(default="ink_pill", max_length=40)
@@ -218,9 +220,22 @@ class BrandDnaTypeIn(BaseModel):
 
 
 class BrandDnaMotifIn(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     kind: str | None = Field(default=None, max_length=40)
     color: str | None = Field(default=None, max_length=20)
     density: str | None = Field(default=None, max_length=10)
+    # Where the motif comes from (logo | place | product); a motif the owner picks by
+    # hand without one is theirs ("owner").
+    from_: str | None = Field(default=None, alias="from", max_length=20)
+    note_he: str | None = Field(default=None, max_length=120)
+
+
+class BrandDnaAdjustIn(BaseModel):
+    """'לשנות פרטים' in words, not pickers: quieter or bolder, more photo or more text."""
+
+    tone: Literal["quieter", "bolder"] | None = None
+    text: Literal["more_photo", "more_text"] | None = None
 
 
 class BrandDnaColorsIn(BaseModel):
@@ -240,6 +255,7 @@ class BrandDnaEditIn(BaseModel):
     type: BrandDnaTypeIn | None = None
     motif: BrandDnaMotifIn | None = None
     colors: BrandDnaColorsIn | None = None
+    adjust: BrandDnaAdjustIn | None = None
     keep: bool = False
 
 
@@ -295,6 +311,19 @@ class BrandLanguageIn(BaseModel):
     offers_seen: list[str] = Field(default_factory=list, max_length=16)
     audience: str = Field(min_length=2, max_length=400)
     logo_description: str = Field(default="", max_length=400)
+    # The logo file's address. None = keep the one the scan found; "" = no logo. It is
+    # downloaded through the SSRF guard after the save (services/brand_logo.py).
+    logo_url: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("logo_url")
+    @classmethod
+    def _logo_url(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip()
+        if cleaned and not cleaned.lower().startswith(("https://", "http://")):
+            raise ValueError("כתובת הלוגו צריכה להתחיל ב-https://")
+        return cleaned
 
 
 class PaletteIn(BaseModel):

@@ -50,6 +50,8 @@ def migrate_db():
             # Design DNA (services/design_dna.py). Empty on existing rows: built on the
             # first read of /brand/dna or the next site scan.
             ("brand_dna_json", "TEXT DEFAULT ''"),
+            # The same-origin logo copy (services/brand_logo.py). Empty until fetched.
+            ("brand_logo_json", "TEXT DEFAULT ''"),
         ]
         for col, col_type in new_cols:
             if col not in existing:

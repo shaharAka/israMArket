@@ -30,6 +30,7 @@ from app.models import (
     Integration,
     Payment,
     PerformanceSnapshot,
+    PhotoAnalysis,
     Recommendation,
     ResearchRun,
     Strategy,
@@ -115,6 +116,7 @@ class AccountDeletionTest(unittest.TestCase):
                     GenerationJob(business_id=bid, kind="first_month", status="done"),
                     ImageUsage(business_id=bid, task="generate", provider="muse", model="muse-image-1.0",
                                est_cost_usd=0.01),
+                    PhotoAnalysis(business_id=bid, content_hash=f"{bid:064d}", result_json="{}"),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
             )

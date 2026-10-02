@@ -165,12 +165,29 @@ def locked(db: Session, user: User, now: datetime | None = None) -> bool:
     return not has_access(subscription_for(db, user), trial_end(db, user), now)
 
 
+PLAN_REQUIRED = "plan_required"
+
+
+class PlanRequiredError(HTTPException):
+    """402 from the billing gate. The body keeps `detail` (the Hebrew sentence every client
+    already shows) and adds `code: "plan_required"` and `detail_he` (app/main.py), so a
+    client can tell "subscribe" apart from any other 402."""
+
+    def __init__(self, detail_he: str = LOCKED_HE) -> None:
+        super().__init__(status_code=402, detail=detail_he)
+        self.code = PLAN_REQUIRED
+        self.detail_he = detail_he
+
+    def body(self) -> dict:
+        return {"detail": self.detail_he, "code": self.code, "detail_he": self.detail_he}
+
+
 def require_generation_access(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> None:
     """THE billing gate. Attached (as a route dependency) only to endpoints that start new
     AI generation; tests/test_billing.py lists them and fails if the set changes unnoticed.
     Viewing, editing, exporting, the account and deletion never carry it."""
     if locked(db, user):
-        raise HTTPException(status_code=402, detail=LOCKED_HE)
+        raise PlanRequiredError()
 
 
 def status_payload(db: Session, user: User, now: datetime | None = None) -> dict:

@@ -285,7 +285,7 @@ ROADMAP_ITEM_SCHEMA = {
         "caption": {"type": "string", "description": "טיוטת כיתוב בעברית"},
         "cta": {
             "type": "string",
-            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד — היא מודפסת על גבי הכרטיס הגרפי",
+            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד. היא נכנסת לכיתוב, לא לתמונה",
         },
         "calendar_tie": {"type": "string", "description": "איזה אירוע בלוח השנה זה משרת, אם בכלל"},
         "goal_fit": {"type": "string", "description": "איך זה משרת מכירות או מודעות"},
@@ -299,7 +299,7 @@ ROADMAP_ITEM_SCHEMA = {
         },
         "overlay_text": {
             "type": "string",
-            "description": "טקסט עברי קצר שיופיע על התמונה, עד שש מילים",
+            "description": "טקסט עברי קצר שיופיע על התמונה, עד שש מילים: המסר האחד של הפוסט, בלי קריאה לפעולה",
         },
         "primary_outlet": {
             "type": "string",
@@ -319,8 +319,9 @@ ROADMAP_ITEM_SCHEMA = {
         "stat_highlight": {
             "type": "string",
             "description": (
-                "מספר קונקרטי ואימותי אחד שיוצג גדול על הכרטיס הגרפי, למשל '100 חלות כל שישי', "
-                "'מהתנור ב-07:00', '3 דורות של אופים'. "
+                "מספר קונקרטי ואימותי אחד מהפוסט, למשל '100 חלות כל שישי', "
+                "'מהתנור ב-07:00', '3 דורות של אופים'. אם הוא המסר של הפוסט, הוא גם הכותרת שעל התמונה; "
+                "הוא לא מודפס בנפרד. "
                 "קריטי: השתמש רק במספר שמופיע בחומר המקור (פרטי העסק, האתר, ההצעות). "
                 "אם אין מספר אמיתי — החזר מחרוזת ריקה. אל תמציא נתון, ואל תכתוב סיסמה שיווקית כללית."
             ),
@@ -633,6 +634,34 @@ CONNECTED_POST_FIELDS = {
     },
 }
 
+# docs/design-dna.md, Revision 1: one message per post. On the image only a headline and at
+# most one short line; the call to action, hours and conditions stay in the caption. A
+# price only when it is real (services/connected_posts.post_price checks it).
+ONE_MESSAGE_FIELDS = {
+    "overlay_headline": {
+        "type": "string",
+        "description": (
+            "הכותרת שעל התמונה: המסר האחד של הפוסט, עד 6 מילים בעברית. "
+            "בלי קריאה לפעולה, בלי שעות, בלי כתובת ובלי תנאים: אלה נשארים בכיתוב."
+        ),
+    },
+    "overlay_sub": {
+        "type": "string",
+        "description": "שורה קצרה אחת מתחת לכותרת, עד 6 מילים, רק אם היא מוסיפה משהו שאין בכותרת. ברוב הפוסטים: מחרוזת ריקה.",
+    },
+    "price_amount": {
+        "type": "number",
+        "description": (
+            "המחיר בשקלים, רק אם המחיר הוא המסר של הפוסט והוא מופיע בחומר המקור (ההצעה בתוכנית, "
+            "המוצרים, מה שבעל העסק סיפר). אחרת 0. אסור להמציא מחיר."
+        ),
+    },
+    "price_note": {
+        "type": "string",
+        "description": "על מה המחיר, עד 4 מילים (למשל 'למארז', 'ליחידה'). בלי מחיר: מחרוזת ריקה.",
+    },
+}
+
 MONTHLY_POST_ITEM_SCHEMA = {
     **ROADMAP_ITEM_SCHEMA,
     "properties": {
@@ -644,8 +673,10 @@ MONTHLY_POST_ITEM_SCHEMA = {
         },
         **INSPIRATION_FIELDS,
         **CONNECTED_POST_FIELDS,
+        **ONE_MESSAGE_FIELDS,
     },
-    "required": [*ROADMAP_ITEM_SCHEMA["required"], *INSPIRATION_FIELDS.keys(), *CONNECTED_POST_FIELDS.keys()],
+    "required": [*ROADMAP_ITEM_SCHEMA["required"], *INSPIRATION_FIELDS.keys(), *CONNECTED_POST_FIELDS.keys(),
+                 *ONE_MESSAGE_FIELDS.keys()],
 }
 
 # One line of "מה לומדים" per measured post, phrased by the cheap model from facts the
@@ -765,7 +796,7 @@ POST_REWRITE_SCHEMA = {
         "caption": {"type": "string"},
         "cta": {
             "type": "string",
-            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד — היא מודפסת על גבי הכרטיס הגרפי",
+            "description": "קריאה לפעולה קצרה, 2-4 מילים בלבד. היא נכנסת לכיתוב, לא לתמונה",
         },
         "overlay_text": {"type": "string"},
         "outlet_captions": {
@@ -886,12 +917,17 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "overlay_headline": {
             "type": "string",
             "title": "Overlay Headline",
-            "description": "כותרת קצרה וקולעת בעברית בת 2 עד 5 מילים: ההבטחה הקונקרטית של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). אם has_overlay הוא false, החזר מחרוזת ריקה.",
+            "description": "כותרת קצרה וקולעת בעברית, עד 6 מילים: המסר האחד של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). בלי קריאה לפעולה, שעות או תנאים. אם has_overlay הוא false, החזר מחרוזת ריקה.",
+        },
+        "overlay_sub": {
+            "type": "string",
+            "title": "Overlay Sub Line",
+            "description": "שורה קצרה אחת מתחת לכותרת, עד 6 מילים, רק אם היא מוסיפה משהו. ברוב הפוסטים ריקה.",
         },
         "overlay_badge": {
             "type": "string",
-            "title": "Overlay Badge",
-            "description": "תגית קטנה של מילה עד שתיים שמסמנת את ההקשר (מועד, חידוש, הגבלה). אם has_overlay הוא false, החזר מחרוזת ריקה.",
+            "title": "Overlay Badge (retired)",
+            "description": "לא בשימוש יותר: מסר אחד לפוסט. החזר מחרוזת ריקה.",
         },
     },
     # The layout is the business's Design DNA composition (services/post_design.py), no
@@ -902,6 +938,7 @@ DESIGNER_POST_CREATIVE_SCHEMA = {
         "scene_description",
         "has_overlay",
         "overlay_headline",
+        "overlay_sub",
         "overlay_badge",
     ],
 }

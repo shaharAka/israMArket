@@ -80,6 +80,28 @@ def is_provider_unavailable(exc: BaseException | None) -> bool:
     return False
 
 
+# Callables `(model, usage)` told about every text call's token usage (prompt, output,
+# thinking). Empty in the app; scripts (dna_smoke, design_review) add one to measure
+# what a run really spent. Never carries the prompt, the answer or the key.
+USAGE_HOOKS: list = []
+
+
+def _report_usage(model: str, response) -> None:
+    if not USAGE_HOOKS:
+        return
+    usage = getattr(response, "usage_metadata", None)
+    numbers = {
+        "prompt_tokens": getattr(usage, "prompt_token_count", 0) or 0,
+        "output_tokens": getattr(usage, "candidates_token_count", 0) or 0,
+        "thinking_tokens": getattr(usage, "thoughts_token_count", 0) or 0,
+    }
+    for hook in list(USAGE_HOOKS):
+        try:
+            hook(model, numbers)
+        except Exception:  # a measuring hook never breaks a call
+            pass
+
+
 def _call_with_retry(fn, *, attempts: int = 5):
     last_error: Exception | None = None
     for attempt in range(attempts):
@@ -124,6 +146,7 @@ def generate_json(
             contents=contents,
             config=config,
         )
+        _report_usage(model or settings.gemini_strategy_model, response)
         if not response.text:
             raise RuntimeError("קיבלנו תשובה ריקה מה-AI. נסו שוב.")
         return response.text
