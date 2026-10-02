@@ -143,6 +143,11 @@ is settled. The atlas lives in `web/public/flow-screens/` and the node mapping i
 `web/lib/flowScreens.ts`. Use the browser's screenshot API and write the returned PNG bytes
 to those paths; do not manipulate the DOM, authentication or storage to fabricate a state.
 
+The landing, dashboard and Posts captures were refreshed on 2 October against
+`24a1ed8a071d61d3d52528aff7f6c5e76bfc5e54`. The bakery already has published posts:
+its Posts capture does not demonstrate the first-ever publication priority. That condition
+is covered by the trial regressions; the actual customer pilot remains #66.
+
 Routes: `/`, `/login`, `/signup`, `/strategy?welcome=1` (plan), `/strategy?tour=1`
 (optional welcome), `/dashboard`, `/integrations`, `/baseline`, `/featured`, `/assets`,
 `/voice`, `/posts`, `/performance`, `/decisions`, `/strategy`, `/billing`. Capture the
