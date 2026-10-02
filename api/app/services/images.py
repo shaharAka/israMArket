@@ -139,16 +139,34 @@ def aspect_for(post: dict) -> str:
     return _post_design(post)["crop"]
 
 
+def _no_text(post: dict, design: dict) -> bool:
+    return post.get("has_overlay") is False or design.get("text_mode") == "photo_only"
+
+
 def composition_zone(post: dict) -> str:
     """What the photo must leave room for, from the post's composition and text position."""
     design = _post_design(post)
-    if post.get("has_overlay") is False:
+    if _no_text(post, design):
         return (
             "No text will be placed on this image, so treat it as a clean hero photograph. "
             "Place the subject confidently in the frame with deliberate, balanced margins."
         )
     zone = COMPOSITIONS[design["composition"]].photo_zone
     return zone.replace("{pos}", _POSITION_WORDS.get(design["text_position"], "bottom"))
+
+
+def negative_space_line(post: dict) -> str:
+    """Design DNA v2, rule 2: the text sits in the photo's calm area, so a generated photo
+    leaves one where the composition sets the headline."""
+    design = _post_design(post)
+    if _no_text(post, design) or not COMPOSITIONS[design["composition"]].photo:
+        return ""
+    where = _POSITION_WORDS.get(design["text_position"], "bottom")
+    return (
+        f"- Leave calm negative space in the {where} of the frame (about a third of it) where a "
+        "short headline will be set: the same surface and light continued, with no part of the "
+        "subject, no face and no busy detail there."
+    )
 
 
 def _photo_lines(dna: dict | None, brand: dict) -> list[str]:
@@ -215,6 +233,7 @@ What a real photo in this field shows: {FIELD_ART_DIRECTION.get(field, FIELD_ART
 
 COMPOSITION, as important as the subject:
 - {composition_zone(post)}
+{negative_space_line(post) or "- The subject is the hero; nothing will cover it."}
 - Keep the main subject and any face out of the text area, but that area must still be
   photographed content: surface, texture and light.
 - {_LAYOUT_FURNITURE}

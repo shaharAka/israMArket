@@ -262,3 +262,103 @@ parameter is derived from that brief and never shown to the owner.
   - A composition change keeps the photo.
   - `editorial_column` at 9:16 is allowed only when picked by hand.
   - A focal-point crop is the `focal` above.
+
+### As built (server, 2026-10-02)
+Services: `design_dna.py` (v2 genes, validation, uniqueness, upgrade, adjust),
+`dna_colors.py` (evidence, ΔE, lightness-only derivation), `brand_logo.py` (the logo copy),
+`photo_analysis.py` (safe area), `post_design.py` (text modes), `connected_posts.py` (one
+message, price). The library (`GET /brand/dna/library`) is `version: 2`.
+
+**`brand_dna` v2, field by field** (additive keys marked +)
+- `direction{feel_he, world_he, photo_he, text_he, never_he[3–5]}`: Hebrew, no English word
+  the business does not use, no `!`, no em dash, no generic marketing word (`GENERIC_HE`:
+  חוויה, פתרון, מותג, איכותי, ייחודי, מושלם, מזמין… and the stock photo phrases). `world_he`
+  and `photo_he` must share a word with the business's own signals, else they fall back to
+  its own words. `rationale_he` is kept and equals `feel_he`.
+- `colors{ink, paper, accent, accent_2, on_photo, tint}`, `colors_source{role: logo | site |
+  derived | owner}` (`owner` + = set by hand in `PUT /brand/dna` and not a brand colour),
+  `colors_base{role: "#hex"}` + = the brand colour a `derived` role came from.
+  - Evidence order: the logo copy's pixel colours (else the scan's logo measurement), then the
+    site: palette swatches (with roles), screenshot colours, CSS colours (`raw.colors`, the
+    scraper already keeps them, builder defaults removed).
+  - A model colour within ΔE 6 (CIE76) of a brand colour is snapped to it exactly; one that is
+    a brand colour moved in lightness (CIE LCh, same hue, chroma lowered only by the gamut) is
+    `derived`; anything else is replaced locally.
+  - Ink reaches 4.5:1 on paper by moving its lightness only. The accent is the logo's most
+    saturated colour (not its largest area).
+- `signature{kind, use_logo, logo_url, logo_on, logo_colors[] +}`: `corner_mark | footer_band
+  | none` when a same-origin logo copy exists (`logo_url` = `/backend/media/{id}/logo-<sha1>.png`,
+  owner-only like every media file), else `name_only | none` (`logo_url: ""`, `logo_on: any`).
+  `logo_on` comes from the logo's own alpha and luminance: it reads on a ground when 90% of it
+  is visible there (1.5:1) and 20% legible (3:1); an opaque logo follows its own ground.
+- `motif{kind, from, note_he +, color, density}`: `none` by default. Any other kind needs
+  `from: logo | place | product`, a Hebrew `note_he` naming the thing, and the brand's own words
+  for that `from` (logo description; visual style, photography, location, photo notes; offerings,
+  featured items) must mention it (`MOTIF_EVIDENCE` keywords). `from: owner` + when the owner
+  picks a motif by hand. Library motifs carry `generic: true` for scalloped_edge, arches, tape,
+  thread, stamp.
+- `mix{photo_only, headline, type_led}`: fractions summing to 1, steps of 0.05, from the field
+  (`FIELD_MIX`, e.g. food 0.5/0.4/0.1, professional 0.3/0.45/0.25) nudged by the voice (quiet
+  → more photo, lively → more headline). `type_led > 0` exactly when the DNA has a photo-free
+  composition. Every DNA keeps at least two compositions that can carry a photo alone.
+- `copy{headline_accent, price_style, cta_on_image: false}`; `cta_style` is gone.
+- `source: model | local | upgraded`, `upgraded_from` +, `adjusted[]` + (the owner's word
+  adjustments, replayed after a regenerate or re-scan), `locked` as before.
+- A stored v1 DNA is upgraded on read without a model call (`source: "upgraded"`): direction
+  from the brand's own words (the v1 rationale only when it is a feeling, not a list of fonts
+  and motifs), colours rebuilt from the evidence unless the owner locked them, motif `none`
+  unless the logo description names it, `stamp`/`tab` → the logo or the name. `GET /brand/dna`
+  stores the upgrade.
+
+**Uniqueness:** distance = 0.35 type + 0.25 compositions + 0.15 photo direction (word Jaccard)
++ 0.10 motif + 0.05 mix + 0.05 signature + 0.05 palette, re-weighted over the genes both
+carry. Against the business's own earlier style the palette is left out. Colours are never
+excluded or moved; a motif too close becomes `none`; `none` is never excluded. Across fields
+the look that may not repeat is the same type pair + motif (with no motif: also ≥ 60% of the
+compositions).
+
+**`PUT /brand/dna`** adds `adjust{tone: quieter | bolder, text: more_photo | more_text}`:
+quieter = display weight one step down, scale one step smaller, +0.1 photo only, motif density
+low; bolder the reverse; more_photo +0.15 photo only; more_text +0.15 headline (or +0.1 and
++0.05 type-led). `direction.text_he` follows the mix. Locked genes stay. `motif` takes `from`
+and `note_he`.
+
+**Logo copy:** on scan, from-draft, brand save and palette save (`refresh_after_scan`), and on
+the first build or a regenerate. `brand_language.logo_url` is fetched with the scraper's
+`capped_get` (SSRF guard on every hop, 900 KB cap, 20 s), `_download_logo` (image types only,
+≥ 24 px), normalised with Pillow (first frame, EXIF, RGBA, transparent margins trimmed, ≤ 1024
+px, PNG) and stored as `Business.brand_logo_json` + the file. An SVG logo is never copied (an
+SVG served from our origin can carry script): `status: unsupported`, its fill colours still
+count as logo evidence. `POST /onboarding/brand` keeps the scanned `logo_url` and accepts a
+new one (`https://` only). Settings: `BRAND_LOGO_COPY`.
+
+**A post** (written by `finish_written`, the designer and a rewrite)
+- `overlay_headline` ≤ 6 words, `overlay_sub` + ≤ 6 words or "" (dropped when it is a CTA,
+  hours or conditions); `overlay_text` = `overlay_headline`; `overlay_badge` is retired ("").
+  The CTA, hours, address and conditions stay in the caption. `stat_highlight` is not printed
+  separately.
+- `price{amount, currency: "ILS", note}` or `null`: only an amount found in the plan's offer,
+  the plan, the offerings, the owner context or the featured items; after an owner save, the
+  amount in their text.
+- `design.text_mode` +: `photo_only | headline | type_led`, from the DNA mix across the month
+  (has_overlay false → photo only, a price → headline, product posts never type-led); the
+  layout always carries its mode (`compositions[].text_modes` in the library); neighbours
+  still never share a composition. The editor's overlay switch sets it.
+- `design.safe_area{x,y,w,h} | null`, `design.focal{x,y}`, `design.subject{x,y,w,h}` +,
+  `design.photo_hash` +: one vision call per photo (DESIGN_DNA_MODEL, answered on Gemini's
+  0–1000 grid, stored 0–1), cached per business by the image's sha256 (`photo_analyses`
+  table), never when the call may not spend (browsing), removed when the photo changes. A safe
+  area that overlaps the subject by more than 12% is `null`. With a safe area, `text_position`
+  moves to the allowed position nearest it. Settings: `PHOTO_ANALYSIS`, `PHOTO_ANALYSIS_MODEL`.
+- `design.by_hand: true` + marks a feed-only layout the owner picked for a story.
+- Generated photos for a headline post ask for calm negative space at the text position.
+
+**Gate:** every billing-gated endpoint, `/brand/dna/regenerate` included, answers 402
+`{detail, code: "plan_required", detail_he}` (`detail` = `detail_he`, so older clients still
+show the sentence).
+
+**Tools:** `api/scripts/design_review.py FOLDER [--meta]` (rubric: template_look, lower is
+better; subject_visible; readable_on_phone; fits_direction; would_stop; notes in Hebrew and
+English; report in `.runtime/design-review/<ts>/`), `api/scripts/dna_smoke.py` (tazizi.co.il
+through the scraper path + 3 fictional businesses; fixtures in `web/app/dev/dna/fixtures/`, the
+logo in `web/public/dev-dna/`).

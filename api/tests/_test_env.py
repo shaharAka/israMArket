@@ -32,6 +32,13 @@ os.environ["BILLING_ENFORCE"] = "false"
 # call. Off here so no scan or signup test can make one; tests of that path turn it on and
 # mock the model (tests/test_design_dna.py).
 os.environ["DESIGN_DNA_ON_SCAN"] = "false"
+# Design DNA v2: the logo copy downloads the business's logo, and every post photo gets one
+# vision call (subject, focal point, where text may sit). Both off here so no test can make
+# an HTTP or model call through them; tests of those paths turn them on and mock the calls
+# (tests/test_design_dna_v2.py).
+os.environ["BRAND_LOGO_COPY"] = "false"
+os.environ["PHOTO_ANALYSIS"] = "false"
+os.environ["PHOTO_ANALYSIS_MODEL"] = ""
 # Image routing at the code defaults, whatever a developer's .env says (a local .env with
 # GEMINI_IMAGE_MODEL=gemini-3-pro-image / 2K would otherwise reach the routing tests).
 os.environ["IMAGE_GENERATE_PROVIDER"] = "muse"

@@ -1313,7 +1313,10 @@ _SAMPLE_EXTRA_PROPERTIES = {
 # The connected-post fields a sample cannot use yet (no featured items, no owner facts to
 # check, nothing measured) are dropped too; its mix type is kept and carried into the month.
 _SAMPLE_DROPPED = {"outlet_captions", "image_prompt", "inspiration_refs", "inspiration_note",
-                   "featured_item", "owner_fact", "applied_learning"}
+                   "featured_item", "owner_fact", "applied_learning",
+                   # The sample keeps its own overlay_headline (below); the one-message
+                   # extras of the month's posts are not part of the preview.
+                   "overlay_headline", "overlay_sub", "price_amount", "price_note"}
 SAMPLE_POST_SCHEMA = {
     "type": "object",
     "title": "WeekOnePost",

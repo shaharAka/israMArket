@@ -97,6 +97,56 @@ customer's grant must be proven on a real authorised account; SDK availability a
 not proof that every token can read the edge. No broader write permission is requested
 as a shortcut if read access fails.
 
+## Console check — 1 October 2026
+
+- IsraMarket app `1598367401696233` remains **unpublished**. The Publish page says
+  required basic settings are complete; that does not establish Advanced Access.
+- The dashboard says **Become a Tech Provider** is required to submit to App Review
+  and request other businesses' data. Its access-verification application has not
+  been submitted. No verified IsraMarket portfolio or legal entity is available yet.
+- Existing contact, privacy, terms and callback settings use the working SSLip origin.
+  The basic-settings tab rejects the attempted `/security` data-deletion URL as
+  invalid. A dedicated public `/data-deletion` page is being prepared; acceptance in
+  the Meta console must be checked after deployment. This is an instructions page,
+  not a signed-request deletion callback.
+- `/security` is being corrected to the actual four social scopes plus optional
+  `ads_read`. Old references to `business_management` and `pages_read_user_content`
+  are removed. It now describes ads reports and Pixel evidence.
+- No authorised Tazizi dataset or ad account is available in this login's Events Manager
+  account selector. An entry named IsraMarket uses the **app ID** and is not evidence
+  of an installed store Pixel. Nothing was created or changed in Events Manager.
+  Unrelated account names, identifiers and event activity stay out of this review packet.
+- Final review submission still needs actual authorised store consent and evidence,
+  usable reviewer access and the entity/portfolio prerequisites. No demo screenshots
+  or fabricated successful event receipts are submitted as real integration proof.
+- Native Chrome's dashboard subsequently remained blank/loading. The connected Chrome
+  profile reaches Facebook's sign-in page and has no authenticated Meta session;
+  it can be used for the forms once the owner signs in there. No credentials are copied
+  between browser profiles.
+
+## Data-handling answers prepared for verification
+
+IsraMarket helps the customer understand their marketing data and improve an ongoing
+marketing plan. They initiate the Meta connection in Connections, approve in Meta's
+own consent screen, and select named assets returned by that grant. Optional ads access
+is clearly separated. Access tokens are encrypted on the server and never returned
+to the browser. Reports and content belong to that customer's business; API endpoints
+check the signed-in owner before returning data or accepting asset selections.
+
+The requested permissions are read-only. We do not create/manage ads, change budgets,
+publish posts, install tracking code, or send conversion events. Meta-attributed
+outcomes are labelled with attribution settings; unavailable metrics and unverified
+tracking quality remain unknown. Data supports customer analysis, recommendations and
+their plan, rather than being sold to advertisers.
+
+Disconnect removes stored connection tokens and stops future access through that
+connection. Previously stored analyses remain until account deletion. The existing
+account-deletion flow removes the account, its businesses, imported data, reports,
+content, tokens and media from the live system; backups expire within 30 days.
+The public instructions include help through the owner's supplied contact email.
+This describes current behaviour; it does not claim an audited certification or
+an implemented automatic signed-request deletion/deauthorisation callback.
+
 ## Reviewer walkthrough (draft, no credentials in this file)
 
 1. Sign in to the provided IsraMarket reviewer account and open `/integrations`.
