@@ -15,6 +15,7 @@ import { SendToHelper } from "@/components/help/SendToHelper";
 import { IconCamera } from "@/components/instagram/SourceLink";
 import { MetaConnection } from "@/components/integrations/MetaConnection";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
+import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
 import {
   endpoints,
   exitDemo,
@@ -81,7 +82,7 @@ export default function IntegrationsPage() {
     if (typeof window === "undefined") return "";
     const params = new URLSearchParams(window.location.search);
     if (params.get("ga4") === "connected") {
-      return "התחברתם לגוגל. נשאר רק לבחור את האתר מהרשימה (בגוגל הוא נקרא ״נכס״).";
+      return "הגישה לגוגל אושרה. נבחר את האתר ונבדוק שאפשר לקרוא את הנתונים שלו.";
     }
     if (params.get("meta") === "connected") {
       return "התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.";
@@ -92,8 +93,7 @@ export default function IntegrationsPage() {
   const [webhookUrl, setWebhookUrl] = useState("");
   const [devConfigOpen, setDevConfigOpen] = useState(false);
 
-  // Which account/page was chosen, right after the owner approved the connection at the
-  // provider. "נכס" is Google's word for the owner's site, so the copy explains it.
+  // Selection still needs the owner's confirmation, even when only one site is listed.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");
   const [savingGa4, setSavingGa4] = useState(false);
 
@@ -109,6 +109,8 @@ export default function IntegrationsPage() {
       .integrations(forceLive)
       .then((integrationsRes) => {
         setData(integrationsRes);
+        const sites = integrationsRes.integrations.find(item => item.provider === "ga4")?.properties;
+        if (sites?.length === 1) setSelectedGa4Property(sites[0].property_id);
       })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.");
@@ -144,6 +146,9 @@ export default function IntegrationsPage() {
   const metaItem = data?.integrations.find((item) => item.provider === "meta");
 
   const ga4Connected = Boolean(ga4Item?.connected);
+  const ga4State = ga4Item?.source_readiness;
+  const ga4HasSelection = Boolean(ga4Item?.external_id && ga4Item.status !== "select_property");
+  const ga4Presentation = sourcePresentation(ga4State, savingGa4);
   const metaConnected = Boolean(metaItem?.connected);
 
   const ga4NeedsSelection = ga4Item?.status === "select_property" && Boolean(ga4Item.properties?.length);
@@ -180,18 +185,30 @@ export default function IntegrationsPage() {
     setSavingGa4(true);
     setError("");
     try {
-      await endpoints.ga4Property({
+      const result = await endpoints.ga4Property({
         property_id: selectedGa4Property,
         display_name: prop ? `${prop.display_name} (${prop.account})` : selectedGa4Property,
       });
-      setSuccessNote("נתוני האתר מחוברים.");
-      toast("נתוני האתר חוברו");
+      setSuccessNote("");
+      setData(previous => previous ? { ...previous, integrations: previous.integrations.map(item => item.provider === "ga4" ? result.integration : item) } : previous);
+      if (result.integration.source_readiness?.status === "ready") toast("קראנו את נתוני האתר");
       await reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את האתר שבחרתם");
     } finally {
       setSavingGa4(false);
     }
+  }
+
+  async function handleReadGa4() {
+    if (demo) { toast("זהו דמו. לא נקראים נתונים מחשבון אמיתי."); return; }
+    setSavingGa4(true); setError(""); setSuccessNote("");
+    try {
+      const result = await endpoints.ga4Read();
+      setData(previous => previous ? { ...previous, integrations: previous.integrations.map(item => item.provider === "ga4" ? result.integration : item) } : previous);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "לא הצלחנו לבדוק את הנתונים. נסו שוב.");
+    } finally { setSavingGa4(false); }
   }
 
   async function handleDisconnect(provider: "ga4" | "meta") {
@@ -239,7 +256,7 @@ export default function IntegrationsPage() {
     ? "website"
     : whatsapp && !whatsappSet
       ? "whatsapp"
-      : !ga4Connected
+      : !ga4Connected || ["unchecked", "reconnect", "unavailable"].includes(ga4State?.status || "")
         ? "ga4"
         : !metaConnected
           ? "meta"
@@ -439,17 +456,16 @@ export default function IntegrationsPage() {
             <RowHead
               icon={IconChart}
               title="נתוני האתר"
-              status={ga4Connected ? "מחובר" : ga4NeedsSelection ? "נשאר לבחור" : "לא מחובר"}
-              tone={ga4Connected ? "good" : ga4NeedsSelection ? "waiting" : "muted"}
-              note="כמה נכנסו לאתר, מאיפה הגיעו ומה קנו."
+              status={ga4Item ? ga4Presentation.label : "לא מחובר"}
+              tone={ga4Item ? ga4Presentation.tone : "muted"}
+              note="כמה נכנסו לאתר ומאיפה הגיעו."
             />
 
             <div className={ROW_BODY}>
               {ga4NeedsSelection ? (
                 <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
                   <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
-                    אישרתם את הכניסה לגוגל. נשאר לבחור את האתר מהרשימה (בגוגל הוא נקרא
-                    ״נכס״):
+                    הגישה לגוגל אושרה. בחרו את האתר של העסק; אחרי הבחירה נבדוק את הנתונים שלו.
                   </p>
                   <label htmlFor="ga4-property" className={`${LABEL} mt-4`}>בחירת האתר</label>
                   <div className="flex flex-col gap-2.5 sm:flex-row">
@@ -463,7 +479,7 @@ export default function IntegrationsPage() {
                       <option value="">-- בחרו את האתר --</option>
                       {ga4Item?.properties?.map((prop) => (
                         <option key={prop.property_id} value={prop.property_id}>
-                          {prop.display_name} ({prop.account}) — מזהה {prop.property_id}
+                          {prop.display_name || "אתר ללא שם"}{prop.account ? ` (${prop.account})` : ""}
                         </option>
                       ))}
                     </select>
@@ -477,15 +493,16 @@ export default function IntegrationsPage() {
                       onClick={handleSaveGa4Property}
                       className="shrink-0 whitespace-nowrap"
                     >
-                      {savingGa4 ? "שומרים…" : "זה האתר שלי"}
+                      {savingGa4 ? "בודקים את הנתונים…" : "זה האתר שלי"}
                     </Button>
                   </div>
                 </div>
-              ) : ga4Connected ? (
+              ) : ga4HasSelection ? (
+                <>
                 <ConnectedLine
                   account={
                     <>
-                      מחובר לאתר:{" "}
+                      האתר שנבחר:{" "}
                       {/* Google's product code ("GA4") is not the owner's business name. */}
                       <strong className="font-semibold text-[color:var(--ink)]">
                         {(ga4Item?.display_name || ga4Item?.external_id || "").replace(/\s*\(GA4\)\s*$/, "")}
@@ -500,6 +517,10 @@ export default function IntegrationsPage() {
                     לנתק
                   </button>
                 </ConnectedLine>
+                {ga4State ? <SourceReadState state={ga4State} checking={savingGa4} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} /> : null}
+                </>
+              ) : ga4Item?.source_readiness?.status === "no_properties" ? (
+                <SourceReadState state={ga4Item.source_readiness} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} />
               ) : (
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <Button
@@ -530,9 +551,9 @@ export default function IntegrationsPage() {
 
             <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
               <p>
-                בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). בלעדיו, שיווק ברשתות הוא ניחוש. שם רואים כמה אנשים נכנסו
-                לאתר, מאיפה הגיעו, מה קנו ואילו פוסטים באמת הביאו לקוחות. לפי זה אנחנו משפרים את התוכנית של
-                החודש הבא.
+                בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). הוא מראה כניסות לאתר ואת המקורות שלהן.
+                פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח.
+                החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר.
               </p>
               <p>מתחברים עם חשבון הגוגל שלכם, ולא נותנים לנו סיסמה.</p>
               <div>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { BrandMark, IconChevron } from "@/lib/icons";
 import { SunProgress } from "@/components/brand/SunProgress";
 import { PixelSetupGuide } from "@/components/integrations/PixelSetupGuide";
+import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
+import type { SourceReadiness } from "@/lib/api";
 import { UIAction, UIDialog } from "./Controls";
 import styles from "./connection-workshop.module.css";
 
@@ -21,6 +23,35 @@ const states: Record<State, string> = {
   missing: "עוד לא חובר", selected: "החשבון נבחר, מחכים לקריאה הראשונה", ready: "התקבלה קריאה בדוגמה",
   no_history: "החשבון מחובר, עדיין אין נתונים לתקופה", reconnect: "צריך לחדש את האישור",
 };
+
+const readNotes: Record<SourceReadiness["status"], string> = {
+  choose_property: "הגישה לגוגל אושרה. בחרו את האתר שאת הנתונים שלו נקרא.",
+  no_properties: "לא נמצאו אתרים בחשבון הזה. אפשר לבחור חשבון אחר או לבקש גישה ממי שמנהל את האתר.",
+  unchecked: "האתר נבחר. עוד לא בדקנו אם אפשר לקרוא את הנתונים שלו.",
+  reading: "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית.",
+  ready: "קראנו נתונים מהאתר. הם זמינים בעמוד התוצאות.",
+  empty: "הקריאה הצליחה, אבל לא נמצאה פעילות בתקופה שנבדקה. אפשר להמשיך בתוכנית ולבדוק את התקנת המדידה.",
+  reconnect: "גוגל לא מאפשר כרגע לקרוא את הנתונים. חברו מחדש עם חשבון שיש לו גישה לאתר.",
+  unavailable: "לא הצלחנו לקרוא את הנתונים כרגע. הבחירה נשמרה; אפשר לנסות שוב בלי להתחיל מחדש.",
+};
+
+function ReadinessRehearsal() {
+  const [status, setStatus] = useState<SourceReadiness["status"]>("unchecked");
+  const priorRead = ["ready", "empty", "reconnect", "unavailable"].includes(status);
+  const state: SourceReadiness = { status, note_he: readNotes[status],
+    ...(priorRead ? { period: { start: "2026-09-02", end: "2026-09-29" }, last_success_at: "2026-09-30T09:00:00Z" } : {}) };
+  return <section className={`${styles.recommendation} mt-8`} aria-labelledby="real-read-states">
+    <div><h2 id="real-read-states">מצב נתוני האתר</h2><p className={styles.caption}>הרכיב שמופיע במוצר, עם מצבים ונתונים לדוגמה. אין קריאה מחשבון אמיתי.</p></div>
+    <label className={styles.field}>המצב שמוצג למשתמש<select value={status} onChange={event => setStatus(event.target.value as SourceReadiness["status"])}>
+      {(Object.keys(readNotes) as SourceReadiness["status"][]).map(value => <option key={value} value={value}>{sourcePresentation({ status: value, note_he: "" }).label}</option>)}
+    </select></label>
+    <div><strong className="text-[16px]">פרג ושמרים · האתר</strong><p className={styles.caption}>{sourcePresentation(state).label}</p>
+      <SourceReadState state={state} resultsHref="/design/results" primary onRetry={() => setStatus("reading")} onReconnect={() => setStatus("choose_property")} />
+    </div>
+    {status === "reading" ? <UIAction onClick={() => setStatus("ready")}>לדמות קריאה מוצלחת</UIAction> : null}
+    {status === "choose_property" ? <UIAction onClick={() => setStatus("unchecked")}>לדמות בחירת אתר</UIAction> : null}
+  </section>;
+}
 
 /** Local-only UX rehearsal. Never calls provider APIs, grants access or saves account data. */
 export function ConnectionWorkshop() {
@@ -85,6 +116,7 @@ export function ConnectionWorkshop() {
       </section>
       <details className={styles.disclosure}><summary>ומה עם חיבורים נוספים?<IconChevron /></summary><p>קישור וואטסאפ יכול למדוד לחיצות, לא הודעות או מכירות. חיבור לכרטיס העסק בגוגל ולכלים נוספים יוצע כשיהיה זמין; התוכנית אינה תלויה בהם.</p></details>
       <div className={styles.reviewControls}><label>מצב לבדיקה<select value={scenario} onChange={event => changeScenario(event.target.value as Scenario)}><option value="normal">חיבור רגיל</option><option value="wrong_account">החשבון הלא נכון</option><option value="cancelled">האישור בוטל</option><option value="no_history">אין נתונים לתקופה</option><option value="reconnect">האישור צריך חידוש</option></select></label><UIAction variant="text" onClick={() => changeScenario("normal")}>להתחיל את הדוגמה מחדש</UIAction></div>
+      <ReadinessRehearsal />
     </main>
     <UIDialog open={open} onClose={() => setOpen(false)} title={title} description="דוגמה בלבד. לא נפתח חיבור אמיתי ולא ניתנת גישה לחשבונות שלכם.">
       <div className={styles.sheet}>
