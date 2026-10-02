@@ -72,7 +72,7 @@ const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12
 export default function IntegrationsPage() {
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
-  const [demo, setDemo] = useState(() => typeof window !== "undefined" && isDemo());
+  const [demo] = useState(() => typeof window !== "undefined" && isDemo());
   const [error, setError] = useState(() => {
     if (typeof window === "undefined") return "";
     return new URLSearchParams(window.location.search).get("error") || "";
@@ -265,9 +265,9 @@ export default function IntegrationsPage() {
               variant="secondary"
               onClick={() => {
                 exitDemo();
-                setDemo(false);
-                reload(true);
-                toast("עברתם לעסק שלכם");
+                // Remount the shell too: its identity and first-run gate belong to
+                // the real session, and sample rows must never become account rows.
+                window.location.reload();
               }}
               className="shrink-0 self-start !min-h-11 !px-4 !text-[14px] sm:self-auto"
             >
@@ -296,9 +296,7 @@ export default function IntegrationsPage() {
               type="button"
               onClick={async () => {
                 await endpoints.enterDemo();
-                setDemo(true);
-                reload();
-                toast("עברתם לדמו של מאפיית לחם תום");
+                window.location.reload();
               }}
               className={`${TEXT_ACTION} shrink-0`}
             >
