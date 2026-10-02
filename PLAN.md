@@ -37,7 +37,14 @@ owner, add it under their name rather than doing it in their lane.
 ## Next (ready, in order)
 
 **Claude**
-- C1 **Design pass on N2** (Pixel setup guide, [#33](https://github.com/shaharAka/israMArket/pull/33)), before it merges.
+- C1 **Design pass on N2** ([#33](https://github.com/shaharAka/israMArket/pull/33)), right after it merges. Reviewed:
+  - show the setup guide only when tracking isn't receiving
+  - the Pixel's name without the raw ID
+  - check time without seconds
+  - one short disclaimer line
+  - guide links underline on hover only
+  - no em dash in "חיברתי באתר"
+  - fewer actions in the "is tracking working?" step
 - C2 **Results page word budget:** 200 words vs 140. Fold the WhatsApp table and the Instagram numbers into "more" (needs D1).
 - C3 **Today word budget:** 162 vs 150.
 - C4 **Plan page** is ~284 words once a month exists. Tighten it.
