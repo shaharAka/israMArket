@@ -4,7 +4,7 @@ One shared plan for the owner, Claude and Codex. **Read it before starting; upda
 same PR that changes the work.** Each item has one owner. If you need something from another
 owner, add it under their name rather than doing it in their lane.
 
-- **Live:** https://34-165-93-157.sslip.io (main `56021d2`, 2 Oct 2026). Domain `isramarket.co.il`
+- **Live:** https://34-165-93-157.sslip.io (main, 2 Oct 2026: Design DNA v2). Domain `isramarket.co.il`
   is registered but not live yet (see Blocked).
 - **Updated:** 2 Oct 2026 by Claude.
 
@@ -29,7 +29,6 @@ owner, add it under their name rather than doing it in their lane.
 
 | # | Item | Owner | Status | Links |
 |---|---|---|---|---|
-| N1 | **Design DNA v2**: style as an art direction in words; the real logo (same-origin copy, small); colours from the logo + site (ΔE ≤ 6, never moved for uniqueness); one message per post; text in the photo's empty area; photo-led mix; ornament only from the brand; designer-review scoring; real test on tazizi.co.il | Claude | Server done (994 tests, tazizi style built from its real logo + site), merged into `ux-simplification`. Renderer done on its agent branch (layout planner with the phone minimums, text in `safe_area` or on a band, real logo by its own colours, brief on `/brand`, words-first adjust, 402 next step, `/dev/dna` with the 4 fixtures and "export all"); needs real tazizi photos to judge its feed; then review → PR → publish | `docs/design-dna.md` Revision 1 |
 | N2 | **Customer Pixel setup guide** (Wix / Shopify / WordPress instructions, refresh list, verification identity) | Codex | PR open, waiting for Claude's design pass (C1) | [#33](https://github.com/shaharAka/israMArket/pull/33) |
 | N3 | **Domain move** to `www.isramarket.co.il`: site-host switch, aliases + 308 redirects, then Google and Meta origins / callbacks / policy URLs together | Codex | DNS on `serverHold` at the registry; draft PR #28 ready | [#28](https://github.com/shaharAka/israMArket/pull/28) |
 | N4 | **Meta app approval**: Tech Provider done, `ads_read` ready for testing, data-deletion URL saved | Codex + Shahar | Blocked on a business portfolio (portfolio limit) and IsraMarket's legal entity | `docs/meta-approval-plan.md` |
@@ -90,6 +89,7 @@ owner, add it under their name rather than doing it in their lane.
 ## Done (recent)
 | PR | What | Owner |
 |---|---|---|
+| [#36](https://github.com/shaharAka/israMArket/pull/36) | Design DNA v2: style as an art direction in words, the real logo, colours from logo + site, one message per post, text in the photo's empty area, designer-review script (template look 3.8 → 1.7) | Claude |
 | [#32](https://github.com/shaharAka/israMArket/pull/32) | Design DNA v1: own style per business, photos real first, Muse Image default with NB2 fallback, cost log, brand page "הסגנון שלכם", demo bakery photos | Claude |
 | [#31](https://github.com/shaharAka/israMArket/pull/31) | Cookie disclosure for Google and Meta security cookies | Codex |
 | [#30](https://github.com/shaharAka/israMArket/pull/30) | Meta screens to the design standard | Claude |
