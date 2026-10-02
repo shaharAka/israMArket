@@ -1,0 +1,188 @@
+{
+  "id": "anan",
+  "name": "ענן",
+  "field": "food",
+  "field_he": "קונדיטוריה · מודיעין",
+  "website": "",
+  "logo": "",
+  "brand_dna": {
+    "version": 2,
+    "seed": 8131,
+    "created_at": "2026-10-02T00:19:00+00:00",
+    "field": "food",
+    "direction": {
+      "feel_he": "אוורירי, קליל ומדויק כמו נגיסה ראשונה בשכבות של בצק כרוך",
+      "world_he": "דלפק בהיר במודיעין, מגשי נירוסטה נקיים, נייר אפייה ופירורים זהובים על שיש לבן",
+      "photo_he": "קרופין או שמרים במרכז הפריים באור שמש ישיר וצל גרפי וחד של צהריים",
+      "text_he": "שתי מילים חדות בפינה או רק שם המאפה בלי שום עומס מסביב",
+      "never_he": [
+        "פילטרים חומים או מראה כפרי חשוך",
+        "תמונות עמוסות עם פרחים יבשים או סלסלאות קש",
+        "אותיות מחוברות בסגנון כתב יד",
+        "טקסט שיושב על קופסה אטומה מעל המאפה"
+      ]
+    },
+    "type": {
+      "display": "rubik",
+      "display_weight": 700,
+      "text": "heebo",
+      "text_weight": 400,
+      "headline_case": "sentence",
+      "scale": "large"
+    },
+    "colors": {
+      "ink": "#2a2a2a",
+      "paper": "#fbfaf6",
+      "accent": "#f2c6c2",
+      "accent_2": "#a9c99a",
+      "on_photo": "#fbfaf6",
+      "tint": "#f6e7a6"
+    },
+    "colors_source": {
+      "ink": "site",
+      "paper": "site",
+      "accent": "site",
+      "accent_2": "site",
+      "on_photo": "site",
+      "tint": "site"
+    },
+    "colors_base": {},
+    "compositions": [
+      "full_bleed",
+      "corner_tab",
+      "stacked_bands",
+      "arch_window"
+    ],
+    "mix": {
+      "photo_only": 0.45,
+      "headline": 0.55,
+      "type_led": 0.0
+    },
+    "motif": {
+      "kind": "none",
+      "from": "",
+      "note_he": "",
+      "color": "accent",
+      "density": "low"
+    },
+    "signature": {
+      "kind": "name_only",
+      "use_logo": false,
+      "logo_url": "",
+      "logo_on": "any",
+      "logo_colors": []
+    },
+    "photo": {
+      "grade": "high key, clean daylight, sharp pastel vibrancy with crisp pastry tones",
+      "light": "hard direct midday sunlight from side creating crisp defined cast shadows",
+      "angle": "straight-on eye level macro or clean top-down 90 degree overhead",
+      "background": "clean white engineered quartz surface, matte pastel laminate counter",
+      "props": [
+        "baking parchment scrap",
+        "stainless steel cooling rack",
+        "single ceramic pastel plate",
+        "crumbled flaky pastry layers"
+      ],
+      "never": [
+        "text, letters or numbers in any language",
+        "logos, watermarks or price tags",
+        "people's faces",
+        "a white studio sweep or a generic marble backdrop",
+        "waxy or plastic-looking surfaces",
+        "drawn frames, borders or panels",
+        "dark wood boards",
+        "flour dust clouds in air",
+        "burlap fabric",
+        "rustic baskets",
+        "blurred cozy coffee cups"
+      ]
+    },
+    "copy": {
+      "headline_accent": true,
+      "price_style": "inline",
+      "cta_on_image": false
+    },
+    "rationale_he": "אוורירי, קליל ומדויק כמו נגיסה ראשונה בשכבות של בצק כרוך",
+    "distance_checked_against": 2,
+    "source": "model"
+  },
+  "brand_language": {
+    "business_name": "ענן",
+    "palette": [
+      {
+        "hex": "#a9c99a",
+        "role": "primary",
+        "name": "פיסטוק"
+      },
+      {
+        "hex": "#f2c6c2",
+        "role": "accent",
+        "name": "ורוד אבקה"
+      },
+      {
+        "hex": "#f6e7a6",
+        "role": "secondary",
+        "name": "חמאה"
+      },
+      {
+        "hex": "#2a2a2a",
+        "role": "ink",
+        "name": "גרפיט"
+      },
+      {
+        "hex": "#fbfaf6",
+        "role": "background",
+        "name": "לבן חם"
+      }
+    ],
+    "typography": {
+      "primary": "Heebo",
+      "mood": "צעיר, משחקי ומדויק"
+    },
+    "visual_style": "מינימליסטי ומודרני, פסטלים, דלפק אחד, הרבה אוויר",
+    "photography": "צילומי סטודיו בהירים, מאפה אחד במרכז, צל חד של צהריים",
+    "voice": "צעיר, משחקי ומדויק",
+    "audience": "תושבי האזור",
+    "logo_description": "ענן ורוד מעוגל עם אותיות דקות",
+    "logo_url": ""
+  },
+  "color_evidence": [
+    {
+      "hex": "#a9c99a",
+      "source": "site",
+      "role": "primary",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#f2c6c2",
+      "source": "site",
+      "role": "accent",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#f6e7a6",
+      "source": "site",
+      "role": "secondary",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#2a2a2a",
+      "source": "site",
+      "role": "ink",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#fbfaf6",
+      "source": "site",
+      "role": "background",
+      "origin": "palette",
+      "share": 0.0
+    }
+  ],
+  "generated_at": "2026-10-02T00:19:05+00:00",
+  "generated_by": "api/scripts/dna_smoke.py"
+}

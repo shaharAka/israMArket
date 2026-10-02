@@ -5,8 +5,17 @@
 
 .head h2 { font-size: 17px; font-weight: 650; line-height: 1.5; letter-spacing: -.01em; }
 .line { margin-top: 4px; font-size: 15px; line-height: 1.7; color: var(--ink-soft); max-width: 60ch; }
+/* The direction's feeling: the one sentence the owner reads first. */
+.lead { margin-top: 6px; font-size: 18px; font-weight: 600; line-height: 1.55; letter-spacing: -.01em; color: var(--ink); max-width: 48ch; text-wrap: balance; }
 
-.samples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+/* The rest of the brief: a calm two-column list, hairlines between rows. */
+.brief { margin-top: 16px; display: grid; gap: 0; max-width: 680px; }
+.brief > div { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding: 9px 0; border-top: 1px solid var(--rule); }
+.brief > div:last-child { border-bottom: 1px solid var(--rule); }
+.brief dt { font-size: 13px; font-weight: 600; line-height: 1.7; color: var(--ink-muted); }
+.brief dd { margin: 0; font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
+
+.samples { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
 .sample { min-width: 0; border-radius: 12px; overflow: hidden; box-shadow: var(--shadow-card); }
 .skeleton { aspect-ratio: 4 / 5; background: var(--soft); animation: pulse 1.4s ease-in-out infinite; }
 @keyframes pulse { 50% { opacity: .55; } }
@@ -16,31 +25,52 @@
 .kept { font-size: 14px; font-weight: 500; color: var(--ink-muted); }
 .error { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--danger); }
 .note { margin-top: 12px; font-size: 14px; line-height: 1.7; color: var(--good); }
+/* The plan gate: the next step, not an error. */
+.plan { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--sand); font-size: 14px; line-height: 1.7; color: var(--ink); }
+.planLink { font-weight: 600; color: var(--primary); text-underline-offset: 3px; }
+.planLink:hover { text-decoration: underline; }
 
 .details { margin-top: 20px; border-top: 1px solid var(--rule); }
+.details[hidden] { display: none; }
 .details > summary { justify-content: space-between; min-height: 52px; font-size: 14px; font-weight: 600; color: var(--ink-soft); transition: color 180ms ease; }
 .details > summary:hover { color: var(--ink); }
 .details > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 
-.pickers { display: grid; gap: 24px; padding: 4px 0 24px; }
+/* Choices in words first: two pairs of quiet buttons. */
+.adjust { display: grid; gap: 12px; padding: 4px 0 20px; }
+.pair { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice {
+  min-height: 44px; padding: 0 18px; border: 1px solid var(--rule-dark); border-radius: 12px; background: var(--paper);
+  font-size: 14px; font-weight: 600; color: var(--ink); cursor: pointer;
+  transition: border-color 180ms ease, background 180ms ease;
+}
+.choice:hover:not(:disabled) { border-color: color-mix(in srgb, var(--ink) 24%, var(--rule-dark)); background: var(--soft); }
+.choice:disabled { opacity: .5; cursor: default; }
+.choice[aria-busy="true"] { opacity: 1; color: var(--ink-muted); }
+.choice:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+/* Fonts and colours: a second layer, under the choices. */
+.more { margin-top: 8px; border-top: 1px solid var(--rule); }
+.more > summary { min-height: 48px; font-size: 13px; font-weight: 600; color: var(--ink-muted); transition: color 180ms ease; }
+.more > summary:hover { color: var(--ink); }
+.more > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+
+.pickers { display: grid; gap: 24px; padding: 4px 0 8px; }
 .pickers fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .pickers legend { font-size: 13px; font-weight: 600; color: var(--ink-muted); margin-bottom: 8px; }
 
 .fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
-.font, .motif {
+.font {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 64px;
   border: 1px solid var(--rule-dark); border-radius: 12px; background: var(--paper); color: var(--ink); cursor: pointer;
   transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
 }
 .font span { font-size: 26px; line-height: 1.2; }
 .font small { font-size: 12px; color: var(--ink-muted); }
-.font:hover, .motif:hover { border-color: color-mix(in srgb, var(--ink) 24%, var(--rule-dark)); }
-.font[aria-pressed="true"], .motif[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+.font:hover { border-color: color-mix(in srgb, var(--ink) 24%, var(--rule-dark)); }
+.font[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
 .font[aria-pressed="true"] small { color: var(--primary-dark); }
-.font:focus-visible, .motif:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-
-.motifs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
-.motif { min-height: 44px; font-size: 14px; font-weight: 600; }
+.font:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 
 .colors { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
 .colors label { display: flex; flex-direction: column; gap: 6px; min-width: 0; cursor: pointer; font-size: 12px; color: var(--ink-muted); }
@@ -52,9 +82,12 @@
 
 @media (max-width: 600px) {
   .card { padding: 20px 20px 4px; }
+  .lead { font-size: 17px; }
+  .brief > div { grid-template-columns: 1fr; gap: 0; padding: 8px 0; }
   /* Three posts side by side are too small on a phone: a row that scrolls inside the card. */
   .samples { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px; margin-inline: -20px; padding: 2px 20px 8px; }
   .sample { flex: 0 0 68%; scroll-snap-align: center; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; }
   .colors { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 

@@ -4,20 +4,21 @@
  * The browser breaks lines; this module makes the text worth breaking: proper geresh and
  * gershayim, no space before punctuation, the shekel sign after the number, and
  * non-breaking spaces where a break would read badly (after a one- or two-letter word,
- * between a number and what it counts, before a short last word). `fitHeadline` picks a
- * size before layout, from the font's measured average letter width, so a preview, a
+ * between a number and what it counts, before a short last word). `lineCount` measures a
+ * setting before layout, from the font's measured average letter width, so a preview, a
  * thumbnail and the 1080px export always agree.
  */
 
 import type { FontMeta } from "./library";
+import { measuredEm } from "./measure";
 
-const NBSP = "\u00A0";
-const HEB = "\u0590-\u05FF";
+const NBSP = " ";
+const HEB = "֐-׿";
 const HEB_LETTER = new RegExp(`[${HEB}]`);
 
 /** Words of one or two letters that should never end a line in a headline. */
 function isShortWord(word: string): boolean {
-  const letters = word.replace(/[^\u0590-\u05FFA-Za-z]/g, "");
+  const letters = word.replace(/[^֐-׿A-Za-z]/g, "");
   return letters.length > 0 && letters.length <= 2;
 }
 
@@ -63,7 +64,7 @@ export function typesetHebrew(input: string, { bindLast = true }: { bindLast?: b
     const lastSpace = s.lastIndexOf(" ");
     if (lastSpace > 0) {
       const tail = s.slice(lastSpace + 1);
-      if (!tail.includes(NBSP) && tail.replace(/[^\u0590-\u05FFA-Za-z0-9]/g, "").length <= 4) {
+      if (!tail.includes(NBSP) && tail.replace(/[^֐-׿A-Za-z0-9]/g, "").length <= 4) {
         s = `${s.slice(0, lastSpace)}${NBSP}${tail}`;
       }
     }
@@ -72,16 +73,15 @@ export function typesetHebrew(input: string, { bindLast = true }: { bindLast?: b
 }
 
 /**
- * The headline's key phrase — what an accent colour or an underline marks. After a colon
- * or a dash when there is one ("שישי: חלות חמות" → "חלות חמות"), otherwise the last word,
- * or the last two when the last is very short.
+ * The headline's key phrase — what an accent colour marks. After a colon or a dash when
+ * there is one ("שישי: חלות חמות" → "חלות חמות"), otherwise the last word.
  */
 export function splitKeyPhrase(text: string): { lead: string; key: string } {
   const s = text.trim();
   const sep = s.search(/[:–—]\s/);
   if (sep > 0) {
     const key = s.slice(sep + 1).trim();
-    if (key && key.split(/[\s\u00A0]+/).length <= 4) return { lead: s.slice(0, sep + 1) + " ", key };
+    if (key && key.split(/[\s ]+/).length <= 4) return { lead: s.slice(0, sep + 1) + " ", key };
   }
   const words = s.split(" ");
   if (words.length < 2) return { lead: s, key: "" };
@@ -100,70 +100,93 @@ export function splitSentences(text: string): string[] {
     .map((p) => p.trim())
     .filter(Boolean);
   if (parts.length < 2 || parts.length > 3) return [text];
-  if (parts.some((p) => p.split(/[ \u00A0]+/).length < 2)) return [text];
+  if (parts.some((p) => p.split(/[  ]+/).length < 2)) return [text];
   return parts;
 }
 
-/** A price in the copy ("49 ₪", "₪49", "49 ש״ח"), and the copy without it. */
-export function findPrice(text?: string): { price: string; rest: string } | null {
-  const s = (text || "").trim();
-  if (!s) return null;
-  const m = s.match(/(\d[\d,.]*)[\s\u00A0]*(?:₪|ש״ח|ש"ח)|₪[\s\u00A0]*(\d[\d,.]*)/);
-  if (!m) return null;
-  const amount = m[1] || m[2];
-  const rest = s.replace(m[0], "").replace(/\s+/g, " ").replace(/^[\s:–—-]+|[\s:–—-]+$/g, "").trim();
-  return { price: amount, rest };
-}
-
-/** A leading number in a stat ("100 חלות כל שישי" → "100" + "חלות כל שישי"). */
-export function splitStat(text: string): { figure: string; label: string } | null {
-  const m = text.trim().match(/^(\d[\d,.:]*%?\+?)[\s\u00A0]+(.{2,})$/);
-  return m ? { figure: m[1], label: m[2] } : null;
+/** The number of words, counting a run held by non-breaking spaces as its words. */
+export function wordCount(text: string): number {
+  return text.trim() ? text.trim().split(/[\s ]+/).length : 0;
 }
 
 /* ------------------------------------------------------------------ */
-/* Fit                                                                 */
+/* Measure                                                             */
 /* ------------------------------------------------------------------ */
 
-function emWidth(text: string, meta: FontMeta, weight: number): number {
+/**
+ * The advance of `text` in em: measured in the real face once it has loaded (see
+ * measure.ts), estimated from the font's average letter width before that.
+ */
+export function emWidth(text: string, meta: FontMeta, weight: number, exact = false): number {
+  const measured = exact ? measuredEm(text, meta.key, weight) : null;
+  if (measured !== null) return measured;
   // Heavier cuts run a little wider; spaces are about a quarter em.
-  const heavy = 1 + Math.max(0, weight - 400) / 1000 * 0.18;
+  const heavy = 1 + (Math.max(0, weight - 400) / 1000) * 0.18;
   let em = 0;
   for (const ch of text) {
     if (ch === " " || ch === NBSP) em += 0.26;
     else if (/[0-9]/.test(ch)) em += meta.widthEm * 1.05;
     else if (/[.,:;'׳״"!?()–—-]/.test(ch)) em += meta.widthEm * 0.5;
+    else if (/[A-Z]/.test(ch)) em += meta.widthEm * 1.15;
     else em += meta.widthEm;
   }
   return em * heavy;
 }
 
-export type Fit = { size: number; lines: number };
+/** A word space in em (measured in the face once loaded). */
+function spaceEm(meta: FontMeta, weight: number, exact: boolean): number {
+  return (exact ? measuredEm(" ", meta.key, weight) : null) ?? 0.26;
+}
 
 /**
- * The largest size at which `text` fits `width` × `height` in at most `maxLines` lines,
- * clamped to [min, max]. The browser does the actual breaking (with `text-wrap: balance`);
- * the estimate keeps a margin so its lines never outnumber ours.
+ * How many lines `text` takes at `size` px in a column `width` px wide (`exact`: measured in
+ * the loaded face, see measure.ts; otherwise estimated): the browser's own
+ * greedy breaking at ordinary spaces (a run held by non-breaking spaces is one word), with a
+ * margin so the estimate never undercounts. `text-wrap: balance` evens the lines out but
+ * keeps their number. `Infinity` when one word alone is wider than the column.
  */
-export function fitHeadline(
-  text: string,
-  meta: FontMeta,
-  weight: number,
-  { width, height, max, min = 30, maxLines = 4, leading = meta.leading }: { width: number; height: number; max: number; min?: number; maxLines?: number; leading?: number },
-): Fit {
+export function lineCount(text: string, meta: FontMeta, weight: number, size: number, width: number, exact = false): number {
   const s = text.trim();
-  if (!s) return { size: min, lines: 1 };
-  const total = emWidth(s, meta, weight);
-  // A run held together by non-breaking spaces breaks as one word.
-  const longest = Math.max(...s.split(/ +/).map((w) => emWidth(w, meta, weight)), 0.5);
-  let best: Fit = { size: min, lines: maxLines };
-  for (let lines = 1; lines <= maxLines; lines += 1) {
-    // Line breaks never fall exactly at the width; a balanced setting loses ~12% a line.
-    const byWidth = (width * lines * (lines === 1 ? 0.97 : 0.86)) / total;
-    const byHeight = height / (lines * leading + 0.08);
-    const byWord = (width * 0.96) / longest;
-    const size = Math.min(max, byWidth, byHeight, byWord);
-    if (size > best.size + 0.5) best = { size, lines };
+  if (!s) return 0;
+  const limit = width * 0.95;
+  const space = spaceEm(meta, weight, exact) * size;
+  let lines = 1;
+  let used = 0;
+  for (const word of s.split(/ +/)) {
+    const w = emWidth(word, meta, weight, exact) * size;
+    if (w > limit) return Infinity;
+    if (used === 0) used = w;
+    else if (used + space + w <= limit) used += space + w;
+    else {
+      lines += 1;
+      used = w;
+    }
   }
-  return { size: Math.max(min, Math.floor(best.size)), lines: best.lines };
+  return lines;
+}
+
+/** `lineCount` for a headline set one sentence to a line (see `splitSentences`). */
+export function headlineLines(text: string, meta: FontMeta, weight: number, size: number, width: number, exact = false): number {
+  return splitSentences(text).reduce((n, seg) => n + lineCount(seg, meta, weight, size, width, exact), 0);
+}
+
+/** The widest line of a setting in px (for a block that hugs its text). */
+export function widestLine(text: string, meta: FontMeta, weight: number, size: number, width: number, exact = false): number {
+  const limit = width * 0.95;
+  const space = spaceEm(meta, weight, exact) * size;
+  let widest = 0;
+  for (const seg of splitSentences(text)) {
+    let used = 0;
+    for (const word of seg.trim().split(/ +/)) {
+      const w = emWidth(word, meta, weight, exact) * size;
+      if (used === 0) used = w;
+      else if (used + space + w <= limit) used += space + w;
+      else {
+        widest = Math.max(widest, used);
+        used = w;
+      }
+    }
+    widest = Math.max(widest, used);
+  }
+  return Math.min(width, widest);
 }

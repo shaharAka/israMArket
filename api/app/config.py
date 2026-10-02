@@ -64,6 +64,13 @@ class Settings(BaseSettings):
     # whether it is (re)built in the background after a site scan and at signup.
     design_dna_model: str = "gemini-3.8-flash"
     design_dna_on_scan: bool = True
+    # Download the business's logo (brand_language.logo_url) after a scan, signup or brand
+    # save and keep a normalised same-origin copy (services/brand_logo.py).
+    brand_logo_copy: bool = True
+    # One cheap vision call per post photo: where the subject is and where text may sit
+    # (services/photo_analysis.py, cached per image hash). Empty model = DESIGN_DNA_MODEL.
+    photo_analysis: bool = True
+    photo_analysis_model: str = ""
 
     # Prefer the business's OWN scraped photographs over a generated one. Photoreal
     # generated images of a product the business never shot are the exact case that

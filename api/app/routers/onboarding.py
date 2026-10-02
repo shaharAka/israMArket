@@ -335,6 +335,14 @@ def save_brand_language(
     if not business or not stored.get("brand_language"):
         raise HTTPException(status_code=400, detail="קודם צריך לקרוא את האתר. עד אז אין סגנון לשמור.")
     brand = body.model_dump()
+    # What the form does not carry stays as the scan found it: the logo's address (unless
+    # the owner gave one), the social links and the card photo.
+    previous = stored.get("brand_language") or {}
+    if brand.get("logo_url") is None:
+        brand["logo_url"] = previous.get("logo_url") or ""
+    for key in ("social_links", "card_photo_url", "source"):
+        if key in previous and key not in brand:
+            brand[key] = previous[key]
     stored["brand_language"] = brand
     business.scraped_profile_json = dumps(stored)
     if brand.get("business_name"):

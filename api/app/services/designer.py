@@ -46,7 +46,17 @@ def _photo_direction(dna: dict | None, brand: dict) -> str:
         return f"סגנון הצילום באתר: {brand.get('photography')}\nסגנון ויזואלי: {brand.get('visual_style')}"
     props = ", ".join(photo.get("props") or [])
     never = ", ".join(photo.get("never") or [])
-    return (
+    direction = (dna or {}).get("direction") or {}
+    brief = ""
+    if direction:
+        brief = (
+            f"- התחושה: {direction.get('feel_he')}\n"
+            f"- העולם: {direction.get('world_he')}\n"
+            f"- הצילום: {direction.get('photo_he')}\n"
+            f"- הטקסט: {direction.get('text_he')}\n"
+            f"- אף פעם: {', '.join(direction.get('never_he') or [])}\n"
+        )
+    return brief + (
         f"- גרייד צבע: {photo.get('grade')}\n"
         f"- אור: {photo.get('light')}\n"
         f"- זווית מצלמה: {photo.get('angle')}\n"
@@ -143,10 +153,12 @@ def plan_post_design(
    - מעצב אמיתי לא שם כיתוב על כל פוסט.
    - צילום אווירה, מלאכה או מאחורי הקלעים: לרוב has_overlay = false. תן לתמונה לנשום.
    - הודעה, שעות פתיחה, תזכורת אחרונה, מבצע או הכרזה: has_overlay = true.
-3. אם has_overlay הוא true:
-   - overlay_headline: 2 עד 5 מילים בעברית, ההבטחה הקונקרטית של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). לא כל כותרת הפוסט.
-   - overlay_badge: מילה או שתיים שמסמנות את ההקשר (מועד, חידוש, הגבלה).
-4. אם has_overlay הוא false: overlay_headline ו-overlay_badge ריקים ("").
+3. מסר אחד לפוסט. אם has_overlay הוא true:
+   - overlay_headline: עד 6 מילים בעברית, המסר האחד של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). לא כל כותרת הפוסט.
+   - overlay_sub: שורה קצרה אחת, עד 6 מילים, רק אם היא מוסיפה משהו. לרוב ריקה.
+   - הקריאה לפעולה, השעות והתנאים נשארים בכיתוב, לא על התמונה. overlay_badge תמיד ריק.
+   - הכיתוב יושב על האזור השקט של הצילום, אף פעם לא על המוצר.
+4. אם has_overlay הוא false: overlay_headline, overlay_sub ו-overlay_badge ריקים ("").
 """
     creative = loads(strategy_json(prompt, DESIGNER_POST_CREATIVE_SCHEMA), {})
     if not creative.get("scene_description"):
@@ -155,19 +167,28 @@ def plan_post_design(
 
 
 def apply_creative_to_post(post: dict, creative: dict) -> dict:
-    has_overlay = bool(creative.get("has_overlay"))
-    headline = (creative.get("overlay_headline") or "").strip() if has_overlay else ""
-    badge = (creative.get("overlay_badge") or "").strip() if has_overlay else ""
+    """The designer's decision on the post, in place. One message (docs/design-dna.md,
+    Revision 1): a headline of at most 6 words and at most one short line; the badge is
+    retired. No overlay = a photo-only post."""
+    from app.services.connected_posts import one_message
+    from app.services.post_design import sync_text_mode
 
+    has_overlay = bool(creative.get("has_overlay"))
     post["creative_concept"] = creative.get("creative_concept", "")
     post["visual_style"] = creative.get("visual_style", "")
     post["scene_description"] = creative.get("scene_description", "")
     post["image_prompt"] = creative.get("scene_description", "")
     post["has_overlay"] = has_overlay
-    post["overlay_headline"] = headline
-    post["overlay_badge"] = badge
-    post["overlay_text"] = headline
+    post["overlay_headline"] = (creative.get("overlay_headline") or "").strip() if has_overlay else ""
+    post["overlay_sub"] = (creative.get("overlay_sub") or "").strip() if has_overlay else ""
+    if has_overlay:
+        one_message(post)
+    else:
+        post["overlay_text"] = ""
+    post["overlay_badge"] = ""
     post["design_creative"] = creative
+    if isinstance(post.get("design"), dict):
+        sync_text_mode(post["design"], has_overlay)
     return post
 
 
