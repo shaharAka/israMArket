@@ -239,6 +239,10 @@ function Brief({ biz, dna }: { biz: SampleBusiness; dna: BrandDna }) {
     { label: "מה לא נעשה", text: d.never.join(" · ") },
   ].filter((r) => r.text);
   const sources = dna.colors_source || {};
+  const bases = dna.colors_base || {};
+  const SOURCE_HE: Record<string, string> = { logo: "לוגו", site: "אתר", derived: "נגזר", owner: "בעלים" };
+  // QA only: what the motif echoes in the brand, in the server's words.
+  const motifNote = (dna.motif?.note_he || "").trim();
   return (
     <div className="mb-4 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
       <div>
@@ -251,18 +255,28 @@ function Brief({ biz, dna }: { biz: SampleBusiness; dna: BrandDna }) {
                 <dd className="m-0 text-[var(--ink-soft)]">{r.text}</dd>
               </div>
             ))}
+            {motifNote ? (
+              <div className="flex gap-2">
+                <dt className="w-[72px] shrink-0 font-semibold text-[var(--ink-muted)]">הפרט החוזר</dt>
+                <dd className="m-0 text-[var(--ink-soft)]">{motifNote}</dd>
+              </div>
+            ) : null}
           </dl>
         ) : null}
+        {biz.testWords ? <p className="mt-1 text-[12px] font-semibold text-[var(--ink-muted)]">בקובץ אין פוסטים ותמונות: התמונה והמילים כאן שלנו, לבדיקה.</p> : null}
       </div>
       <ul className="m-0 flex list-none flex-wrap items-start gap-2 p-0" aria-label={`הצבעים של ${biz.name}`}>
         {COLOR_ROLES.map((role: ColorRole) => {
           const hex = (dna.colors as Record<string, string | undefined>)[role];
           if (!hex) return null;
           const src = (sources as Record<string, string | undefined>)[role];
+          const base = (bases as Record<string, string | undefined>)[role];
           return (
-            <li key={role} className="flex flex-col items-center gap-1 text-[11px] text-[var(--ink-muted)]" title={`${COLOR_ROLE_LABEL[role]}${src ? ` · ${src === "logo" ? "מהלוגו" : src === "site" ? "מהאתר" : "נגזר"}` : ""}`}>
-              <span className="h-7 w-7 rounded-full shadow-[var(--shadow-card)]" style={{ background: hex }} />
-              {src === "logo" ? "לוגו" : src === "site" ? "אתר" : src ? "נגזר" : ""}
+            <li key={role} className="flex flex-col items-center gap-1 text-[11px] text-[var(--ink-muted)]" title={`${COLOR_ROLE_LABEL[role]} ${hex}${src ? ` · ${SOURCE_HE[src] ?? src}` : ""}${base ? ` · מ-${base}` : ""}`}>
+              <span className="relative h-7 w-7 rounded-full shadow-[var(--shadow-card)]" style={{ background: hex }}>
+                {base ? <span className="absolute -bottom-0.5 -left-0.5 h-3 w-3 rounded-full ring-2 ring-[var(--canvas)]" style={{ background: base }} /> : null}
+              </span>
+              {src ? SOURCE_HE[src] ?? src : ""}
             </li>
           );
         })}

@@ -934,7 +934,7 @@ const POSTS: RoadmapPost[] = [
     image_prompt: "Holiday bakery box with challah, jam, and a savory pastry on kraft paper",
     overlay_text: "מארז ראש השנה",
     // The box fills the frame: the photo alone carries it, the words are in the caption.
-    has_overlay: true,
+    has_overlay: false,
     overlay_headline: "מארז ראש השנה",
     design: { composition: "full_bleed", text_mode: "photo_only", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-2.webp"] },
     primary_outlet: "instagram",
@@ -1142,7 +1142,7 @@ const POSTS: RoadmapPost[] = [
     image_prompt: "Night bakery shift, warm oven glow, baker's hands, no luxury styling",
     overlay_text: "מאחורי התנור",
     // The hands and the fire are the post.
-    has_overlay: true,
+    has_overlay: false,
     overlay_headline: "מאחורי התנור",
     design: { composition: "full_bleed", text_mode: "photo_only", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-7.webp"] },
     primary_outlet: "instagram",
@@ -2297,7 +2297,24 @@ function demoInstructionRewrite(
  */
 function demoDesignFor(post: RoadmapPost, url: string): RoadmapPost["design"] {
   const area = DEMO_PHOTO_AREAS[url];
-  return { ...post.design, safe_area: area?.safe_area ?? null, focal: area?.focal ?? null };
+  return { ...post.design, safe_area: area?.safe_area ?? null, focal: area?.focal ?? null, subject: null };
+}
+
+/** The server's compositions that can carry a photo alone (`text_modes` has photo_only). */
+const DEMO_PHOTO_ONLY = new Set(["full_bleed", "inset_frame", "arch_window", "circle_crop", "collage_grid"]);
+
+/**
+ * Mirrors `sync_text_mode` (api/app/services/post_design.py): a photo-free composition is
+ * type-led; the words switched off is photo only (where the composition can carry a photo
+ * alone); switched on, a photo-only or missing mode becomes a headline.
+ */
+function demoSyncTextMode(design: RoadmapPost["design"], hasOverlay: boolean): RoadmapPost["design"] {
+  if (!design?.composition) return design;
+  const current = design.text_mode;
+  if (design.composition === "type_led") return { ...design, text_mode: "type_led" };
+  if (!hasOverlay && DEMO_PHOTO_ONLY.has(String(design.composition))) return { ...design, text_mode: "photo_only" };
+  if (hasOverlay && (!current || current === "photo_only" || current === "type_led")) return { ...design, text_mode: "headline" };
+  return design;
 }
 
 function cloneDemoStrategy(): StrategyPayload {
@@ -3194,17 +3211,25 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       overlay_position: body.overlay_position || POSTS[index].overlay_position || "bottom_pill",
       // Like the server: the old field changes only when it is sent.
       overlay_theme: body.overlay_theme !== undefined ? body.overlay_theme : POSTS[index].overlay_theme,
-      // Like the server: the composition and text mode change, the photo's measured empty
-      // area and subject stay (the photo did not change).
-      design: body.design?.composition
-        ? {
-            ...POSTS[index].design,
-            ...body.design,
-            safe_area: POSTS[index].design?.safe_area ?? null,
-            focal: POSTS[index].design?.focal ?? null,
-            crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5",
-          }
-        : POSTS[index].design,
+      // Like the server (save_post): the composition changes, the photo's measured empty
+      // area and subject stay (the photo did not change), and the text mode follows the
+      // composition and the words switch (`sync_text_mode`), not what the editor sent.
+      design: demoSyncTextMode(
+        body.design?.composition
+          ? {
+              ...POSTS[index].design,
+              ...body.design,
+              text_mode: POSTS[index].design?.text_mode,
+              safe_area: POSTS[index].design?.safe_area ?? null,
+              focal: POSTS[index].design?.focal ?? null,
+              subject: POSTS[index].design?.subject ?? null,
+              crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5",
+            }
+          : POSTS[index].design,
+        has_overlay,
+      ),
+      // The one short line goes with the words: off clears it.
+      overlay_sub: !has_overlay ? "" : body.overlay_sub !== undefined ? body.overlay_sub : POSTS[index].overlay_sub,
       overlay_text: has_overlay ? headline : "",
       creative_concept: body.creative_concept || POSTS[index].creative_concept,
       visual_style: body.visual_style || POSTS[index].visual_style,

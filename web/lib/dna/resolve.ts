@@ -87,6 +87,15 @@ export function contrastOnLuminance(hex: string, lum: number): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
+/**
+ * Whether a colour has a hue of its own. A neutral grey (often a site's border or panel
+ * colour) reads as an app panel, not as the brand, so it never becomes a band's ground.
+ */
+function chromatic(hex: string): boolean {
+  const [r, g, b] = rgb(hex);
+  return Math.max(r, g, b) - Math.min(r, g, b) > 14;
+}
+
 /** Of the candidates, the one that reads best on `bg` (first wins a tie). */
 function bestOn(bg: string, ...candidates: string[]): string {
   let best = candidates[0];
@@ -159,7 +168,7 @@ export type ResolvedDna = {
   colors: DnaColors;
   compositions: CompositionKey[];
   motif: { kind: MotifKey; from?: MotifSource; color: ColorRole; density: MotifDensity };
-  signature: { kind: SignatureKey; useLogo: boolean; logoUrl?: string; logoOn: LogoGround };
+  signature: { kind: SignatureKey; useLogo: boolean; logoUrl?: string; logoOn: LogoGround; logoColors: string[] };
   /** Share of posts per text mode, normalised to 1. */
   mix: Record<TextMode, number>;
   copy: { accent: boolean; price: PriceStyle; subAbove: boolean };
@@ -257,8 +266,12 @@ export function resolveDna(dna?: BrandDna | null, brand?: BrandLanguage | null):
   const tint = normalizeHex(src.colors?.tint) ?? mix(paper, accent, 0.14);
   const onPhoto = normalizeHex(src.colors?.on_photo) ?? (isLight(paper) ? paper : "#ffffff");
 
+  // A v1 DNA's motif came from a list, not from the brand: none. A v2 motif other than none
+  // must say what in the brand it comes from (`from`), and is drawn in its quiet form.
   const rawMotif = src.motif?.kind;
-  const motifKind: MotifKey = isMotifKey(rawMotif) ? rawMotif : typeof rawMotif === "string" && rawMotif in LEGACY_MOTIFS ? LEGACY_MOTIFS[rawMotif] : "none";
+  const isV2 = (typeof src.version === "number" ? src.version : 1) >= 2;
+  let motifKind: MotifKey = isMotifKey(rawMotif) ? rawMotif : typeof rawMotif === "string" && rawMotif in LEGACY_MOTIFS ? LEGACY_MOTIFS[rawMotif] : "none";
+  if (!isV2 || (motifKind !== "none" && !isMotifSource(src.motif?.from))) motifKind = "none";
   const motifRole: ColorRole = isColorRole(src.motif?.color) ? src.motif.color : "ink";
   const roleHex: Record<ColorRole, string> = { ink, paper, accent, accent_2: accent2, on_photo: onPhoto, tint };
   let motifColor = roleHex[motifRole];
@@ -301,7 +314,7 @@ export function resolveDna(dna?: BrandDna | null, brand?: BrandLanguage | null):
   const ground: BandGround =
     scale === "large" && contrastRatio(colors.onAccent, accent) >= 4.5
       ? "accent"
-      : scale === "medium" && contrastRatio(ink, tint) >= 4.5 && contrastRatio(tint, paper) > 1.06
+      : scale === "medium" && chromatic(tint) && contrastRatio(ink, tint) >= 4.5 && contrastRatio(tint, paper) > 1.06
         ? "tint"
         : "paper";
 
@@ -330,6 +343,7 @@ export function resolveDna(dna?: BrandDna | null, brand?: BrandLanguage | null):
       useLogo: sig.use_logo !== false,
       logoUrl,
       logoOn: isLogoGround(sig.logo_on) ? sig.logo_on : "light",
+      logoColors: Array.isArray(sig.logo_colors) ? (sig.logo_colors.map((x) => normalizeHex(x)).filter(Boolean) as string[]) : [],
     },
     mix: mixOf(src.mix),
     copy: {
@@ -437,6 +451,8 @@ export type ResolvedDesign = {
   textPosition?: TextPosition;
   safeArea: Rect01 | null;
   focal: Point01 & { zoom: number };
+  /** The subject's box (0–1 of the photo), when the photo was analysed. */
+  subject: Rect01 | null;
 };
 
 /** How a post is drawn: its text mode, composition, text position, safe area and focal point. */
@@ -456,7 +472,7 @@ export function resolveDesign(post: DesignPost, dna: ResolvedDna): ResolvedDesig
   const legacyPos = LEGACY_THEMES[post.overlay_theme || ""]?.textPosition;
   const allowed = COMPOSITION_LIBRARY[composition].text_positions;
   const textPosition = isTextPosition(rawPos) && allowed.includes(rawPos) ? rawPos : legacyPos && allowed.includes(legacyPos) ? legacyPos : undefined;
-  return { mode, composition, textPosition, safeArea: safeAreaOf(design?.safe_area), focal: focalOf(design) };
+  return { mode, composition, textPosition, safeArea: safeAreaOf(design?.safe_area), focal: focalOf(design), subject: safeAreaOf(design?.subject) };
 }
 
 /** The composition a post is drawn with (kept for callers of the v1 API). */

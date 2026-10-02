@@ -725,14 +725,16 @@ export function PostEditor({
   /**
    * One of the three designs of the DNA for this post. Saved like any other edit (no model
    * call). The photo stays, and with it its empty area and subject; the text keeps its
-   * position when the new composition takes it, otherwise the composition's default.
+   * position when the new composition takes it, otherwise the composition's default. The
+   * server derives the text mode from the composition and the words switch (off = photo
+   * only), so "רק התמונה" is sent as the words turned off.
    */
   function chooseDesign({ mode, composition }: DesignChoice) {
     const position = currentPost.design?.text_position;
     const keeps = Boolean(position) && (COMPOSITION_LIBRARY[composition].text_positions as string[]).includes(position as string);
     void updateDesignField({
       design: { ...currentPost.design, composition, text_mode: mode, text_position: keeps ? position : "" },
-      has_overlay: true,
+      has_overlay: mode !== "photo_only",
     });
   }
 

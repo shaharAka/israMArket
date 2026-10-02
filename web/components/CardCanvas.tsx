@@ -119,9 +119,12 @@ function amountOf(raw: unknown): string {
  * caption: one message per post.
  */
 export function wordsOf(post: RoadmapPost, mode: TextMode, businessName = ""): CardWords {
+  // The owner turned the words off: a clean photo, not even one word.
+  if (mode === "photo_only" && post.has_overlay === false) return { headline: "", sub: "" };
   let headline = typesetHebrew((post.overlay_headline || post.overlay_text || "").trim());
   if (!headline && mode === "type_led") headline = typesetHebrew(businessName);
-  const amount = mode === "photo_only" ? "" : amountOf(post.price?.amount);
+  // A price is printed only on a headline post, where it is the message.
+  const amount = mode === "headline" ? amountOf(post.price?.amount) : "";
   const note = amount ? typesetHebrew((post.price?.note || "").trim(), { bindLast: false }) : "";
   const sub = typesetHebrew((post.overlay_sub || "").trim(), { bindLast: false }) || note;
   return { headline, sub: mode === "photo_only" ? "" : sub, price: amount ? { amount, note } : undefined };

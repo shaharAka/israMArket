@@ -14,7 +14,7 @@
 
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
 import type { BrandDna, Point01, Rect01 } from "@/lib/dna/library";
-import type { SampleBusiness } from "@/lib/dna/samples";
+import type { SampleBusiness, SamplePost } from "@/lib/dna/samples";
 
 type Obj = Record<string, unknown>;
 const obj = (v: unknown): Obj | null => (v && typeof v === "object" && !Array.isArray(v) ? (v as Obj) : null);
@@ -41,6 +41,46 @@ function postOf(raw: Obj, i: number, id: string): RoadmapPost | null {
   } as RoadmapPost;
 }
 
+/**
+ * The server's fixtures carry a business's DNA but no posts and no usable photos. For QA
+ * each known one gets a photo of its field from `public/examples/` and three test posts in
+ * its own mix (one message each). The words are ours, for the test; the page says so.
+ */
+const FIXTURE_QA: Record<string, { photo: string; posts: SamplePost[] }> = {
+  tazizi: {
+    photo: "/examples/lingerie.webp",
+    posts: [
+      { mode: "headline", composition: "full_bleed", headline: "כותנה רכה, לכל היום" },
+      { mode: "photo_only" },
+      { mode: "headline", composition: "inset_frame", headline: "החזייה שלא מרגישים", sub: "בלי חוטים, בלי לחץ" },
+    ],
+  },
+  "even-oven": {
+    photo: "/examples/bakery.webp",
+    posts: [
+      { mode: "headline", composition: "arch_window", headline: "לחם מתנור אבן, כל בוקר" },
+      { mode: "photo_only" },
+      { mode: "headline", composition: "inset_frame", headline: "שאור, קמח, מים ומלח" },
+    ],
+  },
+  anan: {
+    photo: "/examples/bakery.webp",
+    posts: [
+      { mode: "headline", composition: "full_bleed", headline: "שכבות של חמאה" },
+      { mode: "headline", composition: "split", headline: "קרואסון חמאה לשישי" },
+      { mode: "photo_only" },
+    ],
+  },
+  mirpeset: {
+    photo: "/examples/yoga.webp",
+    posts: [
+      { mode: "headline", composition: "full_bleed", headline: "בוקר צלול על ההר" },
+      { mode: "photo_only" },
+      { mode: "headline", composition: "inset_frame", headline: "שיעור פתוח בשבת", sub: "08:00, על המרפסת" },
+    ],
+  },
+};
+
 export function normalizeFixture(file: string, raw: unknown): SampleBusiness {
   const top = obj(raw);
   if (!top) throw new Error("the file is not a JSON object");
@@ -54,7 +94,22 @@ export function normalizeFixture(file: string, raw: unknown): SampleBusiness {
   const rawPosts = Array.isArray(top.posts) ? top.posts : Array.isArray(roadmap?.posts) ? (roadmap?.posts as unknown[]) : [];
   const posts = rawPosts.map((p, i) => (obj(p) ? postOf(obj(p) as Obj, i, id) : null)).filter(Boolean) as RoadmapPost[];
   const signature = obj(dna.signature);
-  const logo = str(pick(signature?.logo_url, top.logo_url, brand?.logo_url)) || undefined;
+  // A logo only when the DNA signs with one (an SVG logo gets no copy: `name_only`).
+  const logo = signature?.use_logo === false ? undefined : str(pick(signature?.logo_url, top.logo, top.logo_url, brand?.logo_url)) || undefined;
+  const qa = FIXTURE_QA[str(top.id) || id];
+  if (!posts.length && qa) {
+    return {
+      id: str(top.id) || id,
+      name,
+      field_he: str(pick(top.field_he, business?.business_type, dna.field)) || "",
+      photo: qa.photo,
+      logo,
+      dna,
+      posts: qa.posts,
+      source: file,
+      testWords: true,
+    };
+  }
 
   // No posts: its photos alone (we write no words for a real business).
   const photos = Array.isArray(top.photos) ? top.photos : [];

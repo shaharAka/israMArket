@@ -189,6 +189,8 @@ export type SampleBusiness = {
   realPosts?: import("@/lib/api").RoadmapPost[];
   /** Where it came from: a hand-written sample, or a fixture file. */
   source?: string;
+  /** A real business whose fixture has no posts: the photo and words are ours, for the test. */
+  testWords?: boolean;
 };
 
 const BAKERY_PHOTO = "/examples/bakery.webp";

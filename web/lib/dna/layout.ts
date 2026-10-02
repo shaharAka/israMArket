@@ -84,7 +84,7 @@ export type TextPlan = {
 };
 
 export type SignaturePlan =
-  | { kind: "logo"; src: string; box: Box; height: number; plate?: { bg: string; pad: number; radius: number }; nameColor: string }
+  | { kind: "logo"; src: string; box: Box; height: number; plate?: { bg: string; pad: number; radius: number }; nameColor: string; reads?: number | null }
   | { kind: "name"; box: Box; size: number; color: string; align: "start" | "center" | "end"; shadow?: string };
 
 export type FooterPlan = { y: number; h: number; bg: string; fg: string; logo?: string; logoH: number; nameSize: number; plate?: string };
@@ -160,7 +160,7 @@ type Crop = { dw: number; dh: number; x0: number; y0: number };
  * A cover crop of a photo of `aspect` into `frame`, centred on `focal` as far as the photo
  * allows; `t` moves it that far toward `toward` (the empty area), for room to write.
  */
-function coverCrop(aspect: number, frame: Box, focal: Point01 & { zoom: number }, toward?: Point01, t = 0): Crop {
+function coverCrop(aspect: number, frame: Box, focal: Point01 & { zoom: number }, toward?: Point01, t = 0, subject?: Rect01 | null): Crop {
   const s = Math.max(frame.w / aspect, frame.h) * focal.zoom;
   const dw = aspect * s;
   const dh = s;
@@ -171,6 +171,17 @@ function coverCrop(aspect: number, frame: Box, focal: Point01 & { zoom: number }
   if (toward && t > 0) {
     x0 = clampX(x0 + (clampX(frame.w / 2 - toward.x * dw) - x0) * t);
     y0 = clampY(y0 + (clampY(frame.h / 2 - toward.y * dh) - y0) * t);
+  }
+  // The whole subject in frame when it fits: the crop slides just enough to include it.
+  if (subject) {
+    const fit = (o: number, a: number, len: number, frameLen: number) => {
+      if (len > frameLen) return o;
+      if (o + a < 0) return o - (o + a);
+      if (o + a + len > frameLen) return o - (o + a + len - frameLen);
+      return o;
+    };
+    x0 = clampX(fit(x0, subject.x * dw, subject.w * dw, frame.w));
+    y0 = clampY(fit(y0, subject.y * dh, subject.h * dh, frame.h));
   }
   return { dw, dh, x0, y0 };
 }
@@ -360,18 +371,18 @@ function signatureSize(input: PlanInput, m: Measures, clear: boolean): SigSize {
 }
 
 /**
- * What the DNA's signature becomes on this post. Stories and WhatsApp: always, small and
- * clear (nothing next to them says whose post it is). Feed: as the DNA chose — except that a
- * photo-only feed post carries no name of its own: the profile beside it already says whose
- * it is, and a name stamped on a photo is what makes it read as generated. A real logo the
- * brand chose to show stays, small.
+ * What the DNA's signature becomes on this post. `none` is no mark at all (the brand's
+ * choice). Otherwise stories and WhatsApp always carry it, small and clear (nothing next to
+ * them says whose post it is). Feed: as the DNA chose — except that a photo-only feed post
+ * carries no name of its own: the profile beside it already says whose it is, and a name
+ * stamped on a photo is what makes it read as generated. A real logo stays, small.
  */
 function signatureMode(input: PlanInput, format: CardFormat): "corner" | "footer" | "none" {
   const clear = input.channel !== "feed" || format === "story";
   const kind = input.dna.signature.kind;
+  if (kind === "none") return "none";
   if (kind === "footer_band") return format === "story" ? "corner" : "footer";
   if (clear) return "corner";
-  if (kind === "none") return "none";
   if (input.design.mode === "photo_only" && !(kind === "corner_mark" && input.logo)) return "none";
   return "corner";
 }
@@ -394,17 +405,37 @@ function lightPaperOf(dna: ResolvedDna): string {
   return isLight(dna.colors.paper) ? dna.colors.paper : "#ffffff";
 }
 
+/** A logo reads on a photo when one of its own colours stands off it at least this much. */
+const LOGO_READS = 3;
+
+/** The best contrast of the logo's own colours on the light under it, or null if unknown. */
+function logoReadability(dna: ResolvedDna, light: RegionLight | null): number | null {
+  const colors = dna.signature.logoColors;
+  if (!light || !colors.length) return null;
+  return Math.max(...colors.map((hex) => contrastOnLuminance(hex, light.mean)));
+}
+
+/** The plate a logo needs: light behind a mid or dark logo, the ink behind a light one. */
+function logoPlate(dna: ResolvedDna): string {
+  const colors = dna.signature.logoColors;
+  const allLight = colors.length > 0 && colors.every((hex) => isLight(hex));
+  return allLight ? dna.colors.ink : lightPaperOf(dna);
+}
+
 function signatureOnPhoto(input: PlanInput, sz: SigSize, box: Box, light: RegionLight | null): SignaturePlan {
   const { dna, logo } = input;
   const c = dna.colors;
   if (sz.kind === "logo" && logo) {
     const on = dna.signature.logoOn;
     // A logo drawn for a light ground needs a light plate on a dark or busy photo, and the
-    // other way round. Unknown light: a plate, to be safe.
+    // other way round. Unknown light: a plate, to be safe. When the logo's own colours are
+    // known, they decide: a plate only where none of them would read on this photo.
     const busy = light ? light.sd > 0.16 : true;
     const dark = light ? light.mean < 0.32 : true;
     const bright = light ? light.mean > 0.5 : true;
-    const plateBg = on === "light" && (dark || busy) ? lightPaperOf(dna) : on === "dark" && (bright || busy) ? c.ink : "";
+    const reads = logoReadability(dna, light);
+    let plateBg = on === "light" && (dark || busy) ? lightPaperOf(dna) : on === "dark" && (bright || busy) ? c.ink : "";
+    if (reads !== null) plateBg = reads >= LOGO_READS ? "" : logoPlate(dna);
     const pad = Math.round(sz.h * 0.3);
     return {
       kind: "logo",
@@ -413,6 +444,7 @@ function signatureOnPhoto(input: PlanInput, sz: SigSize, box: Box, light: Region
       box,
       plate: plateBg ? { bg: plateBg, pad, radius: dna.shape === "round" ? 999 : dna.shape === "soft" ? Math.round(pad * 0.9) : 2 } : undefined,
       nameColor: plateBg ? (isLight(plateBg) ? c.ink : c.onInk) : c.onPhoto,
+      reads,
     };
   }
   const fgLight = isLight(c.onPhoto) ? c.onPhoto : lightPaperOf(dna);
@@ -430,7 +462,10 @@ function signatureOnGround(input: PlanInput, sz: SigSize, box: Box, ground: Band
   const bg = groundColor(dna, ground);
   if (sz.kind === "logo" && logo) {
     const on = dna.signature.logoOn;
-    const plateBg = on === "light" && !isLight(bg) ? lightPaperOf(dna) : on === "dark" && isLight(bg) ? c.ink : "";
+    const colors = dna.signature.logoColors;
+    const reads = colors.length ? Math.max(...colors.map((hex) => contrastRatio(hex, bg))) : null;
+    const plateBg =
+      reads !== null ? (reads >= LOGO_READS ? "" : logoPlate(dna)) : on === "light" && !isLight(bg) ? lightPaperOf(dna) : on === "dark" && isLight(bg) ? c.ink : "";
     const pad = Math.round(sz.h * 0.28);
     return {
       kind: "logo",
@@ -524,7 +559,10 @@ export function planCard(input: PlanInput): CardPlan {
     const area: Box = { x: 0, y: ST, w: W, h: H - ST - SB };
     const inset = Math.round(P * 0.75);
     const f = focalInFrame(frame, crop, design.focal);
-    const focalBox: Box = { x: frame.x + f.x * frame.w - W * 0.12, y: frame.y + f.y * frame.h - W * 0.12, w: W * 0.24, h: W * 0.24 };
+    // The subject's own box when the photo was analysed, else a square around its centre.
+    const focalBox: Box = design.subject
+      ? toCard(design.subject, frame, crop)
+      : { x: frame.x + f.x * frame.w - W * 0.12, y: frame.y + f.y * frame.h - W * 0.12, w: W * 0.24, h: W * 0.24 };
     const all: Corner[] = [...new Set<Corner>([...prefer, "top-start", "top-end", "bottom-start", "bottom-end"])];
     // Of the corners clear of the words and the subject, the calmest one (the least busy
     // photo under it); the composition's preferred order breaks ties.
@@ -533,7 +571,11 @@ export function planCard(input: PlanInput): CardPlan {
       const b = cornerBox(corner, sig, area, inset);
       if (avoid.some((a) => intersects(a, b, sigGap)) || intersects(focalBox, b)) return;
       const light = photo.url ? regionLight(photo.info, toPhoto(b, frame, crop)) : null;
-      const score = (light ? light.sd : 0) + i * 0.02;
+      // A logo whose own colours would not read here costs more than a busier corner.
+      const reads = sig.kind === "logo" ? logoReadability(dna, light) : null;
+      // Where it will need a plate anyway, the photo's calm no longer matters: the
+      // composition's preferred corner wins.
+      const score = reads !== null && reads < LOGO_READS ? 0.5 + i * 0.02 : (light ? light.sd : 0) + i * 0.02;
       if (!best || score < best.score) best = { box: b, score, light };
     });
     const chosen: { box: Box; light: RegionLight | null } = best ?? { box: cornerBox(all[0], sig, area, inset), light: null };
@@ -579,12 +621,12 @@ export function planCard(input: PlanInput): CardPlan {
   /* ---- photo only: the photo is the post ---- */
   const fullFrame: Box = { x: 0, y: 0, w: W, h: H };
   if (design.mode === "photo_only") {
-    const crop = coverCrop(aspect, fullFrame, design.focal);
+    const crop = coverCrop(aspect, fullFrame, design.focal, undefined, 0, design.subject);
     plan.photo = photoPlan(fullFrame, crop);
     plan.composition = "full_bleed";
     plan.outcome = "photo";
-    // At most one word or a very short line, and only inside the photo's empty area.
-    const short = Boolean(words.headline) && wordCount(words.headline) <= 2 && words.headline.length <= 16;
+    // At most one word, and only inside the photo's empty area.
+    const short = Boolean(words.headline) && wordCount(words.headline) === 1;
     const avoid: Box[] = [];
     if (short && design.safeArea && photo.url) {
       const placed = onPhoto(m, input, { headline: words.headline, sub: "" }, fullFrame, crop, design.safeArea, content, { maxLines: 1, factor: 0.9 });
@@ -606,7 +648,7 @@ export function planCard(input: PlanInput): CardPlan {
       const safeCentre = { x: safe.x + safe.w / 2, y: safe.y + safe.h / 2 };
       // The crop may move toward the empty area, as long as the subject stays well in frame.
       for (const t of [0, 0.5, 1]) {
-        const crop = coverCrop(aspect, fullFrame, design.focal, safeCentre, t);
+        const crop = coverCrop(aspect, fullFrame, design.focal, safeCentre, t, design.subject);
         const f = focalInFrame(fullFrame, crop, design.focal);
         if (t > 0 && (f.x < 0.18 || f.x > 0.82 || f.y < 0.18 || f.y > 0.82)) break;
         const placed = onPhoto(m, input, words, fullFrame, crop, safe, content, { maxLines: 3, factor: 1 });
@@ -626,7 +668,11 @@ export function planCard(input: PlanInput): CardPlan {
   }
 
   const safe = design.safeArea;
-  const bandTop = design.textPosition === "top" || (design.textPosition !== "bottom" && Boolean(safe) && (safe as Rect01).y + (safe as Rect01).h / 2 < 0.45);
+  // A story keeps its words high: the bottom of a story sits under Instagram's reply bar,
+  // where a photo can run but a band of words would read as empty paper.
+  const bandTop =
+    design.textPosition === "top" ||
+    (design.textPosition !== "bottom" && (story || (Boolean(safe) && (safe as Rect01).y + (safe as Rect01).h / 2 < 0.45)));
 
   if (composition === "split") {
     const ground = dna.ground;
@@ -643,7 +689,7 @@ export function planCard(input: PlanInput): CardPlan {
     const bandH = Math.max(minBand, Math.min(maxBand, Math.ceil(textH + 2 * padY + insetTop + insetBottom + rowsHeight)));
     const band: Box = bandTop ? { x: 0, y: 0, w: W, h: bandH } : { x: 0, y: H - bandH, w: W, h: bandH };
     const frame: Box = bandTop ? { x: 0, y: bandH, w: W, h: H - bandH } : { x: 0, y: 0, w: W, h: H - bandH };
-    plan.photo = photoPlan(frame, coverCrop(aspect, frame, design.focal));
+    plan.photo = photoPlan(frame, coverCrop(aspect, frame, design.focal, undefined, 0, design.subject));
     plan.bands.push({ box: band, color: groundColor(dna, ground) });
     plan.composition = "split";
     plan.outcome = bandTop ? "band_top" : "band_bottom";
@@ -659,7 +705,7 @@ export function planCard(input: PlanInput): CardPlan {
     grainOn(ground, { x: 0, y: 0, w: W, h: H });
     const arch = composition === "arch_window";
     const sideBySide = arch && format === "square";
-    const textTop = design.textPosition === "top" && !arch;
+    const textTop = sideBySide ? false : story ? design.textPosition !== "bottom" : design.textPosition === "top" && !arch;
     let frame: Box;
     let area: Box;
     if (sideBySide) {
@@ -680,7 +726,7 @@ export function planCard(input: PlanInput): CardPlan {
       const need = Math.ceil((probe ? probe.height : m.minHeadline * 1.2) + pads + insets + rowsHeight);
       const areaH = Math.max(minArea, Math.min(maxArea, need));
       if (textTop) {
-        frame = { x: mrg, y: areaH, w: W - 2 * mrg, h: H - areaH - mrg };
+        frame = { x: mrg, y: areaH, w: W - 2 * mrg, h: H - areaH - (arch ? Math.round(P * 0.9) : mrg) };
         area = { x: P, y: P + ST, w: width, h: areaH - P - ST - Math.round(P * 0.5) };
       } else {
         const top = arch ? Math.round(P * 0.9) + Math.round(ST * 0.6) : mrg;
@@ -689,7 +735,7 @@ export function planCard(input: PlanInput): CardPlan {
       }
     }
     const radius = arch ? frame.w / 2 : dna.shape === "round" ? Math.round(W * 0.03) : dna.shape === "soft" ? Math.round(W * 0.014) : 0;
-    plan.photo = photoPlan(frame, coverCrop(aspect, frame, design.focal), arch ? "arch" : "rect", radius);
+    plan.photo = photoPlan(frame, coverCrop(aspect, frame, design.focal, undefined, 0, design.subject), arch ? "arch" : "rect", radius);
     plan.composition = composition;
     plan.outcome = arch ? "arch" : "inset";
     const align: "start" | "center" = arch && !sideBySide ? "center" : dna.align;
@@ -702,7 +748,7 @@ export function planCard(input: PlanInput): CardPlan {
   }
 
   // Unreachable with the v2 library; draw the photo alone rather than nothing.
-  plan.photo = photoPlan(fullFrame, coverCrop(aspect, fullFrame, design.focal));
+  plan.photo = photoPlan(fullFrame, coverCrop(aspect, fullFrame, design.focal, undefined, 0, design.subject));
   return plan;
 }
 
@@ -714,7 +760,7 @@ export function planCard(input: PlanInput): CardPlan {
 function onPhoto(m: Measures, input: PlanInput, words: CardWords, frame: Box, crop: Crop, safe: Rect01, content: Box, opts: { maxLines: number; factor: number }): TextPlan | null {
   const { dna, W } = input;
   const mapped = intersect(toCard(safe, frame, crop), content);
-  if (!mapped || mapped.w < W * 0.36 || mapped.h < m.minHeadline * 1.1) return null;
+  if (!mapped || mapped.w < W * 0.3 || mapped.h < m.minHeadline * 1.1) return null;
   const format = formatOf(input.W, input.H);
   const fit = fitWords(m, words, { width: mapped.w, height: mapped.h }, { max: headlineMax(dna, W, format, opts.factor), maxLines: opts.maxLines });
   if (!fit) return null;
@@ -726,6 +772,9 @@ function onPhoto(m: Measures, input: PlanInput, words: CardWords, frame: Box, cr
   const bx = dna.align === "center" ? mapped.x + (mapped.w - bw) / 2 : mapped.x + mapped.w - bw;
   const by = vAlign === "start" ? mapped.y : vAlign === "end" ? mapped.y + mapped.h - fit.height : mapped.y + (mapped.h - fit.height) / 2;
   const box: Box = { x: bx, y: by, w: bw, h: Math.ceil(fit.height) };
+  // Never over the subject, even when a loose empty area reaches it.
+  const subject = input.design.subject;
+  if (subject && intersects(box, toCard(subject, frame, crop))) return null;
   const light = regionLight(input.photo.info, toPhoto(box, frame, crop));
   const pad = Math.round(fit.size * 0.9);
   const inks = inksOnPhoto(dna, light, { x: box.x - pad, y: box.y - pad, w: box.w + pad * 2, h: box.h + pad * 2 });

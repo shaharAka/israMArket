@@ -80,13 +80,13 @@ export function SignatureView({ plan, W, dna, name, display }: { plan: Signature
     const fallback = <Name name={name} dna={dna} display={display} size={Math.max(Math.ceil(W * 0.032), Math.round(plan.height * 0.8))} color={plan.nameColor} />;
     if (p) {
       return (
-        <div style={{ ...at, top: box.y - p.pad, ...(nearRight ? { right: W - box.x - box.w - p.pad } : { left: box.x - p.pad }), background: p.bg, padding: p.pad, borderRadius: p.radius }}>
+        <div data-card-sig="logo-plate" data-card-sig-reads={plan.reads ?? undefined} style={{ ...at, top: box.y - p.pad, ...(nearRight ? { right: W - box.x - box.w - p.pad } : { left: box.x - p.pad }), background: p.bg, padding: p.pad, borderRadius: p.radius }}>
           <Logo src={plan.src} height={plan.height} maxWidth={box.w} fallback={fallback} />
         </div>
       );
     }
     return (
-      <div style={at}>
+      <div data-card-sig="logo" data-card-sig-reads={plan.reads ?? undefined} style={at}>
         <Logo src={plan.src} height={plan.height} maxWidth={box.w} fallback={fallback} />
       </div>
     );

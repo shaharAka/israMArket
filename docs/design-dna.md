@@ -362,3 +362,40 @@ better; subject_visible; readable_on_phone; fits_direction; would_stop; notes in
 English; report in `.runtime/design-review/<ts>/`), `api/scripts/dna_smoke.py` (tazizi.co.il
 through the scraper path + 3 fictional businesses; fixtures in `web/app/dev/dna/fixtures/`, the
 logo in `web/public/dev-dna/`).
+
+### As built (renderer, 2026-10-02)
+`web/lib/dna/layout.ts` plans every card (the renderer draws the plan, the editor names it);
+`photoInfo.ts` reads each photo's shape and light; `measure.ts` measures words in the loaded
+face; `resolve.ts` reads v1 and v2 DNAs; `components/dna/` draws; `CardCanvas.tsx` ties them.
+
+- **Compositions drawn:** `full_bleed`, `inset_frame`, `split`, `type_led`, `arch_window`. The
+  server's other keys are drawn as the nearest of these (`ticket`, `handwritten_note`,
+  `corner_tab` → `full_bleed`; `stacked_bands` → `split`; `collage_grid`, `circle_crop`,
+  `editorial_column` → `inset_frame`). Nothing is ever drawn over the photo but words.
+- **Words:** `overlay_headline` and `overlay_sub` only. `photo_only` shows one word at most, and
+  nothing when `has_overlay` is false. `price` only on a headline post, as a line in the display
+  face (`price_style: tag | circle` read as `inline`; `headline` makes the amount the headline).
+- **Placement:** `safe_area` is mapped through the crop. The crop may slide toward it while the
+  focal point stays within 18–82% of the frame, and keeps the whole `subject` in frame when it
+  fits. Words never touch the subject. No safe area, or words that do not fit it: a band of the
+  brand's ground above or below the photo. Stories keep their words high (the bottom is under
+  Instagram's reply bar).
+- **Phone sizes:** no text under 3.2% of the width, no headline under 7% (the library's
+  `rules`). A setting that would need less moves to a band; it is never drawn smaller.
+  `/dev/dna` checks every card (smallest size, lines drawn against lines planned).
+- **Colour on a photo:** the photo's own light under the words picks the ink (the DNA's
+  `on_photo` first) and whether a soft shade is needed.
+- **Motif:** v1 → none. v2 needs `from`; drawn quietly: `grain`, one fine rule (`thread`,
+  `underline`, `stripes`), the logo as a small closing detail (`logo_mark`). The generic list
+  ornaments draw nothing.
+- **Signature:** `none` = no mark. The logo small; a plate only where none of `logo_colors`
+  reads on the photo (3:1), or by `logo_on` when the colours are unknown. A photo-only feed post
+  carries no name (the profile shows it). Stories and WhatsApp always carry the mark.
+- **Ground:** quiet DNAs set bands on paper, bold ones on the accent (when it carries text),
+  medium ones on the tint, unless the tint is a neutral grey (a site panel colour).
+- **Editor:** three designs named by what they draw (`רק התמונה`, `כותרת על התמונה`, `כותרת
+  מתחת לתמונה`, `התמונה עם שוליים`, `טקסט על רקע`). "רק התמונה" saves `has_overlay: false`
+  (the server derives the mode). **Brand page:** the direction in words, three samples in the
+  DNA's mix, `adjust` first, fonts and colours under it, 402 → a link to `/billing`.
+- **Review:** "לייצא את כל הכרטיסים" on `/dev/dna` writes `web/.design-review/dna/<ratio>/`
+  (PNG + JSON per card), ready for `api/scripts/design_review.py web/.design-review/dna/4x5`.

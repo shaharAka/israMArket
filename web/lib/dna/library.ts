@@ -77,19 +77,26 @@ export type TextMode = (typeof TEXT_MODES)[number];
 export const MOTIF_KEYS = ["none", "grain", "rule", "logo_mark"] as const;
 export type MotifKey = (typeof MOTIF_KEYS)[number];
 
-/** v1 motifs. The generic list ornaments are retired to `none`; two keep a quiet form. */
+/**
+ * The server's other motif keys (api/app/services/dna_library.py, `MOTIFS`), and the quiet
+ * form each is drawn in. A v2 DNA names one only with evidence (`motif.from` + `note_he`);
+ * the list ornaments the owner review called Canva moves (scalloped edges, arches and
+ * rings, tape, stamps, dots) have no quiet form and draw nothing. A line-like one (a thread,
+ * an underline, an awning's stripes) is drawn as a single fine rule.
+ */
 export const LEGACY_MOTIFS: Record<string, MotifKey> = {
   scalloped_edge: "none",
-  stripes: "none",
+  stripes: "rule",
   arches: "none",
   dots: "none",
   stamp: "none",
   tape: "none",
   thread: "rule",
-  underline: "none",
+  underline: "rule",
 };
 
-export const MOTIF_SOURCES = ["logo", "place", "product"] as const;
+/** Where the one quiet element comes from; `owner` = set by hand in `PUT /brand/dna`. */
+export const MOTIF_SOURCES = ["logo", "place", "product", "owner"] as const;
 export type MotifSource = (typeof MOTIF_SOURCES)[number];
 
 /**
@@ -123,7 +130,7 @@ export type HeadlineCase = (typeof HEADLINE_CASES)[number];
 export const COLOR_ROLES = ["ink", "paper", "accent", "accent_2", "on_photo", "tint"] as const;
 export type ColorRole = (typeof COLOR_ROLES)[number];
 
-export const COLOR_SOURCES = ["logo", "site", "derived"] as const;
+export const COLOR_SOURCES = ["logo", "site", "derived", "owner"] as const;
 export type ColorSource = (typeof COLOR_SOURCES)[number];
 
 export const MOTIF_DENSITIES = ["low", "mid"] as const;
@@ -181,22 +188,33 @@ export type BrandDna = {
   };
   /** v2: where each colour was read from. */
   colors_source?: Partial<Record<ColorRole, ColorSource | string>>;
+  /** v2: for a derived colour, the brand colour it was derived from (by lightness only). */
+  colors_base?: Partial<Record<ColorRole, string>>;
   /** The business's compositions, rotated across its posts (v1 keys still resolve). */
   compositions: (CompositionKey | string)[];
   motif: {
     kind: MotifKey | string;
-    /** v2: what the one quiet element comes from. */
+    /** v2: what the one quiet element comes from (empty when there is none). */
     from?: MotifSource | string;
+    /** v2: what in the brand it echoes, in Hebrew (shown on the QA page only). */
+    note_he?: string;
     color?: ColorRole | string;
     density?: MotifDensity | string;
   };
   signature: {
     kind: SignatureKey | string;
     use_logo?: boolean;
-    /** A same-origin copy of the logo, so the PNG export can inline it. */
+    /**
+     * A same-origin copy of the logo (`/backend/media/{id}/logo-….png`, owner-only), so
+     * the PNG export can inline it. Fixtures point it at `/dev-dna/…`.
+     */
     logo_url?: string;
-    /** v2: the ground the logo is drawn for. */
+    /** Fixtures only: the server path `logo_url` stands in for. */
+    logo_url_server?: string;
+    /** v2: the ground the logo reads on, from its own pixels. */
     logo_on?: LogoGround | string;
+    /** v2: the logo's own colours. */
+    logo_colors?: string[];
   };
   /** v2: the share of posts per text mode (fractions, about 1 in total). */
   mix?: { photo_only?: number; headline?: number; type_led?: number };
@@ -225,8 +243,11 @@ export type BrandDna = {
   /** v1's one line for the owner. Shown only when there is no `direction`. */
   rationale_he?: string;
   distance_checked_against?: number;
-  /** `model` or `local` (built without the model). */
+  /** `model`, `local` (built without the model) or `upgraded` (from a v1 DNA). */
   source?: string;
+  upgraded_from?: number;
+  /** The owner's choices in words so far (`adjust`), replayed after a regenerate. */
+  adjusted?: string[];
   /** Genes the owner set (`type`, `colors`, …), plus `all` once they kept the style. */
   locked?: string[];
 };
@@ -260,6 +281,10 @@ export type PostDesign = {
   safe_area?: Rect01 | null;
   /** v2: the subject's centre, 0–1 of the photo. Crops keep it in frame. */
   focal?: Point01 | null;
+  /** v2: the subject's box, 0–1 of the photo. Words and the signature stay off it. */
+  subject?: Rect01 | null;
+  /** The owner picked this composition by hand (e.g. a feed-only one on a story). */
+  by_hand?: boolean;
 };
 
 /** v2: a price on the post, when the plan's offer has one. */
@@ -339,34 +364,22 @@ export const COLOR_ROLE_LABEL: Record<ColorRole, string> = {
 };
 
 /**
- * `GET /brand/dna/library` — what the server may pick from (api/app/services/dna_library.py,
- * `library_payload`). The demo answers with `DNA_LIBRARY`, built from the tables above.
+ * `GET /brand/dna/library` (v2) — api/app/services/dna_library.py, `library_payload`. The
+ * server still lists its v1 composition and motif keys ("the renderer still draws every
+ * key"); this renderer draws each through its v2 form (`drawn_as`, `LEGACY_*` above). The
+ * demo answers with `DNA_LIBRARY`, which mirrors the server's shape.
  */
 export type DnaLibrary = {
   version: number;
   fonts: { key: FontKey; family: string; category: FontCategory; weights: number[]; roles: ("display" | "text")[]; google_fonts: string }[];
-  compositions: { key: CompositionKey; photo: boolean; text_positions: TextPosition[]; crops: string[] }[];
-  motifs: MotifKey[];
-  signatures: SignatureKey[];
-  enums: {
-    type_scale: TypeScale[];
-    headline_case: string[];
-    price_style: PriceStyle[];
-    text_mode: TextMode[];
-    motif_from: MotifSource[];
-    motif_color: string[];
-    motif_density: MotifDensity[];
-    logo_on: LogoGround[];
-    color_roles: ColorRole[];
-    color_source: ColorSource[];
-    text_position: TextPosition[];
-    crop: string[];
-  };
-  /** v1 keys and the v2 key each one is drawn as. */
-  legacy: { compositions: Record<string, CompositionKey>; motifs: Record<string, MotifKey>; signatures: Record<string, SignatureKey> };
-  legacy_overlay_theme: Record<string, { composition: CompositionKey; text_position: TextPosition }>;
-  /** What the renderer enforces, so the server can check copy before it reaches a post. */
-  rules: { min_text_ratio: number; min_headline_ratio: number; headline_max_words: number };
+  compositions: { key: string; photo: boolean; text_positions: TextPosition[]; crops: string[]; text_modes: TextMode[]; label_he: string; drawn_as?: CompositionKey }[];
+  motifs: { key: string; label_he: string; generic: boolean; drawn_as?: MotifKey }[];
+  signatures: { key: SignatureKey; label_he: string; needs_logo: boolean }[];
+  enums: Record<string, string[]>;
+  /** The design rules both sides enforce (percent of the card's width, word limits). */
+  rules: { overlay_headline_max_words: number; overlay_sub_max_words: number; min_text_pct_of_width: number; min_headline_pct_of_width: number; cta_on_image: boolean };
+  legacy_signatures: Record<string, SignatureKey>;
+  legacy_overlay_theme: Record<string, { composition: string; text_position: TextPosition }>;
 };
 
 export const DNA_LIBRARY_VERSION = 2;
@@ -374,11 +387,67 @@ export const DNA_LIBRARY_VERSION = 2;
 /** The motif colours a DNA may name (a role, never a hex). */
 export const MOTIF_COLORS = ["accent", "accent_2", "ink", "tint"] as const;
 
-/** Smallest text on the image, as a share of the card's width (≈35px at 1080). */
+/**
+ * The library's `rules`, which the layout enforces (lib/dna/layout.ts): the smallest text on
+ * the image is 3.2% of the card's width (about 35px at 1080), the headline 7% (about 76px).
+ */
 export const MIN_TEXT_RATIO = 0.032;
-/** Smallest headline, as a share of the card's width (≈76px at 1080). */
 export const MIN_HEADLINE_RATIO = 0.07;
 export const HEADLINE_MAX_WORDS = 6;
+
+const COMPOSITION_LABEL: Record<string, string> = {
+  full_bleed: "תמונה מלאה",
+  inset_frame: "תמונה ממוסגרת",
+  split: "חצי תמונה, חצי טקסט",
+  type_led: "טקסט גדול בלי תמונה",
+  arch_window: "חלון קשת",
+  stacked_bands: "פסים של צבע",
+  corner_tab: "לשונית בפינה",
+  circle_crop: "תמונה עגולה",
+  ticket: "כרטיס",
+  collage_grid: "רשת תמונות",
+  handwritten_note: "פתק בכתב יד",
+  editorial_column: "עמודה של מגזין",
+};
+
+/** The text modes each of the server's compositions carries (`Composition.text_modes`). */
+const COMPOSITION_TEXT_MODES: Record<string, TextMode[]> = {
+  full_bleed: ["photo_only", "headline"],
+  inset_frame: ["photo_only", "headline"],
+  split: ["headline"],
+  type_led: ["type_led"],
+  stacked_bands: ["headline"],
+  corner_tab: ["headline"],
+  arch_window: ["photo_only", "headline"],
+  circle_crop: ["photo_only", "headline"],
+  ticket: ["headline"],
+  collage_grid: ["photo_only", "headline"],
+  handwritten_note: ["headline"],
+  editorial_column: ["headline"],
+};
+
+const MOTIF_LABEL: Record<string, string> = {
+  none: "בלי קישוט",
+  scalloped_edge: "קצה גלי",
+  stripes: "פסים",
+  arches: "קשתות",
+  dots: "נקודות",
+  grain: "גרעיניות של נייר",
+  stamp: "חותמת",
+  underline: "קו תחתון בכתב יד",
+  tape: "סלוטייפ",
+  thread: "קו של חוט",
+  rule: "קו דק אחד",
+  logo_mark: "הלוגו כפרט קטן",
+};
+const GENERIC_MOTIFS = new Set(["scalloped_edge", "arches", "tape", "thread", "stamp"]);
+
+const SIGNATURE_LABEL: Record<SignatureKey, string> = {
+  corner_mark: "הלוגו קטן בפינה",
+  footer_band: "פס תחתון שקט עם הלוגו",
+  name_only: "שם העסק בפונט הכותרות",
+  none: "בלי סימן",
+};
 
 export const DNA_LIBRARY: DnaLibrary = {
   version: DNA_LIBRARY_VERSION,
@@ -386,41 +455,59 @@ export const DNA_LIBRARY: DnaLibrary = {
     const f = FONT_LIBRARY[key];
     return { key, family: f.family, category: f.category, weights: f.weights, roles: f.roles, google_fonts: `${f.family.replace(/ /g, "+")}:wght@${f.weights.join(";")}` };
   }),
-  compositions: COMPOSITION_KEYS.map((key) => {
-    const c = COMPOSITION_LIBRARY[key];
-    return { key, photo: c.photo === "required", text_positions: c.text_positions, crops: c.crops };
+  compositions: Object.keys(COMPOSITION_LABEL).map((key) => {
+    // (Not `compositionKeyOf`: the guards it uses are declared further down.)
+    const drawn: CompositionKey = (COMPOSITION_KEYS as readonly string[]).includes(key) ? (key as CompositionKey) : LEGACY_COMPOSITIONS[key] ?? "full_bleed";
+    const c = COMPOSITION_LIBRARY[drawn];
+    return {
+      key,
+      photo: c.photo === "required",
+      text_positions: c.text_positions,
+      crops: key === "editorial_column" ? ["4:5"] : c.crops,
+      text_modes: COMPOSITION_TEXT_MODES[key],
+      label_he: COMPOSITION_LABEL[key],
+      ...(drawn !== key ? { drawn_as: drawn } : {}),
+    };
   }),
-  motifs: [...MOTIF_KEYS],
-  signatures: [...SIGNATURE_KEYS],
+  motifs: Object.keys(MOTIF_LABEL).map((key) => ({ key, label_he: MOTIF_LABEL[key], generic: GENERIC_MOTIFS.has(key), ...(key in LEGACY_MOTIFS ? { drawn_as: LEGACY_MOTIFS[key] } : {}) })),
+  signatures: SIGNATURE_KEYS.map((key) => ({ key, label_he: SIGNATURE_LABEL[key], needs_logo: key === "corner_mark" || key === "footer_band" })),
   enums: {
     type_scale: [...TYPE_SCALES],
     headline_case: [...HEADLINE_CASES],
-    price_style: [...PRICE_STYLES],
-    text_mode: [...TEXT_MODES],
-    motif_from: [...MOTIF_SOURCES],
+    price_style: ["tag", "inline", "circle"],
     motif_color: [...MOTIF_COLORS],
     motif_density: [...MOTIF_DENSITIES],
-    logo_on: [...LOGO_GROUNDS],
+    motif_from: [...MOTIF_SOURCES],
     color_roles: [...COLOR_ROLES],
-    color_source: [...COLOR_SOURCES],
+    color_sources: [...COLOR_SOURCES],
     text_position: [...TEXT_POSITIONS],
+    text_mode: [...TEXT_MODES],
+    logo_on: [...LOGO_GROUNDS],
     crop: ["4:5", "9:16"],
+    adjust_tone: ["quieter", "bolder"],
+    adjust_text: ["more_photo", "more_text"],
   },
-  legacy: { compositions: LEGACY_COMPOSITIONS, motifs: LEGACY_MOTIFS, signatures: { stamp: "corner_mark", tab: "corner_mark" } },
+  rules: {
+    overlay_headline_max_words: HEADLINE_MAX_WORDS,
+    overlay_sub_max_words: 6,
+    min_text_pct_of_width: MIN_TEXT_RATIO * 100,
+    min_headline_pct_of_width: MIN_HEADLINE_RATIO * 100,
+    cta_on_image: false,
+  },
+  legacy_signatures: { stamp: "corner_mark", tab: "corner_mark" },
   legacy_overlay_theme: {
     lower_editorial: { composition: "full_bleed", text_position: "bottom" },
     split_panel: { composition: "split", text_position: "bottom" },
     framed_inset: { composition: "inset_frame", text_position: "bottom" },
     cover_type: { composition: "full_bleed", text_position: "top" },
-    promo_ribbon: { composition: "split", text_position: "top" },
+    promo_ribbon: { composition: "stacked_bands", text_position: "top" },
     type_hero: { composition: "type_led", text_position: "center" },
     ink_pill: { composition: "full_bleed", text_position: "bottom" },
     minimal_text: { composition: "full_bleed", text_position: "top" },
     paper_badge: { composition: "inset_frame", text_position: "bottom" },
     frosted_glass: { composition: "split", text_position: "bottom" },
-    accent_banner: { composition: "split", text_position: "top" },
+    accent_banner: { composition: "stacked_bands", text_position: "top" },
   },
-  rules: { min_text_ratio: MIN_TEXT_RATIO, min_headline_ratio: MIN_HEADLINE_RATIO, headline_max_words: HEADLINE_MAX_WORDS },
 };
 
 function member<T extends string>(list: readonly T[], value: unknown): value is T {
