@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { UIDialog, UIAction, InlineNotice } from "@/components/design/Controls";
 import { endpoints, type IntegrationsPayload, type MetaAssets, type MetaPixel, type PixelVerification } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
 import { PixelSetupGuide } from "./PixelSetupGuide";
 
@@ -194,14 +195,14 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {account && <>
             <label className={styles.field}>המעקב באתר (Meta Pixel)<select value={pixel} onChange={e => setPixel(e.target.value)} disabled={loadingPixels}><option value="">{loadingPixels ? "מחפשים את המעקב…" : "לבחור בהמשך"}</option>{pixels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
             {pixelNote ? <p className={styles.hint}>{pixelNote}</p> : !loadingPixels && !pixels.length ? <p className={styles.hint}>לא נמצא מעקב בחשבון הזה. תוכלו לחבר אותו דרך מערכת האתר; החיבור לפרסום לא תלוי בכך.</p> : null}
-            <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={loadingPixels || busy} />
+            {!loadingPixels && !pixels.length && <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
           </>}
           {!account && <p className={styles.hint}>כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף.</p>}
           <UIAction onClick={save} busy={busy} disabled={loadingPixels || (!page && !account)}>אלה החשבונות של העסק שלי</UIAction>
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>
-          <p>נתוני העסק זמינים לרענון בעמוד התוצאות. משם נגזור מה כדאי לשנות בתוכנית ובפוסט הבא.</p>
+          <p>החשבונות נשמרו. בעמוד התוצאות תוכלו לרענן את הנתונים ולראות מה כדאי לשנות בתוכנית ובפוסט הבא.</p>
           {account && !pixel && <>
             <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
             <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב שלי</UIAction>
@@ -209,14 +210,20 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           </>}
           {pixel && <div className={styles.tracking}>
             <h3>האם המעקב באתר עובד?</h3>
-            <p className={styles.hint}>המעקב שנבחר: <strong>{selectedPixel?.name || tracking?.name || "Meta Pixel"}</strong> · <bdi>{pixel}</bdi><br />האתר לבדיקה: {website ? <bdi>{website}</bdi> : <>לא הוגדר אתר. <Link href="/business">להוסיף את כתובת האתר</Link></>}</p>
+            <p className={styles.hint}><strong>{selectedPixel?.name || tracking?.name || "המעקב של העסק"}</strong><br />האתר לבדיקה: {website ? <bdi>{website}</bdi> : <>לא הוגדר אתר. <Link href="/business">להוסיף את כתובת האתר</Link></>}</p>
             <p>{tracking?.note_he || "נבדוק אם מטא מקבלת אירועים מהכתובת של העסק."}</p>
-            {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL")}</small>}
-            <UIAction variant="secondary" onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
-            <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור מעקב אחר</UIAction>
+            {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
+            <UIAction onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
             {tracking && tracking.status !== "receiving" && website && <a href={website} target="_blank" rel="noopener noreferrer">לפתוח את האתר ולנסות שוב</a>}
-            <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />
-            <p className={styles.hint}>הבדיקה בוחנת קבלת אירועים ושיוך לאתר. היא לא מאשרת את תקינות סכומי הרכישות, המעקב מהשרת או מניעת ספירה כפולה.</p>
+            {tracking?.status !== "receiving" && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
+            <details className={styles.trackingDetails}>
+              <summary>פרטי המעקב ושינוי הבחירה<IconChevron className={styles.disclosureIcon} /></summary>
+              <div className={styles.setupBody}>
+                <p>מזהה המעקב: <bdi>{pixel}</bdi></p>
+                <button type="button" className={styles.textAction} onClick={() => { setBusy(true); void loadAssets(); }} disabled={busy}>לבחור מעקב אחר</button>
+              </div>
+            </details>
+            <p className={styles.hint}>הבדיקה אינה מאשרת סכומי רכישה, מעקב מהשרת או מניעת ספירה כפולה.</p>
           </div>}
           <Link href="/performance" className={styles.next}>לראות את התוצאות ←</Link>
           <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
 
 const PLATFORMS = {
@@ -35,7 +36,7 @@ export function PixelSetupGuide({ onRefresh, busy }: { onRefresh: () => void; bu
   const [platform, setPlatform] = useState<keyof typeof PLATFORMS | "">("");
   const guide = platform ? PLATFORMS[platform] : null;
   return <details className={styles.setupGuide}>
-    <summary>המעקב חסר? כך מחברים אותו לאתר</summary>
+    <summary>המעקב חסר? כך מחברים אותו לאתר<IconChevron className={styles.disclosureIcon} /></summary>
     <div className={styles.setupBody}>
       <label className={styles.field}>באיזו מערכת האתר שלכם?<select value={platform} onChange={e => setPlatform(e.target.value as keyof typeof PLATFORMS | "")}>
         <option value="">לבחור את מערכת האתר</option>
@@ -46,7 +47,7 @@ export function PixelSetupGuide({ onRefresh, busy }: { onRefresh: () => void; bu
         <p className={styles.hint}>{guide.note}</p>
         {guide.url && <a href={guide.url} target="_blank" rel="noopener noreferrer">להוראות של {guide.label} ↗</a>}
         <p>בסיום החיבור לאתר, חזרו לכאן ובחרו את המעקב שהופיע בחשבון הפרסום שלכם.</p>
-        <button type="button" className={styles.textAction} onClick={onRefresh} disabled={busy}>חיברתי באתר — לרענן את הרשימה</button>
+        <button type="button" className={styles.textAction} onClick={onRefresh} disabled={busy}>חיברתי באתר, לרענן את הרשימה</button>
       </>}
     </div>
   </details>;
