@@ -254,9 +254,9 @@ def build_steps(
     status = "done" if whatsapp_set else ("todo" if whatsapp_ready else "soon")
     steps.append(_step(
         "whatsapp", 1, "להכין את קישור הוואטסאפ",
-        f"קישור עם הודעה מוכנה. כך נספור כל פנייה, וזה היעד שבחרתם: {kpi}."
+        f"קישור עם הודעה מוכנה. נמדוד לחיצות לקישור, שעשויות להוביל ליעד שבחרתם: {kpi}. שליחת הודעה אינה נמדדת כאן."
         if "whatsapp_link" in kpi_needs and kpi
-        else "קישור עם הודעה מוכנה. כך נספור כמה פניות הגיעו מכל פוסט.",
+        else "קישור עם הודעה מוכנה. נמדוד לחיצות מכל פוסט; שליחת הודעה אינה נמדדת כאן.",
         2, "/integrations#whatsapp", "להכין את הקישור",
         status, None,
         "הקישור יהיה מוכן כאן בקרוב." if status == "soon" else None,
@@ -301,7 +301,8 @@ def build_steps(
     featured_raw = facts.stored.get("featured_items") if isinstance(facts.stored.get("featured_items"), dict) else {}
     steps.append(_step(
         "featured", 2, "לבחור אילו מוצרים לקדם" if products else "לבחור אילו שירותים לקדם",
-        "מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
+        ("מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
+         if products else "אילו שירותים מתאימים ללקוחות שאתם רוצים ולזמן הפנוי שלכם. בחרו מה להבליט ואיזו עבודה ממחישה אותו.")
         + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < foundations.MIN_FEATURED else ""),
         5, "/featured", "לבחור",
         "done" if featured_done else "todo", journey.parse_time(featured_raw.get("saved_at")),
@@ -321,14 +322,15 @@ def build_steps(
         # Written, or being written: the owner asked (the job's own row shows its progress).
         start_status, start_note = "done", None
     elif not foundations_done:
-        start_status, start_note = "locked", "אחרי התמונות, המוצרים והסגנון."
+        start_status, start_note = "locked", "אחרי התמונות, המוצרים והסגנון." if products else "אחרי התמונות, השירותים והסגנון."
     elif not posts_start_ready:
         start_status, start_note = "soon", "הכתיבה לפי הבחירות שלכם תיפתח כאן בקרוב."
     else:
         start_status, start_note = "todo", None
     steps.append(_step(
         "start_posts", 2, "להתחיל לכתוב את הפוסטים",
-        "לפי התוכנית, המוצרים שבחרתם והתמונות שלכם. הפוסטים יחכו לאישור שלכם.",
+        ("לפי התוכנית, המוצרים שבחרתם והתמונות שלכם. הפוסטים יחכו לאישור שלכם."
+         if products else "לפי התוכנית, השירותים שבחרתם והעבודות שלכם. הפוסטים יחכו לאישור שלכם."),
         1, "/posts", "להתחיל לכתוב",
         start_status, started, start_note,
     ))

@@ -313,8 +313,23 @@ class TrialTestCase(unittest.TestCase):
         self.db.commit()
         keys = [f["key"] for f in self.client.get("/business/baseline").json()["fields"]]
         self.assertEqual(keys, ["inquiries_month", "close_rate", "deal_value_ils"])
-        self.assertEqual(self.steps()["featured"]["title_he"], "לבחור אילו שירותים לקדם")
+        steps = self.steps()
+        self.assertEqual(steps["featured"]["title_he"], "לבחור אילו שירותים לקדם")
+        self.assertIn("זמן הפנוי", steps["featured"]["why_he"])
+        self.assertNotIn("מלאי", steps["featured"]["why_he"])
+        self.assertIn("שירותים", steps["start_posts"]["why_he"])
+        self.assertNotIn("מוצרים", steps["start_posts"]["why_he"])
+        self.assertNotIn("מוצרים", steps["start_posts"]["note_he"])
         self.assertEqual(self.client.put("/business/baseline", json={"close_rate": 140}).status_code, 422)
+
+    def test_whatsapp_clicks_are_not_reported_as_received_inquiries(self):
+        # Both the KPI-specific explanation and the default must state what the link measures.
+        for plan in (PLAN, {**PLAN, "kpi": {"name_he": "פניות מתאימות", "needs": ["whatsapp_link"]}}):
+            self.save_profile({"quarter_plan": plan})
+            why = self.steps()["whatsapp"]["why_he"]
+            self.assertIn("לחיצות", why)
+            self.assertIn("שליחת הודעה אינה נמדדת", why)
+            self.assertNotIn("נספור כל פנייה", why)
 
     # --- week 2 · raw materials ---------------------------------------------------------
 
