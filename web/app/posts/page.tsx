@@ -203,13 +203,16 @@ function PostsWorkspace() {
   const doneCount = posts.filter(isDone).length;
   const firstPending = nextPendingIndex(posts, -1);
   const due = queue?.due[0];
-  // A failed queue read must not read as "nothing is due", so nothing is claimed until it
-  // answers. With posts still to approve, publishing is the secondary ask.
-  const showDue = Boolean(due && firstPending >= 0);
+  // Only the real queue establishes that a post is due. Complete one first publication
+  // before asking the owner to approve more of the batch; preserve later scheduling.
+  const firstPublicationDue = due && !posts.some((post) => (post.published_url || "").trim() || post.published_at);
+  const showDue = Boolean(due && firstPending >= 0 && !firstPublicationDue);
   // The page's one ask is the next post that needs the owner, worded as what it needs.
   const primary =
     strategy && !location.calendar
-      ? firstPending >= 0
+      ? firstPublicationDue
+        ? { label: "לפרסם את הפוסט הראשון", index: due.index }
+        : firstPending >= 0
         ? {
             label: ownerNeedsOf(posts[firstPending]).some((need) => need.kind === "photo")
               ? "להוסיף תמונה לפוסט"
@@ -340,8 +343,8 @@ function NoPostsYet() {
     <section className={`${ui.card} px-6 py-12 text-center sm:px-10`}>
       <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        קודם מחברים מדידה ובוחרים מוצרים, ככה הפוסטים יהיו שלכם. אחר כך נכתוב אותם, והם יחכו כאן
-        לאישור שלכם.
+        נבדוק אילו תמונות והצעות כבר יש לכם, ונכין פוסט לפי התוכנית. נחבר את המדידה הזמינה,
+        והפוסט יחכה כאן לאישור ולפרסום שלכם.
       </p>
       <div className="mt-6 flex flex-col items-center gap-2">
         <Link href="/strategy" className={ui.button}>

@@ -77,7 +77,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
   const capture = !RealStep && scenario === "normal" ? flowCapture(node.id) : null;
 
   return <div className={styles.page} dir="rtl"><div className={styles.container}>
-    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><div><Link href="/design/flows/shorter">הצעת קיצור ההיכרות</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
+    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><div><Link href="/design/flows/shorter">הצעה להצצה ראשונית</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
     <section className={styles.intro}><div><h1>מסכים, פעולות ומעברים.</h1><p className={styles.caption}>גרירה להזזה · + / − להגדלה · לחיצה לפתיחת מסך · קו מקווקו: הצעה. נתוני הדוגמה אינם חשבון לקוח.</p></div></section>
     <details ref={filterRef} className={styles.filters} open><summary>סינון המסלול · {PERSONAS[persona].label} · {PHASES.find(p=>p.value===phase)?.label}</summary><div className={styles.toolbar}>
       <label>עסק<select value={persona} onChange={e=>choosePersona(e.target.value)}>{Object.entries(PERSONAS).map(([value,p])=><option key={value} value={value}>{p.label}</option>)}</select></label>

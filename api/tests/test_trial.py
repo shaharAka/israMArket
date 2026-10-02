@@ -175,7 +175,7 @@ class TrialTestCase(unittest.TestCase):
         self.assertIsNone(payload["welcomed_at"])
         self.assertEqual(payload["next_key"], "instagram")
         self.assertEqual(payload["done"], 0)
-        self.assertEqual([week["title_he"] for week in payload["weeks"]], ["מדידה", "חומרי גלם", "תוכן ראשון", "מודדים ומתאימים"])
+        self.assertEqual([week["title_he"] for week in payload["weeks"]], ["חיבורים ונקודת פתיחה", "מכינים פוסט ראשון", "מאשרים ומפרסמים", "לומדים ומתאימים"])
         started = datetime.fromisoformat(payload["started_at"])
         self.assertEqual(datetime.fromisoformat(payload["ends_at"]) - started, timedelta(days=30))
 
@@ -478,7 +478,34 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(steps["publish_first"]["status"], "todo")
         self.assertEqual(steps["publish_first"]["href"], "/posts?post=0")
 
-        self.db.query(Strategy).delete()
+    def test_day_one_can_publish_one_approved_post_before_finishing_setup_or_batch(self):
+        self.add_month([post(1, approved=True), post(1), post(2)])
+        payload = self.payload()
+        self.assertEqual(payload["day"], 1)
+        self.assertEqual(self.steps(payload)["instagram"]["status"], "todo")
+        self.assertEqual(self.steps(payload)["approve_first"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "publish_first")
+
+    def test_existing_content_can_be_reviewed_before_missing_connections(self):
+        self.add_month([post(1)])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["instagram"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "approve_first")
+
+    def test_ready_foundations_can_start_content_before_other_setup(self):
+        self.foundations()
+        self.add_month([])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["site_data"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "start_posts")
+
+    def test_after_first_publication_missing_measurement_still_needs_attention(self):
+        self.add_month([post(1, approved=True, published=True), post(1)])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["publish_first"]["status"], "done")
+        self.assertEqual(payload["next_key"], "instagram")
+
+    def test_approving_then_publishing_preserves_actual_publication_status(self):
         self.add_month([post(1, approved=True, published=True), post(1, approved=True), post(2)])
         steps = self.steps()
         self.assertEqual(steps["approve_first"]["status"], "done")
