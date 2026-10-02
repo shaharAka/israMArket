@@ -7,6 +7,7 @@ import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
 import { StepLink } from "@/components/trial/StepLink";
 import { MetaAdsSummary } from "@/components/integrations/MetaAdsSummary";
+import { SourceDataNotice } from "@/components/integrations/SourceDataNotice";
 import { MetricComparison } from "@/components/design/MetricComparison";
 import { SegmentedControl } from "@/components/design/Controls";
 import {
@@ -1060,6 +1061,9 @@ export default function PerformancePage() {
       setRecommendation(weekly.recommendation);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לרענן את הנתונים מגוגל ומאינסטגרם. נסו שוב בעוד כמה דקות.");
+      // A recommendation outage can follow a successful source read. Load that saved
+      // snapshot rather than leaving the owner with a failed request and stale numbers.
+      try { setData(await endpoints.performance()); } catch { /* Keep the displayed results. */ }
     } finally {
       setPending(false);
     }
@@ -1091,6 +1095,7 @@ export default function PerformancePage() {
         {data ? (
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
+              <SourceDataNotice payload={data} />
               {available ? <Answer payload={data} /> : <NoSnapshotYet />}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
@@ -1102,7 +1107,7 @@ export default function PerformancePage() {
               ) : null}
             </div>
             <MeasurementGaps payload={data} />
-            <AnalysisAction recommendation={recommendation} payload={data} />
+            {!["pending", "unavailable"].includes(data.diagnostic?.analysis_status || "") ? <AnalysisAction recommendation={recommendation} payload={data} /> : null}
             {available ? <MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /> : null}
             {account ? <InstagramAccountBlock account={account} /> : null}
 

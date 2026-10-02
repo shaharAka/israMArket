@@ -10,7 +10,7 @@ from app.models import Audience, Business, Integration, PerformanceSnapshot, Rec
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
 from app.security import decrypt_page_token
-from app.services import connected_posts, ga4, hypotheses, instagram_signal, meta, meta_marketing
+from app.services import connected_posts, ga4, ga4_readiness, hypotheses, instagram_signal, meta, meta_marketing
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
@@ -169,7 +169,11 @@ def _sync_payload(business: Business, db: Session) -> dict:
     try:
         if ga4_item:
             access, refresh, expires = tokens_for(ga4_item)
-            ga4_data = ga4.fetch_report(access, refresh, expires, ga4_item.external_id, start.isoformat(), end.isoformat())
+            try:
+                ga4_data = ga4.fetch_report(access, refresh, expires, ga4_item.external_id, start.isoformat(), end.isoformat())
+            except Exception as exc:
+                state = ga4_readiness.record(db, ga4_item, ga4_readiness.failure(exc)["status"])
+                raise HTTPException(status_code=502, detail=state["note_he"]) from exc
         if meta_item:
             extra_meta = loads(meta_item.extra_json, {})
             instagram_id = extra_meta.get("selected_instagram_id") or ""
@@ -212,11 +216,9 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
     }
-    try:
-        diagnostic = diagnose(business_payload, ga4_data, meta_data)
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
-
+    # Store the observations before analysis: a model outage must not lose source data.
+    diagnostic = {"analysis_status": "pending", "headline": "", "top_content": [],
+                  "bottom_content": [], "funnel_issues": [], "metric_highlights": []}
     snap = PerformanceSnapshot(
         business_id=business.id,
         period_start=start.isoformat(),
@@ -228,6 +230,15 @@ def _sync_payload(business: Business, db: Session) -> dict:
     db.add(snap)
     db.commit()
     db.refresh(snap)
+    if ga4_item:
+        ga4_readiness.record(db, ga4_item, "ready" if ga4_readiness.has_activity(ga4_data) else "empty", report=ga4_data)
+    try:
+        diagnostic = {**diagnose(business_payload, ga4_data, meta_data), "analysis_status": "ready"}
+    except Exception:
+        diagnostic = {**diagnostic, "analysis_status": "unavailable"}
+        logger.warning("analysis unavailable for business %s; source snapshot retained", business.id)
+    snap.diagnostic_json = dumps(diagnostic)
+    db.commit()
     # Now that the snapshot is the latest, the targets are read against its numbers.
     _refresh_hypotheses(business, db)
     return {
@@ -240,7 +251,12 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "created_at": snap.created_at.isoformat(),
         # How many posts got numbers from this refresh, and how many are measured overall.
         "post_results": post_results,
+        "sources": _source_states(business),
     }
+
+
+def _source_states(business: Business) -> dict:
+    return {"ga4": ga4_readiness.public_state(item) for item in business.integrations if item.provider == "ga4"}
 
 
 @router.get("/latest")
@@ -268,6 +284,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
             "diagnostic": {},
             "created_at": "",
             "audiences": audience_payload,
+            "sources": _source_states(business),
         }
     return {
         "available": True,
@@ -279,6 +296,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         "diagnostic": loads(snap.diagnostic_json, {}),
         "created_at": snap.created_at.isoformat(),
         "audiences": audience_payload,
+        "sources": _source_states(business),
     }
 
 

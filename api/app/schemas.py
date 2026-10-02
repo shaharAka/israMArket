@@ -376,7 +376,7 @@ class WebhookIn(BaseModel):
 
 
 class Ga4PropertyIn(BaseModel):
-    property_id: str = Field(min_length=3, max_length=40)
+    property_id: str = Field(min_length=3, max_length=40, pattern=r"^\d+$")
     display_name: str = Field(default="", max_length=160)
 
 

@@ -3628,6 +3628,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
           external_id: "properties/318491024",
           display_name: "מאפיית לחם תום",
           connected: true,
+          source_readiness: { status: "ready", note_he: "נתונים לדוגמה בלבד, ללא קריאה מחשבון אמיתי.", property_id: "properties/318491024", last_success_at: "2026-09-30T09:00:00Z", period: { start: "2026-09-02", end: "2026-09-29" } },
         },
         {
           provider: "meta",
@@ -4028,7 +4029,8 @@ export const endpoints = {
   metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
   metaVerify: () => api<PixelVerification>("/integrations/meta/verify", { method: "POST" }),
   ga4Property: (body: { property_id: string; display_name: string }) =>
-    api("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
+    api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
+  ga4Read: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/read", { method: "POST" }),
   metaAccount: (body: { page_id: string; instagram_id?: string; display_name?: string; ad_account_id?: string; pixel_id?: string }) =>
     api("/integrations/meta/account", { method: "POST", body: JSON.stringify(body) }),
   disconnectIntegration: (provider: "ga4" | "meta") =>
@@ -5010,6 +5012,15 @@ export type CalendarPayload = {
   roadmap: { posts: RoadmapPost[] } | null;
 };
 
+export type SourceReadiness = {
+  status: "choose_property" | "no_properties" | "unchecked" | "reading" | "ready" | "empty" | "reconnect" | "unavailable";
+  note_he: string;
+  property_id?: string;
+  checked_at?: string | null;
+  last_success_at?: string | null;
+  period?: { start: string; end: string } | null;
+};
+
 export type IntegrationsPayload = {
   ga4_ready: boolean;
   meta_ready: boolean;
@@ -5019,6 +5030,7 @@ export type IntegrationsPayload = {
     external_id: string;
     display_name: string;
     connected: boolean;
+    source_readiness?: SourceReadiness | null;
     scopes?: string[];
     ad_account_id?: string;
     pixel_id?: string;
@@ -5067,6 +5079,8 @@ export type MetaAdsReport = MetaReadState & {
 };
 
 export type PerformancePayload = {
+  sources?: { ga4?: SourceReadiness };
+  created_at?: string;
   /** False when nothing has been synced yet — a normal state, not an error. */
   available?: boolean;
   /** From `/performance/sync`: how many posts got results written back, and how many of
@@ -5075,12 +5089,16 @@ export type PerformancePayload = {
   period_start: string;
   period_end: string;
   ga4: {
+    property_id?: string;
+    read_at?: string;
     overview?: Record<string, string>;
     landing_pages?: Record<string, string>[];
     campaigns?: Record<string, string>[];
     post_attribution?: Record<string, unknown>[];
   };
   meta: {
+    source_read_at?: string;
+    source_period?: { start: string; end: string };
     ads?: MetaAdsReport;
     tracking?: PixelVerification;
     page?: { name?: string; fan_count?: number };
@@ -5089,6 +5107,7 @@ export type PerformancePayload = {
     account?: InstagramAccount | null;
   };
   diagnostic: {
+    analysis_status?: "pending" | "ready" | "unavailable";
     headline: string;
     top_content: { label: string; why: string }[];
     bottom_content: { label: string; why: string }[];
