@@ -14,7 +14,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-LIBRARY_VERSION = 1
+LIBRARY_VERSION = 2
 
 
 @dataclass(frozen=True)
@@ -53,6 +53,12 @@ TEXT_POSITIONS = ("top", "center", "bottom", "start", "end")
 CROPS = ("4:5", "9:16")
 
 
+# How much text a post carries (docs/design-dna.md, Revision 1, "one message per post"):
+# `photo_only` = no text on the image, or one word; `headline` = a headline (and at most
+# one short line) on the photo's calm area; `type_led` = the text is the picture.
+TEXT_MODES = ("photo_only", "headline", "type_led")
+
+
 @dataclass(frozen=True)
 class Composition:
     photo: bool
@@ -62,6 +68,9 @@ class Composition:
     # the post's text position. Never describes a panel to draw: the renderer draws it.
     photo_zone: str
     label_he: str
+    # The text modes this composition can carry. A layout built around a text stub
+    # (ticket, split, corner tab...) has no photo-only form.
+    text_modes: tuple[str, ...] = ("headline",)
 
 
 COMPOSITIONS: dict[str, Composition] = {
@@ -71,12 +80,14 @@ COMPOSITIONS: dict[str, Composition] = {
         "that third calmer: the same surface and light continued, with less detail and no key "
         "part of the subject. It must still be photographed content, never blank or blurred out.",
         "תמונה מלאה",
+        text_modes=("photo_only", "headline"),
     ),
     "inset_frame": Composition(
         True, ("bottom", "top"), CROPS,
         "The photo is shown inside a frame, with a margin of brand colour around it. Compose a "
         "self-contained picture with nothing important touching the edges.",
         "תמונה ממוסגרת",
+        text_modes=("photo_only", "headline"),
     ),
     "split": Composition(
         True, ("bottom", "top"), CROPS,
@@ -88,6 +99,7 @@ COMPOSITIONS: dict[str, Composition] = {
         False, ("center", "top"), CROPS,
         "No photograph is used: this card is typography on the brand's paper colour.",
         "טקסט גדול בלי תמונה",
+        text_modes=("type_led",),
     ),
     "stacked_bands": Composition(
         True, ("top", "bottom"), CROPS,
@@ -106,12 +118,14 @@ COMPOSITIONS: dict[str, Composition] = {
         "The photo is seen through an arch-shaped window with a rounded top. Keep the subject "
         "central and in the lower two thirds; the top corners will be cut away.",
         "חלון קשת",
+        text_modes=("photo_only", "headline"),
     ),
     "circle_crop": Composition(
         True, ("bottom", "top"), CROPS,
         "The photo is cropped to a circle. Centre the subject with room around it; the corners "
         "will be cut away.",
         "תמונה עגולה",
+        text_modes=("photo_only", "headline"),
     ),
     "ticket": Composition(
         True, ("bottom",), CROPS,
@@ -124,6 +138,7 @@ COMPOSITIONS: dict[str, Composition] = {
         "The photo is one cell of a small grid. Keep one clear subject that still reads when "
         "small, without busy detail.",
         "רשת תמונות",
+        text_modes=("photo_only", "headline"),
     ),
     "handwritten_note": Composition(
         True, ("bottom", "start"), CROPS,
@@ -138,8 +153,15 @@ COMPOSITIONS: dict[str, Composition] = {
     ),
 }
 PHOTO_FREE_COMPOSITIONS = frozenset(key for key, comp in COMPOSITIONS.items() if not comp.photo)
+# Compositions a photo can carry alone (text mode `photo_only`). Every DNA keeps at least one.
+PHOTO_ONLY_COMPOSITIONS = frozenset(key for key, comp in COMPOSITIONS.items() if "photo_only" in comp.text_modes)
 
+# Revision 1: "none" is the default motif. Any other is allowed only when the DNA can say
+# what in this brand it comes from (`motif.from` + `motif.note_he`, checked against the
+# brand's own words with MOTIF_EVIDENCE). The renderer still draws every key.
+NO_MOTIF = "none"
 MOTIFS: dict[str, str] = {
+    NO_MOTIF: "בלי קישוט",
     "scalloped_edge": "קצה גלי",
     "stripes": "פסים",
     "arches": "קשתות",
@@ -150,22 +172,70 @@ MOTIFS: dict[str, str] = {
     "tape": "סלוטייפ",
     "thread": "קו של חוט",
 }
+# The list ornaments the owner review called Canva moves (scalloped frames, rainbow arcs and
+# rings, dashed thread frames, tape, stamps). Never a default; drawn only as the quiet echo
+# of something real in the brand.
+GENERIC_MOTIFS = frozenset({"scalloped_edge", "arches", "tape", "thread", "stamp"})
+# Where a motif may come from: a shape in the logo, a texture of the real place, a detail
+# of the product. "owner" = set by hand in PUT /brand/dna (the owner knows their brand).
+MOTIF_FROM = ("logo", "place", "product")
+MOTIF_FROM_OWNER = "owner"
+# What the brand's own words must mention for a motif to be justified (Hebrew stems and
+# English, matched as substrings of the logo description, the place or the product text).
+MOTIF_EVIDENCE: dict[str, tuple[str, ...]] = {
+    "scalloped_edge": ("גלי", "גלים", "סלסול", "תחרה", "מפית", "scallop", "wave", "lace", "doily"),
+    "stripes": ("פסים", "מפוספס", "סוכך", "stripe", "awning"),
+    "arches": ("קשת", "קמרון", "arch"),
+    "dots": ("נקודות", "נקודה", "פולקה", "polka", "dots", "dotted"),
+    "grain": ("נייר", "גרעיני", "טקסטור", "מרקם", "פשתן", "קרטון", "טיח", "בטון", "אבן",
+              "paper", "grain", "texture", "linen", "kraft", "plaster", "concrete", "stone"),
+    "stamp": ("חותמת", "חותם", "stamp", "seal"),
+    "underline": ("כתב יד", "מכחול", "חתימה", "handwrit", "hand-drawn", "brush", "signature"),
+    "tape": ("סלוטייפ", "נייר דבק", "מדבק", "tape", "sticker"),
+    "thread": ("חוט", "תפר", "תפיר", "רקמה", "רקום", "thread", "stitch", "embroider", "sewing"),
+}
 MOTIF_COLORS = ("accent", "accent_2", "ink", "tint")
 MOTIF_DENSITIES = ("low", "mid")
 
+# How the business signs a post. With a same-origin logo copy: the logo small in a corner
+# or on a quiet footer band. Without one: the name set in the display face. "none" for
+# posts that need no mark (on the feed the profile already shows it). Never an invented
+# monogram or stamp.
 SIGNATURES: dict[str, str] = {
-    "corner_mark": "סימן קטן בפינה",
-    "footer_band": "פס תחתון",
-    "stamp": "חותמת",
-    "tab": "לשונית",
+    "corner_mark": "הלוגו קטן בפינה",
+    "footer_band": "פס תחתון שקט עם הלוגו",
+    "name_only": "שם העסק בפונט הכותרות",
+    "none": "בלי סימן",
 }
+LOGO_SIGNATURES = ("corner_mark", "footer_band", "none")
+NAME_SIGNATURES = ("name_only", "none")
+# v1 kinds, read by the v1 -> v2 upgrade.
+LEGACY_SIGNATURES = {"stamp": "corner_mark", "tab": "corner_mark"}
+# Which ground the logo reads on, worked out from its own pixels (services/brand_logo.py).
+LOGO_ON = ("light", "dark", "any")
 
 TYPE_SCALES = ("large", "medium", "editorial")
 # Hebrew has no letter case: this applies to Latin letters in a headline (a product name).
 HEADLINE_CASES = ("sentence", "upper")
 PRICE_STYLES = ("tag", "inline", "circle")
+# v1 only: the CTA lives in the caption now (`copy.cta_on_image` is always false).
 CTA_STYLES = ("underline", "pill", "arrow")
 COLOR_ROLES = ("ink", "paper", "accent", "accent_2", "on_photo", "tint")
+# `colors_source.<role>`: read off the logo's pixels, off the site (palette, screenshot,
+# CSS), derived from one of those by lightness only, or set by the owner by hand.
+COLOR_SOURCES = ("logo", "site", "derived", "owner")
+# PUT /brand/dna `adjust`: the owner's words, not pickers.
+ADJUST_TONES = ("quieter", "bolder")
+ADJUST_TEXT = ("more_photo", "more_text")
+# Design rules the renderer and the server enforce (docs/design-dna.md, Revision 1).
+RULES = {
+    "overlay_headline_max_words": 6,
+    "overlay_sub_max_words": 6,
+    # Smallest text on the image, and the headline, as a share of the card width.
+    "min_text_pct_of_width": 3.2,
+    "min_headline_pct_of_width": 7.0,
+    "cta_on_image": False,
+}
 
 # The old renderer's six layouts (`overlay_theme`, still stored on older posts) and the
 # composition each one is closest to, with where its text sat.
@@ -325,7 +395,7 @@ def google_fonts_family(font_key: str) -> str:
 
 
 def library_payload() -> dict:
-    """What `GET /brand/dna/library` returns: every key the renderer must draw."""
+    """What `GET /brand/dna/library` returns: every key the renderer must draw (v2)."""
     return {
         "version": LIBRARY_VERSION,
         "fonts": [
@@ -345,23 +415,37 @@ def library_payload() -> dict:
                 "photo": comp.photo,
                 "text_positions": list(comp.text_positions),
                 "crops": list(comp.crops),
+                "text_modes": list(comp.text_modes),
                 "label_he": comp.label_he,
             }
             for key, comp in COMPOSITIONS.items()
         ],
-        "motifs": [{"key": key, "label_he": label} for key, label in MOTIFS.items()],
-        "signatures": [{"key": key, "label_he": label} for key, label in SIGNATURES.items()],
+        "motifs": [
+            {"key": key, "label_he": label, "generic": key in GENERIC_MOTIFS}
+            for key, label in MOTIFS.items()
+        ],
+        "signatures": [
+            {"key": key, "label_he": label, "needs_logo": key in ("corner_mark", "footer_band")}
+            for key, label in SIGNATURES.items()
+        ],
         "enums": {
             "type_scale": list(TYPE_SCALES),
             "headline_case": list(HEADLINE_CASES),
             "price_style": list(PRICE_STYLES),
-            "cta_style": list(CTA_STYLES),
             "motif_color": list(MOTIF_COLORS),
             "motif_density": list(MOTIF_DENSITIES),
+            "motif_from": [*MOTIF_FROM, MOTIF_FROM_OWNER],
             "color_roles": list(COLOR_ROLES),
+            "color_sources": list(COLOR_SOURCES),
             "text_position": list(TEXT_POSITIONS),
+            "text_mode": list(TEXT_MODES),
+            "logo_on": list(LOGO_ON),
             "crop": list(CROPS),
+            "adjust_tone": list(ADJUST_TONES),
+            "adjust_text": list(ADJUST_TEXT),
         },
+        "rules": dict(RULES),
+        "legacy_signatures": dict(LEGACY_SIGNATURES),
         "legacy_overlay_theme": {
             theme: {"composition": comp, "text_position": pos}
             for theme, (comp, pos) in LEGACY_THEME_COMPOSITION.items()

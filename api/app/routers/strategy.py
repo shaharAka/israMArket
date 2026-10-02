@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session, object_session
 from app.db import get_db
 from app.config import get_settings
 from app.deps import get_business
-from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy
+from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy, User
 from app.schemas import (
     PostApprovalIn,
     PostAssetIn,
@@ -19,7 +19,16 @@ from app.schemas import (
     PostUpdateIn,
     StrategyApproveIn,
 )
-from app.services import connected_posts, design_dna, generation_jobs, hypotheses, photo_choice, post_rewrite
+from app.services import (
+    billing,
+    connected_posts,
+    design_dna,
+    generation_jobs,
+    hypotheses,
+    photo_analysis,
+    photo_choice,
+    post_rewrite,
+)
 from app.services.assets import (
     asset_catalogue,
     suggest_assets,
@@ -28,14 +37,16 @@ from app.services.audiences import catalogue_for
 from app.services.calendar_il import gregorian_month_meta, israeli_events_for_month
 from app.services.designer import design_and_generate_post, vibe_composition
 from app.services.image_routing import edit_for_post, generate_for_post
-from app.services.images import image_public_url, store_image_bytes
+from app.services.images import image_public_url, read_stored_bytes, store_image_bytes
 from app.services.post_design import (
     assign_designs,
     clean_design,
     dna_compositions,
     ensure_post_design,
     make_design,
+    photo_fields,
     post_needs_photo,
+    sync_text_mode,
     view_designs,
 )
 from app.services.instagram_signal import signal_for
@@ -274,9 +285,13 @@ def _produce_post_image(
         post["image_url"] = ""
         post["image_source"] = "none"
         post["image_action"] = "no_photo_theme"
+        photo_analysis.attach(db, business.id, post, None)
         return ""
 
     def stored(data: bytes, mime: str) -> str:
+        # Where the photo's subject is and where text may sit (design.safe_area/focal):
+        # one cheap vision call per photo, cached by its hash; never when browsing.
+        photo_analysis.attach(db, business.id, post, data, mime, allow_model=allow_generation)
         return store_image_bytes(business.id, post.get("title") or "post", data, mime, post.get("week", 0))
 
     def mark_own(candidate, reason: str) -> None:
@@ -334,6 +349,7 @@ def _produce_post_image(
         post["image_url"] = ""
         post["image_source"] = "pending"
         post["image_action"] = "pending"
+        photo_analysis.attach(db, business.id, post, None)
         return ""
 
     def pick():
@@ -526,6 +542,7 @@ def design_post_endpoint(
         composition=body.composition or vibe_composition(body.vibe, dna_compositions(dna), target.get("format")),
         text_position=body.text_position,
         prefer_dna=True,
+        by_hand=bool(body.composition),
     )
     # The image follows the same real-first route as /strategy/posts/image (it used to be
     # a plain generation here, with none of the business's photos).
@@ -592,6 +609,14 @@ def attach_post_asset(
     target["image_asset_id"] = asset.id
     target["image_action"] = "asset"
     target["image_source_url"] = asset.source_url or ""
+    # The owner's own photo: where its subject is and where text may sit. The design is
+    # stored first so the analysis has somewhere to go.
+    ensure_post_design(posts, body.post_index, design_dna.dna_for_posts(business))
+    loaded = read_stored_bytes(target["image_url"])
+    owner = db.get(User, business.user_id)
+    may_spend = owner is None or not billing.locked(db, owner)
+    photo_analysis.attach(db, business.id, target, loaded[0] if loaded else None, loaded[1] if loaded else "",
+                          allow_model=may_spend)
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
@@ -689,14 +714,29 @@ def save_post(
     # must not overwrite a post's Design DNA layout every time it is saved.
     if "overlay_theme" in body.model_fields_set:
         target["overlay_theme"] = body.overlay_theme
+    previous_design = target.get("design") if isinstance(target.get("design"), dict) else {}
     if body.design is not None:
-        design = clean_design(body.design.model_dump(), {**target, "format": body.format})
+        submitted = {**body.design.model_dump(), "text_mode": previous_design.get("text_mode")}
+        # Picked by hand in the editor: a feed-only layout may go on a story too.
+        design = clean_design(submitted, {**target, "format": body.format}, by_hand=True)
         if design is None:
             raise HTTPException(status_code=422, detail="הקומפוזיציה הזו לא מתאימה לפוסט הזה.")
+        # A composition change keeps the photo, and so what we know about it.
+        design.update(photo_fields(previous_design))
         target["design"] = design
-    elif isinstance(target.get("design"), dict):
+    elif previous_design:
         # The format may have changed (a post became a story): keep the crop in step.
-        target["design"] = clean_design(target["design"], target) or make_design("full_bleed", target)
+        target["design"] = clean_design(previous_design, target) or make_design(
+            "full_bleed", target, photo=photo_fields(previous_design))
+    if isinstance(target.get("design"), dict):
+        # The owner's overlay switch decides the text mode: off = photo only.
+        sync_text_mode(target["design"], body.has_overlay)
+    # The one short line under the headline: kept unless the editor sends it (an older
+    # editor does not know the field) or the owner turned the text off.
+    if not body.has_overlay:
+        target["overlay_sub"] = ""
+    elif "overlay_sub" in body.model_fields_set:
+        target["overlay_sub"] = " ".join(body.overlay_sub.split())
     target["overlay_text"] = headline if body.has_overlay else ""
     if body.creative_concept:
         target["creative_concept"] = body.creative_concept
@@ -721,6 +761,8 @@ def save_post(
     if target.get("owner_fact"):
         target["owner_fact_done"] = True
     post_rewrite.confirm_prices(target, post_rewrite.post_text(target))
+    # The price on the post follows the text the owner saved (theirs now).
+    target["price"] = connected_posts.price_after_edit(target)
     target.pop("rewrite_instruction", None)
 
     posts[body.post_index] = target
@@ -816,6 +858,10 @@ def rewrite_post_endpoint(
 
     for name in post_rewrite.TEXT_FIELDS:
         target[name] = checked.fields[name]
+    if target.get("has_overlay") is not False and target.get("overlay_text"):
+        # The headline the card prints follows the rewritten text: one message, 6 words.
+        target["overlay_headline"] = target["overlay_text"]
+        connected_posts.one_message(target)
     if checked.fields.get("outlet_captions"):
         target["outlet_captions"] = checked.fields["outlet_captions"]
     if isinstance(target.get("outlet_captions"), dict):
@@ -841,6 +887,9 @@ def rewrite_post_endpoint(
         # A fact the owner already went over stays theirs; a new one is asked about.
         target["owner_fact"] = fact
         target["owner_fact_done"] = False
+    if isinstance(target.get("price"), dict) or post_rewrite.money_in(target.get("overlay_headline") or ""):
+        # Only prices the guard let through (known to the owner) can be here.
+        target["price"] = connected_posts.price_after_edit(target)
     note, sources = connected_posts.informed_note(target, worked, rewritten.get("applied_learning"))
     target["informed_by_note"] = note
     target["informed_by"] = sources

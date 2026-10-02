@@ -1,12 +1,16 @@
 """The business's Design DNA (docs/design-dna.md, services/design_dna.py).
 
     GET  /brand/dna/library      the keys the renderer draws (fonts, compositions, motifs,
-                                 signatures, enums). Static, no account needed.
-    GET  /brand/dna              the business's DNA; built on the first read if missing.
+                                 signatures, enums, rules). Static, no account needed.
+    GET  /brand/dna              the business's DNA (v2); built on the first read if missing,
+                                 and a stored v1 DNA is upgraded (no model call) and stored.
     POST /brand/dna/regenerate   "לנסות סגנון אחר": a new seed within the same signals,
                                  still unique in its field. Genes the owner set stay.
-    PUT  /brand/dna              the owner keeps or changes a few genes (fonts, motif,
-                                 colours), validated against the library; "keep" = "לשמור".
+                                 Billing-gated: 402 {code: "plan_required", detail_he}.
+    PUT  /brand/dna              the owner adjusts the style in words (`adjust`: quieter |
+                                 bolder, more_photo | more_text), or keeps or changes a few
+                                 genes (fonts, motif, colours), validated against the
+                                 library; "keep" = "לשמור".
 """
 
 from datetime import datetime
@@ -43,6 +47,10 @@ def get_brand_dna(business: Business = Depends(get_business), db: Session = Depe
         dna = design_dna.create_dna(db, business)
         business.updated_at = datetime.utcnow()
         db.commit()
+    elif design_dna.stored_version(business) < design_dna.DNA_VERSION:
+        # A v1 DNA, upgraded on read (source "upgraded"): stored, so every reader agrees.
+        design_dna.store_dna(business, dna)
+        db.commit()
     return _payload(business, dna)
 
 
@@ -66,8 +74,9 @@ def edit_brand_dna(
 ) -> dict:
     edit = {
         "type": body.type.model_dump(exclude_none=True) if body.type else {},
-        "motif": body.motif.model_dump(exclude_none=True) if body.motif else {},
+        "motif": body.motif.model_dump(exclude_none=True, by_alias=True) if body.motif else {},
         "colors": body.colors.model_dump(exclude_none=True) if body.colors else {},
+        "adjust": body.adjust.model_dump(exclude_none=True) if body.adjust else {},
         "keep": body.keep,
     }
     try:

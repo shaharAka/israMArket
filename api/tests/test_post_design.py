@@ -60,7 +60,10 @@ class RotationTest(unittest.TestCase):
         posts = month()
         posts[2]["design"] = {"composition": "circle_crop", "text_position": "top"}
         assign_designs(posts, DNA)
-        self.assertEqual(posts[2]["design"], {"composition": "circle_crop", "crop": "4:5", "text_position": "top"})
+        kept = posts[2]["design"]
+        self.assertEqual({k: kept[k] for k in ("composition", "crop", "text_position")},
+                         {"composition": "circle_crop", "crop": "4:5", "text_position": "top"})
+        self.assertIn(kept["text_mode"], COMPOSITIONS["circle_crop"].text_modes, "a kept design gets a text mode")
         self.assertNotEqual(posts[1]["design"]["composition"], "circle_crop")
         self.assertNotEqual(posts[3]["design"]["composition"], "circle_crop")
 
@@ -152,7 +155,7 @@ class StorageTest(DnaTestCase, unittest.TestCase):
                                                                            "text_position": "top"}})
         self.assertEqual(ok.status_code, 200, ok.text)
         self.assertEqual(ok.json()["post"]["design"], {"composition": "circle_crop", "crop": "4:5",
-                                                        "text_position": "top"})
+                                                        "text_position": "top", "text_mode": "headline"})
         again = client.post("/strategy/posts/save", json={**body, "format": "story"})
         stored = json.loads(self.db.get(Strategy, strategy.id).roadmap_json)["roadmap"]["posts"][0]
         self.assertEqual(again.status_code, 200)
