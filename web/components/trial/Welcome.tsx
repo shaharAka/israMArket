@@ -41,10 +41,10 @@ function cards(trial: TrialPayload): Card[] {
       body: (
         <ol className={styles.month}>
           {/* Each week's name is its own line now, so it carries no colon. */}
-          <li><b>שבוע 1, מדידה</b> מחברים את מה שמודד, ורושמים איפה העסק היום.</li>
-          <li><b>שבוע 2, חומרי גלם</b> בוחרים מה לקדם, מוסיפים תמונות ובודקים שהסגנון נשמע כמוכם.</li>
-          <li><b>שבוע 3, תוכן ראשון</b> רק עכשיו כותבים את הפוסטים. מאשרים ומפרסמים.</li>
-          <li><b>שבוע 4, מודדים ומתאימים</b> התוצאות מול נקודת הפתיחה, החודש השני, ומחליטים אם להמשיך.</li>
+          <li><b>מחברים מדידה</b> רק את המקורות שהתוכנית צריכה. הנתונים שכבר נתתם נשמרים.</li>
+          <li><b>מכינים תוכן</b> בוחרים מה לקדם, מוסיפים חומר אמיתי ובודקים את הסגנון.</li>
+          <li><b>מאשרים ומפרסמים</b> אפשר להתחיל ברגע שהחומרים מוכנים, גם ביום הראשון.</li>
+          <li><b>מודדים ומתאימים</b> מה קרה בעקבות הפעולות, ומה כדאי לנסות בהמשך.</li>
           <li>
             {trial.days_total} יום חינם{NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}.
           </li>
@@ -98,7 +98,9 @@ export function TrialWelcome() {
   const [index, setIndex] = useState(0);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const open = Boolean(payload && !payload.ended && !dismissed && (tour || !payload.welcomed_at));
+  // A saved plan is the first-entry experience. The optional tour remains available
+  // from the account menu, rather than interrupting it with three more screens.
+  const open = Boolean(payload && !payload.ended && !dismissed && tour);
 
   useEffect(() => {
     if (!open) return;

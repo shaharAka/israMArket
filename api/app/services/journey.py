@@ -94,6 +94,7 @@ class Facts:
     connected_at: dict[str, datetime] = field(default_factory=dict)
     # When the library reached three photos (the journey's "a few photos" step).
     third_asset_at: datetime | None = None
+    first_asset_at: datetime | None = None
     # The posts of the strategy the rest of the app treats as current (`_active_strategy`).
     posts: list[dict] = field(default_factory=list)
     has_month: bool = False
@@ -252,6 +253,7 @@ def load(db: Session, business: Business | None) -> Facts:
         connected={row[0] for row in connected_rows},
         connected_at={row[0]: row[1] for row in connected_rows if row[1]},
         third_asset_at=asset_times[2] if len(asset_times) >= 3 else None,
+        first_asset_at=asset_times[0] if asset_times else None,
         posts=posts,
         has_month=has_month,
         month_core=month_core,

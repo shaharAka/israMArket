@@ -14,7 +14,9 @@ not a live business or measured campaign.
    dashed lines lead to proposals. Screen positions can be dragged locally, and reset
    when changing journey/phase. This is not a shared Figma document or live multiplayer.
 3. Select a thumbnail to inspect its larger screen and action beside the canvas. Six question screens reuse
-   actual components with local answers; the other screens are explicitly schematic.
+   actual components with local answers. Sixteen nodes also have actual route captures from
+   the synthetic bakery demo; exact OAuth, writing and publishing states remain schematic.
+   Captures show a shared route, not proof of a distinct account or the exact workflow state.
 4. Try its primary action, alternative branch and failure/cancel/missing-information case.
    The recovery example describes what the source supports; it is not a new API behavior.
 5. Inspect saved state, the proposed improvement and measurement. The source disclosure
@@ -31,11 +33,14 @@ describes conditions that route alone cannot show.
 
 ## Current source and branch conditions
 
-Audit baseline: `bf531bbabe02ed9f20dc3292bde1f2cb0b115ed9`, 2 October 2026. Maintain the
+Audit baseline: `1c037008fa932a9cd4781eb3428fd29fd2da7241`, 2 October 2026, with the
+first-value onboarding follow-up on top. The inspector links to the follow-up implementation
+revision. Maintain the
 data in `web/lib/uxFlows.ts` when behavior changes; update the baseline only after checking
 the mapped routes and conditions. The board is excluded from search indexing.
 
-- `/start`: 16 questions/screens for products, 15 for services, local draft until save.
+- `/start`: 13 answer/confirmation stages for products, 12 for services, followed by the
+  research summary, plan and save (16/15 main-path stages total). Local draft until save.
   Research links and authorization to read account data are separate. Invalid or
   inaccessible links are excluded from research and retained for later correction.
 - Save: Google or email/password, then `from-draft`. Delete the local draft only after
@@ -43,8 +48,9 @@ the mapped routes and conditions. The board is excluded from search indexing.
 - `/onboarding`: no business goes to `/start`; completed business to `/dashboard`; a named
   business with a saved start plan to `/strategy`. A legacy partial business can still see
   the older three-part completion form. This is not a business switcher.
-- `/strategy`: saved plan first; month preparation happens in the background. A first-entry
-  welcome is a three-card, skippable dialog; dismissal is stored in the account.
+- `/strategy`: saved plan first; month preparation happens in the background. The saved plan has
+  one current next action. The three-card tour opens only through `?tour=1` from the account;
+  dismissal is stored in the account.
 - `/integrations`: actual connections UI. `/design/connections` is a guided UX prototype;
   account wiring and full source readiness are still #44 and #45. OAuth, choosing an asset,
   useful data arriving and publication rights are different states.
@@ -53,8 +59,10 @@ the mapped routes and conditions. The board is excluded from search indexing.
   and receiving an event signal are distinct. Each business chooses its own assets.
 - WhatsApp: short-link clicks, not messages sent or qualified inquiries. Google Business
   Profile: conditional owner checklist confirmation; API work remains #51.
-- Foundations: three photos/assets, three featured items and a voice check currently gate
-  post writing. This may be excessive for a knowledge-led service business.
+- Foundations: services require one uploaded asset, one selected service and a saved
+  style answer. Products/both/unknown retain three assets and three selected items.
+  Explicitly saved unknown baseline answers count as answered, never as measured figures.
+  Connections follow the saved plan; old accounts without a plan keep their fallback.
 - Posts: editing, approval, manual publishing kit, then owner report of publication.
   `api/app/services/publish.py` does not call a social publishing API. A reported publication
   is not independent provider confirmation and does not prove a marketing result.
@@ -98,3 +106,37 @@ from the review examples.
 
 The first service wording correction is tracked in #67. The real customer pilot and its
 remaining identity/asset/measurement requirements are tracked in #66.
+
+## Shorter pre-signup proposal (#69)
+
+`/design/flows/shorter` is a local review diagram, not a changed `/start` implementation.
+Five input screens lead to the full plan: business, customers/uniqueness, links, baseline
+and budget/capacity. A provisional direction appears after the first three inputs.
+The growth recommendation and numeric working target come only after their inputs exist.
+Competitors, seasonal context and previous marketing are proposed after signup, alongside
+the decision they inform. Every answer remains in the future planner contract; implementation
+requires dependency changes and regression checks first. Approval of the preview is tracked
+in #69 before adopting it.
+
+## Repeatable real-screen captures
+
+Capture through the normal local demo UI using the authorised CUA browser. Do not reuse
+a customer session, tokens, or private analytics. Start `/preview`, select the bakery and
+choose “לראות את התוכנית”; then capture the actual routes below after their visible data
+is settled. The atlas lives in `web/public/flow-screens/` and the node mapping in
+`web/lib/flowScreens.ts`. Use the browser's screenshot API and write the returned PNG bytes
+to those paths; do not manipulate the DOM, authentication or storage to fabricate a state.
+
+Routes: `/`, `/login`, `/signup`, `/strategy?welcome=1` (plan), `/strategy?tour=1`
+(optional welcome), `/dashboard`, `/integrations`, `/baseline`, `/featured`, `/assets`,
+`/voice`, `/posts`, `/performance`, `/decisions`, `/strategy`, `/billing`. Capture the
+editor by opening a demo post for review; do not approve or publish. Clear the local demo
+through its visible exit control afterward.
+
+Use one consistent desktop viewport and real app styling. Wait for the relevant heading
+and populated state, then inspect the result: no loading skeleton, missing font or mid-enter
+fade. Never label a generic route capture as an OAuth callback, a generated post or a
+confirmed publication. Refresh affected captures whenever route UI changes and record the
+date and synthetic persona in the mapping. The board displays exact unsupported states as
+sketches until they have an authorised, reproducible capture. This recipe uses CUA rather
+than a parallel headless browser driver to respect the current browser-control instructions.

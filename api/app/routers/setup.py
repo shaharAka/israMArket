@@ -87,7 +87,7 @@ def _item(key: str, title: str, why: str, action_href: str, action_label: str, d
 
 
 def _setup_items(facts: journey.Facts) -> list[dict]:
-    return [
+    items = [
         _item(
             "scan",
             title="קריאת האתר",
@@ -114,11 +114,11 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
         ),
         _item(
             "quarter",
-            title="התוכנית של הרבעון",
-            why="כך כל חודש הוא צעד לקראת יעד גדול, ולא רק רשימת פוסטים.",
+            title="הכיוון של התוכנית",
+            why="הכיוון שמנחה את צעדי העבודה, ומשתנה לפי מה שלומדים.",
             action_href="/plan",
             action_label="לבנות את התוכנית",
-            done=facts.long_horizon,
+            done=facts.long_horizon or bool(facts.quarter_plan),
         ),
         _item(
             "audiences",
@@ -153,6 +153,17 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
             done="meta" in facts.connected,
         ),
     ]
+
+    # The saved plan carries the sources it actually needs. Old accounts keep their
+    # familiar fallback; an entered website or profile never stands in for consent.
+    keys = {str(item.get("key")) for item in facts.integrations_checklist}
+    if not keys and facts.quarter_plan:
+        keys = {str(item.get("key")) for item in facts.quarter_plan.get("integrations", []) if isinstance(item, dict)}
+    if facts.quarter_plan or facts.integrations_checklist:
+        items = [item for item in items if item["key"] not in {"google", "instagram"}
+                 or item["key"] == "google" and "ga4" in keys
+                 or item["key"] == "instagram" and bool(keys & {"meta_business", "instagram_insights", "facebook_insights", "meta_pixel"})]
+    return items
 
 
 def _running_items(facts: journey.Facts) -> list[dict]:

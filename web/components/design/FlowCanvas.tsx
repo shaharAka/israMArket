@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import {
-  Background, BackgroundVariant, Controls, Handle, MarkerType, MiniMap, Panel,
-  Position, ReactFlow, ReactFlowProvider, useNodesState, useReactFlow,
+  Background, BackgroundVariant, Controls, Handle, MarkerType, MiniMap,
+  Position, ReactFlow, ReactFlowProvider, useNodesInitialized, useNodesState, useReactFlow,
   type Edge, type Node, type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -12,6 +12,8 @@ import { emptyFlow } from "@/lib/draft";
 import { isStepId, nextStepLabel } from "@/components/start/script";
 import { FLOW_NODES, PERSONAS, nextFor, nodesFor, type FlowNode, type FlowPersona, type FlowPhase } from "@/lib/uxFlows";
 import styles from "./flow-canvas.module.css";
+import Image from "next/image";
+import { flowCapture } from "@/lib/flowScreens";
 
 type ScreenData = { flow: FlowNode; persona: FlowPersona; external: boolean; inspect: (id: string) => void };
 type ScreenNode = Node<ScreenData, "screen">;
@@ -70,19 +72,27 @@ export function buildFlowGraph(phase: FlowPhase, branch: FlowPersona, persona: F
   return {nodes,edges};
 }
 
-export function FlowCanvas(props: {phase:FlowPhase;branch:FlowPersona;persona:FlowPersona;selected:string;inspect:(id:string)=>void}) {
+export function FlowCanvas(props: {phase:FlowPhase;branch:FlowPersona;persona:FlowPersona;selected:string;chapter:string;inspect:(id:string)=>void}) {
   return <ReactFlowProvider><CanvasGraph {...props} /></ReactFlowProvider>;
 }
 
-function CanvasGraph({phase,branch,persona,selected,inspect}:{phase:FlowPhase;branch:FlowPersona;persona:FlowPersona;selected:string;inspect:(id:string)=>void}) {
+function CanvasGraph({phase,branch,persona,selected,chapter,inspect}:{phase:FlowPhase;branch:FlowPersona;persona:FlowPersona;selected:string;chapter:string;inspect:(id:string)=>void}) {
   const graph = useMemo(()=>buildFlowGraph(phase,branch,persona,inspect),[phase,branch,persona,inspect]);
   const [nodes,,onNodesChange] = useNodesState<ScreenNode>(graph.nodes);
-  const flow = useReactFlow();
-  const groups = [...new Set(nodesFor(branch,phase).map(n=>n.group))];
+  const flow = useReactFlow<ScreenNode>();
+  const initialized = useNodesInitialized();
+  const opening = nodesFor(branch,phase).slice(0,4).map(n=>n.id);
+  const focused = nodes.filter(n=>chapter === "all" || (chapter === "opening" ? opening.includes(n.id) : n.data.flow.group===chapter));
+  useEffect(() => {
+    if (!initialized) return;
+    const current = flow.getNodes();
+    const ids = nodesFor(branch,phase).slice(0,4).map(n=>n.id);
+    void flow.fitView({nodes: chapter === "all" ? current : current.filter(n=>chapter === "opening" ? ids.includes(n.id) : n.data.flow.group===chapter),padding:.18,maxZoom:1,duration:0});
+  }, [chapter, flow, initialized, branch, phase]);
   return <div className={styles.canvas} dir="ltr" aria-label="לוח מסכים שאפשר לגרור ולהגדיל">
     <ReactFlow nodes={nodes.map(n=>({...n,selected:n.id===selected}))} edges={graph.edges} nodeTypes={NODE_TYPES}
       onNodesChange={onNodesChange} onNodeClick={(_,node)=>inspect(node.id)}
-      fitView fitViewOptions={{padding:.15,minZoom:.25,maxZoom:.8}} minZoom={.15} maxZoom={1.6}
+      fitView fitViewOptions={{nodes:focused,padding:.18,maxZoom:1}} minZoom={.15} maxZoom={1.6}
       nodesConnectable={false} edgesReconnectable={false} deleteKeyCode={null}
       panOnScroll zoomOnScroll={false} zoomOnPinch zoomActivationKeyCode="Meta"
       ariaLabelConfig={{"controls.ariaLabel":"הזזה והגדלה של הלוח","controls.zoomIn.ariaLabel":"להגדיל את המסכים","controls.zoomOut.ariaLabel":"להקטין את המסכים","controls.fitView.ariaLabel":"להציג את כל המסלול","minimap.ariaLabel":"מפת התמצאות במסלול"}}
@@ -90,28 +100,24 @@ function CanvasGraph({phase,branch,persona,selected,inspect}:{phase:FlowPhase;br
       <Background variant={BackgroundVariant.Dots} gap={24} size={1} color="var(--rule-dark)" />
       <Controls position="bottom-right" showInteractive={false} />
       <MiniMap position="bottom-left" pannable zoomable nodeColor={n=>n.selected ? "var(--primary)" : "var(--rule-dark)"} maskColor="color-mix(in srgb, var(--canvas) 70%, transparent)" maskStrokeColor="var(--ink-muted)" />
-      <Panel position="top-right" className={styles.tools}><div dir="rtl"><label>להתמקד ב<select aria-label="להתמקד בחלק במסלול" defaultValue="all" onChange={e=>{
-        const matching = e.target.value === "all" ? nodes : nodes.filter(n=>n.data.flow.group===e.target.value);
-        void flow.fitView({nodes:matching,padding:.25,maxZoom:1,duration:0});
-      }}><option value="all">כל המסלול</option>{groups.map(g=><option key={g} value={g}>{g}</option>)}</select></label><button type="button" onClick={()=>void flow.fitView({nodes:[{id:selected}],padding:.4,maxZoom:1,duration:0})}>למסך הנבחר</button></div></Panel>
-      <Panel position="top-left" className={styles.hint}><span dir="rtl">גרירה להזזה · + / − להגדלה<br />מסך לפתיחה · קו מקווקו: הצעה</span></Panel>
     </ReactFlow>
   </div>;
 }
 
 function ScreenThumbnail({data,selected}:NodeProps<ScreenNode>) {
   const node=data.flow;
+  const capture=flowCapture(node.id);
   const reviewFlow = emptyFlow();
   reviewFlow.draft.business_model = PERSONAS[data.persona].model;
   const action = node.action.includes("לשלב הבא בדוגמה") && isStepId(node.id) ? nextStepLabel(node.id,reviewFlow) ?? node.action : node.action;
   return <div className={styles.screenNode} dir="rtl" data-selected={selected || undefined} data-proposed={node.proposed || undefined}>
     <div className={`screen-drag-handle ${styles.nodeTitle}`}><strong>{node.title}</strong><span>{data.external ? "המשך בחלק אחר" : node.proposed ? "הצעה" : node.group}</span></div>
     <button type="button" className={`nodrag ${styles.thumbnail}`} aria-label={`לפתוח מסך ${node.title}`} onClick={e=>{e.stopPropagation();data.inspect(node.id);}}>
-      <div className={styles.miniHeader}><BrandMark /><span>{PERSONAS[data.persona].name}</span><small>{node.route.split("?")[0]}</small></div>
+      {capture ? <Image src={capture} alt={`צילום ${node.title} בדמו`} width={1170} height={615} className={styles.capture} unoptimized/> : <><div className={styles.miniHeader}><BrandMark /><span>{PERSONAS[data.persona].name}</span><small>{node.route.split("?")[0]}</small></div>
       <h4>{node.headline}</h4><ThumbnailContent node={node} persona={data.persona} />
-      <span className={styles.miniAction}>{action}</span>
+      <span className={styles.miniAction}>{action}</span></>}
     </button>
-    <small className={styles.caption}>סקיצת מסך · פתיחה לתצוגה גדולה</small>
+    <small className={styles.caption}>{capture ? "צילום העמוד בדמו · פתיחה לתצוגה גדולה" : "סקיצת מצב · פתיחה לתצוגה גדולה"}</small>
     {[Position.Left,Position.Right,Position.Top,Position.Bottom].map(side=><span key={side}><Handle type="target" id={`to-${side}`} position={side} isConnectable={false} /><Handle type="source" id={`from-${side}`} position={side} isConnectable={false} /></span>)}
   </div>;
 }
