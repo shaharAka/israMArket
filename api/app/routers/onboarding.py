@@ -599,6 +599,7 @@ def _first_month_payload(db: Session, business: Business, stored: dict, *, with_
         # the direction + idea the owner chose, which only the first month is built on.
         "owner_context": stored.get("owner_context") or None,
         "first_month_seed": seed_from_stored(stored) if with_seed else None,
+        "plan_edit": stored.get("plan_edit") or None,
         # Revision 8: what the owner chose to feature (week 2). [] until they choose.
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst. Empty until a

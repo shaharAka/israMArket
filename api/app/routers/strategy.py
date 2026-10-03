@@ -1,6 +1,7 @@
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import ValidationError
 from sqlalchemy.orm import Session, object_session
 
 from app.db import get_db
@@ -28,6 +29,7 @@ from app.services import (
     photo_analysis,
     photo_choice,
     post_rewrite,
+    plan_editing,
 )
 from app.services.assets import (
     asset_catalogue,
@@ -77,6 +79,7 @@ def serialize_strategy(
     usp = loads(strategy.usp_json, {})
     payload = {
         "id": strategy.id,
+        "plan_revision": plan_editing.revision(business),
         **gregorian_month_meta(strategy.year, strategy.month),
         "year": strategy.year,
         "month": strategy.month,
@@ -475,6 +478,25 @@ def quarter_plan(business: Business = Depends(get_business)) -> dict:
         "integrations_checklist": stored.get("integrations_checklist") or [],
         "long_horizon_plan": stored.get("long_horizon_plan"),
     }
+
+
+def _editable_strategy(db: Session, business: Business) -> Strategy | None:
+    today = date.today()
+    return _strategy_for_month(db, business, today.year, today.month) or _newest_strategy(db, business)
+
+
+@router.get("/strategy/edit")
+def editable_plan(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    return plan_editing.view(db, business, _editable_strategy(db, business))
+
+
+@router.patch("/strategy/edit")
+def save_plan_edit(body: dict, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    try:
+        edit = plan_editing.EditIn.model_validate(body)
+    except ValidationError:
+        raise HTTPException(422, "מלאו כיוון וקהל. הכיוון וההנחות יכולים להכיל עד 300 תווים, והקהל עד 160. אפשר להוסיף עד 4 הנחות.")
+    return plan_editing.save(db, business, _editable_strategy(db, business), edit)
 
 
 @router.get("/strategy/current")
@@ -1085,6 +1107,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         # What the owner told us at /start (seasons, what they tried...). Absent for
         # businesses onboarded before v2. The first-month seed deliberately stays out.
         "owner_context": stored.get("owner_context") or None,
+        "plan_edit": stored.get("plan_edit") or None,
         # Revision 8: the products/services the owner chose to feature, when they have.
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst ("" when none).

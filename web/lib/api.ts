@@ -2149,6 +2149,7 @@ function demoCalendar(year: number, month: number): CalendarPayload {
 // The explicit demo includes the same stored-plan artifact created by /start.
 // Fixtures load lazily; real accounts never run this builder.
 let demoPlanReady: Promise<void> | null = null;
+let demoPlanSavedAt: string | null = null;
 async function ensureDemoPlan() {
   if (DEMO_BUSINESS.quarter_plan) return;
   demoPlanReady ??= (async () => {
@@ -3058,6 +3059,35 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   }
   if (path === "/onboarding/generate/status") return DEMO_GENERATION_DONE as T;
   if (path === "/onboarding/posts/start" && method === "POST") return { ...DEMO_GENERATION_DONE, kind: "posts" } as T;
+  if (path === "/strategy/edit") {
+    await ensureDemoPlan();
+    const plan = DEMO_BUSINESS.quarter_plan!;
+    const revision = DEMO_STRATEGY.plan_revision ?? 0;
+    const version = String(revision).padStart(64, "0");
+    const fields: PlanEditFields = {
+      direction: plan.strategy.one_liner_he,
+      audience: plan.audiences?.find(a => a.role === "primary")?.name ?? DEMO_AUDIENCES[0]?.name ?? "",
+      assumptions: plan.assumptions.map(a => ({ ...a })),
+    };
+    if (method === "PATCH") {
+      const body = JSON.parse(String(options.body || "{}")) as PlanEditFields & { version: string };
+      if (body.version !== version) throw new ApiError("התוכנית עודכנה בינתיים. בדקו את העדכון לפני שמירה.", 409);
+      const updated = { direction: body.direction.trim(), audience: body.audience.trim(), assumptions: body.assumptions.map(a => ({ bet_he: a.bet_he.trim(), if_wrong_he: a.if_wrong_he.trim() })) };
+      if (!updated.direction || !updated.audience || updated.direction.length > 300 || updated.audience.length > 160 || updated.assumptions.length > 4 || updated.assumptions.some(a => !a.bet_he || a.bet_he.length > 300 || a.if_wrong_he.length > 300)) throw new ApiError("מלאו כיוון וקהל וקצרו שדות שחורגים מהמגבלה.", 422);
+      if (JSON.stringify(fields) !== JSON.stringify(updated)) {
+        plan.strategy = { ...plan.strategy, one_liner_he: updated.direction, angle_he: updated.direction !== fields.direction ? "" : plan.strategy.angle_he, from_insight: updated.direction !== fields.direction ? undefined : plan.strategy.from_insight, why_he: "התוכנית עודכנה על ידכם.", based_on: "עדכון שלכם" };
+        plan.audiences = [{ name: updated.audience, role: "primary", message_he: "" }, ...(plan.audiences ?? []).filter(a => a.role !== "primary").slice(0, 3)];
+        plan.assumptions = updated.assumptions;
+        DEMO_STRATEGY.usp.growth_hypothesis = updated.direction;
+        DEMO_STRATEGY.roadmap.summary = updated.direction;
+        for (const monthly of [DEMO_STRATEGY.monthly_horizon_plan, DEMO_STRATEGY.roadmap.monthly_horizon_plan]) if (monthly) monthly.hypothesis = updated.direction;
+        DEMO_STRATEGY.plan_revision = revision + 1;
+        demoPlanSavedAt = new Date().toISOString();
+      }
+      return demoResolve<T>("/strategy/edit");
+    }
+    return { business_id: DEMO_BUSINESS.id, strategy_id: DEMO_STRATEGY.id, available: true, blocked: false, version, revision, saved_at: demoPlanSavedAt, fields } as T;
+  }
   if (path === "/strategy/current") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
@@ -3962,6 +3992,9 @@ export const endpoints = {
       body: JSON.stringify(week ? { week } : {}),
     }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
+  editablePlan: () => api<PlanEditPayload>("/strategy/edit"),
+  savePlanEdit: (version: string, fields: PlanEditFields) =>
+    api<PlanEditPayload>("/strategy/edit", { method: "PATCH", body: JSON.stringify({ version, ...fields }) }),
   generatePostImage: (
     post_index: number,
     options: {
@@ -4887,8 +4920,25 @@ export type Diagnostics = {
   capacity_constraint?: string;
 };
 
+export type PlanEditFields = {
+  direction: string;
+  audience: string;
+  assumptions: { bet_he: string; if_wrong_he: string }[];
+};
+export type PlanEditPayload = {
+  business_id: number;
+  strategy_id: number | null;
+  available: boolean;
+  blocked: boolean;
+  version: string;
+  revision: number;
+  saved_at: string | null;
+  fields: PlanEditFields;
+};
+
 export type StrategyPayload = {
   id: number;
+  plan_revision?: number;
   calendar_kind: "gregorian";
   year: number;
   month: number;
