@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
+import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { HypothesisStatusLine, reviewByKey, reviewFor } from "@/components/plan/HypothesisStatusLine";
 import { SegmentedControl, TransitionPanel } from "@/components/design/Controls";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -141,6 +142,7 @@ export default function StrategyPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
+        {loaded ? <RecommendationReview planId={strategy?.id} /> : null}
         <SectionHeader
           section="plan"
           eyebrow={null}

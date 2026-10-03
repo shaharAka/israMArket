@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { PostEditor } from "@/components/PostEditor";
+import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
@@ -73,6 +74,10 @@ function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (cale
 function PostsWorkspace() {
   const params = useSearchParams();
   const location = readLocation(params);
+  const reviewing = params.has("recommendation");
+  const reviewPlan = params.get("plan");
+  const reviewUid = params.get("post_uid");
+  const reviewVisit = useRef(reviewing);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
   const [noMonth, setNoMonth] = useState(false);
@@ -95,12 +100,13 @@ function PostsWorkspace() {
 
   useEffect(() => {
     let active = true;
+    if (reviewing) reviewVisit.current = true;
     async function loadPosts() {
       try {
         const current = await endpoints.strategy();
         if (!active) return;
         setStrategy(current);
-        if (current.roadmap.posts.some((post) => !post.image_url)) {
+        if (!reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
           const prepared = await endpoints.generateAllPostImages();
           if (active) setStrategy(prepared.strategy);
           if (prepared.errors?.length) {
@@ -120,7 +126,7 @@ function PostsWorkspace() {
     return () => {
       active = false;
     };
-  }, [reload]);
+  }, [reload, reviewing]);
 
   const signature = queueSignature(strategy);
 
@@ -143,8 +149,12 @@ function PostsWorkspace() {
   }, [signature]);
 
   const posts = strategy?.roadmap?.posts ?? [];
-  const openIndex =
-    location.post !== null && location.post < posts.length ? location.post : null;
+  const matching = reviewUid ? posts.map((post, index) => post.uid === reviewUid ? index : -1).filter(index => index >= 0) : [];
+  const reviewPost = matching.length === 1 ? posts[matching[0]] : null;
+  const guardedIndex = reviewing
+    ? reviewPlan === String(strategy?.id) && reviewPost && !reviewPost.published_at && !reviewPost.published_url ? matching[0] : null
+    : location.post;
+  const openIndex = guardedIndex !== null && guardedIndex < posts.length ? guardedIndex : null;
 
   // Coming back to the feed returns to the row the owner tapped, not the top of the list.
   const editorOpen = openIndex !== null;
@@ -187,16 +197,19 @@ function PostsWorkspace() {
 
   if (strategy && openIndex !== null) {
     return (
-      <PostEditor
-        key={`${strategy.id}-${openIndex}`}
-        posts={posts}
-        strategy={strategy}
-        brandLanguage={strategy.brand_language}
-        initialIndex={openIndex}
-        onStrategyUpdated={setStrategy}
-        onNavigate={moveEditor}
-        onClose={closeEditor}
-      />
+      <div>
+        <RecommendationReview planId={strategy.id} postUid={posts[openIndex].uid} />
+        <PostEditor
+          key={`${strategy.id}-${openIndex}`}
+          posts={posts}
+          strategy={strategy}
+          brandLanguage={strategy.brand_language}
+          initialIndex={openIndex}
+          onStrategyUpdated={setStrategy}
+          onNavigate={moveEditor}
+          onClose={closeEditor}
+        />
+      </div>
     );
   }
 
@@ -230,6 +243,7 @@ function PostsWorkspace() {
     // The month view needs the width; a list of rows does not, and at 1100px a row's title
     // and its arrow ended up a screen apart.
     <div className={`mx-auto ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
+      <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
         <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
           כלי הביצוע של התוכנית

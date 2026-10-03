@@ -66,7 +66,7 @@ the mapped routes and conditions. The board is excluded from search indexing.
 - Posts: editing, approval, manual publishing kit, then owner report of publication.
   `api/app/services/publish.py` does not call a social publishing API. A reported publication
   is not independent provider confirmation and does not prove a marketing result.
-- Results: `/performance` and source snapshots; approachable findings remain #46. Decisions
+- Results: `/performance` and the shared `FindingCard` in `/recommendations`: dated source facts, possible explanations and small experiments. Review links validate the current plan and post UID; published posts return to plan review for the next post. Live multi-provider proof and Claude’s UX pass remain #46. Decisions
   and a next-month loop exist; complete plan editing remains #48. Billing is a separate branch.
 
 ## Measurement proposal, not installed instrumentation

@@ -30,3 +30,6 @@ class AnalysisTest(unittest.TestCase):
         self.assertIn("הזמנות מאומתות", prompt)
         self.assertIn("אין לטעון להצלחה במכירות", prompt)
         self.assertIn("החזירו רשימה ריקה", prompt)
+        self.assertIn("post_uid מדויק", prompt)
+        self.assertIn("analysis_basis", prompt)
+        self.assertIn("הסבר אפשרי בלבד", prompt)
