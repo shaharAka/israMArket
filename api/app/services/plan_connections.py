@@ -70,7 +70,7 @@ def state(facts, provider: str, *, available: bool = True) -> dict:
                            _read(sections.get("tracking") or {}, {"receiving"})))
     done = bool(item.get("status") == "connected" and item.get("granted") and read.get("status") in {"ready", "partial", "empty"}
                 and checks and all(checks))
-    why = read.get("note_he") or ("נראה מה הביאו המודעות, כדי לדייק את התקציב והפעולה הבאה." if ads else
+    why = read.get("note_he") or ("נלמד מה המודעות הביאו ונבחר את הפעולה הבאה." if ads else
                                   "נלמד מה עורר עניין בפוסטים, כדי לדייק את הפעולה הבאה בתוכנית.")
     if facebook:
         why += " מדידת הפוסטים בעמוד הפייסבוק עדיין לא זמינה כאן."
