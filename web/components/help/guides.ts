@@ -22,6 +22,8 @@
 export type HelpTopic =
   | "google_analytics"
   | "instagram_business"
+  | "facebook_data"
+  | "tiktok_data"
   | "instagram"
   | "facebook"
   | "tiktok"
@@ -34,6 +36,8 @@ export type Device = "phone" | "computer";
 
 export type GuideBlock = {
   title: string;
+  /** Troubleshooting stays one tap away instead of competing with the main steps. */
+  disclosure?: boolean;
   text?: string;
   /** Steps that are the same everywhere. */
   steps?: string[];
@@ -200,7 +204,9 @@ const googleAnalytics: Guide = {
 };
 
 /*
- * instagram_business — checked 2026-09 against:
+ * instagram_business — requirements rechecked 2026-10-04 in Meta's get-started and
+ * Insights documentation, plus our current read-only integration. Menu-path references
+ * below were checked 2026-09; labels may differ by app version.
  *   Switch to a professional account (app: Profile › More/☰ › Settings and activity › For
  *   professionals › Account type and tools › Switch to professional account; computer:
  *   More › Settings › same):                                  https://help.instagram.com/502981923235522
@@ -223,79 +229,110 @@ const googleAnalytics: Guide = {
  */
 const instagramBusiness: Guide = {
   topic: "instagram_business",
-  title: "מה צריך כדי לחבר את האינסטגרם",
-  short:
-    "צריך חשבון אינסטגרם מקצועי (עסק או יוצר תוכן) שמקושר לדף פייסבוק, ואז נכנסים אצלנו עם חשבון הפייסבוק שמנהל את הדף.",
+  title: "איך מחברים את נתוני האינסטגרם",
+  short: "במסלול שלנו מתחברים דרך פייסבוק. צריך אינסטגרם מקצועי שמקושר לדף של העסק.",
   minutes: 5,
   blocks: [
     {
-      title: "1. לעבור לחשבון מקצועי",
-      text: "זה בחינם, ואפשר לחזור אחורה מתי שרוצים.",
-      phone: [
-        "באפליקציית אינסטגרם, לחצו על תמונת הפרופיל בתחתית המסך.",
-        "לחצו על התפריט ☰ למעלה, ואז **הגדרות ופעילות** (Settings and activity).",
-        "תחת **For professionals**, לחצו **סוג חשבון וכלים** (Account type and tools) › **מעבר לחשבון מקצועי** (Switch to professional account).",
-        "בחרו **עסק** (Business) או **יוצר תוכן** (Creator). שניהם מתאימים לנו.",
-        "כשמציעים לחבר לפייסבוק, אפשר לחבר כבר עכשיו, או לדלג (Skip) ולעשות את זה בשלב הבא.",
-      ],
-      computer: [
-        "ב-instagram.com לחצו **עוד** (More) › **הגדרות** (Settings).",
-        "תחת **For professionals**, לחצו **Account type and tools** › **Switch to professional account**.",
-        "בחרו **Business** (עסק) או **Creator** (יוצר תוכן), ואז **Next**. שניהם מתאימים לנו.",
-        "בחרו קטגוריה ולחצו **Done**.",
-      ],
-      note: "חשבון פרטי יהפוך לציבורי. השמות בעברית באפליקציה יכולים להיות מעט שונים.",
-    },
-    {
-      title: "2. לקשר את האינסטגרם לדף פייסבוק",
-      text: "זו דרישה של פייסבוק. אין לכם דף? אפשר לפתוח אחד בחינם באותו תהליך.",
-      phone: [
-        "באינסטגרם, בפרופיל, לחצו **עריכת פרופיל** (Edit profile).",
-        "גללו ל-**Public business information** (בחשבון עסק) או **Profile information** (בחשבון יוצר), ולחצו **Page** › **Connect or create**.",
-        "היכנסו לפייסבוק, בחרו את הדף ולחצו **Connect**. אין דף? לחצו **Create a new Facebook Page**.",
-      ],
-      computer: [
-        "בפייסבוק, לחצו על תמונת הפרופיל למעלה › **See all profiles**, ובחרו את הדף.",
-        "לחצו על תמונת הדף › **Settings & privacy** › **Settings**.",
-        "תחת **Permissions**, לחצו **Linked accounts** › **Instagram** › **Connect account**.",
-      ],
-      note: "צריך שליטה מלאה בדף (Facebook access עם full control). מישהו אחר פתח את הדף? בקשו ממנו.",
-    },
-    {
-      title: "3. לחבר אצלנו",
+      title: "כשהחשבונות כבר מוכנים",
       steps: [
-        "בעמוד החיבורים לוחצים **לחבר את אינסטגרם ופייסבוק**.",
-        "נכנסים עם חשבון הפייסבוק שמנהל את הדף.",
-        "פייסבוק שואל לאילו דפים וחשבונות לתת גישה. סמנו את הדף של העסק ואת האינסטגרם שלו.",
-        "חוזרים אלינו ובוחרים את הדף. ליד דף שמקושר לאינסטגרם כתוב ״עם אינסטגרם מקושר״.",
+        "בחיבורים, לחצו **לחבר את פייסבוק ואינסטגרם**. היכנסו עם חשבון הפייסבוק האישי שמנהל את דף העסק.",
+        "בחלון של פייסבוק, בחרו את הדף ואת האינסטגרם של העסק ואשרו את הגישה.",
+        "חזרו אלינו ובחרו את הדף. נבדוק אם הגיעו נתונים, ומשם נציע מה לשפר בתוכנית ובפוסטים.",
       ],
+      note: "אישור הגישה לא מפרסם פוסטים. קישור לפרופיל לבדו לא נותן גישה לנתונים.",
     },
     {
-      title: "הופיע ״לא מצאנו דפי פייסבוק בחשבון שחיברתם״?",
+      title: "האינסטגרם אישי או פרטי?",
+      disclosure: true,
+      text: "צריך חשבון מקצועי: עסק (Business) או יוצר תוכן (Creator). שניהם מתאימים.",
+      steps: [
+        "באינסטגרם, פתחו את הפרופיל ואת התפריט. חפשו **סוג חשבון וכלים** (Account type and tools), ואז **מעבר לחשבון מקצועי** (Switch to professional account).",
+        "בחרו עסק או יוצר תוכן. אם מוצע לחבר דף פייסבוק, בחרו את הדף של העסק.",
+      ],
+      note: "המעבר בחינם, אבל החשבון יהפוך לציבורי. השמות בתפריט משתנים בין גרסאות. רוצים לשמור עליו פרטי? אפשר להמשיך בתוכנית בלי החיבור.",
+    },
+    {
+      title: "הדף מופיע בלי אינסטגרם?",
+      disclosure: true,
+      steps: [
+        "בפייסבוק עברו לפרופיל של הדף. בהגדרות, פתחו **חשבונות מקושרים** (Linked accounts) › **Instagram** וחברו את חשבון העסק.",
+        "חזרו לחיבורים ופתחו **ניהול החיבור** כדי לטעון שוב את הדפים. אם עדיין לא חיברתם, התחילו בחיבור רגיל.",
+      ],
+      note: "מי שמנהל את הדף יכול לעזור בקישור החשבונות. אין לכם דף? אפשר ליצור דף עסקי בפייסבוק ולחבר אותו, או להמשיך בתוכנית בינתיים.",
+    },
+    {
+      title: "לא מצאתם את הדף או שאין נתונים?",
+      disclosure: true,
       cases: [
-        { label: "נכנסתם עם חשבון אחר", text: "התחברו שוב עם חשבון הפייסבוק שיש לו גישה לדף." },
-        {
-          label: "לא סימנתם את הדף בחלון של פייסבוק",
-          text: "בפייסבוק במחשב: תמונת הפרופיל › **Settings & privacy** › **Settings** › **Business integrations**. לחצו **View and edit** וסמנו את הדף, או **Remove** וחברו אצלנו מחדש.",
-        },
-        { label: "אין לכם גישה לדף", text: "מי שפתח את הדף צריך לתת לכם **Facebook access** עם שליטה מלאה." },
-        { label: "הדף מופיע בלי ״עם אינסטגרם מקושר״", text: "האינסטגרם עוד לא מקושר לדף. חזרו לשלב 2." },
+        { label: "הדף חסר", text: "נסו את חשבון הפייסבוק שמנהל אותו. ודאו שבחרתם את הדף בחלון האישור. אם הוא עדיין חסר, בקשו ממנהל הדף לבדוק את הגישה שלכם." },
+        { label: "הדף נמצא, אבל נתוני האינסטגרם חסרים", text: "בדקו שהאינסטגרם מקצועי ומקושר לדף הנכון. ודאו שאישרתם גם את הגישה לאינסטגרם בחלון החיבור." },
+        { label: "הכול מחובר, אבל מספרים מסוימים חסרים", text: "פייסבוק לא מחזירה כל נתון לכל חשבון או פוסט. נסמן מה לא נמדד. נתון חסר אינו אפס." },
+        { label: "החיבור עדיין לא זמין", text: "אם אנחנו מציגים שהחיבור עדיין לא זמין, אין צורך לשנות חשבון או הרשאות. אפשר להמשיך בתוכנית ולחבר כשיהיה זמין." },
       ],
     },
   ],
   stuck: {
-    title: "תקועים? שלחו את זה למי שמנהל לכם את הדף בפייסבוק",
+    title: TO_SOCIAL_MANAGER,
     message: [
-      "היי, אנחנו מחברים את האינסטגרם של העסק לאפליקציית השיווק שלנו, והיא צריכה:",
-      "1. שהאינסטגרם יהיה חשבון מקצועי (Business או Creator)",
-      "2. שהוא יהיה מקושר לדף הפייסבוק של העסק",
-      "3. שלחשבון הפייסבוק שלי תהיה גישה מלאה לדף (Facebook access, full control)",
-      "אפשר לעזור עם זה? תודה!",
+      "היי, אנחנו רוצים לחבר את נתוני האינסטגרם של העסק לישראמארקט.",
+      "אפשר לבדוק שהחשבון מקצועי (Business או Creator), מקושר לדף הפייסבוק הנכון, ושיש לחשבון הפייסבוק שלי גישה לקריאת נתוני הדף והאינסטגרם?",
+      "אין צורך לשלוח סיסמה. תודה!",
     ].join("\n"),
     copiedNote: COPIED,
   },
-  why: "פייסבוק נותנת את נתוני האינסטגרם רק לחשבון מקצועי שמקושר לדף. בלי זה לא נדע אילו פוסטים הצליחו.",
-  source: { label: "ההסבר של אינסטגרם: מעבר לחשבון מקצועי", url: "https://help.instagram.com/502981923235522" },
+  why: "נקרא את הנתונים הזמינים על הפוסטים, למשל אנשים שראו, שמירות ותגובות. הם יעזרו לדייק את התוכנית; הם לא מוכיחים כמה לקוחות קנו.",
+  source: { label: "ההסבר של אינסטגרם: חשבון מקצועי", url: "https://help.instagram.com/502981923235522" },
+};
+
+/*
+ * facebook_data — checked 2026-10-04 against Meta's official Facebook Login get-started
+ * guide and Insights guide, and api/app/services/meta.py. Our current ingestion reads
+ * linked Instagram media/account metrics plus Page name/fan_count; it does not ingest
+ * Facebook post insights. Do not promise those reports or require full-control access
+ * merely to read data. Additional Page/account access can be needed to link accounts.
+ * https://developers.facebook.com/documentation/instagram-platform/instagram-api-with-facebook-login/get-started
+ * https://developers.facebook.com/documentation/instagram-platform/insights
+ */
+const facebookData: Guide = {
+  topic: "facebook_data",
+  title: "איך מחברים את דף הפייסבוק",
+  short: "מתחברים עם החשבון שמנהל את דף העסק. כרגע הניתוח אצלנו מתמקד באינסטגרם המקושר; עדיין אין דוח על פוסטים בפייסבוק.",
+  minutes: 3,
+  blocks: [
+    {
+      title: "לחבר את הדף הנכון",
+      steps: [
+        "בחיבורים, לחצו **לחבר את פייסבוק ואינסטגרם** והיכנסו לפייסבוק עם החשבון שמנהל את הדף.",
+        "בחלון האישור, בחרו את דף העסק. אם מקושר אליו אינסטגרם, בחרו גם אותו.",
+        "חזרו אלינו ובחרו את הדף מהרשימה. נציג בנפרד אם הגיעו נתונים שאפשר להשתמש בהם.",
+      ],
+      note: "קישור לדף לבדו לא נותן גישה לנתונים. החיבור לא מוסר לנו את הסיסמה שלכם ולא מפרסם פוסט.",
+    },
+    {
+      title: "מה אפשר למדוד כרגע?",
+      disclosure: true,
+      text: "החיבור מציג פרטים בסיסיים על דף הפייסבוק ואת נתוני האינסטגרם המקצועי שמקושר אליו. עדיין אין אצלנו דוח על ביצועי הפוסטים בפייסבוק. בלי אינסטגרם מקושר, החיבור לבדו לא מספיק לניתוח הפוסטים.",
+      note: "פוסטים בפרופיל פייסבוק אישי ופעילות בקבוצות אינם חלק מהחיבור הזה.",
+    },
+    {
+      title: "הדף לא מופיע?",
+      disclosure: true,
+      cases: [
+        { label: "נכנסתם עם חשבון אחר", text: "חברו שוב עם החשבון שמנהל את דף העסק." },
+        { label: "לא בחרתם את הדף בחלון האישור", text: "פתחו את הגדרות פייסבוק › **Business integrations**, מצאו את ישראמארקט ובדקו שהדף כלול בגישה שאישרתם. אחר כך חברו שוב אצלנו." },
+        { label: "מישהו אחר מנהל את הדף", text: "בקשו ממנו לבדוק שיש לחשבון שלכם גישה לקריאת נתוני הדף והאינסטגרם המקושר. לא צריך לשלוח לנו סיסמה." },
+        { label: "יש לכם רק פרופיל אישי או קבוצה", text: "צריך דף עסקי בפייסבוק. אפשר ליצור דף, או להמשיך בתוכנית בלי החיבור הזה." },
+      ],
+    },
+  ],
+  stuck: {
+    title: TO_SOCIAL_MANAGER,
+    message: "היי, אנחנו מחברים את דף העסק לישראמארקט. אפשר לבדוק שלחשבון הפייסבוק שלי יש גישה לקריאת נתוני הדף והאינסטגרם המקושר, ולוודא מה הדף הנכון? אין צורך לשלוח סיסמה. תודה!",
+    copiedNote: COPIED,
+  },
+  why: "בחירת הדף מאפשרת לקרוא נתונים מהאינסטגרם המקושר. נשתמש רק במה שהחיבור מחזיר בפועל.",
+  source: { label: "ההסבר של פייסבוק: סוגי גישה לדף", url: "https://www.facebook.com/help/289207354498410" },
 };
 
 /*
@@ -500,6 +537,52 @@ const tiktok: Guide = {
 };
 
 /*
+ * tiktok_data — checked 2026-10-04 against TikTok's official tools/account-type pages.
+ * Studio is available to Personal and Business accounts; analytics need a public post,
+ * and individual tools vary by region. IsraMarket has no TikTok analytics ingestion or
+ * automatic publishing route. Do not imply that a stored link grants either capability.
+ * https://support.tiktok.com/en/using-tiktok/creating-videos/creator-tools-on-tiktok
+ * https://support.tiktok.com/en/using-tiktok/growing-your-audience/switching-to-a-creator-or-business-account
+ */
+const tiktokData: Guide = {
+  topic: "tiktok_data",
+  title: "איך בודקים תוצאות בטיקטוק",
+  short: "נתוני טיקטוק עדיין לא נקראים אצלנו אוטומטית. בינתיים אפשר לבדוק את הסרטונים ב-TikTok Studio.",
+  minutes: 2,
+  blocks: [
+    {
+      title: "לראות את התוצאות שלכם",
+      phone: [
+        "בטיקטוק, פתחו **פרופיל** (Profile) › התפריט › **TikTok Studio**.",
+        "פתחו **Analytics** (נתונים). בחרו סרטון ובדקו צפיות ותגובות. השוו סרטונים מאותה תקופה.",
+      ],
+      computer: [
+        "פתחו בדפדפן את tiktok.com/tiktokstudio והיכנסו לחשבון של העסק.",
+        "פתחו **Analytics** (נתונים). בחרו סרטון ובדקו צפיות ותגובות. השוו סרטונים מאותה תקופה.",
+      ],
+      note: "שמירת קישור לפרופיל אצלנו אינה חיבור לנתונים. גם הפרסום בטיקטוק נעשה ידנית כרגע.",
+    },
+    {
+      title: "לא רואים נתונים?",
+      disclosure: true,
+      cases: [
+        { label: "לא מופיעים הסרטונים שלכם", text: "ודאו שנכנסתם לחשבון הנכון. מי שמנהל את הטיקטוק של העסק יכול לבדוק בו את התוצאות." },
+        { label: "זה חשבון אישי", text: "אפשר להשתמש בכלי היוצרים גם בחשבון אישי וגם בחשבון עסקי. אין צורך להחליף סוג חשבון רק כדי לראות נתונים." },
+        { label: "החשבון חדש או פרטי", text: "טיקטוק דורשת לפחות פוסט ציבורי אחד כדי להציג נתונים. אל תשנו פרטיות בלי להחליט שזה מתאים לעסק." },
+        { label: "TikTok Studio או נתון מסוים חסר", text: "הכלים משתנים לפי אזור, חשבון וגרסת האפליקציה. נסו גם דרך הדפדפן או דרך הנתונים של הסרטון עצמו." },
+      ],
+    },
+  ],
+  stuck: {
+    title: TO_SOCIAL_MANAGER,
+    message: "היי, אפשר לבדוק ב-TikTok Studio אילו סרטונים של העסק קיבלו הכי הרבה צפיות ותגובות בתקופה האחרונה? נתוני טיקטוק עדיין לא מתחברים אצלנו אוטומטית. אין צורך לשלוח סיסמה. תודה!",
+    copiedNote: COPIED,
+  },
+  why: "אפשר לבדוק אילו סרטונים משכו תשומת לב. צפיות לבדן לא מוכיחות פניות או מכירות, והמספרים האלה עדיין לא נכנסים אוטומטית לניתוח אצלנו.",
+  source: { label: "ההסבר של טיקטוק: נתונים וכלי יוצרים", url: "https://support.tiktok.com/en/using-tiktok/creating-videos/creator-tools-on-tiktok" },
+};
+
+/*
  * google_business_profile — checked 2026-09 against:
  *   Find your profile (search "my business", Maps app › Business): https://support.google.com/business/answer/145585
  *   Claim this business › Manage now; business.google.com/add:     https://support.google.com/business/answer/2911778
@@ -613,6 +696,8 @@ const whatsappBusiness: Guide = {
 export const GUIDES: Record<HelpTopic, Guide> = {
   google_analytics: googleAnalytics,
   instagram_business: instagramBusiness,
+  facebook_data: facebookData,
+  tiktok_data: tiktokData,
   instagram,
   facebook,
   tiktok,
@@ -624,7 +709,7 @@ export const GUIDES: Record<HelpTopic, Guide> = {
 
 /** The order `/help` lists them in: connecting first, then your own links, then others. */
 export const HELP_GROUPS: { title: string; topics: HelpTopic[] }[] = [
-  { title: "לחבר את הנתונים", topics: ["google_analytics", "instagram_business"] },
+  { title: "נתונים וחיבורים", topics: ["google_analytics", "instagram_business", "facebook_data", "tiktok_data"] },
   { title: "הקישורים שלכם", topics: ["website", "instagram", "facebook", "tiktok", "whatsapp_business"] },
   { title: "גוגל ועסקים אחרים", topics: ["google_business_profile", "competitor_instagram"] },
 ];
