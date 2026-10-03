@@ -4070,6 +4070,7 @@ export const endpoints = {
   metaAssets: () => api<MetaAssets>("/integrations/meta/assets"),
   metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
   metaVerify: () => api<PixelVerification>("/integrations/meta/verify", { method: "POST" }),
+  metaRead: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/meta/read", { method: "POST" }),
   ga4Property: (body: { property_id: string; display_name: string }) =>
     api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
   ga4Read: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/read", { method: "POST" }),
@@ -5081,6 +5082,12 @@ export type SourceReadiness = {
   period?: { start: string; end: string } | null;
 };
 
+export type MetaSourceReadiness = Omit<SourceReadiness, "status"> & {
+  status: SourceReadiness["status"] | "choose_assets" | "no_assets" | "partial" | "permission" | "link_instagram";
+  selection?: { page_id: string; instagram_id: string; ad_account_id: string; pixel_id: string };
+  sections?: Record<string, MetaReadState & { read_at?: string; retained_at?: string; recovery_status?: string }>;
+};
+
 export type IntegrationsPayload = {
   ga4_ready: boolean;
   meta_ready: boolean;
@@ -5090,7 +5097,7 @@ export type IntegrationsPayload = {
     external_id: string;
     display_name: string;
     connected: boolean;
-    source_readiness?: SourceReadiness | null;
+    source_readiness?: SourceReadiness | MetaSourceReadiness | null;
     scopes?: string[];
     ad_account_id?: string;
     pixel_id?: string;
@@ -5140,7 +5147,7 @@ export type MetaAdsReport = MetaReadState & {
 
 export type PerformancePayload = {
   id?: number | null;
-  sources?: { ga4?: SourceReadiness };
+  sources?: { ga4?: SourceReadiness; meta?: MetaSourceReadiness };
   created_at?: string;
   /** False when nothing has been synced yet — a normal state, not an error. */
   available?: boolean;
@@ -5160,6 +5167,8 @@ export type PerformancePayload = {
   meta: {
     source_read_at?: string;
     source_period?: { start: string; end: string };
+    source_selection?: MetaSourceReadiness["selection"];
+    source_reads?: Record<string, { read_at?: string; period?: { start: string; end: string } }>;
     ads?: MetaAdsReport;
     tracking?: PixelVerification;
     page?: { name?: string; fan_count?: number };

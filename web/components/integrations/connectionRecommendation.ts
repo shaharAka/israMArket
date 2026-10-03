@@ -19,6 +19,9 @@ export function connectionRecommendation(business: Business | null, setup: Setup
   if (ga4?.external_id && ["unchecked", "reconnect", "unavailable"].includes(ga4.source_readiness?.status || "")) {
     return { key: "ga4", title: "לבדוק את נתוני האתר", why: googleWhy };
   }
+  if (meta?.connected && ["unchecked", "reconnect", "permission", "unavailable"].includes(meta.source_readiness?.status || "")) {
+    return { key: "meta", title: "לבדוק את נתוני פייסבוק ואינסטגרם", why: metaWhy };
+  }
   if (!whatsappSet && planned.some(item => item.key === "whatsapp_link")) {
     return { key: "whatsapp", title: "להכין קישור לוואטסאפ", why: "נוכל לראות מאיפה לחצו לפנות אליכם. לחיצה אינה הודעה או לקוח." };
   }

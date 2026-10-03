@@ -449,7 +449,7 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     meta: (
-<ConnectionSection source="meta" title="פייסבוק ואינסטגרם" status={metaConnected ? "החשבון נבחר" : metaNeedsSelection ? "נשאר לבחור דף" : data && !data.meta_ready ? "עדיין לא זמין" : "לא מחובר"} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
+<ConnectionSection source="meta" title="פייסבוק ואינסטגרם" status={metaConnected ? sourcePresentation(metaItem?.source_readiness).label : metaNeedsSelection ? "נשאר לבחור דף" : data && !data.meta_ready ? "עדיין לא זמין" : "לא מחובר"} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
             <div className="pb-3">
               <MetaConnection primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />

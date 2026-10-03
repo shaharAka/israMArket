@@ -17,7 +17,7 @@ from app.security import (
     decrypt_secret,
     encrypt_secret,
 )
-from app.services import ga4, ga4_readiness, google_login, meta
+from app.services import ga4, ga4_readiness, google_login, meta, meta_readiness
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
 from app.routers import meta_connections
@@ -33,7 +33,7 @@ def _public_integration(item: Integration) -> dict:
         "external_id": item.external_id,
         "display_name": item.display_name,
         "connected": item.status == "connected" and bool(item.access_token_enc) and (item.provider != "ga4" or bool(item.external_id)),
-        "source_readiness": ga4_readiness.public_state(item) if item.provider == "ga4" else None,
+        "source_readiness": ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item) if item.provider == "meta" else None,
         "properties": extra.get("properties"),
         "pages": extra.get("pages"),
         # What Google actually granted on this connection. Search Console lives on the
@@ -42,7 +42,7 @@ def _public_integration(item: Integration) -> dict:
         "scopes": extra.get("scopes") or [],
         "ad_account_id": extra.get("selected_ad_account_id") or "",
         "pixel_id": extra.get("selected_pixel_id") or "",
-        "pixel_verification": extra.get("pixel_verification"),
+        "pixel_verification": extra.get("pixel_verification") if not extra.get("pixel_verification_key") or extra["pixel_verification_key"] == meta_readiness.key(item) else None,
         # Which Google account granted it (Google only), and a Hebrew note when that is not
         # the account the owner signs in with. Allowed, just said out loud.
         "account_email": (extra.get("google_account") or {}).get("email") or None,
@@ -209,6 +209,16 @@ def meta_account(
 ) -> dict:
     meta_connections.save_assets(body, business, db)
     item = meta_connections.integration(business, db)
+    return {"integration": _public_integration(item)}
+
+
+@router.post("/meta/read")
+def meta_read(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    item = meta_connections.integration(business, db)
+    if not item.external_id or item.status in {"select_page", "select_assets"}:
+        raise HTTPException(400, "בחרו קודם את הדף או את חשבון הפרסום של העסק.")
+    if meta_readiness.initial_read(db, item, business.website_url) is None:
+        raise HTTPException(409, "החיבור השתנה בזמן הקריאה. בדקו את הבחירה ונסו שוב.")
     return {"integration": _public_integration(item)}
 
 

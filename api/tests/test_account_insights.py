@@ -374,7 +374,7 @@ class AccountSnapshotTest(unittest.TestCase):
         with mock.patch.object(meta.httpx, "get", side_effect=FakeGraph()), \
                 mock.patch.object(performance_router, "diagnose", return_value={}), \
                 mock.patch.object(meta, "account_overview", side_effect=KeyError("boom")), \
-                self.assertLogs("app.routers.performance", level="ERROR"):
+             self.assertLogs("app.services.meta_readiness", level="ERROR"):
             response = self.client.post("/performance/sync")
         self.assertEqual(response.status_code, 200, response.text)
         account = response.json()["meta"]["account"]

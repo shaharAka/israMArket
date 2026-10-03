@@ -1,5 +1,5 @@
 import logging
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -9,8 +9,7 @@ from app.deps import get_business
 from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, serialize_strategy
-from app.security import decrypt_page_token
-from app.services import connected_posts, ga4, ga4_readiness, hypotheses, instagram_signal, meta, meta_marketing
+from app.services import connected_posts, ga4, ga4_readiness, hypotheses, instagram_signal, meta, meta_readiness
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
 from app.services.jsonutil import dumps, loads
@@ -114,14 +113,6 @@ def _audience_payload(
     )
 
 
-def _account_block(page_token: str, instagram_id: str) -> dict:
-    try:
-        return meta.account_overview(page_token, instagram_id)
-    except Exception:  # noqa: BLE001 - the per-post numbers must still be stored
-        logger.exception("Instagram account insights failed")
-        return {"windows": {}, "followers_count": None, "errors": {"account": meta.MISSING_METRIC_HE}}
-
-
 def _refresh_post_results(business: Business, db: Session, ga4_data: dict | None, meta_data: dict | None) -> dict:
     """Write each post's results (and its learning line) back onto the post.
 
@@ -163,8 +154,8 @@ def _sync_payload(business: Business, db: Session) -> dict:
             detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
         )
 
-    end = date.today()
-    start = end - timedelta(days=28)
+    end = date.today() - timedelta(days=1)
+    start = end - timedelta(days=27)
     ga4_data: dict = {}
     meta_data: dict = {}
     try:
@@ -176,38 +167,31 @@ def _sync_payload(business: Business, db: Session) -> dict:
                 state = ga4_readiness.record(db, ga4_item, ga4_readiness.failure(exc)["status"])
                 raise HTTPException(status_code=502, detail=state["note_he"]) from exc
         if meta_item:
-            extra_meta = loads(meta_item.extra_json, {})
-            instagram_id = extra_meta.get("selected_instagram_id") or ""
-            page_id = extra_meta.get("selected_page_id") or (meta_item.external_id if not meta_item.external_id.startswith("act_") else "")
-            page_token = decrypt_page_token(extra_meta, page_id)
-            if page_id and page_token:
-                try:
-                    meta_data = meta.fetch_insights(page_token, instagram_id, page_id)
-                    meta_data["account"] = _account_block(page_token, instagram_id)
-                except RuntimeError as exc:
-                    # A social-permission problem must not discard accessible ad/site data.
-                    meta_data["social_error"] = meta_marketing.failure(exc)
-            elif page_id:
-                meta_data["social_error"] = {"status": "reconnect", "note_he": "חברו מחדש את הדף כדי לקרוא את נתוני הפוסטים."}
-            # The user grant is needed only for selected ad/site measurement. Social
-            # reports use their Page grant, including connections made before this flow.
-            access = ""
-            if extra_meta.get("selected_ad_account_id") or extra_meta.get("selected_pixel_id"):
-                access, _, _ = tokens_for(meta_item)
-            meta_data.update(meta_marketing.measurement(access, extra_meta, business.website_url, start.isoformat(), end.isoformat()))
+            result = meta_readiness.read(db, meta_item, business.website_url, start.isoformat(), end.isoformat())
+            if result is None:
+                raise HTTPException(409, "בחירת החשבון השתנתה בזמן הקריאה. רעננו את הנתונים שוב.")
+            meta_data = result
+            state = meta_readiness.public_state(meta_item)
+            if not ga4_item and state["status"] in {"reconnect", "permission", "link_instagram", "unavailable"}:
+                raise HTTPException(502, state["note_he"])
+            if not ga4_item and not meta_readiness.has_observations(meta_data):
+                return latest(business, db)
     except RuntimeError as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(status_code=502, detail="לא הצלחנו לקרוא את הנתונים כרגע. הנתונים הקודמים נשמרו; נסו שוב.") from exc
 
     # Every synced Instagram post, with the numbers Meta returned, feeds the post writer
     # (services/instagram_signal). The snapshot keeps the short caption as before.
     # Committed now, so a diagnostic failure below does not throw the numbers away.
-    if instagram_signal.store_media(db, business.id, meta_data):
+    fresh_social = not meta_data.get("source_reads") or (meta_data.get("source_reads", {}).get("social") or {}).get("read_at") == meta_data.get("source_read_at")
+    if fresh_social and instagram_signal.store_media(db, business.id, meta_data):
         db.commit()
     meta_data = meta.snapshot_view(meta_data)
 
+    if ga4_item:
+        ga4_data["read_at"] = datetime.utcnow().isoformat()
     posts = _posts(business, db)
-    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data)
-    post_results = _refresh_post_results(business, db, ga4_data if ga4_item else None, meta_data)
+    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social else {})
+    post_results = _refresh_post_results(business, db, ga4_data if ga4_item else None, meta_data if fresh_social else None)
 
     business_payload = {
         "name": business.name,
@@ -257,7 +241,20 @@ def _sync_payload(business: Business, db: Session) -> dict:
 
 
 def _source_states(business: Business) -> dict:
-    return {"ga4": ga4_readiness.public_state(item) for item in business.integrations if item.provider == "ga4"}
+    return {item.provider: ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item)
+            for item in business.integrations if item.provider in {"ga4", "meta"}}
+
+
+def _meta_snapshot(business: Business, snap: PerformanceSnapshot) -> dict:
+    stored = loads(snap.meta_json, {}) or {}
+    item = next((item for item in business.integrations if item.provider == "meta"), None)
+    if item:
+        extra = loads(item.extra_json, {}) or {}
+        check = extra.get("pixel_verification") or {}
+        current_check = not extra.get("pixel_verification_key") or extra["pixel_verification_key"] == meta_readiness.key(item)
+        if current_check and stored.get("source_selection") == meta_readiness.selection(item) and check.get("pixel_id") == extra.get("selected_pixel_id") and check.get("pixel_id"):
+            stored["tracking"] = check
+    return stored
 
 
 @router.get("/latest")
@@ -293,7 +290,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         "period_start": snap.period_start,
         "period_end": snap.period_end,
         "ga4": loads(snap.ga4_json, {}),
-        "meta": loads(snap.meta_json, {}),
+        "meta": _meta_snapshot(business, snap),
         "diagnostic": loads(snap.diagnostic_json, {}),
         "created_at": snap.created_at.isoformat(),
         "audiences": audience_payload,
