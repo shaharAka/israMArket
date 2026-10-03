@@ -18,8 +18,9 @@ export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
   const sourceNote = previousSite ? "נבחר אתר אחר, אבל עוד לא התקבלו הנתונים שלו. המספרים המוצגים שייכים לאתר שנקרא קודם."
     : emptyWithOlderData ? "בבדיקה האחרונה לא נמצאו נתונים לתקופה. המספרים המוצגים נשמרו מהקריאה הקודמת."
     : source && source.status !== "ready" ? source.note_he : "";
-  const analysisNote = analysis === "pending" ? "הנתונים שנקראו נשמרו. הניתוח עוד לא הושלם; רענון הנתונים ינסה להכין מהם המלצה לתוכנית."
-    : analysis === "unavailable" ? "הנתונים נשמרו, אבל הניתוח לא הושלם. אפשר לעבוד בתוכנית ולנסות לרענן בהמשך." : "";
+  const analysisNote = analysis === "pending" ? "הנתונים כבר כאן. מכינים מהם תובנה והצעה לתוכנית; הן יופיעו כאן אוטומטית."
+    : analysis === "unavailable" ? "הנתונים נשמרו, אבל הניתוח לא הושלם. אפשר לעבוד בתוכנית ולנסות לרענן בהמשך."
+    : analysis === "paused" ? "הנתונים זמינים. כדי להכין מהם הצעה חדשה לתוכנית, צריך מנוי פעיל." : "";
   const metaDate = checkedDate(payload.meta?.source_read_at);
   const siteDate = checkedDate(payload.ga4?.read_at);
   const siteOlder = Boolean(metaDate && siteDate && (payload.ga4.read_at || "") < (payload.meta.source_read_at || ""));

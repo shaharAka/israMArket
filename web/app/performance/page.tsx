@@ -1050,6 +1050,42 @@ export default function PerformancePage() {
     }
   }
 
+  const analysisPending = data?.diagnostic?.analysis_status === "pending";
+  const snapshotId = data?.id;
+  useEffect(() => {
+    if (!analysisPending || !snapshotId) return;
+    let stopped = false;
+    let checking = false;
+    let timer: ReturnType<typeof setTimeout>;
+    let attempts = 0;
+    async function check() {
+      if (stopped || checking || attempts >= 120) return;
+      checking = true;
+      if (!document.hidden) {
+        attempts++;
+        try {
+          const payload = await endpoints.performance();
+          const proposal = await endpoints.recommendations();
+          if (stopped) return;
+          setData(payload);
+          setRecommendation(proposal);
+          if (payload.diagnostic?.analysis_status !== "pending") return;
+        } catch { /* A quiet read retry; never starts generation or another provider read. */ }
+      }
+      checking = false;
+      if (!stopped) timer = setTimeout(check, document.hidden ? 30000 : 3000);
+    }
+    function resume() {
+      if (document.hidden || checking) return;
+      attempts = 0;
+      clearTimeout(timer);
+      void check();
+    }
+    document.addEventListener("visibilitychange", resume);
+    timer = setTimeout(check, 3000);
+    return () => { stopped = true; clearTimeout(timer); document.removeEventListener("visibilitychange", resume); };
+  }, [analysisPending, snapshotId]);
+
   const available = Boolean(data && data.available !== false);
   const results = data && available ? postResults(data) : null;
   const hasVerdict = Boolean(data?.diagnostic?.top_content?.length || data?.diagnostic?.bottom_content?.length);
@@ -1057,7 +1093,7 @@ export default function PerformancePage() {
   // Only from a refresh that read the account; an older snapshot simply has none.
   const account = available && data?.meta?.account ? data.meta.account : null;
   const hasProposal = Boolean(recommendation?.available !== false && recommendation?.suggestions?.suggestions?.length &&
-    (!["pending", "unavailable"].includes(data?.diagnostic?.analysis_status || "") ||
+    (!["pending", "unavailable", "paused", "superseded"].includes(data?.diagnostic?.analysis_status || "") ||
       (data?.id && recommendation?.suggestions?.basis?.snapshot_id === data.id)));
 
   return (

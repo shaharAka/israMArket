@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models import Integration, PerformanceSnapshot
 from app.security import decrypt_secret
-from app.services import ga4
+from app.services import analysis_jobs, ga4
 from app.services.jsonutil import dumps, loads
 
 NOTES = {
@@ -122,11 +122,13 @@ def initial_read(db: Session, item: Integration) -> dict:
     if meta_data:
         meta_data.setdefault("source_read_at", previous.created_at.isoformat())
         meta_data.setdefault("source_period", {"start": previous.period_start, "end": previous.period_end})
-    db.add(PerformanceSnapshot(
+    snap = PerformanceSnapshot(
         business_id=item.business_id, period_start=start.isoformat(), period_end=end.isoformat(),
         ga4_json=dumps(report), meta_json=dumps(meta_data),
         diagnostic_json=dumps({"analysis_status": "pending", "headline": "", "top_content": [],
                                "bottom_content": [], "funnel_issues": [], "metric_highlights": []}),
-    ))
+    )
+    db.add(snap)
     db.commit()
+    analysis_jobs.enqueue(db, snap)
     return public_state(item)

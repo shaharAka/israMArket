@@ -20,6 +20,9 @@ os.environ["SITE_SCREENSHOT"] = "false"
 # runs to the end inside the request that started it, so `mock.patch` blocks and the
 # overridden test database still apply; tests of the worker threads switch it off.
 os.environ["GENERATION_JOBS_INLINE"] = "1"
+# Source reads queue analysis, but the suite stays offline. Dedicated worker tests run
+# the queue with fake model replies and their own temporary database.
+os.environ["ANALYSIS_JOBS_ENABLED"] = "false"
 # PayPal: a developer `.env` may hold sandbox credentials. Tests that need PayPal patch the
 # settings and mock the HTTP transport (tests/test_billing.py); nothing may reach PayPal.
 os.environ["PAYPAL_ENV"] = "sandbox"

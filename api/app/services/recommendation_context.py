@@ -49,6 +49,12 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     fallback = {"start": snapshot.get("period_start", ""), "end": snapshot.get("period_end", "")}
     sources, observations, limits = [], [], []
     meta_item = next((item for item in business.integrations if item.provider == "meta"), None)
+    from app.services.meta_readiness import selection
+    recorded_selection = _dict(meta.get("source_selection"))
+    wrong_meta = bool(meta_item and recorded_selection and recorded_selection != selection(meta_item))
+    if wrong_meta:
+        meta = {}
+        limits.append("נתוני פייסבוק ואינסטגרם שנשמרו שייכים לבחירה קודמת. קראו את החשבון שנבחר עכשיו.")
     selected_ads = _dict(loads(meta_item.extra_json, {})).get("selected_ad_account_id") if meta_item else ""
     old_ads = _dict(meta.get("ads")).get("account_id")
     wrong_ads = bool(selected_ads and old_ads and str(selected_ads).removeprefix("act_") != str(old_ads).removeprefix("act_"))
@@ -96,7 +102,7 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     limits.append("הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.")
     basis = {"version": 1, "snapshot_id": snapshot.get("id"), "plan_id": plan.get("id"), "plan_revision": plan_revision(business),
              "sources": [_freshness(source) for source in sources], "observations": observations, "limits": limits,
-             "excluded_sources": wrong_site or wrong_ads,
+             "excluded_sources": wrong_site or wrong_ads or wrong_meta,
              "selection": {"ga4": selected, "meta_ads": selected_ads or ""}}
     return ga, meta, basis
 

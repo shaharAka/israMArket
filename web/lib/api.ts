@@ -5177,7 +5177,7 @@ export type PerformancePayload = {
     account?: InstagramAccount | null;
   };
   diagnostic: {
-    analysis_status?: "pending" | "ready" | "unavailable";
+    analysis_status?: "pending" | "ready" | "unavailable" | "paused" | "superseded";
     headline: string;
     top_content: { label: string; why: string }[];
     bottom_content: { label: string; why: string }[];

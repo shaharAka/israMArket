@@ -105,6 +105,15 @@ class ContextTest(unittest.TestCase):
         self.assertEqual(basis["observations"], [])
         self.assertTrue(basis["excluded_sources"])
 
+    def test_retained_social_from_another_page_never_enters_analysis(self):
+        snap = snapshot()
+        snap["meta"]["source_selection"] = {"page_id": "old", "instagram_id": "old-ig", "ad_account_id": "act_1", "pixel_id": ""}
+        snap["meta"]["account"] = {"windows": {"28": {"current": {"values": {"reach": 9000}}}}}
+        ga, meta, basis = context.prepare(self.business, self.plan, snap)
+        self.assertEqual(meta, {})
+        self.assertEqual([row["source"] for row in basis["observations"]], ["ga4", "ga4"])
+        self.assertTrue(basis["excluded_sources"])
+
     def test_model_cannot_replace_basis_or_choose_a_url(self):
         raw = proposal(href="https://evil.example", review={"href": "/admin"})
         raw["basis"] = {"observations": [{"value": 9000}]}
