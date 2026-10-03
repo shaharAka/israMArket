@@ -1,0 +1,48 @@
+{
+  "exports": [
+    {
+      "file": "isramarket-instagram-v3.mp4",
+      "duration_seconds": 26,
+      "frames": 780,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "codec": "h264",
+      "profile": "High",
+      "pixel_format": "yuv420p",
+      "faststart": true,
+      "bytes": 354371,
+      "sha256": "3f1f2e8f405a52409ebc9c232b9264204a0764011e84c23ab007c4dc94db8629",
+      "render_verify_seconds": 77.28,
+      "audio": "none; optional timed narration provided, not synthesized",
+      "external_provider_fees_usd": 0,
+      "source_base_revision": "ddbd3d6369869ff3abe834bb6da8d69dad4166b4",
+      "composition_sha256": "fdccebc8da01a748d0fe1e2288a8fd784cbc10a596056e62eee8df107fa87c09",
+      "caption_sha256": "c88f0a3dc3960de7fdd782d9d562e3313014e08160a8e4475162e8d8db739e91"
+    },
+    {
+      "file": "isramarket-tiktok-v3.mp4",
+      "duration_seconds": 20,
+      "frames": 600,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "codec": "h264",
+      "profile": "High",
+      "pixel_format": "yuv420p",
+      "faststart": true,
+      "bytes": 319923,
+      "sha256": "355675066efaefa27a19370837b1cd0db7825a2aa213fe97361e383bdbe73a72",
+      "render_verify_seconds": 59.84,
+      "audio": "none; optional timed narration provided, not synthesized",
+      "external_provider_fees_usd": 0,
+      "source_base_revision": "ddbd3d6369869ff3abe834bb6da8d69dad4166b4",
+      "composition_sha256": "fdccebc8da01a748d0fe1e2288a8fd784cbc10a596056e62eee8df107fa87c09",
+      "caption_sha256": "c88f0a3dc3960de7fdd782d9d562e3313014e08160a8e4475162e8d8db739e91"
+    }
+  ],
+  "render_jobs": 2,
+  "encode_failures": 0,
+  "external_provider_fees_usd": 0,
+  "v1_v2_preserved_hash_check": true
+}
