@@ -18,6 +18,10 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
   const basis = payload.suggestions.basis;
   const sources = basis?.sources ?? [];
   const observations = basis?.observations ?? [];
+  const ownerFacts = observations.filter(fact => fact.source === "service_owner");
+  const visibleFacts = [...ownerFacts, ...observations.filter(fact => fact.source !== "service_owner")].slice(0, 3);
+  const onlyOwnerFacts = visibleFacts.length > 0 && visibleFacts.every(fact => fact.source === "service_owner");
+  const ownerPeriod = sources.find(source => source.key === "service_owner")?.period;
   const available = sources.filter(source => source.status !== "missing");
   const stale = available.some(source => source.stale || source.status !== "available");
   const missing = sources.filter(source => source.status === "missing");
@@ -31,14 +35,15 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
     </p>
     <h2 id={`${id}-title`} className="mt-3 text-[20px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{item.title}</h2>
     {legacy ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">זו הצעה קודמת ללא תיעוד המקורות. בדקו נתונים עדכניים לפני שינוי.</p> : <>
-      <div className="mt-4 flex flex-wrap gap-x-8 gap-y-3" aria-label="מה נמדד">
-        {observations.slice(0, 3).map(fact => <div key={`${fact.source}-${fact.metric}`}>
+      <div className={onlyOwnerFacts ? "mt-4 grid grid-cols-3 gap-3" : "mt-4 flex flex-wrap gap-x-8 gap-y-3"} aria-label={ownerFacts.length ? "מה ידוע" : "מה נמדד"}>
+        {visibleFacts.map(fact => <div key={`${fact.source}-${fact.metric}`}>
           <p className="text-[12px] text-[color:var(--ink-muted)]">{fact.label}</p>
           <p className="mt-1 text-[24px] font-bold tabular-nums tracking-tight text-[color:var(--ink)]">{new Intl.NumberFormat("he-IL", { maximumFractionDigits: 1 }).format(fact.value)}</p>
-          <p className="mt-1 text-[11px] text-[color:var(--ink-muted)]">{checkedDate(sources.find(source => source.key === fact.source)?.period.start)}–{checkedDate(sources.find(source => source.key === fact.source)?.period.end)}</p>
+          {!onlyOwnerFacts ? <p className="mt-1 text-[11px] text-[color:var(--ink-muted)]">{checkedDate(sources.find(source => source.key === fact.source)?.period.start)}–{checkedDate(sources.find(source => source.key === fact.source)?.period.end)}</p> : null}
         </div>)}
       </div>
-      {observations.length === 0 ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">אין כאן מספיק מדידה לביסוס מסקנה. זו הצעה לניסוי, ולא תוצאה מוכחת.</p> : <p className="mt-3 text-[12px] leading-6 text-[color:var(--ink-muted)]">אלה אינן בהכרח פניות או הזמנות. הספירות מכל מקור נשארות נפרדות.</p>}
+      {onlyOwnerFacts ? <p className="mt-2 text-[12px] text-[color:var(--ink-muted)]">{checkedDate(ownerPeriod?.start)} עד {checkedDate(ownerPeriod?.end)} · לפי הדיווח שלכם</p> : null}
+      {observations.length === 0 ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">אין כאן מספיק מדידה לביסוס מסקנה. זו הצעה לניסוי, ולא תוצאה מוכחת.</p> : <p className="mt-3 text-[12px] leading-6 text-[color:var(--ink-muted)]">{ownerFacts.length ? "הפניות והלקוחות הם דיווח שלכם. לקוחות יכולים להגיע מפניות של חודש קודם. אין שיוך לפוסט; כל מקור נספר בנפרד." : "אלה אינן בהכרח פניות או הזמנות. הספירות מכל מקור נשארות נפרדות."}</p>}
       {stale ? <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-soft)]">חלק מהנתונים מקריאה קודמת. זו אינה תמונה עדכנית של העסק.</p> : null}
       {missing.length ? <p className="mt-2 text-[13px] leading-6 text-[color:var(--ink-muted)]">חסר: {missing.map(source => source.label).join(", ")}. אין להסיק מזה שאין פעילות.</p> : null}
     </>}
@@ -57,8 +62,8 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       <div className="space-y-3 pt-1 text-[13px] leading-6 text-[color:var(--ink-soft)]">
         {sources.map(source => <p key={source.key}><strong className="font-semibold">{source.label}: </strong>{source.status === "missing" ? "אין נתונים" : <>
           {checkedDate(source.period.start) || "תקופה לא ידועה"} עד {checkedDate(source.period.end) || "תקופה לא ידועה"}{" · "}
-          נקראו ב־{checkedDate(source.read_at) || "מועד לא ידוע"}
-          {source.status === "historical" ? " · החיבור אינו פעיל כרגע" : source.status === "different_selection" ? " · נבחר אתר או חשבון אחר מאז הקריאה" : ""}
+          {source.key === "service_owner" ? "עודכנו" : "נקראו"} ב־{checkedDate(source.read_at) || "מועד לא ידוע"}
+          {source.status === "historical" ? source.key === "service_owner" ? " · הדיווח השתנה מאז ההצעה" : " · החיבור אינו פעיל כרגע" : source.status === "different_selection" ? " · נבחר אתר או חשבון אחר מאז הקריאה" : ""}
         </>}</p>)}
         {item.evidence ? <p><strong className="font-semibold">הנימוק להצעה, לפי הניתוח: </strong>{item.evidence}</p> : null}
         {(basis?.limits ?? []).map(limit => <p key={limit}>{limit}</p>)}

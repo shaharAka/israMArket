@@ -10,6 +10,7 @@ from urllib.parse import urlencode
 
 from app.services.jsonutil import loads
 from app.services.plan_editing import revision as plan_revision
+from app.services import service_results
 
 
 def _dict(value) -> dict:
@@ -99,10 +100,21 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     reach = _number(_dict(window.get("values")).get("reach"))
     if reach is not None:
         observations.append({"source": "meta_social", "metric": "reach", "label": "אנשים שראו באינסטגרם", "value": reach})
+    service = service_results.evidence(business)
+    report = service.get("report") if service else None
+    if service:
+        limits.extend(service["limits"])
+        sources.append({"key": "service_owner", "label": "דיווח שלכם על פניות ולקוחות", "status": "available" if report else "missing",
+                        "period": report["period"] if report else {}, "read_at": report["updated_at"] if report else ""})
+        if report:
+            for metric, label in (("inquiries", "פניות שהתקבלו"), ("suitable", "פניות מתאימות"), ("clients_won", "לקוחות חדשים")):
+                if report[metric] is not None:
+                    observations.append({"source": "service_owner", "metric": metric, "label": label, "value": report[metric]})
     limits.append("הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.")
     basis = {"version": 1, "snapshot_id": snapshot.get("id"), "plan_id": plan.get("id"), "plan_revision": plan_revision(business),
              "sources": [_freshness(source) for source in sources], "observations": observations, "limits": limits,
              "excluded_sources": wrong_site or wrong_ads or wrong_meta,
+             "service_fingerprint": service_results.fingerprint(business),
              "selection": {"ga4": selected, "meta_ads": selected_ads or ""}}
     return ga, meta, basis
 
@@ -167,6 +179,7 @@ def serialize(rec, plan: dict, business=None) -> dict:
     same_id = bool(plan.get("id")) and basis.get("plan_id") == plan["id"]
     current_revision = plan_revision(business) if business is not None else plan.get("plan_revision", 0)
     same_plan = provenance and same_id and basis.get("plan_revision", 0) == current_revision
+    same_service = business is None or not service_results.enabled(business) or basis.get("service_fingerprint", "") == service_results.fingerprint(business)
     rows = stored.get("suggestions")
     items = []
     for row in (rows[:3] if isinstance(rows, list) else []):
@@ -181,6 +194,8 @@ def serialize(rec, plan: dict, business=None) -> dict:
         elif not same_plan:
             status, note = "stale", ("התוכנית נערכה מאז ההמלצה. בדקו אם ההצעה מתאימה לכיוון המעודכן." if same_id else
                                      "התוכנית התחלפה מאז ההמלצה. בדקו מה עדיין מתאים לתוכנית הנוכחית.")
+        elif not same_service:
+            status, note = "stale", "הדיווח שלכם או פרטי העסק השתנו מאז ההמלצה. הכינו הצעה עדכנית לפני שינוי בתוכנית."
         elif row.get("action_kind") == "measurement":
             kind, href, label = "measurement", "/integrations", "לבדוק את החיבורים"
             note = "בדיקת חיבור אינה מאשרת שהאירועים באתר מודדים פניות או הזמנות."
@@ -209,6 +224,10 @@ def serialize(rec, plan: dict, business=None) -> dict:
     if public_basis and business is not None:
         current = {item.provider: item for item in business.integrations}
         for source in public_basis["sources"]:
+            if source.get("key") == "service_owner":
+                if not same_service:
+                    source.update(status="historical", stale=True)
+                continue
             provider = "ga4" if source.get("key") == "ga4" else "meta"
             item = current.get(provider)
             if source.get("status") == "missing":

@@ -62,8 +62,38 @@ The measurement ladder must remain separate:
 4. Project won and its value: owner/CRM evidence.
 5. Capacity and profitable fit: planning input, not inferred from reach or clicks.
 
-The post-signup baseline currently stores inquiries, close rate and deal value; it does
-not yet provide this full qualification/reporting ladder. Do not label it as shipped.
+The post-signup baseline stores inquiries, close rate and deal value as planning inputs.
+The reporting change described below adds owner-entered outcomes. It does not provide
+automatic inquiry attribution, a CRM or a verified click-to-client funnel.
+
+## Optional results check-in (4 October change)
+
+Service and mixed businesses can record a month of inquiries, the suitable subset and
+new clients signed. A suitable count requires the owner's short definition of fit. A blank
+count stays unknown, and zero stays zero. Clients signed may have inquired in a previous
+month, so no conversion rate is calculated between these totals. There are no client names
+or per-post/channel attribution fields.
+
+Current-month reports can also record how many additional clients the owner can accept
+now. Availability older than seven days or from an earlier month is excluded from current
+planning and flagged for an update. Historical corrections retain their own month and do
+not replace the latest month's results. Concurrent edits require a fresh revision and
+show the saved values before the owner decides to replace them.
+
+The check-in is optional and works before any provider connection. Saving makes no model
+or provider request and edits no baseline, plan or post. The owner can then request a
+reviewable plan suggestion using the report, its fit definition, project-value inputs,
+portfolio availability and capacity constraints. Planning ranges remain ranges; they are
+not presented as observed revenue. Earlier proposals are marked stale after a correction,
+and an in-flight background analysis cannot save advice against changed reporting facts.
+
+Results leads with the proposal when one exists; the report then lives in an expandable
+row. Owner counts lead the proposal's evidence, separately labelled from provider data.
+An existing plan without later milestones also opens without a rendering crash.
+
+Delivery remains subject to PR review, a Claude design pass and deployment verification.
+The local preview uses a fictional designer and simulated AI replies; it verifies the
+working API/UI path, not recommendation quality or real-customer adoption.
 
 ## Pitch and test
 
@@ -79,7 +109,8 @@ sessions for time to useful plan and first meaningful action, not only signup co
 Record unanswered questions, assistance and exits; a small qualitative sample is not a
 conversion benchmark.
 
-Next product decisions in #67: whether to shorten initial discovery, whether one evidence
-item can unlock a service post, where to capture suitable/won inquiries, and a service
-landing example. Coordinate guided connection delivery with #44/#45 and findings with
-#46 rather than duplicating their ownership or claiming their prototypes are live data.
+The subsequent first-content correction already allows one service and one evidence item;
+shops retain their three-item requirement. Remaining work in #67 includes real owner
+discovery/pilots and a verified service example in the customer journey. Coordinate guided
+connection delivery with #44/#45 and findings with #46. Do not call the service segments
+validated or the simulated preview live customer data.

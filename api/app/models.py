@@ -94,6 +94,7 @@ class Business(Base):
     integrations: Mapped[list["Integration"]] = relationship(back_populates="business")
     snapshots: Mapped[list["PerformanceSnapshot"]] = relationship(back_populates="business")
     recommendations: Mapped[list["Recommendation"]] = relationship(back_populates="business")
+    service_reports: Mapped[list["ServiceReport"]] = relationship(back_populates="business")
     webhooks: Mapped[list["WebhookEndpoint"]] = relationship(back_populates="business")
     assets: Mapped[list["Asset"]] = relationship(back_populates="business")
     audiences: Mapped[list["Audience"]] = relationship(back_populates="business")
@@ -260,6 +261,24 @@ class HashtagQuery(Base):
     hashtag: Mapped[str] = mapped_column(String(120))
     hashtag_id: Mapped[str] = mapped_column(String(64), default="")
     queried_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class ServiceReport(Base):
+    """Owner-reported monthly outcomes, separate from provider/link observations."""
+    __tablename__ = "service_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    month: Mapped[str] = mapped_column(String(7))
+    inquiries: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    suitable: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    clients_won: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    capacity: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    fit_criterion: Mapped[str] = mapped_column(Text, default="")
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    business: Mapped[Business] = relationship(back_populates="service_reports")
+    __table_args__ = (UniqueConstraint("business_id", "month", name="uq_service_report_month"),)
 
 
 class Recommendation(Base):

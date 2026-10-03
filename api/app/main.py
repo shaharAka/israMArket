@@ -27,6 +27,7 @@ from app.routers import (
     recommendations,
     research,
     setup,
+    service_results,
     strategy,
     trial,
     whatsapp,
@@ -105,6 +106,7 @@ app.include_router(strategy.router)
 app.include_router(publish.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
+app.include_router(service_results.router)
 app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)

@@ -16,7 +16,7 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
-from app.services import recommendation_context
+from app.services import recommendation_context, service_results
 
 router = APIRouter(prefix="/performance", tags=["performance"])
 logger = logging.getLogger(__name__)
@@ -200,6 +200,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
+        **service_results.model_context(business),
     }
     # Store the observations before analysis: a model outage must not lose source data.
     diagnostic = {"analysis_status": "pending", "headline": "", "top_content": [],
@@ -317,6 +318,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
         "analysis_basis": basis,
+        **service_results.model_context(business),
     }
     try:
         proposed = recommend(

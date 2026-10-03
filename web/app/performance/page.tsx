@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FindingCard } from "@/components/results/FindingCard";
+import { ServiceCheckIn } from "@/components/results/ServiceCheckIn";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
@@ -18,6 +19,7 @@ import {
   type InstagramAccountWindow,
   type PerformancePayload,
   type RecommendationPayload,
+  type ServiceResultsPayload,
 } from "@/lib/api";
 import { markSeen } from "@/lib/trial";
 import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
@@ -339,13 +341,16 @@ function BigNumber({ label, value }: { label: string; value?: string }) {
  * missing source is the reason a number is absent, and the owner should not have to open
  * anything to learn that.
  */
-function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
+function MeasurementGaps({ payload, ownerReport = false }: { payload: PerformancePayload; ownerReport?: boolean }) {
   const data = payload.audiences as AudiencePerformance | null | undefined;
   const connected = data?.connected;
   if (!connected) return null;
   const anyConnected = Boolean(connected.ga4 || connected.meta);
   const offline = [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
   if (!offline.length) return null;
+  if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
+    נתוני האתר והאינסטגרם לא מחוברים. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
+  </p>;
 
   return (
     <div className="rounded-[14px] bg-[var(--sand)] px-5 py-4 text-[14px] leading-6 text-[color:var(--sand-dark)]">
@@ -1005,6 +1010,10 @@ export default function PerformancePage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [planMeasure, setPlanMeasure] = useState("");
+  const [serviceResults, setServiceResults] = useState<ServiceResultsPayload | null>(null);
+  const [serviceError, setServiceError] = useState("");
+  const [serviceEditing, setServiceEditing] = useState(false);
+  const [recommending, setRecommending] = useState(false);
   // Our own count of WhatsApp taps. Loaded apart from the synced results: it needs no
   // connection, and a failure here must not hide them.
   const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
@@ -1019,7 +1028,15 @@ export default function PerformancePage() {
   useEffect(() => {
     endpoints.business().then(({ business }) => setPlanMeasure(business?.quarter_plan?.kpi.name_he || "")).catch(() => {});
     endpoints.recommendations().then(setRecommendation).catch(() => {});
+    endpoints.serviceResults().then(setServiceResults).catch(err => setServiceError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הדיווח. נסו לרענן את העמוד."));
   }, []);
+
+  async function recommendFromReport() {
+    setRecommending(true); setError("");
+    try { setRecommendation(await endpoints.generateRecommendations()); }
+    catch (err) { setError(err instanceof Error ? err.message : "לא הצלחנו להכין הצעה. הדיווח נשמר; אפשר לנסות שוב."); }
+    finally { setRecommending(false); }
+  }
 
   useEffect(() => {
     // Opening the results is a step of the free month (the first results, the month's
@@ -1095,6 +1112,9 @@ export default function PerformancePage() {
   const hasProposal = Boolean(recommendation?.available !== false && recommendation?.suggestions?.suggestions?.length &&
     (!["pending", "unavailable", "paused", "superseded"].includes(data?.diagnostic?.analysis_status || "") ||
       (data?.id && recommendation?.suggestions?.basis?.snapshot_id === data.id)));
+  const checkIn = <ServiceCheckIn data={serviceResults} loadError={serviceError} primary={!hasProposal} onEditing={setServiceEditing}
+    onSaved={payload => { setServiceResults(payload); endpoints.recommendations().then(setRecommendation).catch(() => {}); }}
+    onRecommend={recommendFromReport} recommending={recommending} />;
 
   return (
     <AppShell>
@@ -1112,11 +1132,13 @@ export default function PerformancePage() {
 
         <ErrorNote message={error} />
 
+        {!hasProposal ? <div className="mb-8 empty:hidden">{checkIn}</div> : null}
+
         {data ? (
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
               <SourceDataNotice payload={data} />
-              {!hasProposal ? available ? <Answer payload={data} /> : <NoSnapshotYet /> : null}
+              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet /> : null : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
@@ -1126,8 +1148,15 @@ export default function PerformancePage() {
                 </p>
               ) : null}
             </div>
-            <MeasurementGaps payload={data} />
-            {hasProposal && recommendation ? <FindingCard payload={recommendation} /> : null}
+            {!serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
+            {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
+            {hasProposal && serviceResults?.enabled ? <details className="group/check-in border-y border-[var(--rule)]">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
+                הדיווח שלכם על פניות ולקוחות<IconChevron className="h-[18px] w-[18px] -rotate-90 text-[color:var(--ink-muted)] transition-transform group-open/check-in:rotate-90" />
+              </summary>
+              <div className="pb-4">{checkIn}</div>
+            </details> : null}
+            {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
             <SourceReportLimits payload={data} />
             <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
               {available ? <Expand title="נתוני האתר"><Answer payload={data} /></Expand> : null}
