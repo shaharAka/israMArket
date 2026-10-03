@@ -99,7 +99,7 @@ export function ServiceCheckIn({ data, loadError, primary, onSaved, onEditing, o
   return <section aria-labelledby={`${id}-title`} className="paper p-5 sm:p-6">
     <div className="flex items-center justify-between gap-4">
       <h2 id={`${id}-title`} className="text-[18px] font-bold tracking-tight text-[color:var(--ink)]">פניות ולקוחות</h2>
-      {report && !editing ? <button onClick={open} className="min-h-11 text-[14px] font-semibold text-[color:var(--primary)] hover:underline">לעדכן</button> : null}
+      {report && !editing ? <button onClick={open} className="min-h-11 min-w-11 px-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline">לעדכן</button> : null}
     </div>
     {loadError ? <p role="alert" className="mt-3 text-[14px] text-[color:var(--danger)]">{loadError}</p> : null}
     {editing ? <form onSubmit={save} className="mt-4 space-y-4">
