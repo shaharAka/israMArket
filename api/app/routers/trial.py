@@ -41,7 +41,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.routers.setup import newest_business
 from app.routers import foundations
-from app.services import ga4, hypotheses as hypothesis_review, journey, meta
+from app.services import ga4, hypotheses as hypothesis_review, journey, meta, plan_connections
 from app.services.jsonutil import dumps, loads
 
 try:  # tzdata is not guaranteed on slim images; the day number only needs Israel's date.
@@ -147,20 +147,14 @@ def _kpi_needs(facts: journey.Facts) -> set[str]:
 
 def _plan_integration_keys(facts: journey.Facts) -> set[str] | None:
     """The integrations the plan measures with, or None for a business without a plan."""
-    checklist = facts.integrations_checklist
-    if checklist:
-        return {str(item.get("key")) for item in checklist}
-    plan_integrations = (facts.quarter_plan or {}).get("integrations")
-    if isinstance(plan_integrations, list) and plan_integrations:
-        return {str(item.get("key")) for item in plan_integrations if isinstance(item, dict)}
-    return None
+    return plan_connections.keys(facts)
 
 
 def _needs_site_data(facts: journey.Facts) -> bool:
     """Only when the plan measures something on the site. A business without a website —
     or whose plan's integrations list nothing on the site — never sees the step."""
     keys = _plan_integration_keys(facts)
-    return bool(keys & SITE_KEYS) if keys is not None else bool(facts.website)
+    return "ga4" in keys if keys is not None else bool(facts.website)
 
 
 def _needs_gbp(facts: journey.Facts) -> bool:
@@ -206,12 +200,6 @@ def _step(key, week, title, why, minutes, href, action, status, done_at=None, no
     return step
 
 
-def _connect(facts: journey.Facts, provider: str, ready: bool) -> str:
-    if provider in facts.connected:
-        return "done"
-    return "todo" if ready else "soon"
-
-
 def build_steps(
     facts: journey.Facts,
     events: dict,
@@ -231,22 +219,20 @@ def build_steps(
     # --- week 1 · measurement: without it there is no way to know anything works ------
     required = _plan_integration_keys(facts)
     if required is None or required & {"meta_business", "instagram_insights", "facebook_insights", "meta_pixel"}:
-        status = _connect(facts, "meta", meta_ready)
+        connection = plan_connections.state(facts, "meta", available=meta_ready)
+        status = connection["status"]
         steps.append(_step(
-            "instagram", 1, "לחבר את האינסטגרם",
-            "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
-            3, "/integrations", "לחבר את האינסטגרם",
+            "instagram", 1, connection["title"], connection["why"],
+            3, "/integrations", connection["action"],
             status, facts.connected_at.get("meta"),
-            "החיבור לאינסטגרם ייפתח כאן בקרוב." if status == "soon" else None,
+            connection["why"] if status == "soon" else None,
         ))
     if _needs_site_data(facts):
-        status = _connect(facts, "ga4", ga4_ready)
+        connection = plan_connections.state(facts, "ga4", available=ga4_ready)
+        status = connection["status"]
         steps.append(_step(
-            "site_data", 1, "לחבר את נתוני האתר",
-            f"בלי זה לא נדע כמה הגיעו לאתר מכל פוסט, ולא נוכל למדוד את היעד: {kpi}."
-            if kpi and kpi_needs & SITE_KEYS
-            else "כך נראה כמה נכנסו לאתר מכל פוסט, ומה עשו שם.",
-            10, "/integrations", "לחבר את נתוני האתר",
+            "site_data", 1, connection["title"], connection["why"],
+            10, "/integrations", connection["action"],
             status, facts.connected_at.get("ga4"),
             "החיבור לנתוני האתר ייפתח כאן בקרוב." if status == "soon" else None,
         ))
@@ -446,8 +432,13 @@ def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
         ("site", "ga4" in facts.connected),
         ("whatsapp", whatsapp_set),
     ) if on]
+    sources = [plan_connections.state(facts, provider, available=available)
+               for provider, available in (("ga4", ga4.ga4_configured()), ("meta", meta.meta_configured()))
+               if plan_connections.needed(facts, provider)]
     return {
         "connected": connected,
+        "verified_sources": [source["title"] for source in sources if source["status"] == "done"],
+        "pending_sources": [source["title"] for source in sources if source["status"] == "todo"],
         "has_numbers": facts.first_snapshot_at is not None,
         "first_numbers_at": _iso(facts.first_snapshot_at),
         "baseline": foundations.baseline_filled(facts.baseline),

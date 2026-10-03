@@ -80,7 +80,13 @@ export type TrialPayload = {
   weeks: { week: number; title_he: string }[];
   steps: TrialStep[];
   /** Week 1's aha, "המדידה עובדת": what is connected and whether real numbers came in. */
-  measurement: { connected: ("instagram" | "site" | "whatsapp")[]; has_numbers: boolean; first_numbers_at: string | null; baseline: boolean };
+  measurement: {
+    connected: ("instagram" | "site" | "whatsapp")[];
+    /** Plan-specific source names, only after a successful selected-source read. */
+    verified_sources?: string[];
+    pending_sources?: string[];
+    has_numbers: boolean; first_numbers_at: string | null; baseline: boolean;
+  };
   hypotheses: TrialHypothesis[];
 };
 

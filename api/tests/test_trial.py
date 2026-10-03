@@ -25,6 +25,7 @@ from app.deps import get_current_user
 from app.main import app
 from app.models import Asset, Business, Integration, PerformanceSnapshot, Strategy, User
 from app.services.jsonutil import dumps, loads
+from _verified_connection import verified_connection
 
 HEBREW = re.compile(r"[֐-׿]")
 
@@ -126,10 +127,15 @@ class TrialTestCase(unittest.TestCase):
         self.business.scraped_profile_json = dumps(stored)
         self.db.commit()
 
-    def connect(self, provider: str, business: Business | None = None) -> None:
+    def connect(self, provider: str, business: Business | None = None, *, verified=True) -> Integration:
         business = business or self.business
-        self.db.add(Integration(business_id=business.id, provider=provider, status="connected", external_id="x", display_name=provider))
+        item = Integration(business_id=business.id, provider=provider, status="connected", external_id="x", display_name=provider)
+        self.db.add(item)
+        self.db.flush()
+        if verified:
+            verified_connection(item)
         self.db.commit()
+        return item
 
     def add_assets(self, count: int, business: Business | None = None) -> None:
         business = business or self.business
@@ -259,9 +265,10 @@ class TrialTestCase(unittest.TestCase):
         self.assertRegex(step["note_he"], HEBREW)
 
     def test_site_data_follows_the_plan(self):
-        self.save_profile({"quarter_plan": PLAN, "integrations_checklist": [{"key": "whatsapp_link"}]})
+        self.save_profile({"quarter_plan": {**PLAN, "integrations": [{"key": "whatsapp_link"}]},
+                           "integrations_checklist": [{"key": "ga4"}]})
         self.assertNotIn("site_data", self.steps())
-        self.save_profile({"integrations_checklist": [{"key": "ga4"}, {"key": "whatsapp_link"}]})
+        self.save_profile({"quarter_plan": PLAN})
         step = self.steps()["site_data"]
         self.assertEqual(step["status"], "todo")
         self.assertIn("יותר הזמנות באתר", step["why_he"])
@@ -375,7 +382,8 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(self.status("start_posts"), "locked")
 
     def test_only_plan_sources_are_asked_and_links_are_not_grants(self):
-        self.save_profile({"quarter_plan": PLAN, "integrations_checklist": [{"key": "ga4", "status": "have"}]})
+        self.save_profile({"quarter_plan": {**PLAN, "integrations": [{"key": "ga4"}]},
+                           "integrations_checklist": [{"key": "ga4", "status": "have"}]})
         steps = self.steps()
         self.assertNotIn("instagram", steps)
         self.assertNotIn("whatsapp", steps)

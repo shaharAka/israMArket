@@ -171,9 +171,10 @@ export default function DashboardPage() {
     .map((post, index) => ({ post, index }))
     .filter(({ post }) => post.week === shownWeek);
 
-  // The brief reads the stored 3-month plan; a business from before it falls back to the
+  // The brief reads the stored ongoing plan; a business from before it falls back to the
   // month's hypothesis. Numbers are the owner's own (Revision 6), never invented.
   const plan = strategy?.quarter_plan ?? business?.quarter_plan;
+  const instagramNeeded = !Array.isArray(plan?.integrations) || plan.integrations.some(item => item.key === "instagram_insights");
   const direction =
     plan?.strategy.one_liner_he ||
     strategy?.monthly_horizon_plan?.hypothesis ||
@@ -279,7 +280,7 @@ export default function DashboardPage() {
             {/* The free month's last week, and after it with nothing paid: one line to /billing. */}
             <BillingReminder />
             <HypothesisStatus trial={guided ? trial : null} />
-            {guided ? null : instagram && needsInstagram(instagram) ? (
+            {guided ? null : instagramNeeded && instagram && needsInstagram(instagram) ? (
               <InstagramNudge connected={instagram.meta_connected} />
             ) : null}
             {guided ? null : <SetupChecklist />}

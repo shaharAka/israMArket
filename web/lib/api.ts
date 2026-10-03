@@ -1609,6 +1609,8 @@ export type SetupItem = {
   /** Why this step changes the plan, in the owner's words. */
   why: string;
   done: boolean;
+  /** A source the plan needs but this app cannot read yet. Excluded from setup totals. */
+  status?: "soon";
   action_href: string;
   action_label: string;
 };
