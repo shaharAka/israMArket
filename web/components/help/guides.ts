@@ -709,7 +709,7 @@ export const GUIDES: Record<HelpTopic, Guide> = {
 
 /** The order `/help` lists them in: connecting first, then your own links, then others. */
 export const HELP_GROUPS: { title: string; topics: HelpTopic[] }[] = [
-  { title: "לחבר את הנתונים", topics: ["google_analytics", "instagram_business", "facebook_data", "tiktok_data"] },
+  { title: "נתונים וחיבורים", topics: ["google_analytics", "instagram_business", "facebook_data", "tiktok_data"] },
   { title: "הקישורים שלכם", topics: ["website", "instagram", "facebook", "tiktok", "whatsapp_business"] },
   { title: "גוגל ועסקים אחרים", topics: ["google_business_profile", "competitor_instagram"] },
 ];
