@@ -1,5 +1,7 @@
 "use client";
 
+import { FindingRehearsal } from "./FindingRehearsal";
+
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
 import { BrandMark } from "@/lib/icons";
@@ -122,9 +124,10 @@ export function ResultsWorkshop() {
 }
 
 export function ResultsPreview() {
+  const [view, setView] = useState("app");
   const { palette } = useDesignPalette();
   return <DesignScope palette={palette} className={styles.preview}><div className={styles.previewContainer}>
     <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><Link href="/design">לספריית העיצוב ←</Link></header>
-    <main><ResultsWorkshop /></main>
+    <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label="תצוגת סקירת התוצאות" value={view} onChange={setView} options={[{ value: "app", label: "הרכיב באפליקציה" }, { value: "concept", label: "הרעיון הקודם" }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
   </div></DesignScope>;
 }

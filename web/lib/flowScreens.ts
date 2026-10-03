@@ -1,4 +1,4 @@
-/** Real route captures made through the demo UI on 2 Oct 2026. All account data is synthetic.
+/** Real route captures made through the demo UI on 2–3 Oct 2026. All account data is synthetic.
  * OAuth, generating and publishing states stay schematic until those states are captured.
  * Do not relabel a shared route's screenshot as proof of a distinct state or customer.
  */

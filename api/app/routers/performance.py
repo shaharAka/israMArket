@@ -17,6 +17,7 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
+from app.services import recommendation_context
 
 router = APIRouter(prefix="/performance", tags=["performance"])
 logger = logging.getLogger(__name__)
@@ -309,6 +310,8 @@ def sync(business: Business = Depends(get_business), db: Session = Depends(get_d
 def weekly(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     snap = _sync_payload(business, db)
     strategy = _active_strategy(db, business)
+    plan = serialize_strategy(strategy, business)
+    ga4_data, meta_data, basis = recommendation_context.prepare(business, plan, snap)
     business_payload = {
         "name": business.name,
         "business_type": field_label(business.business_type),
@@ -316,17 +319,19 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
+        "analysis_basis": basis,
     }
     try:
-        suggestions = recommend(
+        proposed = recommend(
             business_payload,
-            serialize_strategy(strategy),
-            snap["diagnostic"],
-            snap["ga4"],
-            snap["meta"],
+            recommendation_context.for_model(plan),
+            snap["diagnostic"] if not basis["excluded_sources"] else {},
+            ga4_data,
+            meta_data,
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(status_code=502, detail="לא הצלחנו להכין הצעה כרגע. התוכנית והנתונים נשמרו; אפשר לנסות שוב.") from exc
+    suggestions = recommendation_context.bind(proposed, basis, plan)
     rec = Recommendation(
         business_id=business.id,
         week_of=week_of(),
@@ -343,11 +348,5 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
     )
     return {
         "performance": snap,
-        "recommendation": {
-            "id": rec.id,
-            "week_of": rec.week_of,
-            "suggestions": suggestions,
-            "created_at": rec.created_at.isoformat(),
-            "webhook_deliveries": deliveries,
-        },
+        "recommendation": {**recommendation_context.serialize(rec, plan, business), "webhook_deliveries": deliveries},
     }

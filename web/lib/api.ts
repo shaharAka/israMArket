@@ -1564,31 +1564,40 @@ const DEMO_PERFORMANCE: PerformancePayload = {
   },
 };
 
-const DEMO_RECS: RecommendationPayload = {
-  week_of: "2026-09-01",
+/** Fictional source facts; no inferred messages, sales or prior-year results. */
+export const DEMO_RECS: RecommendationPayload = {
+  id: 1,
+  created_at: "2026-09-05T08:00:00Z",
+  week_of: "2026-08-31",
   suggestions: {
-    week_summary: "הרילס מצליח, אבל אנשים יוצאים מעמוד החג בלי להזמין. כדאי שהפוסט של מארז ראש השנה ישלח ישר לוואטסאפ.",
+    week_summary: "נבדוק אם הסבר ברור יותר במארז עוזר ללקוחות לבחור.",
+    basis: {
+      version: 1, snapshot_id: 1, plan_id: DEMO_STRATEGY.id,
+      sources: [
+        { key: "ga4", label: "נתוני האתר", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
+        { key: "meta_ads", label: "דיווח המודעות של מטא", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
+      ],
+      observations: [
+        { source: "ga4", metric: "sessions", label: "כניסות לאתר", value: 1840 },
+        { source: "ga4", metric: "conversions", label: "פעולות חשובות באתר", value: 63 },
+        { source: "meta_ads", metric: "link_clicks", label: "לחיצות על קישור במודעות", value: 160 },
+      ],
+      limits: ["הנתונים מומצאים לצורך הדגמה. פעולות חשובות אינן בהכרח פניות או הזמנות.", "אין כאן בדיקה שמוכיחה למה הלקוחות פעלו כך. זהו ניסוי מוצע, ולא מסקנה על המכירות."],
+    },
     suggestions: [
       {
-        priority: "high",
-        title: "שלחו מהפוסט של המארז ישר לוואטסאפ",
-        action: "במקום «לפרטים באתר» שימו «וואטסאפ להזמנת מארז עד רביעי».",
-        evidence: "יותר מדי אנשים עוזבים את דף החג בלי להזמין.",
-        target: "קרוסלת מארז ראש השנה",
+        priority: "medium", title: "נסביר מה יש במארז לפני שמבקשים להזמין",
+        action: "בפוסט המארז נוסיף פירוט קצר של התכולה ומועד האיסוף, ונשאיר בקשה אחת להזמנה.",
+        evidence: "בתרחיש יש כניסות ופעולות באתר, אבל אין מדידה מאומתת של הזמנות. אפשר לבדוק ניסוח אחד בלי להסיק מה גרם לתוצאות.",
+        target: "טיוטת מארז סוכות בתוכנית", hypothesis: "ייתכן שפרטי המארז יעזרו לבחור. הנתונים אינם מוכיחים שחוסר במידע מונע הזמנות.",
+        success_check: "אחרי שבוע נבדוק לחיצות מהפוסט. לפני מסקנה על הזמנות, נוודא שאפשר לזהות אותן באתר.",
+        review: { kind: "post", status: "ready", href: `/posts?post=5&plan=${DEMO_STRATEGY.id}&post_uid=demo-p6&recommendation=1&suggestion=0`, label: "לבדוק את ההצעה בפוסט", note_he: "נפתח את הפוסט כפי שהוא. ההצעה לא נערכת ולא מתפרסמת אוטומטית.", plan_id: DEMO_STRATEGY.id, post_uid: "demo-p6" },
       },
       {
-        priority: "medium",
-        title: "פרסמו את שעות הסגירה יום לפני החג",
-        action: "פרסמו את תמונת השעות 36 שעות לפני ראש השנה, לא ביום החג עצמו.",
-        evidence: "בשנה שעברה שאלו הרבה על שעות הפתיחה.",
-        target: "פוסט התמונה של שבוע 2",
-      },
-      {
-        priority: "low",
-        title: "העבירו קצת תקציב מודעות למי שכבר צפה",
-        action: "הורידו מעט ממודעות החג, והשקיעו יותר במי שכבר ראה את רילס החלות.",
-        evidence: "המודעות מביאות צפיות, אבל פחות הזמנות ביחס לעלות.",
-        target: "מודעות אינסטגרם",
+        priority: "medium", title: "נוודא מה נחשב לפעולה חשובה באתר",
+        action: "בדקו עם מי שמנהל את האתר אם הזמנה או פנייה נמדדות בנפרד מלחיצה.", evidence: "63 הפעולות בדוגמה אינן ספירה מאומתת של הזמנות.", target: "מדידת האתר",
+        success_check: "ננסה פנייה או הזמנה לבדיקה, ונאשר שאירוע מתאים הגיע למערכת.",
+        review: { kind: "measurement", status: "ready", href: "/integrations", label: "לבדוק את החיבורים", note_he: "חיבור פעיל אינו מאשר מה בדיוק נמדד באתר.", plan_id: DEMO_STRATEGY.id },
       },
     ],
   },
@@ -3645,7 +3654,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/performance/weekly" && method === "POST") {
     return { performance: DEMO_PERFORMANCE, recommendation: DEMO_RECS } as T;
   }
-  if (path === "/recommendations/latest" || (path === "/recommendations/generate" && method === "POST")) {
+  if (path === "/recommendations/latest" || path === "/recommendations/1" || (path === "/recommendations/generate" && method === "POST")) {
     return DEMO_RECS as T;
   }
   if (path.startsWith("/integrations/webhooks") && method === "POST") {
@@ -4048,6 +4057,7 @@ export const endpoints = {
       method: "POST",
     }),
   recommendations: () => api<RecommendationPayload>("/recommendations/latest"),
+  recommendation: (id: number) => api<RecommendationPayload>(`/recommendations/${id}`),
   generateRecommendations: () => api<RecommendationPayload>("/recommendations/generate", { method: "POST" }),
   /** What the owner has not set up yet, grouped, plus the single next step to take. */
   setup: () => api<SetupPayload>("/setup"),
@@ -5079,6 +5089,7 @@ export type MetaAdsReport = MetaReadState & {
 };
 
 export type PerformancePayload = {
+  id?: number | null;
   sources?: { ga4?: SourceReadiness };
   created_at?: string;
   /** False when nothing has been synced yet — a normal state, not an error. */
@@ -5215,15 +5226,36 @@ export type AudiencePerformance = {
 export type RecommendationPayload = {
   /** False when no weekly loop has run yet — a normal state, not an error. */
   available?: boolean;
+  id?: number | null;
+  created_at?: string;
   week_of: string;
   suggestions: {
     week_summary: string;
+    basis?: {
+      version: number;
+      snapshot_id?: number | null;
+      plan_id?: number | null;
+      sources: { key: string; label: string; status: string; period: { start?: string; end?: string }; read_at: string; stale?: boolean; age_days?: number | null }[];
+      observations: { source: string; metric: string; label: string; value: number }[];
+      limits: string[];
+    } | null;
     suggestions: {
       priority: "high" | "medium" | "low";
       title: string;
       action: string;
       evidence: string;
       target: string;
+      hypothesis?: string;
+      success_check?: string;
+      review?: {
+        kind: "post" | "plan" | "measurement" | "website";
+        status: "ready" | "legacy" | "stale" | "missing" | "changed" | "published";
+        href: string;
+        label: string;
+        note_he: string;
+        plan_id?: number | null;
+        post_uid?: string | null;
+      };
     }[];
   };
   webhook_deliveries?: { url: string; ok: boolean; error?: string }[];
