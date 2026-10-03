@@ -11,15 +11,17 @@ from __future__ import annotations
 
 import threading
 import time
-from collections import defaultdict, deque
+from collections import deque
 
 from fastapi import HTTPException, Request
 
 from app.config import get_settings
 
-_hits: dict[str, deque[float]] = defaultdict(deque)
+_hits: dict[str, deque[float]] = {}
+_expires_at: dict[str, float] = {}
 _lock = threading.Lock()
 _MAX_KEYS = 10_000
+_next_prune = 0.0
 
 
 def _client_ip(request: Request) -> str:
@@ -41,26 +43,41 @@ def _client_ip(request: Request) -> str:
 
 def allow(key: str, limit: int, window_seconds: int) -> bool:
     """Record a hit and report whether it is within budget."""
+    global _next_prune
+    if limit <= 0:
+        return False
     now = time.monotonic()
     cutoff = now - window_seconds
     with _lock:
+        if key not in _hits:
+            if len(_hits) >= _MAX_KEYS and now >= _next_prune:
+                # Each namespace has its own window. Never reclaim a long-lived
+                # allowance using another endpoint's shorter cutoff.
+                for stale in [k for k, expires in _expires_at.items() if expires < now]:
+                    _hits.pop(stale, None)
+                    _expires_at.pop(stale, None)
+                _next_prune = now + 1.0
+            if len(_hits) >= _MAX_KEYS:
+                # Preserve active allowances; new identities retry after room frees.
+                return False
+            _hits[key] = deque()
         bucket = _hits[key]
+        _expires_at[key] = max(_expires_at.get(key, 0.0), now + window_seconds)
         while bucket and bucket[0] < cutoff:
             bucket.popleft()
         if len(bucket) >= limit:
             return False
         bucket.append(now)
-        # Bound memory: drop empty buckets if the map grows unreasonably.
-        if len(_hits) > _MAX_KEYS:
-            for stale in [k for k, v in _hits.items() if not v]:
-                _hits.pop(stale, None)
         return True
 
 
 def reset() -> None:
     """Test helper."""
+    global _next_prune
     with _lock:
         _hits.clear()
+        _expires_at.clear()
+        _next_prune = 0.0
 
 
 def auth_rate_limit(name: str, *, by_email: bool = False):
