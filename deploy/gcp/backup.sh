@@ -11,8 +11,9 @@
 #   - everything else under the data dir (generated card images, uploads) is tarred.
 #
 # Objects: gs://<bucket>/<prefix>/<YYYY-MM-DD>/<timestamp>/{isramarket.db.gz,files.tar,SHA256SUMS}
-# Retention: the bucket's lifecycle rule deletes objects older than 30 days
-# (backup-lifecycle.json). The last 3 local copies stay on the data disk as well.
+# Retention: the bucket's lifecycle rule schedules deletion after 30 days
+# (backup-lifecycle.json); soft-deleted cloud objects remain recoverable for 7 more days.
+# Keep at most 3 completed local copies per prefix and expire all prefixes after 30 days.
 #
 # Restore: README.md, "Restore from a backup".
 set -euo pipefail
@@ -85,9 +86,11 @@ dest="gs://$BUCKET/$PREFIX/$day/$ts/"
 log "upload to $dest"
 gcloud storage cp --no-user-output-enabled "$work"/* "$dest"
 
-# Keep only the newest local copies of this prefix.
-find "$LOCAL_DIR" -mindepth 1 -maxdepth 1 -type d -name "$PREFIX-*" -printf '%f\n' \
-  | sort -r | tail -n +$((KEEP_LOCAL + 1)) \
-  | while read -r old; do rm -rf -- "${LOCAL_DIR:?}/$old"; done
+# Daily age cleanup also expires infrequent pre-update and manual-check prefixes.
+# Run only after this upload succeeds. The count cap excludes unfinished copies;
+# old snapshot work directories still expire so failed backups cannot retain data forever.
+# shellcheck source=prune-backups.sh
+source "$(dirname "${BASH_SOURCE[0]}")/prune-backups.sh"
+prune_local_backups "$LOCAL_DIR" "$PREFIX" "$(date -u -d '30 days ago' +%Y%m%dT%H%M%SZ)" "$KEEP_LOCAL"
 
 log "done: $dest ($(du -sh "$work" | cut -f1))"
