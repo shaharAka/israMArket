@@ -20,12 +20,12 @@ const EXAMPLE_ASSETS: MetaAssets = {
   scopes: ["ads_read"], errors: {},
 };
 
-export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect }: {
-  item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
+export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect, primary = false }: {
+  primary?: boolean; item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"connect" | "choose" | "done">("connect");
   const [assets, setAssets] = useState<MetaAssets | null>(null);
-  const [ads, setAds] = useState(true);
+  const [ads, setAds] = useState(false);
   const [page, setPage] = useState("");
   const [account, setAccount] = useState("");
   const [pixel, setPixel] = useState("");
@@ -55,8 +55,8 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setNote("");
       const current = latestItem.current;
       setAssets(result);
-      setPage(result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : result.pages.length === 1 ? result.pages[0].page_id : "");
-      void chooseAccount(result.ad_accounts.some(a => a.id === current?.ad_account_id) ? current!.ad_account_id! : result.ad_accounts.length === 1 ? result.ad_accounts[0].id : "");
+      setPage(previous => result.pages.some(p => p.page_id === previous) ? previous : result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : result.pages.length === 1 ? result.pages[0].page_id : "");
+      void chooseAccount(result.ad_accounts.some(a => a.id === current?.ad_account_id) ? current!.ad_account_id! : "");
       setStage("choose"); setOpen(true);
       setCanResume(false);
     } catch (err) {
@@ -104,7 +104,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     } finally { if (request === pixelRequest.current) setLoadingPixels(false); }
   }
 
-  async function connect() {
+  async function connect(includeAds = ads) {
     if (demo) { await loadAssets(); return; }
     if (!ready) { setNote("החיבור למטא עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך."); return; }
     // Open synchronously during the click so the browser can allow the consent window.
@@ -113,7 +113,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     popup.current = child; returned.current = false;
     setBusy(true); setNote("");
     try {
-      const { url, attempt } = await endpoints.metaStart(ads, Boolean(child));
+      const { url, attempt } = await endpoints.metaStart(includeAds, Boolean(child));
       expectedAttempt.current = attempt;
       setCanResume(true);
       if (!child) { window.location.assign(url); return; }
@@ -169,27 +169,33 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
         </div>
       </div>
     ) : <>
-      <UIAction variant="primary" onClick={() => {
+      <UIAction variant={primary ? "primary" : "secondary"} disabled={!ready && !demo && !needsChoice} onClick={() => {
         setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = "";
         if (needsChoice) { setBusy(true); void loadAssets(); } else setStage("connect");
-      }}>{needsChoice ? "לבחור את העסק שלי" : "לחבר את Meta"}</UIAction>
-      <p className={styles.hint}>פייסבוק, אינסטגרם ונתוני המודעות: מחברים פעם אחת, עם החשבון שמנהל את העסק.</p>
+      }}>{needsChoice ? "לבחור את העסק שלי" : "לחבר את פייסבוק ואינסטגרם"}</UIAction>
+      <p className={styles.hint}>{!ready && !demo ? "החיבור עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך." : "עם חשבון הפייסבוק שמנהל את הדף. נתוני מודעות אפשר להוסיף בהמשך."}</p>
     </>}
     {note && !open && <p role="status">{note}</p>}
-    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק למטא" : stage === "choose" ? "איזה עסק לחבר?" : "החיבור מוכן"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
+    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק למטא" : stage === "choose" ? "איזה עסק לחבר?" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>
-          <p>מטא תפתח חלון מאובטח לאישור הגישה. אחריו תבחרו כאן את הדף ואת חשבון הפרסום שלכם.</p>
-          <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי להבין כמה הוצאתם ומה המודעות הביאו.</small></span></label>
+          <p>פייסבוק תפתח חלון לאישור קריאת הנתונים. אחריו תבחרו את הדף העסקי; האינסטגרם המקצועי שמקושר אליו ייבחר איתו.</p>
+          <details className={styles.setupGuide}><summary>יש לכם גם מודעות בתשלום?<IconChevron className={styles.disclosureIcon} /></summary>
+            <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי לבדוק הוצאות ותוצאות. אפשר גם בהמשך.</small></span></label>
+          </details>
           <p className={styles.hint}>גישה לקריאת נתונים בלבד. פרסום פוסטים ושינוי מודעות דורשים אישור נפרד.</p>
-          <UIAction onClick={connect} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של מטא" : "להמשיך למטא"}</UIAction>
+          <UIAction onClick={() => void connect()} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של מטא" : "לאשר בפייסבוק ולבחור את הדף"}</UIAction>
           {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
         </>}
         {stage === "choose" && assets && <>
           <label className={styles.field}>הדף העסקי<select value={page} onChange={e => setPage(e.target.value)}><option value="">בלי דף כרגע</option>{assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}</select></label>
           {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? "האינסטגרם המקושר לדף הזה יתחבר יחד איתו." : "לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף במטא ולחזור לכאן."}</p>}
           {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || "לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס למטא מנהל את הדף ושבחרתם בו בחלון האישור."} במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק.</p>}
+          <details className={styles.setupGuide} open={Boolean(account) || undefined}>
+            <summary>גם נתוני מודעות ומעקב באתר?<IconChevron className={styles.disclosureIcon} /></summary>
+            <div className={styles.setupBody}>
+              {assets.scopes.some(scope => ["ads_read", "ads_management"].includes(scope)) ? <>
           <label className={styles.field}>חשבון הפרסום <small>אפשר גם בהמשך</small><select value={account} onChange={e => { void chooseAccount(e.target.value); }}><option value="">בלי נתוני מודעות כרגע</option>{assets.ad_accounts.map(a => <option key={a.id} value={a.id}>{a.name}{a.currency ? ` (${a.currency})` : ""}</option>)}</select></label>
           {!assets.ad_accounts.length && <p className={styles.hint}>{assets.errors.ads?.note_he || "לא נמצאו חשבונות פרסום. אפשר להמשיך עם הדף ולחבר פרסום בהמשך."}</p>}
           {account && <>
@@ -198,11 +204,17 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             {!loadingPixels && !pixels.length && <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
           </>}
           {!account && <p className={styles.hint}>כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף.</p>}
-          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (!page && !account)}>אלה החשבונות של העסק שלי</UIAction>
+              </> : <>
+                <p className={styles.hint}>אם אתם מפרסמים בתשלום, אפשר לאשר קריאה נוספת בפייסבוק. הדף נשאר בבחירה שלכם.</p>
+                <UIAction variant="secondary" onClick={() => void connect(true)} busy={busy}>לחבר גם את נתוני המודעות</UIAction>
+              </>}
+            </div>
+          </details>
+          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (!page && !account)}>{account ? "אלה החשבונות של העסק שלי" : "זה הדף של העסק שלי"}</UIAction>
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>
-          <p>החשבונות נשמרו. בעמוד התוצאות תוכלו לרענן את הנתונים ולראות מה כדאי לשנות בתוכנית ובפוסט הבא.</p>
+          <p>הבחירה נשמרה. בעמוד התוצאות אפשר לנסות לקרוא את הנתונים; אישור גישה לבדו אינו תוצאות.</p>
           {account && !pixel && <>
             <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
             <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב שלי</UIAction>
@@ -225,6 +237,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             </details>
             <p className={styles.hint}>הבדיקה אינה מאשרת סכומי רכישה, מעקב מהשרת או מניעת ספירה כפולה.</p>
           </div>}
+          <Link href="/strategy" className={styles.next}>להמשיך בתוכנית ←</Link>
           <Link href="/performance" className={styles.next}>לראות את התוצאות ←</Link>
           <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>
         </>}

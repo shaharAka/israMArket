@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import Link from "next/link";
 import {
   AppShell,
   Button,
@@ -12,8 +13,8 @@ import { UIAction } from "@/components/design/Controls";
 import { GUIDES } from "@/components/help/guides";
 import { HowToFind } from "@/components/help/HowToFind";
 import { SendToHelper } from "@/components/help/SendToHelper";
-import { IconCamera } from "@/components/instagram/SourceLink";
 import { MetaConnection } from "@/components/integrations/MetaConnection";
+import { connectionRecommendation, type ConnectionKey } from "@/components/integrations/connectionRecommendation";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
 import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
 import {
@@ -22,13 +23,12 @@ import {
   isDemo,
   type Business,
   type IntegrationsPayload,
+  type SetupPayload,
 } from "@/lib/api";
 import {
-  IconChart,
   IconCheck,
   IconChevron,
   IconCopy,
-  IconGlobe,
   IconLink,
   IconWhatsApp,
 } from "@/lib/icons";
@@ -43,9 +43,6 @@ import {
 /** A connection's card: depth, no frame; the details row sits close to the bottom edge. */
 const ROW_CARD = `${CARD} px-5 pb-2 pt-5 sm:px-6 sm:pb-3 sm:pt-6`;
 
-/** The body of a card lines up with the title on wider screens, past the icon tile. */
-const ROW_BODY = "mt-5 sm:ps-14";
-
 /** The quiet counterpart of a text action: "לנתק" is available, never inviting. */
 const QUIET_ACTION =
   "inline-flex min-h-11 items-center text-[14px] font-medium text-[color:var(--ink-muted)] underline-offset-4 transition-colors hover:text-[color:var(--danger)] hover:underline";
@@ -59,7 +56,6 @@ const DETAIL_BLOCK = "border-t border-[var(--rule)] pt-4";
 /** The short heading of a block inside an expand. */
 const DETAIL_TITLE = "font-semibold text-[color:var(--ink)]";
 
-/** Code and keys in the technical notes, on paper rather than in a bordered box. */
 const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12px] shadow-[inset_0_0_0_1px_var(--rule)]";
 
 /**
@@ -68,7 +64,7 @@ const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12
  * Plain Hebrew on the face (UI-RULES rule 4): Google Analytics is "נתוני האתר", because that
  * is what it is to the owner, and the product's own name appears once, inside the row's
  * expand, for whoever has to find it in Google. OAuth, `.env` keys and webhooks are for
- * whoever set up the server; they live behind expands marked for technical users.
+ * operators; the customer screen explains availability and recovery instead.
  */
 export default function IntegrationsPage() {
   const [data, setData] = useState<IntegrationsPayload | null>(null);
@@ -91,7 +87,12 @@ export default function IntegrationsPage() {
   });
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
-  const [devConfigOpen, setDevConfigOpen] = useState(false);
+  const [setup, setSetup] = useState<SetupPayload | null>(null);
+  const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(() => {
+    if (typeof window === "undefined") return undefined;
+    const key = window.location.hash.slice(1);
+    return ["website", "whatsapp", "ga4", "meta"].includes(key) ? key as ConnectionKey : undefined;
+  });
 
   // Selection still needs the owner's confirmation, even when only one site is listed.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");
@@ -122,6 +123,8 @@ export default function IntegrationsPage() {
       .catch(() => {
         // The row shows its own empty state; the other connections still load.
       });
+
+    await endpoints.setup().then(setSetup).catch(() => { setSetup(null); });
 
     await endpoints
       .business()
@@ -163,9 +166,8 @@ export default function IntegrationsPage() {
     }
     if (!data?.ga4_ready) {
       setError(
-        "אי אפשר עדיין להתחבר לגוגל בלחיצה, כי החיבור לא הוגדר בשרת. מי שהקים לכם את המערכת ימצא הנחיות למטה."
+        "החיבור לגוגל עדיין לא זמין. אפשר להמשיך בתוכנית ולחזור לכאן בהמשך."
       );
-      setDevConfigOpen(true);
       return;
     }
     try {
@@ -245,27 +247,263 @@ export default function IntegrationsPage() {
     }
   }
 
-  // The page's one dark button belongs to the first channel that still needs something,
-  // in the order the rows appear. When everything is connected (the demo, or a finished
-  // setup) the page is asking for nothing, so nothing competes: the actions that remain —
-  // re-scanning the site, switching the demo off — are outlines and links.
-  // The WhatsApp link comes right after the site: it takes a minute, needs no account and
-  // no approval, and it is the measurement the plan promises from day one.
-  const whatsappSet = Boolean(whatsapp?.number_e164);
-  const primaryKey: "website" | "whatsapp" | "ga4" | "meta" | null = !business?.website_url
-    ? "website"
-    : whatsapp && !whatsappSet
-      ? "whatsapp"
-      : !ga4Connected || ["unchecked", "reconnect", "unavailable"].includes(ga4State?.status || "")
-        ? "ga4"
-        : !metaConnected
-          ? "meta"
-          : null;
+  const recommendation = connectionRecommendation(business, setup, data, Boolean(whatsapp?.number_e164));
+  const primaryKey = recommendation?.key || null;
+  const activeKey = expanded === undefined ? primaryKey : expanded;
+
+  const connectionRows: Record<ConnectionKey, ReactNode> = {
+    website: (
+<ConnectionSection source="website" title="האתר של העסק" status={business?.website_url ? "כתובת נשמרה" : "לבחירה"} open={activeKey === "website"} onOpen={setExpanded}>
+          <section className={ROW_CARD}>
+            <div className="pb-3">
+              <label htmlFor="business-website" className={LABEL}>כתובת האתר</label>
+              <div className="flex flex-col gap-2.5 sm:flex-row">
+                <input
+                  id="business-website"
+                  type="url"
+                  value={websiteInput}
+                  onChange={(e) => setWebsiteInput(e.target.value)}
+                  placeholder="https://myshop.co.il"
+                  dir="ltr"
+                  className={`${FIELD} sm:flex-1`}
+                />
+                <Button
+                  size="md"
+                  tone="primary"
+                  variant={primaryKey === "website" ? "solid" : "outline"}
+                  disabled={scanningWebsite}
+                  onClick={handleUpdateWebsite}
+                  className="shrink-0 whitespace-nowrap"
+                >
+                  {scanningWebsite ? "קוראים את האתר…" : business?.website_url ? "לקרוא שוב את האתר" : "לקרוא את האתר"}
+                </Button>
+              </div>
+              <HowToFind topic="website" className="mt-1" />
+            </div>
+
+            <RowDetails summary="מה זה נותן, ומה אם אין לי אתר?">
+              <p>
+                אנחנו קוראים מהאתר את הצבעים, הלוגו, הגופנים וסגנון הצילום, ואת מה שאתם מוכרים.
+                לפי זה אנחנו בונים פוסטים שנראים כאילו העסק שלכם הכין אותם.
+              </p>
+              <p>
+                אין אתר, או שהוא עוד בבנייה? זה בסדר. השאירו את השדה ריק, ונעבוד מתיאור העסק
+                ומהעמודים באינסטגרם ובפייסבוק. כשהאתר יעלה, חזרו לכאן ולחצו ״לקרוא שוב את האתר״.
+              </p>
+            </RowDetails>
+          </section>
+
+          {/* ============================================================== */}
+          {/* CONNECTION 2: the WhatsApp tracked link (ours, nothing to connect) */}
+          {/* ============================================================== */}
+          </ConnectionSection>
+    ),
+    whatsapp: (
+<ConnectionSection source="whatsapp" title="קישור הוואטסאפ" status={whatsapp?.number_e164 ? "פעיל" : "לבחירה"} open={activeKey === "whatsapp"} onOpen={setExpanded}>
+          <WhatsappRow data={whatsapp} primary={primaryKey === "whatsapp"} onChange={setWhatsapp} />
+          </ConnectionSection>
+    ),
+    ga4: (
+<ConnectionSection source="ga4" title="נתוני האתר" status={ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? "עדיין לא זמין" : "לא מחובר"} account={ga4Item?.display_name} open={activeKey === "ga4"} onOpen={setExpanded}>
+          <section className={ROW_CARD}>
+            <div className="pb-3">
+              <p className="mb-3 text-[13px] leading-6 text-[var(--ink-soft)]">הכניסה עם Google אינה מחברת את המדידה. כאן מאשרים קריאה בנפרד ובוחרים את האתר.</p>
+              {ga4NeedsSelection ? (
+                <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
+                  <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
+                    הגישה לגוגל אושרה. בחרו את האתר של העסק; אחרי הבחירה נבדוק את הנתונים שלו.
+                  </p>
+                  <label htmlFor="ga4-property" className={`${LABEL} mt-4`}>בחירת האתר</label>
+                  <div className="flex flex-col gap-2.5 sm:flex-row">
+                    <SelectFrame>
+                    <select
+                      id="ga4-property"
+                      value={selectedGa4Property}
+                      onChange={(e) => setSelectedGa4Property(e.target.value)}
+                      className={SELECT}
+                    >
+                      <option value="">-- בחרו את האתר --</option>
+                      {ga4Item?.properties?.map((prop) => (
+                        <option key={prop.property_id} value={prop.property_id}>
+                          {prop.display_name || "אתר ללא שם"}{prop.account ? ` (${prop.account})` : ""}
+                        </option>
+                      ))}
+                    </select>
+                    </SelectFrame>
+
+                    <Button
+                      size="md"
+                      tone="primary"
+                      variant={primaryKey === "ga4" ? "solid" : "outline"}
+                      disabled={savingGa4 || !selectedGa4Property}
+                      onClick={handleSaveGa4Property}
+                      className="shrink-0 whitespace-nowrap"
+                    >
+                      {savingGa4 ? "בודקים את הנתונים…" : "זה האתר שלי"}
+                    </Button>
+                  </div>
+                </div>
+              ) : ga4HasSelection ? (
+                <>
+                <ConnectedLine
+                  account={
+                    <>
+                      האתר שנבחר:{" "}
+                      {/* Google's product code ("GA4") is not the owner's business name. */}
+                      <strong className="font-semibold text-[color:var(--ink)]">
+                        {(ga4Item?.display_name || ga4Item?.external_id || "").replace(/\s*\(GA4\)\s*$/, "")}
+                      </strong>
+                    </>
+                  }
+                >
+                  <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
+                    להחליף חשבון
+                  </button>
+                  <button type="button" onClick={() => handleDisconnect("ga4")} className={QUIET_ACTION}>
+                    לנתק
+                  </button>
+                </ConnectedLine>
+                {ga4State ? <SourceReadState state={ga4State} checking={savingGa4} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} /> : null}
+                </>
+              ) : ga4Item?.source_readiness?.status === "no_properties" ? (
+                <SourceReadState state={ga4Item.source_readiness} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} />
+              ) : (
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <Button
+                    size="md"
+                    tone="primary"
+                    variant={primaryKey === "ga4" ? "solid" : "outline"}
+                    onClick={handleStartGa4}
+                    disabled={!data?.ga4_ready}
+                  >
+                    <IconLink className="h-4 w-4" />
+                    <span>לחבר את נתוני האתר</span>
+                  </Button>
+                  <span className="text-[13px] text-[color:var(--ink-muted)]">
+                    {/* Shortened for the word budget; the full sentence is in the expand. */}
+                    {data && !data.ga4_ready ? "החיבור עדיין לא זמין. אפשר להמשיך בתוכנית." : "אישור לקריאת נתונים, בלי למסור סיסמה."}
+                  </span>
+                </div>
+              )}
+              {/* Connected from a different Google account than the one used to sign in:
+                  allowed, and said, with the account's address (routers/integrations.py). */}
+              {ga4Item?.account_note_he ? (
+                <p role="note" className="mt-3 flex items-start gap-2.5 text-[13px] leading-6 text-[color:var(--sand-dark)]">
+                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sun)]" />
+                  {ga4Item.account_note_he}
+                </p>
+              ) : null}
+              {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
+            </div>
+
+            <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
+              <p>
+                בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). הוא מראה כניסות לאתר ואת המקורות שלהן.
+                פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח.
+                החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר.
+              </p>
+              <p>הכניסה עם Google מזהה אתכם בישראמארקט. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר.</p>
+              <div>
+                <p className={DETAIL_TITLE}>1. מישהו אחר בנה או מנהל לכם את האתר?</p>
+                <p className="mt-1">
+                  בקשו ממנו להוסיף את הג׳ימייל שלכם כ<strong>צופה</strong> בנתוני האתר בגוגל
+                  (שם ההרשאה באנגלית: Viewer). לא צריך הרשאות ניהול.
+                </p>
+                <div className="mt-2">
+                  <SendToHelper
+                    title="ההודעה למי שבנה את האתר"
+                    message={GUIDES.google_analytics.stuck.message}
+                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר"
+                  />
+                </div>
+              </div>
+              <div className={DETAIL_BLOCK}>
+                <p className={DETAIL_TITLE}>2. האתר עוד לא מחובר לגוגל בכלל?</p>
+                <p className="mt-1">
+                  פותחים חשבון בחינם ב-
+                  <a
+                    href="https://analytics.google.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
+                  >
+                    analytics.google.com
+                  </a>
+                  , מוסיפים את האתר (בגוגל זה נקרא ״נכס״) ומדביקים את הקוד שקיבלתם בהגדרות האתר:
+                  בוויקס, בוורדפרס או בשופיפיי.
+                </p>
+              </div>
+              <div className={DETAIL_BLOCK}>
+                <p className={DETAIL_TITLE}>3. אין לעסק אתר בכלל?</p>
+                <p className="mt-1">
+                  אפשר לדלג על החיבור הזה ולחבר רק את אינסטגרם ופייסבוק. שם נמדוד כמה אנשים ראו
+                  את הפוסטים ואיך הגיבו.
+                </p>
+              </div>
+            </RowDetails>
+          </section>
+
+          {/* ============================================================== */}
+          {/* CONNECTION 4: Instagram & Facebook */}
+          {/* ============================================================== */}
+          </ConnectionSection>
+    ),
+    meta: (
+<ConnectionSection source="meta" title="פייסבוק ואינסטגרם" status={metaConnected ? "החשבון נבחר" : metaNeedsSelection ? "נשאר לבחור דף" : data && !data.meta_ready ? "עדיין לא זמין" : "לא מחובר"} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
+          <section className={ROW_CARD}>
+            <div className="pb-3">
+              <MetaConnection primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
+            </div>
+
+            <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
+              <p>
+                מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה
+                הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית.
+              </p>
+              <p>
+                מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה
+                חברה.
+              </p>
+              <div>
+                <p className={DETAIL_TITLE}>1. החשבון שלכם פרטי?</p>
+                <p className="mt-1">
+                  פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל ›
+                  תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים › <strong>מעבר לחשבון מקצועי</strong> ›
+                  עסק או יוצר תוכן.
+                </p>
+              </div>
+              <div className={DETAIL_BLOCK}>
+                <p className={DETAIL_TITLE}>2. האינסטגרם חייב להיות מקושר לדף בפייסבוק</p>
+                <p className="mt-1">
+                  במסלול החיבור שלנו, בלי דף עסקי בפייסבוק אין גישה לנתוני האינסטגרם. אפשר לפתוח דף
+                  פשוט בחינם, ולחבר אליו את האינסטגרם בהגדרות הדף, תחת <strong>חשבונות מקושרים</strong>.
+                </p>
+              </div>
+              <div className={DETAIL_BLOCK}>
+                <p className={DETAIL_TITLE}>3. מישהו אחר מנהל לכם את הדף?</p>
+                <p className="mt-1">
+                  בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף.
+                </p>
+                <div className="mt-2">
+                  <SendToHelper
+                    title="ההודעה למי שמנהל את הדף"
+                    message={GUIDES.instagram_business.stuck.message}
+                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
+                  />
+                </div>
+              </div>
+            </RowDetails>
+          </section>
+          </ConnectionSection>
+    ),
+  };
+  const sourceOrder: ConnectionKey[] = ["website", "whatsapp", "ga4", "meta"];
+  if (primaryKey) { sourceOrder.splice(sourceOrder.indexOf(primaryKey), 1); sourceOrder.unshift(primaryKey); }
 
   return (
     <AppShell>
       <div className="mx-auto max-w-[800px]">
-        <PageHeader title="חיבורים" subtitle="כך התוכנית נבנית לפי מספרים אמיתיים, לא לפי ניחושים." />
+        <PageHeader title="חיבורים" subtitle="מחברים את מה שיעזור לדייק את התוכנית." />
 
         {/* One quiet line for demo/real mode instead of a band: this page is about the
             connections, not about the mode. The sun marks "this is a sample". */}
@@ -343,314 +581,18 @@ export default function IntegrationsPage() {
           </div>
         ) : null}
 
-        {/* Developer-only: the server is missing the keys that make the one-click connection
-            work. A quiet inset, not a card, and hidden in demo mode. */}
-        {(!data?.ga4_ready || !data?.meta_ready) && !demo ? (
-          <div className="mb-6 rounded-xl bg-[var(--soft)] px-4 py-2 text-[13px] leading-6 sm:px-5">
-            <div className="flex flex-wrap items-center justify-between gap-x-4">
-              <p className="py-2.5 text-[color:var(--ink-soft)]">
-                <span className="font-semibold text-[color:var(--ink)]">הגדרות שרת:</span>{" "}
-                {!data?.ga4_ready && !data?.meta_ready
-                  ? "חסרים מפתחות החיבור לגוגל ולפייסבוק, ולכן אי אפשר להתחבר בלחיצה."
-                  : !data?.ga4_ready
-                    ? "חסר מפתח החיבור לגוגל, ולכן אי אפשר להתחבר לגוגל בלחיצה."
-                    : "חסר מפתח החיבור לפייסבוק, ולכן אי אפשר להתחבר לאינסטגרם בלחיצה."}
-              </p>
-              <button
-                type="button"
-                aria-expanded={devConfigOpen}
-                onClick={() => setDevConfigOpen(!devConfigOpen)}
-                className={`${TEXT_ACTION} !text-[13px]`}
-              >
-                {devConfigOpen ? "להסתיר את ההנחיות" : "הנחיות למי שמתקין את השרת"}
-                <IconChevron
-                  className={`h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${devConfigOpen ? "rotate-90" : "-rotate-90"}`}
-                />
-              </button>
-            </div>
+        {data || error ? <div className="mb-6 space-y-2">
+          {recommendation ? <>
+            <p className="text-[13px] font-medium text-[var(--ink-muted)]">כדאי להתחיל כאן</p>
+            <h2 className="text-[20px] font-semibold text-[var(--ink)]">{recommendation.title}</h2>
+            <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{recommendation.why}</p>
+            {activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}>לפתוח את החיבור המומלץ</UIAction> : null}
+          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.</p>}
+          <Link href="/strategy" className={recommendation ? TEXT_ACTION : "drawn-button inline-flex min-h-11 items-center px-5 py-2"}>{recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"}</Link>
+        </div> : null}
 
-            {devConfigOpen ? (
-              <div className="mb-2 mt-1 space-y-3 border-t border-[var(--rule-dark)] pt-3 text-[color:var(--ink-soft)]">
-                <p>
-                  כדי שבעלי העסק יוכלו להתחבר בלחיצה אחת עם חשבון גוגל או פייסבוק, הגדירו את המפתחות האלה בקבצים <code className={CODE_CHIP}>.env</code> ו-<code className={CODE_CHIP}>api/.env</code>:
-                </p>
-                <div className="space-y-1 overflow-x-auto rounded-lg bg-[var(--paper)] p-3.5 font-mono text-[11px] leading-5 text-[color:var(--ink)] shadow-[inset_0_0_0_1px_var(--rule)]">
-                  <div># Google Analytics 4 (Google Cloud Console OAuth 2.0 Web Client)</div>
-                  <div>GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com</div>
-                  <div>GOOGLE_CLIENT_SECRET=your-google-client-secret</div>
-                  <div className="text-[var(--ink-muted)]"># Authorized redirect URIs (deploy/gcp/google-oauth.md):</div>
-                  <div className="text-[var(--ink-muted)]">#   http://localhost:3000/backend/integrations/ga4/callback</div>
-                  <div className="text-[var(--ink-muted)]">#   http://localhost:3000/backend/auth/google/callback</div>
-                  <div className="pt-2"># Meta Graph API (Meta for Developers - Business App)</div>
-                  <div>META_APP_ID=your-facebook-app-id</div>
-                  <div>META_APP_SECRET=your-facebook-app-secret</div>
-                  <div className="text-[var(--ink-muted)]"># Valid OAuth Redirect URI: http://localhost:8000/integrations/meta/callback</div>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-
-        {/* One card per connection, each answering the same two questions in the same order:
-            is it connected, and what do I press. Why it matters lives behind the card's expand. */}
         <div className="space-y-4">
-          {/* ============================================================== */}
-          {/* CONNECTION 1: Business Website & Brand Scraper */}
-          {/* ============================================================== */}
-          <section className={ROW_CARD}>
-            <RowHead
-              icon={IconGlobe}
-              title="האתר של העסק"
-              status={business?.website_url ? "מחובר" : "לא הוגדר"}
-              tone={business?.website_url ? "good" : "muted"}
-              note="מכאן אנחנו לומדים את הצבעים, הסגנון והניסוחים."
-            />
-
-            <div className={ROW_BODY}>
-              <label htmlFor="business-website" className={LABEL}>כתובת האתר</label>
-              <div className="flex flex-col gap-2.5 sm:flex-row">
-                <input
-                  id="business-website"
-                  type="url"
-                  value={websiteInput}
-                  onChange={(e) => setWebsiteInput(e.target.value)}
-                  placeholder="https://myshop.co.il"
-                  dir="ltr"
-                  className={`${FIELD} sm:flex-1`}
-                />
-                <Button
-                  size="md"
-                  tone="primary"
-                  variant={primaryKey === "website" ? "solid" : "outline"}
-                  disabled={scanningWebsite}
-                  onClick={handleUpdateWebsite}
-                  className="shrink-0 whitespace-nowrap"
-                >
-                  {scanningWebsite ? "קוראים את האתר…" : business?.website_url ? "לקרוא שוב את האתר" : "לקרוא את האתר"}
-                </Button>
-              </div>
-              <HowToFind topic="website" className="mt-1" />
-            </div>
-
-            <RowDetails summary="מה זה נותן, ומה אם אין לי אתר?">
-              <p>
-                אנחנו קוראים מהאתר את הצבעים, הלוגו, הגופנים וסגנון הצילום, ואת מה שאתם מוכרים.
-                לפי זה אנחנו בונים פוסטים שנראים כאילו העסק שלכם הכין אותם.
-              </p>
-              <p>
-                אין אתר, או שהוא עוד בבנייה? זה בסדר. השאירו את השדה ריק, ונעבוד מתיאור העסק
-                ומהעמודים באינסטגרם ובפייסבוק. כשהאתר יעלה, חזרו לכאן ולחצו ״לקרוא שוב את האתר״.
-              </p>
-            </RowDetails>
-          </section>
-
-          {/* ============================================================== */}
-          {/* CONNECTION 2: the WhatsApp tracked link (ours, nothing to connect) */}
-          {/* ============================================================== */}
-          <WhatsappRow data={whatsapp} primary={primaryKey === "whatsapp"} onChange={setWhatsapp} />
-
-          {/* ============================================================== */}
-          {/* CONNECTION 3: Google Analytics */}
-          {/* ============================================================== */}
-          <section className={ROW_CARD}>
-            <RowHead
-              icon={IconChart}
-              title="נתוני האתר"
-              status={ga4Item ? ga4Presentation.label : "לא מחובר"}
-              tone={ga4Item ? ga4Presentation.tone : "muted"}
-              note="כמה נכנסו לאתר ומאיפה הגיעו."
-            />
-
-            <div className={ROW_BODY}>
-              {ga4NeedsSelection ? (
-                <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
-                  <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
-                    הגישה לגוגל אושרה. בחרו את האתר של העסק; אחרי הבחירה נבדוק את הנתונים שלו.
-                  </p>
-                  <label htmlFor="ga4-property" className={`${LABEL} mt-4`}>בחירת האתר</label>
-                  <div className="flex flex-col gap-2.5 sm:flex-row">
-                    <SelectFrame>
-                    <select
-                      id="ga4-property"
-                      value={selectedGa4Property}
-                      onChange={(e) => setSelectedGa4Property(e.target.value)}
-                      className={SELECT}
-                    >
-                      <option value="">-- בחרו את האתר --</option>
-                      {ga4Item?.properties?.map((prop) => (
-                        <option key={prop.property_id} value={prop.property_id}>
-                          {prop.display_name || "אתר ללא שם"}{prop.account ? ` (${prop.account})` : ""}
-                        </option>
-                      ))}
-                    </select>
-                    </SelectFrame>
-
-                    <Button
-                      size="md"
-                      tone="primary"
-                      variant={primaryKey === "ga4" ? "solid" : "outline"}
-                      disabled={savingGa4 || !selectedGa4Property}
-                      onClick={handleSaveGa4Property}
-                      className="shrink-0 whitespace-nowrap"
-                    >
-                      {savingGa4 ? "בודקים את הנתונים…" : "זה האתר שלי"}
-                    </Button>
-                  </div>
-                </div>
-              ) : ga4HasSelection ? (
-                <>
-                <ConnectedLine
-                  account={
-                    <>
-                      האתר שנבחר:{" "}
-                      {/* Google's product code ("GA4") is not the owner's business name. */}
-                      <strong className="font-semibold text-[color:var(--ink)]">
-                        {(ga4Item?.display_name || ga4Item?.external_id || "").replace(/\s*\(GA4\)\s*$/, "")}
-                      </strong>
-                    </>
-                  }
-                >
-                  <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
-                    להחליף חשבון
-                  </button>
-                  <button type="button" onClick={() => handleDisconnect("ga4")} className={QUIET_ACTION}>
-                    לנתק
-                  </button>
-                </ConnectedLine>
-                {ga4State ? <SourceReadState state={ga4State} checking={savingGa4} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} /> : null}
-                </>
-              ) : ga4Item?.source_readiness?.status === "no_properties" ? (
-                <SourceReadState state={ga4Item.source_readiness} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} />
-              ) : (
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <Button
-                    size="md"
-                    tone="primary"
-                    variant={primaryKey === "ga4" ? "solid" : "outline"}
-                    onClick={handleStartGa4}
-                  >
-                    <IconLink className="h-4 w-4" />
-                    <span>לחבר את נתוני האתר</span>
-                  </Button>
-                  <span className="text-[13px] text-[color:var(--ink-muted)]">
-                    {/* Shortened for the word budget; the full sentence is in the expand. */}
-                    בלי לתת לנו סיסמה.
-                  </span>
-                </div>
-              )}
-              {/* Connected from a different Google account than the one used to sign in:
-                  allowed, and said, with the account's address (routers/integrations.py). */}
-              {ga4Item?.account_note_he ? (
-                <p role="note" className="mt-3 flex items-start gap-2.5 text-[13px] leading-6 text-[color:var(--sand-dark)]">
-                  <span aria-hidden className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--sun)]" />
-                  {ga4Item.account_note_he}
-                </p>
-              ) : null}
-              {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
-            </div>
-
-            <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
-              <p>
-                בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). הוא מראה כניסות לאתר ואת המקורות שלהן.
-                פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח.
-                החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר.
-              </p>
-              <p>מתחברים עם חשבון הגוגל שלכם, ולא נותנים לנו סיסמה.</p>
-              <div>
-                <p className={DETAIL_TITLE}>1. מישהו אחר בנה או מנהל לכם את האתר?</p>
-                <p className="mt-1">
-                  בקשו ממנו להוסיף את הג׳ימייל שלכם כ<strong>צופה</strong> בנתוני האתר בגוגל
-                  (שם ההרשאה באנגלית: Viewer). לא צריך הרשאות ניהול.
-                </p>
-                <div className="mt-2">
-                  <SendToHelper
-                    title="ההודעה למי שבנה את האתר"
-                    message={GUIDES.google_analytics.stuck.message}
-                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר"
-                  />
-                </div>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>2. האתר עוד לא מחובר לגוגל בכלל?</p>
-                <p className="mt-1">
-                  פותחים חשבון בחינם ב-
-                  <a
-                    href="https://analytics.google.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
-                  >
-                    analytics.google.com
-                  </a>
-                  , מוסיפים את האתר (בגוגל זה נקרא ״נכס״) ומדביקים את הקוד שקיבלתם בהגדרות האתר:
-                  בוויקס, בוורדפרס או בשופיפיי.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>3. אין לעסק אתר בכלל?</p>
-                <p className="mt-1">
-                  אפשר לדלג על החיבור הזה ולחבר רק את אינסטגרם ופייסבוק. שם נמדוד כמה אנשים ראו
-                  את הפוסטים ואיך הגיבו.
-                </p>
-              </div>
-            </RowDetails>
-          </section>
-
-          {/* ============================================================== */}
-          {/* CONNECTION 4: Instagram & Facebook */}
-          {/* ============================================================== */}
-          <section className={ROW_CARD}>
-            <RowHead
-              icon={IconCamera}
-              title="פייסבוק, אינסטגרם ומודעות"
-              status={metaConnected ? "מחובר" : metaNeedsSelection ? "נשאר לבחור" : "לא מחובר"}
-              tone={metaConnected ? "good" : metaNeedsSelection ? "waiting" : "muted"}
-              note="מה עובד בפוסטים ובמודעות, והאם האתר מודד את התוצאות."
-            />
-
-            <div className={ROW_BODY}>
-              <MetaConnection item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => reload(true)} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
-            </div>
-
-            <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
-              <p>
-                מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה
-                הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית.
-              </p>
-              <p>
-                מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה
-                חברה.
-              </p>
-              <div>
-                <p className={DETAIL_TITLE}>1. החשבון שלכם פרטי?</p>
-                <p className="mt-1">
-                  פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל ›
-                  תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים › <strong>מעבר לחשבון מקצועי</strong> ›
-                  עסק או יוצר תוכן.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>2. האינסטגרם חייב להיות מקושר לדף בפייסבוק</p>
-                <p className="mt-1">
-                  זו דרישה של פייסבוק: בלי דף עסקי בפייסבוק אין גישה לנתוני האינסטגרם. אפשר לפתוח דף
-                  פשוט בחינם, ולחבר אליו את האינסטגרם בהגדרות הדף, תחת <strong>חשבונות מקושרים</strong>.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>3. מישהו אחר מנהל לכם את הדף?</p>
-                <p className="mt-1">
-                  בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף.
-                </p>
-                <div className="mt-2">
-                  <SendToHelper
-                    title="ההודעה למי שמנהל את הדף"
-                    message={GUIDES.instagram_business.stuck.message}
-                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
-                  />
-                </div>
-              </div>
-            </RowDetails>
-          </section>
+          {sourceOrder.map(source => <div key={source}>{connectionRows[source]}</div>)}
         </div>
 
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
@@ -733,6 +675,21 @@ export default function IntegrationsPage() {
   );
 }
 
+function ConnectionSection({ source, title, status, account, open, onOpen, children }: {
+  source: ConnectionKey; title: string; status: string; account?: string; open: boolean;
+  onOpen: (value: ConnectionKey | null) => void; children: ReactNode;
+}) {
+  return <details id={source === "whatsapp" ? "whatsapp-connection" : source} open={open} className="group/connection scroll-mt-20 border-b border-[var(--rule)]" onToggle={event => {
+    if (event.currentTarget.open !== open) onOpen(event.currentTarget.open ? source : null);
+  }}>
+    <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
+      <span className="min-w-0"><strong className="text-[16px] font-semibold text-[var(--ink)]">{title}</strong>{account ? <span className="mt-1 block truncate text-[13px] text-[var(--ink-soft)]">{account}</span> : null}</span>
+      <span className="flex shrink-0 items-center gap-3 text-[13px] text-[var(--ink-muted)]">{status}<IconChevron className="h-4 w-4 transition-transform duration-200 group-open/connection:rotate-90 motion-reduce:transition-none" /></span>
+    </summary>
+    {children}
+  </details>;
+}
+
 /**
  * קישור הוואטסאפ — the owner types the number once and gets one short link per place a
  * customer can tap "write to us". The face says what is counted and what is not in one
@@ -795,7 +752,7 @@ function WhatsappRow({
         note="סופרים לחיצות, לא הודעות שנשלחו. הקוד בהודעה מראה מאיפה הגיעה הפנייה."
       />
 
-      <div className={ROW_BODY}>
+      <div className="pb-3">
         {showForm ? (
           <div>
             <label htmlFor="whatsapp-number" className={LABEL}>
