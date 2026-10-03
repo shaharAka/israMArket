@@ -63,7 +63,6 @@ function dismissForSession() {
 const HELP_FOR: Partial<Record<string, HelpTopic>> = {
   scan: "website",
   google: "google_analytics",
-  instagram: "instagram_business",
 };
 
 function HelpLink({ itemKey, className }: { itemKey: string; className?: string }) {
@@ -115,10 +114,14 @@ export function SetupChecklist() {
   if (!setup) return null;
 
   const complete = setup.next === null || (setup.total > 0 && setup.completed >= setup.total);
+  const deferred = setup.groups.flatMap(group => group.items).filter(item => item.status === "soon");
 
   if (complete) {
     if (dismissed) return null;
-    return <CompleteLine onDismiss={dismissForSession} />;
+    return <>
+      <CompleteLine onDismiss={dismissForSession} deferred={deferred.length > 0} />
+      {deferred.map(item => <p key={item.key} className="pb-3 text-[13px] leading-6 text-[var(--ink-soft)]">{item.why}</p>)}
+    </>;
   }
 
   const items = setup.groups.flatMap((group) => group.items);
@@ -209,9 +212,9 @@ function ItemRow({ item }: { item: SetupItem }) {
         <p className={`mt-0.5 text-[13px] leading-5 ${item.done ? "text-[var(--ink-muted)]" : "text-[var(--ink-soft)]"}`}>
           {item.why}
         </p>
-        {item.done ? null : <HelpLink itemKey={item.key} className="-my-1" />}
+        {item.done || item.status === "soon" ? null : <HelpLink itemKey={item.key} className="-my-1" />}
       </div>
-      {item.done ? null : (
+      {item.done ? null : item.status === "soon" ? <span className="text-[13px] text-[var(--ink-muted)]">בהמשך</span> : (
         <Link
           href={item.action_href}
           className="-my-2 inline-flex min-h-11 shrink-0 items-center text-[13px] font-semibold text-[var(--primary)] underline-offset-4 hover:underline"
@@ -224,14 +227,14 @@ function ItemRow({ item }: { item: SetupItem }) {
 }
 
 /** The finished state: one quiet line, and the option to stop seeing it. */
-function CompleteLine({ onDismiss }: { onDismiss: () => void }) {
+function CompleteLine({ onDismiss, deferred = false }: { onDismiss: () => void; deferred?: boolean }) {
   return (
     <div className="flex min-h-14 items-center justify-between gap-3 py-2">
       <p className="flex min-w-0 items-center gap-2.5 text-[15px] font-medium text-[var(--ink-soft)]">
         <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[var(--primary)]">
           <IconCheck className="h-3 w-3" />
         </span>
-        <span>הכול מוגדר</span>
+        <span>{deferred ? "ההגדרות הזמינות הושלמו" : "מה שצריך להתחלה מוגדר"}</span>
       </p>
       <button
         type="button"
