@@ -3686,6 +3686,8 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/performance/weekly" && method === "POST") {
     return { performance: DEMO_PERFORMANCE, recommendation: DEMO_RECS } as T;
   }
+  // The existing public demo represents a product shop, which has no service check-in.
+  if (path.startsWith("/performance/service-results")) return { enabled: false, report: null } as T;
   if (path === "/recommendations/latest" || path === "/recommendations/1" || (path === "/recommendations/generate" && method === "POST")) {
     return DEMO_RECS as T;
   }
@@ -4087,6 +4089,8 @@ export const endpoints = {
     }),
   deleteWebhook: (id: number) => api(`/integrations/webhooks/${id}`, { method: "DELETE" }),
   performance: () => api<PerformancePayload>("/performance/latest"),
+  serviceResults: (month?: string) => api<ServiceResultsPayload>(`/performance/service-results${month ? `?month=${encodeURIComponent(month)}` : ""}`),
+  saveServiceResults: (body: ServiceReportInput) => api<ServiceResultsPayload>("/performance/service-results", { method: "PUT", body: JSON.stringify(body) }),
   syncPerformance: () => api<PerformancePayload>("/performance/sync", { method: "POST" }),
   weeklyLoop: () =>
     api<{ performance: PerformancePayload; recommendation: RecommendationPayload }>("/performance/weekly", {
@@ -5146,6 +5150,24 @@ export type MetaAdsReport = MetaReadState & {
   overview?: Partial<MetaAdsRow>;
   campaigns?: MetaAdsRow[];
 };
+
+export type ServiceReportInput = {
+  month: string;
+  revision: number | null;
+  inquiries: number | null;
+  suitable: number | null;
+  clients_won: number | null;
+  capacity: number | null;
+  fit_criterion: string;
+};
+export type ServiceReport = ServiceReportInput & {
+  revision: number;
+  source: "owner";
+  period: { start: string; end: string };
+  updated_at: string;
+  capacity_outdated: boolean;
+};
+export type ServiceResultsPayload = { enabled: boolean; report: ServiceReport | null };
 
 export type PerformancePayload = {
   id?: number | null;

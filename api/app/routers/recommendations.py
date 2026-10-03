@@ -10,7 +10,7 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
-from app.services import recommendation_context
+from app.services import recommendation_context, service_results
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
@@ -76,6 +76,7 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
         "analysis_basis": basis,
+        **service_results.model_context(business),
     }
     try:
         proposed = recommend(

@@ -243,7 +243,9 @@ function MonthSection({
   const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
   const events = strategy.relevant_events || strategy.roadmap?.relevant_events || [];
   const monthly = strategy.monthly_horizon_plan || strategy.roadmap?.monthly_horizon_plan;
-  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  const horizon = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  // The API uses {} for a plan without later milestones; it is truthy in JavaScript.
+  const quarter = Array.isArray(horizon?.milestones) ? horizon : null;
   const management = strategy.management_and_checkpoints || strategy.roadmap?.management_and_checkpoints;
   const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
   const currentWeek = currentWeekOf(strategy);
