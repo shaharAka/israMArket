@@ -45,8 +45,8 @@ import styles from "./strategy.module.css";
  * each row its own expand. The page keeps exactly one filled button, `השבוע בתוכנית`, in
  * its footer beside the calendar.
  *
- * Editing the plan itself is not built yet, and the page says so; what it is built on is
- * editable from /decisions today. A business without a stored plan (built before Revision
+ * The direction, intended audience and assumptions are editable at /strategy/edit.
+ * The business inputs remain editable at /decisions. A business without a stored plan (built before Revision
  * 5) sees the month and the quarter as before.
  */
 
@@ -130,12 +130,7 @@ export default function StrategyPage() {
         <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
       ) : null}
       <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" review={strategy?.hypothesis_review} />
-      <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-        לערוך את התוכנית עצמה יהיה אפשר בקרוב. בינתיים אפשר לשנות את מה שהיא בנויה עליו:{" "}
-        <Link href="/decisions" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-          ההחלטות שלי
-        </Link>
-      </p>
+
     </section>
   ) : null;
 
@@ -148,9 +143,12 @@ export default function StrategyPage() {
           eyebrow={null}
           title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"}
           action={
-            loaded && plan && strategy ? (
-              <div className={styles.range}>
-                <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{ value: "quarter", label: "התמונה הרחבה" }, { value: "month", label: strategy.month_name_he }]} />
+            loaded && (plan || strategy) ? (
+              <div className="flex flex-wrap items-center gap-3">
+                {plan && strategy ? <div className={styles.range}>
+                  <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{ value: "quarter", label: "התמונה הרחבה" }, { value: "month", label: strategy.month_name_he }]} />
+                </div> : null}
+                <Link href="/strategy/edit" className={TEXT_ACTION}>לערוך את התוכנית</Link>
               </div>
             ) : undefined
           }

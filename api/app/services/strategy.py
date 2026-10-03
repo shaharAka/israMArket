@@ -43,7 +43,7 @@ def _business_brief(business: dict) -> dict:
     and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
     raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items", "what_worked"}
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items", "what_worked", "plan_edit"}
     if not any(key in business for key in own_blocks):
         return business
     return {key: value for key, value in business.items() if key not in own_blocks}
@@ -57,13 +57,15 @@ def _owner_block(business: dict, include_idea: bool = False) -> str:
     `first_month_seed` is only put in the payload by /onboarding/generate, so the chosen
     direction steers the first month and nothing after it.
     """
-    if not business.get("owner_context") and not business.get("first_month_seed"):
+    if not business.get("owner_context") and not business.get("first_month_seed") and not business.get("plan_edit"):
         return ""
     from app.services.onboarding_draft import owner_context_block  # avoids an import cycle
 
-    return owner_context_block(
+    from app.services.plan_editing import prompt_block as edited_plan_block
+
+    return "\n\n".join(block for block in (owner_context_block(
         business.get("owner_context"), business.get("first_month_seed"), include_idea=include_idea
-    )
+    ), edited_plan_block(business.get("plan_edit"))) if block)
 
 
 def _featured_list(value) -> list | None:

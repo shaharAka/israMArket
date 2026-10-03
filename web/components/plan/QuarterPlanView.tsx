@@ -364,10 +364,10 @@ function StrategyBlock({
     <div className="space-y-3">
       <div>
         <p className={styles.oneLiner}>{directionTitle || plan.strategy.one_liner_he}</p>
-        <p className="mt-3 text-base leading-7 text-[color:var(--ink-soft)]">
+        {plan.strategy.angle_he ? <p className="mt-3 text-base leading-7 text-[color:var(--ink-soft)]">
           <b className="text-[color:var(--ink)]">הזווית: </b>
           {plan.strategy.angle_he}
-        </p>
+        </p> : null}
         <Why why={directionTitle && directionTitle !== plan.strategy.one_liner_he ? `${plan.strategy.one_liner_he} ${plan.strategy.why_he}` : plan.strategy.why_he} insight={insight} />
       </div>
       {audienceSlot && <details className={styles.adjustment}><summary>לשנות עם מי מתחילים</summary>{audienceSlot}</details>}

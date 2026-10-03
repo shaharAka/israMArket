@@ -9,6 +9,7 @@ from datetime import date, datetime, timezone
 from urllib.parse import urlencode
 
 from app.services.jsonutil import loads
+from app.services.plan_editing import revision as plan_revision
 
 
 def _dict(value) -> dict:
@@ -93,7 +94,7 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     if reach is not None:
         observations.append({"source": "meta_social", "metric": "reach", "label": "אנשים שראו באינסטגרם", "value": reach})
     limits.append("הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.")
-    basis = {"version": 1, "snapshot_id": snapshot.get("id"), "plan_id": plan.get("id"),
+    basis = {"version": 1, "snapshot_id": snapshot.get("id"), "plan_id": plan.get("id"), "plan_revision": plan_revision(business),
              "sources": [_freshness(source) for source in sources], "observations": observations, "limits": limits,
              "excluded_sources": wrong_site or wrong_ads,
              "selection": {"ga4": selected, "meta_ads": selected_ads or ""}}
@@ -157,7 +158,9 @@ def serialize(rec, plan: dict, business=None) -> dict:
     stored = _dict(loads(rec.suggestions_json, {}))
     basis = _dict(stored.get("basis"))
     provenance = basis.get("version") == 1
-    same_plan = provenance and bool(plan.get("id")) and basis.get("plan_id") == plan["id"]
+    same_id = bool(plan.get("id")) and basis.get("plan_id") == plan["id"]
+    current_revision = plan_revision(business) if business is not None else plan.get("plan_revision", 0)
+    same_plan = provenance and same_id and basis.get("plan_revision", 0) == current_revision
     rows = stored.get("suggestions")
     items = []
     for row in (rows[:3] if isinstance(rows, list) else []):
@@ -170,7 +173,8 @@ def serialize(rec, plan: dict, business=None) -> dict:
         if not provenance:
             status, note = "legacy", "זו המלצה קודמת ללא תיעוד של מקורות הנתונים. בדקו את התוכנית והנתונים העדכניים לפני שינוי."
         elif not same_plan:
-            status, note = "stale", "התוכנית התחלפה מאז ההמלצה. בדקו מה עדיין מתאים לתוכנית הנוכחית."
+            status, note = "stale", ("התוכנית נערכה מאז ההמלצה. בדקו אם ההצעה מתאימה לכיוון המעודכן." if same_id else
+                                     "התוכנית התחלפה מאז ההמלצה. בדקו מה עדיין מתאים לתוכנית הנוכחית.")
         elif row.get("action_kind") == "measurement":
             kind, href, label = "measurement", "/integrations", "לבדוק את החיבורים"
             note = "בדיקת חיבור אינה מאשרת שהאירועים באתר מודדים פניות או הזמנות."
