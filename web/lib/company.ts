@@ -5,8 +5,7 @@
  * - CONTACT_EMAIL: a real, monitored mailbox for privacy and deletion questions.
  * - HOSTING_NOTE: where the servers are. Not decided, so no country, region or provider is
  *   named anywhere. Keep it null until it is, then write one plain sentence.
- * - BACKUP_NOTE: whether backups exist and how long a deleted account's data can survive
- *   in them (DEPLOY.md asks for volume backups but sets no retention). Null = not stated.
+ * - BACKUP_NOTE: the deployed backup deletion and recovery policy, checked against GCP.
  */
 
 /**
@@ -33,7 +32,11 @@ export const CONTACT_EMAIL = "shaharro@gmail.com";
 export const HOSTING_NOTE: string | null =
   "השרתים והגיבויים נמצאים בגוגל קלאוד, באזור תל אביב (me-west1).";
 
-/** Null until the owner sets a backup retention policy. */
-// deploy/gcp/backup.sh + backup-lifecycle.json: nightly copy, objects deleted after 30 days.
+/** Verified 2026-10-03: 30-day lifecycle rule, plus 7 days of cloud soft-delete recovery. */
+// Local snapshots also expire by age. Cloud lifecycle execution is automatic;
+// its age condition alone is not a guaranteed permanent-deletion deadline.
 export const BACKUP_NOTE: string | null =
-  "כל לילה נשמר גיבוי. גיבוי נמחק אחרי 30 יום, כך שמידע של חשבון שנמחק נעלם גם מהגיבויים תוך 30 יום.";
+  "כל לילה נשמר גיבוי. הגיבויים מיועדים למחיקה אחרי 30 יום. לאחר המחיקה בגוגל קלאוד ניתן לשחזר אותם במשך 7 ימים נוספים. המחיקה מתבצעת אוטומטית, בהתאם לזמני העיבוד של גוגל.";
+
+export const BACKUP_NOTE_EN =
+  "Backups are scheduled for deletion after 30 days. Deleted cloud backups remain recoverable for 7 additional days before permanent deletion. Automatic deletion is subject to Google's processing time.";

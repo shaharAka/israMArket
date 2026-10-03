@@ -225,7 +225,10 @@ their plan, rather than being sold to advertisers.
 Disconnect removes stored connection tokens and stops future access through that
 connection. Previously stored analyses remain until account deletion. The existing
 account-deletion flow removes the account, its businesses, imported data, reports,
-content, tokens and media from the live system; backups expire within 30 days.
+content, tokens and media from the live system. Local backup snapshots expire after
+30 days; the cloud lifecycle schedules deletion at 30 days, followed by a seven-day
+soft-delete recovery period. Automatic cloud deletion follows the provider's processing
+schedule; do not promise complete backup disappearance within 30 days.
 The public instructions include help through the owner's supplied contact email.
 This describes current behaviour; it does not claim an audited certification or
 an implemented automatic signed-request deletion/deauthorisation callback.
