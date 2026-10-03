@@ -7,7 +7,7 @@
 # secret or a changed instance-metadata value takes effect on the next `update.sh`.
 #
 # Sources, in order:
-#   1. Instance metadata (non-secret): site-host, acme-email, public-base-url.
+#   1. Instance metadata (non-secret): site-host, site-aliases, acme-email, public-base-url.
 #      site-host empty => "<external-ip-with-dashes>.sslip.io". Switching to a real
 #      domain is ONE metadata value: site-host=isramarket.co.il (see README.md).
 #   2. Secret Manager (secrets), read with the VM's service account.
@@ -40,6 +40,18 @@ if [[ -z "$SITE_HOST" ]]; then
   [[ -n "$ip" ]] || { log "no site-host metadata and no external IP"; exit 1; }
   SITE_HOST="${ip//./-}.sslip.io"
 fi
+# Optional space-separated DNS names which Caddy redirects to the canonical host.
+# Validate before Caddyfile substitution: metadata must not inject Caddy directives.
+SITE_ALIASES=$(metadata instance/attributes/site-aliases)
+read -r -a redirect_hosts <<< "$SITE_ALIASES"
+for alias in "${redirect_hosts[@]-}"; do
+  [[ -n "$alias" ]] || continue
+  if [[ ! "$alias" =~ ^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$ ]]; then
+    log "site-aliases must contain space-separated lowercase DNS names"
+    exit 1
+  fi
+done
+[[ "$SITE_ALIASES" != *$'\n'* && "$SITE_ALIASES" != *$'\r'* ]] || { log "site-aliases must be one line"; exit 1; }
 ACME_EMAIL=$(metadata instance/attributes/acme-email)
 [[ -n "$ACME_EMAIL" ]] || { log "set the acme-email instance metadata (Let's Encrypt account)"; exit 1; }
 PUBLIC_BASE_URL=$(metadata instance/attributes/public-base-url)
@@ -78,6 +90,7 @@ trap 'rm -f "$tmp"' EXIT
   # Used by docker-compose.prod.yml interpolation and by the scripts.
   line PROJECT_ID "$PROJECT_ID"
   line SITE_HOST "$SITE_HOST"
+  line SITE_ALIASES "$SITE_ALIASES"
   line ACME_EMAIL "$ACME_EMAIL"
   line DATA_DIR "$DATA_DIR"
   # The browser-facing origin: CORS, the CSRF origin check, cookies, OAuth return pages.
