@@ -130,7 +130,7 @@ class PlanEditTest(unittest.TestCase):
             self.assertIn("קונים מתנה", block)
             self.assertIn("נבדוק חלות", block)
             if with_seed:
-                self.assertNotIn("posts", payload["first_month_seed"])
+                self.assertEqual(payload["first_month_seed"]["posts"], self.profile["first_month_seed"]["posts"])
                 self.assertEqual(stored["first_month_seed_before_owner_edit"]["posts"][0]["title"], "דוגמה בכיוון הקודם")
                 fresh_core = {"weekly_breakdown": [{"week": 1, "focus": "מיקוד בכיוון החדש"}]}
                 applied = strategy_reveal.apply_strategy_to_core(fresh_core, payload["first_month_seed"])
@@ -140,8 +140,12 @@ class PlanEditTest(unittest.TestCase):
                 self.assertEqual(payload["first_month_seed"]["strategy"]["pillars"][0]["description_he"], "לעזור לבחור מארז למתנה")
             # Verify the actual post writer gets the updated block, with no provider call.
             with patch("app.services.strategy.strategy_json", return_value=dumps({"posts": [{"title": "חדש", "caption": "דוגמה", "week": 1}] * 2})) as model:
-                write_week_posts(payload, {}, self.core, {}, 1)
+                generated = write_week_posts(payload, {}, self.core, {}, 1)
                 self.assertIn("לעזור לבחור מארז למתנה", model.call_args.args[0])
+                if with_seed:
+                    self.assertTrue(generated[0]["chosen_at_signup"])
+                    self.assertEqual(generated[0]["caption"], "קודם")
+                    self.assertEqual(generated[0]["title"], "דוגמה בכיוון הקודם")
 
     def test_conflicting_profile_or_post_update_does_not_overwrite_or_partially_save(self):
         for field in ("scraped_profile_json", "roadmap_json"):

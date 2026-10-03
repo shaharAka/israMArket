@@ -137,7 +137,8 @@ def save(db, business, strategy, body: EditIn):
             seed_strategy["pillars"] = [{"key": "owner_direction", "title": body.direction[:80],
                                          "description_he": body.direction}]
             seed.pop("idea", None)
-            seed.pop("posts", None)
+            # Chosen onboarding posts are already written owner-approved content,
+            # even before they enter a monthly plan. Keep their text and photos.
         seed["strategy"] = seed_strategy
         direction = _dict(seed.get("direction"))
         direction.update(approach_he=body.direction, audience=body.audience)
