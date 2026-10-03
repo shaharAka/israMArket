@@ -37,3 +37,9 @@ test("permission requirements do not override existing confirmed usable source d
 test("a failed setup read does not invent a recommendation", () => {
   assert.equal(recommend(business, null, sources, true), null);
 });
+test("a selected Meta account is still recommended until its first read succeeds", () => {
+  for (const status of ["unchecked", "reconnect", "permission", "unavailable"]) {
+    assert.equal(recommend(business, { groups: [] }, { ...sources, integrations: [{ provider: "meta", connected: true, source_readiness: { status } }] }, true).key, "meta");
+  }
+  assert.equal(recommend(business, { groups: [] }, { ...sources, integrations: [{ provider: "meta", connected: true, source_readiness: { status: "partial" } }] }, true), null);
+});

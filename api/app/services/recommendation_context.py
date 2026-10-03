@@ -79,7 +79,7 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     ads = _dict(meta.get("ads"))
     ad_values = _dict(ads.get("overview")) if ads.get("status") == "available" else {}
     source("meta_ads", "דיווח המודעות של מטא", bool(ad_values), ads.get("period") or meta.get("source_period") or fallback,
-           meta.get("source_read_at") or snapshot.get("created_at"))
+           _dict(_dict(meta.get("source_reads")).get("ads")).get("read_at") or meta.get("source_read_at") or snapshot.get("created_at"))
     clicks = _number(ad_values.get("link_clicks"))
     if clicks is not None:
         observations.append({"source": "meta_ads", "metric": "link_clicks", "label": "לחיצות על קישור במודעות", "value": clicks})
@@ -89,7 +89,7 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     window = _dict(_dict(_dict(social.get("windows")).get("28")).get("current"))
     source("meta_social", "נתוני אינסטגרם ופייסבוק", bool(meta.get("posts") or window),
            {"start": window.get("start", ""), "end": window.get("end", "")} if window else meta.get("source_period") or fallback,
-           meta.get("source_read_at") or snapshot.get("created_at"))
+           _dict(_dict(meta.get("source_reads")).get("social")).get("read_at") or meta.get("source_read_at") or snapshot.get("created_at"))
     reach = _number(_dict(window.get("values")).get("reach"))
     if reach is not None:
         observations.append({"source": "meta_social", "metric": "reach", "label": "אנשים שראו באינסטגרם", "value": reach})

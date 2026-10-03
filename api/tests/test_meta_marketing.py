@@ -275,5 +275,10 @@ class CustomerConnectionTest(unittest.TestCase):
         diagnosis = {"headline": "Test", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []}
         with mock.patch.object(m, "measurement", return_value=evidence), mock.patch.object(performance, "diagnose", return_value=diagnosis) as analyse: response = self.client.post("/performance/sync")
         evidence["posts"] = []
-        self.assertEqual(response.status_code, 200, response.text); self.assertEqual(response.json()["meta"], evidence); self.assertEqual(analyse.call_args.args[2], evidence)
-        with self.Session() as db: self.assertEqual(loads(db.query(PerformanceSnapshot).one().meta_json, {}), evidence)
+        self.assertEqual(response.status_code, 200, response.text)
+        report = response.json()["meta"]
+        for key, value in evidence.items(): self.assertEqual(report[key], value)
+        self.assertIn("source_read_at", report)
+        self.assertEqual(response.json()["sources"]["meta"]["status"], "partial")
+        self.assertEqual(analyse.call_args.args[2], report)
+        with self.Session() as db: self.assertEqual(loads(db.query(PerformanceSnapshot).one().meta_json, {}), report)

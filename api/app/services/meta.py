@@ -350,16 +350,10 @@ def fetch_insights(page_access_token: str, instagram_id: str, page_id: str) -> d
             }
         )
 
-    page = httpx.get(
-        f"{GRAPH}/{page_id}",
-        params={"fields": "name,fan_count", "access_token": page_access_token},
-        timeout=20.0,
-    )
-    if page.status_code >= 400:
-        raise RuntimeError(f"לא הצלחנו לקבל מפייסבוק את נתוני הדף: {page.text}")
+    page = graph_get(page_id, {"fields": "name,fan_count"}, page_access_token)
 
     return {
-        "page": page.json(),
+        "page": page,
         "instagram_id": instagram_id,
         "posts": posts,
         "graph_version": GRAPH_VERSION,

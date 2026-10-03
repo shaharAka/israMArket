@@ -1,12 +1,15 @@
 import Link from "next/link";
-import type { SourceReadiness } from "@/lib/api";
+import type { SourceReadiness, MetaSourceReadiness } from "@/lib/api";
+import { IconChevron } from "@/lib/icons";
 
-export function sourcePresentation(state?: SourceReadiness | null, checking = false) {
+export function sourcePresentation(state?: SourceReadiness | MetaSourceReadiness | null, checking = false) {
   const status = checking ? "reading" : state?.status;
   const label = {
     choose_property: "נשאר לבחור אתר", no_properties: "לא נמצאו אתרים", unchecked: "עוד לא נבדק",
     reading: "בודקים נתונים", ready: "יש נתונים", empty: "עוד אין פעילות",
     reconnect: "צריך לחדש גישה", unavailable: "הקריאה לא הושלמה",
+    choose_assets: "נשאר לבחור חשבון", no_assets: "לא נמצאו חשבונות", partial: "יש נתונים חלקיים",
+    permission: "צריך לאשר גישה", link_instagram: "נשאר לקשר אינסטגרם",
   }[status || "unchecked"];
   return { label, tone: status === "ready" ? "good" as const : "waiting" as const };
 }
@@ -18,8 +21,9 @@ export function checkedDate(value?: string | null) {
 }
 
 /** Actual source state; the design workshop reuses this with labeled synthetic examples. */
-export function SourceReadState({ state, checking = false, onRetry, onReconnect, primary = false, resultsHref = "/performance" }: {
-  state: SourceReadiness;
+export function SourceReadState({ state, checking = false, onRetry, onReconnect, primary = false, resultsHref = "/performance", provider = "ga4" }: {
+  state: SourceReadiness | MetaSourceReadiness;
+  provider?: "ga4" | "meta";
   checking?: boolean;
   onRetry: () => void;
   onReconnect: () => void;
@@ -28,22 +32,29 @@ export function SourceReadState({ state, checking = false, onRetry, onReconnect,
 }) {
   const status = checking ? "reading" : state.status;
   const date = checkedDate(state.last_success_at);
-  const retry = ["unchecked", "unavailable", "empty"].includes(status);
-  const renew = ["reconnect", "no_properties"].includes(status);
+  const sections = provider === "meta" ? (state as MetaSourceReadiness).sections : undefined;
+  const renew = ["reconnect", "no_properties", "no_assets", "permission", "link_instagram"].includes(status) ||
+    (status === "partial" && Object.values(sections || {}).some(row => ["reconnect", "permission", "link_instagram"].includes(row.recovery_status || row.status)));
+  const retry = ["unchecked", "unavailable", "empty", "partial"].includes(status) && !renew;
   return <div className="mt-4 space-y-2">
     <p role="status" aria-live="polite" className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-      {checking ? "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית." : state.note_he}
+      {checking ? provider === "meta" ? "קוראים את נתוני פייסבוק ואינסטגרם. אפשר להמשיך לעבוד בתוכנית." : "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית." : state.note_he}
     </p>
-    {state.period?.start && state.period.end ? <p className="text-[12px] tabular-nums text-[color:var(--ink-muted)]">
-      התקופה שנקראה: <bdi>{checkedDate(state.period.start)}–{checkedDate(state.period.end)}</bdi>{date ? ` · נקראה ב־${date}` : ""}
-    </p> : null}
-    {date && ["unavailable", "reconnect"].includes(status) ? <p className="text-[12px] leading-5 text-[color:var(--ink-muted)]">הנתונים מהקריאה הקודמת נשארו בתוצאות.</p> : null}
+    {state.period?.start && state.period.end && (provider !== "meta" || ["ready", "empty"].includes(sections?.ads?.status || "")) ? <p className="text-[12px] tabular-nums text-[color:var(--ink-muted)]">
+      {provider === "meta" ? "תקופת המודעות" : "התקופה שנקראה"}: <bdi>{checkedDate(state.period.start)}–{checkedDate(state.period.end)}</bdi>{date ? ` · נקראה ב־${date}` : ""}
+    </p> : date ? <p className="text-[12px] text-[color:var(--ink-muted)]">נקרא ב־{date}</p> : null}
+    {date && (["unavailable", "reconnect", "permission"].includes(status) || (status === "partial" && Object.values(sections || {}).some(row => row.retained_at))) ? <p className="text-[12px] leading-5 text-[color:var(--ink-muted)]">הנתונים מהקריאה הקודמת נשארו בתוצאות, עם התאריך שלהם.</p> : null}
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
       {retry || renew ? <button type="button" onClick={renew ? onReconnect : onRetry} disabled={checking}
         className={primary ? "drawn-button min-h-11 px-4 py-2 text-[14px]" : "inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"}>
-        {renew ? "לחבר מחדש עם גוגל" : status === "empty" ? "לבדוק שוב את הנתונים" : "לנסות לקרוא את הנתונים"}
+        {renew ? provider === "meta" ? "לבדוק ולחדש את הגישה בפייסבוק" : "לחבר מחדש עם גוגל" : status === "empty" ? "לבדוק שוב את הנתונים" : "לנסות לקרוא את הנתונים"}
       </button> : null}
-      {["ready", "empty"].includes(status) ? <Link href={resultsHref} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">לראות את התוצאות</Link> : null}
+      {["ready", "empty", "partial"].includes(status) ? <Link href={resultsHref} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">לראות את התוצאות</Link> : null}
     </div>
+    {sections && <details className="border-t border-[var(--rule)] pt-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
+      <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-4 font-semibold">מה נקרא, ומה צריך לבדוק?<IconChevron className="h-4 w-4" /></summary>
+      <div className="space-y-3 py-2">{Object.entries(sections).map(([key, section]) => <p key={key}><strong>{({ social: "החשבון והפוסטים", ads: "המודעות", tracking: "המעקב באתר" } as Record<string, string>)[key] || key}: </strong>{section.note_he || sourcePresentation({ status: section.status as MetaSourceReadiness["status"], note_he: "" }).label}{section.retained_at ? ` המספרים נשמרו מקריאה ב־${checkedDate(section.retained_at)}.` : ""}</p>)}
+      <p>המספרים בכל פוסט מצטברים מאז פרסומו; הם אינם סיכום של התקופה. אישור אירועים מהאתר אינו אישור לפניות או לרכישות.</p></div>
+    </details>}
   </div>;
 }

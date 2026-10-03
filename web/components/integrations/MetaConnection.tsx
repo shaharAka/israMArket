@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { UIDialog, UIAction, InlineNotice } from "@/components/design/Controls";
-import { endpoints, type IntegrationsPayload, type MetaAssets, type MetaPixel, type PixelVerification } from "@/lib/api";
+import { endpoints, type IntegrationsPayload, type MetaAssets, type MetaPixel, type PixelVerification, type MetaSourceReadiness } from "@/lib/api";
 import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
 import { PixelSetupGuide } from "./PixelSetupGuide";
+import { SourceReadState } from "./SourceReadState";
 
 type Item = IntegrationsPayload["integrations"][number];
 const RETURN_NOTES: Record<string, string> = {
@@ -37,6 +38,9 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   const [waiting, setWaiting] = useState(false);
   const [canResume, setCanResume] = useState(false);
   const [note, setNote] = useState("");
+  const [reading, setReading] = useState(false);
+  const [readOverride, setReadState] = useState<MetaSourceReadiness | null>(null);
+  const readState = readOverride || (item?.source_readiness as MetaSourceReadiness) || null;
   const popup = useRef<Window | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const returned = useRef(false);
@@ -45,6 +49,23 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   const pixelRequest = useRef(0);
   const latestItem = useRef(item);
   useEffect(() => { changed.current = onChanged; latestItem.current = item; }, [onChanged, item]);
+
+  async function read() {
+    setReadState(null); setReading(true);
+    try {
+      const result = demo ? { integration: { source_readiness: { status: "ready", note_he: "נתונים לדוגמה בלבד. לא נקרא חשבון אמיתי." }, pixel_verification: null } } : await endpoints.metaRead();
+      setReadState(result.integration.source_readiness as MetaSourceReadiness);
+      setVerification(result.integration.pixel_verification || null);
+      if (!demo) { await changed.current(); setReadState(null); }
+    } catch {
+      setReadState({ ...(latestItem.current?.source_readiness as MetaSourceReadiness), status: "unavailable", note_he: "לא הצלחנו לקרוא כרגע. הבחירה נשמרה; אפשר לנסות שוב." });
+    } finally { setReading(false); }
+  }
+
+  function renewAccess() {
+    setAds(Boolean(latestItem.current?.ad_account_id));
+    setNote(""); setStage("connect"); setOpen(true);
+  }
 
   async function loadAssets() {
     try {
@@ -133,13 +154,15 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   }
 
   async function save() {
-    setBusy(true); setNote("");
+    setReadState(null); setBusy(true); setNote("");
     try {
       if (!demo) {
         await endpoints.metaAccount({ page_id: page, ad_account_id: account, pixel_id: pixel });
         await changed.current();
       }
       setVerification(null); setStage("done");
+      // Read after the saved selection, without a model prerequisite or blocking the plan.
+      void read();
     } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לשמור את הבחירה. נסו שוב."); }
     finally { setBusy(false); }
   }
@@ -175,6 +198,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       }}>{needsChoice ? "לבחור את העסק שלי" : "לחבר את פייסבוק ואינסטגרם"}</UIAction>
       <p className={styles.hint}>{!ready && !demo ? "החיבור עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך." : "עם חשבון הפייסבוק שמנהל את הדף. נתוני מודעות אפשר להוסיף בהמשך."}</p>
     </>}
+    {item?.connected && readState && <SourceReadState provider="meta" state={readState} checking={reading} primary={primary} onRetry={() => void read()} onReconnect={renewAccess} />}
     {note && !open && <p role="status">{note}</p>}
     <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק למטא" : stage === "choose" ? "איזה עסק לחבר?" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
       <div className={styles.wizard}>
@@ -214,7 +238,8 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>
-          <p>הבחירה נשמרה. בעמוד התוצאות אפשר לנסות לקרוא את הנתונים; אישור גישה לבדו אינו תוצאות.</p>
+          <p>הבחירה נשמרה.</p>
+          {readState && <SourceReadState provider="meta" state={readState} checking={reading} onRetry={() => void read()} onReconnect={renewAccess} />}
           {account && !pixel && <>
             <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
             <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב שלי</UIAction>
@@ -226,8 +251,10 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             <p>{tracking?.note_he || "נבדוק אם מטא מקבלת אירועים מהכתובת של העסק."}</p>
             {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
             <UIAction onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
-            {tracking && tracking.status !== "receiving" && website && <a href={website} target="_blank" rel="noopener noreferrer">לפתוח את האתר ולנסות שוב</a>}
-            {tracking?.status !== "receiving" && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
+            {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer">לפתוח את האתר ולנסות שוב</a>}
+            {tracking?.status === "wrong_site" && <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב של האתר שלי</UIAction>}
+            {tracking && ["permission", "reconnect"].includes(tracking.status) && <UIAction variant="text" onClick={renewAccess}>לחדש את הגישה למעקב</UIAction>}
+            {(!tracking || tracking.status === "waiting") && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
             <details className={styles.trackingDetails}>
               <summary>פרטי המעקב ושינוי הבחירה<IconChevron className={styles.disclosureIcon} /></summary>
               <div className={styles.setupBody}>
@@ -238,7 +265,6 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             <p className={styles.hint}>הבדיקה אינה מאשרת סכומי רכישה, מעקב מהשרת או מניעת ספירה כפולה.</p>
           </div>}
           <Link href="/strategy" className={styles.next}>להמשיך בתוכנית ←</Link>
-          <Link href="/performance" className={styles.next}>לראות את התוצאות ←</Link>
           <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>
         </>}
       </div>
