@@ -142,6 +142,18 @@ def _resume_month_generation() -> None:
         pass
 
 
+@app.on_event("startup")
+def _resume_source_analysis() -> None:
+    from app.services import analysis_jobs
+    analysis_jobs.resume_on_startup()
+
+
+@app.on_event("shutdown")
+def _stop_source_analysis() -> None:
+    from app.services import analysis_jobs
+    analysis_jobs.stop()
+
+
 @app.middleware("http")
 async def csrf_origin_check(request: Request, call_next):
     """Reject state-changing requests that carry a foreign Origin.

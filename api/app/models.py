@@ -168,6 +168,25 @@ class PerformanceSnapshot(Base):
     business: Mapped[Business] = relationship(back_populates="snapshots")
 
 
+class AnalysisJob(Base):
+    """Interpret one saved source read, independently of the owner's open browser.
+
+    Separate from the single month/post GenerationJob, so connecting an account never
+    cancels or waits for content generation. Deleted with its business like other rows.
+    """
+    __tablename__ = "analysis_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    snapshot_id: Mapped[int] = mapped_column(ForeignKey("performance_snapshots.id"), unique=True)
+    context_key: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    worker_token: Mapped[str] = mapped_column(String(64), default="")
+    available_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    lease_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class InstagramPost(Base):
     """One of the business's own Instagram posts, with the latest numbers Meta gave us.
 

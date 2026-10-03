@@ -9,7 +9,7 @@ from sqlalchemy.exc import InvalidRequestError
 
 from app.models import Integration, PerformanceSnapshot
 from app.security import decrypt_page_token, decrypt_secret
-from app.services import instagram_signal, meta, meta_marketing
+from app.services import analysis_jobs, instagram_signal, meta, meta_marketing
 from app.services.jsonutil import dumps, loads
 
 NOTES = {
@@ -236,7 +236,9 @@ def initial_read(db: Session, item: Integration, website: str) -> dict | None:
         ga4_data.setdefault("period", {"start": previous.period_start, "end": previous.period_end})
     if (report.get("source_reads", {}).get("social") or {}).get("read_at") == report["source_read_at"]:
         instagram_signal.store_media(db, item.business_id, report)
-    db.add(PerformanceSnapshot(business_id=item.business_id, period_start=start.isoformat(), period_end=end.isoformat(),
-           ga4_json=dumps(ga4_data), meta_json=dumps(meta.snapshot_view(report)), diagnostic_json=dumps({"analysis_status": "pending", "headline": "", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []})))
+    snap = PerformanceSnapshot(business_id=item.business_id, period_start=start.isoformat(), period_end=end.isoformat(),
+           ga4_json=dumps(ga4_data), meta_json=dumps(meta.snapshot_view(report)), diagnostic_json=dumps({"analysis_status": "pending", "headline": "", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []}))
+    db.add(snap)
     db.commit()
+    analysis_jobs.enqueue(db, snap)
     return public_state(item)

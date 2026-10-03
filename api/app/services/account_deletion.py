@@ -35,6 +35,8 @@ from sqlalchemy.orm import Session
 
 from app.models import (
     Business,
+    AnalysisJob,
+    PerformanceSnapshot,
     User,
     WebhookDelivery,
     WebhookEndpoint,
@@ -46,7 +48,7 @@ from app.services import billing, images
 
 # The only foreign-key targets this module knows how to cascade from.
 # `whatsapp_links` is safe because every table pointing at it also has `business_id`.
-HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links"}
+HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots"}
 
 
 def purge_orphans(db: Session) -> dict[str, int]:
@@ -83,6 +85,12 @@ def purge_orphans(db: Session) -> dict[str, int]:
     for table in business_scoped_tables():
         result = conn.execute(delete(table).where(table.c.business_id.not_in(live_businesses)))
         counts[table.name] = counts.get(table.name, 0) + (result.rowcount or 0)
+    # Jobs also reference a source snapshot. Remove leftovers whose snapshot is gone
+    # or belongs to another business, before a reused row id can be interpreted.
+    jobs, snapshots = AnalysisJob.__table__, PerformanceSnapshot.__table__
+    result = conn.execute(delete(jobs).where(~select(snapshots.c.id).where(
+        snapshots.c.id == jobs.c.snapshot_id, snapshots.c.business_id == jobs.c.business_id).exists()))
+    counts["analysis_jobs"] = counts.get("analysis_jobs", 0) + (result.rowcount or 0)
     result = conn.execute(delete(deliveries).where(deliveries.c.endpoint_id.not_in(select(endpoints.c.id))))
     counts["webhook_deliveries"] += result.rowcount or 0
     for table in user_scoped_tables():
