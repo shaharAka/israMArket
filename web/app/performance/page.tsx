@@ -1012,7 +1012,7 @@ function NoSnapshotYet({ payload }: { payload: PerformancePayload }) {
       {needs.some(item => item.key === "ga4") ? <div className="mt-2">
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
       </div> : null}
-      <StepLink stepKey={["site_data", "instagram", "results"]} />
+      <div className="mt-2"><StepLink stepKey={["site_data", "instagram", "results"]} /></div>
     </section>
   );
 }
