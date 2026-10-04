@@ -7,13 +7,15 @@ import {
   CardCanvas,
   CardStage,
   CARD_RATIOS,
-  CARD_TEMPLATES,
   cardSize,
-  needsPhoto,
-  resolveTemplate,
+  postNeedsPhoto,
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
+import { COMPOSITION_LIBRARY } from "@/lib/dna/library";
+import { resolveDna } from "@/lib/dna/resolve";
+import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions";
+import { useBrandDna } from "@/lib/dna/useBrandDna";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
 import { InspirationLine } from "@/components/posts/InspirationLine";
@@ -49,7 +51,6 @@ import {
   type AssetSuggestion,
   type Audience,
   type BrandLanguage,
-  type OverlayTheme,
   type PostChannel,
   type RoadmapPost,
   type StrategyPayload,
@@ -68,7 +69,7 @@ import {
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
-import { EditorIcon, type EditorIconKind } from "@/components/posts/EditorIcon";
+import { EditorIcon } from "@/components/posts/EditorIcon";
 import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
 import editorStyles from "@/components/posts/editor.module.css";
@@ -93,13 +94,6 @@ const PRICE_WORDS = /מחיר|כמה עולה|₪|ש"ח|ש״ח|שקל/;
  * need from the owner, and the one thing we are asking for.
  */
 type Step = "text" | "photo" | "publish";
-
-const DESIGN_PRESETS:{ key: string; label: string; desc: string; icon: EditorIconKind }[] = [
-  { key: "hero_clean", label: "צילום נקי", desc: "בלי שום כיתוב, רק המוצר והמרקם", icon: "photo" },
-  { key: "corner_badge", label: "מדבקה בפינה", desc: "תגית קטנה ועדינה בפינה העליונה", icon: "badge" },
-  { key: "announcement_card", label: "כרטיס הודעה", desc: "כרטיס נייר חם, באמצע או למטה", icon: "paper" },
-  { key: "ink_pill", label: "תגית שחורה", desc: "תגית שחורה צפה, עם אותיות חדות", icon: "text" },
-];
 
 const IMAGE_SOURCE_LABELS: Record<string, string> = {
   real_photo: "תמונה אמיתית מהאתר שלכם",
@@ -155,11 +149,6 @@ function AssetPickerThumb({ asset, className }: { asset: Asset; className: strin
     />
   );
 }
-
-const THEME_OPTIONS: { key: OverlayTheme; label: string }[] = CARD_TEMPLATES.map((t) => ({
-  key: t.key,
-  label: t.label,
-}));
 
 function primaryOutletOf(post: RoadmapPost): string {
   return post.primary_outlet || "instagram";
@@ -221,7 +210,7 @@ export function PostEditor({
 }: {
   posts: RoadmapPost[];
   /** The month the posts belong to, for the week's focus when a post has no plan link. */
-  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown"> | null;
+  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown" | "brand_dna"> | null;
   brandLanguage?: BrandLanguage | null;
   initialIndex?: number;
   onStrategyUpdated?: (strategy: StrategyPayload) => void;
@@ -232,6 +221,11 @@ export function PostEditor({
   onClose?: () => void;
 }) {
   const { palette } = useDesignPalette();
+  // The business's Design DNA: every preview, thumbnail and export is drawn from it.
+  // The month carries it (`serialize_strategy`); the shared store is the fallback, and is
+  // what a save on the brand page updates.
+  const stored = useBrandDna({ skip: Boolean(strategy?.brand_dna) });
+  const brandDna = (stored.loaded ? stored.dna : null) ?? strategy?.brand_dna ?? null;
   const demo = useSyncExternalStore(subscribeClient, isDemo, serverSnapshot);
   const [posts, setPosts] = useState(initialPosts);
   const [selectedIndex, setSelectedIndex] = useState(() =>
@@ -278,7 +272,6 @@ export function PostEditor({
   // Designer AI State
   const [designerBusy, setDesignerBusy] = useState(false);
   const [customDesignPrompt, setCustomDesignPrompt] = useState("");
-  const [showDesignerSettings, setShowDesignerSettings] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportRatio, setExportRatio] = useState<CardRatio | "auto">("auto");
 
@@ -346,9 +339,8 @@ export function PostEditor({
       ? Boolean(currentPost.has_overlay)
       : Boolean(currentPost.overlay_text && currentPost.overlay_text.trim());
   const overlayHeadline = currentPost.overlay_headline || currentPost.overlay_text || "";
-  const overlayBadge = currentPost.overlay_badge || "";
-  const overlayTheme = currentPost.overlay_theme || "ink_pill";
-  const activeTemplate = resolveTemplate(overlayTheme);
+  const overlaySub = currentPost.overlay_sub || "";
+  const resolvedDna = resolveDna(brandDna, brandLanguage);
   const exportSize = cardSize(
     currentPost.format,
     exportRatio === "auto" ? undefined : exportRatio,
@@ -360,7 +352,7 @@ export function PostEditor({
       toast("הכרטיס עוד לא מוכן להורדה.");
       return;
     }
-    if (!currentPost.image_url && needsPhoto(currentPost.overlay_theme)) {
+    if (!currentPost.image_url && postNeedsPhoto(currentPost)) {
       toast("צרו קודם תמונה, ואז נוכל להוריד את הכרטיס.");
       return;
     }
@@ -695,9 +687,20 @@ export function PostEditor({
         outlets: updated.outlets,
         has_overlay: updated.has_overlay,
         overlay_headline: updated.overlay_headline,
+        overlay_sub: updated.overlay_sub,
         overlay_badge: updated.overlay_badge,
         overlay_position: updated.overlay_position,
-        overlay_theme: updated.overlay_theme,
+        // How the post uses the DNA (docs/design-dna.md): its composition, text mode and text
+        // position. The server validates them and sets the crop from the format; the photo's
+        // empty area and subject (`safe_area`, `focal`) belong to the photo and are never
+        // sent. `overlay_theme` is never sent: the server keeps it only for older posts.
+        design: updated.design?.composition
+          ? {
+              composition: updated.design.composition,
+              text_position: updated.design.text_position || "",
+              ...(updated.design.text_mode ? { text_mode: updated.design.text_mode } : {}),
+            }
+          : undefined,
         overlay_text: updated.has_overlay ? updated.overlay_headline : "",
         creative_concept: updated.creative_concept,
         visual_style: updated.visual_style,
@@ -717,6 +720,22 @@ export function PostEditor({
     } catch {
       // quiet save
     }
+  }
+
+  /**
+   * One of the three designs of the DNA for this post. Saved like any other edit (no model
+   * call). The photo stays, and with it its empty area and subject; the text keeps its
+   * position when the new composition takes it, otherwise the composition's default. The
+   * server derives the text mode from the composition and the words switch (off = photo
+   * only), so "רק התמונה" is sent as the words turned off.
+   */
+  function chooseDesign({ mode, composition }: DesignChoice) {
+    const position = currentPost.design?.text_position;
+    const keeps = Boolean(position) && (COMPOSITION_LIBRARY[composition].text_positions as string[]).includes(position as string);
+    void updateDesignField({
+      design: { ...currentPost.design, composition, text_mode: mode, text_position: keeps ? position : "" },
+      has_overlay: mode !== "photo_only",
+    });
   }
 
   /** The owner's own wording for the primary outlet. A saved edit sends the post back to
@@ -750,7 +769,7 @@ export function PostEditor({
   const activeCaption = captionFor(currentPost, channel);
   const businessName = brandLanguage?.business_name || "העסק";
   const isPreparingImage = imageBusy === selectedIndex;
-  const cardNeedsPhoto = needsPhoto(currentPost.overlay_theme);
+  const cardNeedsPhoto = postNeedsPhoto(currentPost);
   // Posts created before provenance tracking have no image_source. Every legacy path
   // generated its image, so "generated" is the accurate label — not "no image yet", which
   // was plainly wrong for a card that visibly had one. A photo-free card is the exception:
@@ -822,7 +841,7 @@ export function PostEditor({
 
   // Visual Image Media Slot — the card itself renders inside CardStage.
   function renderMediaSlot() {
-    const photoFree = !needsPhoto(currentPost.overlay_theme);
+    const photoFree = !postNeedsPhoto(currentPost);
     if (!currentPost.image_url && !photoFree) {
       return (
         <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
@@ -842,6 +861,7 @@ export function PostEditor({
       <CardStage
         post={currentPost}
         brand={brandLanguage}
+        dna={brandDna}
         businessName={businessName}
         rounded={false}
         ratio={exportRatio === "auto" ? undefined : exportRatio}
@@ -979,7 +999,7 @@ export function PostEditor({
             {!cardNeedsPhoto ? (
               <p className="mt-3 rounded-[12px] bg-[var(--paper)] px-3.5 py-2.5 text-[13px] leading-6 text-[color:var(--ink-soft)] shadow-[var(--shadow-card)]">
                 הכרטיס הזה בנוי מטקסט בלבד, אז התמונה שתבחרו לא תופיע עליו. כדי שתופיע, בחרו
-                תבנית אחרת ב״התאמה ידנית״.
+                עיצוב עם תמונה ב״לשנות עיצוב״.
               </p>
             ) : null}
 
@@ -1138,45 +1158,33 @@ export function PostEditor({
     );
   }
 
-  /** Design directions, the free-text instruction and the manual fine-tuning — one panel,
-   *  opened on demand, instead of four always-visible tiles and a dark apply button. */
+  /**
+   * The design step: three designs of the business's own DNA, each drawn by the real
+   * renderer with this post's words and photo and named by what it draws, then the card's
+   * shape and the free-text instruction. Every thumbnail is exactly what the post becomes.
+   */
   function renderDesignerPanel() {
+    const thumbRatio = exportRatio === "auto" ? undefined : exportRatio;
     return (
-      <div className="mt-2 space-y-5 pb-1">
-        {currentPost.creative_concept || currentPost.visual_style ? (
-          <div className={`${ui.inset} px-4 py-3 text-[13px] leading-6 text-[color:var(--ink)]`}>
-            {currentPost.creative_concept ? (
-              <p>
-                <span className="font-semibold">הרעיון: </span>
-                {currentPost.creative_concept}
-              </p>
-            ) : null}
-            {currentPost.visual_style ? (
-              <p className="mt-1 text-[color:var(--ink-soft)]">
-                <span className="font-semibold">הסגנון: </span>
-                {currentPost.visual_style}
-              </p>
-            ) : null}
-          </div>
-        ) : null}
-
+      <div className="mt-2 space-y-6 pb-1">
         <div>
-          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">עיצוב מהיר, בלחיצה אחת:</p>
-          <div className="mt-2 grid grid-cols-2 gap-2">
-            {DESIGN_PRESETS.map((preset) => (
-              <button
-                key={preset.key}
-                type="button"
-                disabled={imageLocked}
-                onClick={() => void handleApplyDesignPreset(preset.key, false)}
-                className={`${ui.option} ${ui.tile}`}
-              >
-                <EditorIcon kind={preset.icon} className="h-5 w-5 text-[color:var(--primary)]" />
-                <span className="mt-1 block text-[13px] font-semibold text-[color:var(--ink)]">{preset.label}</span>
-                <span className="block text-xs font-normal leading-5 text-[color:var(--ink-muted)]">{preset.desc}</span>
-              </button>
-            ))}
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
+              {resolvedDna.isDefault ? "שלושה עיצובים לפוסט:" : "שלושה עיצובים בסגנון שלכם:"}
+            </p>
+            <Link href="/brand#style" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px]`}>
+              {resolvedDna.isDefault ? "לבחור סגנון לעסק" : "לשנות את הסגנון"}
+            </Link>
           </div>
+          <DesignOptions
+            post={currentPost}
+            brand={brandLanguage}
+            dna={brandDna}
+            businessName={businessName}
+            ratio={thumbRatio}
+            disabled={imageLocked}
+            onChoose={chooseDesign}
+          />
         </div>
 
         {/* The card's shape. It changes the preview as well as the download, so it is a
@@ -1229,66 +1237,28 @@ export function PostEditor({
           </div>
         </div>
 
-        <div>
-          <button
-            type="button"
-            onClick={() => setShowDesignerSettings((open) => !open)}
-            aria-expanded={showDesignerSettings}
-            className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px]`}
-          >
-            {showDesignerSettings ? "לסגור את ההתאמה הידנית" : "התאמה ידנית"}
-            <IconChevron className={`transition-transform duration-200 ${showDesignerSettings ? "rotate-90" : "-rotate-90"}`} />
-          </button>
-
-          {showDesignerSettings ? (
-            <div className={`${ui.inset} mt-3 space-y-4 p-4`}>
-              <div className="flex items-center justify-between gap-3">
-                <span className="text-sm font-semibold text-[color:var(--ink)]">כיתוב על התמונה</span>
-                <button
-                  type="button"
-                  onClick={() => void updateDesignField({ has_overlay: !hasOverlay })}
-                  aria-pressed={hasOverlay}
-                  // Outlined even when on: a filled toggle here was a second dark button.
-                  className={ui.chip}
-                >
-                  {hasOverlay ? "כן, עם כיתוב" : "לא, צילום נקי"}
-                </button>
-              </div>
-
-              {hasOverlay ? (
-                <>
-                  {/* The headline and the badge themselves are edited under "טקסט", with
-                      the rest of the post's words. */}
-                  <div>
-                    <span className="mb-2 block text-[13px] font-semibold text-[color:var(--ink-muted)]">תבנית הכרטיס</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      {THEME_OPTIONS.map((theme) => (
-                        <button
-                          key={theme.key}
-                          type="button"
-                          data-on={activeTemplate === theme.key}
-                          onClick={() => void updateDesignField({ overlay_theme: theme.key })}
-                          className={`${ui.option} text-[13px]`}
-                        >
-                          {theme.label}
-                        </button>
-                      ))}
-                    </div>
-                    <p className={`${ui.help} mt-2`}>
-                      {CARD_TEMPLATES.find((t) => t.key === activeTemplate)?.desc}
-                    </p>
-                  </div>
-                </>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+        {currentPost.creative_concept || currentPost.visual_style ? (
+          <div className={`${ui.inset} px-4 py-3 text-[13px] leading-6 text-[color:var(--ink)]`}>
+            {currentPost.creative_concept ? (
+              <p>
+                <span className="font-semibold">הרעיון: </span>
+                {currentPost.creative_concept}
+              </p>
+            ) : null}
+            {currentPost.visual_style ? (
+              <p className="mt-1 text-[color:var(--ink-soft)]">
+                <span className="font-semibold">הסגנון: </span>
+                {currentPost.visual_style}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+        {/* No separate "words on the image" switch: "רק התמונה" above is that choice. */}
       </div>
     );
   }
 
-  const downloadDisabled =
-    exporting || (!currentPost.image_url && needsPhoto(currentPost.overlay_theme));
+  const downloadDisabled = exporting || (!currentPost.image_url && postNeedsPhoto(currentPost));
 
   /* ------------------------------------------------------------------ *
    * The steps behind the quiet links. Each holds the tools that belong *
@@ -1404,19 +1374,19 @@ export function PostEditor({
                   })
                 }
                 className={ui.field}
-                placeholder="2–5 מילים"
+                placeholder="עד 6 מילים"
               />
             </div>
             <div>
-              <label htmlFor="post-overlay-badge" className={`${ui.groupTitle} mb-2 block`}>
-                תגית
+              <label htmlFor="post-overlay-sub" className={`${ui.groupTitle} mb-2 block`}>
+                שורה קצרה
               </label>
               <input
-                id="post-overlay-badge"
-                value={overlayBadge}
-                onChange={(e) => void updateDesignField({ overlay_badge: e.target.value })}
+                id="post-overlay-sub"
+                value={overlaySub}
+                onChange={(e) => void updateDesignField({ overlay_sub: e.target.value })}
                 className={ui.field}
-                placeholder="למשל: מיוחד לחג / רק בשישי"
+                placeholder="לא חובה. למשל: רק בשישי"
               />
             </div>
           </div>
@@ -2010,6 +1980,7 @@ export function PostEditor({
               <CardCanvas
                 post={currentPost}
                 brand={brandLanguage}
+                dna={brandDna}
                 businessName={businessName}
                 size={exportSize}
                 canvasRef={exportRef}

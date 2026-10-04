@@ -20,17 +20,21 @@ from app.db import Base, get_db
 from app.main import app
 from app.models import (
     Asset,
+    AnalysisJob,
     Audience,
     Business,
     GenerationJob,
     HashtagQuery,
+    ImageUsage,
     InspirationBrief,
     InstagramPost,
     Integration,
     Payment,
     PerformanceSnapshot,
+    PhotoAnalysis,
     Recommendation,
     ResearchRun,
+    ServiceReport,
     Strategy,
     Subscription,
     User,
@@ -98,20 +102,27 @@ class AccountDeletionTest(unittest.TestCase):
             db.add(wa_link)
             db.flush()
             db.add(WhatsappClick(business_id=bid, link_id=wa_link.id, day="2026-10-01", ua_family="ios", count=3))
+            snapshot = PerformanceSnapshot(business_id=bid, period_start="2026-09-01", period_end="2026-09-28")
+            db.add(snapshot)
+            db.flush()
             db.add_all(
                 [
                     Strategy(business_id=bid, year=2026, month=10),
                     Integration(business_id=bid, provider="meta", access_token_enc="enc", refresh_token_enc="enc"),
                     Integration(business_id=bid, provider="ga4", access_token_enc="enc", refresh_token_enc="enc"),
-                    PerformanceSnapshot(business_id=bid, period_start="2026-09-01", period_end="2026-09-28"),
+                    AnalysisJob(business_id=bid, snapshot_id=snapshot.id, context_key="fake", status="done"),
                     InstagramPost(business_id=bid, media_id=f"m{bid}"),
                     InspirationBrief(business_id=bid, year=2026, month=10),
                     HashtagQuery(business_id=bid, instagram_id="ig", hashtag="חלות"),
                     Recommendation(business_id=bid, week_of="2026-09-28"),
+                    ServiceReport(business_id=bid, month="2026-10", inquiries=4, suitable=2, fit_criterion="דוגמה"),
                     Asset(business_id=bid, filename="asset-photo.png"),
                     Audience(business_id=bid, name="שכונה"),
                     ResearchRun(business_id=bid, period="2026-W40"),
                     GenerationJob(business_id=bid, kind="first_month", status="done"),
+                    ImageUsage(business_id=bid, task="generate", provider="muse", model="muse-image-1.0",
+                               est_cost_usd=0.01),
+                    PhotoAnalysis(business_id=bid, content_hash=f"{bid:064d}", result_json="{}"),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
             )
@@ -163,6 +174,20 @@ class AccountDeletionTest(unittest.TestCase):
         """If a new table is added, it must be seeded here, so the deletion test proves it."""
         seeded = {table for table, count in self._rows_for(self.owner_id, self.owner_businesses).items() if count}
         self.assertEqual(seeded, set(Base.metadata.tables))
+
+    def test_analysis_job_with_missing_or_foreign_snapshot_is_swept(self):
+        db = self.Session()
+        owner_bid, other_bid = self.owner_businesses[0], self.other_businesses[0]
+        foreign_snapshot = db.query(PerformanceSnapshot).filter_by(business_id=other_bid).first()
+        db.query(AnalysisJob).filter_by(business_id=other_bid).delete()
+        db.add_all([AnalysisJob(business_id=owner_bid, snapshot_id=999999, context_key="missing"),
+                    AnalysisJob(business_id=owner_bid, snapshot_id=foreign_snapshot.id, context_key="foreign")])
+        db.commit()
+        account_deletion.purge_orphans(db)
+        db.commit()
+        self.assertEqual(db.query(AnalysisJob).filter(AnalysisJob.context_key.in_(["missing", "foreign"])).count(), 0)
+        self.assertEqual(db.query(PerformanceSnapshot).filter_by(business_id=other_bid).count(), 1)
+        db.close()
 
     def test_every_foreign_key_points_at_a_handled_parent(self):
         """A table hanging off something other than users / businesses / webhook

@@ -92,8 +92,11 @@ class Facts:
     connected: set[str] = field(default_factory=set)
     # When each connected provider was last written (the connect callback's update).
     connected_at: dict[str, datetime] = field(default_factory=dict)
+    # Sanitized saved read states; permission alone is not a verified source read.
+    connection_states: dict[str, dict] = field(default_factory=dict)
     # When the library reached three photos (the journey's "a few photos" step).
     third_asset_at: datetime | None = None
+    first_asset_at: datetime | None = None
     # The posts of the strategy the rest of the app treats as current (`_active_strategy`).
     posts: list[dict] = field(default_factory=list)
     has_month: bool = False
@@ -212,11 +215,20 @@ def load(db: Session, business: Business | None) -> Facts:
     from app.services.jsonutil import loads
 
     stored = loads(business.scraped_profile_json, {}) if business.scraped_profile_json else {}
-    connected_rows = (
-        db.query(Integration.provider, Integration.updated_at)
-        .filter(Integration.business_id == business.id, Integration.status == CONNECTED)
-        .all()
-    )
+    integration_rows = db.query(Integration).filter(Integration.business_id == business.id).all()
+    connected_rows = [(item.provider, item.updated_at) for item in integration_rows if item.status == CONNECTED]
+    from app.services import ga4_readiness, meta_readiness
+
+    connection_states = {}
+    for item in integration_rows:
+        if item.provider == "ga4":
+            connection_states[item.provider] = {"status": item.status, "granted": bool(item.access_token_enc),
+                                               "selected": bool(item.external_id),
+                                               "readiness": ga4_readiness.public_state(item)}
+        elif item.provider == "meta":
+            connection_states[item.provider] = {"status": item.status, "granted": bool(item.access_token_enc),
+                                               "selection": meta_readiness.selection(item),
+                                               "readiness": meta_readiness.public_state(item)}
     asset_times = [
         row[0]
         for row in db.query(Asset.created_at)
@@ -246,12 +258,14 @@ def load(db: Session, business: Business | None) -> Facts:
     has_month, posts, month_core, review = _active_month(db, business)
     return Facts(
         business=business,
+        connection_states=connection_states,
         stored=stored if isinstance(stored, dict) else {},
         audiences=db.query(Audience.id).filter(Audience.business_id == business.id).first() is not None,
         asset_count=db.query(Asset.id).filter(Asset.business_id == business.id).count(),
         connected={row[0] for row in connected_rows},
         connected_at={row[0]: row[1] for row in connected_rows if row[1]},
         third_asset_at=asset_times[2] if len(asset_times) >= 3 else None,
+        first_asset_at=asset_times[0] if asset_times else None,
         posts=posts,
         has_month=has_month,
         month_core=month_core,

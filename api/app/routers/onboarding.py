@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Annotated, Literal
 
-from fastapi import APIRouter, Body, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Body, Depends, HTTPException
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
@@ -9,7 +9,7 @@ from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, Strategy, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
-from app.services import connected_posts, generation_jobs, month_posts
+from app.services import connected_posts, design_dna, generation_jobs, month_posts
 from app.services.audiences import attach_audiences
 from app.services.brand import filter_usable_photos
 from app.services.audiences import catalogue_for
@@ -34,7 +34,7 @@ from app.services.preview import cached_scan
 from app.services.quarter_plan import QuarterPlanIn
 from app.services.strategy_reveal import SamplePostIn, StrategyIn
 from app.services.jsonutil import dumps, loads
-from app.services.scraper import fetch_photo_candidates
+from app.services.scraper import fetch_photo_candidates, image_alt_for
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
 from app.services.strategy import (
     attach_tracking,
@@ -153,6 +153,7 @@ def _stored_plan(plan: QuarterPlanIn | None) -> dict | None:
 @router.post("/from-draft")
 def from_draft(
     body: FromDraftIn,
+    background_tasks: BackgroundTasks = None,  # type: ignore[assignment]  # injected by FastAPI
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -194,6 +195,9 @@ def from_draft(
         user.trial_started_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
+    # The business's Design DNA, after the response: never holds up the signup.
+    if background_tasks is not None:
+        background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business)}
 
 
@@ -253,6 +257,7 @@ def update_owner_context(
 @router.post("/scan")
 def scan_business_site(
     body: WebsiteScanIn,
+    background_tasks: BackgroundTasks = None,  # type: ignore[assignment]  # injected by FastAPI
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -288,7 +293,12 @@ def scan_business_site(
             public_url = store_image_bytes(
                 business_id, "source-photo", photo["bytes"], photo["mime"]
             )
-            stored_photos.append({"url": photo.get("url", ""), "public_url": public_url})
+            stored_photos.append({
+                "url": photo.get("url", ""),
+                "public_url": public_url,
+                # What the site says the photo shows: how a post finds its subject.
+                "alt": image_alt_for((scanned.get("raw") or {}).get("image_alts"), photo.get("url", "")),
+            })
         # Record that the photos were checked even when NONE survived the filter.
         # Without this flag an empty list is indistinguishable from "never checked",
         # and the generation path would re-fetch the rejected photos.
@@ -306,12 +316,17 @@ def scan_business_site(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
+    # The brand is read: build the Design DNA from it after the response (background-safe,
+    # never blocks or fails the scan; see design_dna.refresh_after_scan).
+    if background_tasks is not None:
+        background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business), "scan": scanned}
 
 
 @router.post("/brand")
 def save_brand_language(
     body: BrandLanguageIn,
+    background_tasks: BackgroundTasks = None,  # type: ignore[assignment]  # injected by FastAPI
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -320,6 +335,14 @@ def save_brand_language(
     if not business or not stored.get("brand_language"):
         raise HTTPException(status_code=400, detail="קודם צריך לקרוא את האתר. עד אז אין סגנון לשמור.")
     brand = body.model_dump()
+    # What the form does not carry stays as the scan found it: the logo's address (unless
+    # the owner gave one), the social links and the card photo.
+    previous = stored.get("brand_language") or {}
+    if brand.get("logo_url") is None:
+        brand["logo_url"] = previous.get("logo_url") or ""
+    for key in ("social_links", "card_photo_url", "source"):
+        if key in previous and key not in brand:
+            brand[key] = previous[key]
     stored["brand_language"] = brand
     business.scraped_profile_json = dumps(stored)
     if brand.get("business_name"):
@@ -327,12 +350,16 @@ def save_brand_language(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
+    # The owner corrected the brand: the DNA follows (genes the owner set stay).
+    if background_tasks is not None:
+        background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business), "scan": stored}
 
 
 @router.post("/palette")
 def save_palette(
     body: PaletteIn,
+    background_tasks: BackgroundTasks = None,  # type: ignore[assignment]  # injected by FastAPI
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict:
@@ -354,6 +381,9 @@ def save_palette(
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(business)
+    # The DNA's colours come from this palette (unless the owner set them on the DNA).
+    if background_tasks is not None:
+        background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business)}
 
 
@@ -569,6 +599,7 @@ def _first_month_payload(db: Session, business: Business, stored: dict, *, with_
         # the direction + idea the owner chose, which only the first month is built on.
         "owner_context": stored.get("owner_context") or None,
         "first_month_seed": seed_from_stored(stored) if with_seed else None,
+        "plan_edit": stored.get("plan_edit") or None,
         # Revision 8: what the owner chose to feature (week 2). [] until they choose.
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst. Empty until a
@@ -736,7 +767,7 @@ def run_posts_stage(db: Session, business: Business) -> bool:
     tagged = attach_audiences(
         attach_tracking(existing + written, payload, strategy.year, strategy.month), payload.get("audiences") or []
     )
-    month_posts.add_week_posts(strategy, week, tagged[len(existing):])
+    month_posts.add_week_posts(strategy, week, tagged[len(existing):], dna=design_dna.dna_for_posts(business))
     business.updated_at = datetime.utcnow()
     db.commit()
     return month_posts.next_queued(strategy) is None

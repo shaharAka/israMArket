@@ -42,10 +42,35 @@ class Settings(BaseSettings):
     # literally and returned Wix's navy defaults for a beige-and-pink shop, and copied the
     # meta description into the sample caption. Cheap checks (photo usability) stay lite.
     gemini_extract_model: str = "gemini-3.8-flash"
-    gemini_image_model: str = "gemini-3-pro-image"
-    # 1K returns ~928px wide for 4:5 — under Instagram's 1080px ideal, so an export
-    # would have to upscale. 2K gives real headroom. Set to "1K" to trade quality for speed.
-    gemini_image_size: str = "2K"
+    # Images (docs/image-models.md, docs/design-dna.md "Model routing"). Muse Image makes
+    # both new images and edits of the owner's real photos ($0.01 each); when it refuses
+    # (e.g. lingerie generation), errors or times out, Nano Banana 2 takes over. Switch
+    # either task to "gemini" to skip Muse. Never a `-contributor` Meta model.
+    image_generate_provider: str = "muse"
+    image_edit_provider: str = "muse"
+    muse_image_model: str = "muse-image-1.0"
+    # Muse took up to 41 s in the bench; past this the fallback runs instead.
+    muse_image_timeout_seconds: float = 45.0
+    # The Gemini model a Muse failure falls back to. Empty = no fallback (the error shows).
+    image_fallback_model: str = "gemini-3.1-flash-image"
+    # The Gemini image model when a task's provider is "gemini". Nano Banana 2 matched Pro
+    # in the bench at half the price; "gemini-3-pro-image" stays selectable as the "best"
+    # option. "gemini-2.5-flash-image" is retired and is read as Nano Banana 2.
+    gemini_image_model: str = "gemini-3.1-flash-image"
+    # 1K is 928x1152 for 4:5 (Instagram upscales ~1.17x). "2K" if owners see softness.
+    gemini_image_size: str = "1K"
+
+    # Design DNA (services/design_dna.py): the model that writes each business's DNA, and
+    # whether it is (re)built in the background after a site scan and at signup.
+    design_dna_model: str = "gemini-3.8-flash"
+    design_dna_on_scan: bool = True
+    # Download the business's logo (brand_language.logo_url) after a scan, signup or brand
+    # save and keep a normalised same-origin copy (services/brand_logo.py).
+    brand_logo_copy: bool = True
+    # One cheap vision call per post photo: where the subject is and where text may sit
+    # (services/photo_analysis.py, cached per image hash). Empty model = DESIGN_DNA_MODEL.
+    photo_analysis: bool = True
+    photo_analysis_model: str = ""
 
     # Prefer the business's OWN scraped photographs over a generated one. Photoreal
     # generated images of a product the business never shot are the exact case that
@@ -121,6 +146,15 @@ class Settings(BaseSettings):
     # the free month plus a short grace has passed without a paid-through subscription.
     # Viewing, editing, exporting, the account and deletion are never gated.
     billing_enforce: bool = False
+
+    @field_validator("gemini_image_model", "image_fallback_model", mode="before")
+    @classmethod
+    def _retired_image_model(cls, value: object) -> object:
+        # Deprecated by Google and worst in the bench on every criterion that matters
+        # (docs/image-models.md). An old .env that still names it gets Nano Banana 2.
+        if isinstance(value, str) and value.strip() == "gemini-2.5-flash-image":
+            return "gemini-3.1-flash-image"
+        return value
 
     @field_validator("cookie_secure", mode="before")
     @classmethod

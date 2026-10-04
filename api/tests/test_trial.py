@@ -25,6 +25,7 @@ from app.deps import get_current_user
 from app.main import app
 from app.models import Asset, Business, Integration, PerformanceSnapshot, Strategy, User
 from app.services.jsonutil import dumps, loads
+from _verified_connection import verified_connection
 
 HEBREW = re.compile(r"[֐-׿]")
 
@@ -48,7 +49,7 @@ DEFAULT_KEYS = [key for key in ALL_KEYS if key != "gbp"]
 PLAN = {
     "strategy": {"one_liner_he": "לחם של בוקר לשכונה"},
     "kpi": {"key": "online_orders", "name_he": "יותר הזמנות באתר", "needs": ["ga4"]},
-    "integrations": [{"key": "ga4"}, {"key": "whatsapp_link"}, {"key": "gbp"}],
+    "integrations": [{"key": "ga4"}, {"key": "whatsapp_link"}, {"key": "gbp"}, {"key": "instagram_insights"}],
     "assumptions": [
         {"bet_he": "אנחנו מניחים שהזמנות מראש לחג יעבדו", "if_wrong_he": "נעבור למבצע בחנות"},
         {"bet_he": "  ", "if_wrong_he": ""},
@@ -126,10 +127,15 @@ class TrialTestCase(unittest.TestCase):
         self.business.scraped_profile_json = dumps(stored)
         self.db.commit()
 
-    def connect(self, provider: str, business: Business | None = None) -> None:
+    def connect(self, provider: str, business: Business | None = None, *, verified=True) -> Integration:
         business = business or self.business
-        self.db.add(Integration(business_id=business.id, provider=provider, status="connected", external_id="x", display_name=provider))
+        item = Integration(business_id=business.id, provider=provider, status="connected", external_id="x", display_name=provider)
+        self.db.add(item)
+        self.db.flush()
+        if verified:
+            verified_connection(item)
         self.db.commit()
+        return item
 
     def add_assets(self, count: int, business: Business | None = None) -> None:
         business = business or self.business
@@ -175,7 +181,7 @@ class TrialTestCase(unittest.TestCase):
         self.assertIsNone(payload["welcomed_at"])
         self.assertEqual(payload["next_key"], "instagram")
         self.assertEqual(payload["done"], 0)
-        self.assertEqual([week["title_he"] for week in payload["weeks"]], ["מדידה", "חומרי גלם", "תוכן ראשון", "מודדים ומתאימים"])
+        self.assertEqual([week["title_he"] for week in payload["weeks"]], ["חיבורים ונקודת פתיחה", "מכינים פוסט ראשון", "מאשרים ומפרסמים", "לומדים ומתאימים"])
         started = datetime.fromisoformat(payload["started_at"])
         self.assertEqual(datetime.fromisoformat(payload["ends_at"]) - started, timedelta(days=30))
 
@@ -259,9 +265,10 @@ class TrialTestCase(unittest.TestCase):
         self.assertRegex(step["note_he"], HEBREW)
 
     def test_site_data_follows_the_plan(self):
-        self.save_profile({"quarter_plan": PLAN, "integrations_checklist": [{"key": "whatsapp_link"}]})
+        self.save_profile({"quarter_plan": {**PLAN, "integrations": [{"key": "whatsapp_link"}]},
+                           "integrations_checklist": [{"key": "ga4"}]})
         self.assertNotIn("site_data", self.steps())
-        self.save_profile({"integrations_checklist": [{"key": "ga4"}, {"key": "whatsapp_link"}]})
+        self.save_profile({"quarter_plan": PLAN})
         step = self.steps()["site_data"]
         self.assertEqual(step["status"], "todo")
         self.assertIn("יותר הזמנות באתר", step["why_he"])
@@ -294,7 +301,8 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual([f["key"] for f in form["fields"]], ["orders_month", "avg_order_ils"])
         self.assertIs(form["from_integrations"], False)
         saved = self.post_json("/business/baseline", {"orders_month": None, "avg_order_ils": None}, "PUT")
-        self.assertEqual(self.status("baseline"), "todo", "all 'not sure' is not a baseline")
+        self.assertEqual(self.status("baseline"), "done", "an explicit unknown answer need not be asked again")
+        self.assertFalse(self.payload()["measurement"]["baseline"])
         saved = self.post_json("/business/baseline", {"orders_month": 40, "avg_order_ils": 180, "close_rate": 30}, "PUT")
         self.assertEqual(saved["baseline"], {"orders_month": 40, "avg_order_ils": 180})
         self.assertEqual(self.status("baseline"), "done")
@@ -313,10 +321,83 @@ class TrialTestCase(unittest.TestCase):
         self.db.commit()
         keys = [f["key"] for f in self.client.get("/business/baseline").json()["fields"]]
         self.assertEqual(keys, ["inquiries_month", "close_rate", "deal_value_ils"])
-        self.assertEqual(self.steps()["featured"]["title_he"], "לבחור אילו שירותים לקדם")
+        steps = self.steps()
+        self.assertEqual(steps["featured"]["title_he"], "לבחור אילו שירותים לקדם")
+        self.assertIn("זמן הפנוי", steps["featured"]["why_he"])
+        self.assertNotIn("מלאי", steps["featured"]["why_he"])
+        self.assertIn("שירותים", steps["start_posts"]["why_he"])
+        self.assertNotIn("מוצרים", steps["start_posts"]["why_he"])
+        self.assertNotIn("מוצרים", steps["start_posts"]["note_he"])
         self.assertEqual(self.client.put("/business/baseline", json={"close_rate": 140}).status_code, 422)
 
+    def test_whatsapp_clicks_are_not_reported_as_received_inquiries(self):
+        # Both the KPI-specific explanation and the default must state what the link measures.
+        for plan in (PLAN, {**PLAN, "kpi": {"name_he": "פניות מתאימות", "needs": ["whatsapp_link"]}}):
+            self.save_profile({"quarter_plan": plan})
+            why = self.steps()["whatsapp"]["why_he"]
+            self.assertIn("לחיצות", why)
+            self.assertIn("שליחת הודעה אינה נמדדת", why)
+            self.assertNotIn("נספור כל פנייה", why)
+
     # --- week 2 · raw materials ---------------------------------------------------------
+
+    def test_services_can_start_with_one_real_asset_one_service_and_voice(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.assertEqual(self.client.get("/business/featured-items").json()["min"], 1)
+        self.add_assets(1)
+        self.post_json("/business/featured-items", {"items": [{"name": "עיצוב מותג"}]}, "PUT")
+        self.assertEqual(self.status("start_posts"), "locked")
+        self.post_json("/business/voice-check", {"ok": True}, "PUT")
+        steps = self.steps()
+        self.assertEqual(steps["photos"]["status"], "done")
+        self.assertIn("done_at", steps["photos"])
+        self.assertEqual(steps["featured"]["status"], "done")
+        self.assertEqual(steps["start_posts"]["status"], "todo")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_other_customer_materials_do_not_unlock_service_content(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.add_assets(3, self.rival)
+        self.rival.scraped_profile_json = dumps({"featured_items": {"items": [{"name": "מיתוג"}]}, "voice_check": {"at": datetime.utcnow().isoformat()}})
+        self.db.commit()
+        self.connect("meta", self.rival)
+        self.connect("ga4", self.rival)
+        self.add_snapshot(self.rival)
+        steps = self.steps()
+        for key in ("photos", "featured", "voice"):
+            self.assertEqual(steps[key]["status"], "todo")
+        self.assertEqual(steps["start_posts"]["status"], "locked")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_service_focus_can_be_removed_and_resumed(self):
+        self.business.business_model = "services"
+        self.db.commit()
+        self.add_assets(1)
+        self.post_json("/business/voice-check", {"ok": False, "note": "טון אישי יותר"}, "PUT")
+        self.post_json("/business/featured-items", {"items": [{"name": "מיתוג"}]}, "PUT")
+        self.assertEqual(self.status("start_posts"), "todo")
+        self.post_json("/business/featured-items", {"items": []}, "PUT")
+        self.assertEqual(self.status("start_posts"), "locked")
+
+    def test_only_plan_sources_are_asked_and_links_are_not_grants(self):
+        self.save_profile({"quarter_plan": {**PLAN, "integrations": [{"key": "ga4"}]},
+                           "integrations_checklist": [{"key": "ga4", "status": "have"}]})
+        steps = self.steps()
+        self.assertNotIn("instagram", steps)
+        self.assertNotIn("whatsapp", steps)
+        self.assertEqual(steps["site_data"]["status"], "todo")
+        self.assertFalse(self.payload()["measurement"]["has_numbers"])
+
+    def test_explicit_unknown_baseline_is_saved_without_inventing_numbers(self):
+        self.post_json("/business/baseline", {}, "PUT")
+        self.assertEqual(self.status("baseline"), "done")
+        measurement = self.payload()["measurement"]
+        self.assertFalse(measurement["has_numbers"])
+        self.assertFalse(measurement["baseline"])
+        baseline = self.client.get("/business/baseline").json()
+        self.assertIsNone(baseline["baseline"]["orders_month"])
 
     def test_photos_need_three(self):
         self.add_assets(2)
@@ -405,7 +486,34 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(steps["publish_first"]["status"], "todo")
         self.assertEqual(steps["publish_first"]["href"], "/posts?post=0")
 
-        self.db.query(Strategy).delete()
+    def test_day_one_can_publish_one_approved_post_before_finishing_setup_or_batch(self):
+        self.add_month([post(1, approved=True), post(1), post(2)])
+        payload = self.payload()
+        self.assertEqual(payload["day"], 1)
+        self.assertEqual(self.steps(payload)["instagram"]["status"], "todo")
+        self.assertEqual(self.steps(payload)["approve_first"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "publish_first")
+
+    def test_existing_content_can_be_reviewed_before_missing_connections(self):
+        self.add_month([post(1)])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["instagram"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "approve_first")
+
+    def test_ready_foundations_can_start_content_before_other_setup(self):
+        self.foundations()
+        self.add_month([])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["site_data"]["status"], "todo")
+        self.assertEqual(payload["next_key"], "start_posts")
+
+    def test_after_first_publication_missing_measurement_still_needs_attention(self):
+        self.add_month([post(1, approved=True, published=True), post(1)])
+        payload = self.payload()
+        self.assertEqual(self.steps(payload)["publish_first"]["status"], "done")
+        self.assertEqual(payload["next_key"], "instagram")
+
+    def test_approving_then_publishing_preserves_actual_publication_status(self):
         self.add_month([post(1, approved=True, published=True), post(1, approved=True), post(2)])
         steps = self.steps()
         self.assertEqual(steps["approve_first"]["status"], "done")

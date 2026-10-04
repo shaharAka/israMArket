@@ -139,6 +139,71 @@ class CustomerConnectionTest(unittest.TestCase):
         with self.Session() as db:
             db.add(Integration(business_id=self.bid, provider="meta", status="connected", external_id="111", access_token_enc=encrypt_secret("customer-secret"), refresh_token_enc=encrypt_secret("customer-secret"), extra_json=dumps({"pages": [{"page_id": "111", "display_name": "My shop", "instagram_id": "222"}], "page_tokens": encrypt_page_tokens({"111": "page-secret"}), "ad_accounts": [{"id": "act_333", "name": "My ads", "currency": "USD"}], "pixels_by_account": {"act_333": [{"id": "444", "name": "My site"}]}}))); db.commit()
 
+    def other_customer(self):
+        with self.Session() as db:
+            user = User(email="other@example.invalid", full_name="Other owner")
+            db.add(user); db.flush()
+            business = Business(user_id=user.id, name="Other shop", website_url="https://other.example")
+            db.add(business); db.flush()
+            db.add(Integration(business_id=business.id, provider="meta", status="connected", external_id="777",
+                               access_token_enc=encrypt_secret("other-secret"), refresh_token_enc=encrypt_secret("other-secret"),
+                               extra_json=dumps({"pages": [{"page_id": "777", "display_name": "Other shop", "instagram_id": "778"}],
+                                                 "page_tokens": encrypt_page_tokens({"777": "other-page-secret"}),
+                                                 "ad_accounts": [{"id": "act_888", "name": "Other ads", "currency": "ILS"}],
+                                                 "pixels_by_account": {"act_888": [{"id": "999", "name": "Other site"}]}})))
+            db.commit(); uid, bid = user.id, business.id
+        client = TestClient(app); self.addCleanup(client.close)
+        client.cookies.set(COOKIE_NAME, create_access_token(uid))
+        return client, bid
+
+    def test_two_customers_see_only_their_own_granted_assets(self):
+        self.seed(); other, _ = self.other_customer()
+        for client, page, account, hidden in ((self.client, "111", "act_333", "Other shop"), (other, "777", "act_888", "My shop")):
+            with self.subTest(page=page):
+                response = client.get("/integrations/meta/assets")
+                self.assertEqual(response.status_code, 200)
+                data = response.json()
+                self.assertEqual([p["page_id"] for p in data["pages"]], [page])
+                self.assertEqual([a["id"] for a in data["ad_accounts"]], [account])
+                self.assertNotIn(hidden, response.text)
+                self.assertNotIn("secret", response.text)
+
+    def test_two_customers_cannot_select_or_read_each_others_pixels(self):
+        self.seed(); other, other_bid = self.other_customer()
+        with mock.patch.object(m, "list_pixels") as read:
+            for client, page, account, pixel in ((self.client, "777", "act_888", "999"), (other, "111", "act_333", "444")):
+                self.assertEqual(client.post("/integrations/meta/account", json={"page_id": page}).status_code, 400)
+                self.assertEqual(client.post("/integrations/meta/account", json={"ad_account_id": account, "pixel_id": pixel}).status_code, 400)
+                self.assertEqual(client.get("/integrations/meta/pixels", params={"ad_account_id": account}).status_code, 400)
+            # Even a valid account cannot be paired with the other customer's Pixel.
+            self.assertEqual(self.client.post("/integrations/meta/account", json={"ad_account_id": "act_333", "pixel_id": "999"}).status_code, 400)
+            self.assertEqual(other.post("/integrations/meta/account", json={"ad_account_id": "act_888", "pixel_id": "444"}).status_code, 400)
+        read.assert_not_called()
+        offered = [{"id": "998", "name": "Other customer's new Pixel"}]
+        with mock.patch.object(m, "list_pixels", return_value=offered) as read:
+            self.assertEqual(other.get("/integrations/meta/pixels", params={"ad_account_id": "act_888"}).json()["pixels"], offered)
+        read.assert_called_once_with("other-secret", "act_888")
+        with self.Session() as db:
+            first = loads(db.query(Integration).filter_by(business_id=self.bid).one().extra_json, {})
+            second = loads(db.query(Integration).filter_by(business_id=other_bid).one().extra_json, {})
+        self.assertEqual(first["pixels_by_account"], {"act_333": [{"id": "444", "name": "My site"}]})
+        self.assertEqual(second["pixels_by_account"], {"act_888": offered})
+
+    def test_two_customers_verify_and_disconnect_only_their_own_connection(self):
+        self.seed(); other, _ = self.other_customer()
+        self.assertEqual(self.client.post("/integrations/meta/account", json={"ad_account_id": "act_333", "pixel_id": "444"}).status_code, 200)
+        self.assertEqual(other.post("/integrations/meta/account", json={"ad_account_id": "act_888", "pixel_id": "999"}).status_code, 200)
+        with mock.patch.object(m, "verify_pixel", side_effect=[{"status": "receiving"}, {"status": "waiting"}]) as verify:
+            self.assertEqual(self.client.post("/integrations/meta/verify").json()["status"], "receiving")
+            self.assertIsNone(other.get("/integrations").json()["integrations"][0]["pixel_verification"])
+            self.assertEqual(other.post("/integrations/meta/verify").json()["status"], "waiting")
+        self.assertEqual(verify.call_args_list, [mock.call("customer-secret", "444", "https://store.example"),
+                                                mock.call("other-secret", "999", "https://other.example")])
+        self.assertEqual(other.delete("/integrations/meta").status_code, 200)
+        self.assertEqual(other.get("/integrations").json()["integrations"], [])
+        first = self.client.get("/integrations").json()["integrations"][0]
+        self.assertEqual((first["connected"], first["pixel_id"], first["pixel_verification"]["status"]), (True, "444", "receiving"))
+
     def test_minimal_read_scopes_and_optional_ads_browser_nonce(self):
         scopes = self.start(False)["scope"][0].split(",")
         for unnecessary in ("ads_read", "business_management", "pages_read_user_content", "ads_management", "instagram_content_publish"): self.assertNotIn(unnecessary, scopes)
@@ -210,5 +275,10 @@ class CustomerConnectionTest(unittest.TestCase):
         diagnosis = {"headline": "Test", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []}
         with mock.patch.object(m, "measurement", return_value=evidence), mock.patch.object(performance, "diagnose", return_value=diagnosis) as analyse: response = self.client.post("/performance/sync")
         evidence["posts"] = []
-        self.assertEqual(response.status_code, 200, response.text); self.assertEqual(response.json()["meta"], evidence); self.assertEqual(analyse.call_args.args[2], evidence)
-        with self.Session() as db: self.assertEqual(loads(db.query(PerformanceSnapshot).one().meta_json, {}), evidence)
+        self.assertEqual(response.status_code, 200, response.text)
+        report = response.json()["meta"]
+        for key, value in evidence.items(): self.assertEqual(report[key], value)
+        self.assertIn("source_read_at", report)
+        self.assertEqual(response.json()["sources"]["meta"]["status"], "partial")
+        self.assertEqual(analyse.call_args.args[2], report)
+        with self.Session() as db: self.assertEqual(loads(db.query(PerformanceSnapshot).one().meta_json, {}), report)

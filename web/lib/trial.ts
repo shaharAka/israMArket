@@ -80,7 +80,13 @@ export type TrialPayload = {
   weeks: { week: number; title_he: string }[];
   steps: TrialStep[];
   /** Week 1's aha, "המדידה עובדת": what is connected and whether real numbers came in. */
-  measurement: { connected: ("instagram" | "site" | "whatsapp")[]; has_numbers: boolean; first_numbers_at: string | null; baseline: boolean };
+  measurement: {
+    connected: ("instagram" | "site" | "whatsapp")[];
+    /** Plan-specific source names, only after a successful selected-source read. */
+    verified_sources?: string[];
+    pending_sources?: string[];
+    has_numbers: boolean; first_numbers_at: string | null; baseline: boolean;
+  };
   hypotheses: TrialHypothesis[];
 };
 
@@ -111,22 +117,28 @@ export type ResearchPayload = {
   rate_limit: { limit_per_day: number; runs_left_today: number; next_run_at: string };
 };
 
-/** The one job of each week (Revision 8). The API sends the same in `weeks`. */
+/** Readiness-stage titles; the API retains legacy `weeks` field names. */
 export const WEEK_THEME: Record<number, string> = {
-  1: "מדידה",
-  2: "חומרי גלם",
-  3: "תוכן ראשון",
-  4: "מודדים ומתאימים",
+  1: "חיבורים ונקודת פתיחה",
+  2: "מכינים פוסט ראשון",
+  3: "מאשרים ומפרסמים",
+  4: "לומדים ומתאימים",
 };
 
 export function weekLabel(week: number): string {
-  return `שבוע ${week} · ${WEEK_THEME[week] ?? ""}`;
+  return `שלב ${week} · ${WEEK_THEME[week] ?? ""}`;
 }
 
 /* ------------------------------ Derivations ------------------------------ */
 
 /** The same rule as the API's `next_step`: the first step that can be done now. */
 export function nextStep(payload: TrialPayload): TrialStep | null {
+  if (payload.steps.find((step) => step.key === "publish_first")?.status !== "done") {
+    for (const key of ["publish_first", "approve_first", "start_posts"]) {
+      const ready = payload.steps.find((step) => step.key === key && step.status === "todo");
+      if (ready) return ready;
+    }
+  }
   // Never past a week that is still waiting (a locked step): the same rule as the API's
   // next_step, so "לבנות את החודש השני" is not the ask while the first posts are written.
   const waiting = payload.steps.filter((step) => step.status === "locked").map((step) => step.week);

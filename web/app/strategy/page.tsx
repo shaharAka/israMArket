@@ -7,6 +7,7 @@ import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { QuarterPlanView } from "@/components/plan/QuarterPlanView";
+import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { HypothesisStatusLine, reviewByKey, reviewFor } from "@/components/plan/HypothesisStatusLine";
 import { SegmentedControl, TransitionPanel } from "@/components/design/Controls";
 import { SectionHeader } from "@/components/SectionHeader";
@@ -20,7 +21,8 @@ import {
   type WeeklyBreakdownItem,
 } from "@/lib/api";
 import { mockStoredPlan } from "@/lib/draft";
-import { markSeen } from "@/lib/trial";
+import { markSeen, nextStep, useTrial } from "@/lib/trial";
+import { NextStepAction } from "@/components/trial/TrialGuide";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconCalendar, IconChevron, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
 import { toast } from "@/lib/ui";
@@ -43,8 +45,8 @@ import styles from "./strategy.module.css";
  * each row its own expand. The page keeps exactly one filled button, `השבוע בתוכנית`, in
  * its footer beside the calendar.
  *
- * Editing the plan itself is not built yet, and the page says so; what it is built on is
- * editable from /decisions today. A business without a stored plan (built before Revision
+ * The direction, intended audience and assumptions are editable at /strategy/edit.
+ * The business inputs remain editable at /decisions. A business without a stored plan (built before Revision
  * 5) sees the month and the quarter as before.
  */
 
@@ -65,6 +67,8 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
 }
 
 export default function StrategyPage() {
+  const { payload: trial } = useTrial();
+  const firstAction = trial && !trial.ended ? nextStep(trial) : null;
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -126,26 +130,25 @@ export default function StrategyPage() {
         <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
       ) : null}
       <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" review={strategy?.hypothesis_review} />
-      <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-        לערוך את התוכנית עצמה יהיה אפשר בקרוב. בינתיים אפשר לשנות את מה שהיא בנויה עליו:{" "}
-        <Link href="/decisions" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-          ההחלטות שלי
-        </Link>
-      </p>
+
     </section>
   ) : null;
 
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
+        {loaded ? <RecommendationReview planId={strategy?.id} /> : null}
         <SectionHeader
           section="plan"
           eyebrow={null}
           title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"}
           action={
-            loaded && plan && strategy ? (
-              <div className={styles.range}>
-                <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{ value: "quarter", label: "התמונה הרחבה" }, { value: "month", label: strategy.month_name_he }]} />
+            loaded && (plan || strategy) ? (
+              <div className="flex flex-wrap items-center gap-3">
+                {plan && strategy ? <div className={styles.range}>
+                  <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{ value: "quarter", label: "התמונה הרחבה" }, { value: "month", label: strategy.month_name_he }]} />
+                </div> : null}
+                <Link href="/strategy/edit" className={TEXT_ACTION}>לערוך את התוכנית</Link>
               </div>
             ) : undefined
           }
@@ -170,6 +173,7 @@ export default function StrategyPage() {
 
         {loaded ? (
           <div className="space-y-10 pb-2">
+            {welcome && plan ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">התוכנית נשמרה בחשבון. אפשר לחזור אליה בכל זמן; אין צורך לחבר את כל הכלים כדי להתחיל.</p> : null}
             {/* Arrived from /start with the plan and no month yet: the server builds it now. */}
             {needsMonth ? (
               <MonthBuildProgress
@@ -194,7 +198,7 @@ export default function StrategyPage() {
             ) : null}
             {/* The page's one filled button, beside the calendar that belongs to the plan. */}
             <footer className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-8">
-              {strategy ? (
+              {firstAction ? <div className="w-full space-y-3"><p className="text-base font-semibold">הצעד הקרוב: {firstAction.title_he}</p><p className="max-w-xl text-sm leading-6 text-[color:var(--ink-soft)]">{firstAction.why_he}</p><NextStepAction step={firstAction} /></div> : strategy ? (
                 <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
                   השבוע בתוכנית
                   <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
@@ -218,7 +222,7 @@ function NoMonthYet() {
     <div className="paper px-5 py-4 text-[15px] leading-7 text-[color:var(--ink-soft)] sm:px-6">
       <p>
         <b className="font-semibold text-[color:var(--ink)]">החודש עוד לא מוכן. </b>
-        קודם מחברים מדידה ובוחרים מוצרים, ואז כותבים את הפוסטים. הם יחכו לאישור שלכם בעמוד הפוסטים.
+        בונים את צעדי העבודה מתוך התוכנית. בוחרים מה לקדם ומוסיפים חומרים, ואז כותבים פוסטים לאישור שלכם.
       </p>
       <StepLink stepKey={["start_posts", "approve_first"]} />
     </div>
@@ -239,7 +243,9 @@ function MonthSection({
   const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
   const events = strategy.relevant_events || strategy.roadmap?.relevant_events || [];
   const monthly = strategy.monthly_horizon_plan || strategy.roadmap?.monthly_horizon_plan;
-  const quarter = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  const horizon = strategy.long_horizon_plan || strategy.roadmap?.long_horizon_plan;
+  // The API uses {} for a plan without later milestones; it is truthy in JavaScript.
+  const quarter = Array.isArray(horizon?.milestones) ? horizon : null;
   const management = strategy.management_and_checkpoints || strategy.roadmap?.management_and_checkpoints;
   const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
   const currentWeek = currentWeekOf(strategy);

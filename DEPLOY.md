@@ -89,11 +89,14 @@ failed; the others still ran.
 
 ## Cost note
 
-Image generation defaults to `gemini-3-pro-image` at 2K — roughly 20-30s and the
-expensive tier per image. `REAL_PHOTO_FIRST=true` means most cards reuse the
-business's own scraped photograph and cost nothing. Set
-`GEMINI_IMAGE_MODEL=gemini-3.1-flash-lite-image` and `GEMINI_IMAGE_SIZE=1K` to cut cost
-and latency at a visible quality cost.
+Images go to Muse Image first ($0.01 each, new images and edits of the owner's own
+photos), and to Nano Banana 2 (`gemini-3.1-flash-image` at 1K, about $0.068) only when
+Muse refuses, errors or times out (docs/design-dna.md, "Model routing"). Each attempt and
+its estimated cost is in the `image_usage` table. `REAL_PHOTO_FIRST=true` means a card
+starts from the business's own photo that best matches the post, edited to its Design DNA.
+`IMAGE_GENERATE_PROVIDER` / `IMAGE_EDIT_PROVIDER=gemini` skip Muse; set
+`GEMINI_IMAGE_MODEL=gemini-3-pro-image` and `GEMINI_IMAGE_SIZE=2K` for the "best" tier
+(about $0.14 an image).
 
 Nothing in the app generates an image while browsing — only an explicit click does.
 

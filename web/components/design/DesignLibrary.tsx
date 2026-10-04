@@ -25,6 +25,8 @@ export function DesignLibrary() {
   const [reduced, setReduced] = useState(false);
   return <DesignScope className={styles.page} palette={palette} mood={mood} reduced={reduced}><div className={styles.container}>
     <header className={styles.header}><Link href="/preview" className={styles.brand}><BrandMark className={styles.brandMark} />ישראמארקט</Link><span className={styles.headerLabel}>ספריית העיצוב</span><Link href="/preview" className={styles.openProduct}>למוצר ←</Link></header>
+    <p className={styles.openProduct}><Link href="/design/connections">לנסות את החיבורים אחרי ההרשמה ←</Link></p>
+    <p className={styles.openProduct}><Link href="/design/flows">לוח מסעות המשתמש · לפני ואחרי הרשמה ←</Link></p>
     <nav className={styles.libraryNav} aria-label="חלקי ספריית העיצוב">{[{id:"language",label:"השפה"},{id:"components",label:"רכיבים"},{id:"results",label:"תוצאות"},{id:"transitions",label:"מעברים ותנועה"}].map(item => <button key={item.id} type="button" aria-pressed={area === item.id} onClick={() => setArea(item.id)}>{item.label}</button>)}</nav>
     <main>
       {area === "language" && <>

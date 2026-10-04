@@ -13,6 +13,7 @@ import tempfile
 import unittest
 from datetime import date
 from pathlib import Path
+from unittest.mock import patch
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -23,6 +24,7 @@ from app.deps import get_current_user
 from app.main import app
 from app.models import Asset, Audience, Business, Integration, Strategy, User
 from app.services.jsonutil import dumps, loads
+from _verified_connection import verified_connection
 
 # The checklist in reading order: the setup group first, then the running group.
 SETUP_KEYS = [
@@ -119,6 +121,10 @@ class SetupChecklistTestCase(unittest.TestCase):
         app.dependency_overrides[get_db] = override_db
         app.dependency_overrides[get_current_user] = lambda: self.owner
         self.client = TestClient(app)
+        for target in ("app.services.meta.meta_configured", "app.services.ga4.ga4_configured"):
+            patcher = patch(target, return_value=True)
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
     def _cleanup(self):
         app.dependency_overrides.clear()
@@ -170,7 +176,7 @@ class SetupChecklistTestCase(unittest.TestCase):
         self.db.commit()
         return row
 
-    def connect(self, provider: str, status: str = "connected", business: Business | None = None) -> Integration:
+    def connect(self, provider: str, status: str = "connected", business: Business | None = None, *, verified=True) -> Integration:
         business = business or self.business
         row = (
             self.db.query(Integration)
@@ -188,6 +194,9 @@ class SetupChecklistTestCase(unittest.TestCase):
                 display_name=provider,
             )
             self.db.add(row)
+        self.db.flush()
+        if verified:
+            verified_connection(row)
         self.db.commit()
         return row
 
@@ -277,6 +286,177 @@ class SetupChecklistTestCase(unittest.TestCase):
         self.assertEqual(payload["next"]["key"], NEXT_ORDER[0])
         self.assertEqual(payload["next"]["action_href"], ACTION_HREFS["scan"])
         self.assertEqual(payload["next"], {k: payload["next"][k] for k in ("key", "title", "action_href", "action_label")})
+
+    def test_saved_plan_only_asks_for_its_sources(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}]}})
+        by_key = self.by_key()
+        self.assertIn("google", by_key)
+        self.assertNotIn("instagram", by_key)
+        self.assertTrue(by_key["quarter"]["done"])
+        self.assertFalse(by_key["google"]["done"])
+        self.connect("ga4", business=self.rival)
+        self.assertFalse(self.by_key()["google"]["done"])
+        self.connect("ga4")
+        self.assertTrue(self.by_key()["google"]["done"])
+
+    def test_plan_without_external_sources_does_not_add_connectors(self):
+        self.save_profile({"quarter_plan": {"strategy": "recommendations", "integrations": []},
+                           "integrations_checklist": [{"key": "ga4"}, {"key": "instagram_insights"}]})
+        by_key = self.by_key()
+        self.assertNotIn("google", by_key)
+        self.assertNotIn("instagram", by_key)
+        trial_keys = {step["key"] for step in self.client.get("/trial").json()["steps"]}
+        self.assertNotIn("site_data", trial_keys)
+        self.assertNotIn("instagram", trial_keys)
+
+    def assert_guides_connection(self, key, status):
+        item = self.by_key()[key]
+        step_key = "site_data" if key == "google" else "instagram"
+        step = next(step for step in self.client.get("/trial").json()["steps"] if step["key"] == step_key)
+        self.assertEqual(item["done"], status == "done")
+        self.assertEqual(item.get("status", "todo") == "soon", status == "soon")
+        self.assertEqual(step["status"], status)
+        self.assertEqual(item["title"], step["title_he"])
+        return item
+
+    def test_existing_permission_and_public_profiles_do_not_claim_a_successful_read(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}, {"key": "instagram_insights"}]},
+                           "social_links": {"instagram": "https://instagram.com/example"}})
+        for provider, key in (("ga4", "google"), ("meta", "instagram")):
+            self.connect(provider, verified=False)
+            self.assert_guides_connection(key, "todo")
+        measurement = self.client.get("/trial").json()["measurement"]
+        self.assertEqual(measurement["verified_sources"], [])
+        self.assertEqual(measurement["pending_sources"], ["נתוני האתר", "נתוני האינסטגרם"])
+
+    def test_read_progress_survives_repeated_visits_and_invalidates_changed_selection(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}, {"key": "instagram_insights"}]}})
+        google = self.connect("ga4")
+        social = self.connect("meta")
+        saved = (google.extra_json, social.extra_json)
+        for _ in range(2):
+            self.assert_guides_connection("google", "done")
+            self.assert_guides_connection("instagram", "done")
+        self.assertEqual((google.extra_json, social.extra_json), saved)
+        google.external_id = "different-site"
+        extra = loads(social.extra_json, {})
+        extra["selected_instagram_id"] = "different-instagram"
+        social.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("google", "todo")
+        self.assert_guides_connection("instagram", "todo")
+
+    def test_successful_old_read_does_not_complete_a_disconnected_source(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}, {"key": "instagram_insights"}]}})
+        google = self.connect("ga4")
+        social = self.connect("meta")
+        google.access_token_enc = ""
+        social.status = "reconnect"
+        self.db.commit()
+        self.assert_guides_connection("google", "todo")
+        self.assert_guides_connection("instagram", "todo")
+
+    def test_empty_read_is_successful_but_failure_and_invalid_dates_are_not(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}]}})
+        item = self.connect("ga4")
+        extra = loads(item.extra_json, {})
+        extra["source_readiness"]["status"] = "empty"
+        item.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("google", "done")
+        for fields in ({"status": "unavailable"}, {"status": "ready", "last_success_at": "invalid-date"}):
+            extra["source_readiness"].update(fields)
+            item.extra_json = dumps(extra)
+            self.db.commit()
+            self.assert_guides_connection("google", "todo")
+
+    def test_advertising_plan_does_not_require_instagram(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "meta_business"}]},
+                           "integrations_checklist": [{"key": "instagram_insights"}]})
+        item = self.connect("meta")
+        extra = loads(item.extra_json, {})
+        extra["selected_page_id"] = ""
+        extra["selected_instagram_id"] = ""
+        item.external_id = "act_example"
+        item.extra_json = dumps(extra)
+        from app.services import meta_readiness
+        extra["source_readiness"]["selection_key"] = meta_readiness.key(item)
+        extra["source_readiness"]["status"] = "partial"
+        extra["source_readiness"]["sections"]["social"] = {"status": "link_instagram"}
+        item.extra_json = dumps(extra)
+        self.db.commit()
+        self.assertEqual(self.assert_guides_connection("instagram", "done")["title"], "נתוני הפרסום")
+        self.assertEqual(self.client.get("/trial").json()["measurement"]["verified_sources"], ["נתוני הפרסום"])
+        extra["source_readiness"]["sections"]["ads"] = {"status": "permission"}
+        item.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("instagram", "todo")
+
+    def test_pixel_must_receive_events_from_the_selected_site(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "meta_pixel"}]}})
+        item = self.connect("meta")
+        self.assert_guides_connection("instagram", "done")
+        extra = loads(item.extra_json, {})
+        for status in ("waiting", "wrong_site", "site_unconfirmed", "unavailable"):
+            extra["source_readiness"]["status"] = "partial"
+            extra["source_readiness"]["sections"]["tracking"]["status"] = status
+            item.extra_json = dumps(extra)
+            self.db.commit()
+            self.assert_guides_connection("instagram", "todo")
+
+    def test_incomplete_required_section_does_not_count_and_unrelated_failure_does_not_block(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "instagram_insights"}]}})
+        item = self.connect("meta")
+        extra = loads(item.extra_json, {})
+        extra["source_readiness"]["status"] = "partial"
+        extra["source_readiness"]["sections"]["ads"] = {"status": "permission"}
+        item.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("instagram", "done")
+        extra["source_readiness"]["sections"]["social"]["incomplete"] = True
+        item.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("instagram", "todo")
+
+    def test_facebook_only_plan_is_honestly_deferred_without_forcing_instagram(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "facebook_insights"}]}})
+        self.connect("meta")
+        item = self.assert_guides_connection("instagram", "soon")
+        self.assertNotIn("אינסטגרם", item["title"])
+        self.assertIn("עדיין לא זמינה", item["why"])
+        for key in ("scan", "diagnostics", "priorities", "audiences", "media", "publish"):
+            self.make_done(key)
+        payload = self.payload()
+        self.assertEqual(payload["completed"], payload["total"])
+        self.assertIsNone(payload["next"])
+        self.assertFalse(self.by_key(payload)["instagram"]["done"])
+
+    def test_unavailable_connection_is_excluded_from_both_guides_progress(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}, {"key": "meta_business"}]}})
+        with patch("app.services.ga4.ga4_configured", return_value=False), patch("app.services.meta.meta_configured", return_value=False):
+            self.assert_guides_connection("google", "soon")
+            self.assert_guides_connection("instagram", "soon")
+            items = self.by_key()
+            self.assertEqual(self.payload()["total"], len(items) - 2)
+
+    def test_whatsapp_is_the_saved_tracking_number_not_a_public_profile_link(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "whatsapp_link"}]},
+                           "social_links": {"whatsapp": "https://wa.me/972501234567"}})
+        self.assertFalse(self.by_key()["whatsapp"]["done"])
+        self.business.whatsapp_number_e164 = "+972501234567"
+        self.db.commit()
+        self.assertTrue(self.by_key()["whatsapp"]["done"])
+
+    def test_ready_content_is_actionable_ahead_of_unfinished_connections(self):
+        self.save_profile({"quarter_plan": {"integrations": [{"key": "instagram_insights"}]}})
+        self.add_strategy([post("פוסט מוכן")])
+        self.assertEqual(self.next_key(), "approve")
+        self.assertFalse(self.by_key()["publish"]["done"])
+        self.add_strategy([post("פוסט מוכן", approved=True), post("עוד טיוטה")])
+        self.assertEqual(self.next_key(), "publish")
+        self.assertFalse(self.by_key()["approve"]["done"])
+        self.add_strategy([post("פוסט מוכן", approved=True, published_url="https://instagram.com/p/example")])
+        self.assertEqual(self.next_key(), "scan")
 
     def test_groups_are_the_setup_and_running_groups(self):
         groups = self.payload()["groups"]

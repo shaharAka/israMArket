@@ -144,6 +144,12 @@ class DraftTestCase(unittest.TestCase):
         preview_service.reset_cache()
         public_router.answers.clear()
         self.models = FakeModels()
+        # The fictional reply below names Simchat Torah. Keep its request date
+        # stable so calendar validation does not add an unrelated model retry.
+        test_date = mock.patch.object(public_router, "date", wraps=date)
+        clock = test_date.start()
+        clock.today.return_value = date(2026, 9, 26)
+        self.addCleanup(test_date.stop)
         self._patches = [
             mock.patch.object(drafts, "_strategy_call", side_effect=self.models.strategy),
             mock.patch.object(drafts, "lite_json", side_effect=self.models.lite),

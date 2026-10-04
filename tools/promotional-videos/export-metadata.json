@@ -1,0 +1,67 @@
+{
+  "exports": [
+    {
+      "platform": "instagram",
+      "file": "isramarket-instagram.mp4",
+      "duration_seconds": 24,
+      "frames": 720,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "profile": "High",
+      "level": 42,
+      "faststart": true,
+      "mp4_atoms": [
+        "ftyp",
+        "moov",
+        "free",
+        "mdat"
+      ],
+      "audio": "none; silent-first review export",
+      "bytes": 842222,
+      "sha256": "ecdab3aa7cae1d64bc71fc5c079406fda8396f3bc2d0794cb34726c588c1fdf4",
+      "render_and_verification_seconds": 68.44,
+      "external_provider_fees_usd": 0,
+      "source_revision": "3a40db5644b23624f593472b37f3d922caf492f4",
+      "source_sha256": "6ef9daab610a9ec3c92e20b5b124b81db8dc180d11f60a42602f54a4f31a6ec0",
+      "caption_sha256": "2311b15a6d7229f4fdd396121e0ed53abc71f79c85523b7183db862e84dcdc8b",
+      "source_revision_note": "Git base at rendering; source/caption SHA-256 identify the actual then-uncommitted composition."
+    },
+    {
+      "platform": "tiktok",
+      "file": "isramarket-tiktok.mp4",
+      "duration_seconds": 18,
+      "frames": 540,
+      "width": 1080,
+      "height": 1920,
+      "fps": 30,
+      "codec": "h264",
+      "pixel_format": "yuv420p",
+      "profile": "High",
+      "level": 42,
+      "faststart": true,
+      "mp4_atoms": [
+        "ftyp",
+        "moov",
+        "free",
+        "mdat"
+      ],
+      "audio": "none; silent-first review export",
+      "bytes": 571523,
+      "sha256": "2b2457ba8eacdb1b5f882bb6d3cf4a028ebde91684e530817316c4a30bd29dc1",
+      "render_and_verification_seconds": 51.52,
+      "external_provider_fees_usd": 0,
+      "source_revision": "3a40db5644b23624f593472b37f3d922caf492f4",
+      "source_sha256": "6ef9daab610a9ec3c92e20b5b124b81db8dc180d11f60a42602f54a4f31a6ec0",
+      "caption_sha256": "2311b15a6d7229f4fdd396121e0ed53abc71f79c85523b7183db862e84dcdc8b",
+      "source_revision_note": "Git base at rendering; source/caption SHA-256 identify the actual then-uncommitted composition."
+    }
+  ],
+  "accepted_files": 2,
+  "completed_render_jobs": 4,
+  "encode_failures": 0,
+  "preview_passes": 2,
+  "external_provider_fees_usd": 0
+}

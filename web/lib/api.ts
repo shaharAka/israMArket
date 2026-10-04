@@ -1,4 +1,6 @@
 import type { OnboardingDraft } from "./draft";
+import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign, type PostPrice } from "./dna/library";
+import { DEMO_DNA, DEMO_DNA_ALTERNATIVES, DEMO_PHOTO_AREAS, adjustDna } from "./dna/samples";
 import type { StoredQuarterPlan } from "./quarterPlan";
 import { deriveLifecycle } from "./postLifecycle";
 
@@ -24,10 +26,28 @@ function formatDetail(detail: unknown, fallback: string) {
 
 export class ApiError extends Error {
   status: number;
-  constructor(message: string, status: number) {
+  /** A machine-readable reason when the server sends one (e.g. `plan_required` on a 402). */
+  code?: string;
+  constructor(message: string, status: number, code?: string) {
     super(message);
     this.status = status;
+    this.code = code;
   }
+}
+
+/** The server's `{code, detail_he}` error body, at the top level or inside FastAPI's `detail`. */
+function errorCode(data: unknown): { code?: string; message?: string } {
+  if (!data || typeof data !== "object") return {};
+  const top = data as { code?: unknown; detail_he?: unknown; detail?: unknown };
+  const inner = top.detail && typeof top.detail === "object" && !Array.isArray(top.detail) ? (top.detail as { code?: unknown; detail_he?: unknown }) : null;
+  const code = typeof top.code === "string" ? top.code : typeof inner?.code === "string" ? inner.code : undefined;
+  const message = typeof top.detail_he === "string" ? top.detail_he : typeof inner?.detail_he === "string" ? inner.detail_he : undefined;
+  return { code, message };
+}
+
+/** A 402: this action needs a paid plan (`plan_required`), or the trial's access ended. */
+export function isPlanRequired(err: unknown): err is ApiError {
+  return err instanceof ApiError && (err.status === 402 || err.code === "plan_required");
 }
 
 export function isDemo(): boolean {
@@ -146,6 +166,7 @@ export const DEMO_BUSINESS: Business = {
     brand_language: DEMO_BRAND,
   },
   brand_language: DEMO_BRAND,
+  brand_dna: DEMO_DNA,
   diagnostics: {
     has_customer_club: "no",
     repeat_vs_new: "mostly_repeat",
@@ -393,13 +414,13 @@ function demoGeneratedAudiences(): Audience[] {
 }
 
 const DEMO_IMAGES = [
-  "/demo/post-1.svg",
-  "/demo/post-2.svg",
-  "/demo/post-3.svg",
-  "/demo/post-4.svg",
-  "/demo/post-5.svg",
-  "/demo/post-6.svg",
-  "/demo/post-7.svg",
+  "/demo/post-1.webp",
+  "/demo/post-2.webp",
+  "/demo/post-3.webp",
+  "/demo/post-4.webp",
+  "/demo/post-5.webp",
+  "/demo/post-6.webp",
+  "/demo/post-7.webp",
 ];
 
 /** Their own library of photos and clips — the raw material for post images. */
@@ -433,38 +454,38 @@ let DEMO_ASSETS: Asset[] = [
   {
     id: 1,
     kind: "image",
-    mime: "image/jpeg",
+    mime: "image/webp",
     source: "upload",
     source_url: "",
     description: "חלות קלועות על שולחן מקומח, רגע אחרי שיצאו מהתנור, באור של בוקר.",
     tags: ["חלות", "מחמצת", "תנור", "שישי"],
-    url: "/demo/post-1.svg",
-    width: 1200,
-    height: 900,
+    url: "/demo/post-1.webp",
+    width: 1080,
+    height: 1350,
     created_at: "2026-09-01T06:20:00Z",
   },
   {
     id: 2,
     kind: "image",
-    mime: "image/png",
+    mime: "image/webp",
     source: "site",
     source_url: "https://lechem-tom.example.co.il/gallery",
-    description: "חזית המאפייה ברחוב, עם השלט הישן ותיבת החלות ליד הדלת.",
-    tags: ["חזית החנות", "יפו", "מיתוג"],
-    url: "/demo/post-2.svg",
-    width: 1000,
-    height: 1000,
+    description: "משמרת הלילה: התנור פתוח והכיכרות נכנסות על מרדה עץ.",
+    tags: ["תנור", "משמרת לילה", "מאחורי הקלעים"],
+    url: "/demo/post-7.webp",
+    width: 1080,
+    height: 1350,
     created_at: "2026-09-02T09:05:00Z",
   },
   {
     id: 3,
     kind: "image",
-    mime: "image/jpeg",
+    mime: "image/webp",
     source: "url",
     source_url: "https://instagram.com/p/CxYzLechemTom",
-    description: "מארז ראש השנה: חלה עגולה, עוגת דבש וריבת תאנים על נייר קראפט.",
+    description: "מארז ראש השנה: חלה עגולה, ריבת תאנים ומאפה מלוח על נייר קראפט.",
     tags: ["ראש השנה", "מארז", "מתנה", "חג"],
-    url: "/demo/post-5.svg",
+    url: "/demo/post-2.webp",
     width: 1080,
     height: 1350,
     created_at: "2026-09-03T14:40:00Z",
@@ -849,7 +870,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "הכנות לחגי תשרי",
     goal_fit: "הזמנות מראש לחג",
     image_prompt: "Warm close-up of golden challah loaves on a floured Jaffa bakery counter at morning light",
-    overlay_text: "החלות נגמרות",
+    overlay_text: "החלות נגמרות לפני הצהריים",
+    // One message on the image (docs/design-dna.md, Revision 1); the order deadline is in
+    // the caption. The words sit on the empty wall above the challahs.
+    has_overlay: true,
+    overlay_headline: "החלות נגמרות לפני הצהריים",
+    design: { composition: "full_bleed", text_mode: "headline", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-1.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["פניות בוואטסאפ", "שמירות של הפוסט"],
@@ -907,6 +933,10 @@ const POSTS: RoadmapPost[] = [
     goal_fit: "שמי שרואה את הפוסט גם יזמין",
     image_prompt: "Holiday bakery box with challah, jam, and a savory pastry on kraft paper",
     overlay_text: "מארז ראש השנה",
+    // The box fills the frame: the photo alone carries it, the words are in the caption.
+    has_overlay: false,
+    overlay_headline: "מארז ראש השנה",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-2.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["דפדופים בקרוסלה", "לחיצות על הקישור"],
@@ -952,7 +982,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "ראש השנה",
     goal_fit: "שאף אחד לא יגיע לדלת סגורה",
     image_prompt: "Handwritten bakery hours card on dark wood, cream paper, rust ink",
-    overlay_text: "סגורים 12–13.9",
+    overlay_text: "פתוחים עד 13:00",
+    // The hours go on the blank card in the photo itself.
+    has_overlay: true,
+    overlay_headline: "פתוחים עד 13:00",
+    overlay_sub: "בערב החג, לאיסוף הזמנות",
+    design: { composition: "full_bleed", text_mode: "headline", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-3.webp"] },
     primary_outlet: "facebook",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["שמירות של הפוסט", "שיתופים"],
@@ -990,7 +1025,11 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "",
     goal_fit: "שהלקוחות יחזרו לבוא כל יום",
     image_prompt: "Sliced sourdough and a sandwich on a neighborhood counter after the holiday",
-    overlay_text: "הלחם היומי חוזר",
+    overlay_text: "חזרנו.",
+    // Photo-led: one word on the dark wall, the rest in the caption.
+    has_overlay: true,
+    overlay_headline: "חזרנו.",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-4.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["צפיות ברילס", "ביקורים בפרופיל"],
@@ -1021,7 +1060,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "יום כיפור",
     goal_fit: "אמון של השכונה",
     image_prompt: "Quiet dark bakery interior, oven off, no sale graphics",
-    overlay_text: "סגורים. בלי מבצע.",
+    overlay_text: "גמר חתימה טובה",
+    // Nothing to sell: type on the bakery's paper, quiet.
+    has_overlay: true,
+    overlay_headline: "גמר חתימה טובה",
+    overlay_sub: "ב-21.9 סגורים כל היום",
+    design: { composition: "type_led", text_mode: "type_led", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-5.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook"],
     metrics_to_watch: ["תגובות חמות"],
@@ -1049,7 +1093,12 @@ const POSTS: RoadmapPost[] = [
     calendar_tie: "סוכות",
     goal_fit: "מכירות לחול המועד",
     image_prompt: "Picnic breads, baguettes and focaccia on a outdoor table under sukkah shade",
-    overlay_text: "לחם לפיקניק",
+    overlay_text: "מארז פיקניק לסוכה",
+    // The offer post, the only one with a price on the image: here the price is the message.
+    has_overlay: true,
+    overlay_headline: "מארז פיקניק לסוכה",
+    price: { amount: 120, currency: "ILS", note: "לכל המשפחה" },
+    design: { composition: "full_bleed", text_mode: "headline", crop: "4:5", ...DEMO_PHOTO_AREAS["/demo/post-6.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "facebook", "whatsapp"],
     metrics_to_watch: ["שמירות של הפוסט", "הזמנות של מארזים"],
@@ -1092,6 +1141,10 @@ const POSTS: RoadmapPost[] = [
     goal_fit: "שיכירו אתכם ויבואו לחנות",
     image_prompt: "Night bakery shift, warm oven glow, baker's hands, no luxury styling",
     overlay_text: "מאחורי התנור",
+    // The hands and the fire are the post.
+    has_overlay: false,
+    overlay_headline: "מאחורי התנור",
+    design: { composition: "full_bleed", text_mode: "photo_only", crop: "9:16", ...DEMO_PHOTO_AREAS["/demo/post-7.webp"] },
     primary_outlet: "instagram",
     outlets: ["instagram", "tiktok"],
     metrics_to_watch: ["זמן צפייה ממוצע", "שיתופים"],
@@ -1511,31 +1564,40 @@ const DEMO_PERFORMANCE: PerformancePayload = {
   },
 };
 
-const DEMO_RECS: RecommendationPayload = {
-  week_of: "2026-09-01",
+/** Fictional source facts; no inferred messages, sales or prior-year results. */
+export const DEMO_RECS: RecommendationPayload = {
+  id: 1,
+  created_at: "2026-09-05T08:00:00Z",
+  week_of: "2026-08-31",
   suggestions: {
-    week_summary: "הרילס מצליח, אבל אנשים יוצאים מעמוד החג בלי להזמין. כדאי שהפוסט של מארז ראש השנה ישלח ישר לוואטסאפ.",
+    week_summary: "נבדוק אם הסבר ברור יותר במארז עוזר ללקוחות לבחור.",
+    basis: {
+      version: 1, snapshot_id: 1, plan_id: DEMO_STRATEGY.id,
+      sources: [
+        { key: "ga4", label: "נתוני האתר", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
+        { key: "meta_ads", label: "דיווח המודעות של מטא", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
+      ],
+      observations: [
+        { source: "ga4", metric: "sessions", label: "כניסות לאתר", value: 1840 },
+        { source: "ga4", metric: "conversions", label: "פעולות חשובות באתר", value: 63 },
+        { source: "meta_ads", metric: "link_clicks", label: "לחיצות על קישור במודעות", value: 160 },
+      ],
+      limits: ["הנתונים מומצאים לצורך הדגמה. פעולות חשובות אינן בהכרח פניות או הזמנות.", "אין כאן בדיקה שמוכיחה למה הלקוחות פעלו כך. זהו ניסוי מוצע, ולא מסקנה על המכירות."],
+    },
     suggestions: [
       {
-        priority: "high",
-        title: "שלחו מהפוסט של המארז ישר לוואטסאפ",
-        action: "במקום «לפרטים באתר» שימו «וואטסאפ להזמנת מארז עד רביעי».",
-        evidence: "יותר מדי אנשים עוזבים את דף החג בלי להזמין.",
-        target: "קרוסלת מארז ראש השנה",
+        priority: "medium", title: "נסביר מה יש במארז לפני שמבקשים להזמין",
+        action: "בפוסט המארז נוסיף פירוט קצר של התכולה ומועד האיסוף, ונשאיר בקשה אחת להזמנה.",
+        evidence: "בתרחיש יש כניסות ופעולות באתר, אבל אין מדידה מאומתת של הזמנות. אפשר לבדוק ניסוח אחד בלי להסיק מה גרם לתוצאות.",
+        target: "טיוטת מארז סוכות בתוכנית", hypothesis: "ייתכן שפרטי המארז יעזרו לבחור. הנתונים אינם מוכיחים שחוסר במידע מונע הזמנות.",
+        success_check: "אחרי שבוע נבדוק לחיצות מהפוסט. לפני מסקנה על הזמנות, נוודא שאפשר לזהות אותן באתר.",
+        review: { kind: "post", status: "ready", href: `/posts?post=5&plan=${DEMO_STRATEGY.id}&post_uid=demo-p6&recommendation=1&suggestion=0`, label: "לבדוק את ההצעה בפוסט", note_he: "נפתח את הפוסט כפי שהוא. ההצעה לא נערכת ולא מתפרסמת אוטומטית.", plan_id: DEMO_STRATEGY.id, post_uid: "demo-p6" },
       },
       {
-        priority: "medium",
-        title: "פרסמו את שעות הסגירה יום לפני החג",
-        action: "פרסמו את תמונת השעות 36 שעות לפני ראש השנה, לא ביום החג עצמו.",
-        evidence: "בשנה שעברה שאלו הרבה על שעות הפתיחה.",
-        target: "פוסט התמונה של שבוע 2",
-      },
-      {
-        priority: "low",
-        title: "העבירו קצת תקציב מודעות למי שכבר צפה",
-        action: "הורידו מעט ממודעות החג, והשקיעו יותר במי שכבר ראה את רילס החלות.",
-        evidence: "המודעות מביאות צפיות, אבל פחות הזמנות ביחס לעלות.",
-        target: "מודעות אינסטגרם",
+        priority: "medium", title: "נוודא מה נחשב לפעולה חשובה באתר",
+        action: "בדקו עם מי שמנהל את האתר אם הזמנה או פנייה נמדדות בנפרד מלחיצה.", evidence: "63 הפעולות בדוגמה אינן ספירה מאומתת של הזמנות.", target: "מדידת האתר",
+        success_check: "ננסה פנייה או הזמנה לבדיקה, ונאשר שאירוע מתאים הגיע למערכת.",
+        review: { kind: "measurement", status: "ready", href: "/integrations", label: "לבדוק את החיבורים", note_he: "חיבור פעיל אינו מאשר מה בדיוק נמדד באתר.", plan_id: DEMO_STRATEGY.id },
       },
     ],
   },
@@ -1547,6 +1609,8 @@ export type SetupItem = {
   /** Why this step changes the plan, in the owner's words. */
   why: string;
   done: boolean;
+  /** A source the plan needs but this app cannot read yet. Excluded from setup totals. */
+  status?: "soon";
   action_href: string;
   action_label: string;
 };
@@ -2087,6 +2151,7 @@ function demoCalendar(year: number, month: number): CalendarPayload {
 // The explicit demo includes the same stored-plan artifact created by /start.
 // Fixtures load lazily; real accounts never run this builder.
 let demoPlanReady: Promise<void> | null = null;
+let demoPlanSavedAt: string | null = null;
 async function ensureDemoPlan() {
   if (DEMO_BUSINESS.quarter_plan) return;
   demoPlanReady ??= (async () => {
@@ -2164,7 +2229,8 @@ const DEMO_PRODUCT_IMAGE_MIX = new Set(["product", "offer", "behind_scenes", "so
 function demoOwnerNeeds(post: RoadmapPost): PostOwnerNeed[] {
   if (post.approval_status === "approved" || (post.published_url || "").trim() || post.published_at) return [];
   const needs: PostOwnerNeed[] = [];
-  if (post.overlay_theme !== "type_hero") {
+  // A type-led post draws no photo (it keeps the one it has for a later change of design).
+  if (post.overlay_theme !== "type_hero" && post.design?.text_mode !== "type_led") {
     const hasImage = Boolean((post.image_url || "").trim());
     const own = hasImage && (post.image_source === "asset" || post.image_source === "real_photo");
     const choseAi = hasImage && post.image_preference === "ai";
@@ -2236,9 +2302,38 @@ function demoInstructionRewrite(
   return { ...base, caption: `בוקר טוב, שכנים. ${caption}` };
 }
 
+/**
+ * A new photo brings its own empty area and subject (the server's vision pass; measured by
+ * eye for the demo photos). A photo the demo has not measured has neither: the words go
+ * on a band beside it.
+ */
+function demoDesignFor(post: RoadmapPost, url: string): RoadmapPost["design"] {
+  const area = DEMO_PHOTO_AREAS[url];
+  return { ...post.design, safe_area: area?.safe_area ?? null, focal: area?.focal ?? null, subject: null };
+}
+
+/** The server's compositions that can carry a photo alone (`text_modes` has photo_only). */
+const DEMO_PHOTO_ONLY = new Set(["full_bleed", "inset_frame", "arch_window", "circle_crop", "collage_grid"]);
+
+/**
+ * Mirrors `sync_text_mode` (api/app/services/post_design.py): a photo-free composition is
+ * type-led; the words switched off is photo only (where the composition can carry a photo
+ * alone); switched on, a photo-only or missing mode becomes a headline.
+ */
+function demoSyncTextMode(design: RoadmapPost["design"], hasOverlay: boolean): RoadmapPost["design"] {
+  if (!design?.composition) return design;
+  const current = design.text_mode;
+  if (design.composition === "type_led") return { ...design, text_mode: "type_led" };
+  if (!hasOverlay && DEMO_PHOTO_ONLY.has(String(design.composition))) return { ...design, text_mode: "photo_only" };
+  if (hasOverlay && (!current || current === "photo_only" || current === "type_led")) return { ...design, text_mode: "headline" };
+  return design;
+}
+
 function cloneDemoStrategy(): StrategyPayload {
   return {
     ...DEMO_STRATEGY,
+    // Like serialize_strategy: the month carries the business's Design DNA.
+    brand_dna: DEMO_BUSINESS.brand_dna ?? null,
     usp: {
       ...DEMO_STRATEGY.usp,
       growth_targets: [...(DEMO_STRATEGY.usp.growth_targets || [])],
@@ -2818,6 +2913,20 @@ function demoSaveOwnerContext(body: OwnerContextUpdate): Business {
  * like the real work they stand in for — an instantly-resolved list would hide every
  * loading state the screens are supposed to prove. Callers already await `api()`.
  */
+/** WCAG contrast of two hex colours, for the demo's copy of the server's colour rule. */
+function demoContrast(a: string, b: string): number {
+  const lum = (hex: string) => {
+    const h = hex.replace("#", "");
+    const [r, g, bl] = [0, 2, 4].map((i) => {
+      const v = parseInt(h.slice(i, i + 2), 16) / 255;
+      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}
+
 async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {  const method = (options.method || "GET").toUpperCase();
   if (path === "/auth/me") return DEMO_USER as T;
   if (path === "/auth/logout" && method === "POST") {
@@ -2865,6 +2974,73 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       },
     } as T;
   }
+  // The Design DNA (api/app/routers/brand_dna.py). The real first read builds the DNA and
+  // can take seconds; the demo waits a little so the brand page's loading state is real.
+  if (path === "/brand/dna" && method === "GET") {
+    await new Promise((resolve) => window.setTimeout(resolve, 600));
+    return { brand_dna: DEMO_BUSINESS.brand_dna ?? null, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna" && method === "PUT") {
+    const edit = JSON.parse(String(options.body || "{}")) as BrandDnaEdit;
+    const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
+    // Choices in words first ("יותר שקט", "יותר תמונה"): the server re-derives the genes
+    // from them and stores the result at once, like a regeneration that keeps the style.
+    if (edit.adjust && (edit.adjust.tone || edit.adjust.text)) {
+      await new Promise((resolve) => window.setTimeout(resolve, 500));
+      const adjusted = adjustDna(current, edit.adjust);
+      DEMO_BUSINESS.brand_dna = adjusted;
+      return { brand_dna: adjusted, business_id: DEMO_BUSINESS.id } as T;
+    }
+    const next: BrandDna = structuredClone(current);
+    const locked = new Set(current.locked ?? []);
+    if (edit.type && Object.keys(edit.type).length) {
+      next.type = { ...next.type, ...edit.type };
+      locked.add("type");
+    }
+    if (edit.motif && Object.keys(edit.motif).length) {
+      next.motif = { ...next.motif, ...edit.motif };
+      locked.add("motif");
+    }
+    if (edit.colors && Object.keys(edit.colors).length) {
+      const colors = { ...next.colors, ...edit.colors };
+      // Same rule as the server (MIN_TEXT_CONTRAST).
+      if (demoContrast(colors.ink, colors.paper) < 4.5) {
+        throw new ApiError("צבע הטקסט לא נקרא על צבע הרקע. בחרו טקסט כהה יותר או רקע בהיר יותר.", 422);
+      }
+      next.colors = colors;
+      locked.add("colors");
+    }
+    if (edit.keep) locked.add("all");
+    if (locked.size) next.locked = [...locked].sort();
+    DEMO_BUSINESS.brand_dna = next;
+    return { brand_dna: next, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna/regenerate" && method === "POST") {
+    // Feels like the real call (a model picks within the business's signals) and walks
+    // through hand-made alternatives. Like the server it is stored at once, keeps the
+    // genes the owner set, and clears "kept" (the owner is trying something else).
+    await new Promise((resolve) => window.setTimeout(resolve, 900));
+    // The plan gate (402 `plan_required`). The demo account is on its free month, so it
+    // only answers this way when asked to: localStorage `isramarket_demo_plan` = "locked".
+    if (window.localStorage.getItem("isramarket_demo_plan") === "locked") {
+      throw new ApiError("כדי לנסות סגנון אחר צריך מנוי פעיל.", 402, "plan_required");
+    }
+    const current = DEMO_BUSINESS.brand_dna ?? DEMO_DNA;
+    const cycle = [...DEMO_DNA_ALTERNATIVES, DEMO_DNA];
+    const at = cycle.findIndex((dna) => dna.seed === current.seed);
+    const next: BrandDna = structuredClone(cycle[(at + 1) % cycle.length]);
+    const genes = (current.locked ?? []).filter((gene) => gene === "type" || gene === "motif" || gene === "colors");
+    for (const gene of genes) {
+      if (gene === "type") next.type = structuredClone(current.type);
+      if (gene === "motif") next.motif = structuredClone(current.motif);
+      if (gene === "colors") next.colors = structuredClone(current.colors);
+    }
+    next.locked = genes.length ? genes : undefined;
+    next.created_at = new Date().toISOString();
+    DEMO_BUSINESS.brand_dna = next;
+    return { brand_dna: next, business_id: DEMO_BUSINESS.id } as T;
+  }
+  if (path === "/brand/dna/library") return DNA_LIBRARY as T;
   if (path === "/onboarding/scan" && method === "POST") {
     return {
       business: DEMO_BUSINESS,
@@ -2885,6 +3061,35 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   }
   if (path === "/onboarding/generate/status") return DEMO_GENERATION_DONE as T;
   if (path === "/onboarding/posts/start" && method === "POST") return { ...DEMO_GENERATION_DONE, kind: "posts" } as T;
+  if (path === "/strategy/edit") {
+    await ensureDemoPlan();
+    const plan = DEMO_BUSINESS.quarter_plan!;
+    const revision = DEMO_STRATEGY.plan_revision ?? 0;
+    const version = String(revision).padStart(64, "0");
+    const fields: PlanEditFields = {
+      direction: plan.strategy.one_liner_he,
+      audience: plan.audiences?.find(a => a.role === "primary")?.name ?? DEMO_AUDIENCES[0]?.name ?? "",
+      assumptions: plan.assumptions.map(a => ({ ...a })),
+    };
+    if (method === "PATCH") {
+      const body = JSON.parse(String(options.body || "{}")) as PlanEditFields & { version: string };
+      if (body.version !== version) throw new ApiError("התוכנית עודכנה בינתיים. בדקו את העדכון לפני שמירה.", 409);
+      const updated = { direction: body.direction.trim(), audience: body.audience.trim(), assumptions: body.assumptions.map(a => ({ bet_he: a.bet_he.trim(), if_wrong_he: a.if_wrong_he.trim() })) };
+      if (!updated.direction || !updated.audience || updated.direction.length > 300 || updated.audience.length > 160 || updated.assumptions.length > 4 || updated.assumptions.some(a => !a.bet_he || a.bet_he.length > 300 || a.if_wrong_he.length > 300)) throw new ApiError("מלאו כיוון וקהל וקצרו שדות שחורגים מהמגבלה.", 422);
+      if (JSON.stringify(fields) !== JSON.stringify(updated)) {
+        plan.strategy = { ...plan.strategy, one_liner_he: updated.direction, angle_he: updated.direction !== fields.direction ? "" : plan.strategy.angle_he, from_insight: updated.direction !== fields.direction ? undefined : plan.strategy.from_insight, why_he: "התוכנית עודכנה על ידכם.", based_on: "עדכון שלכם" };
+        plan.audiences = [{ name: updated.audience, role: "primary", message_he: "" }, ...(plan.audiences ?? []).filter(a => a.role !== "primary").slice(0, 3)];
+        plan.assumptions = updated.assumptions;
+        DEMO_STRATEGY.usp.growth_hypothesis = updated.direction;
+        DEMO_STRATEGY.roadmap.summary = updated.direction;
+        for (const monthly of [DEMO_STRATEGY.monthly_horizon_plan, DEMO_STRATEGY.roadmap.monthly_horizon_plan]) if (monthly) monthly.hypothesis = updated.direction;
+        DEMO_STRATEGY.plan_revision = revision + 1;
+        demoPlanSavedAt = new Date().toISOString();
+      }
+      return demoResolve<T>("/strategy/edit");
+    }
+    return { business_id: DEMO_BUSINESS.id, strategy_id: DEMO_STRATEGY.id, available: true, blocked: false, version, revision, saved_at: demoPlanSavedAt, fields } as T;
+  }
   if (path === "/strategy/current") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
@@ -2917,6 +3122,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       image_action: body.image_preference === "real" ? "real_photo" : "generated",
       // Choosing AI on purpose meets a photo need, the way the server records it.
       ...(body.image_preference ? { image_preference: body.image_preference } : {}),
+      design: demoDesignFor(POSTS[index], DEMO_IMAGES[index] || DEMO_IMAGES[0]),
     };
     delete generated.image_asset_id;
     POSTS[index] = generated;
@@ -2936,6 +3142,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       image_asset_id: asset.id,
       image_source_url: asset.source_url || "",
       image_action: "asset",
+      design: demoDesignFor(POSTS[index], asset.url),
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
     return { post: { ...POSTS[index] }, strategy: cloneDemoStrategy() } as T;
@@ -2981,50 +3188,38 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       vibe?: string;
       custom_prompt?: string;
       generate_image?: boolean;
+      composition?: string;
+      text_position?: string;
     };
     const index = body.post_index ?? 0;
     if (!POSTS[index]) throw new ApiError("הפוסט לא נמצא", 404);
+    // The result follows the business's DNA: the composition asked for, or the next of the
+    // DNA's own compositions; the words stay, the way the real designer reads the DNA.
+    await new Promise((resolve) => window.setTimeout(resolve, 700));
+    const dnaCompositions = DEMO_BUSINESS.brand_dna?.compositions ?? [];
+    const current = POSTS[index].design?.composition;
     const vibe = body.vibe || "";
-    let has_overlay = vibe !== "hero_clean";
-    let overlay_position: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card" = "bottom_pill";
-    let overlay_theme: "paper_badge" | "ink_pill" | "accent_banner" | "frosted_glass" | "minimal_text" = "ink_pill";
-    let concept = "צילום אמיתי של מאפי חג ומחמצת טרייה, באור בוקר טבעי";
-    let style = "צילום חם בסגנון מגזין · רקע מטושטש · שולחן עץ כפרי";
-    let headline = POSTS[index].overlay_text || POSTS[index].title.slice(0, 20);
-    let badge = "לחג";
-
-    if (vibe === "hero_clean") {
-      has_overlay = false;
-      concept = "צילום נקי של המוצר, בלי כיתוב בכלל. כל תשומת הלב על הבצק והקרום הטרי";
-      style = "צילום תקריב · אור טבעי מהחלון · בלי שום דבר מסביב";
-      headline = "";
-      badge = "";
-    } else if (vibe === "announcement_card") {
-      has_overlay = true;
-      overlay_position = "center_card";
-      overlay_theme = "paper_badge";
-      concept = "כרטיס הודעה על רקע של נייר חם, עם מסגרת עדינה ואותיות ברורות";
-      headline = POSTS[index].title.slice(0, 24);
-      badge = "חשוב לחג";
-    } else if (vibe === "corner_badge") {
-      has_overlay = true;
-      overlay_position = "top_right";
-      overlay_theme = "paper_badge";
-      concept = "תווית קטנה בפינה הימנית העליונה, על צילום מלא";
-      headline = POSTS[index].overlay_text || "טרי הבוקר";
-      badge = "שישי ביפו";
-    }
-
+    const next =
+      body.composition ||
+      ((dnaCompositions as string[]).includes(vibe)
+        ? vibe
+        : dnaCompositions[(Math.max(-1, dnaCompositions.indexOf(current ?? "")) + 1) % Math.max(1, dnaCompositions.length)]);
+    const prompt = (body.custom_prompt || "").trim();
     POSTS[index] = {
       ...POSTS[index],
-      has_overlay,
-      overlay_headline: headline,
-      overlay_badge: badge,
-      overlay_position,
-      overlay_theme,
-      overlay_text: headline,
-      creative_concept: concept,
-      visual_style: style,
+      has_overlay: true,
+      overlay_headline: POSTS[index].overlay_headline || POSTS[index].overlay_text || POSTS[index].title.slice(0, 24),
+      // A new design keeps the photo, and with it the photo's empty area and subject.
+      design: next
+        ? {
+            ...POSTS[index].design,
+            composition: next,
+            text_mode: next === "type_led" ? "type_led" : "headline",
+            text_position: body.text_position || "",
+            crop: POSTS[index].format === "reel" || POSTS[index].format === "story" ? "9:16" : "4:5",
+          }
+        : POSTS[index].design,
+      creative_concept: prompt ? `לפי מה שביקשתם: ${prompt}` : POSTS[index].creative_concept,
       image_url: POSTS[index].image_url || DEMO_IMAGES[index] || DEMO_IMAGES[0],
     };
     DEMO_STRATEGY.roadmap.posts = POSTS;
@@ -3055,7 +3250,27 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
       overlay_headline: headline,
       overlay_badge: body.overlay_badge !== undefined ? body.overlay_badge : (POSTS[index].overlay_badge || ""),
       overlay_position: body.overlay_position || POSTS[index].overlay_position || "bottom_pill",
-      overlay_theme: body.overlay_theme || POSTS[index].overlay_theme || "ink_pill",
+      // Like the server: the old field changes only when it is sent.
+      overlay_theme: body.overlay_theme !== undefined ? body.overlay_theme : POSTS[index].overlay_theme,
+      // Like the server (save_post): the composition changes, the photo's measured empty
+      // area and subject stay (the photo did not change), and the text mode follows the
+      // composition and the words switch (`sync_text_mode`), not what the editor sent.
+      design: demoSyncTextMode(
+        body.design?.composition
+          ? {
+              ...POSTS[index].design,
+              ...body.design,
+              text_mode: POSTS[index].design?.text_mode,
+              safe_area: POSTS[index].design?.safe_area ?? null,
+              focal: POSTS[index].design?.focal ?? null,
+              subject: POSTS[index].design?.subject ?? null,
+              crop: (body.format || POSTS[index].format) === "reel" || (body.format || POSTS[index].format) === "story" ? "9:16" : "4:5",
+            }
+          : POSTS[index].design,
+        has_overlay,
+      ),
+      // The one short line goes with the words: off clears it.
+      overlay_sub: !has_overlay ? "" : body.overlay_sub !== undefined ? body.overlay_sub : POSTS[index].overlay_sub,
       overlay_text: has_overlay ? headline : "",
       creative_concept: body.creative_concept || POSTS[index].creative_concept,
       visual_style: body.visual_style || POSTS[index].visual_style,
@@ -3454,6 +3669,7 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
           external_id: "properties/318491024",
           display_name: "מאפיית לחם תום",
           connected: true,
+          source_readiness: { status: "ready", note_he: "נתונים לדוגמה בלבד, ללא קריאה מחשבון אמיתי.", property_id: "properties/318491024", last_success_at: "2026-09-30T09:00:00Z", period: { start: "2026-09-02", end: "2026-09-29" } },
         },
         {
           provider: "meta",
@@ -3470,7 +3686,9 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
   if (path === "/performance/weekly" && method === "POST") {
     return { performance: DEMO_PERFORMANCE, recommendation: DEMO_RECS } as T;
   }
-  if (path === "/recommendations/latest" || (path === "/recommendations/generate" && method === "POST")) {
+  // The existing public demo represents a product shop, which has no service check-in.
+  if (path.startsWith("/performance/service-results")) return { enabled: false, report: null } as T;
+  if (path === "/recommendations/latest" || path === "/recommendations/1" || (path === "/recommendations/generate" && method === "POST")) {
     return DEMO_RECS as T;
   }
   if (path.startsWith("/integrations/webhooks") && method === "POST") {
@@ -3688,7 +3906,8 @@ export async function api<T>(
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(formatDetail(data.detail, res.statusText), res.status);
+    const coded = errorCode(data);
+    throw new ApiError(coded.message || formatDetail(data.detail, res.statusText), res.status, coded.code);
   }
   return data as T;
 }
@@ -3742,6 +3961,17 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify(brand_language),
     }),
+  /** The business's Design DNA. The first read builds it (up to ~12 s on a real account). */
+  brandDna: () => api<{ brand_dna: BrandDna | null; business_id?: number }>("/brand/dna"),
+  /** "לנסות סגנון אחר": a new DNA from the same signals, stored at once. Genes the owner
+   *  set stay. Billing-gated, like every generation. */
+  regenerateBrandDna: () =>
+    api<{ brand_dna: BrandDna; business_id?: number }>("/brand/dna/regenerate", { method: "POST" }),
+  /** The owner's own fonts, motif or colours (each one then locked), or `keep` ("לשמור"). */
+  editBrandDna: (edit: BrandDnaEdit) =>
+    api<{ brand_dna: BrandDna; business_id?: number }>("/brand/dna", { method: "PUT", body: JSON.stringify(edit) }),
+  /** The keys the renderer can draw (fonts, compositions, motifs, signatures). No account needed. */
+  brandDnaLibrary: () => api<DnaLibrary>("/brand/dna/library"),
   previewScan: (website_url: string) =>
     api<{ scan: ScanPayload }>("/onboarding/preview-scan", {
       method: "POST",
@@ -3766,6 +3996,9 @@ export const endpoints = {
       body: JSON.stringify(week ? { week } : {}),
     }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
+  editablePlan: () => api<PlanEditPayload>("/strategy/edit"),
+  savePlanEdit: (version: string, fields: PlanEditFields) =>
+    api<PlanEditPayload>("/strategy/edit", { method: "PATCH", body: JSON.stringify({ version, ...fields }) }),
   generatePostImage: (
     post_index: number,
     options: {
@@ -3841,8 +4074,10 @@ export const endpoints = {
   metaAssets: () => api<MetaAssets>("/integrations/meta/assets"),
   metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
   metaVerify: () => api<PixelVerification>("/integrations/meta/verify", { method: "POST" }),
+  metaRead: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/meta/read", { method: "POST" }),
   ga4Property: (body: { property_id: string; display_name: string }) =>
-    api("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
+    api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/property", { method: "POST", body: JSON.stringify(body) }),
+  ga4Read: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/read", { method: "POST" }),
   metaAccount: (body: { page_id: string; instagram_id?: string; display_name?: string; ad_account_id?: string; pixel_id?: string }) =>
     api("/integrations/meta/account", { method: "POST", body: JSON.stringify(body) }),
   disconnectIntegration: (provider: "ga4" | "meta") =>
@@ -3854,12 +4089,15 @@ export const endpoints = {
     }),
   deleteWebhook: (id: number) => api(`/integrations/webhooks/${id}`, { method: "DELETE" }),
   performance: () => api<PerformancePayload>("/performance/latest"),
+  serviceResults: (month?: string) => api<ServiceResultsPayload>(`/performance/service-results${month ? `?month=${encodeURIComponent(month)}` : ""}`),
+  saveServiceResults: (body: ServiceReportInput) => api<ServiceResultsPayload>("/performance/service-results", { method: "PUT", body: JSON.stringify(body) }),
   syncPerformance: () => api<PerformancePayload>("/performance/sync", { method: "POST" }),
   weeklyLoop: () =>
     api<{ performance: PerformancePayload; recommendation: RecommendationPayload }>("/performance/weekly", {
       method: "POST",
     }),
   recommendations: () => api<RecommendationPayload>("/recommendations/latest"),
+  recommendation: (id: number) => api<RecommendationPayload>(`/recommendations/${id}`),
   generateRecommendations: () => api<RecommendationPayload>("/recommendations/generate", { method: "POST" }),
   /** What the owner has not set up yet, grouped, plus the single next step to take. */
   setup: () => api<SetupPayload>("/setup"),
@@ -4207,6 +4445,8 @@ export type Business = {
   onboarding_complete: boolean;
   scraped_profile: unknown;
   brand_language?: BrandLanguage | null;
+  /** The business's Design DNA (docs/design-dna.md), once generated. */
+  brand_dna?: BrandDna | null;
   growth_targets?: string[];
   diagnostics?: Diagnostics | null;
   long_horizon_plan?: LongHorizonPlan | null;
@@ -4337,10 +4577,19 @@ export type RoadmapPost = {
   image_action?: "generated" | "real_photo" | "asset" | "kept_existing" | "no_photo_theme" | "pending";
   overlay_text?: string;
   has_overlay?: boolean;
+  /** The words on the image: at most 6 (docs/design-dna.md, Revision 1). */
   overlay_headline?: string;
+  /** v2: at most one short line under (or over) the headline. Optional. */
+  overlay_sub?: string;
+  /** v2: the offer's price, when the plan's offer has one. On the image only when it is the message. */
+  price?: PostPrice | null;
+  /** v1: a small line over the headline. No longer drawn on the image (one message). */
   overlay_badge?: string;
   overlay_position?: "top_right" | "top_left" | "bottom_bar" | "bottom_pill" | "center_card";
   overlay_theme?: OverlayTheme;
+  /** Which of the business's DNA compositions the post uses, its crop and text position.
+   *  Absent on posts written before the DNA: the renderer maps `overlay_theme` instead. */
+  design?: PostDesign;
   creative_concept?: string;
   visual_style?: string;
   scene_description?: string;
@@ -4678,8 +4927,25 @@ export type Diagnostics = {
   capacity_constraint?: string;
 };
 
+export type PlanEditFields = {
+  direction: string;
+  audience: string;
+  assumptions: { bet_he: string; if_wrong_he: string }[];
+};
+export type PlanEditPayload = {
+  business_id: number;
+  strategy_id: number | null;
+  available: boolean;
+  blocked: boolean;
+  version: string;
+  revision: number;
+  saved_at: string | null;
+  fields: PlanEditFields;
+};
+
 export type StrategyPayload = {
   id: number;
+  plan_revision?: number;
   calendar_kind: "gregorian";
   year: number;
   month: number;
@@ -4728,6 +4994,8 @@ export type StrategyPayload = {
   weekly_breakdown?: WeeklyBreakdownItem[];
   competitors: unknown[];
   brand_language?: BrandLanguage | null;
+  /** The business's Design DNA, when the server sends it with the month. */
+  brand_dna?: BrandDna | null;
   horizon?: MonthHorizon;
   /** The stored 3-month plan from /start (Revision 5), when the business has one. */
   quarter_plan?: StoredQuarterPlan | null;
@@ -4811,6 +5079,21 @@ export type CalendarPayload = {
   roadmap: { posts: RoadmapPost[] } | null;
 };
 
+export type SourceReadiness = {
+  status: "choose_property" | "no_properties" | "unchecked" | "reading" | "ready" | "empty" | "reconnect" | "unavailable";
+  note_he: string;
+  property_id?: string;
+  checked_at?: string | null;
+  last_success_at?: string | null;
+  period?: { start: string; end: string } | null;
+};
+
+export type MetaSourceReadiness = Omit<SourceReadiness, "status"> & {
+  status: SourceReadiness["status"] | "choose_assets" | "no_assets" | "partial" | "permission" | "link_instagram";
+  selection?: { page_id: string; instagram_id: string; ad_account_id: string; pixel_id: string };
+  sections?: Record<string, MetaReadState & { read_at?: string; retained_at?: string; recovery_status?: string }>;
+};
+
 export type IntegrationsPayload = {
   ga4_ready: boolean;
   meta_ready: boolean;
@@ -4820,6 +5103,7 @@ export type IntegrationsPayload = {
     external_id: string;
     display_name: string;
     connected: boolean;
+    source_readiness?: SourceReadiness | MetaSourceReadiness | null;
     scopes?: string[];
     ad_account_id?: string;
     pixel_id?: string;
@@ -4867,7 +5151,28 @@ export type MetaAdsReport = MetaReadState & {
   campaigns?: MetaAdsRow[];
 };
 
+export type ServiceReportInput = {
+  month: string;
+  revision: number | null;
+  inquiries: number | null;
+  suitable: number | null;
+  clients_won: number | null;
+  capacity: number | null;
+  fit_criterion: string;
+};
+export type ServiceReport = ServiceReportInput & {
+  revision: number;
+  source: "owner";
+  period: { start: string; end: string };
+  updated_at: string;
+  capacity_outdated: boolean;
+};
+export type ServiceResultsPayload = { enabled: boolean; report: ServiceReport | null };
+
 export type PerformancePayload = {
+  id?: number | null;
+  sources?: { ga4?: SourceReadiness; meta?: MetaSourceReadiness };
+  created_at?: string;
   /** False when nothing has been synced yet — a normal state, not an error. */
   available?: boolean;
   /** From `/performance/sync`: how many posts got results written back, and how many of
@@ -4876,12 +5181,18 @@ export type PerformancePayload = {
   period_start: string;
   period_end: string;
   ga4: {
+    property_id?: string;
+    read_at?: string;
     overview?: Record<string, string>;
     landing_pages?: Record<string, string>[];
     campaigns?: Record<string, string>[];
     post_attribution?: Record<string, unknown>[];
   };
   meta: {
+    source_read_at?: string;
+    source_period?: { start: string; end: string };
+    source_selection?: MetaSourceReadiness["selection"];
+    source_reads?: Record<string, { read_at?: string; period?: { start: string; end: string } }>;
     ads?: MetaAdsReport;
     tracking?: PixelVerification;
     page?: { name?: string; fan_count?: number };
@@ -4890,6 +5201,7 @@ export type PerformancePayload = {
     account?: InstagramAccount | null;
   };
   diagnostic: {
+    analysis_status?: "pending" | "ready" | "unavailable" | "paused" | "superseded";
     headline: string;
     top_content: { label: string; why: string }[];
     bottom_content: { label: string; why: string }[];
@@ -4997,15 +5309,36 @@ export type AudiencePerformance = {
 export type RecommendationPayload = {
   /** False when no weekly loop has run yet — a normal state, not an error. */
   available?: boolean;
+  id?: number | null;
+  created_at?: string;
   week_of: string;
   suggestions: {
     week_summary: string;
+    basis?: {
+      version: number;
+      snapshot_id?: number | null;
+      plan_id?: number | null;
+      sources: { key: string; label: string; status: string; period: { start?: string; end?: string }; read_at: string; stale?: boolean; age_days?: number | null }[];
+      observations: { source: string; metric: string; label: string; value: number }[];
+      limits: string[];
+    } | null;
     suggestions: {
       priority: "high" | "medium" | "low";
       title: string;
       action: string;
       evidence: string;
       target: string;
+      hypothesis?: string;
+      success_check?: string;
+      review?: {
+        kind: "post" | "plan" | "measurement" | "website";
+        status: "ready" | "legacy" | "stale" | "missing" | "changed" | "published";
+        href: string;
+        label: string;
+        note_he: string;
+        plan_id?: number | null;
+        post_uid?: string | null;
+      };
     }[];
   };
   webhook_deliveries?: { url: string; ok: boolean; error?: string }[];

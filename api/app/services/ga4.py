@@ -20,6 +20,12 @@ GA4_SCOPES = [
 ]
 
 
+class Ga4AccessError(RuntimeError):
+    def __init__(self, status: str):
+        super().__init__("Google Analytics access unavailable")
+        self.readiness_status = status
+
+
 def ga4_configured() -> bool:
     settings = get_settings()
     return bool(settings.google_client_id and settings.google_client_secret)
@@ -119,28 +125,32 @@ def fresh_access_token(access_token: str, refresh_token: str, expires_at: dateti
 
 def list_properties(access_token: str, refresh_token: str, expires_at: datetime | None) -> list[dict]:
     creds = _credentials(access_token, refresh_token, expires_at)
-    response = httpx.get(
-        "https://analyticsadmin.googleapis.com/v1beta/accountSummaries",
-        headers={"Authorization": f"Bearer {creds.token}"},
-        timeout=20.0,
-    )
-    if response.status_code >= 400:
-        raise RuntimeError(
-            "לא הצלחנו לקבל מגוגל אנליטיקס את רשימת האתרים. ודאו שלחשבון יש גישה לנתוני האתר "
-            f"(ושה-Google Analytics Admin API מופעל). התשובה של גוגל: {response.text}"
-        )
     properties = []
-    for account in response.json().get("accountSummaries", []):
-        for prop in account.get("propertySummaries", []):
-            properties.append(
-                {
-                    "property_id": prop.get("property", "").split("/")[-1],
-                    "display_name": prop.get("displayName", ""),
-                    "account": account.get("displayName", ""),
-                }
-            )
-    if not properties:
-        raise RuntimeError("לא מצאנו אתרים בגוגל אנליטיקס בחשבון שחיברתם.")
+    page_token = ""
+    seen = set()
+    while True:
+        response = httpx.get(
+            "https://analyticsadmin.googleapis.com/v1beta/accountSummaries",
+            headers={"Authorization": f"Bearer {creds.token}"},
+            params={"pageToken": page_token} if page_token else {}, timeout=20.0,
+        )
+        if response.status_code >= 400:
+            status = "reconnect" if response.status_code in (401, 403) else "unavailable"
+            if "SERVICE_DISABLED" in response.text:
+                status = "unavailable"
+            raise Ga4AccessError(status)
+        payload = response.json()
+        for account in payload.get("accountSummaries", []):
+            for prop in account.get("propertySummaries", []):
+                properties.append({"property_id": prop.get("property", "").split("/")[-1],
+                                   "display_name": prop.get("displayName", ""),
+                                   "account": account.get("displayName", "")})
+        page_token = payload.get("nextPageToken") or ""
+        if not page_token:
+            break
+        if page_token in seen or len(seen) >= 100:
+            raise Ga4AccessError("unavailable")
+        seen.add(page_token)
     return properties
 
 
@@ -151,10 +161,22 @@ def fetch_report(
     property_id: str,
     start: str,
     end: str,
+    *,
+    overview_only: bool = False,
 ) -> dict:
     creds = _credentials(access_token, refresh_token, expires_at)
     client = BetaAnalyticsDataClient(credentials=creds)
     property_name = property_id if property_id.startswith("properties/") else f"properties/{property_id}"
+
+    def _rows(report) -> list[dict]:
+        metric_names = [h.name for h in report.metric_headers]
+        dimension_names = [h.name for h in report.dimension_headers]
+        rows = []
+        for row in report.rows:
+            item = {name: row.dimension_values[i].value for i, name in enumerate(dimension_names)}
+            item.update({name: row.metric_values[i].value for i, name in enumerate(metric_names)})
+            rows.append(item)
+        return rows
 
     overview = client.run_report(
         RunReportRequest(
@@ -168,8 +190,12 @@ def fetch_report(
                 Metric(name="screenPageViews"),
                 Metric(name="averageSessionDuration"),
             ],
-        )
+        ), timeout=15.0, retry=None,
     )
+    if overview_only:
+        rows = _rows(overview)
+        return {"property_id": property_id, "period": {"start": start, "end": end},
+                "overview": rows[0] if rows else {}, "report_scope": "overview"}
     landing = client.run_report(
         RunReportRequest(
             property=property_name,
@@ -182,7 +208,7 @@ def fetch_report(
                 Metric(name="engagedSessions"),
             ],
             limit=15,
-        )
+        ), timeout=15.0, retry=None,
     )
     campaigns = client.run_report(
         RunReportRequest(
@@ -199,18 +225,8 @@ def fetch_report(
                 Metric(name="engagedSessions"),
             ],
             limit=30,
-        )
+        ), timeout=15.0, retry=None,
     )
-
-    def _rows(report) -> list[dict]:
-        metric_names = [h.name for h in report.metric_headers]
-        dimension_names = [h.name for h in report.dimension_headers]
-        rows = []
-        for row in report.rows:
-            item = {name: row.dimension_values[i].value for i, name in enumerate(dimension_names)}
-            item.update({name: row.metric_values[i].value for i, name in enumerate(metric_names)})
-            rows.append(item)
-        return rows
 
     overview_rows = _rows(overview)
     return {

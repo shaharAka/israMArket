@@ -1,6 +1,6 @@
 from typing import Literal, TypedDict
 
-from pydantic import BaseModel, EmailStr, Field, HttpUrl, model_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator, model_validator
 
 from app.services.business_fields import coerce_field
 from app.services.business_model import goals_for
@@ -144,11 +144,52 @@ class PostUpdateIn(BaseModel):
     outlets: list[str] = Field(default_factory=lambda: ["instagram", "facebook"])
     has_overlay: bool = True
     overlay_headline: str = Field(default="", max_length=200)
+    # Design DNA v2, one message per post: at most one short line under the headline.
+    overlay_sub: str = Field(default="", max_length=120)
     overlay_badge: str = Field(default="", max_length=100)
+    # The old renderer's layout. Stored only when sent explicitly (routers/strategy.save_post).
     overlay_theme: str = Field(default="ink_pill", max_length=40)
     creative_concept: str = Field(default="", max_length=1000)
     visual_style: str = Field(default="", max_length=500)
     image_prompt: str = Field(default="", max_length=4000)
+    # The post's Design DNA layout (docs/design-dna.md); crop follows the format.
+    design: "PostDesignChoice | None" = None
+
+
+def _library_composition(value: str) -> str:
+    from app.services.dna_library import COMPOSITIONS
+
+    if value and value not in COMPOSITIONS:
+        raise ValueError("הקומפוזיציה הזו לא נמצאת בספרייה.")
+    return value
+
+
+def _library_position(value: str) -> str:
+    from app.services.dna_library import TEXT_POSITIONS
+
+    if value and value not in TEXT_POSITIONS:
+        raise ValueError("מיקום הטקסט לא מוכר.")
+    return value
+
+
+class PostDesignChoice(BaseModel):
+    """A composition from the DNA library (GET /brand/dna/library) and where its text sits."""
+
+    composition: str = Field(min_length=1, max_length=40)
+    text_position: str = Field(default="", max_length=10)
+
+    @field_validator("composition")
+    @classmethod
+    def _composition(cls, value: str) -> str:
+        return _library_composition(value)
+
+    @field_validator("text_position")
+    @classmethod
+    def _position(cls, value: str) -> str:
+        return _library_position(value)
+
+
+PostUpdateIn.model_rebuild()
 
 
 class PostDesignIn(BaseModel):
@@ -156,6 +197,66 @@ class PostDesignIn(BaseModel):
     vibe: str = Field(default="", max_length=120)
     custom_prompt: str = Field(default="", max_length=1000)
     generate_image: bool = True
+    # The editor's design step: one of the DNA's compositions (empty = the DNA's rotation).
+    composition: str = Field(default="", max_length=40)
+    text_position: str = Field(default="", max_length=10)
+
+    @field_validator("composition")
+    @classmethod
+    def _composition(cls, value: str) -> str:
+        return _library_composition(value)
+
+    @field_validator("text_position")
+    @classmethod
+    def _position(cls, value: str) -> str:
+        return _library_position(value)
+
+
+class BrandDnaTypeIn(BaseModel):
+    display: str | None = Field(default=None, max_length=40)
+    text: str | None = Field(default=None, max_length=40)
+    display_weight: int | None = Field(default=None, ge=100, le=900)
+    text_weight: int | None = Field(default=None, ge=100, le=900)
+
+
+class BrandDnaMotifIn(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    kind: str | None = Field(default=None, max_length=40)
+    color: str | None = Field(default=None, max_length=20)
+    density: str | None = Field(default=None, max_length=10)
+    # Where the motif comes from (logo | place | product); a motif the owner picks by
+    # hand without one is theirs ("owner").
+    from_: str | None = Field(default=None, alias="from", max_length=20)
+    note_he: str | None = Field(default=None, max_length=120)
+
+
+class BrandDnaAdjustIn(BaseModel):
+    """'לשנות פרטים' in words, not pickers: quieter or bolder, more photo or more text."""
+
+    tone: Literal["quieter", "bolder"] | None = None
+    text: Literal["more_photo", "more_text"] | None = None
+
+
+class BrandDnaColorsIn(BaseModel):
+    ink: str | None = Field(default=None, max_length=9)
+    paper: str | None = Field(default=None, max_length=9)
+    accent: str | None = Field(default=None, max_length=9)
+    accent_2: str | None = Field(default=None, max_length=9)
+    on_photo: str | None = Field(default=None, max_length=9)
+    tint: str | None = Field(default=None, max_length=9)
+
+
+class BrandDnaEditIn(BaseModel):
+    """PUT /brand/dna: the genes the owner keeps or changes. Each is validated against
+    the library (services/design_dna.edit_dna). `keep` = "לשמור": the whole style stays
+    as it is through later site scans."""
+
+    type: BrandDnaTypeIn | None = None
+    motif: BrandDnaMotifIn | None = None
+    colors: BrandDnaColorsIn | None = None
+    adjust: BrandDnaAdjustIn | None = None
+    keep: bool = False
 
 
 class PostRewriteIn(BaseModel):
@@ -210,6 +311,19 @@ class BrandLanguageIn(BaseModel):
     offers_seen: list[str] = Field(default_factory=list, max_length=16)
     audience: str = Field(min_length=2, max_length=400)
     logo_description: str = Field(default="", max_length=400)
+    # The logo file's address. None = keep the one the scan found; "" = no logo. It is
+    # downloaded through the SSRF guard after the save (services/brand_logo.py).
+    logo_url: str | None = Field(default=None, max_length=1000)
+
+    @field_validator("logo_url")
+    @classmethod
+    def _logo_url(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        cleaned = value.strip()
+        if cleaned and not cleaned.lower().startswith(("https://", "http://")):
+            raise ValueError("כתובת הלוגו צריכה להתחיל ב-https://")
+        return cleaned
 
 
 class PaletteIn(BaseModel):
@@ -262,7 +376,7 @@ class WebhookIn(BaseModel):
 
 
 class Ga4PropertyIn(BaseModel):
-    property_id: str = Field(min_length=3, max_length=40)
+    property_id: str = Field(min_length=3, max_length=40, pattern=r"^\d+$")
     display_name: str = Field(default="", max_length=160)
 
 

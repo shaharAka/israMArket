@@ -41,7 +41,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.routers.setup import newest_business
 from app.routers import foundations
-from app.services import ga4, hypotheses as hypothesis_review, journey, meta
+from app.services import ga4, hypotheses as hypothesis_review, journey, meta, plan_connections
 from app.services.jsonutil import dumps, loads
 
 try:  # tzdata is not guaranteed on slim images; the day number only needs Israel's date.
@@ -123,12 +123,12 @@ def _whatsapp_state(request: Request, business: Business | None) -> tuple[bool, 
 
 # --- the steps ----------------------------------------------------------------------
 
-# Revision 8: foundations before posts. Each week has one job.
+# Readiness stages retain the legacy week numbers in the API contract.
 WEEKS = [
-    {"week": 1, "title_he": "מדידה"},
-    {"week": 2, "title_he": "חומרי גלם"},
-    {"week": 3, "title_he": "תוכן ראשון"},
-    {"week": 4, "title_he": "מודדים ומתאימים"},
+    {"week": 1, "title_he": "חיבורים ונקודת פתיחה"},
+    {"week": 2, "title_he": "מכינים פוסט ראשון"},
+    {"week": 3, "title_he": "מאשרים ומפרסמים"},
+    {"week": 4, "title_he": "לומדים ומתאימים"},
 ]
 
 
@@ -147,20 +147,14 @@ def _kpi_needs(facts: journey.Facts) -> set[str]:
 
 def _plan_integration_keys(facts: journey.Facts) -> set[str] | None:
     """The integrations the plan measures with, or None for a business without a plan."""
-    checklist = facts.integrations_checklist
-    if checklist:
-        return {str(item.get("key")) for item in checklist}
-    plan_integrations = (facts.quarter_plan or {}).get("integrations")
-    if isinstance(plan_integrations, list) and plan_integrations:
-        return {str(item.get("key")) for item in plan_integrations if isinstance(item, dict)}
-    return None
+    return plan_connections.keys(facts)
 
 
 def _needs_site_data(facts: journey.Facts) -> bool:
     """Only when the plan measures something on the site. A business without a website —
     or whose plan's integrations list nothing on the site — never sees the step."""
     keys = _plan_integration_keys(facts)
-    return bool(keys & SITE_KEYS) if keys is not None else bool(facts.website)
+    return "ga4" in keys if keys is not None else bool(facts.website)
 
 
 def _needs_gbp(facts: journey.Facts) -> bool:
@@ -206,12 +200,6 @@ def _step(key, week, title, why, minutes, href, action, status, done_at=None, no
     return step
 
 
-def _connect(facts: journey.Facts, provider: str, ready: bool) -> str:
-    if provider in facts.connected:
-        return "done"
-    return "todo" if ready else "soon"
-
-
 def build_steps(
     facts: journey.Facts,
     events: dict,
@@ -229,39 +217,38 @@ def build_steps(
     steps: list[dict] = []
 
     # --- week 1 · measurement: without it there is no way to know anything works ------
-    status = _connect(facts, "meta", meta_ready)
-    steps.append(_step(
-        "instagram", 1, "לחבר את האינסטגרם",
-        "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
-        3, "/integrations", "לחבר את האינסטגרם",
-        status, facts.connected_at.get("meta"),
-        "החיבור לאינסטגרם ייפתח כאן בקרוב." if status == "soon" else None,
-    ))
-
-    if _needs_site_data(facts):
-        status = _connect(facts, "ga4", ga4_ready)
+    required = _plan_integration_keys(facts)
+    if required is None or required & {"meta_business", "instagram_insights", "facebook_insights", "meta_pixel"}:
+        connection = plan_connections.state(facts, "meta", available=meta_ready)
+        status = connection["status"]
         steps.append(_step(
-            "site_data", 1, "לחבר את נתוני האתר",
-            f"בלי זה לא נדע כמה הגיעו לאתר מכל פוסט, ולא נוכל למדוד את היעד: {kpi}."
-            if kpi and kpi_needs & SITE_KEYS
-            else "כך נראה כמה נכנסו לאתר מכל פוסט, ומה עשו שם.",
-            10, "/integrations", "לחבר את נתוני האתר",
+            "instagram", 1, connection["title"], connection["why"],
+            3, "/integrations", connection["action"],
+            status, facts.connected_at.get("meta"),
+            connection["why"] if status == "soon" else None,
+        ))
+    if _needs_site_data(facts):
+        connection = plan_connections.state(facts, "ga4", available=ga4_ready)
+        status = connection["status"]
+        steps.append(_step(
+            "site_data", 1, connection["title"], connection["why"],
+            10, "/integrations", connection["action"],
             status, facts.connected_at.get("ga4"),
             "החיבור לנתוני האתר ייפתח כאן בקרוב." if status == "soon" else None,
         ))
 
-    whatsapp_ready, whatsapp_set = whatsapp
-    status = "done" if whatsapp_set else ("todo" if whatsapp_ready else "soon")
-    steps.append(_step(
-        "whatsapp", 1, "להכין את קישור הוואטסאפ",
-        f"קישור עם הודעה מוכנה. כך נספור כל פנייה, וזה היעד שבחרתם: {kpi}."
-        if "whatsapp_link" in kpi_needs and kpi
-        else "קישור עם הודעה מוכנה. כך נספור כמה פניות הגיעו מכל פוסט.",
-        2, "/integrations#whatsapp", "להכין את הקישור",
-        status, None,
-        "הקישור יהיה מוכן כאן בקרוב." if status == "soon" else None,
-    ))
-
+    if required is None or "whatsapp_link" in required:
+        whatsapp_ready, whatsapp_set = whatsapp
+        status = "done" if whatsapp_set else ("todo" if whatsapp_ready else "soon")
+        steps.append(_step(
+            "whatsapp", 1, "להכין את קישור הוואטסאפ",
+            f"קישור עם הודעה מוכנה. נמדוד לחיצות לקישור, שעשויות להוביל ליעד שבחרתם: {kpi}. שליחת הודעה אינה נמדדת כאן."
+            if "whatsapp_link" in kpi_needs and kpi
+            else "קישור עם הודעה מוכנה. נמדוד לחיצות מכל פוסט; שליחת הודעה אינה נמדדת כאן.",
+            2, "/integrations#whatsapp", "להכין את הקישור",
+            status, None,
+            "הקישור יהיה מוכן כאן בקרוב." if status == "soon" else None,
+        ))
     if _needs_gbp(facts):
         confirmed = _event(events, "gbp_confirmed_at")
         steps.append(_step(
@@ -271,8 +258,9 @@ def build_steps(
             "done" if confirmed else "todo", confirmed,
         ))
 
-    if foundations.baseline_filled(facts.baseline) or facts.first_snapshot_at:
-        # From the owner's numbers, or measured: a connected source already gave numbers.
+    if foundations.baseline_filled(facts.baseline) or journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at:
+        # Completion of the answer also includes explicitly saved unknowns. This does
+        # not mark an unknown baseline as measured; measurement readiness stays separate.
         baseline_status = "done"
         baseline_done = journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at
     else:
@@ -286,23 +274,27 @@ def build_steps(
     ))
 
     # --- week 2 · raw materials: what the posts are made of ---------------------------
-    photos_done = facts.asset_count >= MIN_PHOTOS
+    minimum_photos = MIN_PHOTOS if products else 1
+    minimum_featured = foundations.minimum_featured("products" if products else "services")
+    photos_done = facts.asset_count >= minimum_photos
     have = facts.asset_count
     steps.append(_step(
         "photos", 2, "להעלות תמונות וסרטונים של העסק",
-        f"לפחות {MIN_PHOTOS}, כדי שהפוסטים ייראו כמו העסק שלכם."
-        + (f" כבר העליתם {have}." if 0 < have < MIN_PHOTOS else ""),
+        (f"לפחות {minimum_photos}, כדי שהפוסטים ייראו כמו העסק שלכם." if products
+         else "תמונה אחת של עבודה, תהליך או שלכם בעסק מספיקה להתחלה. אפשר להוסיף עוד בהמשך.")
+        + (f" כבר העליתם {have}." if 0 < have < minimum_photos else ""),
         5, "/assets", "להעלות תמונות",
-        "done" if photos_done else "todo", facts.third_asset_at,
+        "done" if photos_done else "todo", facts.third_asset_at if products else facts.first_asset_at,
     ))
 
     featured = facts.featured_items
-    featured_done = len(featured) >= foundations.MIN_FEATURED
+    featured_done = len(featured) >= minimum_featured
     featured_raw = facts.stored.get("featured_items") if isinstance(facts.stored.get("featured_items"), dict) else {}
     steps.append(_step(
         "featured", 2, "לבחור אילו מוצרים לקדם" if products else "לבחור אילו שירותים לקדם",
-        "מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
-        + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < foundations.MIN_FEATURED else ""),
+        ("מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
+         if products else "בחרו שירות אחד שמתאים ללקוחות שאתם רוצים ולזמן הפנוי שלכם. אפשר להוסיף שירותים בהמשך.")
+        + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < minimum_featured else ""),
         5, "/featured", "לבחור",
         "done" if featured_done else "todo", journey.parse_time(featured_raw.get("saved_at")),
     ))
@@ -321,14 +313,15 @@ def build_steps(
         # Written, or being written: the owner asked (the job's own row shows its progress).
         start_status, start_note = "done", None
     elif not foundations_done:
-        start_status, start_note = "locked", "אחרי התמונות, המוצרים והסגנון."
+        start_status, start_note = "locked", "אחרי התמונות, המוצרים והסגנון." if products else "אחרי התמונות, השירותים והסגנון."
     elif not posts_start_ready:
         start_status, start_note = "soon", "הכתיבה לפי הבחירות שלכם תיפתח כאן בקרוב."
     else:
         start_status, start_note = "todo", None
     steps.append(_step(
         "start_posts", 2, "להתחיל לכתוב את הפוסטים",
-        "לפי התוכנית, המוצרים שבחרתם והתמונות שלכם. הפוסטים יחכו לאישור שלכם.",
+        ("לפי התוכנית, המוצרים שבחרתם והתמונות שלכם. הפוסטים יחכו לאישור שלכם."
+         if products else "לפי התוכנית, השירותים שבחרתם והעבודות שלכם. הפוסטים יחכו לאישור שלכם."),
         1, "/posts", "להתחיל לכתוב",
         start_status, started, start_note,
     ))
@@ -439,8 +432,13 @@ def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
         ("site", "ga4" in facts.connected),
         ("whatsapp", whatsapp_set),
     ) if on]
+    sources = [plan_connections.state(facts, provider, available=available)
+               for provider, available in (("ga4", ga4.ga4_configured()), ("meta", meta.meta_configured()))
+               if plan_connections.needed(facts, provider)]
     return {
         "connected": connected,
+        "verified_sources": [source["title"] for source in sources if source["status"] == "done"],
+        "pending_sources": [source["title"] for source in sources if source["status"] == "todo"],
         "has_numbers": facts.first_snapshot_at is not None,
         "first_numbers_at": _iso(facts.first_snapshot_at),
         "baseline": foundations.baseline_filled(facts.baseline),
@@ -448,13 +446,20 @@ def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
 
 
 def next_step(steps: list[dict]) -> dict | None:
-    """The one thing to do now: the first step that can be done, in the journey's order.
+    """Finish the first ready content action, then follow the remaining journey.
 
-    Never past a week that is still waiting (a locked step: week 3 while its posts are
-    being written). Otherwise "לבנות את החודש השני", open as soon as the month's structure
-    exists, became the ask on day 1 while the first posts were still being written
-    (Revision 8: foundations, then content, then measure and adjust).
+    The fallback never advances past a locked stage: next-month work must not become
+    the primary ask while the first posts are still being written.
     """
+    # Finish the first usable content cycle before expanding setup or the batch. A
+    # connector that still needs work remains visible; it is not a publication gate.
+    # Each content status was derived from actual foundations/approval above.
+    by_key = {step["key"]: step for step in steps}
+    if by_key.get("publish_first", {}).get("status") != "done":
+        for key in ("publish_first", "approve_first", "start_posts"):
+            step = by_key.get(key)
+            if step and step["status"] == "todo":
+                return step
     waiting = [step["week"] for step in steps if step["status"] == "locked"]
     horizon = min(waiting) if waiting else None
     return next(

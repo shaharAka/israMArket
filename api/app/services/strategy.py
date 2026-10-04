@@ -43,7 +43,7 @@ def _business_brief(business: dict) -> dict:
     and so is the Instagram signal (services/instagram_signal.py). Leaving them inside the
     raw dict as well would print the same information twice and quietly grow every prompt.
     """
-    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items", "what_worked"}
+    own_blocks = {"audiences", "instagram_signal", "owner_context", "first_month_seed", "featured_items", "what_worked", "plan_edit"}
     if not any(key in business for key in own_blocks):
         return business
     return {key: value for key, value in business.items() if key not in own_blocks}
@@ -57,13 +57,15 @@ def _owner_block(business: dict, include_idea: bool = False) -> str:
     `first_month_seed` is only put in the payload by /onboarding/generate, so the chosen
     direction steers the first month and nothing after it.
     """
-    if not business.get("owner_context") and not business.get("first_month_seed"):
+    if not business.get("owner_context") and not business.get("first_month_seed") and not business.get("plan_edit"):
         return ""
     from app.services.onboarding_draft import owner_context_block  # avoids an import cycle
 
-    return owner_context_block(
+    from app.services.plan_editing import prompt_block as edited_plan_block
+
+    return "\n\n".join(block for block in (owner_context_block(
         business.get("owner_context"), business.get("first_month_seed"), include_idea=include_idea
-    )
+    ), edited_plan_block(business.get("plan_edit"))) if block)
 
 
 def _featured_list(value) -> list | None:
@@ -421,13 +423,15 @@ USP: {usp}
 לכל פוסט חובה:
 - פורמט reel / carousel / image / story
 - title, angle, hook, caption, cta בעברית חדה
-- cta חייב להיות קצר: 2 עד 4 מילים. הוא מודפס על הכרטיס הגרפי, לא בקפשן.
+- cta חייב להיות קצר: 2 עד 4 מילים. הוא נכנס לכיתוב (caption), לא לתמונה.
 - why_now: משפט אחד לבעל העסק למה הפוסט הזה עכשיו
 {post_audience_rule(business.get("audiences") or [])}
 - image_prompt באנגלית לפי שפת העיצוב של האתר. בלי טקסט עברי בתוך התמונה.
-- overlay_text עד 6 מילים בעברית — לכיתוב מעל התמונה באפליקציה, לא בתוך הפיקסלים
+- מסר אחד לפוסט. על התמונה רק overlay_headline: עד 6 מילים בעברית, המסר האחד של הפוסט. overlay_sub: שורה קצרה אחת (עד 6 מילים) רק אם היא מוסיפה משהו, וברוב הפוסטים ריקה. overlay_text זהה ל-overlay_headline.
+- הקריאה לפעולה, השעות, הכתובת והתנאים נשארים בכיתוב, אף פעם לא על התמונה.
+- price_amount: מחיר רק אם הוא המסר של הפוסט והוא מופיע בחומר המקור (ההצעה בתוכנית, המוצרים, מה שבעל העסק סיפר). אחרת 0. price_note: על מה המחיר, עד 4 מילים.
 - outlets, metrics_to_watch
-- stat_highlight: מספר קונקרטי אחד שמופיע בחומר המקור (למשל "100 חלות כל שישי", "מהתנור ב-07:00") שיוצג גדול על הכרטיס. אם אין מספר אמיתי — החזר מחרוזת ריקה. אסור להמציא נתון.
+- stat_highlight: מספר קונקרטי אחד שמופיע בחומר המקור (למשל "100 חלות כל שישי", "מהתנור ב-07:00"). אם הוא המסר של הפוסט, הוא גם overlay_headline. אם אין מספר אמיתי — החזר מחרוזת ריקה. אסור להמציא נתון.
 {connected_posts.prompt_rules()}
 - טון האתר: {brand.get("voice")}
 - מילים לשימוש: {brand.get("do_say")}

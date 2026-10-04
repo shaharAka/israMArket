@@ -1,0 +1,190 @@
+{
+  "id": "tazizi",
+  "name": "ת'ציצי פנימה",
+  "field": "fashion",
+  "field_he": "הלבשה תחתונה",
+  "website": "https://tazizi.co.il",
+  "logo": "/dev-dna/tazizi-logo.png",
+  "brand_dna": {
+    "version": 2,
+    "seed": 51939,
+    "created_at": "2026-10-02T00:18:50+00:00",
+    "field": "fashion",
+    "direction": {
+      "feel_he": "אוורירי, נשי ויומיומי, כמו לפתוח מגירת כותנה נקייה בבוקר שקט.",
+      "world_he": "בדי כותנה, סאטן ומיקרופייבר, מגירות הלבשה תחתונה מסודרות ומצעי פשתן בהירים בחדר שינה שטוף שמש.",
+      "photo_he": "תקריבים של בדי תחרה וכותנה או פקשוטים נקיים ומסודרים ממעוף הציפור על מצעים בהירים.",
+      "text_he": "כותרת קצרה ושובבה בגובה העיניים, שיושבת על שטח פתוח בבד או ברקע.",
+      "never_he": [
+        "צילומים פרובוקטיביים או תנוחות מוגזמות",
+        "אותיות מרוחות במעברי צבע זוהרים",
+        "מדבקות מחיר מצועצעות או כוכבי מבצע",
+        "עומס גרפי או רקעים כהים ומעיקים"
+      ]
+    },
+    "type": {
+      "display": "assistant",
+      "display_weight": 700,
+      "text": "heebo",
+      "text_weight": 400,
+      "headline_case": "sentence",
+      "scale": "medium"
+    },
+    "colors": {
+      "ink": "#222222",
+      "paper": "#ffffff",
+      "accent": "#ec4179",
+      "accent_2": "#eabeac",
+      "on_photo": "#222222",
+      "tint": "#e5e5e5"
+    },
+    "colors_source": {
+      "ink": "site",
+      "paper": "site",
+      "accent": "logo",
+      "accent_2": "logo",
+      "on_photo": "site",
+      "tint": "site"
+    },
+    "colors_base": {},
+    "compositions": [
+      "full_bleed",
+      "split",
+      "inset_frame",
+      "collage_grid"
+    ],
+    "mix": {
+      "photo_only": 0.5,
+      "headline": 0.5,
+      "type_led": 0.0
+    },
+    "motif": {
+      "kind": "none",
+      "from": "",
+      "note_he": "",
+      "color": "accent_2",
+      "density": "low"
+    },
+    "signature": {
+      "kind": "corner_mark",
+      "use_logo": true,
+      "logo_url": "/dev-dna/tazizi-logo.png",
+      "logo_on": "any",
+      "logo_colors": [
+        "#eabeac",
+        "#ec4179"
+      ],
+      "logo_url_server": "/backend/media/1/logo-1248a37528a4a9c8ae41.png"
+    },
+    "photo": {
+      "grade": "clean high-key pastel tones, crisp daylight whites, gentle warm skin tones without heavy filters",
+      "light": "diffused morning sunlight from an off-camera window, minimal soft shadows",
+      "angle": "top-down flat lay for folded garments and sets, 50mm eye-level for detail and texture shots",
+      "background": "crisp white cotton bedding, pale powder-toned tabletop, bright minimalist bedroom corner",
+      "props": [
+        "white cotton bedsheets",
+        "minimalist wooden hanger",
+        "linen storage pouch",
+        "ceramic tray"
+      ],
+      "never": [
+        "text, letters or numbers in any language",
+        "logos, watermarks or price tags",
+        "people's faces",
+        "a white studio sweep or a generic marble backdrop",
+        "waxy or plastic-looking surfaces",
+        "drawn frames, borders or panels",
+        "neon nightlife lighting",
+        "overly sexualized poses",
+        "cluttered messy rooms",
+        "dark textured concrete"
+      ]
+    },
+    "copy": {
+      "headline_accent": true,
+      "price_style": "inline",
+      "cta_on_image": false
+    },
+    "rationale_he": "אוורירי, נשי ויומיומי, כמו לפתוח מגירת כותנה נקייה בבוקר שקט.",
+    "distance_checked_against": 0,
+    "source": "model"
+  },
+  "brand_language": {
+    "palette": [
+      {
+        "hex": "#ed427a",
+        "role": "primary",
+        "name": "ורוד פוקסיה",
+        "seen_in": "logo"
+      },
+      {
+        "hex": "#eabeac",
+        "role": "secondary",
+        "name": "פודרה ניוד",
+        "seen_in": "logo"
+      },
+      {
+        "hex": "#ffffff",
+        "role": "background",
+        "name": "לבן",
+        "seen_in": "screenshot"
+      },
+      {
+        "hex": "#222222",
+        "role": "ink",
+        "name": "שחור גרפיט",
+        "seen_in": "photos"
+      },
+      {
+        "hex": "#e5e5e5",
+        "role": "accent",
+        "name": "אפור בהיר",
+        "seen_in": "photos"
+      }
+    ],
+    "voice": "קליל, ישיר ובגובה העיניים, עם קריצה שובבה בשם העסק ופנייה נשית ברורה.",
+    "visual_style": "אתר מסחר נקי ופשוט בסגנון קטלוגי, רקעים לבנים ובהירים, דגש על צילומי מוצר ברורים והבלטת מחירי מבצע בוורוד פוקסיה בולט.",
+    "photography": "צילומי סטודיו מקצועיים על רקע בהיר וחלק, שילוב של דוגמניות בהלבשה תחתונה וצילומי פקשוט מסודרים של מארזים ופיג'מות.",
+    "logo_description": "איור עדין המזכיר כנפי פרפר או קאפים של חזייה בשילוב ורוד פוקסיה וגוון פודרה, לצד הכיתוב 'ת'ציצי פנימה' ותת-הכותרת 'לבני נשים'.",
+    "logo_url": "/dev-dna/tazizi-logo.png"
+  },
+  "color_evidence": [
+    {
+      "hex": "#eabeac",
+      "source": "logo",
+      "role": "secondary",
+      "origin": "logo",
+      "share": 0.626
+    },
+    {
+      "hex": "#ec4179",
+      "source": "logo",
+      "role": "primary",
+      "origin": "logo",
+      "share": 0.349
+    },
+    {
+      "hex": "#ffffff",
+      "source": "site",
+      "role": "background",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#222222",
+      "source": "site",
+      "role": "ink",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#e5e5e5",
+      "source": "site",
+      "role": "accent",
+      "origin": "palette",
+      "share": 0.0
+    }
+  ],
+  "generated_at": "2026-10-02T00:19:05+00:00",
+  "generated_by": "api/scripts/dna_smoke.py"
+}

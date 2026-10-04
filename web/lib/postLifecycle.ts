@@ -6,6 +6,7 @@ import type {
   PostResults,
   RoadmapPost,
 } from "@/lib/api";
+import { compositionDrawsPhoto } from "@/lib/dna/library";
 
 /**
  * Where a post stands, in the one vocabulary the owner sees everywhere (docs/posts-v2.md):
@@ -28,8 +29,10 @@ export const LIFECYCLE_LABEL: Record<PostLifecycle, string> = {
   measured: "נמדד",
 };
 
-/** The one photo-free card template (`PHOTO_FREE_TEMPLATES` in components/CardCanvas.tsx). */
+/** Whether the card draws a photograph: its DNA composition when it has one, else the old
+ *  photo-free template (`postNeedsPhoto` in components/CardCanvas.tsx). */
 function cardDrawsPhoto(post: RoadmapPost) {
+  if (post.design?.composition) return compositionDrawsPhoto(post.design.composition);
   return post.overlay_theme !== "type_hero";
 }
 

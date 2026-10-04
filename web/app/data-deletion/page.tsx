@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { BACKUP_NOTE, CONTACT_EMAIL } from "@/lib/company";
+import { BACKUP_NOTE, BACKUP_NOTE_EN, CONTACT_EMAIL } from "@/lib/company";
 import {
   LEGAL_LINK,
   LegalPage,
@@ -91,7 +91,7 @@ export default function DataDeletionPage() {
             and Pixel evidence. You are signed out after successful deletion.
           </p>
           <p>
-            Backups expire within 30 days. Content and data held by Google, Meta or
+            {BACKUP_NOTE_EN} Content and data held by Google, Meta or
             your website are not deleted by this action. Disconnecting a provider removes
             our stored tokens but does not delete previously saved analyses. To request
             help with deletion, email {CONTACT_EMAIL} from your account email.

@@ -16,7 +16,7 @@ function joinHe(items: string[]): string {
 }
 
 /** This week's focus, from the plan: the month's week when there is a month, else the
- *  3-month plan's first month. */
+ *  ongoing plan's first working month. */
 function focusOf(trial: TrialPayload, strategy: StrategyPayload | null, business: Business | null): string {
   if (strategy) {
     const now = new Date();
@@ -34,12 +34,17 @@ function focusOf(trial: TrialPayload, strategy: StrategyPayload | null, business
  *  whether the measurement works yet. Never a number we do not have. */
 function learnedLine(trial: TrialPayload, headline: string): string {
   if (headline) return headline;
-  const { connected, has_numbers } = trial.measurement;
-  if (has_numbers) return "המדידה עובדת: יש מספרים ראשונים מהחיבורים, מול היעד.";
+  const { connected, has_numbers, verified_sources, pending_sources } = trial.measurement;
+  if (has_numbers) return pending_sources?.length
+    ? "יש נתונים בתוצאות. חלק מהחיבורים עוד דורשים בדיקה."
+    : "הנתונים זמינים בתוצאות. נבדוק מה הם אומרים על היעד.";
+  if (pending_sources?.length) return `עוד לא קראנו את ${joinHe(pending_sources)}. אפשר להמשיך בתוכנית.`;
+  if (verified_sources?.length) return `נבדקו: ${joinHe(verified_sources)}. עדיין אין פעילות למדידה.`;
+  if (verified_sources) return "עוד אין נתונים למדידה. אפשר להמשיך בתוכנית.";
   if (connected.length) {
-    return `מחוברים: ${joinHe(connected.map((key) => SOURCE_HE[key] ?? key))}. המספרים הראשונים יגיעו בימים הקרובים.`;
+    return `מחוברים: ${joinHe(connected.map((key) => SOURCE_HE[key] ?? key))}. עדיין אין פעילות למדידה.`;
   }
-  return "עוד לא מודדים כלום. לכן השבוע מתחילים מהמדידה.";
+  return "עוד אין נתונים למדידה. אפשר להמשיך בתוכנית.";
 }
 
 /** One half of the brief: an icon, a quiet label, the line itself, and where it leads. */
@@ -99,7 +104,7 @@ export function WeeklyBrief({
           {focus}
         </BriefCell>
       ) : null}
-      <BriefCell href={headline ? "/performance#research" : "/performance"} Icon={IconLightbulb} label="מה למדנו">
+      <BriefCell href={headline ? "/performance#research" : trial.measurement.pending_sources?.length ? "/integrations" : "/performance"} Icon={IconLightbulb} label="מה למדנו">
         {learnedLine(trial, headline)}
       </BriefCell>
     </div>

@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { FindingCard } from "@/components/results/FindingCard";
+import { ServiceCheckIn } from "@/components/results/ServiceCheckIn";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
 import { HowToFind } from "@/components/help/HowToFind";
 import { PerformanceHypotheses, ResearchSection } from "@/components/trial/Research";
 import { StepLink } from "@/components/trial/StepLink";
 import { MetaAdsSummary } from "@/components/integrations/MetaAdsSummary";
+import { SourceDataNotice } from "@/components/integrations/SourceDataNotice";
 import { MetricComparison } from "@/components/design/MetricComparison";
 import { SegmentedControl } from "@/components/design/Controls";
 import {
@@ -16,6 +19,7 @@ import {
   type InstagramAccountWindow,
   type PerformancePayload,
   type RecommendationPayload,
+  type ServiceResultsPayload,
 } from "@/lib/api";
 import { markSeen } from "@/lib/trial";
 import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
@@ -318,42 +322,6 @@ function Answer({ payload }: { payload: PerformancePayload }) {
   );
 }
 
-/** Show one useful action without regenerating analysis on every visit. */
-function AnalysisAction({ recommendation, payload }: { recommendation: RecommendationPayload | null; payload: PerformancePayload }) {
-  const items = recommendation?.available === false ? [] : recommendation?.suggestions?.suggestions ?? [];
-  const item = items[0];
-  const summary = recommendation?.suggestions?.week_summary || payload.diagnostic?.headline;
-  if (!summary && !item) return null;
-  return (
-    <section className="paper px-5 pb-2 pt-5 sm:px-7 sm:pt-6" aria-labelledby="analysis-action-heading">
-      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] font-semibold text-[color:var(--ink)]">
-        <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
-        מה כדאי לבדוק עכשיו
-        {recommendation?.week_of ? (
-          <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">לשבוע שמתחיל ב־{formatPeriod(recommendation.week_of, recommendation.week_of).split(" עד ")[0]}</span>
-        ) : null}
-      </p>
-      <h2 id="analysis-action-heading" className="mt-3 text-[19px] font-bold leading-[1.45] tracking-tight text-[color:var(--ink)] sm:text-[20px]">{item?.title || summary}</h2>
-      {item ? <p className="mt-2 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">{item.action}</p> : null}
-      <Link
-        href={item ? "/recommendations" : "/strategy"}
-        className="group mt-3 inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"
-      >
-        {item ? "לבדוק את ההמלצה" : "לראות את התוכנית"}
-        <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
-      </Link>
-      <details className="group/more mt-2 border-t border-[var(--rule)]">
-        <MoreSummary>על מה ההמלצה מבוססת</MoreSummary>
-        <div className="pb-4">
-          <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">{item?.evidence || summary}</p>
-          {item?.target ? <p className="mt-2 text-[13px] text-[color:var(--ink-muted)]">בתוכנית: {item.target}</p> : null}
-          {recommendation?.week_of ? <p className="mt-2 text-[13px] text-[color:var(--ink-muted)]">המלצה לשבוע שמתחיל ב־{formatPeriod(recommendation.week_of, recommendation.week_of).split(" עד ")[0]}. מבוססת על הנתונים שהיו זמינים אז.</p> : null}
-        </div>
-      </details>
-    </section>
-  );
-}
-
 /** One cell of a stat strip: the label, then the number, big and tabular (the landing's KPI row). */
 function BigNumber({ label, value }: { label: string; value?: string }) {
   return (
@@ -373,13 +341,16 @@ function BigNumber({ label, value }: { label: string; value?: string }) {
  * missing source is the reason a number is absent, and the owner should not have to open
  * anything to learn that.
  */
-function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
+function MeasurementGaps({ payload, ownerReport = false }: { payload: PerformancePayload; ownerReport?: boolean }) {
   const data = payload.audiences as AudiencePerformance | null | undefined;
   const connected = data?.connected;
   if (!connected) return null;
   const anyConnected = Boolean(connected.ga4 || connected.meta);
   const offline = [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
   if (!offline.length) return null;
+  if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
+    נתוני האתר והאינסטגרם לא מחוברים. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
+  </p>;
 
   return (
     <div className="rounded-[14px] bg-[var(--sand)] px-5 py-4 text-[14px] leading-6 text-[color:var(--sand-dark)]">
@@ -400,6 +371,22 @@ function MeasurementGaps({ payload }: { payload: PerformancePayload }) {
       ) : null}
     </div>
   );
+}
+
+/** Failed source reads remain visible even while successful reports are folded. */
+function SourceReportLimits({ payload }: { payload: PerformancePayload }) {
+  const ads = payload.meta?.ads;
+  const tracking = payload.meta?.tracking;
+  const notes = [
+    ads && !["available", "no_activity", "not_selected"].includes(ads.status) ? ads.note_he : "",
+    tracking && tracking.status !== "receiving" ? tracking.note_he : "",
+    payload.meta?.account?.stopped ? "אינסטגרם הפסיק להחזיר חלק מהנתונים. המספרים החסרים אינם אפס." : "",
+  ].filter(Boolean);
+  if (!notes.length) return null;
+  return <aside aria-label="מה עדיין חסר במדידה" className="rounded-xl bg-[var(--soft)] p-4 text-[13px] leading-6 text-[color:var(--ink-soft)]">
+    {notes.map(note => <p key={note}>{note}</p>)}
+    <Link href="/integrations" className="mt-1 inline-flex min-h-11 items-center font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
+  </aside>;
 }
 
 /* ------------------------------------------------------------------------------------ */
@@ -1023,6 +1010,10 @@ export default function PerformancePage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [planMeasure, setPlanMeasure] = useState("");
+  const [serviceResults, setServiceResults] = useState<ServiceResultsPayload | null>(null);
+  const [serviceError, setServiceError] = useState("");
+  const [serviceEditing, setServiceEditing] = useState(false);
+  const [recommending, setRecommending] = useState(false);
   // Our own count of WhatsApp taps. Loaded apart from the synced results: it needs no
   // connection, and a failure here must not hide them.
   const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
@@ -1037,7 +1028,15 @@ export default function PerformancePage() {
   useEffect(() => {
     endpoints.business().then(({ business }) => setPlanMeasure(business?.quarter_plan?.kpi.name_he || "")).catch(() => {});
     endpoints.recommendations().then(setRecommendation).catch(() => {});
+    endpoints.serviceResults().then(setServiceResults).catch(err => setServiceError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הדיווח. נסו לרענן את העמוד."));
   }, []);
+
+  async function recommendFromReport() {
+    setRecommending(true); setError("");
+    try { setRecommendation(await endpoints.generateRecommendations()); }
+    catch (err) { setError(err instanceof Error ? err.message : "לא הצלחנו להכין הצעה. הדיווח נשמר; אפשר לנסות שוב."); }
+    finally { setRecommending(false); }
+  }
 
   useEffect(() => {
     // Opening the results is a step of the free month (the first results, the month's
@@ -1060,10 +1059,49 @@ export default function PerformancePage() {
       setRecommendation(weekly.recommendation);
     } catch (err) {
       setError(err instanceof Error ? err.message : "לא הצלחנו לרענן את הנתונים מגוגל ומאינסטגרם. נסו שוב בעוד כמה דקות.");
+      // A recommendation outage can follow a successful source read. Load that saved
+      // snapshot rather than leaving the owner with a failed request and stale numbers.
+      try { setData(await endpoints.performance()); } catch { /* Keep the displayed results. */ }
     } finally {
       setPending(false);
     }
   }
+
+  const analysisPending = data?.diagnostic?.analysis_status === "pending";
+  const snapshotId = data?.id;
+  useEffect(() => {
+    if (!analysisPending || !snapshotId) return;
+    let stopped = false;
+    let checking = false;
+    let timer: ReturnType<typeof setTimeout>;
+    let attempts = 0;
+    async function check() {
+      if (stopped || checking || attempts >= 120) return;
+      checking = true;
+      if (!document.hidden) {
+        attempts++;
+        try {
+          const payload = await endpoints.performance();
+          const proposal = await endpoints.recommendations();
+          if (stopped) return;
+          setData(payload);
+          setRecommendation(proposal);
+          if (payload.diagnostic?.analysis_status !== "pending") return;
+        } catch { /* A quiet read retry; never starts generation or another provider read. */ }
+      }
+      checking = false;
+      if (!stopped) timer = setTimeout(check, document.hidden ? 30000 : 3000);
+    }
+    function resume() {
+      if (document.hidden || checking) return;
+      attempts = 0;
+      clearTimeout(timer);
+      void check();
+    }
+    document.addEventListener("visibilitychange", resume);
+    timer = setTimeout(check, 3000);
+    return () => { stopped = true; clearTimeout(timer); document.removeEventListener("visibilitychange", resume); };
+  }, [analysisPending, snapshotId]);
 
   const available = Boolean(data && data.available !== false);
   const results = data && available ? postResults(data) : null;
@@ -1071,6 +1109,12 @@ export default function PerformancePage() {
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
   // Only from a refresh that read the account; an older snapshot simply has none.
   const account = available && data?.meta?.account ? data.meta.account : null;
+  const hasProposal = Boolean(recommendation?.available !== false && recommendation?.suggestions?.suggestions?.length &&
+    (!["pending", "unavailable", "paused", "superseded"].includes(data?.diagnostic?.analysis_status || "") ||
+      (data?.id && recommendation?.suggestions?.basis?.snapshot_id === data.id)));
+  const checkIn = <ServiceCheckIn data={serviceResults} loadError={serviceError} primary={!hasProposal} onEditing={setServiceEditing}
+    onSaved={payload => { setServiceResults(payload); endpoints.recommendations().then(setRecommendation).catch(() => {}); }}
+    onRecommend={recommendFromReport} recommending={recommending} />;
 
   return (
     <AppShell>
@@ -1088,41 +1132,39 @@ export default function PerformancePage() {
 
         <ErrorNote message={error} />
 
+        {!hasProposal ? <div className="mb-8 empty:hidden">{checkIn}</div> : null}
+
         {data ? (
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
-              {available ? <Answer payload={data} /> : <NoSnapshotYet />}
+              <SourceDataNotice payload={data} />
+              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet /> : null : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  המדד בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
+                  בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
                   <Link href="/strategy" className="font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
                     לתוכנית
                   </Link>
                 </p>
               ) : null}
             </div>
-            <MeasurementGaps payload={data} />
-            <AnalysisAction recommendation={recommendation} payload={data} />
-            {available ? <MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /> : null}
-            {account ? <InstagramAccountBlock account={account} /> : null}
-
-            {available ? (
-              results ? (
-                <div className="paper px-5 pt-6 sm:px-7 sm:pt-7">
-                  <PostComparison results={results} payload={data} />
-                  <div className="mt-5 border-t border-[var(--rule)]">
-                    {/* The card is titled "התוצאות לפי פוסט"; the fold only says it is the detail. */}
-                    <Expand title="פירוט">
-                      <PostResults results={results} />
-                    </Expand>
-                  </div>
-                </div>
-              ) : (
-                // A snapshot from before per-post matching existed: the diagnosis's own
-                // verdict is the best "what worked" there is, so it takes the list's place.
-                <ContentVerdict payload={data} />
-              )
-            ) : null}
+            {!serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
+            {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
+            {hasProposal && serviceResults?.enabled ? <details className="group/check-in border-y border-[var(--rule)]">
+              <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
+                הדיווח שלכם על פניות ולקוחות<IconChevron className="h-[18px] w-[18px] -rotate-90 text-[color:var(--ink-muted)] transition-transform group-open/check-in:rotate-90" />
+              </summary>
+              <div className="pb-4">{checkIn}</div>
+            </details> : null}
+            {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
+            <SourceReportLimits payload={data} />
+            <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
+              {available ? <Expand title="נתוני האתר"><Answer payload={data} /></Expand> : null}
+              {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title="המודעות והמעקב באתר"><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
+              {account ? <Expand title="החשבון באינסטגרם"><InstagramAccountBlock account={account} /></Expand> : null}
+              {available && results ? <Expand title="מה קרה בכל פוסט"><PostComparison results={results} payload={data} /><div className="mt-5"><PostResults results={results} /></div></Expand> : null}
+              {whatsapp ? <Expand title="לחיצות על וואטסאפ"><WhatsappClicks data={whatsapp} /></Expand> : null}
+            </div>
 
             {/* Two folded rows from the plan side, drawn as one hairline list (each carries
                 its own top and bottom rule; the overlap keeps it to one line between). */}
@@ -1130,10 +1172,9 @@ export default function PerformancePage() {
               <ResearchSection />
               <PerformanceHypotheses />
             </div>
-            <WhatsappClicks data={whatsapp} />
 
             <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-              {available && results && (hasVerdict || hasFriction) ? (
+              {available && (hasVerdict || hasFriction) ? (
                 <Expand title="מה הצליח ומה לשפר">
                   <div className="space-y-6">
                     <ContentVerdict payload={data} />

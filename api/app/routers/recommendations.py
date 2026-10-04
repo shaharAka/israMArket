@@ -10,8 +10,18 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
+from app.services import recommendation_context, service_results
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
+
+
+def current_plan(db: Session, business: Business) -> dict:
+    try:
+        return serialize_strategy(_active_strategy(db, business), business)
+    except HTTPException as exc:
+        if exc.status_code != 404:
+            raise
+        return {}
 
 
 @router.get("/latest")
@@ -31,13 +41,16 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
             "suggestions": {},
             "created_at": "",
         }
-    return {
-        "available": True,
-        "id": rec.id,
-        "week_of": rec.week_of,
-        "suggestions": loads(rec.suggestions_json, {}),
-        "created_at": rec.created_at.isoformat(),
-    }
+    return recommendation_context.serialize(rec, current_plan(db, business), business)
+
+
+@router.get("/{recommendation_id}")
+def by_id(recommendation_id: int, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    rec = db.query(Recommendation).filter(Recommendation.id == recommendation_id,
+                                         Recommendation.business_id == business.id).first()
+    if not rec:
+        raise HTTPException(status_code=404, detail="ההמלצה הזו אינה זמינה בעסק הזה. אפשר לחזור להמלצות העדכניות.")
+    return recommendation_context.serialize(rec, current_plan(db, business), business)
 
 
 @router.post("/generate", dependencies=[Depends(require_generation_access)])
@@ -52,6 +65,8 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
     # gating the weekly loop on it made half the product unreachable for them —
     # the prompt already knows how to work from the plan alone and say so.
     strategy = _active_strategy(db, business)
+    plan = serialize_strategy(strategy, business)
+    ga4_data, meta_data, basis = recommendation_context.prepare(business, plan, recommendation_context.snapshot_view(snap))
 
     business_payload = {
         "name": business.name,
@@ -60,17 +75,20 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
+        "analysis_basis": basis,
+        **service_results.model_context(business),
     }
     try:
-        suggestions = recommend(
+        proposed = recommend(
             business_payload,
-            serialize_strategy(strategy),
-            loads(snap.diagnostic_json, {}) if snap else {},
-            loads(snap.ga4_json, {}) if snap else {},
-            loads(snap.meta_json, {}) if snap else {},
+            recommendation_context.for_model(plan),
+            loads(snap.diagnostic_json, {}) if snap and not basis["excluded_sources"] else {},
+            ga4_data,
+            meta_data,
         )
     except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(status_code=502, detail="לא הצלחנו להכין הצעה כרגע. התוכנית והנתונים נשמרו; אפשר לנסות שוב.") from exc
+    suggestions = recommendation_context.bind(proposed, basis, plan)
 
     rec = Recommendation(
         business_id=business.id,
@@ -86,10 +104,4 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         {"business_id": business.id, "week_of": rec.week_of, "suggestions": suggestions},
         db=db,
     )
-    return {
-        "id": rec.id,
-        "week_of": rec.week_of,
-        "suggestions": suggestions,
-        "created_at": rec.created_at.isoformat(),
-        "webhook_deliveries": deliveries,
-    }
+    return {**recommendation_context.serialize(rec, plan, business), "webhook_deliveries": deliveries}

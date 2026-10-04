@@ -15,7 +15,7 @@ from app.deps import get_business, get_current_user
 from app.models import Business, Integration, User
 from app.schemas import MetaAccountIn
 from app.security import ALGORITHM, decrypt_secret, encrypt_page_tokens, encrypt_secret
-from app.services import meta, meta_marketing
+from app.services import meta, meta_marketing, meta_readiness
 from app.services.jsonutil import dumps, loads
 
 router = APIRouter()
@@ -167,6 +167,8 @@ def save_assets(body: MetaAccountIn, business: Business, db: Session) -> dict:
                   "selected_ad_account_id": account["id"] if account else "",
                   "selected_pixel_id": body.pixel_id})
     extra.pop("pixel_verification", None)
+    extra.pop("pixel_verification_key", None)
+    extra.pop("source_readiness", None)
     item.external_id = body.page_id or body.ad_account_id
     item.display_name = (page or account).get("display_name") or (page or account).get("name") or item.external_id
     item.extra_json = dumps(extra)
@@ -187,6 +189,13 @@ def verify(business: Business = Depends(get_business), db: Session = Depends(get
     except (meta.GraphError, ValueError) as exc:
         result = meta_marketing.failure(exc)
     extra["pixel_verification"] = result
+    extra["pixel_verification_key"] = meta_readiness.key(item)
+    state = extra.get("source_readiness") or {}
+    if state.get("selection_key") == meta_readiness.key(item) and state.get("sections"):
+        state["sections"]["tracking"] = {"status": result["status"], "note_he": result.get("note_he") or "", "checked_at": result.get("checked_at")}
+        state["status"] = meta_readiness.aggregate(state["sections"])
+        state["note_he"] = meta_readiness.NOTES[state["status"]]
+        extra["source_readiness"] = state
     item.extra_json = dumps(extra)
     db.commit()
     return result

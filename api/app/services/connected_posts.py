@@ -33,8 +33,8 @@ import uuid
 from datetime import datetime
 
 from app.services.gemini import lite_json
-from app.services.images import needs_photo
 from app.services.jsonutil import dumps, loads
+from app.services.post_design import post_needs_photo, view_designs
 from app.services.schemas_llm import LEARNING_LINES_SCHEMA, MIX_TYPE_KEYS, POST_CHANNELS
 from app.services.whatsapp import post_cta_is_whatsapp, post_key_for, uid_post_source_key
 
@@ -333,7 +333,7 @@ def owner_needs(post: dict) -> list[dict]:
     if _is_approved(post) or _is_published(post):
         return []
     needs: list[dict] = []
-    if needs_photo(post.get("overlay_theme")):
+    if post_needs_photo(post):
         has_image = bool(_clean(post.get("image_url"), 800))
         own = has_image and str(post.get("image_source") or "") in OWNER_PHOTO_SOURCES
         chose_ai = has_image and str(post.get("image_preference") or "") == "ai"
@@ -375,9 +375,14 @@ def connected_view(
     month,
     core: dict | None = None,
     website: str = "",
+    design: dict | None = None,
 ) -> dict:
-    """The post with every contract field (docs/posts-v2.md), old posts included."""
+    """The post with every contract field (docs/posts-v2.md), old posts included.
+
+    `design` is the post's Design DNA layout as `post_design.view_designs` computed it
+    for the whole month (an old post's `overlay_theme` mapped onto a composition)."""
     view = {key: value for key, value in post.items() if key != "learning_key"}  # internal
+    view["design"] = design or view_designs([post], None)[0]
     view["uid"] = _clean(post.get("uid"), 40) or backfill_uid(business_id, year, month, index)
     view["channel"] = channel_of(post)
     stored_link = post.get("plan_link") if isinstance(post.get("plan_link"), dict) else None
@@ -398,9 +403,12 @@ def connected_view(
     return view
 
 
-def connect_posts(posts: list, *, business_id, year, month, core: dict | None = None, website: str = "") -> list:
+def connect_posts(posts: list, *, business_id, year, month, core: dict | None = None, website: str = "",
+                  dna: dict | None = None) -> list:
+    designs = view_designs(posts or [], dna)
     return [
-        connected_view(post, index=index, business_id=business_id, year=year, month=month, core=core, website=website)
+        connected_view(post, index=index, business_id=business_id, year=year, month=month, core=core, website=website,
+                       design=designs[index])
         if isinstance(post, dict)
         else post
         for index, post in enumerate(posts or [])
@@ -585,6 +593,111 @@ def prompt_rules() -> str:
     ])
 
 
+# --- one message per post (docs/design-dna.md, Revision 1, rule 1) --------------------------
+
+OVERLAY_MAX_WORDS = 6
+PRICE_NOTE_MAX_WORDS = 4
+# What belongs in the caption, never on the image: a call to action, hours, an address,
+# conditions.
+_CAPTION_ONLY = re.compile(
+    r"וואטסאפ|ווטסאפ|whatsapp|להזמנה|להזמין|הזמינו|התקשרו|לפרטים|בלינק|בביו|קישור|שעות פתיחה|"
+    r"פתוחים|פתוח עד|בתוקף|עד גמר|בכפוף|\*|כתובת|לחצו|כנסו",
+    re.IGNORECASE,
+)
+
+
+def clip_words(text, limit: int) -> str:
+    """At most `limit` words, without an em dash or a trailing punctuation mark."""
+    cleaned = re.sub(r"\s*[—–]\s*", " ", str(text or ""))
+    words = cleaned.split()
+    return " ".join(words[:limit]).strip(" .,;:-")
+
+
+def one_message(item: dict) -> dict:
+    """The post's text on the image, in place: one headline of at most 6 words and at most
+    one short line under it. A call to action, hours or conditions stay in the caption."""
+    headline = clip_words(item.get("overlay_headline") or item.get("overlay_text"), OVERLAY_MAX_WORDS)
+    if headline and _CAPTION_ONLY.search(headline):
+        title = clip_words(item.get("title"), OVERLAY_MAX_WORDS)
+        headline = title if title and not _CAPTION_ONLY.search(title) else ""
+    sub = clip_words(item.get("overlay_sub"), OVERLAY_MAX_WORDS)
+    cta = clip_words(item.get("cta"), 12)
+    if sub and (_CAPTION_ONLY.search(sub) or sub == headline or (cta and sub == cta)):
+        sub = ""
+    item["overlay_headline"] = headline
+    item["overlay_sub"] = sub
+    item["overlay_text"] = headline
+    return item
+
+
+def _money(value) -> str | None:
+    from app.services.post_rewrite import _norm
+
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if number <= 0:
+        return None
+    return _norm(f"{number:.2f}")
+
+
+def _amount(value: str):
+    number = float(value)
+    return int(number) if number.is_integer() else round(number, 2)
+
+
+def _price_sources(business: dict, core: dict | None) -> str:
+    """Where a real price can come from: the plan's offer, the plan itself, what the business
+    sells, what the owner told us and the items they chose to feature."""
+    core = core if isinstance(core, dict) else {}
+    seed = core.get("strategy") if isinstance(core.get("strategy"), dict) else {}
+    parts = [dumps(seed.get("offer") or {}), dumps(core.get("monthly_horizon_plan") or {}),
+             dumps(core.get("weekly_breakdown") or []), str(business.get("offerings") or ""),
+             dumps(business.get("owner_context") or {})]
+    for item in business.get("featured_items") or []:
+        parts.append(dumps(item) if isinstance(item, dict) else str(item or ""))
+    return "\n".join(parts)
+
+
+def post_price(item: dict, business: dict, core: dict | None) -> dict | None:
+    """{amount, currency: "ILS", note} when the post carries a price that is real (in the
+    plan's offer or the business's own material), else None. A price the writer made up
+    is never kept."""
+    from app.services.post_rewrite import money_in
+
+    model_amount = _money(item.pop("price_amount", None))
+    note = clip_words(item.pop("price_note", ""), PRICE_NOTE_MAX_WORDS)
+    known = money_in(_price_sources(business or {}, core))
+    if not known:
+        return None
+    own = " ".join(str(item.get(key) or "") for key in ("overlay_headline", "overlay_sub", "title", "hook", "caption"))
+    candidates = ([model_amount] if model_amount else []) + sorted(money_in(own), key=lambda v: float(v))
+    for amount in candidates:
+        if amount in known:
+            return {"amount": _amount(amount), "currency": "ILS", "note": note}
+    return None
+
+
+def price_after_edit(post: dict) -> dict | None:
+    """The price on a post the owner just saved: theirs now (the text is theirs). The
+    stored price while its amount is still in the text, else the first amount on the
+    image, else none."""
+    from app.services.post_rewrite import money_in
+
+    on_image = " ".join(str(post.get(key) or "") for key in ("overlay_headline", "overlay_sub"))
+    text = " ".join(str(post.get(key) or "") for key in ("overlay_headline", "overlay_sub", "title", "hook", "caption"))
+    current = post.get("price") if isinstance(post.get("price"), dict) else None
+    if current:
+        amount = _money(current.get("amount"))
+        if amount and amount in money_in(text):
+            return current
+    amounts = sorted(money_in(on_image), key=lambda v: float(v))
+    if amounts:
+        return {"amount": _amount(amounts[0]), "currency": "ILS", "note": ""}
+    return None
+
+
 def _match_featured(name, items: list) -> tuple[str | None, str | None]:
     wanted = _WS.sub(" ", str(name or "")).strip().lower()
     if not wanted:
@@ -641,6 +754,9 @@ def finish_written(items: list[dict], business: dict, core: dict | None) -> list
         item["informed_by"] = sources
         item.setdefault("results", None)
         item.setdefault("learning", None)
+        # Design DNA v2: one message on the image, the price only when it is real.
+        one_message(item)
+        item["price"] = post_price(item, business, core)
     return items
 
 

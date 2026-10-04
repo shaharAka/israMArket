@@ -77,7 +77,7 @@ export function Landing() {
                   תוכנית שיווק שמתאימה לעסק שלכם.
                 </h1>
                 <p className="lv2-lead lv2-in" style={{ "--d": 2 } as CSSProperties}>
-                  מסלול לשלושה חודשים, עם מטרה במספרים. כל שבוע יודעים מה הצעד הבא, ורואים אם מתקרבים ליעד.
+                  תוכנית שיווק מתמשכת שמתחילה בעסק שלכם. בוחרים צעד קרוב, מכינים תוכן ולומדים מהתוצאות.
                 </p>
                 <div className="lv2-hero-cta lv2-in" style={{ "--d": 3 } as CSSProperties}>
                   <Link href="/start" className="lv2-btn">

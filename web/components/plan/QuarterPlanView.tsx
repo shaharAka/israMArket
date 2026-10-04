@@ -121,7 +121,7 @@ export function QuarterPlanView({
 
         <Glance plan={plan} months={months} />
       </div>
-      {mode === "start" && <section className={styles.firstStep} aria-label="הצעד הראשון בתוכנית"><p>הצעד הראשון</p><h3>{firstPlanAction(plan)}</h3><span>נפתח מזה, ואז נתקדם לפי מה שנלמד.</span></section>}
+      {mode === "start" && <section className={styles.firstStep} aria-label="הצעד הראשון בתוכנית"><p>הצעד הראשון</p><h3>לבדוק מה כבר יש לכם לפוסט הראשון.</h3><span>נחבר את המדידה הזמינה, נכין פוסט לאישור ולפרסום ונלמד מהתוצאות.</span></section>}
 
       <div className={styles.folds}>
       <Section id="measure" index={2} busy={isBusy("measure")} mode={mode} summary={measureSummary(plan)}>
@@ -164,21 +164,6 @@ export function QuarterPlanView({
       {slots.end}
     </div>
   );
-}
-
-/**
- * A measurement prerequisite comes before dated execution, using the plan's own status
- * (Revision 8: week 1 is measurement, in the journey's order — Instagram, the site's data,
- * the Google business card). The WhatsApp link works from day one, so it is never the
- * blocker; with everything connected, the first step is the baseline.
- */
-const MEASURE_ORDER: Record<string, number> = { meta_business: 0, ga4: 1, gtm: 2, meta_pixel: 3, search_console: 4, gbp: 5 };
-function firstPlanAction(plan: AnyPlan) {
-  const connection = plan.integrations
-    .filter(item => item.key !== "whatsapp_link" && item.status !== "have")
-    .sort((a, b) => (MEASURE_ORDER[a.key] ?? 9) - (MEASURE_ORDER[b.key] ?? 9))[0];
-  if (connection) return connection.status === "unknown" ? `לבדוק יחד את ${connection.name_he} ואת האפשרות למדוד.` : `להגדיר את ${connection.name_he} ולאסוף את נקודת ההתחלה.`;
-  return "לרשום איפה העסק היום, כדי שנדע מה השתנה.";
 }
 
 /* --------------------------------- Frame --------------------------------- */
@@ -379,10 +364,10 @@ function StrategyBlock({
     <div className="space-y-3">
       <div>
         <p className={styles.oneLiner}>{directionTitle || plan.strategy.one_liner_he}</p>
-        <p className="mt-3 text-base leading-7 text-[color:var(--ink-soft)]">
+        {plan.strategy.angle_he ? <p className="mt-3 text-base leading-7 text-[color:var(--ink-soft)]">
           <b className="text-[color:var(--ink)]">הזווית: </b>
           {plan.strategy.angle_he}
-        </p>
+        </p> : null}
         <Why why={directionTitle && directionTitle !== plan.strategy.one_liner_he ? `${plan.strategy.one_liner_he} ${plan.strategy.why_he}` : plan.strategy.why_he} insight={insight} />
       </div>
       {audienceSlot && <details className={styles.adjustment}><summary>לשנות עם מי מתחילים</summary>{audienceSlot}</details>}

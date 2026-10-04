@@ -20,6 +20,9 @@ os.environ["SITE_SCREENSHOT"] = "false"
 # runs to the end inside the request that started it, so `mock.patch` blocks and the
 # overridden test database still apply; tests of the worker threads switch it off.
 os.environ["GENERATION_JOBS_INLINE"] = "1"
+# Source reads queue analysis, but the suite stays offline. Dedicated worker tests run
+# the queue with fake model replies and their own temporary database.
+os.environ["ANALYSIS_JOBS_ENABLED"] = "false"
 # PayPal: a developer `.env` may hold sandbox credentials. Tests that need PayPal patch the
 # settings and mock the HTTP transport (tests/test_billing.py); nothing may reach PayPal.
 os.environ["PAYPAL_ENV"] = "sandbox"
@@ -28,3 +31,23 @@ os.environ["PAYPAL_CLIENT_SECRET"] = ""
 os.environ["PAYPAL_PLAN_ID"] = ""
 os.environ["PAYPAL_WEBHOOK_ID"] = ""
 os.environ["BILLING_ENFORCE"] = "false"
+# Design DNA is (re)built in the background after a site scan and at signup, with a model
+# call. Off here so no scan or signup test can make one; tests of that path turn it on and
+# mock the model (tests/test_design_dna.py).
+os.environ["DESIGN_DNA_ON_SCAN"] = "false"
+# Design DNA v2: the logo copy downloads the business's logo, and every post photo gets one
+# vision call (subject, focal point, where text may sit). Both off here so no test can make
+# an HTTP or model call through them; tests of those paths turn them on and mock the calls
+# (tests/test_design_dna_v2.py).
+os.environ["BRAND_LOGO_COPY"] = "false"
+os.environ["PHOTO_ANALYSIS"] = "false"
+os.environ["PHOTO_ANALYSIS_MODEL"] = ""
+# Image routing at the code defaults, whatever a developer's .env says (a local .env with
+# GEMINI_IMAGE_MODEL=gemini-3-pro-image / 2K would otherwise reach the routing tests).
+os.environ["IMAGE_GENERATE_PROVIDER"] = "muse"
+os.environ["IMAGE_EDIT_PROVIDER"] = "muse"
+os.environ["IMAGE_FALLBACK_MODEL"] = "gemini-3.1-flash-image"
+os.environ["GEMINI_IMAGE_MODEL"] = "gemini-3.1-flash-image"
+os.environ["GEMINI_IMAGE_SIZE"] = "1K"
+# Images go to Muse first. META_MODEL_API_KEY is blank above, so Muse fails before any
+# request; tests that exercise the routing patch services/muse_image.py.

@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { MonthBuildProgress } from "@/components/MonthBuildProgress";
+import { FirstPosts } from "@/components/posts/FirstPosts";
 import { PostEditor } from "@/components/PostEditor";
+import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
@@ -73,6 +74,10 @@ function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (cale
 function PostsWorkspace() {
   const params = useSearchParams();
   const location = readLocation(params);
+  const reviewing = params.has("recommendation");
+  const reviewPlan = params.get("plan");
+  const reviewUid = params.get("post_uid");
+  const reviewVisit = useRef(reviewing);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
   const [noMonth, setNoMonth] = useState(false);
@@ -95,12 +100,13 @@ function PostsWorkspace() {
 
   useEffect(() => {
     let active = true;
+    if (reviewing) reviewVisit.current = true;
     async function loadPosts() {
       try {
         const current = await endpoints.strategy();
         if (!active) return;
         setStrategy(current);
-        if (current.roadmap.posts.some((post) => !post.image_url)) {
+        if (!reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
           const prepared = await endpoints.generateAllPostImages();
           if (active) setStrategy(prepared.strategy);
           if (prepared.errors?.length) {
@@ -120,7 +126,7 @@ function PostsWorkspace() {
     return () => {
       active = false;
     };
-  }, [reload]);
+  }, [reload, reviewing]);
 
   const signature = queueSignature(strategy);
 
@@ -143,8 +149,12 @@ function PostsWorkspace() {
   }, [signature]);
 
   const posts = strategy?.roadmap?.posts ?? [];
-  const openIndex =
-    location.post !== null && location.post < posts.length ? location.post : null;
+  const matching = reviewUid ? posts.map((post, index) => post.uid === reviewUid ? index : -1).filter(index => index >= 0) : [];
+  const reviewPost = matching.length === 1 ? posts[matching[0]] : null;
+  const guardedIndex = reviewing
+    ? reviewPlan === String(strategy?.id) && reviewPost && !reviewPost.published_at && !reviewPost.published_url ? matching[0] : null
+    : location.post;
+  const openIndex = guardedIndex !== null && guardedIndex < posts.length ? guardedIndex : null;
 
   // Coming back to the feed returns to the row the owner tapped, not the top of the list.
   const editorOpen = openIndex !== null;
@@ -175,7 +185,7 @@ function PostsWorkspace() {
     window.scrollTo(0, 0);
   }
 
-  if (location.post !== null && !strategy) {
+  if (location.post !== null && !strategy && !noMonth) {
     return error ? (
       <p className={`${ui.error} mx-auto max-w-3xl`}>
         {error}
@@ -187,29 +197,35 @@ function PostsWorkspace() {
 
   if (strategy && openIndex !== null) {
     return (
-      <PostEditor
-        key={`${strategy.id}-${openIndex}`}
-        posts={posts}
-        strategy={strategy}
-        brandLanguage={strategy.brand_language}
-        initialIndex={openIndex}
-        onStrategyUpdated={setStrategy}
-        onNavigate={moveEditor}
-        onClose={closeEditor}
-      />
+      <div>
+        <RecommendationReview planId={strategy.id} postUid={posts[openIndex].uid} />
+        <PostEditor
+          key={`${strategy.id}-${openIndex}`}
+          posts={posts}
+          strategy={strategy}
+          brandLanguage={strategy.brand_language}
+          initialIndex={openIndex}
+          onStrategyUpdated={setStrategy}
+          onNavigate={moveEditor}
+          onClose={closeEditor}
+        />
+      </div>
     );
   }
 
   const doneCount = posts.filter(isDone).length;
   const firstPending = nextPendingIndex(posts, -1);
   const due = queue?.due[0];
-  // A failed queue read must not read as "nothing is due", so nothing is claimed until it
-  // answers. With posts still to approve, publishing is the secondary ask.
-  const showDue = Boolean(due && firstPending >= 0);
+  // Only the real queue establishes that a post is due. Complete one first publication
+  // before asking the owner to approve more of the batch; preserve later scheduling.
+  const firstPublicationDue = due && !posts.some((post) => (post.published_url || "").trim() || post.published_at);
+  const showDue = Boolean(due && firstPending >= 0 && !firstPublicationDue);
   // The page's one ask is the next post that needs the owner, worded as what it needs.
   const primary =
     strategy && !location.calendar
-      ? firstPending >= 0
+      ? firstPublicationDue
+        ? { label: "לפרסם את הפוסט הראשון", index: due.index }
+        : firstPending >= 0
         ? {
             label: ownerNeedsOf(posts[firstPending]).some((need) => need.kind === "photo")
               ? "להוסיף תמונה לפוסט"
@@ -226,7 +242,8 @@ function PostsWorkspace() {
   return (
     // The month view needs the width; a list of rows does not, and at 1100px a row's title
     // and its arrow ended up a screen apart.
-    <div className={`mx-auto ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
+    <div className={`mx-auto ${location.calendar && posts.length ? "max-w-6xl" : "max-w-3xl"}`}>
+      <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
         <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
           כלי הביצוע של התוכנית
@@ -258,10 +275,12 @@ function PostsWorkspace() {
           ) : (
             <span />
           )}
-          <ViewToggle
-            calendar={location.calendar}
-            onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
-          />
+          {posts.length ? (
+            <ViewToggle
+              calendar={location.calendar}
+              onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
+            />
+          ) : null}
         </div>
       </header>
 
@@ -299,14 +318,6 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      {/* The posts the owner asked for ("להתחיל לכתוב") are written on the server: say so
-          while the month has none yet, never a bare "loading". */}
-      {strategy && posts.length === 0 ? (
-        <div className="mt-8">
-          <MonthBuildProgress kind="posts" onDone={() => setReload((n) => n + 1)} />
-        </div>
-      ) : null}
-
       <div className="mt-8">
         {!strategy ? (
           noMonth ? (
@@ -314,6 +325,8 @@ function PostsWorkspace() {
           ) : !error ? (
             <p className="text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים של החודש…</p>
           ) : null
+        ) : posts.length === 0 ? (
+          <FirstPosts onDone={() => setReload((n) => n + 1)} />
         ) : location.calendar ? (
           <CalendarView
             strategy={strategy}
@@ -340,8 +353,8 @@ function NoPostsYet() {
     <section className={`${ui.card} px-6 py-12 text-center sm:px-10`}>
       <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        קודם מחברים מדידה ובוחרים מוצרים, ככה הפוסטים יהיו שלכם. אחר כך נכתוב אותם, והם יחכו כאן
-        לאישור שלכם.
+        נבדוק אילו תמונות והצעות כבר יש לכם, ונכין פוסט לפי התוכנית. נחבר את המדידה הזמינה,
+        והפוסט יחכה כאן לאישור ולפרסום שלכם.
       </p>
       <div className="mt-6 flex flex-col items-center gap-2">
         <Link href="/strategy" className={ui.button}>

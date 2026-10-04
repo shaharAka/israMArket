@@ -1,0 +1,176 @@
+{
+  "id": "even-oven",
+  "name": "תנור אבן",
+  "field": "food",
+  "field_he": "מאפייה · ראש פינה",
+  "website": "",
+  "logo": "",
+  "brand_dna": {
+    "version": 2,
+    "seed": 86264,
+    "created_at": "2026-10-02T00:18:56+00:00",
+    "field": "food",
+    "direction": {
+      "feel_he": "פשוט, שקט ואיטי, כמו לחם שיוצא מתנור אבן ישן לפנות בוקר",
+      "world_he": "סמטאות ראש פינה, עצי זית, קמח מלא, אבן גיר גלילית ואש חיה",
+      "photo_he": "תקריבים חדים של קרום לחם שחום, קמח על עץ כהה ואור צדדי של גחלים",
+      "text_he": "מילה אחת או שתיים בשולי התמונה, או תמונה נקייה לגמרי בלי אותיות",
+      "never_he": [
+        "גרפיקה של מבצעים ומחירים באדום",
+        "צילום מואר מדי בסגנון סטודיו מסחרי",
+        "מדבקות ואייקונים צבעוניים על התמונה",
+        "שימוש במגשים מתכתיים מבריקים או פלסטיק"
+      ]
+    },
+    "type": {
+      "display": "frank-ruhl-libre",
+      "display_weight": 700,
+      "text": "assistant",
+      "text_weight": 400,
+      "headline_case": "sentence",
+      "scale": "editorial"
+    },
+    "colors": {
+      "ink": "#5b3a24",
+      "paper": "#efe6d6",
+      "accent": "#c2562b",
+      "accent_2": "#6b6b3a",
+      "on_photo": "#efe6d6",
+      "tint": "#d5ccbd"
+    },
+    "colors_source": {
+      "ink": "site",
+      "paper": "site",
+      "accent": "site",
+      "accent_2": "site",
+      "on_photo": "site",
+      "tint": "derived"
+    },
+    "colors_base": {
+      "tint": "#efe6d6"
+    },
+    "compositions": [
+      "inset_frame",
+      "arch_window",
+      "stacked_bands"
+    ],
+    "mix": {
+      "photo_only": 0.65,
+      "headline": 0.35,
+      "type_led": 0.0
+    },
+    "motif": {
+      "kind": "arches",
+      "from": "logo",
+      "note_he": "קשת פתח תנור האבן מתוך החותמת של המאפייה",
+      "color": "accent",
+      "density": "low"
+    },
+    "signature": {
+      "kind": "name_only",
+      "use_logo": false,
+      "logo_url": "",
+      "logo_on": "any",
+      "logo_colors": []
+    },
+    "photo": {
+      "grade": "warm earth tones, deep shadows, amber glow, muted greens",
+      "light": "low directional side light from live oven embers and dawn window",
+      "angle": "eye-level close-up 50mm, slightly overhead 45 degrees",
+      "background": "chiseled Galilee limestone wall, firebrick hearth, scorched dark wood table",
+      "props": [
+        "wooden peel with sourdough loaves",
+        "linen proofing cloth dusted with flour",
+        "fresh zaatar sprigs",
+        "olive wood cutting board"
+      ],
+      "never": [
+        "text, letters or numbers in any language",
+        "logos, watermarks or price tags",
+        "people's faces",
+        "a white studio sweep or a generic marble backdrop",
+        "waxy or plastic-looking surfaces",
+        "drawn frames, borders or panels",
+        "stainless steel workbenches",
+        "bright white studio lights",
+        "plastic packaging",
+        "pastries or croissants"
+      ]
+    },
+    "copy": {
+      "headline_accent": false,
+      "price_style": "inline",
+      "cta_on_image": false
+    },
+    "rationale_he": "פשוט, שקט ואיטי, כמו לחם שיוצא מתנור אבן ישן לפנות בוקר",
+    "distance_checked_against": 1,
+    "source": "model"
+  },
+  "brand_language": {
+    "business_name": "תנור אבן",
+    "palette": [
+      {
+        "hex": "#c2562b",
+        "role": "primary",
+        "name": "גחלים"
+      },
+      {
+        "hex": "#5b3a24",
+        "role": "ink",
+        "name": "קרום שרוף"
+      },
+      {
+        "hex": "#6b6b3a",
+        "role": "secondary",
+        "name": "זית"
+      },
+      {
+        "hex": "#efe6d6",
+        "role": "background",
+        "name": "קמח"
+      }
+    ],
+    "typography": {
+      "primary": "Frank Ruhl Libre",
+      "mood": "משפחתי, איטי, בלי פוזות"
+    },
+    "visual_style": "בית אבן ישן בגליל, עץ זית, תנור עצים, הכול עבודת יד",
+    "photography": "צילומים כהים וחמים של כיכרות ליד פתח התנור, אור הגחלים מהצד",
+    "voice": "משפחתי, איטי, בלי פוזות",
+    "audience": "תושבי האזור",
+    "logo_description": "חותמת עגולה חומה עם קשת של תנור",
+    "logo_url": ""
+  },
+  "color_evidence": [
+    {
+      "hex": "#c2562b",
+      "source": "site",
+      "role": "primary",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#5b3a24",
+      "source": "site",
+      "role": "ink",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#6b6b3a",
+      "source": "site",
+      "role": "secondary",
+      "origin": "palette",
+      "share": 0.0
+    },
+    {
+      "hex": "#efe6d6",
+      "source": "site",
+      "role": "background",
+      "origin": "palette",
+      "share": 0.0
+    }
+  ],
+  "generated_at": "2026-10-02T00:19:05+00:00",
+  "generated_by": "api/scripts/dna_smoke.py"
+}

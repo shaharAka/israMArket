@@ -421,6 +421,14 @@ Backups live at `gs://$BUCKET/{nightly,pre-update}/<YYYY-MM-DD>/<timestamp>/`. E
 holds `isramarket.db.gz` and `SHA256SUMS`. Nightly backups also have `files.tar`: the
 images and everything else under `/app/data` except the database.
 
+After each successful upload, local snapshots expire at 30 days across all prefixes,
+including interrupted copies; the current prefix also keeps at most three completed
+copies. In Cloud Storage,
+the 30-day lifecycle rule schedules deletion, then deleted objects remain recoverable
+for another seven days under soft delete. Lifecycle processing is automatic, so this is
+not a guarantee of permanent erasure on day 30. See [lifecycle deletion](https://docs.cloud.google.com/storage/docs/lifecycle#delete)
+and [soft delete](https://docs.cloud.google.com/storage/docs/soft-delete).
+
 ```bash
 # On the VM, as root (sudo -i).
 BUCKET=$(curl -fsS -H 'Metadata-Flavor: Google' http://metadata.google.internal/computeMetadata/v1/instance/attributes/backup-bucket)

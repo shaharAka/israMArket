@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, User
-from app.services import journey
+from app.services import ga4, journey, meta, plan_connections
 
 router = APIRouter(prefix="/setup", tags=["setup"])
 
@@ -49,9 +49,8 @@ RUNNING_TITLE = "כל חודש"
 #      outside the app and a login at another provider — more effort, so they rank below
 #      the zero-friction wins rather than above them.
 #   4. plan -> approve -> publish
-#      The recurring loop. It only becomes the right thing to do once the one-time setup
-#      that shapes the output exists, and it must be walked in this order: a month has to
-#      be generated before it can be approved, and approved before it is published.
+#      Generation keeps its actual prerequisites. When a post already exists, its review
+#      or publication takes priority over the unfinished setup above, as in /trial.
 NEXT_ORDER = (
     "scan",
     "diagnostics",
@@ -61,6 +60,7 @@ NEXT_ORDER = (
     "media",
     "google",
     "instagram",
+    "whatsapp",
     "plan",
     "approve",
     "publish",
@@ -87,7 +87,7 @@ def _item(key: str, title: str, why: str, action_href: str, action_label: str, d
 
 
 def _setup_items(facts: journey.Facts) -> list[dict]:
-    return [
+    items = [
         _item(
             "scan",
             title="קריאת האתר",
@@ -114,11 +114,11 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
         ),
         _item(
             "quarter",
-            title="התוכנית של הרבעון",
-            why="כך כל חודש הוא צעד לקראת יעד גדול, ולא רק רשימת פוסטים.",
+            title="הכיוון של התוכנית",
+            why="הכיוון שמנחה את צעדי העבודה, ומשתנה לפי מה שלומדים.",
             action_href="/plan",
             action_label="לבנות את התוכנית",
-            done=facts.long_horizon,
+            done=facts.long_horizon or bool(facts.quarter_plan),
         ),
         _item(
             "audiences",
@@ -153,6 +153,26 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
             done="meta" in facts.connected,
         ),
     ]
+
+    result = []
+    for item in items:
+        provider = {"google": "ga4", "instagram": "meta"}.get(item["key"])
+        if provider:
+            if not plan_connections.needed(facts, provider):
+                continue
+            available = ga4.ga4_configured() if provider == "ga4" else meta.meta_configured()
+            connection = plan_connections.state(facts, provider, available=available)
+            item.update(title=connection["title"], why=connection["why"],
+                        action_label=connection["action"], done=connection["status"] == "done")
+            if connection["status"] == "soon":
+                item["status"] = "soon"
+        result.append(item)
+    if "whatsapp_link" in (plan_connections.keys(facts) or set()):
+        result.append(_item("whatsapp", "קישור לוואטסאפ",
+                            "נוכל למדוד לחיצות לפנייה אליכם. לחיצה אינה הודעה או לקוח.",
+                            "/integrations", "להכין את הקישור",
+                            bool(facts.business and facts.business.whatsapp_number_e164)))
+    return result
 
 
 def _running_items(facts: journey.Facts) -> list[dict]:
@@ -197,15 +217,21 @@ def groups_for(facts: journey.Facts) -> list[dict]:
 def setup_checklist(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
     """What is done, what is missing, and the one thing to do now.
 
-    `next` is the first incomplete item in `NEXT_ORDER` — a ranking by value to the owner,
-    kept separate from how `groups` is listed — so the UI can show one clear instruction
-    instead of a wall of checkboxes. When nothing is left, `next` is null.
+    `next` leads with existing first content, otherwise walks the setup ranking.
+    Sources that cannot yet be connected are visible but excluded from the actionable
+    count and next step. When nothing actionable is left, `next` is null.
     """
     business = newest_business(db, user)
-    groups = groups_for(journey.load(db, business))
-    items = [item for group in groups for item in group["items"]]
+    facts = journey.load(db, business)
+    groups = groups_for(facts)
+    items = [item for group in groups for item in group["items"] if item.get("status") != "soon"]
     pending = sorted(items, key=lambda item: _RANK.get(item["key"], len(NEXT_ORDER)))
     nxt = next((item for item in pending if not item["done"]), None)
+    # The same first-content priority as /trial: unfinished connections do not prevent
+    # reviewing or publishing a post that already exists. Never publish automatically.
+    if facts.posts and not facts.published_posts:
+        first = "publish" if facts.approved_posts else "approve"
+        nxt = next((item for item in items if item["key"] == first and not item["done"]), nxt)
     return {
         "completed": sum(1 for item in items if item["done"]),
         "total": len(items),

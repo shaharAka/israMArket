@@ -1,73 +1,34 @@
+"""Image prompts and the served media folder.
+
+The prompts are written from the business's Design DNA (services/design_dna.py): its own
+photo direction (grade, light, angle, props, background, never-list) plus an art
+direction for its field, and the post's composition decides what the photo must leave
+room for. Nothing here is shared house wording: the fixed lighting and bakery phrases
+that once went into every business's prompt are gone (docs/design-dna.md).
+
+Which model gets the prompt, and the fallback, is services/image_routing.py.
+"""
+
 import hashlib
 import re
 import time
 from pathlib import Path
 
-from app.services.gemini import generate_image_bytes
-
-ASPECT = {
-    "reel": "9:16",
-    "carousel": "4:5",
-    "image": "4:5",
-    "story": "9:16",
-}
-
-# Mirrors resolveTemplate() in web/components/CardCanvas.tsx. Legacy `overlay_theme`
-# values stored on existing strategies map onto the compositions the renderer actually
-# draws, so the prompt can describe the real text placement.
-_LEGACY_TEMPLATES = {
-    "ink_pill": "lower_editorial",
-    "minimal_text": "cover_type",
-    "paper_badge": "framed_inset",
-    "frosted_glass": "split_panel",
-    "accent_banner": "promo_ribbon",
-}
-
-# Where the card renderer will paint the headline. The photo has to leave this zone
-# calm and uncluttered, otherwise the text lands on top of the subject and the whole
-# card looks accidental. Keep in sync with CardCanvas.tsx.
-_SAFE_ZONE = {
-    "lower_editorial": (
-        "the BOTTOM THIRD will carry the headline over a dark gradient. That band must "
-        "still be part of the photograph — keep lighting the same surface, texture and "
-        "props into it — but quieter and darker, with no faces, hands or key product "
-        "detail. It must NOT be blank, blurred out, or an empty wash of colour."
-    ),
-    "split_panel": (
-        "compose everything the viewer needs to see in the UPPER portion of the frame. The "
-        "bottom of the picture is cropped away by the layout, so let it be plain, evenly "
-        "lit surface — the same surface continued, nothing else. Do not draw a panel, "
-        "band, block of flat colour, or any border."
-    ),
-    "framed_inset": (
-        "the photo is shown as an inset frame on a flat brand-colour ground. Compose a "
-        "self-contained square-ish image with even margins of interest; no important "
-        "detail hard against the edges."
-    ),
-    "cover_type": (
-        "an oversized headline sits across the TOP THIRD, and a small brand line at the "
-        "very bottom. Keep the top third low-contrast and quiet (sky, wall, soft shadow) "
-        "and keep the bottom edge uncluttered — but both areas must still be real parts "
-        "of the photograph, never blank or blurred-out filler."
-    ),
-    "promo_ribbon": (
-        "compose the subject across the MIDDLE of the frame at a generous size, with the "
-        "surrounding surface filling the rest. The top and bottom edges are cropped by "
-        "the layout, so keep them plain — never a thin strip of detail surrounded by "
-        "emptiness, and never a painted band or block of flat colour."
-    ),
-    # Photo-free: no image is generated for this template at all (see needs_photo).
-    "type_hero": "no photograph is used — this card is typography on a brand ground.",
-}
+from app.services.business_fields import coerce_field, field_label
+from app.services.dna_library import COMPOSITIONS
+from app.services.post_design import clean_design, crop_for, legacy_design
 
 _ORIENTATION = {
     "9:16": "a vertical 9:16 frame (portrait, like a phone screen)",
     "4:5": "a vertical 4:5 portrait frame (the Instagram feed shape)",
 }
-
-
-# Templates that draw no photograph. Mirrors PHOTO_FREE_TEMPLATES in CardCanvas.tsx.
-PHOTO_FREE_TEMPLATES = {"type_hero"}
+_POSITION_WORDS = {
+    "top": "top",
+    "bottom": "bottom",
+    "center": "middle",
+    "start": "right-hand side (where Hebrew reading starts)",
+    "end": "left-hand side",
+}
 
 # What viewers have learned to read as "generated". A positive prompt does not remove
 # these; an explicit never-list does. The glossy, saturated, symmetrical look is the
@@ -76,91 +37,257 @@ _NEVER = """- Any text, letters, numbers, Hebrew or Latin, logos, watermarks, pr
 - Slick advertising gloss: no gradients, no lens flare, no sparkle or bokeh overlays,
   no glassmorphism, no drop shadows, no vignette, no HDR glow.
 - Perfect symmetry, or a centred, staged, catalogue arrangement.
-- Plastic-looking or waxy food; over-saturated colour; unnaturally uniform texture.
+- Plastic-looking or waxy surfaces (food, skin, fabric); over-saturated colour; unnaturally
+  uniform texture.
 - Poreless skin, identical catchlights, or hands with the wrong number of fingers.
+- People's faces, unless the brief asks for one.
 - Floating or physically impossible objects, cut-out edges, missing contact shadows.
-- Anything that reads as stock: white studio sweep, generic marble surface, a person in
+- Anything that reads as stock: a white studio sweep, a generic marble surface, a person in
   a suit pointing at a laptop, an unblemished flat-lay.
 - Invented signage, menus, labels or packaging.
 - Collage, split panels, borders, frames, or any card-like layout drawn inside the image."""
 
+_LAYOUT_FURNITURE = (
+    "Never draw layout furniture: no panels, bands, bars, blocks of flat colour, borders or "
+    "frames. The app adds those; anything like them in the photo is wrong. Never leave a "
+    "large area blank, flat, blurred out or an empty wash of colour: a quiet zone means "
+    "calmer content, not absent content."
+)
 
-def resolve_template(theme: str | None) -> str:
-    if not theme:
-        return "lower_editorial"
-    if theme in _LEGACY_TEMPLATES:
-        return _LEGACY_TEMPLATES[theme]
-    return theme if theme in _SAFE_ZONE else "lower_editorial"
+# Art direction per field: what a real photo in that trade shows. Field-level, so it is
+# only ever added to the business's own photo direction, never instead of it.
+FIELD_ART_DIRECTION = {
+    "food": (
+        "Food as this place really serves it: the actual portion in the plate, cup or wrapping it "
+        "leaves the counter in, with the marks of real handling (a drip, a torn edge, a spoon resting "
+        "in it). Shot where it is made or eaten here, not on a styled set."
+    ),
+    "fashion": (
+        "The garment as a customer meets it: on its hanger, folded on the shop's own table, or worn "
+        "with the face out of frame. The weave, seams and drape must read up close."
+    ),
+    "jewelry": (
+        "The piece at true scale, with the real reflections of its metal and the actual cut of its "
+        "stones, on the shop's own tray or a hand with the face out of frame. No floating pieces, no "
+        "sparkle effects."
+    ),
+    "beauty": (
+        "The result and the tools of the treatment: real skin texture, nails or hair, the products in "
+        "use, the studio's own chair, basin or shelf. Never a retouched beauty-advert face."
+    ),
+    "health": (
+        "Care as it happens in this clinic: its own room and equipment, a practitioner's hands at work, "
+        "calm and honest. No stock doctors, no anatomy graphics."
+    ),
+    "fitness": (
+        "The studio or field as it is used: its own floor, equipment and windows, a body in motion seen "
+        "from behind or cropped below the face, effort visible."
+    ),
+    "home": (
+        "Finished work and what it is made of: a real room, or a close detail of a joint, a tile or a "
+        "fabric sample, in the true light of that space."
+    ),
+    "real_estate": (
+        "The property's real rooms, views and light at an honest time of day, verticals kept straight. "
+        "No virtual staging, no replaced sky."
+    ),
+    "professional": (
+        "The work behind the service, never a person in a suit: the desk, the documents, the tools of "
+        "the trade, the office's own window."
+    ),
+    "education": (
+        "A class or a workshop in progress: materials on the table, hands working, the room's own boards "
+        "and walls. No faces in focus."
+    ),
+    "hospitality": (
+        "The place itself: its rooms, view, table or path at the hour guests know it, with the marks of "
+        "being lived in."
+    ),
+    "kids": (
+        "Products and spaces at a child's height, in a real home or in the shop. Colour comes from the "
+        "products themselves; children only from behind or out of frame."
+    ),
+    "pets": (
+        "The product in use by a real animal, or beside its bowl, bed or leash, at the animal's eye "
+        "level."
+    ),
+    "gifts": (
+        "The gift as it will be received: the wrapping, the card, the flowers or the box being opened by "
+        "hands, on the shop's own counter."
+    ),
+    "other": (
+        "What this business really makes or does, in the place it happens, with its own materials and "
+        "light."
+    ),
+}
 
 
-def needs_photo(theme: str | None) -> bool:
-    """False for templates that draw no photograph, so no image is generated at all."""
-    if theme in PHOTO_FREE_TEMPLATES:
-        return False
-    return resolve_template(theme) not in PHOTO_FREE_TEMPLATES
+def _field_key(business: dict) -> str:
+    return coerce_field(business.get("business_type") or business.get("field") or "", business.get("offerings") or "").key
 
 
-def build_image_prompt(post: dict, brand: dict, business: dict) -> str:
-    palette = ", ".join(
-        f"{swatch.get('name', '')} {swatch.get('hex')}" for swatch in brand.get("palette") or []
+def _post_design(post: dict) -> dict:
+    return (
+        clean_design(post.get("design"), post)
+        or legacy_design(post)
+        or {"composition": "full_bleed", "crop": crop_for(post.get("format")), "text_position": "bottom"}
     )
-    scene = post.get("scene_description") or post.get("image_prompt") or post.get("title")
-    format_ = post.get("format") or "image"
-    aspect = ASPECT.get(format_, "4:5")
-    orientation = _ORIENTATION.get(aspect, _ORIENTATION["4:5"])
 
-    has_overlay = post.get("has_overlay")
-    if has_overlay is False:
-        layout_rules = (
+
+def aspect_for(post: dict) -> str:
+    """The image's aspect ratio: the card's crop (9:16 for a reel or story, else 4:5)."""
+    return _post_design(post)["crop"]
+
+
+def _no_text(post: dict, design: dict) -> bool:
+    return post.get("has_overlay") is False or design.get("text_mode") == "photo_only"
+
+
+def composition_zone(post: dict) -> str:
+    """What the photo must leave room for, from the post's composition and text position."""
+    design = _post_design(post)
+    if _no_text(post, design):
+        return (
             "No text will be placed on this image, so treat it as a clean hero photograph. "
             "Place the subject confidently in the frame with deliberate, balanced margins."
         )
-    else:
-        template = resolve_template(post.get("overlay_theme"))
-        layout_rules = (
-            f"Graphic text WILL be added on top of this photo. Composition constraint: "
-            f"{_SAFE_ZONE[template]}\n"
-            f"Keep the main subject and any face out of that area, but it must still be "
-            f"photographed content — surface, texture and light — not emptiness."
-        )
+    zone = COMPOSITIONS[design["composition"]].photo_zone
+    return zone.replace("{pos}", _POSITION_WORDS.get(design["text_position"], "bottom"))
 
+
+def negative_space_line(post: dict) -> str:
+    """Design DNA v2, rule 2: the text sits in the photo's calm area, so a generated photo
+    leaves one where the composition sets the headline."""
+    design = _post_design(post)
+    if _no_text(post, design) or not COMPOSITIONS[design["composition"]].photo:
+        return ""
+    where = _POSITION_WORDS.get(design["text_position"], "bottom")
+    return (
+        f"- Leave calm negative space in the {where} of the frame (about a third of it) where a "
+        "short headline will be set: the same surface and light continued, with no part of the "
+        "subject, no face and no busy detail there."
+    )
+
+
+def _photo_lines(dna: dict | None, brand: dict) -> list[str]:
+    photo = (dna or {}).get("photo") or {}
+    if photo:
+        lines = [
+            f"- Colour grade: {photo.get('grade')}",
+            f"- Light: {photo.get('light')}",
+            f"- Camera: {photo.get('angle')}",
+            f"- Background: {photo.get('background')}",
+        ]
+        if photo.get("props"):
+            lines.append(f"- Props that belong to this business: {', '.join(photo['props'])}")
+        colors = (dna or {}).get("colors") or {}
+        if colors:
+            lines.append(
+                f"- Palette to find in real surfaces, props and light (never painted on): "
+                f"{colors.get('paper')}, {colors.get('accent')}, {colors.get('accent_2')}"
+            )
+        return lines
+    palette = ", ".join(f"{s.get('name', '')} {s.get('hex')}" for s in brand.get("palette") or [])
+    return [
+        f"- Brand visual style: {brand.get('visual_style') or 'not read'}",
+        f"- How its own photos look: {brand.get('photography') or 'not read'}",
+        f"- Palette to find in real surfaces, props and light (never painted on): {palette or 'not read'}",
+    ]
+
+
+def _never_block(dna: dict | None) -> str:
+    from app.services.design_dna import DEFAULT_NEVER  # the defaults are already in _NEVER
+
+    extra = [item for item in ((dna or {}).get("photo") or {}).get("never") or [] if item and item not in DEFAULT_NEVER]
+    lines = _NEVER
+    if extra:
+        lines += "\n" + "\n".join(f"- {item}" for item in extra)
+    return lines
+
+
+def build_image_prompt(post: dict, brand: dict, business: dict, dna: dict | None = None) -> str:
+    """A new photograph for the post, from the DNA's photo direction (the brand's
+    description when there is no DNA), the field's art direction and the composition."""
+    scene = post.get("scene_description") or post.get("image_prompt") or post.get("title")
+    orientation = _ORIENTATION.get(aspect_for(post), _ORIENTATION["4:5"])
+    field = _field_key(business)
+    photo = "\n".join(_photo_lines(dna, brand))
     return f"""
-Create one finished, art-directed photograph for an Israeli small business's Instagram post.
-This must look like a real photograph taken for this business — not a website screenshot,
-not a UI mockup, not a stock-library image.
+Create one finished photograph for an Israeli small business's Instagram post.
+It must look like a real photograph taken for this business: not a website screenshot,
+not a UI mockup, not a stock-library image, not an advert.
 
-Framing: {orientation}. Fill the frame; it will be used full-bleed.
+Framing: {orientation}. Fill the frame; it will be used as the card's photo.
 
-Business: {business.get("name")}
-What they sell: {business.get("offerings")}
-Brand visual style: {brand.get("visual_style")}
-Photography style: {brand.get("photography")}
-Typography mood: {(brand.get("typography") or {}).get("mood")}
-Exact palette to lean into: {palette}
-Voice (do not invent a luxury/agency look if the brand is neighbourhood/handmade): {brand.get("voice")}
+Business: {business.get("name")} ({field_label(field)})
+What they sell or do: {business.get("offerings")}
+Voice (do not invent a luxury or agency look if the business is neighbourhood or handmade): {brand.get("voice")}
 
-Scene and art direction to depict:
+Scene for this post:
 {scene}
 
-COMPOSITION — this matters as much as the subject:
-- {layout_rules}
-- Direct the light: one clear source, natural and directional, with real falloff and shadow.
-  Avoid flat, evenly-lit catalogue lighting.
-- Show authentic materials and texture — real crumbs, flour, worn wood, linen, condensation,
-  thumbprints. Imperfection reads as honest; plastic perfection reads as stock.
-- Work the brand palette into props, surfaces and light, not into painted-on colour.
-- Shallow depth of field, with the subject sharp and the background falling away.
-- FILL THE FRAME. Every part of the picture must be real photographed content.
-- Never draw layout furniture: no panels, bands, bars, blocks of flat colour,
-  borders or frames. The app adds those; anything like them in the photo is wrong.
-  Never leave a large area blank, flat, blurred out or an empty wash of colour —
-  a quiet zone means calmer content, not absent content. A card whose photo is a
-  third empty space looks like a mistake, which is exactly what it is.
+This business's photo direction:
+{photo}
 
-STRICT RULES — never include any of these:
-{_NEVER}
+What a real photo in this field shows: {FIELD_ART_DIRECTION.get(field, FIELD_ART_DIRECTION["other"])}
+
+COMPOSITION, as important as the subject:
+- {composition_zone(post)}
+{negative_space_line(post) or "- The subject is the hero; nothing will cover it."}
+- Keep the main subject and any face out of the text area, but that area must still be
+  photographed content: surface, texture and light.
+- {_LAYOUT_FURNITURE}
+
+STRICT RULES, never include any of these:
+{_never_block(dna)}
 """
 
+
+def edit_subject(post: dict) -> str:
+    return str(post.get("featured_item_name") or post.get("product") or "").strip()[:80]
+
+
+def build_edit_prompt(post: dict, dna: dict | None, business: dict, *, labelled: bool = False) -> str:
+    """Improve the owner's real photo for this post, keeping the product exactly as it is.
+
+    `labelled`: the photo arrives as REFERENCE PHOTO 1 (the Gemini fallback), rather than
+    as the image being edited (Muse's edits endpoint)."""
+    photo = (dna or {}).get("photo") or {}
+    subject = edit_subject(post)
+    field = _field_key(business)
+    what = f"of {subject}" if subject else "of what it sells"
+    source = "The attached REFERENCE PHOTO 1 is" if labelled else "This is"
+    orientation = _ORIENTATION.get(aspect_for(post), _ORIENTATION["4:5"])
+    props = ", ".join(photo.get("props") or [])
+    lines = [
+        f"{source} a real photo {what}, taken by {business.get('name')} ({field_label(field)}). "
+        "Prepare it for their Instagram feed.",
+        "Keep what it shows exactly as it is: the same product, shape, proportions, colour, texture, "
+        "count and every detail. Do not redraw, restyle, re-make or replace it, and do not add or "
+        "remove items.",
+        "Change only:",
+        f"- the light: relight it as {photo.get('light') or 'one clear directional source, true to the place'}",
+        f"- the background: clean it up into {photo.get('background') or 'the real surface it stands on, tidied'}",
+        f"- the colour grade: {photo.get('grade') or 'true to life'}",
+    ]
+    if props:
+        lines.append(f"- if there is room at the edges, a prop that belongs here ({props}), never covering the subject")
+    lines += [
+        f"Framing: {orientation}. {composition_zone(post)}",
+        _LAYOUT_FURNITURE,
+        "Never include:",
+        _never_block(dna),
+    ]
+    return "\n".join(lines)
+
+
+def reference_label(post: dict) -> str:
+    subject = edit_subject(post)
+    of = f" of {subject}" if subject else ""
+    return (
+        f"REFERENCE PHOTO 1: the business's own photograph{of}. Edit this photo; keep the product "
+        "in it exactly as it is."
+    )
 
 
 def media_root() -> Path:
@@ -228,10 +355,13 @@ def generate_and_store(
     post: dict,
     brand: dict,
     business: dict,
-    references: list[tuple[bytes, str]] | None = None,
+    references: list[tuple[bytes, str]] | None = None,  # noqa: ARG001 - kept for callers
+    dna: dict | None = None,
+    db=None,
 ) -> str:
-    aspect = ASPECT.get(post.get("format") or "image", "4:5")
-    prompt = build_image_prompt(post, brand, business)
-    data, mime = generate_image_bytes(prompt, aspect, references=references)
-    return store_image_bytes(business_id, post.get("title") or "post", data, mime, post.get("week", 0))
+    """Generate the post's image (Muse, falling back to Nano Banana 2) and store it."""
+    from app.services.image_routing import generate_for_post
 
+    outcome = generate_for_post(post, brand, business, dna, business_id=business_id, db=db)
+    post.update(outcome.post_fields())
+    return store_image_bytes(business_id, post.get("title") or "post", outcome.data, outcome.mime, post.get("week", 0))

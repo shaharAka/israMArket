@@ -17,7 +17,7 @@ from app.security import (
     decrypt_secret,
     encrypt_secret,
 )
-from app.services import ga4, google_login, meta
+from app.services import ga4, ga4_readiness, google_login, meta, meta_readiness
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
 from app.routers import meta_connections
@@ -32,7 +32,8 @@ def _public_integration(item: Integration) -> dict:
         "status": item.status,
         "external_id": item.external_id,
         "display_name": item.display_name,
-        "connected": item.status == "connected" and bool(item.access_token_enc),
+        "connected": item.status == "connected" and bool(item.access_token_enc) and (item.provider != "ga4" or bool(item.external_id)),
+        "source_readiness": ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item) if item.provider == "meta" else None,
         "properties": extra.get("properties"),
         "pages": extra.get("pages"),
         # What Google actually granted on this connection. Search Console lives on the
@@ -41,7 +42,7 @@ def _public_integration(item: Integration) -> dict:
         "scopes": extra.get("scopes") or [],
         "ad_account_id": extra.get("selected_ad_account_id") or "",
         "pixel_id": extra.get("selected_pixel_id") or "",
-        "pixel_verification": extra.get("pixel_verification"),
+        "pixel_verification": extra.get("pixel_verification") if not extra.get("pixel_verification_key") or extra["pixel_verification_key"] == meta_readiness.key(item) else None,
         # Which Google account granted it (Google only), and a Hebrew note when that is not
         # the account the owner signs in with. Allowed, just said out loud.
         "account_email": (extra.get("google_account") or {}).get("email") or None,
@@ -106,7 +107,8 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
     settings = get_settings()
     dest = f"{settings.web_origin}/integrations"
     if error:
-        return RedirectResponse(f"{dest}?{urlencode({'error': error})}")
+        note = "האישור לגוגל לא הושלם. התוכנית נשמרה; אפשר לחבר שוב כשנוח לכם."
+        return RedirectResponse(f"{dest}?{urlencode({'error': note})}")
     try:
         claims = decode_oauth_state(state)
         tokens = ga4.exchange_code(code)
@@ -115,6 +117,8 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         item.refresh_token_enc = encrypt_secret(tokens["refresh_token"])
         item.token_expires_at = tokens["expires_at"]
         item.status = "select_property"
+        item.external_id = ""
+        item.display_name = ""
         properties = ga4.list_properties(tokens["access_token"], tokens["refresh_token"], tokens["expires_at"])
         extra = {"properties": properties, "scopes": tokens.get("scopes") or []}
         mismatch = _note_google_account(db, claims["user_id"], tokens.get("id_token"), extra)
@@ -123,7 +127,8 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         db.commit()
         _invalidate_promotion_cache(claims["business_id"])
     except Exception as exc:
-        return RedirectResponse(f"{dest}?{urlencode({'error': str(exc)})}")
+        db.rollback()
+        return RedirectResponse(f"{dest}?{urlencode({'error': ga4_readiness.failure(exc)['note_he']})}")
     suffix = "&ga4_account=other" if mismatch else ""
     return RedirectResponse(f"{dest}?ga4=connected{suffix}")
 
@@ -161,14 +166,35 @@ def ga4_property(
     )
     if not item or not item.access_token_enc:
         raise HTTPException(status_code=400, detail="חברו קודם את נתוני האתר (גוגל אנליטיקס)")
+    try:
+        properties = ga4.list_properties(*tokens_for(item))
+    except Exception as exc:
+        state = ga4_readiness.record(db, item, ga4_readiness.failure(exc)["status"])
+        raise HTTPException(status_code=502, detail=state["note_he"]) from exc
+    prop = next((prop for prop in properties if prop["property_id"] == body.property_id), None)
+    if not prop:
+        raise HTTPException(status_code=400, detail="האתר שנבחר אינו זמין בחשבון הזה. חברו חשבון עם גישה לאתר ובחרו אותו מהרשימה.")
     extra = loads(item.extra_json, {})
+    extra["properties"] = properties
     extra["selected_property_id"] = body.property_id
     item.external_id = body.property_id
-    item.display_name = body.display_name or body.property_id
+    item.display_name = f"{prop['display_name']} ({prop['account']})"[:160]
     item.extra_json = dumps(extra)
     item.status = "connected"
     item.updated_at = datetime.utcnow()
     db.commit()
+    ga4_readiness.initial_read(db, item)
+    return {"integration": _public_integration(item)}
+
+
+@router.post("/ga4/read")
+def ga4_read(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    item = db.query(Integration).filter(
+        Integration.business_id == business.id, Integration.provider == "ga4",
+    ).first()
+    if not item or not item.access_token_enc or not item.external_id:
+        raise HTTPException(status_code=400, detail="בחרו קודם את האתר בעמוד החיבורים.")
+    ga4_readiness.initial_read(db, item)
     return {"integration": _public_integration(item)}
 
 
@@ -183,6 +209,16 @@ def meta_account(
 ) -> dict:
     meta_connections.save_assets(body, business, db)
     item = meta_connections.integration(business, db)
+    return {"integration": _public_integration(item)}
+
+
+@router.post("/meta/read")
+def meta_read(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    item = meta_connections.integration(business, db)
+    if not item.external_id or item.status in {"select_page", "select_assets"}:
+        raise HTTPException(400, "בחרו קודם את הדף או את חשבון הפרסום של העסק.")
+    if meta_readiness.initial_read(db, item, business.website_url) is None:
+        raise HTTPException(409, "החיבור השתנה בזמן הקריאה. בדקו את הבחירה ונסו שוב.")
     return {"integration": _public_integration(item)}
 
 

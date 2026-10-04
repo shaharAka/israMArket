@@ -71,7 +71,7 @@ INSIGHTS = [{"text_he": "סיפרתם שתמונות הטאבון מביאות �
 
 def answer(today: date | None = None, **overrides) -> dict:
     months = quarter.plan_months(today or date.today())
-    first_event = next((e for m in months for e in m["events"]), None)
+    first_event = next(iter(months[0]["events"]), None)
     data = {
         "strategy": {"one_liner_he": "מצלמים את הטאבון בבוקר ומביאים עוברים לדלפק.", "angle_he": "טאבון עצים ביפו.",
                      "why_he": "סיפרתם שתמונות הטאבון מביאות אנשים.", "based_on": "insight_1"},

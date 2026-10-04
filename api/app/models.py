@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -79,6 +79,13 @@ class Business(Base):
     # message starts with — every link appends its own short source code to it.
     whatsapp_number_e164: Mapped[str | None] = mapped_column(String(20), nullable=True, default=None)
     whatsapp_default_text_he: Mapped[str] = mapped_column(Text, default="")
+    # The business's Design DNA (docs/design-dna.md, the `brand_dna` contract): its type
+    # pair, colours, compositions, motif, signature and photo direction. "" until built
+    # (services/design_dna.py, at the end of the site scan or on the first read).
+    brand_dna_json: Mapped[str] = mapped_column(Text, default="")
+    # The same-origin copy of the business's logo and what its pixels say (colours, the
+    # ground it reads on): services/brand_logo.py. "" until the logo is fetched.
+    brand_logo_json: Mapped[str] = mapped_column(Text, default="")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -87,6 +94,7 @@ class Business(Base):
     integrations: Mapped[list["Integration"]] = relationship(back_populates="business")
     snapshots: Mapped[list["PerformanceSnapshot"]] = relationship(back_populates="business")
     recommendations: Mapped[list["Recommendation"]] = relationship(back_populates="business")
+    service_reports: Mapped[list["ServiceReport"]] = relationship(back_populates="business")
     webhooks: Mapped[list["WebhookEndpoint"]] = relationship(back_populates="business")
     assets: Mapped[list["Asset"]] = relationship(back_populates="business")
     audiences: Mapped[list["Audience"]] = relationship(back_populates="business")
@@ -159,6 +167,25 @@ class PerformanceSnapshot(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="snapshots")
+
+
+class AnalysisJob(Base):
+    """Interpret one saved source read, independently of the owner's open browser.
+
+    Separate from the single month/post GenerationJob, so connecting an account never
+    cancels or waits for content generation. Deleted with its business like other rows.
+    """
+    __tablename__ = "analysis_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    snapshot_id: Mapped[int] = mapped_column(ForeignKey("performance_snapshots.id"), unique=True)
+    context_key: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(20), default="pending", index=True)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    worker_token: Mapped[str] = mapped_column(String(64), default="")
+    available_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    lease_until: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
 
 class InstagramPost(Base):
@@ -236,6 +263,24 @@ class HashtagQuery(Base):
     queried_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
+class ServiceReport(Base):
+    """Owner-reported monthly outcomes, separate from provider/link observations."""
+    __tablename__ = "service_reports"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    month: Mapped[str] = mapped_column(String(7))
+    inquiries: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    suitable: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    clients_won: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    capacity: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    fit_criterion: Mapped[str] = mapped_column(Text, default="")
+    revision: Mapped[int] = mapped_column(Integer, default=1)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    business: Mapped[Business] = relationship(back_populates="service_reports")
+    __table_args__ = (UniqueConstraint("business_id", "month", name="uq_service_report_month"),)
+
+
 class Recommendation(Base):
     __tablename__ = "recommendations"
 
@@ -274,6 +319,55 @@ class Asset(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     business: Mapped[Business] = relationship(back_populates="assets")
+
+
+class ImageUsage(Base):
+    """One image-model call made for a business's post, and what it cost (estimated).
+
+    Every attempt is a row, refusals and errors included, so a fallback is visible: a
+    Muse refusal (not billed) followed by the Nano Banana 2 image that replaced it. The
+    cost is the list price from docs/image-models.md (services/image_usage.py), not an
+    invoice line.
+    """
+
+    __tablename__ = "image_usage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    post_uid: Mapped[str] = mapped_column(String(40), default="")
+    # "generate" | "edit"
+    task: Mapped[str] = mapped_column(String(20), default="generate")
+    # "muse" | "gemini"
+    provider: Mapped[str] = mapped_column(String(20), default="")
+    model: Mapped[str] = mapped_column(String(80), default="")
+    image_size: Mapped[str] = mapped_column(String(10), default="")
+    # "ok" | "refused" | "error" | "timeout"
+    outcome: Mapped[str] = mapped_column(String(20), default="ok")
+    # Why this attempt happened instead of the preferred one ("" for the first try).
+    fallback_reason: Mapped[str] = mapped_column(Text, default="")
+    est_cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
+    latency_ms: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class PhotoAnalysis(Base):
+    """Where a post photo's subject is and where text may sit (services/photo_analysis.py).
+
+    One cheap vision call per photo, cached by the photo's content hash, so the same photo
+    is never analysed twice for a business (a month reuses photos; an edit is a new file).
+    """
+
+    __tablename__ = "photo_analyses"
+    __table_args__ = (UniqueConstraint("business_id", "content_hash", name="uq_photo_analysis_hash"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    # sha256 of the image bytes.
+    content_hash: Mapped[str] = mapped_column(String(64))
+    # {subject{x,y,w,h}, focal{x,y}, safe_area{x,y,w,h} | null}, all 0-1 of the photo.
+    result_json: Mapped[str] = mapped_column(Text, default="{}")
+    model: Mapped[str] = mapped_column(String(80), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
 
 class Audience(Base):

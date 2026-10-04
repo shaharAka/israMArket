@@ -1,12 +1,13 @@
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from pydantic import ValidationError
+from sqlalchemy.orm import Session, object_session
 
 from app.db import get_db
 from app.config import get_settings
 from app.deps import get_business
-from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy
+from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy, User
 from app.schemas import (
     PostApprovalIn,
     PostAssetIn,
@@ -19,20 +20,36 @@ from app.schemas import (
     PostUpdateIn,
     StrategyApproveIn,
 )
-from app.services import connected_posts, generation_jobs, hypotheses, post_rewrite
+from app.services import (
+    billing,
+    connected_posts,
+    design_dna,
+    generation_jobs,
+    hypotheses,
+    photo_analysis,
+    photo_choice,
+    post_rewrite,
+    plan_editing,
+)
 from app.services.assets import (
     asset_catalogue,
     suggest_assets,
 )
 from app.services.audiences import catalogue_for
 from app.services.calendar_il import gregorian_month_meta, israeli_events_for_month
-from app.services.designer import apply_creative_to_post, design_and_generate_post, plan_post_design
-from app.services.images import (
-    generate_and_store,
-    image_public_url,
-    needs_photo,
-    read_stored_bytes,
-    store_image_bytes,
+from app.services.designer import design_and_generate_post, vibe_composition
+from app.services.image_routing import edit_for_post, generate_for_post
+from app.services.images import image_public_url, read_stored_bytes, store_image_bytes
+from app.services.post_design import (
+    assign_designs,
+    clean_design,
+    dna_compositions,
+    ensure_post_design,
+    make_design,
+    photo_fields,
+    post_needs_photo,
+    sync_text_mode,
+    view_designs,
 )
 from app.services.instagram_signal import signal_for
 from app.services.jsonutil import dumps, loads
@@ -62,6 +79,7 @@ def serialize_strategy(
     usp = loads(strategy.usp_json, {})
     payload = {
         "id": strategy.id,
+        "plan_revision": plan_editing.revision(business),
         **gregorian_month_meta(strategy.year, strategy.month),
         "year": strategy.year,
         "month": strategy.month,
@@ -87,6 +105,9 @@ def serialize_strategy(
             (scraped or {}).get("quarter_plan"),
             scraped,
         ),
+        # docs/design-dna.md (additive): the business's Design DNA, what every post's
+        # `design` is drawn from. None until it is built.
+        "brand_dna": design_dna.load_dna(business) if business else None,
     }
     if horizon:
         payload["horizon"] = horizon
@@ -101,12 +122,15 @@ def _connected(strategy: Strategy, roadmap: dict, business: Business | None) -> 
         month=strategy.month,
         core=connected_posts.strategy_core(roadmap),
         website=(business.website_url if business else "") or "",
+        dna=design_dna.load_dna(business) if business else None,
     )
 
 
 def _post_view(strategy: Strategy, business: Business, index: int, post: dict) -> dict:
     """The post an endpoint just changed, as every reader sees it (with lifecycle etc.)."""
     roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
+    posts = roadmap.get("posts") or []
+    designs = view_designs(posts, design_dna.load_dna(business)) if index < len(posts) else []
     return connected_posts.connected_view(
         post,
         index=index,
@@ -115,6 +139,7 @@ def _post_view(strategy: Strategy, business: Business, index: int, post: dict) -
         month=strategy.month,
         core=connected_posts.strategy_core(roadmap),
         website=business.website_url or "",
+        design=clean_design(post.get("design"), post) or (designs[index] if designs else None),
     )
 
 
@@ -128,6 +153,11 @@ def upsert_generated_strategy(db: Session, business: Business, generated: dict) 
         )
         .first()
     )
+    # Every post of the month gets its design from the business's DNA, compositions
+    # rotating so neighbours differ (services/post_design.py). No model call here.
+    roadmap_posts = (generated.get("roadmap") or {}).get("posts")
+    if isinstance(roadmap_posts, list):
+        assign_designs(roadmap_posts, design_dna.dna_for_posts(business))
     payload = dumps(
         {
             "posting_plan": generated["posting_plan"],
@@ -180,28 +210,17 @@ def _horizon_for(db: Session, business: Business, strategy: Strategy) -> dict:
     return horizon_payload(strategy.year, strategy.month, next_exists=bool(existing), next_stage=stage)
 
 
-def _local_photos(scraped: dict) -> list[dict]:
-    """Photos already stored during the scan, re-read from disk (no network)."""
-    out: list[dict] = []
-    for item in scraped.get("real_photos") or []:
-        loaded = read_stored_bytes(item.get("public_url", ""))
-        if loaded:
-            data, mime = loaded
-            out.append({"url": item.get("url", ""), "mime": mime, "bytes": data})
-    return out
+def _legacy_site_photos(scraped: dict) -> list[dict] | None:
+    """Site photos for a scan older than the stored-photo flag, or None (the stored ones
+    are read from disk when a post picks one, see services/photo_choice.gather).
 
-
-def _candidate_photos(scraped: dict) -> list[dict]:
-    """The business's own usable photographs, or [] if there are none.
-
-    If the scan already ran the vision check, its verdict is final — an empty result
-    means "everything was rejected", NOT "we never looked". Re-fetching here used to
-    silently bypass the filter and put a supplier's promo banner (or a blurred
-    snapshot) on the customer's cards.
+    If the scan already ran the vision check, its verdict is final: an empty result means
+    "everything was rejected", NOT "we never looked". Re-fetching here used to silently
+    bypass the filter and put a supplier's promo banner (or a blurred snapshot) on the
+    customer's cards.
     """
     if scraped.get("photos_checked"):
-        return _local_photos(scraped)
-
+        return None
     # Older scans predate the flag: fetch, then apply the same check before use.
     from app.services.brand import filter_usable_photos
 
@@ -210,76 +229,150 @@ def _candidate_photos(scraped: dict) -> list[dict]:
     )
 
 
+def _photo_pool(db: Session | None, business: Business, scraped: dict, posts: list, index: int):
+    """The owner's photos this post may use, and how often the month already used each."""
+    candidates = photo_choice.gather(db, business, scraped, site_photos=_legacy_site_photos(scraped))
+    return candidates, photo_choice.usage_counts(posts, exclude_index=index)
+
+
+def _biz_dict(business: Business, strategy: Strategy) -> dict:
+    usp_data = loads(strategy.usp_json, {}) or {}
+    return {
+        "name": business.name,
+        "business_type": field_label(business.business_type),
+        "offerings": business.offerings,
+        "location": business.location,
+        "presence_type": business.presence_type,
+        "primary_goal": business.primary_goal,
+        "business_model": business.business_model or "products",
+        "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
+    }
+
+
+_IMAGE_FIELDS_RESET = ("image_provider", "image_model", "image_fallback_reason", "image_edit_error")
+
+
 def _produce_post_image(
     business: Business,
     post: dict,
     brand: dict,
     biz_dict: dict,
-    scraped_photos: list[dict],
+    candidates: list,
+    used: dict,
+    *,
+    index: int = 0,
+    dna: dict | None = None,
     force: bool = False,
     allow_generation: bool = True,
     preference: str = "auto",
+    db: Session | None = None,
 ) -> str:
-    """Decide where a card's image comes from.
+    """Decide where a card's image comes from, real first (docs/design-dna.md).
 
-    `preference` is the user's explicit intent ("real" / "ai" / "auto"), kept separate
-    from `force` (which only means "redo the work"). Conflating the two made
-    "use my own photo" fall through to no image at all.
+    1. The owner's own photo that best matches the post's subject (library, Instagram,
+       site), not always the first one; the month's other posts count against reuse.
+    2. That photo edited to the DNA (Muse, then Nano Banana 2 with it as a labelled
+       reference). A failed edit keeps the photo as it is: the real photo is never lost.
+    3. No matching photo: a new image from the DNA's photo direction (Muse, then NB2).
+
+    `preference` is the user's explicit intent ("real" = the photo as it is, never an
+    AI call; "ai" = a new image; "auto"), kept separate from `force` ("redo the work",
+    which in auto mode means a new image). `allow_generation=False` never spends money:
+    an own photo is used as it is, otherwise nothing.
     """
     settings = get_settings()
 
-    if not needs_photo(post.get("overlay_theme")):
+    if not post_needs_photo(post):
         # Typographic cards carry no photograph on purpose. Say so, rather than
         # silently emptying the image and leaving the owner to guess why nothing came.
         post["image_url"] = ""
         post["image_source"] = "none"
         post["image_action"] = "no_photo_theme"
+        photo_analysis.attach(db, business.id, post, None)
         return ""
 
-    def use_real_photo() -> str:
-        photo = scraped_photos[0]
-        url = store_image_bytes(
-            business.id,
-            post.get("title") or "post",
-            photo["bytes"],
-            photo["mime"],
-            post.get("week", 0),
-        )
-        post["image_source"] = "real_photo"
-        post["image_source_url"] = photo.get("url", "")
-        post["image_action"] = "real_photo"
+    def stored(data: bytes, mime: str) -> str:
+        # Where the photo's subject is and where text may sit (design.safe_area/focal):
+        # one cheap vision call per photo, cached by its hash; never when browsing.
+        photo_analysis.attach(db, business.id, post, data, mime, allow_model=allow_generation)
+        return store_image_bytes(business.id, post.get("title") or "post", data, mime, post.get("week", 0))
+
+    def mark_own(candidate, reason: str) -> None:
+        post["image_source"] = candidate.image_source
+        post["image_origin"] = candidate.origin
+        post["image_source_url"] = candidate.source_url
+        post["image_candidate_key"] = candidate.key
+        post["image_match"] = reason
+        post["image_action"] = "asset" if candidate.origin == "library" else "real_photo"
+        if candidate.asset_id:
+            post["image_asset_id"] = candidate.asset_id
+        else:
+            post.pop("image_asset_id", None)
+
+    def use_as_is(picked) -> str:
+        candidate, (data, mime), reason = picked
+        url = stored(data, mime)
+        for key in _IMAGE_FIELDS_RESET:
+            post.pop(key, None)
+        mark_own(candidate, reason)
+        post["image_edited"] = False
+        post["image_task"] = "as_is"
+        post["image_cost_usd"] = 0.0
+        return url
+
+    def edit(picked) -> str:
+        candidate, photo, reason = picked
+        try:
+            outcome = edit_for_post(post, photo, biz_dict, dna, business_id=business.id, db=db)
+        except Exception as exc:
+            url = use_as_is(picked)
+            post["image_edit_error"] = str(exc)[:200]
+            return url
+        url = stored(outcome.data, outcome.mime)
+        post.pop("image_edit_error", None)
+        mark_own(candidate, reason)
+        post["image_edited"] = True
+        post.update(outcome.post_fields())
+        return url
+
+    def generate() -> str:
+        outcome = generate_for_post(post, brand, biz_dict, dna, business_id=business.id, db=db)
+        url = stored(outcome.data, outcome.mime)
+        for key in ("image_candidate_key", "image_match", "image_edit_error"):
+            post.pop(key, None)
+        post["image_source"] = "generated"
+        post["image_origin"] = "generated"
+        post["image_source_url"] = ""
+        post["image_action"] = "generated"
+        post["image_edited"] = False
+        post.update(outcome.post_fields())
         return url
 
     def leave_without_image() -> str:
         post["image_url"] = ""
         post["image_source"] = "pending"
         post["image_action"] = "pending"
+        photo_analysis.attach(db, business.id, post, None)
         return ""
 
+    def pick():
+        return photo_choice.choose(candidates, post, used, index)
+
     if preference == "real":
-        return use_real_photo() if scraped_photos else leave_without_image()
+        picked = pick()
+        return use_as_is(picked) if picked else leave_without_image()
 
     if preference == "ai":
-        if not allow_generation:
-            return leave_without_image()
-        references = [(p["bytes"], p["mime"]) for p in scraped_photos[:3]] or None
-        url = generate_and_store(business.id, post, brand, biz_dict, references=references)
-        post["image_source"] = "generated"
-        post["image_source_url"] = ""
-        post["image_action"] = "generated"
-        return url
+        return generate() if allow_generation else leave_without_image()
 
-    # auto: prefer the business's own photograph.
-    if settings.real_photo_first and scraped_photos and not force:
-        return use_real_photo()
+    # auto: the business's own photograph first, edited when spending is allowed.
+    if settings.real_photo_first and not force:
+        picked = pick()
+        if picked:
+            return edit(picked) if allow_generation else use_as_is(picked)
     if not allow_generation:
         return leave_without_image()
-    references = [(p["bytes"], p["mime"]) for p in scraped_photos[:3]] or None
-    url = generate_and_store(business.id, post, brand, biz_dict, references=references)
-    post["image_source"] = "generated"
-    post["image_action"] = "generated"
-    post["image_source_url"] = ""
-    return url
+    return generate()
 
 
 def _store_post_image(
@@ -291,6 +384,7 @@ def _store_post_image(
     custom_prompt: str = "",
     allow_generation: bool = True,
     preference: str = "auto",
+    db: Session | None = None,
 ) -> dict:
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
@@ -309,22 +403,19 @@ def _store_post_image(
     if not brand:
         raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שיוצרים תמונות.")
 
+    db = db if db is not None else object_session(business)
+    dna = design_dna.dna_for_posts(business)
     target = posts[post_index]
-    usp_data = loads(strategy.usp_json, {}) or {}
-    biz_dict = {
-        "name": business.name,
-        "business_type": field_label(business.business_type),
-        "offerings": business.offerings,
-        "location": business.location,
-        "presence_type": business.presence_type,
-        "primary_goal": business.primary_goal,
-        "business_model": business.business_model or "products",
-        "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
-    }
-
-    # The business's real photographs, used both as the card image and as style
-    # references for generation. Fetched once per call.
-    scraped_photos = _candidate_photos(scraped)
+    biz_dict = _biz_dict(business, strategy)
+    # The post's design first: the image is composed for it.
+    ensure_post_design(
+        posts,
+        post_index,
+        dna,
+        composition=vibe_composition(vibe, dna_compositions(dna), target.get("format")),
+        prefer_dna=bool(vibe or custom_prompt),
+    )
+    candidates, used = _photo_pool(db, business, scraped, posts, post_index)
 
     def provide(target_post: dict) -> str:
         return _produce_post_image(
@@ -332,10 +423,14 @@ def _store_post_image(
             target_post,
             brand,
             biz_dict,
-            scraped_photos,
+            candidates,
+            used,
+            index=post_index,
+            dna=dna,
             force=force,
             allow_generation=allow_generation,
             preference=preference,
+            db=db,
         )
 
     if not target.get("design_creative") or force or vibe or custom_prompt:
@@ -348,6 +443,7 @@ def _store_post_image(
             custom_prompt=custom_prompt,
             generate_image=True,
             image_provider=provide,
+            dna=dna,
         )
     else:
         target["image_url"] = provide(target)
@@ -384,6 +480,25 @@ def quarter_plan(business: Business = Depends(get_business)) -> dict:
     }
 
 
+def _editable_strategy(db: Session, business: Business) -> Strategy | None:
+    today = date.today()
+    return _strategy_for_month(db, business, today.year, today.month) or _newest_strategy(db, business)
+
+
+@router.get("/strategy/edit")
+def editable_plan(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    return plan_editing.view(db, business, _editable_strategy(db, business))
+
+
+@router.patch("/strategy/edit")
+def save_plan_edit(body: dict, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    try:
+        edit = plan_editing.EditIn.model_validate(body)
+    except ValidationError:
+        raise HTTPException(422, "מלאו כיוון וקהל. הכיוון וההנחות יכולים להכיל עד 300 תווים, והקהל עד 160. אפשר להוסיף עד 4 הנחות.")
+    return plan_editing.save(db, business, _editable_strategy(db, business), edit)
+
+
 @router.get("/strategy/current")
 def current_strategy(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     strategy = _active_strategy(db, business)
@@ -407,6 +522,7 @@ def generate_post_image(
             custom_prompt=body.custom_prompt,
             allow_generation=body.allow_generation,
             preference=body.image_preference,
+            db=db,
         )
     except HTTPException:
         raise
@@ -437,17 +553,28 @@ def design_post_endpoint(
         raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שמעצבים פוסטים.")
 
     target = posts[body.post_index]
-    usp_data = loads(strategy.usp_json, {}) or {}
-    biz_dict = {
-        "name": business.name,
-        "business_type": field_label(business.business_type),
-        "offerings": business.offerings,
-        "location": business.location,
-        "presence_type": business.presence_type,
-        "primary_goal": business.primary_goal,
-        "business_model": business.business_model or "products",
-        "growth_hypothesis": usp_data.get("growth_hypothesis") or "",
-    }
+    biz_dict = _biz_dict(business, strategy)
+    dna = design_dna.dna_for_posts(business)
+    # A redesign draws the post from the DNA: the composition the editor chose, the one
+    # the vibe asks for, or the next in the DNA's rotation.
+    ensure_post_design(
+        posts,
+        body.post_index,
+        dna,
+        composition=body.composition or vibe_composition(body.vibe, dna_compositions(dna), target.get("format")),
+        text_position=body.text_position,
+        prefer_dna=True,
+        by_hand=bool(body.composition),
+    )
+    # The image follows the same real-first route as /strategy/posts/image (it used to be
+    # a plain generation here, with none of the business's photos).
+    candidates, used = _photo_pool(db, business, scraped, posts, body.post_index) if body.generate_image else ([], {})
+
+    def provide(target_post: dict) -> str:
+        return _produce_post_image(
+            business, target_post, brand, biz_dict, candidates, used, index=body.post_index, dna=dna, db=db
+        )
+
     try:
         target, image_url = design_and_generate_post(
             business.id,
@@ -457,6 +584,8 @@ def design_post_endpoint(
             vibe=body.vibe,
             custom_prompt=body.custom_prompt,
             generate_image=body.generate_image,
+            image_provider=provide,
+            dna=dna,
         )
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"לא הצלחנו לעצב את הפוסט: {exc}") from exc
@@ -502,6 +631,14 @@ def attach_post_asset(
     target["image_asset_id"] = asset.id
     target["image_action"] = "asset"
     target["image_source_url"] = asset.source_url or ""
+    # The owner's own photo: where its subject is and where text may sit. The design is
+    # stored first so the analysis has somewhere to go.
+    ensure_post_design(posts, body.post_index, design_dna.dna_for_posts(business))
+    loaded = read_stored_bytes(target["image_url"])
+    owner = db.get(User, business.user_id)
+    may_spend = owner is None or not billing.locked(db, owner)
+    photo_analysis.attach(db, business.id, target, loaded[0] if loaded else None, loaded[1] if loaded else "",
+                          allow_model=may_spend)
     posts[body.post_index] = target
     extra["roadmap"] = {**roadmap, "posts": posts}
     strategy.roadmap_json = dumps(extra)
@@ -561,7 +698,7 @@ def generate_all_post_images(
         if post.get("image_url"):
             continue
         try:
-            _store_post_image(business, strategy, index)
+            _store_post_image(business, strategy, index, db=db)
         except Exception as exc:
             errors.append(f"פוסט {index + 1}: {exc}")
     if errors and not any(item.get("image_url") for item in loads(strategy.roadmap_json, {}).get("roadmap", {}).get("posts", [])):
@@ -595,7 +732,33 @@ def save_post(
     headline = body.overlay_headline or (body.overlay_text if body.has_overlay else "")
     target["overlay_headline"] = headline
     target["overlay_badge"] = body.overlay_badge
-    target["overlay_theme"] = body.overlay_theme
+    # Only an explicit old-layout choice is stored: the field's default ("ink_pill")
+    # must not overwrite a post's Design DNA layout every time it is saved.
+    if "overlay_theme" in body.model_fields_set:
+        target["overlay_theme"] = body.overlay_theme
+    previous_design = target.get("design") if isinstance(target.get("design"), dict) else {}
+    if body.design is not None:
+        submitted = {**body.design.model_dump(), "text_mode": previous_design.get("text_mode")}
+        # Picked by hand in the editor: a feed-only layout may go on a story too.
+        design = clean_design(submitted, {**target, "format": body.format}, by_hand=True)
+        if design is None:
+            raise HTTPException(status_code=422, detail="הקומפוזיציה הזו לא מתאימה לפוסט הזה.")
+        # A composition change keeps the photo, and so what we know about it.
+        design.update(photo_fields(previous_design))
+        target["design"] = design
+    elif previous_design:
+        # The format may have changed (a post became a story): keep the crop in step.
+        target["design"] = clean_design(previous_design, target) or make_design(
+            "full_bleed", target, photo=photo_fields(previous_design))
+    if isinstance(target.get("design"), dict):
+        # The owner's overlay switch decides the text mode: off = photo only.
+        sync_text_mode(target["design"], body.has_overlay)
+    # The one short line under the headline: kept unless the editor sends it (an older
+    # editor does not know the field) or the owner turned the text off.
+    if not body.has_overlay:
+        target["overlay_sub"] = ""
+    elif "overlay_sub" in body.model_fields_set:
+        target["overlay_sub"] = " ".join(body.overlay_sub.split())
     target["overlay_text"] = headline if body.has_overlay else ""
     if body.creative_concept:
         target["creative_concept"] = body.creative_concept
@@ -620,6 +783,8 @@ def save_post(
     if target.get("owner_fact"):
         target["owner_fact_done"] = True
     post_rewrite.confirm_prices(target, post_rewrite.post_text(target))
+    # The price on the post follows the text the owner saved (theirs now).
+    target["price"] = connected_posts.price_after_edit(target)
     target.pop("rewrite_instruction", None)
 
     posts[body.post_index] = target
@@ -715,6 +880,10 @@ def rewrite_post_endpoint(
 
     for name in post_rewrite.TEXT_FIELDS:
         target[name] = checked.fields[name]
+    if target.get("has_overlay") is not False and target.get("overlay_text"):
+        # The headline the card prints follows the rewritten text: one message, 6 words.
+        target["overlay_headline"] = target["overlay_text"]
+        connected_posts.one_message(target)
     if checked.fields.get("outlet_captions"):
         target["outlet_captions"] = checked.fields["outlet_captions"]
     if isinstance(target.get("outlet_captions"), dict):
@@ -740,6 +909,9 @@ def rewrite_post_endpoint(
         # A fact the owner already went over stays theirs; a new one is asked about.
         target["owner_fact"] = fact
         target["owner_fact_done"] = False
+    if isinstance(target.get("price"), dict) or post_rewrite.money_in(target.get("overlay_headline") or ""):
+        # Only prices the guard let through (known to the owner) can be here.
+        target["price"] = connected_posts.price_after_edit(target)
     note, sources = connected_posts.informed_note(target, worked, rewritten.get("applied_learning"))
     target["informed_by_note"] = note
     target["informed_by"] = sources
@@ -935,6 +1107,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         # What the owner told us at /start (seasons, what they tried...). Absent for
         # businesses onboarded before v2. The first-month seed deliberately stays out.
         "owner_context": stored.get("owner_context") or None,
+        "plan_edit": stored.get("plan_edit") or None,
         # Revision 8: the products/services the owner chose to feature, when they have.
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst ("" when none).

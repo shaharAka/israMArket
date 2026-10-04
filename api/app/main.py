@@ -14,6 +14,7 @@ from app.routers import (
     audiences,
     auth,
     billing,
+    brand_dna,
     foundations,
     instagram,
     integrations,
@@ -26,11 +27,13 @@ from app.routers import (
     recommendations,
     research,
     setup,
+    service_results,
     strategy,
     trial,
     whatsapp,
 )
 from app.security import DEFAULT_JWT_SECRET
+from app.services import billing as billing_service
 
 Base.metadata.create_all(bind=engine)
 migrate_db()
@@ -97,11 +100,13 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(onboarding.router)
 app.include_router(assets.router)
+app.include_router(brand_dna.router)
 app.include_router(audiences.router)
 app.include_router(strategy.router)
 app.include_router(publish.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
+app.include_router(service_results.router)
 app.include_router(recommendations.router)
 app.include_router(setup.router)
 app.include_router(promotion.router)
@@ -120,6 +125,13 @@ app.include_router(public.router)
 app.include_router(public_onboarding.router)
 
 
+@app.exception_handler(billing_service.PlanRequiredError)
+async def _plan_required(_request: Request, exc: billing_service.PlanRequiredError) -> JSONResponse:
+    """The billing gate's 402: `detail` as before (every client shows it), plus
+    `code: "plan_required"` and `detail_he` (docs/design-dna.md, contract v2)."""
+    return JSONResponse(status_code=402, content=exc.body())
+
+
 @app.on_event("startup")
 def _resume_month_generation() -> None:
     """A month that was being built when the API stopped continues from its saved stage
@@ -130,6 +142,18 @@ def _resume_month_generation() -> None:
         generation_jobs.resume_on_startup()
     except Exception:
         pass
+
+
+@app.on_event("startup")
+def _resume_source_analysis() -> None:
+    from app.services import analysis_jobs
+    analysis_jobs.resume_on_startup()
+
+
+@app.on_event("shutdown")
+def _stop_source_analysis() -> None:
+    from app.services import analysis_jobs
+    analysis_jobs.stop()
 
 
 @app.middleware("http")
