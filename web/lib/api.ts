@@ -5240,6 +5240,28 @@ export type PerformancePayload = {
    * Meta report no per-audience rate, so the screen must not compute one either.
    */
   audiences?: AudiencePerformance | null;
+  /**
+   * The month's measured posts, each with the number its card shows (the post's own
+   * `results`, written by the refresh and the weekly job: `measured_posts()` in
+   * `api/app/services/connected_posts.py`). There with or without a snapshot: WhatsApp taps
+   * are our own count. `waiting` = posts that are out with no number yet, never a 0.
+   */
+  measured_posts?: { items: MeasuredPost[]; waiting: number };
+};
+
+/** One measured post on Results: the post's one number, as its card shows it. */
+export type MeasuredPost = {
+  /** The post's place in the month, for `/posts?post=<index>`. */
+  index: number;
+  uid: string;
+  title: string;
+  channel: string;
+  metric: PostMetric;
+  label_he: string;
+  value: number;
+  compare: { label: string; value: number; direction?: "above" | "below" | "similar" } | null;
+  matched_by: string[];
+  updated_at: string;
 };
 
 /**

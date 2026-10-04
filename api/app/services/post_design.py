@@ -380,6 +380,29 @@ def sync_text_mode(design: dict, has_overlay: bool) -> dict:
     return design
 
 
+def ensure_photo_only(post: dict, dna: dict | None) -> dict | None:
+    """A post with no words on its image, drawn in a layout that can carry the photo alone.
+
+    The designer may turn a post's words off after its layout was assigned. A text-band
+    layout (`split` and the other headline-only ones) then drew an empty band with the
+    business's name in it (#111 loop run). The post moves to the first of the DNA's
+    compositions that can carry a photo alone and fits it (`full_bleed` when none does),
+    keeping what is known about its photo. Returns the new design, or None when it stays."""
+    design = post.get("design")
+    if post.get("has_overlay") is not False or not isinstance(design, dict):
+        return None
+    composition = design.get("composition")
+    comp = COMPOSITIONS.get(composition)
+    if comp is None or "photo_only" in comp.text_modes or composition in PHOTO_FREE_COMPOSITIONS:
+        return None
+    options = [key for key in dna_compositions(dna)
+               if "photo_only" in COMPOSITIONS[key].text_modes and _fits(key, post)]
+    moved = make_design(options[0] if options else "full_bleed", post, text_mode="photo_only",
+                        photo=photo_fields(design))
+    post["design"] = moved
+    return moved
+
+
 def position_for_safe_area(safe_area: dict | None, composition: str, current: str | None = None) -> str:
     """The composition's allowed text position nearest the photo's calm area."""
     allowed = COMPOSITIONS[composition].text_positions

@@ -119,4 +119,20 @@ So:
   (Today). A tap is never confirmed as an order: a count that only stands for the target
   is at most on track.
 
+### The loop, end to end (#111, 2026-10-04)
+- **Results write-back without a connection.** WhatsApp taps need no account, so
+  `POST /performance/sync` and `/performance/weekly` with only a WhatsApp number answer 200
+  (the latest numbers, no snapshot, `post_results` counts) instead of "connect first"; the
+  weekly proposal is not regenerated then. The weekly job (`jobs/weekly_research.py`) also
+  runs `refresh_results` (taps + stored Instagram numbers, no provider read) before the
+  hypotheses, so a post becomes `נמדד` without the owner opening Results.
+- **One per-post source.** `/performance/latest` (and the sync answers) carry
+  `measured_posts {items, waiting}`: each measured post with the number, measure name and
+  comparison its card shows (`connected_posts.measured_posts`). Results' "מה קרה בכל פוסט"
+  reads it, with or without a snapshot; with no snapshot and counted taps the page leads with
+  "N לחיצות לוואטסאפ מהפוסטים", never "עוד אין תוצאות".
+- **The WhatsApp message carries the link the post is measured by**: its own `/r/{code}`
+  when the CTA is WhatsApp (publish kit and the editor's copy), else the site link.
+- **A rewrite keeps the CTA in the caption** when the caption carried it.
+
 Copy follows HEBREW-COPY.md; visuals follow DESIGN-STANDARD.md; word budgets in UI-RULES.md.

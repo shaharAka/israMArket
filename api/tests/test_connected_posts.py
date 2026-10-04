@@ -11,12 +11,15 @@ Hermetic: a throwaway SQLite file per test, every model call is a fake, no netwo
 
 import _test_env  # noqa: F401  (must come before any `app` import)
 
+import io
 import json
 import shutil
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from datetime import date
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 from fastapi.testclient import TestClient
@@ -26,7 +29,8 @@ from sqlalchemy.orm import sessionmaker
 from app.db import Base, get_db
 from app.deps import get_current_user
 from app.main import app
-from app.models import Asset, Audience, Business, InstagramPost, Integration, Strategy, User, WhatsappClick, WhatsappLink
+from app.models import (Asset, Audience, Business, InstagramPost, Integration, Recommendation, Strategy, User,
+                        WhatsappClick, WhatsappLink)
 from app.routers import performance as performance_router
 from app.services import connected_posts as cp
 from app.services import ga4 as ga4_service
@@ -518,6 +522,26 @@ class ResultsTest(ConnectedTestCase):
         previous = self.stored(self.previous)[0]
         self.assertEqual(previous["results"]["value"], 14)
 
+    def test_the_weekly_job_writes_the_taps_onto_the_posts(self):
+        # Before #111 only the Results refresh button wrote them: a WhatsApp-only owner who
+        # never pressed it never saw a post become "נמדד", and the next posts never learned.
+        from app.jobs import weekly_research
+
+        run = SimpleNamespace(id=1, status="done")
+        with mock.patch.object(weekly_research, "SessionLocal", self.Session), \
+                mock.patch.object(weekly_research, "engine", self.engine), \
+                mock.patch.object(weekly_research, "migrate_db", lambda: None), \
+                mock.patch.object(weekly_research.research, "run_research", return_value=run), \
+                mock.patch.object(weekly_research.research, "serialize_run", return_value={"insights": []}), \
+                redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(weekly_research.main(["--force"]), 0)
+        self.assertIn(f"posts business={self.business.id} updated=2 measured=2", out.getvalue())
+        self.db.expire_all()
+        box = self.current_posts()[0]
+        self.assertEqual((box["lifecycle"], box["results"]["value"], box["results"]["matched_by"]),
+                         ("measured", 21, ["whatsapp_code"]))
+        self.assertTrue(box["learning"])
+
     def test_instagram_numbers_by_the_posts_link_and_earlier_values_are_kept(self):
         self.db.add(InstagramPost(business_id=self.business.id, media_id="m1",
                                   permalink="https://www.instagram.com/p/ddddddddd4", caption="", reach=320, saved=None))
@@ -541,8 +565,54 @@ class ResultsTest(ConnectedTestCase):
         self.db.commit()
         with mock.patch.object(cp, "lite_json", side_effect=RuntimeError("offline")):
             response = self.client.post("/performance/sync")
-        self.assertEqual(response.status_code, 400)  # nothing connected: same answer as before
+        # The loop run of #111: the taps were written and the owner was told "connect first".
+        # A refresh that wrote the posts' numbers answers like one: no snapshot, the numbers.
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        self.assertIs(body["available"], False)
+        # Results shows its refresh control for this owner: the refresh writes their taps.
+        self.assertTrue(body["measurement_setup"]["can_refresh"])
+        self.assertEqual(body["post_results"]["updated"], 2)  # this month's box and last month's challah
         self.assertEqual(self.current_posts()[0]["results"]["value"], 21)
+        self.assertEqual([(item["title"], item["value"], item["label_he"]) for item in body["measured_posts"]["items"]],
+                         [("מארז חג", 21, "לחיצות לוואטסאפ")])
+        # Two more posts are out and nothing counted them: waiting, never a 0.
+        self.assertEqual(body["measured_posts"]["waiting"], 2)
+
+    def test_nothing_connected_and_no_whatsapp_number_still_asks_to_connect(self):
+        response = self.client.post("/performance/sync")
+        self.assertEqual(response.status_code, 400)
+        self.assertIsNone(self.current_posts()[0]["results"])
+
+    def test_the_weekly_refresh_with_whatsapp_only_keeps_the_last_proposal(self):
+        self.business.whatsapp_number_e164 = "+972501234567"
+        self.db.add(Recommendation(business_id=self.business.id, week_of="2026-09-28",
+                                   suggestions_json=dumps({"suggestions": []})))
+        self.db.commit()
+        with mock.patch.object(performance_router, "recommend", side_effect=AssertionError("no model call")):
+            response = self.client.post("/performance/weekly")
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        self.assertEqual(body["performance"]["measured_posts"]["items"][0]["value"], 21)
+        self.assertEqual(body["recommendation"]["week_of"], "2026-09-28")
+
+    def test_results_lists_each_measured_post_with_the_number_its_card_shows(self):
+        self.connect_ga4()
+        self.sync([{"sessionCampaignName": f"isramarket-{YEAR}-{MONTH:02d}", "sessionManualAdContent": "p-ccccccccc3",
+                    "sessionSource": "instagram", "sessions": "7", "conversions": "2"}])
+        latest = self.client.get("/performance/latest").json()
+        cards = {post["uid"]: post for post in self.current_posts()}
+        items = latest["measured_posts"]["items"]
+        self.assertEqual([item["uid"] for item in items], ["bbbbbbbbb2", "ccccccccc3"])
+        for item in items:
+            card = cards[item["uid"]]
+            self.assertEqual(item["value"], card["results"]["value"])
+            self.assertEqual(item["label_he"], card["measure"]["label_he"])
+            self.assertEqual(item["matched_by"], card["results"]["matched_by"])
+        self.assertEqual(items[0]["compare"], {"label": "בפוסט דומה", "value": 14, "direction": "above"})
+        self.assertEqual((items[1]["metric"], items[1]["label_he"], items[1]["compare"]), ("site_visits", "כניסות לאתר", None))
+        self.assertEqual((items[0]["index"], items[1]["index"]), (0, 1))
+        self.assertEqual(latest["measured_posts"]["waiting"], 1)  # the Facebook post nothing matched
 
 
 class LearningTest(ConnectedTestCase):

@@ -8,7 +8,7 @@ from app.db import get_db
 from app.deps import get_business
 from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
 from app.routers.integrations import tokens_for
-from app.routers.strategy import _active_strategy, serialize_strategy
+from app.routers.strategy import _active_strategy, _connected, serialize_strategy
 from app.services import connected_posts, ga4, ga4_readiness, hypotheses, instagram_signal, meta, meta_readiness
 from app.services import audiences as audiences_service
 from app.services.diagnostics import diagnose, recommend, week_of
@@ -140,19 +140,34 @@ def _refresh_hypotheses(business: Business, db: Session) -> None:
         logger.exception("hypothesis review failed for business %s", business.id)
 
 
+def _measured_posts(business: Business, db: Session) -> dict:
+    """The month's measured posts, each with the number its card shows
+    (connected_posts.measured_posts): the one per-post list Results reads."""
+    try:
+        strategy = _active_strategy(db, business)
+    except HTTPException:
+        return {"items": [], "waiting": 0}
+    roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
+    if not isinstance(roadmap, dict) or not isinstance(roadmap.get("posts"), list):
+        return {"items": [], "waiting": 0}
+    return connected_posts.measured_posts(_connected(strategy, roadmap, business))
+
+
 def _sync_payload(business: Business, db: Session) -> dict:
     ga4_item = _optional(business, "ga4")
     meta_item = _optional(business, "meta")
     if not ga4_item and not meta_item:
-        if business.whatsapp_number_e164:
-            # WhatsApp taps need no connected account: the posts still get theirs, and the
-            # month's hypotheses move with them.
-            _refresh_post_results(business, db, None, None)
-            _refresh_hypotheses(business, db)
-        raise HTTPException(
-            status_code=400,
-            detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
-        )
+        if not business.whatsapp_number_e164:
+            raise HTTPException(
+                status_code=400,
+                detail="כדי לרענן את הנתונים, חברו קודם את נתוני האתר או את אינסטגרם בעמוד החיבורים.",
+            )
+        # WhatsApp taps need no connected account: the posts get theirs and the month's
+        # hypotheses move with them. That is a refresh that worked, so it answers like one
+        # (the latest numbers, no new snapshot), not with "connect first".
+        post_results = _refresh_post_results(business, db, None, None)
+        _refresh_hypotheses(business, db)
+        return {**latest(business, db), "post_results": post_results}
 
     end = date.today() - timedelta(days=1)
     start = end - timedelta(days=27)
@@ -237,6 +252,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "created_at": snap.created_at.isoformat(),
         # How many posts got numbers from this refresh, and how many are measured overall.
         "post_results": post_results,
+        "measured_posts": _measured_posts(business, db),
         "sources": _source_states(business),
         "measurement_setup": _measurement_setup(business, db),
     }
@@ -263,8 +279,10 @@ def _measurement_setup(business: Business, db: Session) -> dict:
         state = plan_connections.state(facts, provider)
         requirements.append({"key": provider, **state,
                              "action_href": f"/integrations#{provider}", "action_label": state["action"]})
+    # A refresh with only the WhatsApp number writes the posts' taps (#111), so it can run.
     return {"requirements": requirements,
-            "can_refresh": any(_optional(business, provider) is not None for provider in ("ga4", "meta"))}
+            "can_refresh": bool(business.whatsapp_number_e164)
+            or any(_optional(business, provider) is not None for provider in ("ga4", "meta"))}
 
 
 def _meta_snapshot(business: Business, snap: PerformanceSnapshot) -> dict:
@@ -304,6 +322,8 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
             "diagnostic": {},
             "created_at": "",
             "audiences": audience_payload,
+            # Our own numbers (WhatsApp taps) need no snapshot.
+            "measured_posts": _measured_posts(business, db),
             "sources": _source_states(business),
             "measurement_setup": _measurement_setup(business, db),
         }
@@ -317,6 +337,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         "diagnostic": loads(snap.diagnostic_json, {}),
         "created_at": snap.created_at.isoformat(),
         "audiences": audience_payload,
+        "measured_posts": _measured_posts(business, db),
         "sources": _source_states(business),
         "measurement_setup": _measurement_setup(business, db),
     }
@@ -332,6 +353,20 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
     snap = _sync_payload(business, db)
     strategy = _active_strategy(db, business)
     plan = serialize_strategy(strategy, business)
+    if snap.get("available") is False:
+        # Only WhatsApp taps (nothing connected): the posts got their numbers, and there is
+        # no new site or Instagram read to propose from. The last proposal stays as it was.
+        rec = (
+            db.query(Recommendation)
+            .filter(Recommendation.business_id == business.id)
+            .order_by(Recommendation.created_at.desc())
+            .first()
+        )
+        return {
+            "performance": snap,
+            "recommendation": recommendation_context.serialize(rec, plan, business) if rec else {
+                "available": False, "id": None, "week_of": "", "suggestions": {}, "created_at": ""},
+        }
     ga4_data, meta_data, basis = recommendation_context.prepare(business, plan, snap)
     business_payload = {
         "name": business.name,

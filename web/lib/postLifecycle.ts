@@ -154,7 +154,9 @@ export function otherResults(post: RoadmapPost): { label: string; value: number 
   const rows: [keyof PostResults, string][] = [
     ["whatsapp_clicks", "לחיצות לוואטסאפ"],
     ["visits", "כניסות לאתר"],
-    ["conversions", "פניות והזמנות"],
+    // GA4 key events: what the site marks as important, not necessarily inquiries or
+    // orders. The same words as on Results, which says so.
+    ["conversions", "פעולות חשובות באתר"],
     ["reach", "אנשים שראו"],
     ["saves", "שמירות"],
   ];

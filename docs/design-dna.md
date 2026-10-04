@@ -91,7 +91,12 @@ Implemented in `api/app/services/image_routing.py`; every attempt is a row in `i
 Per post, the owner's photo that best matches its subject: the photo library (description +
 tags), Instagram (captions), the site photos kept at the scan (alt text, file name). Local word
 matching, Hebrew-aware, no model call. A photo the month already used counts against itself; a
-post that names a product no photo shows gets a generated image instead of the wrong photo.
+post that names a product no photo shows gets a generated image instead of the wrong photo: a
+photo must share a word with the named product itself, not only "מגש" or "מאפייה" with the post
+(#111), and stop words written with a final letter ("עם", "שם") are skipped like the others.
+An edit adds nothing (no DNA props, products or hands; the props are for a new image), and a
+post whose words the designer turns off moves from a text-band layout (`split`) to the DNA's
+first composition that carries a photo alone, keeping its photo analysis.
 `image_source` stays in the editor's vocabulary (`asset` for a library photo, `real_photo` for a
 site or Instagram photo, `generated`, `none`, `pending`); `image_origin` is
 `library | instagram | site | generated`, `image_match` is `subject | rotation`,

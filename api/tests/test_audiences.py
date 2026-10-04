@@ -912,5 +912,19 @@ class AudienceTestCase(unittest.TestCase):
         self.assertEqual(after["קהל ב"]["ga4"]["sessions"], 41)
 
 
+class ExplanationDateTest(unittest.TestCase):
+    def test_the_last_refresh_reads_as_a_date_not_a_timestamp(self):
+        # The loop run of #111: Results showed "(2026-10-04T21:26:08.534091)" to the owner.
+        from app.services import audiences as audiences_service
+
+        text = audiences_service._explanation(available=True, ga4_connected=False, meta_connected=False,
+                                              synced_at="2026-10-04T21:26:08.534091", unassigned_posts=0)
+        self.assertIn("מהרענון האחרון (4.10.2026).", text)
+        self.assertNotIn("T21", text)
+        bare = audiences_service._explanation(available=True, ga4_connected=False, meta_connected=True,
+                                              synced_at="", unassigned_posts=0)
+        self.assertTrue(bare.endswith("מהרענון האחרון."))
+
+
 if __name__ == "__main__":
     unittest.main()
