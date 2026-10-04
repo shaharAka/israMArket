@@ -59,6 +59,12 @@ const TEXT_ACTION =
 /** A label over a group of details: 12px, 600, muted. */
 const LABEL = "text-xs font-semibold text-[color:var(--ink-muted)]";
 
+/** `2026-09-01` is a machine string; the owner reads `1.9`. Anything else stays as written. */
+function dayMonth(date: string): string {
+  const match = /^\d{4}-(\d{2})-(\d{2})$/.exec((date || "").trim());
+  return match ? `${Number(match[2])}.${Number(match[1])}` : date;
+}
+
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
   const now = new Date();
@@ -125,7 +131,7 @@ export default function StrategyPage() {
 
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-6">
-      <h2 id="quarter-plan-heading" className="sr-only">האסטרטגיה והצעדים הקרובים</h2>
+      <h2 id="quarter-plan-heading" className="sr-only">הכיוון והצעדים הקרובים</h2>
       {welcome ? (
         <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
       ) : null}
@@ -394,7 +400,7 @@ function MonthSection({
                   {events.slice(0, 4).map((event) => (
                     <li key={`${event.date}-${event.name}`}>
                       <span className="font-semibold text-[color:var(--ink)]">
-                        <span className="tabular-nums">{event.date}</span> · {event.name}
+                        <span className="tabular-nums">{dayMonth(event.date)}</span> · {event.name}
                       </span>
                       {": "}
                       {event.business_relevance}

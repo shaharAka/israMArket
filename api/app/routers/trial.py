@@ -407,7 +407,7 @@ def hypotheses(facts: journey.Facts) -> list[dict]:
     """What the month tests, and where each stands (docs/posts-v2.md, Phase C): the month's
     hypothesis, then the 3-month plan's assumptions, each with a status word and one
     evidence line. The statuses are written by services/hypotheses.py (performance refresh,
-    weekly job, month close); until then an item is "נמדדת", or what the monthly review
+    weekly job, month close); until then an item is "בבדיקה", or what the monthly review
     once set by hand (`hypothesis_status` in the stored profile)."""
     view = hypothesis_review.review_view(facts.hypothesis_review, facts.month_core, facts.quarter_plan, facts.stored)
     return [

@@ -85,13 +85,13 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
 
     ads = _dict(meta.get("ads"))
     ad_values = _dict(ads.get("overview")) if ads.get("status") == "available" else {}
-    source("meta_ads", "דיווח המודעות של מטא", bool(ad_values), ads.get("period") or meta.get("source_period") or fallback,
+    source("meta_ads", "המודעות בפייסבוק ובאינסטגרם", bool(ad_values), ads.get("period") or meta.get("source_period") or fallback,
            _dict(_dict(meta.get("source_reads")).get("ads")).get("read_at") or meta.get("source_read_at") or snapshot.get("created_at"))
     clicks = _number(ad_values.get("link_clicks"))
     if clicks is not None:
         observations.append({"source": "meta_ads", "metric": "link_clicks", "label": "לחיצות על קישור במודעות", "value": clicks})
     if ad_values:
-        limits.append("דיווח המודעות הוא של מטא. לחיצה אינה לקוח, ורכישות שמטא שייכה למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.")
+        limits.append("מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.")
     social = _dict(meta.get("account"))
     window = _dict(_dict(_dict(social.get("windows")).get("28")).get("current"))
     source("meta_social", "נתוני אינסטגרם ופייסבוק", bool(meta.get("posts") or window),

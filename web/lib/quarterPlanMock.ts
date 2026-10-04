@@ -349,7 +349,7 @@ export function mockQuarterPlan(
       why_he:
         (monthly ?? 0) < 1500
           ? "סכום קטן, למי שכבר מכיר אתכם ולאנשים באזור. מקדמים רק פוסט שכבר הצליח."
-          : "מקדמים את מה שהצליח באורגני, קודם למי שכבר מכיר אתכם ואז לקהל חדש.",
+          : "מקדמים את מה שהצליח בפוסטים הרגילים, קודם למי שכבר מכיר אתכם ואז לקהל חדש.",
       starts_month: (monthly ?? 0) >= 1000 ? 1 : 2,
       effort_he: "אנחנו מכינים, אתם מאשרים",
     });
@@ -522,7 +522,7 @@ export function mockQuarterPlan(
       pillars: pillarSet[index],
       cadence: cad,
       mix: MIX_BY_LEVER[lever].map(([type_key, per_month, purpose_he]) => ({ type_key, name_he: MIX_NAMES[type_key], per_month, purpose_he })),
-      products_note_he: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות.",
+      products_note_he: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות.",
     };
   });
 

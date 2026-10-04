@@ -168,7 +168,7 @@ MIX_BY_LEVER = {
     "close_more": "social_proof ו-behind_scenes שמראים את תהליך העבודה, ו-value שעונה על השאלות שלפני פנייה.",
     "fill_quiet": "seasonal ו-offer לקראת החודשים השקטים, ו-community. מתחילים שלושה שבועות לפני.",
 }
-PRODUCTS_ARE_YOURS_HE = "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות."
+PRODUCTS_ARE_YOURS_HE = "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות."
 
 # "מה מחכה לכם בפנים": what the app gives, in the owner's words. Only what exists.
 INSIDE: list[dict] = [

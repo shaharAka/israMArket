@@ -1520,7 +1520,7 @@ const DEMO_PERFORMANCE: PerformancePayload = {
     sample_posts: 7,
     unassigned_posts: 1,
     method:
-      "לכל קהל אנחנו סוכמים את התוצאות של הפוסטים שנכתבו אליו: כניסות לאתר ופניות מנתוני האתר, ולייקים ותגובות מאינסטגרם. אין כאן מדד חדש, אחוז או שיוך שאין לו בסיס בנתונים.",
+      "לכל קהל אנחנו סוכמים את התוצאות של הפוסטים שנכתבו אליו: כניסות לאתר ופעולות חשובות מנתוני האתר, ולייקים ותגובות מאינסטגרם. לא המצאנו כאן מספר, אחוז או קשר שאין לו בסיס בנתונים.",
     explanation:
       "פוסט אחד בתוכנית בלי קהל, והוא נספר בנפרד תחת 'לא משויך'.",
     rows: [
@@ -1575,7 +1575,7 @@ export const DEMO_RECS: RecommendationPayload = {
       version: 1, snapshot_id: 1, plan_id: DEMO_STRATEGY.id,
       sources: [
         { key: "ga4", label: "נתוני האתר", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
-        { key: "meta_ads", label: "דיווח המודעות של מטא", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
+        { key: "meta_ads", label: "המודעות בפייסבוק ובאינסטגרם", status: "available", period: { start: "2026-08-08", end: "2026-09-04" }, read_at: "2026-09-05T08:00:00Z", stale: true },
       ],
       observations: [
         { source: "ga4", metric: "sessions", label: "כניסות לאתר", value: 1840 },
@@ -1596,7 +1596,7 @@ export const DEMO_RECS: RecommendationPayload = {
       {
         priority: "medium", title: "נוודא מה נחשב לפעולה חשובה באתר",
         action: "בדקו עם מי שמנהל את האתר אם הזמנה או פנייה נמדדות בנפרד מלחיצה.", evidence: "63 הפעולות בדוגמה אינן ספירה מאומתת של הזמנות.", target: "מדידת האתר",
-        success_check: "ננסה פנייה או הזמנה לבדיקה, ונאשר שאירוע מתאים הגיע למערכת.",
+        success_check: "ננסה פנייה או הזמנה לבדיקה, ונוודא שהיא נספרה בנתוני האתר.",
         review: { kind: "measurement", status: "ready", href: "/integrations", label: "לבדוק את החיבורים", note_he: "חיבור פעיל אינו מאשר מה בדיוק נמדד באתר.", plan_id: DEMO_STRATEGY.id },
       },
     ],
@@ -2199,7 +2199,7 @@ function demoHypothesisReview(): HypothesisReview {
     items.push({ key: "month", kind: "month", text_he: monthly.hypothesis, if_wrong_he: "", status: "on_track", status_he: "בדרך", evidence_he: whatsapp });
   }
   const targetStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
-    { status: "measuring", status_he: "נמדד", evidence_he: "את זה אנחנו לא רואים במספרים. נשאל אתכם בסיכום החודש." },
+    { status: "measuring", status_he: "בבדיקה", evidence_he: "את זה אנחנו לא רואים במספרים. נשאל אתכם בסיכום החודש." },
     { status: "on_track", status_he: "בדרך", evidence_he: whatsapp },
     { status: "changed", status_he: "השתנה", evidence_he: "היעד השתנה, אז מתחילים למדוד אותו מחדש." },
   ];
