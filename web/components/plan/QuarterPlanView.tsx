@@ -35,7 +35,8 @@ import styles from "./plan.module.css";
 export type SectionKey = "strategy" | "measure" | "channels" | "budget" | "calendar" | "content" | "bets" | "inside";
 
 const SECTIONS: { key: SectionKey; title: string; short: string }[] = [
-  { key: "strategy", title: "האסטרטגיה בשורה אחת", short: "אסטרטגיה" },
+  // "אסטרטגיה" is not the owner's word (HEBREW-COPY.md): the plan's direction is הכיוון.
+  { key: "strategy", title: "הכיוון בשורה אחת", short: "הכיוון" },
   // Revision 6: today, the lever, the target with its math, and how each is measured.
   { key: "measure", title: "המספרים", short: "מספרים" },
   { key: "channels", title: "הערוצים", short: "ערוצים" },

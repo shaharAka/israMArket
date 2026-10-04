@@ -21,6 +21,7 @@ import {
   type RecommendationPayload,
   type ServiceResultsPayload,
 } from "@/lib/api";
+import { dateRange } from "@/lib/dates";
 import { markSeen } from "@/lib/trial";
 import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
@@ -43,16 +44,8 @@ function formatMetricValue(key: string, val: string) {
   return val;
 }
 
-/** `2026-08-08` reads as a machine string; the owner reads `8.8.2026`. */
-function formatPeriod(start?: string, end?: string) {
-  const day = (iso: string) => {
-    const [year, month, date] = iso.split("-");
-    if (!year || !month || !date) return iso;
-    return `${Number(date)}.${Number(month)}.${year}`;
-  };
-  if (!start || !end) return "";
-  return `${day(start)} עד ${day(end)}`;
-}
+/** `2026-08-08` reads as a machine string; the owner reads `8.8 עד 4.9.2026` (lib/dates.ts). */
+const formatPeriod = dateRange;
 
 function toNumber(value: unknown): number | undefined {
   if (value === null || value === undefined || value === "") return undefined;
@@ -307,7 +300,7 @@ function Answer({ payload }: { payload: PerformancePayload }) {
 
   return (
     <section>
-      {period ? <p className="text-[13px] font-medium tabular-nums text-[color:var(--ink-muted)]">{period}</p> : null}
+      {period ? <p className="text-[13px] font-medium tabular-nums text-[color:var(--ink-muted)]"><bdi>{period}</bdi></p> : null}
       <h2 className="mt-2 max-w-[30em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
         {sentence}
       </h2>
@@ -551,12 +544,27 @@ function AccountFigure({ label, value, sub, missing }: { label: string; value?: 
   );
 }
 
+/**
+ * The full list under a row's summary: one fold inside the row it belongs to, so the site
+ * and the account each have one row on the page, not a summary row and a numbers row.
+ * Unfolded when there is no summary above it in that row.
+ */
+function MoreFold({ title, folded = true, children }: { title: string; folded?: boolean; children: ReactNode }) {
+  if (!folded) return <div>{children}</div>;
+  return (
+    <details className="group/more mt-6 border-t border-[var(--rule)]">
+      <MoreSummary>{title}</MoreSummary>
+      <div className="pt-1">{children}</div>
+    </details>
+  );
+}
+
 /** Every account number, both windows, what each means, and what Meta no longer reports. */
 function AccountMetrics({ account }: { account: InstagramAccount }) {
   const windows = Object.entries(account.windows || {});
   if (!windows.length) return null;
   return (
-    <Expand title="כל המספרים מאינסטגרם">
+    <MoreFold title="כל המספרים מאינסטגרם">
       {windows.map(([days, pair]) => {
         const values = pair.current?.values || {};
         const before = pair.previous?.values || {};
@@ -569,7 +577,7 @@ function AccountMetrics({ account }: { account: InstagramAccount }) {
         return (
           <div key={days} className="pb-6">
             <p className="text-[13px] font-semibold tabular-nums text-[color:var(--ink-muted)]">
-              {days} ימים · {formatPeriod(pair.current?.start, pair.current?.end)}
+              {days} ימים · <bdi>{formatPeriod(pair.current?.start, pair.current?.end)}</bdi>
             </p>
             <dl className="mt-2 divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
               {ACCOUNT_ROWS.map((row) => {
@@ -607,7 +615,7 @@ function AccountMetrics({ account }: { account: InstagramAccount }) {
         הלחיצות על קישור הוואטסאפ אנחנו סופרים בעצמנו. המספרים של אינסטגרם מתעדכנים באיחור של
         עד יומיים, ולכן היום לא נספר.
       </p>
-    </Expand>
+    </MoreFold>
   );
 }
 
@@ -616,11 +624,11 @@ function AccountMetrics({ account }: { account: InstagramAccount }) {
 /* ------------------------------------------------------------------------------------ */
 
 /** Every traffic number, with the plain-Hebrew meaning of each. */
-function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
+function TrafficMetrics({ payload, folded = true }: { payload: PerformancePayload; folded?: boolean }) {
   const entries = Object.entries(payload.ga4?.overview ?? {});
   if (!entries.length) return null;
   return (
-    <Expand title="כל המספרים מהאתר">
+    <MoreFold title="כל המספרים מהאתר" folded={folded}>
       <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
         המספרים מגוגל אנליטיקס, הכלי שסופר מה קורה באתר.
       </p>
@@ -638,7 +646,7 @@ function TrafficMetrics({ payload }: { payload: PerformancePayload }) {
           );
         })}
       </dl>
-    </Expand>
+    </MoreFold>
   );
 }
 
@@ -975,8 +983,9 @@ function NoSnapshotYet() {
       </div>
       <h2 className="mt-5 text-xl font-bold tracking-tight text-[color:var(--ink)]">עוד אין תוצאות</h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        כדי לראות כמה נכנסו לאתר, כמה פנו ומה קרה באינסטגרם, חברו את נתוני האתר ואת
-        האינסטגרם.
+        {/* Only what these sources can show: visits and posts. Inquiries are counted only
+            where the site measures them, so they are not promised here. */}
+        חברו את נתוני האתר ואת האינסטגרם, ונראה כאן כמה נכנסו לאתר ומה קרה בפוסטים.
       </p>
       {/* With nothing to report, connecting is the one thing this page asks for: the
           page's one filled button (the refresh above is a quiet control). */}
@@ -1109,6 +1118,7 @@ export default function PerformancePage() {
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
   // Only from a refresh that read the account; an older snapshot simply has none.
   const account = available && data?.meta?.account ? data.meta.account : null;
+  const siteNumbers = Object.keys(data?.ga4?.overview ?? {}).length > 0;
   const hasProposal = Boolean(recommendation?.available !== false && recommendation?.suggestions?.suggestions?.length &&
     (!["pending", "unavailable", "paused", "superseded"].includes(data?.diagnostic?.analysis_status || "") ||
       (data?.id && recommendation?.suggestions?.basis?.snapshot_id === data.id)));
@@ -1142,7 +1152,7 @@ export default function PerformancePage() {
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
-                  <Link href="/strategy" className="font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
+                  <Link href="/strategy" className="inline-flex min-h-11 items-center align-middle font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
                     לתוכנית
                   </Link>
                 </p>
@@ -1159,9 +1169,11 @@ export default function PerformancePage() {
             {serviceResults?.enabled ? <MeasurementGaps payload={data} ownerReport /> : null}
             <SourceReportLimits payload={data} />
             <div className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-              {available ? <Expand title="נתוני האתר"><Answer payload={data} /></Expand> : null}
+              {/* One row per source: the summary, then all of its numbers one fold down. With no
+                  proposal the summary already leads the page, so the row holds just the numbers. */}
+              {available && (hasProposal || siteNumbers) ? <Expand title="נתוני האתר">{hasProposal ? <Answer payload={data} /> : null}<TrafficMetrics payload={data} folded={hasProposal} /></Expand> : null}
               {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title="המודעות והמעקב באתר"><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
-              {account ? <Expand title="החשבון באינסטגרם"><InstagramAccountBlock account={account} /></Expand> : null}
+              {account ? <Expand title="החשבון באינסטגרם"><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></Expand> : null}
               {available && results ? <Expand title="מה קרה בכל פוסט"><PostComparison results={results} payload={data} /><div className="mt-5"><PostResults results={results} /></div></Expand> : null}
               {whatsapp ? <Expand title="לחיצות על וואטסאפ"><WhatsappClicks data={whatsapp} /></Expand> : null}
             </div>
@@ -1186,8 +1198,6 @@ export default function PerformancePage() {
                   <Friction payload={data} />
                 </Expand>
               ) : null}
-              {available ? <TrafficMetrics payload={data} /> : null}
-              {account ? <AccountMetrics account={account} /> : null}
               {data.audiences ? <AudienceBreakdown data={data.audiences} /> : null}
               <Method data={data.audiences} />
             </div>
