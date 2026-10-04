@@ -29,6 +29,8 @@ const MESSAGES: Record<string, string> = {
   conflict: "האימייל הזה כבר מחובר לחשבון Google אחר. היכנסו עם החשבון ההוא, או עם אימייל וסיסמה.",
   failed: "לא הצלחנו להשלים את הכניסה עם Google. נסו שוב.",
   rate_limited: "יותר מדי ניסיונות. נסו שוב בעוד כמה דקות.",
+  // The backoffice suspended the account; /login also shows how to reach us.
+  account_suspended: "החשבון מושהה כרגע. כל המידע שמור.",
 };
 
 export function googleErrorMessage(code: string | null | undefined): string {

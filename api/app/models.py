@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
+from sqlalchemy import Boolean, DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, delete, event, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -36,6 +36,15 @@ class User(Base):
     # What the journey cannot read from other rows: when the plan and the results were
     # last opened. {"plan_seen_at": iso, "plan_last_seen_at": iso, ...}. See routers/trial.py.
     trial_events_json: Mapped[str] = mapped_column(Text, default="{}")
+    # The backoffice (routers/admin.py; DEPLOY.md, "Backoffice").
+    # Last authenticated request, written at most once an hour per user (deps.get_current_user).
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+    # Suspended by the owner: sign-in (password and Google) and every authenticated call
+    # answer 403 `account_suspended`; the data stays. NULL = active.
+    suspended_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+    suspended_reason: Mapped[str] = mapped_column(String(300), default="")
+    # A friend's account: never asked to pay, never locked by BILLING_ENFORCE (services/billing.py).
+    billing_exempt: Mapped[bool] = mapped_column(Boolean, default=False)
 
     businesses: Mapped[list["Business"]] = relationship(back_populates="owner")
 
@@ -350,6 +359,27 @@ class ImageUsage(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 
 
+class ModelUsage(Base):
+    """One text-model call (Gemini, through services/gemini.generate_json) made for a
+    business, with its token counts and an estimated cost (services/model_usage.py).
+
+    Only token counts and the model name: never the prompt, the answer or the key. Calls
+    with no signed-in owner behind them (the anonymous landing preview, /start before
+    signup) belong to no account and are not logged. Image calls are in `image_usage`.
+    """
+
+    __tablename__ = "model_usage"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    model: Mapped[str] = mapped_column(String(80), default="")
+    prompt_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    output_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    thinking_tokens: Mapped[int] = mapped_column(Integer, default=0)
+    est_cost_usd: Mapped[float] = mapped_column(Float, default=0.0)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
 class PhotoAnalysis(Base):
     """Where a post photo's subject is and where text may sit (services/photo_analysis.py).
 
@@ -583,6 +613,47 @@ class Payment(Base):
     # TODO(invoicing): the tax invoice's id in the invoicing service, once it exists.
     invoice_ref: Mapped[str | None] = mapped_column(String(120), nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class PasswordResetToken(Base):
+    """A one-time password reset link made in the backoffice (services/password_reset.py).
+
+    Only the SHA-256 of the token is stored; the token itself is returned once, to the
+    owner who made the link, and never logged. Valid for 24 hours, used at most once, and
+    a newer link for the same account revokes every older unused one. Keyed by `user_id`,
+    so account deletion removes these rows with the account.
+    """
+
+    __tablename__ = "password_reset_tokens"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    expires_at: Mapped[datetime] = mapped_column(DateTime)
+    used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+
+
+class AdminAudit(Base):
+    """Every backoffice action: who (admin user id), what, on which account, when.
+
+    Deliberately no foreign keys and no `user_id` column: an entry outlives the account it
+    is about (the record that an account was deleted must survive the deletion), and it
+    holds ids and an action name only, never an email, a name, a password, a token or any
+    business content. `details_json` is a small, fixed set of non-sensitive facts per
+    action (routers/admin.py). services/account_deletion.KEPT_AFTER_DELETION names this table.
+    """
+
+    __tablename__ = "admin_audit"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    admin_user_id: Mapped[int] = mapped_column(Integer, index=True)
+    # reset_link | sign_out_everywhere | suspend | reactivate | delete | billing_exempt
+    action: Mapped[str] = mapped_column(String(40))
+    target_user_id: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+    details_json: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
 
 
 # --- ids that come back ---------------------------------------------------------------

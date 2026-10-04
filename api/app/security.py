@@ -35,16 +35,25 @@ def verify_password(password: str, password_hash: str) -> bool:
         return False
 
 
+# How a session was signed in, carried in the token as `amr`: the backoffice requires a
+# Google sign-in by default (routers/admin.require_admin). Tokens from before the claim
+# existed carry none and are treated as a password sign-in.
+METHOD_PASSWORD = "password"
+METHOD_GOOGLE = "google"
+
+
 def initial_session_epoch() -> int:
     """Independent session generation for each account, within SQLite's signed integer."""
     return secrets.randbits(62) + 1
 
 
-def create_access_token(user_id: int, epoch: int = 0) -> str:
+def create_access_token(user_id: int, epoch: int = 0, method: str = METHOD_PASSWORD) -> str:
     settings = get_settings()
     expire = datetime.now(timezone.utc) + timedelta(days=7)
     return jwt.encode(
-        {"sub": str(user_id), "ep": int(epoch or 0), "exp": expire}, settings.jwt_secret, algorithm=ALGORITHM
+        {"sub": str(user_id), "ep": int(epoch or 0), "amr": method or METHOD_PASSWORD, "exp": expire},
+        settings.jwt_secret,
+        algorithm=ALGORITHM,
     )
 
 
@@ -73,6 +82,18 @@ def decode_access_claims(token: str) -> tuple[int, int] | None:
         return int(payload["sub"]), int(payload.get("ep", 0))
     except (JWTError, KeyError, ValueError, TypeError):
         return None
+
+
+def session_method(token: str) -> str:
+    """`google` or `password` for a valid token (password when the claim is missing),
+    "" for a bad or expired one."""
+    settings = get_settings()
+    try:
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[ALGORITHM])
+    except (JWTError, ValueError, TypeError):
+        return ""
+    method = payload.get("amr")
+    return method if method in {METHOD_PASSWORD, METHOD_GOOGLE} else METHOD_PASSWORD
 
 
 def decode_access_token(token: str) -> int | None:

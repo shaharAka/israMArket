@@ -7,6 +7,7 @@ root, the real cookie auth (so clearing the session is tested too), no network.
 import _test_env  # noqa: F401  (must come before any `app` import)
 
 import shutil
+from datetime import datetime
 import tempfile
 import unittest
 from pathlib import Path
@@ -29,6 +30,8 @@ from app.models import (
     InspirationBrief,
     InstagramPost,
     Integration,
+    ModelUsage,
+    PasswordResetToken,
     Payment,
     PerformanceSnapshot,
     PhotoAnalysis,
@@ -89,6 +92,8 @@ class AccountDeletionTest(unittest.TestCase):
         # has nothing to cancel at PayPal (tests/test_billing.py covers that call).
         db.add(Subscription(user_id=user.id, provider_subscription_id=f"I-SEED{user.id}", status="CANCELLED"))
         db.add(Payment(user_id=user.id, provider_payment_id=f"SALE-SEED-{user.id}", amount="99.00"))
+        # A backoffice reset link (only its hash is stored).
+        db.add(PasswordResetToken(user_id=user.id, token_hash=f"{user.id:064d}", expires_at=datetime.utcnow()))
         ids: list[int] = []
         for index in range(businesses):
             business = Business(user_id=user.id, name=f"עסק {index}")
@@ -122,6 +127,8 @@ class AccountDeletionTest(unittest.TestCase):
                     GenerationJob(business_id=bid, kind="first_month", status="done"),
                     ImageUsage(business_id=bid, task="generate", provider="muse", model="muse-image-1.0",
                                est_cost_usd=0.01),
+                    ModelUsage(business_id=bid, model="gemini-3.8-flash", prompt_tokens=10, output_tokens=5,
+                               est_cost_usd=0.0001),
                     PhotoAnalysis(business_id=bid, content_hash=f"{bid:064d}", result_json="{}"),
                     WebhookDelivery(endpoint_id=endpoint.id, event="strategy"),
                 ]
@@ -173,7 +180,15 @@ class AccountDeletionTest(unittest.TestCase):
     def test_seed_covers_every_table(self):
         """If a new table is added, it must be seeded here, so the deletion test proves it."""
         seeded = {table for table, count in self._rows_for(self.owner_id, self.owner_businesses).items() if count}
-        self.assertEqual(seeded, set(Base.metadata.tables))
+        self.assertEqual(seeded, set(Base.metadata.tables) - account_deletion.KEPT_AFTER_DELETION)
+
+    def test_tables_kept_after_deletion_hold_no_personal_columns(self):
+        """A table that outlives the account may hold ids and facts, never who it was."""
+        personal = {"email", "full_name", "name", "password_hash", "google_sub", "token_hash", "user_id", "business_id"}
+        for name in account_deletion.KEPT_AFTER_DELETION:
+            columns = set(Base.metadata.tables[name].c.keys())
+            self.assertFalse(columns & personal, f"{name} keeps {columns & personal}")
+            self.assertFalse(Base.metadata.tables[name].foreign_keys, f"{name} must not reference live rows")
 
     def test_analysis_job_with_missing_or_foreign_snapshot_is_swept(self):
         db = self.Session()
@@ -223,7 +238,7 @@ class AccountDeletionTest(unittest.TestCase):
         response = self._delete("not-the-password")
         self.assertEqual(response.status_code, 403)
         left = self._rows_for(self.owner_id, self.owner_businesses)
-        self.assertEqual(set(table for table, count in left.items() if count), set(Base.metadata.tables))
+        self.assertEqual(set(table for table, count in left.items() if count), set(Base.metadata.tables) - account_deletion.KEPT_AFTER_DELETION)
         for bid in self.owner_businesses:
             self.assertTrue((self.media / str(bid) / "asset-photo.png").is_file())
 

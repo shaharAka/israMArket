@@ -17,7 +17,9 @@ Access ("may this account start new AI generation?"):
 * with one that was cancelled, suspended or expired: until the end of the period already
   paid for (`next_billing_time` as last reported, never before the trial end), plus the
   same grace;
-* APPROVAL_PENDING (created in the browser but never approved) grants nothing.
+* APPROVAL_PENDING (created in the browser but never approved) grants nothing;
+* an account the owner marked free in the backoffice (`users.billing_exempt`): always,
+  with nothing to pay and no reminder.
 
 Enforcement (`require_generation_access`) is off unless BILLING_ENFORCE is true *and*
 PayPal is configured: nobody is locked out of something they have no way to pay for.
@@ -158,8 +160,9 @@ def enforcing() -> bool:
 
 
 def locked(db: Session, user: User, now: datetime | None = None) -> bool:
-    """True only when enforcement is on and this account has no access."""
-    if not enforcing():
+    """True only when enforcement is on and this account has no access. An account the
+    owner marked free in the backoffice (`users.billing_exempt`) is never locked."""
+    if not enforcing() or user.billing_exempt:
         return False
     now = now or datetime.utcnow()
     return not has_access(subscription_for(db, user), trial_end(db, user), now)
@@ -199,11 +202,14 @@ def status_payload(db: Session, user: User, now: datetime | None = None) -> dict
     end = trial_end(db, user)
     state = state_of(sub, end, now)
     left = days_left(end, now)
-    access = has_access(sub, end, now)
+    # Marked free in the backoffice: full access, nothing to pay, no reminder.
+    exempt = bool(user.billing_exempt)
+    access = exempt or has_access(sub, end, now)
     # A new subscription is what the owner needs, unless one is renewing (ACTIVE with a
     # failed charge: PayPal is retrying it, and a second subscription would double-charge).
-    needs_payment = state in {"trial", "trial_ended", "cancelled"} or (
-        state == "payment_failed" and sub is not None and sub.status == "SUSPENDED"
+    needs_payment = not exempt and (
+        state in {"trial", "trial_ended", "cancelled"}
+        or (state == "payment_failed" and sub is not None and sub.status == "SUSPENDED")
     )
     # The first charge: never before the free month (or an already-paid period) ends.
     through = paid_through(sub, end) if state == "cancelled" else None
@@ -222,6 +228,7 @@ def status_payload(db: Session, user: User, now: datetime | None = None) -> dict
             "ended": now >= end,
         },
         "state": state,
+        "exempt": exempt,
         "subscription": None
         if sub is None
         else {
@@ -236,7 +243,7 @@ def status_payload(db: Session, user: User, now: datetime | None = None) -> dict
         "locked": enforcing() and not access,
         # Today's one-line reminder: the last week of the free month, and after it, while
         # there is nothing paid. Never when there is no way to pay.
-        "remind": is_configured and state in {"trial", "trial_ended", "payment_failed"} and left <= REMIND_DAYS,
+        "remind": is_configured and not exempt and state in {"trial", "trial_ended", "payment_failed"} and left <= REMIND_DAYS,
         # For the browser's PayPal buttons. The client id is public by design.
         "client_id": s.paypal_client_id.strip() if is_configured else None,
         "plan_id": s.paypal_plan_id.strip() if is_configured else None,

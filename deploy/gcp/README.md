@@ -374,6 +374,7 @@ All of these run on the VM. Open a shell there with:
 | Back up now | `sudo systemctl start isramarket-backup.service` |
 | Timers | `systemctl list-timers 'isramarket-*'` |
 | Non-secret tunables | edit `/etc/isramarket/extra.env` (e.g. `GEMINI_IMAGE_SIZE=1K`), then `sudo /srv/isramarket/deploy/gcp/update.sh --recreate` |
+| Who can open `/admin` | `ADMIN_EMAILS=...` (and `ADMIN_REQUIRE_GOOGLE=true`) in `/etc/isramarket/extra.env`, then `update.sh --recreate`; see DEPLOY.md, "Backoffice" |
 | A changed `startup.sh` | from the Mac: `gcloud compute instances add-metadata isramarket-vm --project isramarket --zone me-west1-a --metadata-from-file startup-script=deploy/gcp/startup.sh` |
 
 From the Mac in one line:

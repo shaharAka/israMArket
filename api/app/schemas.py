@@ -48,6 +48,21 @@ class UserOut(BaseModel):
     # False for an account opened with Google that never set a password.
     has_password: bool = True
     google_linked: bool = False
+    # May open the backoffice (routers/admin.py): only so the web app can show the link in
+    # the admin's own account menu. Every /admin route checks again on the server.
+    is_admin: bool = False
+
+
+class ResetCheckIn(BaseModel):
+    """A one-time reset link's token (services/password_reset.py), in a body, never a URL."""
+
+    token: str = Field(min_length=1, max_length=200)
+
+
+class ResetIn(BaseModel):
+    token: str = Field(min_length=1, max_length=200)
+    # The same rule as signup and /auth/password: at least 8 characters.
+    new_password: str = Field(min_length=8, max_length=200)
 
 
 class CompetitorIn(BaseModel):

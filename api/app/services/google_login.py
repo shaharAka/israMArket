@@ -56,7 +56,8 @@ class GoogleLoginError(Exception):
     """A failure with a short code the web app turns into a Hebrew sentence.
 
     Codes: cancelled, denied, misconfigured, expired, unverified, conflict, failed,
-    rate_limited. See web/lib/googleAuth.ts for the copy.
+    rate_limited, account_suspended (the backoffice suspended the account). See
+    web/lib/googleAuth.ts for the copy.
     """
 
     def __init__(self, code: str):

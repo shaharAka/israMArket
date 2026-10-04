@@ -50,6 +50,12 @@ from app.services import billing, images
 # `whatsapp_links` is safe because every table pointing at it also has `business_id`.
 HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots"}
 
+# Tables that deliberately outlive an account. `admin_audit` is the backoffice's record of
+# what the owner did, including "deleted account 12": it holds ids, an action name and a
+# few fixed non-sensitive facts, never an email, a name or any business content
+# (models.AdminAudit). tests/test_account_deletion.py checks every other table is emptied.
+KEPT_AFTER_DELETION = {"admin_audit"}
+
 
 def purge_orphans(db: Session) -> dict[str, int]:
     """Delete rows whose owner no longer exists: businesses of a deleted user, rows keyed

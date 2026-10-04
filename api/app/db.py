@@ -66,6 +66,12 @@ def migrate_db():
             # the uniqueness is the index below, the same one create_all makes.
             ("google_sub", "VARCHAR(255)"),
             ("session_epoch", "INTEGER NOT NULL DEFAULT 0"),
+            # The backoffice (routers/admin.py): last active, suspension, free accounts.
+            # The reset tokens, the audit log and the model-usage log are new tables.
+            ("last_seen_at", "DATETIME"),
+            ("suspended_at", "DATETIME"),
+            ("suspended_reason", "VARCHAR(300) NOT NULL DEFAULT ''"),
+            ("billing_exempt", "BOOLEAN NOT NULL DEFAULT 0"),
         ):
             if col not in user_cols:
                 conn.exec_driver_sql(f"ALTER TABLE users ADD COLUMN {col} {col_type}")

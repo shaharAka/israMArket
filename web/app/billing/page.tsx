@@ -97,6 +97,17 @@ function BillingBody({
   const freeUntil = lastFreeDay(status.trial.ends_at);
   const sub = status.subscription;
 
+  if (status.exempt) {
+    return (
+      <div className={PLAN_CARD}>
+        <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
+          החשבון שלכם פתוח בלי תשלום.
+        </p>
+        <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">אין מנוי להפעיל ולא נבקש תשלום.</p>
+      </div>
+    );
+  }
+
   if (!status.configured) {
     return (
       <div className={PLAN_CARD}>

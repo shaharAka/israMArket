@@ -150,6 +150,19 @@ export default function AccountPage() {
                 <IconChevron className={ROW_CHEVRON} />
               </Link>
             </li>
+            {/* The backoffice: only in an admin's own account menu, and only while the server
+                says this session is an admin one (api/app/services/admin_access.py). */}
+            {me?.is_admin ? (
+              <li>
+                <Link href="/admin" className={`group ${LIST_ROW}`}>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">ניהול החשבונות</span>
+                    <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">כל החשבונות, איפוס סיסמה, השהיה ועלויות</span>
+                  </span>
+                  <IconChevron className={ROW_CHEVRON} />
+                </Link>
+              </li>
+            ) : null}
           </ul>
         </div>
 

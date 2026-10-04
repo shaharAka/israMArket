@@ -33,6 +33,9 @@
   deletion always work. It never applies while PayPal is not configured. The gated
   endpoints are listed in `api/tests/test_billing.py` (`GATED`); the weekly research job
   skips locked accounts too.
+- **Free accounts:** the owner can mark an account free in the backoffice (`/admin`,
+  `users.billing_exempt`). It is never locked by enforcement, gets no reminder, and
+  `/billing` says it is open without payment (`exempt: true` in `GET /billing/status`).
 
 ## Settings
 
