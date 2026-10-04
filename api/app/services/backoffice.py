@@ -350,7 +350,7 @@ class Snapshot:
             "costs": costs_for([b.id for b in businesses], self.costs, self.now),
             # Whether an unused link is out there, and until when. Never the link.
             "reset_link_expires_at": iso(reset.expires_at) if reset else None,
-            "audit": audit_entries(self.db, target_user_id=user.id, limit=20),
+            "audit": audit_entries(self.db, target_user_id=user.id, not_before=user.created_at, limit=20),
         })
         return row
 
@@ -404,10 +404,13 @@ def account_detail(db: Session, user: User, now: datetime | None = None) -> dict
 # --- audit ------------------------------------------------------------------------------------
 
 
-def audit_entries(db: Session, *, target_user_id: int | None = None, limit: int = 100, before_id: int | None = None) -> list[dict]:
+def audit_entries(db: Session, *, target_user_id: int | None = None, not_before: datetime | None = None,
+                  limit: int = 100, before_id: int | None = None) -> list[dict]:
     query = db.query(AdminAudit)
     if target_user_id is not None:
         query = query.filter(AdminAudit.target_user_id == target_user_id)
+    if not_before is not None:
+        query = query.filter(AdminAudit.created_at >= not_before)
     if before_id:
         query = query.filter(AdminAudit.id < before_id)
     entries = query.order_by(AdminAudit.id.desc()).limit(max(1, min(limit, 200))).all()
