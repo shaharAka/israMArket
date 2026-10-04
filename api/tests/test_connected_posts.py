@@ -376,7 +376,9 @@ class ContractFieldsTest(ConnectedTestCase):
         self.assertEqual(cp.lifecycle({**base, "approval_status": "approved"}), "approved")
         self.assertEqual(cp.lifecycle({**base, "published_url": "https://x.example/p/1"}), "published")
         self.assertEqual(cp.lifecycle({**base, "published_url": "https://x", "results": {"value": None}}), "published")
-        self.assertEqual(cp.lifecycle({**base, "results": {"value": 0}}), "measured")
+        # Only a published post is measured: taps on a post not out yet change nothing (#123).
+        self.assertEqual(cp.lifecycle({**base, "results": {"value": 0}}), "ready")
+        self.assertEqual(cp.lifecycle({**base, "published_at": "2026-10-01T09:00:00", "results": {"value": 0}}), "measured")
 
     def test_why_line_and_goal(self):
         self.assertEqual(cp.why_line("הזמנות מראש לחנוכה", "הלקוחות הקבועים"), "בשביל הזמנות מראש לחנוכה, ללקוחות הקבועים.")
@@ -521,6 +523,28 @@ class ResultsTest(ConnectedTestCase):
         self.assertIsNone(not_out["results"])
         previous = self.stored(self.previous)[0]
         self.assertEqual(previous["results"]["value"], 14)
+
+    def test_taps_on_a_post_not_out_yet_are_kept_but_never_make_it_measured(self):
+        # The loop run of #111 (#123): the owner tried the tracked WhatsApp link of a post
+        # before "פרסמתי", and the post jumped straight to "נמדד".
+        link = self.db.query(WhatsappLink).filter(WhatsappLink.source_key == "ig-post-eeeeeeeee5").one()
+        self.db.add(WhatsappClick(business_id=self.business.id, link_id=link.id, day=TODAY.isoformat(),
+                                  ua_family="android", count=3))
+        self.db.commit()
+        cp.refresh_results(self.db, self.business)
+        self.db.commit()
+        not_out = self.current_posts()[3]
+        self.assertEqual(not_out["lifecycle"], "approved")
+        # The taps are kept on the post, waiting for it to go out.
+        self.assertEqual(not_out["results"]["whatsapp_clicks"], 3)
+        latest = self.client.get("/performance/latest").json()
+        self.assertNotIn("eeeeeeeee5", [item["uid"] for item in latest["measured_posts"]["items"]])
+        self.assertNotIn("עוד לא פורסם", cp.what_worked(self.db, self.business)["block"])
+        # "פרסמתי": now it is out, and its taps are its number.
+        response = self.client.post("/strategy/posts/publish", json={"post_index": 3})
+        self.assertEqual(response.status_code, 200, response.text)
+        post = response.json()["post"]
+        self.assertEqual((post["lifecycle"], post["results"]["value"]), ("measured", 3))
 
     def test_the_weekly_job_writes_the_taps_onto_the_posts(self):
         # Before #111 only the Results refresh button wrote them: a WhatsApp-only owner who

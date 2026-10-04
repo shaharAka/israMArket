@@ -9,7 +9,7 @@ from app.db import get_db
 from app.deps import get_current_user
 from app.models import Business, Strategy, User
 from app.schemas import BrandLanguageIn, OnboardingIn, PaletteIn, WebsiteScanIn
-from app.services import connected_posts, design_dna, generation_jobs, month_posts
+from app.services import connected_posts, design_dna, generation_jobs, image_jobs, month_posts
 from app.services.audiences import attach_audiences
 from app.services.brand import filter_usable_photos
 from app.services.audiences import catalogue_for
@@ -785,7 +785,14 @@ def _posts_failed(db: Session, business: Business, job) -> None:
 
 
 generation_jobs.register(generation_jobs.FIRST_MONTH, run_first_month_stage)
-generation_jobs.register(generation_jobs.POSTS, run_posts_stage, marker=_posts_marker, on_fail=_posts_failed)
+# Once the asked-for weeks are written, their images are prepared once, in the background (#123).
+generation_jobs.register(
+    generation_jobs.POSTS,
+    run_posts_stage,
+    marker=_posts_marker,
+    on_fail=_posts_failed,
+    on_done=image_jobs.after_month_job,
+)
 
 
 def _owned_business(db: Session, user: User) -> Business | None:

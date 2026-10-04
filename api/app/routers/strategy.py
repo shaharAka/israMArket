@@ -1,6 +1,7 @@
+import copy
 from datetime import date, datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import ValidationError
 from sqlalchemy.orm import Session, object_session
 
@@ -26,6 +27,7 @@ from app.services import (
     design_dna,
     generation_jobs,
     hypotheses,
+    image_jobs,
     photo_analysis,
     photo_choice,
     post_rewrite,
@@ -375,9 +377,10 @@ def _produce_post_image(
     return generate()
 
 
-def _store_post_image(
+def _prepare_post_image(
     business: Business,
     strategy: Strategy,
+    posts: list,
     post_index: int,
     force: bool = False,
     vibe: str = "",
@@ -386,24 +389,22 @@ def _store_post_image(
     preference: str = "auto",
     db: Session | None = None,
 ) -> dict:
-    extra = loads(strategy.roadmap_json, {})
-    roadmap = extra.get("roadmap") or {}
-    posts = list(roadmap.get("posts") or [])
+    """One post's image (and its design), on `posts` (a copy of the month): the post as
+    the work left it. Writes nothing; services/image_jobs.py writes that one post."""
     if post_index >= len(posts):
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
     if not force and posts[post_index].get("image_url") and not vibe and not custom_prompt:
         # Nothing to do — but the caller must be able to tell "we generated something"
         # apart from "we kept what was already there". Without this the UI showed a
         # success toast for work that never happened, which reads as a broken button.
-        posts[post_index]["image_action"] = "kept_existing"
-        return posts[post_index]
+        return {**posts[post_index], "image_action": "kept_existing"}
 
-    scraped = loads(business.scraped_profile_json, {}) or {}
-    brand = extra.get("brand_language") or scraped.get("brand_language") or {}
+    brand = _brand_of(business, strategy)
     if not brand:
-        raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שיוצרים תמונות.")
+        raise HTTPException(status_code=400, detail=NO_BRAND_FOR_IMAGES_HE)
 
     db = db if db is not None else object_session(business)
+    scraped = loads(business.scraped_profile_json, {}) or {}
     dna = design_dna.dna_for_posts(business)
     target = posts[post_index]
     biz_dict = _biz_dict(business, strategy)
@@ -450,10 +451,37 @@ def _store_post_image(
 
     if preference in ("real", "ai"):
         target["image_preference"] = preference
-    posts[post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
-    return posts[post_index]
+    return target
+
+
+NO_BRAND_FOR_IMAGES_HE = (
+    "עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שיוצרים תמונות."
+)
+
+
+def _brand_of(business: Business, strategy: Strategy) -> dict:
+    extra = loads(strategy.roadmap_json, {}) or {}
+    scraped = loads(business.scraped_profile_json, {}) or {}
+    return extra.get("brand_language") or scraped.get("brand_language") or {}
+
+
+def _run_image_item(db: Session, business: Business, strategy: Strategy, posts: list, index: int, item: dict) -> dict:
+    """How the image job (services/image_jobs.py) makes one post's image."""
+    return _prepare_post_image(
+        business,
+        strategy,
+        posts,
+        index,
+        force=bool(item.get("force")),
+        vibe=str(item.get("vibe") or ""),
+        custom_prompt=str(item.get("custom_prompt") or ""),
+        allow_generation=bool(item.get("allow_generation", True)),
+        preference=str(item.get("preference") or "auto"),
+        db=db,
+    )
+
+
+image_jobs.register(_run_image_item)
 
 
 def _active_strategy(db: Session, business: Business) -> Strategy:
@@ -508,30 +536,56 @@ def current_strategy(business: Business = Depends(get_business), db: Session = D
 @router.post("/strategy/posts/image", dependencies=[Depends(require_generation_access)])
 def generate_post_image(
     body: PostImageIn,
+    response: Response,
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
 ) -> dict:
+    """The owner asked for this post's image ("ליצור תמונה", "תמונה אחרת", a source switch).
+
+    It goes through the business's image job (services/image_jobs.py), first in its queue:
+    never a second job beside a running one, and only this post is written. The answer
+    waits for the image, as before. When the month's images are still being made and this
+    one is not ready within the wait, it answers 202 `queued: true`; the page shows it
+    once the job is done."""
     strategy = _active_strategy(db, business)
-    try:
-        post = _store_post_image(
-            business,
-            strategy,
-            body.post_index,
-            force=body.force,
-            vibe=body.vibe,
-            custom_prompt=body.custom_prompt,
-            allow_generation=body.allow_generation,
-            preference=body.image_preference,
-            db=db,
-        )
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
-    business.updated_at = datetime.utcnow()
-    db.commit()
-    db.refresh(strategy)
-    return {"post": _post_view(strategy, business, body.post_index, post), "strategy": serialize_strategy(strategy, business)}
+    posts = _posts_of(strategy)
+    if body.post_index >= len(posts):
+        raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
+    post = posts[body.post_index]
+    if not body.force and post.get("image_url") and not body.vibe and not body.custom_prompt:
+        kept = {**post, "image_action": "kept_existing"}
+        return {"post": _post_view(strategy, business, body.post_index, kept), "strategy": serialize_strategy(strategy, business)}
+    if not _brand_of(business, strategy):
+        raise HTTPException(status_code=400, detail=NO_BRAND_FOR_IMAGES_HE)
+
+    item = image_jobs.make_item(
+        strategy,
+        body.post_index,
+        post,
+        source=image_jobs.OWNER,
+        force=body.force,
+        preference=body.image_preference,
+        allow_generation=body.allow_generation,
+        vibe=body.vibe,
+        custom_prompt=body.custom_prompt,
+    )
+    job, ids = image_jobs.queue(db, business, [item])
+    result = image_jobs.wait_for(db, business.id, ids[0]) if ids else None
+    db.expire_all()
+    strategy = db.get(Strategy, strategy.id)
+    if result is not None and result.get("state") == image_jobs.ERROR:
+        raise HTTPException(status_code=502, detail=result.get("error_he") or image_jobs.ERROR_HE)
+    stored = _posts_of(strategy)
+    current = stored[body.post_index] if body.post_index < len(stored) else post
+    payload = {
+        "post": _post_view(strategy, business, body.post_index, current),
+        "strategy": serialize_strategy(strategy, business),
+        "job": image_jobs.status(db, business),
+    }
+    if result is not None and result.get("state") != image_jobs.DONE:
+        response.status_code = 202
+        payload["queued"] = True
+    return payload
 
 
 @router.post("/strategy/posts/design", dependencies=[Depends(require_generation_access)])
@@ -553,6 +607,7 @@ def design_post_endpoint(
         raise HTTPException(status_code=400, detail="עוד לא קראנו את האתר, ולכן אין לנו את הצבעים והסגנון שלכם. קראו את האתר לפני שמעצבים פוסטים.")
 
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     biz_dict = _biz_dict(business, strategy)
     dna = design_dna.dna_for_posts(business)
     # A redesign draws the post from the DNA: the composition the editor chose, the one
@@ -590,11 +645,10 @@ def design_post_endpoint(
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"לא הצלחנו לעצב את הפוסט: {exc}") from exc
 
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # Seconds of model calls went by: write this post only, onto the month as it is now,
+    # so an image the job saved for another post meanwhile stays (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
@@ -626,6 +680,7 @@ def attach_post_asset(
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     target["image_url"] = image_public_url(asset.business_id, asset.filename)
     target["image_source"] = "asset"
     target["image_asset_id"] = asset.id
@@ -639,11 +694,9 @@ def attach_post_asset(
     may_spend = owner is None or not billing.locked(db, owner)
     photo_analysis.attach(db, business.id, target, loaded[0] if loaded else None, loaded[1] if loaded else "",
                           allow_model=may_spend)
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # The photo's analysis may take a model call: write this post only (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
@@ -685,47 +738,8 @@ def suggest_post_assets(
     return {"suggestions": suggestions}
 
 
-def _merge_image_work(before: dict, produced: dict, current: dict) -> dict:
-    """Apply what image work changed in one post (`before` → `produced`) onto the post as
-    it is now (`current`), keeping whatever the owner changed in the meantime.
-
-    Key by key: a field the image work changed is taken from `produced` unless the owner
-    changed that same field meanwhile. A post that got its own photo meanwhile, or is no
-    longer the same post, is left as it is now."""
-    if before.get("uid") != current.get("uid") or before.get("image_url") != current.get("image_url"):
-        return current
-    merged = dict(current)
-    for key in set(before) | set(produced):
-        if (key in before) == (key in produced) and before.get(key) == produced.get(key):
-            continue
-        if (key in current) != (key in before) or current.get(key) != before.get(key):
-            continue
-        if key in produced:
-            merged[key] = produced[key]
-        else:
-            merged.pop(key, None)
-    return merged
-
-
 def _posts_of(strategy: Strategy) -> list:
     return list((loads(strategy.roadmap_json, {}).get("roadmap") or {}).get("posts") or [])
-
-
-def _keep_concurrent_edits(db: Session, strategy: Strategy, before: list) -> None:
-    """Image work reads the month, spends seconds to minutes on model calls, then writes
-    the month back. Whatever the owner saved meanwhile (an approval, "פרסמתי", a caption,
-    their own photo) came from other requests and was silently undone by that write.
-    Re-read the month and apply only this request's image work onto it."""
-    produced = _posts_of(strategy)
-    db.refresh(strategy)
-    extra = loads(strategy.roadmap_json, {})
-    roadmap = dict(extra.get("roadmap") or {})
-    now_posts = list(roadmap.get("posts") or [])
-    for index in range(min(len(before), len(produced), len(now_posts))):
-        if produced[index] != before[index]:
-            now_posts[index] = _merge_image_work(before[index], produced[index], now_posts[index])
-    extra["roadmap"] = {**roadmap, "posts": now_posts}
-    strategy.roadmap_json = dumps(extra)
 
 
 @router.post("/strategy/posts/images", dependencies=[Depends(require_generation_access)])
@@ -733,26 +747,29 @@ def generate_all_post_images(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
 ) -> dict:
+    """Prepare the month's missing images: start (or join) the business's image job and
+    answer at once with its status (`job`); GET /strategy/posts/images/status follows it.
+
+    The posts it takes are the ones the job would prepare by itself after the month was
+    written (image_jobs.wants_image): none twice, so a second call (a second tab, an old
+    page) costs nothing. Pages never call this on open (#123)."""
     strategy = _active_strategy(db, business)
-    extra = loads(strategy.roadmap_json, {})
-    posts = list((extra.get("roadmap") or {}).get("posts") or [])
-    before = loads(dumps(posts), [])
-    errors: list[str] = []
-    for index, post in enumerate(posts):
-        if post.get("image_url"):
-            continue
-        try:
-            _store_post_image(business, strategy, index, db=db)
-        except Exception as exc:
-            errors.append(f"פוסט {index + 1}: {exc}")
-    if errors and not any(item.get("image_url") for item in _posts_of(strategy)):
-        raise HTTPException(status_code=502, detail=errors[0])
-    # The Posts page runs this on open, and a month of images takes minutes.
-    _keep_concurrent_edits(db, strategy, before)
-    business.updated_at = datetime.utcnow()
-    db.commit()
-    db.refresh(strategy)
-    return {"strategy": serialize_strategy(strategy, business), "errors": errors}
+    items = image_jobs.build_items(strategy)
+    if items and not _brand_of(business, strategy):
+        raise HTTPException(status_code=400, detail=NO_BRAND_FOR_IMAGES_HE)
+    job, _ids = image_jobs.queue(db, business, items)
+    db.expire_all()
+    strategy = db.get(Strategy, strategy.id)
+    errors = [item["error_he"] for item in job["items"] if item.get("state") == image_jobs.ERROR and item.get("error_he")]
+    return {"strategy": serialize_strategy(strategy, business), "job": job, "errors": errors}
+
+
+@router.get("/strategy/posts/images/status")
+def post_images_status(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    """The business's image job, for the Posts page and the editor: whether images are
+    being made, how many are done, which posts are waiting (`waiting`, by uid). Only a
+    read: it never starts, resumes or pays for anything."""
+    return image_jobs.status(db, business)
 
 
 @router.post("/strategy/posts/save")
@@ -858,19 +875,19 @@ def rewrite_post_endpoint(
     stored = loads(business.scraped_profile_json, {}) or {}
     brand = extra.get("brand_language") or stored.get("brand_language") or {}
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     instruction = post_rewrite.clean_instruction(body.instruction)
     label = post_rewrite.label_for(instruction, body.tone)
     featured = _featured_for(stored, target)
 
     def answer(*, changed: bool, message: str | None = None) -> dict:
-        posts[body.post_index] = target
-        extra["roadmap"] = {**roadmap, "posts": posts}
-        strategy.roadmap_json = dumps(extra)
+        # The rewrite took a model call: write this post only, onto the month as it is
+        # now, so an image the job saved meanwhile stays (#123).
         business.updated_at = datetime.utcnow()
-        db.commit()
+        saved = image_jobs.save_post(db, strategy, body.post_index, before, target)
         db.refresh(strategy)
         return {
-            "post": _post_view(strategy, business, body.post_index, target),
+            "post": _post_view(strategy, business, body.post_index, saved),
             "strategy": serialize_strategy(strategy, business),
             "changed": changed,
             "message": message,
@@ -1191,7 +1208,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
     return True
 
 
-generation_jobs.register(generation_jobs.NEXT_MONTH, run_next_month_stage)
+generation_jobs.register(generation_jobs.NEXT_MONTH, run_next_month_stage, on_done=image_jobs.after_month_job)
 
 
 @router.post("/strategy/next-month", dependencies=[Depends(require_generation_access)])

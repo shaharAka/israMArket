@@ -81,6 +81,9 @@ class Settings(BaseSettings):
     # triggers "is this real?" suspicion, and suspicion taxes the real photos too.
     # Generation stays as the fallback when no usable photo is found.
     real_photo_first: bool = True
+    # Prepare the images of a month's new posts once, in the background, when the server
+    # finishes writing them (services/image_jobs.py). Opening a page never starts it.
+    image_jobs_on_build: bool = True
 
     # Headless Chrome for one rendered screenshot of the site during a brand scan — the
     # best single signal of what the customer actually sees. Empty = look for Chrome in

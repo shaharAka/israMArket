@@ -60,3 +60,9 @@ os.environ["GEMINI_IMAGE_MODEL"] = "gemini-3.1-flash-image"
 os.environ["GEMINI_IMAGE_SIZE"] = "1K"
 # Images go to Muse first. META_MODEL_API_KEY is blank above, so Muse fails before any
 # request; tests that exercise the routing patch services/muse_image.py.
+# Post images are prepared by a background job (services/image_jobs.py). In tests it runs
+# inside the request that queued it, like the month job; tests of the threads switch it
+# off. Nothing prepares images by itself after a month's posts are written: tests of that
+# path turn it on and fake the image models (tests/test_image_jobs.py).
+os.environ["IMAGE_JOBS_INLINE"] = "1"
+os.environ["IMAGE_JOBS_ON_BUILD"] = "false"

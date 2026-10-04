@@ -529,6 +529,36 @@ class GenerationJob(Base):
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
 
 
+class ImageJob(Base):
+    """The images being prepared for one business's posts (services/image_jobs.py, #123).
+
+    One row per business, and a lease lock: the row is claimed with a compare-and-set
+    (`status != running` or `lease_until` passed), so a second tab, a second request or a
+    second API process joins the running job instead of paying for the same images
+    again. `items_json` is the queue of this run, one entry per post; every change to it
+    or to `status` bumps `version`, and is written only if `version` is still the one read.
+    A worker that dies stops renewing `lease_until`, and the next claim takes over.
+    """
+
+    __tablename__ = "image_jobs"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), unique=True, index=True)
+    # "idle" (never ran) | "running" | "done" | "failed".
+    status: Mapped[str] = mapped_column(String(20), default="idle")
+    # Changes on every claim; a worker whose token is no longer the row's writes nothing.
+    token: Mapped[str] = mapped_column(String(40), default="")
+    version: Mapped[int] = mapped_column(Integer, default=0)
+    # [{id, uid, index, strategy_id, source, state, action, error_he, attempts, ...}]
+    items_json: Mapped[str] = mapped_column(Text, default="[]")
+    error_he: Mapped[str] = mapped_column(Text, default="")
+    # Renewed every few seconds by the process running the job, also mid-image.
+    lease_until: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    started_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
+
+
 class Subscription(Base):
     """The account's paid subscription (routers/billing.py, docs/billing.md).
 
