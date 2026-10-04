@@ -77,6 +77,7 @@ export function ScrollScenes() {
             const state = i < step ? "past" : i === step ? "current" : "future";
             const pp = state === "past" ? 1 : state === "current" ? within : 0;
             if (part.dataset.state !== state) part.dataset.state = state;
+            if (part.hasAttribute("data-scene-step")) part.setAttribute("aria-current", state === "current" ? "step" : "false");
             part.style.setProperty("--pp", pp.toFixed(4));
             progressOf.set(part, pp);
           }

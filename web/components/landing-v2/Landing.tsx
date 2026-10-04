@@ -1,13 +1,14 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
-import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
 import { MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
 import { RouteHero } from "./RouteHero";
 import { ScrollScenes } from "./ScrollScenes";
+import { SceneStep } from "./SceneStep";
 import "./lv2.css";
 
 /**
@@ -88,20 +89,21 @@ export function Landing() {
                 <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
                   אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
                 </p>
+                <a href="#story" className="lv2-scroll-hint">
+                  גללו למטה לראות איך זה עובד
+                  <IconChevron aria-hidden className="h-4 w-4" />
+                </a>
               </div>
               <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
                 <RouteHero />
               </div>
             </div>
-            <p className="lv2-scroll-hint" aria-hidden>
-              <span />
-              גללו כדי לראות את המסלול
-            </p>
           </div>
         </section>
 
         {/* How the plan is built, pinned (desktop): the text changes, the plan folds open. */}
-        <section id="story" className="lv2-story" data-scene="track" data-steps={STORY.length} aria-label="איך בונים את התוכנית">
+        <div id="story">
+        <section className="lv2-story" data-scene="track" data-steps={STORY.length} aria-label="איך בונים את התוכנית">
           <div className="lv2-story-pin">
             <div className="lv2-wrap lv2-story-grid">
               <div className="lv2-story-text">
@@ -115,14 +117,16 @@ export function Landing() {
                     </li>
                   ))}
                 </ol>
-                <div className="lv2-ticks" aria-hidden>
+                <p className="lv2-stage-hint">גללו למטה או בחרו שלב</p>
+                <nav className="lv2-ticks" aria-label="שלבי בניית התוכנית">
                   {STORY.map((step, i) => (
-                    <span key={step.label} data-i={i}>
-                      <i />
+                    <SceneStep key={step.label} index={i}>
+                      <i aria-hidden />
                       {step.label}
-                    </span>
+                    </SceneStep>
                   ))}
-                </div>
+                </nav>
+                <a href="#week" className="lv2-scene-continue">להמשך: השבוע שלכם<IconChevron aria-hidden className="h-4 w-4" /></a>
               </div>
               <div className="lv2-sheet lv2-story-sheet" aria-hidden>
                 <SheetHeader />
@@ -168,6 +172,7 @@ export function Landing() {
             })}
           </div>
         </section>
+        </div>
 
         {/* The weekly screen, as a short tour (pinned on desktop): each point lights up
             its part of the card. */}
@@ -185,11 +190,15 @@ export function Landing() {
                       <span className="lv2-tour-bar" aria-hidden>
                         <i />
                       </span>
-                      <strong>{point.k}</strong>
-                      <span>{point.v}</span>
+                      <SceneStep index={i}><strong>{point.k}</strong><span>{point.v}</span></SceneStep>
+                      <span className="lv2-tour-static"><strong>{point.k}</strong><span>{point.v}</span></span>
                     </li>
                   ))}
                 </ol>
+                <div className="lv2-tour-navigation">
+                  <p className="lv2-stage-hint">גללו למטה או בחרו נושא</p>
+                  <a href="#month" className="lv2-scene-continue">להמשך: מה לומדים מהתוצאות<IconChevron aria-hidden className="h-4 w-4" /></a>
+                </div>
               </div>
               <div className="lv2-tour-stage">
                 <HeroWeek tour className="lv2-tour-card" />
@@ -199,7 +208,7 @@ export function Landing() {
         </section>
 
         {/* The monthly review, on the brand blue. */}
-        <section className="lv2-month" aria-labelledby="lv2-month-title">
+        <section id="month" className="lv2-month" aria-labelledby="lv2-month-title">
           <div className="lv2-wrap" data-scene="view">
             <p className="lv2-eyebrow lv2-eyebrow--sun">בסוף כל חודש</p>
             <h2 id="lv2-month-title" className="lv2-h2 lv2-month-title">
