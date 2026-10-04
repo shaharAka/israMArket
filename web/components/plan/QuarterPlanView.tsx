@@ -35,7 +35,7 @@ import styles from "./plan.module.css";
 export type SectionKey = "strategy" | "measure" | "channels" | "budget" | "calendar" | "content" | "bets" | "inside";
 
 const SECTIONS: { key: SectionKey; title: string; short: string }[] = [
-  { key: "strategy", title: "האסטרטגיה בשורה אחת", short: "אסטרטגיה" },
+  { key: "strategy", title: "הכיוון בשורה אחת", short: "כיוון" },
   // Revision 6: today, the lever, the target with its math, and how each is measured.
   { key: "measure", title: "המספרים", short: "מספרים" },
   { key: "channels", title: "הערוצים", short: "ערוצים" },
@@ -333,8 +333,8 @@ function Glance({ plan, months }: { plan: AnyPlan; months: string[] }) {
       ? `היעד: ${plan.kpi.target}`
       : "";
   return (
-    <section className={styles.glance} aria-label="איך נדע שהתוכנית עובדת">
-      <p>איך נדע שזה עובד</p>
+    <section className={styles.glance} aria-label="איך נדע שהתוכנית מצליחה">
+      <p>איך נדע שזה מצליח</p>
       <h3>{plan.kpi.name_he}</h3>
       {numbers ? <p>מה מגדילים: {numbers.lever.name_he}</p> : null}
       {targetLine ? <p>{targetLine}</p> : null}
@@ -504,7 +504,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
       {numbers ? <NumbersBlock numbers={numbers} accent={accent} targetSlot={targetSlot} /> : null}
       {/* The KPI leads: the one number the plan answers to. */}
       <div className={numbers ? `${styles.card} px-5 py-4` : "rounded-2xl px-5 py-4"} style={numbers ? undefined : { background: `color-mix(in srgb, ${accent} 6%, var(--paper))` }}>
-        <p className={LABEL}>{numbers ? "איך סופרים את זה" : "המדד העיקרי"}</p>
+        <p className={LABEL}>{numbers ? "איך סופרים את זה" : "היעד העיקרי"}</p>
         <p className="mt-1 text-xl font-bold leading-8 tracking-tight text-[color:var(--ink)]">{plan.kpi.name_he}</p>
         <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink-soft)]">{plan.kpi.how_he}</p>
         {plan.kpi.needs ? (
@@ -541,7 +541,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <p className="text-[15px] font-semibold text-[color:var(--ink)]">{measure.name_he}</p>
                 {measure.name_he === plan.kpi.name_he ? (
-                  <span className="text-xs font-semibold text-[color:var(--primary)]">המדד העיקרי</span>
+                  <span className="text-xs font-semibold text-[color:var(--primary)]">היעד העיקרי</span>
                 ) : null}
                 <Availability now={measure.available_now} />
               </div>
@@ -887,8 +887,8 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
         ))}
       </ol>
       <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
-        {plan.content.find((m) => m.products_note_he)?.products_note_he ?? "אילו מוצרים להבליט בכל פוסט — אתם מחליטים בתוך המערכת, לפי מלאי ורווחיות."}{" "}
-        את הפוסטים עצמם נכתוב ונעצב יחד בתוך המערכת.
+        {plan.content.find((m) => m.products_note_he)?.products_note_he ?? "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות."}{" "}
+        את הפוסטים עצמם נכתוב ונעצב יחד.
       </p>
       {cadenceSlot}
     </div>

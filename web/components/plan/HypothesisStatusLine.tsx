@@ -47,7 +47,7 @@ const SUMMARY: { status: HypothesisReviewStatus; one: string; many: string }[] =
   { status: "on_track", one: "בדרך", many: "בדרך" },
   { status: "not_yet", one: "בינתיים לא", many: "בינתיים לא" },
   { status: "changed", one: "השתנתה", many: "השתנו" },
-  { status: "measuring", one: "נמדדת", many: "נמדדות" },
+  { status: "measuring", one: "בבדיקה", many: "בבדיקה" },
 ];
 
 export function statusSummary(items: { status: HypothesisReviewStatus }[]): string {

@@ -55,10 +55,11 @@ DECIDED = frozenset({"on_track", "confirmed", "not_yet"})
 REVIEW_KEY = "hypothesis_review"
 
 # The word next to the dot. A hypothesis (השערה) is feminine, a target (יעד) masculine.
+# "בבדיקה" while measuring fits both, and never reads as the post state "נמדד" (measured).
 STATUS_HE = {
-    "hypothesis": {"measuring": "נמדדת", "on_track": "בדרך", "confirmed": "התאמתה", "not_yet": "בינתיים לא",
+    "hypothesis": {"measuring": "בבדיקה", "on_track": "בדרך", "confirmed": "התאמתה", "not_yet": "בינתיים לא",
                    "changed": "השתנתה"},
-    "target": {"measuring": "נמדד", "on_track": "בדרך", "confirmed": "הושג", "not_yet": "מתחת לקצב",
+    "target": {"measuring": "בבדיקה", "on_track": "בדרך", "confirmed": "הושג", "not_yet": "מתחת לקצב",
                "changed": "השתנה"},
 }
 CLOSED_NOT_YET_HE = {"hypothesis": "לא התאמתה", "target": "לא הושג"}
