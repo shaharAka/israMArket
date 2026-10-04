@@ -156,6 +156,11 @@ class EditPromptTest(unittest.TestCase):
         self.assertIn("relight it as late afternoon sun", prompt)
         self.assertIn("the bare plaster wall", prompt)
         self.assertIn("faded teal shadows", prompt)
+        # The DNA's props are for a new image only: offered to an edit, Muse added a challah
+        # and a baker's hands to the owner's sourdough photo (#111).
+        self.assertNotIn("a rolled cork block", prompt)
+        self.assertNotIn("a prop that belongs here", prompt)
+        self.assertIn("Add nothing to the scene", prompt)
 
     def test_labelled_edit_names_the_reference(self):
         prompt = build_edit_prompt({"format": "story"}, DNA, {"name": "b"}, labelled=True)

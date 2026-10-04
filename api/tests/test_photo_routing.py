@@ -64,6 +64,28 @@ class ChoiceTest(unittest.TestCase):
     def test_a_named_product_with_no_matching_photo_gets_none(self):
         self.assertIsNone(photo_choice.choose(self.pool, {"title": "קרואסון", "featured_item_name": "קרואסון חמאה"}, {}))
 
+    def test_a_named_product_is_not_matched_by_a_tray_or_the_bakery(self):
+        # The loop run of #111: a post featuring a new babka got the sourdough photo, because
+        # both said "מגש" (tray) and "מאפייה". The babka has no photo: the post gets a new image.
+        pool = [candidate("asset:2", "library", "כיכר לחם מחמצת פרוסה וכריך על מגש במאפייה | לחם, מחמצת"),
+                candidate("asset:1", "library", "חלות קלועות עם שומשום על שולחן העבודה במאפייה | חלה, שבת")]
+        post = {"title": "העוגה החדשה של שישי", "featured_item_name": "עוגת שמרים שוקולד",
+                "hook": "רק בשישי יוצא מהתנור מגש שמרים שוקולד.",
+                "caption": "עוגת שמרים שוקולד חדשה במאפייה, רק בשישי."}
+        self.assertIsNone(photo_choice.choose(pool, post, {}))
+        # The same post about the challah still finds the challah photo.
+        post = {**post, "featured_item_name": "חלה קלועה עם שומשום", "title": "החלה של שישי"}
+        picked, _photo, reason = photo_choice.choose(pool, post, {})
+        self.assertEqual((picked.key, reason), ("asset:1", "subject"))
+
+    def test_stop_words_with_a_final_letter_are_not_a_subject(self):
+        # "עם" (with) and "שם" (name) were compared after ם → מ, past the stop list.
+        self.assertFalse(photo_choice.stems("שקית עם שם") & photo_choice.stems("חלות עם שומשום"))
+        pool = [candidate("asset:1", "library", "חלות קלועות עם שומשום"),
+                candidate("asset:3", "library", "סופגניות עם אבקת סוכר")]
+        _picked, _photo, reason = photo_choice.choose(pool, {"title": "שקית עם שם מחכה בשישי"}, {})
+        self.assertEqual(reason, "rotation")
+
     def test_without_a_subject_the_photos_take_turns(self):
         post = {"title": "בוקר טוב"}
         firsts = {photo_choice.choose(self.pool, post, {}, index=i)[0].key for i in range(4)}

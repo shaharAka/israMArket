@@ -166,12 +166,12 @@ def plan_post_design(
     return creative
 
 
-def apply_creative_to_post(post: dict, creative: dict) -> dict:
+def apply_creative_to_post(post: dict, creative: dict, dna: dict | None = None) -> dict:
     """The designer's decision on the post, in place. One message (docs/design-dna.md,
     Revision 1): a headline of at most 6 words and at most one short line; the badge is
-    retired. No overlay = a photo-only post."""
+    retired. No overlay = a photo-only post, in a layout that can carry the photo alone."""
     from app.services.connected_posts import one_message
-    from app.services.post_design import sync_text_mode
+    from app.services.post_design import ensure_photo_only, sync_text_mode
 
     has_overlay = bool(creative.get("has_overlay"))
     post["creative_concept"] = creative.get("creative_concept", "")
@@ -189,6 +189,7 @@ def apply_creative_to_post(post: dict, creative: dict) -> dict:
     post["design_creative"] = creative
     if isinstance(post.get("design"), dict):
         sync_text_mode(post["design"], has_overlay)
+        ensure_photo_only(post, dna)
     return post
 
 
@@ -210,7 +211,7 @@ def design_and_generate_post(
     straight generation.
     """
     creative = plan_post_design(post, brand, business, vibe=vibe, custom_prompt=custom_prompt, dna=dna)
-    apply_creative_to_post(post, creative)
+    apply_creative_to_post(post, creative, dna)
 
     image_url = None
     if generate_image:
