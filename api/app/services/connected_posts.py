@@ -419,6 +419,45 @@ def strategy_core(roadmap: dict | None) -> dict:
     return {key: value for key, value in (roadmap or {}).items() if key != "posts"}
 
 
+def measured_posts(views: list) -> dict:
+    """The month's posts as Results lists them: {"items": [...], "waiting": n}.
+
+    Each measured post with its one number, exactly what its card shows (`results.value`,
+    written by `refresh_results`), its measure's name and the comparison the card shows.
+    `waiting` counts the posts that are out and have no number yet: never listed as a 0.
+    """
+    items, waiting = [], 0
+    for index, view in enumerate(views or []):
+        if not isinstance(view, dict):
+            continue
+        results = view.get("results") if isinstance(view.get("results"), dict) else {}
+        value = _number(results.get("value"))
+        if value is None:
+            if _is_published(view):
+                waiting += 1
+            continue
+        measure = view.get("measure") if isinstance(view.get("measure"), dict) else {}
+        metric = results.get("metric") if results.get("metric") in METRICS else measure.get("metric")
+        if metric not in METRICS:
+            continue
+        compare = results.get("compare") if isinstance(results.get("compare"), dict) else None
+        items.append({
+            "index": index,
+            "uid": view.get("uid") or "",
+            "title": _clean(view.get("title"), 120),
+            "channel": view.get("channel") or "",
+            "metric": metric,
+            "label_he": METRIC_LABEL_HE[metric],
+            "value": value,
+            "compare": ({"label": compare.get("label") or COMPARE_LABEL_HE, "value": _number(compare.get("value")),
+                         "direction": compare.get("direction")}
+                        if compare and _number(compare.get("value")) is not None else None),
+            "matched_by": [str(key) for key in results.get("matched_by") or []] if isinstance(results.get("matched_by"), list) else [],
+            "updated_at": str(results.get("updated_at") or ""),
+        })
+    return {"items": items, "waiting": waiting}
+
+
 # --- visible traits (what a learning may point at) ------------------------------------------
 
 _PRICE = re.compile(r"₪|ש\"ח|ש״ח|שקל|מחיר|\[מחיר\]")

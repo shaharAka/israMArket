@@ -419,7 +419,8 @@ class EndpointTest(HypothesisTestCase):
         self.db.query(Integration).delete()
         self.business.whatsapp_number_e164 = "+972501234567"
         self.db.commit()
-        self.assertEqual(self.client.post("/performance/sync").status_code, 400)
+        # A refresh with WhatsApp taps only is a refresh that worked (#111), not "connect first".
+        self.assertEqual(self.client.post("/performance/sync").status_code, 200)
         review = self.client.get("/strategy/current").json()["hypothesis_review"]
         self.assertTrue(review["updated_at"])
 

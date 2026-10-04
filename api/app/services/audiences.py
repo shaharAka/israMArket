@@ -581,6 +581,13 @@ def _row(audience: dict | None, posts: int, total: dict, name: str = "") -> dict
     }
 
 
+def _day_he(stamp: str) -> str:
+    """"2026-10-04T21:26:08.534091" -> "4.10.2026", the way the owner writes a date (the
+    raw stamp was shown on Results as it is). "" when it is not a date."""
+    match = re.match(r"^(\d{4})-(\d{2})-(\d{2})", str(stamp or ""))
+    return f"{int(match.group(3))}.{int(match.group(2))}.{match.group(1)}" if match else ""
+
+
 def _explanation(
     *,
     available: bool,
@@ -607,7 +614,7 @@ def _explanation(
             "אין כרגע חיבור ל"
             + " ול".join(offline)
             + ", ולכן חלק מהמספרים חסרים. מה שמופיע כאן מהרענון האחרון"
-            + (f" ({synced_at})." if synced_at else ".")
+            + (f" ({_day_he(synced_at)})." if _day_he(synced_at) else ".")
         )
     if unassigned_posts == 1:
         notes.append("פוסט אחד בתוכנית בלי קהל, והוא נספר בנפרד תחת 'לא משויך'.")
