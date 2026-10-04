@@ -35,6 +35,9 @@ export class ApiError extends Error {
   }
 }
 
+/** No connection: the request never reached the server, so every screen says the same thing. */
+export const NETWORK_ERROR_HE = "אין חיבור כרגע. נסו שוב.";
+
 /** The server's `{code, detail_he}` error body, at the top level or inside FastAPI's `detail`. */
 function errorCode(data: unknown): { code?: string; message?: string } {
   if (!data || typeof data !== "object") return {};
@@ -3677,6 +3680,15 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
           external_id: "10987654321",
           display_name: "לחם תום, אינסטגרם ופייסבוק",
           connected: true,
+          // Read like the site row: the demo's banner promises "כשהכול מחובר".
+          source_readiness: {
+            status: "ready",
+            note_he: "נתונים לדוגמה בלבד, ללא קריאה מחשבון אמיתי.",
+            last_success_at: "2026-10-03T09:00:00Z",
+            sections: {
+              social: { status: "ready", note_he: "נתוני דוגמה של החשבון והפוסטים.", read_at: "2026-10-03T09:00:00Z" },
+            },
+          },
         },
       ],
       webhooks: [],
@@ -3899,11 +3911,19 @@ export async function api<T>(
   if (options.body && !isFormData && !headers.has("Content-Type")) {
     headers.set("Content-Type", "application/json");
   }
-  const res = await fetch(`${API}${path}`, {
-    ...options,
-    credentials: "include",
-    headers,
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API}${path}`, {
+      ...options,
+      credentials: "include",
+      headers,
+    });
+  } catch (err) {
+    // A cancelled request stays a cancellation; anything else here is the network
+    // ("Failed to fetch"), never an answer from the server. Same error shape, status 0.
+    if (err instanceof DOMException && err.name === "AbortError") throw err;
+    throw new ApiError(NETWORK_ERROR_HE, 0, "network");
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const coded = errorCode(data);

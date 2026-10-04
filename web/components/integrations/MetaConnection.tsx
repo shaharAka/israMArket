@@ -14,7 +14,7 @@ const NO_PAGE = "__no_page__";
 const RETURN_NOTES: Record<string, string> = {
   cancelled: "החיבור לא הושלם. אפשר לנסות שוב כשנוח לכם; התוכנית נשארת זמינה.",
   expired: "חלון החיבור פג או שנפתח בדפדפן אחר. התחילו שוב מכאן.",
-  failed: "לא הצלחנו להשלים את החיבור. נסו שוב עם החשבון שמנהל את העסק במטא.",
+  failed: "לא הצלחנו להשלים את החיבור. נסו שוב עם החשבון שמנהל את העסק בפייסבוק.",
 };
 const EXAMPLE_ASSETS: MetaAssets = {
   pages: [{ page_id: "demo-page", display_name: "לחם תום", instagram_id: "demo-instagram" }],
@@ -72,7 +72,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     try {
       const result = await (demo ? Promise.resolve(EXAMPLE_ASSETS) : endpoints.metaAssets());
       if (expectedAttempt.current && result.connection_attempt !== expectedAttempt.current) {
-        throw new Error("האישור במטא עדיין לא התקבל. השלימו אותו בחלון של מטא ולחצו כאן להמשיך, או נסו לחבר שוב.");
+        throw new Error("האישור בפייסבוק עדיין לא התקבל. השלימו אותו בחלון של פייסבוק ולחצו כאן להמשיך, או נסו לחבר שוב.");
       }
       setNote("");
       const current = latestItem.current;
@@ -128,7 +128,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
 
   async function connect(includeAds = ads) {
     if (demo) { await loadAssets(); return; }
-    if (!ready) { setNote("החיבור למטא עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך."); return; }
+    if (!ready) { setNote("החיבור לפייסבוק עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך."); return; }
     // Open synchronously during the click so the browser can allow the consent window.
     const child = window.open("about:blank", "isramarket-meta", "popup,width=620,height=740");
     if (timer.current) clearInterval(timer.current);
@@ -171,7 +171,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   async function verify() {
     setBusy(true); setNote("");
     try {
-      setVerification(demo ? { status: "receiving", note_he: "דוגמה בלבד: מטא מקבלת אירועים מהאתר.", events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
+      setVerification(demo ? { status: "receiving", note_he: "דוגמה בלבד: פייסבוק מקבלת אירועים מהאתר.", events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
       if (!demo) await changed.current();
     } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לבדוק כרגע. אפשר לחזור לכאן בהמשך."); }
     finally { setBusy(false); }
@@ -187,8 +187,8 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       <div className={styles.connected}>
         <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>
         <div className={styles.actions}>
-          <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>ניהול החיבור</button>
-          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>בדיקת המעקב</button>}
+          <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>לנהל את החיבור</button>
+          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>לבדוק את המעקב</button>}
           {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}>לנתק</button>}
         </div>
       </div>
@@ -201,7 +201,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     </>}
     {item?.connected && readState && <SourceReadState provider="meta" state={readState} checking={reading} primary={primary} onRetry={() => void read()} onReconnect={renewAccess} />}
     {note && !open && <p role="status">{note}</p>}
-    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק למטא" : stage === "choose" ? "איזה עסק לחבר?" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
+    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>
@@ -210,7 +210,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי לבדוק הוצאות ותוצאות. אפשר גם בהמשך.</small></span></label>
           </details>
           <p className={styles.hint}>גישה לקריאת נתונים בלבד. פרסום פוסטים ושינוי מודעות דורשים אישור נפרד.</p>
-          <UIAction onClick={() => void connect()} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של מטא" : "לאשר בפייסבוק ולבחור את הדף"}</UIAction>
+          <UIAction onClick={() => void connect()} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של פייסבוק" : "לאשר בפייסבוק ולבחור את הדף"}</UIAction>
           {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
         </>}
         {stage === "choose" && assets && <>
@@ -219,8 +219,8 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
             {assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}
             {assets.pages.length > 0 && <option value={NO_PAGE}>בלי דף כרגע</option>}
           </select></label>
-          {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? "האינסטגרם המקושר לדף הזה יתחבר יחד איתו." : "לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף במטא ולחזור לכאן."}</p>}
-          {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || "לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס למטא מנהל את הדף ושבחרתם בו בחלון האישור."} במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק.</p>}
+          {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? "האינסטגרם המקושר לדף הזה יתחבר יחד איתו." : "לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף בפייסבוק ולחזור לכאן."}</p>}
+          {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || "לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס לפייסבוק מנהל את הדף ושבחרתם בו בחלון האישור."} במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק.</p>}
           <details className={styles.setupGuide} open={Boolean(account) || undefined}>
             <summary>גם נתוני מודעות ומעקב באתר?<IconChevron className={styles.disclosureIcon} /></summary>
             <div className={styles.setupBody}>
@@ -253,10 +253,10 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {pixel && <div className={styles.tracking}>
             <h3>האם המעקב באתר עובד?</h3>
             <p className={styles.hint}><strong>{selectedPixel?.name || tracking?.name || "המעקב של העסק"}</strong><br />האתר לבדיקה: {website ? <bdi>{website}</bdi> : <>לא הוגדר אתר. <Link href="/business">להוסיף את כתובת האתר</Link></>}</p>
-            <p>{tracking?.note_he || "נבדוק אם מטא מקבלת אירועים מהכתובת של העסק."}</p>
+            <p>{tracking?.note_he || "נבדוק אם פייסבוק מקבלת אירועים מהכתובת של העסק."}</p>
             {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
             <UIAction onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
-            {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer">לפתוח את האתר ולנסות שוב</a>}
+            {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer" className={styles.retry}>לפתוח את האתר ולנסות שוב</a>}
             {tracking?.status === "wrong_site" && <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב של האתר שלי</UIAction>}
             {tracking && ["permission", "reconnect"].includes(tracking.status) && <UIAction variant="text" onClick={renewAccess}>לחדש את הגישה למעקב</UIAction>}
             {(!tracking || tracking.status === "waiting") && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
@@ -267,7 +267,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
                 <button type="button" className={styles.textAction} onClick={() => { setBusy(true); void loadAssets(); }} disabled={busy}>לבחור מעקב אחר</button>
               </div>
             </details>
-            <p className={styles.hint}>הבדיקה אינה מאשרת סכומי רכישה, מעקב מהשרת או מניעת ספירה כפולה.</p>
+            <p className={styles.hint}>הבדיקה מראה שהאתר שולח אירועים. היא לא מאשרת הזמנות או סכומים.</p>
           </div>}
           <Link href="/strategy" className={styles.next}>להמשיך בתוכנית ←</Link>
           <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>

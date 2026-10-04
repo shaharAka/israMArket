@@ -1,6 +1,13 @@
 import Link from "next/link";
 import type { SourceReadiness, MetaSourceReadiness } from "@/lib/api";
+import { dateRange, dayMonth } from "@/lib/dates";
 import { IconChevron } from "@/lib/icons";
+
+/** The row's ask when it is the recommended connection: the standard filled primary. */
+const PRIMARY_ACTION =
+  "drawn-button inline-flex min-h-11 items-center justify-center bg-[var(--primary)] px-5 text-[14px] text-white enabled:hover:bg-[var(--primary-dark)]";
+const TEXT_ACTION =
+  "inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4";
 
 export function sourcePresentation(state?: SourceReadiness | MetaSourceReadiness | null, checking = false) {
   const status = checking ? "reading" : state?.status;
@@ -36,23 +43,25 @@ export function SourceReadState({ state, checking = false, onRetry, onReconnect,
   const renew = ["reconnect", "no_properties", "no_assets", "permission", "link_instagram"].includes(status) ||
     (status === "partial" && Object.values(sections || {}).some(row => ["reconnect", "permission", "link_instagram"].includes(row.recovery_status || row.status)));
   const retry = ["unchecked", "unavailable", "empty", "partial"].includes(status) && !renew;
-  return <div className="mt-4 space-y-2">
+  // Full width, also inside the Meta row's start-aligned grid, so the expand's rule spans the card.
+  return <div className="mt-4 w-full space-y-2">
     <p role="status" aria-live="polite" className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
       {checking ? provider === "meta" ? "קוראים את נתוני פייסבוק ואינסטגרם. אפשר להמשיך לעבוד בתוכנית." : "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית." : state.note_he}
     </p>
     {state.period?.start && state.period.end && (provider !== "meta" || ["ready", "empty"].includes(sections?.ads?.status || "")) ? <p className="text-[12px] tabular-nums text-[color:var(--ink-muted)]">
-      {provider === "meta" ? "תקופת המודעות" : "התקופה שנקראה"}: <bdi>{checkedDate(state.period.start)}–{checkedDate(state.period.end)}</bdi>{date ? ` · נקראה ב־${date}` : ""}
+      {provider === "meta" ? "תקופת המודעות" : "התקופה שנקראה"}: <bdi>{dateRange(state.period.start, state.period.end)}</bdi>{date ? <> · נקראה ב־<bdi>{dayMonth(state.last_success_at)}</bdi></> : null}
     </p> : date ? <p className="text-[12px] text-[color:var(--ink-muted)]">נקרא ב־{date}</p> : null}
     {date && (["unavailable", "reconnect", "permission"].includes(status) || (status === "partial" && Object.values(sections || {}).some(row => row.retained_at))) ? <p className="text-[12px] leading-5 text-[color:var(--ink-muted)]">הנתונים מהקריאה הקודמת נשארו בתוצאות, עם התאריך שלהם.</p> : null}
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
       {retry || renew ? <button type="button" onClick={renew ? onReconnect : onRetry} disabled={checking}
-        className={primary ? "drawn-button min-h-11 px-4 py-2 text-[14px]" : "inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"}>
+        className={primary ? PRIMARY_ACTION : TEXT_ACTION}>
         {renew ? provider === "meta" ? "לבדוק ולחדש את הגישה בפייסבוק" : "לחבר מחדש עם גוגל" : status === "empty" ? "לבדוק שוב את הנתונים" : "לנסות לקרוא את הנתונים"}
       </button> : null}
-      {["ready", "empty", "partial"].includes(status) ? <Link href={resultsHref} className="inline-flex min-h-11 items-center text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">לראות את התוצאות</Link> : null}
+      {["ready", "empty", "partial"].includes(status) ? <Link href={resultsHref} className={TEXT_ACTION}>לראות את התוצאות</Link> : null}
     </div>
-    {sections && <details className="border-t border-[var(--rule)] pt-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
-      <summary className="flex min-h-11 cursor-pointer items-center justify-between gap-4 font-semibold">מה נקרא, ומה צריך לבדוק?<IconChevron className="h-4 w-4" /></summary>
+    {sections && <details className="group/read border-t border-[var(--rule)] pt-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
+      {/* The standard disclosure: down when closed, up when open (DESIGN-STANDARD §4). */}
+      <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-4 font-semibold [&::-webkit-details-marker]:hidden">מה נקרא, ומה צריך לבדוק?<IconChevron className="h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 ease-[cubic-bezier(.2,.7,.2,1)] group-open/read:rotate-90 motion-reduce:transition-none" /></summary>
       <div className="space-y-3 py-2">{Object.entries(sections).map(([key, section]) => <p key={key}><strong>{({ social: "החשבון והפוסטים", ads: "המודעות", tracking: "המעקב באתר" } as Record<string, string>)[key] || key}: </strong>{section.note_he || sourcePresentation({ status: section.status as MetaSourceReadiness["status"], note_he: "" }).label}{section.retained_at ? ` המספרים נשמרו מקריאה ב־${checkedDate(section.retained_at)}.` : ""}</p>)}
       <p>המספרים בכל פוסט מצטברים מאז פרסומו; הם אינם סיכום של התקופה. אישור אירועים מהאתר אינו אישור לפניות או לרכישות.</p></div>
     </details>}

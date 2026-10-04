@@ -5,9 +5,12 @@
  * offset outline; cards are depth, not frames.
  */
 
-/** A text input, select or textarea. Add a height or `resize` on textareas yourself. */
+/**
+ * A text input, select or textarea. Add a height or `resize` on textareas yourself.
+ * 16px on phones: below that, iOS zooms the page in when the field takes focus.
+ */
 export const FIELD =
-  "block min-h-[46px] w-full min-w-0 rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-[15px] leading-6 text-[color:var(--ink)] transition-[border-color,box-shadow] duration-200 ease-out hover:border-[var(--ink-faint)] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--primary-soft)] focus-visible:outline-none! disabled:cursor-not-allowed disabled:bg-[var(--soft)] disabled:text-[color:var(--ink-muted)]";
+  "block min-h-[46px] w-full min-w-0 rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 py-2.5 text-[16px] leading-6 sm:text-[15px] text-[color:var(--ink)] transition-[border-color,box-shadow] duration-200 ease-out hover:border-[var(--ink-faint)] focus:border-[var(--primary)] focus:shadow-[0_0_0_3px_var(--primary-soft)] focus-visible:outline-none! disabled:cursor-not-allowed disabled:bg-[var(--soft)] disabled:text-[color:var(--ink-muted)]";
 
 /** The label above a field. */
 export const LABEL = "mb-2 block text-[13px] font-semibold text-[color:var(--ink)]";

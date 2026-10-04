@@ -34,8 +34,9 @@ export function StepLink({
       href={`/dashboard#step-${step.key}`}
       className={`inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline ${className}`}
     >
+      {/* The step by its name, as Today's readiness stages call it (not by its week). */}
       <span>
-        צעד בשבוע {step.week} של החודש החינמי
+        הצעד הבא: {step.title_he}
         {step.status === "todo" ? ` · ${minutesLabel(step.minutes)}` : ""}
       </span>
       <IconArrowLeft className="h-3.5 w-3.5 shrink-0" />

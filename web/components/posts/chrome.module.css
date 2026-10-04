@@ -220,7 +220,7 @@
     align-items: center;
     justify-content: center;
     gap: 6px;
-    min-height: 40px;
+    min-height: 44px;
     padding-inline: 16px;
     border-radius: 10px;
     color: var(--ink-muted);
@@ -251,7 +251,7 @@
       0 1px 3px color-mix(in srgb, var(--ink) 12%, transparent);
   }
 
-  /* The segments' 40px face gets a 44px hit area from the track's padding. */
+  /* Each segment is a 44px target itself; the track's padding adds a little more. */
   .segmented > button {
     position: relative;
   }

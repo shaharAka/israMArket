@@ -6,16 +6,35 @@
 .disclosure { border-bottom: 1px solid var(--rule); }
 .disclosure summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 48px; cursor: pointer; list-style: none; font-size: 14px; font-weight: 600; color: var(--ink-soft); }
 .disclosure summary::-webkit-details-marker { display: none; }
-.disclosure[open] > summary svg { transform: rotate(180deg); }
+/* The standard disclosure (DESIGN-STANDARD §4): down when closed, up when open. */
+.disclosure summary svg { flex-shrink: 0; color: var(--ink-muted); transform: rotate(-90deg); transition: transform 200ms var(--ease); }
+.disclosure[open] > summary svg { transform: rotate(90deg); }
 .assumption { display: grid; gap: 16px; border: 0; border-bottom: 1px solid var(--rule); padding-bottom: 20px; }
-.optional, .note { color: var(--ink-muted); font-size: 13px; font-weight: 400; }
+.optional { color: var(--ink-muted); font-size: 13px; font-weight: 400; }
 .textAction { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--primary); font-size: 14px; font-weight: 600; text-underline-offset: 4px; }
 .textAction:hover { text-decoration: underline; }
+/* Removing a hypothesis is available, never inviting: the quiet weight of "לנתק". */
+.quietAction { justify-self: start; display: inline-flex; align-items: center; min-height: 44px; color: var(--ink-muted); font-size: 14px; font-weight: 500; text-underline-offset: 4px; transition: color 180ms ease; }
+.quietAction:hover { color: var(--danger); text-decoration: underline; }
 .footer { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
-.notice, .error, .success { border-radius: 14px; padding: 16px 20px; font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+.links { display: flex; flex-wrap: wrap; align-items: center; gap: 0 24px; margin-top: 4px; }
+.notice, .error, .success { position: relative; border-radius: 14px; padding: 16px 20px; padding-inline-start: 40px; font-size: 14px; line-height: 1.65; overflow-wrap: anywhere; }
+/* Every notice leads with a small dot (words first, the dot beside them): sun for "wait" or
+   "look", green for saved, the danger tone for a failure. Centred on the first line. */
+.notice::before, .error::before, .success::before { content: ""; position: absolute; inset-inline-start: 20px; top: 23px; width: 8px; height: 8px; border-radius: 999px; }
 .notice { background: var(--sand); color: var(--ink); }
+.notice::before { background: var(--sun); }
 .notice dt { font-weight: 600; }
 .error { margin-bottom: 24px; background: var(--danger-soft); color: var(--danger); }
+.error::before { background: var(--danger); }
 .success { background: var(--good-soft); color: var(--good); }
-.textAction:focus-visible, .disclosure summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 4px; }
-@media (max-width: 639px) { .fields { padding: 20px 16px; } .footer { align-items: stretch; flex-direction: column; } .footer > button { justify-content: center; } }
+.success::before { background: var(--good); }
+/* The saved note takes focus so it is announced; no default outline, the soft ring if seen. */
+.success:focus { outline: none; }
+.success:focus-visible { box-shadow: 0 0 0 3px var(--focus-ring); }
+.note { display: flex; align-items: center; gap: 10px; color: var(--ink-muted); font-size: 13px; font-weight: 400; }
+.note::before { content: ""; flex-shrink: 0; width: 6px; height: 6px; border-radius: 999px; background: var(--sun); }
+.textAction:focus-visible, .quietAction:focus-visible, .disclosure summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .disclosure summary svg { transition: none; } }
+/* 16px on phones: below that, iOS zooms the page in when a field takes focus. */
+@media (max-width: 639px) { .fields { padding: 20px 16px; } .fields input, .fields textarea, .assumption textarea { font-size: 16px; } .footer { align-items: stretch; flex-direction: column; } .footer > button { justify-content: center; } }
