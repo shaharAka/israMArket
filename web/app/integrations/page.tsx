@@ -56,6 +56,10 @@ const DETAIL_BLOCK = "border-t border-[var(--rule)] pt-4";
 /** The short heading of a block inside an expand. */
 const DETAIL_TITLE = "font-semibold text-[color:var(--ink)]";
 
+/** With nothing to recommend, going back to the plan is the page's one filled button. */
+const BACK_TO_PLAN =
+  "drawn-button inline-flex min-h-12 items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]";
+
 const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12px] shadow-[inset_0_0_0_1px_var(--rule)]";
 
 /**
@@ -78,7 +82,8 @@ export default function IntegrationsPage() {
     if (typeof window === "undefined") return "";
     const params = new URLSearchParams(window.location.search);
     if (params.get("ga4") === "connected") {
-      return "הגישה לגוגל אושרה. נבחר את האתר ונבדוק שאפשר לקרוא את הנתונים שלו.";
+      // The one place that says consent was granted; the row below only asks for the site.
+      return "הגישה לגוגל אושרה. נשאר לבחור את האתר.";
     }
     if (params.get("meta") === "connected") {
       return "התחברתם לפייסבוק. נשאר רק לבחור את הדף העסקי. אם הוא מקושר לאינסטגרם, גם החשבון ייבחר איתו.";
@@ -249,6 +254,8 @@ export default function IntegrationsPage() {
 
   const recommendation = connectionRecommendation(business, setup, data, Boolean(whatsapp?.number_e164));
   const primaryKey = recommendation?.key || null;
+  // Providers the server cannot offer yet, and that are not already connected (the demo's are).
+  const unavailableCount = data && !demo ? [!data.ga4_ready && !ga4Connected, !data.meta_ready && !metaConnected].filter(Boolean).length : 0;
   const activeKey = expanded === undefined ? primaryKey : expanded;
 
   const connectionRows: Record<ConnectionKey, ReactNode> = {
@@ -304,14 +311,14 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     ga4: (
-<ConnectionSection source="ga4" title="נתוני האתר" status={ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? "עדיין לא זמין" : "לא מחובר"} account={ga4Item?.display_name} open={activeKey === "ga4"} onOpen={setExpanded}>
+<ConnectionSection source="ga4" title="נתוני האתר" status={ga4NeedsSelection ? "נשאר לבחור אתר" : ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? "עדיין לא זמין" : "לא מחובר"} account={ga4Item?.display_name?.replace(/\s*\(GA4\)\s*$/, "")} open={activeKey === "ga4"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
             <div className="pb-3">
-              <p className="mb-3 text-[13px] leading-6 text-[var(--ink-soft)]">הכניסה עם Google אינה מחברת את המדידה. כאן מאשרים קריאה בנפרד ובוחרים את האתר.</p>
+              {/* "Signing in with Google is not measurement" is in the expand below. */}
               {ga4NeedsSelection ? (
                 <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
                   <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
-                    הגישה לגוגל אושרה. בחרו את האתר של העסק; אחרי הבחירה נבדוק את הנתונים שלו.
+                    בחרו את האתר של העסק. אחרי הבחירה נבדוק את הנתונים שלו.
                   </p>
                   <label htmlFor="ga4-property" className={`${LABEL} mt-4`}>בחירת האתר</label>
                   <div className="flex flex-col gap-2.5 sm:flex-row">
@@ -402,7 +409,7 @@ export default function IntegrationsPage() {
                 פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח.
                 החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר.
               </p>
-              <p>הכניסה עם Google מזהה אתכם בישראמארקט. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר.</p>
+              <p>הכניסה עם Google מזהה אתכם בישראמארקט, ואינה מחברת את המדידה. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר.</p>
               <div>
                 <p className={DETAIL_TITLE}>1. מישהו אחר בנה או מנהל לכם את האתר?</p>
                 <p className="mt-1">
@@ -584,11 +591,14 @@ export default function IntegrationsPage() {
         {data || error ? <div className="mb-6 space-y-2">
           {recommendation ? <>
             <p className="text-[13px] font-medium text-[var(--ink-muted)]">כדאי להתחיל כאן</p>
-            <h2 className="text-[20px] font-semibold text-[var(--ink)]">{recommendation.title}</h2>
+            {/* The open row right below already carries the title; say it only when it is closed. */}
+            {activeKey !== primaryKey ? <h2 className="text-[20px] font-semibold text-[var(--ink)]">{recommendation.title}</h2> : null}
             <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{recommendation.why}</p>
-            {activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}>לפתוח את החיבור המומלץ</UIAction> : null}
-          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.</p>}
-          <Link href="/strategy" className={recommendation ? TEXT_ACTION : "drawn-button inline-flex min-h-11 items-center px-5 py-2"}>{recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"}</Link>
+          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 2 ? "החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : unavailableCount ? "חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : "אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם."}</p>}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+            {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}>לפתוח את החיבור המומלץ</UIAction> : null}
+            <Link href="/strategy" className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}>{recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"}</Link>
+          </div>
         </div> : null}
 
         <div className="space-y-4">
@@ -684,7 +694,7 @@ function ConnectionSection({ source, title, status, account, open, onOpen, child
   }}>
     <summary className="flex min-h-16 cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
       <span className="min-w-0"><strong className="text-[16px] font-semibold text-[var(--ink)]">{title}</strong>{account ? <span className="mt-1 block truncate text-[13px] text-[var(--ink-soft)]">{account}</span> : null}</span>
-      <span className="flex shrink-0 items-center gap-3 text-[13px] text-[var(--ink-muted)]">{status}<IconChevron className="h-4 w-4 transition-transform duration-200 group-open/connection:rotate-90 motion-reduce:transition-none" /></span>
+      <span className="flex shrink-0 items-center gap-3 text-[13px] text-[var(--ink-muted)]">{status}<IconChevron className="h-4 w-4 -rotate-90 transition-transform duration-200 ease-[cubic-bezier(.2,.7,.2,1)] group-open/connection:rotate-90 motion-reduce:transition-none" /></span>
     </summary>
     {children}
   </details>;
@@ -829,7 +839,7 @@ function WhatsappRow({
         {isSet ? null : <HowToFind topic="whatsapp_business" label="איך כותבים את המספר?" className="mt-1" />}
       </div>
 
-      <RowDetails summary={isSet ? "המספר וההודעה" : "מה נספר ומה לא"}>
+      <RowDetails indent summary={isSet ? "המספר וההודעה" : "מה נספר ומה לא"}>
         {isSet && !editing ? (
           <p className="flex flex-wrap items-center gap-x-4">
             <span>
@@ -1027,9 +1037,10 @@ function SelectFrame({ children }: { children: React.ReactNode }) {
 }
 
 /** Detail on demand: the reasoning and the how-to sit one tap down, never above the row. */
-function RowDetails({ summary, children }: { summary: string; children: React.ReactNode }) {
+function RowDetails({ summary, indent = false, children }: { summary: string; indent?: boolean; children: React.ReactNode }) {
   return (
-    <details className="group mt-4 border-t border-[var(--rule)] sm:ms-14">
+    // `indent` lines the expand up with the text beside a RowHead icon; rows without one stay flush.
+    <details className={`group mt-4 border-t border-[var(--rule)] ${indent ? "sm:ms-14" : ""}`}>
       <summary className="flex min-h-12 cursor-pointer list-none items-center gap-1.5 pt-1 text-[13px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
         {summary}
         <Chevron />

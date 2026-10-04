@@ -19,6 +19,6 @@ export function MetricComparison({ title, unit, source, period, points }: {
       </li>;
     })}</ul>
     {/* The period stays in one piece: a date range broken across lines reads as two dates. */}
-    <p className={styles.caption}>{source}{period ? <> · <span className={styles.period}>{period}</span></> : null}</p>
+    <p className={styles.caption}>{source}{period ? <> · <bdi className={styles.period}>{period}</bdi></> : null}</p>
   </figure>;
 }

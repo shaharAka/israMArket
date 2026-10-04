@@ -132,18 +132,30 @@ export default function StrategyPage() {
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-6">
       <h2 id="quarter-plan-heading" className="sr-only">הכיוון והצעדים הקרובים</h2>
-      {welcome ? (
-        <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">זו התוכנית שבניתם יחד איתנו. היא שמורה, ומכאן נעבוד לפיה.</p>
-      ) : null}
       <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" review={strategy?.hypothesis_review} />
 
     </section>
   ) : null;
 
+  // The page's one filled button: the free month's next step, or this week of the plan.
+  const nextAction = firstAction ? (
+    <div className="w-full space-y-3">
+      <p className="text-base font-semibold">הצעד הקרוב: {firstAction.title_he}</p>
+      <p className="max-w-xl text-sm leading-6 text-[color:var(--ink-soft)]">{firstAction.why_he}</p>
+      <NextStepAction step={firstAction} />
+    </div>
+  ) : strategy ? (
+    <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
+      השבוע בתוכנית
+      <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+    </Link>
+  ) : null;
+  // Right after signup the one action leads, under the title, not two screens down.
+  const actionOnTop = welcome && Boolean(plan);
+
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        {loaded ? <RecommendationReview planId={strategy?.id} /> : null}
         <SectionHeader
           section="plan"
           eyebrow={null}
@@ -159,6 +171,8 @@ export default function StrategyPage() {
             ) : undefined
           }
         />
+        {/* The suggestion the owner came to check: one line under the title, detail on demand. */}
+        {loaded ? <RecommendationReview planId={strategy?.id} /> : null}
         {Object.keys(business?.owner_context?.pending_links ?? {}).length ? (
           <p className="mb-8 flex items-start gap-3 rounded-xl bg-[var(--sand)] px-4 py-3 text-[13px] leading-6 text-[color:var(--ink)]">
             <span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
@@ -179,7 +193,12 @@ export default function StrategyPage() {
 
         {loaded ? (
           <div className="space-y-10 pb-2">
-            {welcome && plan ? <p className="text-sm leading-6 text-[color:var(--ink-soft)]">התוכנית נשמרה בחשבון. אפשר לחזור אליה בכל זמן; אין צורך לחבר את כל הכלים כדי להתחיל.</p> : null}
+            {actionOnTop ? (
+              <div className="space-y-5">
+                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">התוכנית שבניתם יחד איתנו שמורה, ומכאן נעבוד לפיה. אין צורך לחבר את כל הכלים כדי להתחיל.</p>
+                {nextAction}
+              </div>
+            ) : null}
             {/* Arrived from /start with the plan and no month yet: the server builds it now. */}
             {needsMonth ? (
               <MonthBuildProgress
@@ -204,12 +223,7 @@ export default function StrategyPage() {
             ) : null}
             {/* The page's one filled button, beside the calendar that belongs to the plan. */}
             <footer className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-8">
-              {firstAction ? <div className="w-full space-y-3"><p className="text-base font-semibold">הצעד הקרוב: {firstAction.title_he}</p><p className="max-w-xl text-sm leading-6 text-[color:var(--ink-soft)]">{firstAction.why_he}</p><NextStepAction step={firstAction} /></div> : strategy ? (
-                <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
-                  השבוע בתוכנית
-                  <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
-                </Link>
-              ) : null}
+              {actionOnTop ? null : nextAction}
               <Link href="/calendar" className={TEXT_ACTION}>
                 <IconCalendar className="h-[18px] w-[18px]" />
                 לוח התוכנית · פוסטים ומשימות
