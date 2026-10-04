@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+import secrets
 
 from cryptography.fernet import Fernet, InvalidToken
 from jose import JWTError, jwt
@@ -32,6 +33,11 @@ def verify_password(password: str, password_hash: str) -> bool:
     except (ValueError, TypeError):
         # A malformed or non-bcrypt stored hash must read as "wrong password", not a 500.
         return False
+
+
+def initial_session_epoch() -> int:
+    """Independent session generation for each account, within SQLite's signed integer."""
+    return secrets.randbits(62) + 1
 
 
 def create_access_token(user_id: int, epoch: int = 0) -> str:

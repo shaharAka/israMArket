@@ -17,7 +17,7 @@ from app.schemas import (
     RegisterRequest,
     UserOut,
 )
-from app.security import COOKIE_NAME, create_access_token, hash_password, verify_password
+from app.security import COOKIE_NAME, create_access_token, hash_password, initial_session_epoch, verify_password
 from app.services import google_login, ratelimit
 from app.services.account_deletion import delete_account
 from app.services.ratelimit import auth_rate_limit
@@ -65,6 +65,7 @@ def register(
         raise HTTPException(status_code=409, detail="כבר יש חשבון עם האימייל הזה")
     user = User(
         email=body.email.lower(),
+        session_epoch=initial_session_epoch(),
         password_hash=hash_password(body.password),
         full_name=body.full_name,
         # The free month starts at signup (Revision 7 B).
@@ -162,6 +163,7 @@ def _google_user(db: Session, identity: dict) -> User:
         return user
     user = User(
         email=identity["email"],
+        session_epoch=initial_session_epoch(),
         password_hash="",
         full_name=identity["name"],
         google_sub=identity["sub"],
