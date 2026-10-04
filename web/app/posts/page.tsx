@@ -242,7 +242,7 @@ function PostsWorkspace() {
   return (
     // The month view needs the width; a list of rows does not, and at 1100px a row's title
     // and its arrow ended up a screen apart.
-    <div className={`mx-auto ${location.calendar ? "max-w-6xl" : "max-w-3xl"}`}>
+    <div className={`mx-auto ${location.calendar && posts.length ? "max-w-6xl" : "max-w-3xl"}`}>
       <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
         <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
@@ -275,10 +275,12 @@ function PostsWorkspace() {
           ) : (
             <span />
           )}
-          {posts.length ? <ViewToggle
-            calendar={location.calendar}
-            onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
-          /> : null}
+          {posts.length ? (
+            <ViewToggle
+              calendar={location.calendar}
+              onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
+            />
+          ) : null}
         </div>
       </header>
 
