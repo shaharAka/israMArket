@@ -115,8 +115,11 @@ suspend or reactivate it, mark it free, or delete it. Every action is in the aud
 **Who is an admin.** A signed-in, active account whose email is in `ADMIN_EMAILS` and,
 with `ADMIN_REQUIRE_GOOGLE=true` (the default), that is linked to Google *and* whose
 current session came from "להמשיך עם Google" (the session token carries how it was signed
-in). A password session of the same account gets 403, so Google's 2-step verification is
-in front of every account. Keep it `true`: password signup does not verify the address,
+in). A password session of the same account gets 403. This proves Google sign-in, not
+that Google challenged for a second factor. Enable Google 2-Step Verification on every
+allowlisted owner's Google account before enabling backoffice access; this is an
+operational prerequisite, not a claim checked by IsraMarket's session token.
+Keep it `true`: password signup does not verify the address,
 so with `false` anyone who registers the owner's address with a password first is an
 admin. Every `/admin` route checks this on the server (401 without a session, 403
 otherwise, the same answer whatever the reason). The web app shows the link only in the
@@ -176,3 +179,4 @@ Spark post-writing experiment are not in it.
 - [ ] Only the web port published.
 - [ ] `curl -fsS https://your-host/backend/health` returns `{"ok":true,...}`.
 - [ ] `ADMIN_EMAILS` set, `ADMIN_REQUIRE_GOOGLE` left `true`, and `/admin` opens after a Google sign-in.
+- [ ] Every allowlisted owner's Google account has 2-Step Verification enabled.

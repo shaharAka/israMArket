@@ -651,8 +651,14 @@ class AuditTest(AdminTestCase):
         time.sleep(0.01)
         newcomer = self.make_user("new@bakery.example")
         self.assertEqual(newcomer, self.owner_id)  # SQLite hands the id out again
+        detail = self.client.get(f"/admin/users/{newcomer}")
+        self.assertEqual(detail.status_code, 200)
+        self.assertEqual(detail.json()["audit"], [])
         self.client.post(f"/admin/users/{newcomer}/sign-out")
+        detail_entries = self.client.get(f"/admin/users/{newcomer}").json()["audit"]
+        self.assertEqual([entry["action"] for entry in detail_entries], ["sign_out_everywhere"])
         entries = self.client.get("/admin/audit").json()["entries"]
+        self.assertEqual(len(entries), 2)  # The complete global record is retained.
         self.assertEqual(entries[0]["target_email"], "new@bakery.example")
         self.assertIsNone(entries[1]["target_email"])
 
