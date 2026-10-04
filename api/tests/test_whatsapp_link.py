@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
+from unittest import mock
 from urllib.parse import parse_qs, urlparse
 
 from fastapi.testclient import TestClient
@@ -360,7 +361,10 @@ class WhatsappLinkTestCase(unittest.TestCase):
         self.set_number()
         self.click(self.link("default").code)
         self.assertEqual(self.total_clicks(), 1)
-        delete_account(self.db, self.db.get(User, self.owner.id))
+        # Deletion removes media_root()/<business id>: without this it removed the checkout's
+        # real api/data/generated/1 (a developer's local media for business 1).
+        with mock.patch("app.services.account_deletion.images.media_root", return_value=self.tmp / "media"):
+            delete_account(self.db, self.db.get(User, self.owner.id))
         self.assertEqual(self.db.query(WhatsappClick).count(), 0)
         self.assertEqual(self.db.query(WhatsappLink).count(), 0)
 
