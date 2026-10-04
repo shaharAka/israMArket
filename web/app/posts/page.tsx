@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
-import { MonthBuildProgress } from "@/components/MonthBuildProgress";
+import { FirstPosts } from "@/components/posts/FirstPosts";
 import { PostEditor } from "@/components/PostEditor";
 import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { CalendarView } from "@/components/posts/CalendarView";
@@ -185,7 +185,7 @@ function PostsWorkspace() {
     window.scrollTo(0, 0);
   }
 
-  if (location.post !== null && !strategy) {
+  if (location.post !== null && !strategy && !noMonth) {
     return error ? (
       <p className={`${ui.error} mx-auto max-w-3xl`}>
         {error}
@@ -275,10 +275,10 @@ function PostsWorkspace() {
           ) : (
             <span />
           )}
-          <ViewToggle
+          {posts.length ? <ViewToggle
             calendar={location.calendar}
             onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
-          />
+          /> : null}
         </div>
       </header>
 
@@ -316,14 +316,6 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      {/* The posts the owner asked for ("להתחיל לכתוב") are written on the server: say so
-          while the month has none yet, never a bare "loading". */}
-      {strategy && posts.length === 0 ? (
-        <div className="mt-8">
-          <MonthBuildProgress kind="posts" onDone={() => setReload((n) => n + 1)} />
-        </div>
-      ) : null}
-
       <div className="mt-8">
         {!strategy ? (
           noMonth ? (
@@ -331,6 +323,8 @@ function PostsWorkspace() {
           ) : !error ? (
             <p className="text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים של החודש…</p>
           ) : null
+        ) : posts.length === 0 ? (
+          <FirstPosts onDone={() => setReload((n) => n + 1)} />
         ) : location.calendar ? (
           <CalendarView
             strategy={strategy}

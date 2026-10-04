@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api";
 import { SECTIONS } from "@/lib/sections";
-import { useMonthBuild } from "@/lib/useMonthBuild";
+import { useMonthBuild, type MonthBuild } from "@/lib/useMonthBuild";
 
 const TONE = SECTIONS.strategy;
 
@@ -31,10 +31,13 @@ export function MonthBuildProgress({
   kind = "first_month",
   autoStart = false,
   onDone,
+  idle,
 }: {
   kind?: GenerationStatus["kind"];
   autoStart?: boolean;
   onDone?: (result: GenerateResult | null) => void;
+  /** An explicit next action when no build is running; never starts work on mount. */
+  idle?: (build: MonthBuild) => ReactNode;
 }) {
   const build = useMonthBuild({ kind, onDone, startCall: START[kind] });
   const { status, loaded, starting, running, error, start } = build;
@@ -69,9 +72,9 @@ export function MonthBuildProgress({
     );
   }
 
-  if (!running && !starting) return null;
+  if (!running && !starting) return loaded ? idle?.(build) ?? null : null;
 
-  const label = status?.running ? status.label_he : "מתחילים לבנות את החודש…";
+  const label = status?.running ? status.label_he : kind === "posts" ? "מתחילים לכתוב את הפוסטים…" : "מתחילים לבנות את החודש…";
   const step = status?.running ? Math.min(status.stage_index + 1, status.stage_count) : 1;
   const steps = status?.stage_count || 4;
   return (
