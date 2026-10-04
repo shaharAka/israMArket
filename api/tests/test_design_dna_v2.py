@@ -180,20 +180,22 @@ class LogoCopyTest(DnaTestCase, unittest.TestCase):
         _png, transparent = brand_logo.normalise(rgba_png(mark=(222, 49, 99, 255)), "image/png")
         self.assertEqual([item["hex"] for item in transparent["colors"]], ["#de3163"])
 
-    def test_svg_is_never_served_from_our_origin_but_its_colours_count(self):
+    def test_svg_is_served_from_our_origin_only_as_a_png(self):
+        """An SVG from our origin can carry script: it is rasterised (services/svg_logo.py,
+        tests/test_svg_logo.py), and only the PNG is stored and served."""
         svg = b'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><path fill="#c2185b" d="M0 0h10v10z"/>' \
               b'<path fill="#c2185b" d="M1 1h2v2z"/></svg>'
         FakeWeb({LOGO_URL: (200, "image/svg+xml", svg + b" " * 200)}).start(self)
         record = brand_logo.ensure(self.business)
-        self.assertEqual(record["status"], "unsupported")
-        self.assertNotIn("public_url", record)
-        self.assertFalse(any(p.name.startswith("logo-") for p in (self.media / str(self.business.id)).glob("*"))
-                         if (self.media / str(self.business.id)).exists() else False)
+        self.assertEqual((record["status"], record["format"]), ("ok", "svg"))
+        files = list((self.media / str(self.business.id)).glob("logo-*"))
+        self.assertEqual([p.name for p in files], [record["filename"]])
+        self.assertTrue(files[0].read_bytes().startswith(b"\x89PNG"), "the SVG itself is never stored")
         signals = design_dna.signals_for(self.db, self.business)
         self.assertEqual((signals["swatches"][0].hex, signals["swatches"][0].source), ("#c2185b", "logo"))
-        self.assertFalse(signals["has_logo"])
+        self.assertTrue(signals["has_logo"])
         dna = design_dna.preview_dna(self.business)
-        self.assertEqual(dna["signature"]["kind"], "name_only")
+        self.assertEqual(dna["signature"]["logo_url"], record["public_url"])
 
     def test_a_private_address_or_a_non_image_is_refused(self):
         web = FakeWeb({LOGO_URL: (200, "image/png", rgba_png())})

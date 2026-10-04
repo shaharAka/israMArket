@@ -20,6 +20,7 @@ RUN apt-get update \
 # The app finds it through CHROME_PATH; the container user has no user namespaces, so
 # Chrome's own sandbox must be off (CHROME_NO_SANDBOX=true, set by the deployment).
 # Hebrew-capable fonts (Culmus, DejaVu) so a Hebrew site is not captured as empty boxes.
+# resvg (resvg-py, services/svg_logo.py) reads the same fonts for text in an SVG logo.
 # Run the container with a larger /dev/shm (docker-compose: shm_size) and an init
 # process (init: true) so Chrome's helper processes are reaped.
 RUN apt-get update \

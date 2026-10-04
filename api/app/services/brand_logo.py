@@ -14,11 +14,14 @@ cap, image types only, a minimum size (`scraper._download_logo`). Then, with Pil
   ignored) and the ground it reads on (`logo_on`: light | dark | any), from its own
   alpha and luminance.
 
+An SVG logo is never served: an SVG from our origin can carry script. It is sanitised and
+rendered to a PNG in a sandboxed child process (services/svg_logo.py), and that PNG goes
+through the same steps (`format: "svg"` on the record).
+
 The result is `Business.brand_logo_json` (`load`): `status` is `ok` (a copy exists),
-`unsupported` (an SVG logo: never copied, since an SVG served from our origin can carry
-script; its fill colours still count as logo colour evidence) or `failed`. No logo, no
-copy: the DNA signs with the name (`signature.kind` name_only | none), never an invented
-monogram.
+`unsupported` (an SVG that could not be made a safe PNG: `reason` says why, and its fill
+colours still count as logo colour evidence) or `failed`. No logo, no copy: the DNA signs
+with the name (`signature.kind` name_only | none), never an invented monogram.
 """
 
 from __future__ import annotations
@@ -33,6 +36,7 @@ import httpx
 
 from app.config import get_settings
 from app.services import colors as color_tools
+from app.services import svg_logo
 from app.services.jsonutil import dumps, loads
 
 log = logging.getLogger(__name__)
@@ -74,7 +78,9 @@ def fetch(url: str) -> dict | None:
 
 
 def normalise(data: bytes, mime: str) -> tuple[bytes, dict] | None:
-    """(PNG bytes, analysis) for a raster logo, or None (SVG, not an image, too large)."""
+    """(PNG bytes, analysis) for a raster logo, or None (SVG, not an image, too large).
+
+    An SVG never comes here as SVG: `rasterise_svg` renders it to a PNG first."""
     if mime == "image/svg+xml":
         return None
     try:
@@ -225,6 +231,19 @@ def analyse(image) -> dict:
     }
 
 
+def rasterise_svg(data: bytes) -> tuple[tuple[bytes, dict] | None, str]:
+    """(`normalise` of the SVG rendered to PNG, "") or (None, why it could not be)."""
+    try:
+        png = svg_logo.rasterise(data)
+    except svg_logo.SvgRejected as exc:
+        return None, exc.reason
+    except Exception:  # the logo is evidence, never a reason to fail the refresh
+        log.exception("brand logo: SVG rasterisation failed")
+        return None, "render_failed"
+    normalised = normalise(png, "image/png")
+    return normalised, "" if normalised else "blank"
+
+
 def _svg_reading(data: bytes) -> dict:
     colors = color_tools.svg_colors(data.decode("utf-8", "ignore"), max_colors=5)
     weighted = [(_relative(color_tools.hex_to_rgb(c["hex"]) or (0, 0, 0)), float(c.get("share") or 1)) for c in colors]
@@ -306,39 +325,44 @@ def ensure(business, *, force: bool = False) -> dict | None:
     if current and current.get("source_url") == url and not force:
         if current.get("status") == "ok" and usable(current):
             return current
-        if current.get("status") in {"failed", "unsupported"} and _recent(current):
+        # An `unsupported` record without a `reason` predates SVG rasterisation: try it now.
+        if (current.get("status") == "failed" or (current.get("status") == "unsupported" and current.get("reason"))) \
+                and _recent(current):
             return current
     if not get_settings().brand_logo_copy:
         return current
     fetched = fetch(url)
+    svg = bool(fetched) and fetched.get("mime") == "image/svg+xml"
     if fetched is None:
-        record = {"source_url": url, "status": "failed", "checked_at": _now()}
-    elif fetched.get("mime") == "image/svg+xml":
-        record = {"source_url": url, "status": "unsupported", "format": "svg", "checked_at": _now(),
-                  **_svg_reading(fetched["bytes"])}
+        normalised, record = None, {"source_url": url, "status": "failed", "checked_at": _now()}
+    elif svg:
+        normalised, reason = rasterise_svg(fetched["bytes"])
+        record = {"source_url": url, "status": "unsupported", "format": "svg", "reason": reason,
+                  "checked_at": _now(), **(_svg_reading(fetched["bytes"]) if normalised is None else {})}
     else:
         normalised = normalise(fetched["bytes"], fetched.get("mime") or "")
-        if normalised is None:
-            record = {"source_url": url, "status": "failed", "checked_at": _now()}
-        else:
-            png, reading = normalised
-            filename, public = store_png(business.id, png)
-            size = color_tools.image_size(png) or (0, 0)
-            record = {
-                "source_url": url,
-                "status": "ok",
-                "public_url": public,
-                "filename": filename,
-                "width": size[0],
-                "height": size[1],
-                "has_alpha": reading["has_alpha"],
-                "logo_on": reading["logo_on"],
-                "colors": reading["colors"],
-                "ground": reading["ground"],
-                "checked_at": _now(),
-            }
-            _drop_old_file(business.id, current, keep=filename)
+        record = {"source_url": url, "status": "failed", "checked_at": _now()}
+    if normalised is not None:
+        png, reading = normalised
+        filename, public = store_png(business.id, png)
+        size = color_tools.image_size(png) or (0, 0)
+        record = {
+            "source_url": url,
+            "status": "ok",
+            "public_url": public,
+            "filename": filename,
+            "width": size[0],
+            "height": size[1],
+            "has_alpha": reading["has_alpha"],
+            "logo_on": reading["logo_on"],
+            "colors": reading["colors"],
+            "ground": reading["ground"],
+            **({"format": "svg"} if svg else {}),
+            "checked_at": _now(),
+        }
+        _drop_old_file(business.id, current, keep=filename)
     if record["status"] != "ok":
-        log.info("brand logo: no copy for business %s (%s)", business.id, record["status"])
+        log.info("brand logo: no copy for business %s (%s %s)", business.id, record["status"],
+                 record.get("reason") or "")
     business.brand_logo_json = dumps(record)
     return record
