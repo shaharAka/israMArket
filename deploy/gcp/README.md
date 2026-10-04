@@ -393,25 +393,47 @@ startup, so every update first takes a DB-only backup to `gs://$BUCKET/pre-updat
 - Caddy writes **no access log** on purpose. It would record every visitor's IP,
   including taps on WhatsApp tracked links.
 
-### Switch to a real domain (one variable)
+### Switch to a real domain
 
-1. Register the domain (for example `isramarket.co.il`). Add an `A` record for `@` pointing
-   to `$IP` and wait until `dig +short isramarket.co.il` returns it.
-2. Set the variable and redeploy:
+Use two stages so the new certificate works before the application origin changes.
+Deploy the reviewed alias-support revision first. Record the current revision, `site-host`,
+`site-aliases`, any explicit `public-base-url`, and provider URL settings for rollback.
+
+1. Point both the apex and `www` A records to the VM IP and confirm both resolve publicly.
+   A registry `serverHold` must be resolved with the registrar; changing an A record alone
+   cannot activate the domain. Keep the transfer lock enabled.
+2. Keep the current canonical host and add the new names as aliases:
    ```bash
    gcloud compute instances add-metadata isramarket-vm --project isramarket --zone me-west1-a \
-     --metadata site-host=isramarket.co.il
+     --metadata 'site-aliases=isramarket.co.il www.isramarket.co.il'
    gcloud compute ssh isramarket-vm --project isramarket --zone me-west1-a --tunnel-through-iap \
-     --command 'sudo /srv/isramarket/deploy/gcp/update.sh --recreate'
+     --command 'sudo /srv/isramarket/deploy/gcp/update.sh <reviewed-sha>'
    ```
-   Caddy obtains the new certificate within seconds. `WEB_ORIGIN`, `API_ORIGIN` and
-   `PUBLIC_BASE_URL` all follow.
-3. Replace the OAuth URIs in Google and Meta (step 13) with the new host.
-4. The sslip.io host stops being served, so existing sessions and any links printed with
-   it break. **Switch before owners post WhatsApp links.** If links already went out, add
-   a redirect block for the old host to `deploy/gcp/Caddyfile`:
-   `34-165-x-x.sslip.io { redir https://isramarket.co.il{uri} permanent }`.
-   `www.` needs its own DNS record and a block like it.
+   Caddy obtains certificates for every host. Verify TLS for both new names and verify
+   their redirects to the still-active old host, including paths and queries. Do not
+   proceed if certificate verification fails.
+3. Add the new HTTPS origin and callback URLs to Google and Meta (step 13), retaining
+   old URLs during the transition. Only use the verified new host for policy URLs.
+4. Switch the canonical host and retain the apex and old host as aliases:
+   ```bash
+   gcloud compute instances add-metadata isramarket-vm --project isramarket --zone me-west1-a \
+     --metadata 'site-host=www.isramarket.co.il,site-aliases=isramarket.co.il 34-165-93-157.sslip.io'
+   gcloud compute ssh isramarket-vm --project isramarket --zone me-west1-a --tunnel-through-iap \
+     --command 'sudo /srv/isramarket/deploy/gcp/update.sh <reviewed-sha> --recreate'
+   ```
+   Use the VM's actual old host. `WEB_ORIGIN`, `API_ORIGIN` and the default `PUBLIC_BASE_URL`
+   follow `site-host`. Update any explicit `public-base-url` or extra-environment origin
+   override in the same rollout.
+5. Verify public policies, health, sign-in and each integration on the new host. Verify
+   aliases return 308 and preserve the path/query. Users sign in again because their
+   session cookie belongs to the previous host; database integration grants remain.
+   Retry sign-ins interrupted by migration.
+
+For rollback, restore the recorded metadata/origin overrides, keeping the new names as
+aliases to the old canonical host, then run the reviewed alias-support revision with
+`--recreate`. Recheck TLS, health and OAuth redirects. Rolling code back alone does not
+restore the origin: environment values are rendered from metadata on every update.
+Old provider callback entries must remain allowlisted until the rollback window closes.
 
 ### Restore from a backup
 

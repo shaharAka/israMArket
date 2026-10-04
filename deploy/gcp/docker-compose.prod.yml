@@ -89,6 +89,7 @@ services:
       - "443:443/udp" # HTTP/3
     environment:
       SITE_HOST: "${SITE_HOST:?SITE_HOST missing - run deploy/gcp/render-env.sh}"
+      SITE_ALIASES: "${SITE_ALIASES:-}"
       ACME_EMAIL: "${ACME_EMAIL:?ACME_EMAIL missing - set the acme-email instance metadata}"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
