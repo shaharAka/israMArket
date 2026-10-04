@@ -12,6 +12,7 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
+import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { COMPOSITION_LIBRARY } from "@/lib/dna/library";
 import { resolveDna } from "@/lib/dna/resolve";
 import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions";
@@ -69,6 +70,7 @@ import {
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
+import { useTrial, type TrialPayload } from "@/lib/trial";
 import { EditorIcon } from "@/components/posts/EditorIcon";
 import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
@@ -199,6 +201,26 @@ function previewCaption(caption: string, max = 60): string {
   return clean.length > max ? `${clean.slice(0, max).trimEnd()}…` : clean;
 }
 
+/** Where each post number comes from, and what is missing when it is not connected. */
+const MEASURE_SOURCE: Record<string, { source: TrialPayload["measurement"]["connected"][number]; missing: string }> = {
+  site_visits: { source: "site", missing: "צריך לחבר את נתוני האתר" },
+  whatsapp_clicks: { source: "whatsapp", missing: "צריך להכין את קישור הוואטסאפ" },
+  reach: { source: "instagram", missing: "צריך לחבר את האינסטגרם" },
+  saves: { source: "instagram", missing: "צריך לחבר את האינסטגרם" },
+};
+
+/**
+ * What the owner is told about a published post's number before it is counted. "נספור …
+ * בעדכון הנתונים הבא" was said even with nothing connected, a promise no update could
+ * keep; with the source missing, say what it needs instead. Null: the journey has not
+ * loaded, so the usual line stays.
+ */
+function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null): string | null {
+  const need = post.measure ? MEASURE_SOURCE[post.measure.metric] : undefined;
+  if (!trial || !need || trial.measurement.connected.includes(need.source)) return null;
+  return label ? `כדי לספור כאן ${label}, ${need.missing}.` : `כדי למדוד את הפוסט, ${need.missing}.`;
+}
+
 export function PostEditor({
   posts: initialPosts,
   strategy,
@@ -221,6 +243,7 @@ export function PostEditor({
   onClose?: () => void;
 }) {
   const { palette } = useDesignPalette();
+  const { payload: trial } = useTrial();
   // The business's Design DNA: every preview, thumbnail and export is drawn from it.
   // The month carries it (`serialize_strategy`); the shared store is the fallback, and is
   // what a save on the brand page updates.
@@ -318,6 +341,28 @@ export function PostEditor({
       cancelled = true;
     };
   }, []);
+
+  /** The post's own tracked WhatsApp link, for the copied WhatsApp message of a post that
+   *  is measured by WhatsApp taps (the publish kit reads the same link). Kept with the
+   *  index it belongs to, so a switch of post never copies another post's link. */
+  const [postWaLink, setPostWaLink] = useState<{ index: number; link: WhatsappPostLink } | null>(null);
+  const waMeasured = posts[selectedIndex]?.measure?.metric === "whatsapp_clicks";
+  const waCta = posts[selectedIndex]?.cta || "";
+  useEffect(() => {
+    if (!waMeasured) return;
+    let active = true;
+    whatsappEndpoints
+      .forPost(selectedIndex, waCta)
+      .then((link) => {
+        if (active) setPostWaLink({ index: selectedIndex, link });
+      })
+      .catch(() => {
+        if (active) setPostWaLink(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [selectedIndex, waMeasured, waCta]);
 
   /** True while any image operation is in flight. Every image control checks this, so a
    *  library pick, an AI generation and a source switch can never overlap. */
@@ -586,7 +631,9 @@ export function PostEditor({
       toast(
         alreadyOut
           ? "הקישור נשמר. נראה לפיו גם כמה ראו."
-          : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
+          : pendingMeasureLine(currentPost, "", trial)
+            ? "סימנו שהפוסט פורסם."
+            : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
       );
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו לסמן שהפוסט פורסם");
@@ -1268,10 +1315,12 @@ export function PostEditor({
 
   async function copyCaption() {
     // WhatsApp gets the whole formatted message (bold title, caption, call to action and
-    // link), which is what the WhatsApp mockup's copy button used to hand over.
+    // link), which is what the WhatsApp mockup's copy button used to hand over. The link is
+    // the one the post is measured by: its own WhatsApp link when it asks people to write.
+    const own = postWaLink?.index === selectedIndex && postWaLink.link.cta_is_whatsapp ? postWaLink.link.link?.url : "";
     const text =
       channel === "whatsapp"
-        ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${currentPost.tracking_url || ""}`.trim()
+        ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${own || currentPost.tracking_url || ""}`.trim()
         : activeCaption;
     try {
       await navigator.clipboard.writeText(text);
@@ -1829,7 +1878,8 @@ export function PostEditor({
           <>
             <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]">לא נמדד עדיין</p>
             <p className={`${ui.help} mt-0.5`}>
-              {label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא."}
+              {pendingMeasureLine(currentPost, label, trial) ??
+                (label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא.")}
             </p>
           </>
         )}

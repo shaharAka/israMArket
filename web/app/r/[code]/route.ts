@@ -13,20 +13,70 @@ import { NextRequest, NextResponse } from "next/server";
  * not a tap). No cookies, no client address, no referrer — the API never sees who tapped.
  */
 const UPSTREAM = process.env.API_ORIGIN ?? "http://localhost:8000";
-const FORWARDED = ["user-agent", "purpose", "sec-purpose", "x-purpose", "x-moz"];
+const FORWARDED = ["purpose", "sec-purpose", "x-purpose", "x-moz"];
+
+/**
+ * When the API cannot answer, the person who tapped (the business's customer) still gets a
+ * calm Hebrew page with a way on, the same one the API serves for a link that is gone.
+ */
+const UNAVAILABLE = `<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>הקישור לא נפתח · ישראמארקט</title>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7fb;
+         color: #14203a; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }
+  main { max-width: 24rem; padding: 2rem 1.25rem; text-align: center; }
+  .mark { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: #ffc44a;
+          box-shadow: 0 0 0 5px #fff4d6; }
+  h1 { font-size: 1.4rem; line-height: 1.3; margin: 1.25rem 0 .5rem; }
+  p { margin: 0; line-height: 1.7; color: #4b5670; }
+  a { display: inline-flex; align-items: center; min-height: 44px; margin-top: 1.25rem; color: #2853c7;
+      font-weight: 600; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body><main><span class="mark" aria-hidden="true"></span><h1>הקישור לא נפתח כרגע</h1>
+<p>כנראה תקלה רגעית אצלנו. נסו שוב בעוד דקה.</p>
+<a href="/">לעמוד הבית של ישראמארקט</a></main></body>
+</html>`;
+
+function unavailable(request: NextRequest) {
+  return new NextResponse(request.method === "HEAD" ? null : UNAVAILABLE, {
+    status: 503,
+    headers: {
+      "content-type": "text/html; charset=utf-8",
+      "cache-control": "no-store",
+      "referrer-policy": "no-referrer",
+      "x-robots-tag": "noindex, nofollow",
+      "retry-after": "60",
+    },
+  });
+}
 
 async function forward(request: NextRequest, code: string) {
-  const headers = new Headers();
+  // An omitted header lets Node's fetch invent its own agent, turning an anonymous
+  // preview/check into a tap. Preserve absence explicitly for the API's bot filter.
+  const headers = new Headers({ "user-agent": request.headers.get("user-agent") ?? "" });
   for (const name of FORWARDED) {
     const value = request.headers.get(name);
     if (value) headers.set(name, value);
   }
-  const upstream = await fetch(`${UPSTREAM}/r/${encodeURIComponent(code)}`, {
-    method: request.method === "HEAD" ? "HEAD" : "GET",
-    headers,
-    redirect: "manual",
-    cache: "no-store",
-  });
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${UPSTREAM}/r/${encodeURIComponent(code)}`, {
+      method: request.method === "HEAD" ? "HEAD" : "GET",
+      headers,
+      redirect: "manual",
+      cache: "no-store",
+    });
+  } catch {
+    return unavailable(request);
+  }
+  if (upstream.status >= 500) return unavailable(request);
   const out = new Headers();
   for (const name of ["location", "content-type", "cache-control", "referrer-policy", "x-robots-tag"]) {
     const value = upstream.headers.get(name);

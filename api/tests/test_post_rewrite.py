@@ -226,6 +226,24 @@ class InstructionTest(RewriteTestCase):
         self.assertEqual(result["lifecycle"], "ready")
         self.assertEqual(self.stored(strategy)["rewrite_instruction"], "קצר יותר")
 
+    def test_a_rewrite_keeps_the_call_to_action_in_the_caption(self):
+        # The loop run of #111: "יותר חם" dropped "כתבו לנו בוואטסאפ" from the caption of a
+        # post measured by WhatsApp taps, while its note still credited the WhatsApp invite.
+        caption = "חלה, ריבה ועוגה קטנה, הכול במארז אחד לשישי.\nכתבו לנו בוואטסאפ"
+        strategy = self.month(post(caption=caption, outlet_captions={"instagram": caption}), post(uid="bbbbbbbbb2"))
+        response = self.rewrite(Writer(written(caption="חלה חמה, ריבה ועוגה. הכול במארז אחד, רק בשבילכם.")),
+                                instruction="יותר חם")
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()["post"]
+        self.assertEqual(result["caption"], "חלה חמה, ריבה ועוגה. הכול במארז אחד, רק בשבילכם.\nכתבו לנו בוואטסאפ")
+        self.assertEqual(result["outlet_captions"]["instagram"], result["caption"])
+        self.assertEqual(self.stored(strategy)["caption"], result["caption"])
+        # A writer that kept it is left alone, and a caption that never had it gets none.
+        kept = self.rewrite(Writer(written(caption="חלה וריבה. כתבו לנו בוואטסאפ ונשמור לכם.")), instruction="קצר יותר")
+        self.assertEqual(kept.json()["post"]["caption"], "חלה וריבה. כתבו לנו בוואטסאפ ונשמור לכם.")
+        never = self.rewrite(Writer(written(caption="חלה וריבה, מארז אחד.")), instruction="קצר יותר", post_index=1)
+        self.assertEqual(never.json()["post"]["caption"], "חלה וריבה, מארז אחד.")
+
     def test_the_owners_words_are_the_instruction(self):
         self.month(post())
         writer = Writer(written())

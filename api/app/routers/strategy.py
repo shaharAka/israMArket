@@ -685,6 +685,49 @@ def suggest_post_assets(
     return {"suggestions": suggestions}
 
 
+def _merge_image_work(before: dict, produced: dict, current: dict) -> dict:
+    """Apply what image work changed in one post (`before` → `produced`) onto the post as
+    it is now (`current`), keeping whatever the owner changed in the meantime.
+
+    Key by key: a field the image work changed is taken from `produced` unless the owner
+    changed that same field meanwhile. A post that got its own photo meanwhile, or is no
+    longer the same post, is left as it is now."""
+    if before.get("uid") != current.get("uid") or before.get("image_url") != current.get("image_url"):
+        return current
+    merged = dict(current)
+    for key in set(before) | set(produced):
+        if (key in before) == (key in produced) and before.get(key) == produced.get(key):
+            continue
+        if (key in current) != (key in before) or current.get(key) != before.get(key):
+            continue
+        if key in produced:
+            merged[key] = produced[key]
+        else:
+            merged.pop(key, None)
+    return merged
+
+
+def _posts_of(strategy: Strategy) -> list:
+    return list((loads(strategy.roadmap_json, {}).get("roadmap") or {}).get("posts") or [])
+
+
+def _keep_concurrent_edits(db: Session, strategy: Strategy, before: list) -> None:
+    """Image work reads the month, spends seconds to minutes on model calls, then writes
+    the month back. Whatever the owner saved meanwhile (an approval, "פרסמתי", a caption,
+    their own photo) came from other requests and was silently undone by that write.
+    Re-read the month and apply only this request's image work onto it."""
+    produced = _posts_of(strategy)
+    db.refresh(strategy)
+    extra = loads(strategy.roadmap_json, {})
+    roadmap = dict(extra.get("roadmap") or {})
+    now_posts = list(roadmap.get("posts") or [])
+    for index in range(min(len(before), len(produced), len(now_posts))):
+        if produced[index] != before[index]:
+            now_posts[index] = _merge_image_work(before[index], produced[index], now_posts[index])
+    extra["roadmap"] = {**roadmap, "posts": now_posts}
+    strategy.roadmap_json = dumps(extra)
+
+
 @router.post("/strategy/posts/images", dependencies=[Depends(require_generation_access)])
 def generate_all_post_images(
     business: Business = Depends(get_business),
@@ -693,6 +736,7 @@ def generate_all_post_images(
     strategy = _active_strategy(db, business)
     extra = loads(strategy.roadmap_json, {})
     posts = list((extra.get("roadmap") or {}).get("posts") or [])
+    before = loads(dumps(posts), [])
     errors: list[str] = []
     for index, post in enumerate(posts):
         if post.get("image_url"):
@@ -701,8 +745,10 @@ def generate_all_post_images(
             _store_post_image(business, strategy, index, db=db)
         except Exception as exc:
             errors.append(f"פוסט {index + 1}: {exc}")
-    if errors and not any(item.get("image_url") for item in loads(strategy.roadmap_json, {}).get("roadmap", {}).get("posts", [])):
+    if errors and not any(item.get("image_url") for item in _posts_of(strategy)):
         raise HTTPException(status_code=502, detail=errors[0])
+    # The Posts page runs this on open, and a month of images takes minutes.
+    _keep_concurrent_edits(db, strategy, before)
     business.updated_at = datetime.utcnow()
     db.commit()
     db.refresh(strategy)
@@ -878,8 +924,14 @@ def rewrite_post_endpoint(
         # A confirmed fact went missing, or a discount appeared: the old text stays.
         return answer(changed=False, message=checked.message)
 
+    had_cta_in_caption = post_rewrite.cta_in_caption(target)
     for name in post_rewrite.TEXT_FIELDS:
         target[name] = checked.fields[name]
+    if had_cta_in_caption and not post_rewrite.cta_in_caption(target):
+        # The caption is what gets posted, and it carried the call to action: the rewrite
+        # keeps it there, or the post stops asking for what it is measured by (WhatsApp
+        # taps) while "עודכן לפי…" still credits it (#111).
+        target["caption"] = f"{str(target.get('caption') or '').rstrip()}\n{str(target.get('cta') or '').strip()}"
     if target.get("has_overlay") is not False and target.get("overlay_text"):
         # The headline the card prints follows the rewritten text: one message, 6 words.
         target["overlay_headline"] = target["overlay_text"]

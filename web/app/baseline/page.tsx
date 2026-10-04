@@ -89,6 +89,16 @@ export default function BaselinePage() {
                 <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--good)]" />
                 כבר יש לנו מספרים אמיתיים מהחיבורים, והם נקודת הפתיחה. אפשר להוסיף כאן גם מה שהם לא רואים.
               </p>
+            ) : data.from_start_he && !data.saved_at ? (
+              // The owner answered this at /start: say it back, so the page is a chance to
+              // be more exact, not the same question asked again.
+              <div className="flex items-start gap-3 rounded-xl bg-[var(--good-soft)] px-4 py-3.5 text-[14px] leading-6 text-[color:var(--ink)]">
+                <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--good)]" />
+                <p>
+                  <b className="font-semibold">מה שסיפרתם בהתחלה:</b> {data.from_start_he}{" "}
+                  <span className="text-[color:var(--ink-soft)]">זו כבר נקודת פתיחה. מספר מדויק יותר כאן הוא לא חובה.</span>
+                </p>
+              </div>
             ) : null}
 
             {/* One card, a row per number: the question on one side, the answer on the other. */}
@@ -126,7 +136,7 @@ export default function BaselinePage() {
               <UIAction onClick={() => void save()} disabled={saving} className="w-full sm:w-auto sm:!px-7">
                 {saving ? "שומרים…" : "לשמור את נקודת הפתיחה"}
               </UIAction>
-              {data.saved_at ? (
+              {data.saved_at || data.from_start_he ? (
                 <Link href="/dashboard" className={TEXT_ACTION}>
                   לצעד הבא
                   <IconArrowLeft className="h-4 w-4" />

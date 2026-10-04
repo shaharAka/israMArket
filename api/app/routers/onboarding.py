@@ -763,6 +763,11 @@ def run_posts_stage(db: Session, business: Business) -> bool:
     )
     payload = _first_month_payload(db, business, stored, with_seed=first is not None and first.id == strategy.id)
     written = write_week_posts(payload, loads(strategy.usp_json, {}) or {}, core, brand, week)
+    # Writing a week takes one to two minutes, and the weeks already written are on the
+    # Posts page meanwhile: the owner may approve one, give it a photo or edit its text.
+    # Append to the month as it is now, not as it was read before the model call, so
+    # those changes are not overwritten.
+    db.refresh(strategy)
     existing = month_posts.month_posts(strategy)
     tagged = attach_audiences(
         attach_tracking(existing + written, payload, strategy.year, strategy.month), payload.get("audiences") or []

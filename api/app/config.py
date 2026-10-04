@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     # account. Off until the app is approved.
     instagram_hashtag_search: bool = False
     database_url: str = Field(default="sqlite:///./data/isramarket.db")
+    # Where generated cards, uploaded photos, logos and scan captures live (one folder per
+    # business). Empty = api/data/generated. Tests point it at a throwaway folder
+    # (tests/_test_env.py) so a run never touches a developer's real media.
+    media_dir: str = ""
 
     gemini_strategy_model: str = "gemini-3.8-flash"
     gemini_lite_model: str = "gemini-3.5-flash-lite"

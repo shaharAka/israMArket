@@ -17,6 +17,8 @@ import {
   type AudiencePerformance,
   type InstagramAccount,
   type InstagramAccountWindow,
+  type MeasuredPost,
+  type PostMetric,
   type PerformancePayload,
   type RecommendationPayload,
   type ServiceResultsPayload,
@@ -46,12 +48,6 @@ function formatMetricValue(key: string, val: string) {
 
 /** `2026-08-08` reads as a machine string; the owner reads `8.8 עד 4.9.2026` (lib/dates.ts). */
 const formatPeriod = dateRange;
-
-function toNumber(value: unknown): number | undefined {
-  if (value === null || value === undefined || value === "") return undefined;
-  const num = Number(value);
-  return Number.isFinite(num) ? num : undefined;
-}
 
 /**
  * Detail on demand. A native `<details>`, so closed content is out of the reading order —
@@ -133,86 +129,77 @@ function Change({ trend, children }: { trend?: Trend; children: ReactNode }) {
 /* ------------------------------------------------------------------------------------ */
 
 /**
- * One post's results, summed from what the sync attributed to it: its GA4 campaign rows
- * (matched by the post's tracking link) and its matched Instagram post. `undefined` is
- * "not measured" — never zero. A post with nothing matched is a normal state, and the
- * screen says so rather than ranking it last with a 0.
+ * The month's measured posts, each with the one number its card shows: the post's own
+ * `results` (WhatsApp taps by the post's code, site visits by its link with tracking,
+ * Instagram reach or saves by its link), which the refresh and the weekly job write back
+ * (`measured_posts` from `/performance/latest`). One source for the card and this list, so
+ * the two never disagree. A post that is out and was not counted is a count, never a 0.
  */
-type PostResult = {
-  key: string;
-  title: string;
-  audience: string;
-  sessions?: number;
-  conversions?: number;
-  likes?: number;
-  comments?: number;
-  measured: boolean;
-};
+type PostResultsView = { items: MeasuredPost[]; waiting: number };
 
-function postResults(payload: PerformancePayload): PostResult[] | null {
-  const rows = payload.ga4?.post_attribution;
-  if (!Array.isArray(rows) || !rows.length) return null;
-  return rows.map((raw, index) => {
-    const row = raw as {
-      title?: string;
-      utm_content?: string;
-      audience_name?: string;
-      ga4?: Record<string, unknown>[];
-      meta?: Record<string, unknown> | null;
-    };
-    const sum = (key: string) => {
-      const values = (row.ga4 || []).map((campaign) => toNumber(campaign?.[key])).filter((v) => v !== undefined);
-      return values.length ? values.reduce((a, b) => a + (b as number), 0) : undefined;
-    };
-    const sessions = sum("sessions");
-    const conversions = sum("conversions");
-    const likes = row.meta ? toNumber(row.meta.like_count) : undefined;
-    const comments = row.meta ? toNumber(row.meta.comments_count) : undefined;
-    return {
-      key: row.utm_content || `${row.title}-${index}`,
-      title: row.title || "פוסט בלי שם",
-      audience: row.audience_name || "",
-      sessions,
-      conversions,
-      likes,
-      comments,
-      measured: [sessions, conversions, likes, comments].some((v) => v !== undefined),
-    };
-  });
+function postResults(payload: PerformancePayload): PostResultsView | null {
+  const data = payload.measured_posts;
+  if (!data || (!data.items?.length && !data.waiting)) return null;
+  return { items: data.items || [], waiting: data.waiting || 0 };
 }
 
-/** Key events, then visits, then likes. Unmeasured posts are not ranked. */
-function byResult(a: PostResult, b: PostResult) {
-  return (
-    (b.conversions ?? -1) - (a.conversions ?? -1) ||
-    (b.sessions ?? -1) - (a.sessions ?? -1) ||
-    (b.likes ?? -1) - (a.likes ?? -1)
+/** Where each per-post number comes from, in the owner's words. */
+const POST_SOURCE: Record<PostMetric, string> = {
+  whatsapp_clicks: "לחיצות על הקישור לוואטסאפ של כל פוסט, מאז שנוצר. ספירה שלנו",
+  site_visits: "נתוני האתר · לפי הקישור עם המעקב של כל פוסט",
+  reach: "אינסטגרם · לפי הקישור לכל פוסט",
+  saves: "אינסטגרם · לפי הקישור לכל פוסט",
+};
+
+/** The measure most posts share; numbers of different measures are never ranked together. */
+function leadingMetric(items: MeasuredPost[]): PostMetric | null {
+  const counts = new Map<PostMetric, number>();
+  for (const item of items) counts.set(item.metric, (counts.get(item.metric) || 0) + 1);
+  let best: PostMetric | null = null;
+  for (const [metric, count] of counts) if (!best || count > (counts.get(best) || 0)) best = metric;
+  return best;
+}
+
+/** The leading measure's posts first, highest first; then the others by measure. */
+function ordered(items: MeasuredPost[]): MeasuredPost[] {
+  const lead = leadingMetric(items);
+  return [...items].sort(
+    (a, b) => Number(b.metric === lead) - Number(a.metric === lead) || a.metric.localeCompare(b.metric) || b.value - a.value
   );
 }
 
-function ResultFigures({ result }: { result: PostResult }) {
-  if (!result.measured) return <span className="text-[13px] text-[color:var(--ink-muted)]">לא נמדד</span>;
-  const parts = [
-    result.conversions !== undefined ? `${result.conversions.toLocaleString("he-IL")} פעולות חשובות` : "",
-    result.sessions !== undefined ? `${result.sessions.toLocaleString("he-IL")} כניסות` : "",
-    result.likes !== undefined ? `${result.likes.toLocaleString("he-IL")} לייקים` : "",
-  ].filter(Boolean);
-  return <span className="text-[13px] tabular-nums text-[color:var(--ink-soft)]">{parts.join(" · ")}</span>;
+/** "יותר מאשר בפוסט דומה (14)": the card's comparison line, from the server's direction. */
+function compareText(item: MeasuredPost): string {
+  const compare = item.compare;
+  if (!compare || !Number.isFinite(compare.value)) return "";
+  const label = (compare.label || "").trim() || "בפוסט דומה";
+  const count = compare.value.toLocaleString("he-IL");
+  if (compare.direction === "similar") return `בערך כמו ${label} (${count})`;
+  if (compare.direction === "above") return `יותר מאשר ${label} (${count})`;
+  if (compare.direction === "below") return `פחות מאשר ${label} (${count})`;
+  return "";
 }
 
-function ResultRow({ result, best }: { result: PostResult; best?: boolean }) {
+function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
+  const compare = compareText(item);
   return (
     <li className="py-3">
       <span className="flex min-w-0 items-center gap-2">
-        <span className="truncate text-[15px] font-medium text-[color:var(--ink)]">{result.title}</span>
+        <Link
+          href={`/posts?post=${item.index}`}
+          className="truncate text-[15px] font-medium text-[color:var(--ink)] hover:underline hover:underline-offset-4"
+        >
+          {item.title || "פוסט בלי שם"}
+        </Link>
         {best ? (
           <span className="shrink-0 rounded-full bg-[var(--primary-soft)] px-2.5 py-0.5 text-xs font-semibold text-[color:var(--primary)]">
             הכי טוב
           </span>
         ) : null}
       </span>
-      <span className="mt-0.5 block">
-        <ResultFigures result={result} />
+      <span className="mt-0.5 block text-[13px] tabular-nums text-[color:var(--ink-soft)]">
+        {`${item.value.toLocaleString("he-IL")} ${item.label_he}`}
+        {compare ? <span className="text-[color:var(--ink-muted)]">{` · ${compare}`}</span> : null}
       </span>
     </li>
   );
@@ -224,14 +211,16 @@ const VISIBLE_POSTS = 3;
 /**
  * Which posts worked — the second thing the owner wants after "is it working at all".
  *
- * The count of unmeasured posts is stated in the open, outside the fold: it is the
- * reason the list is shorter than the month, and it is not a zero.
+ * The count of posts that are out and not measured is stated in the open, outside the
+ * fold: it is the reason the list is shorter than the month, and it is not a zero.
  */
-function PostResults({ results }: { results: PostResult[] }) {
-  const measured = results.filter((r) => r.measured).sort(byResult);
-  const unmeasured = results.filter((r) => !r.measured);
+function PostResults({ results }: { results: PostResultsView }) {
+  const measured = ordered(results.items);
   const visible = measured.slice(0, VISIBLE_POSTS);
-  const rest = [...measured.slice(VISIBLE_POSTS), ...unmeasured];
+  const rest = measured.slice(VISIBLE_POSTS);
+  const lead = leadingMetric(measured);
+  // "Best" only among posts counted the same way, and only when there is more than one.
+  const comparable = measured.filter((item) => item.metric === lead).length > 1;
 
   return (
     <section aria-labelledby="posts-heading">
@@ -240,26 +229,26 @@ function PostResults({ results }: { results: PostResult[] }) {
       </h2>
       {visible.length ? (
         <ul className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-          {visible.map((result, index) => (
-            <ResultRow key={result.key} result={result} best={index === 0 && visible.length > 1} />
+          {visible.map((item, index) => (
+            <ResultRow key={item.uid || item.index} item={item} best={index === 0 && comparable} />
           ))}
         </ul>
       ) : (
         <p className="mt-2 text-[15px] text-[color:var(--ink-soft)]">עוד לא מדדנו תוצאות לאף פוסט.</p>
       )}
-      {unmeasured.length ? (
+      {results.waiting ? (
         <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-muted)]">
-          {unmeasured.length === 1
-            ? "פוסט אחד עוד לא נמדד. זה לא אומר שהוא הביא אפס."
-            : `${unmeasured.length} פוסטים עוד לא נמדדו. זה לא אומר שהם הביאו אפס.`}
+          {results.waiting === 1
+            ? "פוסט אחד שפורסם עוד לא נמדד. זה לא אומר שהוא הביא אפס."
+            : `${results.waiting} פוסטים שפורסמו עוד לא נמדדו. זה לא אומר שהם הביאו אפס.`}
         </p>
       ) : null}
       {rest.length ? (
         <details className="group/more mt-1">
           <MoreSummary>{rest.length === 1 ? "עוד פוסט אחד" : `עוד ${rest.length} פוסטים`}</MoreSummary>
           <ul className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-            {rest.map((result) => (
-              <ResultRow key={result.key} result={result} />
+            {rest.map((item) => (
+              <ResultRow key={item.uid || item.index} item={item} />
             ))}
           </ul>
         </details>
@@ -268,15 +257,14 @@ function PostResults({ results }: { results: PostResult[] }) {
   );
 }
 
-/** Compare the same metric across posts, using the existing attribution and ranking. */
-function PostComparison({ results, payload }: { results: PostResult[]; payload: PerformancePayload }) {
-  const metric = (["conversions", "sessions", "likes"] as const).find(key => results.some(row => row[key] !== undefined));
-  if (!metric) return null;
-  const labels = { conversions: "פעולות חשובות באתר", sessions: "כניסות לאתר", likes: "לייקים" };
-  return <MetricComparison title="התוצאות לפי פוסט" unit={labels[metric]}
-    source={metric === "likes" ? "אינסטגרם · לפי ההתאמה לפוסטים בתוכנית" : "נתוני האתר · לפי הקישורים של הפוסטים"}
-    period={formatPeriod(payload.period_start, payload.period_end)}
-    points={[...results].sort(byResult).slice(0, 5).map(row => ({ key: row.key, label: row.title, value: row[metric] }))} />;
+/** The posts counted the same way, side by side: only when there are two or more. */
+function PostComparison({ results }: { results: PostResultsView }) {
+  const metric = leadingMetric(results.items);
+  const same = results.items.filter((item) => item.metric === metric);
+  if (!metric || same.length < 2) return null;
+  return <MetricComparison title="התוצאות לפי פוסט" unit={same[0].label_he}
+    source={POST_SOURCE[metric]}
+    points={ordered(same).slice(0, 5).map(item => ({ key: item.uid || String(item.index), label: item.title, value: item.value }))} />;
 }
 
 /* ------------------------------------------------------------------------------------ */
@@ -339,10 +327,14 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
   const connected = data?.connected;
   if (!connected) return null;
   const anyConnected = Boolean(connected.ga4 || connected.meta);
-  const offline = [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
+  const required = payload.measurement_setup?.requirements;
+  const offline = required
+    ? required.filter(item => item.status !== "soon" && item.key !== "whatsapp" && !connected[item.key]).map(item => item.title)
+    : [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
+  const needsGoogle = !connected.ga4 && (!required || required.some(item => item.key === "ga4" && item.status !== "soon"));
   if (!offline.length) return null;
   if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-    נתוני האתר והאינסטגרם לא מחוברים. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
+    אין כרגע חיבור ל{offline.join(" ול")}. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
   </p>;
 
   return (
@@ -352,14 +344,14 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
           ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
               data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
             }`
-          : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
+          : `המקורות שהתוכנית צריכה עדיין לא מחוברים: ${offline.join(" ו")}.`}{" "}
         <Link href="/integrations" className="font-semibold text-[color:var(--ink)] underline decoration-[var(--sand-rule)] underline-offset-4 hover:decoration-current">
           לחבר
         </Link>
       </p>
       {/* The site's numbers are the ones owners most often cannot find: whether there is a
           Google Analytics at all, and which Google account can see it. */}
-      {!connected.ga4 ? (
+      {needsGoogle ? (
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" className="-mb-2" />
       ) : null}
     </div>
@@ -974,32 +966,52 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
   );
 }
 
-/** Nothing has been synced yet. A normal state on this screen, and not an error. */
-function NoSnapshotYet() {
+/**
+ * Nothing has been synced yet. A normal state on this screen, and not an error. Our own
+ * WhatsApp count may already have numbers: `postTaps` (the taps on the posts that were
+ * measured) then leads, rather than a page that says there is nothing yet (#111).
+ */
+function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload; postTaps?: number }) {
+  const setup = payload.measurement_setup;
+  const needs = setup?.requirements.filter(item => item.status === "todo") || [];
+  const later = setup?.requirements.find(item => item.status === "soon");
+  const whatsappOnly = setup?.requirements.length === 1 && setup.requirements[0].key === "whatsapp";
+  const action = needs[0];
+  const stepKeys = needs.map(item => item.key === "ga4" ? "site_data" : item.key === "meta" ? "instagram" : "whatsapp");
+  const explanation = whatsappOnly && needs.length
+    ? "הכינו קישור מדיד לוואטסאפ. נספור לחיצות עליו, ולא הודעות או לקוחות."
+    : needs.length
+    ? `לפי התוכנית, נשאר לבדוק: ${needs.map(item => item.title).join(" ו")}. נציג רק נתונים שנמדדו בפועל.`
+    : later ? later.why
+    : whatsappOnly ? "התוכנית מודדת לחיצות על הקישור לוואטסאפ. הספירה מופיעה בהמשך העמוד; היא לא סופרת הודעות או לקוחות."
+    : "עוד לא שמרנו נתונים מהחיבורים. קריאה מוצלחת תופיע כאן, עם המקור והתאריך. אפשר להמשיך לעבוד בתוכנית.";
   return (
     <section className="paper px-6 py-10 text-center sm:px-10">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sand)] text-[color:var(--sand-dark)]">
         <IconChart className="h-6 w-6" />
       </div>
-      <h2 className="mt-5 text-xl font-bold tracking-tight text-[color:var(--ink)]">עוד אין תוצאות</h2>
+      <h2 className="mt-5 text-xl font-bold tracking-tight text-[color:var(--ink)]">
+        {postTaps > 0
+          ? postTaps === 1
+            ? "לחיצה אחת לוואטסאפ מהפוסטים"
+            : `${postTaps.toLocaleString("he-IL")} לחיצות לוואטסאפ מהפוסטים`
+          : whatsappOnly ? "המדידה לפי התוכנית" : "עוד אין נתונים מהחיבורים"}
+      </h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        {/* Only what these sources can show: visits and posts. Inquiries are counted only
-            where the site measures them, so they are not promised here. */}
-        חברו את נתוני האתר ואת האינסטגרם, ונראה כאן כמה נכנסו לאתר ומה קרה בפוסטים.
+        {explanation}
       </p>
-      {/* With nothing to report, connecting is the one thing this page asks for: the
-          page's one filled button (the refresh above is a quiet control). */}
+      {/* Ask for the first missing source in the saved plan, or return to the plan. */}
       <Link
-        href="/integrations"
+        href={action?.action_href || "/strategy"}
         className="drawn-button group mt-6 inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"
       >
-        לחבר את גוגל ואינסטגרם
+        {action?.action_label || "לתוכנית"}
         <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
       </Link>
-      <div className="mt-2">
+      {needs.some(item => item.key === "ga4") ? <div className="mt-2">
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
-      </div>
-      <StepLink stepKey={["site_data", "instagram", "results"]} />
+      </div> : null}
+      {!later || needs.length ? <div className="mt-2"><StepLink stepKey={[...stepKeys, "results"]} /></div> : null}
     </section>
   );
 }
@@ -1113,7 +1125,10 @@ export default function PerformancePage() {
   }, [analysisPending, snapshotId]);
 
   const available = Boolean(data && data.available !== false);
-  const results = data && available ? postResults(data) : null;
+  const canRefresh = data?.measurement_setup?.can_refresh ?? Boolean(data?.audiences?.connected?.ga4 || data?.audiences?.connected?.meta);
+  // The posts' own numbers need no snapshot: WhatsApp taps are counted from day one.
+  const results = data ? postResults(data) : null;
+  const postTaps = (results?.items || []).reduce((sum, item) => sum + (item.metric === "whatsapp_clicks" ? item.value : 0), 0);
   const hasVerdict = Boolean(data?.diagnostic?.top_content?.length || data?.diagnostic?.bottom_content?.length);
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
   // Only from a refresh that read the account; an older snapshot simply has none.
@@ -1133,11 +1148,11 @@ export default function PerformancePage() {
             with the results (UI-RULES rule 1). */}
         <PageHeader
           title="תוצאות"
-          action={
+          action={canRefresh ? (
             <Button onClick={sync} disabled={pending} tone="secondary" size="md">
               {pending ? "מרעננים…" : "לרענן את הנתונים"}
             </Button>
-          }
+          ) : undefined}
         />
 
         <ErrorNote message={error} />
@@ -1148,7 +1163,7 @@ export default function PerformancePage() {
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
               <SourceDataNotice payload={data} />
-              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet /> : null : null}
+              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : null : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
@@ -1158,7 +1173,7 @@ export default function PerformancePage() {
                 </p>
               ) : null}
             </div>
-            {!serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
+            {available && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
             {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
             {hasProposal && serviceResults?.enabled ? <details className="group/check-in border-y border-[var(--rule)]">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
@@ -1174,7 +1189,7 @@ export default function PerformancePage() {
               {available && (hasProposal || siteNumbers) ? <Expand title="נתוני האתר">{hasProposal ? <Answer payload={data} /> : null}<TrafficMetrics payload={data} folded={hasProposal} /></Expand> : null}
               {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title="המודעות והמעקב באתר"><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
               {account ? <Expand title="החשבון באינסטגרם"><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></Expand> : null}
-              {available && results ? <Expand title="מה קרה בכל פוסט"><PostComparison results={results} payload={data} /><div className="mt-5"><PostResults results={results} /></div></Expand> : null}
+              {results ? <Expand title="מה קרה בכל פוסט"><PostComparison results={results} /><div className="mt-5"><PostResults results={results} /></div></Expand> : null}
               {whatsapp ? <Expand title="לחיצות על וואטסאפ"><WhatsappClicks data={whatsapp} /></Expand> : null}
             </div>
 

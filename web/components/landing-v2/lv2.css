@@ -3,8 +3,9 @@
  *
  * Craft rules: navy ink (never black), one blue for actions, sun only as a highlight,
  * weights 500–700 (no 900), an 8px rhythm, soft layered shadows instead of borders around
- * everything. Motion follows the scroll through the custom properties ScrollScenes sets
- * (--p, --pp, --q, data-state, data-reached); the defaults are the finished state.
+ * everything. Scenes play by themselves once on screen, through the custom properties and
+ * attributes ScenePlayer sets (--p, --pp, --q, data-state, data-reached, data-live,
+ * data-done); the defaults are the finished state.
  */
 
 html:has(.lv2) {
@@ -54,7 +55,7 @@ html:has(.lv2) {
 /* ---- Type ---------------------------------------------------------------- */
 
 .lv2-display {
-  font-size: clamp(2.5rem, 4.6vw, 4.3rem);
+  font-size: clamp(2.5rem, 4vw, 3.75rem);
   font-weight: 700;
   line-height: 1.07;
   letter-spacing: -0.025em;
@@ -258,6 +259,8 @@ html:has(.lv2) {
 
 /* ---- Hero ---------------------------------------------------------------- */
 
+/* What it is, for whom, the one action; the map plays beside it. Not pinned: the page
+   scrolls normally and the next section shows below the fold on a laptop. */
 .lv2-hero {
   position: relative;
   background:
@@ -265,23 +268,15 @@ html:has(.lv2) {
     #fff;
 }
 
-.lv2-hero-pin {
-  position: relative;
-  padding-block: 40px 56px;
-}
-
 .lv2-hero-grid {
   display: grid;
   gap: 40px;
   align-items: center;
-}
-
-.lv2-hero-text .lv2-display {
-  margin-top: 16px;
+  padding-block: 32px 64px;
 }
 
 .lv2-hero-text .lv2-lead {
-  margin-top: 22px;
+  margin-top: 20px;
 }
 
 .lv2-hero-cta {
@@ -289,43 +284,19 @@ html:has(.lv2) {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
-  margin-top: 34px;
+  margin-top: 32px;
 }
 
 .lv2-hero-text .lv2-fine {
-  margin-top: 16px;
-}
-
-.lv2-scroll-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  margin-top: 20px;
-  color: var(--lv2-blue);
-  font-size: 15px;
-  font-weight: 600;
+  margin-top: 14px;
 }
 
 @media (min-width: 1024px) {
-  .lv2-hero {
-    height: 170vh;
-  }
-
-  .lv2-hero-pin {
-    position: sticky;
-    top: 64px;
-    height: calc(100vh - 64px);
-    display: flex;
-    align-items: center;
-    padding-block: 24px;
-  }
-
   .lv2-hero-grid {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
     gap: clamp(40px, 5vw, 80px);
+    padding-block: clamp(32px, 6vh, 64px);
   }
-
 }
 
 .lv2-in {
@@ -382,7 +353,8 @@ html:has(.lv2) {
   font-weight: 500;
 }
 
-html[data-lv2="on"] .lv2-hero {
+/* Motion allowed: the map starts empty and ScenePlayer draws it (inline --q wins). */
+html[data-lv2="on"] .lv2-map {
   --q: 0;
 }
 
@@ -634,7 +606,7 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
     position: absolute;
     top: 16px;
     right: 16px;
-    width: min(284px, 50%);
+    width: min(264px, 46%);
     margin-top: 0;
   }
 
@@ -686,7 +658,9 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
     transform 420ms var(--lv2-ease);
 }
 
-.lv2-map-next-steps > span[data-on="true"] {
+/* The finished state shows the last step; while it plays, the one ScenePlayer marks. */
+html:not([data-lv2="on"]) .lv2-map-next-steps > span:last-child,
+html[data-lv2="on"] .lv2-map-next-steps > span[data-on="true"] {
   opacity: 1;
   transform: none;
 }
@@ -875,6 +849,12 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
   color: var(--lv2-ink-3);
 }
 
+/* The month dots sit on the line and reach 5px above it; the padding keeps them inside the
+   part's body, so a folded part (clipped at its body) shows none of them. */
+.lv2-part-body--route {
+  padding-top: 6px;
+}
+
 .lv2-route {
   position: relative;
   height: 2px;
@@ -966,213 +946,283 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
   direction: ltr;
 }
 
-/* ---- The pinned story (desktop) ------------------------------------------ */
+/* ---- Playing scenes: a list of steps and the picture beside it ------------- */
 
-.lv2-story {
-  display: none;
+/* How the plan is built, and the weekly screen. Normal height, never pinned: ScenePlayer
+   plays the steps once the section is on screen. Every row is a step the visitor can pick.
+   Before ScenePlayer runs, under reduced motion and once the autoplay has finished
+   (`data-done`), everything shows at once. */
+
+.lv2-story,
+.lv2-tour {
+  padding-block: clamp(72px, 11vh, 128px);
 }
 
-.lv2-story-stacked {
-  display: block;
+.lv2-story {
+  --lv2-row-on: #fff;
+  background: var(--lv2-soft);
+}
+
+.lv2-tour {
+  --lv2-row-on: var(--lv2-soft);
+}
+
+.lv2-scene-grid {
+  display: grid;
+  gap: 40px;
+  align-items: center;
+}
+
+/* The plan sheet changes height once at the start (all open → one open). Aligned to the
+   top, nothing beside it moves when it does. */
+.lv2-story-grid {
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
-  .lv2-story {
-    display: block;
-    height: 300vh;
-    background: var(--lv2-soft);
+  .lv2-story-grid {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(40px, 6vw, 96px);
   }
 
-  .lv2-story-stacked {
-    display: none;
+  .lv2-tour-grid {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: clamp(40px, 5vw, 80px);
   }
 }
 
-.lv2-story-pin {
-  position: sticky;
-  top: 64px;
-  height: calc(100vh - 64px);
-  display: flex;
-  align-items: center;
+.lv2-scene-text .lv2-h2 {
+  margin-top: 14px;
 }
 
-.lv2-story-grid {
+/* The rows' own padding hangs outside the column, so their text lines up with the title. */
+.lv2-steplist {
+  --lv2-row-pad: 12px;
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: clamp(40px, 6vw, 96px);
-  align-items: center;
+  gap: 6px;
+  margin-top: 28px;
+  margin-inline: calc(var(--lv2-row-pad) * -1);
 }
 
-.lv2-steps {
+@media (min-width: 640px) {
+  .lv2-steplist {
+    --lv2-row-pad: 18px;
+  }
+}
+
+.lv2-stepitem {
   position: relative;
-  margin-top: 22px;
+  display: grid;
+  gap: 4px;
+  padding: 14px var(--lv2-row-pad);
+  border-radius: 16px;
+  transition:
+    background 400ms ease,
+    box-shadow 400ms ease;
 }
 
-.lv2-step-num {
-  display: inline-grid;
-  place-items: center;
-  min-width: 36px;
-  height: 28px;
-  padding-inline: 8px;
-  margin-bottom: 18px;
-  border-radius: 999px;
-  background: var(--lv2-blue-soft);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--lv2-blue);
-  font-variant-numeric: tabular-nums;
-}
-
-.lv2-step .lv2-h2,
-.lv2-stack-item .lv2-h2 {
-  margin-bottom: 18px;
-}
-
-.lv2-ticks {
-  display: flex;
-  gap: 22px;
-  margin-top: 8px;
+.lv2-stepitem-title {
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.4;
+  transition: color 400ms ease;
 }
 
 .lv2-scene-step {
-  min-height: 44px;
-  background: transparent;
-  border: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   padding: 0;
+  border: 0;
+  background: transparent;
   font: inherit;
   color: inherit;
   text-align: start;
   cursor: pointer;
 }
 
-.lv2-stage-hint {
-  margin-top: 24px;
-  font-size: 13px;
-  color: var(--lv2-ink-2);
-}
-
-.lv2-scene-continue {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  margin-top: 16px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--lv2-blue);
-}
-
-.lv2-scroll-hint:hover,
-.lv2-scene-continue:hover {
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.lv2-scroll-hint svg,
-.lv2-scene-continue svg {
-  transform: rotate(-90deg);
-}
-
-.lv2-ticks button {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  font-size: 13px;
-  color: var(--lv2-ink-2);
-  transition: color 200ms ease;
-}
-
-.lv2-ticks button:hover {
-  color: var(--lv2-blue);
-}
-
-.lv2-ticks i {
-  position: relative;
-  display: block;
-  width: 56px;
-  height: 3px;
-  border-radius: 999px;
-  background: #dfe4ee;
-  overflow: hidden;
-}
-
-.lv2-ticks i::after {
+/* The whole row is the target (at least 44px high), and the row shows the focus. */
+.lv2-scene-step::after {
   content: "";
   position: absolute;
   inset: 0;
+  border-radius: 16px;
+}
+
+.lv2 .lv2-scene-step:focus-visible {
+  outline: none;
+}
+
+.lv2-stepitem:has(.lv2-scene-step:focus-visible) {
+  outline: 2px solid var(--lv2-blue);
+  outline-offset: 2px;
+}
+
+.lv2-stepitem:hover {
+  background: var(--lv2-row-on);
+}
+
+.lv2-step-num {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 36px;
+  height: 28px;
+  padding-inline: 8px;
+  border-radius: 999px;
+  background: var(--lv2-blue-soft);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lv2-blue);
+  font-variant-numeric: tabular-nums;
+  transition:
+    background 400ms ease,
+    color 400ms ease;
+}
+
+.lv2-stepitem-body {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--lv2-ink-2);
+  text-wrap: pretty;
+  transition: color 400ms ease;
+}
+
+/* Numbered rows: the text lines up under the title, not under the number. */
+.lv2-stepitem:has(.lv2-step-num) .lv2-stepitem-body {
+  padding-inline-start: 46px;
+}
+
+/* The progress of the current step: a thin bar on the row's leading edge. */
+.lv2-stepitem-bar {
+  display: none;
+  position: absolute;
+  inset-block: 14px;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: 3px 0 0 3px;
+  overflow: hidden;
+}
+
+.lv2-stepitem-bar i {
+  position: absolute;
+  inset: 0;
   background: var(--lv2-blue);
-  transform-origin: 100% 50%;
-  transform: scaleX(var(--pp, 1));
+  transform-origin: 50% 0%;
+  transform: scaleY(0);
 }
 
-.lv2-ticks button[data-state="current"] {
+[data-live]:not([data-done]) .lv2-stepitem-bar {
+  display: block;
+}
+
+[data-live]:not([data-done]) .lv2-stepitem-title {
+  color: var(--lv2-ink-2);
+}
+
+[data-live]:not([data-done]) .lv2-stepitem-body {
+  color: #5f6b86;
+}
+
+[data-live]:not([data-done]) .lv2-step-num {
+  background: #e8ecf4;
+  color: var(--lv2-ink-2);
+}
+
+[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] {
+  background: var(--lv2-row-on);
+}
+
+.lv2-story[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] {
+  box-shadow: var(--lv2-shadow-chip);
+}
+
+[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] .lv2-stepitem-title {
   color: var(--lv2-ink);
-  font-weight: 600;
 }
 
-.lv2-story-sheet {
-  max-height: calc(100vh - 120px);
+[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] .lv2-stepitem-body {
+  color: var(--lv2-ink-2);
 }
+
+[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] .lv2-step-num {
+  background: var(--lv2-blue);
+  color: #fff;
+}
+
+[data-live]:not([data-done]) .lv2-stepitem[data-state="current"] .lv2-stepitem-bar i {
+  transform: scaleY(var(--pp, 1));
+}
+
+/* The first frame of a scene is set without animation. */
+[data-instant] *,
+[data-instant] *::before,
+[data-instant] *::after {
+  transition: none !important;
+}
+
+/* ---- The plan sheet, folding (how the plan is built) ------------------------ */
 
 .lv2-sheet-stack .lv2-part + .lv2-part {
   border-top: 1px solid var(--lv2-line);
 }
 
-/* The story plan folds like a document being filled in: a finished part collapses to one
-   summary line, the current one opens, the next ones show only their title. */
+/* The plan folds like a document being filled in: a finished part collapses to one
+   summary line, the current one opens, the next ones show only their title.
+   While it plays the parts are stacked by ScenePlayer: each one is placed with a transform
+   (--fold-y) and folded with a clip (--fold-cut), inside a stack of fixed height. Nothing
+   is laid out again, so nothing on the page moves. Without it, every part is open. */
 .lv2-fold .lv2-part-title {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 16px;
+  line-height: 22px;
 }
 
 .lv2-fold-sum {
   display: none;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 14px;
   font-weight: 500;
   color: var(--lv2-ink-2);
 }
 
-.lv2-fold-body {
-  display: grid;
-  grid-template-rows: 1fr;
+[data-live] .lv2-sheet-stack {
+  position: relative;
 }
 
-.lv2-fold-body > div {
-  min-height: 0;
-  overflow: hidden;
-}
-
-html[data-lv2="on"] .lv2-fold-body {
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 700ms var(--lv2-ease);
-}
-
-html[data-lv2="on"] .lv2-fold[data-state="current"] .lv2-fold-body {
-  grid-template-rows: 1fr;
-}
-
-html[data-lv2="on"] .lv2-fold[data-state="past"] .lv2-fold-sum {
-  display: inline;
-}
-
-html[data-lv2="on"] .lv2-fold:not([data-state="current"]) .lv2-part-title {
-  margin-bottom: 0;
-}
-
-html[data-lv2="on"] .lv2-sheet-stack .lv2-part {
+[data-live] .lv2-sheet-stack .lv2-fold {
+  position: absolute;
+  top: 0;
+  inset-inline: 0;
+  transform: translateY(var(--fold-y, 0px));
+  clip-path: inset(0 0 var(--fold-cut, 0px) 0);
   transition:
+    transform 700ms var(--lv2-ease),
+    clip-path 700ms var(--lv2-ease),
     opacity 600ms ease,
     background 600ms ease;
 }
 
-html[data-lv2="on"] .lv2-sheet-stack .lv2-part[data-state="future"] {
+/* Folded, a part ends where its body begins: the gap under the title equals the part's
+   own bottom padding (the same open or folded, so starting to play moves nothing). */
+.lv2-fold .lv2-part-title {
+  margin-bottom: 22px;
+}
+
+[data-live] .lv2-fold[data-state="past"] .lv2-fold-sum {
+  display: block;
+}
+
+[data-live] .lv2-sheet-stack .lv2-part[data-state="future"] {
   opacity: 0.4;
 }
 
-html[data-lv2="on"] .lv2-sheet-stack .lv2-part[data-state="current"] {
+[data-live] .lv2-sheet-stack .lv2-part[data-state="current"] {
   background: linear-gradient(270deg, var(--lv2-blue-soft), #fff 70%);
 }
 
@@ -1188,233 +1238,36 @@ html[data-lv2="on"] .lv2-sheet-stack .lv2-part[data-state="current"] {
   transition: transform 500ms var(--lv2-ease);
 }
 
-.lv2-sheet-stack .lv2-part[data-state="current"]::before {
+[data-live] .lv2-sheet-stack .lv2-part[data-state="current"]::before {
   transform: scaleY(1);
-}
-
-/* Short laptop screens: keep the whole sheet on screen. */
-@media (min-width: 1024px) and (max-height: 820px) {
-  .lv2-story-sheet .lv2-part {
-    padding: 14px 24px;
-  }
-  .lv2-story-sheet .lv2-goal-num {
-    font-size: 2.4rem;
-  }
-  .lv2-story-sheet .lv2-part-note--soft,
-  .lv2-story-sheet .lv2-month-detail {
-    display: none;
-  }
-}
-
-/* Once ScrollScenes runs: one step at a time. */
-html[data-lv2="on"] .lv2-steps {
-  min-height: 19rem;
-}
-
-html[data-lv2="on"] .lv2-step {
-  position: absolute;
-  inset: 0 0 auto 0;
-  opacity: 0;
-  transform: translateY(26px);
-  pointer-events: none;
-  transition:
-    opacity 520ms ease,
-    transform 760ms var(--lv2-ease);
-}
-
-html[data-lv2="on"] .lv2-step[data-state="past"] {
-  transform: translateY(-26px);
-}
-
-html[data-lv2="on"] .lv2-step[data-state="current"] {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-
-/* ---- The story, stacked (phones and tablets) ------------------------------ */
-
-.lv2-story-stacked {
-  padding-block: 72px 24px;
-  background: var(--lv2-soft);
-}
-
-.lv2-stack-item {
-  padding-block: 40px;
-  opacity: clamp(0, calc(var(--p, 1) * 1.6), 1);
-  transform: translateY(calc((1 - var(--p, 1)) * 36px));
-}
-
-.lv2-stack-item:first-of-type {
-  padding-top: 28px;
-}
-
-.lv2-stack-sheet {
-  margin-top: 26px;
 }
 
 /* ---- The weekly screen, as a tour ------------------------------------------ */
 
-.lv2-tour {
-  padding-block: clamp(80px, 12vh, 140px) 40px;
-}
-
-.lv2-tour-grid {
-  display: grid;
-  gap: 40px;
-}
-
-.lv2-tour-text .lv2-h2 {
-  margin-top: 14px;
-}
-
-.lv2-tour-points {
-  display: grid;
-  gap: 8px;
-  margin-top: 32px;
-}
-
-.lv2-tour-points li {
-  position: relative;
-  display: grid;
-  gap: 4px;
-  padding: 16px 20px 16px 16px;
-  border-radius: 16px;
+/* The card: everything but the current region steps back. Fade the content, not the
+   surface, so nothing turns into a grey block. */
+.lv2-tour-card .lv2-wk-region,
+.lv2-tour-card .lv2-wk-side > * {
   transition:
-    background 400ms ease,
-    color 400ms ease;
+    opacity 500ms ease,
+    box-shadow 500ms ease,
+    background 500ms ease;
 }
 
-.lv2-tour-points strong {
-  font-size: 17px;
-  font-weight: 650;
+.lv2-tour[data-live]:not([data-done]) .lv2-tour-card .lv2-wk-side > *,
+.lv2-tour[data-live]:not([data-done]) .lv2-tour-card .lv2-wk-region:not([data-state="current"]) {
+  opacity: 0.34;
 }
 
-.lv2-tour-points .lv2-scene-step > span,
-.lv2-tour-static > span {
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--lv2-ink-2);
+.lv2-tour[data-live]:not([data-done]) .lv2-tour-card .lv2-wk-region[data-state="current"] {
+  box-shadow: inset 0 0 0 2px rgba(40, 83, 199, 0.22);
+  background: linear-gradient(180deg, rgba(238, 242, 253, 0.55), rgba(238, 242, 253, 0));
 }
 
-.lv2-tour-points .lv2-scene-step,
-.lv2-tour-navigation {
-  display: none;
-}
-
-.lv2-tour-static {
-  display: grid;
-  gap: 4px;
-}
-
-.lv2-tour-bar {
-  display: none;
-}
-
-.lv2-tour-stage {
-  perspective: 2200px;
-}
-
-@media (min-width: 1024px) {
-  .lv2-tour {
-    height: 240vh;
-    padding: 0;
-  }
-
-  .lv2-tour-pin {
-    position: sticky;
-    top: 64px;
-    height: calc(100vh - 64px);
-    display: flex;
-    align-items: center;
-  }
-
-  .lv2-tour-grid {
-    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
-    gap: clamp(40px, 5vw, 80px);
-    align-items: center;
-  }
-
-  .lv2-tour-points .lv2-scene-step {
-    display: grid;
-    gap: 4px;
-    width: 100%;
-  }
-
-  .lv2-tour-static {
+/* On phones the card keeps only what the tour points at, so it stays close to the list. */
+@media (max-width: 899px) {
+  .lv2-tour-card .lv2-wk-side {
     display: none;
-  }
-
-  .lv2-tour-navigation {
-    display: block;
-  }
-
-  .lv2-tour-points li:has(button:hover) {
-    background: var(--lv2-soft);
-  }
-
-  /* One point at a time: the current one gets a soft fill and a progress bar. */
-  html[data-lv2="on"] .lv2-tour-points li {
-    color: var(--lv2-ink-3);
-  }
-
-  html[data-lv2="on"] .lv2-tour-points button > span {
-    color: var(--lv2-ink-3);
-  }
-
-  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] {
-    background: var(--lv2-soft);
-    color: var(--lv2-ink);
-  }
-
-  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] button > span {
-    color: var(--lv2-ink-2);
-  }
-
-  .lv2-tour-bar {
-    display: block;
-    position: absolute;
-    inset-block: 16px;
-    inset-inline-start: 0;
-    width: 3px;
-    border-radius: 3px 0 0 3px;
-    background: transparent;
-    overflow: hidden;
-  }
-
-  .lv2-tour-bar i {
-    position: absolute;
-    inset: 0;
-    background: var(--lv2-blue);
-    transform-origin: 50% 0%;
-    transform: scaleY(0);
-  }
-
-  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] .lv2-tour-bar i {
-    transform: scaleY(var(--pp, 1));
-  }
-
-  html[data-lv2="on"] .lv2-tour-points li[data-state="past"] .lv2-tour-bar i {
-    transform: scaleY(0);
-  }
-
-  /* The card: everything but the current region steps back. */
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region,
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > * {
-    transition:
-      opacity 500ms ease,
-      box-shadow 500ms ease;
-  }
-
-  /* Fade the content, not the surface, so nothing turns into a grey block. */
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > *,
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region:not([data-state="current"]) {
-    opacity: 0.34;
-  }
-
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region[data-state="current"] {
-    box-shadow: inset 0 0 0 2px rgba(40, 83, 199, 0.22);
-    background: linear-gradient(180deg, rgba(238, 242, 253, 0.55), rgba(238, 242, 253, 0));
   }
 }
 
@@ -1694,6 +1547,11 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
   }
 }
 
+/* Motion allowed: revealed sections start hidden until ScenePlayer brings them in. */
+html[data-lv2="on"] [data-scene="reveal"] {
+  --p: 0;
+}
+
 .lv2-month-rows > div,
 .lv2-trust-rows > div {
   --r: clamp(0, calc((var(--p, 1) - var(--j) * 0.15) * 2.4), 1);
@@ -1932,46 +1790,13 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
 
 /* ---- Reduced motion: final states, no travel ------------------------------ */
 
+/* Without html[data-lv2="on"] and without [data-live], every scene already shows its
+   finished state; this only removes the remaining transitions and the entrance. */
 @media (prefers-reduced-motion: reduce) {
   .lv2 *,
   .lv2 *::before,
   .lv2 *::after {
     animation: none !important;
     transition: none !important;
-  }
-
-  .lv2-hero,
-  .lv2-tour {
-    height: auto;
-  }
-
-  .lv2-hero-pin,
-  .lv2-tour-pin {
-    position: static;
-    height: auto;
-    padding-block: 64px;
-  }
-
-  .lv2-story {
-    display: none;
-  }
-
-  .lv2-story-stacked {
-    display: block;
-  }
-
-  .lv2-tour-points .lv2-scene-step,
-  .lv2-tour-navigation .lv2-stage-hint {
-    display: none;
-  }
-
-  .lv2-tour-static {
-    display: grid;
-  }
-
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > *,
-  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region {
-    opacity: 1;
-    box-shadow: none;
   }
 }

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
+import secrets
 
 from cryptography.fernet import Fernet, InvalidToken
 from jose import JWTError, jwt
@@ -39,6 +40,11 @@ def verify_password(password: str, password_hash: str) -> bool:
 # existed carry none and are treated as a password sign-in.
 METHOD_PASSWORD = "password"
 METHOD_GOOGLE = "google"
+
+
+def initial_session_epoch() -> int:
+    """Independent session generation for each account, within SQLite's signed integer."""
+    return secrets.randbits(62) + 1
 
 
 def create_access_token(user_id: int, epoch: int = 0, method: str = METHOD_PASSWORD) -> str:

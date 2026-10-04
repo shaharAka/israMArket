@@ -103,6 +103,32 @@ class LegacyTest(unittest.TestCase):
         moved = ensure_post_design(posts, 0, DNA, prefer_dna=True)
         self.assertIn(moved["composition"], DNA["compositions"])
 
+    def test_words_off_moves_a_text_band_layout_to_one_that_carries_the_photo_alone(self):
+        # The loop run of #111: the designer turned a split post's words off, and the card
+        # drew an empty band with only the business name in it.
+        from app.services.designer import apply_creative_to_post
+
+        dna = {"compositions": ["full_bleed", "split", "handwritten_note", "arch_window"]}
+        photo = {"safe_area": {"x": 0.0, "y": 0.0, "w": 0.5, "h": 0.25}, "focal": {"x": 0.3, "y": 0.6},
+                 "subject": {"x": 0.0, "y": 0.4, "w": 0.9, "h": 0.3}, "photo_hash": "c8f6628335f31c28"}
+        post = {"format": "image", "mix_type": "product",
+                "design": {"composition": "split", "crop": "4:5", "text_position": "top", "text_mode": "headline",
+                           **photo}}
+        apply_creative_to_post(post, {"has_overlay": False, "scene_description": "bread"}, dna)
+        self.assertEqual((post["design"]["composition"], post["design"]["text_mode"]), ("full_bleed", "photo_only"))
+        self.assertEqual(post["design"]["photo_hash"], "c8f6628335f31c28")  # the same photo
+        self.assertEqual(post["design"]["subject"], photo["subject"])
+        # Words on: the band layout stays.
+        kept = {"format": "image", "design": {"composition": "split", "crop": "4:5", "text_position": "top",
+                                             "text_mode": "headline"}}
+        apply_creative_to_post(kept, {"has_overlay": True, "overlay_headline": "לחם טרי מהאבן"}, dna)
+        self.assertEqual((kept["design"]["composition"], kept["design"]["text_mode"]), ("split", "headline"))
+        # A layout that carries a photo alone just turns photo-only.
+        arch = {"format": "story", "design": {"composition": "arch_window", "crop": "9:16", "text_position": "top",
+                                             "text_mode": "headline"}}
+        apply_creative_to_post(arch, {"has_overlay": False}, dna)
+        self.assertEqual((arch["design"]["composition"], arch["design"]["text_mode"]), ("arch_window", "photo_only"))
+
     def test_invalid_designs_are_rejected(self):
         self.assertIsNone(clean_design({"composition": "mosaic"}, {"format": "image"}))
         self.assertIsNone(clean_design({"composition": "editorial_column"}, {"format": "story"}))

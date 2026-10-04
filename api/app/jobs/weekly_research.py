@@ -10,8 +10,10 @@ Scheduled runs are stored with `trigger="scheduled"` and do not use the owner's 
 manual runs a day. No scheduler lives inside the API: cron (or the platform's scheduled
 job) calls this module — see DEPLOY.md. Exit code 1 if any business failed.
 
-Each business run also refreshes the month's hypothesis statuses (services/hypotheses.py),
-best effort: a failure there is logged and never counts as the business failing.
+Each business run also writes the week's numbers onto its posts (WhatsApp taps and stored
+Instagram numbers, services/connected_posts.refresh_results) and then refreshes the month's
+hypothesis statuses (services/hypotheses.py), best effort: a failure there is logged and
+never counts as the business failing.
 """
 
 from __future__ import annotations
@@ -22,7 +24,7 @@ from datetime import datetime
 
 from app.db import Base, SessionLocal, engine, migrate_db
 from app.models import Business
-from app.services import billing, hypotheses, model_usage, research
+from app.services import billing, connected_posts, hypotheses, model_usage, research
 
 
 def due(db, business: Business, now: datetime, force: bool = False) -> bool:
@@ -77,6 +79,17 @@ def main(argv: list[str] | None = None) -> int:
                     db.rollback()
                     failures += 1
                     print(f"fail  business={business.id}: {type(exc).__name__}: {exc}", file=sys.stderr)
+                # The week's numbers onto the posts first (docs/posts-v2.md, Feedback 6-7): the
+                # WhatsApp taps per post code and the Instagram numbers already stored, so a post
+                # becomes "נמדד" and gets its "מה לומדים" line without the owner opening Results.
+                # No provider is read here. Best effort, like the hypotheses below.
+                try:
+                    outcome = connected_posts.refresh_results(db, business)
+                    db.commit()
+                    print(f"posts business={business.id} updated={outcome['updated']} measured={outcome['measured']}")
+                except Exception as exc:  # noqa: BLE001
+                    db.rollback()
+                    print(f"warn  business={business.id} post results: {type(exc).__name__}", file=sys.stderr)
                 # The week's look at the month's hypotheses (docs/posts-v2.md, Phase C): the
                 # statuses move with this week's numbers. Best effort, never fails the job.
                 review = hypotheses.refresh_for_business(db, business)

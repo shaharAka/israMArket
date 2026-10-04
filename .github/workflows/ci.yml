@@ -46,8 +46,8 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
-      - name: Connection guidance tests
-        run: node --test components/integrations/connectionRecommendation.test.mjs
+      - name: Connection guidance and tracked-link route tests
+        run: node --test components/integrations/connectionRecommendation.test.mjs tests/trackedLinkRoute.test.mjs
       - name: Build
         run: npm run build
         env:

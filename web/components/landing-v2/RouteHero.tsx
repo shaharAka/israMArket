@@ -4,13 +4,14 @@ import { EXAMPLE, GOAL, NEXT_STEPS, ROUTE_STOPS } from "./content";
 
 /**
  * The hero's map: the plan as a route, like a navigation app. A dotted planned route, the
- * blue route drawing in as you scroll, the storefront driving it, the months as stops, and
+ * blue route drawing itself in, the storefront driving it, the months as stops, and
  * the goal as the destination. Two panels, as in a navigation app: the arrival (the goal)
  * and the next step (which changes at every stop).
  *
  * The map is a 640 × 560 SVG; the HTML labels sit on it in percentages of the same box, so
- * they stay crisp and aligned at any size. ScrollScenes drives `--q` (0–1, how far along)
- * and moves the puck; without JavaScript the route is simply complete.
+ * they stay crisp and aligned at any size. ScenePlayer plays it once it is on screen: it
+ * drives `--q` (0–1, how far along) and moves the puck. Without JavaScript, or with reduced
+ * motion, the route is simply complete.
  */
 
 const W = 640;
@@ -103,7 +104,7 @@ function Streets() {
 
 export function RouteHero() {
   return (
-    <div className="lv2-map" aria-hidden>
+    <div className="lv2-map" data-scene="route" aria-hidden>
       <div className="lv2-map-canvas">
         <svg viewBox={`0 0 ${W} ${H}`} className="lv2-map-svg">
           <defs>
@@ -168,7 +169,7 @@ export function RouteHero() {
             />
           ))}
 
-          {/* The puck: ScrollScenes moves and turns it along the route. */}
+          {/* The puck: ScenePlayer moves and turns it along the route. */}
           <g
             className="lv2-puck"
             data-route-puck
@@ -220,7 +221,7 @@ export function RouteHero() {
             </svg>
           </span>
           <span className="lv2-map-label lv2-map-label--goal">
-            <strong>היעד</strong> {GOAL.target} הזמנות בחודש
+            <strong>היעד</strong> {GOAL.target} הזמנות
           </span>
         </div>
       </div>

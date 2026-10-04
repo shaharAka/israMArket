@@ -244,7 +244,9 @@ export default function FeaturedPage() {
             </div>
             {enough ? null : (
               <p className={`${ui.help} mt-3`}>
-                צריך לפחות {data.min}. אפשר לשמור גם פחות, ולהשלים אחר כך.
+                {data.min > 1
+                  ? `צריך לפחות ${data.min}. אפשר לשמור גם פחות, ולהשלים אחר כך.`
+                  : "מספיק אחד כדי להתחיל. אפשר להוסיף עוד אחר כך."}
               </p>
             )}
             <StepLink stepKey="featured" className="mt-2" />

@@ -12,6 +12,7 @@ import tempfile
 import unittest
 from datetime import date, timedelta
 from pathlib import Path
+from unittest import mock
 from urllib.parse import parse_qs, urlparse
 
 from fastapi.testclient import TestClient
@@ -46,6 +47,9 @@ BOTS = [
     "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
     "SomeLinkPreview/3.0",
     "Mozilla/5.0 (compatible; MyCrawler/1.0)",
+    "node",
+    " NODE ",
+    "undici",
     "",
 ]
 
@@ -251,13 +255,29 @@ class WhatsappLinkTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.total_clicks(), 0)
 
+    def test_missing_agent_and_node_checks_keep_the_redirect_without_adding_taps(self):
+        self.set_number()
+        code = self.link("default").code
+        self.click(code, ANDROID)
+        self.assertEqual(self.total_clicks(), 1)
+        for ua in ("node", "undici"):
+            self.assertEqual(self.click(code, ua).status_code, 302)
+        self.client.headers.pop("user-agent", None)
+        response = self.client.get(f"/r/{code}", follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.headers["location"].startswith("https://wa.me/"))
+        self.assertEqual(self.total_clicks(), 1)
+
     def test_unknown_code_is_a_hebrew_page(self):
         for code in ["nope123", "a-b", "x" * 40]:
             with self.subTest(code=code):
                 response = self.click(code)
                 self.assertEqual(response.status_code, 404)
                 self.assertIn('dir="rtl"', response.text)
-                self.assertIn("הקישור הזה לא קיים", response.text)
+                self.assertIn("הקישור הזה כבר לא פעיל", response.text)
+                # A way on, not a dead end: the site's home page.
+                home = whatsapp.get_settings().web_origin.rstrip("/")
+                self.assertIn(f'href="{home}/"', response.text)
         self.assertEqual(self.total_clicks(), 0)
 
     def test_cleared_number_turns_links_off(self):
@@ -360,7 +380,10 @@ class WhatsappLinkTestCase(unittest.TestCase):
         self.set_number()
         self.click(self.link("default").code)
         self.assertEqual(self.total_clicks(), 1)
-        delete_account(self.db, self.db.get(User, self.owner.id))
+        # Deletion removes media_root()/<business id>: without this it removed the checkout's
+        # real api/data/generated/1 (a developer's local media for business 1).
+        with mock.patch("app.services.account_deletion.images.media_root", return_value=self.tmp / "media"):
+            delete_account(self.db, self.db.get(User, self.owner.id))
         self.assertEqual(self.db.query(WhatsappClick).count(), 0)
         self.assertEqual(self.db.query(WhatsappLink).count(), 0)
 

@@ -258,7 +258,9 @@ def build_edit_prompt(post: dict, dna: dict | None, business: dict, *, labelled:
     what = f"of {subject}" if subject else "of what it sells"
     source = "The attached REFERENCE PHOTO 1 is" if labelled else "This is"
     orientation = _ORIENTATION.get(aspect_for(post), _ORIENTATION["4:5"])
-    props = ", ".join(photo.get("props") or [])
+    # No props here: an edit adds nothing. The DNA's props are for a new image; offered to an
+    # edit ("a prop that belongs here: sesame seeds beside braided challah, baker hands"),
+    # Muse added a challah and hands to the owner's sourdough photo (#111 loop run).
     lines = [
         f"{source} a real photo {what}, taken by {business.get('name')} ({field_label(field)}). "
         "Prepare it for their Instagram feed.",
@@ -269,9 +271,8 @@ def build_edit_prompt(post: dict, dna: dict | None, business: dict, *, labelled:
         f"- the light: relight it as {photo.get('light') or 'one clear directional source, true to the place'}",
         f"- the background: clean it up into {photo.get('background') or 'the real surface it stands on, tidied'}",
         f"- the colour grade: {photo.get('grade') or 'true to life'}",
+        "Add nothing to the scene: no extra products, food, props or hands.",
     ]
-    if props:
-        lines.append(f"- if there is room at the edges, a prop that belongs here ({props}), never covering the subject")
     lines += [
         f"Framing: {orientation}. {composition_zone(post)}",
         _LAYOUT_FURNITURE,
@@ -291,7 +292,10 @@ def reference_label(post: dict) -> str:
 
 
 def media_root() -> Path:
-    root = Path(__file__).resolve().parents[2] / "data" / "generated"
+    from app.config import get_settings
+
+    configured = get_settings().media_dir
+    root = Path(configured) if configured else Path(__file__).resolve().parents[2] / "data" / "generated"
     root.mkdir(parents=True, exist_ok=True)
     return root
 

@@ -5,8 +5,8 @@ import { EXAMPLE, GOAL, MEASURES, THIS_WEEK } from "./content";
  * posts waiting for approval (drawn as real post designs, not placeholders), where the
  * plan stands, what we learned, and the three numbers.
  *
- * `tour` marks the three regions the landing's scroll tour highlights one by one
- * (`data-i` 0 step, 1 posts, 2 numbers; ScrollScenes sets their `data-state`).
+ * `tour` marks the three regions the landing's tour highlights one by one
+ * (`data-i` 0 step, 1 posts, 2 numbers; ScenePlayer sets their `data-state`).
  */
 export function HeroWeek({ className = "", tour = false }: { className?: string; tour?: boolean }) {
   const region = (i: number) => (tour ? { "data-i": i, "data-region": "" } : {});
@@ -30,7 +30,7 @@ export function HeroWeek({ className = "", tour = false }: { className?: string;
           </section>
 
           <section className="lv2-wk-region lv2-wk-posts-region" {...region(1)}>
-            <h3 className="lv2-part-title">מחכים לאישור שלכם</h3>
+            <h3 className="lv2-part-title">מחכים לכם</h3>
             <ul className="lv2-wk-posts">
               <li>
                 <div className="lv2-post lv2-post--cream" aria-hidden>

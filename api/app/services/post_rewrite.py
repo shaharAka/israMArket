@@ -114,6 +114,13 @@ def post_text(post: dict, fields=_READ_FIELDS) -> str:
     return "\n".join(str(post.get(name) or "") for name in fields)
 
 
+def cta_in_caption(post: dict) -> bool:
+    """Whether the caption (what is posted) carries the post's call to action word for word.
+    The writer puts the CTA at the end of the caption; a rewrite must not drop it."""
+    cta = _WS.sub(" ", str(post.get("cta") or "")).strip()
+    return bool(cta) and cta in _WS.sub(" ", str(post.get("caption") or ""))
+
+
 def _featured_text(featured: dict | None) -> str:
     if not isinstance(featured, dict):
         return ""

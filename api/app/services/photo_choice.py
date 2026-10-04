@@ -39,12 +39,14 @@ _WORD = re.compile(r"[א-תA-Za-z0-9]+")
 _HEB_PREFIXES = "והבלמשכ"
 # Written with final letters already folded (ם → מ), longest first.
 _HEB_SUFFIXES = ("יות", "ימ", "ות", "ה", "ת", "י")
-_STOP = {
+# Folded like every word they are compared with: "עם" is looked up as "עמ", so a stop word
+# written with a final letter ("עם", "גם", "שם", "בין") is really skipped.
+_STOP = {word.translate(_FINALS) for word in (
     "של", "עם", "על", "את", "זה", "זו", "כל", "לא", "יש", "אנחנו", "שלנו", "שלכם", "היום", "חדש", "חדשה",
     "או", "גם", "רק", "עוד", "כמו", "אצלנו", "אתכם", "לכם", "הכי", "מאוד", "בין", "אחד", "אחת", "שם",
     "the", "and", "of", "with", "a", "an", "for", "in", "on", "at", "to", "photo", "image", "shot", "picture",
     "jpg", "jpeg", "png", "webp", "img", "dsc", "scaled", "large", "min", "copy", "final", "mv2", "media",
-}
+)}
 
 
 def _is_hebrew(word: str) -> bool:
@@ -263,11 +265,16 @@ def usage_counts(posts: list, exclude_index: int | None = None) -> dict[str, int
 def rank(candidates: list[Candidate], post: dict, used: dict[str, int], index: int = 0) -> list[tuple[Candidate, str, float]]:
     """Candidates best first, each with why it was picked ("subject" | "rotation").
 
-    Only subject matches are returned when the post names a specific product.
+    Only subject matches are returned when the post names a specific product, and only
+    photos that show that product: one that shares just a word like "מגש" or "מאפייה"
+    with the post shows something else, and the post gets a new image instead.
     """
     terms = subject_terms(post)
     scored = [(candidate, score(stems(candidate.text), terms)) for candidate in candidates]
     matched = [(c, s) for c, s in scored if s > 0]
+    product = stems(post.get("featured_item_name") or post.get("product") or "")
+    if product:
+        matched = [(c, s) for c, s in matched if stems(c.text) & product]
     if matched:
         matched.sort(key=lambda item: (-(item[1] - REUSE_PENALTY * used.get(item[0].key, 0)),
                                        -ORIGIN_RANK[item[0].origin], used.get(item[0].key, 0)))

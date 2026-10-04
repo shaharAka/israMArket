@@ -361,6 +361,33 @@ class PostsLaterTest(JobTestCase):
         # Posts are addressed by index: new weeks are appended, never re-ordered.
         self.assertEqual([post["week"] for post in month_posts.month_posts(self.month())], [3, 3, 1, 1])
 
+    def test_an_edit_made_while_a_week_is_written_is_kept(self):
+        self.build_structure()
+        with mock.patch.object(strategy_service, "strategy_json", side_effect=FakeModel()):
+            self.client.post("/onboarding/posts/start", json={"week": 1})
+        strategy_id = self.month().id
+
+        def approve_meanwhile(prompt):
+            # The owner approves week 1's first post (another request, another session)
+            # while week 2 is still being written.
+            other = self.Session()
+            try:
+                row = other.get(Strategy, strategy_id)
+                extra = loads(row.roadmap_json, {})
+                extra["roadmap"]["posts"][0]["approval_status"] = "approved"
+                row.roadmap_json = dumps(extra)
+                other.commit()
+            finally:
+                other.close()
+            return _posts(weeks_of(prompt))
+
+        with mock.patch.object(strategy_service, "strategy_json", side_effect=FakeModel(posts=approve_meanwhile)):
+            body = self.client.post("/onboarding/posts/start", json={"week": 2}).json()
+        self.assertEqual(body["posts"]["2"], "done")
+        posts = month_posts.month_posts(self.month())
+        self.assertEqual([post["week"] for post in posts], [1, 1, 2, 2])
+        self.assertEqual(posts[0]["approval_status"], "approved")
+
     def test_without_picks_the_prompt_is_unchanged(self):
         self.assertEqual(strategy_service._featured_block({"featured_items": []}), "")
         self.assertEqual(strategy_service.featured_items_from({"owner_context": {"featured_items": ["א"]}}), ["א"])
