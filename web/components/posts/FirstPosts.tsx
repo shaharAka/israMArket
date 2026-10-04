@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { IconArrowLeft } from "@/lib/icons";
 import { loadTrial, useTrial } from "@/lib/trial";
@@ -10,7 +11,11 @@ const actionClass = "drawn-button inline-flex min-h-12 items-center justify-cent
 
 /** The plan exists but has no posts: guide the owner, or resume a requested build. */
 export function FirstPosts({ onDone }: { onDone: () => void }) {
-  const { payload, failed } = useTrial();
+  const { payload, failed, loading } = useTrial();
+  // Photos can be added on another screen without refreshing the shared journey cache.
+  useEffect(() => {
+    void loadTrial(true);
+  }, []);
   const foundations = ["photos", "featured", "voice"].map((key) => payload?.steps.find((step) => step.key === key));
   const next = foundations.find((step) => step && step.status !== "done");
   const startStep = payload?.steps.find((step) => step.key === "start_posts");
@@ -34,12 +39,12 @@ export function FirstPosts({ onDone }: { onDone: () => void }) {
               ? "נכתוב לפי המוצרים או השירותים שבחרתם והסגנון שלכם. הפוסטים יחכו כאן לבדיקה ולאישור לפני הפרסום."
               : "נשתמש בתמונות של העסק, נבחר מה לקדם ונבדוק את הסגנון. אפשר להכין פוסטים גם כשעוד לא סיימתם לחבר את החשבונות."}
           </p>
-          {failed ? (
+          {failed && !loading ? (
             <div className="mt-5">
               <p role="alert" className="text-sm text-[color:var(--ink-soft)]">לא הצלחנו לבדוק מה כבר הושלם. נסו שוב.</p>
               <button type="button" className={`${actionClass} mt-4`} onClick={() => void loadTrial(true)}>לבדוק שוב</button>
             </div>
-          ) : !payload ? (
+          ) : loading || !payload ? (
             <p role="status" className="mt-5 text-sm text-[color:var(--ink-muted)]">בודקים מה כבר מוכן…</p>
           ) : ready ? (
             <button type="button" className={`${actionClass} mt-6`} onClick={() => void start()}>
