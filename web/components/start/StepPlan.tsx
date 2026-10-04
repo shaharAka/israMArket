@@ -154,7 +154,7 @@ export function StepFound(props: RevealProps) {
       skip={failed ? "להמשיך בלי זה ולשמור" : undefined}
       onSkip={failed ? () => jump("save") : undefined}
     >
-      {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website)} /> : null}
+      {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website) && flow.brandScan?.status !== "failed"} /> : null}
       {failed ? <><PlanFailed message={failMessage} />{failMessage.includes("קישור") ? <div><QuietLink tone="action" onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink></div> : null}</> : null}
       {plan ? <InsightList insights={plan.insights} /> : null}
     </StepShell>
@@ -202,7 +202,7 @@ export function StepDirection(props: RevealProps) {
       skip={failed ? "להמשיך בלי זה ולשמור" : undefined}
       onSkip={failed ? () => jump("save") : undefined}
     >
-      {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website)} /> : null}
+      {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website) && flow.brandScan?.status !== "failed"} /> : null}
       {failed ? <PlanFailed message={failMessage} /> : null}
       {plan ? (
         <>

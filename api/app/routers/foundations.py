@@ -109,12 +109,18 @@ def _baseline_payload(db: Session, business: Business) -> dict:
         .order_by(PerformanceSnapshot.created_at.asc())
         .first()
     )
+    # What the owner already said at /start, in their own ranges ("בערך 20-50 הזמנות…"), so
+    # this page never looks like a blank re-ask. Empty when /start gave no numbers.
+    numbers = stored.get("goal_numbers") if isinstance(stored.get("goal_numbers"), dict) else {}
+    view = numbers.get("view") if isinstance(numbers.get("view"), dict) else {}
+    from_start = str(view.get("baseline_he") or "").strip() if view.get("baseline_known") else ""
     return {
         "baseline": {key: baseline.get(key) for key in BASELINE_FIELDS if key in baseline},
         "saved_at": baseline.get("saved_at"),
         "fields": baseline_fields(_model(business)),
         # A connected source already gave real numbers: the baseline is measured, not typed.
         "from_integrations": snapshot is not None,
+        "from_start_he": from_start,
     }
 
 
@@ -172,7 +178,10 @@ def featured_items(stored: dict) -> list[dict]:
 
 def _suggestions(business: Business, taken: set[str]) -> list[str]:
     """What the owner already told us they sell, as starting points they can tap."""
-    parts = re.split(r"[,،\n;|•]+|\s+-\s+", business.offerings or "")
+    # Also at a sentence end or a colon: "כלי קרמיקה: ספלים, קערות. מוכרים באתר" offered
+    # "קערות. מוכרים באתר…" as one product. A decimal point ("1.5 ליטר") is not followed
+    # by a space, so it is not split.
+    parts = re.split(r"[,،\n;|•]+|\s+-\s+|[.:](?:\s+|$)", business.offerings or "")
     out: list[str] = []
     for part in parts:
         name = _clean(part, 60)
@@ -240,9 +249,13 @@ def _voice_payload(business: Business) -> dict:
     brand = stored.get("brand_language") if isinstance(stored.get("brand_language"), dict) else {}
     examples = [str(item) for item in brand.get("voice_examples") or [] if str(item).strip()][:2]
     check = stored.get("voice_check") if isinstance(stored.get("voice_check"), dict) else None
+    # "preset": no site was read (none given, or it could not be read). The one "example"
+    # is then the owner's own description, not a sample of a read voice.
+    preset = brand.get("source") == "preset"
     return {
         "voice_he": str(brand.get("voice") or ""),
-        "examples_he": examples,
+        "examples_he": [] if preset else examples,
+        "from_site": bool(brand) and not preset,
         "do_say": [str(item) for item in brand.get("do_say") or []][:3],
         "dont_say": [str(item) for item in brand.get("dont_say") or []][:3],
         "check": check,

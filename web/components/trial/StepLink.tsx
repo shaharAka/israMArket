@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { CONTACT_EMAIL } from "@/lib/company";
 import { IconArrowLeft } from "@/lib/icons";
 import { useTrial } from "@/lib/trial";
@@ -24,11 +25,26 @@ export function StepLink({
   className?: string;
 }) {
   const { payload } = useTrial();
+  const pathname = usePathname();
   const keys = Array.isArray(stepKey) ? stepKey : [stepKey];
   const step = keys
     .map((key) => payload?.steps.find((item) => item.key === key))
     .find((item) => item && item.status !== "done");
   if (!payload || payload.ended || !step) return null;
+  // On the step's own page, "הצעד הבא: <this page>" read as a loop: the owner is doing it.
+  // There, the line is the way back to the list of steps.
+  const here = step.href.split(/[?#]/)[0] === pathname;
+  if (here) {
+    return (
+      <Link
+        href={`/dashboard#step-${step.key}`}
+        className={`inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline ${className}`}
+      >
+        <span>לכל הצעדים של החודש</span>
+        <IconArrowLeft className="h-3.5 w-3.5 shrink-0" />
+      </Link>
+    );
+  }
   return (
     <Link
       href={`/dashboard#step-${step.key}`}
