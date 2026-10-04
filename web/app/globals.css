@@ -368,7 +368,10 @@ a {
 .start-blue :is(input,textarea,select):focus { border-color: var(--primary); }
 .start-blue :is(button[aria-pressed="true"],label:has(input:checked)) { border-color: var(--primary); background-color: var(--primary-soft); }
 .app-feedback { animation: feedback-in 260ms ease-out both; background: var(--ink); border-inline-start: 4px solid var(--sun); }
-@keyframes feedback-in { from { opacity: 0; transform: translate(-50%, 6px); } to { opacity: 1; transform: translate(-50%, 0); } }
+/* Only the rise: the toast is centred by its own `-translate-x-1/2` (Tailwind v4's `translate`
+   property). Animating `transform: translate(-50%, …)` too added a second -50%, so every toast
+   sat half its width to the left, cut off at the edge of a phone. */
+@keyframes feedback-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (max-width: 639px) { .sun-progress { width: 104px; } }
 @media (prefers-reduced-motion: reduce) {
   .journey-sun, .drawn-button { transition: none; }

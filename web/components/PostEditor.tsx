@@ -69,6 +69,7 @@ import {
   IconUsers,
 } from "@/lib/icons";
 import { toast } from "@/lib/ui";
+import { useTrial, type TrialPayload } from "@/lib/trial";
 import { EditorIcon } from "@/components/posts/EditorIcon";
 import { PhotoPlaceholder } from "@/components/posts/PhotoPlaceholder";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
@@ -199,6 +200,26 @@ function previewCaption(caption: string, max = 60): string {
   return clean.length > max ? `${clean.slice(0, max).trimEnd()}…` : clean;
 }
 
+/** Where each post number comes from, and what is missing when it is not connected. */
+const MEASURE_SOURCE: Record<string, { source: TrialPayload["measurement"]["connected"][number]; missing: string }> = {
+  site_visits: { source: "site", missing: "צריך לחבר את נתוני האתר" },
+  whatsapp_clicks: { source: "whatsapp", missing: "צריך להכין את קישור הוואטסאפ" },
+  reach: { source: "instagram", missing: "צריך לחבר את האינסטגרם" },
+  saves: { source: "instagram", missing: "צריך לחבר את האינסטגרם" },
+};
+
+/**
+ * What the owner is told about a published post's number before it is counted. "נספור …
+ * בעדכון הנתונים הבא" was said even with nothing connected, a promise no update could
+ * keep; with the source missing, say what it needs instead. Null: the journey has not
+ * loaded, so the usual line stays.
+ */
+function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null): string | null {
+  const need = post.measure ? MEASURE_SOURCE[post.measure.metric] : undefined;
+  if (!trial || !need || trial.measurement.connected.includes(need.source)) return null;
+  return label ? `כדי לספור כאן ${label}, ${need.missing}.` : `כדי למדוד את הפוסט, ${need.missing}.`;
+}
+
 export function PostEditor({
   posts: initialPosts,
   strategy,
@@ -221,6 +242,7 @@ export function PostEditor({
   onClose?: () => void;
 }) {
   const { palette } = useDesignPalette();
+  const { payload: trial } = useTrial();
   // The business's Design DNA: every preview, thumbnail and export is drawn from it.
   // The month carries it (`serialize_strategy`); the shared store is the fallback, and is
   // what a save on the brand page updates.
@@ -586,7 +608,9 @@ export function PostEditor({
       toast(
         alreadyOut
           ? "הקישור נשמר. נראה לפיו גם כמה ראו."
-          : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
+          : pendingMeasureLine(currentPost, "", trial)
+            ? "סימנו שהפוסט פורסם."
+            : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
       );
     } catch (err) {
       toast(err instanceof Error ? err.message : "לא הצלחנו לסמן שהפוסט פורסם");
@@ -1829,7 +1853,8 @@ export function PostEditor({
           <>
             <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]">לא נמדד עדיין</p>
             <p className={`${ui.help} mt-0.5`}>
-              {label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא."}
+              {pendingMeasureLine(currentPost, label, trial) ??
+                (label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא.")}
             </p>
           </>
         )}

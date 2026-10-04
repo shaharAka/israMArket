@@ -31,15 +31,18 @@ export function MonthBuildProgress({
   kind = "first_month",
   autoStart = false,
   onDone,
+  onProgress,
   idle,
 }: {
   kind?: GenerationStatus["kind"];
   autoStart?: boolean;
   onDone?: (result: GenerateResult | null) => void;
+  /** Another week's posts were saved while the build goes on (see useMonthBuild). */
+  onProgress?: (status: GenerationStatus) => void;
   /** An explicit next action when no build is running; never starts work on mount. */
   idle?: (build: MonthBuild) => ReactNode;
 }) {
-  const build = useMonthBuild({ kind, onDone, startCall: START[kind] });
+  const build = useMonthBuild({ kind, onDone, onProgress, startCall: START[kind] });
   const { status, loaded, starting, running, error, start } = build;
   const autoStarted = useRef(false);
 
@@ -92,7 +95,11 @@ export function MonthBuildProgress({
       <p className="min-w-0 flex-1 text-[15px] leading-6 text-[color:var(--ink)]">
         <b className="font-semibold">{label}</b>
         <span className="mt-0.5 block text-[13px] text-[color:var(--ink-soft)]">
-          שלב {step} מתוך {steps}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.
+          {/* Posts: a week takes one to two minutes (measured 80-130 s on Muse Spark),
+              and the Posts page shows each week as soon as it is saved. */}
+          {kind === "posts"
+            ? `שלב ${step} מתוך ${steps} · כשתי דקות לכל שבוע. כל שבוע שמוכן נכנס מיד לפוסטים, ואפשר לסגור את הדף.`
+            : `שלב ${step} מתוך ${steps}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.`}
         </span>
       </p>
     </div>

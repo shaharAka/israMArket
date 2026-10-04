@@ -5,6 +5,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { FirstPosts } from "@/components/posts/FirstPosts";
+import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { PostEditor } from "@/components/PostEditor";
 import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { CalendarView } from "@/components/posts/CalendarView";
@@ -106,7 +107,14 @@ function PostsWorkspace() {
         const current = await endpoints.strategy();
         if (!active) return;
         setStrategy(current);
-        if (!reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
+        // While the month's posts are still being written, the weeks already saved are
+        // shown, but their images wait: preparing them rewrites the month alongside the
+        // writer. They are prepared when the build is done (its onDone reloads).
+        const building = current.roadmap.posts.length
+          ? await endpoints.generationStatus().then((status) => status.running, () => false)
+          : false;
+        if (!active) return;
+        if (!building && !reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
           const prepared = await endpoints.generateAllPostImages();
           if (active) setStrategy(prepared.strategy);
           if (prepared.errors?.length) {
@@ -284,6 +292,18 @@ function PostsWorkspace() {
         </div>
       </header>
 
+      {/* The rest of the month still being written: the weeks below are ready to work on
+          now, and each new week joins them as it is saved. Nothing when no build runs. */}
+      {strategy && posts.length ? (
+        <div className="mt-6 empty:hidden">
+          <MonthBuildProgress
+            kind="posts"
+            onDone={() => setReload((n) => n + 1)}
+            onProgress={() => setReload((n) => n + 1)}
+          />
+        </div>
+      ) : null}
+
       {error ? (
         <p className={`${ui.error} mt-6`}>
           {error}
@@ -326,7 +346,7 @@ function PostsWorkspace() {
             <p className="text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים של החודש…</p>
           ) : null
         ) : posts.length === 0 ? (
-          <FirstPosts onDone={() => setReload((n) => n + 1)} />
+          <FirstPosts onDone={() => setReload((n) => n + 1)} onWeekReady={() => setReload((n) => n + 1)} />
         ) : location.calendar ? (
           <CalendarView
             strategy={strategy}

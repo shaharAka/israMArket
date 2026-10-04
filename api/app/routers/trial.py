@@ -200,6 +200,18 @@ def _step(key, week, title, why, minutes, href, action, status, done_at=None, no
     return step
 
 
+def _no_meta_account_yet(facts: journey.Facts) -> bool:
+    """At /start the owner listed where customers find them, without Instagram or Facebook
+    (no link, no posting habit), and no Meta account is connected since."""
+    context = facts.stored.get("owner_context")
+    if facts.business is None or not isinstance(context, dict) or "meta" in facts.connected:
+        return False
+    activity = context.get("activity") if isinstance(context.get("activity"), dict) else {}
+    social = loads(facts.business.social_links_json, {}) or {}
+    social = social if isinstance(social, dict) else {}
+    return not any(social.get(key) or activity.get(key) for key in ("instagram", "facebook"))
+
+
 def build_steps(
     facts: journey.Facts,
     events: dict,
@@ -218,15 +230,25 @@ def build_steps(
 
     # --- week 1 · measurement: without it there is no way to know anything works ------
     required = _plan_integration_keys(facts)
+    # The owner told us at /start where to find them, and it was neither Instagram nor
+    # Facebook: connecting one cannot be the first thing asked (often the plan is to open
+    # the page). The step stays in week 1, after the ones they can do today.
+    social_later = _no_meta_account_yet(facts)
+    meta_step: dict | None = None
     if required is None or required & {"meta_business", "instagram_insights", "facebook_insights", "meta_pixel"}:
         connection = plan_connections.state(facts, "meta", available=meta_ready)
         status = connection["status"]
-        steps.append(_step(
-            "instagram", 1, connection["title"], connection["why"],
+        why = connection["why"]
+        if social_later and status == "todo":
+            why = f"{why} אין עדיין עמוד? מחברים אחרי שפותחים אותו."
+        meta_step = _step(
+            "instagram", 1, connection["title"], why,
             3, "/integrations", connection["action"],
             status, facts.connected_at.get("meta"),
             connection["why"] if status == "soon" else None,
-        ))
+        )
+        if not social_later:
+            steps.append(meta_step)
     if _needs_site_data(facts):
         connection = plan_connections.state(facts, "ga4", available=ga4_ready)
         status = connection["status"]
@@ -258,20 +280,27 @@ def build_steps(
             "done" if confirmed else "todo", confirmed,
         ))
 
-    if foundations.baseline_filled(facts.baseline) or journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at:
+    # The same question answered at /start (ranges, or an explicit "לא בטוחים") is an answer
+    # too: asking it again as the first step after signup made owners repeat themselves.
+    start_answered = any(value not in (None, "") for value in facts.start_baseline.values())
+    if (foundations.baseline_filled(facts.baseline) or journey.parse_time(facts.baseline.get("saved_at"))
+            or facts.first_snapshot_at or start_answered):
         # Completion of the answer also includes explicitly saved unknowns. This does
         # not mark an unknown baseline as measured; measurement readiness stays separate.
         baseline_status = "done"
         baseline_done = journey.parse_time(facts.baseline.get("saved_at")) or facts.first_snapshot_at
     else:
         baseline_status, baseline_done = "todo", None
-    steps.append(_step(
+    baseline_step = _step(
         "baseline", 1, "לרשום איפה העסק היום",
         f"נקודת הפתיחה. בלעדיה לא נדע אם {kpi} באמת השתנה." if kpi
         else "נקודת הפתיחה. בלעדיה לא נדע אם משהו באמת השתנה.",
         2, "/baseline", "לרשום את המספרים",
         baseline_status, baseline_done,
-    ))
+    )
+    steps.append(baseline_step)
+    if meta_step is not None and social_later:
+        steps.append(meta_step)
 
     # --- week 2 · raw materials: what the posts are made of ---------------------------
     minimum_photos = MIN_PHOTOS if products else 1
@@ -300,9 +329,14 @@ def build_steps(
     ))
 
     voice = facts.voice_check
+    brand = facts.stored.get("brand_language") if isinstance(facts.stored.get("brand_language"), dict) else {}
+    # A style picked from a preset (no site, or a site we could not read) was never read
+    # off a site: say so, rather than "the style we read on your site".
     steps.append(_step(
         "voice", 2, "לבדוק שהסגנון נשמע כמוכם",
-        "שני משפטים לדוגמה בסגנון שקראנו באתר. אם זה לא אתם, נתקן לפני שכותבים.",
+        "התחלנו מסגנון לפי סוג העסק. אם זה לא אתם, נתקן לפני שכותבים."
+        if brand.get("source") == "preset"
+        else "שני משפטים לדוגמה בסגנון שקראנו באתר. אם זה לא אתם, נתקן לפני שכותבים.",
         2, "/voice", "לבדוק את הסגנון",
         "done" if voice else "todo", journey.parse_time((voice or {}).get("at")),
     ))
