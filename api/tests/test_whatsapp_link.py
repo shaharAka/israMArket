@@ -47,6 +47,9 @@ BOTS = [
     "Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)",
     "SomeLinkPreview/3.0",
     "Mozilla/5.0 (compatible; MyCrawler/1.0)",
+    "node",
+    " NODE ",
+    "undici",
     "",
 ]
 
@@ -251,6 +254,19 @@ class WhatsappLinkTestCase(unittest.TestCase):
         response = self.click(self.link("gbp").code, ANDROID, method="HEAD")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.total_clicks(), 0)
+
+    def test_missing_agent_and_node_checks_keep_the_redirect_without_adding_taps(self):
+        self.set_number()
+        code = self.link("default").code
+        self.click(code, ANDROID)
+        self.assertEqual(self.total_clicks(), 1)
+        for ua in ("node", "undici"):
+            self.assertEqual(self.click(code, ua).status_code, 302)
+        self.client.headers.pop("user-agent", None)
+        response = self.client.get(f"/r/{code}", follow_redirects=False)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.headers["location"].startswith("https://wa.me/"))
+        self.assertEqual(self.total_clicks(), 1)
 
     def test_unknown_code_is_a_hebrew_page(self):
         for code in ["nope123", "a-b", "x" * 40]:
