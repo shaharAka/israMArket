@@ -61,8 +61,9 @@ def _encrypt_legacy_page_tokens() -> None:
 
 _encrypt_legacy_page_tokens()
 
-MEDIA_DIR = Path(__file__).resolve().parents[1] / "data" / "generated"
-MEDIA_DIR.mkdir(parents=True, exist_ok=True)
+from app.services.images import media_root as _media_root  # noqa: E402
+
+MEDIA_DIR = _media_root()  # settings.media_dir, or api/data/generated
 
 # Interactive docs enumerate every endpoint; keep them for local work only.
 _expose_docs = settings.environment == "development"
