@@ -5190,6 +5190,10 @@ export type ServiceReport = ServiceReportInput & {
 export type ServiceResultsPayload = { enabled: boolean; report: ServiceReport | null };
 
 export type PerformancePayload = {
+  measurement_setup?: {
+    requirements: { key: "ga4" | "meta" | "whatsapp"; title: string; status: "done" | "todo" | "soon"; why: string; action_href: string; action_label: string }[];
+    can_refresh: boolean;
+  };
   id?: number | null;
   sources?: { ga4?: SourceReadiness; meta?: MetaSourceReadiness };
   created_at?: string;

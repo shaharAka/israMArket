@@ -26,6 +26,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   primary?: boolean; item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"connect" | "choose" | "done">("connect");
+  const [doneContext, setDoneContext] = useState<"saved" | "tracking">("saved");
   const [assets, setAssets] = useState<MetaAssets | null>(null);
   const [ads, setAds] = useState(false);
   const [page, setPage] = useState("");
@@ -161,7 +162,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
         await endpoints.metaAccount({ page_id: page === NO_PAGE ? "" : page, ad_account_id: account, pixel_id: pixel });
         await changed.current();
       }
-      setVerification(null); setStage("done");
+      setVerification(null); setDoneContext("saved"); setStage("done");
       // Read after the saved selection, without a model prerequisite or blocking the plan.
       void read();
     } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לשמור את הבחירה. נסו שוב."); }
@@ -188,7 +189,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
         <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>
         <div className={styles.actions}>
           <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>לנהל את החיבור</button>
-          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setStage("done"); setOpen(true); }}>לבדוק את המעקב</button>}
+          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setDoneContext("tracking"); setStage("done"); setOpen(true); }}>לבדוק את המעקב</button>}
           {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}>לנתק</button>}
         </div>
       </div>
@@ -201,7 +202,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     </>}
     {item?.connected && readState && <SourceReadState provider="meta" state={readState} checking={reading} primary={primary} onRetry={() => void read()} onReconnect={renewAccess} />}
     {note && !open && <p role="status">{note}</p>}
-    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
+    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : doneContext === "tracking" ? "בדיקת המעקב באתר" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>
@@ -243,7 +244,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>
-          <p>הבחירה נשמרה.</p>
+          {doneContext === "saved" ? <p>הבחירה נשמרה.</p> : null}
           {readState && <SourceReadState provider="meta" state={readState} checking={reading} onRetry={() => void read()} onReconnect={renewAccess} />}
           {account && !pixel && <>
             <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
