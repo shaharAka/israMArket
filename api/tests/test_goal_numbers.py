@@ -351,7 +351,7 @@ class PlanNumbersTest(QuarterTestCase):
         self.assertEqual([m["type_key"] for m in month["mix"]], ["product", "behind_scenes", "social_proof"])
         self.assertEqual(month["mix"][0]["name_he"], "המוצרים")
         self.assertNotIn("example_titles", month)
-        self.assertIn("אתם מחליטים בתוך המערכת", month["products_note_he"])
+        self.assertIn("אתם מחליטים כאן", month["products_note_he"])
         self.assertEqual([i["key"] for i in body["inside"]][:2], ["plan", "posts"])
 
     def test_a_draft_from_before_revision_6_has_no_numbers(self):

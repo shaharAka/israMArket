@@ -86,6 +86,8 @@ Use these consistently. A term changes only if it changes everywhere.
 | sold out | נגמר, נמכר הכול | סולד אאוט |
 | the assistant | מאיה (e.g. `הצעה של מאיה`) | המערכת, האלגוריתם |
 | an assumption the plan tests | השערה (שנבדוק / שנמדוד), "אנחנו מניחים ש…"; if not: "אם היא לא תתאמת" | הימור, מהמרים, "אם טעינו" |
+| a hypothesis or target still being measured | בבדיקה | נמדד/נמדדת (נמדד is a post that was measured) |
+| attribution (a visit or sale counted for a post or an ad) | הגיעו מהפוסט, פייסבוק מייחס למודעה | שיוך, משויך, שייכה |
 
 English brand names in Hebrew letters: גוגל, אינסטגרם, פייסבוק, וואטסאפ.
 **Exception: signing in with Google.** Google's branding rules keep its name in Latin letters

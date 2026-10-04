@@ -29,9 +29,9 @@ import styles from "./performance.module.css";
 
 const METRIC_LABELS: Record<string, { label: string; note: string }> = {
   sessions: { label: "כניסות לאתר", note: "כמה פעמים נכנסו לאתר" },
-  engagedSessions: { label: "כניסות עם פעילות", note: "לפי גוגל: מעל 10 שניות, אירוע חשוב או לפחות שתי צפיות בעמודים" },
-  conversions: { label: "פעולות חשובות באתר", note: "אירועים שהוגדרו כחשובים בגוגל אנליטיקס; לא בהכרח פניות או הזמנות" },
-  bounceRate: { label: "כניסות בלי פעילות מספקת", note: "אחוז הכניסות שלא עמדו בהגדרת הפעילות של גוגל" },
+  engagedSessions: { label: "כניסות שנשארו באתר", note: "לפי גוגל: יותר מ־10 שניות, פעולה חשובה או לפחות 2 עמודים" },
+  conversions: { label: "פעולות חשובות באתר", note: "פעולות שסומנו כחשובות במדידה של האתר. לא בהכרח פניות או הזמנות" },
+  bounceRate: { label: "יצאו מיד", note: "אחוז הכניסות שלא נשארו באתר לפי ההגדרה של גוגל" },
   screenPageViews: { label: "צפיות בעמודים", note: "כמה עמודים נפתחו בסך הכול" },
   averageSessionDuration: { label: "זמן ממוצע באתר", note: "כמה זמן נשארים באתר, בממוצע" },
 };
@@ -274,7 +274,7 @@ function PostComparison({ results, payload }: { results: PostResult[]; payload: 
   if (!metric) return null;
   const labels = { conversions: "פעולות חשובות באתר", sessions: "כניסות לאתר", likes: "לייקים" };
   return <MetricComparison title="התוצאות לפי פוסט" unit={labels[metric]}
-    source={metric === "likes" ? "אינסטגרם · לפי ההתאמה לפוסטים בתוכנית" : "גוגל אנליטיקס · לפי הקישורים של הפוסטים"}
+    source={metric === "likes" ? "אינסטגרם · לפי ההתאמה לפוסטים בתוכנית" : "נתוני האתר · לפי הקישורים של הפוסטים"}
     period={formatPeriod(payload.period_start, payload.period_end)}
     points={[...results].sort(byResult).slice(0, 5).map(row => ({ key: row.key, label: row.title, value: row[metric] }))} />;
 }
@@ -309,7 +309,7 @@ function Answer({ payload }: { payload: PerformancePayload }) {
         <BigNumber label="כניסות לאתר" value={sessions !== undefined ? formatMetricValue("sessions", sessions) : undefined} />
       </dl>
       {conversions !== undefined ? (
-        <p className="mt-3 max-w-[46em] text-[13px] leading-6 text-[color:var(--ink-muted)]">הפעולות לפי ההגדרה בגוגל אנליטיקס. כדי לספור פניות או הזמנות, צריך לוודא מה בדיוק נמדד.</p>
+        <p className="mt-3 max-w-[46em] text-[13px] leading-6 text-[color:var(--ink-muted)]">אלה הפעולות שסומנו כחשובות במדידה של האתר. כדי לדעת אם הן פניות או הזמנות, צריך לבדוק מה בדיוק נספר.</p>
       ) : null}
     </section>
   );
@@ -710,7 +710,7 @@ function Friction({ payload }: { payload: PerformancePayload }) {
 const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] = [
   { key: "sessions", label: "כניסות לאתר", source: "ga4" },
   { key: "conversions", label: "פעולות חשובות באתר", source: "ga4" },
-  { key: "engaged_sessions", label: "כניסות עם פעילות", source: "ga4" },
+  { key: "engaged_sessions", label: "כניסות שנשארו באתר", source: "ga4" },
   { key: "likes", label: "לייקים", source: "meta" },
   { key: "comments", label: "תגובות", source: "meta" },
   { key: "views", label: "צפיות", source: "meta" },
@@ -724,8 +724,8 @@ const METRIC_COLUMNS: { key: string; label: string; source: "ga4" | "meta" }[] =
 /** What each column means, in the owner's words. No acronym has to be looked up. */
 const METRIC_NOTES: Record<string, string> = {
   sessions: "כמה פעמים נכנסו לאתר מהפוסטים של כל קהל.",
-  conversions: "אירועים שהוגדרו כחשובים בגוגל אנליטיקס ושויכו לפוסטים. בלי לבדוק את ההגדרה, אי אפשר לקרוא להם הזמנות או פניות.",
-  engaged_sessions: "לפי גוגל: מעל 10 שניות, אירוע חשוב או לפחות שתי צפיות בעמודים.",
+  conversions: "פעולות שסומנו כחשובות במדידה של האתר, אחרי כניסה מהקישור של פוסט. בלי לבדוק מה סומן, אי אפשר לקרוא להן הזמנות או פניות.",
+  engaged_sessions: "לפי גוגל: יותר מ־10 שניות, פעולה חשובה או לפחות 2 עמודים.",
   likes: "כמה לייקים קיבלו הפוסטים.",
   comments: "כמה תגובות קיבלו הפוסטים.",
   views: "כמה פעמים צפו בפוסטים. אותו אדם יכול להיספר יותר מפעם אחת.",
@@ -860,9 +860,9 @@ function Method({ data }: { data?: AudiencePerformance | null }) {
     <Expand title="איך חישבנו">
       {data?.method ? <p className="max-w-[46em] text-[14px] leading-6 text-[color:var(--ink-soft)]">{data.method}</p> : null}
       <p className="mt-2 max-w-[46em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-        לכל פוסט יש קישור מיוחד משלו, וכך משייכים אליו כניסות ואירועים שגוגל מדד. השיוך אינו הוכחה שהפוסט גרם לרכישה. פוסט
-        שלא הצלחנו לקשר לתוצאות מסומן &quot;לא נמדד&quot;. ככל שיש לקהל יותר פוסטים, המספרים
-        שלו אמינים יותר. קהל עם פוסט אחד נותן כיוון, לא מגמה.
+        לכל פוסט יש קישור מיוחד משלו, וכך יודעים אילו כניסות ופעולות באתר הגיעו ממנו. זה לא מוכיח שהפוסט
+        גרם לרכישה. פוסט שלא הצלחנו לקשר לתוצאות מסומן &quot;לא נמדד&quot;. ככל שיש לקהל יותר פוסטים,
+        המספרים שלו אמינים יותר. קהל עם פוסט אחד נותן כיוון, לא מגמה.
       </p>
       {columns.length ? (
         <dl className="mt-4 divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
