@@ -151,7 +151,12 @@ export function PublishPanel({
   // than leaving a date on screen that was never stored.
   const storedDate = post.scheduled_for || "";
   const trackingUrl = post.tracking_url || "";
-  const whatsappText = (text: string) => (trackingUrl ? `${text}\n\n${trackingUrl}` : text);
+  // The link the WhatsApp message carries is the one the post is measured by: its own
+  // tracked WhatsApp link when it asks people to write on WhatsApp (taps are counted per
+  // post code), else the site link with tracking. The site link on a "write to us" post
+  // sent people to the site and left the post's WhatsApp taps at nothing.
+  const messageLink = waLink?.cta_is_whatsapp && waLink.link ? waLink.link.url : trackingUrl;
+  const whatsappText = (text: string) => (messageLink ? `${text}\n\n${messageLink}` : text);
   const published = Boolean(post.published_url);
   // Out: "פרסמתי" was tapped, with or without a link.
   const out = published || Boolean(post.published_at);

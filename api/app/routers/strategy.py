@@ -878,8 +878,14 @@ def rewrite_post_endpoint(
         # A confirmed fact went missing, or a discount appeared: the old text stays.
         return answer(changed=False, message=checked.message)
 
+    had_cta_in_caption = post_rewrite.cta_in_caption(target)
     for name in post_rewrite.TEXT_FIELDS:
         target[name] = checked.fields[name]
+    if had_cta_in_caption and not post_rewrite.cta_in_caption(target):
+        # The caption is what gets posted, and it carried the call to action: the rewrite
+        # keeps it there, or the post stops asking for what it is measured by (WhatsApp
+        # taps) while "עודכן לפי…" still credits it (#111).
+        target["caption"] = f"{str(target.get('caption') or '').rstrip()}\n{str(target.get('cta') or '').strip()}"
     if target.get("has_overlay") is not False and target.get("overlay_text"):
         # The headline the card prints follows the rewritten text: one message, 6 words.
         target["overlay_headline"] = target["overlay_text"]

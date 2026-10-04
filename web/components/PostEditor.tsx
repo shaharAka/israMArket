@@ -12,6 +12,7 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
+import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { COMPOSITION_LIBRARY } from "@/lib/dna/library";
 import { resolveDna } from "@/lib/dna/resolve";
 import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions";
@@ -318,6 +319,28 @@ export function PostEditor({
       cancelled = true;
     };
   }, []);
+
+  /** The post's own tracked WhatsApp link, for the copied WhatsApp message of a post that
+   *  is measured by WhatsApp taps (the publish kit reads the same link). Kept with the
+   *  index it belongs to, so a switch of post never copies another post's link. */
+  const [postWaLink, setPostWaLink] = useState<{ index: number; link: WhatsappPostLink } | null>(null);
+  const waMeasured = posts[selectedIndex]?.measure?.metric === "whatsapp_clicks";
+  const waCta = posts[selectedIndex]?.cta || "";
+  useEffect(() => {
+    if (!waMeasured) return;
+    let active = true;
+    whatsappEndpoints
+      .forPost(selectedIndex, waCta)
+      .then((link) => {
+        if (active) setPostWaLink({ index: selectedIndex, link });
+      })
+      .catch(() => {
+        if (active) setPostWaLink(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [selectedIndex, waMeasured, waCta]);
 
   /** True while any image operation is in flight. Every image control checks this, so a
    *  library pick, an AI generation and a source switch can never overlap. */
@@ -1268,10 +1291,12 @@ export function PostEditor({
 
   async function copyCaption() {
     // WhatsApp gets the whole formatted message (bold title, caption, call to action and
-    // link), which is what the WhatsApp mockup's copy button used to hand over.
+    // link), which is what the WhatsApp mockup's copy button used to hand over. The link is
+    // the one the post is measured by: its own WhatsApp link when it asks people to write.
+    const own = postWaLink?.index === selectedIndex && postWaLink.link.cta_is_whatsapp ? postWaLink.link.link?.url : "";
     const text =
       channel === "whatsapp"
-        ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${currentPost.tracking_url || ""}`.trim()
+        ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${own || currentPost.tracking_url || ""}`.trim()
         : activeCaption;
     try {
       await navigator.clipboard.writeText(text);
