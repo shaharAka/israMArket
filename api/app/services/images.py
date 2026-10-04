@@ -291,7 +291,10 @@ def reference_label(post: dict) -> str:
 
 
 def media_root() -> Path:
-    root = Path(__file__).resolve().parents[2] / "data" / "generated"
+    from app.config import get_settings
+
+    configured = get_settings().media_dir
+    root = Path(configured) if configured else Path(__file__).resolve().parents[2] / "data" / "generated"
     root.mkdir(parents=True, exist_ok=True)
     return root
 
