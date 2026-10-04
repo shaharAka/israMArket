@@ -1916,6 +1916,7 @@ def apply_draft(
     # What the owner told us that has no column of its own. The month prompts read it
     # through strategy._owner_block (see `owner_context_block`).
     stored["owner_context"] = owner_context(draft)
+    stored["onboarding_source"] = "start"
     # Revision 6: the numbers (today, what to grow, the 3-month target), with the
     # deterministic calculation the target came from. The first month plans against them.
     if draft.baseline is not None or draft.lever is not None or draft.target is not None:

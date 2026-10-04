@@ -21,7 +21,7 @@ import {
   type WeeklyBreakdownItem,
 } from "@/lib/api";
 import { mockStoredPlan } from "@/lib/draft";
-import { markSeen, nextStep, useTrial } from "@/lib/trial";
+import { loadTrial, markSeen, nextStep, useTrial, type TrialStep } from "@/lib/trial";
 import { NextStepAction } from "@/components/trial/TrialGuide";
 import { SECTIONS } from "@/lib/sections";
 import { IconArrowLeft, IconBell, IconCalendar, IconChevron, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
@@ -187,12 +187,13 @@ export default function StrategyPage() {
                 onDone={() => {
                   toast("התוכנית של החודש מוכנה");
                   void loadStrategy();
+                  void loadTrial(true);
                 }}
               />
             ) : null}
             {plan && !strategy && !needsMonth && !error ? <NoMonthYet /> : null}
             <TransitionPanel transitionKey={range}>
-              {plan && (range === "quarter" || !strategy) ? planView : strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} /> : null}
+              {plan && (range === "quarter" || !strategy) ? planView : strategy ? <MonthSection strategy={strategy} setStrategy={setStrategy} showQuarter={!plan} nextAction={firstAction} /> : null}
             </TransitionPanel>
             {!plan && !strategy && !needsMonth && !error ? (
               <p className="paper px-5 py-4 text-[15px] text-[color:var(--ink-soft)]">
@@ -240,11 +241,13 @@ function MonthSection({
   strategy,
   setStrategy,
   showQuarter,
+  nextAction,
 }: {
   strategy: StrategyPayload;
   setStrategy: (s: StrategyPayload) => void;
   /** The old quarter block, for a business with no stored 3-month plan. */
   showQuarter: boolean;
+  nextAction: TrialStep | null;
 }) {
   const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
   const events = strategy.relevant_events || strategy.roadmap?.relevant_events || [];
@@ -253,7 +256,6 @@ function MonthSection({
   // The API uses {} for a plan without later milestones; it is truthy in JavaScript.
   const quarter = Array.isArray(horizon?.milestones) ? horizon : null;
   const management = strategy.management_and_checkpoints || strategy.roadmap?.management_and_checkpoints;
-  const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
   const currentWeek = currentWeekOf(strategy);
   // Where the hypothesis and each target stand (docs/posts-v2.md, Phase C), from the
   // server's review. Shown under the line it belongs to, only while its text is the one here.
@@ -312,13 +314,13 @@ function MonthSection({
             </ul>
           ) : null}
         </div>
-        <div className={styles.ask}>
+        {nextAction ? <div className={styles.ask}>
           <IconBell className={styles.askIcon} />
           <p>
             <strong>מה צריך מכם: </strong>
-            {nextUserAction || "כרגע כלום. אנחנו ממשיכים לעבוד."}
+            {nextAction.title_he}
           </p>
-        </div>
+        </div> : null}
       </section>
 
       <section aria-labelledby="weeks-heading">
@@ -326,10 +328,10 @@ function MonthSection({
           <h2 id="weeks-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
             השבועות
           </h2>
-          <Link href="/posts" className={`group ${TEXT_ACTION}`}>
-            לבדוק את הפוסט הבא
+          {nextAction ? <Link href={nextAction.href} className={`group ${TEXT_ACTION}`}>
+            {nextAction.action_he}
             <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
-          </Link>
+          </Link> : null}
         </div>
         {weeks.length ? (
           <ol className={styles.list}>

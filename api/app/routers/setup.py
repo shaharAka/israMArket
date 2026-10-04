@@ -156,6 +156,11 @@ def _setup_items(facts: journey.Facts) -> list[dict]:
 
     result = []
     for item in items:
+        # /start already saved the first meeting and its proposed direction. These
+        # legacy questions are a different form, not unfinished work for that owner.
+        # Omit them rather than falsely claiming those exact fields were answered.
+        if facts.from_start and item["key"] in {"diagnostics", "priorities"}:
+            continue
         provider = {"google": "ga4", "instagram": "meta"}.get(item["key"])
         if provider:
             if not plan_connections.needed(facts, provider):
