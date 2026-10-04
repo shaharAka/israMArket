@@ -18,6 +18,7 @@ export function LegalPage({
   lead,
   contents,
   current,
+  back = { href: "/", label: "לעמוד הראשי" },
   children,
 }: {
   eyebrow: string;
@@ -25,7 +26,9 @@ export function LegalPage({
   lead: string;
   /** The sections, for the contents rail (same ids and titles as the sections). */
   contents: { id: string; title: string }[];
-  current: "/security" | "/terms" | "/data-deletion";
+  current: "/security" | "/terms" | "/data-deletion" | "/beta/terms";
+  /** The link at the end of the bar: the home page, unless a page belongs somewhere else. */
+  back?: { href: "/" | "/beta"; label: string };
   children: ReactNode;
 }) {
   return (
@@ -36,8 +39,8 @@ export function LegalPage({
             <BrandMark className="h-8 w-8 text-[var(--primary)]" />
             <span>ישראמארקט</span>
           </Link>
-          <Link href="/" className={styles.home}>
-            לעמוד הראשי
+          <Link href={back.href} className={styles.home}>
+            {back.label}
           </Link>
         </div>
       </header>
