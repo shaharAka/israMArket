@@ -215,7 +215,8 @@ parameter is derived from that brief and never shown to the owner.
    comes from the brand itself: a shape from its logo, a texture of its real place, a detail of
    its product (`motif.from: logo | place | product`). Generic list ornaments are retired as
    defaults: scalloped edges, rainbow arcs, rings, dashed frames, tape.
-6. **The real logo, small.** The logo is a same-origin copy (`signature.logo_url`). On feed posts
+6. **The real logo, small.** The logo is a same-origin PNG copy (`signature.logo_url`); an SVG logo
+   is rasterised to that PNG first and never served as SVG (see "Logo copy" below). On feed posts
    it is small or absent, because the profile already shows it. On stories and WhatsApp it is
    small and clear. With no logo, the name is set in the display face. Never an invented monogram
    or stamp.
@@ -288,7 +289,8 @@ message, price). The library (`GET /brand/dna/library`) is `version: 2`.
     saturated colour (not its largest area).
 - `signature{kind, use_logo, logo_url, logo_on, logo_colors[] +}`: `corner_mark | footer_band
   | none` when a same-origin logo copy exists (`logo_url` = `/backend/media/{id}/logo-<sha1>.png`,
-  owner-only like every media file), else `name_only | none` (`logo_url: ""`, `logo_on: any`).
+  owner-only like every media file; a PNG also for an SVG logo, rasterised), else `name_only | none`
+  (`logo_url: ""`, `logo_on: any`).
   `logo_on` comes from the logo's own alpha and luminance: it reads on a ground when 90% of it
   is visible there (1.5:1) and 20% legible (3:1); an opaque logo follows its own ground.
 - `motif{kind, from, note_he +, color, density}`: `none` by default. Any other kind needs
@@ -327,10 +329,36 @@ and `note_he`.
 the first build or a regenerate. `brand_language.logo_url` is fetched with the scraper's
 `capped_get` (SSRF guard on every hop, 900 KB cap, 20 s), `_download_logo` (image types only,
 ≥ 24 px), normalised with Pillow (first frame, EXIF, RGBA, transparent margins trimmed, ≤ 1024
-px, PNG) and stored as `Business.brand_logo_json` + the file. An SVG logo is never copied (an
-SVG served from our origin can carry script): `status: unsupported`, its fill colours still
-count as logo evidence. `POST /onboarding/brand` keeps the scanned `logo_url` and accepts a
-new one (`https://` only). Settings: `BRAND_LOGO_COPY`.
+px, PNG) and stored as `Business.brand_logo_json` + the file. `POST /onboarding/brand` keeps the
+scanned `logo_url` and accepts a new one (`https://` only). Settings: `BRAND_LOGO_COPY`.
+
+**An SVG logo is rasterised, never served** (an SVG from our origin can carry script;
+`services/svg_logo.py`, 2026-10-04). Only the PNG it becomes is stored, and from there it is a
+PNG logo like any other: trimmed, ≤ 1024 px, `logo_on` and colours from its pixels, the same
+`logo_url` (the record adds `format: "svg"`).
+- **Read:** ≤ 512 KB; a `.svgz` is unpacked to ≤ 512 KB (a gzip bomb stops at the cap). A plain
+  `<!DOCTYPE svg PUBLIC "…" "…">` line (Illustrator's) is dropped; any other DTD, every entity
+  and external reference is refused by defusedxml (billion laughs, XXE).
+- **Sanitised by allowlist:** SVG drawing elements only (shapes, text, gradients, patterns,
+  clip paths, masks, markers, filters, `use`, `switch`, `style`). `script`, `foreignObject`,
+  animation, `metadata` and every element of another namespace go with their content; `on*`
+  handlers, `xml:base` and foreign attributes go. An `href` stays only as a same-document
+  `#fragment`, or on `image`/`feImage` as an inline `data:image/(png|jpeg|webp);base64` that
+  Pillow opens as that format (≤ 16 MP). `url(…)` stays only as `url(#id)`, in attributes and
+  CSS; `@import`/`@font-face` leave the CSS, and CSS with escapes is dropped.
+- **Limits:** 5,000 elements, nesting depth 40, 20,000 elements drawn once every `use` and
+  `url(#…)` is expanded (a `use` bomb; reference cycles refused), width/height/viewBox positive,
+  finite, ≤ 1,000,000 units, aspect ≤ 25:1.
+- **Render:** resvg (`resvg-py`, a static Rust wheel: no script engine, no network client, no
+  system library) in a child process (`services/svg_render_child.py`): empty environment,
+  empty working directory, CPU/memory/file-size rlimits, a fixed 2048 px box (the pixel cap,
+  whatever the SVG declares), system fonts only when it has text, killed at a 10 s
+  wall-clock timeout, at most two renders at once.
+- **Fallback:** anything refused or failed is `status: unsupported` with a `reason`
+  (`dtd`, `too_deep`, `too_many_drawn`, `bad_size`, `timeout`, `blank`, …); the DNA signs with
+  the name and the SVG's fill colours still count as logo evidence. A refusal is retried after
+  6 h like a failure; an `unsupported` record from before rasterisation (no `reason`) is retried
+  at the next refresh.
 
 **A post** (written by `finish_written`, the designer and a rewrite)
 - `overlay_headline` ≤ 6 words, `overlay_sub` + ≤ 6 words or "" (dropped when it is a CTA,

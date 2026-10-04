@@ -17,3 +17,5 @@ cryptography==45.0.6
 pyluach==2.2.0
 python-dotenv==1.1.1
 Pillow==12.3.0
+defusedxml==0.7.1
+resvg-py==0.5.0
