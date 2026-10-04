@@ -327,10 +327,14 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
   const connected = data?.connected;
   if (!connected) return null;
   const anyConnected = Boolean(connected.ga4 || connected.meta);
-  const offline = [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
+  const required = payload.measurement_setup?.requirements;
+  const offline = required
+    ? required.filter(item => item.status !== "soon" && item.key !== "whatsapp" && !connected[item.key]).map(item => item.title)
+    : [!connected.ga4 ? "נתוני האתר" : "", !connected.meta ? "אינסטגרם" : ""].filter(Boolean);
+  const needsGoogle = !connected.ga4 && (!required || required.some(item => item.key === "ga4" && item.status !== "soon"));
   if (!offline.length) return null;
   if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-    נתוני האתר והאינסטגרם לא מחוברים. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
+    אין כרגע חיבור ל{offline.join(" ול")}. אפשר להמשיך עם הדיווח שלכם. <Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline">לבדוק את החיבורים</Link>
   </p>;
 
   return (
@@ -340,14 +344,14 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
           ? `אין כרגע חיבור ל${offline.join(" ול")}, ולכן חלק מהמספרים חסרים.${
               data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : ""
             }`
-          : data?.explanation || "נתוני האתר והאינסטגרם לא מחוברים, ולכן אין לנו מה למדוד."}{" "}
+          : `המקורות שהתוכנית צריכה עדיין לא מחוברים: ${offline.join(" ו")}.`}{" "}
         <Link href="/integrations" className="font-semibold text-[color:var(--ink)] underline decoration-[var(--sand-rule)] underline-offset-4 hover:decoration-current">
           לחבר
         </Link>
       </p>
       {/* The site's numbers are the ones owners most often cannot find: whether there is a
           Google Analytics at all, and which Google account can see it. */}
-      {!connected.ga4 ? (
+      {needsGoogle ? (
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" className="-mb-2" />
       ) : null}
     </div>
@@ -964,11 +968,23 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
 
 /**
  * Nothing has been synced yet. A normal state on this screen, and not an error. Our own
- * WhatsApp count may already have numbers, and then the page must not say there are no
- * results: `postTaps` (the taps on the posts that were measured) leads, and what is
- * missing is the site and Instagram. `counted`: taps on any link, a post measured or not.
+ * WhatsApp count may already have numbers: `postTaps` (the taps on the posts that were
+ * measured) then leads, rather than a page that says there is nothing yet (#111).
  */
-function NoSnapshotYet({ counted = false, postTaps = 0 }: { counted?: boolean; postTaps?: number }) {
+function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload; postTaps?: number }) {
+  const setup = payload.measurement_setup;
+  const needs = setup?.requirements.filter(item => item.status === "todo") || [];
+  const later = setup?.requirements.find(item => item.status === "soon");
+  const whatsappOnly = setup?.requirements.length === 1 && setup.requirements[0].key === "whatsapp";
+  const action = needs[0];
+  const stepKeys = needs.map(item => item.key === "ga4" ? "site_data" : item.key === "meta" ? "instagram" : "whatsapp");
+  const explanation = whatsappOnly && needs.length
+    ? "הכינו קישור מדיד לוואטסאפ. נספור לחיצות עליו, ולא הודעות או לקוחות."
+    : needs.length
+    ? `לפי התוכנית, נשאר לבדוק: ${needs.map(item => item.title).join(" ו")}. נציג רק נתונים שנמדדו בפועל.`
+    : later ? later.why
+    : whatsappOnly ? "התוכנית מודדת לחיצות על הקישור לוואטסאפ. הספירה מופיעה בהמשך העמוד; היא לא סופרת הודעות או לקוחות."
+    : "עוד לא שמרנו נתונים מהחיבורים. קריאה מוצלחת תופיע כאן, עם המקור והתאריך. אפשר להמשיך לעבוד בתוכנית.";
   return (
     <section className="paper px-6 py-10 text-center sm:px-10">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--sand)] text-[color:var(--sand-dark)]">
@@ -979,31 +995,23 @@ function NoSnapshotYet({ counted = false, postTaps = 0 }: { counted?: boolean; p
           ? postTaps === 1
             ? "לחיצה אחת לוואטסאפ מהפוסטים"
             : `${postTaps.toLocaleString("he-IL")} לחיצות לוואטסאפ מהפוסטים`
-          : counted
-            ? "עוד אין נתונים מהאתר ומאינסטגרם"
-            : "עוד אין תוצאות"}
+          : whatsappOnly ? "המדידה לפי התוכנית" : "עוד אין נתונים מהחיבורים"}
       </h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        {/* Only what these sources can show: visits and posts. Inquiries are counted only
-            where the site measures them, so they are not promised here. Taps are taps: not
-            messages sent and not sales (the WhatsApp section says so). */}
-        {counted
-          ? "את הלחיצות אנחנו סופרים בעצמנו, בלי חיבור. חברו את נתוני האתר ואת האינסטגרם, ונראה גם כמה נכנסו לאתר."
-          : "חברו את נתוני האתר ואת האינסטגרם, ונראה כאן כמה נכנסו לאתר ומה קרה בפוסטים."}
+        {explanation}
       </p>
-      {/* With nothing to report, connecting is the one thing this page asks for: the
-          page's one filled button (the refresh above is a quiet control). */}
+      {/* Ask for the first missing source in the saved plan, or return to the plan. */}
       <Link
-        href="/integrations"
+        href={action?.action_href || "/strategy"}
         className="drawn-button group mt-6 inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"
       >
-        לחבר את גוגל ואינסטגרם
+        {action?.action_label || "לתוכנית"}
         <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
       </Link>
-      <div className="mt-2">
+      {needs.some(item => item.key === "ga4") ? <div className="mt-2">
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
-      </div>
-      <StepLink stepKey={["site_data", "instagram", "results"]} />
+      </div> : null}
+      {!later || needs.length ? <div className="mt-2"><StepLink stepKey={[...stepKeys, "results"]} /></div> : null}
     </section>
   );
 }
@@ -1117,9 +1125,9 @@ export default function PerformancePage() {
   }, [analysisPending, snapshotId]);
 
   const available = Boolean(data && data.available !== false);
+  const canRefresh = data?.measurement_setup?.can_refresh ?? Boolean(data?.audiences?.connected?.ga4 || data?.audiences?.connected?.meta);
   // The posts' own numbers need no snapshot: WhatsApp taps are counted from day one.
   const results = data ? postResults(data) : null;
-  const counted = Boolean(results?.items.length) || (whatsapp?.clicks_total || 0) > 0;
   const postTaps = (results?.items || []).reduce((sum, item) => sum + (item.metric === "whatsapp_clicks" ? item.value : 0), 0);
   const hasVerdict = Boolean(data?.diagnostic?.top_content?.length || data?.diagnostic?.bottom_content?.length);
   const hasFriction = Boolean(data?.diagnostic?.funnel_issues?.length);
@@ -1140,11 +1148,11 @@ export default function PerformancePage() {
             with the results (UI-RULES rule 1). */}
         <PageHeader
           title="תוצאות"
-          action={
+          action={canRefresh ? (
             <Button onClick={sync} disabled={pending} tone="secondary" size="md">
               {pending ? "מרעננים…" : "לרענן את הנתונים"}
             </Button>
-          }
+          ) : undefined}
         />
 
         <ErrorNote message={error} />
@@ -1155,7 +1163,7 @@ export default function PerformancePage() {
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
               <SourceDataNotice payload={data} />
-              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet counted={counted} postTaps={postTaps} /> : null : null}
+              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : null : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
@@ -1165,7 +1173,7 @@ export default function PerformancePage() {
                 </p>
               ) : null}
             </div>
-            {!serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
+            {available && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
             {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}
             {hasProposal && serviceResults?.enabled ? <details className="group/check-in border-y border-[var(--rule)]">
               <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">

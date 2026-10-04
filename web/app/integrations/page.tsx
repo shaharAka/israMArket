@@ -363,9 +363,9 @@ export default function IntegrationsPage() {
                     </>
                   }
                 >
-                  <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
+                  {!(["reconnect", "no_properties"].includes(ga4State?.status || "")) ? <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
                     להחליף חשבון
-                  </button>
+                  </button> : null}
                   <button type="button" onClick={() => handleDisconnect("ga4")} className={QUIET_ACTION}>
                     לנתק
                   </button>

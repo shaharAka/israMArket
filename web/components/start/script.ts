@@ -128,7 +128,17 @@ function joinHe(items: string[]): string {
 
 function quote(text: string, max = 60): string {
   const clean = text.trim().replace(/\s+/g, " ");
-  return clean.length > max ? `${clean.slice(0, max - 1).trim()}…` : clean;
+  if (clean.length <= max) return clean;
+  // At a word boundary: a cut word ("…עד 20 פ…") reads as a typo in the owner's own words.
+  const cut = clean.slice(0, max - 1);
+  const space = cut.lastIndexOf(" ");
+  return `${(space > max / 2 ? cut.slice(0, space) : cut).replace(/[\s,.;:–-]+$/, "")}…`;
+}
+
+/** The owner's words as the end of a sentence: one closing mark, not "…." after a cut. */
+function quoted(text: string): string {
+  const said = quote(text);
+  return said.endsWith("…") || /[.!?]$/.test(said) ? said : `${said}.`;
 }
 
 /** What the consultant says after `step` was answered (or skipped). */
@@ -145,7 +155,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     }
     case "different":
       return d.differentiator?.trim()
-        ? `זה מה שנשים בחזית: ${quote(d.differentiator)}.`
+        ? `זה מה שנשים בחזית: ${quoted(d.differentiator)}`
         : "בסדר גמור. לרוב זה מסתתר במה שלקוחות מספרים עליכם, ונמצא את זה יחד.";
     case "audiences": {
       const names = d.audiences.map((a) => a.name.trim()).filter(Boolean);
@@ -158,8 +168,8 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       const slow = d.seasons?.slow ?? [];
       if (busy.length) {
         const verb = busy.length > 1 ? "הם" : "הוא";
-        const tail = slow.length ? " ובחודשים השקטים נחזיר לקוחות קבועים." : "";
-        return `הבנו: ${monthsLabel(busy)} ${verb} העונה החזקה שלכם, ולכן נתחיל להתכונן שלושה שבועות לפני.${tail}`;
+        const tail = slow.length ? ", ובחודשים השקטים נחזיר לקוחות קבועים." : ".";
+        return `הבנו: ${monthsLabel(busy)} ${verb} העונה החזקה שלכם, ולכן נתחיל להתכונן שלושה שבועות לפני${tail}`;
       }
       if (slow.length) {
         return `הבנו: ב${monthsLabel(slow)} שקט יותר. אלה החודשים להחזיר לקוחות קבועים.`;
@@ -170,7 +180,11 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       if (d.has_none) return "מתחילים נקי, וזה יתרון: אין הרגלים ישנים לתקן. נבחר ערוץ אחד ונעשה אותו טוב.";
       const regular = NETWORKS.find((n) => d.activity?.[n.key] === "regular" && d.links[n.key] !== undefined);
       if (regular) return `יש לכם כבר קהל ב${NETWORK_LABEL[regular.key]}. נבנה עליו לפני שנפתח ערוץ חדש.`;
-      if (d.links.website !== undefined) return "נקרא את האתר ברקע ונלמד ממנו את הסגנון שלכם.";
+      // A site we could not read is not promised here: the notice under this line
+      // already says so, and the two used to contradict each other on one screen.
+      if (d.links.website !== undefined && flow.brandScan?.status !== "failed") {
+        return "נקרא את האתר ברקע ונלמד ממנו את הסגנון שלכם.";
+      }
       const any = NETWORKS.find((n) => d.links[n.key] !== undefined);
       if (any) return `נתחיל מ${NETWORK_LABEL[any.key]}, כי שם כבר מחפשים אתכם.`;
       return null;
@@ -178,7 +192,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     case "tried": {
       const worked = d.tried?.what_worked?.trim();
       const channels = d.tried?.channels ?? [];
-      if (worked) return `נחזק את מה שכבר הצליח: ${quote(worked)}.`;
+      if (worked) return `נחזק את מה שכבר הצליח: ${quoted(worked)}`;
       if (channels.includes("word_of_mouth")) {
         return "פה לאוזן הוא סימן מצוין: יש לקוחות שממליצים עליכם. נעזור להם לספר.";
       }

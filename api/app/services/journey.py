@@ -166,6 +166,14 @@ class Facts:
         return value if isinstance(value, dict) else {}
 
     @property
+    def start_baseline(self) -> dict:
+        """"איפה העסק היום" as answered at /start (ranges, numbers or "unknown"), kept under
+        goal_numbers by onboarding_draft. Not measured figures: an answer already given."""
+        numbers = self.stored.get("goal_numbers")
+        value = numbers.get("baseline") if isinstance(numbers, dict) else None
+        return value if isinstance(value, dict) else {}
+
+    @property
     def featured_items(self) -> list[dict]:
         raw = self.stored.get("featured_items")
         items = raw.get("items") if isinstance(raw, dict) else None

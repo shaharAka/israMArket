@@ -16,7 +16,7 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
-from app.services import recommendation_context, service_results
+from app.services import journey, plan_connections, recommendation_context, service_results
 
 router = APIRouter(prefix="/performance", tags=["performance"])
 logger = logging.getLogger(__name__)
@@ -254,12 +254,35 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "post_results": post_results,
         "measured_posts": _measured_posts(business, db),
         "sources": _source_states(business),
+        "measurement_setup": _measurement_setup(business, db),
     }
 
 
 def _source_states(business: Business) -> dict:
     return {item.provider: ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item)
             for item in business.integrations if item.provider in {"ga4", "meta"}}
+
+
+def _measurement_setup(business: Business, db: Session) -> dict:
+    """The same saved-plan requirements as Setup/Today, without any provider read."""
+    facts = journey.load(db, business)
+    required = plan_connections.keys(facts) or set()
+    requirements = []
+    if "whatsapp_link" in required:
+        requirements.append({"key": "whatsapp", "title": "לחיצות על הקישור לוואטסאפ",
+                             "status": "done" if business.whatsapp_number_e164 else "todo",
+                             "why": "הקישור סופר לחיצות. הוא לא סופר הודעות, פניות או לקוחות.",
+                             "action_href": "/integrations#whatsapp", "action_label": "להכין קישור מדיד לוואטסאפ"})
+    for provider in ("ga4", "meta"):
+        if not plan_connections.needed(facts, provider):
+            continue
+        state = plan_connections.state(facts, provider)
+        requirements.append({"key": provider, **state,
+                             "action_href": f"/integrations#{provider}", "action_label": state["action"]})
+    # A refresh with only the WhatsApp number writes the posts' taps (#111), so it can run.
+    return {"requirements": requirements,
+            "can_refresh": bool(business.whatsapp_number_e164)
+            or any(_optional(business, provider) is not None for provider in ("ga4", "meta"))}
 
 
 def _meta_snapshot(business: Business, snap: PerformanceSnapshot) -> dict:
@@ -302,6 +325,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
             # Our own numbers (WhatsApp taps) need no snapshot.
             "measured_posts": _measured_posts(business, db),
             "sources": _source_states(business),
+            "measurement_setup": _measurement_setup(business, db),
         }
     return {
         "available": True,
@@ -315,6 +339,7 @@ def latest(business: Business = Depends(get_business), db: Session = Depends(get
         "audiences": audience_payload,
         "measured_posts": _measured_posts(business, db),
         "sources": _source_states(business),
+        "measurement_setup": _measurement_setup(business, db),
     }
 
 

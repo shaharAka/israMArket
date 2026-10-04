@@ -570,6 +570,8 @@ class ResultsTest(ConnectedTestCase):
         self.assertEqual(response.status_code, 200, response.text)
         body = response.json()
         self.assertIs(body["available"], False)
+        # Results shows its refresh control for this owner: the refresh writes their taps.
+        self.assertTrue(body["measurement_setup"]["can_refresh"])
         self.assertEqual(body["post_results"]["updated"], 2)  # this month's box and last month's challah
         self.assertEqual(self.current_posts()[0]["results"]["value"], 21)
         self.assertEqual([(item["title"], item["value"], item["label_he"]) for item in body["measured_posts"]["items"]],

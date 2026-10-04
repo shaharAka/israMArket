@@ -283,6 +283,8 @@ export type BaselinePayload = {
   saved_at: string | null;
   fields: { key: BaselineKey; label_he: string; unit_he: string }[];
   from_integrations: boolean;
+  /** What the owner said at /start ("בערך 20-50 הזמנות בחודש…"); "" when nothing. */
+  from_start_he?: string;
 };
 
 export type FeaturedReason = "in_stock" | "profitable" | "seasonal" | "new" | "best_seller";
@@ -302,6 +304,8 @@ export type FeaturedPayload = {
 export type VoicePayload = {
   voice_he: string;
   examples_he: string[];
+  /** False when the style is a starting preset (no site, or one we could not read). */
+  from_site?: boolean;
   do_say: string[];
   dont_say: string[];
   check: { ok: boolean; note: string; at: string } | null;
@@ -426,6 +430,7 @@ function demoVoice(): VoicePayload {
   return {
     voice_he: "חם, קצר ושכונתי. מדברים כמו מהדלפק: ״בוקר טוב״, ״יצא עכשיו מהתנור״.",
     examples_he: ["בוקר טוב! החלות של שישי יצאו עכשיו מהתנור.", "שמרנו לכם עוגת דבש לחג. תגידו כמה."],
+    from_site: true,
     do_say: ["מהתנור", "שכונה", "של שישי"],
     dont_say: ["מבצע בלעדי", "איכות ללא פשרות"],
     check: DEMO_VOICE,
