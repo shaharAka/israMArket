@@ -369,7 +369,9 @@ class EndpointTest(DnaTestCase, unittest.TestCase):
         new = response.json()["brand_dna"]
         assert_library_only(self, new)
         self.assertNotEqual(new["seed"], dna["seed"])
-        self.assertGreaterEqual(distance(new, dna), FIELD_MIN_DISTANCE)
+        # Compared the way regenerate does (services/design_dna.check_unique): without the
+        # palette, since a business's colours are its own brand's in every style it gets.
+        self.assertGreaterEqual(distance(new, dna, with_palette=False), FIELD_MIN_DISTANCE)
 
     def test_put_validates_and_locks_what_the_owner_set(self):
         self.client.get("/brand/dna")

@@ -12,6 +12,12 @@ the screenshot is switched off here; tests of that path turn it on explicitly.
 """
 
 import os
+import tempfile
+
+# The app opens its database at import (app/db.py), and its default is ./data/isramarket.db:
+# run from api/ in the main checkout, that is the developer's real local database, and app
+# startup migrates it. Every run gets its own throwaway database instead.
+os.environ["DATABASE_URL"] = f"sqlite:///{tempfile.mkdtemp(prefix='isramarket-tests-')}/isramarket.db"
 
 os.environ["POST_MODEL"] = "gemini"
 os.environ["META_MODEL_API_KEY"] = ""
