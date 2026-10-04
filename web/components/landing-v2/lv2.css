@@ -297,12 +297,19 @@ html:has(.lv2) {
 }
 
 .lv2-scroll-hint {
-  display: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 20px;
+  color: var(--lv2-blue);
+  font-size: 15px;
+  font-weight: 600;
 }
 
 @media (min-width: 1024px) {
   .lv2-hero {
-    height: 210vh;
+    height: 170vh;
   }
 
   .lv2-hero-pin {
@@ -319,47 +326,6 @@ html:has(.lv2) {
     gap: clamp(40px, 5vw, 80px);
   }
 
-  .lv2-scroll-hint {
-    position: absolute;
-    bottom: 22px;
-    left: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-    color: var(--lv2-ink-3);
-    transform: translateX(-50%);
-    opacity: clamp(0, calc(1 - var(--p, 0) * 10), 1);
-    transition: opacity 200ms ease;
-  }
-
-  .lv2-scroll-hint span {
-    position: relative;
-    width: 1px;
-    height: 30px;
-    background: var(--lv2-line);
-    overflow: hidden;
-  }
-
-  .lv2-scroll-hint span::after {
-    content: "";
-    position: absolute;
-    inset-inline: 0;
-    top: 0;
-    height: 12px;
-    background: var(--lv2-blue);
-    animation: lv2-hint 1800ms var(--lv2-ease) infinite;
-  }
-}
-
-@keyframes lv2-hint {
-  from {
-    transform: translateY(-12px);
-  }
-  to {
-    transform: translateY(30px);
-  }
 }
 
 .lv2-in {
@@ -1013,7 +979,7 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
 @media (min-width: 1024px) {
   .lv2-story {
     display: block;
-    height: 460vh;
+    height: 300vh;
     background: var(--lv2-soft);
   }
 
@@ -1065,16 +1031,60 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
 .lv2-ticks {
   display: flex;
   gap: 22px;
-  margin-top: 44px;
+  margin-top: 8px;
 }
 
-.lv2-ticks span {
+.lv2-scene-step {
+  min-height: 44px;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.lv2-stage-hint {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--lv2-ink-2);
+}
+
+.lv2-scene-continue {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--lv2-blue);
+}
+
+.lv2-scroll-hint:hover,
+.lv2-scene-continue:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.lv2-scroll-hint svg,
+.lv2-scene-continue svg {
+  transform: rotate(-90deg);
+}
+
+.lv2-ticks button {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 10px;
   font-size: 13px;
-  color: var(--lv2-ink-3);
-  transition: color 300ms ease;
+  color: var(--lv2-ink-2);
+  transition: color 200ms ease;
+}
+
+.lv2-ticks button:hover {
+  color: var(--lv2-blue);
 }
 
 .lv2-ticks i {
@@ -1096,7 +1106,7 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
   transform: scaleX(var(--pp, 1));
 }
 
-.lv2-ticks span[data-state="current"] {
+.lv2-ticks button[data-state="current"] {
   color: var(--lv2-ink);
   font-weight: 600;
 }
@@ -1280,10 +1290,21 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
   font-weight: 650;
 }
 
-.lv2-tour-points li > span:last-child {
+.lv2-tour-points .lv2-scene-step > span,
+.lv2-tour-static > span {
   font-size: 15px;
   line-height: 1.6;
   color: var(--lv2-ink-2);
+}
+
+.lv2-tour-points .lv2-scene-step,
+.lv2-tour-navigation {
+  display: none;
+}
+
+.lv2-tour-static {
+  display: grid;
+  gap: 4px;
 }
 
 .lv2-tour-bar {
@@ -1296,7 +1317,7 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
 
 @media (min-width: 1024px) {
   .lv2-tour {
-    height: 330vh;
+    height: 240vh;
     padding: 0;
   }
 
@@ -1314,12 +1335,30 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
     align-items: center;
   }
 
+  .lv2-tour-points .lv2-scene-step {
+    display: grid;
+    gap: 4px;
+    width: 100%;
+  }
+
+  .lv2-tour-static {
+    display: none;
+  }
+
+  .lv2-tour-navigation {
+    display: block;
+  }
+
+  .lv2-tour-points li:has(button:hover) {
+    background: var(--lv2-soft);
+  }
+
   /* One point at a time: the current one gets a soft fill and a progress bar. */
   html[data-lv2="on"] .lv2-tour-points li {
     color: var(--lv2-ink-3);
   }
 
-  html[data-lv2="on"] .lv2-tour-points li > span:last-child {
+  html[data-lv2="on"] .lv2-tour-points button > span {
     color: var(--lv2-ink-3);
   }
 
@@ -1328,7 +1367,7 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
     color: var(--lv2-ink);
   }
 
-  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] > span:last-child {
+  html[data-lv2="on"] .lv2-tour-points li[data-state="current"] button > span {
     color: var(--lv2-ink-2);
   }
 
@@ -1901,4 +1940,38 @@ html[data-lv2="on"] .lv2-step[data-state="current"] {
     transition: none !important;
   }
 
+  .lv2-hero,
+  .lv2-tour {
+    height: auto;
   }
+
+  .lv2-hero-pin,
+  .lv2-tour-pin {
+    position: static;
+    height: auto;
+    padding-block: 64px;
+  }
+
+  .lv2-story {
+    display: none;
+  }
+
+  .lv2-story-stacked {
+    display: block;
+  }
+
+  .lv2-tour-points .lv2-scene-step,
+  .lv2-tour-navigation .lv2-stage-hint {
+    display: none;
+  }
+
+  .lv2-tour-static {
+    display: grid;
+  }
+
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-side > *,
+  html[data-lv2="on"] .lv2-tour-card .lv2-wk-region {
+    opacity: 1;
+    box-shadow: none;
+  }
+}
