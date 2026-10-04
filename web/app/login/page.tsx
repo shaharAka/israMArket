@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
+import { SetupNotice } from "@/components/account/SetupNotice";
 import { GoogleButton, OrDivider } from "@/components/GoogleButton";
-import { endpoints } from "@/lib/api";
+import { ApiError, endpoints } from "@/lib/api";
+import { CONTACT_EMAIL } from "@/lib/company";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { BrandMark } from "@/lib/icons";
 import form from "@/components/start/form.module.css";
@@ -15,12 +17,20 @@ export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  // From a one-time reset link (`?reset=1`), or an account the backoffice suspended
+  // (`?suspended=1` from AppShell, `?google_error=account_suspended`, or the 403 below).
+  const [resetDone, setResetDone] = useState(false);
+  const [suspended, setSuspended] = useState(false);
 
   // Back from Google with `?google_error=`: say what happened. Browser only, after mount.
   useEffect(() => {
     const timer = window.setTimeout(() => {
+      const query = new URLSearchParams(window.location.search);
+      const isSuspended = query.get("suspended") === "1" || query.get("google_error") === "account_suspended";
+      setResetDone(query.get("reset") === "1");
+      setSuspended(isSuspended);
       const message = googleErrorFromLocation();
-      if (message) setError(message);
+      if (message && !isSuspended) setError(message);
     }, 0);
     return () => window.clearTimeout(timer);
   }, []);
@@ -38,7 +48,10 @@ export default function LoginPage() {
       const { business } = await endpoints.business();
       router.replace(business?.onboarding_complete ? "/dashboard" : "/onboarding");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "האימייל או הסיסמה לא נכונים");
+      if (err instanceof ApiError && err.code === "account_suspended") {
+        setSuspended(true);
+        setError("");
+      } else setError(err instanceof Error ? err.message : "האימייל או הסיסמה לא נכונים");
     } finally {
       setPending(false);
     }
@@ -46,6 +59,23 @@ export default function LoginPage() {
 
   return (
     <AuthCard title="כניסה לחשבון">
+      {resetDone && !suspended ? (
+        <div className="mb-6">
+          <SetupNotice tone="success" title="הסיסמה החדשה נשמרה">
+            אפשר להיכנס איתה עכשיו.
+          </SetupNotice>
+        </div>
+      ) : null}
+      {suspended ? (
+        <div className="mb-6">
+          <SetupNotice tone="attention" title="החשבון מושהה כרגע">
+            כל המידע שמור. כדי לברר למה, כתבו לנו:{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} dir="ltr" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
+              {CONTACT_EMAIL}
+            </a>
+          </SetupNotice>
+        </div>
+      ) : null}
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
       <GoogleButton next="/dashboard" back="/login" disabled={pending} />
       <div className="my-5">

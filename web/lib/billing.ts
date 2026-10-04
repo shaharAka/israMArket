@@ -30,6 +30,8 @@ export type BillingStatus = {
     ended: boolean;
   };
   state: BillingState;
+  /** Marked free in the backoffice: full access, nothing to pay, no reminder. */
+  exempt?: boolean;
   subscription: {
     status: string;
     /** Only while the subscription renews. */

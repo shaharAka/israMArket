@@ -95,6 +95,16 @@ def _supersede(job, snap):
 
 
 def _execute(factory, job_id, token):
+    from app.services import model_usage
+
+    # Model calls are counted for the job's business once it is known (_execute_job).
+    with model_usage.scoped():
+        _execute_job(factory, job_id, token)
+
+
+def _execute_job(factory, job_id, token):
+    from app.services import model_usage
+
     # Router serializers are imported here, after app startup, avoiding import cycles.
     from app.routers.recommendations import current_plan
     from app.services.plan_editing import revision
@@ -109,8 +119,11 @@ def _execute(factory, job_id, token):
                 _supersede(job, snap)
                 db.commit()
                 return
+            model_usage.note_business(business.id, db.get_bind())
             user = db.get(User, business.user_id)
-            if not user or billing.locked(db, user):
+            # Suspended in the backoffice: paused like a locked account, resumed by nobody
+            # until a later read queues it again.
+            if not user or billing.locked(db, user) or user.suspended_at is not None:
                 job.status = "paused"
                 snap.diagnostic_json = dumps({**loads(snap.diagnostic_json, {}), "analysis_status": "paused"})
                 db.commit()

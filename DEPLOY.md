@@ -51,6 +51,9 @@ production but it still has no TLS of its own.
 | `OAUTH_REDIRECT_BASE` | Optional. Base of every OAuth redirect URI (Google sign-in, GA4, Meta). Blank means `{WEB_ORIGIN}/backend`, so the registered URIs are `{WEB_ORIGIN}/backend/auth/google/callback`, `/backend/integrations/ga4/callback` and `/backend/integrations/meta/callback`. See `deploy/gcp/google-oauth.md`. |
 | `PUBLIC_BASE_URL` | Optional. The origin printed on every WhatsApp tracked link, `{PUBLIC_BASE_URL}/r/{code}`. Blank means `WEB_ORIGIN`: only the web tier is public, and `web/app/r/[code]/route.ts` forwards `/r/{code}` to the API (not `API_ORIGIN`, which is an internal address in this compose file). **Set the final domain before owners post links**: a link already in an Instagram bio keeps pointing at the old origin. |
 
+| `ADMIN_EMAILS` | Not secret. Who may open the backoffice at `/admin`: comma-separated, case-insensitive. Empty means nobody. See "Backoffice" below. |
+| `ADMIN_REQUIRE_GOOGLE` | Not secret, default `true`. Keep it `true` in production; see "Backoffice". |
+
 Generate secrets with:
 
 ```bash
@@ -100,6 +103,69 @@ starts from the business's own photo that best matches the post, edited to its D
 
 Nothing in the app generates an image while browsing — only an explicit click does.
 
+## Backoffice
+
+`/admin` lists every account (stage, last active, connections, billing, this month's AI
+cost) and lets the owner make a one-time password link, sign an account out everywhere,
+suspend or reactivate it, mark it free, or delete it. Every action is in the audit log
+(the backoffice's second tab, `admin_audit` table). Code: `api/app/routers/admin.py`,
+`api/app/services/admin_access.py`, `api/app/services/backoffice.py`; tests:
+`api/tests/test_admin.py`.
+
+**Who is an admin.** A signed-in, active account whose email is in `ADMIN_EMAILS` and,
+with `ADMIN_REQUIRE_GOOGLE=true` (the default), that is linked to Google *and* whose
+current session came from "להמשיך עם Google" (the session token carries how it was signed
+in). A password session of the same account gets 403, so Google's 2-step verification is
+in front of every account. Keep it `true`: password signup does not verify the address,
+so with `false` anyone who registers the owner's address with a password first is an
+admin. Every `/admin` route checks this on the server (401 without a session, 403
+otherwise, the same answer whatever the reason). The web app shows the link only in the
+admin's own account menu (`/account`), and `/admin` and `/reset/...` are `noindex` with no
+referrer.
+
+**Setting it in production (the GCE VM).** These are non-secret tunables, so they go in
+`/etc/isramarket/extra.env`, which `deploy/gcp/render-env.sh` appends to the container
+environment as it is (no change to the script is needed):
+
+```bash
+gcloud compute ssh isramarket-vm --project isramarket --zone me-west1-a --tunnel-through-iap
+sudo nano /etc/isramarket/extra.env        # add the two lines below
+#   ADMIN_EMAILS=the-owner@gmail.com
+#   ADMIN_REQUIRE_GOOGLE=true
+sudo /srv/isramarket/deploy/gcp/update.sh --recreate
+```
+
+Then sign in on the site with "להמשיך עם Google" using that Google account (a password
+sign-in is not enough), open `/account`, and follow "ניהול החשבונות". Sessions signed in
+before this release carry no sign-in method and count as password sessions: sign in with
+Google once more.
+
+**Reset links.** "קישור לסיסמה חדשה" returns the link once (`/reset/<token>`, 32 random
+bytes). Only its SHA-256 is stored, it works once, for 24 hours, a newer link revokes
+older unused ones, and using it signs out every session of the account. The token is
+never logged or written to the audit log; the reset page sends it in a POST body, never
+a query string, and the attempts are rate-limited like sign-in. Send it to the person
+yourself (e.g. WhatsApp); there is no email sending.
+
+**Suspension** blocks password and Google sign-in and every authenticated call with 403
+`account_suspended` (the web app shows a Hebrew notice with the contact address), signs
+out every session, and keeps the data. The weekly research job and source analysis skip
+suspended accounts. A suspended person cannot delete their own account; the owner can.
+
+**Deletion** runs the same pipeline as "delete my account"
+(`api/app/services/account_deletion.py`), confirmed by typing the account's email. The
+audit entry survives the account (it holds ids and an action name only).
+
+**Free accounts** (`users.billing_exempt`) are never locked by `BILLING_ENFORCE`, see no
+payment reminder, and `/billing` says the account is open without payment.
+
+**Costs** are estimates at list prices, in USD, per calendar month (UTC): images from
+`image_usage`, text-model calls from `model_usage`. `model_usage` is new with the
+backoffice: one row per Gemini text call made for a signed-in account or a background job
+of one (token counts and an estimate, never the prompt or the answer). Text calls before
+this release, anonymous calls (the landing preview, `/start` before signup) and the Muse
+Spark post-writing experiment are not in it.
+
 ## Before you call it live
 
 - [ ] `ENVIRONMENT=production` set (otherwise the default-secret guard is inactive).
@@ -109,3 +175,4 @@ Nothing in the app generates an image while browsing — only an explicit click 
 - [ ] `api-data` volume mounted and covered by backups.
 - [ ] Only the web port published.
 - [ ] `curl -fsS https://your-host/backend/health` returns `{"ok":true,...}`.
+- [ ] `ADMIN_EMAILS` set, `ADMIN_REQUIRE_GOOGLE` left `true`, and `/admin` opens after a Google sign-in.

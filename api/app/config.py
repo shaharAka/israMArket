@@ -147,6 +147,19 @@ class Settings(BaseSettings):
     # Viewing, editing, exporting, the account and deletion are never gated.
     billing_enforce: bool = False
 
+    # The backoffice at /admin (routers/admin.py; DEPLOY.md, "Backoffice"). Not secret.
+    # Comma-separated, case-insensitive. Empty = nobody is an admin (every /admin call 403).
+    admin_emails: str = ""
+    # True (default): an admin must also be signed in with Google — the account has a
+    # Google id and this session came from "להמשיך עם Google" — so the owner's Google
+    # 2-step verification guards the backoffice. Password signup does not verify the
+    # address, so with false anyone who registers an admin address first is an admin
+    # until the owner signs in with Google. Keep it true outside local development.
+    admin_require_google: bool = True
+
+    def admin_email_set(self) -> set[str]:
+        return {part.strip().lower() for part in (self.admin_emails or "").split(",") if part.strip()}
+
     @field_validator("gemini_image_model", "image_fallback_model", mode="before")
     @classmethod
     def _retired_image_model(cls, value: object) -> object:

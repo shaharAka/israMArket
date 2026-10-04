@@ -9,17 +9,28 @@ from app.config import get_settings
 from app.db import get_db
 from app.deps import get_current_user
 from app.models import User
+from app.errors import account_suspended
 from app.schemas import (
     AccountDeleteIn,
     LoginRequest,
     PasswordChangeIn,
     PasswordSetIn,
     RegisterRequest,
+    ResetCheckIn,
+    ResetIn,
     UserOut,
 )
-from app.security import COOKIE_NAME, create_access_token, hash_password, verify_password
-from app.services import google_login, ratelimit
+from app.security import (
+    COOKIE_NAME,
+    METHOD_GOOGLE,
+    METHOD_PASSWORD,
+    create_access_token,
+    hash_password,
+    verify_password,
+)
+from app.services import google_login, password_reset, ratelimit
 from app.services.account_deletion import delete_account
+from app.services.admin_access import is_admin_request
 from app.services.ratelimit import auth_rate_limit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -40,11 +51,13 @@ def _cookie_secure() -> bool:
     )
 
 
-def _set_cookie(response: Response, user: User) -> None:
+def _set_cookie(response: Response, user: User, method: str = METHOD_PASSWORD) -> None:
+    """The session cookie. `method` (password | google) is carried in the token: the
+    backoffice requires a Google sign-in (services/admin_access.py)."""
     secure = _cookie_secure()
     response.set_cookie(
         key=COOKIE_NAME,
-        value=create_access_token(user.id, user.session_epoch or 0),
+        value=create_access_token(user.id, user.session_epoch or 0, method),
         httponly=True,
         samesite="lax",
         secure=secure,
@@ -60,7 +73,7 @@ def register(
     request: Request,
     db: Session = Depends(get_db),
     _: None = Depends(auth_rate_limit("register", by_email=False)),
-) -> User:
+) -> UserOut:
     if db.query(User).filter(User.email == body.email.lower()).first():
         raise HTTPException(status_code=409, detail="כבר יש חשבון עם האימייל הזה")
     user = User(
@@ -73,8 +86,8 @@ def register(
     db.add(user)
     db.commit()
     db.refresh(user)
-    _set_cookie(response, user)
-    return user
+    _set_cookie(response, user, METHOD_PASSWORD)
+    return _user_out(request, user)
 
 
 @router.post("/login", response_model=UserOut)
@@ -84,14 +97,17 @@ def login(
     request: Request,
     db: Session = Depends(get_db),
     _: None = Depends(auth_rate_limit("login", by_email=True)),
-) -> User:
+) -> UserOut:
     user = db.query(User).filter(User.email == body.email.lower()).first()
     if user and not user.password_hash:
         raise HTTPException(status_code=401, detail=GOOGLE_ONLY_HINT)
     if not user or not verify_password(body.password, user.password_hash):
         raise HTTPException(status_code=401, detail="האימייל או הסיסמה לא נכונים")
-    _set_cookie(response, user)
-    return user
+    if user.suspended_at is not None:
+        # Only after the password matched: a wrong guess learns nothing about suspension.
+        raise account_suspended()
+    _set_cookie(response, user, METHOD_PASSWORD)
+    return _user_out(request, user)
 
 
 def _rate_ok(request: Request, name: str) -> bool:
@@ -143,11 +159,16 @@ def _google_user(db: Session, identity: dict) -> User:
     email already belongs to an account linked to a different Google account."""
     user = db.query(User).filter(User.google_sub == identity["sub"]).first()
     if user:
+        if user.suspended_at is not None:
+            raise google_login.GoogleLoginError("account_suspended")
         return user
     user = db.query(User).filter(User.email == identity["email"]).first()
     if user:
         if user.google_sub and user.google_sub != identity["sub"]:
             raise google_login.GoogleLoginError("conflict")
+        if user.suspended_at is not None:
+            # Before linking: a suspended account is not changed by a sign-in attempt.
+            raise google_login.GoogleLoginError("account_suspended")
         user.google_sub = identity["sub"]
         if user.password_hash:
             # There is no email verification on password signup, so whoever set this
@@ -227,7 +248,7 @@ def google_callback(
         return fail(exc.code)
     response = RedirectResponse(f"{web}{next_path}", status_code=303)
     response.delete_cookie(google_login.FLOW_COOKIE, path="/")
-    _set_cookie(response, user)
+    _set_cookie(response, user, METHOD_GOOGLE)
     return response
 
 
@@ -260,7 +281,7 @@ def change_password(
     # Sign out every other session; this one gets a fresh cookie.
     user.session_epoch = (user.session_epoch or 0) + 1
     db.commit()
-    _set_cookie(response, user)
+    _set_cookie(response, user, METHOD_PASSWORD)
     return {"ok": True}
 
 
@@ -307,6 +328,54 @@ def delete_my_account(
     return {"ok": True}
 
 
+def _user_out(request: Request, user: User) -> UserOut:
+    return UserOut(
+        id=user.id,
+        email=user.email,
+        full_name=user.full_name,
+        has_password=user.has_password,
+        google_linked=user.google_linked,
+        is_admin=is_admin_request(request, user),
+    )
+
+
 @router.get("/me", response_model=UserOut)
-def me(user: User = Depends(get_current_user)) -> User:
-    return user
+def me(request: Request, user: User = Depends(get_current_user)) -> UserOut:
+    return _user_out(request, user)
+
+
+# --- one-time reset links (made in the backoffice, services/password_reset.py) ----------
+
+RESET_INVALID_HE = "הקישור הזה כבר לא בתוקף. בקשו קישור חדש ממי ששלח לכם אותו."
+
+
+@router.post("/reset/check")
+def reset_check(
+    body: ResetCheckIn,
+    db: Session = Depends(get_db),
+    _: None = Depends(auth_rate_limit("reset_check", by_email=False)),
+) -> dict:
+    """Whether a reset link can still be used, before the page asks for a password.
+    The token travels in the body (never a URL the API logs). A masked email only."""
+    found = password_reset.find(db, body.token)
+    if found is None:
+        return {"valid": False}
+    row, user = found
+    return {
+        "valid": True,
+        "email_hint": password_reset.mask_email(user.email),
+        "expires_at": row.expires_at.replace(microsecond=0).isoformat() + "Z",
+    }
+
+
+@router.post("/reset")
+def reset_password(
+    body: ResetIn,
+    db: Session = Depends(get_db),
+    _: None = Depends(auth_rate_limit("reset", by_email=False)),
+) -> dict:
+    """Set a new password with a one-time link: marks the link used and signs out every
+    session of the account. Does not sign in: the page sends the person to /login."""
+    if password_reset.redeem(db, body.token, body.new_password) is None:
+        raise HTTPException(status_code=400, detail=RESET_INVALID_HE)
+    return {"ok": True}

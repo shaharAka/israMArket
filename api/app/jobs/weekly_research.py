@@ -22,7 +22,7 @@ from datetime import datetime
 
 from app.db import Base, SessionLocal, engine, migrate_db
 from app.models import Business
-from app.services import billing, hypotheses, research
+from app.services import billing, hypotheses, model_usage, research
 
 
 def due(db, business: Business, now: datetime, force: bool = False) -> bool:
@@ -42,6 +42,7 @@ def main(argv: list[str] | None = None) -> int:
     # Same boot as the API, so a fresh volume or a new table works from cron too.
     Base.metadata.create_all(bind=engine)
     migrate_db()
+    model_usage.install()
 
     now = datetime.utcnow()
     failures = 0
@@ -59,26 +60,36 @@ def main(argv: list[str] | None = None) -> int:
             if business.owner is not None and billing.locked(db, business.owner, now):
                 print(f"skip  business={business.id} (free month over, no subscription)")
                 continue
+            # Suspended in the backoffice: no API use, so no scheduled model spend either.
+            if business.owner is not None and business.owner.suspended_at is not None:
+                print(f"skip  business={business.id} (account suspended)")
+                continue
             if args.dry_run:
                 print(f"due   business={business.id} {business.name}")
                 continue
-            try:
-                run = research.run_research(db, business, trigger="scheduled", now=datetime.utcnow())
-                insights = (research.serialize_run(run, with_findings=False).get("insights")) or []
-                print(f"done  business={business.id} run={run.id} status={run.status} insights={len(insights)}")
-            except Exception as exc:  # keep going; one business must not stop the rest
-                db.rollback()
-                failures += 1
-                print(f"fail  business={business.id}: {type(exc).__name__}: {exc}", file=sys.stderr)
-            # The week's look at the month's hypotheses (docs/posts-v2.md, Phase C): the
-            # statuses move with this week's numbers. Best effort, never fails the job.
-            review = hypotheses.refresh_for_business(db, business)
+            # Model calls below are counted for this business (services/model_usage.py).
+            with model_usage.attributed(business.id, engine):
+                try:
+                    run = research.run_research(db, business, trigger="scheduled", now=datetime.utcnow())
+                    insights = (research.serialize_run(run, with_findings=False).get("insights")) or []
+                    print(f"done  business={business.id} run={run.id} status={run.status} insights={len(insights)}")
+                except Exception as exc:  # keep going; one business must not stop the rest
+                    db.rollback()
+                    failures += 1
+                    print(f"fail  business={business.id}: {type(exc).__name__}: {exc}", file=sys.stderr)
+                # The week's look at the month's hypotheses (docs/posts-v2.md, Phase C): the
+                # statuses move with this week's numbers. Best effort, never fails the job.
+                review = hypotheses.refresh_for_business(db, business)
             if review is not None:
                 db.commit()
                 moved = sum(1 for item in review.get("items") or [] if item.get("status") != "measuring")
                 print(f"hyp   business={business.id} items={len(review.get('items') or [])} decided={moved}")
     finally:
         db.close()
+        try:
+            model_usage.flush(timeout=15)
+        except Exception:
+            pass
     return 1 if failures else 0
 
 

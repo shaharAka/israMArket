@@ -12,7 +12,8 @@
 #      domain is ONE metadata value: site-host=isramarket.co.il (see README.md).
 #   2. Secret Manager (secrets), read with the VM's service account.
 #   3. /etc/isramarket/extra.env (optional, non-secret tunables such as
-#      GEMINI_IMAGE_MODEL=...), appended last so it can override defaults.
+#      GEMINI_IMAGE_MODEL=... or the backoffice's ADMIN_EMAILS=... and
+#      ADMIN_REQUIRE_GOOGLE=true, see DEPLOY.md), appended last so it can override defaults.
 #
 # The output lives on tmpfs (/run), mode 0600, root only. Values are written single-
 # quoted, which Docker Compose's env-file parser takes literally.

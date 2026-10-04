@@ -426,6 +426,14 @@ def _job_row(db: Session, business_id: int, token: str) -> GenerationJob:
 
 
 def _work(business_id: int, token: str, factory: Callable[[], Session]) -> None:
+    from app.services import model_usage
+
+    # Model calls of this month's build are counted for its business (services/model_usage.py).
+    with model_usage.attributed(business_id, getattr(factory, "kw", {}).get("bind")):
+        _work_attributed(business_id, token, factory)
+
+
+def _work_attributed(business_id: int, token: str, factory: Callable[[], Session]) -> None:
     try:
         while True:
             outcome = _run_stage_with_retry(business_id, token, factory)

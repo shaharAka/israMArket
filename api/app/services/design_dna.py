@@ -1863,7 +1863,17 @@ def edit_dna(db, business, edit: dict) -> dict:
 
 def refresh_after_scan(bind, business_id: int) -> None:
     """Background, after a site scan, the signup or a brand save: copy the logo, then build
-    (or rebuild) the business's DNA.
+    (or rebuild) the business's DNA. Its model call is counted for the business
+    (services/model_usage.py).
+    """
+    from app.services import model_usage
+
+    with model_usage.attributed(business_id, bind):
+        _refresh_after_scan(bind, business_id)
+
+
+def _refresh_after_scan(bind, business_id: int) -> None:
+    """refresh_after_scan, inside its model-usage scope.
 
     Never raises: the scan and the signup already answered. A style the owner kept
     ("לשמור") is left alone; genes the owner set stay. The logo copy is off when

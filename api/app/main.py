@@ -9,7 +9,9 @@ from app.config import get_settings
 from app.db import Base, engine, get_db, migrate_db
 from app.deps import get_current_user
 from app.models import Business, User
+from app.errors import CodedError
 from app.routers import (
+    admin,
     assets,
     audiences,
     auth,
@@ -34,6 +36,7 @@ from app.routers import (
 )
 from app.security import DEFAULT_JWT_SECRET
 from app.services import billing as billing_service
+from app.services import model_usage
 
 Base.metadata.create_all(bind=engine)
 migrate_db()
@@ -97,6 +100,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+class RequestScopeMiddleware:
+    """One empty model-usage scope per request, so a text-model call made while serving it
+    is counted for the signed-in account (services/model_usage.py). Pure ASGI: it touches
+    nothing but a context variable."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        token = model_usage.open_scope()
+        try:
+            await self.app(scope, receive, send)
+        finally:
+            model_usage.close_scope(token)
+
+
+app.add_middleware(RequestScopeMiddleware)
+# Every Gemini text call reports its tokens; this one records them per account.
+model_usage.install()
+
 app.include_router(auth.router)
 app.include_router(onboarding.router)
 app.include_router(assets.router)
@@ -117,6 +144,8 @@ app.include_router(foundations.router)
 app.include_router(whatsapp.router)
 # Subscription billing (PayPal). Its webhook is anonymous and signature-verified.
 app.include_router(billing.router)
+# The owner's backoffice: every route carries services/admin_access.require_admin.
+app.include_router(admin.router)
 # The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
 app.include_router(whatsapp.public_router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
@@ -130,6 +159,13 @@ async def _plan_required(_request: Request, exc: billing_service.PlanRequiredErr
     """The billing gate's 402: `detail` as before (every client shows it), plus
     `code: "plan_required"` and `detail_he` (docs/design-dna.md, contract v2)."""
     return JSONResponse(status_code=402, content=exc.body())
+
+
+@app.exception_handler(CodedError)
+async def _coded_error(_request: Request, exc: CodedError) -> JSONResponse:
+    """403 `account_suspended`, 403 `admin_only` (app/errors.py): `detail` plus `code` and
+    `detail_he`, like the billing gate's 402."""
+    return JSONResponse(status_code=exc.status_code, content=exc.body())
 
 
 @app.on_event("startup")

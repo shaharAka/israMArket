@@ -91,6 +91,8 @@ export type AuthUser = {
   full_name: string;
   has_password: boolean;
   google_linked: boolean;
+  /** May open the backoffice (/admin). Only for the link; the server checks every call. */
+  is_admin?: boolean;
 };
 
 export type BrandSwatch = { hex: string; role: "primary" | "accent" | "background" | "ink" | "secondary"; name: string };

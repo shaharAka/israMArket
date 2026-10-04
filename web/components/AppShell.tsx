@@ -116,7 +116,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .me()
       .then((user) => setName(user.full_name))
       .catch((err: unknown) => {
-        if (err instanceof ApiError && err.status === 401) router.replace("/login");
+        if (err instanceof ApiError && err.code === "account_suspended") router.replace("/login?suspended=1");
+        else if (err instanceof ApiError && err.status === 401) router.replace("/login");
       });
 
     endpoints
