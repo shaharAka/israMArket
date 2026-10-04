@@ -1,43 +1,78 @@
 import Link from "next/link";
 import type { CSSProperties } from "react";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
-import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
+import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
-import { MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR } from "./content";
+import { HERO, MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR, type Step } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
 import { RouteHero } from "./RouteHero";
-import { ScrollScenes } from "./ScrollScenes";
+import { ScenePlayer } from "./ScenePlayer";
 import { SceneStep } from "./SceneStep";
 import "./lv2.css";
 
 /**
  * The landing page, in the product's own direction (blue and sun, the storefront, the plan
- * as a route). The hero is a navigation map that draws the route as you scroll; then the
- * plan fills in, the weekly screen, the monthly review, trust, price, questions.
+ * as a route). The first screen says what it is, for whom and the one action; the map
+ * beside it draws the example plan as a route. Then, once each: how the plan is built, what
+ * a week looks like, what the month teaches, trust, price, questions.
  *
- * One filled button on the page (the hero's). Motion follows the scroll (ScrollScenes).
+ * One filled button on the page (the hero's). Nothing is pinned and nothing waits for the
+ * scroll: each scene plays by itself once it is on screen (ScenePlayer).
  */
 
 const FAQ: { q: string; a: string }[] = [
   {
     q: "מה קורה אחרי החודש החינמי?",
-    a: `מהחודש השני: ${formatPrice()} לחודש. ${VAT_NOTE}.${NO_CARD_AT_SIGNUP ? " בהרשמה לא מבקשים כרטיס אשראי." : ""}`,
+    a: `מהחודש השני: ${formatPrice()} לחודש. ${VAT_NOTE}.${NO_CARD_AT_SIGNUP ? " בהרשמה לא מבקשים כרטיס אשראי." : ""} אם רוצים להמשיך, מפעילים מנוי לקראת סוף החודש החינמי.`,
   },
   { q: "צריך אתר כדי להתחיל?", a: "לא. אפשר להתחיל עם אינסטגרם, פייסבוק או טיקטוק, או פשוט לספר לנו על העסק." },
   {
     q: "מה אתם עושים עם הסיסמה לאינסטגרם?",
-    a: "אנחנו לא רואים אותה. החיבור נעשה דרך פייסבוק, והסיסמה נשארת שם. אנחנו מקבלים הרשאה לקרוא פוסטים ונתונים בלבד.",
+    a: "אנחנו לא רואים אותה. מחברים דרך פייסבוק, והסיסמה נשארת שם. אנחנו מקבלים הרשאה לקרוא פוסטים ונתונים בלבד.",
   },
-  { q: "אפשר לבטל?", a: `${NO_COMMITMENT_LABEL}. אפשר לבטל בעמוד המנוי, ולמחוק את החשבון וכל המידע בכל רגע.` },
+  { q: "אפשר לבטל?", a: `${NO_COMMITMENT_LABEL}. אפשר לבטל בעמוד המנוי, ולמחוק את החשבון ואת כל המידע בכל רגע.` },
   {
     q: "מי כותב את הפוסטים?",
-    a: "הפוסטים נכתבים לפי התוכנית והסגנון שלכם. אתם קוראים, משנים ומאשרים, ומפרסמים בעצמכם.",
+    a: "ה-AI שלנו כותב אותם, לפי התוכנית ובסגנון שלכם. אתם קוראים, משנים ומאשרים, ומפרסמים בעצמכם.",
   },
 ];
 
-/** Set before the first paint, so the scroll-driven start states never flash. */
-const EARLY = 'document.documentElement.dataset.lv2="on"';
+/**
+ * Runs before the first paint: with motion allowed, the hero map starts empty instead of
+ * flashing finished. Under reduced motion it does nothing and the page stays finished.
+ */
+const EARLY = 'if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.lv2="on"';
+
+/** Hold per step, in ms: long enough to read the row and look at the picture. */
+const STORY_HOLD_MS = 4500;
+const TOUR_HOLD_MS = 3200;
+
+/** The rows of a playing scene: each one a step the visitor can pick, with its progress bar. */
+function StepList({ steps, label, numbered = false }: { steps: Step[]; label: string; numbered?: boolean }) {
+  return (
+    <ol className="lv2-steplist" aria-label={label}>
+      {steps.map((step, i) => (
+        <li key={step.title} data-i={i} className="lv2-stepitem">
+          <span className="lv2-stepitem-bar" aria-hidden>
+            <i />
+          </span>
+          <h3 className="lv2-stepitem-title">
+            <SceneStep index={i}>
+              {numbered ? (
+                <span className="lv2-step-num" aria-hidden>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+              ) : null}
+              {step.title}
+            </SceneStep>
+          </h3>
+          <p className="lv2-stepitem-body">{step.body}</p>
+        </li>
+      ))}
+    </ol>
+  );
+}
 
 export function Landing() {
   return (
@@ -66,150 +101,94 @@ export function Landing() {
       </header>
 
       <main>
-        {/* Hero, pinned on desktop: the text stays, the route draws itself on the map. */}
-        <section className="lv2-hero" data-scene="track" data-steps="1" aria-labelledby="lv2-title">
-          <div className="lv2-hero-pin">
-            <div className="lv2-wrap lv2-hero-grid">
-              <div className="lv2-hero-text">
-                <p className="lv2-eyebrow lv2-in" style={{ "--d": 0 } as CSSProperties}>
-                  שיווק לעסקים קטנים
-                </p>
-                <h1 id="lv2-title" className="lv2-display lv2-in" style={{ "--d": 1 } as CSSProperties}>
-                  תוכנית שיווק שמתאימה לעסק שלכם.
-                </h1>
-                <p className="lv2-lead lv2-in" style={{ "--d": 2 } as CSSProperties}>
-                  תוכנית שיווק מתמשכת שמתחילה בעסק שלכם. בוחרים צעד קרוב, מכינים תוכן ולומדים מהתוצאות.
-                </p>
-                <div className="lv2-hero-cta lv2-in" style={{ "--d": 3 } as CSSProperties}>
-                  <Link href="/start" className="lv2-btn">
-                    להתחיל
-                    <IconArrowLeft className="h-4 w-4" />
-                  </Link>
-                </div>
-                <p className="lv2-fine lv2-in" style={{ "--d": 4 } as CSSProperties}>
-                  אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
-                </p>
-                <a href="#story" className="lv2-scroll-hint">
-                  גללו למטה לראות איך זה עובד
-                  <IconChevron aria-hidden className="h-4 w-4" />
-                </a>
+        {/* What it is, for whom, the one action. The map plays the example plan beside it. */}
+        <section className="lv2-hero" aria-labelledby="lv2-title">
+          <div className="lv2-wrap lv2-hero-grid">
+            <div className="lv2-hero-text">
+              <h1 id="lv2-title" className="lv2-display lv2-in" style={{ "--d": 0 } as CSSProperties}>
+                {HERO.title}
+              </h1>
+              <p className="lv2-lead lv2-in" style={{ "--d": 1 } as CSSProperties}>
+                {HERO.lead}
+              </p>
+              <div className="lv2-hero-cta lv2-in" style={{ "--d": 2 } as CSSProperties}>
+                <Link href="/start" className="lv2-btn">
+                  להתחיל
+                  <IconArrowLeft className="h-4 w-4" />
+                </Link>
               </div>
-              <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
-                <RouteHero />
-              </div>
+              <p className="lv2-fine lv2-in" style={{ "--d": 3 } as CSSProperties}>
+                אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
+              </p>
+            </div>
+            <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
+              <RouteHero />
             </div>
           </div>
         </section>
 
-        {/* How the plan is built, pinned (desktop): the text changes, the plan folds open. */}
-        <div id="story">
-        <section className="lv2-story" data-scene="track" data-steps={STORY.length} aria-label="איך בונים את התוכנית">
-          <div className="lv2-story-pin">
-            <div className="lv2-wrap lv2-story-grid">
-              <div className="lv2-story-text">
-                <p className="lv2-eyebrow">איך בונים את התוכנית</p>
-                <ol className="lv2-steps">
-                  {STORY.map((step, i) => (
-                    <li key={step.label} data-i={i} className="lv2-step">
-                      <span className="lv2-step-num">{String(i + 1).padStart(2, "0")}</span>
-                      <h2 className="lv2-h2">{step.title}</h2>
-                      <p className="lv2-lead">{step.body}</p>
-                    </li>
-                  ))}
-                </ol>
-                <p className="lv2-stage-hint">גללו למטה או בחרו שלב</p>
-                <nav className="lv2-ticks" aria-label="שלבי בניית התוכנית">
-                  {STORY.map((step, i) => (
-                    <SceneStep key={step.label} index={i}>
-                      <i aria-hidden />
-                      {step.label}
-                    </SceneStep>
-                  ))}
-                </nav>
-                <a href="#week" className="lv2-scene-continue">להמשך: השבוע שלכם<IconChevron aria-hidden className="h-4 w-4" /></a>
-              </div>
-              <div className="lv2-sheet lv2-story-sheet" aria-hidden>
-                <SheetHeader />
-                <div className="lv2-sheet-stack">
-                  {PARTS.map(({ key, title, Body }, i) => (
-                    <section key={key} data-i={i} className="lv2-part lv2-fold">
-                      <h3 className="lv2-part-title">
-                        {title}
-                        <span className="lv2-fold-sum">{PART_SUMMARY[i]}</span>
-                      </h3>
-                      <div className="lv2-fold-body">
-                        <div>
-                          <Body live />
-                        </div>
+        {/* How the plan is built: three steps, and the plan sheet folding open beside them. */}
+        <section
+          id="story"
+          className="lv2-story"
+          data-scene="steps"
+          data-hold={STORY_HOLD_MS}
+          aria-labelledby="lv2-story-title"
+        >
+          <div className="lv2-wrap lv2-scene-grid lv2-story-grid">
+            <div className="lv2-scene-text">
+              <p className="lv2-eyebrow">איך זה עובד</p>
+              <h2 id="lv2-story-title" className="lv2-h2">
+                קודם בונים תוכנית לעסק שלכם.
+              </h2>
+              <StepList steps={STORY} label="שלבי בניית התוכנית" numbered />
+            </div>
+            <div className="lv2-sheet lv2-story-sheet" aria-hidden>
+              <SheetHeader />
+              <div className="lv2-sheet-stack" data-fold-stack>
+                {PARTS.map(({ key, title, Body }, i) => (
+                  <section key={key} data-i={i} className="lv2-part lv2-fold">
+                    <h3 className="lv2-part-title">
+                      {title}
+                      <span className="lv2-fold-sum">{PART_SUMMARY[i]}</span>
+                    </h3>
+                    <div className="lv2-fold-body">
+                      <div>
+                        <Body live />
                       </div>
-                    </section>
-                  ))}
-                </div>
+                    </div>
+                  </section>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* The same story, stacked (phones and tablets). */}
-        <section className="lv2-story-stacked" aria-label="איך בונים את התוכנית">
-          <div className="lv2-wrap">
-            <p className="lv2-eyebrow">איך בונים את התוכנית</p>
-            {STORY.map((step, i) => {
-              const { title, Body } = PARTS[i];
-              return (
-                <article key={step.label} className="lv2-stack-item" data-scene="view">
-                  <span className="lv2-step-num">{String(i + 1).padStart(2, "0")}</span>
-                  <h2 className="lv2-h2">{step.title}</h2>
-                  <p className="lv2-lead">{step.body}</p>
-                  <div className="lv2-sheet lv2-stack-sheet">
-                    <section className="lv2-part">
-                      <h3 className="lv2-part-title">{title}</h3>
-                      <Body live />
-                    </section>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
-        </div>
-
-        {/* The weekly screen, as a short tour (pinned on desktop): each point lights up
-            its part of the card. */}
-        <section id="week" className="lv2-tour" data-scene="track" data-steps={WEEK_TOUR.length} aria-labelledby="lv2-week-title">
-          <div className="lv2-tour-pin">
-            <div className="lv2-wrap lv2-tour-grid">
-              <div className="lv2-tour-text">
-                <p className="lv2-eyebrow">השבוע שלכם</p>
-                <h2 id="lv2-week-title" className="lv2-h2">
-                  כל שבוע, צעד אחד ברור.
-                </h2>
-                <ol className="lv2-tour-points">
-                  {WEEK_TOUR.map((point, i) => (
-                    <li key={point.k} data-i={i}>
-                      <span className="lv2-tour-bar" aria-hidden>
-                        <i />
-                      </span>
-                      <SceneStep index={i}><strong>{point.k}</strong><span>{point.v}</span></SceneStep>
-                      <span className="lv2-tour-static"><strong>{point.k}</strong><span>{point.v}</span></span>
-                    </li>
-                  ))}
-                </ol>
-                <div className="lv2-tour-navigation">
-                  <p className="lv2-stage-hint">גללו למטה או בחרו נושא</p>
-                  <a href="#month" className="lv2-scene-continue">להמשך: מה לומדים מהתוצאות<IconChevron aria-hidden className="h-4 w-4" /></a>
-                </div>
-              </div>
-              <div className="lv2-tour-stage">
-                <HeroWeek tour className="lv2-tour-card" />
-              </div>
+        {/* The weekly screen, as a short tour: each point lights up its part of the card. */}
+        <section
+          id="week"
+          className="lv2-tour"
+          data-scene="steps"
+          data-hold={TOUR_HOLD_MS}
+          aria-labelledby="lv2-week-title"
+        >
+          <div className="lv2-wrap lv2-scene-grid lv2-tour-grid">
+            <div className="lv2-scene-text">
+              <p className="lv2-eyebrow">השבוע שלכם</p>
+              <h2 id="lv2-week-title" className="lv2-h2">
+                כל שבוע, צעד אחד ברור.
+              </h2>
+              <StepList steps={WEEK_TOUR} label="מה יש במסך השבועי" />
+            </div>
+            <div className="lv2-tour-stage">
+              <HeroWeek tour className="lv2-tour-card" />
             </div>
           </div>
         </section>
 
         {/* The monthly review, on the brand blue. */}
         <section id="month" className="lv2-month" aria-labelledby="lv2-month-title">
-          <div className="lv2-wrap" data-scene="view">
+          <div className="lv2-wrap" data-scene="reveal">
             <p className="lv2-eyebrow lv2-eyebrow--sun">בסוף כל חודש</p>
             <h2 id="lv2-month-title" className="lv2-h2 lv2-month-title">
               מה שלמדנו משנה את החודש הבא.
@@ -227,7 +206,7 @@ export function Landing() {
         </section>
 
         <section className="lv2-trust" aria-labelledby="lv2-trust-title">
-          <div className="lv2-wrap" data-scene="view">
+          <div className="lv2-wrap" data-scene="reveal">
             <h2 id="lv2-trust-title" className="lv2-h2">
               המידע של העסק נשאר שלכם.
             </h2>
@@ -246,13 +225,16 @@ export function Landing() {
         </section>
 
         <section id="price" className="lv2-price" aria-labelledby="lv2-price-title">
-          <div className="lv2-wrap" data-scene="view">
+          <div className="lv2-wrap" data-scene="reveal">
             <p className="lv2-eyebrow">מחיר</p>
             <h2 id="lv2-price-title" className="lv2-price-num">
               <span>{PRICE_ILS}</span>
               <small>₪ לחודש</small>
             </h2>
-            <p className="lv2-lead">{TRIAL_LABEL}. בלי כרטיס אשראי ובלי התחייבות.</p>
+            <p className="lv2-lead">
+              {TRIAL_LABEL}
+              {NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}. אין התחייבות.
+            </p>
             <p className="lv2-fine">{VAT_NOTE}</p>
             <Link href="/start" className="lv2-btn-quiet lv2-btn-quiet--lg lv2-price-cta">
               להתחיל עם העסק שלכם
@@ -286,7 +268,7 @@ export function Landing() {
       </footer>
 
       <DeletedNotice />
-      <ScrollScenes />
+      <ScenePlayer />
     </div>
   );
 }

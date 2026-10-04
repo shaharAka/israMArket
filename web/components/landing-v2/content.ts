@@ -1,8 +1,12 @@
 /**
- * Copy and example data for the landing draft (/landing-draft).
+ * Copy and example data for the landing page (/).
  *
  * One example business runs through the whole page, so the story reads as one plan being
- * built, not as eight slides. Every number here is an example and the page says so.
+ * built and run, not as eight slides. Every number here is an example and the page says so.
+ *
+ * The story, in order: what it is (the hero) → how the plan is built (STORY) → what a week
+ * looks like (WEEK_TOUR) → what the month teaches (MONTH) → trust, price, questions.
+ * Each section says one thing; none repeats another.
  */
 
 export const EXAMPLE = {
@@ -11,33 +15,30 @@ export const EXAMPLE = {
   period: "אוקטובר–דצמבר",
 };
 
-export type StoryStep = {
-  label: string;
+/** The first screen: what it is, for whom, and what happens every week. */
+export const HERO = {
+  title: "תוכנית שיווק אישית לעסק שלכם.",
+  lead: "לעסקים קטנים שעושים את השיווק לבד. כל שבוע מקבלים את הצעד הבא ופוסטים מוכנים בסגנון שלכם. אחר כך בודקים מה הצליח ומעדכנים את התוכנית.",
+};
+
+export type Step = {
   title: string;
   body: string;
 };
 
-/** The four steps of the pinned story. Each one fills one part of the plan sheet. */
-export const STORY: StoryStep[] = [
+/** How the plan is built: three steps, each filling one part of the plan sheet beside it. */
+export const STORY: Step[] = [
   {
-    label: "מכירים את העסק",
-    title: "קודם מכירים את העסק.",
-    body: "שיחה קצרה, כמו עם יועץ: מה אתם מוכרים, למי, ומתי חזק או חלש. אם יש אתר או אינסטגרם, אנחנו קוראים אותם בעצמנו.",
+    title: "מכירים את העסק",
+    body: "שיחה קצרה: מה אתם מוכרים, למי ומתי חזק או חלש. אם יש לכם אתר או אינסטגרם, אנחנו קוראים אותם בעצמנו.",
   },
   {
-    label: "מטרה",
-    title: "מטרה אחת, עם מספרים.",
-    body: "מתחילים ממה שקורה היום, בוחרים מה מזיזים ומחשבים יעד שאפשר לבדוק. לא ״יותר עוקבים״, אלא כמה הזמנות.",
+    title: "מטרה אחת עם מספרים",
+    body: "מתחילים ממה שקורה היום ובוחרים יעד שאפשר לבדוק. לא ״יותר עוקבים״, אלא כמה הזמנות.",
   },
   {
-    label: "מסלול",
-    title: "תוכנית שמתקדמת עם העסק.",
-    body: "בודקים אילו תמונות, עבודות ומוצרים כבר יש לכם. מחברים את מה שאפשר למדוד, מכינים פוסט ראשון לאישור ולפרסום, ולומדים מהתוצאות.",
-  },
-  {
-    label: "מדידה",
-    title: "כל שבוע בודקים מה קרה.",
-    body: "מחברים את מה שכבר יש לכם: וואטסאפ, אינסטגרם ונתוני האתר. רואים מה הצליח ומעדכנים את הצעד הבא.",
+    title: "מסלול לשלושה חודשים",
+    body: "חודש אחרי חודש, לפי העונות והחגים של העסק. כל חודש מתעדכן לפי מה שלמדנו.",
   },
 ];
 
@@ -61,20 +62,24 @@ export const ROUTE = [
   { month: "דצמבר", focus: "חנוכה", detail: "הזמנות מראש לסופגניות" },
 ];
 
+/** The week's three numbers. Orders are the ones the owner reports; the page says so. */
 export const MEASURES = [
-  { k: "לחיצות על וואטסאפ", v: 38, delta: "+12", source: "קישור המעקב" },
-  { k: "הזמנות מראש", v: 14, delta: "", source: "אתם מעדכנים" },
-  { k: "כניסות לאתר", v: 620, delta: "+8%", source: "נתוני האתר" },
+  { k: "לחיצות על וואטסאפ", v: 38, delta: "+12" },
+  { k: "הזמנות מראש", v: 14, delta: "" },
+  { k: "כניסות לאתר", v: 620, delta: "+8%" },
 ];
 
 /** One-line summaries of the plan parts, shown once a part is done in the story. */
-export const PART_SUMMARY = ["מאפייה שכונתית · משפחות מהשכונה", "40 ← 56 הזמנות מראש בחודש", "אוקטובר · נובמבר · דצמבר", "וואטסאפ · הזמנות · כניסות לאתר"];
+export const PART_SUMMARY = ["מאפייה שכונתית · משפחות מהשכונה", "40 ← 56 הזמנות מראש בחודש", "אוקטובר · נובמבר · דצמבר"];
 
-/** The hero: the weekly home, as the owner sees it in week 2 of month 2. */
+/**
+ * The weekly screen, as the owner sees it in the middle of the plan: the week two weeks
+ * before Hanukkah (which starts on 4 December 2026), so the step matches its date.
+ */
 export const THIS_WEEK = {
-  range: "השבוע · 3–9 בנובמבר",
+  range: "השבוע · 15–21 בנובמבר",
   step: "תזכורת ללקוחות הקבועים, שבועיים לפני חנוכה.",
-  stepNote: "הודעה אחת בוואטסאפ ופוסט אחד. הכול כתוב ומחכה לאישור שלכם.",
+  stepNote: "הודעה אחת בוואטסאפ ופוסט אחד. הכול כתוב ומוכן לאישור.",
   posts: [
     { where: "וואטסאפ", text: "סופגניות בהזמנה מראש: מזמינים עד יום חמישי" },
     { where: "אינסטגרם", text: "מי שמזמין מראש לא עומד בתור" },
@@ -83,17 +88,17 @@ export const THIS_WEEK = {
   learned: "הסטורי עם המחיר הביא הכי הרבה לחיצות.",
 };
 
-/** The monthly review, on the dark band. */
+/** The monthly review, on the blue band. Clicks, not sales: that is what we can count. */
 export const MONTH = [
   { k: "מה הצליח", v: "סטורי עם מחיר הביא פי 3 לחיצות על וואטסאפ." },
-  { k: "מה לא", v: "פוסטים בלי מחיר כמעט לא הביאו פניות." },
+  { k: "מה לא", v: "פוסטים בלי מחיר כמעט לא הביאו לחיצות." },
   { k: "מה משנים", v: "בנובמבר, כל פוסט עם מחיר וקישור לוואטסאפ." },
 ];
 
 export const TRUST = [
   { k: "קוראים, לא מפרסמים", v: "אין לנו הרשאה לפרסם בשמכם. אתם מאשרים ומפרסמים." },
-  { k: "הסיסמאות נשארות אצלכם", v: "את החיבור לאינסטגרם ולגוגל עושים אצלם. הסיסמה לא עוברת דרכנו." },
-  { k: "מוחקים בכל רגע", v: "אפשר לנתק חיבור או למחוק את החשבון וכל המידע." },
+  { k: "הסיסמאות נשארות אצלכם", v: "את אינסטגרם, פייסבוק וגוגל מחברים במסך שלהם. הסיסמה לא עוברת דרכנו." },
+  { k: "מוחקים בכל רגע", v: "אפשר לנתק חיבור או למחוק את החשבון ואת כל המידע." },
 ];
 
 /**
@@ -115,8 +120,8 @@ export const NEXT_STEPS = [
 ];
 
 /** The weekly-screen tour: three points, each lighting up its part of the card. */
-export const WEEK_TOUR = [
-  { k: "צעד אחד ברור", v: "מה עושים השבוע, ולמה עכשיו. בלי רשימה ארוכה." },
-  { k: "הפוסטים כבר כתובים", v: "לפי התוכנית והסגנון שלכם. אתם קוראים, מאשרים ומפרסמים." },
-  { k: "המספרים של השבוע", v: "לחיצות, הזמנות וכניסות לאתר, מול השבוע הקודם." },
+export const WEEK_TOUR: Step[] = [
+  { title: "הצעד של השבוע", body: "מה עושים השבוע ולמה עכשיו. בלי רשימה ארוכה." },
+  { title: "הפוסטים כבר כתובים", body: "לפי התוכנית ובסגנון שלכם. אתם קוראים, מאשרים ומפרסמים." },
+  { title: "המספרים של השבוע", body: "לחיצות על וואטסאפ, כניסות לאתר וההזמנות שעדכנתם, מול השבוע הקודם." },
 ];

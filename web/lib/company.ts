@@ -36,7 +36,7 @@ export const HOSTING_NOTE: string | null =
 // Local snapshots also expire by age. Cloud lifecycle execution is automatic;
 // its age condition alone is not a guaranteed permanent-deletion deadline.
 export const BACKUP_NOTE: string | null =
-  "כל לילה נשמר גיבוי. הגיבויים מיועדים למחיקה אחרי 30 יום. לאחר המחיקה בגוגל קלאוד ניתן לשחזר אותם במשך 7 ימים נוספים. המחיקה מתבצעת אוטומטית, בהתאם לזמני העיבוד של גוגל.";
+  "כל לילה נשמר גיבוי. הגיבויים מיועדים למחיקה אחרי 30 יום. אחרי המחיקה בגוגל קלאוד אפשר לשחזר אותם במשך 7 ימים נוספים. המחיקה מתבצעת אוטומטית, בהתאם לזמני העיבוד של גוגל.";
 
 export const BACKUP_NOTE_EN =
   "Backups are scheduled for deletion after 30 days. Deleted cloud backups remain recoverable for 7 additional days before permanent deletion. Automatic deletion is subject to Google's processing time.";

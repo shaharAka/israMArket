@@ -257,7 +257,10 @@ class WhatsappLinkTestCase(unittest.TestCase):
                 response = self.click(code)
                 self.assertEqual(response.status_code, 404)
                 self.assertIn('dir="rtl"', response.text)
-                self.assertIn("הקישור הזה לא קיים", response.text)
+                self.assertIn("הקישור הזה כבר לא פעיל", response.text)
+                # A way on, not a dead end: the site's home page.
+                home = whatsapp.get_settings().web_origin.rstrip("/")
+                self.assertIn(f'href="{home}/"', response.text)
         self.assertEqual(self.total_clicks(), 0)
 
     def test_cleared_number_turns_links_off(self):

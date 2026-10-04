@@ -1,12 +1,12 @@
 import type { CSSProperties } from "react";
-import { EXAMPLE, GOAL, LEARNED, MEASURES, ROUTE } from "./content";
+import { EXAMPLE, GOAL, LEARNED, ROUTE } from "./content";
 
 /**
- * The example plan, drawn as the real thing (HTML, not an illustration), in four parts:
- * what we learned → the goal → the route → what we measure.
+ * The example plan, drawn as the real thing (HTML, not an illustration), in three parts:
+ * what we learned → the goal → the route. What gets measured lives in the weekly screen.
  *
- * `live` wires the numbers to the scroll (ScrollScenes). The route line always follows
- * the nearest `--pp`.
+ * `live` lets ScenePlayer count the goal up while its step plays. The route line and the
+ * months follow the nearest `--pp`.
  */
 
 type PartProps = { live?: boolean };
@@ -66,7 +66,7 @@ export function PartGoal({ live }: PartProps) {
 
 export function PartRoute() {
   return (
-    <div className="lv2-part-body">
+    <div className="lv2-part-body lv2-part-body--route">
       <div className="lv2-route" aria-hidden>
         <span className="lv2-route-line" />
       </div>
@@ -84,32 +84,10 @@ export function PartRoute() {
   );
 }
 
-export function PartMeasures({ live }: PartProps) {
-  return (
-    <div className="lv2-part-body">
-      <ul className="lv2-measures">
-        {MEASURES.map((m) => (
-          <li key={m.k}>
-            <span className="lv2-measure-k">
-              {m.k}
-              <small>{m.source}</small>
-            </span>
-            <span className="lv2-measure-v">
-              <Count from={0} to={m.v} live={live} />
-            </span>
-            <span className="lv2-measure-d">{m.delta}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export const PARTS = [
   { key: "learned", title: "מה למדנו", Body: PartLearned },
   { key: "goal", title: "המטרה", Body: PartGoal },
   { key: "route", title: "המסלול", Body: PartRoute },
-  { key: "measures", title: "מה מודדים השבוע", Body: PartMeasures },
 ] as const;
 
 export function SheetHeader() {

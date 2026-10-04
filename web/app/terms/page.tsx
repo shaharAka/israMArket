@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CONTACT_EMAIL } from "@/lib/company";
-import { formatPrice, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
+import { formatPrice, NO_CARD_AT_SIGNUP, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { LEGAL_LINK as LINK, LegalPage, LegalSection as Section } from "@/components/landing/LegalPage";
 
 export const metadata: Metadata = {
@@ -39,17 +39,17 @@ export default function TermsPage() {
     <LegalPage
       eyebrow="תנאי שימוש"
       title="מה אנחנו עושים, ומה נשאר אצלכם"
-      lead="השימוש בישראמארקט אומר שאתם מסכימים לתנאים האלה. כתבנו אותם קצר ובפשטות."
+      lead="השימוש בישראמארקט אומר שאתם מסכימים לתנאים האלה. כתבנו אותם בקצרה ובפשטות."
       contents={[...CONTENTS]}
       current="/terms"
     >
         <Section id="service" title={TITLE.service}>
           <p>
-            ישראמארקט בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע, ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא
+            ישראמארקט בונה לעסק תוכנית שיווק, מציעה פוסטים ומשימות לכל שבוע ומראה מה הצליח. חלק מהתוכן נכתב בעזרת AI, ולכן הוא
             הצעה. לפני שמפרסמים, קוראים ומאשרים.
           </p>
           <p>
-            התוכנית מבוססת על מה שסיפרתם ועל נתונים שחיברתם. היעדים בה הם השערות שאנחנו בודקים יחד. אנחנו לא מבטיחים
+            התוכנית נבנית לפי מה שסיפרתם ולפי הנתונים שחיברתם. היעדים בה הם השערות שאנחנו בודקים יחד. אנחנו לא מבטיחים
             תוצאה מסוימת במכירות, בעוקבים או בפניות.
           </p>
         </Section>
@@ -60,7 +60,7 @@ export default function TermsPage() {
             שמוזכרים בו, היא שלכם.
           </p>
           <p>
-            תעלו רק תמונות וטקסטים שמותר לכם להשתמש בהם. אל תשתמשו בשירות לתוכן שקרי, פוגעני או לא חוקי, ואל תנסו
+            העלו רק תמונות וטקסטים שמותר לכם להשתמש בהם. אל תשתמשו בשירות לתוכן שקרי, פוגעני או לא חוקי, ואל תנסו
             לפרוץ אליו או להעמיס עליו.
           </p>
           <p>שמרו על הסיסמה שלכם. חשבון אחד שייך לעסק אחד ולמי שפתח אותו.</p>
@@ -68,7 +68,7 @@ export default function TermsPage() {
 
         <Section id="content" title={TITLE.content}>
           <p>
-            התמונות, הטקסטים והנתונים שלכם נשארים שלכם. גם הפוסטים והתוכניות שיצרנו בשבילכם שלכם, ואפשר להשתמש בהם
+            התמונות, הטקסטים והנתונים שלכם נשארים שלכם. גם הפוסטים והתוכניות שיצרנו בשבילכם הם שלכם, ואפשר להשתמש בהם
             בכל מקום. אנחנו משתמשים בהם רק כדי לתת לכם את השירות. מה נשמר ואצל מי, כתוב ב
             <Link href="/security" className={LINK}>
               עמוד האבטחה והפרטיות
@@ -82,7 +82,7 @@ export default function TermsPage() {
             {TRIAL_LABEL}. אחר כך {formatPrice()} לחודש. {VAT_NOTE}.
           </p>
           <p>
-            בהרשמה לא מבקשים כרטיס אשראי. לקראת סוף החודש החינמי אפשר להפעיל מנוי בעמוד{" "}
+            {NO_CARD_AT_SIGNUP ? "בהרשמה לא מבקשים כרטיס אשראי. " : ""}לקראת סוף החודש החינמי אפשר להפעיל מנוי בעמוד{" "}
             <Link href="/billing" className={LINK}>
               המנוי
             </Link>
@@ -103,13 +103,13 @@ export default function TermsPage() {
             <Link href="/account" className={LINK}>
               החשבון
             </Link>
-            . המחיקה מוחקת את כל המידע, כמו שמתואר ב
+            . המחיקה מוחקת את כל המידע, כמו שמפורט ב
             <Link href="/security#delete" className={LINK}>
-              איך מוחקים
+              עמוד האבטחה והפרטיות
             </Link>
             .
           </p>
-          <p>אם החשבון משמש לפגיעה באחרים או בשירות, נוכל לסגור אותו. נכתוב לכם לפני כן, חוץ ממקרה דחוף.</p>
+          <p>אם החשבון משמש לפגיעה באחרים או בשירות, נוכל לסגור אותו. נכתוב לכם לפני כן, חוץ ממקרים דחופים.</p>
         </Section>
 
         <Section id="limits" title={TITLE.limits}>
