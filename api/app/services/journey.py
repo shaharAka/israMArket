@@ -124,6 +124,21 @@ class Facts:
         return has_answers(self.stored.get("diagnostics"))
 
     @property
+    def from_start(self) -> bool:
+        """The first meeting was saved, not an unfinished legacy wizard.
+
+        Older /start accounts predate the explicit marker. Their saved plan and the
+        structured first-meeting answers identify that path without guessing that
+        legacy diagnostics or ranked targets were answered.
+        """
+        if self.stored.get("onboarding_source") == "start":
+            return True
+        context = self.stored.get("owner_context")
+        return bool(self.quarter_plan) and isinstance(context, dict) and all(
+            isinstance(context.get(key), dict) for key in ("seasons", "activity", "tried")
+        )
+
+    @property
     def targets(self) -> list[str]:
         return ranked_targets(self.stored.get("growth_targets"))
 

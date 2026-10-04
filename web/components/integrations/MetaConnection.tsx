@@ -10,6 +10,7 @@ import { PixelSetupGuide } from "./PixelSetupGuide";
 import { SourceReadState } from "./SourceReadState";
 
 type Item = IntegrationsPayload["integrations"][number];
+const NO_PAGE = "__no_page__";
 const RETURN_NOTES: Record<string, string> = {
   cancelled: "החיבור לא הושלם. אפשר לנסות שוב כשנוח לכם; התוכנית נשארת זמינה.",
   expired: "חלון החיבור פג או שנפתח בדפדפן אחר. התחילו שוב מכאן.",
@@ -76,7 +77,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setNote("");
       const current = latestItem.current;
       setAssets(result);
-      setPage(previous => result.pages.some(p => p.page_id === previous) ? previous : result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : result.pages.length === 1 ? result.pages[0].page_id : "");
+      setPage(previous => previous === NO_PAGE || result.pages.some(p => p.page_id === previous) ? previous : result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : "");
       void chooseAccount(result.ad_accounts.some(a => a.id === current?.ad_account_id) ? current!.ad_account_id! : "");
       setStage("choose"); setOpen(true);
       setCanResume(false);
@@ -157,7 +158,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     setReadState(null); setBusy(true); setNote("");
     try {
       if (!demo) {
-        await endpoints.metaAccount({ page_id: page, ad_account_id: account, pixel_id: pixel });
+        await endpoints.metaAccount({ page_id: page === NO_PAGE ? "" : page, ad_account_id: account, pixel_id: pixel });
         await changed.current();
       }
       setVerification(null); setStage("done");
@@ -213,7 +214,11 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
           {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
         </>}
         {stage === "choose" && assets && <>
-          <label className={styles.field}>הדף העסקי<select value={page} onChange={e => setPage(e.target.value)}><option value="">בלי דף כרגע</option>{assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}</select></label>
+          <label className={styles.field}>הדף העסקי<select value={page} onChange={e => setPage(e.target.value)}>
+            <option value="" disabled={assets.pages.length > 0}>{assets.pages.length ? "בחרו את הדף" : "בלי דף כרגע"}</option>
+            {assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}
+            {assets.pages.length > 0 && <option value={NO_PAGE}>בלי דף כרגע</option>}
+          </select></label>
           {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? "האינסטגרם המקושר לדף הזה יתחבר יחד איתו." : "לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף בפייסבוק ולחזור לכאן."}</p>}
           {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || "לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס לפייסבוק מנהל את הדף ושבחרתם בו בחלון האישור."} במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק.</p>}
           <details className={styles.setupGuide} open={Boolean(account) || undefined}>
@@ -234,7 +239,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
               </>}
             </div>
           </details>
-          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (!page && !account)}>{account ? "אלה החשבונות של העסק שלי" : "זה הדף של העסק שלי"}</UIAction>
+          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (assets.pages.length > 0 && !page) || ((!page || page === NO_PAGE) && !account)}>{account ? "אלה החשבונות של העסק שלי" : "זה הדף של העסק שלי"}</UIAction>
           <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
         </>}
         {stage === "done" && <>

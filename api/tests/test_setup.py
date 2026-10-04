@@ -587,6 +587,32 @@ class SetupChecklistTestCase(unittest.TestCase):
         self.assertTrue(all(item["done"] for item in self.by_key(payload).values()))
         self.assertIsNone(payload["next"])
 
+    def test_saved_start_meeting_does_not_repeat_legacy_questions(self):
+        self.save_profile({"onboarding_source": "start", "brand_language": {"voice": "warm"},
+                           "quarter_plan": {"strategy": "saved direction", "integrations": []}})
+        payload = self.payload()
+        items = self.by_key(payload)
+        self.assertNotIn("diagnostics", items)
+        self.assertNotIn("priorities", items)
+        self.assertTrue(items["quarter"]["done"])
+        self.assertEqual(payload["total"], len(items))
+        self.assertEqual(payload, self.payload())  # reload keeps the saved progress
+        stored = loads(self.business.scraped_profile_json, {})
+        self.assertNotIn("diagnostics", stored)
+        self.assertNotIn("growth_targets", stored)
+
+    def test_existing_start_account_is_recognised_without_a_new_marker(self):
+        self.save_profile({"quarter_plan": {"strategy": "saved direction", "integrations": []},
+                           "owner_context": {"seasons": {}, "activity": {}, "tried": {}}})
+        self.assertNotIn("diagnostics", self.by_key())
+        self.assertNotIn("priorities", self.by_key())
+
+    def test_plan_alone_or_a_pending_link_does_not_hide_unanswered_legacy_questions(self):
+        self.save_profile({"quarter_plan": {"integrations": []},
+                           "owner_context": {"pending_links": {"facebook": {"url": "example"}}}})
+        self.assertFalse(self.done("diagnostics"))
+        self.assertFalse(self.done("priorities"))
+
     def test_next_follows_the_documented_order(self):
         self.assertEqual(self.next_key(), NEXT_ORDER[0])
         for index, key in enumerate(NEXT_ORDER[:-1]):

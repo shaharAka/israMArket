@@ -133,6 +133,12 @@ export function weekLabel(week: number): string {
 
 /** The same rule as the API's `next_step`: the first step that can be done now. */
 export function nextStep(payload: TrialPayload): TrialStep | null {
+  // Real accounts use the server's saved readiness decision on every screen. A
+  // missing/blocked selection must not silently become another task in this browser.
+  return payload.steps.find(step => step.key === payload.next_key && step.status === "todo") ?? null;
+}
+
+function demoNextStep(payload: TrialPayload): TrialStep | null {
   if (payload.steps.find((step) => step.key === "publish_first")?.status !== "done") {
     for (const key of ["publish_first", "approve_first", "start_posts"]) {
       const ready = payload.steps.find((step) => step.key === key && step.status === "todo");
@@ -148,7 +154,7 @@ export function nextStep(payload: TrialPayload): TrialStep | null {
 
 function recount(payload: TrialPayload): TrialPayload {
   const counted = payload.steps.filter((step) => step.status !== "soon");
-  const next = nextStep(payload);
+  const next = demoNextStep(payload);
   return {
     ...payload,
     done: counted.filter((step) => step.status === "done").length,
