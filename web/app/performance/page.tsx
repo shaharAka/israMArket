@@ -985,6 +985,7 @@ function NoSnapshotYet({ payload }: { payload: PerformancePayload }) {
   const later = setup?.requirements.find(item => item.status === "soon");
   const whatsappOnly = setup?.requirements.length === 1 && setup.requirements[0].key === "whatsapp";
   const action = needs[0];
+  const stepKeys = needs.map(item => item.key === "ga4" ? "site_data" : item.key === "meta" ? "instagram" : "whatsapp");
   const explanation = whatsappOnly && needs.length
     ? "הכינו קישור מדיד לוואטסאפ. נספור לחיצות עליו, ולא הודעות או לקוחות."
     : needs.length
@@ -1012,7 +1013,7 @@ function NoSnapshotYet({ payload }: { payload: PerformancePayload }) {
       {needs.some(item => item.key === "ga4") ? <div className="mt-2">
         <HowToFind topic="google_analytics" label="איך מוצאים את נתוני האתר?" />
       </div> : null}
-      <div className="mt-2"><StepLink stepKey={["site_data", "instagram", "results"]} /></div>
+      {!later || needs.length ? <div className="mt-2"><StepLink stepKey={[...stepKeys, "results"]} /></div> : null}
     </section>
   );
 }
