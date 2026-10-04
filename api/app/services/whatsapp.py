@@ -335,7 +335,7 @@ _BOT_FALSE_POSITIVES = re.compile(r"cubot", re.IGNORECASE)
 
 def is_bot(user_agent: str) -> bool:
     ua = (user_agent or "").strip()
-    if not ua:
+    if not ua or ua.lower() == "node":
         return True
     if _KNOWN_BOTS.search(ua):
         return True

@@ -13,7 +13,7 @@ import { NextRequest, NextResponse } from "next/server";
  * not a tap). No cookies, no client address, no referrer — the API never sees who tapped.
  */
 const UPSTREAM = process.env.API_ORIGIN ?? "http://localhost:8000";
-const FORWARDED = ["user-agent", "purpose", "sec-purpose", "x-purpose", "x-moz"];
+const FORWARDED = ["purpose", "sec-purpose", "x-purpose", "x-moz"];
 
 /**
  * When the API cannot answer, the person who tapped (the business's customer) still gets a
@@ -58,7 +58,9 @@ function unavailable(request: NextRequest) {
 }
 
 async function forward(request: NextRequest, code: string) {
-  const headers = new Headers();
+  // An omitted header lets Node's fetch invent its own agent, turning an anonymous
+  // preview/check into a tap. Preserve absence explicitly for the API's bot filter.
+  const headers = new Headers({ "user-agent": request.headers.get("user-agent") ?? "" });
   for (const name of FORWARDED) {
     const value = request.headers.get(name);
     if (value) headers.set(name, value);
