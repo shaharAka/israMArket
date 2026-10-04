@@ -258,6 +258,48 @@ class PublishTestCase(unittest.TestCase):
 
     # --- 1. scheduling ------------------------------------------------------------
 
+    def test_preparing_images_keeps_what_the_owner_did_meanwhile(self):
+        # The Posts page prepares every missing image on open, which takes minutes; the
+        # owner approves a post meanwhile (another request). That approval must survive.
+        from unittest import mock
+
+        from app.routers import strategy as strategy_router
+
+        calls: list[int] = []
+
+        def fake_store(business, strategy, index, db=None, **kwargs):
+            extra = loads(strategy.roadmap_json, {})
+            posts = extra["roadmap"]["posts"]
+            if not calls:
+                other = self.Session()
+                try:
+                    row = other.get(Strategy, self.strategy.id)
+                    current = loads(row.roadmap_json, {})
+                    current["roadmap"]["posts"][4]["approval_status"] = "approved"
+                    current["roadmap"]["posts"][4]["caption"] = "נוסח של בעלת העסק"
+                    row.roadmap_json = dumps(current)
+                    other.commit()
+                finally:
+                    other.close()
+            calls.append(index)
+            posts[index]["image_url"] = f"/media/1/new-{index}.png"
+            posts[index]["image_source"] = "generated"
+            strategy.roadmap_json = dumps(extra)
+            return posts[index]
+
+        with mock.patch.object(strategy_router, "_store_post_image", side_effect=fake_store):
+            response = self.client.post("/strategy/posts/images")
+        self.assertEqual(response.status_code, 200, response.text)
+        self.db.expire_all()
+        posts = self.stored_posts()
+        self.assertEqual(posts[4]["approval_status"], "approved")
+        self.assertEqual(posts[4]["caption"], "נוסח של בעלת העסק")
+        self.assertEqual(posts[4]["image_url"], "/media/1/new-4.png")
+        self.assertEqual(posts[0]["image_url"], "/media/1/new-0.png")
+        # A post that already had an image was not touched.
+        self.assertEqual(posts[1]["image_url"], "/media/1/a.png")
+        self.assertNotIn(1, calls)
+
     def test_scheduling_sets_the_date_and_records_when_it_was_set(self):
         response = self.client.post(
             "/strategy/posts/schedule", json={"post_index": 3, "scheduled_for": day(5)}

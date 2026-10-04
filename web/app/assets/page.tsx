@@ -63,7 +63,8 @@ function mergeAssets(current: Asset[], incoming: Asset[]) {
  * The page has ONE ask: the deep site scan. It is the only one of the three ways in that
  * the owner cannot do anywhere else in the app — and it is the only one that fills the
  * whole library at once, from their own site, without them hunting for files. So it is the
- * dark button in the header, on an empty library as much as a full one.
+ * dark button in the header, on an empty library as much as a full one — except for a
+ * business with no website: there is nothing to scan, so the ask is the phone upload.
  *
  * Uploading and importing a link stay fully available, but they are the *other* ways in,
  * not a second ask: both live behind the one `להעלות מהטלפון או מקישור` disclosure. Nothing is
@@ -81,6 +82,9 @@ export default function AssetsPage() {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState("");
   const [addOpen, setAddOpen] = useState(false);
+  // Whether the business has a website to scan. Without one (or until we know), the
+  // site scan cannot be the page's ask: the owner's phone is where the photos are.
+  const [hasSite, setHasSite] = useState<boolean | null>(null);
   const [openId, setOpenId] = useState<number | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const demo = useSyncExternalStore(subscribeDemo, demoSnapshot, demoServerSnapshot);
@@ -91,9 +95,13 @@ export default function AssetsPage() {
     let active = true;
     async function firstLoad() {
       try {
-        const res = await endpoints.assets();
+        const [res, me] = await Promise.all([
+          endpoints.assets(),
+          endpoints.business().catch(() => null),
+        ]);
         if (!active) return;
         setAssets(mergeAssets([], res.assets));
+        setHasSite(me ? Boolean(me.business?.website_url?.trim()) : null);
         setLoadError("");
       } catch (err) {
         if (active) setLoadError(message(err, "לא הצלחנו לטעון את התמונות"));
@@ -132,6 +140,7 @@ export default function AssetsPage() {
     if (added.length) {
       setAssets((prev) => mergeAssets(prev, added));
       toast(countLabel(added.length, "קובץ נוסף לתמונות שלכם", "קבצים נוספו לתמונות שלכם"));
+      void describeNew(added);
     }
     if (failures.length) {
       setFileError(failures.join(" · "));
@@ -140,6 +149,26 @@ export default function AssetsPage() {
       setPending({});
       // Everything landed: fold the disclosure away and give the library back its page.
       setAddOpen(false);
+    }
+  }
+
+  /**
+   * The subtitle promises a description and tags for every photo, and posts pick the
+   * owner's photo by them: an undescribed upload never matched a post, which then got a
+   * generated image instead. So new photos are described right after they land, one at
+   * a time (one small vision call each), quietly — a failure leaves the ״לכתוב תיאור״
+   * action on the photo, as before.
+   */
+  async function describeNew(added: Asset[]) {
+    if (demo) return;
+    for (const asset of added) {
+      if (asset.kind !== "image" || asset.description.trim()) continue;
+      try {
+        const res = await endpoints.describeAsset(asset.id);
+        setAssets((prev) => mergeAssets(prev, [res.asset]));
+      } catch {
+        // Not fatal: the photo is in the library and can be described from its sheet.
+      }
     }
   }
 
@@ -188,6 +217,8 @@ export default function AssetsPage() {
       toast("סיימנו לעבור על האתר");
     } catch (err) {
       setLoadError(message(err, "לא הצלחנו לעבור על האתר"));
+      // The site could not be read: the other ways in, open, right under the reason.
+      setAddOpen(true);
     } finally {
       setScanning(false);
     }
@@ -231,15 +262,27 @@ export default function AssetsPage() {
           title="התמונות שלי"
           subtitle="אנחנו כותבים תיאור ותגיות לכל תמונה, ולפיהם בונים את הפוסטים."
           action={
-            <button
-              type="button"
-              onClick={() => void handleScan()}
-              disabled={scanning || busy}
-              className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
-            >
-              <IconEye className="h-[18px] w-[18px]" />
-              {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
-            </button>
+            hasSite === false ? (
+              <button
+                type="button"
+                onClick={() => fileInput.current?.click()}
+                disabled={busy}
+                className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
+              >
+                <IconImage className="h-[18px] w-[18px]" />
+                {Object.values(pending).includes("uploading") ? "מעלים…" : "להעלות תמונות מהטלפון"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => void handleScan()}
+                disabled={scanning || busy}
+                className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
+              >
+                <IconEye className="h-[18px] w-[18px]" />
+                {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
+              </button>
+            )
           }
         />
 
@@ -263,24 +306,28 @@ export default function AssetsPage() {
               <span aria-hidden className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-[var(--primary-soft)] text-[var(--primary)]">
                 <IconImage className="h-[18px] w-[18px]" />
               </span>
-              להעלות מהטלפון או מקישור
+              {/* Without a website the header button is already the upload: this is the link. */}
+              {hasSite === false ? "להוסיף מקישור או עוד קבצים" : "להעלות מהטלפון או מקישור"}
             </span>
             <IconChevron
               className={`h-4 w-4 shrink-0 text-[var(--ink-muted)] transition-transform duration-200 ${addOpen ? "rotate-90" : "-rotate-90"}`}
             />
           </button>
 
+          {/* Always mounted: the header's upload button (no website) opens it too. */}
+          <input
+            ref={fileInput}
+            type="file"
+            accept="image/*,video/*"
+            multiple
+            onChange={(event) => void handleFiles(event)}
+            className="sr-only"
+            tabIndex={-1}
+            aria-hidden
+          />
           {addOpen ? (
             <div className="space-y-5 border-t border-[var(--rule)] px-5 py-5">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <input
-                  ref={fileInput}
-                  type="file"
-                  accept="image/*,video/*"
-                  multiple
-                  onChange={(event) => void handleFiles(event)}
-                  className="sr-only"
-                />
                 <button
                   type="button"
                   onClick={() => fileInput.current?.click()}
@@ -400,7 +447,9 @@ export default function AssetsPage() {
             </span>
             <h2 className="mt-4 text-lg font-bold tracking-tight text-[var(--ink)]">עוד אין כאן תמונות</h2>
             <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[var(--ink-soft)]">
-              לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.
+              {hasSite === false
+                ? "תמונות של העבודה, המקום או המוצרים, ישר מהטלפון. מהן נבנה את הפוסטים."
+                : "לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק."}
             </p>
             <StepLink stepKey="photos" className="mt-2" />
           </section>

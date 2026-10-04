@@ -9,8 +9,10 @@ import ui from "./chrome.module.css";
 
 const actionClass = "drawn-button inline-flex min-h-12 items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white hover:bg-[var(--primary-dark)]";
 
-/** The plan exists but has no posts: guide the owner, or resume a requested build. */
-export function FirstPosts({ onDone }: { onDone: () => void }) {
+/** The plan exists but has no posts: guide the owner, or resume a requested build.
+ *  `onWeekReady` fires when the first week is saved while the rest are still written,
+ *  so the page can show those posts at once instead of after the whole month. */
+export function FirstPosts({ onDone, onWeekReady }: { onDone: () => void; onWeekReady?: () => void }) {
   const { payload, failed, loading } = useTrial();
   // Photos can be added on another screen without refreshing the shared journey cache.
   useEffect(() => {
@@ -29,6 +31,7 @@ export function FirstPosts({ onDone }: { onDone: () => void }) {
         void loadTrial(true);
         onDone();
       }}
+      onProgress={onWeekReady}
       idle={({ start }) => (
         <section className={`${ui.card} px-6 py-8 sm:px-8`} aria-labelledby="first-post-heading">
           <h2 id="first-post-heading" className="text-xl font-bold tracking-tight text-[color:var(--ink)]">

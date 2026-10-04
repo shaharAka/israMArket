@@ -24,7 +24,15 @@ type Options = {
   startCall?: () => Promise<GenerateResult>;
   /** Called once when a build this page started or watched finishes. */
   onDone?: (result: GenerateResult | null) => void;
+  /** Called while the build runs, each time another week's posts are saved, so a page can
+   *  show the weeks that are ready instead of waiting for the whole month. */
+  onProgress?: (status: GenerationStatus) => void;
 };
+
+/** How many weeks of the month already have their posts. */
+function weeksDone(status: GenerationStatus): number {
+  return Object.values(status.posts ?? {}).filter((state) => state === "done").length;
+}
 
 export type MonthBuild = {
   /** The latest status of this kind, or null (none yet / another kind). */
@@ -39,7 +47,7 @@ export type MonthBuild = {
   start: () => Promise<void>;
 };
 
-export function useMonthBuild({ kind, startCall, onDone }: Options = {}): MonthBuild {
+export function useMonthBuild({ kind, startCall, onDone, onProgress }: Options = {}): MonthBuild {
   const [status, setStatus] = useState<GenerationStatus | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [starting, setStarting] = useState(false);
@@ -52,6 +60,12 @@ export function useMonthBuild({ kind, startCall, onDone }: Options = {}): MonthB
   useEffect(() => {
     onDoneRef.current = onDone;
   }, [onDone]);
+  const onProgressRef = useRef(onProgress);
+  useEffect(() => {
+    onProgressRef.current = onProgress;
+  }, [onProgress]);
+  // Weeks with posts at the last status seen while running (-1: none seen yet).
+  const lastWeeksDone = useRef(-1);
 
   const stopTimer = useCallback(() => {
     window.clearTimeout(timer.current);
@@ -67,8 +81,12 @@ export function useMonthBuild({ kind, startCall, onDone }: Options = {}): MonthB
       if (!mine) return false;
       if (next.running) {
         watching.current = true;
+        const done = weeksDone(next);
+        if (lastWeeksDone.current >= 0 && done > lastWeeksDone.current) onProgressRef.current?.(next);
+        lastWeeksDone.current = done;
         return true;
       }
+      lastWeeksDone.current = -1;
       if (next.done && watching.current) {
         watching.current = false;
         onDoneRef.current?.(result);

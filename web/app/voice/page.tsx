@@ -56,7 +56,18 @@ export default function VoicePage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-lg">
-        <SectionHeader section="business" title="זה נשמע כמוכם?" subtitle="כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים." />
+        <SectionHeader
+          section="business"
+          title="זה נשמע כמוכם?"
+          subtitle={
+            // A preset was never read off a site: say what it is instead.
+            !data
+              ? "ככה נכתוב את הפוסטים."
+              : data.from_site === false
+                ? "עוד לא קראנו אתר שלכם, אז התחלנו מסגנון לפי סוג העסק. ככה נכתוב את הפוסטים."
+                : "כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים."
+          }
+        />
 
         {!data ? (
           error ? (
@@ -79,7 +90,11 @@ export default function VoicePage() {
                   ))}
                 </ul>
               ) : (
-                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים.</p>
+                <p className={`${data.voice_he ? "mt-3 " : ""}text-[15px] leading-7 text-[color:var(--ink-soft)]`}>
+                  {data.from_site === false
+                    ? "אם זה לא הסגנון שלכם, כתבו למטה איך אתם מדברים עם לקוחות."
+                    : "עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים."}
+                </p>
               )}
             </section>
 

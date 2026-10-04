@@ -308,6 +308,23 @@ class TrialTestCase(unittest.TestCase):
         self.assertEqual(self.status("baseline"), "done")
         self.assertIs(self.payload()["measurement"]["baseline"], True)
 
+    def test_the_baseline_answered_at_start_is_not_asked_again(self):
+        # Skipping the question at /start leaves the step to do.
+        self.save_profile({"goal_numbers": {"baseline": {}, "view": {"baseline_known": False, "baseline_he": ""}}})
+        self.assertEqual(self.status("baseline"), "todo")
+        self.assertEqual(self.client.get("/business/baseline").json()["from_start_he"], "")
+        # Ranges (or an explicit "unknown") given at /start are an answer, said back here.
+        self.save_profile({"goal_numbers": {
+            "baseline": {"orders_month": "20-50", "avg_order_ils": "unknown"},
+            "view": {"baseline_known": True, "baseline_he": "בערך 20-50 הזמנות בחודש."},
+        }})
+        self.assertEqual(self.status("baseline"), "done")
+        form = self.client.get("/business/baseline").json()
+        self.assertEqual(form["from_start_he"], "בערך 20-50 הזמנות בחודש.")
+        self.assertIsNone(form["saved_at"])
+        # A range is not a measured or typed number.
+        self.assertFalse(self.payload()["measurement"]["baseline"])
+
     def test_measured_numbers_are_a_baseline_too(self):
         self.connect("ga4")
         self.add_snapshot()
@@ -426,6 +443,29 @@ class TrialTestCase(unittest.TestCase):
         self.post_json("/business/featured-items", {"items": [{"name": n} for n in ("א׳", "ב׳", "ג׳")]}, "PUT")
         self.assertEqual(self.status("featured"), "done")
 
+    def test_no_instagram_yet_is_not_the_first_ask(self):
+        self.save_profile({"quarter_plan": PLAN, "owner_context": {"activity": {}}})
+        keys = [step["key"] for step in self.payload()["steps"]]
+        # Told at /start: no Instagram or Facebook. The step stays in week 1, after the
+        # ones that can be done today, and says how it comes later.
+        self.assertLess(keys.index("baseline"), keys.index("instagram"))
+        self.assertNotEqual(self.payload()["next_key"], "instagram")
+        self.assertIn("אחרי שפותחים", self.steps()["instagram"]["why_he"])
+        # With an Instagram link (or a posting habit) it is first, as before.
+        self.business.social_links_json = dumps({"instagram": "https://instagram.com/bakery"})
+        self.db.commit()
+        keys = [step["key"] for step in self.payload()["steps"]]
+        self.assertEqual(keys[0], "instagram")
+        self.business.social_links_json = dumps({})
+        self.save_profile({"owner_context": {"activity": {"facebook": "regular"}}})
+        self.assertEqual([step["key"] for step in self.payload()["steps"]][0], "instagram")
+
+    def test_featured_suggestions_split_at_sentences(self):
+        self.business.offerings = "כלי קרמיקה בעבודת יד: ספלים, קערות וצלחות. בקבוק 1.5 ליטר"
+        self.db.commit()
+        suggestions = self.client.get("/business/featured-items").json()["suggestions"]
+        self.assertEqual(suggestions, ["כלי קרמיקה בעבודת יד", "ספלים", "קערות וצלחות", "בקבוק 1.5 ליטר"])
+
     def test_featured_items_are_validated(self):
         too_many = {"items": [{"name": f"מוצר {i}"} for i in range(11)]}
         self.assertEqual(self.client.put("/business/featured-items", json=too_many).status_code, 422)
@@ -441,6 +481,18 @@ class TrialTestCase(unittest.TestCase):
         saved = self.post_json("/business/voice-check", {"ok": False, "note": "פחות רשמי"}, "PUT")
         self.assertEqual((saved["check"]["ok"], saved["check"]["note"]), (False, "פחות רשמי"))
         self.assertEqual(self.status("voice"), "done")
+        self.assertIs(voice["from_site"], True)
+
+    def test_a_preset_style_is_not_presented_as_read_from_a_site(self):
+        # /start without a readable site stores a preset whose one "example" is the owner's
+        # own description: it is not offered back as a sample of their voice.
+        self.save_profile({"brand_language": {"voice": "חם וביתי", "voice_examples": ["לחם וחלות"], "source": "preset"}})
+        voice = self.client.get("/business/voice-check").json()
+        self.assertEqual(voice["voice_he"], "חם וביתי")
+        self.assertEqual(voice["examples_he"], [])
+        self.assertIs(voice["from_site"], False)
+        step = self.steps()["voice"]
+        self.assertNotIn("קראנו באתר", step["why_he"])
 
     def test_starting_the_posts_waits_for_the_foundations(self):
         self.add_assets(3)
