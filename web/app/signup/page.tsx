@@ -84,7 +84,7 @@ export default function SignupPage() {
       }
     >
       {draft ? (
-        <p className={auth.lead}>נשמור את מה שבנינו יחד ונמשיך לתקציב.</p>
+        <p className={auth.lead}>נשמור את מה שבנינו יחד ונמשיך לתוכנית.</p>
       ) : preview ? (
         <div className={`${auth.lead} flex items-center justify-between gap-3`}>
           <p>אחרי זה נבנה את החודש הראשון.</p>

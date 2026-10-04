@@ -112,23 +112,35 @@ def post_link(index: int, business: Business = Depends(get_business), db: Sessio
 
 # --- the public redirect ----------------------------------------------------------------
 
+# The visitor is the business's customer, not the owner: a calm page in the site's colours,
+# what happened, and a way on (web/app/r/[code]/route.ts serves the same page when the API
+# cannot be reached).
 _NOT_FOUND_PAGE = """<!doctype html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>{title}</title>
+<title>{title} · ישראמארקט</title>
 <style>
-  body {{ margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f9f8f6;
-         color: #191b18; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }}
-  main {{ max-width: 22rem; padding: 2rem 1rem; text-align: center; }}
-  h1 {{ font-size: 1.25rem; margin: 0 0 .5rem; }}
-  p {{ margin: 0; line-height: 1.6; color: #5e6159; }}
+  body {{ margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f7fb;
+         color: #14203a; font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif; }}
+  main {{ max-width: 24rem; padding: 2rem 1.25rem; text-align: center; }}
+  .mark {{ display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: #ffc44a;
+          box-shadow: 0 0 0 5px #fff4d6; }}
+  h1 {{ font-size: 1.4rem; line-height: 1.3; margin: 1.25rem 0 .5rem; }}
+  p {{ margin: 0; line-height: 1.7; color: #4b5670; }}
+  a {{ display: inline-flex; align-items: center; min-height: 44px; margin-top: 1.25rem; color: #2853c7;
+      font-weight: 600; text-decoration: none; }}
+  a:hover {{ text-decoration: underline; }}
 </style>
 </head>
-<body><main><h1>{title}</h1><p>{body}</p></main></body>
+<body><main><span class="mark" aria-hidden="true"></span><h1>{title}</h1><p>{body}</p>
+<a href="{home}">לעמוד הבית של ישראמארקט</a></main></body>
 </html>"""
+
+_GONE_TITLE = "הקישור הזה כבר לא פעיל"
+_GONE_BODY = "אולי הוא הועתק חלקית, או שהעסק החליף אותו. אפשר לבקש מהעסק את הקישור שוב."
 
 _NO_STORE = {
     "Cache-Control": "no-store",
@@ -138,19 +150,22 @@ _NO_STORE = {
 
 
 def _page(status: int, title: str, body: str) -> HTMLResponse:
+    home = f"{whatsapp.get_settings().web_origin.rstrip('/')}/"
     return HTMLResponse(
-        _NOT_FOUND_PAGE.format(title=escape(title), body=escape(body)), status_code=status, headers=_NO_STORE
+        _NOT_FOUND_PAGE.format(title=escape(title), body=escape(body), home=escape(home, quote=True)),
+        status_code=status,
+        headers=_NO_STORE,
     )
 
 
 @public_router.api_route("/r/{code}", methods=["GET", "HEAD"], include_in_schema=False)
 def redirect(code: str, request: Request, db: Session = Depends(get_db)):
     if not code.isalnum() or len(code) > 16:
-        return _page(404, "הקישור הזה לא קיים", "אולי הוא הועתק חלקית. בקשו מהעסק את הקישור שוב.")
+        return _page(404, _GONE_TITLE, _GONE_BODY)
     link = db.query(WhatsappLink).filter(WhatsappLink.code == code).first()
     business = db.get(Business, link.business_id) if link else None
     if not link or not business:
-        return _page(404, "הקישור הזה לא קיים", "אולי הוא הועתק חלקית. בקשו מהעסק את הקישור שוב.")
+        return _page(404, _GONE_TITLE, _GONE_BODY)
     if not business.whatsapp_number_e164:
         return _page(404, "הקישור הזה לא פעיל כרגע", "העסק עוד לא עדכן את מספר הוואטסאפ. נסו שוב מאוחר יותר.")
 
