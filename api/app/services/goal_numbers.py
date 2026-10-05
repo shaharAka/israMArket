@@ -88,7 +88,7 @@ FIELD_HE = {
     "close_rate": "כמה מהפניות נסגרות",
     "deal_value_ils": "שווי ממוצע של לקוח",
     "capacity_more": "כמה לקוחות נוספים אפשר לקבל",
-    "margin_pct": "כמה נשאר לכם מכל מכירה",
+    "margin_pct": "כמה נשאר לכם מכל עסקה",
 }
 UNKNOWN = "unknown"
 
@@ -308,6 +308,25 @@ def _n(x: float) -> str:
 def _rng(low: float, high: float) -> str:
     """"444-1,666": one left-to-right run (a hyphen, not a dash, keeps RTL order)."""
     return _n(low) if _n(low) == _n(high) else f"{_n(low)}-{_n(high)}"
+
+
+def _whole(low: float, high: float) -> tuple[int, int] | None:
+    """A range of things people count (orders, clients, inquiries): whole numbers, never
+    "+1.8 עד +3.5". A low end above zero stays at least 1 (0.4 of an order is not "+0");
+    None when even the high end rounds to nothing, which is no target at all."""
+    high_w = _half_up(high)
+    if high_w < 1:
+        return None
+    low_w = _half_up(low)
+    if low_w == 0 and low > 0:
+        low_w = 1
+    return min(low_w, high_w), high_w
+
+
+def _count_rng(low: float, high: float) -> str:
+    """"3-7": a range of people or orders, in whole numbers."""
+    pair = _whole(low, high)
+    return _rng(*pair) if pair else "0"
 
 
 def _ils(x: float) -> str:
@@ -568,11 +587,11 @@ def baseline_summary(draft, base: dict | None = None) -> str:
                 parts.append({"few": "מעט קונים חוזרים.", "half": "בערך חצי מהקונים חוזרים.", "most": "רוב הקונים חוזרים."}[returning])
         value = avg
     margin = _v(base, "margin_pct")
+    what = "מכל לקוח" if _side(draft.model) == "services" else "מכל קנייה"
     if margin and value:
-        what = "מכל לקוח" if _side(draft.model) == "services" else "מכל קנייה"
         parts.append(f"{what} נשארים לכם כ-{_ils(_nice(value.point * margin.point / 100))}.")
     elif margin:
-        parts.append(f"מכל מכירה נשארים לכם כ-{_margin_label(margin)}.")
+        parts.append(f"{what} נשארים לכם כ-{_margin_label(margin)}.")
     if not parts:
         return "עוד לא יודעים כמה יש היום. נמדוד מהשבוע הראשון, וזו תהיה נקודת הפתיחה."
     if not baseline_known(draft, base):
@@ -645,15 +664,31 @@ def _slow_months(draft) -> list[int]:
     return list(getattr(getattr(draft, "seasons", None), "slow", []) or [])
 
 
+def plan_month_numbers(today: date | None = None) -> list[int]:
+    """The plan's three months, in order (quarter_plan.plan_months' rule): the month the
+    next two weeks mostly fall in, and the two after it."""
+    middle = (today or date.today()) + timedelta(days=14)
+    return [(middle.month - 1 + offset) % 12 + 1 for offset in range(3)]
+
+
+def quiet_in_plan(draft, today: date | None = None) -> list[int]:
+    """The owner's quiet months that fall inside the plan, in the plan's order. An
+    October-December plan cannot fill July and August, so those are not its business."""
+    slow = set(_slow_months(draft))
+    return [month for month in plan_month_numbers(today) if month in slow]
+
+
 def _months_he(months: list[int]) -> str:
     names = [GREGORIAN_MONTHS[m - 1]["he"] for m in months]
     return names[0] if len(names) == 1 else f"{', '.join(names[:-1])} ו{names[-1]}"
 
 
-def recommend(draft, base: dict, verdict: str | None, economics_cost: tuple[int, int] | None) -> tuple[str, str]:
-    """The lever the numbers point to, and why, in one or two plain sentences."""
+def recommend(draft, base: dict, verdict: str | None, economics_cost: tuple[int, int] | None,
+              today: date | None = None) -> tuple[str, str]:
+    """The lever the numbers point to, and why, in one or two plain sentences. Quiet months
+    count only when they fall inside the plan's three months."""
     services = _side(draft.model) == "services"
-    slow = _slow_months(draft)
+    slow = quiet_in_plan(draft, today)
     if services:
         capacity, rate, inquiries = _v(base, "capacity_more"), _v(base, "close_rate"), _v(base, "inquiries_month")
         if capacity and capacity.high == 0:
@@ -697,9 +732,15 @@ def first_month_label(today: date | None = None) -> str:
     return GREGORIAN_MONTHS[middle.month - 1]["he"]
 
 
+def _w(x: float) -> str:
+    """A target's number: whole, with thousands commas ("+2", never "+1.8")."""
+    return f"{_half_up(x):,}"
+
+
 def headline(kind: str, low: float, high: float, unit_he: str, pct: tuple[int, int] | None = None) -> str:
-    """"+9 עד +25 הזמנות בחודש (+23%-63%)"."""
-    text = f"+{_n(low)} {unit_he}" if _n(low) == _n(high) else f"+{_n(low)} עד +{_n(high)} {unit_he}"
+    """"+9 עד +25 הזמנות בחודש (+23%-63%)". Whole numbers: a target is something people
+    count, so a value stored before targets were whole still reads "+2 עד +4"."""
+    text = f"+{_w(low)} {unit_he}" if _w(low) == _w(high) else f"+{_w(low)} עד +{_w(high)} {unit_he}"
     if pct:
         text += f" (+{pct[0]}%)" if pct[0] == pct[1] else f" (+{pct[0]}%-{pct[1]}%)"
     return text
@@ -726,7 +767,7 @@ UNITS = {
 }
 
 
-def _qualitative(draft, lever: str, month: str) -> tuple[str, str]:
+def _qualitative(draft, lever: str, month: str, today: date | None = None) -> tuple[str, str]:
     """(target, first checkpoint) when there is no honest number to stand on."""
     services = _side(draft.model) == "services"
     store = not services and draft.grow_where == "store"
@@ -740,10 +781,16 @@ def _qualitative(draft, lever: str, month: str) -> tuple[str, str]:
     if lever == "returning":
         return ("בחודש הראשון בונים רשימת לקוחות (וואטסאפ או מועדון לקוחות) ומודדים כמה חוזרים. אחר כך קובעים יעד.",
                 f"בסוף {month}: כמה לקוחות נכנסו לרשימה, וכמה מהם חזרו.")
-    if lever == "fill_quiet" and _slow_months(draft):
-        months = _months_he(_slow_months(draft))
+    if lever == "fill_quiet" and quiet_in_plan(draft, today):
+        months = _months_he(quiet_in_plan(draft, today))
         return (f"בחודשים השקטים ({months}) מתחילים להזכיר ללקוחות שלושה שבועות לפני, ומודדים מול אותו חודש בשנה שעברה.",
                 f"בסוף {month}: הרשימה מוכנה, וידוע מה יוצא לקראת החודש השקט הקרוב.")
+    if lever == "fill_quiet":
+        # The owner chose it, but no quiet month falls inside the plan: nothing in these
+        # months can fill one, and naming one would be advice for another plan.
+        return ("בחודשים של התוכנית אין חודש שקט. בונים רשימת לקוחות קבועים ומודדים כמה חוזרים, "
+                "כדי שהחודש השקט הבא יתחיל עם קהל מוכן.",
+                f"בסוף {month}: כמה לקוחות נכנסו לרשימה, וכמה מהם חזרו.")
     if services:
         return ("בחודש הראשון רושמים כל פנייה ומאיפה הגיעה. זו נקודת הפתיחה, ובסוף החודש קובעים יעד במספרים.",
                 f"בסוף {month}: כמה פניות הגיעו, מאיפה, וכמה נסגרו.")
@@ -755,8 +802,9 @@ def _qualitative(draft, lever: str, month: str) -> tuple[str, str]:
 
 
 def _monthly_or_quarter(low: float, high: float, unit: str) -> tuple[float, float, str, bool]:
-    """Fractions of a customer a month read badly: below 1 a month, say it for the quarter."""
-    if high < 1:
+    """Fractions of a customer a month read badly, and rounding "0.6-1.2" to whole numbers
+    turns it into "1": when either end is a fraction under 1 a month, say it for the quarter."""
+    if high < 1 or 0 < low < 1:
         return low * 3, high * 3, unit.replace("בחודש", "ב-3 חודשים"), True
     return low, high, unit, False
 
@@ -770,7 +818,7 @@ def suggest(draft, today: date | None = None) -> dict:
     budget = monthly_budget(draft)
     paid = paid_estimate(draft, budget or 0)
     economics, verdict = unit_economics(draft, base, paid)
-    recommended, why = recommend(draft, base, verdict, paid.cost_per_result)
+    recommended, why = recommend(draft, base, verdict, paid.cost_per_result, today)
     lever = draft.lever.primary if getattr(draft, "lever", None) else recommended
     if lever not in LEVERS or draft.model not in LEVERS[lever]["models"]:
         lever = recommended
@@ -850,24 +898,26 @@ def suggest(draft, today: date | None = None) -> dict:
                     low, high = c_low, c_high
                     kind, unit, reference = "clients", UNITS["clients"], clients
                     math_he[-1] = (f"{share} מהקליקים הופכים לפניות: {_rng(*paid.results)} פניות. "
-                                   f"אם {_close_label(rate)} נסגרות, כ-{_rng(*(r * rate.point / 100 for r in paid.results))} "
+                                   f"אם {_close_label(rate)} נסגרות, כ-{_count_rng(*(r * rate.point / 100 for r in paid.results))} "
                                    f"לקוחות{capped}.")
-            if high <= 0:
+            low, high, unit, quarterly = _monthly_or_quarter(low, high, unit)
+            whole = _whole(low, high) if high > 0 else None
+            if whole is None:
                 suggestion = None
             else:
-                low, high, unit, quarterly = _monthly_or_quarter(low, high, unit)
                 base_value = reference.point if isinstance(reference, Value) else reference
                 if quarterly and base_value:
                     base_value *= 3
                 pct = (_pct(low, base_value), _pct(high, base_value)) if base_value else None
-                low_r, high_r = (round(low, 1), round(high, 1)) if high < 10 else (_half_up(low), _half_up(high))
+                low_r, high_r = whole
                 suggestion = {"kind": kind, "min": low_r, "max": high_r, "unit_he": unit,
                               "headline_he": headline(kind, low_r, high_r, unit, pct)}
                 if pct:
                     suggestion["pct_min"], suggestion["pct_max"] = pct
-                    suggestion["level_he"] = f"{_rng(base_value + low_r, base_value + high_r)} {unit}"
-                if lever == "fill_quiet" and _slow_months(draft):
-                    suggestion["headline_he"] += f", בחודשים השקטים ({_months_he(_slow_months(draft))})"
+                    suggestion["level_he"] = f"{_count_rng(base_value + low_r, base_value + high_r)} {unit}"
+                quiet = quiet_in_plan(draft, today)
+                if lever == "fill_quiet" and quiet:
+                    suggestion["headline_he"] += f", בחודשים השקטים ({_months_he(quiet)})"
                 target_line = f"היעד: {suggestion['headline_he']}."
                 math_he.append(target_line)
         assumptions += paid.lines
@@ -903,21 +953,24 @@ def suggest(draft, today: date | None = None) -> dict:
         if count:
             unit = "לקוחות חוזרים בחודש" if services else UNITS["repeat_orders"]
             low, high, unit, quarterly = _monthly_or_quarter(count * 0.05, count * 0.10, unit)
-            if high >= 1:
+            whole = _whole(low, high)
+            if whole is not None:
                 how = ("בקשה מסודרת להמלצה ותזכורת ללקוחות קודמים" if services
                        else "תזכורת קבועה בוואטסאפ או מועדון לקוחות")
                 math_he.append(f"הנחת עבודה: {how} מחזירים עוד 5-10 מכל 100 לקוחות.")
-                low_r, high_r = (round(low, 1), round(high, 1)) if high < 10 else (_half_up(low), _half_up(high))
+                low_r, high_r = whole
                 noun = "לקוחות" if services else "הזמנות"
                 period = "ב-3 חודשים" if quarterly else "בחודש"
                 amount = count * 3 if quarterly else count
                 step = f"{_n(amount)} {noun} {period} × 5%-10% = עוד {_rng(low_r, high_r)} {unit}"
                 value = deal if services else avg
                 if value:
-                    step += f", כ-{_rng(low * value.point, high * value.point)} ₪"
+                    # The money of the whole numbers just said ("2-4 הזמנות, כ-400-800 ₪").
+                    step += f", כ-{_rng(low_r * value.point, high_r * value.point)} ₪"
                 math_he.append(step + ".")
                 kind = "clients" if services else "repeat_orders"
-                pct = (_pct(low_r, amount), _pct(high_r, amount))
+                # The share is the assumption's (5-10 of 100), not the rounding's.
+                pct = (_pct(low, amount), _pct(high, amount))
                 suggestion = {"kind": kind, "min": low_r, "max": high_r, "unit_he": unit,
                               "pct_min": pct[0], "pct_max": pct[1],
                               "headline_he": headline(kind, low_r, high_r, unit, pct)}
@@ -929,24 +982,29 @@ def suggest(draft, today: date | None = None) -> dict:
 
     elif lever == "close_more" and inquiries and rate:
         p = rate.point
-        new_low, new_high = min(p + 10, 90), min(p + 20, 90)
-        d_low, d_high = inquiries.point * (new_low - p) / 100, inquiries.point * (new_high - p) / 100
+        # Whole steps of "out of 10" (one or two more), never past 9 of 10: a target of
+        # "+0.5 מכל 10" is not something anyone can count.
+        step_high = min(2, int((90 - p) / 10 + 1e-9))
+        step_low = min(1, step_high)
+        d_low, d_high = inquiries.point * step_low / 10, inquiries.point * step_high / 10
         capped = ""
         if capacity is not None:
             cap_high = capacity.high if capacity.high is not None else math.inf
             if d_high > cap_high or d_low > capacity.low:
                 capped = f" יש לכם מקום לעוד {capacity.label()} לקוחות בחודש, וזו התקרה."
             d_low, d_high = min(d_low, capacity.low), min(d_high, cap_high)
-        if d_high > 0:
+        if step_high >= 1 and d_high > 0:
             math_he.append("הנחת עבודה: מענה באותו יום ומעקב אחרי כל הצעה סוגרים עוד 1-2 מכל 10 פניות.")
             q_low, q_high = d_low * 3, d_high * 3
             money = f" (כ-{_rng(q_low * deal.point, q_high * deal.point)} ₪)" if deal else ""
-            step_low, step_high = (new_low - p) / 10, (new_high - p) / 10
-            math_he.append(f"{_n(inquiries.point)} פניות × עוד {_rng(step_low, step_high)} מכל 10 = עוד {_rng(d_low, d_high)} "
-                           f"לקוחות בחודש, כ-{_rng(_half_up(q_low), _half_up(q_high))} ב-3 החודשים{money}.{capped}")
-            levels = f"{_rng(new_low / 10, new_high / 10)} מתוך 10 (היום {_n(p / 10)})"
+            # People in whole numbers: a month when it is at least one, else the quarter.
+            monthly = _whole(d_low, d_high) if d_low >= 1 else None
+            more = (f"עוד {_rng(*monthly)} לקוחות בחודש, כ-{_count_rng(q_low, q_high)} ב-3 החודשים" if monthly
+                    else f"עוד כ-{_count_rng(q_low, q_high)} לקוחות ב-3 החודשים")
+            math_he.append(f"{_n(inquiries.point)} פניות × עוד {_rng(step_low, step_high)} מכל 10 = {more}{money}.{capped}")
+            levels = f"{_rng(p / 10 + step_low, p / 10 + step_high)} מתוך 10 (היום {_n(p / 10)})"
             pct = (_pct(d_low, clients), _pct(d_high, clients)) if clients else None
-            suggestion = {"kind": "close_rate", "min": round(step_low, 1), "max": round(step_high, 1),
+            suggestion = {"kind": "close_rate", "min": step_low, "max": step_high,
                           "unit_he": UNITS["close_rate"], "level_he": levels,
                           "headline_he": headline("close_rate", step_low, step_high, UNITS["close_rate"])}
             if pct:
@@ -967,7 +1025,7 @@ def suggest(draft, today: date | None = None) -> dict:
                 room = (f" זה יותר ממה שיש לכם מקום (עוד {capacity.label()} בחודש), אז קודם סוגרים יותר, "
                         "ואחר כך מגדילים את הפרסום.")
             budget_he = (f"{_ils(budget)} בחודש ב{paid.channel_he} יכולים להביא לפי המקור {_rng(*paid.results)} פניות נוספות. "
-                         f"אם {_close_label(rate)} נסגרות, זה כ-{_rng(c_low, c_high)} לקוחות.{room}")
+                         f"אם {_close_label(rate)} נסגרות, זה כ-{_count_rng(c_low, c_high)} לקוחות.{room}")
         elif paid.results:
             budget_he = (f"{_ils(budget)} בחודש ב{paid.channel_he} יכולים להביא לפי המקור {_rng(*paid.results)} "
                          f"{'הזמנות' if paid.channel == 'meta' else 'פניות'} מלקוחות חדשים. בתוכנית הזו הם הולכים קודם "
@@ -991,7 +1049,7 @@ def suggest(draft, today: date | None = None) -> dict:
         sources.append(paid.source)
 
     if suggestion is None:
-        qualitative, checkpoint = _qualitative(draft, lever, month)
+        qualitative, checkpoint = _qualitative(draft, lever, month, today)
         if lever in {"new_customers", "fill_quiet"} and not budget:
             math_he.append("בלי תקציב פרסום אין מספר אמיתי לכמה לקוחות חדשים יגיעו. לא ננחש: נמדוד חודש, ואז נקבע יעד.")
         if services and capacity is not None and capacity.high == 0 and lever in {"new_customers", "close_more", "fill_quiet"}:
@@ -1049,6 +1107,9 @@ def numbers_view(draft, today: date | None = None) -> dict:
         "first_checkpoint_he": result["first_checkpoint_he"],
         "caveat_he": result["caveat_he"],
     }
+    if _slow_months(draft):
+        # Which of the owner's quiet months this plan can act on ("" = none of them).
+        view["quiet_in_plan_he"] = _months_he(quiet_in_plan(draft, today)) if quiet_in_plan(draft, today) else ""
     if target is not None and (target.accepted or target.edited_by_owner):
         view["target"] = {**target.model_dump(), "text_he": target_text(target), "from": "owner" if target.edited_by_owner else "suggestion"}
         if target.edited_by_owner and suggestion:
@@ -1088,6 +1149,10 @@ def prompt_block(view: dict) -> str:
     if view.get("budget_he"):
         lines.append(f"- התקציב: {view['budget_he']}")
     lines.append(LEVER_GUIDE.get(lever["key"], ""))
+    if lever["key"] == "fill_quiet" and "quiet_in_plan_he" in view:
+        lines.append(f"החודשים השקטים שבתוכנית: {view['quiet_in_plan_he']}. רק עליהם בונים." if view["quiet_in_plan_he"]
+                     else "אף חודש שקט שלהם לא נופל בחודשי התוכנית: בונים רשימת לקוחות קבועים ותזכורות, "
+                          "בלי להזכיר את החודשים השקטים עצמם.")
     return "\n".join(line for line in lines if line)
 
 

@@ -297,6 +297,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {inSetup ? null : (
         <nav
           aria-label="ניווט ראשי"
+          data-tab-bar
           className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
         >
           {TABS.map((tab) => {

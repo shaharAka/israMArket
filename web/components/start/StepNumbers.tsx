@@ -471,8 +471,8 @@ export function TargetEdit({
   onSave: (target: DraftTarget) => void;
   onCancel: () => void;
 }) {
-  const [low, setLow] = useState(target.value_min != null ? String(target.value_min) : "");
-  const [high, setHigh] = useState(target.value_max != null ? String(target.value_max) : "");
+  const [low, setLow] = useState(target.value_min != null ? String(Math.round(target.value_min)) : "");
+  const [high, setHigh] = useState(target.value_max != null ? String(Math.round(target.value_max)) : "");
   const [error, setError] = useState("");
   const lowId = useId();
   const highId = useId();
@@ -482,16 +482,17 @@ export function TargetEdit({
       <p className="text-sm font-semibold text-[color:var(--ink)]">היעד שלכם, בתוספת על היום ({target.unit_he})</p>
       <div className="flex flex-wrap items-center gap-2.5 text-sm font-medium text-[color:var(--ink-soft)]">
         <label htmlFor={lowId}>מ-+</label>
-        <input id={lowId} type="number" inputMode="decimal" min={0} dir="ltr" value={low} onChange={(e) => setLow(e.target.value)} className={field} />
+        <input id={lowId} type="number" inputMode="numeric" min={0} step={1} dir="ltr" value={low} onChange={(e) => setLow(e.target.value)} className={field} />
         <label htmlFor={highId}>עד +</label>
-        <input id={highId} type="number" inputMode="decimal" min={0} dir="ltr" value={high} onChange={(e) => setHigh(e.target.value)} className={field} />
+        <input id={highId} type="number" inputMode="numeric" min={0} step={1} dir="ltr" value={high} onChange={(e) => setHigh(e.target.value)} className={field} />
       </div>
       <div className="flex items-center gap-3">
         <UIAction
           variant="secondary"
           onClick={() => {
-            const a = low.trim() ? Number(low) : NaN;
-            const b = high.trim() ? Number(high) : NaN;
+            // Whole numbers: a target is something people count.
+            const a = low.trim() ? Math.round(Number(low)) : NaN;
+            const b = high.trim() ? Math.round(Number(high)) : NaN;
             const min = Number.isFinite(a) ? a : b;
             const max = Number.isFinite(b) ? b : a;
             if (!Number.isFinite(min) || min < 0 || max < 0) {

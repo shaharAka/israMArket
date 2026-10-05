@@ -5246,7 +5246,28 @@ export type PerformancePayload = {
    * `api/app/services/connected_posts.py`). There with or without a snapshot: WhatsApp taps
    * are our own count. `waiting` = posts that are out with no number yet, never a 0.
    */
-  measured_posts?: { items: MeasuredPost[]; waiting: number };
+  measured_posts?: { items: MeasuredPost[]; waiting: number; waiting_items?: WaitingPost[] };
+};
+
+/**
+ * A post that is out with no number yet (#117): listed at once, as published, with what is
+ * missing to measure it (`connected_posts.waiting_item`). Never a 0.
+ */
+export type WaitingPost = {
+  /** The post's place in the month, for `/posts?post=<index>`. */
+  index: number;
+  uid: string;
+  title: string;
+  channel: string;
+  metric: PostMetric;
+  label_he: string;
+  /** `YYYY-MM-DD`: the post's day as the feed shows it (the owner's date, else the plan's),
+   *  else when "פרסמתי" was tapped; "" when unknown. */
+  day: string;
+  /** True when something must be connected or made before a number can come. */
+  missing: boolean;
+  /** One sentence: what is missing, or that the next refresh counts it. */
+  missing_he: string;
 };
 
 /** One measured post on Results: the post's one number, as its card shows it. */

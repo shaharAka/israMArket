@@ -251,8 +251,8 @@ export function StepQuarter(props: RevealProps & { loggedIn: boolean; saving: bo
       {loading ? (
         <WorkProgress
           title="בונים את התוכנית שלכם…"
-          note="בערך חצי דקה. אפשר להשאיר את המסך פתוח."
-          pace={4500}
+          note="בדרך כלל פחות מדקה. אפשר להשאיר את המסך פתוח."
+          pace={9000}
           lines={[
             "מחברים את הכיוון למה שגילינו",
             "קובעים את המדד ואיך נמדוד",

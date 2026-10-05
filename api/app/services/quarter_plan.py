@@ -169,6 +169,17 @@ MIX_BY_LEVER = {
     "fill_quiet": "seasonal ו-offer לקראת החודשים השקטים, ו-community. מתחילים שלושה שבועות לפני.",
 }
 PRODUCTS_ARE_YOURS_HE = "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות."
+# A service business has no stock: what it features is a service, by what pays and what
+# the diary has room for (the shop's words read wrong to a physiotherapist).
+SERVICES_ARE_YOURS_HE = "אילו שירותים להבליט בכל פוסט — אתם מחליטים כאן, לפי מה שמשתלם לכם ומה שיש לו מקום ביומן."
+BOTH_ARE_YOURS_HE = "אילו מוצרים ושירותים להבליט בכל פוסט — אתם מחליטים כאן, לפי מה שמשתלם לכם."
+_OFFER_WORD = {"products": "מוצרים", "services": "שירותים", "both": "מוצרים ושירותים"}
+
+
+def yours_note(model: str) -> str:
+    """"Which products to feature is yours", in the business's own terms."""
+    return {"services": SERVICES_ARE_YOURS_HE, "both": BOTH_ARE_YOURS_HE}.get(model, PRODUCTS_ARE_YOURS_HE)
+
 
 # "מה מחכה לכם בפנים": what the app gives, in the owner's words. Only what exists.
 INSIDE: list[dict] = [
@@ -189,6 +200,16 @@ INSIDE: list[dict] = [
     {"key": "whatsapp_link", "title_he": "קישור וואטסאפ מסומן",
      "what_he": "בכל פוסט ובביו, וסופרים כמה לחצו מכל מקום. אנחנו מכינים אותו."},
 ]
+
+
+def inside_for(model: str) -> list[dict]:
+    """"מה מחכה לכם בפנים" for this business: a service business picks services, not products."""
+    word = _OFFER_WORD.get(model, "מוצרים")
+    return [
+        {**item, "what_he": item["what_he"].replace("אילו מוצרים", f"אילו {word}")} if item["key"] == "posts" else dict(item)
+        for item in INSIDE
+    ]
+
 
 PLAN_PROMPT_CHARS = 26000
 SITE_CHARS = 1600
@@ -540,7 +561,7 @@ def _channels_block(draft: OnboardingDraft, frame: dict, scan: dict | None = Non
     return "\n".join(lines)
 
 
-def _months_block(months: list[dict], today: date) -> str:
+def _months_block(months: list[dict], today: date, draft: OnboardingDraft | None = None) -> str:
     lines = ["שלושת החודשים של התוכנית (month 1, 2, 3) והמועדים בכל אחד (רק אלה קיימים):"]
     for item in months:
         events = "; ".join(f"{e['date']} {e['name']} [{e['kind']}]: {e['note']}" for e in item["events"]) or "אין מועד מיוחד"
@@ -549,7 +570,97 @@ def _months_block(months: list[dict], today: date) -> str:
     lines.append("השבועות של החודש הראשון: " + "; ".join(
         f"שבוע {i} ({reveal._dates_he(*w)})" for i, w in enumerate(windows, start=1)))
     lines.append("ב-dates: רק תאריך מהרשימה של אותו חודש, כמו שהוא (YYYY-MM-DD). ביום זיכרון לא מקדמים מכירות.")
+    labels = ", ".join(m["label"] for m in months)
+    lines.append(f"כל המלצה, צעד, בדיקה והשערה בתוכנית היא ל{labels} בלבד. אל תזכיר שם של חודש אחר בשום מקום "
+                 "בתוכנית, גם לא עונה עמוסה או שקטה שנופלת מחוץ לחודשים האלה.")
+    if draft is not None:
+        plan_numbers = [m["month"] for m in months]
+        for key, many, one in (("slow", "שקטים", "שקט"), ("busy", "עמוסים", "עמוס")):
+            theirs = list(getattr(draft.seasons, key) or [])
+            if not theirs:
+                continue
+            inside = [GREGORIAN_MONTHS[m - 1]["he"] for m in plan_numbers if m in theirs]
+            if inside:
+                lines.append(f"חודשים {many} שבתוך התוכנית: {', '.join(inside)}.")
+            elif key == "busy" and plan_numbers[-1] % 12 + 1 in theirs:
+                lines.append("העונה העמוסה שלהם מתחילה מיד אחרי חודשי התוכנית: החודש האחרון יכול להתכונן אליה, "
+                             "בלי לכתוב את שם החודש.")
+            else:
+                lines.append(f"אף חודש {one} שלהם לא נופל בחודשי התוכנית: לא בונים עליו כאן.")
     return "\n".join(lines)
+
+
+# --- months outside the plan ---------------------------------------------------------------
+
+# A Gregorian month's name in Hebrew, with the prefixes it takes ("ביולי", "ולאוגוסט").
+_MONTH_NAMES = {item["number"]: item["he"] for item in GREGORIAN_MONTHS}
+_MONTH_ALIASES = {3: ("מרץ", "מרס")}
+
+
+def _month_pattern(number: int) -> re.Pattern:
+    names = "|".join(_MONTH_ALIASES.get(number, (_MONTH_NAMES[number],)))
+    return re.compile(rf"(?<![א-ת])[ובלמהכש]{{0,3}}(?:{names})(?![א-ת])")
+
+
+_MONTH_PATTERNS = {number: _month_pattern(number) for number in _MONTH_NAMES}
+
+
+def outside_months(text: str, plan_months: set[int]) -> list[str]:
+    """The months `text` names that are not one of the plan's: "למלא את החודשים השקטים
+    (יולי-אוגוסט)" in an October-December plan names two."""
+    return [_MONTH_NAMES[number] for number, pattern in _MONTH_PATTERNS.items()
+            if number not in plan_months and pattern.search(text or "")]
+
+
+def _drop_outside(text: str, plan_months: set[int]) -> str:
+    """The text without the sentences that name a month outside the plan."""
+    parts = drafts._SENTENCE.split(text or "")
+    return " ".join(part for part in parts if not outside_months(part, plan_months)).strip()
+
+
+def _scrub_months(result: dict, plan_months: set[int], fallback: str = "") -> dict:
+    """After the retry: no recommendation names a month outside the plan. A sentence that
+    does is dropped; a pillar, assumption or measure built on one is dropped whole."""
+    def clean(text: str) -> str:
+        return _drop_outside(text, plan_months)
+
+    strategy = result["strategy"]
+    for field in ("one_liner_he", "angle_he", "why_he"):
+        strategy[field] = clean(strategy[field])
+    if not strategy["one_liner_he"]:
+        # The strategy line is required: the direction's own words, when they are clean.
+        strategy["one_liner_he"] = clean(fallback)
+    result["kpi"]["how_he"] = clean(result["kpi"]["how_he"])
+    result["measures"] = [m for m in result["measures"] if not outside_months(m["name_he"], plan_months)]
+    for m in result["measures"]:
+        m["how_he"] = clean(m["how_he"])
+    for a in result["audiences"]:
+        a["message_he"] = clean(a["message_he"])
+    for c in result["channels"]:
+        for field in ("why_he", "effort_he", "cadence_he"):
+            c[field] = clean(c[field])
+    for month in result["budget"]["months"]:
+        for line in month["lines"]:
+            line["note_he"] = clean(line["note_he"])
+    if result["budget"].get("unlock_he"):
+        result["budget"]["unlock_he"] = clean(result["budget"]["unlock_he"])
+    for month in result["calendar"]:
+        month["checkpoint_he"] = clean(month["checkpoint_he"])
+        for d in month["dates"]:
+            d["action_he"] = clean(d["action_he"])
+        for w in month.get("weeks") or []:
+            w["focus_he"] = clean(w["focus_he"])
+    for month in result["content"]:
+        month["pillars"] = [p for p in month["pillars"] if not outside_months(p["title"], plan_months)]
+        for p in month["pillars"]:
+            p["description_he"] = clean(p["description_he"])
+        for item in month.get("mix") or []:
+            item["purpose_he"] = clean(item["purpose_he"])
+    result["assumptions"] = [a for a in result["assumptions"] if not outside_months(a["bet_he"], plan_months)]
+    for a in result["assumptions"]:
+        a["if_wrong_he"] = clean(a["if_wrong_he"])
+    result["changed_he"] = clean(result.get("changed_he", ""))
+    return result
 
 
 def _budget_block(draft: OnboardingDraft, frame: dict) -> str:
@@ -598,7 +709,8 @@ def _mix_block(draft: OnboardingDraft, inputs: dict, numbers: dict | None) -> st
         f"תמהיל הפוסטים (mix): בערך {per_month} פוסטים בחודש בסך הכול. סוגי הפוסטים (type_key): {names}.\n"
         + (f"לפי מה שמגדילים: {lean}\n" if lean else "")
         + "התוכנית בונה מבנה, לא פוסטים: אסור לציין מוצר, דגם, מותג, מחיר או מבצע מסוים בשום מקום בתוכנית. "
-        "אילו מוצרים להבליט בעל העסק מחליט בתוך המערכת, לפי מלאי ורווחיות."
+        + (f"אילו {_OFFER_WORD['services']} להבליט בעל העסק מחליט בתוך המערכת, לפי מה שמשתלם לו ומה שיש לו מקום ביומן."
+           if draft.model == "services" else "אילו מוצרים להבליט בעל העסק מחליט בתוך המערכת, לפי מלאי ורווחיות.")
     )
 
 
@@ -688,7 +800,7 @@ def plan_prompt(
 
 {reveal._direction_block(direction)}
 
-{_months_block(months, today)}
+{_months_block(months, today, draft)}
 
 {_numbers_block(numbers)}
 
@@ -978,7 +1090,7 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
         if len(pillars) < 2 or len(mix) < 3:
             problems.append(f"בחודש {info['index']} חסרים נושאי תוכן או תמהיל פוסטים (3 עד 5 סוגים).")
         content.append({"month_label": info["label"], "pillars": pillars, "cadence": cadence, "mix": mix,
-                        "products_note_he": PRODUCTS_ARE_YOURS_HE})
+                        "products_note_he": yours_note(draft.model)})
 
     # A hypothesis to measure, never a gamble: rewrite the model's occasional "מהמרים".
     assumptions = [{"bet_he": _as_hypothesis(clean_text(a.get("bet_he"), 300)), "if_wrong_he": clean_text(a.get("if_wrong_he"), 300)}
@@ -993,10 +1105,16 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
     }
     specific_ok = _latin_ok(draft)
     names = _site_product_names(scan)
+    plan_numbers = {info["month"] for info in months}
+    labels = ", ".join(info["label"] for info in months)
     for path, text in _texts(result):
         bad = invented_numbers(text, money if path.startswith("budget") else allowed)
         if bad:
             problems.append(f"ב-{path} יש מספרים שלא נמסרו: {', '.join(bad)}.")
+        outside = outside_months(text, plan_numbers)
+        if outside:
+            problems.append(f"ב-{path} מוזכר חודש שמחוץ לתוכנית ({', '.join(outside)}). "
+                            f"התוכנית היא ל{labels} בלבד: כתוב מה עושים בחודשים האלה, בלי חודש אחר.")
         found = specifics(text, specific_ok, names, prices=not path.startswith("budget"))
         if found:
             problems.append(f"ב-{path} יש מוצר, מותג או מחיר מסוים ({', '.join(found[:3])}). "
@@ -1246,6 +1364,10 @@ def build_quarter_plan(
             pass
     _fit_budget(result, frame)
     result = _scrub_specifics(_scrub(result, allowed, money), _latin_ok(draft), _site_product_names(scan))
+    # Recommendations stay inside the plan's months: whatever still names another month
+    # after the retry ("למלא את החודשים השקטים (יולי-אוגוסט)" in October) is dropped.
+    result = _scrub_months(result, {info["month"] for info in months},
+                           fallback=clean_text(direction.get("approach_he") or direction.get("title"), 300))
     result = reveal._walk_strings(result, reveal.glossary)
     if not result["channels"] or not result["content"] or not result["strategy"]["one_liner_he"]:
         raise RuntimeError("לא קיבלנו תוכנית מלאה.")
@@ -1270,7 +1392,7 @@ def build_quarter_plan(
             result["kpi"]["target"] = target["text_he"]
         if numbers.get("baseline_known"):
             result["kpi"]["baseline_he"] = numbers["baseline_he"]
-    result["inside"] = [dict(item) for item in INSIDE]
+    result["inside"] = inside_for(draft.model)
     result["direction_title"] = direction.get("title", "")
     result["inputs"] = inputs
     if (inputs or changed) and not result["changed_he"] and changes:

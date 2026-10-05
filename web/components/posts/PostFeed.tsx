@@ -21,7 +21,7 @@ import ui from "./chrome.module.css";
  * A 12px corner and a hairline ring drawn over the picture, so a dark photo and a pale one
  * both keep a clean edge against the white row.
  */
-function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | null }) {
+function Thumb({ post, brand, preparing = false }: { post: RoadmapPost; brand?: BrandLanguage | null; preparing?: boolean }) {
   const [broken, setBroken] = useState(false);
   const frame =
     "relative block h-20 w-16 shrink-0 overflow-hidden rounded-[12px] bg-[var(--primary-soft)] after:pointer-events-none after:absolute after:inset-0 after:rounded-[12px] after:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_10%,transparent)]";
@@ -33,7 +33,7 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   if (!post.image_url || broken) {
     return (
       <span aria-hidden className={`${frame} flex items-center justify-center text-[var(--ink-faint)]`}>
-        <PhotoPlaceholder small />
+        <PhotoPlaceholder small preparing={preparing && !post.image_url} />
       </span>
     );
   }
@@ -50,10 +50,11 @@ function Thumb({ post, brand }: { post: RoadmapPost; brand?: BrandLanguage | nul
   );
 }
 
-/** What a post waiting on the owner is waiting for, in one word after its state. */
-function needHint(post: RoadmapPost): string {
+/** What a post waiting on the owner is waiting for, in one word after its state. While the
+ *  month's pictures are being prepared, a post with none yet says its picture is coming. */
+function needHint(post: RoadmapPost, preparing = false): string {
   const needs = ownerNeedsOf(post);
-  if (needs.some((need) => need.kind === "photo")) return "תמונה";
+  if (needs.some((need) => need.kind === "photo")) return preparing && !post.image_url ? "תמונה בדרך" : "תמונה";
   return needs.length ? "פרט לבדוק" : "";
 }
 
@@ -85,11 +86,14 @@ export function PostFeed({
   brand,
   strategy,
   onOpen,
+  preparing = false,
 }: {
   posts: RoadmapPost[];
   brand?: BrandLanguage | null;
   strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown"> | null;
   onOpen: (index: number) => void;
+  /** The month's pictures are being prepared: posts with none say theirs is coming. */
+  preparing?: boolean;
 }) {
   if (!posts.length) {
     return (
@@ -113,7 +117,7 @@ export function PostFeed({
             <ul className={`${ui.card} divide-y divide-[var(--rule)] overflow-hidden`}>
               {rows.map(({ post, index }) => {
                 const stage = lifecycleOf(post);
-                const hint = stage === "needs_owner" ? needHint(post) : "";
+                const hint = stage === "needs_owner" ? needHint(post, preparing) : "";
                 const result = stage === "measured" ? resultShort(post) : "";
                 const channel = channelOf(post);
                 const day = postDateLabel(post);
@@ -128,7 +132,7 @@ export function PostFeed({
                       }}
                       className="group flex min-h-24 items-center gap-4 px-4 py-3 transition-colors duration-200 hover:bg-[var(--soft)] active:bg-[var(--primary-soft)] sm:px-5"
                     >
-                      <Thumb post={post} brand={brand} />
+                      <Thumb post={post} brand={brand} preparing={preparing} />
                       <span className="min-w-0 flex-1">
                         <span className="line-clamp-2 text-[15px] font-semibold leading-6 text-[color:var(--ink)] sm:text-base">
                           {post.title}

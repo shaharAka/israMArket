@@ -4,11 +4,16 @@ import Link from "next/link";
 import { useState } from "react";
 import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { ApiError, endpoints } from "@/lib/api";
+import type { BusinessModel } from "@/lib/api";
+import { modelOf } from "./script";
 import type { StepProps } from "./steps";
 import { StepShell, TextInput } from "./ui";
 import form from "./form.module.css";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+/** What the owner picks before the posts are written, in the business's own terms. */
+const OFFERS: Record<BusinessModel, string> = { products: "מוצרים", services: "שירותים", both: "מוצרים ושירותים" };
 
 /**
  * Save: an account (Google, or email + password with the same rules as /signup), then the
@@ -87,7 +92,7 @@ export function StepSave(
     <StepShell
       {...props}
       title="נשמור את התוכנית"
-      why="חשבון אחד, והתוכנית מחכה לכם בפנים. מתחילים מהמדידה, ואת הפוסטים נכתוב אחרי שתבחרו מוצרים ותמונות."
+      why={`חשבון אחד, והתוכנית מחכה לכם בפנים. מתחילים מהמדידה, ואת הפוסטים נכתוב אחרי שתבחרו ${OFFERS[modelOf(props.flow)]} ותמונות.`}
       primary={busy ? (saving ? savingLabel : "פותחים חשבון…") : "לפתוח חשבון ולהיכנס לתוכנית"}
       primaryDisabled={busy}
       onPrimary={() => void submit()}

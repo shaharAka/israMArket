@@ -19,11 +19,13 @@ import {
   type InstagramAccountWindow,
   type MeasuredPost,
   type PostMetric,
+  type WaitingPost,
   type PerformancePayload,
   type RecommendationPayload,
   type ServiceResultsPayload,
 } from "@/lib/api";
 import { dateRange } from "@/lib/dates";
+import { shortDay } from "@/components/posts/postMeta";
 import { markSeen } from "@/lib/trial";
 import { IconArrowLeft, IconChart, IconChevron } from "@/lib/icons";
 import { FAMILY_HE, whatsappEndpoints, type WhatsappPayload } from "@/lib/whatsapp";
@@ -53,9 +55,9 @@ const formatPeriod = dateRange;
  * Detail on demand. A native `<details>`, so closed content is out of the reading order —
  * and out of the measured page height and word count — while staying one click away.
  */
-function Expand({ title, children }: { title: string; children: ReactNode }) {
+function Expand({ title, children, open = false }: { title: string; children: ReactNode; open?: boolean }) {
   return (
-    <details className="group/expand">
+    <details className="group/expand" open={open}>
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 py-3 text-[15px] font-semibold text-[color:var(--ink)] transition-colors hover:text-[color:var(--primary)] [&::-webkit-details-marker]:hidden">
         <span className="min-w-0">{title}</span>
         <Chevron />
@@ -135,12 +137,12 @@ function Change({ trend, children }: { trend?: Trend; children: ReactNode }) {
  * (`measured_posts` from `/performance/latest`). One source for the card and this list, so
  * the two never disagree. A post that is out and was not counted is a count, never a 0.
  */
-type PostResultsView = { items: MeasuredPost[]; waiting: number };
+type PostResultsView = { items: MeasuredPost[]; waiting: number; out: WaitingPost[] };
 
 function postResults(payload: PerformancePayload): PostResultsView | null {
   const data = payload.measured_posts;
   if (!data || (!data.items?.length && !data.waiting)) return null;
-  return { items: data.items || [], waiting: data.waiting || 0 };
+  return { items: data.items || [], waiting: data.waiting || 0, out: data.waiting_items || [] };
 }
 
 /** Where each per-post number comes from, in the owner's words. */
@@ -209,10 +211,41 @@ function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
 const VISIBLE_POSTS = 3;
 
 /**
+ * A post that is out with no number yet (#117): published, "עוד אין מספרים", and what its
+ * number needs (`missing_he`, the same words as the editor's "לא נמדד עדיין"). A post just
+ * published shows up here at once instead of the page ignoring it.
+ */
+function WaitingRow({ item }: { item: WaitingPost }) {
+  // The post's day as the feed shows it, so the two pages never name two dates for one post.
+  const day = item.day ? shortDay(item.day) : "";
+  return (
+    <li className="py-3">
+      <Link
+        href={`/posts?post=${item.index}`}
+        className="block truncate text-[15px] font-medium text-[color:var(--ink)] hover:underline hover:underline-offset-4"
+      >
+        {item.title || "פוסט בלי שם"}
+      </Link>
+      <span className="mt-0.5 flex flex-wrap items-center gap-x-2 text-[13px] text-[color:var(--ink-soft)]">
+        <span className="inline-flex items-center gap-1.5 font-semibold text-[color:var(--good)]">
+          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--good)]" />
+          פורסם
+        </span>
+        {day ? <span className="tabular-nums">{day}</span> : null}
+        <span aria-hidden>·</span>
+        <span>עוד אין מספרים</span>
+      </span>
+      <span className="mt-0.5 block text-[13px] leading-5 text-[color:var(--ink-muted)]">{item.missing_he}</span>
+    </li>
+  );
+}
+
+/**
  * Which posts worked — the second thing the owner wants after "is it working at all".
  *
- * The count of posts that are out and not measured is stated in the open, outside the
- * fold: it is the reason the list is shorter than the month, and it is not a zero.
+ * The posts that are out and not measured are listed in the open, outside the fold, each
+ * with what its number needs: they are the reason the list is shorter than the month, and
+ * they are not a zero.
  */
 function PostResults({ results }: { results: PostResultsView }) {
   const measured = ordered(results.items);
@@ -221,11 +254,12 @@ function PostResults({ results }: { results: PostResultsView }) {
   const lead = leadingMetric(measured);
   // "Best" only among posts counted the same way, and only when there is more than one.
   const comparable = measured.filter((item) => item.metric === lead).length > 1;
+  const out = results.out;
 
   return (
     <section aria-labelledby="posts-heading">
       <h2 id="posts-heading" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
-        אילו פוסטים הצליחו
+        {visible.length || !out.length ? "אילו פוסטים הצליחו" : "הפוסטים שפורסמו"}
       </h2>
       {visible.length ? (
         <ul className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
@@ -233,10 +267,24 @@ function PostResults({ results }: { results: PostResultsView }) {
             <ResultRow key={item.uid || item.index} item={item} best={index === 0 && comparable} />
           ))}
         </ul>
-      ) : (
+      ) : out.length ? null : (
         <p className="mt-2 text-[15px] text-[color:var(--ink-soft)]">עוד לא מדדנו תוצאות לאף פוסט.</p>
       )}
-      {results.waiting ? (
+      {out.length ? (
+        <>
+          {visible.length ? (
+            <h3 className="mt-6 text-[13px] font-semibold text-[color:var(--ink-muted)]">פורסמו, עוד אין מספרים</h3>
+          ) : null}
+          <ul className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
+            {out.map((item) => (
+              <WaitingRow key={item.uid || item.index} item={item} />
+            ))}
+          </ul>
+          <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-muted)]">
+            {out.length === 1 ? "זה לא אומר שהפוסט הביא אפס." : "זה לא אומר שהפוסטים האלה הביאו אפס."}
+          </p>
+        </>
+      ) : results.waiting ? (
         <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-muted)]">
           {results.waiting === 1
             ? "פוסט אחד שפורסם עוד לא נמדד. זה לא אומר שהוא הביא אפס."
@@ -971,7 +1019,7 @@ function WhatsappClicks({ data }: { data: WhatsappPayload | null }) {
  * WhatsApp count may already have numbers: `postTaps` (the taps on the posts that were
  * measured) then leads, rather than a page that says there is nothing yet (#111).
  */
-function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload; postTaps?: number }) {
+function NoSnapshotYet({ payload, postTaps = 0, published = 0 }: { payload: PerformancePayload; postTaps?: number; published?: number }) {
   const setup = payload.measurement_setup;
   const needs = setup?.requirements.filter(item => item.status === "todo") || [];
   const later = setup?.requirements.find(item => item.status === "soon");
@@ -995,7 +1043,10 @@ function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload;
           ? postTaps === 1
             ? "לחיצה אחת לוואטסאפ מהפוסטים"
             : `${postTaps.toLocaleString("he-IL")} לחיצות לוואטסאפ מהפוסטים`
-          : whatsappOnly ? "המדידה לפי התוכנית" : "עוד אין נתונים מהחיבורים"}
+          : published > 0
+            // A post just went out: say so first (its row below says what its number needs).
+            ? published === 1 ? "פוסט אחד פורסם. עוד אין מספרים" : `${published} פוסטים פורסמו. עוד אין מספרים`
+            : whatsappOnly ? "המדידה לפי התוכנית" : "עוד אין נתונים מהחיבורים"}
       </h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
         {explanation}
@@ -1163,7 +1214,7 @@ export default function PerformancePage() {
           <div className="space-y-10 sm:space-y-12">
             <div className="space-y-4">
               <SourceDataNotice payload={data} />
-              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : null : null}
+              {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} published={results && !results.items.length ? results.out.length : 0} /> : null : null}
               {planMeasure ? (
                 <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
                   בתוכנית: <span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
@@ -1189,7 +1240,8 @@ export default function PerformancePage() {
               {available && (hasProposal || siteNumbers) ? <Expand title="נתוני האתר">{hasProposal ? <Answer payload={data} /> : null}<TrafficMetrics payload={data} folded={hasProposal} /></Expand> : null}
               {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title="המודעות והמעקב באתר"><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
               {account ? <Expand title="החשבון באינסטגרם"><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></Expand> : null}
-              {results ? <Expand title="מה קרה בכל פוסט"><PostComparison results={results} /><div className="mt-5"><PostResults results={results} /></div></Expand> : null}
+              {/* Open while nothing is measured yet: a post just published is the news. */}
+              {results ? <Expand title="מה קרה בכל פוסט" open={!results.items.length && results.out.length > 0}><PostComparison results={results} /><div className={results.items.length >= 2 ? "mt-5" : ""}><PostResults results={results} /></div></Expand> : null}
               {whatsapp ? <Expand title="לחיצות על וואטסאפ"><WhatsappClicks data={whatsapp} /></Expand> : null}
             </div>
 

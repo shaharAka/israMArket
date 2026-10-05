@@ -522,7 +522,7 @@ export function mockQuarterPlan(
       pillars: pillarSet[index],
       cadence: cad,
       mix: MIX_BY_LEVER[lever].map(([type_key, per_month, purpose_he]) => ({ type_key, name_he: MIX_NAMES[type_key], per_month, purpose_he })),
-      products_note_he: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות.",
+      products_note_he: MOCK_YOURS[model],
     };
   });
 
@@ -570,7 +570,9 @@ export function mockQuarterPlan(
     calendar,
     content,
     assumptions,
-    inside: MOCK_INSIDE,
+    inside: MOCK_INSIDE.map((item) =>
+      item.key === "posts" ? { ...item, what_he: item.what_he.replace("אילו מוצרים", `אילו ${MOCK_OFFERS[model]}`) } : item
+    ),
     cached: false,
   };
   const numbers = mockNumbers(d, model);
@@ -592,7 +594,15 @@ export function mockQuarterPlan(
   return plan;
 }
 
-/** Mirrors quarter_plan.INSIDE: only what the app has. */
+/** Mirrors quarter_plan.yours_note: a service business has no stock. */
+const MOCK_YOURS: Record<BusinessModel, string> = {
+  products: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות.",
+  services: "אילו שירותים להבליט בכל פוסט — אתם מחליטים כאן, לפי מה שמשתלם לכם ומה שיש לו מקום ביומן.",
+  both: "אילו מוצרים ושירותים להבליט בכל פוסט — אתם מחליטים כאן, לפי מה שמשתלם לכם.",
+};
+const MOCK_OFFERS: Record<BusinessModel, string> = { products: "מוצרים", services: "שירותים", both: "מוצרים ושירותים" };
+
+/** Mirrors quarter_plan.INSIDE (inside_for): only what the app has. */
 const MOCK_INSIDE: NonNullable<QuarterPlan["inside"]> = [
   { key: "plan", title_he: "התוכנית הזו, לעריכה", what_he: "כל חודש נפתח ממנה. אפשר לשנות ערוצים, קצב ויעד בכל רגע." },
   { key: "posts", title_he: "פוסטים לכל שבוע", what_he: "אחרי שתבחרו אילו מוצרים להבליט ותעלו תמונות, נכתוב לפי התמהיל. אתם מאשרים." },

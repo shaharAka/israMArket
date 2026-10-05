@@ -113,7 +113,7 @@ const RANGES: Partial<Record<BaselineField, Record<string, [number, number | nul
 
 const MARGIN: BaselineQuestion = {
   field: "margin_pct",
-  label: "כמה נשאר לכם מכל מכירה, בערך?",
+  label: "כמה נשאר לכם מכל קנייה, בערך?",
   chips: [
     { key: "m20", label: "20%" },
     { key: "m40", label: "40%" },
@@ -121,6 +121,9 @@ const MARGIN: BaselineQuestion = {
   ],
   exact: { unit: "%", placeholder: "35", max: 95 },
 };
+
+/** A service business sells no "sale": it keeps something from each client. */
+const MARGIN_SERVICES: BaselineQuestion = { ...MARGIN, label: "כמה נשאר לכם מכל לקוח, בערך?" };
 
 /** "איפה העסק היום": the questions for this business, one screen. */
 export function baselineQuestions(model: BusinessModel, grow?: GrowWhere): BaselineQuestion[] {
@@ -170,7 +173,7 @@ export function baselineQuestions(model: BusinessModel, grow?: GrowWhere): Basel
         ],
         exact: { unit: "לקוחות", placeholder: "2", max: 10000 },
       },
-      MARGIN,
+      MARGIN_SERVICES,
     ];
   }
   const questions: BaselineQuestion[] = [
@@ -391,11 +394,11 @@ export function baselineSummary(baseline: DraftBaseline | undefined, model: Busi
     value = avg;
   }
   const margin = resolve("margin_pct", b.margin_pct);
+  const what = model === "services" ? "מכל לקוח" : "מכל קנייה";
   if (margin && value) {
-    const what = model === "services" ? "מכל לקוח" : "מכל קנייה";
     parts.push(`${what} נשארים לכם כ-${n(nice((value.point * margin.point) / 100))} ₪.`);
   } else if (margin) {
-    parts.push(`מכל מכירה נשארים לכם כ-${marginLabel(margin)}.`);
+    parts.push(`${what} נשארים לכם כ-${marginLabel(margin)}.`);
   }
   const text = parts.filter(Boolean);
   if (!text.length) return "עוד לא יודעים כמה יש היום. נמדוד מהשבוע הראשון, וזו תהיה נקודת הפתיחה.";
@@ -438,13 +441,23 @@ export function leverReflection(lever: LeverKey, baseline: DraftBaseline | undef
   return `הבנו: ${name}. התוכנית תיבנה סביב זה.`;
 }
 
-/** "+9 עד +25 הזמנות בחודש". Mirrors goal_numbers.headline / target_text. */
+/** A target's number: whole, because a target is something people count (mirrors goal_numbers._w). */
+const whole = (x: number) => halfUp(x).toLocaleString("en-US");
+
+/** "+9 עד +25 הזמנות בחודש", never "+1.8 עד +3.5". Mirrors goal_numbers.headline / target_text. */
 export function targetText(target: DraftTarget | null | undefined): string {
   if (!target) return "";
   if (target.kind === "qualitative" || target.value_min == null) return (target.text_he ?? "").trim();
   const low = target.value_min;
   const high = target.value_max ?? low;
-  return n(low) === n(high) ? `+${n(low)} ${target.unit_he}` : `+${n(low)} עד +${n(high)} ${target.unit_he}`;
+  return whole(low) === whole(high) ? `+${whole(low)} ${target.unit_he}` : `+${whole(low)} עד +${whole(high)} ${target.unit_he}`;
+}
+
+/** The plan's three months, in order (goal_numbers.plan_month_numbers): the month the next
+ *  two weeks mostly fall in, and the two after it. */
+export function planMonthNumbers(today: Date = new Date()): number[] {
+  const middle = new Date(today.getTime() + 14 * 24 * 60 * 60 * 1000);
+  return [0, 1, 2].map((offset) => ((middle.getMonth() + offset) % 12) + 1);
 }
 
 export function targetFromSuggestion(result: TargetSuggestion): DraftTarget | null {
@@ -505,7 +518,8 @@ export function mockTargetSuggestion(input: {
   } else if (!services && avg && margin && (avg.point * margin.point) / 100 < cost[0]) {
     recommended = b.returning === "most" ? "bigger_basket" : "returning";
     why = `כל קנייה משאירה לכם כ-${n(nice((avg.point * margin.point) / 100))} ₪, וקנייה מפרסום עולה לפי המקור ${cost[0]}-${cost[1]} ₪. קודם מרוויחים יותר מלקוחות שכבר יש.`;
-  } else if (input.slowMonths.length) {
+  } else if (planMonthNumbers().some((month) => input.slowMonths.includes(month))) {
+    // Only quiet months inside the plan: an October plan cannot fill July (goal_numbers.recommend).
     recommended = "fill_quiet";
     why = "יש לכם חודשים שקטים. שם הכי קל לגדול.";
   } else if (orders || inquiries) {

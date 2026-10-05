@@ -150,8 +150,9 @@ class ArchitectMathTest(unittest.TestCase):
         math_he = self.result["math_he"]
         self.assertEqual(math_he[0], "היום: 6 פניות × 2 מתוך 10 = כ-1.2 לקוחות בחודש (כ-30,000 ₪).")
         self.assertTrue(math_he[1].startswith("הנחת עבודה:"))  # no invented benchmark
-        # 6 × 0.1..0.2 = 0.6..1.2 a month; ×3 = 1.8..3.6 ≈ 2-4 clients; × 25,000 = 45,000..90,000.
-        self.assertIn("עוד 0.6-1.2 לקוחות בחודש, כ-2-4 ב-3 החודשים (כ-45,000-90,000 ₪)", math_he[2])
+        # 6 × 0.1..0.2 = 0.6..1.2 a month: under one client a month, so whole people for the
+        # quarter: ×3 = 1.8..3.6 ≈ 2-4 clients; × 25,000 = 45,000..90,000.
+        self.assertIn("6 פניות × עוד 1-2 מכל 10 = עוד כ-2-4 לקוחות ב-3 החודשים (כ-45,000-90,000 ₪)", math_he[2])
 
     def test_the_google_numbers_and_the_capacity(self):
         plan = google_cost.plan_from_budget(5000, "home", ARCHITECT["offerings"], "services")
@@ -161,7 +162,7 @@ class ArchitectMathTest(unittest.TestCase):
         self.assertEqual(len(self.result["math_he"]), 3)  # the cost comparison lives in the unit economics
         budget = self.result["budget_he"]
         self.assertIn("13-35 פניות נוספות", budget)
-        self.assertIn("2.6-7 לקוחות", budget)  # 13×20% .. 35×20%
+        self.assertIn("כ-3-7 לקוחות", budget)  # 13×20% .. 35×20% = 2.6..7, in whole people
         self.assertIn("יותר ממה שיש לכם מקום", budget)
         unit = self.result["unit_economics_he"]
         self.assertIn("700-1,835 ₪", unit)  # 140/20% .. 367/20%
@@ -435,6 +436,159 @@ class FromDraftNumbersTest(QuarterTestCase):
         self.assertIn("+15 עד +30 הזמנות חוזרות בחודש", block)
         self.assertIn("אילו מוצרים להבליט בעל העסק בוחר", block)
         self.assertIn("מה מגדילים: לקוחות שחוזרים יותר", stored["long_horizon_plan"]["targets"][1])
+
+
+# --- #117: whole-number targets, quiet months inside the plan, service wording ------------------
+
+# The first-hour shop: 20-50 orders (35 at the middle), few come back, 40% left, under 1,000 ₪.
+CERAMICS = {
+    "business_name": "סטודיו טין ואש", "business_type": "other",
+    "offerings": "כלי קרמיקה בעבודת יד: ספלים, קערות וצלחות", "business_model": "products", "grow_where": "online",
+    "budget": {"range": "lt1k"},
+    "baseline": {"orders_month": "20-50", "avg_order_ils": "100-300", "returning": "few", "margin_pct": "m40"},
+    "lever": {"primary": "returning"},
+}
+# The first-hour physiotherapist: quiet in July and August, no budget.
+PHYSIO = {
+    "business_name": "פיזיותרפיה עם מיכל", "business_type": "health",
+    "offerings": "פיזיותרפיה לכאבי גב וצוואר ושיקום אחרי פציעות ספורט", "business_model": "services",
+    "budget": {"range": "none"}, "seasons": {"busy": [1, 2, 3], "slow": [7, 8]},
+    "baseline": {"inquiries_month": "15-40", "close_rate": "half", "deal_value_ils": "lt2k", "capacity_more": "3-5",
+                 "margin_pct": "m60"},
+}
+OCTOBER = date(2026, 10, 5)  # the plan is October, November and December
+DECIMAL = re.compile(r"\+\d+\.\d")
+
+
+class WholeTargetsTest(unittest.TestCase):
+    """A target is something people count: "+2 עד +4 הזמנות", never "+1.8 עד +3.5"."""
+
+    def test_the_first_hour_shop(self):
+        result = goals.suggest(draft(CERAMICS), OCTOBER)
+        suggestion = result["suggestion"]
+        self.assertEqual((suggestion["min"], suggestion["max"]), (2, 4))  # 35 × 5%-10% = 1.75-3.5
+        self.assertIsInstance(suggestion["min"], int)
+        # The share is the assumption's (5-10 of 100), not the rounding's.
+        self.assertEqual(suggestion["headline_he"], "+2 עד +4 הזמנות חוזרות בחודש (+5%-10%)")
+        self.assertIn("35 הזמנות בחודש × 5%-10% = עוד 2-4 הזמנות חוזרות בחודש, כ-400-800 ₪.", result["math_he"][2])
+        view = goals.numbers_view(draft(CERAMICS), OCTOBER)
+        self.assertEqual(view["target"]["text_he"], "+2 עד +4 הזמנות חוזרות בחודש (+5%-10%)")
+
+    def test_under_one_a_month_is_said_for_the_quarter(self):
+        small = draft(CERAMICS, baseline={**CERAMICS["baseline"], "orders_month": 12})
+        suggestion = goals.suggest(small, OCTOBER)["suggestion"]
+        # 12 × 5%-10% = 0.6-1.2 a month: "+1" would hide half of it, so 1.8-3.6 in 3 months.
+        self.assertEqual((suggestion["min"], suggestion["max"]), (2, 4))
+        self.assertEqual(suggestion["unit_he"], "הזמנות חוזרות ב-3 חודשים")
+
+    def test_service_clients_from_a_budget_are_whole(self):
+        physio = draft(PHYSIO, budget={"range": "1k-3k"}, lever={"primary": "new_customers"})
+        result = goals.suggest(physio, OCTOBER)
+        suggestion = result["suggestion"]
+        self.assertTrue(all(isinstance(v, int) for v in (suggestion["min"], suggestion["max"])), suggestion)
+        self.assertNotRegex(suggestion["headline_he"], DECIMAL)
+        self.assertNotRegex(" ".join(result["math_he"]), r"\d\.\d+ לקוחות")
+
+    def test_every_suggested_target_is_whole(self):
+        baselines = {
+            "products": [{"orders_month": key, "avg_order_ils": "100-300", "returning": back, "margin_pct": "m40"}
+                         for key in ("lt20", "20-50", "50-200", "gt200", 7, 13) for back in ("few", "half")],
+            "services": [{"inquiries_month": key, "close_rate": rate, "deal_value_ils": "2k-10k", "capacity_more": room}
+                         for key in ("lt5", "5-15", "15-40", "gt40", 3) for rate in ("1of10", "half", 80, 85)
+                         for room in ("1-2", "gt5")],
+        }
+        levers = ["new_customers", "bigger_basket", "returning", "close_more", "fill_quiet"]
+        budgets = [{"range": "none"}, {"range": "lt1k"}, {"range": "1k-3k"}, {"range": "3k-7k", "exact_ils": 4000}]
+        for model, base, shop in (("products", baselines["products"], LINGERIE), ("services", baselines["services"], ARCHITECT)):
+            for baseline in base:
+                for lever in levers:
+                    if model == "products" and lever == "close_more":
+                        continue
+                    for budget in budgets:
+                        result = goals.suggest(draft(shop, baseline=baseline, lever={"primary": lever}, budget=budget), OCTOBER)
+                        suggestion = result["suggestion"]
+                        if not suggestion:
+                            continue
+                        with self.subTest(model=model, baseline=baseline, lever=lever, budget=budget["range"]):
+                            self.assertEqual(suggestion["min"], int(suggestion["min"]))
+                            self.assertEqual(suggestion["max"], int(suggestion["max"]))
+                            self.assertNotRegex(suggestion["headline_he"], DECIMAL)
+                            if lever != "close_more":
+                                self.assertNotRegex(suggestion.get("level_he", ""), r"\d\.\d")
+
+    def test_close_more_steps_are_whole_and_stop_at_nine_of_ten(self):
+        eighty = goals.suggest(draft(ARCHITECT, baseline={**ARCHITECT["baseline"], "close_rate": 80}), OCTOBER)
+        self.assertEqual((eighty["suggestion"]["min"], eighty["suggestion"]["max"]), (1, 1))
+        self.assertTrue(eighty["suggestion"]["level_he"].startswith("9 מתוך 10"))
+        # 85% leaves half a step before 9 of 10: no number to count, so measure first.
+        nearly = goals.suggest(draft(ARCHITECT, baseline={**ARCHITECT["baseline"], "close_rate": 85}), OCTOBER)
+        self.assertIsNone(nearly["suggestion"])
+        self.assertIn("qualitative_he", nearly)
+
+    def test_a_target_stored_with_fractions_reads_whole(self):
+        old = draft(CERAMICS, target={"kind": "repeat_orders", "value_min": 1.8, "value_max": 3.5,
+                                      "unit_he": "הזמנות חוזרות בחודש", "accepted": True})
+        self.assertEqual(old.target_text, "+2 עד +4 הזמנות חוזרות בחודש")
+        self.assertEqual(goals.headline("orders", 9, 25, "הזמנות בחודש"), "+9 עד +25 הזמנות בחודש")
+
+
+class QuietMonthsInThePlanTest(unittest.TestCase):
+    """An October-December plan does not recommend filling July and August."""
+
+    def test_plan_months_follow_the_plan(self):
+        self.assertEqual(goals.plan_month_numbers(OCTOBER), [10, 11, 12])
+        self.assertEqual(goals.plan_month_numbers(date(2026, 12, 20)), [1, 2, 3])
+        self.assertEqual(goals.plan_month_numbers(OCTOBER), [m["month"] for m in quarter.plan_months(OCTOBER)])
+        self.assertEqual(goals.quiet_in_plan(draft(PHYSIO), OCTOBER), [])
+        self.assertEqual(goals.quiet_in_plan(draft(PHYSIO), date(2026, 7, 25)), [8])
+
+    def test_quiet_months_outside_the_plan_are_not_recommended(self):
+        result = goals.suggest(draft(PHYSIO), OCTOBER)
+        self.assertNotEqual(result["recommended_lever"], "fill_quiet")
+        self.assertNotRegex(result["lever_hint_he"], "יולי|אוגוסט")
+
+    def test_quiet_months_inside_the_plan_are(self):
+        june = goals.suggest(draft(PHYSIO), date(2026, 6, 20))  # the plan is July-September
+        self.assertEqual(june["recommended_lever"], "fill_quiet")
+        self.assertIn("(יולי ואוגוסט)", june["lever_hint_he"])
+        july = goals.suggest(draft(PHYSIO), date(2026, 7, 25))  # August-October: only August is in it
+        self.assertIn("(אוגוסט)", july["lever_hint_he"])
+        self.assertNotIn("יולי", july["lever_hint_he"])
+
+    def test_chosen_anyway_it_names_no_month_outside_the_plan(self):
+        chosen = draft(PHYSIO, lever={"primary": "fill_quiet"})
+        result = goals.suggest(chosen, OCTOBER)
+        text = " ".join([result.get("qualitative_he", ""), result["first_checkpoint_he"], *result["math_he"]])
+        self.assertNotRegex(text, "יולי|אוגוסט")
+        self.assertIn("אין חודש שקט", result["qualitative_he"])
+        view = goals.numbers_view(chosen, OCTOBER)
+        self.assertEqual(view["quiet_in_plan_he"], "")
+        block = goals.prompt_block(view)
+        self.assertIn("אף חודש שקט שלהם לא נופל בחודשי התוכנית", block)
+        paid = goals.suggest(draft(PHYSIO, lever={"primary": "fill_quiet"}, budget={"range": "1k-3k"}), OCTOBER)
+        self.assertNotIn("בחודשים השקטים", paid["suggestion"]["headline_he"])
+        june = goals.numbers_view(draft(PHYSIO, lever={"primary": "fill_quiet"}), date(2026, 6, 20))
+        self.assertIn("(יולי ואוגוסט)", june["target"]["text_he"])
+        self.assertIn("החודשים השקטים שבתוכנית: יולי ואוגוסט", goals.prompt_block(june))
+
+
+class ServiceWordingTest(unittest.TestCase):
+    """A service business is not told about sales, stock or products."""
+
+    def test_margin_without_a_value(self):
+        physio = draft(PHYSIO, baseline={"inquiries_month": "15-40", "margin_pct": "m60"})
+        self.assertIn("מכל לקוח נשארים לכם כ-60% ומעלה", goals.baseline_summary(physio))
+        shop = draft(CERAMICS, baseline={"orders_month": "20-50", "margin_pct": "m40"})
+        self.assertIn("מכל קנייה נשארים לכם כ-40%", goals.baseline_summary(shop))
+        self.assertNotIn("מכירה", goals.FIELD_HE["margin_pct"])
+
+    def test_the_plan_notes_follow_the_model(self):
+        self.assertIn("שירותים", quarter.yours_note("services"))
+        self.assertNotIn("מלאי", quarter.yours_note("services"))
+        self.assertEqual(quarter.yours_note("products"), quarter.PRODUCTS_ARE_YOURS_HE)
+        posts = {item["key"]: item for item in quarter.inside_for("services")}["posts"]
+        self.assertIn("אילו שירותים להבליט", posts["what_he"])
+        self.assertIn("אילו מוצרים להבליט", {item["key"]: item for item in quarter.inside_for("products")}["posts"]["what_he"])
 
 
 if __name__ == "__main__":

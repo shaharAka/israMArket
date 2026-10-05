@@ -229,6 +229,7 @@ export function PostEditor({
   onStrategyUpdated,
   onNavigate,
   onClose,
+  imagesPreparing = false,
 }: {
   posts: RoadmapPost[];
   /** The month the posts belong to, for the week's focus when a post has no plan link. */
@@ -241,6 +242,9 @@ export function PostEditor({
   onNavigate?: (index: number) => void;
   /** Back to the month's feed. */
   onClose?: () => void;
+  /** The month's pictures are being prepared (the page knows; it starts that work).
+   *  Presentational only: a post with no picture says so instead of asking for one. */
+  imagesPreparing?: boolean;
 }) {
   const { palette } = useDesignPalette();
   const { payload: trial } = useTrial();
@@ -261,6 +265,37 @@ export function PostEditor({
   // missing — on the pasted link.
   const [publishFocus, setPublishFocus] = useState<"kit" | "link">("kit");
   const isDesktop = useIsDesktop();
+  // On a phone the card is sized so the whole post, its panel and the actions under it fit
+  // above the bottom tab bar. What sits around the picture is measured, not estimated: a
+  // "why" line that wraps, a second need or a longer result moved the actions under the
+  // tab bar (#117). `null` until measured; the estimate below stands in for the first paint.
+  const editorRef = useRef<HTMLDivElement>(null);
+  const mediaRef = useRef<HTMLDivElement>(null);
+  const [measuredReserve, setMeasuredReserve] = useState<number | null>(null);
+  useEffect(() => {
+    const editor = editorRef.current;
+    const media = mediaRef.current;
+    if (isDesktop || !editor || !media || typeof ResizeObserver === "undefined") return;
+    const measure = () => {
+      // The tab bar's own height, safe area included.
+      const bar = document.querySelector<HTMLElement>("[data-tab-bar]");
+      const barHeight = bar && getComputedStyle(bar).position === "fixed" ? bar.getBoundingClientRect().height : 0;
+      const above = editor.getBoundingClientRect().top + window.scrollY;
+      const around = editor.offsetHeight - media.offsetHeight;
+      setMeasuredReserve(Math.ceil(above + around + barHeight + 12));
+    };
+    // A ResizeObserver reports once as soon as it observes: that is the first measure. The
+    // page around the editor is watched too: a note that loads above it moves it down.
+    const observer = new ResizeObserver(measure);
+    observer.observe(editor);
+    const main = editor.closest("main");
+    if (main) observer.observe(main);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [isDesktop]);
   const closeSection = useCallback(() => setActive(null), []);
   // An unsaved edit of the caption; `null` when the box shows what is stored.
   const [captionDraft, setCaptionDraft] = useState<string | null>(null);
@@ -816,6 +851,9 @@ export function PostEditor({
   const activeCaption = captionFor(currentPost, channel);
   const businessName = brandLanguage?.business_name || "העסק";
   const isPreparingImage = imageBusy === selectedIndex;
+  // This post's picture is on its way: the editor's own request, or the month's batch for a
+  // post that has none yet.
+  const pictureComing = isPreparingImage || uploadingPhoto || (imagesPreparing && !currentPost.image_url);
   const cardNeedsPhoto = postNeedsPhoto(currentPost);
   // Posts created before provenance tracking have no image_source. Every legacy path
   // generated its image, so "generated" is the accurate label — not "no image yet", which
@@ -891,10 +929,15 @@ export function PostEditor({
     const photoFree = !postNeedsPhoto(currentPost);
     if (!currentPost.image_url && !photoFree) {
       return (
-        <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
+        <div
+          style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }}
+          className={editorStyles.placeholder}
+          data-preparing={pictureComing ? "" : undefined}
+          aria-busy={pictureComing || undefined}
+        >
           <PhotoPlaceholder />
-          <h3>{isPreparingImage || uploadingPhoto ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
-          <p>{isPreparingImage || uploadingPhoto ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
+          <h3>{pictureComing ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
+          <p>{pictureComing ? "התצוגה תתעדכן כשהתמונה מוכנה. אפשר להמשיך בינתיים." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
           {imageError && <p role="alert">{imageError}</p>}
           <button type="button" disabled={imageLocked} onClick={openLibrary}>
             לבחור מהתמונות שלי
@@ -945,11 +988,11 @@ export function PostEditor({
         </span>
       </button>
     );
-    // Measured at 390x844: 325px is the header, the caption line, the gaps and the tab bar;
-    // the rest is the panel this post actually shows. After publishing the number leads, so
-    // the card gives it room.
+    // The first paint's estimate (measured once at 390x844: 325px is the header, the caption
+    // line, the gaps and the tab bar; the rest is the panel this post shows). Once the
+    // editor is on screen, `measuredReserve` replaces it with what is really around the card.
     const hasPrimary = pending || stage === "approved";
-    const reservePhone =
+    const estimate =
       325 +
       (why ? 52 : 0) +
       (workedNote ? 48 : 0) +
@@ -958,18 +1001,22 @@ export function PostEditor({
       (linkOptional ? 92 : 0) +
       (hasPrimary ? 72 : 0) +
       64;
+    const reservePhone = measuredReserve ?? estimate;
     return (
       <div
         className="mx-auto [--reserve:var(--reserve-phone)] md:[--reserve:290px]"
         style={{
           ["--reserve-phone" as string]: `${reservePhone}px`,
-          // The floor: a 4:5 card never under 176px wide, a 9:16 reel never under 164px.
-          width: `min(100%, max(${previewSize.w / previewSize.h < 0.7 ? 164 : 176}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
+          // The floor: a 4:5 card never under 128px wide, a 9:16 reel never under 112px (once
+          // the post is out its number leads, and the card may go to 104 / 88). Lower than the
+          // card would like, so a post with a long "why" and two needs still shows its actions
+          // above the tab bar on a phone with a home indicator, instead of behind it (#117).
+          width: `min(100%, max(${(previewSize.w / previewSize.h < 0.7 ? 112 : 128) - (out ? 24 : 0)}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
         }}
       >
         <div className="overflow-hidden rounded-[16px] bg-[var(--paper)] shadow-[var(--shadow-pop)]">
           {channel === "facebook" ? captionLine : null}
-          {renderMediaSlot()}
+          <div ref={mediaRef}>{renderMediaSlot()}</div>
           {channel !== "facebook" ? captionLine : null}
         </div>
       </div>
@@ -1677,7 +1724,7 @@ export function PostEditor({
   /** The optional link for a post marked "פרסמתי" without one: what it adds, and a field. */
   function renderLinkField() {
     return (
-      <div className="mt-5">
+      <div className="mt-4 md:mt-5">
         <label htmlFor="post-link-later" className={`${ui.help} block`}>
           להדביק קישור לפוסט, כדי לראות גם כמה ראו
         </label>
@@ -1830,7 +1877,7 @@ export function PostEditor({
     const meta = [updated ? `עודכן ${updated}` : "", source].filter(Boolean).join(" · ");
     const learning = (currentPost.learning || "").trim();
     return (
-      <section aria-labelledby="post-results" className="mt-6 border-t border-[var(--rule)] pt-5">
+      <section aria-labelledby="post-results" className="mt-4 border-t border-[var(--rule)] pt-4 md:mt-6 md:pt-5">
         <h2 id="post-results" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
           מה קרה
         </h2>
@@ -1912,7 +1959,7 @@ export function PostEditor({
   }
 
   return (
-    <div className={`${editorStyles.editor} mx-auto max-w-5xl`}>
+    <div ref={editorRef} className={`${editorStyles.editor} mx-auto max-w-5xl`}>
       <input ref={photoInput} type="file" accept="image/*" aria-label="להעלות תמונה לפוסט" hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
 
       {/* Where this post sits in the plan, its title and its state. */}

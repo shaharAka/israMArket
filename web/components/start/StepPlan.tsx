@@ -3,7 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import { ApiError, type PlanInsight, type PlanPreview } from "@/lib/api";
 import { draftForApi, fetchPlanPreview, revisePlan, signature } from "@/lib/draft";
-import type { StepId } from "./script";
+import { modelOf, type StepId } from "./script";
 import type { StepProps } from "./steps";
 import { UIAction } from "@/components/design/Controls";
 import { CheckMark, QuietLink, StepShell } from "./ui";
@@ -34,16 +34,41 @@ export function sourceLabel(source: PlanInsight["source"]): string {
 const LETTERS = ["א׳", "ב׳"];
 
 /** A paced checklist for a model call that takes a while. Honest: it only paces, never claims done. */
-export function WorkProgress({ title, note, lines, pace = 5500 }: { title: string; note: string; lines: string[]; pace?: number }) {
+/**
+ * A wait that says what is true. `note` is the usual time ("בדרך כלל פחות מדקה": the research
+ * took 31 s and the plan 49 s on a real run, more with a retry); past `slowAfter` it says so
+ * instead of standing by a promise the clock has already broken. The lines advance at
+ * `pace`, so the last one is reached about when the work usually ends, not halfway.
+ */
+export function WorkProgress({
+  title,
+  note,
+  lines,
+  pace = 5500,
+  slowAfter = 60000,
+}: {
+  title: string;
+  note: string;
+  lines: string[];
+  pace?: number;
+  slowAfter?: number;
+}) {
   const [at, setAt] = useState(0);
+  const [slow, setSlow] = useState(false);
   useEffect(() => {
     const timer = window.setInterval(() => setAt((i) => Math.min(i + 1, lines.length - 1)), pace);
     return () => window.clearInterval(timer);
   }, [lines.length, pace]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSlow(true), slowAfter);
+    return () => window.clearTimeout(timer);
+  }, [slowAfter]);
   return (
     <div role="status" aria-live="polite" className={styles.work}>
       <p className="text-[16px] font-semibold text-[color:var(--ink)]">{title}</p>
-      <p className="mt-0.5 text-[13px] text-[color:var(--ink-muted)]">{note}</p>
+      <p className="mt-0.5 text-[13px] text-[color:var(--ink-muted)]">
+        {slow ? "לוקח קצת יותר מהרגיל. אנחנו עדיין על זה, אפשר להשאיר את המסך פתוח." : note}
+      </p>
       <ol className="mt-4 space-y-3 border-t border-[var(--rule)] pt-4">
         {lines.map((line, index) => (
           <li
@@ -116,7 +141,8 @@ function ResearchProgress({ hasSite }: { hasSite: boolean }) {
   return (
     <WorkProgress
       title="חוקרים את העסק שלכם…"
-      note="זה לוקח בערך חצי דקה. אפשר להשאיר את המסך פתוח."
+      note="בדרך כלל פחות מדקה. אפשר להשאיר את המסך פתוח."
+      pace={7000}
       lines={[
         "קוראים את מה שסיפרתם",
         ...(hasSite ? ["בודקים מה ראינו באתר"] : []),
@@ -326,7 +352,7 @@ function SomethingElse({
         }}
         rows={2}
         maxLength={400}
-        placeholder="למשל: אנחנו רוצים להתמקד בהזמנות לאירועים"
+        placeholder={modelOf(flow) === "services" ? "למשל: אנחנו רוצים להתמקד בלקוחות מהאזור" : "למשל: אנחנו רוצים להתמקד בהזמנות לאירועים"}
         className={form.input}
       />
       <div className="flex flex-wrap items-center gap-3">

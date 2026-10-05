@@ -131,6 +131,12 @@ So:
   comparison its card shows (`connected_posts.measured_posts`). Results' "מה קרה בכל פוסט"
   reads it, with or without a snapshot; with no snapshot and counted taps the page leads with
   "N לחיצות לוואטסאפ מהפוסטים", never "עוד אין תוצאות".
+- **A post just published is listed at once (#117).** `measured_posts.waiting_items` lists
+  every post that is out with no number: its day (the feed's), "פורסם · עוד אין מספרים", and
+  `missing_he`, what its number needs (the WhatsApp link, the site's data, Instagram, or
+  "נספור … בעדכון הנתונים הבא" when nothing is missing), in the editor's own words. While
+  nothing is measured, Results opens "מה קרה בכל פוסט" and its first card says the post went
+  out ("פוסט אחד פורסם. עוד אין מספרים").
 - **The WhatsApp message carries the link the post is measured by**: its own `/r/{code}`
   when the CTA is WhatsApp (publish kit and the editor's copy), else the site link.
 - **A rewrite keeps the CTA in the caption** when the caption carried it.

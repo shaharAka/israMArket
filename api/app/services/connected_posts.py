@@ -419,14 +419,72 @@ def strategy_core(roadmap: dict | None) -> dict:
     return {key: value for key, value in (roadmap or {}).items() if key != "posts"}
 
 
-def measured_posts(views: list) -> dict:
-    """The month's posts as Results lists them: {"items": [...], "waiting": n}.
+# What a published post's number needs, and the words for it when it is missing. The same
+# vocabulary as the editor's "לא נמדד עדיין" line (web/components/PostEditor.tsx).
+MEASURE_NEEDS = {"whatsapp_clicks": "whatsapp", "site_visits": "site", "saves": "instagram", "reach": "instagram"}
+MISSING_HE = {
+    "whatsapp": "צריך להכין את קישור הוואטסאפ",
+    "site": "צריך לחבר את נתוני האתר",
+    "instagram": "צריך לחבר את האינסטגרם",
+    "post_link": "הפוסט יצא בלי הקישור המדיד שלו לוואטסאפ",
+}
+
+
+def _post_day(view: dict) -> str:
+    """`YYYY-MM-DD`: the post's day as the feed shows it (the owner's date, else the plan's;
+    web/components/posts/postMeta.ts `postDay`), else the day "פרסמתי" was tapped."""
+    for value in (view.get("scheduled_for"), view.get("date_hint"), view.get("published_at")):
+        match = re.match(r"\d{4}-\d{2}-\d{2}", str(value or ""))
+        if match:
+            return match.group(0)
+    return ""
+
+
+def waiting_item(index: int, view: dict, sources: dict | None) -> dict:
+    """A post that is out with no number yet, as Results lists it: what it is measured by,
+    and what is missing for that number ("" when nothing is: the next refresh counts it)."""
+    measure = view.get("measure") if isinstance(view.get("measure"), dict) else {}
+    metric = measure.get("metric") if measure.get("metric") in METRICS else "reach"
+    label = METRIC_LABEL_HE[metric]
+    missing = ""
+    if sources is not None:
+        need = MEASURE_NEEDS[metric]
+        if not sources.get(need):
+            missing = MISSING_HE[need]
+        elif need == "whatsapp" and measure.get("link_code") and measure["link_code"] not in (sources.get("links") or ()):
+            missing = MISSING_HE["post_link"]
+    if missing == MISSING_HE["post_link"]:
+        missing_he = f"{missing}, אז אין לחיצות לספור."
+    elif missing:
+        missing_he = f"כדי לספור {label}, {missing}."
+    else:
+        missing_he = f"נספור {label} בעדכון הנתונים הבא."
+    return {
+        "index": index,
+        "uid": view.get("uid") or "",
+        "title": _clean(view.get("title"), 120),
+        "channel": view.get("channel") or "",
+        "metric": metric,
+        "label_he": label,
+        "day": _post_day(view),
+        "missing": bool(missing),
+        "missing_he": missing_he,
+    }
+
+
+def measured_posts(views: list, sources: dict | None = None) -> dict:
+    """The month's posts as Results lists them: {"items": [...], "waiting": n,
+    "waiting_items": [...]}.
 
     Each measured post with its one number, exactly what its card shows (`results.value`,
     written by `refresh_results`), its measure's name and the comparison the card shows.
     `waiting` counts the posts that are out and have no number yet: never listed as a 0.
+    `waiting_items` lists them (a post just published shows up at once, as published with
+    no number yet), each with what is missing to measure it. `sources` says what is
+    connected: {"whatsapp": bool, "site": bool, "instagram": bool, "links": set of the
+    business's WhatsApp link codes}; without it nothing is said to be missing.
     """
-    items, waiting = [], 0
+    items, waiting, waiting_items = [], 0, []
     for index, view in enumerate(views or []):
         if not isinstance(view, dict):
             continue
@@ -435,6 +493,7 @@ def measured_posts(views: list) -> dict:
         if value is None:
             if _is_published(view):
                 waiting += 1
+                waiting_items.append(waiting_item(index, view, sources))
             continue
         measure = view.get("measure") if isinstance(view.get("measure"), dict) else {}
         metric = results.get("metric") if results.get("metric") in METRICS else measure.get("metric")
@@ -455,7 +514,7 @@ def measured_posts(views: list) -> dict:
             "matched_by": [str(key) for key in results.get("matched_by") or []] if isinstance(results.get("matched_by"), list) else [],
             "updated_at": str(results.get("updated_at") or ""),
         })
-    return {"items": items, "waiting": waiting}
+    return {"items": items, "waiting": waiting, "waiting_items": waiting_items}
 
 
 # --- visible traits (what a learning may point at) ------------------------------------------

@@ -14,7 +14,7 @@ import { IconCheck, IconChevron, IconCopy, IconImage, IconLink, IconWhatsApp } f
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
 import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { ChannelIcon } from "@/components/posts/ChannelIcon";
-import { shortDay } from "@/components/posts/postMeta";
+import { postDay, shortDay } from "@/components/posts/postMeta";
 import ui from "@/components/posts/chrome.module.css";
 
 /** The apps the owner posts to by hand. Each one is opened, not filled: neither Instagram
@@ -94,7 +94,10 @@ export function PublishPanel({
   onMarkPublished,
   linkFirst = false,
 }: PublishPanelProps) {
-  const [scheduleDate, setScheduleDate] = useState(post.scheduled_for || "");
+  // The post's day as the feed, the calendar and the editor show it (postDay): the owner's
+  // own date, else the plan's. The panel used to read only the owner's date, and said "עוד
+  // לא נקבע תאריך" under a list that showed the plan's day for the same post.
+  const [scheduleDate, setScheduleDate] = useState(postDay(post));
   const [savingSchedule, setSavingSchedule] = useState(false);
   const [scheduleError, setScheduleError] = useState("");
   const [capability, setCapability] = useState<PublishCapability | null>(null);
@@ -149,7 +152,9 @@ export function PublishPanel({
   // editor remounts this panel when the owner switches post, so there is no second copy of
   // "which post is this" to keep in sync — and a failed save restores `storedDate` rather
   // than leaving a date on screen that was never stored.
-  const storedDate = post.scheduled_for || "";
+  const storedDate = postDay(post);
+  // Only a day the owner set can be removed; the plan's day is where the post belongs.
+  const ownDate = post.scheduled_for || "";
   const trackingUrl = post.tracking_url || "";
   // The link the WhatsApp message carries is the one the post is measured by: its own
   // tracked WhatsApp link when it asks people to write on WhatsApp (taps are counted per
@@ -173,7 +178,7 @@ export function PublishPanel({
     setScheduleError("");
     try {
       const result = await endpoints.schedulePost(postIndex, value);
-      setScheduleDate(result.post.scheduled_for || "");
+      setScheduleDate(postDay(result.post));
       onStrategy(result.strategy);
       toast(value ? "התאריך נשמר. הפוסט יופיע בתור לפרסום." : "התאריך הוסר מהפוסט.");
     } catch (err) {
@@ -196,7 +201,8 @@ export function PublishPanel({
       void saveSchedule(raw);
       return;
     }
-    if (previous) void saveSchedule("");
+    if (previous && ownDate) void saveSchedule("");
+    else setScheduleDate(storedDate);
   }
 
   // ---- closing the loop after posting by hand ----
@@ -388,7 +394,7 @@ export function PublishPanel({
             onChange={(event) => changeSchedule(event.target.value)}
             className={`${ui.field} w-auto min-w-44 text-sm font-medium tabular-nums`}
           />
-          {storedDate ? (
+          {ownDate ? (
             <button
               type="button"
               disabled={imageLocked || savingSchedule}
@@ -397,10 +403,23 @@ export function PublishPanel({
             >
               להסיר את התאריך
             </button>
+          ) : storedDate ? (
+            <button
+              type="button"
+              disabled={imageLocked || savingSchedule}
+              onClick={() => void saveSchedule(storedDate)}
+              className={`${ui.link} text-[13px]`}
+            >
+              לקבוע את התאריך הזה
+            </button>
           ) : null}
           {savingSchedule ? <span className={ui.help}>שומרים…</span> : null}
         </div>
-        {storedDate ? null : (
+        {storedDate ? (
+          ownDate ? null : (
+            <p className={`${ui.help} mt-2`}>התאריך מהתוכנית. כדי שהפוסט ייכנס לרשימת הפוסטים שמחכים לפרסום, קבעו אותו.</p>
+          )
+        ) : (
           <p className={`${ui.help} mt-2`}>בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום.</p>
         )}
         {scheduleError ? (

@@ -614,6 +614,54 @@ class ResultsTest(ConnectedTestCase):
         self.assertEqual((items[0]["index"], items[1]["index"]), (0, 1))
         self.assertEqual(latest["measured_posts"]["waiting"], 1)  # the Facebook post nothing matched
 
+    def test_a_post_just_published_is_listed_with_what_is_missing(self):
+        # #117: Results ignored the post that was just published. It is listed at once, as
+        # published with no number yet, and says what its number needs.
+        waiting = self.client.get("/performance/latest").json()["measured_posts"]
+        self.assertEqual(waiting["items"], [])
+        self.assertEqual(waiting["waiting"], 3)
+        rows = {item["title"]: item for item in waiting["waiting_items"]}
+        self.assertEqual(sorted(rows), sorted(["מארז חג", "סדנת אפייה", "פוסט שלא נמדד"]))  # not the one still unpublished
+        box, workshop, facebook = rows["מארז חג"], rows["סדנת אפייה"], rows["פוסט שלא נמדד"]
+        self.assertEqual((box["index"], box["metric"], box["missing"]), (0, "whatsapp_clicks", True))
+        self.assertEqual(box["missing_he"], "כדי לספור לחיצות לוואטסאפ, צריך להכין את קישור הוואטסאפ.")
+        self.assertEqual(workshop["missing_he"], "כדי לספור כניסות לאתר, צריך לחבר את נתוני האתר.")
+        self.assertEqual(facebook["missing_he"], "כדי לספור אנשים שראו, צריך לחבר את האינסטגרם.")
+        self.assertRegex(box["day"], r"^\d{4}-\d{2}-\d{2}$")
+
+        # The number set and the site connected: the next refresh counts them, nothing is missing.
+        self.business.whatsapp_number_e164 = "+972501234567"
+        self.db.commit()
+        self.connect_ga4()
+        rows = {item["title"]: item for item in self.client.get("/performance/latest").json()["measured_posts"]["waiting_items"]}
+        self.assertEqual(rows["מארז חג"]["missing_he"], "נספור לחיצות לוואטסאפ בעדכון הנתונים הבא.")
+        self.assertFalse(rows["מארז חג"]["missing"])
+        self.assertEqual(rows["סדנת אפייה"]["missing_he"], "נספור כניסות לאתר בעדכון הנתונים הבא.")
+
+    def test_a_whatsapp_post_that_went_out_without_its_link(self):
+        self.business.whatsapp_number_e164 = "+972501234567"
+        self.db.commit()
+        extra = loads(self.current.roadmap_json, {})
+        extra["roadmap"]["posts"].append(stored_post("בלי קישור", uid="fffffffff6"))  # no link was ever made
+        self.current.roadmap_json = dumps(extra)
+        self.db.commit()
+        rows = {row["title"]: row for row in self.client.get("/performance/latest").json()["measured_posts"]["waiting_items"]}
+        self.assertFalse(rows["מארז חג"]["missing"])  # its link exists: the next refresh counts it
+        self.assertTrue(rows["בלי קישור"]["missing"])
+        self.assertEqual(rows["בלי קישור"]["missing_he"], "הפוסט יצא בלי הקישור המדיד שלו לוואטסאפ, אז אין לחיצות לספור.")
+
+    def test_without_sources_nothing_is_said_to_be_missing(self):
+        view = {"title": "פוסט", "published_at": "2026-10-04T22:00:00", "measure": {"metric": "reach"}}
+        out = cp.measured_posts([view])
+        self.assertEqual(out["waiting"], 1)
+        self.assertEqual(out["waiting_items"][0]["missing_he"], "נספור אנשים שראו בעדכון הנתונים הבא.")
+        self.assertEqual(out["waiting_items"][0]["day"], "2026-10-04")  # no other day: when it went out
+        # The day the feed shows wins: the owner's date, else the plan's.
+        planned = cp.measured_posts([{**view, "date_hint": "2026-10-05"}])["waiting_items"][0]
+        self.assertEqual(planned["day"], "2026-10-05")
+        owned = cp.measured_posts([{**view, "date_hint": "2026-10-05", "scheduled_for": "2026-10-06"}])["waiting_items"][0]
+        self.assertEqual(owned["day"], "2026-10-06")
+
 
 class LearningTest(ConnectedTestCase):
     FACTS = {"ref": "u1", "metric": "whatsapp_clicks", "value": 21, "compare": 14, "direction": "above",

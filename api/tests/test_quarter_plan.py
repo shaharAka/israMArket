@@ -416,3 +416,59 @@ class HypothesisWordingTest(unittest.TestCase):
         self.assertEqual(_as_hypothesis("אנחנו מהמרים שהטאבון מושך."), "אנחנו מניחים שהטאבון מושך.")
         self.assertEqual(_as_hypothesis("ההימור: הכרטיס בגוגל"), "ההשערה: הכרטיס בגוגל")
         self.assertEqual(_as_hypothesis("אנחנו מניחים ש..."), "אנחנו מניחים ש...")
+
+
+class PlanMonthsOnlyTest(QuarterTestCase):
+    """Recommendations stay inside the plan's months (#117): an October-December plan once
+    recommended "למלא את החודשים השקטים (יולי-אוגוסט)"."""
+
+    TODAY = date(2026, 10, 1)  # the plan is October, November and December
+    MONTHS = {10, 11, 12}
+
+    def draft(self):
+        return drafts.OnboardingDraft(**{**copy.deepcopy(BAKERY), "seasons": {"busy": [12], "slow": [7, 8]}})
+
+    def build(self):
+        return quarter.build_quarter_plan(self.draft(), DIRECTION, insights=INSIGHTS, today=self.TODAY)
+
+    def test_month_names_are_found_with_their_prefixes(self):
+        find = lambda text: quarter.outside_months(text, self.MONTHS)  # noqa: E731
+        self.assertEqual(find("למלא את החודשים השקטים (יולי-אוגוסט)"), ["יולי", "אוגוסט"])
+        self.assertEqual(find("מתכוננים ביולי ובאוגוסט, ולקראת מרס"), ["מרץ", "יולי", "אוגוסט"])
+        self.assertEqual(find("בסוף דצמבר בודקים, ובנובמבר מרחיבים."), [])
+        self.assertEqual(find("יוליה מספרת על הטאבון"), [])  # a name, not a month
+        self.assertEqual(find("מאיפה המספרים"), [])  # a word that starts like May
+
+    def test_the_prompt_names_only_the_plan_months(self):
+        self.build()
+        prompt = self.model.prompts[0]
+        self.assertIn("היא לאוקטובר, נובמבר, דצמבר בלבד", prompt)
+        self.assertIn("אף חודש שקט שלהם לא נופל בחודשי התוכנית", prompt)
+        self.assertIn("חודשים עמוסים שבתוך התוכנית: דצמבר", prompt)
+
+    def test_another_month_is_sent_back_then_dropped(self):
+        bad = answer(today=self.TODAY)
+        bad["strategy"]["one_liner_he"] = "ממלאים את החודשים השקטים (יולי-אוגוסט) עם הלקוחות הקבועים."
+        bad["strategy"]["why_he"] = "סיפרתם שתמונות הטאבון מביאות אנשים. ביולי ובאוגוסט שקט אצלכם."
+        bad["calendar"][2]["checkpoint_he"] = "בודקים את דצמבר. מתכננים את אוגוסט."
+        bad["content"][1]["pillars"].append({"key": "summer", "title": "מכינים את יולי", "description_he": "קיץ."})
+        bad["assumptions"].append({"bet_he": "אנחנו מניחים שביולי הקבועים יחזרו.", "if_wrong_he": "נשנה."})
+        self.model.answers = [bad, copy.deepcopy(bad)]
+        plan = self.build()
+        self.assertIn("מוזכר חודש שמחוץ לתוכנית (יולי, אוגוסט)", self.model.prompts[1])
+        text = json.dumps(plan, ensure_ascii=False)
+        self.assertEqual(quarter.outside_months(text, self.MONTHS), [], text)
+        # Only what named another month went: the direction's words stand in for the strategy.
+        self.assertEqual(plan["strategy"]["one_liner_he"], DIRECTION["approach_he"])
+        self.assertEqual(plan["strategy"]["why_he"], "סיפרתם שתמונות הטאבון מביאות אנשים.")
+        self.assertEqual(plan["calendar"][2]["checkpoint_he"], "בודקים את דצמבר.")
+        self.assertEqual(len(plan["assumptions"]), 2)
+        self.assertNotIn("summer", [p["key"] for p in plan["content"][1]["pillars"]])
+
+    def test_a_fixed_retry_is_kept(self):
+        bad = answer(today=self.TODAY)
+        bad["strategy"]["one_liner_he"] = "ממלאים את יולי ואוגוסט."
+        self.model.answers = [bad, answer(today=self.TODAY)]
+        plan = self.build()
+        self.assertEqual(plan["strategy"]["one_liner_he"], answer()["strategy"]["one_liner_he"])
+        self.assertEqual(len(self.model.prompts), 2)

@@ -85,6 +85,10 @@ function PostsWorkspace() {
   // Bumped when the posts being written on the server are done: load them again.
   const [reload, setReload] = useState(0);
   const [queue, setQueue] = useState<PublishQueue | null>(null);
+  // The month's pictures are being prepared (the request below is in flight). Shown, never
+  // acted on: the feed and the editor say a picture is on its way instead of a blank slot.
+  const [preparingImages, setPreparingImages] = useState(false);
+  const imageRequests = useRef(0);
 
   // Whether the open post was reached from this page's own feed. Closing it then steps
   // back through history, so the feed is where it was; a post opened from a link elsewhere
@@ -115,10 +119,17 @@ function PostsWorkspace() {
           : false;
         if (!active) return;
         if (!building && !reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
-          const prepared = await endpoints.generateAllPostImages();
-          if (active) setStrategy(prepared.strategy);
-          if (prepared.errors?.length) {
-            setError(prepared.errors[0]);
+          imageRequests.current += 1;
+          setPreparingImages(true);
+          try {
+            const prepared = await endpoints.generateAllPostImages();
+            if (active) setStrategy(prepared.strategy);
+            if (prepared.errors?.length) {
+              setError(prepared.errors[0]);
+            }
+          } finally {
+            imageRequests.current -= 1;
+            setPreparingImages(imageRequests.current > 0);
           }
         }
       } catch (err) {
@@ -216,6 +227,7 @@ function PostsWorkspace() {
           onStrategyUpdated={setStrategy}
           onNavigate={moveEditor}
           onClose={closeEditor}
+          imagesPreparing={preparingImages}
         />
       </div>
     );
@@ -304,6 +316,14 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
+      {/* The month's pictures on their way: one calm line, the sun dot for "now". */}
+      {preparingImages && posts.some((post) => !post.image_url) ? (
+        <p role="status" className="mt-6 flex items-start gap-2.5 text-sm leading-6 text-[color:var(--ink-soft)]">
+          <span aria-hidden className="mt-2 h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--sun)] shadow-[0_0_0_3px_var(--sand)] motion-reduce:animate-none" />
+          מכינים תמונות לפוסטים. אפשר להמשיך בינתיים.
+        </p>
+      ) : null}
+
       {error ? (
         <p className={`${ui.error} mt-6`}>
           {error}
@@ -357,7 +377,7 @@ function PostsWorkspace() {
             onOpenPost={openPost}
           />
         ) : (
-          <PostFeed posts={posts} brand={strategy.brand_language} strategy={strategy} onOpen={openPost} />
+          <PostFeed posts={posts} brand={strategy.brand_language} strategy={strategy} onOpen={openPost} preparing={preparingImages} />
         )}
       </div>
     </div>

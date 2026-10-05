@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.db import get_db
 from app.deps import get_business
-from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation
+from app.models import Audience, Business, Integration, PerformanceSnapshot, Recommendation, WhatsappLink
 from app.routers.integrations import tokens_for
 from app.routers.strategy import _active_strategy, _connected, serialize_strategy
 from app.services import connected_posts, ga4, ga4_readiness, hypotheses, instagram_signal, meta, meta_readiness
@@ -140,17 +140,31 @@ def _refresh_hypotheses(business: Business, db: Session) -> None:
         logger.exception("hypothesis review failed for business %s", business.id)
 
 
+def _measure_sources(business: Business, db: Session) -> dict:
+    """What can count a post's number right now: our WhatsApp link (a number set, and the
+    post's own link code), the site's data and Instagram (connected and readable)."""
+    links = {key for (key,) in db.query(WhatsappLink.source_key).filter(WhatsappLink.business_id == business.id).all()}
+    return {
+        "whatsapp": bool(business.whatsapp_number_e164),
+        "site": _optional(business, "ga4") is not None,
+        "instagram": _optional(business, "meta") is not None,
+        "links": links,
+    }
+
+
 def _measured_posts(business: Business, db: Session) -> dict:
-    """The month's measured posts, each with the number its card shows
-    (connected_posts.measured_posts): the one per-post list Results reads."""
+    """The month's measured posts, each with the number its card shows, and the posts that
+    are out with no number yet, each with what is missing (connected_posts.measured_posts):
+    the one per-post list Results reads."""
+    empty = {"items": [], "waiting": 0, "waiting_items": []}
     try:
         strategy = _active_strategy(db, business)
     except HTTPException:
-        return {"items": [], "waiting": 0}
+        return empty
     roadmap = (loads(strategy.roadmap_json, {}) or {}).get("roadmap") or {}
     if not isinstance(roadmap, dict) or not isinstance(roadmap.get("posts"), list):
-        return {"items": [], "waiting": 0}
-    return connected_posts.measured_posts(_connected(strategy, roadmap, business))
+        return empty
+    return connected_posts.measured_posts(_connected(strategy, roadmap, business), _measure_sources(business, db))
 
 
 def _sync_payload(business: Business, db: Session) -> dict:
