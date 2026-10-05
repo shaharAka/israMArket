@@ -786,6 +786,7 @@ def save_post(
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     target["title"] = body.title
     target["format"] = body.format
     target["hook"] = body.hook
@@ -850,11 +851,10 @@ def save_post(
     target["price"] = connected_posts.price_after_edit(target)
     target.pop("rewrite_instruction", None)
 
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # Write this post only, onto the month as it is now: an image the job saved for any
+    # post between this request's read and its write stays (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
@@ -1018,6 +1018,7 @@ def approve_post(
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
 
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     target["approval_status"] = "approved" if body.approved else "review"
     target["approved_at"] = datetime.utcnow().isoformat() if body.approved else None
     if body.approved and target.get("owner_fact"):
@@ -1025,11 +1026,10 @@ def approve_post(
     if body.approved:
         post_rewrite.confirm_prices(target, post_rewrite.post_text(target))
         target.pop("rewrite_instruction", None)
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # Write this post only, onto the month as it is now: an image the job saved for any
+    # post between this request's read and its write stays (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
@@ -1059,13 +1059,13 @@ def schedule_post(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     target["scheduled_for"] = scheduled_for
     target["scheduled_at"] = datetime.utcnow().isoformat() if scheduled_for else None
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # Write this post only, onto the month as it is now: an image the job saved for any
+    # post between this request's read and its write stays (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
@@ -1083,6 +1083,7 @@ def publish_post(
     if body.post_index >= len(posts):
         raise HTTPException(status_code=404, detail="הפוסט לא נמצא בתוכנית")
     target = posts[body.post_index]
+    before = copy.deepcopy(target)
     url = body.published_url.strip()
     if url and not url.startswith(("http://", "https://")):
         raise HTTPException(status_code=422, detail="הקישור צריך להתחיל ב-https://")
@@ -1091,11 +1092,10 @@ def publish_post(
     # The first "פרסמתי" sets the time; adding the link later keeps it.
     if not target.get("published_at"):
         target["published_at"] = datetime.utcnow().isoformat()
-    posts[body.post_index] = target
-    extra["roadmap"] = {**roadmap, "posts": posts}
-    strategy.roadmap_json = dumps(extra)
+    # Write this post only, onto the month as it is now: an image the job saved for any
+    # post between this request's read and its write stays (#123).
     business.updated_at = datetime.utcnow()
-    db.commit()
+    target = image_jobs.save_post(db, strategy, body.post_index, before, target)
     db.refresh(strategy)
     return {"post": _post_view(strategy, business, body.post_index, target), "strategy": serialize_strategy(strategy, business)}
 
