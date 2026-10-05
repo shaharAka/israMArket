@@ -339,7 +339,7 @@ class TrialTestCase(unittest.TestCase):
         keys = [f["key"] for f in self.client.get("/business/baseline").json()["fields"]]
         self.assertEqual(keys, ["inquiries_month", "close_rate", "deal_value_ils"])
         steps = self.steps()
-        self.assertEqual(steps["featured"]["title_he"], "לבחור אילו שירותים לקדם")
+        self.assertEqual(steps["featured"]["title_he"], "לבחור מה להבליט בפוסטים")
         self.assertIn("זמן הפנוי", steps["featured"]["why_he"])
         self.assertNotIn("מלאי", steps["featured"]["why_he"])
         self.assertIn("שירותים", steps["start_posts"]["why_he"])

@@ -320,9 +320,9 @@ def build_steps(
     featured_done = len(featured) >= minimum_featured
     featured_raw = facts.stored.get("featured_items") if isinstance(facts.stored.get("featured_items"), dict) else {}
     steps.append(_step(
-        "featured", 2, "לבחור אילו מוצרים לקדם" if products else "לבחור אילו שירותים לקדם",
-        ("מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו."
-         if products else "בחרו שירות אחד שמתאים ללקוחות שאתם רוצים ולזמן הפנוי שלכם. אפשר להוסיף שירותים בהמשך.")
+        "featured", 2, "לבחור מה להבליט בפוסטים",
+        ("מציעים לפי העסק, המחקר והתוכנית. בחרו מה מתאים ושנו את הסדר לפי הצורך."
+         if products else "שירות, דוגמה מעבודה או טיפ מקצועי. בחרו נושא אחד להתחלה שמתאים ללקוחות ולזמן הפנוי שלכם.")
         + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < minimum_featured else ""),
         5, "/featured", "לבחור",
         "done" if featured_done else "todo", journey.parse_time(featured_raw.get("saved_at")),

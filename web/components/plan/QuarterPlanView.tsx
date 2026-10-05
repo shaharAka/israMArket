@@ -888,7 +888,7 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
         ))}
       </ol>
       <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
-        {plan.content.find((m) => m.products_note_he)?.products_note_he ?? "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות."}{" "}
+        נציע מה להבליט בפוסטים לפי העסק והתוכנית. אתם מחליטים כאן ומשנים לפי הצורך.{" "}
         את הפוסטים עצמם נכתוב ונעצב יחד.
       </p>
       {cadenceSlot}

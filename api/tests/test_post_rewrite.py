@@ -211,7 +211,7 @@ class InstructionTest(RewriteTestCase):
         self.assertIn("שבוע 1 בתוכנית: הלקוחות הקבועים.", prompt)
         self.assertIn("למה הפוסט הזה: בשביל הזמנות מראש לחנוכה, ללקוחות הקבועים.", prompt)
         self.assertIn("סוג הפוסט בתמהיל: מבצע או הזמנה לפעולה.", prompt)
-        self.assertIn("המוצר שבעל העסק בחר להבליט בפוסט: מארז שישי (הכי נמכר).", prompt)
+        self.assertIn("הנושא שבעל העסק בחר להבליט בפוסט: מארז שישי (הכי נמכר).", prompt)
         self.assertIn("הערוץ של הפוסט: אינסטגרם.", prompt)
         self.assertIn("איך נדע אם הצליח: לחיצות לוואטסאפ.", prompt)
         self.assertIn("אין מחיר ידוע. אל תכתוב מחיר.", prompt)
