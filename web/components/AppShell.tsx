@@ -46,7 +46,7 @@ export const TABS: Tab[] = [
 ];
 
 // `/security` is public (the landing links to it) and has no shell.
-const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help"];
+const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help", "/support"];
 
 function underRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
@@ -72,7 +72,7 @@ export function tabFor(pathname: string): Tab | null {
  * `/account` and `/billing` too: they belong to the account, not the business. Paying,
  * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing"];
+const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {

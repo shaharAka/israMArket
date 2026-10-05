@@ -134,6 +134,8 @@ export const LIFECYCLE_LABEL: Record<Lifecycle, string> = {
 };
 
 export const ACTION_LABEL: Record<string, string> = {
+  support_reply: "תשובת תמיכה",
+  support_status: "עדכון מצב פנייה",
   reset_link: "קישור לאיפוס סיסמה",
   sign_out_everywhere: "ניתוק מכל המכשירים",
   suspend: "השהיה",

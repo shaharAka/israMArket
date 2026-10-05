@@ -28,13 +28,13 @@ _RETRYABLE = (
 )
 
 
-def _client() -> genai.Client:
+def _client(timeout_seconds: float | None = None) -> genai.Client:
     settings = get_settings()
     if not settings.gemini_api_key:
         raise RuntimeError("חסר GEMINI_API_KEY. הוסיפו מפתח ב-.env כדי להריץ את מנוע האסטרטגיה.")
     # Without a timeout a request that never answers holds its caller (a month being
     # built in the background, services/generation_jobs.py) forever. HttpOptions is in ms.
-    timeout = float(getattr(settings, "gemini_timeout_seconds", 0) or 0)
+    timeout = float(timeout_seconds if timeout_seconds is not None else (settings.gemini_timeout_seconds or 0))
     if timeout > 0:
         return genai.Client(
             api_key=settings.gemini_api_key,
@@ -124,14 +124,17 @@ def generate_json(
     images: list[ImageBlob] | None = None,
     system: str | None = None,
     attempts: int = 5,
+    timeout_seconds: float | None = None,
+    max_output_tokens: int | None = None,
 ) -> str:
     settings = get_settings()
-    client = _client()
+    client = _client(timeout_seconds)
     config = types.GenerateContentConfig(
         system_instruction=system or SYSTEM_HE,
         response_mime_type="application/json",
         response_json_schema=schema,
         thinking_config=types.ThinkingConfig(thinking_level=thinking_level),
+        max_output_tokens=max_output_tokens,
     )
     contents: Any = prompt
     if images:

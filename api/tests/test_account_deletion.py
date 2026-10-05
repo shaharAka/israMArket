@@ -40,6 +40,8 @@ from app.models import (
     ServiceReport,
     Strategy,
     Subscription,
+    SupportTicket,
+    SupportMessage,
     User,
     WebhookDelivery,
     WebhookEndpoint,
@@ -94,6 +96,10 @@ class AccountDeletionTest(unittest.TestCase):
         db.add(Payment(user_id=user.id, provider_payment_id=f"SALE-SEED-{user.id}", amount="99.00"))
         # A backoffice reset link (only its hash is stored).
         db.add(PasswordResetToken(user_id=user.id, token_hash=f"{user.id:064d}", expires_at=datetime.utcnow()))
+        ticket = SupportTicket(id=f"{user.id:032d}", user_id=user.id, client_ref=f"support-seed-{user.id}", ai_status="skipped")
+        db.add(ticket)
+        db.flush()
+        db.add(SupportMessage(id=f"{user.id:032d}", ticket_id=ticket.id, user_id=user.id, role="user", body="Synthetic support"))
         ids: list[int] = []
         for index in range(businesses):
             business = Business(user_id=user.id, name=f"עסק {index}")

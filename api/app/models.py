@@ -635,6 +635,36 @@ class PasswordResetToken(Base):
     revoked_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
 
 
+class SupportTicket(Base):
+    """Private account support; UUIDs prevent late workers reaching reused account rows."""
+    __tablename__ = "support_tickets"
+    __table_args__ = (UniqueConstraint("user_id", "client_ref"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    client_ref: Mapped[str] = mapped_column(String(36))
+    category: Mapped[str] = mapped_column(String(24), default="other")
+    page: Mapped[str] = mapped_column(String(40), default="")
+    status: Mapped[str] = mapped_column(String(20), default="open", index=True)
+    ai_status: Mapped[str] = mapped_column(String(20), default="pending")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class SupportMessage(Base):
+    __tablename__ = "support_messages"
+    __table_args__ = (UniqueConstraint("ticket_id", "client_ref"),)
+
+    id: Mapped[str] = mapped_column(String(32), primary_key=True)
+    ticket_id: Mapped[str] = mapped_column(ForeignKey("support_tickets.id"), index=True)
+    # Kept on every child too: the existing deletion/sweep handles all support content.
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    client_ref: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    role: Mapped[str] = mapped_column(String(20))
+    body: Mapped[str] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
 class AdminAudit(Base):
     """Every backoffice action: who (admin user id), what, on which account, when.
 

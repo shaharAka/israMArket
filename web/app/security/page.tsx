@@ -109,6 +109,7 @@ export default function SecurityPage() {
 
         <Section id="stored" title={TITLE.stored}>
           <Rows rows={STORED} />
+          <p>פניות תמיכה והתשובות להן נשמרות בחשבון ונגישות לכם ולצוות התמיכה. כשמבקשים עזרה מהירה, טקסט הפנייה נשלח ל-AI של גוגל כדי להציע תשובה. אפשר לבחור צוות תמיכה בלבד. מחיקת החשבון מוחקת גם את הפניות מהמערכת הפעילה.</p>
           <p>
             {/* web/lib/draft.ts: the /start draft lives in localStorage until signup. */}
             לפני ההרשמה, מה שאתם כותבים בשאלות הפתיחה נשמר רק בדפדפן שלכם.

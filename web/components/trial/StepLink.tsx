@@ -65,12 +65,13 @@ export function ContactLink({ className = "" }: { className?: string }) {
   return (
     <p className={`text-sm text-[color:var(--ink-soft)] ${className}`}>
       שאלות?{" "}
-      <a
-        href={`mailto:${CONTACT_EMAIL}`}
+      <Link
+        href="/support"
         className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
       >
         כתבו לנו
-      </a>
+      </Link>
+      {" · "}<a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-4 hover:underline">או במייל</a>
     </p>
   );
 }
