@@ -8,6 +8,7 @@
  */
 import {
   NETWORKS,
+  CLIENT_SOURCE_OPTIONS,
   inferBusinessModel,
   TRIED_OPTIONS,
   firstOffering,
@@ -52,17 +53,19 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
 
 const STEP_DESTINATIONS: Record<StepId, string> = {
-  name: "לשם העסק", what: "לתיאור העסק", different: "למה שמייחד את העסק",
-  audiences: "ללקוחות", seasons: "לעונות השנה", links: "לאתר ולרשתות",
-  tried: "למה שכבר ניסיתם", competitors: "למתחרים", grow: "למטרת הצמיחה",
-  baseline: "למצב העסק היום", lever: "להמלצה לצמיחה", budget: "לתקציב",
-  target: "ליעד העבודה", found: "למה שגילינו", direction: "לכיוון התוכנית",
-  quarter: "לתוכנית שלכם", save: "לשמירת התוכנית",
+  name: "להמשיך לשם העסק", what: "להמשיך לתיאור העסק", different: "להמשיך לייחוד של העסק",
+  audiences: "להמשיך לבחירת קהל", seasons: "להמשיך לעונות ולחגים", links: "להמשיך לאתר ולרשתות",
+  tried: "להמשיך לשיווק שכבר ניסיתם", competitors: "להמשיך לעסקים דומים", grow: "להמשיך למטרת השיווק",
+  baseline: "להמשיך למצב העסק כיום", lever: "לראות את ההמלצה שלנו", budget: "להמשיך לתקציב השיווק",
+  target: "לחשב את יעד העבודה", found: "לראות מה גילינו על העסק", direction: "לבחור את כיוון התוכנית",
+  quarter: "לבנות את התוכנית שלכם", save: "להמשיך לשמירת התוכנית",
 };
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
   const destination = nextStep(step, flow);
-  return destination ? `לעבור ${STEP_DESTINATIONS[destination]}` : undefined;
+  if (destination === "tried" && modelOf(flow) !== "products") return "להמשיך למקורות הלקוחות";
+  if (destination === "what" && flow.modelConfirmed && modelOf(flow) === "services") return "להמשיך לתיאור השירות";
+  return destination ? STEP_DESTINATIONS[destination] : undefined;
 }
 
 /**
@@ -190,6 +193,17 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       return null;
     }
     case "tried": {
+      if (modelOf(flow) !== "products") {
+        const sources = d.client_sources;
+        if (sources?.status === "starting") return "נבנה תוכנית להיכרות עם השירות שלכם ולהבאת הפניות הראשונות.";
+        if (sources?.status === "known") {
+          const labels = CLIENT_SOURCE_OPTIONS.filter((source) => sources.channels.includes(source.key)).map((source) => source.label);
+          const main = CLIENT_SOURCE_OPTIONS.find((source) => source.key === sources.main_channel);
+          if (main) return `סיפרתם שרוב הלקוחות מגיעים דרך ${main.label}. נבדוק איך לתמוך בזה בתוכנית.`;
+          return `סיפרתם שלקוחות מגיעים דרך ${joinHe(labels)}. נבחן מה מתאים לחזק בתוכנית.`;
+        }
+        return "נלמד יחד מאיפה מגיעים לקוחות. בינתיים נתכנן לפי השירות והקהל שסיפרתם עליהם.";
+      }
       const worked = d.tried?.what_worked?.trim();
       const channels = d.tried?.channels ?? [];
       if (worked) return `נחזק את מה שכבר הצליח: ${quoted(worked)}`;

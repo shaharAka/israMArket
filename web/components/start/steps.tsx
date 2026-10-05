@@ -26,6 +26,8 @@ import {
 import { HowToFind } from "@/components/help/HowToFind";
 import { ActivityPicker, TriedPicker } from "./AnswerPickers";
 import { SeasonsPicker } from "./SeasonsPicker";
+import { BusinessRoute, ServiceClientSources } from "./BusinessRoute";
+import { modelOf } from "./script";
 import { IconPlus } from "@/lib/icons";
 import { CHANGE_LATER, Chip, IconButton, NetworkIcon, QuietLink, StepShell, TextInput } from "./ui";
 import styles from "./start.module.css";
@@ -107,13 +109,18 @@ export function StepWhat(props: StepProps) {
   const [error, setError] = useState("");
   const d = flow.draft;
   const kit = kitFor(d.business_type);
+  const service = flow.modelConfirmed && d.business_model === "services";
   return (
     <StepShell
       {...props}
-      title="מה אתם עושים?"
-      why="ככה נדע מה לחקור ועל מה לדבר."
+      title={service ? "איזה שירות אתם נותנים?" : "מה אתם עושים?"}
+      why="נתאים לכם תוכנית שיווק, ובהמשך נכתוב לפיה פוסטים לאישורכם."
       primary="להמשיך למה שמייחד אתכם"
       onPrimary={() => {
+        if (!flow.modelConfirmed) {
+          setError("בחרו אם אתם מוכרים מוצרים, נותנים שירות או גם וגם.");
+          return;
+        }
         if (d.offerings.trim().length < 3) {
           setError("כתבו במשפט קצר מה אתם מוכרים או עושים.");
           return;
@@ -130,22 +137,25 @@ export function StepWhat(props: StepProps) {
         next();
       }}
     >
+      <BusinessRoute flow={flow} update={update} onSelect={() => setError("")} />
       <TextInput
         id="offerings"
-        label="במילים שלכם: מה אתם מוכרים או עושים?"
+        label={service ? "איזה שירות, ולמי הוא מתאים?" : "במילים שלכם: מה אתם מוכרים או עושים?"}
         value={d.offerings}
         onChange={(value) => {
           setError("");
           setDraft({ offerings: value });
         }}
-        placeholder={kit.placeholder}
+        placeholder={service && !d.business_type ? "למשל: עיצוב דירות למשפחות, אימון אישי למתחילים או שיעורים לתלמידים" : kit.placeholder}
         maxLength={300}
       />
       <FieldError message={error} />
+      <details className="border-t border-[var(--rule)] pt-2">
+        <summary className="min-h-11 cursor-pointer py-3 text-[14px] font-medium text-[color:var(--ink-muted)]">
+          תחום העסק (לא חובה){d.business_type ? ` · ${kit.chip}` : ""}
+        </summary>
       <fieldset>
-        <legend className={form.label}>
-          התחום <small>(לא חובה, רק אם אחד מאלה מתאים)</small>
-        </legend>
+        <legend className="sr-only">תחום העסק</legend>
         <div className="flex flex-wrap gap-2">
           {BUSINESS_FIELDS.map((field) => (
             <Chip
@@ -161,6 +171,7 @@ export function StepWhat(props: StepProps) {
           ))}
         </div>
       </fieldset>
+      </details>
     </StepShell>
   );
 }
@@ -279,7 +290,7 @@ export function StepAudiences(props: StepProps) {
   return (
     <StepShell
       {...props}
-      title="מי קונה מכם?"
+      title={modelOf(flow) === "services" ? "למי מתאים השירות שלכם?" : "מי קונה מכם?"}
       why="ככה נדע למי לכתוב. הצענו 3 קהלים לפי מה שסיפרתם, ואפשר לשנות."
       primary="להמשיך לעונות השנה"
       reassure={CHANGE_LATER}
@@ -305,7 +316,7 @@ export function StepAudiences(props: StepProps) {
       ) : (
         <>
           {flow.suggestionsFailed ? (
-            <p className="text-[15px] leading-6 text-[color:var(--ink-soft)]">לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי אתם מוכרים.</p>
+            <p className="text-[15px] leading-6 text-[color:var(--ink-soft)]">לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי העסק שלכם מתאים.</p>
           ) : null}
           {kept.length ? (
             <ul className={`${form.list} ${styles.stagger}`}>
@@ -694,6 +705,23 @@ export function StepTried(props: StepProps) {
         : [...current.channels, key];
       return { ...f, triedNone: false, draft: { ...f.draft, tried: { ...current, channels } } };
     });
+  }
+  if (modelOf(flow) !== "products") {
+    return (
+      <StepShell {...props} title="מאיפה מגיעים הלקוחות שלכם?" why="נבין מה כבר מביא פניות, ומה כדאי לפתח בתוכנית."
+        primary="להמשיך למתחרים" reassure={CHANGE_LATER} onPrimary={next} skip="לדלג" onSkip={next}>
+        <ServiceClientSources flow={flow} setDraft={props.setDraft} />
+        <details className="border-t border-[var(--rule)] pt-3">
+          <summary className="cursor-pointer py-2 text-[14px] font-semibold text-[color:var(--ink)]">שיווק שכבר ניסיתם (לא חובה)</summary>
+          <div className="mt-3 space-y-4">
+            <TriedPicker channels={tried.channels} onToggle={toggle} />
+            <TextInput id="what-worked" label="מה הצליח, ומה פחות?" value={tried.what_worked ?? ""}
+              onChange={(what_worked) => update((f) => ({ ...f, draft: { ...f.draft, tried: { channels: f.draft.tried?.channels ?? [], what_worked } } }))}
+              placeholder="למשל: טיפים הביאו שאלות, אבל עוד לא לקוחות" maxLength={200} />
+          </div>
+        </details>
+      </StepShell>
+    );
   }
   return (
     <StepShell

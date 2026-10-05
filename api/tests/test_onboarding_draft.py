@@ -660,6 +660,16 @@ class FromDraftTest(DraftTestCase):
         ok = self.submit(self.draft(business_model="services", goal="leads"))
         self.assertEqual(ok.json()["business"]["primary_goal"], "leads")
 
+    def test_signup_keeps_declared_client_sources_for_monthly_plan(self):
+        sources = {"status": "known", "channels": ["referrals", "partners"],
+                   "main_channel": "partners", "details": "הפניות מאדריכלים באזור"}
+        response = self.submit(self.draft(business_model="services", goal="leads", client_sources=sources))
+        self.assertEqual(response.status_code, 200, response.text)
+        saved = self.client.get("/onboarding/me").json()["business"]["owner_context"]
+        self.assertEqual(saved["client_sources"], sources)
+        self.assertEqual(saved["tried"]["channels"], ["social_posts", "word_of_mouth"])
+        self.assertIn(sources["details"], strategy_service._owner_block({"owner_context": saved}))
+
     def test_instagram_handle_uses_the_same_validation(self):
         response = self.submit(self.draft(links={"instagram": "not a handle!"}))
         self.assertEqual(response.status_code, 422)

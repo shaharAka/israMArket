@@ -79,6 +79,22 @@ export type TriedChannel =
   | "flyers"
   | "word_of_mouth";
 
+export const CLIENT_SOURCE_OPTIONS = [
+  { key: "referrals", label: "המלצות אישיות" },
+  { key: "social", label: "אינסטגרם, פייסבוק או טיקטוק" },
+  { key: "search", label: "חיפוש בגוגל או באתר" },
+  { key: "returning", label: "לקוחות חוזרים" },
+  { key: "partners", label: "הפניות מאנשי מקצוע" },
+  { key: "other", label: "דרך אחרת" },
+] as const;
+export type ClientSource = (typeof CLIENT_SOURCE_OPTIONS)[number]["key"];
+export type ClientSources = {
+  status: "known" | "starting" | "unknown";
+  channels: ClientSource[];
+  main_channel?: ClientSource | null;
+  details?: string;
+};
+
 /** What the client sends. Mirrored by the API (`services/onboarding_draft.py`). */
 export type OnboardingDraft = {
   business_name: string;
@@ -92,6 +108,7 @@ export type OnboardingDraft = {
   activity?: { instagram?: Activity; facebook?: Activity; tiktok?: Activity };
   style_preset?: string; // a STYLE_PRESETS key, when there is no site (or its scan failed)
   tried?: { channels: TriedChannel[]; what_worked?: string };
+  client_sources?: ClientSources;
   competitors?: { name: string; link?: string }[]; // 0–3
   business_model?: BusinessModel; // inferred from the type and the owner's words, confirmable
   /** Where customers come. Not asked at /start: kept from an old draft whose field was
@@ -481,6 +498,12 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
   if (d.tried && (d.tried.channels.length || d.tried.what_worked?.trim())) {
     out.tried = { channels: d.tried.channels };
     if (d.tried.what_worked?.trim()) out.tried.what_worked = d.tried.what_worked.trim().slice(0, 400);
+  }
+  if (d.client_sources) {
+    out.client_sources = {
+      ...d.client_sources,
+      details: d.client_sources.details?.trim().slice(0, 300),
+    };
   }
   const competitors = (d.competitors ?? [])
     .filter((c) => c.name.trim())

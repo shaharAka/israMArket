@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { BrandSwatch } from "@/lib/api";
 import {
   MONTHS_HE,
+  CLIENT_SOURCE_OPTIONS,
   NETWORKS,
   TRIED_OPTIONS,
   chosenDirectionOf,
@@ -64,14 +65,14 @@ export function cardSlots(flow: FlowState): Slot[] {
   const anyLink = Object.keys(d.links).length > 0;
   return [
     { key: "name", filled: Boolean(d.business_name.trim()) },
-    { key: "what", filled: Boolean(d.business_type) },
+    { key: "what", filled: Boolean(d.offerings.trim()) },
     { key: "different", filled: Boolean(d.differentiator?.trim()) },
     { key: "audiences", filled: d.audiences.length > 0 },
     { key: "seasons", filled: Boolean(d.seasons && (d.seasons.busy.length || d.seasons.slow.length)) },
     { key: "links", filled: Boolean(d.has_none || anyLink) },
     {
       key: "tried",
-      filled: Boolean(flow.triedNone || d.tried?.channels.length || d.tried?.what_worked?.trim()),
+      filled: Boolean(d.client_sources || flow.triedNone || d.tried?.channels.length || d.tried?.what_worked?.trim()),
     },
     { key: "competitors", filled: Boolean(d.competitors?.some((c) => c.name.trim())) },
     { key: "baseline", filled: Object.values(d.baseline ?? {}).some((v) => v !== undefined && v !== UNKNOWN) },
@@ -257,7 +258,7 @@ export function BusinessCard({
         </Section>
 
         <Section title="הלקוחות">
-          <Row label="למי אתם מוכרים" on={d.audiences.length > 0}>
+          <Row label={model === "services" ? "למי מתאים השירות" : "למי אתם מוכרים"} on={d.audiences.length > 0}>
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {d.audiences.map((a) => (
                 <li key={a.name} className={`${styles.tag} ${styles.pop}`}>
@@ -299,7 +300,12 @@ export function BusinessCard({
               </ul>
             )}
           </Row>
-          <Row label="מה ניסיתם" on={tried.length > 0 || Boolean(flow.triedNone) || Boolean(d.tried?.what_worked?.trim())}>
+          {model !== "products" ? <Row label="מקורות הלקוחות" on={Boolean(d.client_sources)}>
+            {d.client_sources?.status === "known"
+              ? CLIENT_SOURCE_OPTIONS.filter((source) => d.client_sources?.channels.includes(source.key)).map((source) => source.label).join(" · ")
+              : d.client_sources?.status === "starting" ? "עוד לא הגיעו לקוחות" : "עוד לא יודעים"}
+          </Row> : null}
+          {model === "products" || tried.length > 0 || Boolean(d.tried?.what_worked?.trim()) ? <Row label="שיווק שכבר ניסיתם" on={tried.length > 0 || Boolean(flow.triedNone) || Boolean(d.tried?.what_worked?.trim())}>
             {flow.triedNone ? (
               "עוד לא ניסיתם. נתחיל בקטן."
             ) : (
@@ -310,7 +316,7 @@ export function BusinessCard({
                 ) : null}
               </>
             )}
-          </Row>
+          </Row> : null}
           <Row label="מתחרים" on={competitors.length > 0}>
             {competitors.map((c) => c.name).join(" · ")}
           </Row>
