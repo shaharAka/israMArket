@@ -21,7 +21,7 @@ import re
 from datetime import datetime
 from typing import Literal
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field, field_validator
 from sqlalchemy.orm import Session
 
@@ -29,6 +29,7 @@ from app.db import get_db
 from app.deps import get_business
 from app.models import Business, PerformanceSnapshot
 from app.services.connected_posts import FEATURED_REASONS_HE, featured_item_id
+from app.services import featured_recommendations
 from app.services.jsonutil import dumps, loads
 
 router = APIRouter(prefix="/business", tags=["foundations"])
@@ -154,6 +155,7 @@ class FeaturedItemIn(BaseModel):
     name: str = Field(min_length=1, max_length=80)
     reason: Literal["in_stock", "profitable", "seasonal", "new", "best_seller"] | None = None
     note: str = Field(default="", max_length=160)
+    kind: Literal["product", "service", "offering", "work", "expertise", "story"] | None = None
 
     @field_validator("name")
     @classmethod
@@ -190,7 +192,7 @@ def _suggestions(business: Business, taken: set[str]) -> list[str]:
     return out[:8]
 
 
-def _featured_payload(business: Business) -> dict:
+def _featured_payload(business: Business, db: Session) -> dict:
     stored = _stored(business)
     items = featured_items(stored)
     raw = stored.get("featured_items") if isinstance(stored.get("featured_items"), dict) else {}
@@ -204,21 +206,26 @@ def _featured_payload(business: Business) -> dict:
                 "priority": index + 1,
                 "reason": item.get("reason"),
                 "note": item.get("note") or "",
+                "kind": item.get("kind") or ("service" if model == "services" else "product" if model == "products" else "offering"),
             }
             for index, item in enumerate(items)
         ],
         "saved_at": raw.get("saved_at"),
-        "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items()],
+        "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items() if model != "services" or key in {"seasonal", "new"}],
         "min": minimum_featured(model),
         "max": MAX_FEATURED,
-        "kind_he": "שירותים" if model == "services" else "מוצרים",
+        "kind_he": "שירותים" if model == "services" else "מוצרים ושירותים" if model == "both" else "מוצרים",
+        "business_model": model,
+        "kinds": [{"key": key, "label_he": label} for key, label in featured_recommendations.KINDS.items()
+                  if (model != "services" or key != "product") and (model != "products" or key == "product")],
         "suggestions": _suggestions(business, {item["name"] for item in items}),
+        "recommendations": featured_recommendations.recommend(db, business, stored, {item["name"] for item in items}),
     }
 
 
 @router.get("/featured-items")
-def get_featured(business: Business = Depends(get_business)) -> dict:
-    return _featured_payload(business)
+def get_featured(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    return _featured_payload(business, db)
 
 
 @router.put("/featured-items")
@@ -230,10 +237,13 @@ def put_featured(body: FeaturedItemsIn, business: Business = Depends(get_busines
         if item.name in seen:
             continue
         seen.add(item.name)
-        items.append({"name": item.name, "reason": item.reason, "note": _clean(item.note, 160)})
+        note = _clean(item.note, 160)
+        if item.kind in {"work", "story"} and len(note) < 5:
+            raise HTTPException(422, "תארו דוגמה אמיתית מהעבודה, בלי פרטים מזהים של לקוחות.")
+        items.append({"name": item.name, "reason": item.reason, "note": note, "kind": item.kind})
     stored["featured_items"] = {"items": items, "saved_at": _now()}
     _save(db, business, stored)
-    return _featured_payload(business)
+    return _featured_payload(business, db)
 
 
 # --- voice check -----------------------------------------------------------------------

@@ -91,7 +91,7 @@ def _featured_item(item):
     why = str(item.get("why") or "").strip() or ", ".join(
         part for part in (reason, str(item.get("note") or "").strip()) if part
     )
-    return {"id": connected_posts.featured_item_id(name), "name": name, "why": why}
+    return {"id": connected_posts.featured_item_id(name), "name": name, "why": why, "kind": item.get("kind") or "offering"}
 
 
 def featured_items_from(stored: dict | None) -> list:
@@ -127,14 +127,18 @@ def _featured_block(business: dict) -> str:
         if not name:
             continue
         why = str(item.get("why") or item.get("reason") or item.get("note") or "").strip()
-        lines.append(f"{index}. {name}" + (f": {why}" if why else ""))
+        kind = str(item.get("kind") or "")
+        label = {"work": "דוגמה מעבודה", "expertise": "טיפ מקצועי", "story": "סיפור לקוח", "service": "שירות"}.get(kind, "")
+        lines.append(f"{index}. {name}" + (f" ({label})" if label else "") + (f": {why}" if why else ""))
     if not lines:
         return ""
     listed = "\n".join(lines)
     return f"""
-המוצרים והשירותים שבעל העסק בחר להבליט, לפי הסדר שלו:
+הנושאים שבעל העסק בחר להבליט בפוסטים, לפי הסדר שלו:
 {listed}
-הפוסטים מבליטים אותם, בסדר הזה ומהסיבות שבעל העסק נתן. אל תמציא מוצר שלא ברשימה ואל תבליט מוצר אחר במקומם.
+הפוסטים מבליטים אותם, בסדר הזה ומהסיבות שבעל העסק נתן. אל תמציא מוצר או שירות שלא ברשימה.
+דוגמת עבודה או סיפור לקוח: רק הפרטים שבעל העסק סיפק. אין להמציא לקוח, פרויקט, תוצאה או המלצה. אם חסר פרט, owner_fact מציין מה צריך להשלים.
+טיפ מקצועי הוא הסבר שימושי, לא מוצר למכירה. התאם את סוג הפוסט לנושא, לא כל נושא הוא מודעה.
 """
 
 
@@ -634,7 +638,7 @@ def _rewrite_context_block(context: dict | None) -> str:
     featured = context.get("featured") if isinstance(context.get("featured"), dict) else {}
     if featured.get("name"):
         why = f" ({featured['why']})" if featured.get("why") else ""
-        lines.append(f"- המוצר שבעל העסק בחר להבליט בפוסט: {featured['name']}{why}.")
+        lines.append(f"- הנושא שבעל העסק בחר להבליט בפוסט: {featured['name']}{why}.")
     channel = connected_posts.CHANNEL_HE.get(context.get("channel") or "")
     if channel:
         lines.append(f"- הערוץ של הפוסט: {channel}. caption נכתב לערוץ הזה.")

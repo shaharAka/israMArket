@@ -289,7 +289,9 @@ export type BaselinePayload = {
 
 export type FeaturedReason = "in_stock" | "profitable" | "seasonal" | "new" | "best_seller";
 
-export type FeaturedItem = { name: string; priority?: number; reason: FeaturedReason | null; note?: string };
+export type FeaturedKind = "product" | "service" | "offering" | "work" | "expertise" | "story";
+export type FeaturedItem = { id?: string; name: string; priority?: number; reason: FeaturedReason | null; note?: string; kind?: FeaturedKind | null };
+export type FeaturedRecommendation = { name: string; kind: FeaturedKind; why_he: string; source_he: string; needs_detail: boolean };
 
 export type FeaturedPayload = {
   items: FeaturedItem[];
@@ -299,6 +301,9 @@ export type FeaturedPayload = {
   max: number;
   kind_he: string;
   suggestions: string[];
+  business_model: "products" | "services" | "both";
+  kinds: { key: FeaturedKind; label_he: string }[];
+  recommendations: FeaturedRecommendation[];
 };
 
 export type VoicePayload = {
@@ -340,7 +345,7 @@ export const foundations = {
   featured: (): Promise<FeaturedPayload> =>
     isDemo() ? Promise.resolve(demoFeatured()) : api<FeaturedPayload>("/business/featured-items"),
   saveFeatured: (items: FeaturedItem[]): Promise<FeaturedPayload> => {
-    const body = { items: items.map(({ name, reason, note }) => ({ name, reason, note: note || "" })) };
+    const body = { items: items.map(({ name, reason, note, kind }) => ({ name, reason, note: note || "", kind })) };
     if (isDemo()) {
       DEMO_FEATURED = body.items;
       return refreshAfter(Promise.resolve(demoFeatured()));
@@ -422,6 +427,12 @@ function demoFeatured(): FeaturedPayload {
     min: 3,
     max: 10,
     kind_he: "מוצרים",
+    business_model: "products",
+    kinds: [{ key: "product", label_he: "מוצר" }],
+    recommendations: [
+      { name: "לחם מחמצת", kind: "product", why_he: "מתאים לנושא בתוכנית: לחם של בוקר לשכונה.", source_he: "התוכנית לדוגמה", needs_detail: false },
+      { name: "פוקצ׳ה", kind: "product", why_he: "מתוך ההצעות של המאפייה לדוגמה.", source_he: "העסק לדוגמה", needs_detail: false },
+    ].filter(item => !taken.has(item.name)) as FeaturedRecommendation[],
     suggestions: ["לחם מחמצת", "פוקצ׳ה", "עוגיות חמאה", "בורקס"].filter((name) => !taken.has(name)),
   };
 }
@@ -501,7 +512,7 @@ async function demoTrial(): Promise<TrialPayload> {
     { key: "gbp", week: 1, title_he: "לבדוק את הכרטיס של העסק בגוגל", why_he: "שם מוצאים אתכם במפות ובחיפוש. נוודא שהוא קיים, מעודכן ושאפשר למדוד אותו.", minutes: 5, href: "/promotion#profile", action_he: "לבדוק את הכרטיס", status: DEMO_EVENTS.gbp ? "done" : "todo" },
     { key: "baseline", week: 1, title_he: "לרשום איפה העסק היום", why_he: `נקודת הפתיחה. בלעדיה לא נדע אם ${DEMO_KPI} באמת השתנה.`, minutes: 2, href: "/baseline", action_he: "לרשום את המספרים", status: baseline ? "done" : "todo" },
     { key: "photos", week: 2, title_he: "להעלות תמונות וסרטונים של העסק", why_he: `לפחות 3, כדי שהפוסטים ייראו כמו העסק שלכם.${photos > 0 && photos < 3 ? ` כבר העליתם ${photos}.` : ""}`, minutes: 5, href: "/assets", action_he: "להעלות תמונות", status: photos >= 3 ? "done" : "todo" },
-    { key: "featured", week: 2, title_he: "לבחור אילו מוצרים לקדם", why_he: `מה במלאי, מה רווחי ומה עונתי. אתם מחליטים את הסדר, והפוסטים הולכים לפיו.${featured > 0 && featured < 3 ? ` בחרתם ${featured} עד עכשיו.` : ""}`, minutes: 5, href: "/featured", action_he: "לבחור", status: featured >= 3 ? "done" : "todo" },
+    { key: "featured", week: 2, title_he: "לבחור מה להבליט בפוסטים", why_he: `מציעים לפי העסק, המחקר והתוכנית. אתם בוחרים מה מתאים.${featured > 0 && featured < 3 ? ` בחרתם ${featured} עד עכשיו.` : ""}`, minutes: 5, href: "/featured", action_he: "לבחור", status: featured >= 3 ? "done" : "todo" },
     { key: "voice", week: 2, title_he: "לבדוק שהסגנון נשמע כמוכם", why_he: "שני משפטים לדוגמה בסגנון שקראנו באתר. אם זה לא אתם, נתקן לפני שכותבים.", minutes: 2, href: "/voice", action_he: "לבדוק את הסגנון", status: DEMO_VOICE ? "done" : "todo" },
     { key: "start_posts", week: 2, title_he: "להתחיל לכתוב את הפוסטים", why_he: "לפי התוכנית, המוצרים שבחרתם והתמונות שלכם. הפוסטים יחכו לאישור שלכם.", minutes: 1, href: "/posts", action_he: "להתחיל לכתוב", ...(posts.length ? { status: "done" as const } : lock("אחרי התמונות, המוצרים והסגנון.")) },
     { key: "approve_first", week: 3, title_he: "לאשר את הפוסטים הראשונים", why_he: waiting.length > 1 ? `רק פוסט מאושר יוצא לפרסום. ${waiting.length} מחכים לכם.` : "רק פוסט מאושר יוצא לפרסום.", minutes: 10, href: "/posts", action_he: "לבדוק ולאשר", ...(first.length ? { status: waiting.length ? ("todo" as const) : ("done" as const) } : lock("אחרי שנכתוב את הפוסטים.")) },

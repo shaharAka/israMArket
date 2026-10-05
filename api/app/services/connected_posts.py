@@ -337,7 +337,9 @@ def owner_needs(post: dict) -> list[dict]:
         has_image = bool(_clean(post.get("image_url"), 800))
         own = has_image and str(post.get("image_source") or "") in OWNER_PHOTO_SOURCES
         chose_ai = has_image and str(post.get("image_preference") or "") == "ai"
-        product_like = post.get("mix_type") in PRODUCT_IMAGE_MIX or bool(post.get("featured_item_id"))
+        kind = post.get("featured_item_kind")
+        real_subject = kind in {"product", "offering", "work", "story"} or (not kind and bool(post.get("featured_item_id")))
+        product_like = post.get("mix_type") in PRODUCT_IMAGE_MIX or real_subject
         if not has_image or (product_like and not own and not chose_ai):
             subject = _clean(post.get("featured_item_name") or post.get("product"), 80)
             hint = _clean(post.get("photo_hint_he"), 200)
@@ -479,7 +481,7 @@ def traits(post: dict) -> list[tuple[str, str]]:
     if str(post.get("hook") or "").strip().endswith("?"):
         out.append(("question_hook", "שאלה בפתיחה"))
     if post.get("featured_item_id"):
-        out.append(("featured", "מוצר שבחרתם להבליט"))
+        out.append(("featured", "נושא שבחרתם להבליט"))
     if post.get("format") in FORMAT_HE:
         out.append((f"format:{post['format']}", FORMAT_HE[post["format"]]))
     if post.get("mix_type") in MIX_TYPES:
@@ -625,7 +627,7 @@ def prompt_rules() -> str:
         "זה הפוסט שבעל העסק יראה ויאשר, ו-caption נכתב לערוץ הזה בלבד.",
         "- outlet_captions: עותק קצר לשיתוף אופציונלי ברשתות האחרות. בערוץ שבחרת: אותו טקסט כמו caption.",
         f"- mix_type: סוג הפוסט בתמהיל התוכן, מפתח אחד מתוך: {', '.join(MIX_TYPES)}.",
-        "- featured_item: אם הפוסט מבליט מוצר או שירות מהרשימה שבעל העסק בחר, השם שלו בדיוק כמו ברשימה. אחרת ריק.",
+        "- featured_item: אם הפוסט מבליט מוצר, שירות, דוגמת עבודה או טיפ מהרשימה שבעל העסק בחר, השם שלו בדיוק כמו ברשימה. אחרת ריק.",
         "- owner_fact: פרט שרק בעל העסק יודע, שהפוסט תלוי בו ושלא מופיע בחומר (מחיר, תאריך, שעות, כמות). "
         "כתוב בקצרה מה לבדוק. בטקסט עצמו אל תמציא אותו: אם הוא חייב להופיע, כתוב [מחיר] או [תאריך] במקומו. אם אין — ריק.",
         "- applied_learning: מזהה מבלוק 'מה הצליח אצלכם' כשהפוסט ממשיך דפוס שלו. אם אין בלוק או שלא השתמשת — ריק.",
@@ -784,6 +786,7 @@ def finish_written(items: list[dict], business: dict, core: dict | None) -> list
         fid, fname = _match_featured(item.pop("featured_item", ""), featured)
         item["featured_item_id"] = fid
         item["featured_item_name"] = fname
+        item["featured_item_kind"] = next((f.get("kind") for f in featured if isinstance(f, dict) and featured_name(f) == fname), None)
         item["owner_fact"] = _clean(item.get("owner_fact"), 120)
         item["owner_fact_done"] = False
         item["plan_link"] = plan_link(core, week)

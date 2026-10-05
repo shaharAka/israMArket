@@ -522,7 +522,7 @@ export function mockQuarterPlan(
       pillars: pillarSet[index],
       cadence: cad,
       mix: MIX_BY_LEVER[lever].map(([type_key, per_month, purpose_he]) => ({ type_key, name_he: MIX_NAMES[type_key], per_month, purpose_he })),
-      products_note_he: "אילו מוצרים להבליט בכל פוסט — אתם מחליטים כאן, לפי מלאי ורווחיות.",
+      products_note_he: "נציע מה להבליט בפוסטים לפי העסק והתוכנית. אתם מחליטים כאן ומשנים לפי הצורך.",
     };
   });
 
