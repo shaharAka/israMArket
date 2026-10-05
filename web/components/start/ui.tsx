@@ -143,7 +143,7 @@ export function StepShell({
   }, [focus]);
 
   const label = nextLabel && primary.startsWith("להמשיך") ? nextLabel : primary;
-  const forward = !primaryDisabled && /^(לעבור|להמשיך)/.test(label);
+  const forward = !primaryDisabled && (label === nextLabel || /^(לעבור|להמשיך)/.test(label));
 
   return (
     <form

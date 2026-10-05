@@ -53,18 +53,20 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
 
 const STEP_DESTINATIONS: Record<StepId, string> = {
-  name: "להמשיך לשם העסק", what: "להמשיך לתיאור העסק", different: "להמשיך לייחוד של העסק",
-  audiences: "להמשיך לבחירת קהל", seasons: "להמשיך לעונות ולחגים", links: "להמשיך לאתר ולרשתות",
-  tried: "להמשיך לשיווק שכבר ניסיתם", competitors: "להמשיך לעסקים דומים", grow: "להמשיך למטרת השיווק",
-  baseline: "להמשיך למצב העסק כיום", lever: "לראות את ההמלצה שלנו", budget: "להמשיך לתקציב השיווק",
-  target: "לחשב את יעד העבודה", found: "לראות מה גילינו על העסק", direction: "לבחור את כיוון התוכנית",
-  quarter: "לבנות את התוכנית שלכם", save: "להמשיך לשמירת התוכנית",
+  name: "איך קוראים לעסק?", what: "מה אתם עושים?", different: "מה מבדיל אתכם?",
+  audiences: "מי הלקוחות שלכם?", seasons: "מתי עמוס אצלכם?", links: "איפה אפשר למצוא אתכם?",
+  tried: "איזה שיווק כבר ניסיתם?", competitors: "מי המתחרים שלכם?", grow: "איפה תרצו לגדול?",
+  baseline: "איפה העסק היום?", lever: "לראות מה כדאי להגדיל", budget: "כמה להשקיע בשיווק?",
+  target: "לחשב לאן אפשר להגיע", found: "לראות מה גילינו על העסק", direction: "לבחור כיוון לתוכנית",
+  quarter: "לבנות את התוכנית שלכם", save: "לשמור את התוכנית בחשבון שלכם", };
 };
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
   const destination = nextStep(step, flow);
-  if (destination === "tried" && modelOf(flow) !== "products") return "להמשיך למקורות הלקוחות";
-  if (destination === "what" && flow.modelConfirmed && modelOf(flow) === "services") return "להמשיך לתיאור השירות";
+  if (destination === "tried" && modelOf(flow) !== "products") return "איך לקוחות מגיעים אליכם?";
+  if (destination === "what" && flow.modelConfirmed && modelOf(flow) === "services") return "איזה שירות אתם נותנים?";
+  if (destination === "audiences" && modelOf(flow) === "services") return "למי מתאים השירות שלכם?";
+  if (destination === "competitors" && modelOf(flow) !== "products") return "מי עוד מציע שירות דומה?";
   return destination ? STEP_DESTINATIONS[destination] : undefined;
 }
 
