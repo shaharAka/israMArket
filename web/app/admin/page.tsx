@@ -32,6 +32,7 @@ import {
 import { ApiError, endpoints } from "@/lib/api";
 import { BrandMark, IconArrowRight, IconCopy } from "@/lib/icons";
 import { ToastHost, copyText, toast } from "@/lib/ui";
+import { SupportQueue } from "@/components/support/SupportQueue";
 
 type Gate = "loading" | "ok" | "signin" | "forbidden";
 type Action = "reset" | "signout" | "suspend" | "reactivate" | "exempt" | "delete";
@@ -57,7 +58,7 @@ const META = "text-[13px] leading-5 text-[color:var(--ink-muted)]";
 export default function AdminPage() {
   const [gate, setGate] = useState<Gate>("loading");
   const [gateMessage, setGateMessage] = useState("");
-  const [tab, setTab] = useState<"accounts" | "audit">("accounts");
+  const [tab, setTab] = useState<"accounts" | "audit" | "support">("accounts");
   const [filters, setFilters] = useState<Required<AccountFilters>>({ q: "", stage: "", status: "", sort: "last_active" });
   const [rows, setRows] = useState<AccountRow[] | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -184,15 +185,16 @@ export default function AdminPage() {
         <SegmentedControl
           label="תצוגה"
           value={tab}
-          onChange={(value) => setTab(value as "accounts" | "audit")}
+          onChange={(value) => setTab(value as "accounts" | "audit" | "support")}
           options={[
             { value: "accounts", label: "חשבונות" },
             { value: "audit", label: "יומן פעולות" },
+            { value: "support", label: "פניות תמיכה" },
           ]}
         />
       </div>
 
-      {tab === "audit" ? (
+      {tab === "support" ? <SupportQueue /> : tab === "audit" ? (
         <AuditLog />
       ) : (
         <>

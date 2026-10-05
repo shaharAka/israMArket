@@ -31,6 +31,7 @@ from app.routers import (
     setup,
     service_results,
     strategy,
+    support,
     trial,
     whatsapp,
 )
@@ -147,6 +148,8 @@ app.include_router(whatsapp.router)
 app.include_router(billing.router)
 # The owner's backoffice: every route carries services/admin_access.require_admin.
 app.include_router(admin.router)
+app.include_router(support.router)
+app.include_router(support.admin_router)
 # The WhatsApp tracked link's public redirect, /r/{code}: anonymous, stores no visitor data.
 app.include_router(whatsapp.public_router)
 # Anonymous on purpose (the landing-page preview); it carries its own rate limits.
@@ -185,6 +188,12 @@ def _resume_month_generation() -> None:
 def _resume_source_analysis() -> None:
     from app.services import analysis_jobs
     analysis_jobs.resume_on_startup()
+
+
+@app.on_event("startup")
+def _resume_support() -> None:
+    from app.services import support as support_service
+    support_service.resume_on_startup()
 
 
 @app.on_event("shutdown")

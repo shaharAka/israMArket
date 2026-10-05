@@ -161,6 +161,10 @@ class Settings(BaseSettings):
     # until the owner signs in with Google. Keep it true outside local development.
     admin_require_google: bool = True
 
+    # One bounded, grounded suggestion per support report. Failure keeps a human ticket.
+    support_ai_enabled: bool = True
+    support_ai_model: str = "gemini-3.8-flash"
+
     def admin_email_set(self) -> set[str]:
         return {part.strip().lower() for part in (self.admin_emails or "").split(",") if part.strip()}
 

@@ -222,6 +222,9 @@ def admin_requests(target_id: int, email: str = "") -> list[tuple[str, str, dict
         ("POST", f"/admin/users/{target_id}/billing-exempt", {"exempt": True}),
         ("DELETE", f"/admin/users/{target_id}", {"confirm_email": email}),
         ("GET", "/admin/audit", None),
+        ("GET", "/admin/support", None),
+        ("POST", "/admin/support/nonexistent/messages", {"client_ref": "00000000-0000-4000-8000-000000000001", "body": "Synthetic reply"}),
+        ("PATCH", "/admin/support/nonexistent", {"status": "resolved"}),
     ]
 
 

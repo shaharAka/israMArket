@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AppShell, PageHeader } from "@/components/AppShell";
 import { CARD, GROUP_LABEL, LIST_ROW, ROW_CHEVRON } from "@/components/account/setupStyles";
 import { GuideSheet } from "@/components/help/HowToFind";
@@ -19,6 +20,7 @@ export default function HelpPage() {
     <AppShell>
       <div className="mx-auto max-w-[720px]">
         <PageHeader title="איך מוצאים דברים" subtitle="הסברים קצרים, צעד אחר צעד." />
+        <Link href="/support" className="drawn-button mb-7 inline-flex min-h-11 items-center justify-center px-5">לדווח על בעיה או לשאול שאלה</Link>
 
         {/* A label and whitespace per group, a card with hairlines per list: no boxes inside boxes. */}
         <div className="space-y-8">

@@ -48,7 +48,8 @@ from app.services import billing, images
 
 # The only foreign-key targets this module knows how to cascade from.
 # `whatsapp_links` is safe because every table pointing at it also has `business_id`.
-HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots"}
+# Support messages carry their owning user_id, so they are deleted before their ticket.
+HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots", "support_tickets"}
 
 # Tables that deliberately outlive an account. `admin_audit` is the backoffice's record of
 # what the owner did, including "deleted account 12": it holds ids, an action name and a
