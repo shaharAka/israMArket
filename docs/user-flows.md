@@ -35,9 +35,9 @@ describes conditions that route alone cannot show.
 
 ## Current source and branch conditions
 
-Audit baseline: `1c037008fa932a9cd4781eb3428fd29fd2da7241`, 2 October 2026, with the
-first-value onboarding, source-readiness and finding-review follow-ups on top. The inspector
-now links to the finding-review implementation revision, audited on 3 October 2026. Maintain the
+Audit revision: `1bac6c7f007dbf558c044e6ff2cf38a5664e2d36`, 7 October 2026. The software
+product/offer and buyer/problem route, its skipped shop questions and the persistent post
+preparation workspace were checked against actual components and synthetic accounts. Maintain the
 data in `web/lib/uxFlows.ts` when behavior changes; update the baseline only after checking
 the mapped routes and conditions. The board is excluded from search indexing.
 
