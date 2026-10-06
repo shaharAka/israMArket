@@ -709,8 +709,17 @@ def _business_payload(business: Business) -> dict:
 
 def research_seeds(business: Business) -> list[str]:
     """What to ask Google about: the owner's words plus the categories read off the site."""
-    seeds = keywords.seeds_for(_business_payload(business))
     scraped = loads(business.scraped_profile_json, {}) or {}
+    payload = _business_payload(business)
+    focused = ""
+    if business.business_model == "saas":
+        context = scraped.get("owner_context") if isinstance(scraped.get("owner_context"), dict) else {}
+        software = context.get("software") if isinstance(context.get("software"), dict) else {}
+        # Search for the selected problem/product, rather than every company product.
+        focused = ", ".join(str(software.get(key) or "").strip() for key in ("focus_product", "problem") if software.get(key))
+        if focused:
+            payload["offerings"] = focused[:600]
+    seeds = keywords.seeds_for(payload)
     offers = ((scraped.get("extracted") or {}).get("offers")) or []
     known = {keywords.normalise_term(seed) for seed in seeds}
     extra: list[str] = []
@@ -722,7 +731,7 @@ def research_seeds(business: Business) -> list[str]:
                 extra.append(offer.strip())
     # Category words first: "what people type after 'הלבשה תחתונה'" is demand for the
     # category; the owner's promo sentences rarely are.
-    ordered = extra[:4] + seeds
+    ordered = seeds if focused else extra[:4] + seeds
     return ordered[:MAX_SEARCH_SEEDS]
 
 

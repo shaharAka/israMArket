@@ -23,6 +23,7 @@ import form from "./form.module.css";
  */
 
 const MODEL_QUESTION: Record<BusinessModel, string> = {
+  saas: "מוצר תוכנה או סטארטאפ — נכון?",
   products: "נראה שאתם מוכרים מוצרים — נכון?",
   services: "נראה שאתם נותנים שירות — נכון?",
   both: "נראה שאתם מוכרים מוצרים וגם נותנים שירות — נכון?",

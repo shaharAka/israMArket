@@ -95,7 +95,9 @@ def subject_terms(post: dict) -> list[tuple[set[str], float]]:
         (post.get("photo_hint_he"), 2.0),
         (post.get("angle"), 1.5),
         (post.get("hook"), 1.0),
-        (post.get("scene_description") or post.get("image_prompt"), 1.0),
+        # A stale art direction must never select a different subject. It can be a
+        # fallback only on legacy posts with no message/subject at all.
+        ((post.get("scene_description") or post.get("image_prompt")) if not any(post.get(k) for k in ("title", "caption", "hook", "featured_item_name", "product", "photo_hint_he")) else None, 1.0),
         (post.get("caption"), 0.5),
     )
     return [(stems(text), weight) for text, weight in fields if text]
@@ -279,7 +281,10 @@ def rank(candidates: list[Candidate], post: dict, used: dict[str, int], index: i
         matched.sort(key=lambda item: (-(item[1] - REUSE_PENALTY * used.get(item[0].key, 0)),
                                        -ORIGIN_RANK[item[0].origin], used.get(item[0].key, 0)))
         return [(c, "subject", s) for c, s in matched]
-    if post.get("featured_item_name") or post.get("product") or post.get("featured_item_id"):
+    if (post.get("featured_item_name") or post.get("product") or post.get("featured_item_id")
+            or post.get("caption") or post.get("photo_hint_he") or post.get("angle")):
+        # Substantive posts need a topic match. Rotation is reserved for legacy
+        # greeting/atmosphere cards with no specific message.
         return []
     if not candidates:
         return []

@@ -310,7 +310,7 @@ function budgetSummary(plan: AnyPlan): string {
 function channelsSummary(plan: AnyPlan): string {
   const existing = plan.channels.filter((c) => c.kind === "existing").length;
   const fresh = plan.channels.filter((c) => c.kind === "new").length;
-  if (!existing) return `${fresh} ערוצים חדשים`;
+  if (!existing) return fresh === 1 ? "ערוץ חדש אחד" : `${fresh} ערוצים חדשים`;
   return fresh ? `${existing} שכבר יש, ${fresh} חדשים` : `${existing} ערוצים שכבר יש`;
 }
 
@@ -607,7 +607,7 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
               <p className="text-[15px] font-semibold text-[color:var(--ink)]">{channel.name_he}</p>
               {isNew ? (
                 <span className="text-xs font-semibold text-[color:var(--primary)]">
-                  חדש · מ{months[channel.starts_month - 1] ?? `חודש ${channel.starts_month}`}
+                  {channel.availability === "needs_check" ? "בודקים התאמה לפני שמתחילים" : <>חדש · מ{months[channel.starts_month - 1] ?? `חודש ${channel.starts_month}`}</>}
                 </span>
               ) : null}
             </div>
@@ -616,6 +616,7 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
               {channel.cadence_he ? `${channel.cadence_he} · ` : ""}
               {channel.effort_he}
             </p>
+            {channel.key === "chatgpt_ads" ? <HowToFind topic="chatgpt_ads" label="מה זה, והאם זה מתאים לעסק שלכם?" /> : null}
           </div>
         </li>
       ))}
@@ -903,7 +904,7 @@ function betsSummary(plan: AnyPlan, review?: HypothesisReview | null): string {
   const items = reviewByKey(review);
   const states = plan.assumptions.flatMap((bet, index) => reviewFor(items, `assumption:${index}`, bet.bet_he) ?? []);
   const decided = states.some((state) => state.status !== "measuring");
-  return decided ? `${plan.assumptions.length} השערות · ${statusSummary(states)}` : `${plan.assumptions.length} השערות שנמדוד`;
+  return decided ? `${plan.assumptions.length} השערות · ${statusSummary(states)}` : plan.assumptions.length === 1 ? "השערה אחת שנבדוק" : `${plan.assumptions.length} השערות שנבדוק`;
 }
 
 function BetsBlock({ plan, mode, review }: { plan: AnyPlan; mode: "start" | "app"; review?: HypothesisReview | null }) {

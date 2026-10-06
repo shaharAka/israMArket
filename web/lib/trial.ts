@@ -79,6 +79,8 @@ export type TrialPayload = {
   next_key: string | null;
   weeks: { week: number; title_he: string }[];
   steps: TrialStep[];
+  /** Actual saved drafts, independent of the owner's request to start writing. */
+  posts_written?: number;
   /** Week 1's aha, "המדידה עובדת": what is connected and whether real numbers came in. */
   measurement: {
     connected: ("instagram" | "site" | "whatsapp")[];
@@ -301,7 +303,7 @@ export type FeaturedPayload = {
   max: number;
   kind_he: string;
   suggestions: string[];
-  business_model: "products" | "services" | "both";
+  business_model: "products" | "services" | "both" | "saas";
   kinds: { key: FeaturedKind; label_he: string }[];
   recommendations: FeaturedRecommendation[];
 };

@@ -22,7 +22,7 @@ from __future__ import annotations
 import re
 
 from app.models import Audience
-from app.services.business_model import audience_framing, model_framing
+from app.services.business_model import audience_framing, model_framing, related_account_framing
 from app.services.gemini import strategy_json
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
@@ -299,6 +299,7 @@ def proposal_prompt(
     return f"""
 {model_framing(business.get("business_model"))}
 {audience_framing(business.get("business_model"))}
+{related_account_framing()}
 
 הצע 3 עד 5 קהלי יעד לעסק הישראלי הקטן הזה, כדי שהתוכן והפרסום יידעו למי הם מדברים.
 זו לא סקירת שוק. כל קהל חייב לנבוע מהמידע שסופק כאן למטה.

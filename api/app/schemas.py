@@ -102,7 +102,7 @@ class OnboardingIn(BaseModel):
     presence_type: Literal["brick_and_mortar", "online_only", "hybrid"] = "brick_and_mortar"
     # Forks diagnostics, goals and the whole plan engine. Defaults to the historic
     # behaviour so older clients and pre-fork rows keep working.
-    business_model: Literal["products", "services", "both"] = "products"
+    business_model: Literal["products", "services", "both", "saas"] = "products"
     social_links: dict[str, str] = Field(default_factory=dict)
     monthly_budget_ils: int = Field(ge=0, le=10_000_000)
     competitors: list[CompetitorIn] = Field(default_factory=list, max_length=5)

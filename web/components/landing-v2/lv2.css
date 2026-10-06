@@ -592,12 +592,10 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #2f5cd3, #2450bf);
-  color: #fff;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 14px 30px -14px rgba(28, 60, 152, 0.8);
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--lv2-ink);
+  border-top: 1px solid var(--lv2-line);
   margin-top: 14px;
 }
 
@@ -623,10 +621,11 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
   flex: none;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
-  background: rgba(255, 255, 255, 0.16);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--lv2-sun-soft);
+  color: var(--lv2-ink);
 }
 
 .lv2-map-next-text {
@@ -638,7 +637,7 @@ html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
 
 .lv2-map-next-text small {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.72);
+  color: var(--lv2-ink-3);
 }
 
 .lv2-map-next-steps {

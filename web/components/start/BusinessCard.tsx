@@ -63,7 +63,7 @@ type Slot = { key: string; filled: boolean };
 export function cardSlots(flow: FlowState): Slot[] {
   const d = flow.draft;
   const anyLink = Object.keys(d.links).length > 0;
-  return [
+  const slots = [
     { key: "name", filled: Boolean(d.business_name.trim()) },
     { key: "what", filled: Boolean(d.offerings.trim()) },
     { key: "different", filled: Boolean(d.differentiator?.trim()) },
@@ -82,6 +82,10 @@ export function cardSlots(flow: FlowState): Slot[] {
     { key: "direction", filled: Boolean(flow.quarterPlan && chosenDirectionOf(flow)) },
     { key: "plan", filled: Boolean(currentPlan(flow)) },
   ];
+  if (d.business_model !== "saas") return slots;
+  return [...slots.filter(slot => !["seasons", "baseline", "lever", "target"].includes(slot.key)),
+    { key: "software_offer", filled: Boolean(d.software?.focus_product) },
+    { key: "software", filled: Boolean(d.software?.problem && d.software?.buyer) }];
 }
 
 export function filledCount(flow: FlowState): { filled: number; total: number } {
@@ -258,7 +262,7 @@ export function BusinessCard({
         </Section>
 
         <Section title="הלקוחות">
-          <Row label={model === "services" ? "למי מתאים השירות" : "למי אתם מוכרים"} on={d.audiences.length > 0}>
+          <Row label={model === "saas" ? "מי צריך את המוצר" : model === "services" ? "למי מתאים השירות" : "למי אתם מוכרים"} on={d.audiences.length > 0}>
             <ul className="mt-1 flex flex-wrap gap-1.5">
               {d.audiences.map((a) => (
                 <li key={a.name} className={`${styles.tag} ${styles.pop}`}>
@@ -267,7 +271,7 @@ export function BusinessCard({
               ))}
             </ul>
           </Row>
-          <Row label="עונות" on={busy.length + slow.length > 0}>
+          {model !== "saas" ? <Row label="עונות" on={busy.length + slow.length > 0}>
             {busy.length ? (
               <span className="flex items-center gap-2">
                 <SeasonDot kind="busy" /> עמוס: {busy.map((m) => MONTHS_HE[m - 1]).join(", ")}
@@ -278,7 +282,7 @@ export function BusinessCard({
                 <SeasonDot kind="slow" /> שקט: {slow.map((m) => MONTHS_HE[m - 1]).join(", ")}
               </span>
             ) : null}
-          </Row>
+          </Row> : null}
         </Section>
 
         <Section title="איפה אתם">
@@ -300,6 +304,9 @@ export function BusinessCard({
               </ul>
             )}
           </Row>
+          {model === "saas" && d.software ? <Row label="המוצר והלקוח" on={Boolean(d.software.problem)}>
+            {d.software.focus_product ? <><strong>{d.software.focus_product}</strong><br /></> : null}{d.software.problem}<br />{d.software.buyer}{d.software.commercial_offer ? <><br />{d.software.commercial_offer}</> : null}
+          </Row> : null}
           {model !== "products" ? <Row label="מקורות הלקוחות" on={Boolean(d.client_sources)}>
             {d.client_sources?.status === "known"
               ? CLIENT_SOURCE_OPTIONS.filter((source) => d.client_sources?.channels.includes(source.key)).map((source) => source.label).join(" · ")
@@ -322,23 +329,26 @@ export function BusinessCard({
           </Row>
         </Section>
 
-        <Section title="המספרים">
+        <Section title={model === "saas" ? "המטרה והתקציב" : "המספרים"}>
           {grow ? (
             <Row label="איפה לגדול" on>
               {grow}
             </Row>
           ) : null}
-          <Row label="היום" on={Boolean(today)}>
+          {model !== "saas" ? <><Row label="היום" on={Boolean(today)}>
             <BidiText text={today} />
           </Row>
           <Row label="מה מגדילים" on={Boolean(lever)}>
             <span className="block font-semibold">{lever}</span>
             {secondLever ? <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">ועוד: {secondLever}</span> : null}
           </Row>
+          </> : <Row label="הצעד שנמדוד" on={Boolean(d.software?.buying_motion && d.software.buying_motion !== "unknown")}>
+            {d.software?.buying_motion === "demo" ? "בקשה להדגמה או לשיחה" : d.software?.buying_motion === "waitlist" ? "הצטרפות לרשימת המתנה" : "הרשמה והתנסות; שימוש ותשלום נבדקים בנפרד"}
+          </Row>}
           <Row label="תקציב שיווק לחודש" on={Boolean(budget)}>
             {budget}
           </Row>
-          <Row label="יעד העבודה" on={Boolean(target)} empty="נחשב יחד אחרי התקציב">
+          {model !== "saas" ? <Row label="יעד העבודה" on={Boolean(target)} empty="נחשב יחד אחרי התקציב">
             <span className="block font-semibold">
               <BidiText text={target} />
             </span>
@@ -347,7 +357,7 @@ export function BusinessCard({
                 {d.target.edited_by_owner ? "היעד שלכם." : "לפי החישוב שלנו."} טווח לתכנון, לא הבטחה.
               </span>
             ) : null}
-          </Row>
+          </Row> : <p className="text-[13px] leading-5 text-[var(--ink-soft)]">בלי נתוני שימוש, לא נציג יעד מספרי. נתחיל למדוד ונעדכן את התוכנית.</p>}
         </Section>
 
         <Section title="התוכנית">
@@ -359,7 +369,7 @@ export function BusinessCard({
             <span className="block">{plan?.strategy.one_liner_he}</span>
             {plan ? (
               <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">
-                {plan.channels.filter((c) => c.kind === "new").length} ערוצים חדשים ·{" "}
+                {plan.channels.filter((c) => c.kind === "new").length === 1 ? "ערוץ חדש אחד" : `${plan.channels.filter((c) => c.kind === "new").length} ערוצים חדשים`} ·{" "}
                 {plan.budget.organic_only || !plan.budget.monthly_ils ? "בלי תקציב פרסום" : `${formatIls(plan.budget.monthly_ils)} בחודש`}
               </span>
             ) : null}

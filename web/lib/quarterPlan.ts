@@ -56,6 +56,7 @@ export type QuarterPlan = {
     starts_month: 1 | 2 | 3;
     effort_he: string;
     cadence_he?: string;
+    availability?: "needs_check";
     from_insight?: number;
     based_on?: string;
   }[];

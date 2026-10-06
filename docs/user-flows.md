@@ -3,19 +3,20 @@
 The shared visual review is `/design/flows`, linked from `/design` and [task #65](https://github.com/shaharAka/israMArket/issues/65).
 This is a product review tool inside the app, available without signing in. It never saves
 a business, grants access, generates content, publishes, pays or emits review analytics.
-Examples of a shop and designer are fictional. The IsraMarket branch is a pilot proposal,
+Examples of a shop, designer and software company are fictional. The IsraMarket branch is a pilot proposal,
 not a live business or measured campaign.
 
 ## How to review
 
-1. Choose a shop, designer or IsraMarket, then before signup, after signup or returning use.
+1. Choose a shop, designer, software company or IsraMarket, then before signup, after signup or returning use.
 2. Pan and zoom the React Flow screen canvas. Use the minimap, +/- controls, fit-all or
    chapter focus selector. Arrowheads show the next screen; named arrows show branches;
    dashed lines lead to proposals. Screen positions can be dragged locally, and reset
    when changing journey/phase. This is not a shared Figma document or live multiplayer.
-3. Select a thumbnail to inspect its larger screen and action beside the canvas. Six question screens reuse
+3. Select a thumbnail to inspect its larger screen and action beside the canvas. Eight question screens reuse
    actual components with local answers. Sixteen nodes also have actual route captures from
-   the synthetic bakery demo; exact OAuth, writing and publishing states remain schematic.
+   synthetic fixtures; post preparation captures were updated on 7 October for the software fixture.
+   Exact OAuth, writing and publishing states remain schematic.
    Captures show a shared route, not proof of a distinct account or the exact workflow state.
 4. Try its primary action, alternative branch and failure/cancel/missing-information case.
    The recovery example describes what the source supports; it is not a new API behavior.
@@ -26,7 +27,8 @@ not a live business or measured campaign.
    second shared task system.
 
 Before signup, the map follows `STEP_ORDER` in `web/components/start/script.ts`; services
-skip `grow`. After signup, the columns organize related actions and optional branches.
+skip `grow`. Software adds selected product/offer and buyer/problem/stage questions and skips store location,
+seasonality and retail baseline/target calculations. After signup, the columns organize related actions and optional branches.
 They do **not** mandate connecting every provider, or waiting a week between actions.
 The sample walkthrough chooses one route so clicks can be rehearsed. The source inspector
 describes conditions that route alone cannot show.
@@ -40,7 +42,10 @@ data in `web/lib/uxFlows.ts` when behavior changes; update the baseline only aft
 the mapped routes and conditions. The board is excluded from search indexing.
 
 - `/start`: 13 answer/confirmation stages for products, 12 for services, followed by the
-  research summary, plan and save (16/15 main-path stages total). Local draft until save.
+  research summary, plan and save (16/15 main-path stages total). Software has 10 answer
+  stages plus summary, plan and save (13 total). The owner describes the company’s products,
+  chooses the first focus and commercial offer, then the problem, buyer and buying path. It distinguishes signup, first useful
+  use and payment; no unmeasured traction or store arithmetic. Local draft until save.
   Research links and authorization to read account data are separate. Invalid or
   inaccessible links are excluded from research and retained for later correction.
 - Save: Google or email/password, then `from-draft`. Delete the local draft only after
@@ -59,8 +64,12 @@ the mapped routes and conditions. The board is excluded from search indexing.
   and receiving an event signal are distinct. Each business chooses its own assets.
 - WhatsApp: short-link clicks, not messages sent or qualified inquiries. Google Business
   Profile: conditional owner checklist confirmation; API work remains #51.
-- Foundations: services require one uploaded asset, one selected service and a saved
-  style answer. Products/both/unknown retain three assets and three selected items.
+- Foundations: services and software require one uploaded asset, one selected topic and a saved
+  style answer. `/prepare` keeps Topics → Photos → Style → Posts in one workspace;
+  stage changes preserve unsaved form state and scroll to its heading. Saving each form
+  persists it. Generation is explicit and readiness includes unsaved changes.
+  Reopening resumes writing status; requesting writing is not proof of saved drafts.
+  `/featured`, `/assets` and `/voice` remain available as standalone tools. Products/both/unknown retain three assets and three selected items.
   Explicitly saved unknown baseline answers count as answered, never as measured figures.
   Connections follow the saved plan; old accounts without a plan keep their fallback.
 - Posts: editing, approval, manual publishing kit, then owner report of publication.

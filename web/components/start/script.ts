@@ -23,6 +23,8 @@ import { withLamed } from "./ui";
 
 export type StepId =
   | "name"
+  | "software_offer"
+  | "software"
   | "what"
   | "different"
   | "audiences"
@@ -41,7 +43,7 @@ export type StepId =
   | "save";
 
 export const CHAPTERS: { key: string; label: string; short?: string; steps: StepId[] }[] = [
-  { key: "business", label: "העסק", steps: ["name", "what", "different"] },
+  { key: "business", label: "העסק", steps: ["name", "what", "software_offer", "software", "different"] },
   { key: "customers", label: "הלקוחות", steps: ["audiences", "seasons"] },
   { key: "marketing", label: "איך משווקים", steps: ["links", "tried", "competitors"] },
   // Revision 6: where the business is today, what to grow, the budget, and the calculated target.
@@ -53,6 +55,8 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
 
 const STEP_DESTINATIONS: Record<StepId, string> = {
+  software_offer: "מה רוצים לקדם קודם?",
+  software: "מה המוצר פותר, ולמי?",
   name: "איך קוראים לעסק?", what: "מה אתם עושים?", different: "מה מבדיל אתכם?",
   audiences: "מי הלקוחות שלכם?", seasons: "מתי עמוס אצלכם?", links: "איפה אפשר למצוא אתכם?",
   tried: "איזה שיווק כבר ניסיתם?", competitors: "מי המתחרים שלכם?", grow: "איפה תרצו לגדול?",
@@ -63,6 +67,8 @@ const STEP_DESTINATIONS: Record<StepId, string> = {
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
   const destination = nextStep(step, flow);
+  if (destination === "audiences" && modelOf(flow) === "saas") return "מי צריך את המוצר שלכם?";
+  if (destination === "competitors" && modelOf(flow) === "saas") return "מה עושים היום בלי המוצר שלכם?";
   if (destination === "tried" && modelOf(flow) !== "products") return "איך לקוחות מגיעים אליכם?";
   if (destination === "what" && flow.modelConfirmed && modelOf(flow) === "services") return "איזה שירות אתם נותנים?";
   if (destination === "audiences" && modelOf(flow) === "services") return "למי מתאים השירות שלכם?";
@@ -90,7 +96,10 @@ export function modelOf(flow: FlowState) {
 
 /** "איפה אתם רוצים לגדול?" is for shops: a service business skips it. */
 function skipped(step: StepId, flow: FlowState): boolean {
-  return step === "grow" && modelOf(flow) === "services";
+  const model = modelOf(flow);
+  if (step === "software" || step === "software_offer") return model !== "saas";
+  if (model === "saas") return ["seasons", "grow", "baseline", "lever", "target"].includes(step);
+  return step === "grow" && model === "services";
 }
 
 export function isStepId(value: string): value is StepId {
@@ -153,7 +162,12 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
   switch (step) {
     case "name":
       return d.business_name.trim() ? `נעים להכיר, ${d.business_name.trim()}.` : null;
+    case "software_offer":
+      return d.software?.focus_product ? `נתמקד קודם ב${d.software.focus_product}.` : null;
+    case "software":
+      return d.software?.problem ? `נבנה את התוכנית סביב הבעיה: ${quoted(d.software.problem)}` : null;
     case "what": {
+      if (modelOf(flow) === "saas") return "נבנה תוכנית סביב הבעיה שהמוצר פותר, וממנה נכין תוכן שמסביר ומדגים אותו.";
       const offer = firstOffering(d.offerings);
       const heard = kitFor(d.business_type).heard;
       return offer ? `הבנו: ${offer}. ${heard}` : heard;
@@ -164,6 +178,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
         : "בסדר גמור. לרוב זה מסתתר במה שלקוחות מספרים עליכם, ונמצא את זה יחד.";
     case "audiences": {
       const names = d.audiences.map((a) => a.name.trim()).filter(Boolean);
+      if (!names.length && modelOf(flow) === "saas") return "נציע קהל לפי הבעיה, תפקיד הקונה והשוק שסיפרתם עליהם.";
       if (!names.length) return "נמצא יחד את הקהל הנכון. בינתיים נכתוב למי שגר ועובד קרוב אליכם.";
       if (names.length === 1) return `נכתוב קודם כול ${withLamed(names[0])}. קהל אחד ברור עדיף על כולם.`;
       return `נכתוב קודם ${withLamed(names[0])}, ואחר כך ${joinHe(names.slice(1).map(withLamed))}.`;
@@ -197,6 +212,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     case "tried": {
       if (modelOf(flow) !== "products") {
         const sources = d.client_sources;
+        if (sources?.status === "starting" && modelOf(flow) === "saas") return "נתחיל בניסוי שמביא משתמשים ראשונים או בקשות להדגמה, לפי שלב המוצר.";
         if (sources?.status === "starting") return "נבנה תוכנית להיכרות עם השירות שלכם ולהבאת הפניות הראשונות.";
         if (sources?.status === "known") {
           const labels = CLIENT_SOURCE_OPTIONS.filter((source) => sources.channels.includes(source.key)).map((source) => source.label);
@@ -204,7 +220,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
           if (main) return `סיפרתם שרוב הלקוחות מגיעים דרך ${main.label}. נבדוק איך לתמוך בזה בתוכנית.`;
           return `סיפרתם שלקוחות מגיעים דרך ${joinHe(labels)}. נבחן מה מתאים לחזק בתוכנית.`;
         }
-        return "נלמד יחד מאיפה מגיעים לקוחות. בינתיים נתכנן לפי השירות והקהל שסיפרתם עליהם.";
+        return modelOf(flow) === "saas" ? "נלמד יחד מאיפה מגיעים לקוחות. בינתיים נתכנן לפי המוצר והקהל שסיפרתם עליהם." : "נלמד יחד מאיפה מגיעים לקוחות. בינתיים נתכנן לפי השירות והקהל שסיפרתם עליהם.";
       }
       const worked = d.tried?.what_worked?.trim();
       const channels = d.tried?.channels ?? [];
@@ -221,6 +237,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     case "competitors": {
       const names = (d.competitors ?? []).map((c) => c.name.trim()).filter(Boolean);
       if (names.length) return `נבדוק מה ${joinHe(names)} מפרסמים, ונמצא איפה אתם יכולים לבלוט.`;
+      if (modelOf(flow) === "saas") return "נבחן פתרונות חלופיים לבעיה, כולל הדרך שבה אנשים מסתדרים היום בלי תוכנה.";
       return "נחפש בעצמנו עסקים דומים באזור, וניקח מהם השראה, לא העתקה.";
     }
     case "grow":

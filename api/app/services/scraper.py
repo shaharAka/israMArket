@@ -988,6 +988,11 @@ def _limited_fetchers(limits: ScrapeLimits):
     return make(limits.max_html_bytes), make(limits.max_stylesheet_bytes), make(limits.max_image_bytes)
 
 
+def _product_links(page_url: str, soup: BeautifulSoup) -> list[dict]:
+    from app.services.software_site import content_links
+    return content_links(page_url, soup)
+
+
 def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
     """Read one public page: text, colours, fonts and a few images.
 
@@ -1071,6 +1076,7 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
         "meta": metas[:5],
         "headings": headings[:15],
         "buttons": buttons[:15],
+        "content_links": _product_links(page_url, soup),
         "text": text[:MAX_CHARS],
         "colors": colors,
         "fonts": fonts,

@@ -16,7 +16,8 @@ export const PRESENCE_MODELS: { key: PresenceType; title: string }[] = [
 ];
 
 /** Short labels for the three-way products / services choice on a phone. */
-export const MODEL_SHORT: Record<"products" | "services" | "both", string> = {
+export const MODEL_SHORT: Record<"products" | "services" | "both" | "saas", string> = {
+  saas: "תוכנה / סטארטאפ",
   products: "מוצרים",
   services: "שירותים",
   both: "גם וגם",

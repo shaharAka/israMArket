@@ -30,12 +30,15 @@ const START: Record<GenerationStatus["kind"], () => Promise<GenerateResult>> = {
 export function MonthBuildProgress({
   kind = "first_month",
   autoStart = false,
+  canStart = true,
   onDone,
   onProgress,
   idle,
 }: {
   kind?: GenerationStatus["kind"];
   autoStart?: boolean;
+  /** Keep retries from bypassing unfinished or unsaved preparation. */
+  canStart?: boolean;
   onDone?: (result: GenerateResult | null) => void;
   /** Another week's posts were saved while the build goes on (see useMonthBuild). */
   onProgress?: (status: GenerationStatus) => void;
@@ -47,11 +50,11 @@ export function MonthBuildProgress({
   const autoStarted = useRef(false);
 
   useEffect(() => {
-    if (!autoStart || !loaded || autoStarted.current) return;
+    if (!canStart || !autoStart || !loaded || autoStarted.current) return;
     if (running || starting || status?.status === "failed" || status?.done) return;
     autoStarted.current = true;
     void start();
-  }, [autoStart, loaded, running, starting, status, start]);
+  }, [canStart, autoStart, loaded, running, starting, status, start]);
 
   if (error && !running && !starting) {
     return (
@@ -64,9 +67,11 @@ export function MonthBuildProgress({
               : "לא הצלחנו לסיים את החודש."}
         </p>
         <p>{error}</p>
+        {!canStart ? <p>בדקו ושמרו את הנושאים, התמונות והסגנון לפני שמנסים שוב.</p> : null}
         <button
           type="button"
-          onClick={() => void start()}
+          disabled={!canStart}
+          onClick={() => { if (canStart) void start(); }}
           className="mt-3 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:border-[var(--ink-faint)]"
         >
           לנסות שוב

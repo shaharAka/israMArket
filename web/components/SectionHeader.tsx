@@ -12,9 +12,11 @@ export function SectionHeader({
   title,
   subtitle,
   action,
+  level = 1,
   eyebrow: eyebrowOverride,
 }: {
   section: SectionKey;
+  level?: 1 | 2;
   title: string;
   /** `null` hides the section label; a string replaces it. */
   eyebrow?: string | null;
@@ -22,6 +24,7 @@ export function SectionHeader({
   action?: React.ReactNode;
 }) {
   const identity = SECTIONS[section];
+  const Heading = level === 1 ? "h1" : "h2";
   // The section label adds context only when it is not the title itself
   // (DESIGN-STANDARD.md §2: one title, no eyebrow that repeats it).
   const label = eyebrowOverride === undefined ? identity.eyebrow : eyebrowOverride;
@@ -31,7 +34,7 @@ export function SectionHeader({
       {eyebrow ? <p className="mb-2 text-[13px] font-semibold text-[var(--ink-muted)]">{eyebrow}</p> : null}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[32px]">{title}</h1>
+          <Heading className={level === 1 ? "text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-[32px]" : "text-[20px] font-bold leading-tight tracking-tight text-[var(--ink)]"}>{title}</Heading>
           {subtitle ? (
             <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--ink-soft)]">{subtitle}</p>
           ) : null}

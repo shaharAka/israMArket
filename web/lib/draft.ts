@@ -96,7 +96,15 @@ export type ClientSources = {
 };
 
 /** What the client sends. Mirrored by the API (`services/onboarding_draft.py`). */
+export type SoftwareContext = {
+  stage: "idea" | "beta" | "live" | "unknown";
+  buying_motion: "self_serve" | "demo" | "waitlist" | "unknown";
+  problem: string; buyer: string; market: string;
+  focus_product?: string; commercial_offer?: string; product_evidence?: string;
+};
+
 export type OnboardingDraft = {
+  software?: SoftwareContext;
   business_name: string;
   business_type: string; // a FieldKey (lib/businessFields.ts), "" until answered
   offerings: string; // free text, "what you do / sell"
@@ -499,6 +507,7 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
     out.tried = { channels: d.tried.channels };
     if (d.tried.what_worked?.trim()) out.tried.what_worked = d.tried.what_worked.trim().slice(0, 400);
   }
+  if (d.business_model === "saas" && d.software) out.software = d.software;
   if (d.client_sources) {
     out.client_sources = {
       ...d.client_sources,
@@ -587,7 +596,7 @@ function wait(ms: number) {
 
 export async function scanBrand(url: string, draft: OnboardingDraft): Promise<PublicBrandResult> {
   return withMock(
-    () => endpoints.publicBrand(url),
+    () => endpoints.publicBrand(url, draft.business_model),
     async () => {
       await wait(2600);
       return mockBrand(url, draft);
@@ -600,6 +609,7 @@ export async function suggestAudiences(draft: OnboardingDraft): Promise<Suggeste
     async () => (await endpoints.publicAudiences(draft)).audiences,
     async () => {
       await wait(1300);
+      if (draft.business_model === "saas") return [{ name: draft.software?.buyer || "מי שהבעיה הזו מפריעה לו", description: `לפי הבעיה שסיפרתם: ${draft.software?.problem || draft.offerings}`, why_he: "לפי המשתמש ומקבל החלטת הרכישה שסיפרתם עליהם; זו הצעה להדגמה." }];
       return kitFor(draft.business_type).audiences.map((a) => ({ ...a }));
     },
   );
@@ -1325,6 +1335,17 @@ const GOAL_HE: Record<PrimaryGoal, string> = {
 function mockPlanPreview(d: OnboardingDraft, brand: PublicBrand | null): PlanPreview {
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
   const goal: PrimaryGoal = d.goal ?? defaultGoalFor(model);
+  if (model === "saas") {
+    const focus = d.software?.focus_product || d.offerings;
+    const buyer = d.audiences[0]?.name || d.software?.buyer || "הקונה שיגדיר את הצורך";
+    return { brand, insights: [
+      { source: "answers", text_he: `סיפרתם שנרצה לקדם קודם את ${focus}, עבור ${buyer}.` },
+      { source: "answers", text_he: d.software?.commercial_offer ? `ההצעה עכשיו: ${d.software.commercial_offer}. נכין תוכן שמסביר מה מקבלים ולמי זה מתאים.` : "עוד לא בחרתם הצעה מסחרית. לא נפרסם מחיר או ניסיון שלא אישרתם." },
+    ], directions: [
+      { title: "להראות את הפתרון בפעולה", approach_he: `מסבירים את הבעיה ומדגימים יכולת אמיתית של ${focus}.`, audience: buyer, goal_he: "התנסות מתאימה", why_he: "לפי הבעיה והמוצר שסיפרתם עליהם.", first_steps: ["לבחור פעולה אמיתית להדגמה", "להכין פוסט הסבר והזמנה לצעד שבחרתם", "למדוד התנסות ושימוש בנפרד"] },
+      { title: "לעזור לפני שמוכרים", approach_he: "תוכן מקצועי שמסביר החלטה שהלקוחות צריכים לקבל.", audience: buyer, goal_he: "לבנות אמון", why_he: "מראה הבנה של הבעיה ומאפשר לקהל לבדוק התאמה.", first_steps: ["לענות על שאלה מהתהליך הקיים", "להסביר מתי המוצר מתאים", "לבדוק מה הוביל לשיחה או להתנסות"] },
+    ], ideas: [] };
+  }
   const kit = kitFor(d.business_type);
   const next = nextIlDate();
   const event = next && next.days <= 75 ? next.name : "";

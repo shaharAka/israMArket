@@ -48,6 +48,7 @@ from app.services.gemini import generate_json, lite_json
 from app.services import goal_numbers
 from app.services.goal_numbers import DraftBaseline, DraftLever, DraftTarget
 from app.services.hebrew_style import HEBREW_STYLE
+from app.services.software_business import DraftSoftware, software_block
 from app.services.instagram_signal import MAX_HANDLES as MAX_PEER_HANDLES, HandleError, normalize_handle
 from app.services.jsonutil import dumps, loads
 from app.services import business_fields
@@ -606,6 +607,18 @@ GROW_WHERE_HE = {"online": "באתר (הזמנות אונליין)", "store": "�
 # offered; `needs` are the integrations that measure it (see services/quarter_plan.py);
 # `goal` is the PrimaryGoal the month planner gets (the first that fits the model).
 KPI_OPTIONS: dict[str, dict] = {
+    "software_paid": {
+        "name_he": "מנויים בתשלום", "description_he": "לקוחות שהתחילו לשלם, בנפרד מהרשמות והתנסות",
+        "models": {"saas"}, "grow": {None}, "needs": ["ga4"], "goal": ("sales",),
+    },
+    "software_signups": {
+        "name_he": "הרשמות למוצר או לרשימת ההמתנה", "description_he": "הצעד הראשון בדרך להתנסות; אינו שימוש פעיל או תשלום",
+        "models": {"saas"}, "grow": {None}, "needs": ["ga4"], "goal": ("leads",),
+    },
+    "software_demos": {
+        "name_he": "בקשות להדגמת המוצר", "description_he": "בקשות להדגמה או שיחת היכרות",
+        "models": {"saas"}, "grow": {None}, "needs": ["ga4"], "goal": ("leads",),
+    },
     "online_orders": {
         "name_he": "יותר הזמנות באתר", "description_he": "הזמנות שמגיעות דרך האתר",
         "models": {"products", "both"}, "grow": {"online", "both", None}, "needs": ["ga4"],
@@ -659,7 +672,7 @@ KPI_OPTIONS: dict[str, dict] = {
 def success_options(model: str | None, grow_where: str | None = None) -> list[dict]:
     """The "מה ייחשב הצלחה" choices for a business model and where it wants to grow."""
     model = normalise_model(model)
-    grow = grow_where if model != "services" and grow_where in GROW_WHERE_HE else None
+    grow = grow_where if model not in {"services", "saas"} and grow_where in GROW_WHERE_HE else None
     return [
         {"key": key, "name_he": spec["name_he"], "description_he": spec["description_he"]}
         for key, spec in KPI_OPTIONS.items()
@@ -669,6 +682,8 @@ def success_options(model: str | None, grow_where: str | None = None) -> list[di
 
 def default_kpi(model: str, grow_where: str | None, has_website: bool) -> str:
     keys = [item["key"] for item in success_options(model, grow_where)]
+    if model == "saas":
+        return "software_signups"
     if model == "services":
         return "whatsapp_inquiries"
     if has_website and grow_where != "store" and "online_orders" in keys:
@@ -742,7 +757,7 @@ class OnboardingDraft(BaseModel):
     has_none: bool = False
     style_preset: str = Field(default="", max_length=40)
     audiences: list[DraftAudience] = Field(default_factory=list, max_length=3)
-    business_model: Literal["products", "services", "both"] | None = None
+    business_model: Literal["products", "services", "both", "saas"] | None = None
     # Where customers come. Not asked at /start; set when an old draft said "חנות
     # אונליין" or "חנות פיזית", which the field list no longer offers.
     presence_type: Literal["brick_and_mortar", "online_only", "hybrid"] | None = None
@@ -753,6 +768,7 @@ class OnboardingDraft(BaseModel):
     activity: DraftActivity = Field(default_factory=DraftActivity)
     tried: DraftTried = Field(default_factory=DraftTried)
     client_sources: DraftClientSources | None = None
+    software: DraftSoftware | None = None
     competitors: list[DraftCompetitor] = Field(default_factory=list, max_length=3)
     # Revision 5 (all optional): the marketing budget, where to grow, what counts as success.
     budget: DraftBudget | None = None
@@ -774,6 +790,10 @@ class OnboardingDraft(BaseModel):
     def kpi_key(self) -> str:
         """The plan's main measure: from the lever (revision 6), else the owner's pick,
         else the natural one for the model."""
+        if self.model == "saas":
+            if self.goal == "sales":
+                return "software_paid"
+            return "software_demos" if self.software and self.software.buying_motion == "demo" else "software_signups"
         natural = default_kpi(self.model, self.grow_where, bool(self.links.website))
         if self.lever is not None:
             kpi = goal_numbers.LEVER_KPI.get(self.lever.primary)
@@ -874,9 +894,13 @@ class OnboardingDraft(BaseModel):
             )
         if any([self.links.website, *self.links.socials().values()]):
             self.has_none = False
-        if self.model == "services":
+        if self.model in {"services", "saas"}:
             # "Where to grow" is a shop question; a service business has no store/online split.
             self.grow_where = None
+        if self.model != "saas":
+            self.software = None
+        else:
+            self.baseline = self.lever = self.target = None
         if self.success is not None:
             allowed = {item["key"] for item in success_options(self.model, self.grow_where)}
             if self.success.kpi not in allowed:
@@ -1094,6 +1118,10 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
     if draft.budget is not None:
         exact = f" (כתבו: {draft.budget.exact_ils:,} ₪)" if draft.budget.exact_ils is not None else ""
         lines.append(f"- תקציב שיווק לחודש: {BUDGET_RANGES[draft.budget.range]['label_he']}{exact}")
+    from app.services.business_model import related_account_framing
+    lines.append(related_account_framing())
+    if draft.software is not None:
+        lines.append(software_block(draft.software.model_dump()))
     if draft.client_sources is not None:
         lines.append(client_sources_block(draft.client_sources.model_dump()))
     if draft.audiences:
@@ -1159,6 +1187,11 @@ def _site_block(scan: dict | None, text_chars: int = SITE_TEXT_CHARS) -> str:
     text = clean_text(raw.get("text"), text_chars)
     if text:
         parts.append(f"- קטע מהטקסט באתר: \"{text}\"")
+    for page in (raw.get("product_pages") or [])[:2]:
+        if isinstance(page, dict):
+            parts.append(f"- עמוד מוצר/תמחור שקראנו: {clean_text(page.get('url'), 300)} (נקרא: {clean_text(page.get('read_at'), 40)}): {clean_text(page.get('text'), 1800)}")
+    if isinstance(raw.get("product_research"), dict):
+        parts.append(clean_text(raw["product_research"].get("note_he"), 400))
     return "\n".join(line for line in parts if not line.endswith(": "))
 
 
@@ -1708,6 +1741,7 @@ def owner_context(draft: OnboardingDraft) -> dict:
         "activity": draft.activity.as_dict(),
         "tried": {"channels": list(draft.tried.channels), "what_worked": draft.tried.what_worked},
         **({"client_sources": draft.client_sources.model_dump()} if draft.client_sources is not None else {}),
+        **({"software": draft.software.model_dump()} if draft.model == "saas" and draft.software is not None else {}),
         "competitors": [
             {"name": item.name, "kind": item.kind, "link": item.link} for item in draft.competitors
         ],
@@ -1722,6 +1756,8 @@ def owner_context_block(context: dict | None, seed: dict | None = None, *, inclu
     """
     lines: list[str] = []
     context = context if isinstance(context, dict) else {}
+    if product_block := software_block(context.get("software")):
+        lines.append(product_block)
     if source_block := client_sources_block(context.get("client_sources")):
         lines.append(source_block)
     if context.get("differentiator"):
@@ -1995,6 +2031,9 @@ def apply_draft(
             "view": goal_numbers.numbers_view(draft),
         }
 
+    if draft.model == "saas":
+        stored.pop("goal_numbers", None)  # never carry a former shop's revenue target into software
+
     # Brand: the scan we already paid for, else what is stored for the same site, else
     # the preset (the owner's pick, or the default for the business type).
     if scan is not None:
@@ -2078,6 +2117,7 @@ class OwnerContextIn(BaseModel):
     seasons: DraftSeasons | None = None
     tried: DraftTried | None = None
     client_sources: DraftClientSources | None = None
+    software: DraftSoftware | None = None
     activity: DraftActivity | None = None
     competitors: list[DraftCompetitor] | None = Field(default=None, max_length=3)
     # Partial repair of public research links; this never grants provider access.
@@ -2194,6 +2234,12 @@ def apply_owner_context(business: Business, update: OwnerContextIn) -> Business:
             context.pop("client_sources", None)
         else:
             context["client_sources"] = update.client_sources.model_dump()
+
+    if "software" in sent:
+        if business.business_model != "saas" or update.software is None:
+            context.pop("software", None)
+        else:
+            context["software"] = update.software.model_dump()
 
     if "seasons" in sent and update.seasons is not None:
         context["seasons"] = {"busy": list(update.seasons.busy), "slow": list(update.seasons.slow)}

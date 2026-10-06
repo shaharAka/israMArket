@@ -10,6 +10,7 @@ import form from "./form.module.css";
 const ROUTES: { key: BusinessModel; label: string; detail: string }[] = [
   { key: "products", label: "מוכרים מוצרים", detail: "בחנות או באתר" },
   { key: "services", label: "נותנים שירות", detail: "מומחיות, פגישות או פרויקטים" },
+  { key: "saas", label: "תוכנה או סטארטאפ", detail: "מוצר דיגיטלי או אפליקציה" },
   { key: "both", label: "גם וגם", detail: "מוצרים ושירותים" },
 ];
 
@@ -21,12 +22,13 @@ export function BusinessRoute({ flow, update, onSelect }: Pick<StepProps, "flow"
         ...f, modelConfirmed: true,
         draft: {
           ...f.draft, business_model: model,
+          software: model === "saas" ? f.draft.software : undefined,
           goal: f.draft.goal && isGoalValidFor(model, f.draft.goal) ? f.draft.goal : undefined,
           success: changed ? undefined : f.draft.success,
           baseline: changed ? undefined : f.draft.baseline,
           lever: changed ? undefined : f.draft.lever,
           target: changed ? undefined : f.draft.target,
-          grow_where: model === "services" ? undefined : f.draft.grow_where,
+          grow_where: ["services", "saas"].includes(model) ? undefined : f.draft.grow_where,
         },
       };
     });
@@ -35,7 +37,7 @@ export function BusinessRoute({ flow, update, onSelect }: Pick<StepProps, "flow"
   return (
     <fieldset>
       <legend className={form.label}>איזה עסק יש לכם?</legend>
-      <div role="radiogroup" aria-label="סוג העסק" className="grid grid-cols-3 gap-2">
+      <div role="radiogroup" aria-label="סוג העסק" className="grid grid-cols-2 gap-2">
         {ROUTES.map((route) => (
           <button key={route.key} type="button" role="radio"
             aria-checked={Boolean(flow.modelConfirmed && flow.draft.business_model === route.key)}

@@ -435,8 +435,8 @@ export default function OnboardingPage() {
             <TextField label="מה אתם מוכרים או מציעים" value={offerings} onChange={setOfferings} />
 
             <fieldset>
-              <legend className={form.label}>מוצרים או שירותים?</legend>
-              <div className="grid grid-cols-3 gap-2">
+              <legend className={form.label}>איזה עסק יש לכם?</legend>
+              <div className="grid grid-cols-2 gap-2">
                 {BUSINESS_MODEL_OPTIONS.map((option) => (
                   <Chip
                     key={option.key}
@@ -455,7 +455,7 @@ export default function OnboardingPage() {
               </summary>
               <div className="mt-3 space-y-4 pb-2">
                 <TextField label="עיר או שכונה" value={location} onChange={setLocation} />
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {PRESENCE_MODELS.map((model) => (
                     <Chip
                       key={model.key}
