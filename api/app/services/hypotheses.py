@@ -224,7 +224,11 @@ class Evidence:
         self.elapsed = self.elapsed_days / self.days
         website = getattr(business, "website_url", "") or ""
         records = cp._records(cp._strategies(db, business.id), website)
-        self.records = [record for record in records if isinstance(record["view"].get("results"), dict)]
+        # Only published posts are evidence: taps on a post not out yet do not count (#123).
+        self.records = [
+            record for record in records
+            if isinstance(record["view"].get("results"), dict) and cp._is_published(record["view"])
+        ]
         self.month_records = [r for r in records if int(r["year"]) == self.year and int(r["month"]) == self.month]
         self.published_this_month = any(cp._is_published(r["view"]) for r in self.month_records)
         connected = {i.provider for i in getattr(business, "integrations", []) or [] if i.status == "connected"}

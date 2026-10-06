@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import get_settings
@@ -19,12 +20,46 @@ def _ensure_sqlite_dir(url: str) -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
 
 
+# How long a writer waits for another one to finish before SQLite says "database is
+# locked". The default (5 s) was shorter than one image job's old transaction (#123).
+SQLITE_BUSY_TIMEOUT_MS = 30_000
+
+
+def sqlite_pragmas(engine: Engine) -> Engine:
+    """WAL (readers never block the writer, nor it them) and a busy timeout, on every
+    connection of a SQLite engine. A no-op for any other database.
+
+    WAL is stored in the database file, so this only switches it on the first time; the
+    nightly `.backup` (deploy/gcp/backup.sh) copies a WAL database consistently."""
+    if engine.dialect.name != "sqlite":
+        return engine
+
+    @event.listens_for(engine, "connect")
+    def _on_connect(dbapi_connection, _record) -> None:
+        cursor = dbapi_connection.cursor()
+        try:
+            cursor.execute(f"PRAGMA busy_timeout = {SQLITE_BUSY_TIMEOUT_MS}")
+            database = engine.url.database or ""
+            if database and database != ":memory:" and not database.startswith("file::memory:"):
+                cursor.execute("PRAGMA journal_mode = WAL")
+        finally:
+            cursor.close()
+
+    return engine
+
+
 settings = get_settings()
 _ensure_sqlite_dir(settings.database_url)
 
-engine = create_engine(
-    settings.database_url,
-    connect_args={"check_same_thread": False} if settings.database_url.startswith("sqlite") else {},
+engine = sqlite_pragmas(
+    create_engine(
+        settings.database_url,
+        connect_args=(
+            {"check_same_thread": False, "timeout": SQLITE_BUSY_TIMEOUT_MS / 1000}
+            if settings.database_url.startswith("sqlite")
+            else {}
+        ),
+    )
 )
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 

@@ -16,6 +16,7 @@ import { StepLink } from "@/components/trial/StepLink";
 import ui from "@/components/posts/chrome.module.css";
 import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
 import { IconArrowLeft, IconChevron } from "@/lib/icons";
+import { useImageJob } from "@/lib/useImageJob";
 
 /**
  * What the header's due line depends on.
@@ -78,7 +79,6 @@ function PostsWorkspace() {
   const reviewing = params.has("recommendation");
   const reviewPlan = params.get("plan");
   const reviewUid = params.get("post_uid");
-  const reviewVisit = useRef(reviewing);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
   const [noMonth, setNoMonth] = useState(false);
@@ -99,28 +99,18 @@ function PostsWorkspace() {
     if (legacy !== null && current.get("post") === null) go(`post=${legacy}`, "replace");
   }, []);
 
+  // The posts' images are made on the server, once, when the month's posts are written (or
+  // when the owner asks for one in the editor). Opening this page never starts or pays for
+  // them (#123): it reads the image job and loads the month again as each image lands.
+  const imageJob = useImageJob({ refreshKey: reload, onProgress: () => setReload((n) => n + 1) });
+
   useEffect(() => {
     let active = true;
-    if (reviewing) reviewVisit.current = true;
     async function loadPosts() {
       try {
         const current = await endpoints.strategy();
         if (!active) return;
         setStrategy(current);
-        // While the month's posts are still being written, the weeks already saved are
-        // shown, but their images wait: preparing them rewrites the month alongside the
-        // writer. They are prepared when the build is done (its onDone reloads).
-        const building = current.roadmap.posts.length
-          ? await endpoints.generationStatus().then((status) => status.running, () => false)
-          : false;
-        if (!active) return;
-        if (!building && !reviewVisit.current && current.roadmap.posts.some((post) => !post.image_url)) {
-          const prepared = await endpoints.generateAllPostImages();
-          if (active) setStrategy(prepared.strategy);
-          if (prepared.errors?.length) {
-            setError(prepared.errors[0]);
-          }
-        }
       } catch (err) {
         if (!active) return;
         // No month yet (right after /start, while it is written) is a normal state with
@@ -216,6 +206,7 @@ function PostsWorkspace() {
           onStrategyUpdated={setStrategy}
           onNavigate={moveEditor}
           onClose={closeEditor}
+          imagesWaiting={imageJob?.waiting}
         />
       </div>
     );

@@ -114,6 +114,8 @@ class _Kind:
     marker: Marker
     # The job stopped (a stage failed twice): tidy what the kind keeps outside the job row.
     on_fail: Callable[[Session, Business, GenerationJob], None] | None = None
+    # The job finished: what follows it (the posts' images, services/image_jobs.py).
+    on_done: Callable[[Session, Business, GenerationJob], None] | None = None
 
 
 _kinds: dict[str, _Kind] = {}
@@ -147,8 +149,9 @@ def register(
     *,
     marker: Marker | None = None,
     on_fail: Callable[[Session, Business, GenerationJob], None] | None = None,
+    on_done: Callable[[Session, Business, GenerationJob], None] | None = None,
 ) -> None:
-    _kinds[kind] = _Kind(run=runner, marker=marker or _stage_marker, on_fail=on_fail)
+    _kinds[kind] = _Kind(run=runner, marker=marker or _stage_marker, on_fail=on_fail, on_done=on_done)
 
 
 def _now() -> datetime:
@@ -485,6 +488,7 @@ def _run_stage_with_retry(business_id: int, token: str, factory: Callable[[], Se
                 job.error_he = ""
                 job.error_detail = ""
                 db.commit()
+                _after_done(db, business, job, kind)
                 return "done"
             if kind.marker(db, business, job) == before:
                 last_error = NoProgress(f"{job.kind} stage returned without moving on")
@@ -496,6 +500,17 @@ def _run_stage_with_retry(business_id: int, token: str, factory: Callable[[], Se
     with _session(factory) as db:
         _fail(db, business_id, token, last_error or RuntimeError(""))
     return "failed"
+
+
+def _after_done(db: Session, business: Business, job: GenerationJob, kind: _Kind) -> None:
+    """What follows a finished job (the month's images). Never turns it into a failure."""
+    if kind.on_done is None:
+        return
+    try:
+        kind.on_done(db, business, job)
+    except Exception:
+        db.rollback()
+        log.exception("what follows the %s job of business %s failed", job.kind, business.id)
 
 
 def _fail(db: Session, business_id: int, token: str, exc: Exception) -> None:

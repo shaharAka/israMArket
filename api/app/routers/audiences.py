@@ -4,8 +4,8 @@ Every route here is scoped to the caller's business. An audience id that belongs
 somebody else must 404 exactly like a missing one — anything else confirms which ids
 exist and, through the rollup, would leak another business's segment names.
 
-Post tagging lives here too, next to the segments it points at, and follows
-`strategy._store_post_image` for loading, mutating and serialising the roadmap.
+Post tagging lives here too, next to the segments it points at, and follows the post
+endpoints of routers/strategy.py for loading, mutating and serialising the roadmap.
 """
 
 from datetime import datetime

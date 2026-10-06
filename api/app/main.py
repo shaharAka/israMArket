@@ -185,6 +185,18 @@ def _resume_month_generation() -> None:
 
 
 @app.on_event("startup")
+def _resume_image_jobs() -> None:
+    """Post images that were being made when the API stopped continue from their queue
+    (services/image_jobs.py). Never blocks or fails the startup."""
+    from app.services import image_jobs
+
+    try:
+        image_jobs.resume_on_startup()
+    except Exception:
+        pass
+
+
+@app.on_event("startup")
 def _resume_source_analysis() -> None:
     from app.services import analysis_jobs
     analysis_jobs.resume_on_startup()
