@@ -91,4 +91,3 @@ class AcquisitionPromptTest(fixture.DraftTestCase):
         prompt = call.call_args_list[0].args[0]
         self.assertIn("המקור העיקרי שסימנו: המלצות אישיות", prompt)
         self.assertIn("לא נתונים שמדדנו", prompt)
-
