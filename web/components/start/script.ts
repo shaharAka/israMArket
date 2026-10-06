@@ -8,6 +8,7 @@
  */
 import {
   NETWORKS,
+  CLIENT_SOURCE_OPTIONS,
   inferBusinessModel,
   TRIED_OPTIONS,
   firstOffering,
@@ -52,17 +53,21 @@ export const CHAPTERS: { key: string; label: string; short?: string; steps: Step
 export const STEP_ORDER: StepId[] = CHAPTERS.flatMap((chapter) => chapter.steps);
 
 const STEP_DESTINATIONS: Record<StepId, string> = {
-  name: "לשם העסק", what: "לתיאור העסק", different: "למה שמייחד את העסק",
-  audiences: "ללקוחות", seasons: "לעונות השנה", links: "לאתר ולרשתות",
-  tried: "למה שכבר ניסיתם", competitors: "למתחרים", grow: "למטרת הצמיחה",
-  baseline: "למצב העסק היום", lever: "להמלצה לצמיחה", budget: "לתקציב",
-  target: "ליעד העבודה", found: "למה שגילינו", direction: "לכיוון התוכנית",
-  quarter: "לתוכנית שלכם", save: "לשמירת התוכנית",
+  name: "איך קוראים לעסק?", what: "מה אתם עושים?", different: "מה מבדיל אתכם?",
+  audiences: "מי הלקוחות שלכם?", seasons: "מתי עמוס אצלכם?", links: "איפה אפשר למצוא אתכם?",
+  tried: "איזה שיווק כבר ניסיתם?", competitors: "מי המתחרים שלכם?", grow: "איפה תרצו לגדול?",
+  baseline: "איפה העסק היום?", lever: "לראות מה כדאי להגדיל", budget: "כמה להשקיע בשיווק?",
+  target: "לחשב לאן אפשר להגיע", found: "לראות מה גילינו על העסק", direction: "לבחור כיוון לתוכנית",
+  quarter: "לבנות את התוכנית שלכם", save: "לשמור את התוכנית בחשבון שלכם",
 };
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
   const destination = nextStep(step, flow);
-  return destination ? `לעבור ${STEP_DESTINATIONS[destination]}` : undefined;
+  if (destination === "tried" && modelOf(flow) !== "products") return "איך לקוחות מגיעים אליכם?";
+  if (destination === "what" && flow.modelConfirmed && modelOf(flow) === "services") return "איזה שירות אתם נותנים?";
+  if (destination === "audiences" && modelOf(flow) === "services") return "למי מתאים השירות שלכם?";
+  if (destination === "competitors" && modelOf(flow) !== "products") return "מי עוד מציע שירות דומה?";
+  return destination ? STEP_DESTINATIONS[destination] : undefined;
 }
 
 /**
@@ -177,19 +182,30 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
       return "אין בעיה. נתכנן לפי לוח השנה ונלמד מהתוצאות.";
     }
     case "links": {
-      if (d.has_none) return "מתחילים נקי, וזה יתרון: אין הרגלים ישנים לתקן. נבחר ערוץ אחד ונעשה אותו טוב.";
+      if (d.has_none) return "אפשר להתחיל גם בלי אתר או חשבון ברשתות. נבחר איך להגיע לקהל שלכם.";
       const regular = NETWORKS.find((n) => d.activity?.[n.key] === "regular" && d.links[n.key] !== undefined);
-      if (regular) return `יש לכם כבר קהל ב${NETWORK_LABEL[regular.key]}. נבנה עליו לפני שנפתח ערוץ חדש.`;
+      if (regular) return `אתם כבר מפרסמים ב${NETWORK_LABEL[regular.key]}. נבדוק איך להמשיך משם.`;
       // A site we could not read is not promised here: the notice under this line
       // already says so, and the two used to contradict each other on one screen.
       if (d.links.website !== undefined && flow.brandScan?.status !== "failed") {
         return "נקרא את האתר ברקע ונלמד ממנו את הסגנון שלכם.";
       }
       const any = NETWORKS.find((n) => d.links[n.key] !== undefined);
-      if (any) return `נתחיל מ${NETWORK_LABEL[any.key]}, כי שם כבר מחפשים אתכם.`;
+      if (any) return `נבחן איך להשתמש ב${NETWORK_LABEL[any.key]} בתוכנית.`;
       return null;
     }
     case "tried": {
+      if (modelOf(flow) !== "products") {
+        const sources = d.client_sources;
+        if (sources?.status === "starting") return "נבנה תוכנית להיכרות עם השירות שלכם ולהבאת הפניות הראשונות.";
+        if (sources?.status === "known") {
+          const labels = CLIENT_SOURCE_OPTIONS.filter((source) => sources.channels.includes(source.key)).map((source) => source.label);
+          const main = CLIENT_SOURCE_OPTIONS.find((source) => source.key === sources.main_channel);
+          if (main) return `סיפרתם שרוב הלקוחות מגיעים דרך ${main.label}. נבדוק איך לתמוך בזה בתוכנית.`;
+          return `סיפרתם שלקוחות מגיעים דרך ${joinHe(labels)}. נבחן מה מתאים לחזק בתוכנית.`;
+        }
+        return "נלמד יחד מאיפה מגיעים לקוחות. בינתיים נתכנן לפי השירות והקהל שסיפרתם עליהם.";
+      }
       const worked = d.tried?.what_worked?.trim();
       const channels = d.tried?.channels ?? [];
       if (worked) return `נחזק את מה שכבר הצליח: ${quoted(worked)}`;

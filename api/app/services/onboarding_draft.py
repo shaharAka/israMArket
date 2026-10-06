@@ -37,7 +37,7 @@ from datetime import date, datetime, timedelta
 from typing import Any, Literal
 from urllib.parse import parse_qs, urlparse
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
 from app.config import get_settings
 from app.models import Audience, Business
@@ -448,6 +448,67 @@ class DraftActivity(BaseModel):
 
 TriedChannel = Literal["social_posts", "paid_social", "google", "influencers", "whatsapp", "flyers", "word_of_mouth"]
 
+ClientSource = Literal["referrals", "social", "search", "returning", "partners", "other"]
+CLIENT_SOURCE_HE = {
+    "referrals": "המלצות אישיות",
+    "social": "אינסטגרם, פייסבוק או טיקטוק",
+    "search": "חיפוש בגוגל או באתר",
+    "returning": "לקוחות חוזרים",
+    "partners": "שיתופי פעולה והפניות מאנשי מקצוע",
+    "other": "דרך אחרת",
+}
+
+
+class DraftClientSources(BaseModel):
+    """Owner-declared acquisition, distinct from tactics tried or measured attribution."""
+
+    model_config = ConfigDict(extra="ignore")
+    status: Literal["known", "starting", "unknown"] = "unknown"
+    channels: list[ClientSource] = Field(default_factory=list, max_length=6)
+    main_channel: ClientSource | None = None
+    details: str = Field(default="", max_length=400)
+
+    @field_validator("channels")
+    @classmethod
+    def _unique(cls, value: list[str]) -> list[str]:
+        return list(dict.fromkeys(value))
+
+    @field_validator("details")
+    @classmethod
+    def _details(cls, value: str) -> str:
+        return _readable(clean_text(value, 300), "איך מגיעים לקוחות")
+
+    @model_validator(mode="after")
+    def _consistent(self) -> "DraftClientSources":
+        if self.status == "known" and not self.channels:
+            raise ValueError("בחרו איך מגיעים לקוחות, או סמנו שלא בטוחים.")
+        if self.status != "known" and (self.channels or self.main_channel):
+            raise ValueError("כשאין עדיין מידע על לקוחות, אל תסמנו מקורות הגעה.")
+        if self.main_channel and self.main_channel not in self.channels:
+            raise ValueError("המקור העיקרי צריך להיות אחד מהמקורות שבחרתם.")
+        return self
+
+
+def client_sources_block(raw: dict | None) -> str:
+    """Never infer acquisition from a social link, tried tactic or absent answer."""
+    if not raw:
+        return ""
+    try:
+        sources = DraftClientSources.model_validate(raw)
+    except ValidationError:
+        return ""
+    if sources.status == "starting":
+        line = "- איך מגיעים לקוחות, לדבריהם: עוד לא הגיעו לקוחות. אין מקורות קיימים שנמסרו."
+    elif sources.status == "unknown":
+        line = "- איך מגיעים לקוחות, לדבריהם: לא בטוחים. לא להסיק שאין לקוחות."
+    else:
+        line = "- איך מגיעים לקוחות, לדבריהם: " + ", ".join(CLIENT_SOURCE_HE[c] for c in sources.channels) + "."
+        if sources.main_channel:
+            line += " המקור העיקרי שסימנו: " + CLIENT_SOURCE_HE[sources.main_channel] + "."
+    if sources.details:
+        line += f' פרטים במילים שלהם: "{sources.details}".'
+    return line + " אלה תשובות בעל העסק, לא נתונים שמדדנו. אין להסיק אחוזים, מספר פניות או הוכחת הצלחה."
+
 
 class DraftTried(BaseModel):
     """Marketing they already tried, from a fixed list, plus what worked in their words."""
@@ -691,6 +752,7 @@ class OnboardingDraft(BaseModel):
     seasons: DraftSeasons = Field(default_factory=DraftSeasons)
     activity: DraftActivity = Field(default_factory=DraftActivity)
     tried: DraftTried = Field(default_factory=DraftTried)
+    client_sources: DraftClientSources | None = None
     competitors: list[DraftCompetitor] = Field(default_factory=list, max_length=3)
     # Revision 5 (all optional): the marketing budget, where to grow, what counts as success.
     budget: DraftBudget | None = None
@@ -1032,6 +1094,8 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
     if draft.budget is not None:
         exact = f" (כתבו: {draft.budget.exact_ils:,} ₪)" if draft.budget.exact_ils is not None else ""
         lines.append(f"- תקציב שיווק לחודש: {BUDGET_RANGES[draft.budget.range]['label_he']}{exact}")
+    if draft.client_sources is not None:
+        lines.append(client_sources_block(draft.client_sources.model_dump()))
     if draft.audiences:
         lines.append("- הקהלים שהם בחרו:")
         for item in draft.audiences:
@@ -1643,6 +1707,7 @@ def owner_context(draft: OnboardingDraft) -> dict:
         "seasons": {"busy": list(draft.seasons.busy), "slow": list(draft.seasons.slow)},
         "activity": draft.activity.as_dict(),
         "tried": {"channels": list(draft.tried.channels), "what_worked": draft.tried.what_worked},
+        **({"client_sources": draft.client_sources.model_dump()} if draft.client_sources is not None else {}),
         "competitors": [
             {"name": item.name, "kind": item.kind, "link": item.link} for item in draft.competitors
         ],
@@ -1657,6 +1722,8 @@ def owner_context_block(context: dict | None, seed: dict | None = None, *, inclu
     """
     lines: list[str] = []
     context = context if isinstance(context, dict) else {}
+    if source_block := client_sources_block(context.get("client_sources")):
+        lines.append(source_block)
     if context.get("differentiator"):
         lines.append(f"- מה מייחד אותם, במילים שלהם: \"{clean_text(context['differentiator'], 300)}\"")
     seasons = context.get("seasons") if isinstance(context.get("seasons"), dict) else {}
@@ -2010,6 +2077,7 @@ class OwnerContextIn(BaseModel):
     differentiator: str | None = Field(default=None, max_length=500)
     seasons: DraftSeasons | None = None
     tried: DraftTried | None = None
+    client_sources: DraftClientSources | None = None
     activity: DraftActivity | None = None
     competitors: list[DraftCompetitor] | None = Field(default=None, max_length=3)
     # Partial repair of public research links; this never grants provider access.
@@ -2120,6 +2188,12 @@ def apply_owner_context(business: Business, update: OwnerContextIn) -> Business:
 
     if "differentiator" in sent and update.differentiator is not None:
         context["differentiator"] = update.differentiator
+
+    if "client_sources" in sent:
+        if update.client_sources is None:
+            context.pop("client_sources", None)
+        else:
+            context["client_sources"] = update.client_sources.model_dump()
 
     if "seasons" in sent and update.seasons is not None:
         context["seasons"] = {"busy": list(update.seasons.busy), "slow": list(update.seasons.slow)}
