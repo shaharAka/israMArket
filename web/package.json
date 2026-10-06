@@ -8,6 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
+    "i18n:extract": "node scripts/extract-messages.mjs",
+    "i18n:sync": "python3 ../scripts/sync-translations.py",
+    "i18n:check": "node scripts/check-translations.mjs && node scripts/test-translation-format.mjs",
     "verify": "npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {

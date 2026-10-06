@@ -1,0 +1,23 @@
+---
+description: Keep IsraMarket changes translated in Hebrew, English, Arabic and Russian
+alwaysApply: true
+---
+
+# Translation maintenance
+
+- Every change to website/app copy includes English, Arabic and Russian translations
+  alongside Hebrew. This includes recovery messages, connector guidance and static API labels.
+- Run `npm --prefix web run i18n:sync` after changing copy, then `npm --prefix web run i18n:check`.
+  Sync reuses reviewed messages and translates only new/changed source messages.
+- Keep canonical source copy in code or a source registry when wiring message IDs;
+  moving a label to a translation call must not remove its original source definition.
+- Install the repository commit hook in a new checkout with
+  `python3 scripts/install-translation-hook.py`. CI independently checks source coverage.
+- Keep numbers, ranges, missing-data states, permissions and action meanings faithful.
+  Approving a hypothesis does not prove it; approving a post does not publish it.
+- Review natural wording and ambiguity in context. Machine checks alone are not a native
+  language or legal review. Keep source references and review notes with catalog changes.
+- Interface language is independent of business content language. Never rewrite stored
+  customer content, names, answers or evidence, or trigger paid generation on page reads.
+- Do not change enum/API identifiers, callbacks, tracked links or budgets through translation.
+- Shahar deferred the public language picker until whole journeys are translated and reviewed.

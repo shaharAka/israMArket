@@ -1,0 +1,198 @@
+{
+  "reviewer": "Codex source-context check; not a native-speaker or legal review",
+  "reason": "Source-context checks for conversion rates, approval vs evidence, alternate selection, subscriber units, natural labels, grammatical duals and Google Business Profile terminology.",
+  "messages": {
+    "m_213840f281fa09b3": {
+      "en": "This is the published conversion rate for the “{arg_0}” industry. It was not measured on your website.",
+      "ar": "هذه نسبة التحويل المنشورة لقطاع «{arg_0}». لم تُقَس في موقعكم.",
+      "ru": "Это опубликованный показатель конверсии для отрасли «{arg_0}». Он не измерялся на вашем сайте."
+    },
+    "m_c791bfd73677466c": {
+      "en": "This is the published conversion rate for your industry. It was not measured on your website.",
+      "ar": "هذه نسبة التحويل المنشورة لقطاعكم. لم تُقَس في موقعكم.",
+      "ru": "Это опубликованный показатель конверсии для вашей отрасли. Он не измерялся на вашем сайте."
+    },
+    "m_d415ed7a0ab7e1cd": {
+      "en": "The hypothesis was approved ✓",
+      "ar": "تم اعتماد الفرضية ✓",
+      "ru": "Гипотеза одобрена ✓"
+    },
+    "m_0e1def3b0936e6a4": {
+      "en": "Choose different tracking",
+      "ar": "اختيار تتبع آخر",
+      "ru": "Выбрать другое отслеживание"
+    },
+    "m_16e3de6fcfc395ec": {
+      "en": "Paying subscribers",
+      "ar": "المشتركون الذين يدفعون",
+      "ru": "Платящие подписчики"
+    },
+    "m_0633c690e869f1e0": {
+      "en": "Customer stories",
+      "ar": "قصص العملاء",
+      "ru": "Истории клиентов"
+    },
+    "m_05b0e68972057054": {
+      "en": "Who the service is for",
+      "ar": "لمن تناسب الخدمة",
+      "ru": "Кому подходит услуга"
+    },
+    "m_04bf99c5346ad533": {
+      "en": "We develop 2 directions for the first month",
+      "ar": "نضع توجهين للشهر الأول",
+      "ru": "Формулируем 2 направления на первый месяц"
+    },
+    "m_6e09b7cbde3d7d32": {
+      "en": "Google defines this as more than 10 seconds, an important action, or at least 2 pages.",
+      "ar": "حسب Google: أكثر من 10 ثوانٍ، أو إجراء مهم، أو صفحتان على الأقل.",
+      "ru": "По определению Google: более 10 секунд, важное действие или не менее 2 страниц."
+    },
+    "m_ce928ad88e5e881d": {
+      "en": "Google defines this as more than 10 seconds, an important action, or at least 2 pages",
+      "ar": "حسب Google: أكثر من 10 ثوانٍ، أو إجراء مهم، أو صفحتان على الأقل",
+      "ru": "По определению Google: более 10 секунд, важное действие или не менее 2 страниц"
+    },
+    "m_b4975eb74f95daeb": {
+      "en": "Give the audience a name with at least 2 letters.",
+      "ar": "اكتبوا اسمًا للجمهور لا يقل عن حرفين.",
+      "ru": "Название аудитории должно содержать не менее 2 букв."
+    },
+    "m_b9e9ad254584c0a4": {
+      "en": "What is the business called? Use at least 2 letters.",
+      "ar": "ما اسم النشاط التجاري؟ يجب أن يتكون من حرفين على الأقل.",
+      "ru": "Как называется бизнес? Не менее 2 букв."
+    },
+    "m_04c769e2262822db": {
+      "en": "On the website or chat button in your Google Business Profile",
+      "ar": "عبر زر الموقع أو الدردشة في ملف النشاط التجاري على Google",
+      "ru": "Через кнопку сайта или чата в профиле компании в Google"
+    },
+    "m_131b8a784423e110": {
+      "en": "Claim ownership of your Google Business Profile",
+      "ar": "الحصول على ملكية ملف النشاط التجاري على Google",
+      "ru": "Подтвердить право на профиль компании в Google"
+    },
+    "m_176f8d389d17a56a": {
+      "en": "Check your Google Business Profile",
+      "ar": "التحقق من ملف النشاط التجاري على Google",
+      "ru": "Проверить профиль компании в Google"
+    },
+    "m_1fbee93283f6938c": {
+      "en": "Google Business Profile",
+      "ar": "ملف النشاط التجاري على Google",
+      "ru": "Профиль компании в Google"
+    },
+    "m_25fbc49ad5c77880": {
+      "en": "Google Business Profile is free: you do not pay Google for visibility or bid for a place.",
+      "ar": "ملف النشاط التجاري على Google مجاني: لا تدفعون إلى Google مقابل الظهور، ولا تتنافسون في مزاد على مكان.",
+      "ru": "Профиль компании в Google бесплатен: вы не платите Google за показы и не участвуете в аукционе за место."
+    },
+    "m_3046a871db583b12": {
+      "en": "Google Business Profile",
+      "ar": "ملف النشاط التجاري على Google (Google Business Profile)",
+      "ru": "Профиль компании в Google (Google Business Profile)"
+    },
+    "m_32781ba1323e5298": {
+      "en": "People looking for a local business can find you through Google Business Profile and Maps, for free.",
+      "ar": "من يبحث عن نشاط تجاري في المنطقة يمكنه العثور عليكم عبر ملف النشاط التجاري وخرائط Google مجانًا.",
+      "ru": "Люди, которые ищут бизнес поблизости, могут найти вас через профиль компании и Карты Google бесплатно."
+    },
+    "m_49082002f35b891d": {
+      "en": "Hi, does our business have a Google Business Profile?",
+      "ar": "مرحبًا، هل لنشاطنا التجاري ملف على Google (Google Business Profile)؟",
+      "ru": "Здравствуйте! Есть ли у нашей компании профиль в Google (Google Business Profile)?"
+    },
+    "m_55898b22418f41e3": {
+      "en": "The server did not return the Google Business Profile steps. Try again later. Meanwhile, you can find your profile by searching Google for your business name.",
+      "ar": "لم تصلنا من الخادم خطوات إعداد ملف النشاط التجاري على Google. حاولوا مرة أخرى لاحقًا. يمكنكم الآن العثور على الملف بالبحث عن اسم نشاطكم التجاري في Google.",
+      "ru": "Сервер не вернул список шагов для профиля компании в Google. Попробуйте позже. Пока можно найти сам профиль, введя название компании в поиске Google."
+    },
+    "m_733c287303d89a3f": {
+      "en": "Before paying Google for clicks, improve what is free: your Google Business Profile. It appears when people search for your business name, and you can use it to request reviews.",
+      "ar": "قبل الدفع إلى Google مقابل النقرات، حسّنوا ما هو مجاني: ملف النشاط التجاري على Google. يظهر عند البحث عن اسم نشاطكم التجاري، ويمكن استخدامه لطلب التقييمات.",
+      "ru": "Прежде чем платить Google за клики, приведите в порядок бесплатный профиль компании. Он появляется при поиске названия бизнеса и позволяет запрашивать отзывы."
+    },
+    "m_7564c2eee1bb24e7": {
+      "en": "We do not have access to your Google Business Profile, so we cannot tell whether it exists or is up to date.",
+      "ar": "ليس لدينا وصول إلى ملف النشاط التجاري على Google، لذلك لا نعرف إن كان موجودًا ومحدّثًا.",
+      "ru": "У нас нет доступа к профилю компании в Google, поэтому мы не знаем, существует ли он и актуальны ли данные."
+    },
+    "m_a09dd0319daa15e3": {
+      "en": "Google Business Profile",
+      "ar": "ملف النشاط التجاري على Google",
+      "ru": "Профиль компании в Google"
+    },
+    "m_b0a16e3298a627ae": {
+      "en": "A WhatsApp link measures clicks, not messages or sales. Connections to Google Business Profile and other tools will be offered when available; your marketing plan does not depend on them.",
+      "ar": "يمكن لرابط WhatsApp قياس النقرات، لا الرسائل أو المبيعات. سيُتاح الربط بملف النشاط التجاري على Google والأدوات الأخرى عندما يصبح متوفرًا؛ ولا تعتمد الخطة التسويقية على هذه الروابط.",
+      "ru": "Ссылка WhatsApp позволяет считать клики, а не сообщения или продажи. Подключение профиля компании в Google и других инструментов появится, когда станет доступно; маркетинговый план от них не зависит."
+    },
+    "m_c27e2828a1188339": {
+      "en": "Step by step: connect your website data, Instagram and Google Business Profile.",
+      "ar": "خطوة بخطوة: ربط بيانات الموقع وInstagram وملف النشاط التجاري على Google.",
+      "ru": "Пошаговое подключение данных сайта, Instagram и профиля компании в Google."
+    },
+    "m_c773d773886e8c5e": {
+      "en": "Google Business Profile is free and is not part of this budget",
+      "ar": "ملف النشاط التجاري على Google (Google Business Profile) مجاني، ولا يدخل ضمن هذه الميزانية",
+      "ru": "Профиль компании в Google (Google Business Profile) бесплатен и не входит в этот бюджет"
+    },
+    "m_cb9f05a97c8924ea": {
+      "en": "Do you already have a Google Business Profile?",
+      "ar": "هل لديكم بالفعل ملف نشاط تجاري على Google؟",
+      "ru": "У вас уже есть профиль компании в Google?"
+    },
+    "m_e8eb8bf29402e86e": {
+      "en": "If the plan calls for a Google Business Profile",
+      "ar": "إذا كانت الخطة تحتاج إلى ملف نشاط تجاري على Google",
+      "ru": "Если для плана нужен профиль компании в Google"
+    },
+    "m_ea4364a066213462": {
+      "en": "Customers visit their physical location: Google Business Profile (gbp) is usually the first new channel, because it is free and reaches people searching nearby.",
+      "ar": "لديهم مكان يزوره العملاء: ملف النشاط التجاري على Google (gbp) هو عادةً أول قناة جديدة، لأنه مجاني ويصل إلى من يبحثون في المنطقة.",
+      "ru": "У них есть место, куда приходят клиенты: профиль компании в Google (gbp) обычно становится первым новым каналом — он бесплатен и помогает людям, которые ищут бизнес поблизости."
+    }
+  },
+  "numberForms": {
+    "m_04bf99c5346ad533": {
+      "ar": [
+        {
+          "form": "توجهين",
+          "value": "2"
+        }
+      ]
+    },
+    "m_6e09b7cbde3d7d32": {
+      "ar": [
+        {
+          "form": "صفحتان",
+          "value": "2"
+        }
+      ]
+    },
+    "m_ce928ad88e5e881d": {
+      "ar": [
+        {
+          "form": "صفحتان",
+          "value": "2"
+        }
+      ]
+    },
+    "m_b4975eb74f95daeb": {
+      "ar": [
+        {
+          "form": "حرفين",
+          "value": "2"
+        }
+      ]
+    },
+    "m_b9e9ad254584c0a4": {
+      "ar": [
+        {
+          "form": "حرفين",
+          "value": "2"
+        }
+      ]
+    }
+  }
+}

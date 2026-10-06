@@ -46,6 +46,8 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
+      - name: Translation catalog and formatter checks
+        run: python3 ../scripts/sync-translations.py --check && npm run i18n:check && python3 -m unittest discover -s ../scripts/tests
       - name: Connection guidance and tracked-link route tests
         run: node --test components/integrations/connectionRecommendation.test.mjs tests/trackedLinkRoute.test.mjs
       - name: Build

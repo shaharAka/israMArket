@@ -199,6 +199,33 @@ class DraftValidationTest(unittest.TestCase):
         self.assertEqual(draft.model, "services")
         self.assertEqual(draft.goal_key, "leads")
 
+    def test_business_answers_accept_supported_languages(self):
+        for name, offering, difference in (
+            ("Студия дизайна", "Дизайн интерьеров для небольших квартир", "Личное сопровождение от идеи до ремонта"),
+            ("استوديو التصميم", "تصميم داخلي للشقق الصغيرة", "مرافقة شخصية من الفكرة إلى التنفيذ"),
+            ("Design studio", "Interior design for small apartments", "Personal guidance from idea to renovation"),
+            ("סטודיו לעיצוב", "עיצוב פנים לדירות קטנות", "ליווי אישי מהרעיון ועד השיפוץ"),
+        ):
+            with self.subTest(name=name):
+                draft = self.make(business_name=name, offerings=offering, differentiator=difference)
+                self.assertEqual(draft.business_name, name)
+                self.assertEqual(draft.offerings, offering)
+                self.assertEqual(draft.differentiator, difference)
+
+    def test_unicode_numbers_and_marks_alone_are_not_business_words(self):
+        for value in ("١٢٣٤٥", "؟،؛", "\u064e\u064f\u0650", "12345", "!!!!", "аааааааа"):
+            with self.subTest(value=value):
+                with self.assertRaises(ValidationError):
+                    self.make(offerings=value)
+
+    def test_russian_text_keeps_hygiene_and_goal_validation(self):
+        draft = self.make(business_name="\u202eСтудия\u2069   дизайна\x07")
+        self.assertEqual(draft.business_name, "Студия дизайна")
+        goal = drafts.DraftSuccess(kpi="whatsapp_inquiries", target="Больше заявок")
+        self.assertEqual(goal.target, "Больше заявок")
+        with self.assertRaises(ValidationError):
+            drafts.DraftSuccess(kpi="whatsapp_inquiries", target="!!!")
+
     def test_rejects_junk_and_bad_enums(self):
         bad = [
             {"business_type": "חללית"},

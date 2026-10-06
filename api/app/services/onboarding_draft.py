@@ -194,7 +194,12 @@ def public_presets() -> list[dict]:
 
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f​-‏‪-‮⁦-⁩]")
 _WS = re.compile(r"\s+")
-_LETTER = re.compile(r"[A-Za-z֐-׿؀-ۿ]")
+
+
+def _has_letter(text: str) -> bool:
+    # Owners can describe their business in any supported language. Unicode letters
+    # include Cyrillic, but not Arabic digits, punctuation or combining marks alone.
+    return any(character.isalpha() for character in text)
 
 
 def clean_text(value: Any, limit: int) -> str:
@@ -208,7 +213,7 @@ def _readable(text: str, what: str) -> str:
     """Reject input that is not words: no letters at all, or one key held down."""
     if not text:
         return text
-    if not _LETTER.search(text):
+    if not _has_letter(text):
         raise ValueError(f"{what}: כתבו במילים, לא רק מספרים או סימנים.")
     compact = text.replace(" ", "")
     if len(compact) >= 6 and len(set(compact)) < 3:
@@ -740,7 +745,7 @@ class DraftSuccess(BaseModel):
         text = clean_text(value, 120)
         if not text:
             return ""
-        if re.search(r"\d", text) or _LETTER.search(text):
+        if re.search(r"\d", text) or _has_letter(text):
             return text
         raise ValueError("היעד: כתבו מספר או כמה מילים.")
 
