@@ -58,7 +58,7 @@ const STEP_DESTINATIONS: Record<StepId, string> = {
   tried: "איזה שיווק כבר ניסיתם?", competitors: "מי המתחרים שלכם?", grow: "איפה תרצו לגדול?",
   baseline: "איפה העסק היום?", lever: "לראות מה כדאי להגדיל", budget: "כמה להשקיע בשיווק?",
   target: "לחשב לאן אפשר להגיע", found: "לראות מה גילינו על העסק", direction: "לבחור כיוון לתוכנית",
-  quarter: "לבנות את התוכנית שלכם", save: "לשמור את התוכנית בחשבון שלכם", };
+  quarter: "לבנות את התוכנית שלכם", save: "לשמור את התוכנית בחשבון שלכם",
 };
 
 export function nextStepLabel(step: StepId, flow: FlowState): string | undefined {
