@@ -6,7 +6,7 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUTS = ["web/lib/i18n/source.json"] + [f"web/lib/i18n/messages/{locale}.json" for locale in ("en", "ar", "ru")]
+OUTPUTS = ["web/lib/i18n/source.json"] + [f"web/lib/i18n/messages/{locale}.json" for locale in ("he", "en", "ar", "ru")]
 
 
 def main():

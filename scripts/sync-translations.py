@@ -142,6 +142,8 @@ def write_json(path, data):
 def sync(root, *, check=False, allow_large=False):
     source_file = root / "web/lib/i18n/source.json"
     before = source_file.read_bytes() if source_file.exists() else b""
+    hebrew_file = source_file.parent / "messages/he.json"
+    before_hebrew = hebrew_file.read_bytes() if hebrew_file.exists() else b""
     env = {**os.environ, "ISRAMARKET_I18N_ROOT": str(root)}
     subprocess.run(["node", str(TOOL_ROOT / "web/scripts/extract-messages.mjs")], cwd=TOOL_ROOT, env=env, check=True, stdout=subprocess.DEVNULL)
     source = json.loads(source_file.read_text())
@@ -152,7 +154,7 @@ def sync(root, *, check=False, allow_large=False):
     number_forms = json.loads(review_file.read_text()).get("numberForms", {}) if review_file.exists() else {}
     pending = {mid: entry for mid, entry in source.items() if any(invalid(entry["source"], catalogs[locale].get(mid), number_forms.get(mid, {}).get(locale, [])) for locale in LOCALES)}
     if check:
-        changed = before != source_file.read_bytes()
+        changed = before != source_file.read_bytes() or before_hebrew != hebrew_file.read_bytes()
         print(json.dumps({"source_inventory_current": not changed, "missing_or_invalid": len(pending), "messages": len(source)}))
         return 1 if changed or pending or any(set(catalogs[l]) - set(source) for l in LOCALES) else 0
     characters = sum(len(entry["source"]) for entry in pending.values())

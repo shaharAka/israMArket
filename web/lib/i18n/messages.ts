@@ -28,9 +28,6 @@ export async function loadCatalog(locale: Locale): Promise<Catalog> {
     case "en": return (await import("./messages/en.json")).default;
     case "ar": return (await import("./messages/ar.json")).default;
     case "ru": return (await import("./messages/ru.json")).default;
-    case "he": {
-      const { default: source } = await import("./source.json");
-      return Object.fromEntries(Object.entries(source).map(([id, message]) => [id, message.source]));
-    }
+    case "he": return (await import("./messages/he.json")).default;
   }
 }

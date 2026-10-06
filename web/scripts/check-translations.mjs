@@ -31,7 +31,7 @@ for (const [id, entry] of Object.entries(source)) {
   if (!entry.references?.length) failures.push({ id, issue: "missing source reference" });
 }
 
-for (const locale of ["en", "ar", "ru"]) {
+for (const locale of ["he", "en", "ar", "ru"]) {
   const catalog = JSON.parse(fs.readFileSync(path.join(root, `web/lib/i18n/messages/${locale}.json`), "utf8"));
   let complete = 0;
   for (const [id, entry] of Object.entries(source)) {
@@ -49,7 +49,7 @@ for (const locale of ["en", "ar", "ru"]) {
     if (!source[id]) failures.push({ locale, id, issue: "orphan message" });
   }
   for (const [id, reviewed] of Object.entries(review.messages ?? {})) {
-    if (source[id] && reviewed[locale] !== catalog[id]) {
+    if (source[id] && Object.hasOwn(reviewed, locale) && reviewed[locale] !== catalog[id]) {
       failures.push({ locale, id, issue: "reviewed meaning changed; review the copy in context" });
     }
   }

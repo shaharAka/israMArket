@@ -79,5 +79,8 @@ const messages = [...entries].filter(([, entry]) => entry.references.some(refere
   reference.purpose !== "generation-instruction" && reference.purpose !== "logic-reference"));
 const sorted = Object.fromEntries(messages.sort(([a], [b]) => a.localeCompare(b)));
 fs.writeFileSync(path.join(destination, "source.json"), JSON.stringify(sorted, null, 2) + "\n");
+fs.mkdirSync(path.join(destination, "messages"), { recursive: true });
+fs.writeFileSync(path.join(destination, "messages/he.json"), JSON.stringify(
+  Object.fromEntries(Object.entries(sorted).map(([id, message]) => [id, message.source])), null, 2) + "\n");
 console.log(JSON.stringify({ files: files.length, messages: messages.length, instructionsExcluded: entries.size - messages.length,
   characters: messages.reduce((n, [, entry]) => n + entry.source.length, 0) }));

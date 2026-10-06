@@ -122,7 +122,7 @@ class CommitTest(unittest.TestCase):
         subprocess.run(["node", str(ROOT / "web/scripts/extract-messages.mjs")], env={**sync.os.environ, "ISRAMARKET_I18N_ROOT": str(self.root)}, check=True, capture_output=True)
         mid, _ = entry("העסק")
         folder = self.root / "web/lib/i18n/messages"
-        folder.mkdir()
+        folder.mkdir(exist_ok=True)
         for locale in sync.LOCALES:
             (folder / f"{locale}.json").write_text(json.dumps({mid: "The business"}, indent=2) + "\n")
         self.git("init", "-q")
