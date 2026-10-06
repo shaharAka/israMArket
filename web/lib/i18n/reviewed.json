@@ -151,6 +151,14 @@
       "en": "Customers visit their physical location: Google Business Profile (gbp) is usually the first new channel, because it is free and reaches people searching nearby.",
       "ar": "لديهم مكان يزوره العملاء: ملف النشاط التجاري على Google (gbp) هو عادةً أول قناة جديدة، لأنه مجاني ويصل إلى من يبحثون في المنطقة.",
       "ru": "У них есть место, куда приходят клиенты: профиль компании в Google (gbp) обычно становится первым новым каналом — он бесплатен и помогает людям, которые ищут бизнес поблизости."
+    },
+    "m_c573175d97c86efb": {
+      "en": "This is the component used in the app. The business and numbers here are fictional; this preview does not access or change your account.",
+      "ar": "هذا هو المكوّن المستخدم في التطبيق. النشاط التجاري والأرقام هنا أمثلة وهمية؛ هذه المعاينة لا تصل إلى حسابكم ولا تغيّره.",
+      "ru": "Этот компонент используется в приложении. Здесь показаны вымышленные данные и бизнес; демонстрация не обращается к вашему аккаунту и не меняет его данные."
+    },
+    "m_dd31ebb274376821": {
+      "en": "Review the suggestion in the post"
     }
   },
   "numberForms": {

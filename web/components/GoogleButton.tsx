@@ -1,6 +1,7 @@
 "use client";
 
 import { continueWithGoogle, googleStartUrl } from "@/lib/googleAuth";
+import { useCopy } from "@/components/language/LanguageProvider";
 
 /**
  * "להמשיך עם Google", drawn to Google's sign-in branding rules rather than our own button
@@ -30,6 +31,7 @@ export function GoogleButton({
   label?: string;
   className?: string;
 }) {
+  const t = useCopy();
   return (
     <a
       href={googleStartUrl(next, back)}
@@ -44,7 +46,7 @@ export function GoogleButton({
       } ${className}`}
     >
       <GoogleMark />
-      <span>{label}</span>
+      <span>{t(label)}</span>
     </a>
   );
 }
@@ -75,11 +77,12 @@ function GoogleMark() {
 
 /** The quiet "או" line between the Google button and the email form. */
 export function OrDivider({ label = "או עם אימייל" }: { label?: string }) {
+  const t = useCopy();
   return (
-    <div className="relative flex items-center py-1" role="separator" aria-label={label}>
+    <div className="relative flex items-center py-1" role="separator" aria-label={t(label)}>
       <div className="flex-grow border-t border-[var(--rule)]" />
       <span aria-hidden="true" className="mx-4 flex-shrink text-[13px] text-[var(--ink-muted)]">
-        {label}
+        {t(label)}
       </span>
       <div className="flex-grow border-t border-[var(--rule)]" />
     </div>

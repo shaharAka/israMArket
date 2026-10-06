@@ -1,3 +1,5 @@
+
+import { Copy } from "@/components/language/LanguageProvider";
 import type { CSSProperties } from "react";
 import { BrandMark } from "@/lib/icons";
 import { EXAMPLE, GOAL, NEXT_STEPS, ROUTE_STOPS } from "./content";
@@ -88,15 +90,9 @@ function Streets() {
       </g>
 
       <g className="lv2-map-names" fontSize="11" fill="#9aa6ba">
-        <text x="620" y="334" textAnchor="start">
-          ויצמן
-        </text>
-        <text x="84" y="484" textAnchor="start">
-          התע״ש
-        </text>
-        <text transform="translate(434 150) rotate(-90)" textAnchor="middle">
-          ירושלים
-        </text>
+        <text x="620" y="334" textAnchor="start"><Copy text="ויצמן" /></text>
+        <text x="84" y="484" textAnchor="start"><Copy text="התע״ש" /></text>
+        <text transform="translate(434 150) rotate(-90)" textAnchor="middle"><Copy text="ירושלים" /></text>
       </g>
     </g>
   );
@@ -188,8 +184,7 @@ export function RouteHero() {
             <BrandMark className="h-5 w-5 text-[#1b2a4a]" />
           </span>
           <span className="lv2-map-label">
-            <strong>היום</strong> {GOAL.today} הזמנות
-          </span>
+            <strong><Copy text="היום" /></strong>{" "}<Copy text="{arg_0} הזמנות" args={{ arg_0: GOAL.today }} /></span>
         </div>
 
         {ROUTE_STOPS.map((stop, i) => (
@@ -202,7 +197,7 @@ export function RouteHero() {
             style={at(stop.x, stop.y)}
           >
             <span className="lv2-map-label">
-              <strong>{stop.month}</strong> {stop.text}
+              <strong><Copy text={stop.month} /></strong> <Copy text={stop.text} />
             </span>
           </div>
         ))}
@@ -221,8 +216,7 @@ export function RouteHero() {
             </svg>
           </span>
           <span className="lv2-map-label lv2-map-label--goal">
-            <strong>היעד</strong> {GOAL.target} הזמנות
-          </span>
+            <strong><Copy text="היעד" /></strong>{" "}<Copy text="{arg_0} הזמנות" args={{ arg_0: GOAL.target }} /></span>
         </div>
       </div>
 
@@ -230,14 +224,14 @@ export function RouteHero() {
           under it on phones so the map stays readable. */}
       <div className="lv2-map-eta">
         <p className="lv2-map-eta-top">
-          <span>המסלול של {EXAMPLE.name}</span>
-          <span className="lv2-map-tag">דוגמה</span>
+          <span><Copy text="המסלול של {arg_0}" args={{ arg_0: EXAMPLE.name }} /></span>
+          <span className="lv2-map-tag"><Copy text="דוגמה" /></span>
         </p>
         <p className="lv2-map-eta-main">
           <strong>{GOAL.target}</strong>
           <span>
-            {GOAL.unit}
-            <small>מגיעים בדצמבר · היום {GOAL.today}</small>
+            <Copy text={GOAL.unit} />
+            <small><Copy text="מגיעים בדצמבר · היום {arg_0}" args={{ arg_0: GOAL.today }} /></small>
           </span>
         </p>
         <span className="lv2-map-progress">
@@ -259,7 +253,7 @@ export function RouteHero() {
           </svg>
         </span>
         <span className="lv2-map-next-text">
-          <small>בתוכנית לדוגמה · הצעד הבא</small>
+          <small><Copy text="בתוכנית לדוגמה · הצעד הבא" /></small>
           <span className="lv2-map-next-steps">
             {NEXT_STEPS.map((text, i) => (
               <span
@@ -267,7 +261,7 @@ export function RouteHero() {
                 data-next={i}
                 data-on={i === 0 ? "true" : undefined}
               >
-                {text}
+                <Copy text={text} />
               </span>
             ))}
           </span>

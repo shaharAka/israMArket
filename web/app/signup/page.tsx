@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -13,12 +15,8 @@ import { Swatches } from "@/components/onboarding/SitePreviewView";
 import { AuthCard, Field } from "../login/page";
 import auth from "../login/auth.module.css";
 
-/** "ל" joins a Hebrew name directly (למאפיית תום) and takes a maqaf before a Latin one (ל־Tom's). */
-function forName(name: string): string {
-  return /^[֐-׿]/.test(name) ? `ל${name}` : `ל־${name}`;
-}
-
 export default function SignupPage() {
+  const t = useCopy();
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -77,17 +75,17 @@ export default function SignupPage() {
     <AuthCard
       title={
         draft
-          ? `חשבון ${forName(draft.draft.business_name.trim())}`
+          ? <>{t("חשבון לעסק")} <bdi>{draft.draft.business_name.trim()}</bdi></>
           : preview?.business_name
-            ? `חשבון ${forName(preview.business_name)}`
-            : "פתיחת חשבון"
+            ? <>{t("חשבון לעסק")} <bdi>{preview.business_name}</bdi></>
+            : t("פתיחת חשבון")
       }
     >
       {draft ? (
-        <p className={auth.lead}>נשמור את מה שבנינו יחד ונמשיך לתוכנית.</p>
+        <p className={auth.lead}><Copy text="נשמור את מה שבנינו יחד ונמשיך לתוכנית." /></p>
       ) : preview ? (
         <div className={`${auth.lead} flex items-center justify-between gap-3`}>
-          <p>אחרי זה נבנה את החודש הראשון.</p>
+          <p><Copy text="אחרי זה נבנה את החודש הראשון." /></p>
           <Swatches preview={preview} size="sm" />
         </div>
       ) : null}
@@ -108,10 +106,10 @@ export default function SignupPage() {
         <OrDivider />
       </div>
       <form onSubmit={onSubmit} className={auth.form}>
-        <Field name="full_name" label="שם מלא" placeholder="נועה כהן" autoComplete="name" />
+        <Field name="full_name" label={t("שם מלא")} placeholder={t("נועה כהן")} autoComplete="name" />
         <Field
           name="email"
-          label="אימייל"
+          label={t("אימייל")}
           type="email"
           placeholder="noa@bakery.co.il"
           dir="ltr"
@@ -119,7 +117,7 @@ export default function SignupPage() {
         />
         <Field
           name="password"
-          label="סיסמה (לפחות 8 תווים)"
+          label={t("סיסמה (לפחות 8 תווים)")}
           type="password"
           placeholder="••••••••"
           dir="ltr"
@@ -127,19 +125,13 @@ export default function SignupPage() {
         />
         <ErrorNote message={error} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
-          {pending ? "פותחים חשבון…" : "לפתוח חשבון"}
+          {pending ? t("פותחים חשבון…") : t("לפתוח חשבון")}
         </Button>
       </form>
-      <p className={auth.fine}>
-        פתיחת חשבון, גם עם Google, היא הסכמה ל
-        <Link href="/terms">תנאי השימוש</Link>
-        {" "}ול
-        <Link href="/security">מדיניות הפרטיות</Link>
-        .
+      <p className={auth.fine}><Copy text="פתיחת חשבון, גם עם Google, היא הסכמה לתנאי השימוש ולמדיניות הפרטיות." />{" "}<Link href="/terms"><Copy text="תנאי השימוש" /></Link>{" · "}<Link href="/security"><Copy text="מדיניות הפרטיות" /></Link>
       </p>
-      <p className={auth.foot}>
-        כבר יש לכם חשבון?{" "}
-        <Link href="/login">להיכנס</Link>
+      <p className={auth.foot}><Copy text="כבר יש לכם חשבון?" />{" "}
+        <Link href="/login"><Copy text="להיכנס" /></Link>
       </p>
     </AuthCard>
   );

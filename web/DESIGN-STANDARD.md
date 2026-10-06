@@ -29,7 +29,8 @@ Never pure black. Never more than one accent per component.
 
 ## 2. Type
 
-- Heebo only. Weights **400 / 500 / 600 / 700**. No 800–900 (`font-black` renders 700).
+- Heebo for Hebrew/English; Noto Sans for Cyrillic and Noto Sans Arabic for Arabic
+  glyph coverage. Weights **400 / 500 / 600 / 700**. No 800–900 (`font-black` renders 700).
 - Page title: 28–32px, 700, `tracking-tight`. One per page. No eyebrow that repeats it.
 - Section title: 17–20px, 650–700.
 - Body: 15–16px, line-height 1.6–1.7, `--ink-soft` for descriptions.

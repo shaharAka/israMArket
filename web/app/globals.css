@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  --font-ui: var(--font-heebo);
   /* The finesse palette (DESIGN-STANDARD.md). Navy ink, one blue, sun for highlights. */
   --canvas: #f6f7fb;
   --paper: #ffffff;
@@ -37,7 +38,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-heebo), Arial, sans-serif;
+  --font-sans: var(--font-ui), var(--font-heebo), Arial, sans-serif;
   /* No 800–900 in the product: the heaviest weight renders 700 (DESIGN-STANDARD.md §2). */
   --font-weight-black: 700;
   --font-weight-extrabold: 700;
@@ -52,10 +53,18 @@ body {
   background: var(--canvas);
   color: var(--ink);
   min-height: 100%;
-  font-family: var(--font-heebo), Arial, sans-serif;
+  font-family: var(--font-ui), var(--font-heebo), Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
+
+html[lang="ar"] { --font-ui: var(--font-arabic); }
+html[lang="ru"] { --font-ui: var(--font-noto); }
+html[dir="ltr"] .locale-arrow { transform: scaleX(-1); }
+.product-utilities { background: var(--paper); border-bottom: 1px solid var(--rule); }
+.product-utilities-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
+.translation-preview-note { margin: 0; padding: 4px 24px 8px; font-size: 12px; line-height: 1.7; color: var(--ink-muted); background: var(--soft); }
+@media (max-width: 600px) { .product-utilities-row { padding-inline: 16px; } .translation-preview-note { padding-inline: 16px; } }
 
 input::placeholder,
 textarea::placeholder {

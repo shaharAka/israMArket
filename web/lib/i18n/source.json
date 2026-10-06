@@ -173,9 +173,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 29,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 43,
+        "kind": "literal"
       }
     ]
   },
@@ -2484,8 +2483,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 248,
-        "kind": "jsx"
+        "line": 232,
+        "kind": "literal"
       }
     ]
   },
@@ -2731,8 +2730,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 211,
-        "kind": "jsx"
+        "line": 202,
+        "kind": "literal"
       }
     ]
   },
@@ -2851,9 +2850,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 111,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 109,
+        "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
@@ -2951,22 +2949,22 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 101,
+        "line": 104,
         "kind": "literal"
       },
       {
@@ -3056,7 +3054,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -4135,7 +4133,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 99,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -4478,8 +4476,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 105,
-        "kind": "jsx"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -4647,7 +4645,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 37,
+        "line": 39,
         "kind": "literal",
         "purpose": "display"
       },
@@ -4659,8 +4657,13 @@
       },
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 61,
-        "kind": "jsx"
+        "line": 63,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/PlanSheet.tsx",
+        "line": 101,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/BusinessCard.tsx",
@@ -4850,7 +4853,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 98,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -4940,7 +4943,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 59,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -5150,7 +5153,7 @@
     "references": [
       {
         "file": "web/components/GoogleButton.tsx",
-        "line": 77,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -5763,7 +5766,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -6108,8 +6111,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 98,
-        "kind": "jsx"
+        "line": 104,
+        "kind": "literal"
       }
     ]
   },
@@ -6328,11 +6331,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/signup/page.tsx",
-        "line": 18,
-        "kind": "template"
-      },
-      {
         "file": "web/components/start/ui.tsx",
         "line": 345,
         "kind": "template"
@@ -6353,6 +6351,17 @@
         "line": 34,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_0f12af48c3158424": {
+    "source": "בהרשמה לא מבקשים כרטיס אשראי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/PricingAnswers.tsx",
+        "line": 9,
+        "kind": "literal"
       }
     ]
   },
@@ -6517,6 +6526,17 @@
       }
     ]
   },
+  "m_0f93c49234f2644e": {
+    "source": "אפשר לבחור עברית, אנגלית, ערבית או רוסית בראש העמוד. כאן תוכלו לראות מה השתנה במערכת, בלי הודעות קופצות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0f971e5250717b59": {
     "source": "איזה סגנון מרגיש כמוכם?",
     "language": "he",
@@ -6591,7 +6611,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -6693,9 +6713,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 105,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -7300,6 +7319,17 @@
       }
     ]
   },
+  "m_11662fdafb739dc2": {
+    "source": "מה השתנה במערכת, ואיפה אפשר לנסות את זה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_116f113b5b27f733": {
     "source": "הנתונים כבר כאן. מכינים מהם תובנה והצעה לתוכנית; הן יופיעו כאן אוטומטית.",
     "language": "he",
@@ -7414,6 +7444,17 @@
       {
         "file": "web/components/start/StepSave.tsx",
         "line": 53,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_11d3c1174b187db5": {
+    "source": "נקראו ב־{arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -8975,7 +9016,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 115,
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -9340,6 +9381,17 @@
       }
     ]
   },
+  "m_16f37ba554fa74cc": {
+    "source": "העזרה נעזרת במידע על המערכת. כשאין תשובה בטוחה, הפנייה עוברת לבדיקה אנושית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_17007562012a1ae0": {
     "source": "מחפשים מה מתאים…",
     "language": "he",
@@ -9621,8 +9673,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 90,
-        "kind": "jsx"
+        "line": 88,
+        "kind": "literal"
       }
     ]
   },
@@ -9644,8 +9696,8 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 92,
-        "kind": "jsx"
+        "line": 95,
+        "kind": "literal"
       }
     ]
   },
@@ -9678,8 +9730,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 120,
-        "kind": "jsx"
+        "line": 123,
+        "kind": "literal"
       }
     ]
   },
@@ -9826,6 +9878,17 @@
       }
     ]
   },
+  "m_181874bb107342f2": {
+    "source": ". היום {arg_0}.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/HeroWeek.tsx",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_181b4fb61de482ab": {
     "source": "תצוגה",
     "language": "he",
@@ -9895,7 +9958,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 102,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -10423,7 +10486,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -10434,8 +10497,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 121,
-        "kind": "jsx"
+        "line": 124,
+        "kind": "literal"
       }
     ]
   },
@@ -10696,6 +10759,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 219,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_19c4e42599758e8e": {
+    "source": "פתיחת חשבון, גם עם Google, היא הסכמה לתנאי השימוש ולמדיניות הפרטיות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/signup/page.tsx",
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -11514,7 +11588,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 33,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -12342,7 +12416,7 @@
       {
         "file": "web/app/login/page.tsx",
         "line": 72,
-        "kind": "jsx"
+        "kind": "literal"
       }
     ]
   },
@@ -12491,7 +12565,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       },
@@ -12547,8 +12621,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 84,
-        "kind": "jsx"
+        "line": 90,
+        "kind": "literal"
       }
     ]
   },
@@ -12746,8 +12820,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 224,
-        "kind": "jsx"
+        "line": 219,
+        "kind": "literal"
       },
       {
         "file": "api/app/services/strategy_reveal.py",
@@ -13063,9 +13137,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 131,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 135,
+        "kind": "literal"
       }
     ]
   },
@@ -13133,7 +13206,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 24,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -13462,8 +13535,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 110,
-        "kind": "jsx"
+        "line": 113,
+        "kind": "literal"
       }
     ]
   },
@@ -14097,7 +14170,7 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 83,
+        "line": 81,
         "kind": "literal"
       },
       {
@@ -14357,8 +14430,8 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 266,
-        "kind": "jsx"
+        "line": 249,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
@@ -14895,13 +14968,13 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 209,
-        "kind": "jsx"
+        "line": 212,
+        "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
         "line": 246,
-        "kind": "jsx"
+        "kind": "literal"
       }
     ]
   },
@@ -15054,7 +15127,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -15341,17 +15414,6 @@
         "line": 812,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_2456658830b08d51": {
-    "source": "מגיעים בדצמבר · היום",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 240,
-        "kind": "jsx"
       }
     ]
   },
@@ -15992,8 +16054,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 121,
-        "kind": "jsx"
+        "line": 119,
+        "kind": "literal"
       }
     ]
   },
@@ -16138,8 +16200,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 69,
-        "kind": "jsx"
+        "line": 70,
+        "kind": "literal"
       }
     ]
   },
@@ -16395,8 +16457,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 137,
-        "kind": "jsx"
+        "line": 131,
+        "kind": "literal"
       }
     ]
   },
@@ -16551,6 +16613,18 @@
         "file": "web/lib/admin.ts",
         "line": 137,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_27acf4b59cf548ba": {
+    "source": "כל הכנת הפוסטים במקום אחד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 14,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -17171,7 +17245,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -17798,7 +17872,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 102,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -18474,13 +18548,24 @@
       }
     ]
   },
+  "m_2c8d150ac5a5fb46": {
+    "source": "משהו לא הסתדר? אפשר לתאר את הבעיה בעמוד העזרה, לשמור את הפנייה ולעקוב אחר התשובה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 29,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2c8d6449a6b37782": {
     "source": "בעמוד הזה",
     "language": "he",
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 88,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       },
@@ -19047,6 +19132,22 @@
       }
     ]
   },
+  "m_2d7cc1595cfed5df": {
+    "source": "חשבון לעסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/signup/page.tsx",
+        "line": 78,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/signup/page.tsx",
+        "line": 80,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2d88f99fb7f110c3": {
     "source": "הפוסטים של החודש עוד נכתבים",
     "language": "he",
@@ -19140,7 +19241,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 91,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -19364,9 +19465,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 105,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -19523,7 +19623,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 57,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -19537,6 +19637,17 @@
         "line": 570,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2ea792f306e1ff91": {
+    "source": "לתוכנית שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -20471,13 +20582,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 91,
-        "kind": "jsx"
+        "line": 94,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 229,
-        "kind": "jsx"
+        "line": 217,
+        "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
@@ -20540,13 +20651,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 90,
-        "kind": "jsx"
+        "line": 93,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 177,
-        "kind": "jsx"
+        "line": 173,
+        "kind": "literal"
       }
     ]
   },
@@ -20788,11 +20899,6 @@
         "file": "web/components/MonthAhead.tsx",
         "line": 156,
         "kind": "jsx"
-      },
-      {
-        "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 99,
-        "kind": "jsx"
       }
     ]
   },
@@ -20959,7 +21065,7 @@
     "references": [
       {
         "file": "web/app/layout.tsx",
-        "line": 13,
+        "line": 17,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20993,7 +21099,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 69,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -21351,6 +21457,17 @@
       }
     ]
   },
+  "m_32d63e2ff26ec542": {
+    "source": "המסלול של {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/RouteHero.tsx",
+        "line": 227,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_32dc9f963ef129e5": {
     "source": "קרם",
     "language": "he",
@@ -21542,17 +21659,17 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       },
       {
@@ -22079,8 +22196,7 @@
       {
         "file": "web/app/login/page.tsx",
         "line": 96,
-        "kind": "literal",
-        "purpose": "display"
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StepSave.tsx",
@@ -22168,7 +22284,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -22797,8 +22913,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 109,
-        "kind": "jsx"
+        "line": 112,
+        "kind": "literal"
       }
     ]
   },
@@ -22912,12 +23028,12 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 110,
-        "kind": "jsx"
+        "line": 109,
+        "kind": "literal"
       },
       {
         "file": "web/app/signup/page.tsx",
-        "line": 130,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -22939,7 +23055,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 21,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -23012,8 +23128,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 262,
-        "kind": "jsx"
+        "line": 256,
+        "kind": "literal"
       }
     ]
   },
@@ -23262,8 +23378,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 135,
-        "kind": "jsx"
+        "line": 131,
+        "kind": "literal"
       }
     ]
   },
@@ -23273,8 +23389,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 81,
-        "kind": "jsx"
+        "line": 87,
+        "kind": "literal"
       }
     ]
   },
@@ -23525,8 +23641,8 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 65,
-        "kind": "jsx"
+        "line": 67,
+        "kind": "literal"
       }
     ]
   },
@@ -23778,7 +23894,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 80,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -24092,17 +24208,17 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 24,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 39,
+        "line": 41,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 54,
+        "line": 56,
         "kind": "literal"
       },
       {
@@ -24472,7 +24588,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -24872,7 +24988,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -26058,7 +26174,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -26272,8 +26388,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 27,
-        "kind": "jsx"
+        "line": 29,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/content.ts",
@@ -26372,7 +26488,7 @@
       },
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 88,
+        "line": 90,
         "kind": "literal",
         "purpose": "display"
       },
@@ -26413,7 +26529,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -27230,8 +27346,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 82,
-        "kind": "jsx"
+        "line": 88,
+        "kind": "literal"
       }
     ]
   },
@@ -27241,7 +27357,7 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 70,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -27563,7 +27679,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 181,
+        "line": 175,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27754,8 +27870,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 116,
-        "kind": "jsx"
+        "line": 119,
+        "kind": "literal"
       }
     ]
   },
@@ -27992,7 +28108,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 90,
+        "line": 92,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28221,7 +28337,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 56,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -28272,13 +28388,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 43,
-        "kind": "jsx"
+        "line": 45,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 53,
-        "kind": "jsx"
+        "line": 55,
+        "kind": "literal"
       },
       {
         "file": "web/lib/admin.ts",
@@ -28565,7 +28681,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 80,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -28728,7 +28844,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 36,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -29362,13 +29478,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
-        "kind": "jsx"
+        "line": 92,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 140,
-        "kind": "jsx"
+        "line": 138,
+        "kind": "literal"
       },
       {
         "file": "web/lib/draft.ts",
@@ -29755,8 +29871,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 80,
-        "kind": "jsx"
+        "line": 86,
+        "kind": "literal"
       }
     ]
   },
@@ -29782,8 +29898,8 @@
       },
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 33,
-        "kind": "jsx"
+        "line": 35,
+        "kind": "literal"
       }
     ]
   },
@@ -30211,8 +30327,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 35,
-        "kind": "jsx"
+        "line": 49,
+        "kind": "literal"
       }
     ]
   },
@@ -30523,8 +30639,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 38,
-        "kind": "jsx"
+        "line": 40,
+        "kind": "literal"
       }
     ]
   },
@@ -30578,7 +30694,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 101,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -31548,8 +31664,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 82,
-        "kind": "jsx"
+        "line": 88,
+        "kind": "literal"
       }
     ]
   },
@@ -32133,13 +32249,13 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 218,
-        "kind": "jsx"
+        "line": 220,
+        "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 282,
-        "kind": "jsx"
+        "line": 280,
+        "kind": "literal"
       }
     ]
   },
@@ -32195,7 +32311,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 21,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -32272,8 +32388,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 104,
-        "kind": "jsx"
+        "line": 110,
+        "kind": "literal"
       }
     ]
   },
@@ -32977,7 +33093,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 31,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -33059,6 +33175,18 @@
       }
     ]
   },
+  "m_4ffcd9a9495792d5": {
+    "source": "אפשר לדווח על תקלה מתוך המערכת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 28,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_5000d28018b0b884": {
     "source": "בעל העסק אמר מה ייחשב בשבילו הצלחה: \"{arg_0}\". זה היעד היחיד. מותר להזכיר אותו כמו שהוא; אסור להוסיף יעד, אחוז או מספר משלך.",
     "language": "he",
@@ -33111,8 +33239,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 204,
-        "kind": "jsx"
+        "line": 196,
+        "kind": "literal"
       }
     ]
   },
@@ -33244,13 +33372,29 @@
       }
     ]
   },
+  "m_507587759f498405": {
+    "source": "{arg_0} הזמנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/RouteHero.tsx",
+        "line": 187,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/RouteHero.tsx",
+        "line": 219,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5085eddeb40e58b9": {
     "source": "מה קורה אחרי החודש החינמי?",
     "language": "he",
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 26,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -33632,7 +33776,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "literal",
         "purpose": "display"
       },
@@ -33801,7 +33945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 32,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -33878,11 +34022,6 @@
     "source": "ל־{arg_0}",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/signup/page.tsx",
-        "line": 18,
-        "kind": "template"
-      },
       {
         "file": "web/components/start/ui.tsx",
         "line": 345,
@@ -34051,7 +34190,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 29,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -34142,8 +34281,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 113,
-        "kind": "jsx"
+        "line": 116,
+        "kind": "literal"
       }
     ]
   },
@@ -34704,7 +34843,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 120,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -34891,7 +35030,7 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 116,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       },
@@ -35341,9 +35480,8 @@
       },
       {
         "file": "web/app/login/page.tsx",
-        "line": 64,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 67,
+        "kind": "literal"
       }
     ]
   },
@@ -35454,9 +35592,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 52,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 55,
+        "kind": "literal"
       }
     ]
   },
@@ -35584,7 +35721,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35643,7 +35780,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -35758,6 +35895,17 @@
         "line": 397,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_56e466e0a3f827b8": {
+    "source": "חנויות, נותני שירות וחברות תוכנה עוברים שאלות שמתאימות למה שהם מוכרים ולאופן שבו לקוחות מגיעים אליהם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 22,
+        "kind": "literal"
       }
     ]
   },
@@ -36388,8 +36536,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 106,
-        "kind": "jsx"
+        "line": 112,
+        "kind": "literal"
       }
     ]
   },
@@ -36906,8 +37054,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 75,
-        "kind": "jsx"
+        "line": 81,
+        "kind": "literal"
       },
       {
         "file": "web/components/results/ServiceCheckIn.tsx",
@@ -37177,7 +37325,7 @@
     "references": [
       {
         "file": "web/app/layout.tsx",
-        "line": 11,
+        "line": 15,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37216,8 +37364,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 36,
-        "kind": "jsx"
+        "line": 50,
+        "kind": "literal"
       }
     ]
   },
@@ -37462,14 +37610,12 @@
       {
         "file": "web/app/login/page.tsx",
         "line": 88,
-        "kind": "literal",
-        "purpose": "display"
+        "kind": "literal"
       },
       {
         "file": "web/app/signup/page.tsx",
-        "line": 114,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 112,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StepSave.tsx",
@@ -37655,7 +37801,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -37773,7 +37919,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 20,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -37859,7 +38005,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 37,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -38072,6 +38218,17 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 58,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_5ce864020f9a789a": {
+    "source": "לנותני שירות בודקים אילו שירותים להציג ואילו עבודות כדאי להראות. לחברות תוכנה בודקים את המוצר, למי הוא מתאים ומה רוצים שלקוח יעשה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 23,
+        "kind": "literal"
       }
     ]
   },
@@ -38492,7 +38649,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 115,
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -39237,7 +39394,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 58,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -39475,7 +39632,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 95,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -40589,7 +40746,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 29,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -40661,13 +40818,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 46,
-        "kind": "jsx"
+        "line": 48,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 191,
-        "kind": "jsx"
+        "line": 187,
+        "kind": "literal"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
@@ -41139,18 +41296,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 95,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_642582e22ab4e7d8": {
-    "source": " בהרשמה לא מבקשים כרטיס אשראי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 27,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -41805,7 +41951,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -42296,7 +42442,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 100,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -43620,8 +43766,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 141,
-        "kind": "jsx"
+        "line": 133,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
@@ -44077,6 +44223,17 @@
       }
     ]
   },
+  "m_6affffce1cf97618": {
+    "source": "אפשר להתחיל גם בלי תמונות או חיבורים. יצירת תמונה נעשית רק כשמבקשים אותה; פתיחת העמוד לא מפעילה יצירה בתשלום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6b01b61c46c5e16e": {
     "source": "בדמו הפוסטים כבר כתובים.",
     "language": "he",
@@ -44121,14 +44278,25 @@
       }
     ]
   },
+  "m_6b16a44eabefa626": {
+    "source": "נושאים, תמונות, סגנון ופוסטים נמצאים עכשיו בתהליך אחד. רואים איפה אתם ומה הצעד הבא, ואפשר לחזור ולתקן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6b2966d19f5973b5": {
     "source": "מהחודש השני: {arg_0} לחודש. {arg_1}.{arg_2} אם רוצים להמשיך, מפעילים מנוי לקראת סוף החודש החינמי.",
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 27,
-        "kind": "template"
+        "file": "web/components/language/PricingAnswers.tsx",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -44212,7 +44380,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 89,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       },
@@ -44235,14 +44403,26 @@
       }
     ]
   },
+  "m_6b9e2f7786b77362": {
+    "source": "שאלות שמתאימות לסוג העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_6b9fad560d36895b": {
     "source": "מי שמזמין מראש לא עומד בתור",
     "language": "he",
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 48,
-        "kind": "jsx"
+        "line": 50,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/content.ts",
@@ -44380,8 +44560,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
-        "kind": "jsx"
+        "line": 107,
+        "kind": "literal"
       }
     ]
   },
@@ -44974,8 +45154,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 44,
-        "kind": "jsx"
+        "line": 47,
+        "kind": "literal"
       }
     ]
   },
@@ -45198,7 +45378,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 100,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -45221,9 +45401,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 122,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 120,
+        "kind": "literal"
       }
     ]
   },
@@ -45861,7 +46040,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -46079,6 +46258,18 @@
         "file": "web/app/decisions/page.tsx",
         "line": 565,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_6ffc8d68e065d344": {
+    "source": "בחירת שפה ועדכונים במקום קבוע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -47403,6 +47594,18 @@
       }
     ]
   },
+  "m_728fe2092f4fa105": {
+    "source": "עדכונים ושיפורים בישראמארקט, ואיפה אפשר לנסות אותם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/updates/page.tsx",
+        "line": 6,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_729c8bcbbcfb1b47": {
     "source": "ההשערה של החודש",
     "language": "he",
@@ -47542,8 +47745,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 53,
-        "kind": "jsx"
+        "line": 56,
+        "kind": "literal"
       }
     ]
   },
@@ -47625,17 +47828,6 @@
         "file": "web/components/help/guides.ts",
         "line": 284,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_7310168d5f4309d7": {
-    "source": "פתיחת חשבון, גם עם Google, היא הסכמה ל",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/signup/page.tsx",
-        "line": 134,
-        "kind": "jsx"
       }
     ]
   },
@@ -48201,6 +48393,17 @@
         "line": 1000,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_74a167b36405ab6a": {
+    "source": "מה חדש — עדכונים שעוד לא קראתם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 31,
+        "kind": "literal"
       }
     ]
   },
@@ -50076,7 +50279,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 23,
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -50313,8 +50516,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 95,
-        "kind": "jsx"
+        "line": 94,
+        "kind": "literal"
       }
     ]
   },
@@ -50966,7 +51169,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -51399,8 +51602,8 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 109,
-        "kind": "jsx"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -51532,12 +51735,12 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -51571,8 +51774,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 92,
-        "kind": "jsx"
+        "line": 93,
+        "kind": "literal"
       }
     ]
   },
@@ -51585,22 +51788,6 @@
         "line": 145,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_7d1357da3072cf0c": {
-    "source": "חשבון {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/signup/page.tsx",
-        "line": 80,
-        "kind": "template"
-      },
-      {
-        "file": "web/app/signup/page.tsx",
-        "line": 82,
-        "kind": "template"
       }
     ]
   },
@@ -52247,13 +52434,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 97,
-        "kind": "jsx"
+        "line": 99,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
         "line": 116,
-        "kind": "jsx"
+        "kind": "literal"
       }
     ]
   },
@@ -52965,6 +53152,27 @@
       {
         "file": "web/lib/api.ts",
         "line": 624,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_80c2726d1b7964aa": {
+    "source": "מה חדש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 31,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 32,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -53741,17 +53949,6 @@
       }
     ]
   },
-  "m_8257ea632839b6c3": {
-    "source": ". היום",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 69,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_827791d0d1e34dae": {
     "source": "שיווק שכבר ניסיתם (לא חובה)",
     "language": "he",
@@ -53793,7 +53990,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 144,
+        "line": 140,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53805,8 +54002,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 68,
-        "kind": "jsx"
+        "line": 74,
+        "kind": "literal"
       }
     ]
   },
@@ -54800,8 +54997,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 71,
-        "kind": "jsx"
+        "line": 72,
+        "kind": "literal"
       },
       {
         "file": "web/components/trial/Research.tsx",
@@ -55077,7 +55274,7 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 130,
+        "line": 128,
         "kind": "literal"
       },
       {
@@ -55209,7 +55406,7 @@
     "references": [
       {
         "file": "web/lib/dates.ts",
-        "line": 27,
+        "line": 32,
         "kind": "template"
       }
     ]
@@ -56115,9 +56312,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 105,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -56363,8 +56559,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 106,
-        "kind": "jsx"
+        "line": 109,
+        "kind": "literal"
       }
     ]
   },
@@ -56659,7 +56855,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -56913,7 +57109,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -57080,6 +57276,17 @@
       }
     ]
   },
+  "m_8aa320ed22a55d7d": {
+    "source": "שפה ועדכונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8aa465113c7bf3aa": {
     "source": "לא הצלחנו לעדכן את הקהל",
     "language": "he",
@@ -57141,7 +57348,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 101,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -57552,7 +57759,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 54,
+        "line": 57,
         "kind": "literal"
       },
       {
@@ -57921,8 +58128,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 194,
-        "kind": "jsx"
+        "line": 187,
+        "kind": "literal"
       }
     ]
   },
@@ -58224,8 +58431,8 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
-        "kind": "jsx"
+        "line": 111,
+        "kind": "literal"
       },
       {
         "file": "web/components/help/HelpSheet.tsx",
@@ -58637,17 +58844,6 @@
         "line": 398,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_8e8500fbe96a5526": {
-    "source": "ול",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/signup/page.tsx",
-        "line": 136,
-        "kind": "jsx"
       }
     ]
   },
@@ -59862,7 +60058,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -60632,7 +60828,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61704,7 +61900,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -61826,7 +62022,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 69,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -62098,17 +62294,6 @@
         "line": 118,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_9636a436ac8c0eb7": {
-    "source": "המסלול של",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 233,
-        "kind": "jsx"
       }
     ]
   },
@@ -62507,16 +62692,6 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 191,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 224,
-        "kind": "jsx"
-      },
-      {
         "file": "api/app/services/goal_numbers.py",
         "line": 888,
         "kind": "literal",
@@ -62751,8 +62926,8 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 232,
-        "kind": "jsx"
+        "line": 220,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StepGoal.tsx",
@@ -63028,8 +63203,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 98,
-        "kind": "jsx"
+        "line": 95,
+        "kind": "literal"
       }
     ]
   },
@@ -63825,6 +64000,28 @@
       }
     ]
   },
+  "m_9ae80570906194bd": {
+    "source": "שפה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 26,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_9aea5f875f333004": {
+    "source": "התרגום מתווסף בהדרגה. חלק מהמסכים והתוכן עדיין בעברית. החלפת השפה לא משנה את התוכנית, הפוסטים או הטיוטות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9aefe25f5711ad34": {
     "source": "מה כותבים לנו",
     "language": "he",
@@ -63910,7 +64107,7 @@
     "references": [
       {
         "file": "web/components/GoogleButton.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -64005,6 +64202,17 @@
       }
     ]
   },
+  "m_9b6f56fff429b194": {
+    "source": "לראות איך מתחילים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9b707e0fde0cc1e3": {
     "source": "אפשר להתחיל גם בלי אתר או חשבון ברשתות. נבחר איך להגיע לקהל שלכם.",
     "language": "he",
@@ -64080,8 +64288,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 240,
-        "kind": "jsx"
+        "line": 226,
+        "kind": "literal"
       }
     ]
   },
@@ -64345,7 +64553,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -64636,8 +64844,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 106,
-        "kind": "jsx"
+        "line": 112,
+        "kind": "literal"
       }
     ]
   },
@@ -65004,8 +65212,8 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 265,
-        "kind": "jsx"
+        "line": 248,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
@@ -65161,6 +65369,17 @@
       }
     ]
   },
+  "m_9e6be8aaa9a61f7d": {
+    "source": "לא הצלחנו להחליף שפה. אפשר לנסות שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/LanguageProvider.tsx",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9e737269092479ad": {
     "source": "לפתוח צילום בגודל מלא",
     "language": "he",
@@ -65257,9 +65476,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 28,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -65292,8 +65510,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 121,
-        "kind": "jsx"
+        "line": 124,
+        "kind": "literal"
       }
     ]
   },
@@ -65331,7 +65549,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 272,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -66645,8 +66863,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 58,
-        "kind": "jsx"
+        "line": 60,
+        "kind": "literal"
       }
     ]
   },
@@ -67126,6 +67344,17 @@
       }
     ]
   },
+  "m_a39fd532fe6e522e": {
+    "source": "לעזרה ולדיווח על תקלה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a3a08103ad9710ee": {
     "source": "בחרו קודם את הדף או את חשבון הפרסום של העסק.",
     "language": "he",
@@ -67450,17 +67679,6 @@
       }
     ]
   },
-  "m_a48091615c9cbe14": {
-    "source": "נקראו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 101,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_a480e2fbac8553d9": {
     "source": "השעות שלנו בראש השנה",
     "language": "he",
@@ -67586,9 +67804,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 32,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 46,
+        "kind": "literal"
       }
     ]
   },
@@ -68293,7 +68510,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 18,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -68373,7 +68590,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -68866,7 +69083,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -68914,6 +69131,17 @@
         "line": 31,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_a7eed2c3de5fa152": {
+    "source": "עודכנו ב־{arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 107,
+        "kind": "literal"
       }
     ]
   },
@@ -69645,17 +69873,17 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 25,
+        "line": 27,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 55,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -70138,7 +70366,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 64,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -70262,7 +70490,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 63,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -70307,7 +70535,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 107,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -70563,15 +70791,13 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 253,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 252,
+        "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 300,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 297,
+        "kind": "literal"
       }
     ]
   },
@@ -71188,8 +71414,8 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 256,
-        "kind": "jsx"
+        "line": 255,
+        "kind": "literal"
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
@@ -71871,9 +72097,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 131,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 135,
+        "kind": "literal"
       }
     ]
   },
@@ -72096,8 +72321,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 87,
-        "kind": "jsx"
+        "line": 85,
+        "kind": "literal"
       }
     ]
   },
@@ -72266,7 +72491,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 33,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -72291,6 +72516,11 @@
         "file": "web/components/posts/preparation/VoiceStep.tsx",
         "line": 165,
         "kind": "jsx"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 17,
+        "kind": "literal"
       }
     ]
   },
@@ -72736,8 +72966,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 26,
-        "kind": "jsx"
+        "line": 40,
+        "kind": "literal"
       }
     ]
   },
@@ -72933,8 +73163,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
-        "kind": "jsx"
+        "line": 107,
+        "kind": "literal"
       }
     ]
   },
@@ -73067,8 +73297,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 38,
-        "kind": "jsx"
+        "line": 41,
+        "kind": "literal"
       }
     ]
   },
@@ -73169,7 +73399,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 18,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -73180,8 +73410,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 236,
-        "kind": "jsx"
+        "line": 224,
+        "kind": "literal"
       }
     ]
   },
@@ -73279,9 +73509,8 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 71,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 72,
+        "kind": "literal"
       }
     ]
   },
@@ -73999,7 +74228,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 16,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -75208,12 +75437,12 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -75503,7 +75732,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 236,
+        "line": 224,
         "kind": "literal"
       },
       {
@@ -76290,9 +76519,9 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 34,
-        "kind": "template"
+        "file": "web/components/language/PricingAnswers.tsx",
+        "line": 14,
+        "kind": "literal"
       }
     ]
   },
@@ -77015,9 +77244,8 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 61,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 64,
+        "kind": "literal"
       },
       {
         "file": "web/lib/uxFlows.ts",
@@ -77172,17 +77400,6 @@
         "line": 233,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_bd16a031567e2dfd": {
-    "source": "עודכנו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 101,
-        "kind": "literal"
       }
     ]
   },
@@ -77933,8 +78150,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 179,
-        "kind": "jsx"
+        "line": 174,
+        "kind": "literal"
       }
     ]
   },
@@ -78878,6 +79095,17 @@
       }
     ]
   },
+  "m_c101f83164e29c8d": {
+    "source": "עוד פרטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c103f1de3380dd16": {
     "source": "\nהגרסה הקודמת נפסלה. תקן את כל אלה:\n",
     "language": "he",
@@ -78990,8 +79218,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 120,
-        "kind": "jsx"
+        "line": 123,
+        "kind": "literal"
       }
     ]
   },
@@ -79247,7 +79475,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -79496,8 +79724,8 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 238,
-        "kind": "jsx"
+        "line": 239,
+        "kind": "literal"
       }
     ]
   },
@@ -79734,8 +79962,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
-        "kind": "jsx"
+        "line": 107,
+        "kind": "literal"
       }
     ]
   },
@@ -80060,6 +80288,17 @@
       }
     ]
   },
+  "m_c36adbb4bf5dc224": {
+    "source": "התרגום מתווסף בהדרגה. חלק מהמסכים והתוכן עדיין בעברית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c36e305857049ac0": {
     "source": "מה להציג בלוח",
     "language": "he",
@@ -80158,7 +80397,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 167,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80513,8 +80752,7 @@
       {
         "file": "web/app/login/page.tsx",
         "line": 121,
-        "kind": "literal",
-        "purpose": "display"
+        "kind": "literal"
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
@@ -80819,7 +81057,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80866,8 +81104,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 27,
-        "kind": "jsx"
+        "line": 41,
+        "kind": "literal"
       }
     ]
   },
@@ -81972,23 +82210,23 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 169,
+        "line": 172,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 221,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/AppShell.tsx",
-        "line": 270,
+        "line": 222,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 273,
+        "line": 269,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/AppShell.tsx",
+        "line": 272,
         "kind": "literal"
       }
     ]
@@ -82021,13 +82259,13 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 31,
+        "line": 33,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82404,13 +82642,13 @@
       },
       {
         "file": "web/app/signup/page.tsx",
-        "line": 142,
-        "kind": "jsx"
+        "line": 134,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
-        "kind": "jsx"
+        "line": 98,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
@@ -83113,9 +83351,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 29,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 43,
+        "kind": "literal"
       }
     ]
   },
@@ -83208,7 +83445,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -83247,7 +83484,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -83566,8 +83803,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 121,
-        "kind": "jsx"
+        "line": 124,
+        "kind": "literal"
       }
     ]
   },
@@ -85032,8 +85269,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 57,
-        "kind": "jsx"
+        "line": 60,
+        "kind": "literal"
       }
     ]
   },
@@ -85308,7 +85545,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 54,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -85768,7 +86005,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -86300,8 +86537,8 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 177,
-        "kind": "jsx"
+        "line": 180,
+        "kind": "literal"
       },
       {
         "file": "web/components/Doodles.tsx",
@@ -86640,7 +86877,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 121,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -87034,7 +87271,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 101,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -87699,8 +87936,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
-        "kind": "jsx"
+        "line": 111,
+        "kind": "literal"
       }
     ]
   },
@@ -88204,7 +88441,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 69,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -89174,9 +89411,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 131,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 135,
+        "kind": "literal"
       }
     ]
   },
@@ -89242,7 +89478,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 102,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -89826,8 +90062,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 121,
-        "kind": "jsx"
+        "line": 124,
+        "kind": "literal"
       }
     ]
   },
@@ -90850,8 +91086,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 192,
-        "kind": "jsx"
+        "line": 186,
+        "kind": "literal"
       }
     ]
   },
@@ -91219,8 +91455,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 222,
-        "kind": "jsx"
+        "line": 211,
+        "kind": "literal"
       }
     ]
   },
@@ -91421,7 +91657,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 19,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -91928,7 +92164,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92757,9 +92993,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 29,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 43,
+        "kind": "literal"
       }
     ]
   },
@@ -93049,7 +93284,7 @@
       {
         "file": "web/app/login/page.tsx",
         "line": 123,
-        "kind": "jsx"
+        "kind": "literal"
       },
       {
         "file": "web/app/preview/page.tsx",
@@ -93063,13 +93298,13 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 199,
+        "line": 202,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 237,
-        "kind": "jsx"
+        "line": 238,
+        "kind": "literal"
       },
       {
         "file": "web/components/billing/PayPalSubscribe.tsx",
@@ -93093,24 +93328,24 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 130,
-        "kind": "jsx"
+        "line": 134,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 84,
+        "line": 87,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 86,
-        "kind": "jsx"
+        "line": 89,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 264,
-        "kind": "jsx"
+        "line": 247,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
@@ -93126,6 +93361,11 @@
         "file": "web/components/landing/PublicNotice.tsx",
         "line": 18,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 17,
+        "kind": "literal"
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
@@ -93643,8 +93883,8 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 130,
-        "kind": "jsx"
+        "line": 134,
+        "kind": "literal"
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
@@ -93983,7 +94223,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 39,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -94133,9 +94373,8 @@
     "references": [
       {
         "file": "web/app/signup/page.tsx",
-        "line": 111,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 109,
+        "kind": "literal"
       }
     ]
   },
@@ -94556,8 +94795,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 39,
-        "kind": "jsx"
+        "line": 41,
+        "kind": "literal"
       }
     ]
   },
@@ -95140,20 +95379,8 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 29,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
-  "m_e7dfdcf33160ed82": {
-    "source": "ב־",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 101,
-        "kind": "jsx"
+        "line": 43,
+        "kind": "literal"
       }
     ]
   },
@@ -95587,9 +95814,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 105,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 108,
+        "kind": "literal"
       }
     ]
   },
@@ -96108,7 +96334,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 92,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -96131,7 +96357,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 120,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -96355,8 +96581,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 111,
-        "kind": "jsx"
+        "line": 114,
+        "kind": "literal"
       }
     ]
   },
@@ -96378,7 +96604,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -96417,7 +96643,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 97,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -96808,8 +97034,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 61,
-        "kind": "jsx"
+        "line": 63,
+        "kind": "literal"
       }
     ]
   },
@@ -96881,7 +97107,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 23,
+        "line": 26,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97828,8 +98054,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 63,
-        "kind": "template"
+        "line": 69,
+        "kind": "literal"
       }
     ]
   },
@@ -98324,7 +98550,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 89,
+        "line": 95,
         "kind": "literal"
       },
       {
@@ -98755,8 +98981,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
-        "kind": "jsx"
+        "line": 107,
+        "kind": "literal"
       }
     ]
   },
@@ -99025,8 +99251,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 53,
-        "kind": "jsx"
+        "line": 55,
+        "kind": "literal"
       }
     ]
   },
@@ -99142,8 +99368,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 119,
-        "kind": "jsx"
+        "line": 122,
+        "kind": "literal"
       }
     ]
   },
@@ -99976,8 +100202,8 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 78,
-        "kind": "jsx"
+        "line": 84,
+        "kind": "literal"
       }
     ]
   },
@@ -100296,6 +100522,18 @@
       }
     ]
   },
+  "m_f3423038f8c91381": {
+    "source": "מה חדש — ישראמארקט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/updates/page.tsx",
+        "line": 5,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_f34e3cc0395c3d41": {
     "source": "חדשים קודם",
     "language": "he",
@@ -100573,7 +100811,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -102006,8 +102244,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 59,
-        "kind": "jsx"
+        "line": 62,
+        "kind": "literal"
       }
     ]
   },
@@ -102521,7 +102759,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -103208,7 +103446,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 101,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -103306,8 +103544,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 142,
-        "kind": "jsx"
+        "line": 139,
+        "kind": "literal"
       }
     ]
   },
@@ -103797,7 +104035,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal",
         "purpose": "display"
       },
@@ -104320,7 +104558,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 99,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -104705,8 +104943,8 @@
     "references": [
       {
         "file": "web/components/design/ResultsBrief.tsx",
-        "line": 42,
-        "kind": "jsx"
+        "line": 45,
+        "kind": "literal"
       }
     ]
   },
@@ -105208,6 +105446,17 @@
       }
     ]
   },
+  "m_feff27cae47d5168": {
+    "source": "מגיעים בדצמבר · היום {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/RouteHero.tsx",
+        "line": 234,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ff0b1fcfd424c2a8": {
     "source": "למי:",
     "language": "he",
@@ -105363,7 +105612,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 96,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -105385,7 +105634,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 34,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -105581,18 +105830,18 @@
       },
       {
         "file": "web/components/landing-v2/HeroWeek.tsx",
-        "line": 21,
-        "kind": "jsx"
+        "line": 23,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 101,
-        "kind": "jsx"
+        "line": 103,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 234,
-        "kind": "jsx"
+        "line": 228,
+        "kind": "literal"
       }
     ]
   },

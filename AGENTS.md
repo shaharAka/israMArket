@@ -16,7 +16,9 @@ Keep private security findings, customer data and owner declarations in private 
   Install the automatic commit hook with `python3 scripts/install-translation-hook.py`.
   Reuse reviewed translations; check meaning in context. Never translate customer data
   automatically or change business content language when changing interface language.
-  The public language picker remains deferred until complete journey review (#142).
+  Keep the language picker visible as requested. Clearly identify unfinished translation
+  coverage until complete journey review (#142); changing language must preserve drafts.
+  Customer-facing releases include dated, translated notes in `web/lib/releases.ts`.
 
 - Lanes: Claude owns product and design of every screen; Codex owns integrations, provider
   reviews, legal pages, deploy and infra. The owner decides. Details in `PLAN.md`.

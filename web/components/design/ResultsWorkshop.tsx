@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { FindingRehearsal } from "./FindingRehearsal";
 
 import { useId, useRef, useState } from "react";
@@ -70,6 +72,7 @@ const initialCopy = "מארז שישי: חלה ושישה מאפים, ב־89 ₪
 
 /** Fictional synthesis, editable copy and local plan approval. No provider or account writes. */
 export function ResultsWorkshop() {
+  const t = useCopy();
   const id = useId();
   const copyField = useRef<HTMLTextAreaElement>(null);
   const [scenario, setScenario] = useState<Scenario>("finding");
@@ -101,33 +104,34 @@ export function ResultsWorkshop() {
     evidence: [examples.disconnected.evidence[0], { source: "האתר", observation: "החיבור חזר, ומחכים לנתונים", detail: "ההרשאה חודשה בתוך התרחיש. חיבור פעיל לבדו לא אומר שהנתונים כבר התעדכנו.", period: "התאוששות מדומה · אין מדידה חדשה" }, businessFacts],
   } : examples[scenario];
   return <div className={styles.workshop}>
-    <div className={styles.workshopHeading}><div><p className={styles.eyebrow}>רכיב המלצה לעסק</p><h1>המידע מורכב. הצעד הבא ברור.</h1></div><p>תרחיש מומצא מכמה מקורות.<br />{" "}האישור נשאר בתצוגה הזו.</p></div>
-    <div className={styles.scenarios}><span>לנסות מצב אחר</span><SegmentedControl label="מצב נתוני התוצאות" value={scenario} onChange={changeScenario} options={[{ value: "finding", label: "יש המלצה" }, { value: "learning", label: "מעט נתונים" }, { value: "disconnected", label: "מקור חסר" }]} /></div>
-    {reconnected && <p className={styles.recovery} role="status">החיבור חודש בדוגמה. הנתונים עוד לא התעדכנו; בינתיים אפשר להמשיך עם ההסבר שהכנו.</p>}
-    <ResultsBrief key={scenario} data={data} onAction={act} onContinue={scenario === "disconnected" ? () => setExpanded(value => !value) : undefined} expanded={expanded} actionContent={<section className={styles.proposal} aria-labelledby={`${id}-plan-title`}>
-      <div className={styles.proposalHeader}><p className={styles.eyebrow}>הצעד בתוכנית · להסביר איך מזמינים</p><UIAction variant="text" onClick={() => setExpanded(false)}>לסגור</UIAction></div>
-      <h3 id={`${id}-plan-title`}>זה ההסבר שנוסיף לעמוד המארז</h3>
-      <p className={styles.proposalIntro}>בדקו שהפרטים נכונים. אפשר לתקן את הנוסח כאן לפני האישור.</p>
-      <label className={styles.copyLabel} htmlFor={`${id}-copy`}>הנוסח ללקוחות</label>
+    <div className={styles.workshopHeading}><div><p className={styles.eyebrow}><Copy text="רכיב המלצה לעסק" /></p><h1><Copy text="המידע מורכב. הצעד הבא ברור." /></h1></div><p><Copy text="תרחיש מומצא מכמה מקורות." /><br />{" "}<Copy text="האישור נשאר בתצוגה הזו." /></p></div>
+    <div className={styles.scenarios}><span><Copy text="לנסות מצב אחר" /></span><SegmentedControl label={t("מצב נתוני התוצאות")} value={scenario} onChange={changeScenario} options={[{ value: "finding", label: t("יש המלצה") }, { value: "learning", label: t("מעט נתונים") }, { value: "disconnected", label: t("מקור חסר") }]} /></div>
+    {reconnected && <p className={styles.recovery} role="status"><Copy text="החיבור חודש בדוגמה. הנתונים עוד לא התעדכנו; בינתיים אפשר להמשיך עם ההסבר שהכנו." /></p>}
+    <ResultsBrief key={scenario} data={{ ...data, period: t(data.period), source: t(data.source), goal: t(data.goal), heading: t(data.heading), explanation: t(data.explanation), uncertainty: t(data.uncertainty), actionLabel: t(data.actionLabel), nextAction: { title: t(data.nextAction.title), explanation: t(data.nextAction.explanation), effort: t(data.nextAction.effort), successCheck: t(data.nextAction.successCheck) }, evidence: data.evidence.map(item => ({ source: t(item.source), observation: t(item.observation), detail: t(item.detail), period: t(item.period) })) }} onAction={act} onContinue={scenario === "disconnected" ? () => setExpanded(value => !value) : undefined} expanded={expanded} actionContent={<section className={styles.proposal} aria-labelledby={`${id}-plan-title`}>
+      <div className={styles.proposalHeader}><p className={styles.eyebrow}><Copy text="הצעד בתוכנית · להסביר איך מזמינים" /></p><UIAction variant="text" onClick={() => setExpanded(false)}><Copy text="לסגור" /></UIAction></div>
+      <h3 id={`${id}-plan-title`}><Copy text="זה ההסבר שנוסיף לעמוד המארז" /></h3>
+      <p className={styles.proposalIntro}><Copy text="בדקו שהפרטים נכונים. אפשר לתקן את הנוסח כאן לפני האישור." /></p>
+      <label className={styles.copyLabel} htmlFor={`${id}-copy`}><Copy text="הנוסח ללקוחות" /></label>
       <textarea ref={copyField} id={`${id}-copy`} value={copy} rows={3} onChange={event => { setCopy(event.target.value); setAcceptedCopy(null); setCopyStatus(""); }} aria-describedby={`${id}-copy-help`} className={styles.copyField} />
-      <p id={`${id}-copy-help`} className={styles.copyHelp}>פרטי המארז מומצאים לצורך הדוגמה. בחשבון אמיתי משתמשים בפרטים שאישרתם.</p>
+      <p id={`${id}-copy-help`} className={styles.copyHelp}><Copy text="פרטי המארז מומצאים לצורך הדוגמה. בחשבון אמיתי משתמשים בפרטים שאישרתם." /></p>
       <div className={styles.proposalActions}>
-        <UIAction disabled={!copy.trim()} variant={acceptedCopy ? "secondary" : "primary"} onClick={() => setAcceptedCopy(acceptedCopy ? null : copy)}>{acceptedCopy ? "לבטל את האישור בדוגמה" : "לאשר את ההסבר לתוכנית בדוגמה"}</UIAction>
-        <UIAction variant="text" disabled={!copy.trim()} onClick={copyForWebsite}>להעתיק לאתר</UIAction>
+        <UIAction disabled={!copy.trim()} variant={acceptedCopy ? "secondary" : "primary"} onClick={() => setAcceptedCopy(acceptedCopy ? null : copy)}>{acceptedCopy ? t("לבטל את האישור בדוגמה") : t("לאשר את ההסבר לתוכנית בדוגמה")}</UIAction>
+        <UIAction variant="text" disabled={!copy.trim()} onClick={copyForWebsite}><Copy text="להעתיק לאתר" /></UIAction>
       </div>
-      {copyStatus && <p className={styles.accepted} role="status">{copyStatus}</p>}
-      {acceptedCopy && <p className={styles.accepted} role="status">אושר בתצוגה הזו: קודם מוסיפים את ההסבר לאתר, ואז משתמשים בו בפוסט. האתר והתוכנית בחשבון שלכם לא השתנו.</p>}
-      <div className={styles.planFollowThrough}><div><strong>ואיך זה נכנס לתוכנית?</strong><p>קודם מוסיפים את ההסבר לעמוד. הפוסט הבא משתמש באותם פרטים ומפנה אליו להזמנה.</p></div><UIAction variant="text" onClick={() => setDraftOpen(value => !value)} aria-expanded={draftOpen} aria-controls={`${id}-draft`}>{draftOpen ? "להסתיר את הפוסט" : "לראות גם את הפוסט שהכנו"} ←</UIAction></div>
-      {draftOpen && <div id={`${id}-draft`} className={styles.draft}><p className={styles.eyebrow}>הפוסט הבא בתוכנית · טיוטה</p><h4>מתכננים שישי בבית?</h4><p className={styles.postCopy}>{copy.trim() || "הוסיפו את פרטי המארז בנוסח למעלה."}</p><p>לפרטים ולהזמנה, היכנסו לעמוד המארז באתר.</p><small>לפני פרסום: לוודא שהמארז זמין ושהקישור מוביל לעמוד המעודכן.</small></div>}
+      {copyStatus && <p className={styles.accepted} role="status">{t(copyStatus)}</p>}
+      {acceptedCopy && <p className={styles.accepted} role="status"><Copy text="אושר בתצוגה הזו: קודם מוסיפים את ההסבר לאתר, ואז משתמשים בו בפוסט. האתר והתוכנית בחשבון שלכם לא השתנו." /></p>}
+      <div className={styles.planFollowThrough}><div><strong><Copy text="ואיך זה נכנס לתוכנית?" /></strong><p><Copy text="קודם מוסיפים את ההסבר לעמוד. הפוסט הבא משתמש באותם פרטים ומפנה אליו להזמנה." /></p></div><UIAction variant="text" onClick={() => setDraftOpen(value => !value)} aria-expanded={draftOpen} aria-controls={`${id}-draft`}>{draftOpen ? t("להסתיר את הפוסט") : t("לראות גם את הפוסט שהכנו")} ←</UIAction></div>
+      {draftOpen && <div id={`${id}-draft`} className={styles.draft}><p className={styles.eyebrow}><Copy text="הפוסט הבא בתוכנית · טיוטה" /></p><h4><Copy text="מתכננים שישי בבית?" /></h4><p className={styles.postCopy}>{copy.trim() || t("הוסיפו את פרטי המארז בנוסח למעלה.")}</p><p><Copy text="לפרטים ולהזמנה, היכנסו לעמוד המארז באתר." /></p><small><Copy text="לפני פרסום: לוודא שהמארז זמין ושהקישור מוביל לעמוד המעודכן." /></small></div>}
     </section>} />
   </div>;
 }
 
 export function ResultsPreview() {
+  const t = useCopy();
   const [view, setView] = useState("app");
   const { palette } = useDesignPalette();
   return <DesignScope palette={palette} className={styles.preview}><div className={styles.previewContainer}>
-    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><Link href="/design">לספריית העיצוב ←</Link></header>
-    <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label="תצוגת סקירת התוצאות" value={view} onChange={setView} options={[{ value: "app", label: "הרכיב באפליקציה" }, { value: "concept", label: "הרעיון הקודם" }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
+    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark /><Copy text="ישראמארקט" /></Link><Link href="/design"><Copy text="לספריית העיצוב ←" /></Link></header>
+    <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label={t("תצוגת סקירת התוצאות")} value={view} onChange={setView} options={[{ value: "app", label: t("הרכיב באפליקציה") }, { value: "concept", label: t("הרעיון הקודם") }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
   </div></DesignScope>;
 }

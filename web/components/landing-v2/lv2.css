@@ -349,7 +349,7 @@ html:has(.lv2) {
 }
 
 .lv2-map-names text {
-  font-family: var(--font-heebo), Arial, sans-serif;
+  font-family: var(--font-ui), var(--font-heebo), Arial, sans-serif;
   font-weight: 500;
 }
 
