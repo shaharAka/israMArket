@@ -1356,6 +1356,12 @@ function demoTrackingSlug(value: string) {
 
 const DEMO_UTM_CAMPAIGN = `isramarket-${DEMO_STRATEGY.year}-${String(DEMO_STRATEGY.month).padStart(2, "0")}`;
 
+// The demo month's images were prepared when it was written, the way the server's image
+// job does it (#123); the Posts page never prepares them when it opens.
+POSTS.forEach((post, index) => {
+  if (!post.image_url) POSTS[index] = { ...post, image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0] };
+});
+
 POSTS.forEach((post, index) => {
   if (post.tracking_url) return;
   const utm = {
@@ -3100,16 +3106,16 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
   }
   if (path === "/strategy/posts/images" && method === "POST") {
-    // The Posts screen calls this on mount for every post still missing an image. It
-    // had no demo route, so demo mode showed "no demo route" and 0 of 7 posts.
     POSTS.forEach((post, index) => {
       if (!post.image_url) {
         POSTS[index] = { ...post, image_url: DEMO_IMAGES[index] || DEMO_IMAGES[0] };
       }
     });
     DEMO_STRATEGY.roadmap.posts = POSTS;
-    return { strategy: cloneDemoStrategy(), errors: [] } as T;
+    return { strategy: cloneDemoStrategy(), job: DEMO_IMAGE_JOB, errors: [] } as T;
   }
+  // The demo month's images were made with it (see the POSTS setup): nothing is running.
+  if (path === "/strategy/posts/images/status") return { ...DEMO_IMAGE_JOB } as T;
   if (path === "/strategy/posts/image" && method === "POST") {
     const body = JSON.parse(String(options.body || "{}")) as {
       post_index?: number;
@@ -4033,7 +4039,9 @@ export const endpoints = {
       image_preference?: "auto" | "real" | "ai";
     } = {}
   ) =>
-    api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/image", {
+    // Made by the business's image job, ahead of the month's automatic images. `queued`
+    // (a 202) when it is not ready yet: the post gets it once the job is done.
+    api<{ post: RoadmapPost; strategy: StrategyPayload; job?: ImageJobStatus; queued?: boolean }>("/strategy/posts/image", {
       method: "POST",
       body: JSON.stringify({ post_index, ...options }),
     }),
@@ -4058,8 +4066,12 @@ export const endpoints = {
       method: "POST",
       body: JSON.stringify({ post_index, ...options }),
     }),
+  /** Starts (or joins) the image job for the posts still missing one; answers at once.
+   *  An explicit action only: no page calls it when it opens (#123). */
   generateAllPostImages: () =>
-    api<{ strategy: StrategyPayload; errors: string[] }>("/strategy/posts/images", { method: "POST" }),
+    api<{ strategy: StrategyPayload; job?: ImageJobStatus; errors: string[] }>("/strategy/posts/images", { method: "POST" }),
+  /** The image job's progress. Only a read: it never starts or pays for anything. */
+  imageJobStatus: () => api<ImageJobStatus>("/strategy/posts/images/status"),
   publishPost: (post_index: number, published_url: string) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/publish", {
       method: "POST",
@@ -5579,6 +5591,50 @@ export type GenerationStatus = {
   resumable: boolean;
   /** Each week's posts in that month ("1".."4"); null before the month exists. */
   posts: Record<"1" | "2" | "3" | "4", WeekPostsState> | null;
+};
+
+/** The business's image job (api/app/services/image_jobs.py, #123). Images are made on the
+ *  server, once when a month's posts are written, or when the owner asks for one; a page
+ *  only reads this (lib/useImageJob.ts). */
+export type ImageJobStatus = {
+  /** "stalled": its worker stopped; the next request or the API's restart continues it. */
+  status: "idle" | "running" | "stalled" | "done" | "failed";
+  running: boolean;
+  /** This run's posts: how many, how many have their image, how many failed. */
+  total: number;
+  done: number;
+  failed: number;
+  /** The uids of the posts whose image is on its way (queued or being made). */
+  waiting: string[];
+  /** The uid of the post whose image is being made now. */
+  current: string | null;
+  items: {
+    uid: string;
+    index: number;
+    source: "build" | "owner";
+    state: "queued" | "running" | "done" | "error";
+    action: string;
+    error_he: string;
+  }[];
+  error_he: string | null;
+  started_at: string | null;
+  updated_at: string | null;
+  finished_at: string | null;
+};
+
+const DEMO_IMAGE_JOB: ImageJobStatus = {
+  status: "done",
+  running: false,
+  total: 0,
+  done: 0,
+  failed: 0,
+  waiting: [],
+  current: null,
+  items: [],
+  error_he: null,
+  started_at: null,
+  updated_at: null,
+  finished_at: null,
 };
 
 export type GenerateResult = {

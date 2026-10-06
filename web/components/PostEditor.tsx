@@ -82,6 +82,10 @@ import ui from "@/components/posts/chrome.module.css";
  * owner's own words. The server writes with the plan, what worked and the facts the owner
  * confirmed, and never invents a price: "להוסיף מחיר" with no known price asks for it.
  */
+/** An image the owner asked for while the month's images are still being made: it is
+ *  first in line, and lands on the post by itself (the page follows the image job). */
+const QUEUED_IMAGE_TOAST = "מכינים את התמונה. היא תופיע כאן כשתהיה מוכנה.";
+
 const INSTRUCTION_CHIPS = ["קצר יותר", "להוסיף מחיר", "יותר חם", "עם שאלה ללקוחות"] as const;
 const MAX_INSTRUCTION = 200;
 /** The free-text field's own busy key, beside the chips' labels. */
@@ -229,6 +233,7 @@ export function PostEditor({
   onStrategyUpdated,
   onNavigate,
   onClose,
+  imagesWaiting,
 }: {
   posts: RoadmapPost[];
   /** The month the posts belong to, for the week's focus when a post has no plan link. */
@@ -241,6 +246,8 @@ export function PostEditor({
   onNavigate?: (index: number) => void;
   /** Back to the month's feed. */
   onClose?: () => void;
+  /** The uids of the posts whose image the server's image job is making (lib/useImageJob). */
+  imagesWaiting?: string[];
 }) {
   const { palette } = useDesignPalette();
   const { payload: trial } = useTrial();
@@ -251,6 +258,18 @@ export function PostEditor({
   const brandDna = (stored.loaded ? stored.dna : null) ?? strategy?.brand_dna ?? null;
   const demo = useSyncExternalStore(subscribeClient, isDemo, serverSnapshot);
   const [posts, setPosts] = useState(initialPosts);
+  // The page loads the month again as the image job saves each image. A post that had no
+  // image here takes the server's copy once it has one; nothing else is replaced.
+  const [seenPosts, setSeenPosts] = useState(initialPosts);
+  if (seenPosts !== initialPosts) {
+    setSeenPosts(initialPosts);
+    setPosts((current) =>
+      current.map((post, index) => {
+        const incoming = initialPosts[index];
+        return !post.image_url && incoming?.image_url && incoming.uid === post.uid ? incoming : post;
+      })
+    );
+  }
   const [selectedIndex, setSelectedIndex] = useState(() =>
     Math.min(Math.max(initialIndex, 0), Math.max(initialPosts.length - 1, 0))
   );
@@ -429,6 +448,11 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
+      if (result.queued) {
+        // The month's images are still being made, and this one waits its turn (first).
+        toast(QUEUED_IMAGE_TOAST);
+        return;
+      }
       // Report what actually happened. The old code always claimed success, so a
       // typographic card (which carries no photo by design) or a skipped regeneration
       // looked like a broken button.
@@ -468,9 +492,7 @@ export function PostEditor({
     // A ranked answer belongs to the post it was asked about, so it never carries over.
     setSuggestions(null);
     setSuggestError("");
-    // Reuse an existing photo (free) or the business's own scraped image. Passing
-    // allowGeneration=false means clicking through posts can never cost money.
-    void prepareImage(index, false, false);
+    // Opening a post never prepares its image: the server's image job does, once (#123).
   }
 
   /** Switch a card between the business's own photo and a generated one. */
@@ -486,7 +508,7 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
+      toast(result.queued ? QUEUED_IMAGE_TOAST : source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
     } catch (err) {
       setImageError(err instanceof Error ? err.message : "לא הצלחנו להחליף את התמונה");
     } finally {
@@ -816,6 +838,8 @@ export function PostEditor({
   const activeCaption = captionFor(currentPost, channel);
   const businessName = brandLanguage?.business_name || "העסק";
   const isPreparingImage = imageBusy === selectedIndex;
+  // The server's image job is making this post's image (or it is next in line).
+  const jobPreparing = Boolean(currentPost.uid && imagesWaiting?.includes(currentPost.uid));
   const cardNeedsPhoto = postNeedsPhoto(currentPost);
   // Posts created before provenance tracking have no image_source. Every legacy path
   // generated its image, so "generated" is the accurate label — not "no image yet", which
@@ -893,8 +917,8 @@ export function PostEditor({
       return (
         <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
           <PhotoPlaceholder />
-          <h3>{isPreparingImage || uploadingPhoto ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
-          <p>{isPreparingImage || uploadingPhoto ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
+          <h3>{isPreparingImage || uploadingPhoto || jobPreparing ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
+          <p>{isPreparingImage || uploadingPhoto || jobPreparing ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
           {imageError && <p role="alert">{imageError}</p>}
           <button type="button" disabled={imageLocked} onClick={openLibrary}>
             לבחור מהתמונות שלי

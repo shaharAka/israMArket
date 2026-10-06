@@ -311,6 +311,19 @@ def _is_published(post: dict) -> bool:
     return bool(_clean(post.get("published_url"), 800) or post.get("published_at"))
 
 
+def _measured_value(post: dict):
+    """The post's number when it counts as measured, else None.
+
+    Only a published post ("פרסמתי") is measured. Taps on the tracked link of a post that
+    is not out yet (the owner trying the link, a draft shared early) stay in its `results`
+    and in the click table, but do not make it "נמדד", reach Results or teach the next
+    posts; they count once it is published (#123)."""
+    results = post.get("results") if isinstance(post.get("results"), dict) else None
+    if not results or results.get("value") is None or not _is_published(post):
+        return None
+    return results.get("value")
+
+
 def _is_approved(post: dict) -> bool:
     return str(post.get("approval_status") or "") == "approved"
 
@@ -353,8 +366,7 @@ def owner_needs(post: dict) -> list[dict]:
 
 def lifecycle(post: dict, needs: list | None = None) -> str:
     """needs_owner -> ready -> approved -> published -> measured (one vocabulary)."""
-    results = post.get("results") if isinstance(post.get("results"), dict) else None
-    if results and results.get("value") is not None:
+    if _measured_value(post) is not None:
         return "measured"
     if _is_published(post):
         return "published"
@@ -433,7 +445,7 @@ def measured_posts(views: list) -> dict:
         if not isinstance(view, dict):
             continue
         results = view.get("results") if isinstance(view.get("results"), dict) else {}
-        value = _number(results.get("value"))
+        value = _number(_measured_value(view))
         if value is None:
             if _is_published(view):
                 waiting += 1
@@ -536,7 +548,7 @@ def measured(records: list[dict], exclude_uid: str | None = None) -> list[dict]:
     for record in records:
         view = record["view"]
         results = view.get("results") or {}
-        value = results.get("value")
+        value = _measured_value(view)
         if value is None or view["uid"] == exclude_uid:
             continue
         metric = results.get("metric") if results.get("metric") in METRICS else view["measure"]["metric"]

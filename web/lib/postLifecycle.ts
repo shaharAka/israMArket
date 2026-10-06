@@ -15,8 +15,9 @@ import { compositionDrawsPhoto } from "@/lib/dna/library";
  *
  * The server computes `lifecycle` (`lifecycle()` in api/app/services/connected_posts.py).
  * A post from an API that does not send it yet still gets a state, derived here the same
- * way: a measured number first, then "פרסמתי" (with or without a link), then an approval,
- * then anything the owner still has to add.
+ * way: a measured number on a published post first, then "פרסמתי" (with or without a link),
+ * then an approval, then anything the owner still has to add. Taps on the link of a post
+ * that is not out yet never make it "נמדד" (#123).
  */
 
 export const LIFECYCLES: readonly PostLifecycle[] = ["needs_owner", "ready", "approved", "published", "measured"];
@@ -62,7 +63,7 @@ export function ownerNeedsOf(post: RoadmapPost): PostOwnerNeed[] {
 
 /** The state from the stored fields only, in the server's order. */
 export function deriveLifecycle(post: RoadmapPost): PostLifecycle {
-  if (hasResult(post.results)) return "measured";
+  if (hasResult(post.results) && isPublished(post)) return "measured";
   if (isPublished(post)) return "published";
   if (post.approval_status === "approved") return "approved";
   if (ownerNeedsOf(post).length) return "needs_owner";
@@ -126,9 +127,9 @@ export function metricLabel(post: RoadmapPost): string {
   return measure.label_he?.trim() || METRIC_LABEL[measure.metric] || "";
 }
 
-/** The measured number of a post, or null when it was not counted. */
+/** The measured number of a post, or null when it was not counted (or it is not out yet). */
 export function resultValue(post: RoadmapPost): number | null {
-  return hasResult(post.results) ? post.results.value : null;
+  return hasResult(post.results) && isPublished(post) ? post.results.value : null;
 }
 
 /** "21 לחיצות" for the list, or "" when there is nothing measured to show. */
