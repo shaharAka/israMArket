@@ -259,7 +259,7 @@ export function RouteHero() {
           </svg>
         </span>
         <span className="lv2-map-next-text">
-          <small>הצעד הבא</small>
+          <small>בתוכנית לדוגמה · הצעד הבא</small>
           <span className="lv2-map-next-steps">
             {NEXT_STEPS.map((text, i) => (
               <span

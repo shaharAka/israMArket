@@ -151,6 +151,7 @@ export function mockQuarterPlan(
   insights: PlanInsight[],
 ): QuarterPlan {
   const model = d.business_model ?? inferBusinessModel(d.business_type, d.offerings);
+  if (model === "saas") return mockSoftwarePlan(d, inputs);
   const group = typeGroup(d);
   const kit = kitFor(d.business_type);
   const offer = firstOffering(d.offerings) || "מה שאתם עושים";
@@ -590,6 +591,35 @@ export function mockQuarterPlan(
   }
   if (notes.length) plan.changed_he = notes.join(" ");
   return plan;
+}
+
+/** Software preview: declared problem and buyer, not a retail fixture. */
+function mockSoftwarePlan(d: OnboardingDraft, inputs: PlanInputs): QuarterPlan {
+  const months = planMonths();
+  const buyer = inputs.primary_audience || d.audiences[0]?.name || d.software?.buyer || "האנשים שהבעיה הזו מפריעה להם";
+  const problem = d.software?.problem || d.offerings;
+  const product = d.software?.focus_product || firstOffering(d.offerings) || "המוצר שלכם";
+  const demo = d.software?.buying_motion === "demo";
+  const paidGoal = d.goal === "sales";
+  const metric = paidGoal ? "software_paid" : demo ? "software_demos" : "software_signups";
+  const metricName = paidGoal ? "לקוחות בתשלום" : demo ? "בקשות להדגמה" : "הרשמות למוצר או לרשימת ההמתנה";
+  const monthly = d.budget?.range === "unknown" ? null : budgetIls(d.budget);
+  const channel = (["instagram", "facebook", "tiktok"] as const).find(key => Boolean(d.links[key])) || "instagram";
+  const channelLabel = { instagram: "אינסטגרם", facebook: "פייסבוק", tiktok: "טיקטוק" }[channel];
+  const focus = ["מסבירים את הבעיה ומראים פעולה אמיתית במוצר", "בודקים מי הגיע ומי התנסה, ומשפרים את המסר", "מעמיקים בתוכן שהביא משתמשים מתאימים"];
+  return {
+    strategy: { one_liner_he: `להראות איך ${product} יכול לעזור ל${buyer}. הבעיה שנבחן: ${problem}.`, angle_he: d.differentiator || "מדגימים מה שכבר עובד ומסבירים למי זה מתאים.", why_he: "לפי המוצר, ההצעה, הקהל ושלב החברה שסיפרתם עליהם. זו הדגמה; בתוכנית האמיתית נבדוק גם את המחקר." },
+    kpi: { key: metric, name_he: metricName, how_he: "סופרים את הפעולה שנבחרה, ובודקים בנפרד שימוש ראשון ותשלום.", baseline_he: "עוד לא נמסרו נתוני שימוש. נמדוד לפני שנציע יעד מספרי.", needs: d.links.website ? ["ga4"] : [], available_now: false },
+    measures: [{ name_he: "התנסות ראשונה בעלת ערך", how_he: "נבחר פעולה במוצר שמעידה שהוא עוזר, ונבדוק כמה השלימו אותה.", needs: d.links.website ? ["ga4"] : [], available_now: false }],
+    integrations: d.links.website ? [{ key: "ga4", name_he: "נתוני האתר והמוצר", why_he: "לחבר מקור הגעה לפעולה שבחרנו למדוד. התקנת תג לבדה לא מגדירה אירוע שימוש.", status: "unknown", effort_he: "נבדוק את החיבור ואת האירוע לפני שסופרים תוצאות." }] : [],
+    audiences: [{ name: buyer, role: "primary", message_he: `פתרון ל${problem}` }],
+    channels: [{ key: channel, name_he: channelLabel, kind: d.links[channel] ? "existing" : "new", starts_month: 1, why_he: "ערוץ תוכן לדוגמה. בתוכנית האמיתית נבחר לפי הלקוחות והשוק, ונבדוק גם ערוצים מקצועיים.", effort_he: "נכין פוסטים מסבירים והדגמות אמיתיות לאישורכם.", cadence_he: "1-2 בשבוע" }],
+    budget: { monthly_ils: monthly, organic_only: !monthly, months: months.map(m => ({ month_label: m.label, lines: [] })), sources_he: [], unlock_he: "ניסוי בתשלום יתווסף רק אחרי שנבחר קהל, נגדיר מדידה ונבדוק גישה לערוץ. לא הוקצה תקציב בהדגמה הזו." },
+    calendar: months.map((m, i) => ({ month_label: m.label, year: m.year, month: m.month, dates: [], weeks: [{ week: 1, focus_he: focus[i] }], checkpoint_he: "בודקים מי התנסה ומה עזר, ומעדכנים את התוכנית." })),
+    content: months.map(m => ({ month_label: m.label, pillars: [{ key: "problem", title: "הבעיה", description_he: problem }, { key: "demo", title: "המוצר בפעולה", description_he: "הדגמה אמיתית, בלי מסכים או סיפורי הצלחה מומצאים." }], cadence: [{ channel_key: channel, per_week: "1-2" }], mix: [{ type_key: "value", name_he: "הסברים שעוזרים", per_month: "4", purpose_he: "לעזור להבין את הבעיה ואת דרך הפתרון." }, { type_key: "product", name_he: "המוצר בפעולה", per_month: "2", purpose_he: "להראות מה המוצר עושה ומתי הוא מתאים." }], products_note_he: "בוחרים נושאים והדגמות אמיתיות לפני הכתיבה." })),
+    assumptions: [{ bet_he: "אנחנו מניחים שהדגמה של פתרון לבעיה תביא את האנשים המתאימים להתנסות.", if_wrong_he: "נבדוק אם הבעיה, הקהל או דרך ההצטרפות צריכים שינוי." }],
+    inside: MOCK_INSIDE, cadence: { key: "1-2", posts_per_month: 6 }, start: { year: months[0].year, month: months[0].month }, cached: false,
+  };
 }
 
 /** Mirrors quarter_plan.INSIDE: only what the app has. */

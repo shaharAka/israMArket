@@ -225,7 +225,8 @@ def build_steps(
     kpi = _kpi_name(facts)
     kpi_needs = _kpi_needs(facts)
     posts = facts.posts
-    products = (facts.business.business_model if facts.business else "") != "services"
+    software = bool(facts.business and facts.business.business_model == "saas")
+    products = (facts.business.business_model if facts.business else "") not in {"services", "saas"}
     steps: list[dict] = []
 
     # --- week 1 · measurement: without it there is no way to know anything works ------
@@ -310,9 +311,10 @@ def build_steps(
     steps.append(_step(
         "photos", 2, "להעלות תמונות וסרטונים של העסק",
         (f"לפחות {minimum_photos}, כדי שהפוסטים ייראו כמו העסק שלכם." if products
+         else "צילום אמיתי של המוצר, הדגמה או תמונה שלכם מספיקים להתחלה. לא ניצור מסך מוצר מומצא." if software
          else "תמונה אחת של עבודה, תהליך או שלכם בעסק מספיקה להתחלה. אפשר להוסיף עוד בהמשך.")
         + (f" כבר העליתם {have}." if 0 < have < minimum_photos else ""),
-        5, "/assets", "להעלות תמונות",
+        5, "/prepare?stage=photos", "להעלות תמונות",
         "done" if photos_done else "todo", facts.third_asset_at if products else facts.first_asset_at,
     ))
 
@@ -322,9 +324,10 @@ def build_steps(
     steps.append(_step(
         "featured", 2, "לבחור מה להבליט בפוסטים",
         ("מציעים לפי העסק, המחקר והתוכנית. בחרו מה מתאים ושנו את הסדר לפי הצורך."
-         if products else "שירות, דוגמה מעבודה או טיפ מקצועי. בחרו נושא אחד להתחלה שמתאים ללקוחות ולזמן הפנוי שלכם.")
+         if products else "בעיה שהמוצר פותר, הדגמה אמיתית או ידע שלכם. בחרו נושא אחד להתחלה." if software
+         else "שירות, דוגמה מעבודה או טיפ מקצועי. בחרו נושא אחד להתחלה שמתאים ללקוחות ולזמן הפנוי שלכם.")
         + (f" בחרתם {len(featured)} עד עכשיו." if 0 < len(featured) < minimum_featured else ""),
-        5, "/featured", "לבחור",
+        5, "/prepare?stage=topics", "לבחור",
         "done" if featured_done else "todo", journey.parse_time(featured_raw.get("saved_at")),
     ))
 
@@ -337,7 +340,7 @@ def build_steps(
         "התחלנו מסגנון לפי סוג העסק. אם זה לא אתם, נתקן לפני שכותבים."
         if brand.get("source") == "preset"
         else "שני משפטים לדוגמה בסגנון שקראנו באתר. אם זה לא אתם, נתקן לפני שכותבים.",
-        2, "/voice", "לבדוק את הסגנון",
+        2, "/prepare?stage=style", "לבדוק את הסגנון",
         "done" if voice else "todo", journey.parse_time((voice or {}).get("at")),
     ))
 
@@ -540,6 +543,8 @@ def payload_for(request: Request, db: Session, user: User) -> dict:
         "next_key": nxt["key"] if nxt else None,
         "weeks": WEEKS,
         "steps": steps,
+        # Requesting the build completes a task, but does not prove a draft exists.
+        "posts_written": len(facts.posts),
         "measurement": measurement(facts, whatsapp[1]),
         "hypotheses": hypotheses(facts),
     }

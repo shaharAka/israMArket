@@ -4236,8 +4236,8 @@ export const endpoints = {
   /* ---- Onboarding v2 (/start). Anonymous except from-draft. See docs/onboarding-v2.md.
      Callers go through `web/lib/draft.ts`, which falls back to fixtures on 404. ---- */
   /** Fast brand read of a public site, started in the background at the links step. */
-  publicBrand: (url: string) =>
-    api<PublicBrandResult>("/public/brand", { method: "POST", body: JSON.stringify({ url }) }),
+  publicBrand: (url: string, businessModel?: BusinessModel) =>
+    api<PublicBrandResult>("/public/brand", { method: "POST", body: JSON.stringify({ url, business_model: businessModel }) }),
   /** Three suggested audiences, each with the reason we suggest it. */
   publicAudiences: (draft: OnboardingDraft) =>
     api<{ audiences: SuggestedAudience[] }>("/public/audiences", {
@@ -4939,7 +4939,7 @@ export type GrowthTargetCandidate = {
 };
 
 /** Forks diagnostics, goals and the whole plan engine — see lib/businessModel.ts. */
-export type BusinessModel = "products" | "services" | "both";
+export type BusinessModel = "products" | "services" | "both" | "saas";
 
 /** `sales`/`brand_awareness` are purchase goals; `leads`/`personal_brand` are service
  *  goals. The API rejects a goal that does not match the business model. */

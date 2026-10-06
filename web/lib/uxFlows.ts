@@ -1,6 +1,6 @@
 /** A source-grounded review map, not an alternative onboarding implementation. */
-export const FLOW_SOURCE = "e8a2af5d25f4a6c065e10f3f37451bcb8fd57cd1";
-export type FlowPersona = "store" | "designer" | "isramarket";
+export const FLOW_SOURCE = "1bac6c7f007dbf558c044e6ff2cf38a5664e2d36";
+export type FlowPersona = "store" | "designer" | "software" | "isramarket";
 export type FlowPhase = "before" | "after" | "ongoing";
 export type FlowCase = "normal" | "cancel" | "failure" | "missing";
 export type FlowNode = {
@@ -14,7 +14,8 @@ export type FlowNode = {
 export const PERSONAS = {
   store: { label: "חנות", name: "פרג ושמרים", goal: "יותר הזמנות למארזי שישי", model: "products" },
   designer: { label: "מעצבת", name: "סטודיו נועה", goal: "פניות לפרויקטים שמתאימים לסטודיו וליומן", model: "services" },
-  isramarket: { label: "ישראמארקט", name: "ישראמארקט", goal: "בעלי עסקים ששומרים תוכנית ומתחילים להשתמש בה", model: "services" },
+  software: { label: "תוכנה", name: "מערכת לדוגמה", goal: "הדגמות והתנסות במוצר שפותר בעיה מוגדרת", model: "saas" },
+  isramarket: { label: "ישראמארקט", name: "ישראמארקט", goal: "בעלי עסקים ששומרים תוכנית ומתחילים להשתמש בה", model: "saas" },
 } as const;
 
 const startSource = "web/components/start/StartFlow.tsx";
@@ -39,6 +40,8 @@ export const FLOW_NODES: FlowNode[] = [
   { ...pre("landing", "כניסה", "עמוד הבית", "תוכנית שיווק לעסק שלכם.", "התחלה בלי הרשמה, דוגמאות לעסקים והסבר על התהליך.", "name", "להראות מוקדם שגם בעלי מקצוע יכולים להתחיל בלי חנות או אתר."), route: "/", action: "להתחיל את ההיכרות", source: "web/app/page.tsx", alternate: { label: "להיכנס לחשבון קיים", next: "login" } },
   pre("name", "העסק", "שם העסק", "איך קוראים לעסק?", "שם קצר כדי להתחיל את ההיכרות.", "what", "שם מספיק כאן. אין צורך בפרטי קשר לפני הערך הראשון."),
   pre("what", "העסק", "מה מציעים", "מה העסק שלכם עושה?", "תחום, הצעה, ומוצרים או שירותים. המודל קובע את שאלות המטרה.", "different", "לא להציג בעלת מקצוע כעסק שצריך למכור מוצר."),
+  { ...pre("software_offer", "העסק", "מוצר והצעה", "מה רוצים לקדם קודם?", "כל מוצרי החברה, המוצר הראשון שבמוקד, ההצעה המסחרית וחומר אמיתי שאפשר להדגים. מחיר או חומר חסר אינם חסימה.", "software", "תוכן צריך להסביר יכולת אמיתית והצעה ספציפית, ולא לפרסם חברה באופן כללי."), source: "web/components/start/StepSoftwareOffer.tsx" },
+  { ...pre("software", "העסק", "בעיה וקונה", "מה המוצר פותר, ולמי?", "הבעיה, המשתמש ומקבל החלטת הרכישה, שלב המוצר, השוק ודרך ההצטרפות. אין יעד מספרי בלי נתוני שימוש.", "different", "הרשמה, שימוש בעל ערך ותשלום הם שלבים שונים."), source: "web/components/start/StepSoftware.tsx" },
   pre("different", "העסק", "הייחוד", "מה מייחד אתכם?", "סיבה לבחור בעסק; אפשר להמשיך כשעדיין לא יודעים.", "audiences", "בשירותים: מומחיות, תהליך ותוצאה שהלקוח מחפש."),
   pre("audiences", "לקוחות", "למי פונים", "מי הלקוחות שלכם?", "קהל מומלץ לפי ההצעה, עם בחירה ותיקון של בעל העסק.", "seasons", "למעצבת: סוג פרויקט והמצב שמוביל לפנייה, ולא קהל של קוני מוצרים."),
   pre("seasons", "לקוחות", "עונות השנה", "מתי העסק עמוס יותר?", "עונות עמוסות ושקטות; חוסר ודאות אינו עוצר את התהליך.", "links", "פרויקטים ויומן עשויים להיות חשובים יותר מחגים ומבצעים."),
@@ -67,10 +70,10 @@ export const FLOW_NODES: FlowNode[] = [
   { ...post("whatsapp", "מדידה", "קישור WhatsApp", "/integrations#whatsapp", "איך מגיעים אליכם לשיחה?", "מספר עסק וקישור עם הודעה מוכנה. קישורים מסומנים מפרידים בין מקור אחד לאחר.", "לעבור לנקודת הפתיחה", "baseline-post", "web/lib/whatsapp.ts", "לחיצה לקישור אינה הודעה שנשלחה, פנייה מתאימה או לקוח. לא להציג את כולם כאותו מדד."), recovery: "אפשר לתקן את מספר העסק ולבדוק את הקישור. אין קריאת תוכן של שיחות WhatsApp מהקישור הזה." },
   { ...post("gbp", "מדידה", "הכרטיס בגוגל", "/promotion#profile", "העסק בחיפוש ובמפות", "משימה מותנית בתוכנית: הבעלים בודק את הכרטיס ומסמן שהוא מעודכן. חיבור API לקריאת נתוני הכרטיס עדיין פתוח.", "לסיים את הבדיקה בדוגמה", "baseline-post", "api/app/routers/trial.py", "סימון בעלים אינו OAuth או קריאת נתונים מ-Google Business Profile. עבודת החיבור מנוהלת ב-#51."), recovery: "לא מוצאים כרטיס: צריך לבדוק בעלות וגישה ב-Google. עד אז לא מסמנים נתוני מפות כמחוברים." },
   post("baseline-post", "מדידה", "בסיס המדידה", "/baseline", "איפה העסק היום?", "מספרי פתיחה מהבעלים. מה שנענה כבר ב-/start (טווח או לא יודעים) נחשב תשובה ומוצג כאן, ואפשר לדייק. אין להפוך נתון שלא נמדד לאפס.", "לבחור מה לקדם", "featured", "web/app/baseline/page.tsx", "פניות, פניות מתאימות ופרויקטים שנסגרו הם שלבים שונים. מקור נתונים אחד לא מספר את כל הסיפור."),
-  post("featured", "חומרי גלם", "מה לקדם", "/featured", "מה נציג בפוסטים הראשונים?", "בחירת מוצרים או שירותים שהבעלים רוצה להבליט; אלה מזינים את הכותב.", "להכין חומרי גלם", "photos", "web/app/featured/page.tsx", "מעצבת צריכה לבחור שירות ופרויקט שמוכיח אותו; לא מלאי, הנחה או סל קניות."),
-  post("photos", "חומרי גלם", "עבודות ותמונות", "/assets", "חומרי הגלם של העסק", "חומר אמיתי שהבעלים בוחר להעלות. שירותים מתחילים מתמונה אחת; חנויות משלוש.", "לבדוק את הקול", "voice", "web/app/assets/page.tsx", "להתחיל בהוכחה אחת טובה לשירות, ואז להרחיב את החומרים בלי לעכב את הפוסט הראשון."),
-  post("voice", "חומרי גלם", "הקול של העסק", "/voice", "האם זה נשמע כמוכם?", "בדיקה ותיקון של הסגנון לפני כתיבת הפוסטים.", "להתחיל לכתוב", "start-posts", "web/app/voice/page.tsx", "מיתוג אישי: האדם, הגישה והשפה שלו חשובים יותר מסיסמה כללית."),
-  { ...post("start-posts", "תוכן", "כתיבה ראשונה", "/posts", "כותבים מתוך התוכנית והבחירות שלכם", "הכתיבה נפתחת אחרי בחירת מה לקדם, חומר אמיתי ובדיקת הסגנון. שירות אחד ותמונה אחת מספיקים לשירותים; בחנות נדרשים שלושה מכל סוג. פתיחת העמוד אינה יצירת פוסט מוכח.", "לבדוק פוסט ראשון", "editor", "api/app/routers/trial.py", "לקצר את הזמן לפוסט ראשון שימושי. השבועות הם ארגון, לא סיבה להמתין סתם."), recovery: "שלב נעול מסביר איזה חומר חסר. עבודת רקע ניתנת לחידוש, ותוצאה מחכה לבדיקת הבעלים." },
+  post("featured", "חומרי גלם", "מה לקדם", "/prepare?stage=topics", "מה נציג בפוסטים הראשונים?", "בחירת מוצרים או שירותים שהבעלים רוצה להבליט; אלה מזינים את הכותב.", "להכין חומרי גלם", "photos", "web/app/featured/page.tsx", "מעצבת צריכה לבחור שירות ופרויקט שמוכיח אותו; לא מלאי, הנחה או סל קניות."),
+  post("photos", "חומרי גלם", "עבודות ותמונות", "/prepare?stage=photos", "חומרי הגלם של העסק", "חומר אמיתי שהבעלים בוחר להעלות. שירותים מתחילים מתמונה אחת; חנויות משלוש.", "לבדוק את הקול", "voice", "web/app/assets/page.tsx", "להתחיל בהוכחה אחת טובה לשירות, ואז להרחיב את החומרים בלי לעכב את הפוסט הראשון."),
+  post("voice", "חומרי גלם", "הקול של העסק", "/prepare?stage=style", "האם זה נשמע כמוכם?", "בדיקה ותיקון של הסגנון לפני כתיבת הפוסטים.", "להתחיל לכתוב", "start-posts", "web/app/voice/page.tsx", "מיתוג אישי: האדם, הגישה והשפה שלו חשובים יותר מסיסמה כללית."),
+  { ...post("start-posts", "תוכן", "כתיבה ראשונה", "/prepare?stage=write", "כותבים מתוך התוכנית והבחירות שלכם", "הכתיבה נפתחת אחרי בחירת מה לקדם, חומר אמיתי ובדיקת הסגנון. שירות אחד ותמונה אחת מספיקים לשירותים; בחנות נדרשים שלושה מכל סוג. פתיחת העמוד אינה יצירת פוסט מוכח.", "לבדוק פוסט ראשון", "editor", "api/app/routers/trial.py", "לקצר את הזמן לפוסט ראשון שימושי. השבועות הם ארגון, לא סיבה להמתין סתם."), recovery: "שלב נעול מסביר איזה חומר חסר. עבודת רקע ניתנת לחידוש, ותוצאה מחכה לבדיקת הבעלים." },
   post("editor", "תוכן", "עריכת פוסט", "/posts", "פוסט עם תפקיד בתוכנית", "בחירת פוסט, טקסט, עיצוב ותמונה; ציון ההשערה והפעולה שהפוסט משרת.", "לאשר את הפוסט", "approval", "web/app/posts/page.tsx", "לשירותים: הוכחה ותועלת עם הזמנה לשיחה מתאימה, ולא הנחה אוטומטית."),
   post("approval", "תוכן", "אישור הבעלים", "/posts", "זה הפוסט שאני רוצה לפרסם", "האישור נשמר עבור הפוסט. הוא אינו פרסום ברשת ואינו מדידה של תגובה.", "לפתוח את ערכת הפרסום", "publish", "web/lib/postLifecycle.ts", "הבדל גלוי בין מוכן, מאושר, פורסם ונמדד. אין קפיצה אוטומטית בין המצבים."),
   { ...post("publish", "פרסום", "ערכת פרסום", "/posts", "מוכנים לפרסם", "המסלול הנוכחי הוא ידני: כיתוב, תמונה וקישור מסומן. אין קריאה שמפרסמת אוטומטית ל-Meta.", "לדמות פרסום ידני", "published", "api/app/services/publish.py", "IsraMarket צריכה לעבור את אותו מסלול. אם מוסיפים פרסום אוטומטי, נדרש גם מימוש וגם הרשאות, לא רק כפתור."), event: "publishing_kit_opened", recovery: "האישור אצלנו אינו הרשאת פרסום. אפשר להשתמש בערכה ידנית ולשמור את כתובת הפוסט אחרי הפרסום." },
@@ -82,9 +85,27 @@ export const FLOW_NODES: FlowNode[] = [
 ];
 
 export function nodesFor(persona: FlowPersona, phase: FlowPhase) {
-  return FLOW_NODES.filter(node => node.phase === phase && (persona === "store" || node.id !== "grow"));
+  const software = PERSONAS[persona].model === "saas";
+  return FLOW_NODES.filter(node => node.phase === phase &&
+    (!node.id.startsWith("software") || software) &&
+    (persona === "store" || node.id !== "grow") &&
+    (!software || !["seasons", "baseline", "lever", "target"].includes(node.id)))
+    .map(node => software && node.id === "what" ? { ...node, headline: "אילו מוצרים יש לחברה שלכם?", body: "מתארים את מוצרי החברה. בשלב הבא בוחרים מוצר והצעה אחת להתחלה." }
+      : software && node.id === "tried" ? { ...node, headline: "מאיפה מגיעים הלקוחות שלכם?", body: "מקורות לקוחות קיימים, או שעדיין מתחילים ולא יודעים. התשובה מכוונת את הערוצים שנבדוק." }
+      : software && node.id === "competitors" ? { ...node, headline: "מה עושים היום בלי המוצר שלכם?", body: "תוכנה אחרת, גיליון או עבודה ידנית. אפשר להמשיך בלי שם או קישור." }
+      : ["featured", "photos", "voice", "start-posts"].includes(node.id) ? { ...node,
+      ...(software && node.id === "featured" ? { body: "נושא אחד מהמוצר שבחרתם: יכולת אמיתית, הבעיה שהוא פותר או הדגמה. המחקר מסביר את ההצעה; הבחירה נשארת שלכם." } : {}),
+      transition: "אותו מסך /prepare: שלבים גלויים, גלילה לכותרת ושימור עריכות. שומרים בכל שלב; יצירה מתחילה רק בבקשה מפורשת.",
+      source: "web/components/posts/preparation/PostPreparation.tsx" } : node);
 }
 export function nextFor(node: FlowNode, persona: FlowPersona) {
-  return node.next === "grow" && persona !== "store" ? "baseline" : node.next;
+  const software = PERSONAS[persona].model === "saas";
+  if (software && node.id === "what") return "software_offer";
+  let next = node.next;
+  const included = new Set(nodesFor(persona, "before").map(item => item.id));
+  while (FLOW_NODES.some(item => item.id === next && item.phase === "before") && !included.has(next)) {
+    next = FLOW_NODES.find(item => item.id === next)!.next;
+  }
+  return next;
 }
 export function sourceUrl(path: string) { return `https://github.com/shaharAka/israMArket/blob/${FLOW_SOURCE}/${path}`; }

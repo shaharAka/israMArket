@@ -110,15 +110,16 @@ export function StepWhat(props: StepProps) {
   const d = flow.draft;
   const kit = kitFor(d.business_type);
   const service = flow.modelConfirmed && d.business_model === "services";
+  const software = d.business_model === "saas";
   return (
     <StepShell
       {...props}
-      title={service ? "איזה שירות אתם נותנים?" : "מה אתם עושים?"}
+      title={software ? "אילו מוצרים יש לחברה שלכם?" : service ? "איזה שירות אתם נותנים?" : "מה אתם עושים?"}
       why="נתאים לכם תוכנית שיווק, ובהמשך נכתוב לפיה פוסטים לאישורכם."
       primary="להמשיך למה שמייחד אתכם"
       onPrimary={() => {
         if (!flow.modelConfirmed) {
-          setError("בחרו אם אתם מוכרים מוצרים, נותנים שירות או גם וגם.");
+          setError("בחרו את סוג העסק שמתאים לכם.");
           return;
         }
         if (d.offerings.trim().length < 3) {
@@ -140,14 +141,14 @@ export function StepWhat(props: StepProps) {
       <BusinessRoute flow={flow} update={update} onSelect={() => setError("")} />
       <TextInput
         id="offerings"
-        label={service ? "איזה שירות, ולמי הוא מתאים?" : "במילים שלכם: מה אתם מוכרים או עושים?"}
+        label={software ? "שם ותיאור קצר לכל מוצר. אפשר גם מוצר אחד שעוד בונים." : service ? "איזה שירות, ולמי הוא מתאים?" : "במילים שלכם: מה אתם מוכרים או עושים?"}
         value={d.offerings}
         onChange={(value) => {
           setError("");
           setDraft({ offerings: value });
         }}
-        placeholder={service && !d.business_type ? "למשל: עיצוב דירות למשפחות, אימון אישי למתחילים או שיעורים לתלמידים" : kit.placeholder}
-        maxLength={300}
+        placeholder={software ? "למשל: כלי לתיאום פגישות לסטודיואים; כלי לניהול תשלומים" : service && !d.business_type ? "למשל: עיצוב דירות למשפחות, אימון אישי למתחילים או שיעורים לתלמידים" : kit.placeholder}
+        maxLength={software ? 600 : 300}
       />
       <FieldError message={error} />
       <details className="border-t border-[var(--rule)] pt-2">
@@ -208,13 +209,13 @@ export function StepDifferent(props: StepProps) {
         label="במשפט אחד"
         value={text}
         onChange={(value) => setDraft({ differentiator: value })}
-        placeholder="למשל: הכול נעשה אצלנו, בעבודת יד"
+        placeholder={modelOf(flow) === "saas" ? "למשל: מתחילים בלי הטמעה ארוכה, והכלי נבנה במיוחד לסטודיואים" : "למשל: הכול נעשה אצלנו, בעבודת יד"}
         maxLength={200}
       />
       <div>
         <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]">אפשר להתחיל מאחד מאלה:</p>
         <div className="flex flex-wrap gap-2">
-          {kit.differentiators.map((example) => (
+          {(modelOf(flow) === "saas" ? ["קל להתחיל", "חוסך עבודה ידנית", "מתחבר לכלים שכבר יש", "נבנה לתחום שלנו"] : kit.differentiators).map((example) => (
             <Chip
               key={example}
               label={example}
@@ -290,8 +291,8 @@ export function StepAudiences(props: StepProps) {
   return (
     <StepShell
       {...props}
-      title={modelOf(flow) === "services" ? "למי מתאים השירות שלכם?" : "מי קונה מכם?"}
-      why="ככה נדע למי לכתוב. הצענו 3 קהלים לפי מה שסיפרתם, ואפשר לשנות."
+      title={modelOf(flow) === "saas" ? "מי צריך את המוצר שלכם?" : modelOf(flow) === "services" ? "למי מתאים השירות שלכם?" : "מי קונה מכם?"}
+      why={modelOf(flow) === "saas" ? "נציע קהל לפי הבעיה ומי שמחליט על הרכישה. אפשר לבחור, לשנות או להשלים בהמשך." : "ככה נדע למי לכתוב. הצענו 3 קהלים לפי מה שסיפרתם, ואפשר לשנות."}
       primary="להמשיך לעונות השנה"
       reassure={CHANGE_LATER}
       onPrimary={() => {
@@ -782,15 +783,15 @@ export function StepCompetitors(props: StepProps) {
   return (
     <StepShell
       {...props}
-      title="מי המתחרים העיקריים שלכם?"
-      why="לא כדי להעתיק. כדי לראות מה כבר יש, ולמצוא איפה אתם יכולים לבלוט."
+      title={flow.draft.business_model === "saas" ? "מה עושים היום בלי המוצר שלכם?" : "מי המתחרים העיקריים שלכם?"}
+      why={flow.draft.business_model === "saas" ? "גם גיליון, תהליך ידני או כלי אחר הם חלופות. נבין למה כדאי לעבור אליכם." : "נראה מה כבר יש, ונמצא איפה אתם יכולים לבלוט."}
       primary="להמשיך למטרה ולתקציב"
       reassure={CHANGE_LATER}
       onPrimary={() => {
         setDraft({ competitors: rows.filter((r) => r.name.trim()) });
         next();
       }}
-      skip="לא יודעים? לדלג, ונחפש בעצמנו"
+      skip={flow.draft.business_model === "saas" ? "אין כרגע? אפשר להמשיך" : "לא יודעים? לדלג, ונחפש בעצמנו"}
       onSkip={() => {
         setDraft({ competitors: [] });
         next();
@@ -802,7 +803,7 @@ export function StepCompetitors(props: StepProps) {
           <div key={index} className="grid grid-cols-[1fr_1.1fr] items-end gap-3">
             <TextInput
               id={`comp-name-${index}`}
-              label={rows.length > 1 ? `מתחרה ${index + 1}` : "שם העסק"}
+              label={flow.draft.business_model === "saas" ? "כלי או דרך עבודה" : rows.length > 1 ? `מתחרה ${index + 1}` : "שם העסק"}
               value={row.name}
               onChange={(value) => setRow(index, { name: value })}
               placeholder="השם"
@@ -810,10 +811,10 @@ export function StepCompetitors(props: StepProps) {
             />
             <TextInput
               id={`comp-link-${index}`}
-              label="אתר או אינסטגרם"
+              label={flow.draft.business_model === "saas" ? "קישור (לא חובה)" : "אתר או אינסטגרם"}
               value={row.link ?? ""}
               onChange={(value) => setRow(index, { link: value })}
-              placeholder="@name"
+              placeholder="https://example.com"
               dir="ltr"
               inputMode="url"
               maxLength={200}
@@ -824,7 +825,7 @@ export function StepCompetitors(props: StepProps) {
       {rows.length < MAX_COMPETITORS && rows[rows.length - 1]?.name.trim() ? (
         <div>
           <QuietLink tone="action" onClick={() => setDraft({ competitors: [...rows, { name: "", link: "" }] })}>
-            להוסיף עוד מתחרה
+            {flow.draft.business_model === "saas" ? "להוסיף עוד חלופה" : "להוסיף עוד מתחרה"}
           </QuietLink>
         </div>
       ) : null}
@@ -832,7 +833,7 @@ export function StepCompetitors(props: StepProps) {
           than the name box beside it. */}
       <div className="-my-2 flex flex-wrap items-center justify-between gap-x-3">
         <p className="text-[13px] text-[color:var(--ink-muted)]">לא חייבים קישור. מספיק השם.</p>
-        <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
+        {flow.draft.business_model !== "saas" && <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />}
       </div>
     </StepShell>
   );

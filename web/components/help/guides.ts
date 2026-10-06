@@ -28,7 +28,9 @@ export type HelpTopic =
   | "website"
   | "competitor_instagram"
   | "google_business_profile"
-  | "whatsapp_business";
+  | "whatsapp_business"
+  | "chatgpt_ads"
+  | "related_accounts";
 
 export type Device = "phone" | "computer";
 
@@ -610,7 +612,56 @@ const whatsappBusiness: Guide = {
   source: { label: "ההסבר של וואטסאפ: קישור לשיחה", url: "https://faq.whatsapp.com/5913398998672934" },
 };
 
+/* ChatGPT ads — checked 2026-10-06 against OpenAI's official partner setup,
+ * campaign-targeting and reporting docs. Account access and supported countries
+ * are unverified here. A normal ChatGPT/API subscription is not an Ads API key. */
+const chatgptAds: Guide = {
+  topic: "chatgpt_ads",
+  title: "האם כדאי לפרסם ב-ChatGPT?",
+  short: "זה ערוץ מודעות בתשלום שכדאי לבדוק כשהקהל שלכם מחפש פתרון לבעיה. קודם נוודא שיש גישה ושהפרסום זמין במדינות של הקהל.",
+  minutes: 3,
+  blocks: [
+    { title: "מתי זה יכול להתאים", text: "למשל, כשמישהו מחפש כלי לניהול סטודיו או משווה פתרונות לעסק. נבדוק מה אתם מציעים, למי ולאיזה צורך. התאמה היא השערה שנבחן, לא הבטחה לתוצאות." },
+    { title: "לפני שמוציאים כסף", steps: [
+      "בדקו ב-Ads Manager של OpenAI שיש לכם חשבון פרסום וגישה אליו. מנוי ChatGPT או מפתח ליצירת תוכן לא מחליפים חשבון מודעות.",
+      "בדקו שהמותג אושר לפרסום ושהמדינות שאליהן תרצו להגיע זמינות בחשבון. עדיין לא אימתנו זמינות לפרסום בישראל.",
+      "בחרו פעולה אחת למדידה: פנייה, הרשמה או רכישה. הוסיפו מדידה באתר לפני ניסוי בתשלום.",
+      "קבעו תקציב מוגבל ובדקו את המודעה לפני שמפעילים אותה. כרגע אי אפשר לחבר חשבון או להפעיל מודעות ChatGPT מתוך IsraMarket.",
+    ] },
+    { title: "איך נדע אם זה עוזר", text: "נרצה לדעת כמה הוצאנו, כמה אנשים הגיעו ומה עשו — ובעיקר אם הגיעו פניות מתאימות או מכירות. OpenAI מציעים דוחות ומדידת המרות; החיבור שלהם ל-IsraMarket מתוכנן. מספרי ההמרות יכולים להיות שונים מגוגל אנליטיקס, כי כל מערכת מייחסת תוצאות אחרת." },
+  ],
+  stuck: { title: "צריכים עזרה? פנו דרך התמיכה", message: "היי, אנחנו רוצים לבדוק התאמה לפרסום ב-ChatGPT. נשמח לעזרה בבדיקת גישה לחשבון, המדינות והמדידה לפני שמתחילים.", copiedNote: COPIED },
+  why: "נשווה את הערוץ לתוכנית ולתוצאות של העסק לפני שנמליץ להשקיע בו. מפתחות וסיסמאות נשארים במערכות המאובטחות, ולא שולחים אותם בהודעת תמיכה.",
+  source: { label: "ההסבר של OpenAI: הכנת חשבון פרסום", url: "https://developers.openai.com/ads/api-partner-setup" },
+};
+
+/* Related-account API scope: Meta's official Instagram collection on Postman.
+ * Partnership permissions: facebookblueprint.com/student/path/253173-partnership-ads-course.
+ * The selection criteria below are IsraMarket's product recommendation, not platform guarantees. */
+const relatedAccounts: Guide = {
+  topic: "related_accounts", title: "איך מוצאים קהל ושיתופי פעולה שמתאימים לעסק?", minutes: 3,
+  short: "מתחילים בצורך של הלקוח. חשבונות בענף יכולים לעזור ללמוד ולמצוא שותפים, אבל קישור לחשבון לא נותן גישה לעוקבים שלו.",
+  blocks: [
+    { title: "מי צריך אתכם, ומתי", cases: [
+      { label: "נותני שירות וסטודיואים", text: "למשל: בעלי עסק שעומדים לפתוח וצריכים מעצבת. נבדוק מה מביא אותם לפנות, איזה סגנון הם מחפשים ואיזו עבודה אמיתית בונה אמון." },
+      { label: "חנויות ועסקים אונליין", text: "למשל: מי שקונים מתנה לאירוע מסוים. נבדוק אילו מוצרים מתאימים, איך מגיעים לקנייה והאם יש סיבה לחזור." },
+      { label: "תוכנה וסטארטאפים", text: "נבדיל בין מי שישתמש במוצר למי שמחליט לשלם. נבחר קהל לפי הבעיה ותפקיד הקונה, ונבדוק גם דרך להגיע אליו בקהילה מקצועית." },
+    ] },
+    { title: "איזה חשבון כדאי לבדוק", steps: [
+      "מתחרה: ללמוד איזה מסר ותוכן הוא מציג. זו לא הוכחה שהקהל שלו יתאים לכם.",
+      "עסק משלים: למשל מעצבת ובונה אתרים שפונים לאותו סוג לקוח. בדקו צורך משותף, שפה ואזור פעילות.",
+      "יוצר או קהילה: בדקו תוכן ותגובות אמיתיות שרלוונטיים לצורך של הלקוחות שלכם. מספר עוקבים לבדו לא מספיק.",
+    ] },
+    { title: "איך הופכים את זה לניסוי", text: "בחרו שותף מתאים והציעו יחד תוכן שמועיל לקהל. פונים רק אחרי שבדקתם ואישרתם. לפרסום משותף במטא דרושות ההרשאות המתאימות מהשותף; הוא לא מופעל אוטומטית ב-IsraMarket.", note: "נמדוד פניות מתאימות או קניות מקישור מסומן. אין העתקת עבודות או משלוח הודעות אוטומטי לעוקבים. נתוני המחקר תלויים במה שהפלטפורמה מאפשרת לקרוא." },
+  ],
+  stuck: { title: "צריכים עזרה? פנו דרך התמיכה", message: "היי, נשמח לעזרה בבחירת קהל וחשבון משלים לניסוי שיווקי, לפי השירות או המוצרים שלנו.", copiedNote: COPIED },
+  why: "בתוכנית נבחר מעט ערוצים שאפשר להתחיל בהם, לפי העסק, המחקר והתוצאות. שיתוף פעולה הוא הצעה לבדיקה, לא חיבור שכבר קיים.",
+  source: { label: "מטא: שיתופי פעולה והרשאות לפרסום", url: "https://www.facebookblueprint.com/student/path/253173-partnership-ads-course" },
+};
+
 export const GUIDES: Record<HelpTopic, Guide> = {
+  related_accounts: relatedAccounts,
+  chatgpt_ads: chatgptAds,
   google_analytics: googleAnalytics,
   instagram_business: instagramBusiness,
   instagram,
@@ -626,5 +677,6 @@ export const GUIDES: Record<HelpTopic, Guide> = {
 export const HELP_GROUPS: { title: string; topics: HelpTopic[] }[] = [
   { title: "לחבר את הנתונים", topics: ["google_analytics", "instagram_business"] },
   { title: "הקישורים שלכם", topics: ["website", "instagram", "facebook", "tiktok", "whatsapp_business"] },
+  { title: "ערוצי שיווק נוספים", topics: ["related_accounts", "chatgpt_ads"] },
   { title: "גוגל ועסקים אחרים", topics: ["google_business_profile", "competitor_instagram"] },
 ];

@@ -11,6 +11,7 @@ import type { BusinessModel, Diagnostics, PrimaryGoal } from "@/lib/api";
 export const DEFAULT_BUSINESS_MODEL: BusinessModel = "products";
 
 export const BUSINESS_MODEL_OPTIONS: { key: BusinessModel; title: string; desc: string }[] = [
+  { key: "saas", title: "תוכנה או סטארטאפ", desc: "אפליקציה, מוצר דיגיטלי או שירות תוכנה" },
   {
     key: "products",
     title: "מוצרים",
@@ -41,6 +42,7 @@ const SERVICE_GOALS: GoalOption[] = [
 ];
 
 export const GOALS_BY_MODEL: Record<BusinessModel, GoalOption[]> = {
+  saas: [{ key: "leads", title: "הרשמות או הדגמות", desc: "להביא את האנשים הנכונים לנסות את המוצר" }, { key: "sales", title: "מנויים בתשלום", desc: "להפוך התנסות לתשלום" }, { key: "brand_awareness", title: "היכרות עם המוצר", desc: "להסביר למי המוצר מתאים ומה הוא פותר" }],
   products: PRODUCT_GOALS,
   services: SERVICE_GOALS,
   both: [...PRODUCT_GOALS, ...SERVICE_GOALS],
@@ -48,6 +50,7 @@ export const GOALS_BY_MODEL: Record<BusinessModel, GoalOption[]> = {
 
 /** The goal to fall back to when the model changes and the old goal is no longer valid. */
 export const DEFAULT_GOAL_BY_MODEL: Record<BusinessModel, PrimaryGoal> = {
+  saas: "leads",
   products: "sales",
   services: "leads",
   both: "sales",
@@ -142,6 +145,7 @@ export const BRAND_OWNER_QUESTION: DiagnosticQuestion = {
 };
 
 export const DIAGNOSTIC_QUESTIONS: Record<BusinessModel, DiagnosticQuestion[]> = {
+  saas: [LEAD_SOURCE_QUESTION],
   products: [CLUB_QUESTION, REPEAT_QUESTION, CHANNEL_QUESTION],
   services: [LEAD_SOURCE_QUESTION, PORTFOLIO_QUESTION, BRAND_OWNER_QUESTION],
   both: [CHANNEL_QUESTION, REPEAT_QUESTION, LEAD_SOURCE_QUESTION, PORTFOLIO_QUESTION],
@@ -153,6 +157,9 @@ export function diagnosticQuestionsFor(model: BusinessModel): DiagnosticQuestion
 
 /** The free-text capacity question, phrased for what the money is meant to produce. */
 export function capacityCopy(model: BusinessModel): { title: string; note: string; placeholder: string } {
+  if (model === "saas") {
+    return { title: "יש מגבלה שכדאי לקחת בחשבון לפני שמביאים משתמשים?", note: "לא חובה. למשל: מוצר בבטא, צורך בליווי אישי או מספר מקומות מוגבל.", placeholder: "למשל: בבטא, אפשר ללוות כרגע 20 עסקים." };
+  }
   if (model === "services") {
     return {
       title: "כמה פרויקטים או לקוחות אתם יכולים לקחת במקביל?",

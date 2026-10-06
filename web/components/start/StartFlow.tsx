@@ -37,6 +37,8 @@ import {
   reflectionAfter,
   type StepId,
 } from "./script";
+import { StepSoftwareOffer } from "./StepSoftwareOffer";
+import { StepSoftware } from "./StepSoftware";
 import { StepBudget, StepGrow } from "./StepGoal";
 import { StepBaseline, StepLever, StepTarget } from "./StepNumbers";
 import { StepDirection, StepFound } from "./StepPlan";
@@ -345,6 +347,12 @@ export function StartFlow() {
   switch (step) {
     case "name":
       screen = <StepName {...common} />;
+      break;
+    case "software_offer":
+      screen = <StepSoftwareOffer {...common} />;
+      break;
+    case "software":
+      screen = <StepSoftware {...common} />;
       break;
     case "what":
       screen = <StepWhat {...common} />;

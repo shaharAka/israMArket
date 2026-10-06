@@ -517,7 +517,9 @@ class TrialTestCase(unittest.TestCase):
         self.add_month([])  # Revision 8: the month's structure, no posts yet
         self.assertEqual(self.status("start_posts"), "todo")
         self.assertEqual(self.status("approve_first"), "locked")
-        step = self.steps(self.post_json("/trial/confirm", {"what": "posts_started"}))["start_posts"]
+        payload = self.post_json("/trial/confirm", {"what": "posts_started"})
+        self.assertEqual(payload["posts_written"], 0)
+        step = self.steps(payload)["start_posts"]
         self.assertEqual(step["status"], "done")
         self.assertTrue(step["done_at"])
 
@@ -527,6 +529,7 @@ class TrialTestCase(unittest.TestCase):
         self.add_month([post(1), post(1), post(2)])
         steps = self.steps()
         self.assertEqual(steps["approve_first"]["status"], "todo")
+        self.assertEqual(self.payload()["posts_written"], 3)
         self.assertIn("2", steps["approve_first"]["why_he"])
         self.assertEqual(steps["publish_first"]["status"], "locked")
         self.assertEqual(steps["month_two"]["status"], "todo")

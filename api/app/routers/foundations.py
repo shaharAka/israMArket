@@ -40,13 +40,16 @@ MAX_FEATURED = 10
 
 def minimum_featured(model: str) -> int:
     """One service is enough to establish a first content focus; shops need variety."""
-    return 1 if model == "services" else MIN_FEATURED
+    return 1 if model in {"services", "saas"} else MIN_FEATURED
 
 # One list for the picks screen and the post writer (services/connected_posts.py).
 REASONS: dict[str, str] = FEATURED_REASONS_HE
 
 # The baseline fields per business model. Keys match the goal-setting baseline (Rev 6).
 BASELINE_FIELDS: dict[str, dict] = {
+    "software_signups_month": {"label_he": "הרשמות למוצר או לרשימת ההמתנה בחודש", "unit_he": "בחודש", "models": {"saas"}},
+    "software_demos_month": {"label_he": "בקשות להדגמה בחודש", "unit_he": "בחודש", "models": {"saas"}},
+    "software_paid_month": {"label_he": "לקוחות חדשים בתשלום בחודש", "unit_he": "בחודש", "models": {"saas"}},
     "orders_month": {"label_he": "הזמנות או קניות בחודש", "unit_he": "בחודש", "models": {"products", "both"}},
     "avg_order_ils": {"label_he": "סכום ממוצע לקנייה", "unit_he": "₪", "models": {"products", "both"}},
     "inquiries_month": {"label_he": "פניות בחודש", "unit_he": "בחודש", "models": {"services", "both"}},
@@ -72,7 +75,7 @@ def _now() -> str:
 
 
 def _model(business: Business) -> str:
-    return business.business_model if business.business_model in ("products", "services", "both") else "products"
+    return business.business_model if business.business_model in ("products", "services", "both", "saas") else "products"
 
 
 # --- baseline --------------------------------------------------------------------------
@@ -94,6 +97,9 @@ def baseline_filled(baseline) -> bool:
 
 
 class BaselineIn(BaseModel):
+    software_signups_month: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
+    software_demos_month: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
+    software_paid_month: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
     orders_month: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
     avg_order_ils: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
     inquiries_month: int | None = Field(default=None, ge=0, le=BASELINE_MAX)
@@ -211,13 +217,15 @@ def _featured_payload(business: Business, db: Session) -> dict:
             for index, item in enumerate(items)
         ],
         "saved_at": raw.get("saved_at"),
-        "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items() if model != "services" or key in {"seasonal", "new"}],
+        "reasons": [{"key": key, "label_he": label} for key, label in REASONS.items() if model not in {"services", "saas"} or key in {"seasonal", "new"}],
         "min": minimum_featured(model),
         "max": MAX_FEATURED,
-        "kind_he": "שירותים" if model == "services" else "מוצרים ושירותים" if model == "both" else "מוצרים",
+        "kind_he": "נושאים על המוצר" if model == "saas" else "שירותים" if model == "services" else "מוצרים ושירותים" if model == "both" else "מוצרים",
         "business_model": model,
-        "kinds": [{"key": key, "label_he": label} for key, label in featured_recommendations.KINDS.items()
-                  if (model != "services" or key != "product") and (model != "products" or key == "product")],
+        "kinds": ([{"key": key, "label_he": label} for key, label in {
+            "offering": "מוצר או יכולת", "work": "הדגמה אמיתית", "expertise": "הסבר שימושי", "story": "סיפור לקוח",
+        }.items()] if model == "saas" else [{"key": key, "label_he": label} for key, label in featured_recommendations.KINDS.items()
+                  if (model != "services" or key != "product") and (model != "products" or key == "product")]),
         "suggestions": _suggestions(business, {item["name"] for item in items}),
         "recommendations": featured_recommendations.recommend(db, business, stored, {item["name"] for item in items}),
     }

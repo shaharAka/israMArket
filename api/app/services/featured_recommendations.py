@@ -32,12 +32,15 @@ def _terms(text):
 
 def _offers(business, stored):
     candidates = []
+    context = _dict(stored.get("owner_context"))
+    focus = _text(_dict(context.get("software")).get("focus_product")) if business.business_model == "saas" else ""
     brand = _dict(stored.get("brand_language"))
     site = _list(_dict(stored.get("extracted")).get("offers"))
     if brand.get("source") != "preset":
         site += _list(brand.get("offers_seen"))
     owner = re.split(r"[,،\n;|•]+|\s+-\s+|[.:](?:\s+|$)", business.offerings or "")
-    for raw, source in [(v, "site") for v in site] + [(v, "owner") for v in owner]:
+    focused = [(focus, "focus")] if focus else []
+    for raw, source in focused + [(v, "site") for v in site] + [(v, "owner") for v in owner]:
         name = _text(raw, 80)
         if len(name) > 1 and not any(c["name"] == name for c in candidates):
             candidates.append({"name": name, "source": source})
@@ -89,6 +92,9 @@ def recommend(db, business, stored, taken):
             match = len(terms & _terms(" ".join(_text(insight.get(k), 300) for k in ("title", "text", "plan_change"))))
             if match and match + 10 > score:
                 score, basis, why = match + 10, "המחקר השוטף", f"כדאי לבדוק בעקבות הממצא: {_text(insight.get('title'), 80)}."
+        if source == "focus":
+            # A research ranking must not silently replace the owner's selected product.
+            score, basis, why = 100, "הבחירה שלכם", "בחרתם להתחיל לקדם את המוצר הזה."
         candidates.append({"name": name, "kind": "service" if model == "services" else "product" if model == "products" else "offering",
                            "why_he": why, "source_he": basis, "needs_detail": False, "score": score})
     candidates.sort(key=lambda item: -item["score"])
@@ -98,5 +104,11 @@ def recommend(db, business, stored, taken):
         out = candidates[:2] + [
             {"name": f"טיפ מקצועי: {subject}", "kind": "expertise", "why_he": "להסביר ללקוחות מה כדאי לדעת לפני שפונים אליכם.", "source_he": "השירותים שלכם", "needs_detail": False},
             {"name": f"דוגמה מעבודה: {subject}", "kind": "work", "why_he": "להראות איך אתם עובדים. בחרו עבודה אמיתית ותארו אותה.", "source_he": "הצעה שצריכה דוגמה שלכם", "needs_detail": True},
+        ]
+    if model == "saas" and candidates:
+        subject = candidates[0]["name"][:48]
+        out = candidates[:2] + [
+            {"name": f"הבעיה שהמוצר פותר: {subject}", "kind": "expertise", "why_he": "להסביר למי זה מתאים ומה משתפר בעבודה שלהם.", "source_he": "המוצר שלכם", "needs_detail": False},
+            {"name": f"הדגמת המוצר: {subject}", "kind": "work", "why_he": "להראות פעולה אמיתית במוצר. הוסיפו צילום או תיאור של מה שכבר עובד.", "source_he": "הצעה שצריכה הדגמה שלכם", "needs_detail": True},
         ]
     return [{k: v for k, v in item.items() if k != "score"} for item in out if item["name"] not in taken]

@@ -10,7 +10,7 @@ Everything that needs to know which path we are on reads it from here, so the fo
 single definition rather than being re-implemented per prompt.
 """
 
-BUSINESS_MODELS = ("products", "services", "both")
+BUSINESS_MODELS = ("products", "services", "both", "saas")
 
 DEFAULT_BUSINESS_MODEL = "products"
 
@@ -18,12 +18,14 @@ MODEL_TITLES = {
     "products": "מוצרים",
     "services": "שירותים",
     "both": "מוצרים ושירותים",
+    "saas": "תוכנה או סטארטאפ",
 }
 
 # Which goals are meaningful for each model. `sales` is a purchase goal and is
 # deliberately absent for a pure service business; `leads` is meaningless for a shop
 # that has no inquiry step.
 VALID_GOALS: dict[str, tuple[str, ...]] = {
+    "saas": ("leads", "sales", "brand_awareness"),
     "products": ("sales", "brand_awareness"),
     "services": ("leads", "personal_brand"),
     "both": ("sales", "leads", "brand_awareness", "personal_brand"),
@@ -31,12 +33,14 @@ VALID_GOALS: dict[str, tuple[str, ...]] = {
 
 # The unit a plan is actually trying to produce. Used in copy and in prompts.
 CONVERSION_UNIT = {
+    "saas": "הרשמה, בקשה להדגמה או מנוי בתשלום — לפי דרך ההצטרפות",
     "products": "רכישה",
     "services": "פנייה",
     "both": "רכישה או פנייה",
 }
 
 VALID_DIAGNOSTIC_KEYS: dict[str, tuple[str, ...]] = {
+    "saas": ("lead_source", "capacity_constraint"),
     "products": ("has_customer_club", "repeat_vs_new", "priority_channel", "capacity_constraint"),
     "services": ("lead_source", "has_portfolio", "brand_owner", "capacity_constraint"),
     "both": (
@@ -72,6 +76,13 @@ def audience_framing(business_model: str | None) -> str:
     misses, so the fork is stated once here rather than re-invented per prompt.
     """
     model = normalise_model(business_model)
+    if model == "saas":
+        return """
+סוג העסק: מוצר תוכנה/סטארטאפ. הפרד בין המשתמש לבין מי שמחליט לשלם.
+הגדר קהל לפי בעיה, תפקיד וסיטואציה שמובילים לחיפוש פתרון; לא לפי כל מי שאוהב טכנולוגיה.
+התאם ערוץ לקהל ולשוק, לא אוטומטית לשכונה או לאינסטגרם.
+הרשמה אינה שימוש פעיל או הכנסה. אל תציג חנות פיזית, מלאי או תיק עבודות כאילו אלה המוצר.
+"""
     if model == "services":
         return """
 סוג העסק: נותן שירותים. קהל היעד כאן הוא סוג לקוח — מי מזמין את השירות, ובאיזו סיטואציה.
@@ -101,6 +112,15 @@ def model_framing(business_model: str | None) -> str:
     rather than only labelling the business.
     """
     model = normalise_model(business_model)
+    if model == "saas":
+        return """
+סוג העסק: תוכנה/סטארטאפ. תוכנית שיווק מתמשכת למוצר, לא לחנות או לבעל מקצוע.
+התאם ניסוי לשלב: בדיקת צורך/רשימת המתנה, בטא, או מוצר פעיל. הבחן בין משתמש לקונה.
+המרה: הרשמה/ניסיון עצמאי או בקשת הדגמה, ואז שימוש בעל ערך ותשלום. לא כל הרשמה היא לקוח.
+אל תמציא MRR, שימור, נטישה, CAC, LTV או יחס המרה. בלי נתונים יש קודם ניסוי מדיד, ללא הבטחת צמיחה.
+תוכן: הסבר בעיה, ידע מקצועי, הדגמת המוצר עם מסכים אמיתיים, סיפורי מייסדים ועדויות שאושרו.
+שוק ושפה הם לפי הבעלים; אל תניח שכל תוכנה מקומית או שכל תוכנה נמכרת באנגלית.
+"""
     if model == "services":
         return """
 סוג העסק: נותן שירותים. זו אינה חנות.
@@ -126,3 +146,14 @@ def model_framing(business_model: str | None) -> str:
 סוג העסק: מוכר מוצרים.
 יחידת ההמרה היא רכישה. יעדים הם מכירות, סל קנייה, לקוחות חוזרים ותנועה.
 """
+
+
+def related_account_framing() -> str:
+    """Peer research is evidence for a hypothesis, not access to somebody else's audience."""
+    return """
+חשבונות דומים: נתח ציבורי וזמין, ורק אם יש מקור ממשי. קשר כל הצעה לצורך הלקוח, שוק/אזור ושפה.
+חשבון בענף הוא כיוון למחקר או שותף אפשרי, לא הוכחה שאפשר להגיע לעוקביו ולא הרשאה לפנות אליהם.
+הפרד מתחרים (ללמוד), עסקים משלימים (שיתוף פעולה) ויוצרים/קהילות (בדיקת התאמה לקהל).
+אל תמציא חשבונות, קהלים חופפים או הסכמות. אין העתקת עבודות, הודעות אוטומטיות או הבטחה לטרגט עוקבים של חשבון אחר.
+לניסוי משותף צריך אישור הבעלים והשותף, ולהצעה ממומנת צריך לבדוק גם הרשאות וזמינות בפלטפורמה.
+""".strip()

@@ -263,13 +263,14 @@ def cached_brand(url: str) -> dict | None:
     return brand_view(preview_service.cached_scan(url)) or brand_view(preview_service.cached_preview(url))
 
 
-def _scan_brand(url: str) -> dict | None:
+def _scan_brand(url: str, include_products: bool = False) -> dict | None:
     # Brand only (no sample post), sharing the public preview's scan cache.
-    return brand_view(preview_service.build_brand_preview(url))
+    return brand_view(preview_service.build_brand_preview(url, include_products=True) if include_products else preview_service.build_brand_preview(url))
 
 
 class BrandIn(BaseModel):
     url: str = Field(min_length=4, max_length=300)
+    business_model: Literal["products", "services", "both", "saas"] | None = None
 
 
 @router.post("/brand")
@@ -281,12 +282,12 @@ def public_brand(body: BrandIn, request: Request) -> dict:
     """
     try:
         url = drafts.normalize_website(body.url)
-        key = f"brand:{preview_service.cache_key(url)}"
+        key = f"brand:{preview_service.cache_key(url)}" + (":software" if body.business_model == "saas" else "")
     except (drafts.LinkError, ValueError) as exc:
         return {"status": "failed", "brand": None, "reason_he": str(exc)}
 
     hit = cached_brand(url)
-    if hit:
+    if hit and (body.business_model != "saas" or ((preview_service.cached_scan(url) or {}).get("raw") or {}).get("product_research")):
         return {"status": "ready", "brand": hit, "cached": True}
 
     if _scans.running(key) is None:
@@ -303,7 +304,7 @@ def public_brand(body: BrandIn, request: Request) -> dict:
         name="onboarding-brand",
         per_ip=BRAND_PER_IP,
         global_cap=BRAND_GLOBAL,
-        work=lambda: _scan_brand(url),
+        work=lambda: _scan_brand(url, True) if body.business_model == "saas" else _scan_brand(url),
     )
     if future is None:  # cached between the two looks
         return {"status": "ready", "brand": answers.get(key), "cached": True}
@@ -354,10 +355,10 @@ def style_presets() -> dict:
 def success_options(model: str = "products", grow_where: str | None = None) -> dict:
     """The "מה ייחשב הצלחה" choices for a business model and where it wants to grow,
     plus the budget chips. No model, no network."""
-    model = model if model in {"products", "services", "both"} else "products"
+    model = model if model in {"products", "services", "both", "saas"} else "products"
     return {
         "options": drafts.success_options(model, grow_where),
-        "grow_where": [{"key": k, "name_he": v} for k, v in drafts.GROW_WHERE_HE.items()] if model != "services" else [],
+        "grow_where": [{"key": k, "name_he": v} for k, v in drafts.GROW_WHERE_HE.items()] if model not in {"services", "saas"} else [],
         "budgets": [{"key": k, "label_he": v["label_he"]} for k, v in drafts.BUDGET_RANGES.items()],
     }
 

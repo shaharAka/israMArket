@@ -134,6 +134,7 @@ CHANNELS: dict[str, dict] = {
     "gbp": {"name_he": "הכרטיס של העסק בגוגל", "posting": True, "spend": False},
     "meta_ads": {"name_he": "פרסום ממומן באינסטגרם ובפייסבוק", "posting": False, "spend": True, "paid": True},
     "google_ads": {"name_he": "פרסום בחיפוש בגוגל", "posting": False, "spend": True, "paid": True},
+    "chatgpt_ads": {"name_he": "מודעות ב-ChatGPT", "posting": False, "spend": True, "paid": True, "requires_eligibility": True},
     "email": {"name_he": "ניוזלטר במייל", "posting": True, "spend": True},
     "local_partnerships": {"name_he": "שיתופי פעולה עם עסקים באזור", "posting": False, "spend": True},
     "influencers": {"name_he": "משפיענים", "posting": False, "spend": True, "paid": True},
@@ -150,7 +151,7 @@ FORMATS = ("reel", "carousel", "image", "story")
 # The content mix: the types a month's posts are split into. Fixed, so the plan speaks
 # structure ("2 פוסטים על המוצרים, 1 של לקוחות מספרים") and never picks products.
 CONTENT_TYPES: dict[str, dict] = {
-    "product": {"name_he": {"products": "המוצרים", "services": "השירותים", "both": "המוצרים והשירותים"},
+    "product": {"name_he": {"products": "המוצרים", "services": "השירותים", "both": "המוצרים והשירותים", "saas": "המוצר והבעיה שהוא פותר"},
                 "what_he": "מה אתם מוכרים ולמי זה מתאים. אתם בוחרים אילו"},
     "value": {"name_he": "תוכן שמלמד ועוזר", "what_he": "טיפ, הסבר או תשובה לשאלה שלקוחות שואלים"},
     "behind_scenes": {"name_he": "מאחורי הקלעים", "what_he": "איך זה נעשה, מי עושה את זה"},
@@ -211,7 +212,7 @@ def plan_months(today: date, model: str = "products") -> list[dict]:
             when = date.fromisoformat(event["date"])
             if index == 0 and when < today:
                 continue
-            if model == "services" and event.get("kind") == "קניות":
+            if model in {"services", "saas"} and event.get("kind") == "קניות":
                 continue
             events.append(event)
         out.append({"index": index + 1, "year": year, "month": month,
@@ -256,6 +257,9 @@ def _presence(draft: OnboardingDraft) -> str | None:
 
 def _cost_blocks(draft: OnboardingDraft, frame: dict) -> tuple[str, str]:
     """The published cost ranges for this budget (Meta and Google), for the prompt."""
+    if draft.model == "saas":
+        note = "אין כאן מקור מאומת לעלות רכישת משתמש למוצר התוכנה הזה ולשוק שלו. התקציב שנמסר הוא תקרה לניסוי, לא תחזית הרשמות או הכנסה."
+        return note, note
     monthly = frame["monthly_ils"] or 0
     meta = cost_model.prompt_block(cost_model.plan_from_budget(monthly, draft.goal_key, draft.model))
     google = google_cost.prompt_block(
@@ -268,6 +272,8 @@ def _cost_blocks(draft: OnboardingDraft, frame: dict) -> tuple[str, str]:
 
 def _unlock_facts(draft: OnboardingDraft) -> str:
     """The thresholds a "what budget would unlock" line may quote."""
+    if draft.model == "saas":
+        return "ניסוי בתשלום דורש קודם בחירת קהל, אירוע הרשמה/שימוש ומדידת תוצאות. אין נתוני עלות מאומתים למוצר ולשוק האלה."
     plan = google_cost.plan_from_budget(
         0, draft.business_type, draft.offerings, draft.model, presence_type=_presence(draft)
     )
@@ -284,7 +290,9 @@ def _unlock_facts(draft: OnboardingDraft) -> str:
     return "\n".join(lines)
 
 
-def sources(frame: dict) -> tuple[list[str], list[dict]]:
+def sources(frame: dict, model: str = "products") -> tuple[list[str], list[dict]]:
+    if model == "saas":
+        return [], []
     items = [
         {"title": "Kan Media: כמה עולה פרסום באינסטגרם ובפייסבוק לחנות בישראל", "url": cost_model.SOURCE_URL},
         {"title": google_cost.SOURCE_TITLE, "url": google_cost.SOURCE_URL},
@@ -520,6 +528,10 @@ def _channels_block(draft: OnboardingDraft, frame: dict, scan: dict | None = Non
         if spec.get("paid") and frame["organic_only"]:
             continue
         lines.append(f"- {key}: {spec['name_he']}" + (" (קיים)" if key in have else ""))
+    if not frame["organic_only"]:
+        lines.append("chatgpt_ads הוא ערוץ בתשלום לבדיקה, לא ערוץ מחובר. בחר בו רק אם יש התאמה לבעיה ולקהל שנמסרו. "
+                     "גישה לחשבון, אישור המותג ומדינות הפרסום לא אומתו; אין להבטיח זמינות בישראל או תוצאות. "
+                     "אסור להקצות לו תקציב או מועדי מודעות פעילות לפני האימות. אפשר להציע ניסוי עתידי עם קריטריון הצלחה.")
     lines.append(
         f"לכל היותר {MAX_NEW_STREAMS.get(level, 2)} ערוצים חדשים ברבעון. "
         + ("ערוץ חדש אחד לכל היותר בכל חודש, " if level != "regular" else "")
@@ -587,7 +599,7 @@ def _numbers_block(numbers: dict | None) -> str:
 def _mix_block(draft: OnboardingDraft, inputs: dict, numbers: dict | None) -> str:
     key, _ = reveal.cadence_key(draft, inputs)
     per_month = reveal.cadence_view(key, "default")["posts_per_month"]
-    side = "services" if draft.model == "services" else ("both" if draft.model == "both" else "products")
+    side = "saas" if draft.model == "saas" else "services" if draft.model == "services" else ("both" if draft.model == "both" else "products")
     names = "; ".join(
         f"{k} = {(v['name_he'][side] if isinstance(v['name_he'], dict) else v['name_he'])} ({v['what_he']})"
         for k, v in CONTENT_TYPES.items()
@@ -856,6 +868,14 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
                          "starts_month": 1 if kind == "existing" else start,
                          "effort_he": clean_text(item.get("effort_he"), 200),
                          "cadence_he": clean_text(item.get("cadence_he"), 120)})
+        if CHANNELS[key].get("requires_eligibility"):
+            # Model output is not evidence of Ads Manager access or country eligibility.
+            channels[-1].update({
+                "kind": "new", "availability": "needs_check",
+                "why_he": "כדאי לבדוק אם אנשים שמחפשים פתרון ב-ChatGPT מתאימים לקהל שלכם. נבחן התאמה לפני שנמליץ להשקיע.",
+                "effort_he": "קודם בודקים גישה לחשבון, אישור המותג וזמינות במדינות של הקהל. החיבור והפרסום דרך IsraMarket עדיין בפיתוח.",
+                "cadence_he": "בדיקת התאמה; ללא תקציב כרגע",
+            })
     new = sorted((c for c in channels if c["kind"] == "new"), key=lambda c: c["starts_month"])
     max_new = MAX_NEW_STREAMS.get(level, 2)
     if len(new) > max_new:
@@ -890,6 +910,9 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
                 if key not in starts or not CHANNELS[key]["spend"]:
                     problems.append(f"שורת תקציב לערוץ שלא בתוכנית או שלא שמים בו כסף: {key}.")
                     continue
+                if CHANNELS[key].get("requires_eligibility"):
+                    problems.append("ChatGPT ads דורש אימות גישה ומדינות לפני הקצאת תקציב. כרגע זה ערוץ לבדיקה בלבד.")
+                    continue
                 if info["index"] < starts[key]:
                     problems.append(f"הערוץ {key} מקבל תקציב לפני החודש שהוא מתחיל.")
                     continue
@@ -901,7 +924,7 @@ def parse_plan(parsed: dict, draft: OnboardingDraft, scan: dict | None, insights
             if frame["cap"] and sum(line["ils_range"][1] for line in lines) > frame["cap"]:
                 problems.append(f"התקציב בחודש {info['index']} עובר את התקרה של {frame['cap']:,} ₪.")
         budget_months.append({"month_label": info["label"], "lines": lines})
-    source_titles, source_items = sources(frame)
+    source_titles, source_items = sources(frame, draft.model)
     budget = {
         "monthly_ils": frame["monthly_ils"], "range": frame["range"], "months": budget_months,
         "organic_only": frame["organic_only"], "sources_he": source_titles, "sources": source_items,
@@ -1317,6 +1340,16 @@ class QuarterPlanIn(BaseModel):
     def stored(self) -> dict:
         data = self.model_dump(mode="json")
         data.pop("cached", None)
+        # Signup accepts an owner-edited plan. That cannot certify provider eligibility.
+        for channel in data["channels"]:
+            if channel.get("key") == "chatgpt_ads":
+                channel.update({"kind": "new", "availability": "needs_check", "cadence_he": "בדיקת התאמה; ללא תקציב כרגע",
+                                "effort_he": "קודם בודקים גישה לחשבון, אישור המותג וזמינות במדינות של הקהל. החיבור והפרסום דרך IsraMarket עדיין בפיתוח."})
+        budget_months = data["budget"].get("months")
+        if isinstance(budget_months, list):
+            for month in budget_months:
+                if isinstance(month, dict) and isinstance(month.get("lines"), list):
+                    month["lines"] = [line for line in month["lines"] if not isinstance(line, dict) or line.get("channel_key") != "chatgpt_ads"]
         text = json.dumps(data, ensure_ascii=False)
         if len(text) > 60_000:
             raise ValueError("התוכנית גדולה מדי.")

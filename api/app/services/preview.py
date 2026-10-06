@@ -54,7 +54,7 @@ SAMPLE_POST_SCHEMA = {
     "description": "ניחוש על העסק ופוסט אחד לדוגמה, מתוך האתר בלבד",
     "properties": {
         "business_type": {"type": "string", "enum": list(BUSINESS_TYPE_LABELS)},
-        "business_model": {"type": "string", "enum": ["products", "services", "both"]},
+        "business_model": {"type": "string", "enum": ["products", "services", "both", "saas"]},
         "presence_type": {
             "type": "string",
             "enum": ["brick_and_mortar", "online_only", "hybrid"],
@@ -310,7 +310,7 @@ def _public_payload(scan: dict, guess: dict) -> dict:
     resolved = business_fields.resolve_field(guess.get("business_type"), summary)
     business_type = resolved.key if resolved else (business_fields.infer_field(summary) or FALLBACK_BUSINESS_TYPE)
     model = guess.get("business_model")
-    if model not in {"products", "services", "both"}:
+    if model not in {"products", "services", "both", "saas"}:
         model = "products"
     presence = guess.get("presence_type")
     if presence not in {"brick_and_mortar", "online_only", "hybrid"}:
@@ -397,7 +397,7 @@ def cached_brand_preview(url: str) -> dict | None:
     return brand_part(entry["preview"]) if entry else None
 
 
-def _scan_brand(url: str, started: float, marks: dict[str, float]) -> dict:
+def _scan_brand(url: str, started: float, marks: dict[str, float], include_products: bool = False) -> dict:
     """Scrape (+ screenshot), read the brand and the site profile. Returns the scan.
 
     Raises PreviewError with a visitor-safe Hebrew message. Anything else (a Gemini
@@ -414,6 +414,9 @@ def _scan_brand(url: str, started: float, marks: dict[str, float]) -> dict:
         except (RuntimeError, ValueError) as exc:
             # The scraper's own messages are Hebrew and name only the URL the visitor typed.
             raise PreviewError(str(exc)) from exc
+        if include_products:
+            from app.services.software_site import read_product_pages
+            scraped.update(read_product_pages(scraped))
         marks["scrape"] = time.monotonic() - started
 
         # The site profile reads text only: start it before waiting for the screenshot.
@@ -450,7 +453,7 @@ def _log(kind: str, key: str, marks: dict[str, float]) -> None:
     )
 
 
-def build_brand_preview(url: str) -> dict:
+def build_brand_preview(url: str, include_products: bool = False) -> dict:
     """The brand only — palette, voice, logo, name, offerings, social links — without the
     business guess or the sample post, so it answers one model call sooner.
 
@@ -461,11 +464,17 @@ def build_brand_preview(url: str) -> dict:
     """
     cached = cached_brand_preview(url)
     if cached is not None:
+        if include_products:
+            entry = _cache_get(cache_key(url))
+            if entry and not (entry["scan"].get("raw") or {}).get("product_research"):
+                from app.services.software_site import read_product_pages
+                entry["scan"]["raw"].update(read_product_pages(entry["scan"]["raw"]))
+                _cache_put(cache_key(url), entry)
         return cached
     key = cache_key(url)
     started = time.monotonic()
     marks: dict[str, float] = {}
-    scan = _scan_brand(url, started, marks)
+    scan = _scan_brand(url, started, marks, include_products=True) if include_products else _scan_brand(url, started, marks)
     preview = _public_payload(scan, {})
     _cache_put(key, {"scan": scan, "preview": preview, "post_done": False})
     _log("brand preview", key, marks)
