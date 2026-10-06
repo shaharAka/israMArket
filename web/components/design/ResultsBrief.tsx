@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useId, type ReactNode } from "react";
 import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
 import { UIAction } from "./Controls";
@@ -28,6 +30,7 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
   expanded?: boolean;
   actionContent?: ReactNode;
 }) {
+  const t = useCopy();
   const id = useId();
   return <article className={styles.brief} aria-labelledby={`${id}-heading`} data-state={data.state}>
     <header className={styles.businessHeader}>
@@ -35,13 +38,13 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
       <p>{data.period}</p>
     </header>
     <section className={styles.finding}>
-      <p className={styles.eyebrow}>מה זה אומר לעסק שלכם</p>
+      <p className={styles.eyebrow}><Copy text="מה זה אומר לעסק שלכם" /></p>
       <h2 id={`${id}-heading`}>{data.heading}</h2>
       <p className={styles.explanation}>{data.explanation}</p>
       <details className={styles.evidence}>
-        <summary>למה זו ההמלצה שלנו?<IconChevron className={styles.chevron} /></summary>
+        <summary><Copy text="למה זו ההמלצה שלנו?" /><IconChevron className={styles.chevron} /></summary>
         <div className={styles.evidenceBody}>
-          <p className={styles.eyebrow}>המידע שחיברנו בדוגמה הזו</p>
+          <p className={styles.eyebrow}><Copy text="המידע שחיברנו בדוגמה הזו" /></p>
           <ol>{data.evidence.map(item => <li key={item.source}>
             <strong>{item.source}</strong><div><h3>{item.observation}</h3><p>{item.detail}</p><small>{item.period}</small></div>
           </li>)}</ol>
@@ -49,14 +52,14 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
         </div>
       </details>
     </section>
-    <section className={styles.nextAction} aria-label="מה עושים עכשיו">
-      <div className={styles.actionIntro}><div><p className={styles.eyebrow}>מה נעשה עכשיו</p><h3>{data.nextAction.title}</h3></div><span className={styles.effort}>{data.nextAction.effort}</span></div>
+    <section className={styles.nextAction} aria-label={t("מה עושים עכשיו")}>
+      <div className={styles.actionIntro}><div><p className={styles.eyebrow}><Copy text="מה נעשה עכשיו" /></p><h3>{data.nextAction.title}</h3></div><span className={styles.effort}>{data.nextAction.effort}</span></div>
       <p className={styles.actionExplanation}>{data.nextAction.explanation}</p>
       <div className={styles.mainActions}>
         <UIAction variant={expanded ? "secondary" : "primary"} onClick={onAction} aria-expanded={data.state === "disconnected" ? undefined : expanded} aria-controls={data.state === "disconnected" ? undefined : `${id}-action`}>{data.actionLabel}<IconArrowLeft className={styles.actionArrow} /></UIAction>
-        {onContinue && <UIAction variant="text" onClick={onContinue} aria-expanded={expanded} aria-controls={`${id}-action`}>להמשיך עם מה שכבר הכנו</UIAction>}
+        {onContinue && <UIAction variant="text" onClick={onContinue} aria-expanded={expanded} aria-controls={`${id}-action`}><Copy text="להמשיך עם מה שכבר הכנו" /></UIAction>}
       </div>
-      <p className={styles.successCheck}><strong>איך נבדוק שזה עוזר?</strong> {data.nextAction.successCheck}</p>
+      <p className={styles.successCheck}><strong><Copy text="איך נבדוק שזה עוזר?" /></strong> {data.nextAction.successCheck}</p>
     </section>
     {expanded && actionContent && <div id={`${id}-action`} className={styles.actionContent}>{actionContent}</div>}
     <footer className={styles.source}><span className={styles.sourceDot} aria-hidden="true" />{data.source}</footer>

@@ -77,6 +77,13 @@ repository task updates remain possible without that scope.
 
 ## Review and completion
 
+Every customer-facing deployment includes a dated note in `web/lib/releases.ts`: explain
+what the owner can now do and link to its app destination. Keep it brief and describe only
+shipped behavior. Translate the note with the same automatic copy workflow. Put the newest
+release first with a new stable ID; that ID drives the quiet unread marker at `/updates`.
+Opening the page marks the current release read on that browser. Do not announce a provider
+approval, complete translation or launched feature before its actual verification.
+
 Link `Refs #<number>` in the PR description. Use a closing keyword only when the issue's
 whole delivery outcome is satisfied by merge. Most product work must stay open until
 deployment verification; premature automatic issue closure can make the board misleading.

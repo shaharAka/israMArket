@@ -827,7 +827,7 @@
 /* ---- The plan screen ---- */
 
 .planFlow {
-  font-family: var(--font-heebo), sans-serif;
+  font-family: var(--font-ui), var(--font-heebo), sans-serif;
 }
 
 .planBusiness {

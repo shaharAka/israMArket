@@ -20,4 +20,6 @@ alwaysApply: true
 - Interface language is independent of business content language. Never rewrite stored
   customer content, names, answers or evidence, or trigger paid generation on page reads.
 - Do not change enum/API identifiers, callbacks, tracked links or budgets through translation.
-- Shahar deferred the public language picker until whole journeys are translated and reviewed.
+- Shahar now requests the visible language picker. Clearly identify unfinished translation
+  coverage until whole journeys are translated and reviewed; preserve drafts on switching.
+- Customer-facing releases include translated, dated notes in `web/lib/releases.ts`.

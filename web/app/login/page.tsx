@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -14,6 +16,7 @@ import form from "@/components/start/form.module.css";
 import auth from "./auth.module.css";
 
 export default function LoginPage() {
+  const t = useCopy();
   const router = useRouter();
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
@@ -58,18 +61,15 @@ export default function LoginPage() {
   }
 
   return (
-    <AuthCard title="כניסה לחשבון">
+    <AuthCard title={t("כניסה לחשבון")}>
       {resetDone && !suspended ? (
         <div className="mb-6">
-          <SetupNotice tone="success" title="הסיסמה החדשה נשמרה">
-            אפשר להיכנס איתה עכשיו.
-          </SetupNotice>
+          <SetupNotice tone="success" title={t("הסיסמה החדשה נשמרה")}><Copy text="אפשר להיכנס איתה עכשיו." /></SetupNotice>
         </div>
       ) : null}
       {suspended ? (
         <div className="mb-6">
-          <SetupNotice tone="attention" title="החשבון מושהה כרגע">
-            כל המידע שמור. כדי לברר למה, כתבו לנו:{" "}
+          <SetupNotice tone="attention" title={t("החשבון מושהה כרגע")}><Copy text="כל המידע שמור. כדי לברר למה, כתבו לנו:" />{" "}
             <a href={`mailto:${CONTACT_EMAIL}`} dir="ltr" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
               {CONTACT_EMAIL}
             </a>
@@ -85,7 +85,7 @@ export default function LoginPage() {
       <form onSubmit={onSubmit} className={auth.form}>
         <Field
           name="email"
-          label="אימייל"
+          label={t("אימייל")}
           type="email"
           placeholder="name@business.co.il"
           dir="ltr"
@@ -93,7 +93,7 @@ export default function LoginPage() {
         />
         <Field
           name="password"
-          label="סיסמה"
+          label={t("סיסמה")}
           type="password"
           placeholder="••••••••"
           dir="ltr"
@@ -101,26 +101,26 @@ export default function LoginPage() {
         />
         <ErrorNote message={error} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
-          {pending ? "נכנסים…" : "להיכנס"}
+          {pending ? t("נכנסים…") : t("להיכנס")}
         </Button>
       </form>
 
-      <p className={auth.foot}>
-        עדיין אין לכם חשבון?{" "}
-        <Link href="/signup">לפתוח חשבון</Link>
+      <p className={auth.foot}><Copy text="עדיין אין לכם חשבון?" />{" "}
+        <Link href="/signup"><Copy text="לפתוח חשבון" /></Link>
       </p>
     </AuthCard>
   );
 }
 
-export function AuthCard({ title, children }: { title: string; children: React.ReactNode }) {
+export function AuthCard({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
+  const t = useCopy();
   return (
     <div className={`auth-blue ${auth.page}`}>
       <header className={auth.bar}>
         <div className={auth.barRow}>
-          <Link href="/" className={auth.brand} aria-label="ישראמארקט, לעמוד הבית">
+          <Link href="/" className={auth.brand} aria-label={t("ישראמארקט, לעמוד הבית")}>
             <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-            <span>ישראמארקט</span>
+            <span><Copy text="ישראמארקט" /></span>
           </Link>
         </div>
       </header>
@@ -152,14 +152,15 @@ export function Field({
   dir?: "ltr" | "rtl";
   autoComplete?: string;
 }) {
+  const t = useCopy();
   return (
     <label className="block">
-      <span className={form.label}>{label}</span>
+      <span className={form.label}>{t(label)}</span>
       {/* 16px on phones: iOS zooms the page into any field smaller than that (form.input). */}
       <input
         name={name}
         type={type}
-        placeholder={placeholder}
+        placeholder={placeholder ? t(placeholder) : placeholder}
         defaultValue={defaultValue}
         dir={dir}
         autoComplete={autoComplete}

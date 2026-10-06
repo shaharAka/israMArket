@@ -1,3 +1,5 @@
+
+import { Copy } from "@/components/language/LanguageProvider";
 import type { CSSProperties } from "react";
 import { EXAMPLE, GOAL, LEARNED, ROUTE } from "./content";
 
@@ -24,12 +26,12 @@ function Count({ from, to, live }: { from: number; to: number; live?: boolean })
 export function PartLearned() {
   return (
     <div className="lv2-part-body">
-      <p className="lv2-part-lead">{EXAMPLE.kind}</p>
+      <p className="lv2-part-lead"><Copy text={EXAMPLE.kind} /></p>
       <dl className="lv2-facts">
         {LEARNED.map((row) => (
           <div key={row.k}>
-            <dt>{row.k}</dt>
-            <dd>{row.v}</dd>
+            <dt><Copy text={row.k} /></dt>
+            <dd><Copy text={row.v} /></dd>
           </div>
         ))}
       </dl>
@@ -43,22 +45,22 @@ export function PartGoal({ live }: PartProps) {
       <div className="lv2-goal">
         <div>
           <span className="lv2-goal-num lv2-goal-num--from">{GOAL.today}</span>
-          <span className="lv2-goal-cap">היום</span>
+          <span className="lv2-goal-cap"><Copy text="היום" /></span>
         </div>
         <span aria-hidden className="lv2-goal-arrow" />
         <div>
           <span className="lv2-goal-num">
             <Count from={GOAL.today} to={GOAL.target} live={live} />
           </span>
-          <span className="lv2-goal-cap">בחודש השלישי</span>
+          <span className="lv2-goal-cap"><Copy text="בחודש השלישי" /></span>
         </div>
-        <p className="lv2-goal-unit">{GOAL.unit}</p>
+        <p className="lv2-goal-unit"><Copy text={GOAL.unit} /></p>
       </div>
       <p className="lv2-part-note">
-        <strong>מה מזיזים:</strong> {GOAL.lever}
+        <strong><Copy text="מה מזיזים:" /></strong> <Copy text={GOAL.lever} />
       </p>
       <p className="lv2-part-note lv2-part-note--soft">
-        <strong>השערה:</strong> {GOAL.hypothesis}
+        <strong><Copy text="השערה:" /></strong> <Copy text={GOAL.hypothesis} />
       </p>
     </div>
   );
@@ -74,9 +76,9 @@ export function PartRoute() {
         {ROUTE.map((m, j) => (
           <li key={m.month} style={{ "--j": j } as CSSProperties}>
             <span className="lv2-month-dot" aria-hidden />
-            <span className="lv2-month-name">{m.month}</span>
-            <span className="lv2-month-focus">{m.focus}</span>
-            <span className="lv2-month-detail">{m.detail}</span>
+            <span className="lv2-month-name"><Copy text={m.month} /></span>
+            <span className="lv2-month-focus"><Copy text={m.focus} /></span>
+            <span className="lv2-month-detail"><Copy text={m.detail} /></span>
           </li>
         ))}
       </ol>
@@ -96,9 +98,9 @@ export function SheetHeader() {
       <span className="lv2-sheet-mark" aria-hidden />
       <p>
         <strong>{EXAMPLE.name}</strong>
-        <span>התוכנית ל{EXAMPLE.period}</span>
+        <span><Copy text="התוכנית" />{" · "}<Copy text={EXAMPLE.period} /></span>
       </p>
-      <span className="lv2-sheet-tag">דוגמה</span>
+      <span className="lv2-sheet-tag"><Copy text="דוגמה" /></span>
     </div>
   );
 }

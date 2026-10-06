@@ -22,7 +22,7 @@ export function createTranslator(catalog: Catalog) {
   };
 }
 
-/** Load one language on demand. Not wired to customer routes until journey review. */
+/** Load one static UI language on demand. No provider calls or source metadata. */
 export async function loadCatalog(locale: Locale): Promise<Catalog> {
   switch (locale) {
     case "en": return (await import("./messages/en.json")).default;

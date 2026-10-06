@@ -5,6 +5,7 @@
  * and dots inside Hebrew text.
  */
 
+import { LOCALE_META, type Locale } from "./i18n/locales";
 type Day = { day: number; month: number; year: number };
 
 /** A date-only value ("2026-09-02") is a calendar day; a timestamp is read in local time. */
@@ -19,10 +20,14 @@ function dayOf(value?: string | null): Day | null {
 }
 
 /** "2.9 עד 29.9.2026"; both years only when the range crosses one ("28.12.2025 עד 3.1.2026"). */
-export function dateRange(start?: string | null, end?: string | null): string {
+export function dateRange(start?: string | null, end?: string | null, locale: Locale = "he"): string {
   const from = dayOf(start);
   const to = dayOf(end);
   if (!from || !to) return "";
+  if (locale !== "he") {
+    const format = new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+    return format.formatRange(new Date(Date.UTC(from.year, from.month - 1, from.day)), new Date(Date.UTC(to.year, to.month - 1, to.day)));
+  }
   const head = from.year === to.year ? `${from.day}.${from.month}` : `${from.day}.${from.month}.${from.year}`;
   return `${head} עד ${to.day}.${to.month}.${to.year}`;
 }

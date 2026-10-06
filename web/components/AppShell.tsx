@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -89,6 +91,7 @@ export function useLogOut() {
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const t = useCopy();
   const { palette } = useDesignPalette();
   const pathname = usePathname();
   const router = useRouter();
@@ -174,7 +177,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--canvas)]">
-        <p className="text-sm text-[color:var(--ink-soft)]">טוענים…</p>
+        <p className="text-sm text-[color:var(--ink-soft)]"><Copy text="טוענים…" /></p>
       </div>
     );
   }
@@ -187,8 +190,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             href={back.href}
             className="inline-flex min-h-11 min-w-11 items-center gap-1.5 rounded-md px-2 text-[15px] font-bold text-[color:var(--ink)] active:bg-[var(--primary-soft)]"
           >
-            <IconArrowRight className="h-5 w-5 shrink-0" />
-            <span>{back.label}</span>
+            <IconArrowRight className="h-5 w-5 shrink-0 locale-arrow" />
+            <span><Copy text={back.label} /></span>
           </Link>
         ) : (
           <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
@@ -196,7 +199,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
             <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">
-              {businessName || "ישראמארקט"}
+              {businessName || t("ישראמארקט")}
             </span>
           </Link>
         )}
@@ -206,7 +209,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="px-2 py-0.5 text-[11px] font-medium"
               style={{ color: SYSTEM_TONE.inkMuted }}
             >
-              <Link href="/preview">דמו</Link>
+              <Link href="/preview"><Copy text="דמו" /></Link>
             </span>
           ) : null}
           {inSetup ? (
@@ -214,17 +217,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               type="button"
               onClick={logOut}
               className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[color:var(--ink-soft)] underline underline-offset-4"
-            >
-              יציאה
-            </button>
+            ><Copy text="יציאה" /></button>
           ) : (
-            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]">העסק שלי</Link>
+            <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><Copy text="העסק שלי" /></Link>
           )}
         </div>
       </header>
 
       <aside
-        className="sticky top-0 z-40 hidden h-screen w-[260px] shrink-0 flex-col border-l border-[var(--rule)] bg-[var(--paper)] md:flex"
+        className="sticky top-0 z-40 hidden h-screen w-[260px] shrink-0 flex-col border-e border-[var(--rule)] bg-[var(--paper)] md:flex"
       >
         <div>
           {/* Identity gets the whole first row. The brand trigger used to share it and
@@ -234,26 +235,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <BrandMark className="h-9 w-9 shrink-0 text-[color:var(--primary)]" />
               <div className="min-w-0">
-                <span className="block text-[17px] font-bold tracking-tight text-[color:var(--ink)]">ישראמארקט</span>
-                <span className="block text-xs text-[color:var(--ink-muted)]">שיווק לעסקים קטנים</span>
+                <span className="block text-[17px] font-bold tracking-tight text-[color:var(--ink)]"><Copy text="ישראמארקט" /></span>
+                <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>
               </div>
             </Link>
             {demo ? (
               <span
                 className="shrink-0 px-2 py-0.5 text-[11px] font-medium"
                 style={{ color: SYSTEM_TONE.inkMuted }}
-              >
-                דמו
-              </span>
+              ><Copy text="דמו" /></span>
             ) : null}
           </div>
 
         </div>
 
-        <nav aria-label="ניווט ראשי" className="flex-1 overflow-y-auto px-3 py-5">
+        <nav aria-label={t("ניווט ראשי")} className="flex-1 overflow-y-auto px-3 py-5">
           {inSetup ? null : (
             <div className="space-y-1">
-              {TABS.map(tab => <div key={tab.href}><NavLink tab={tab} active={activeTab?.href === tab.href} />{tab.href === "/strategy" && activeTab?.href === "/strategy" && <Link href="/calendar" aria-current={pathname === "/calendar" ? "page" : undefined} className="mr-10 flex min-h-10 items-center gap-2 rounded-lg px-2 text-[13px] text-[color:var(--ink-muted)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)] aria-[current=page]:text-[color:var(--primary)]"><IconCalendar className="h-4 w-4" />לוח התוכנית</Link>}</div>)}
+              {TABS.map(tab => <div key={tab.href}><NavLink tab={tab} active={activeTab?.href === tab.href} />{tab.href === "/strategy" && activeTab?.href === "/strategy" && <Link href="/calendar" aria-current={pathname === "/calendar" ? "page" : undefined} className="ms-10 flex min-h-10 items-center gap-2 rounded-lg px-2 text-[13px] text-[color:var(--ink-muted)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)] aria-[current=page]:text-[color:var(--primary)]"><IconCalendar className="h-4 w-4" /><Copy text="לוח התוכנית" /></Link>}</div>)}
             </div>
           )}
         </nav>
@@ -269,8 +268,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           >
             <BusinessLogo src={businessLogo} name={businessName || name || "העסק שלי"} color={businessColor} className="h-8 w-8 shrink-0" />
             <span className="min-w-0">
-              <span className="block truncate text-[13px] font-semibold text-[color:var(--ink)]">{name || "החשבון שלי"}</span>
-              <span className="block truncate text-xs text-[color:var(--ink-muted)]">{businessName || "העסק שלי"}</span>
+              <span className="block truncate text-[13px] font-semibold text-[color:var(--ink)]">{name || t("החשבון שלי")}</span>
+              <span className="block truncate text-xs text-[color:var(--ink-muted)]">{businessName || t("העסק שלי")}</span>
             </span>
           </Link>
           <button
@@ -278,9 +277,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={logOut}
             className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 rounded-xl px-2.5 text-xs text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--paper)] hover:text-[color:var(--ink)]"
           >
-            <IconLogout className="h-4 w-4" />
-            יציאה
-          </button>
+            <IconLogout className="h-4 w-4" /><Copy text="יציאה" /></button>
         </div>
       </aside>
 
@@ -297,7 +294,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {inSetup ? null : (
         <nav
-          aria-label="ניווט ראשי"
+          aria-label={t("ניווט ראשי")}
           className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
         >
           {TABS.map((tab) => {
@@ -317,7 +314,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="nav-icon h-[22px] w-[22px]" />
                 </span>
-                <span>{tab.label}</span>
+                <span><Copy text={tab.label} /></span>
               </Link>
             );
           })}
@@ -346,7 +343,7 @@ function NavLink({ tab, active }: { tab: Tab; active: boolean }) {
       }`}
     >
       <Icon className="nav-icon h-5 w-5" />
-      <span>{tab.label}</span>
+      <span><Copy text={tab.label} /></span>
     </Link>
   );
 }

@@ -1,8 +1,11 @@
+
+import { Copy } from "@/components/language/LanguageProvider";
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
+import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
-import { NO_CARD_AT_SIGNUP, NO_COMMITMENT_LABEL, PRICE_ILS, TRIAL_LABEL, VAT_NOTE, formatPrice } from "@/lib/pricing";
+import { NO_CARD_AT_SIGNUP, PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { HERO, MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR, type Step } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
@@ -21,17 +24,17 @@ import "./lv2.css";
  * scroll: each scene plays by itself once it is on screen (ScenePlayer).
  */
 
-const FAQ: { q: string; a: string }[] = [
+const FAQ: { q: string; a: ReactNode }[] = [
   {
     q: "מה קורה אחרי החודש החינמי?",
-    a: `מהחודש השני: ${formatPrice()} לחודש. ${VAT_NOTE}.${NO_CARD_AT_SIGNUP ? " בהרשמה לא מבקשים כרטיס אשראי." : ""} אם רוצים להמשיך, מפעילים מנוי לקראת סוף החודש החינמי.`,
+    a: <PriceAnswer />,
   },
   { q: "צריך אתר כדי להתחיל?", a: "לא. אפשר להתחיל עם אינסטגרם, פייסבוק או טיקטוק, או פשוט לספר לנו על העסק." },
   {
     q: "מה אתם עושים עם הסיסמה לאינסטגרם?",
     a: "אנחנו לא רואים אותה. מחברים דרך פייסבוק, והסיסמה נשארת שם. אנחנו מקבלים הרשאה לקרוא פוסטים ונתונים בלבד.",
   },
-  { q: "אפשר לבטל?", a: `${NO_COMMITMENT_LABEL}. אפשר לבטל בעמוד המנוי, ולמחוק את החשבון ואת כל המידע בכל רגע.` },
+  { q: "אפשר לבטל?", a: <CancellationAnswer /> },
   {
     q: "מי כותב את הפוסטים?",
     a: "ה-AI שלנו כותב אותם, לפי התוכנית ובסגנון שלכם. אתם קוראים, משנים ומאשרים, ומפרסמים בעצמכם.",
@@ -64,10 +67,10 @@ function StepList({ steps, label, numbered = false }: { steps: Step[]; label: st
                   {String(i + 1).padStart(2, "0")}
                 </span>
               ) : null}
-              {step.title}
+              <Copy text={step.title} />
             </SceneStep>
           </h3>
-          <p className="lv2-stepitem-body">{step.body}</p>
+          <p className="lv2-stepitem-body"><Copy text={step.body} /></p>
         </li>
       ))}
     </ol>
@@ -83,19 +86,17 @@ export function Landing() {
         <div className="lv2-wrap lv2-nav-row">
           <Link href="/" className="lv2-brand" aria-label="ישראמארקט">
             <BrandMark className="h-8 w-8 text-[var(--lv2-blue)]" />
-            <span>ישראמארקט</span>
+            <span><Copy text="ישראמארקט" /></span>
           </Link>
           <nav aria-label="בעמוד הזה" className="lv2-nav-links">
-            <a href="#story">איך זה עובד</a>
-            <a href="#week">השבוע שלכם</a>
-            <a href="#price">מחיר</a>
-            <a href="#faq">שאלות</a>
+            <a href="#story"><Copy text="איך זה עובד" /></a>
+            <a href="#week"><Copy text="השבוע שלכם" /></a>
+            <a href="#price"><Copy text="מחיר" /></a>
+            <a href="#faq"><Copy text="שאלות" /></a>
           </nav>
           <div className="lv2-nav-end">
-            <Link href="/login">להיכנס</Link>
-            <Link href="/start" className="lv2-btn-quiet">
-              להתחיל
-            </Link>
+            <Link href="/login"><Copy text="להיכנס" /></Link>
+            <Link href="/start" className="lv2-btn-quiet"><Copy text="להתחיל" /></Link>
           </div>
         </div>
       </header>
@@ -106,19 +107,16 @@ export function Landing() {
           <div className="lv2-wrap lv2-hero-grid">
             <div className="lv2-hero-text">
               <h1 id="lv2-title" className="lv2-display lv2-in" style={{ "--d": 0 } as CSSProperties}>
-                {HERO.title}
+                <Copy text={HERO.title} />
               </h1>
               <p className="lv2-lead lv2-in" style={{ "--d": 1 } as CSSProperties}>
-                {HERO.lead}
+                <Copy text={HERO.lead} />
               </p>
               <div className="lv2-hero-cta lv2-in" style={{ "--d": 2 } as CSSProperties}>
-                <Link href="/start" className="lv2-btn">
-                  להתחיל
-                  <IconArrowLeft className="h-4 w-4" />
+                <Link href="/start" className="lv2-btn"><Copy text="להתחיל" /><IconArrowLeft className="h-4 w-4" />
                 </Link>
               </div>
-              <p className="lv2-fine lv2-in" style={{ "--d": 3 } as CSSProperties}>
-                אפשר להתחיל בלי להירשם · {TRIAL_LABEL}
+              <p className="lv2-fine lv2-in" style={{ "--d": 3 } as CSSProperties}><Copy text="אפשר להתחיל בלי להירשם ·" /><Copy text={TRIAL_LABEL} />
               </p>
             </div>
             <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
@@ -137,10 +135,8 @@ export function Landing() {
         >
           <div className="lv2-wrap lv2-scene-grid lv2-story-grid">
             <div className="lv2-scene-text">
-              <p className="lv2-eyebrow">איך זה עובד</p>
-              <h2 id="lv2-story-title" className="lv2-h2">
-                קודם בונים תוכנית לעסק שלכם.
-              </h2>
+              <p className="lv2-eyebrow"><Copy text="איך זה עובד" /></p>
+              <h2 id="lv2-story-title" className="lv2-h2"><Copy text="קודם בונים תוכנית לעסק שלכם." /></h2>
               <StepList steps={STORY} label="שלבי בניית התוכנית" numbered />
             </div>
             <div className="lv2-sheet lv2-story-sheet" aria-hidden>
@@ -149,8 +145,8 @@ export function Landing() {
                 {PARTS.map(({ key, title, Body }, i) => (
                   <section key={key} data-i={i} className="lv2-part lv2-fold">
                     <h3 className="lv2-part-title">
-                      {title}
-                      <span className="lv2-fold-sum">{PART_SUMMARY[i]}</span>
+                      <Copy text={title} />
+                      <span className="lv2-fold-sum"><Copy text={PART_SUMMARY[i]} /></span>
                     </h3>
                     <div className="lv2-fold-body">
                       <div>
@@ -174,10 +170,8 @@ export function Landing() {
         >
           <div className="lv2-wrap lv2-scene-grid lv2-tour-grid">
             <div className="lv2-scene-text">
-              <p className="lv2-eyebrow">השבוע שלכם</p>
-              <h2 id="lv2-week-title" className="lv2-h2">
-                כל שבוע, צעד אחד ברור.
-              </h2>
+              <p className="lv2-eyebrow"><Copy text="השבוע שלכם" /></p>
+              <h2 id="lv2-week-title" className="lv2-h2"><Copy text="כל שבוע, צעד אחד ברור." /></h2>
               <StepList steps={WEEK_TOUR} label="מה יש במסך השבועי" />
             </div>
             <div className="lv2-tour-stage">
@@ -189,69 +183,58 @@ export function Landing() {
         {/* The monthly review, on the brand blue. */}
         <section id="month" className="lv2-month" aria-labelledby="lv2-month-title">
           <div className="lv2-wrap" data-scene="reveal">
-            <p className="lv2-eyebrow lv2-eyebrow--sun">בסוף כל חודש</p>
-            <h2 id="lv2-month-title" className="lv2-h2 lv2-month-title">
-              מה שלמדנו משנה את החודש הבא.
-            </h2>
+            <p className="lv2-eyebrow lv2-eyebrow--sun"><Copy text="בסוף כל חודש" /></p>
+            <h2 id="lv2-month-title" className="lv2-h2 lv2-month-title"><Copy text="מה שלמדנו משנה את החודש הבא." /></h2>
             <dl className="lv2-month-rows">
               {MONTH.map((row, j) => (
                 <div key={row.k} style={{ "--j": j } as CSSProperties}>
-                  <dt>{row.k}</dt>
-                  <dd>{row.v}</dd>
+                  <dt><Copy text={row.k} /></dt>
+                  <dd><Copy text={row.v} /></dd>
                 </div>
               ))}
             </dl>
-            <p className="lv2-fine lv2-fine--on-blue">דוגמה מסיכום החודש באפליקציה. אתם מחליטים מה משנים.</p>
+            <p className="lv2-fine lv2-fine--on-blue"><Copy text="דוגמה מסיכום החודש באפליקציה. אתם מחליטים מה משנים." /></p>
           </div>
         </section>
 
         <section className="lv2-trust" aria-labelledby="lv2-trust-title">
           <div className="lv2-wrap" data-scene="reveal">
-            <h2 id="lv2-trust-title" className="lv2-h2">
-              המידע של העסק נשאר שלכם.
-            </h2>
+            <h2 id="lv2-trust-title" className="lv2-h2"><Copy text="המידע של העסק נשאר שלכם." /></h2>
             <dl className="lv2-trust-rows">
               {TRUST.map((row, j) => (
                 <div key={row.k} style={{ "--j": j } as CSSProperties}>
-                  <dt>{row.k}</dt>
-                  <dd>{row.v}</dd>
+                  <dt><Copy text={row.k} /></dt>
+                  <dd><Copy text={row.v} /></dd>
                 </div>
               ))}
             </dl>
-            <Link href="/security" className="lv2-link">
-              מה בדיוק אנחנו שומרים
-            </Link>
+            <Link href="/security" className="lv2-link"><Copy text="מה בדיוק אנחנו שומרים" /></Link>
           </div>
         </section>
 
         <section id="price" className="lv2-price" aria-labelledby="lv2-price-title">
           <div className="lv2-wrap" data-scene="reveal">
-            <p className="lv2-eyebrow">מחיר</p>
+            <p className="lv2-eyebrow"><Copy text="מחיר" /></p>
             <h2 id="lv2-price-title" className="lv2-price-num">
               <span>{PRICE_ILS}</span>
-              <small>₪ לחודש</small>
+              <small><Copy text="₪ לחודש" /></small>
             </h2>
             <p className="lv2-lead">
-              {TRIAL_LABEL}
-              {NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}. אין התחייבות.
-            </p>
-            <p className="lv2-fine">{VAT_NOTE}</p>
-            <Link href="/start" className="lv2-btn-quiet lv2-btn-quiet--lg lv2-price-cta">
-              להתחיל עם העסק שלכם
-            </Link>
+              <Copy text={TRIAL_LABEL} />
+              {NO_CARD_AT_SIGNUP ? <Copy text=", בלי כרטיס אשראי" /> : null}<Copy text=". אין התחייבות." /></p>
+            <p className="lv2-fine"><Copy text={VAT_NOTE} /></p>
+            <Link href="/start" className="lv2-btn-quiet lv2-btn-quiet--lg lv2-price-cta"><Copy text="להתחיל עם העסק שלכם" /></Link>
           </div>
         </section>
 
         <section id="faq" className="lv2-faq" aria-labelledby="lv2-faq-title">
           <div className="lv2-wrap lv2-faq-grid">
-            <h2 id="lv2-faq-title" className="lv2-h2">
-              שאלות ששואלים אותנו
-            </h2>
+            <h2 id="lv2-faq-title" className="lv2-h2"><Copy text="שאלות ששואלים אותנו" /></h2>
             <div>
               {FAQ.map(({ q, a }) => (
                 <details key={q}>
-                  <summary>{q}</summary>
-                  <p>{a}</p>
+                  <summary><Copy text={q} /></summary>
+                  <p>{typeof a === "string" ? <Copy text={a} /> : a}</p>
                 </details>
               ))}
             </div>
@@ -261,9 +244,9 @@ export function Landing() {
 
       <footer className="lv2-foot">
         <div className="lv2-wrap lv2-foot-row">
-          <span>ישראמארקט</span>
-          <Link href="/security">אבטחה ופרטיות</Link>
-          <Link href="/terms">תנאי שימוש</Link>
+          <span><Copy text="ישראמארקט" /></span>
+          <Link href="/security"><Copy text="אבטחה ופרטיות" /></Link>
+          <Link href="/terms"><Copy text="תנאי שימוש" /></Link>
         </div>
       </footer>
 

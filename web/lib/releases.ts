@@ -1,0 +1,36 @@
+/** Published newest first, in the owner's Asia/Jerusalem calendar dates.
+ * Add customer-facing notes with each shipped release. Never list planned features as shipped.
+ */
+export const RELEASES = [
+  {
+    id: "2026-10-07-language-and-updates", date: "2026-10-07",
+    title: "בחירת שפה ועדכונים במקום קבוע",
+    summary: "אפשר לבחור עברית, אנגלית, ערבית או רוסית בראש העמוד. כאן תוכלו לראות מה השתנה במערכת, בלי הודעות קופצות.",
+    detail: "התרגום מתווסף בהדרגה. חלק מהמסכים והתוכן עדיין בעברית. החלפת השפה לא משנה את התוכנית, הפוסטים או הטיוטות שלכם.",
+    href: "/strategy", action: "לתוכנית שלי",
+  },
+  {
+    id: "2026-10-07-content-workspace", date: "2026-10-07",
+    title: "כל הכנת הפוסטים במקום אחד",
+    summary: "נושאים, תמונות, סגנון ופוסטים נמצאים עכשיו בתהליך אחד. רואים איפה אתם ומה הצעד הבא, ואפשר לחזור ולתקן.",
+    detail: "אפשר להתחיל גם בלי תמונות או חיבורים. יצירת תמונה נעשית רק כשמבקשים אותה; פתיחת העמוד לא מפעילה יצירה בתשלום.",
+    href: "/prepare", action: "להכנת הפוסטים",
+  },
+  {
+    id: "2026-10-07-business-paths", date: "2026-10-07",
+    title: "שאלות שמתאימות לסוג העסק",
+    summary: "חנויות, נותני שירות וחברות תוכנה עוברים שאלות שמתאימות למה שהם מוכרים ולאופן שבו לקוחות מגיעים אליהם.",
+    detail: "לנותני שירות בודקים אילו שירותים להציג ואילו עבודות כדאי להראות. לחברות תוכנה בודקים את המוצר, למי הוא מתאים ומה רוצים שלקוח יעשה.",
+    href: "/start", action: "לראות איך מתחילים",
+  },
+  {
+    id: "2026-10-05-support", date: "2026-10-05",
+    title: "אפשר לדווח על תקלה מתוך המערכת",
+    summary: "משהו לא הסתדר? אפשר לתאר את הבעיה בעמוד העזרה, לשמור את הפנייה ולעקוב אחר התשובה.",
+    detail: "העזרה נעזרת במידע על המערכת. כשאין תשובה בטוחה, הפנייה עוברת לבדיקה אנושית.",
+    href: "/support", action: "לעזרה ולדיווח על תקלה",
+  },
+] as const;
+export const LATEST_RELEASE = RELEASES[0].id;
+export const RELEASE_READ_KEY = "isramarket.release-read";
+export const RELEASE_READ_EVENT = "isramarket-release-read";
