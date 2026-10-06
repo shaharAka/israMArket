@@ -43,6 +43,7 @@ class SyncTest(unittest.TestCase):
     def extractor(self, source):
         def run(*args, **kwargs):
             self.source_file.write_text(json.dumps(source, ensure_ascii=False))
+            (self.destination / "he.json").write_text(json.dumps({mid: value["source"] for mid, value in source.items()}, ensure_ascii=False))
             return subprocess.CompletedProcess(args, 0)
         return mock.patch.object(sync.subprocess, "run", side_effect=run)
 
