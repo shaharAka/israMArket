@@ -11,6 +11,13 @@ GitHub account. Keep one status label per issue and mirror it in the Project. If
 API access is unavailable, update the issue and use the signed-in browser for the board.
 Keep private security findings, customer data and owner declarations in private drafts.
 
+- Every copy change must stay aligned in Hebrew, English, Arabic and Russian. Run
+  `npm --prefix web run i18n:sync` and `npm --prefix web run i18n:check` before commit.
+  Install the automatic commit hook with `python3 scripts/install-translation-hook.py`.
+  Reuse reviewed translations; check meaning in context. Never translate customer data
+  automatically or change business content language when changing interface language.
+  The public language picker remains deferred until complete journey review (#142).
+
 - Lanes: Claude owns product and design of every screen; Codex owns integrations, provider
   reviews, legal pages, deploy and infra. The owner decides. Details in `PLAN.md`.
 - Any screen follows `web/DESIGN-STANDARD.md`.
