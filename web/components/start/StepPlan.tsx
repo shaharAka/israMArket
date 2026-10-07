@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { ApiError, type PlanInsight, type PlanPreview } from "@/lib/api";
+import { ApiError, type PlanPreview } from "@/lib/api";
 import { draftForApi, fetchPlanPreview, revisePlan, signature } from "@/lib/draft";
 import type { StepId } from "./script";
 import type { StepProps } from "./steps";
+import { ResearchInsights } from "@/components/research/ResearchInsights";
+export { sourceLabel } from "@/components/research/ResearchInsights";
 import { UIAction } from "@/components/design/Controls";
 import { CheckMark, QuietLink, StepShell } from "./ui";
 import styles from "./start.module.css";
@@ -17,19 +19,6 @@ import form from "./form.module.css";
  */
 
 export type RevealProps = StepProps & { jump: (step: StepId) => void };
-
-const SOURCE_HE: Record<string, string> = {
-  site: "מהאתר שלכם",
-  answers: "ממה שסיפרתם",
-  calendar: "מלוח השנה",
-  category: "מה שידוע על עסקים כמו שלכם",
-  industry: "מה שידוע על עסקים כמו שלכם",
-  social: "מהרשתות",
-};
-
-export function sourceLabel(source: PlanInsight["source"]): string {
-  return SOURCE_HE[source] ?? source;
-}
 
 const LETTERS = ["א׳", "ב׳"];
 
@@ -156,22 +145,8 @@ export function StepFound(props: RevealProps) {
     >
       {loading ? <ResearchProgress hasSite={Boolean(flow.draft.links.website) && flow.brandScan?.status !== "failed"} /> : null}
       {failed ? <><PlanFailed message={failMessage} />{failMessage.includes("קישור") ? <div><QuietLink tone="action" onClick={() => jump("links")}>לתקן את הקישור באתר וברשתות</QuietLink></div> : null}</> : null}
-      {plan ? <InsightList insights={plan.insights} /> : null}
+      {plan ? <ResearchInsights insights={plan.insights} /> : null}
     </StepShell>
-  );
-}
-
-function InsightList({ insights }: { insights: PlanInsight[] }) {
-  return (
-    <ul className={`${form.list} ${styles.stagger}`}>
-      {insights.slice(0, 4).map((insight, index) => (
-        <li key={index} className="px-5 py-4">
-          <p className="mb-1.5 text-[12.5px] font-semibold text-[color:var(--primary)]">{sourceLabel(insight.source)}</p>
-          <p className="text-[15.5px] leading-[1.6] text-[color:var(--ink)]">{insight.text_he}</p>
-          {insight.detail_he ? <p className="mt-1 text-[13.5px] leading-[1.55] text-[color:var(--ink-soft)]">{insight.detail_he}</p> : null}
-        </li>
-      ))}
-    </ul>
   );
 }
 

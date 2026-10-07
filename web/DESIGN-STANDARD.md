@@ -1,7 +1,7 @@
 # IsraMarket design standard (finesse)
 
 The bar is the landing page (`components/landing-v2`). Every screen should feel like the same
-product: calm, precise, blue and sun, never "a template". This file is the checklist a page
+product: calm, precise, neutral and typographic, with one blue interaction accent. This file is the checklist a page
 is held to. It complements `UI-RULES.md` (one filled button, word budgets, honesty) and
 `HEBREW-COPY.md` (copy). Where they overlap, those files win on content; this one on looks.
 
@@ -29,9 +29,9 @@ Never pure black. Never more than one accent per component.
 
 ## 2. Type
 
-- Heebo for Hebrew; Inter for English/Russian; IBM Plex Sans Arabic for Arabic.
+- Rubik for Hebrew; Inter for English/Russian; IBM Plex Sans Arabic for Arabic.
   Fonts are self-hosted by Next; choose them by interface language, never customer content. Weights **400 / 500 / 600 / 700**. No 800–900 (`font-black` renders 700).
-- Page title: 28–32px, 700, `tracking-tight`. One per page. No eyebrow that repeats it.
+- Page title: 28–32px, 500–600, `tracking-tight`. One per page. No eyebrow that repeats it.
 - Section title: 17–20px, 650–700.
 - Body: 15–16px, line-height 1.6–1.7, `--ink-soft` for descriptions.
 - Labels and meta: 12–13px, 500–600, `--ink-muted`.
@@ -44,14 +44,14 @@ Never pure black. Never more than one accent per component.
 - Depth instead of boxes: a card is `bg-[var(--paper)]` + `shadow-[var(--shadow-card)]`
   (a hairline ring plus a soft drop). Don't frame every row; divide lists with hairlines.
 - No coloured top rules or side tails on cards. Emphasis = a soft fill (`--primary-soft`) or
-  the sun dot, not a stripe.
+  a blue selection dot, not a stripe.
 - 8px rhythm: 4, 8, 12, 16, 24, 32, 48, 64. Sections breathe (32–48px apart).
 - Content column centred in the space next to the sidebar, max 760–880px.
 
 ## 4. Components
 
-- **Primary button** (`.drawn-button` / `UIAction` primary): blue, 44–52px high, radius 12px,
-  600 weight, inset highlight + soft blue shadow, lifts 1px on hover.
+- **Primary button** (`.drawn-button` / `UIAction` primary): ink (`--action`), 44–52px high, radius 12px,
+  600 weight, no decorative shadow. Public conversion CTAs can use a pill silhouette.
 - **Secondary**: white, 1px `--rule-dark` border, same radius, no shadow beyond 1px.
 - **Text action**: `--primary`, 600, underline only on hover.
 - **Inputs**: 46px, radius 10px, `--rule-dark` border, focus = primary border + 3px
@@ -73,3 +73,15 @@ Short and purposeful: 160–240ms for UI, `cubic-bezier(.2,.7,.2,1)`. Things fol
 4. Chevrons are icons; arrows point the RTL way.
 5. Desktop 1440 and phone 390: no horizontal scroll, balanced whitespace, tap targets ≥ 44px.
 6. Screenshot both before and after; compare with the landing page side by side.
+
+## October 8: shared public/product direction
+
+One visual language across landing pages, onboarding and the signed-in app: white/neutral
+surfaces, dark primary actions, blue links/selections/focus, medium-weight headlines and
+quiet separators. Keep good/warning/danger colors semantic. Sun/yellow is not a brand motif;
+existing warning tokens remain for warnings only. Business artwork and vendor logos retain
+their colors. Use the full typographic name while /design/identity directions are reviewed.
+Public feature sections pair a concise benefit with a large product view. They reuse the
+same presentation components as the app; public fixtures never cause customer writes.
+Autoplay is limited to the user-requested hero demonstration, with manual pause, reduced
+motion and visibility guards. Other product interactions follow the user.

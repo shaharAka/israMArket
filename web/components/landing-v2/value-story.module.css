@@ -1,0 +1,21 @@
+.section { padding-block: 80px; background: var(--paper); scroll-margin-top: 90px; }
+.sectionTitle { max-width: 660px; margin: 0 auto 64px; text-align: center; font-size: clamp(28px,3vw,42px); font-weight: 500; line-height: 1.2; text-wrap: balance; }
+.featureGrid { display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); align-items: center; gap: 64px; }
+.copy h3 { font-size: clamp(28px,3vw,40px); font-weight: 500; line-height: 1.2; text-wrap: balance; margin-block: 16px 24px; }
+.copy > p:not(:first-child) { max-width: 38ch; font-size: 17px; line-height: 1.65; color: var(--ink-soft); }
+.featureChoices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+.featureChoices button { min-height: 44px; padding: 10px 16px; border-radius: 999px; background: var(--soft); color: var(--ink-soft); font-size: 13px; cursor: pointer; }
+.featureChoices button[aria-pressed="true"] { color: var(--primary); background: var(--primary-soft); }
+.featureChoices button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.productStage { padding: 32px; background: var(--primary-soft); border-radius: 20px; min-width: 0; }
+.learningVisual { padding: 24px; background: var(--soft); border-radius: 20px; min-width: 0; }
+.sources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+.source { padding: 14px 12px; background: var(--paper); border-radius: 10px; min-width: 0; }
+.source > div { display: flex; gap: 8px; align-items: center; font-family: var(--font-inter),sans-serif; font-size: 10px; font-weight: 600; }
+.source > svg { display: block; width: 100%; height: 58px; margin-block: 18px 12px; color: var(--ink-muted); }
+.source p { font-size: 11px; color: var(--ink-muted); }
+.synthesis { padding-block: 14px 18px; text-align: center; color: var(--ink-soft); }
+.synthesis span { font-size: 28px; }
+.synthesis p { font-size: 13px; margin-top: 4px; }
+@media(max-width:900px) { .featureGrid { grid-template-columns: 1fr; gap: 32px; } .copy > p:not(:first-child) { max-width: 50ch; } .sectionTitle { margin-bottom: 40px; } }
+@media(max-width:600px) { .section { padding-block: 48px; } .productStage { padding: 16px; border-radius: 14px; } .learningVisual { padding: 12px; } .sources { gap: 6px; } .source { padding: 12px 8px; } .source > div { flex-direction: column; align-items: start; font-size: 9px; gap: 8px; } }

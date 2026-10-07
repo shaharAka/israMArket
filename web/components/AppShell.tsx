@@ -7,7 +7,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, endpoints, isDemo } from "@/lib/api";
-import { BrandMark, IconArrowRight, IconChart, IconHome, IconImage, IconCalendar, IconLogout, IconStore } from "@/lib/icons";
+import { IconArrowRight, IconChart, IconHome, IconImage, IconCalendar, IconLogout, IconStore } from "@/lib/icons";
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
 import { BrandLink } from "@/components/BrandLink";
 import { TrialWelcome } from "@/components/trial/Welcome";
@@ -196,7 +196,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
         ) : (
           <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
-            {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <BrandMark className="h-7 w-7 shrink-0 text-[color:var(--primary)]" />}
+            {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr">isramarket</span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
             <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">
@@ -234,9 +234,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               that the trigger then sat on top of. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
-              <BrandMark className="h-9 w-9 shrink-0 text-[color:var(--primary)]" />
               <div className="min-w-0">
-                <span className="block text-[17px] font-bold tracking-tight text-[color:var(--ink)]"><Copy text="ישראמארקט" /></span>
+                <span className="product-wordmark block" dir="ltr">isramarket</span>
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>
               </div>
             </Link>
@@ -361,7 +360,7 @@ export function PageHeader({
   return (
     <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">{title}</h1>
+        <h1 className="text-[28px] font-medium leading-tight text-[color:var(--ink)] sm:text-[32px]">{title}</h1>
         {subtitle ? <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{subtitle}</p> : null}
       </div>
       {action ? <div className="flex items-center gap-2 shrink-0">{action}</div> : null}

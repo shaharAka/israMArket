@@ -98,7 +98,7 @@
   gap: 12px;
   margin-top: 16px;
   padding: 16px 24px;
-  background: var(--sand);
+  background: var(--soft);
   color: var(--ink);
   font-size: 15px;
   line-height: 1.6;
@@ -106,7 +106,7 @@
 
 .ask strong {
   font-weight: 600;
-  color: var(--sand-dark);
+  color: var(--ink-soft);
 }
 
 .askIcon {
@@ -114,7 +114,7 @@
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  color: var(--sand-dark);
+  color: var(--ink-soft);
 }
 
 /* A list that is one object: paper, depth, hairlines between rows. */
@@ -172,7 +172,7 @@ summary.row:hover {
 
 /* "This week" wears the sun, like "you are here" on the landing page's map. */
 .num[data-state="now"] {
-  background: var(--sun);
+  background: var(--primary-soft);
   box-shadow: none;
   color: var(--ink);
 }

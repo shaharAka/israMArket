@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --font-ui: var(--font-heebo);
-  /* The finesse palette (DESIGN-STANDARD.md). Navy ink, one blue, sun for highlights. */
+  --font-ui: var(--font-site-clean);
+  /* Shared website/product language: ink actions, blue selection, neutral surfaces. */
+  --action: #14203a;
+  --action-hover: #25344a;
   --canvas: #f6f7fb;
   --paper: #ffffff;
   --soft: #f3f5fa;
@@ -75,7 +77,7 @@ textarea::placeholder {
 }
 
 ::selection {
-  background: #ffdf8c;
+  background: var(--primary-soft);
   color: var(--ink);
 }
 
@@ -370,7 +372,7 @@ a {
 .sun-progress svg { width: 100%; display: block; overflow: visible; }
 .journey-sun { transition: transform 1800ms cubic-bezier(.32, 0, .18, 1); }
 .app-blue .nav-item[aria-current="page"] { color: var(--primary); }
-.app-blue .nav-active-bar { background: var(--sun) !important; }
+.app-blue .nav-active-bar { background: var(--primary) !important; }
 .app-blue main h1 { letter-spacing: -.02em; }
 /* Page content sits centred in the space next to the sidebar, not against it. */
 .app-main > :where(*) { margin-inline: auto; }
@@ -379,7 +381,7 @@ a {
 .start-blue :is(button,a,input,textarea,select):focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .start-blue :is(input,textarea,select):focus { border-color: var(--primary); }
 .start-blue :is(button[aria-pressed="true"],label:has(input:checked)) { border-color: var(--primary); background-color: var(--primary-soft); }
-.app-feedback { animation: feedback-in 260ms ease-out both; background: var(--ink); border-inline-start: 4px solid var(--sun); }
+.app-feedback { animation: feedback-in 260ms ease-out both; background: var(--ink); border: 1px solid var(--rule); }
 /* Only the rise: the toast is centred by its own `-translate-x-1/2` (Tailwind v4's `translate`
    property). Animating `transform: translate(-50%, …)` too added a second -50%, so every toast
    sat half its width to the left, cut off at the edge of a phone. */
@@ -443,3 +445,13 @@ a {
 .product-utilities-inline .product-utilities-row { padding: 0; }
 .product-utilities-inline select { width: 90px; font-size: 13px; }
 .product-utilities-inline [role="alert"] { position: absolute; top: 100%; min-width: 220px; padding: 12px; background: var(--paper); box-shadow: var(--shadow-card); z-index: 50; }
+
+/* Shared primary action: the same restrained hierarchy on public, onboarding and app views. */
+.drawn-button[class*="bg-[var(--primary)]"] { background: var(--action); color: var(--paper); box-shadow: none; }
+.drawn-button[class*="bg-[var(--primary)]"]:hover:not(:disabled) { background: var(--action-hover); }
+.app-blue .dot-grid, .start-blue .dot-grid { background-image: none; }
+.app-blue main h1 { font-weight: 500; letter-spacing: normal; }
+.journey-progress { display: flex; gap: 4px; width: 136px; padding-block: 16px; }
+.journey-progress span { flex: 1; height: 4px; border-radius: 2px; background: var(--rule); }
+.journey-progress span[data-complete="true"] { background: var(--primary); }
+.product-wordmark { font-family: var(--font-inter),sans-serif; font-weight: 750; font-size: 24px; letter-spacing: -.055em; line-height: 1; color: var(--ink); }

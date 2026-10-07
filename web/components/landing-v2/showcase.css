@@ -204,6 +204,39 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 
 /* Identity studies stay opt-in on /design/identity. */
 .lv2-identity-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 750; font-size: 29px; letter-spacing: -.045em; line-height: 1; color: var(--ink); }
-.lv2-identity-symbol { display: none; width: 44px; height: 44px; color: var(--ink); }
+.lv2-identity-symbol { display: none; width: 50px; min-height: 44px; padding-block: 6px; font-size: 17px; color: var(--ink); }
 .lv2-identity-symbol svg { width: 100%; height: 100%; }
 @media (max-width: 520px) { .lv2-identity-wordmark { display: none; } .lv2-identity-symbol { display: block; } }
+
+/* Benefit-led feature chapters. Color belongs to a large product stage, not every control. */
+.lv2-site .lv2-learn-group { background: var(--paper); padding-block: 80px; }
+.lv2-site .lv2-learn-group .lv2-feature-grid { grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); }
+.lv2-site .lv2-post-section { background: var(--paper); }
+.lv2-site .lv2-connections-band { background: var(--primary-soft); }
+.lv2-site .lv2-connections-band .lv2-lead { max-width: 60ch; margin-block: 20px 36px; }
+.lv2-provider-logo { display: inline-flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; }
+.lv2-site .lv2-connector-logos { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
+.lv2-site .lv2-connector-link { background: var(--paper); min-height: 180px; border: 0; box-shadow: none; border-radius: 10px; padding: 24px 12px; display: flex; flex-direction: column; gap: 28px; justify-content: center; align-items: center; }
+.lv2-site .lv2-connector-link:hover { box-shadow: var(--shadow-card); background: var(--paper); }
+.lv2-site .lv2-connector-link > span:last-child { font-size: 14px; font-weight: 500; text-align: center; }
+.lv2-connection-hero { padding-block: 64px 80px; display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: 64px; align-items: center; }
+.lv2-connection-pair { display: flex; align-items: center; gap: 20px; margin-bottom: 36px; }
+.lv2-connection-pair > span:nth-child(2) { color: var(--ink-faint); font-size: 24px; }
+.lv2-connection-hero .lv2-h2 { margin-top: 16px; }
+.lv2-connection-hero .lv2-lead { font-size: 18px; margin-block: 24px 32px; }
+.lv2-site .lv2-value-cta { background: var(--ink); color: white; box-shadow: none; border-radius: 999px; }
+.lv2-connection-hero .lv2-fine { margin-top: 16px; }
+.lv2-connection-art { background: var(--primary-soft); border-radius: 20px; padding: 28px; min-width: 0; }
+.lv2-connection-art-title { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; font-size: 15px; }
+.lv2-connection-benefits { padding-block: 48px 80px; }
+.lv2-connection-benefits ol { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 40px; margin-top: 40px; }
+.lv2-connection-benefits li { border-top: 1px solid var(--rule-dark); padding-top: 24px; }
+.lv2-connection-benefits li > span { font-family: var(--font-inter),sans-serif; font-size: 13px; color: var(--ink-muted); }
+.lv2-connection-benefits h3 { font-size: 24px; line-height: 1.3; font-weight: 500; margin-top: 20px; }
+.lv2-connection-practical { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 64px; padding-block: 48px 80px; }
+.lv2-connection-practical .lv2-lead { margin-block: 20px; font-size: 17px; }
+.lv2-connection-availability { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+.lv2-connection-practical details { border-block: 1px solid var(--rule); margin-top: 24px; }
+.lv2-connection-practical summary { cursor: pointer; min-height: 56px; padding-block: 16px; font-weight: 500; }
+@media(max-width:900px) { .lv2-site .lv2-learn-group .lv2-feature-grid,.lv2-connection-hero,.lv2-connection-practical { grid-template-columns: 1fr; gap: 32px; } .lv2-site .lv2-connector-logos { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width:600px) { .lv2-site .lv2-connector-logos { grid-template-columns: repeat(2,minmax(0,1fr)); } .lv2-connection-hero { padding-block: 40px; } .lv2-connection-art { padding: 16px; } .lv2-connection-benefits ol { grid-template-columns: 1fr; gap: 28px; } .lv2-connection-pair .lv2-wordmark { display: block; font-size: 25px; } }

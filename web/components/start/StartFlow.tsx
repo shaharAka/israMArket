@@ -23,7 +23,7 @@ import {
 } from "@/lib/draft";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { BUSINESS_MODEL_OPTIONS, defaultGoalFor } from "@/lib/businessModel";
-import { BrandMark, IconArrowRight } from "@/lib/icons";
+import { IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
 import {
   CHAPTERS,
@@ -431,7 +431,7 @@ export function StartFlow() {
           </button>
         ) : (
           <Link href="/" aria-label="לעמוד הבית" className="flex min-h-11 shrink-0 items-center px-1">
-            <BrandMark className="h-7 w-7 text-[color:var(--primary)]" />
+            <span className="product-wordmark !text-[18px]" dir="ltr">isramarket</span>
           </Link>
         )}
         <CardBar flow={flow} open={cardOpen} onToggle={toggleCard} onPickStyle={() => setStyleOpen(true)} />
@@ -441,8 +441,7 @@ export function StartFlow() {
       <header className={styles.topbar}>
         <div className={`${styles.wrap} ${styles.topbarRow}`}>
           <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
-            <BrandMark className="h-8 w-8 text-[color:var(--primary)]" />
-            <span>ישראמארקט</span>
+            <span className="product-wordmark" dir="ltr">isramarket</span>
           </Link>
           {loggedIn ? null : (
             <p className={styles.signin}>

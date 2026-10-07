@@ -29,7 +29,9 @@ export function CampaignPostExamples({
   selectionLabel,
   captionLabel,
   screenshot,
+  galleryOnly = false,
 }: {
+  galleryOnly?: boolean;
   examples: CampaignExample[];
   selectionLabel: string;
   captionLabel: string;
@@ -65,26 +67,26 @@ export function CampaignPostExamples({
   }, [playing, visible, pageVisible, beat, example]);
   if (!example) return null;
   return (
-    <div className="campaign-examples">
+    <div className="campaign-examples" data-gallery={galleryOnly}>
       <div className="campaign-grid" data-count={examples.length} role="group" aria-label={selectionLabel}>
         {examples.map((item, index) => <div className="campaign-item" key={item.key}>
         <PostArtwork item={item} artRef={selected === index ? activeArt : undefined} playing={selected === index && playing} beat={selected === index ? beat : 0} screenshot={screenshot} />
-        {item.label ? <p className="campaign-context">{item.label}</p> : null}
-        <button type="button" className="campaign-read" aria-pressed={index === selected && captionOpen} aria-controls="campaign-example-detail" onClick={() => {
+        {!galleryOnly && item.label ? <p className="campaign-context">{item.label}</p> : null}
+        {!galleryOnly && <button type="button" className="campaign-read" aria-pressed={index === selected && captionOpen} aria-controls="campaign-example-detail" onClick={() => {
           setSelected(index); setBeat(0); setPlaying(false); setCaptionOpen(true);
           window.requestAnimationFrame(() => document.getElementById("campaign-example-detail")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "center" }));
-        }}>{t("לקרוא את הפוסט של {arg_0}", {arg_0:item.kind})}</button>
-        {item.motion ? <button type="button" className="campaign-read" onClick={(event) => {
+        }}>{t("לקרוא את הפוסט של {arg_0}", {arg_0:item.kind})}</button>}
+        {item.motion ? <button type="button" className={galleryOnly ? "campaign-play" : "campaign-read"} aria-label={t(playing && selected === index ? "לעצור את התנועה" : "לראות את הפוסט בתנועה")} onClick={(event) => {
           if (playing && selected === index) setPlaying(false);
           else if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
             setSelected(index); setBeat(0); setPlaying(true);
             // Keep the photograph visible when its control sits below a tall phone card.
             event.currentTarget.parentElement?.querySelector("figure")?.scrollIntoView({ behavior: "smooth", block: "start" });
           }
-        }}>{t(playing && selected === index ? "לעצור את התנועה" : "לראות את הפוסט בתנועה")}</button> : null}
+        }}>{galleryOnly ? <span aria-hidden="true">{playing && selected === index ? "Ⅱ" : "▶"}</span> : t(playing && selected === index ? "לעצור את התנועה" : "לראות את הפוסט בתנועה")}</button> : null}
         </div>)}
       </div>
-      <div id="campaign-example-detail" className="campaign-detail">
+      {!galleryOnly && <div id="campaign-example-detail" className="campaign-detail">
         <div className="campaign-explanation">
           <h3>{example.kind}</h3>
           {example.motion ? <div className="campaign-motion">
@@ -93,7 +95,7 @@ export function CampaignPostExamples({
           <p className="campaign-plan">{example.plan}</p>
           <details className="campaign-caption" open={captionOpen} onToggle={event => setCaptionOpen(event.currentTarget.open)}><summary>{captionLabel}</summary><p>{example.caption}</p></details>
         </div>
-      </div>
+      </div>}
     </div>
   );
 }

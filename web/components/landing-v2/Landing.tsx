@@ -20,6 +20,8 @@ import { artSerif, siteSerif, siteClean } from "./siteFonts";
 import { PERSONA_PAGES } from "./personaPages";
 import { BusinessRoleSelector } from "./BusinessRoleSelector";
 import { CampaignPostExamples } from "./CampaignPostExamples";
+import { FeatureStory } from "./FeatureStory";
+import { LearningBridge } from "./LearningBridge";
 import { ConnectionShowcase } from "./ConnectionShowcase";
 import "./lv2.css";
 import "./showcase.css";
@@ -65,24 +67,21 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         {heroVariant === "workspace" ? <HeroWorkspace key={path} path={path} /> : <HeroProduct key={path} path={path} />}
       </div></section>
       {!heroOnly && <>
-      <section id="story" className="lv2-feature-group lv2-plan-group" aria-labelledby="lv2-story-title"><div className="lv2-wrap lv2-feature-grid">
-        <div><p className="lv2-eyebrow"><Copy text="מחקר ותכנון" /></p><h2 id="lv2-story-title" className="lv2-h2"><Copy text={persona.planTitle} /></h2><p className="lv2-lead"><Copy text={persona.planBody} /></p><Link href={`/design/business?persona=${path}&lang=${locale}`} className="lv2-link"><Copy text="לפתוח את מסכי המערכת" /></Link></div>
-        <BusinessProductProof path={path} screen="plan" />
-      </div></section>
+      <FeatureStory path={path} />
       <section id="posts" className="lv2-showcase-section lv2-post-section" aria-labelledby="lv2-post-title"><div className="lv2-wrap">
-        <p className="lv2-eyebrow"><Copy text="כל עסק עם האופי שלו" /></p>
-        <h2 id="lv2-post-title" className="lv2-h2"><Copy text={persona.postsTitle} /></h2>
-        <p className="lv2-lead"><Copy text={persona.postsBody} /></p>
-        <CampaignPostExamples key={path} examples={posts} selectionLabel={t("לבחור פוסט לדוגמה")} captionLabel={t("לקרוא את הטקסט שמלווה את הפוסט")} screenshot={{src:"/showcase/platform-week-desktop.png",alt:t("התוכנית והצעד הבא במערכת")}} />
+        <p className="lv2-eyebrow"><Copy text="מהתוכנית לפוסטים שלכם" /></p>
+        <h2 id="lv2-post-title" className="lv2-h2"><Copy text="אנחנו יוצרים את הפוסטים. אתם מביאים את האופי." /></h2>
+        <p className="lv2-lead"><Copy text="תמונות, טקסטים ותוכן בתנועה שנבנים מתוך תוכנית השיווק, בסגנון שמתאים לעסק שלכם. מוכנים לבדיקה ולפרסום." /></p>
+        <CampaignPostExamples galleryOnly key={path} examples={posts} selectionLabel={t("לבחור פוסט לדוגמה")} captionLabel={t("לקרוא את הטקסט שמלווה את הפוסט")} screenshot={{src:"/showcase/platform-week-desktop.png",alt:t("התוכנית והצעד הבא במערכת")}} />
       </div></section>
       <section id="learn" className="lv2-feature-group lv2-learn-group" aria-labelledby="lv2-learn-title"><div className="lv2-wrap lv2-feature-grid">
-        <div><p className="lv2-eyebrow"><Copy text="למידה מהתוצאות" /></p><h2 id="lv2-learn-title" className="lv2-h2"><Copy text={persona.learnTitle} /></h2><p className="lv2-lead"><Copy text={persona.learnBody} /></p><p className="lv2-fine"><Copy text="ממצא, הסבר וצעד לפוסט הבא. לא רק עוד גרף." /></p></div>
-        <BusinessProductProof path={path} screen="results" />
+        <div><p className="lv2-eyebrow"><Copy text="למידה מהתוצאות" /></p><h2 id="lv2-learn-title" className="lv2-h2"><Copy text="כל הנתונים האלה. צעד אחד ברור." /></h2><p className="lv2-lead"><Copy text="אנחנו קוראים את הנתונים מהחשבונות שחיברתם, מפרידים בין חשיפה, לחיצות ותוצאות, ומסבירים מה ללמוד מהם. הממצא חוזר לתוכנית ולפוסט הבא." /></p><p className="lv2-fine"><Copy text="ממצא, הסבר וצעד לפוסט הבא. לא רק עוד גרף." /></p></div>
+        <LearningBridge path={path} />
       </div></section>
-      <section id="connections" className="lv2-showcase-section" aria-labelledby="lv2-connect-title"><div className="lv2-wrap">
+      <section id="connections" className="lv2-showcase-section lv2-connections-band" aria-labelledby="lv2-connect-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="מתחילים ממה שאתם כבר משתמשים בו" /></p>
-        <h2 id="lv2-connect-title" className="lv2-h2"><Copy text={persona.connectTitle} /></h2>
-        <p className="lv2-lead"><Copy text="בחרו תוכנה כדי לראות מה מקבלים, איך מחברים ואיך זה נראה בתוך המערכת." /></p>
+        <h2 id="lv2-connect-title" className="lv2-h2"><Copy text="הכלים שלכם. התמונה מתחברת אצלנו." /></h2>
+        <p className="lv2-lead"><Copy text="פחות מעבר בין מסכים. יותר הבנה של מה מביא אנשים לעסק ומה כדאי לפרסם בהמשך." /></p>
         <ConnectionShowcase />
       </div></section>
       <section className="lv2-phone-group"><div className="lv2-wrap lv2-phone-grid"><div><h2 className="lv2-h2"><Copy text="צוות השיווק שלכם. גם בטלפון." /></h2><p className="lv2-lead"><Copy text="לבדוק פוסט, לראות את הצעד הבא ולהבין מה למדנו. בין לקוחות, מהטלפון שלכם." /></p></div><div className="lv2-phone-proof" aria-label={t("התוכנית בטלפון")}><BusinessProductProof compact path={path} screen="plan" /></div></div></section>

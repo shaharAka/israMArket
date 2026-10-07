@@ -16,7 +16,7 @@ function subscribeVisibility(listener: () => void) {
 
 /** Only operates on the local, read-only product showcase. Never clicks app actions. */
 export function useProductPlayback(enabled: boolean, screen: ProductScreen,
-  setScreen: (screen: ProductScreen) => void, setPostIndex: (index: number | null) => void) {
+  setScreen: (screen: ProductScreen) => void, setPostIndex: (index: number | null) => void, autoplay = true) {
   const frame = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(.6);
@@ -25,7 +25,7 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   const [cursor, setCursor] = useState<{ x: number; y: number; pressed: boolean } | null>(null);
   const reduced = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
   const visible = useSyncExternalStore(subscribeVisibility, () => document.visibilityState === "visible", () => false);
-  const playing = enabled && requested && inView && visible && !reduced;
+  const playing = enabled && autoplay && requested && inView && visible && !reduced;
 
   useEffect(() => {
     if (!enabled || !frame.current) return;
@@ -39,7 +39,7 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
     const view = viewport.current;
     const active = view.querySelector<HTMLElement>('[data-active="true"]');
     if (!active) return;
-    const fit = () => setScale(Math.min(1, (view.clientWidth - 24) / 760, (view.clientHeight - 56) / active.offsetHeight));
+    const fit = () => setScale(Math.min(1, (view.clientWidth - 24) / active.offsetWidth, (view.clientHeight - 56) / active.offsetHeight));
     const observer = new ResizeObserver(fit);
     observer.observe(view);
     observer.observe(active);
@@ -83,7 +83,7 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
       setCursor({ x: rect.left - bounds.left + rect.width * .62, y: rect.top - bounds.top + rect.height * .5, pressed: false });
     });
     later(4600, () => setCursor(null));
-    later(8500, () => setScreen(screen === "plan" ? "posts" : screen === "posts" ? "results" : "plan"));
+    later(8500, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "posts" : screen === "posts" ? "results" : "research"));
     return () => timers.forEach(clearTimeout);
   }, [playing, screen, setScreen, setPostIndex]);
 

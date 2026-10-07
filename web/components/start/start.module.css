@@ -1,5 +1,5 @@
 /* /start: the page, the conversation and the business card, in the landing's craft (white,
- * navy ink, one blue, the sun only as a highlight). Motion is subtle on purpose, and off
+ * navy ink and one blue interaction accent). Motion is subtle on purpose, and off
  * entirely under prefers-reduced-motion. Controls live in form.module.css. */
 
 /* ---- Motion ---- */
@@ -37,19 +37,19 @@
   }
 }
 
-/* A card slot that was just answered: rises in on a sun wash that fades out. */
+/* A card slot that was just answered: rises in on a blue wash that fades out. */
 @keyframes fill {
   0% {
     opacity: 0;
     transform: translateY(4px);
-    background-color: color-mix(in srgb, var(--sun) 32%, transparent);
+    background-color: color-mix(in srgb, var(--primary-soft) 32%, transparent);
   }
   35% {
     opacity: 1;
     transform: none;
   }
   100% {
-    background-color: color-mix(in srgb, var(--sun) 0%, transparent);
+    background-color: color-mix(in srgb, var(--primary-soft) 0%, transparent);
   }
 }
 
@@ -220,9 +220,7 @@
   --gutter: clamp(20px, 5vw, 48px);
   min-height: 100dvh;
   color: var(--ink);
-  background:
-    radial-gradient(60% 420px at 12% 0%, color-mix(in srgb, var(--primary) 5%, transparent), transparent 70%),
-    var(--paper);
+  background: var(--paper);
   /* Nothing here scrolls sideways. This also stops a full-page capture of a screen that
      fits the window from shifting the whole RTL page against the right edge. */
   overflow-x: clip;
@@ -596,7 +594,7 @@
   transform: translateX(-3px);
 }
 
-/* The consultant saying back what they heard: a sun dot, not a chat bubble. */
+/* The consultant saying back what they heard: a quiet blue dot, not a chat bubble. */
 .reflection {
   display: flex;
   align-items: flex-start;
@@ -614,7 +612,7 @@
   height: 8px;
   margin: 8px 4px 0;
   border-radius: 999px;
-  background: var(--sun);
+  background: var(--primary-soft);
   box-shadow: 0 0 0 4px var(--sand);
 }
 
@@ -905,3 +903,5 @@
     transition: none;
   }
 }
+
+.title { font-weight: 500; letter-spacing: normal; }

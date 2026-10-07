@@ -9,7 +9,7 @@ export function ProductUtilities({ inline = false }: { inline?: boolean }) {
   const pathname = usePathname();
   const { locale, choose, t, busy, error } = useLanguage();
   const id = useId();
-  if (!inline && (pathname === "/" || pathname.startsWith("/for/") || pathname === "/design/hero" || pathname === "/design/identity")) return null;
+  if (!inline && (pathname === "/" || pathname.startsWith("/for/") || pathname === "/design/hero" || pathname === "/design/identity" || pathname.startsWith("/connections/"))) return null;
   return <div className={inline ? "product-utilities product-utilities-inline" : "product-utilities"} aria-label={t("שפה")}>
     <div className="product-utilities-row" dir="rtl">
       <label htmlFor={id} className="product-language-control">

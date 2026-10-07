@@ -1,24 +1,18 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { Copy, useCopy } from "@/components/language/LanguageProvider";
-import { CONNECTION_EXAMPLES } from "./connectionExamples";
-
-const LOGOS: Record<string, string[]> = {
-  "google-analytics": ["googleanalytics"],
-  "facebook-instagram": ["facebook", "instagram"],
-  "ads-pixel": ["meta"],
-  whatsapp: ["whatsapp"],
-};
+import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
+import { ProviderLogo } from "./ProviderLogo";
+import { CONNECTION_EXAMPLES, type ConnectionExampleKey } from "./connectionExamples";
 
 /** Recognisable vendor logos open concrete benefits, setup and screenshot pages. */
 export function ConnectionShowcase() {
   const t = useCopy();
+  const { locale } = useLanguage();
   return <nav className="lv2-connector-logos" aria-label={t("לבחור תוכנה ולקרוא על החיבור")}>
-    {Object.entries(CONNECTION_EXAMPLES).map(([key, item]) => <Link key={key} href={`/connections/${key}`} className="lv2-connector-link">
-      <span className="lv2-connector-logo" aria-hidden="true">{LOGOS[key] ? LOGOS[key].map(logo => <Image key={logo} src={`/connectors/${logo}.svg`} width={40} height={40} alt="" />) : <span className="lv2-website-wordmark" dir="ltr">www.</span>}</span>
-      <span><Copy text={item.short} /></span><small><Copy text="מה מקבלים ואיך מחברים" /></small>
+    {Object.entries(CONNECTION_EXAMPLES).map(([key, item]) => <Link key={key} href={`/connections/${key}?lang=${locale}`} className="lv2-connector-link">
+      <ProviderLogo provider={key as ConnectionExampleKey} size={48} />
+      <span><Copy text={item.short} /></span>
     </Link>)}
   </nav>;
 }

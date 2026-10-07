@@ -213,7 +213,7 @@ Live-account content and backend writes were not exercised during this design re
 
 ## Product screens in the public feature preview
 
-The homepage and `/design/business` switch between Plan, Posts and Results.
+The homepage and `/design/business` switch between Research, Plan, Posts and Results.
 Business-role choices are neutral page links with one blue selected state. Product features use standard pressed
 buttons beneath the product view, rather than a second tab bar. Inactive views are inert
 and hidden from assistive technology; a shared grid reserves their height so feature
@@ -235,7 +235,7 @@ Generic illustrative-data and fictional-customer captions are removed. Actual mi
 measurements, analysis limits and integration readiness remain part of the product UI.
 Final marketing recordings should follow review of the internal screens.
 
-Hero playback cycles plan → posts → findings every 8.5 seconds. An original SVG hand
+Hero playback cycles research → plan → posts → findings every 8.5 seconds. An original SVG hand
 opens an actual weekly disclosure, local post and finding evidence. It only targets
 these read-only fixture controls. Manual pointer/keyboard/wheel interaction pauses it;
 the adjacent play/pause control resumes it. Offscreen/hidden pages suspend timers,
@@ -245,7 +245,16 @@ The full-screen design preview remains manual. Landing headers embed the existin
 language selector beside login/start, with its accessible label retained but visually hidden.
 
 Public shell palette: paper, ink, neutral surfaces and the existing blue interaction accent.
-The wordmark and ISMT mark are monochrome; CTAs use ink. Business-specific colors belong
+The full-name wordmark is monochrome; CTAs use ink. Business-specific colors belong
 inside artwork and real product content, not separate colors for each navigation option.
 
-`/design/identity` compares three original SVG mark studies at 20px, 32px and reversed, with an opt-in real landing-page header preview. The production wordmark is not replaced by an unselected study.
+`/design/identity` compares four typography-led full-name wordmarks in large, small and reversed settings, with an opt-in landing-page header preview. It removes the sun and stacked initials; alternate font studies remain selectable in the workshop.
+
+The October 8 value pass uses `ResearchInsights` in both onboarding and the public tour.
+`FeatureStory` groups research and planning with large native component views; `LearningBridge`
+shows source categories feeding a finding, without adding incompatible metrics together.
+The post gallery shows artwork directly, with only motion controls remaining. Connector
+pages lead with benefits and actual app captures; provider eligibility remains visible and
+setup instructions live below the value sections. Shared Rubik/Inter/Arabic fonts, ink
+primary actions, neutral surfaces and blue interaction states now apply to onboarding and
+signed-in screens. The identity workshop contains typography-only directions.

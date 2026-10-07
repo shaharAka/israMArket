@@ -1,0 +1,6 @@
+.word { display: inline-flex; font-family: var(--font-inter),sans-serif; font-weight: 750; font-size: inherit; line-height: 1; letter-spacing: -.055em; white-space: nowrap; color: inherit; }
+.word[data-type="geometric"] { font-family: var(--identity-geometric),sans-serif; font-weight: 650; letter-spacing: -.065em; }
+.word[data-type="human"] { font-family: var(--identity-human),sans-serif; font-weight: 700; letter-spacing: -.045em; }
+.word[data-type="human"] > span:first-child { font-weight: 450; }
+.word[data-type="compact"] { font-family: var(--identity-compact),sans-serif; font-weight: 750; text-transform: uppercase; letter-spacing: -.015em; }
+.word[data-compact="true"] { flex-direction: column; align-items: start; line-height: .95; letter-spacing: -.04em; }
