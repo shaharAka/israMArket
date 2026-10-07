@@ -4,8 +4,9 @@ import Link from "next/link";
 import { type ReactNode } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
+import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
-import { IconArrowLeft, IconCheck } from "@/lib/icons";
+import { IconArrowLeft } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { HERO, TRUST } from "./content";
 import { type ExamplePath } from "./businessExamples";
@@ -16,6 +17,7 @@ import { HeroProduct } from "./HeroProduct";
 import { BrandWordmark } from "./BrandWordmark";
 import { artSerif, siteSerif, siteClean } from "./siteFonts";
 import { PERSONA_PAGES } from "./personaPages";
+import { BusinessRoleSelector } from "./BusinessRoleSelector";
 import { CampaignPostExamples } from "./CampaignPostExamples";
 import { ConnectionShowcase } from "./ConnectionShowcase";
 import "./lv2.css";
@@ -48,14 +50,14 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row">
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark /></Link>
       {!heroOnly && <nav aria-label={t("בעמוד הזה")} className="lv2-nav-links"><a href="#story"><Copy text="איך זה עובד" /></a><a href="#posts"><Copy text="הפוסטים" /></a><a href="#connections"><Copy text="חיבורים" /></a><a href="#price"><Copy text="מנוי" /></a><a href="#trust"><Copy text="המידע שלכם" /></a></nav>}
-      <div className="lv2-nav-end"><Link href="/login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={canStart ? "להתחיל בחינם" : "דוגמאות לעמותות"} /></Link></div>
+      <div className="lv2-nav-end"><ProductUtilities inline /><Link href="/login" className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={canStart ? "להתחיל בחינם" : "דוגמאות לעמותות"} /></Link></div>
     </div></header>
     <main>
       <section className="lv2-hero" aria-labelledby="lv2-title"><div className="lv2-wrap lv2-hero-grid">
         <div className="lv2-hero-text">
           <h1 id="lv2-title" className="lv2-display"><Copy text={HERO.title} /></h1>
           <p className="lv2-lead"><Copy text={persona.body} /></p>
-          <nav className="lv2-role-nav" aria-label={t("לבחור את התפקיד שלכם ולראות את העמוד המתאים")}>{Object.entries(PERSONA_PAGES).map(([key, item]) => <Link key={key} href={heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`} aria-current={key === path ? "page" : undefined}>{key === path && <IconCheck className="h-3.5 w-3.5" />}<Copy text={item.role} /></Link>)}</nav>
+          <BusinessRoleSelector path={path} hrefFor={key => heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`} />
           <div className="lv2-hero-cta"><Link href={start} className="lv2-btn"><Copy text={startLabel} /><IconArrowLeft className="h-4 w-4" /></Link></div>
           <p className="lv2-fine"><Copy text={canStart ? "בלי כרטיס אשראי. אתם בודקים ומפרסמים." : "המסלול לעמותות בפיתוח. בינתיים אפשר לראות את הכיוון בדוגמאות."} /></p>
         </div>

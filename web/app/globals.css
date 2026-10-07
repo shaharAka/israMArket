@@ -438,3 +438,8 @@ a {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px var(--focus-ring);
 }
+
+.product-utilities-inline { position: relative; border: 0; background: transparent; }
+.product-utilities-inline .product-utilities-row { padding: 0; }
+.product-utilities-inline select { width: 90px; font-size: 13px; }
+.product-utilities-inline [role="alert"] { position: absolute; top: 100%; min-width: 220px; padding: 12px; background: var(--paper); box-shadow: var(--shadow-card); z-index: 50; }

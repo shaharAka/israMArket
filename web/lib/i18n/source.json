@@ -255,7 +255,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -310,7 +310,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -582,7 +582,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -2347,12 +2347,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 20,
-        "kind": "literal",
-        "purpose": "display"
-      },
-      {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 632,
         "kind": "literal"
@@ -2621,7 +2615,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -2879,7 +2873,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -4840,12 +4834,6 @@
         "file": "web/components/landing-v2/PlanSheet.tsx",
         "line": 101,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 18,
-        "kind": "literal",
-        "purpose": "display"
       },
       {
         "file": "web/components/start/BusinessCard.tsx",
@@ -14236,7 +14224,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 61,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -14925,7 +14913,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 93,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -15053,7 +15041,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       },
       {
@@ -15507,7 +15495,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -16719,7 +16707,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 58,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -19382,7 +19370,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -20809,7 +20797,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/BusinessScreenPreview.tsx",
-        "line": 21,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -22077,7 +22065,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/BusinessScreenPreview.tsx",
-        "line": 15,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -22343,6 +22331,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_32d762bc06fb87c0": {
+    "source": "להפעיל את ההדגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -23642,17 +23641,6 @@
       }
     ]
   },
-  "m_35a38a3099a75c41": {
-    "source": "לבחור את התפקיד שלכם ולראות את העמוד המתאים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 58,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_35a88ac367d87ca9": {
     "source": "בחירת החשבון / הנכס",
     "language": "he",
@@ -24311,6 +24299,18 @@
       }
     ]
   },
+  "m_36fcc13f31658a4f": {
+    "source": "תוצאות ושיפור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_370578329ba70f79": {
     "source": "חלק מהמספרים מעדכון קודם, ולכן הם לא מראים את המצב היום.",
     "language": "he",
@@ -24889,7 +24889,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -29378,7 +29378,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 61,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -30518,7 +30518,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -31914,7 +31914,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -34556,7 +34556,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 25,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -36598,7 +36598,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -36699,7 +36699,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 92,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -39211,6 +39211,12 @@
         "file": "web/components/landing-v2/PlanCycleHero.tsx",
         "line": 79,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 19,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -42179,7 +42185,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -42736,6 +42742,17 @@
       {
         "file": "web/components/results/FindingCard.tsx",
         "line": 109,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_642d47b7e195e5b0": {
+    "source": "בוחרים את סוג העסק ורואים את התוכנית, הפוסטים והתוצאות בהדגמה שמתנגנת אוטומטית. אפשר לעצור ולבדוק כל מסך. בחירת השפה נמצאת בתפריט העליון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
         "kind": "literal"
       }
     ]
@@ -44958,7 +44975,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 98,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -45481,17 +45498,6 @@
         "line": 437,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_6a56f867200bc235": {
-    "source": "אפשר לעבור בין התוכנית, הפוסטים והתוצאות. התצוגות משתמשות באותם רכיבים כמו בתוך המערכת, עם תוכן שמתאים לסוג העסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 9,
-        "kind": "literal"
       }
     ]
   },
@@ -46355,7 +46361,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -47506,7 +47512,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 73,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -48174,7 +48180,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -53323,7 +53329,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 70,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -53842,7 +53848,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 82,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -54192,7 +54198,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 57,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -60493,6 +60499,18 @@
       }
     ]
   },
+  "m_8d97f17e61e6ad1c": {
+    "source": "יצירת פוסטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_8d990558733dd2f7": {
     "source": "בחנות או באתר",
     "language": "he",
@@ -60880,7 +60898,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -63810,7 +63828,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 76,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -65111,7 +65129,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 98,
+        "line": 100,
         "kind": "literal"
       },
       {
@@ -66240,12 +66258,12 @@
     "references": [
       {
         "file": "web/components/language/ProductUtilities.tsx",
-        "line": 10,
+        "line": 13,
         "kind": "literal"
       },
       {
         "file": "web/components/language/ProductUtilities.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -67535,7 +67553,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       },
       {
@@ -70857,7 +70875,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 73,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -71232,7 +71250,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -72555,7 +72573,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -72914,7 +72932,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -73048,7 +73066,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -73248,7 +73266,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -74816,7 +74834,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -76167,7 +76185,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 99,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -78497,18 +78515,12 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 19,
-        "kind": "literal",
-        "purpose": "display"
-      },
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 60,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -78569,8 +78581,8 @@
         "purpose": "display"
       },
       {
-        "file": "web/components/landing-v2/BusinessScreenPreview.tsx",
-        "line": 17,
+        "file": "web/components/landing-v2/BusinessRoleSelector.tsx",
+        "line": 13,
         "kind": "literal"
       },
       {
@@ -78587,7 +78599,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 99,
+        "line": 101,
         "kind": "literal"
       },
       {
@@ -81243,6 +81255,11 @@
         "file": "web/components/landing-v2/PlanCycleHero.tsx",
         "line": 132,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 76,
+        "kind": "literal"
       }
     ]
   },
@@ -81427,7 +81444,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -81790,7 +81807,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -82875,7 +82892,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 64,
+        "line": 56,
         "kind": "literal"
       },
       {
@@ -83501,12 +83518,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -83563,7 +83580,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -84390,7 +84407,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -85814,7 +85831,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -90115,6 +90132,17 @@
       }
     ]
   },
+  "m_d399d05fcf7f194b": {
+    "source": "לבחור מה לראות במערכת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d3a29eae1b7ca9fd": {
     "source": "עוד לא הגדרתם עסק",
     "language": "he",
@@ -90769,7 +90797,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -92748,7 +92776,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 94,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -93695,7 +93723,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 73,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -96724,7 +96752,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 76,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -96921,12 +96949,12 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       },
       {
@@ -97063,7 +97091,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 80,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -100214,17 +100242,6 @@
       }
     ]
   },
-  "m_ea74e3eda780735b": {
-    "source": "מסכי המערכת",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 46,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ea77881d692819d4": {
     "source": "עסקים קטנים באזור",
     "language": "he",
@@ -101573,7 +101590,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -106399,7 +106416,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 18,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -109542,7 +109559,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]

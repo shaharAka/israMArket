@@ -5,8 +5,8 @@ html[lang="en"] .lv2-site, html[lang="ru"] .lv2-site { --font-ui: var(--font-int
 html[lang="ar"] .lv2-site { --font-ui: var(--font-arabic); }
 .lv2-site .lv2-fine { color: var(--ink-muted); }
 .lv2-wordmark { font-family: var(--font-inter), sans-serif; font-size: 29px; font-weight: 600; letter-spacing: -.065em; line-height: 1; color: var(--ink); }
-.lv2-wordmark > span { color: var(--primary); }
-.lv2-compact-mark { display: none; background: var(--primary); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -.035em; line-height: .82; text-align: center; padding: 4px 0; }
+.lv2-wordmark > span { color: inherit; }
+.lv2-compact-mark { display: none; background: var(--ink); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -.035em; line-height: .82; text-align: center; padding: 4px 0; }
 .lv2-hero { background: var(--paper); }
 .lv2-site .lv2-hero-grid { grid-template-columns: minmax(0, .86fr) minmax(0, 1.24fr); padding-block: 48px 40px; gap: clamp(32px, 4vw, 56px); align-items: start; }
 .lv2-site .lv2-hero-text .lv2-lead { font-size: 18px; line-height: 1.55; margin-block: 24px; max-width: 32ch; }
@@ -22,7 +22,7 @@ html[lang="ar"] .lv2-site { --font-ui: var(--font-arabic); }
 .lv2-connection-detail { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.15fr); gap: 48px; align-items: center; }
 .lv2-connection-detail h3 { margin-bottom: 16px; }
 .lv2-connection-detail .lv2-fine { margin-top: 20px; font-size: 13px; }
-.lv2-ai-work { background: var(--sand); padding-block: 64px; }
+.lv2-ai-work { background: var(--soft); padding-block: 64px; }
 .lv2-ai-work .lv2-lead { margin-block: 24px; max-width: 48ch; }
 .lv2-ai-work .lv2-link { display: inline-flex; gap: 8px; align-items: center; }
 .lv2-connection-page { padding-block: 48px 72px; }
@@ -54,13 +54,6 @@ html[lang="ar"] .lv2-site { --font-ui: var(--font-arabic); }
  .lv2-hero-text .lv2-lead { font-size: 16px; margin-top: 16px; }
  .lv2-nav-end > .lv2-btn-quiet { display: none; }
 }
-/* The whole page belongs to a business role; these are real, shareable page links. */
-.lv2-role-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-block: 20px; }
-.lv2-role-nav > a { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 14px; border-radius: 999px; background: var(--soft); font-size: 14px; font-weight: 500; color: var(--ink-soft); transition: background 160ms var(--ease); }
-.lv2-role-nav > a[aria-current="page"] { color: var(--primary); background: var(--primary-soft); }
-.lv2-role-nav > a:hover { background: var(--primary-soft); }
-.lv2-role-nav > a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { .lv2-role-nav > a { transition: none; } }
 .lv2-site .lv2-display { font-family: inherit; font-weight: 500; letter-spacing: normal; font-size: clamp(42px, 3.9vw, 56px); line-height: 1.14; }
 html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: clamp(36px, 3.2vw, 46px); font-weight: 600; line-height: 1.16; letter-spacing: -.025em; }
 html[lang="ar"] .lv2-site .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
@@ -118,7 +111,7 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 .lv2-connector-link > small { font-size: 12px; color: var(--ink-soft); }
 .lv2-website-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 600; letter-spacing: -.06em; font-size: 28px; color: var(--primary); }
 #connections > .lv2-wrap > .lv2-lead { font-size: 17px; margin-top: 20px; max-width: 50ch; }
-.lv2-phone-group { background: var(--primary-soft); padding-block: 56px; }
+.lv2-phone-group { background: var(--soft); padding-block: 56px; }
 .lv2-phone-grid { display: grid; grid-template-columns: 1fr 230px; gap: 80px; align-items: center; max-width: 880px; }
 .lv2-phone-grid > img { width: 230px; height: auto; border: 5px solid var(--ink); border-radius: 26px; box-shadow: var(--shadow-pop); }
 .lv2-phone-grid .lv2-lead { margin-top: 20px; font-size: 18px; max-width: 29ch; }
@@ -134,8 +127,6 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
  .lv2-team-work { min-height: 360px; }
 }
 @media (max-width: 520px) {
- .lv2-role-nav { gap: 8px; margin-block: 16px; }
- .lv2-role-nav > a { font-size: 14px; }
  .lv2-site .lv2-display { font-size: 38px; line-height: 1.16; }
  .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 40px; line-height: 1.12; }
  html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: 36px; }
@@ -179,6 +170,34 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 @media (min-width: 1024px) and (max-width: 1280px) {
  .lv2-site .lv2-hero-grid { padding-block: 28px; }
  .lv2-site .lv2-hero-text .lv2-lead { margin-block: 16px; }
- .lv2-role-nav { margin-block: 16px; }
  .lv2-site .lv2-hero-cta { margin-top: 16px; }
+}
+
+/* One compact header; language remains a labelled native selector without a visible caption. */
+.lv2-site .lv2-nav { background: var(--paper); }
+.lv2-site .lv2-nav-end { gap: 20px; }
+.lv2-site .lv2-login { padding: 10px 8px 6px; border-bottom: 1px solid var(--ink-muted); white-space: nowrap; }
+.lv2-site .lv2-nav-end > .lv2-btn-quiet,
+.lv2-site .lv2-hero-cta .lv2-btn { background: var(--ink); color: white; border-color: var(--ink); box-shadow: none; border-radius: 999px; font-weight: 600; }
+.lv2-site .lv2-nav-end > .lv2-btn-quiet:hover,
+.lv2-site .lv2-hero-cta .lv2-btn:hover { background: #30434e; }
+.lv2-site .lv2-hero-cta { margin-top: 36px; }
+.lv2-site .lv2-hero-cta .lv2-btn { min-width: 210px; justify-content: center; }
+.lv2-site .lv2-nav-links { gap: 18px; }
+@media (max-width: 1200px) { .lv2-site .lv2-nav-row { flex-wrap: wrap; height: auto; min-height: 76px; gap: 8px; padding-block: 12px; } .lv2-site .lv2-nav-links { order: 3; width: 100%; justify-content: center; } }
+@media (max-width: 600px) {
+ .lv2-site .lv2-nav-end { gap: 8px; }
+ .lv2-site .lv2-nav-end > .lv2-btn-quiet { display: inline-flex; padding-inline: 10px; font-size: 11px; min-height: 40px; }
+ .lv2-site .lv2-login { padding-inline: 4px; font-size: 12px; }
+ .lv2-site .product-utilities-inline select { width: 78px; padding-inline: 2px; font-size: 12px; }
+ .lv2-site .lv2-hero-cta { margin-top: 28px; }
+ .lv2-site .lv2-nav-links { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; gap: 16px; scrollbar-width: thin; padding-block: 0; }
+ .lv2-site .lv2-nav-links a { flex-shrink: 0; white-space: nowrap; }
+ .lv2-site .lv2-nav { background: var(--paper); }
+}
+@media (max-width: 360px) {
+ .lv2-site .lv2-nav-row { padding-inline: 16px; gap: 4px; }
+ .lv2-site .lv2-nav-end { gap: 4px; }
+ .lv2-site .product-utilities-inline select { width: 70px; }
+ .lv2-site .lv2-nav-end > .lv2-btn-quiet { padding-inline: 8px; font-size: 10px; }
 }

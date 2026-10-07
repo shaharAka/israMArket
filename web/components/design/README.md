@@ -213,7 +213,13 @@ Live-account content and backend writes were not exercised during this design re
 
 ## Product screens in the public feature preview
 
-The homepage and `/design/business` now switch between Plan, Posts and Results.
+The homepage and `/design/business` switch between Plan, Posts and Results.
+Business-role choices are neutral page links with one blue selected state. Product features use standard pressed
+buttons beneath the product view, rather than a second tab bar. Inactive views are inert
+and hidden from assistive technology; a shared grid reserves their height so feature
+selection does not move the controls. Posts opens the native artwork, with its list
+available from the back action. The hero scales the same views into a stable-height player;
+`/design/business` keeps the full-size rendering. Reduced motion disables the reveal.
 `MonthPlanOverview` is extracted from the real `/strategy` month view, including
 hypothesis review, weekly disclosures and owner requests. The page still owns trial
 routing, month building and API callbacks; it passes those actions as slots.
@@ -228,3 +234,16 @@ preview shows selected product views, not the authenticated shell or all editor 
 Generic illustrative-data and fictional-customer captions are removed. Actual missing
 measurements, analysis limits and integration readiness remain part of the product UI.
 Final marketing recordings should follow review of the internal screens.
+
+Hero playback cycles plan → posts → findings every 8.5 seconds. An original SVG hand
+opens an actual weekly disclosure, local post and finding evidence. It only targets
+these read-only fixture controls. Manual pointer/keyboard/wheel interaction pauses it;
+the adjacent play/pause control resumes it. Offscreen/hidden pages suspend timers,
+and reduced-motion preferences disable autoplay and the hand. Timers clean up on each
+stage, pause and unmount. Programmatic scrolling is confined to the product viewport.
+The full-screen design preview remains manual. Landing headers embed the existing native
+language selector beside login/start, with its accessible label retained but visually hidden.
+
+Public shell palette: paper, ink, neutral surfaces and the existing blue interaction accent.
+The wordmark and ISMT mark are monochrome; CTAs use ink. Business-specific colors belong
+inside artwork and real product content, not separate colors for each navigation option.

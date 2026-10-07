@@ -1,0 +1,10 @@
+.choices { display: flex; flex-wrap: wrap; gap: 10px; margin-block: 24px; }
+.choices .choice { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; padding: 10px 16px; border-radius: 999px; border: 1px solid transparent; background: var(--soft); color: var(--ink); font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.3; text-decoration: none; transition: background 180ms ease, border-color 180ms ease; }
+.choices .choice[aria-current="page"] { background: var(--primary-soft); color: var(--primary); font-weight: 600; text-decoration: none; }
+.choices .choice:hover { border-color: var(--rule); background: var(--canvas); }
+.choice:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+.marker { display: none; place-items: center; flex: 0 0 18px; width: 18px; height: 18px; border-radius: 50%; background: var(--primary); color: var(--paper); }
+.choice[aria-current="page"] .marker { display: grid; }
+.marker svg { width: 12px; height: 12px; }
+@media (max-width: 600px) { .choices { gap: 8px; margin-block: 20px; } .choices .choice { padding: 10px 13px; } }
+@media (prefers-reduced-motion: reduce) { .choices .choice { transition: none; } }
