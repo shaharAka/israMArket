@@ -14,7 +14,7 @@ export default function AppleIcon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          background: "#191b18",
+          background: "#2853c7",
         }}
       >
         <svg
@@ -24,11 +24,11 @@ export default function AppleIcon() {
           fill="none"
           stroke="#f9f8f6"
           strokeWidth="1.6"
-          strokeLinecap="square"
+          strokeLinecap="round"
           strokeLinejoin="round"
         >
-          {BRAND_MARK_PATHS.map((d) => (
-            <path key={d} d={d} />
+          {BRAND_MARK_PATHS.map((d, index) => (
+            <path key={d} d={d} stroke={index < 2 ? "#ffc44a" : "#ffffff"} />
           ))}
         </svg>
       </div>

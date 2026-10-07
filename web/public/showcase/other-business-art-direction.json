@@ -1,0 +1,27 @@
+{
+  "created": "2026-10-07",
+  "mode": "built-in image_gen",
+  "calls": 2,
+  "assets": [
+    {
+      "key": "software",
+      "path": "/showcase/software-people-ai.png",
+      "original": "/Users/shahar/.codex/generated_images/01a11619-9e0a-73c0-962b-c46613465bbd/exec-e6a9c3eb-a1d0-45d0-9796-85839d51c57a.png",
+      "prompt": "Create a portrait 4:5 premium editorial photograph for a fictional small SaaS company that helps independent businesses turn scattered marketing ideas into a coherent ongoing plan. Three fictional adults, natural diverse Mediterranean appearance, in a modest bright working studio: a female small-business owner around 40 and two software/marketing collaborators in their 30s, thoughtfully working together at a real oak table. The concrete activity is organizing a few printed unbranded product photographs and a plain paper weekly planning sheet alongside an open laptop seen mostly from the back; one collaborator places a photograph into the plan while the owner points to another, a natural engaged conversation, nobody looking at the camera. No readable words on papers, no fabricated app dashboard, no charts or numeric results. Real expressions, natural hands and realistic anatomy. Tasteful cobalt blue overshirt, muted coral knit, cream clothing, daylight and one living plant, beautiful but believable independent-business environment, no corporate skyscraper office or stock handshake. Medium-close viewpoint, faces in upper half and actual planning work in lower half, textured paper and fabric, human editorial warmth, cinematic natural window light, rich blue/coral visual accents. No geometric graphics, no gradient overlay, no text, logo or watermark. Fictional AI illustration in photorealistic style, not real customers, employees or testimonial. Make the problem visibly understandable: scattered product ideas being arranged into a purposeful plan together.",
+      "alt": "שלושה אנשים מסדרים תמונות של מוצרים לתוכנית שיווק משותפת, בהמחשה שנוצרה ב-AI",
+      "label": "אנשים ועסק לדוגמה · התמונה נוצרה ב-AI",
+      "inspection": "Visually inspected: three natural adults focused on arranging product photos into a planning sheet; blue/coral clothing; no readable UI, logos, numerical outcomes or testimonial.",
+      "headline": "יש רעיונות.\nעכשיו בונים תוכנית."
+    },
+    {
+      "key": "nonprofit",
+      "path": "/showcase/nonprofit-community-ai.png",
+      "original": "/Users/shahar/.codex/generated_images/01a11619-9e0a-73c0-962b-c46613465bbd/exec-82218b8d-084b-4cdc-b4bb-662dea56e986.png",
+      "prompt": "Create a portrait 4:5 premium natural editorial photograph for a fictional community nonprofit volunteer campaign. Three fictional adult community volunteers of mixed ages, one woman around 30, one man around 55 and one woman around 45, diverse natural Mediterranean appearance, jointly assembling reusable cloth grocery bags at a wooden table in a bright modest community kitchen. Dignified warm collaborative activity, not a poverty scene: one volunteer places fresh leafy greens into a bag, another gently passes a bag of apples, another organizes simple unbranded dry groceries. Candid human smiles and attention to the shared task, no posing for camera. Rich plum apron on one person, soft forest green shirt on another, warm cream clothing and subtle aubergine accents, realistic abundant daylight through a side window. Medium-close composition, natural adult faces in upper half, capable hands and groceries in center and foreground, beautiful texture of cloth bags and vegetables, photographic grain, high-end documentary-inspired editorial quality. No identifiable real person, no beneficiary or patient, no child, no illness, no medical equipment, no distress, no savior imagery, no event or organization identity. No donation amount, impact number, text, logos, labels, watermark or graphics. No geometric art or graphic gradients. Entire scene is a fictional AI illustration, not a real event or claim of work accomplished. Correct natural hands, believable proportions, rich inviting plum and green palette.",
+      "alt": "שלושה מתנדבים אורזים יחד ירקות ומצרכים בתיקי בד, בהמחשה קהילתית שנוצרה ב-AI",
+      "label": "פעילות ואנשים לדוגמה · התמונה נוצרה ב-AI",
+      "inspection": "Visually inspected: fictional adult volunteers jointly packing groceries, dignified expressions, plum/green palette, no patients, identifiable organization, donation amounts or impact claims.",
+      "headline": "רוצים לעזור?\nבואו להכיר את העשייה."
+    }
+  ]
+}

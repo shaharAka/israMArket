@@ -21,23 +21,23 @@ function Sketch({ className = "w-5 h-5", children, navigation = false }: IconPro
 }
 
 /**
- * Brand mark: a market stall with a sun rising behind the awning.
+ * Brand mark: two open market stalls sharing a sun and a small central aisle.
  * Shared by the app shell, the favicon (app/icon.svg) and the apple icon.
  */
 export const BRAND_MARK_PATHS = [
   // sun
-  "M9 6.5a3 3 0 016 0",
-  "M12 1.2v1.3M8.3 2.7l.9.9M15.7 2.7l-.9.9",
-  // flat striped awning, display window and entrance
-  "M4 6.5h16V9H4zM3 9h18v2c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0c0 2.4-4.5 2.4-4.5 0V9z",
-  "M7.5 9v2M12 9v2M16.5 9v2",
-  "M4 13.5V21h16v-7.5M6.5 14.5h6V18h-6zM15 21v-6.5h2.5V21M2.5 21h19",
+  "M9.6 5.8a2.4 2.4 0 014.8 0",
+  "M12 1v1M8.5 2.3l.7.7M15.5 2.3l-.7.7",
+  // Separate open counters, rather than one closed shop facade.
+  "M2.2 8h7.2l1.2 3.2H1zM1 11.2c0 2 4.8 2 4.8 0c0 2 4.8 2 4.8 0",
+  "M14.6 8h7.2l1.2 3.2H13.4zM13.4 11.2c0 2 4.8 2 4.8 0c0 2 4.8 2 4.8 0",
+  "M2.3 13.3v4M9.3 13.3v4M14.7 13.3v4M21.7 13.3v4M1.6 17.3H10v3.2H1.6zM14 17.3h8.4v3.2H14zM1 22h22",
 ];
 
 export function BrandMark({ className = "w-8 h-8" }: IconProps) {
   return (
     <Sketch className={className}>
-      <path d="M9 6.5a3 3 0 016 0Z" fill="var(--sun)" stroke="none" />
+      <path d="M9.6 5.8a2.4 2.4 0 014.8 0Z" fill="var(--sun)" stroke="none" />
       {BRAND_MARK_PATHS.map((d, index) => (
         <path key={d} d={d} stroke={index < 2 ? "var(--sun-edge)" : "currentColor"} />
       ))}

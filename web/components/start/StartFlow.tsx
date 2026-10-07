@@ -22,6 +22,7 @@ import {
   type OnboardingDraft,
 } from "@/lib/draft";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
+import { BUSINESS_MODEL_OPTIONS, defaultGoalFor } from "@/lib/businessModel";
 import { BrandMark, IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
 import {
@@ -126,6 +127,15 @@ export function StartFlow() {
       if (googleError) setSaveError(googleError);
       const saved = loadFlow();
       const loaded = saved ?? emptyFlow();
+      // A homepage choice seeds a new draft only. Never replace an owner's saved
+      // answers or apply an unsupported model while its distinct path is pending.
+      const requestedModel = params.get("model");
+      const chosenModel = BUSINESS_MODEL_OPTIONS.find(option => option.key === requestedModel)?.key;
+      if (!saved && chosenModel) {
+        loaded.draft.business_model = chosenModel;
+        loaded.draft.goal = defaultGoalFor(chosenModel);
+        loaded.modelConfirmed = true;
+      }
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
       loaded.step = migrateStep(loaded.step);
       if (!isStepId(loaded.step)) loaded.step = "name";
