@@ -9,16 +9,16 @@ import { NO_CARD_AT_SIGNUP, PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/prici
 import { HERO, MONTH, PART_SUMMARY, STORY, TRUST, WEEK_TOUR, type Step } from "./content";
 import { HeroWeek } from "./HeroWeek";
 import { PARTS, SheetHeader } from "./PlanSheet";
-import { RouteHero } from "./RouteHero";
+import { PlanCycleHero } from "./PlanCycleHero";
 import { ScenePlayer } from "./ScenePlayer";
 import { SceneStep } from "./SceneStep";
 import "./lv2.css";
 
 /**
  * The landing page, in the product's own direction (blue and sun, the storefront, the plan
- * as a route). The first screen says what it is, for whom and the one action; the map
- * beside it draws the example plan as a route. Then, once each: how the plan is built, what
- * a week looks like, what the month teaches, trust, price, questions.
+ * as an ongoing process). The first screen says what it is, for whom and the one action;
+ * beside it one plan evolves through research, connections, posts and measurement. Then,
+ * once each: how the plan is built, a week, what the month teaches, trust, price, questions.
  *
  * One filled button on the page (the hero's). Nothing is pinned and nothing waits for the
  * scroll: each scene plays by itself once it is on screen (ScenePlayer).
@@ -42,8 +42,8 @@ const FAQ: { q: string; a: ReactNode }[] = [
 ];
 
 /**
- * Runs before the first paint: with motion allowed, the hero map starts empty instead of
- * flashing finished. Under reduced motion it does nothing and the page stays finished.
+ * Runs before the first paint: with motion allowed, the lower scenes start at their first step
+ * instead of flashing finished. Reduced motion keeps them readable without animation.
  */
 const EARLY = 'if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.dataset.lv2="on"';
 
@@ -102,7 +102,7 @@ export function Landing() {
       </header>
 
       <main>
-        {/* What it is, for whom, the one action. The map plays the example plan beside it. */}
+        {/* What it is, for whom, the one action. One example plan shows the value beside it. */}
         <section className="lv2-hero" aria-labelledby="lv2-title">
           <div className="lv2-wrap lv2-hero-grid">
             <div className="lv2-hero-text">
@@ -119,8 +119,8 @@ export function Landing() {
               <p className="lv2-fine lv2-in" style={{ "--d": 3 } as CSSProperties}><Copy text="אפשר להתחיל בלי להירשם ·" /><Copy text={TRIAL_LABEL} />
               </p>
             </div>
-            <div className="lv2-hero-map lv2-in" style={{ "--d": 2 } as CSSProperties}>
-              <RouteHero />
+            <div className="lv2-hero-plan lv2-in" style={{ "--d": 2 } as CSSProperties}>
+              <PlanCycleHero />
             </div>
           </div>
         </section>
