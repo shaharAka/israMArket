@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCopy } from "@/components/language/LanguageProvider";
+import { WhatsNewLink } from "@/components/language/WhatsNewLink";
 import { useEffect, useState } from "react";
 import { AppShell, PageHeader, useLogOut } from "@/components/AppShell";
 import { CARD, GROUP_LABEL, LIST_ROW, ROW_CHEVRON, ROW_ICON } from "@/components/account/setupStyles";
@@ -60,6 +61,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
       { href: "/integrations", title: "חיבורים", hint: "אינסטגרם, פייסבוק ונתוני האתר", icon: IconLink },
       { href: "/account", title: "החשבון", hint: "שינוי הסיסמה", icon: IconUser },
       { href: "/help", title: "איך מוצאים דברים", hint: "הסברים קצרים, צעד אחר צעד", icon: IconCompass },
+      { href: "/updates", title: "מה חדש", hint: "עדכונים ושיפורים במערכת", icon: IconLightbulb },
     ],
   },
 ];
@@ -95,9 +97,8 @@ export default function BusinessPage() {
                 {t(group.title)}
               </h2>
               <ul className={`${CARD} divide-y divide-[var(--rule)] overflow-hidden`}>
-                {group.rows.map((row) => (
-                  <li key={row.href}>
-                    <Link href={row.href} className={`group ${LIST_ROW}`}>
+                {group.rows.map((row) => {
+                  const content = <>
                       <span aria-hidden className={ROW_ICON}>
                         <row.icon className="h-5 w-5" />
                       </span>
@@ -106,9 +107,12 @@ export default function BusinessPage() {
                         <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{t(row.hint)}</span>
                       </span>
                       <IconChevron navigation className={ROW_CHEVRON} />
-                    </Link>
-                  </li>
-                ))}
+                    </>;
+                  return <li key={row.href}>{row.href === "/updates"
+                    ? <WhatsNewLink className={`group ${LIST_ROW}`}>{content}</WhatsNewLink>
+                    : <Link href={row.href} className={`group ${LIST_ROW}`}>{content}</Link>}
+                  </li>;
+                })}
               </ul>
             </section>
           ))}
