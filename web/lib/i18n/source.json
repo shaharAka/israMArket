@@ -6549,7 +6549,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -8892,7 +8892,7 @@
       },
       {
         "file": "api/app/services/scraper.py",
-        "line": 969,
+        "line": 995,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -9419,7 +9419,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -10033,7 +10033,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -15005,7 +15005,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16683,7 +16683,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18627,7 +18627,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -19719,7 +19719,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -28946,7 +28946,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -33288,7 +33288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33929,7 +33929,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36007,7 +36007,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -38380,7 +38380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -39920,7 +39920,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1020,
+        "line": 1046,
         "kind": "template",
         "purpose": "validation"
       }
@@ -40477,7 +40477,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -40888,7 +40888,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -44416,7 +44416,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -44471,7 +44471,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -44596,7 +44596,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46470,7 +46470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49961,7 +49961,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1036,
+        "line": 1062,
         "kind": "template",
         "purpose": "validation"
       }
@@ -50261,6 +50261,18 @@
         "file": "web/lib/quarterPlanMock.ts",
         "line": 489,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_78984b2bd532e8f1": {
+    "source": "מזהים טוב יותר את הלוגו של העסק באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -64360,7 +64372,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -64568,7 +64580,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -67720,7 +67732,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -71070,7 +71082,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72978,7 +72990,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -74365,7 +74377,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1038,
+        "line": 1064,
         "kind": "template",
         "purpose": "validation"
       }
@@ -76474,7 +76486,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1069,
+        "line": 1095,
         "kind": "template",
         "purpose": "validation"
       }
@@ -79021,7 +79033,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -79119,6 +79131,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 192,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_bfcec88531eb3e9a": {
+    "source": "גם תמונה בלי המילה לוגו בשם יכולה להיבחר, אם היא מופיעה בראש האתר ומקשרת לעמוד הבית שלו. השיפור חל בקריאה חדשה של האתר; הלוגו ששמרתם לא משתנה מעצמו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
         "kind": "literal"
       }
     ]
@@ -83914,6 +83937,17 @@
       }
     ]
   },
+  "m_cab26d72ea5ef3d3": {
+    "source": "כשקוראים את האתר, הלוגו שבראש העמוד מקבל עדיפות על פני לוגואים אחרים שמופיעים בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_cab6fac7ed439aec": {
     "source": "עיר ואיך מגיעים אליכם",
     "language": "he",
@@ -85844,13 +85878,13 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 942,
+        "line": 968,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/scraper.py",
-        "line": 957,
+        "line": 983,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -87019,7 +87053,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -89482,7 +89516,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1016,
+        "line": 1042,
         "kind": "template",
         "purpose": "validation"
       }
@@ -89505,7 +89539,7 @@
     "references": [
       {
         "file": "api/app/services/scraper.py",
-        "line": 1062,
+        "line": 1088,
         "kind": "template",
         "purpose": "validation"
       }
@@ -92782,7 +92816,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -97584,7 +97618,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -102411,7 +102445,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -104642,6 +104676,17 @@
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 610,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_fb5c7864ad431be8": {
+    "source": "למותג שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
