@@ -1,3 +1,5 @@
+.overview { display: grid; gap: 28px; min-width: 0; font-family: var(--font-ui), sans-serif; }
+.overview summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
 /* התוכנית (/strategy): the month as a plan sheet, the weeks as one calm list.
    Surfaces are depth, not frames (DESIGN-STANDARD.md §3); the page's reference is the plan
    sheet on the landing page (components/landing-v2/PlanSheet). */
@@ -45,7 +47,7 @@
   overflow: hidden;
   border-radius: 20px;
   background: var(--paper);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--shadow-card);
 }
 
 .sheetBody {
@@ -55,16 +57,17 @@
 .hypothesis {
   margin-top: 12px;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   color: var(--ink);
   text-wrap: balance;
 }
 
-.targets {
+.targetsGroup {
   margin-top: 20px;
 }
+.targetsLabel { margin-bottom: 4px; font-size: 13px; font-weight: 500; color: var(--ink-muted); }
 
 .targets li {
   display: flex;

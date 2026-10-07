@@ -8,6 +8,6 @@
 .roles, .screens { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; }
 .roles { border-bottom: 1px solid var(--rule); padding-bottom: 12px; }
 .screens { margin-block: 8px 24px; }
-.frame { max-width: 880px; }
+.frame { max-width: 880px; margin-top: 24px; }
 .notice { color: var(--ink-soft); font-size: 14px; line-height: 1.6; margin-top: 24px; }
 @media (max-width: 600px) { .page { padding-inline: 20px; } .page header { flex-wrap: wrap; gap: 8px; } }

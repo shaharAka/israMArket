@@ -63,15 +63,14 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
       </div></section>
       {!heroOnly && <>
       <section id="story" className="lv2-feature-group lv2-plan-group" aria-labelledby="lv2-story-title"><div className="lv2-wrap lv2-feature-grid">
-        <div><p className="lv2-eyebrow"><Copy text="מחקר ותכנון" /></p><h2 id="lv2-story-title" className="lv2-h2"><Copy text={persona.planTitle} /></h2><p className="lv2-lead"><Copy text={persona.planBody} /></p><Link href={`/design/business?persona=${path}&lang=${locale}`} className="lv2-link"><Copy text="לפתוח תוכנית לדוגמה" /></Link></div>
+        <div><p className="lv2-eyebrow"><Copy text="מחקר ותכנון" /></p><h2 id="lv2-story-title" className="lv2-h2"><Copy text={persona.planTitle} /></h2><p className="lv2-lead"><Copy text={persona.planBody} /></p><Link href={`/design/business?persona=${path}&lang=${locale}`} className="lv2-link"><Copy text="לפתוח את מסכי המערכת" /></Link></div>
         <BusinessProductProof path={path} screen="plan" />
       </div></section>
       <section id="posts" className="lv2-showcase-section lv2-post-section" aria-labelledby="lv2-post-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="כל עסק עם האופי שלו" /></p>
         <h2 id="lv2-post-title" className="lv2-h2"><Copy text={persona.postsTitle} /></h2>
         <p className="lv2-lead"><Copy text={persona.postsBody} /></p>
-        <CampaignPostExamples key={path} examples={posts} selectionLabel={t("לבחור פוסט לדוגמה")} captionLabel={t("לקרוא את הטקסט שמלווה את הפוסט")} screenshot={{src:"/showcase/platform-week-desktop.png",alt:t("צילום אמיתי מתוך המערכת עם נתוני דוגמה")}} />
-        <p className="lv2-fine"><Copy text="התמונות נוצרו ב-AI. התנועה מוצגת כאן להמחשה." /></p>
+        <CampaignPostExamples key={path} examples={posts} selectionLabel={t("לבחור פוסט לדוגמה")} captionLabel={t("לקרוא את הטקסט שמלווה את הפוסט")} screenshot={{src:"/showcase/platform-week-desktop.png",alt:t("התוכנית והצעד הבא במערכת")}} />
       </div></section>
       <section id="learn" className="lv2-feature-group lv2-learn-group" aria-labelledby="lv2-learn-title"><div className="lv2-wrap lv2-feature-grid">
         <div><p className="lv2-eyebrow"><Copy text="למידה מהתוצאות" /></p><h2 id="lv2-learn-title" className="lv2-h2"><Copy text={persona.learnTitle} /></h2><p className="lv2-lead"><Copy text={persona.learnBody} /></p><p className="lv2-fine"><Copy text="ממצא, הסבר וצעד לפוסט הבא. לא רק עוד גרף." /></p></div>
@@ -83,7 +82,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         <p className="lv2-lead"><Copy text="בחרו תוכנה כדי לראות מה מקבלים, איך מחברים ואיך זה נראה בתוך המערכת." /></p>
         <ConnectionShowcase />
       </div></section>
-      <section className="lv2-phone-group"><div className="lv2-wrap lv2-phone-grid"><div><h2 className="lv2-h2"><Copy text="צוות השיווק שלכם. גם בטלפון." /></h2><p className="lv2-lead"><Copy text="לבדוק פוסט, לראות את הצעד הבא ולהבין מה למדנו. בין לקוחות, מהטלפון שלכם." /></p></div><div className="lv2-phone-proof" aria-label={t("תצוגת רכיב התוכנית ברוחב טלפון, עם נתוני דוגמה")}><BusinessProductProof compact path={path} screen="plan" /></div></div></section>
+      <section className="lv2-phone-group"><div className="lv2-wrap lv2-phone-grid"><div><h2 className="lv2-h2"><Copy text="צוות השיווק שלכם. גם בטלפון." /></h2><p className="lv2-lead"><Copy text="לבדוק פוסט, לראות את הצעד הבא ולהבין מה למדנו. בין לקוחות, מהטלפון שלכם." /></p></div><div className="lv2-phone-proof" aria-label={t("התוכנית בטלפון")}><BusinessProductProof compact path={path} screen="plan" /></div></div></section>
       <section id="trust" className="lv2-trust" aria-labelledby="lv2-trust-title"><div className="lv2-wrap">
         <h2 id="lv2-trust-title" className="lv2-h2"><Copy text="המידע של העסק נשאר שלכם." /></h2>
         <dl className="lv2-trust-rows">{TRUST.map(row => <div key={row.k}><dt><Copy text={row.k} /></dt><dd><Copy text={row.v} /></dd></div>)}</dl>

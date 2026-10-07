@@ -48,6 +48,10 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
   const item = payload.suggestions.suggestions[index];
   if (!item) return null;
   const basis = payload.suggestions.basis;
+  // Remove only the old fixture caption. The substantive measurement limit stays visible.
+  const fixtureCaption = "הנתונים מומצאים לצורך הדגמה.";
+  const limits = (basis?.limits ?? []).map(limit => limit.startsWith(fixtureCaption)
+    ? limit.slice(fixtureCaption.length).trim() : limit).filter(Boolean);
   const sources = basis?.sources ?? [];
   const observations = basis?.observations ?? [];
   const ownerFacts = observations.filter(fact => fact.source === "service_owner");
@@ -87,7 +91,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       {stale ? <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-soft)]"><Copy text="חלק מהמספרים מעדכון קודם, ולכן הם לא מראים את המצב היום." /></p> : null}
       {missing.length ? <p className="mt-2 text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="חסר:" />{" "}{missing.map(source => source.label).join(", ")}<Copy text=". זה לא אומר שלא הייתה פעילות." /></p> : null}
     </>}
-    {!legacy && basis?.limits?.[0] ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">{basis.limits[0]}</p> : null}
+    {!legacy && limits[0] ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">{limits[0]}</p> : null}
     <section className="mt-5 rounded-xl bg-[var(--primary-soft)] p-4 sm:p-5" aria-label={t("הצעד הבא")}>
       <p className="text-[13px] font-medium text-[color:var(--primary)]"><Copy text="מה ננסה:" /></p>
       <p className="mt-2 max-w-[42em] text-[17px] font-medium leading-7 text-[color:var(--ink)]">{item.action}</p>
@@ -112,7 +116,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
           {source.status === "historical" ? source.key === "service_owner" ? t(" · הדיווח השתנה מאז ההצעה") : t(" · החיבור אינו פעיל כרגע") : source.status === "different_selection" ? t(" · נבחר אתר או חשבון אחר מאז הקריאה") : ""}
         </>}</p>)}
         {item.evidence ? <p><strong className="font-semibold"><Copy text="הנימוק להצעה, לפי הניתוח:" /></strong>{" "}{item.evidence}</p> : null}
-        {(basis?.limits ?? []).slice(legacy ? 0 : 1).map(limit => <p key={limit}>{limit}</p>)}
+        {limits.slice(legacy ? 0 : 1).map(limit => <p key={limit}>{limit}</p>)}
         {item.success_check ? <p><strong className="font-semibold"><Copy text="איך נבדוק:" /></strong>{" "}{item.success_check}</p> : <p><Copy text="עוד לא קבענו איך נדע אם זה הצליח. בחרו בתוכנית מה למדוד לפני שמסיקים מסקנה." /></p>}
         <p>{review?.note_he || t("ההצעה לא משנה את התוכנית ולא מפרסמת תוכן. אתם מחליטים מה לערוך ולאשר.")}</p>
       </div>

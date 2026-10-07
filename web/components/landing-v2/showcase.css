@@ -100,7 +100,6 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 .lv2-team-post-work { display: grid; grid-template-columns: 1fr .8fr; gap: 20px; padding: 24px; align-items: center; }
 .lv2-team-post-work > div > p:not(.lv2-team-label) { font-size: 14px; line-height: 1.5; margin-top: 16px; color: var(--ink-soft); }
 .lv2-team-post-work small { display: block; color: var(--ink-muted); font-size: 11px; margin-top: 20px; }
-.lv2-team-caption { color: var(--ink-muted); font-size: 12px; line-height: 1.5; margin-top: 12px; }
 .lv2-feature-group { padding-block: 72px; }
 .lv2-plan-group { background: var(--soft); }
 .lv2-feature-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; align-items: center; }
@@ -157,7 +156,6 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
  .lv2-team-post-work > div > p:not(.lv2-team-label) { font-size: 13px; }
  .lv2-team-compare { gap: 8px; margin-top: 16px; }
  .lv2-team-results .lv2-team-next > p { font-size: 14px; }
- .lv2-team-caption { font-size: 11px; }
  .lv2-feature-group { padding-block: 48px; }
  .lv2-feature-grid .lv2-lead { font-size: 16px; margin-block: 16px; }
  .lv2-connector-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }

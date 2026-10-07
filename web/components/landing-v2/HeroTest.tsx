@@ -11,12 +11,11 @@ import styles from "./hero-test.module.css";
 export function HeroTest({ path, initialComposition, initialTypeface }: { path: ExamplePath; initialComposition: "workspace" | "tabs"; initialTypeface: "modern" | "sans" }) {
   const t = useCopy();
   const { locale } = useLanguage();
-  const [composition, setComposition] = useState(initialComposition);
+  const composition = initialComposition;
   const [typeface, setTypeface] = useState(initialTypeface);
   return <>
     <div className={styles.toolbar}>
       <strong><Copy text="בדיקת העיצוב" /></strong>
-      <label><Copy text="מבנה" /><select value={composition} onChange={event => setComposition(event.target.value as "workspace" | "tabs")}><option value="workspace">{t("התוכנית במרכז")}</option><option value="tabs">{t("המבנה הקודם · שלבים נפרדים")}</option></select></label>
       <label><Copy text="טיפוגרפיה" /><select value={typeface} onChange={event => setTypeface(event.target.value as "modern" | "sans")}><option value="modern">{t("חדש · נקי ומרווח")}</option><option value="sans">{t("הטיפוגרפיה הקודמת")}</option></select></label>
       <Link href={`/design/business?persona=${path}&lang=${locale}`}><Copy text="למסכי המערכת עם העסק הזה" /></Link>
     </div>

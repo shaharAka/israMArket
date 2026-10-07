@@ -55,7 +55,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   async function read() {
     setReadState(null); setReading(true);
     try {
-      const result = demo ? { integration: { source_readiness: { status: "ready", note_he: "נתונים לדוגמה בלבד. לא נקרא חשבון אמיתי." }, pixel_verification: null } } : await endpoints.metaRead();
+      const result = demo ? { integration: { source_readiness: { status: "ready", note_he: "" }, pixel_verification: null } } : await endpoints.metaRead();
       setReadState(result.integration.source_readiness as MetaSourceReadiness);
       setVerification(result.integration.pixel_verification || null);
       if (!demo) { await changed.current(); setReadState(null); }
@@ -172,7 +172,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
   async function verify() {
     setBusy(true); setNote("");
     try {
-      setVerification(demo ? { status: "receiving", note_he: "דוגמה בלבד: פייסבוק מקבלת אירועים מהאתר.", events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
+      setVerification(demo ? { status: "receiving", note_he: "פייסבוק מקבלת אירועים מהאתר.", events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
       if (!demo) await changed.current();
     } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לבדוק כרגע. אפשר לחזור לכאן בהמשך."); }
     finally { setBusy(false); }
@@ -202,7 +202,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     </>}
     {item?.connected && readState && <SourceReadState provider="meta" state={readState} checking={reading} primary={primary} onRetry={() => void read()} onReconnect={renewAccess} />}
     {note && !open && <p role="status">{note}</p>}
-    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : doneContext === "tracking" ? "בדיקת המעקב באתר" : "החשבונות נשמרו"} description={demo ? "תצוגת דוגמה בלבד. שום חשבון אמיתי לא יחובר." : "הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם."}>
+    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : doneContext === "tracking" ? "בדיקת המעקב באתר" : "החשבונות נשמרו"} description="הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם.">
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>

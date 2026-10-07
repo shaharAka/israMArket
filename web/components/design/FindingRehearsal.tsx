@@ -38,12 +38,11 @@ export function FindingRehearsal() {
   }));
   return <section className="mx-auto max-w-3xl py-6">
     <h1 className="text-[28px] font-bold tracking-tight text-[color:var(--ink)]"><Copy text="מנתונים להצעה שאפשר לבדוק" /></h1>
-    <p className="mt-2 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="זהו הרכיב שמופיע באפליקציה. המספרים והעסק כאן מומצאים; לא קוראים ולא משנים חשבון." /></p>
-    <div className="my-6"><SegmentedControl label={t("מצב הנתונים בדוגמה")} value={scenario} onChange={value => { setScenario(value); setReviewing(false); }} options={[
+    <div className="my-6"><SegmentedControl label={t("מצב הנתונים")} value={scenario} onChange={value => { setScenario(value); setReviewing(false); }} options={[
       { value: "connected", label: t("שני מקורות") }, { value: "partial", label: t("רק האתר") }, { value: "empty", label: t("לפני מדידה") }, { value: "stale", label: t("תוכנית חדשה") },
     ]} /></div>
     <FindingCard payload={payload} onReview={() => setReviewing(true)} />
-    {reviewing ? <aside aria-label={t("מעבר לסקירת ההצעה בדוגמה")} className="mt-6 rounded-xl bg-[var(--soft)] p-5 text-[14px] leading-7 text-[color:var(--ink-soft)]" role="status">
+    {reviewing ? <aside aria-label={t("מעבר לסקירת ההצעה")} className="mt-6 rounded-xl bg-[var(--soft)] p-5 text-[14px] leading-7 text-[color:var(--ink-soft)]" role="status">
       <h2 className="text-[18px] font-semibold text-[color:var(--ink)]">{scenario === "stale" ? t("נבדוק את התוכנית העדכנית") : t("נפתח את הפוסט הקיים עם ההצעה לידו")}</h2>
       <p className="mt-2">{payload.suggestions.suggestions[0].review?.note_he}</p>
       <p className="mt-2"><Copy text="באפליקציה, הנוסח הקיים נשאר כפי שהוא. עורכים ובודקים לפני אישור; פתיחת המלצה לא מייצרת תמונות ולא מפרסמת." /></p>

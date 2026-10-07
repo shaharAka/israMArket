@@ -2,6 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- same-origin post images, not optimizable remote URLs */
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { useState } from "react";
 import { postNeedsPhoto } from "@/components/CardCanvas";
 import type { BrandLanguage, RoadmapPost, StrategyPayload } from "@/lib/api";
@@ -85,15 +86,19 @@ export function PostFeed({
   brand,
   strategy,
   onOpen,
+  postHref,
 }: {
   posts: RoadmapPost[];
   brand?: BrandLanguage | null;
   strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown"> | null;
   onOpen: (index: number) => void;
+  /** Alternate links for isolated design previews; the app keeps its /posts route. */
+  postHref?: (index: number) => string;
 }) {
+  const t = useCopy();
   if (!posts.length) {
     return (
-      <p className="py-10 text-center text-sm text-[color:var(--ink-muted)]">עוד מכינים את הפוסטים של החודש.</p>
+      <p className="py-10 text-center text-sm text-[color:var(--ink-muted)]"><Copy text="עוד מכינים את הפוסטים של החודש." /></p>
     );
   }
   const groups = groupByWeek(posts);
@@ -107,7 +112,7 @@ export function PostFeed({
               id={`posts-week-${week}`}
               className="mb-3 flex min-w-0 items-baseline gap-1.5 px-1 text-[15px] font-semibold leading-6 text-[color:var(--ink)]"
             >
-              <span className="shrink-0">{week ? `שבוע ${week}` : "עוד פוסטים"}</span>
+              <span className="shrink-0">{week ? t("שבוע {arg_0}", { arg_0: week }) : t("עוד פוסטים")}</span>
               {focus ? <span className="truncate font-normal text-[color:var(--ink-muted)]">· {focus}</span> : null}
             </h2>
             <ul className={`${ui.card} divide-y divide-[var(--rule)] overflow-hidden`}>
@@ -120,7 +125,7 @@ export function PostFeed({
                 return (
                   <li key={`${index}-${post.uid || post.title}`}>
                     <a
-                      href={`/posts?post=${index}`}
+                      href={postHref ? postHref(index) : `/posts?post=${index}`}
                       onClick={(event) => {
                         if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
                         event.preventDefault();
@@ -135,8 +140,8 @@ export function PostFeed({
                         </span>
                         <span className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                           <span className={ui.status} data-status={stage}>
-                            {LIFECYCLE_LABEL[stage]}
-                            {hint ? <small>· {hint}</small> : null}
+                            {t(LIFECYCLE_LABEL[stage])}
+                            {hint ? <small>· {t(hint)}</small> : null}
                           </span>
                           {result ? (
                             <span className="text-[13px] font-semibold tabular-nums text-[color:var(--ink)]">{result}</span>
@@ -144,15 +149,15 @@ export function PostFeed({
                           {day ? <span className={`${ui.meta} font-normal`}>{day}</span> : null}
                           <span
                             role="img"
-                            aria-label={CHANNEL_LABEL[channel]}
-                            title={CHANNEL_LABEL[channel]}
+                            aria-label={t(CHANNEL_LABEL[channel])}
+                            title={t(CHANNEL_LABEL[channel])}
                             className="inline-flex text-[color:var(--ink-muted)]"
                           >
                             <ChannelIcon channel={channel} />
                           </span>
                         </span>
                       </span>
-                      <IconChevron className="h-4 w-4 shrink-0 text-[var(--ink-faint)] transition-[transform,color] duration-200 group-hover:-translate-x-0.5 group-hover:text-[var(--ink-muted)]" />
+                      <IconChevron navigation className="h-4 w-4 shrink-0 text-[var(--ink-faint)] transition-colors duration-200 group-hover:text-[var(--ink-muted)]" />
                     </a>
                   </li>
                 );

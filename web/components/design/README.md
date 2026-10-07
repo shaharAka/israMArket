@@ -210,3 +210,21 @@ Also checked all three demo palettes, calendar interaction and personal task per
 compact onboarding plan/caveats, editor upload/attachment, and brand save success/failure
 using intercepted API responses with an existing logo.
 Live-account content and backend writes were not exercised during this design review.
+
+## Product screens in the public feature preview
+
+The homepage and `/design/business` now switch between Plan, Posts and Results.
+`MonthPlanOverview` is extracted from the real `/strategy` month view, including
+hypothesis review, weekly disclosures and owner requests. The page still owns trial
+routing, month building and API callbacks; it passes those actions as slots.
+`PostWorkspace`, `PostPreview` and `PostActionPanel` are used by the real `PostEditor`
+and the read-only public post view. Artwork uses the actual `CardStage` renderer.
+The list uses `PostFeed`, and findings use `FindingCard`. Public fixture links stay
+inside `/design/business`, including opening a post in another tab.
+
+Fixture data is isolated in `landing-v2/productFixtures.ts`. It never enters demo mode,
+reads a customer account, calls a provider or approves/publishes a post. The public
+preview shows selected product views, not the authenticated shell or all editor tools.
+Generic illustrative-data and fictional-customer captions are removed. Actual missing
+measurements, analysis limits and integration readiness remain part of the product UI.
+Final marketing recordings should follow review of the internal screens.

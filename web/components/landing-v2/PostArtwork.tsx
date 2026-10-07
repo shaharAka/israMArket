@@ -16,7 +16,7 @@ export function PostArtwork({ item, artRef, playing = false, beat = 0, screensho
     {item.key === "dj" ? <ol className="campaign-track-list">{item.motion?.map((line, index) => <li key={line} data-current={playing && beat === index}><small>0{index + 1}</small><span>{line}</span></li>)}</ol> : null}
     {item.key === "mobile" ? <div className="campaign-phone-notes"><span><Copy text="לצילום" /></span><span><Copy text="לעבודה" /></span><span><Copy text="ליומיום" /></span></div> : null}
     {item.key === "wellness" ? <ul className="campaign-kit-list"><li><Copy text="בקבוק" /></li><li><Copy text="מגבת" /></li><li><Copy text="רגע לצאת" /></li></ul> : null}
-    {item.key === "software" ? <div className="campaign-software-screen"><Image src={screenshot?.src ?? "/showcase/platform-week-desktop.png"} alt={screenshot?.alt ?? t("צילום אמיתי מתוך המערכת עם נתוני דוגמה")} width={1440} height={1000} sizes="(max-width: 700px) 75vw, 280px" /></div> : null}
+    {item.key === "software" ? <div className="campaign-software-screen"><Image src={screenshot?.src ?? "/showcase/platform-week-desktop.png"} alt={screenshot?.alt ?? t("התוכנית והצעד הבא במערכת")} width={1440} height={1000} sizes="(max-width: 700px) 75vw, 280px" /></div> : null}
     <figcaption className="campaign-art-footer"><span>{item.action}</span></figcaption>
   </figure>;
 }

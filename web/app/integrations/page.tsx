@@ -512,17 +512,9 @@ export default function IntegrationsPage() {
       <div className="mx-auto max-w-[800px]">
         <PageHeader title="חיבורים" subtitle="מחברים את מה שיעזור לדייק את התוכנית." />
 
-        {/* One quiet line for demo/real mode instead of a band: this page is about the
-            connections, not about the mode. The sun marks "this is a sample". */}
+        {/* The shell identifies demo mode; retain the switch back to the owner's account. */}
         {demo ? (
           <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-            <p className="flex min-w-0 items-start gap-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-              <span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--sun)] shadow-[0_0_0_4px_var(--sand)]" />
-              <span>
-                <span className="font-semibold text-[color:var(--ink)]">דמו: מאפיית לחם תום.</span> החיבורים כאן לדוגמה,
-                כדי שתראו איך זה נראה כשהכול מחובר.
-              </span>
-            </p>
             <UIAction
               variant="secondary"
               onClick={() => {

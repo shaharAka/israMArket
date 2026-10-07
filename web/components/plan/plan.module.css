@@ -106,7 +106,7 @@
 .document {
   display: flex;
   flex-direction: column;
-  font-family: var(--font-heebo), sans-serif;
+  font-family: var(--font-ui), sans-serif;
   color: var(--ink);
 }
 
@@ -140,7 +140,7 @@
   font-size: 26px;
   line-height: 1.45;
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   color: var(--ink);
   text-wrap: balance;
 }
@@ -165,7 +165,7 @@
   font-size: 20px;
   line-height: 1.5;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 .glance > p:not(:first-child) {
@@ -253,7 +253,7 @@
 .foldTitle {
   font-size: 18px;
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
   line-height: 1.5;
   color: var(--ink);
   transition: color 180ms ease;

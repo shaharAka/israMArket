@@ -21,6 +21,7 @@ import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions
 import { useBrandDna } from "@/lib/dna/useBrandDna";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
+import { PostWorkspace, PostPreview, PostActionPanel } from "@/components/posts/PostWorkspace";
 import { InspirationLine } from "@/components/posts/InspirationLine";
 import { ChannelIcon } from "@/components/posts/ChannelIcon";
 import {
@@ -977,29 +978,17 @@ export function PostEditor({
     const hasPrimary = pending || stage === "approved";
     const reservePhone =
       325 +
-      (why ? 52 : 0) +
+      (why ? 84 : 0) +
       (workedNote ? 48 : 0) +
       (showNeeds ? 56 + 28 * needs.length : 0) +
       (out ? (resultValue(currentPost) !== null ? 200 : 110) : 0) +
       (linkOptional ? 92 : 0) +
       (hasPrimary ? 72 : 0) +
       64;
-    return (
-      <div
-        className="mx-auto [--reserve:var(--reserve-phone)] md:[--reserve:290px]"
-        style={{
-          ["--reserve-phone" as string]: `${reservePhone}px`,
-          // The floor: a 4:5 card never under 176px wide, a 9:16 reel never under 164px.
-          width: `min(100%, max(${previewSize.w / previewSize.h < 0.7 ? 164 : 176}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
-        }}
-      >
-        <div className="overflow-hidden rounded-[16px] bg-[var(--paper)] shadow-[var(--shadow-pop)]">
-          {channel === "facebook" ? captionLine : null}
-          {renderMediaSlot()}
-          {channel !== "facebook" ? captionLine : null}
-        </div>
-      </div>
-    );
+    return <PostPreview facebook={channel === "facebook"} caption={captionLine} media={renderMediaSlot()}
+      style={{ ["--reserve-phone" as string]: `${reservePhone}px`,
+        width: `min(100%, max(${previewSize.w / previewSize.h < 0.7 ? 164 : 176}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
+      }} />;
   }
 
   /* ------------------------------------------------------------------ *
@@ -1923,20 +1912,13 @@ export function PostEditor({
 
   function renderPanel() {
     const primary = renderPrimary();
-    return (
-      <div>
-        {why ? (
-          <p className="text-[16px] font-semibold leading-7 text-[color:var(--ink)] md:text-[17px]">{why}</p>
-        ) : null}
-        <InspirationLine inspiration={currentPost.inspiration} note={currentPost.informed_by_note} />
-        {renderRewriteNote("mt-2")}
-        {showNeeds ? renderNeeds() : null}
-        {out ? renderResults() : null}
-        {linkOptional ? renderLinkField() : null}
-        {primary ? <div className={why || showNeeds || out ? "mt-5 md:mt-6" : ""}>{primary}</div> : null}
-        <div className={primary ? "" : "mt-4"}>{renderQuiet(Boolean(primary))}</div>
-      </div>
-    );
+    return <PostActionPanel why={why}
+      inspiration={<InspirationLine inspiration={currentPost.inspiration} note={currentPost.informed_by_note} />}
+      notice={renderRewriteNote("mt-2")}
+      needs={showNeeds ? renderNeeds() : null}
+      results={out ? renderResults() : null}
+      link={linkOptional ? renderLinkField() : null}
+      primary={primary} tools={renderQuiet(Boolean(primary))} />;
   }
 
   return (
@@ -1944,7 +1926,7 @@ export function PostEditor({
       <input ref={photoInput} type="file" accept="image/*" aria-label="להעלות תמונה לפוסט" hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
 
       {/* Where this post sits in the plan, its title and its state. */}
-      <header className="mb-4 md:mb-7">
+      <PostWorkspace header={<>
         <div className="flex items-center justify-between gap-3">
           <nav aria-label="איפה הפוסט בתוכנית" className="flex min-w-0 items-center text-[13px]">
             {onClose ? (
@@ -1989,13 +1971,7 @@ export function PostEditor({
             {postDateLabel(currentPost) ? ` · ${postDateLabel(currentPost)}` : ""}
           </span>
         </div>
-      </header>
-
-      <div className="md:grid md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)] md:items-start md:gap-10 lg:grid-cols-[minmax(0,27rem)_minmax(0,1fr)] lg:gap-12">
-        <div className="min-w-0">{renderPreview()}</div>
-
-        {/* From 768px up the panel — or the step that replaced it — sits beside the post. */}
-        {isDesktop ? (
+</>} preview={renderPreview()} panel={isDesktop ? (
           <aside className={`${ui.card} min-w-0 rounded-[18px] p-6 lg:p-8`}>
             {active ? (
               <>
@@ -2015,9 +1991,8 @@ export function PostEditor({
             )}
           </aside>
         ) : (
-          <div className="mt-4">{renderPanel()}</div>
-        )}
-      </div>
+          renderPanel()
+        )} />
 
       <BottomSheet
         style={demo ? productPaletteVariables(palette) : undefined}

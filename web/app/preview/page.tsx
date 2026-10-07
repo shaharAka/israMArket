@@ -34,15 +34,15 @@ export default function PreviewPage() {
         <div>
           <p className="mb-2 text-sm font-bold text-[var(--primary)]">קצת שמש ביום העבודה.</p>
           <h1 className="text-3xl font-black leading-tight sm:text-5xl">תוכנית לעסק.<br />ליווי לאורך הדרך.</h1>
-          <p className="mt-4 max-w-md text-sm leading-7 text-[var(--ink-soft)]">המסכים הקיימים, עם צבעי הממשק שבחרתם ותנועה שמגיבה לפעולות שלכם. המסכים כאן משתמשים בנתוני דוגמה.</p>
+          <p className="mt-4 max-w-md text-sm leading-7 text-[var(--ink-soft)]">התוכנית, הפוסטים והתוצאות. בחרו מסך כדי לעבור לתוכו.</p>
         </div>
-        <SunProgress value={1} total={1} label="דוגמה לשמש מעל העסק" className="sm:!w-48" />
+        <SunProgress value={1} total={1} label="השמש מעל העסק" className="sm:!w-48" />
       </div>
       <PalettePicker />
       <button onClick={() => void openDemo("/strategy")} className="drawn-button inline-flex min-h-12 items-center gap-3 bg-[var(--primary)] px-6 font-bold text-white">לראות את התוכנית <IconArrowLeft /></button>
       <div className="mt-8 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
         <Link href="/start?mock=1" className="group flex min-h-20 items-center justify-between gap-4 py-4">
-          <div><h2 className="font-black">ההיכרות הראשונה</h2><p className="mt-1 text-sm text-[var(--ink-soft)]">השאלות, כרטיס העסק והתוכנית. תצוגה עם תשובות מחקר לדוגמה.</p></div>
+          <div><h2 className="font-black">ההיכרות הראשונה</h2><p className="mt-1 text-sm text-[var(--ink-soft)]">השאלות, כרטיס העסק והתוכנית.</p></div>
           <IconArrowLeft className="h-5 w-5 shrink-0 text-[var(--primary)]" />
         </Link>
         {screens.map((screen) => <button key={screen.href} onClick={() => void openDemo(screen.href)} className="group flex min-h-20 w-full cursor-pointer items-center justify-between gap-4 py-4 text-right hover:text-[var(--primary)]">

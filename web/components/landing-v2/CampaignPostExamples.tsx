@@ -69,7 +69,7 @@ export function CampaignPostExamples({
       <div className="campaign-grid" data-count={examples.length} role="group" aria-label={selectionLabel}>
         {examples.map((item, index) => <div className="campaign-item" key={item.key}>
         <PostArtwork item={item} artRef={selected === index ? activeArt : undefined} playing={selected === index && playing} beat={selected === index ? beat : 0} screenshot={screenshot} />
-        <p className="campaign-context">{item.label}</p>
+        {item.label ? <p className="campaign-context">{item.label}</p> : null}
         <button type="button" className="campaign-read" aria-pressed={index === selected && captionOpen} aria-controls="campaign-example-detail" onClick={() => {
           setSelected(index); setBeat(0); setPlaying(false); setCaptionOpen(true);
           window.requestAnimationFrame(() => document.getElementById("campaign-example-detail")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "center" }));
@@ -88,7 +88,6 @@ export function CampaignPostExamples({
         <div className="campaign-explanation">
           <h3>{example.kind}</h3>
           {example.motion ? <div className="campaign-motion">
-            <p>{t("דוגמת פוסט מונפש מתמונה שנוצרה ב-AI")}</p>
             <ol>{example.motion.map((line, index) => <li key={line} aria-current={playing && index === beat ? "step" : undefined}>{line}</li>)}</ol>
           </div> : null}
           <p className="campaign-plan">{example.plan}</p>
