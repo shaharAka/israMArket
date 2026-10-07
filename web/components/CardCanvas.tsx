@@ -315,7 +315,7 @@ export function CardStage({
   return (
     <div ref={hostRef} className={className} data-card-stage={resolveTemplate(post.overlay_theme)} style={hostStyle}>
       {scale > 0 ? (
-        <div style={{ position: fill ? "absolute" : "relative", top: 0, right: 0, width: size.w, height: size.h, transform: `scale(${scale})`, transformOrigin: "top right" }}>
+        <div style={{ position: "absolute", top: 0, right: 0, width: size.w, height: size.h, transform: `scale(${scale})`, transformOrigin: "top right" }}>
           <PhotoSizesContext.Provider value={photoSizes}>
             <CardCanvas post={post} brand={brand} dna={dna} businessName={businessName} size={size} canvasRef={canvasRef} logoUrl={logoUrl} quietPlaceholder={quietPlaceholder} />
           </PhotoSizesContext.Provider>
