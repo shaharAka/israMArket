@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
+import { WhatsNewLink } from "@/components/language/WhatsNewLink";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -48,7 +49,7 @@ export const TABS: Tab[] = [
 ];
 
 // `/security` is public (the landing links to it) and has no shell.
-const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help", "/support"];
+const BUSINESS_UTILITIES = ["/brand", "/integrations", "/account", "/billing", "/help", "/support", "/updates"];
 
 function underRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
@@ -74,7 +75,7 @@ export function tabFor(pathname: string): Tab | null {
  * `/account` and `/billing` too: they belong to the account, not the business. Paying,
  * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support"];
+const FIRST_RUN_ROUTES = ["/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
@@ -218,7 +219,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               onClick={logOut}
               className="inline-flex min-h-11 cursor-pointer items-center px-2 text-sm text-[color:var(--ink-soft)] underline underline-offset-4"
             ><Copy text="יציאה" /></button>
-          ) : (
+          ) : back?.href === "/business" ? null : (
             <Link href="/business" className="inline-flex min-h-11 items-center rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] hover:bg-[var(--soft)]"><Copy text="העסק שלי" /></Link>
           )}
         </div>
@@ -258,7 +259,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         {!inSetup && <div className="px-3 pb-1"><BrandLink /></div>}
-
+        <div className="px-5"><WhatsNewLink className="inline-flex min-h-11 items-center gap-2 text-[13px] font-medium text-[var(--ink-muted)] hover:text-[var(--primary)] hover:underline aria-[current=page]:text-[var(--primary)]" /></div>
 
         <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link

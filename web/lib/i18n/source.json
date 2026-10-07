@@ -1031,7 +1031,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       },
@@ -4635,7 +4635,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 42,
+        "line": 43,
         "kind": "literal",
         "purpose": "display"
       },
@@ -4656,7 +4656,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal",
         "purpose": "display"
       },
@@ -5487,7 +5487,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal",
         "purpose": "display"
       }
@@ -6543,7 +6543,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -6985,7 +6985,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 44,
+        "line": 45,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7336,7 +7336,7 @@
     "references": [
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 19,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -8458,7 +8458,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -9397,7 +9397,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -10001,6 +10001,17 @@
       {
         "file": "web/components/start/steps.tsx",
         "line": 446,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_182736d7dcd63177": {
+    "source": "לעסק שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -12586,7 +12597,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       },
@@ -14989,12 +15000,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 212,
+        "line": 213,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 246,
+        "line": 247,
         "kind": "literal"
       }
     ]
@@ -16643,7 +16654,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16733,7 +16744,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -18575,7 +18586,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -19667,7 +19678,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -28889,7 +28900,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -32316,12 +32327,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 220,
+        "line": 221,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 280,
+        "line": 281,
         "kind": "literal"
       }
     ]
@@ -33259,7 +33270,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33854,7 +33865,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       },
@@ -33916,7 +33927,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35994,7 +36005,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -37059,7 +37070,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 122,
+        "line": 126,
         "kind": "jsx"
       }
     ]
@@ -37527,7 +37538,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 44,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -38316,7 +38327,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -39471,7 +39482,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40407,7 +40418,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -40818,7 +40829,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -43684,7 +43695,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 50,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -43769,7 +43780,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 42,
+        "line": 43,
         "kind": "literal"
       },
       {
@@ -44351,7 +44362,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -44406,7 +44417,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -44531,7 +44542,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46389,7 +46400,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46878,7 +46889,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 51,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -47745,7 +47756,7 @@
     "references": [
       {
         "file": "web/app/updates/page.tsx",
-        "line": 6,
+        "line": 7,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48557,8 +48568,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/language/ProductUtilities.tsx",
-        "line": 31,
+        "file": "web/components/language/WhatsNewLink.tsx",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -48764,7 +48775,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -49973,7 +49984,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -53333,18 +53344,24 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/language/ProductUtilities.tsx",
-        "line": 31,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/language/ProductUtilities.tsx",
-        "line": 32,
-        "kind": "literal"
+        "file": "web/app/business/page.tsx",
+        "line": 64,
+        "kind": "literal",
+        "purpose": "display"
       },
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 19,
+        "line": 29,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/WhatsNewLink.tsx",
+        "line": 24,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/WhatsNewLink.tsx",
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -53447,7 +53464,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       },
@@ -56436,6 +56453,11 @@
         "kind": "jsx"
       },
       {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 27,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/posts/CalendarView.tsx",
         "line": 163,
         "kind": "jsx"
@@ -57474,17 +57496,6 @@
         "line": 611,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_8aa320ed22a55d7d": {
-    "source": "שפה ועדכונים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/language/ProductUtilities.tsx",
-        "line": 23,
-        "kind": "literal"
       }
     ]
   },
@@ -62970,7 +62981,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "literal",
         "purpose": "display"
       },
@@ -64247,7 +64258,12 @@
     "references": [
       {
         "file": "web/components/language/ProductUtilities.tsx",
-        "line": 26,
+        "line": 10,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/ProductUtilities.tsx",
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -64258,7 +64274,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -64466,7 +64482,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -65807,7 +65823,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 271,
+        "line": 272,
         "kind": "literal"
       }
     ]
@@ -67607,7 +67623,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -69684,6 +69700,17 @@
       }
     ]
   },
+  "m_a8cd62061fcb6f50": {
+    "source": "לא הצלחנו לטעון את העדכונים. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a8d840a140ac39e1": {
     "source": "המוצר מקרוב",
     "language": "he",
@@ -70907,6 +70934,18 @@
       }
     ]
   },
+  "m_abaf7a9c270723fd": {
+    "source": "מה חדש, בתוך החשבון שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_abb3762ae5bc44cf": {
     "source": "עריכת פוסט",
     "language": "he",
@@ -71048,12 +71087,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 252,
+        "line": 253,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 297,
+        "line": 298,
         "kind": "literal"
       }
     ]
@@ -71292,7 +71331,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 50,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       },
@@ -71655,7 +71694,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       },
@@ -71671,7 +71710,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 255,
+        "line": 256,
         "kind": "literal"
       },
       {
@@ -72798,7 +72837,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -77996,7 +78035,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -78272,6 +78311,17 @@
         "file": "web/lib/admin.ts",
         "line": 162,
         "kind": "template"
+      }
+    ]
+  },
+  "m_be75bcfa30ae04ad": {
+    "source": "עדכונים ושיפורים במערכת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/business/page.tsx",
+        "line": 64,
+        "kind": "literal"
       }
     ]
   },
@@ -78802,6 +78852,17 @@
       }
     ]
   },
+  "m_bfa03998c901705d": {
+    "source": "עדכונים ושיפורים נמצאים עכשיו בתוך המערכת. במחשב יש קישור בתפריט הצד; בטלפון נכנסים דרך העסק שלי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bfa0a9024802f7cf": {
     "source": "עבר יותר מדי זמן, או שהכניסה התחילה בדפדפן אחר. נסו שוב.",
     "language": "he",
@@ -79054,7 +79115,7 @@
       },
       {
         "file": "web/app/business/page.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal",
         "purpose": "display"
       },
@@ -79402,7 +79463,7 @@
     "references": [
       {
         "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 26,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -80025,7 +80086,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 239,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -80687,7 +80748,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 170,
+        "line": 171,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82495,28 +82556,28 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 84,
+        "line": 86,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 172,
+        "line": 173,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 222,
+        "line": 223,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 269,
+        "line": 270,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 272,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -86750,6 +86811,17 @@
       }
     ]
   },
+  "m_d30fdfc66dbcc0b0": {
+    "source": "הנקודה ליד הקישור מסמנת עדכון שעוד לא קראתם ונעלמת כשפותחים את העמוד. העדכונים לא מופיעים בתפריט של האתר הציבורי, ואין הודעות קופצות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d30fe89e749baa5b": {
     "source": "חיבורים ונקודת פתיחה",
     "language": "he",
@@ -86827,12 +86899,17 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 180,
+        "line": 181,
         "kind": "literal"
       },
       {
         "file": "web/components/Doodles.tsx",
         "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/language/ReleaseNotes.tsx",
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -88192,7 +88269,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -89147,7 +89224,7 @@
       },
       {
         "file": "web/app/business/page.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "literal",
         "purpose": "display"
       },
@@ -92493,7 +92570,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -92628,7 +92705,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "literal",
         "purpose": "display"
       },
@@ -92864,7 +92941,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "display"
       }
@@ -93638,12 +93715,12 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 202,
+        "line": 203,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 238,
+        "line": 239,
         "kind": "literal"
       },
       {
@@ -93701,11 +93778,6 @@
         "file": "web/components/landing/PublicNotice.tsx",
         "line": 18,
         "kind": "jsx"
-      },
-      {
-        "file": "web/components/language/ReleaseNotes.tsx",
-        "line": 18,
-        "kind": "literal"
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
@@ -94076,7 +94148,7 @@
     "references": [
       {
         "file": "web/app/business/page.tsx",
-        "line": 51,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
@@ -100912,7 +100984,7 @@
     "references": [
       {
         "file": "web/app/updates/page.tsx",
-        "line": 5,
+        "line": 6,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104430,7 +104502,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 36,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       },

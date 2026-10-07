@@ -1,26 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useId, useState } from "react";
+import { useId } from "react";
 import { SUPPORTED_LOCALES, LOCALE_META, isLocale } from "@/lib/i18n/locales";
-import { LATEST_RELEASE, RELEASE_READ_KEY, RELEASE_READ_EVENT } from "@/lib/releases";
 import { useLanguage } from "./LanguageProvider";
 
 export function ProductUtilities() {
   const { locale, choose, t, busy, error } = useLanguage();
   const id = useId();
-  const [unread, setUnread] = useState(false);
-  useEffect(() => {
-    function refresh() {
-      try { setUnread(localStorage.getItem(RELEASE_READ_KEY) !== LATEST_RELEASE); }
-      catch { setUnread(false); }
-    }
-    const timer = window.setTimeout(refresh, 0);
-    window.addEventListener(RELEASE_READ_EVENT, refresh);
-    window.addEventListener("storage", refresh);
-    return () => { window.clearTimeout(timer); window.removeEventListener(RELEASE_READ_EVENT, refresh); window.removeEventListener("storage", refresh); };
-  }, []);
-  return <div className="product-utilities" aria-label={t("שפה ועדכונים")}>
+  return <div className="product-utilities" aria-label={t("שפה")}>
     <div className="product-utilities-row" dir="rtl">
       <label htmlFor={id} className="product-language-control">
         <span dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}>{t("שפה")}</span>
@@ -28,9 +15,6 @@ export function ProductUtilities() {
           {SUPPORTED_LOCALES.map(language => <option key={language} value={language} lang={language}>{LOCALE_META[language].name}</option>)}
         </select>
       </label>
-      <Link dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"} href="/updates" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)] hover:text-[var(--primary)] hover:underline" aria-label={unread ? t("מה חדש — עדכונים שעוד לא קראתם") : t("מה חדש")}>
-        {t("מה חדש")}{unread && <span className="h-1.5 w-1.5 rounded-full bg-[var(--sun-edge)]" aria-hidden />}
-      </Link>
     </div>
     {error ? <p role="alert" className="px-4 pb-2 text-[13px] text-[var(--danger)]">{t(error)}</p> : null}
   </div>;
