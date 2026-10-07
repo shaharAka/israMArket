@@ -88,7 +88,7 @@ function Workspace({ initial, onReview }: { initial: TrialPayload; onReview?: ()
     <div hidden={stage !== 2} tabIndex={-1} ref={node => { panels.current[2] = node; }} className="focus:outline-none"><VoiceStep embedded onPendingChange={voicePending} onNext={() => move(3)} /></div>
     <div hidden={stage !== 3} tabIndex={-1} ref={node => { panels.current[3] = node; }} className="focus:outline-none">
       <h2 className="mb-3 text-[20px] font-bold">{t(draftsExist ? "הטיוטות מוכנות לבדיקה" : "מכינים פוסטים לפי התוכנית")}</h2>
-      <ContentLanguagePicker onPendingChange={setLanguagePending} onBatchChange={setBatchLanguage} />
+      <ContentLanguagePicker allowBatchChoice={!draftsExist} onPendingChange={setLanguagePending} onBatchChange={setBatchLanguage} />
       {draftsExist ? <>
         <p className="mb-5 text-[15px] leading-7 text-[var(--ink-soft)]">{t("בדקו את התוכן ואת התמונה של כל פוסט. אפשר לערוך הכול לפני שמאשרים.")}</p>
         {onReview ? <button type="button" onClick={onReview} className={primary}>{t("לבדיקת הפוסטים")}<IconArrowLeft /></button> : <Link href="/posts" className={primary}>{t("לבדיקת הפוסטים")}<IconArrowLeft /></Link>}
