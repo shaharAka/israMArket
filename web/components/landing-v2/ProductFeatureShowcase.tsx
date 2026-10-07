@@ -31,15 +31,15 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const [screen, setScreen] = useState<ProductScreen>(initialScreen ?? (presentation === "hero" ? "research" : "plan"));
   const [postIndex, setPostIndex] = useState<number | null>(initialPost ?? 0);
-  const { frame, viewport, scale, cursor, playing, requested, reduced, pause, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero");
+  const { frame, viewport, scale, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero");
   const business = BUSINESS_EXAMPLES[path];
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];
   const active = FEATURES.find(item => item.key === screen)!;
   return <div className={styles.showcase} data-presentation={presentation} data-playing={playing}
-    onPointerDownCapture={event => { if (!(event.target as HTMLElement).closest("[data-playback-control]")) pause(); }}
-    onFocusCapture={event => { if (!(event.target as HTMLElement).closest("[data-playback-control]")) pause(); }}
-    onWheelCapture={pause}>
+    onFocusCapture={event => { if (event.target.matches(":focus-visible") && (event.target as HTMLElement).closest('[data-active="true"]')) hold(); }}
+    onBlurCapture={event => { if (!(event.relatedTarget instanceof Element) || !event.relatedTarget.closest('[data-active="true"]')) release(); }}>
+
 
     <div className={styles.frame} ref={frame}>
       <header className={styles.header}><strong><Copy text={business.name} /></strong><p className="sr-only" aria-live={playing ? "off" : "polite"}><Copy text={active.benefit} /></p></header>
@@ -75,7 +75,7 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
       {FEATURES.map((item, index) => <button key={item.key} type="button"
         id={`${id}-${item.key}-control`} aria-pressed={screen === item.key} aria-controls={`${id}-${item.key}-view`}
         ref={node => { buttons.current[index] = node; }}
-        onClick={() => { pause(); setScreen(item.key); if (item.key === "posts") setPostIndex(0); }}>
+        onClick={() => { setScreen(item.key); if (item.key === "posts") setPostIndex(0); }}>
         <span className={styles.featureDot} aria-hidden="true" /><Copy text={item.label} />
       </button>)}
     </div>

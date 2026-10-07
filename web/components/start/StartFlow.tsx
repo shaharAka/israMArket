@@ -22,7 +22,7 @@ import {
   type OnboardingDraft,
 } from "@/lib/draft";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
-import { BUSINESS_MODEL_OPTIONS, defaultGoalFor } from "@/lib/businessModel";
+import { applyLandingBusinessRoute } from "@/lib/landingBusinessRoute";
 import { IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
 import {
@@ -126,15 +126,13 @@ export function StartFlow() {
       setMockPreview(new URLSearchParams(window.location.search).get("mock") === "1");
       if (googleError) setSaveError(googleError);
       const saved = loadFlow();
-      const loaded = saved ?? emptyFlow();
-      // A homepage choice seeds a new draft only. Never replace an owner's saved
-      // answers or apply an unsupported model while its distinct path is pending.
-      const requestedModel = params.get("model");
-      const chosenModel = BUSINESS_MODEL_OPTIONS.find(option => option.key === requestedModel)?.key;
-      if (!saved && chosenModel) {
-        loaded.draft.business_model = chosenModel;
-        loaded.draft.goal = defaultGoalFor(chosenModel);
-        loaded.modelConfirmed = true;
+      const loaded = applyLandingBusinessRoute(saved ?? emptyFlow(), params.get("model"));
+      // Consume the landing choice once. A later in-interview change survives refresh.
+      if (params.has("model")) {
+        params.delete("model");
+        const rest = params.toString();
+        window.history.replaceState(null, "", `${window.location.pathname}${rest ? `?${rest}` : ""}`);
+        saveFlow(loaded);
       }
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
       loaded.step = migrateStep(loaded.step);

@@ -237,8 +237,7 @@ Final marketing recordings should follow review of the internal screens.
 
 Hero playback cycles research → plan → posts → findings every 8.5 seconds. An original SVG hand
 opens an actual weekly disclosure, local post and finding evidence. It only targets
-these read-only fixture controls. Manual pointer/keyboard/wheel interaction pauses it;
-the adjacent play/pause control resumes it. Offscreen/hidden pages suspend timers,
+these read-only fixture controls. Scrolling and feature selection keep playback running; the explicit play/pause control stops it. Keyboard focus within an interactive product view temporarily holds playback until focus leaves. Offscreen/hidden pages suspend timers,
 and reduced-motion preferences disable autoplay and the hand. Timers clean up on each
 stage, pause and unmount. The active screen is measured with ResizeObserver and scaled to fit the player, including expanded content; no automatic page or panel scrolling is needed. Cursor space is reserved beneath it.
 The full-screen design preview remains manual. Landing headers embed the existing native
@@ -253,8 +252,10 @@ inside artwork and real product content, not separate colors for each navigation
 The October 8 value pass uses `ResearchInsights` in both onboarding and the public tour.
 `FeatureStory` groups research and planning with large native component views; `LearningBridge`
 shows source categories feeding a finding, without adding incompatible metrics together.
-The post gallery shows artwork directly, with only motion controls remaining. Connector
+The post gallery shows artwork directly, with only motion controls remaining. Interview/research/plan, posts and learning each use a separate feature group and a restrained canvas tint. Feature selections cycle while visible; every motion artwork has its own continuously looping player and explicit pause control. Reduced motion keeps them static. Connector
 pages lead with benefits and actual app captures; provider eligibility remains visible and
 setup instructions live below the value sections. Shared Rubik/Inter/Arabic fonts, ink
 primary actions, neutral surfaces and blue interaction states now apply to onboarding and
 signed-in screens. The identity workshop contains typography-only directions.
+
+Landing business choices are consumed once by `applyLandingBusinessRoute`. Existing owner answers survive; changing route clears derived goals/plans and returns to the relevant questions. The confirmed route is collapsed to a change link. Verify this with `node web/scripts/test-landing-business-route.mjs`. Nonprofit remains gated until its dedicated route is ready.

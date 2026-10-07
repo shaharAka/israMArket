@@ -1,7 +1,9 @@
 "use client";
 
 import type { BusinessModel } from "@/lib/api";
-import { isGoalValidFor } from "@/lib/businessModel";
+import { useRef, useState } from "react";
+import { Copy } from "@/components/language/LanguageProvider";
+import { changeBusinessRoute } from "@/lib/landingBusinessRoute";
 import { CLIENT_SOURCE_OPTIONS, type ClientSource, type ClientSources } from "@/lib/draft";
 import type { StepProps } from "./steps";
 import { TextInput } from "./ui";
@@ -15,25 +17,19 @@ const ROUTES: { key: BusinessModel; label: string; detail: string }[] = [
 ];
 
 export function BusinessRoute({ flow, update, onSelect }: Pick<StepProps, "flow" | "update"> & { onSelect: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const changeButton = useRef<HTMLButtonElement>(null);
   function choose(model: BusinessModel) {
-    update((f) => {
-      const changed = f.draft.business_model !== model;
-      return {
-        ...f, modelConfirmed: true,
-        draft: {
-          ...f.draft, business_model: model,
-          software: model === "saas" ? f.draft.software : undefined,
-          goal: f.draft.goal && isGoalValidFor(model, f.draft.goal) ? f.draft.goal : undefined,
-          success: changed ? undefined : f.draft.success,
-          baseline: changed ? undefined : f.draft.baseline,
-          lever: changed ? undefined : f.draft.lever,
-          target: changed ? undefined : f.draft.target,
-          grow_where: ["services", "saas"].includes(model) ? undefined : f.draft.grow_where,
-        },
-      };
-    });
+    update(f => changeBusinessRoute(f, model));
+    setEditing(false);
     onSelect();
+    window.requestAnimationFrame(() => changeButton.current?.focus());
   }
+  const route = ROUTES.find(option => option.key === flow.draft.business_model);
+  if (flow.modelConfirmed && route && !editing) return <div className="flex items-center justify-between gap-3 border-b border-[var(--rule)] pb-3 text-sm">
+    <span className="text-[var(--ink-soft)]"><Copy text={route.label} /></span>
+    <button ref={changeButton} type="button" onClick={() => setEditing(true)} className="min-h-11 text-[var(--primary)]"><Copy text="לשנות את סוג העסק" /></button>
+  </div>;
   return (
     <fieldset>
       <legend className={form.label}>איזה עסק יש לכם?</legend>

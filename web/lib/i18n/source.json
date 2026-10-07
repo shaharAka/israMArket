@@ -1,4 +1,15 @@
 {
+  "m_00043035a53c6745": {
+    "source": "מכירים, חוקרים ומתכננים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_000c01efe2761c78": {
     "source": "לבעלי דירות לפני שיפוץ, באזור שבו הסטודיו עובד.",
     "language": "he",
@@ -255,7 +266,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -582,7 +593,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -2514,7 +2525,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 91,
+        "line": 87,
         "kind": "jsx"
       }
     ]
@@ -2604,7 +2615,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 103,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -2862,7 +2873,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -3105,7 +3116,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 340,
+        "line": 338,
         "kind": "literal"
       },
       {
@@ -5485,12 +5496,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
+        "line": 78,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 86,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -5973,7 +5984,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 343,
+        "line": 341,
         "kind": "jsx"
       }
     ]
@@ -6632,17 +6643,6 @@
       }
     ]
   },
-  "m_0f20fd6a5f59cab9": {
-    "source": "רואים איך המחקר הופך לתוכנית, לפוסטים ולצעד הבא מהתוצאות. עמודי החיבורים מסבירים מה מקבלים, והשפה העיצובית ממשיכה גם בהיכרות ובמסכי החשבון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 9,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0f2b253d8e2b5b42": {
     "source": "בעמוד החיבורים לוחצים **לחבר את אינסטגרם ופייסבוק**.",
     "language": "he",
@@ -6741,7 +6741,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 340,
+        "line": 338,
         "kind": "jsx"
       }
     ]
@@ -6843,7 +6843,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 575,
+        "line": 573,
         "kind": "jsx"
       }
     ]
@@ -7274,7 +7274,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 83,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -7850,7 +7850,7 @@
       },
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 39,
+        "line": 35,
         "kind": "jsx"
       }
     ]
@@ -9801,7 +9801,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 88,
+        "line": 84,
         "kind": "jsx"
       }
     ]
@@ -10616,6 +10616,11 @@
     "source": "מי הלקוחות שלכם?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 30,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/script.ts",
         "line": 61,
@@ -11798,7 +11803,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -12252,6 +12257,11 @@
     "source": "איך קוראים לעסק?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 28,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/script.ts",
         "line": 60,
@@ -13377,6 +13387,17 @@
       }
     ]
   },
+  "m_1e19b3dc9429005f": {
+    "source": "לומדים ומשפרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1e2b8224e5497c8c": {
     "source": "אירוח בחוץ.",
     "language": "he",
@@ -13930,7 +13951,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 13,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -15008,7 +15029,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -15136,7 +15157,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -16910,6 +16931,27 @@
       }
     ]
   },
+  "m_261b589dc15fcb39": {
+    "source": "להמשיך את המעבר בין התכונות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 22,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 17,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2620f2dc9a29a43f": {
     "source": "השבועות",
     "language": "he",
@@ -17376,6 +17418,17 @@
       }
     ]
   },
+  "m_279f28358e9afc97": {
+    "source": "לבחור מה לראות בתוצאות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_27a33ab9aa7b262f": {
     "source": "לחיצה, שינוי והצלחה מקבלים תגובה קצרה. התוכן נשאר יציב בזמן שקוראים.",
     "language": "he",
@@ -17735,6 +17788,17 @@
         "line": 45,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_287449ea148544df": {
+    "source": "לבחור מה לראות בפוסטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 14,
+        "kind": "literal"
       }
     ]
   },
@@ -18783,6 +18847,17 @@
       }
     ]
   },
+  "m_2b08fdcbc053ae90": {
+    "source": "מחברים את מה שנמדד באינסטגרם, במודעות ובאתר. מפרידים בין צפיות, לחיצות ותוצאות, ומסבירים מה אפשר ללמוד — ומה עדיין חסר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 14,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2b14d9176958e221": {
     "source": "הספירות אינן שיעור סגירה ולא מוכיחות איזה פוסט הביא לקוח.",
     "language": "he",
@@ -18892,7 +18967,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 84,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -19224,17 +19299,6 @@
       }
     ]
   },
-  "m_2beb369b0d7cce98": {
-    "source": "אנחנו חוקרים את העסק, ההצעה והקהל. מחברים את מה שסיפרתם עם מה שמצאנו, כדי שהשיווק יהיה שלכם מהצעד הראשון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 17,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2bf3b2dd27a98c34": {
     "source": "סמנו את החודשים העמוסים. {arg_0}",
     "language": "he",
@@ -19475,7 +19539,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 535,
+        "line": 533,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20156,6 +20220,17 @@
       {
         "file": "web/components/start/script.ts",
         "line": 248,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2da969e848a350a3": {
+    "source": "היכרות קצרה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -22585,12 +22660,12 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 434,
+        "line": 432,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 444,
+        "line": 442,
         "kind": "jsx"
       }
     ]
@@ -23053,7 +23128,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 205,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -23709,7 +23784,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 424,
+        "line": 422,
         "kind": "jsx"
       }
     ]
@@ -25512,17 +25587,6 @@
       }
     ]
   },
-  "m_39a8fc3177364d76": {
-    "source": "בונים תוכנית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_39aa134d6c76fd53": {
     "source": "הזר על שולחן עץ ליד קיר אבן, עלי כותרת על השולחן, אור צד.",
     "language": "he",
@@ -26631,6 +26695,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 16,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/results/FindingCard.tsx",
         "line": 95,
         "kind": "literal"
@@ -27564,7 +27633,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -29417,7 +29486,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 433,
+        "line": 431,
         "kind": "literal",
         "purpose": "display"
       }
@@ -31121,7 +31190,7 @@
       },
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 14,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       },
@@ -32531,6 +32600,17 @@
       }
     ]
   },
+  "m_4ae6723a398032ec": {
+    "source": "כל פוסט מתחיל במטרה בתוכנית. אנחנו מכינים את התמונה והטקסט, בסגנון שמתאים לעסק ולקהל שלכם. אתם בודקים, משנים ומפרסמים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 13,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4afa95d58a4dbd6a": {
     "source": "הקלידו אותה שוב",
     "language": "he",
@@ -33403,7 +33483,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 12,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35528,6 +35608,11 @@
         "file": "web/components/brand/BrandStyle.tsx",
         "line": 363,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 15,
+        "kind": "literal"
       }
     ]
   },
@@ -36814,6 +36899,17 @@
       }
     ]
   },
+  "m_5579c38a4e6cfc5a": {
+    "source": "רואים את ההיכרות, המחקר, יצירת הפוסטים והלמידה בקבוצות נפרדות עם הדגמות מתמשכות. סוג העסק שבחרתם באתר ממשיך איתכם לשאלות המתאימות בהיכרות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_557a8aa4954eab08": {
     "source": "לא ראינו באתר אימות של גוגל.",
     "language": "he",
@@ -36944,7 +37040,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 94,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -37487,6 +37583,17 @@
       {
         "file": "web/components/MonthAhead.tsx",
         "line": 130,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_572d5c97db455f1f": {
+    "source": "הממצא חוזר לתוכנית עם הצעה מעשית: איזה מסר לנסות, מה להראות בפוסט הבא ואיך נבדוק את השינוי. אתם רואים את הסיבה ומחליטים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -39012,7 +39119,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 279,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -39488,7 +39595,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
@@ -44653,6 +44760,27 @@
       }
     ]
   },
+  "m_676eaf418379cd41": {
+    "source": "לעצור את המעבר בין התכונות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 22,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 17,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_67728ad9e72bb71d": {
     "source": "לפי הבעיה שסיפרתם: {arg_0}",
     "language": "he",
@@ -45179,6 +45307,17 @@
       }
     ]
   },
+  "m_68e39b235dd7ca8b": {
+    "source": "מי יכול לתמוך במטרה שלכם?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_68e5b94de2d33a8b": {
     "source": "תיאום פגישות",
     "language": "he",
@@ -45271,7 +45410,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 100,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -45533,7 +45672,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 448,
+        "line": 446,
         "kind": "jsx"
       },
       {
@@ -45969,7 +46108,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 471,
+        "line": 469,
         "kind": "jsx"
       }
     ]
@@ -47819,8 +47958,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -49175,7 +49314,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 478,
+        "line": 476,
         "kind": "jsx"
       }
     ]
@@ -49349,7 +49488,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 12,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -49608,7 +49747,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 11,
+        "line": 13,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51408,17 +51547,6 @@
       }
     ]
   },
-  "m_7740b0efd5a79a3c": {
-    "source": "תמונות, טקסטים ותוכן בתנועה שנבנים מתוך תוכנית השיווק, בסגנון שמתאים לעסק שלכם. מוכנים לבדיקה ולפרסום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 74,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_774168b10c827657": {
     "source": "צריך",
     "language": "he",
@@ -51454,7 +51582,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 345,
+        "line": 343,
         "kind": "jsx"
       },
       {
@@ -52446,6 +52574,17 @@
       }
     ]
   },
+  "m_797da4593ab5ef0b": {
+    "source": "ההיכרות עם העסק שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_79932649283671b6": {
     "source": "התוכנית התחלפה מאז ההמלצה. בדקו מה עדיין מתאים לתוכנית הנוכחית.",
     "language": "he",
@@ -52556,17 +52695,6 @@
         "file": "web/components/motion/MotionGallery.tsx",
         "line": 94,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_79d08c1f762ed3f1": {
-    "source": "אנחנו יוצרים את הפוסטים. אתם מביאים את האופי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 73,
-        "kind": "literal"
       }
     ]
   },
@@ -54403,6 +54531,17 @@
       }
     ]
   },
+  "m_7e2fd80dc12dfb3d": {
+    "source": "אנחנו יוצרים. האופי שלכם נשאר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7e3031714d23f434": {
     "source": "קישור עם הודעה מוכנה, כדי לדעת איזו פנייה הגיעה מהתוכנית",
     "language": "he",
@@ -55086,7 +55225,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 473,
+        "line": 471,
         "kind": "jsx"
       },
       {
@@ -55412,7 +55551,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 14,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -55476,6 +55615,17 @@
         "line": 105,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_80cb3101a29b60cd": {
+    "source": "לא רק לדעת מה קרה. לדעת מה לשנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 13,
+        "kind": "literal"
       }
     ]
   },
@@ -57589,8 +57739,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 72,
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 12,
         "kind": "literal"
       },
       {
@@ -60879,13 +61029,13 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 563,
+        "line": 561,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 579,
+        "line": 577,
         "kind": "jsx"
       }
     ]
@@ -60908,7 +61058,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 11,
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -61021,7 +61171,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 489,
+        "line": 487,
         "kind": "jsx"
       }
     ]
@@ -61289,7 +61439,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 91,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -62340,11 +62490,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 15,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/landing-v2/content.ts",
         "line": 32,
         "kind": "literal",
@@ -62604,6 +62749,17 @@
         "line": 77,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_91738fc5dd29c7a4": {
+    "source": "גם תוכן בתנועה מתחיל ברעיון מתוך התוכנית. אנחנו מכינים את התמונה, המילים והקצב — אתם בודקים את הפרטים לפני הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 13,
+        "kind": "literal"
       }
     ]
   },
@@ -62924,7 +63080,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 96,
+        "line": 92,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64218,17 +64374,6 @@
       }
     ]
   },
-  "m_94ba7a67b142e40c": {
-    "source": "ממצא, הסבר וצעד לפוסט הבא. לא רק עוד גרף.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_94bfaf75a89d3781": {
     "source": "{arg_0} (תיאור {arg_1}: הוספנו פרטים על המרקם, האור והעונה.)",
     "language": "he",
@@ -64723,7 +64868,7 @@
       },
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 77,
+        "line": 73,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65536,7 +65681,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 100,
+        "line": 92,
         "kind": "literal"
       },
       {
@@ -66379,6 +66524,11 @@
     "source": "איזה שירות אתם נותנים?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 29,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/script.ts",
         "line": 73,
@@ -67948,7 +68098,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -68736,7 +68886,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 78,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -69218,6 +69368,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 29,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/start/script.ts",
         "line": 60,
         "kind": "literal"
@@ -69289,6 +69444,11 @@
     "source": "אילו מוצרים יש לחברה שלכם?",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 29,
+        "kind": "literal"
+      },
       {
         "file": "web/components/start/steps.tsx",
         "line": 117,
@@ -70344,7 +70504,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -70920,6 +71080,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 30,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/start/script.ts",
         "line": 70,
         "kind": "literal"
@@ -71286,8 +71451,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -72934,12 +73099,12 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 319,
+        "line": 317,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 571,
+        "line": 569,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73213,12 +73378,12 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 430,
+        "line": 428,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 462,
+        "line": 460,
         "kind": "jsx"
       }
     ]
@@ -74774,7 +74939,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 340,
+        "line": 338,
         "kind": "literal"
       },
       {
@@ -75128,7 +75293,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 97,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75142,17 +75307,6 @@
         "file": "web/app/strategy/page.tsx",
         "line": 181,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_af3a26a2727d09a2": {
-    "source": "אנחנו קוראים את הנתונים מהחשבונות שחיברתם, מפרידים בין חשיפה, לחיצות ותוצאות, ומסבירים מה ללמוד מהם. הממצא חוזר לתוכנית ולפוסט הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
-        "kind": "literal"
       }
     ]
   },
@@ -75252,7 +75406,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -76615,7 +76769,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 101,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -79028,7 +79182,7 @@
       },
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 40,
+        "line": 36,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79040,7 +79194,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 101,
+        "line": 93,
         "kind": "literal"
       },
       {
@@ -81171,6 +81325,17 @@
         "file": "web/lib/trial.ts",
         "line": 532,
         "kind": "template"
+      }
+    ]
+  },
+  "m_be0a643a92a99a29": {
+    "source": "מה המטרה של העמותה?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 29,
+        "kind": "literal"
       }
     ]
   },
@@ -83679,7 +83844,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 424,
+        "line": 422,
         "kind": "jsx"
       }
     ]
@@ -83986,7 +84151,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 97,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -84360,7 +84525,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 443,
+        "line": 441,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84621,7 +84786,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 315,
+        "line": 313,
         "kind": "jsx"
       }
     ]
@@ -84881,7 +85046,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 97,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -84975,6 +85140,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1597,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c63132f05d0fc08a": {
+    "source": "מחברים את הנתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -85452,7 +85628,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 340,
+        "line": 338,
         "kind": "jsx"
       }
     ]
@@ -86310,7 +86486,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 449,
+        "line": 447,
         "kind": "jsx"
       },
       {
@@ -87245,7 +87421,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 66,
+        "line": 62,
         "kind": "jsx"
       }
     ]
@@ -87610,7 +87786,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 576,
+        "line": 574,
         "kind": "jsx"
       }
     ]
@@ -90348,7 +90524,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 294,
+        "line": 292,
         "kind": "jsx"
       }
     ]
@@ -92512,7 +92688,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 511,
+        "line": 509,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92860,7 +93036,7 @@
       },
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 77,
+        "line": 73,
         "kind": "literal",
         "purpose": "display"
       },
@@ -93250,7 +93426,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 96,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -93407,6 +93583,17 @@
       {
         "file": "web/components/help/guides.ts",
         "line": 633,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d9cc782976419a37": {
+    "source": "חוקרים את האתר, ההצעה והקהל. מחברים את מה שסיפרתם עם מה שמצאנו, ומראים לכם מה למדנו ועל מה זה מבוסס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -94021,8 +94208,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
+        "file": "web/components/landing-v2/LearningFeature.tsx",
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -94207,12 +94394,12 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "file": "web/components/landing-v2/PostArtwork.tsx",
+        "line": 19,
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/PostArtwork.tsx",
+        "file": "web/components/landing-v2/PostsFeature.tsx",
         "line": 19,
         "kind": "literal"
       },
@@ -95687,7 +95874,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 321,
+        "line": 319,
         "kind": "jsx"
       }
     ]
@@ -97242,17 +97429,6 @@
       }
     ]
   },
-  "m_e1effd0f2bb95bad": {
-    "source": "למידה מהתוצאות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e1f7081195214bf3": {
     "source": " ({arg_0} בתקופה)",
     "language": "he",
@@ -97456,7 +97632,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -97588,7 +97764,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 82,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -98193,7 +98369,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 76,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98609,7 +98785,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 488,
+        "line": 486,
         "kind": "literal",
         "purpose": "display"
       },
@@ -100598,7 +100774,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 13,
+        "line": 15,
         "kind": "literal",
         "purpose": "display"
       },
@@ -101308,7 +101484,7 @@
     "references": [
       {
         "file": "web/components/start/BusinessRoute.tsx",
-        "line": 13,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -102602,6 +102778,17 @@
       }
     ]
   },
+  "m_ede56d774168060c": {
+    "source": "לשנות את סוג העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BusinessRoute.tsx",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_edfe3c42997865c6": {
     "source": "הדגמה של מצב המתנה",
     "language": "he",
@@ -103808,6 +103995,17 @@
         "line": 1807,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_f09eb9b6f7d76ae7": {
+    "source": "תוכן בתנועה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PostsFeature.tsx",
+        "line": 15,
+        "kind": "literal"
       }
     ]
   },
@@ -105030,7 +105228,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 477,
+        "line": 475,
         "kind": "jsx"
       }
     ]
@@ -105786,6 +105984,17 @@
       }
     ]
   },
+  "m_f52341d320ade7e0": {
+    "source": "כמה שאלות על מה שאתם עושים, הלקוחות והכיוון שלכם. ממשיכים עם מה שכבר סיפרתם, גם אם עדיין אין אתר או חשבונות מחוברים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f5343f25ac87d629": {
     "source": "שופיפיי (Shopify)",
     "language": "he",
@@ -105900,12 +106109,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
+        "line": 78,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 86,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -106571,7 +106780,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 469,
+        "line": 467,
         "kind": "jsx"
       }
     ]
@@ -108379,6 +108588,17 @@
       }
     ]
   },
+  "m_fb4cb9406b8ce2c8": {
+    "source": "אתם מכירים את העסק. אנחנו מתחילים בהקשבה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureStory.tsx",
+        "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fb5c7864ad431be8": {
     "source": "למותג שלי",
     "language": "he",
@@ -108705,7 +108925,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 16,
+        "line": 18,
         "kind": "literal"
       }
     ]

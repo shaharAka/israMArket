@@ -19,3 +19,33 @@
 .synthesis p { font-size: 13px; margin-top: 4px; }
 @media(max-width:900px) { .featureGrid { grid-template-columns: 1fr; gap: 32px; } .copy > p:not(:first-child) { max-width: 50ch; } .sectionTitle { margin-bottom: 40px; } }
 @media(max-width:600px) { .section { padding-block: 48px; } .productStage { padding: 16px; border-radius: 14px; } .learningVisual { padding: 12px; } .sources { gap: 6px; } .source { padding: 12px 8px; } .source > div { flex-direction: column; align-items: start; font-size: 9px; gap: 8px; } }
+
+.section[data-tone="research"] { --feature-tint: #e8eff7; }
+.section[data-tone="posts"] { --feature-tint: #f3eee7; }
+.section .productStage { background: var(--feature-tint, var(--primary-soft)); }
+.section .featureChoices button[aria-pressed="true"] { background: var(--feature-tint, var(--primary-soft)); color: var(--ink); }
+.productStage { min-height: 530px; display: grid; align-content: center; }
+.interview { background: var(--paper); border-radius: 14px; padding: 28px; box-shadow: var(--shadow-card); }
+.interviewIntro { font-size: 13px; color: var(--ink-muted); margin-bottom: 24px; }
+.interview > p:not(:first-child) { font-size: 17px; font-weight: 500; margin-bottom: 10px; }
+.answer { padding: 14px 16px; border: 1px solid var(--rule); border-radius: 8px; margin-bottom: 22px; color: var(--ink-soft); line-height: 1.6; font-size: 14px; }
+.answer:last-child { margin-bottom: 0; }
+.postsStage { padding: 28px 20px; }
+.postsStage :global(.campaign-grid) { gap: 10px; margin-top: 0; }
+.postsStage :global(.campaign-art) { box-shadow: none; }
+.postsStage :global(.campaign-grid[data-count="1"]) { max-width: 300px; margin-inline: auto; }
+@media(max-width:600px) { .productStage { min-height: 420px; } .interview { padding: 20px; } .postsStage { padding: 20px 16px; } }
+
+.section[data-tone="learning"] { --feature-tint: #e8eeed; }
+.section[data-tone="learning"] .learningVisual { padding: 0; background: transparent; }
+.section + .section { border-top: 1px solid var(--rule); }
+
+.stageGrid { display: grid; align-content: start; }
+.featurePanel { grid-area: 1 / 1; min-width: 0; visibility: hidden; }
+.featurePanel[data-active="true"] { visibility: visible; }
+
+@media(max-width:700px) {
+  .postsStage { min-height: 470px; }
+  .postsStage :global(.campaign-examples[data-gallery="true"] .campaign-grid) { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 100%; overflow-x: auto; scroll-snap-type: x mandatory; max-width: 100%; padding-bottom: 8px; }
+  .postsStage :global(.campaign-item) { scroll-snap-align: start; }
+}

@@ -112,3 +112,5 @@ html[lang="ar"] .campaign-art--makeup h3 { font-size: 7cqw; line-height: 1.35; }
 .campaign-play:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 
 .campaign-play { inset-inline-start: 16px; inset-inline-end: auto; width: 44px; height: 44px; min-width: 44px; padding: 0; transform: none; display: grid; place-items: center; font-size: 16px; }
+
+.campaign-player { position: relative; min-width: 0; }

@@ -21,11 +21,12 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   const viewport = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(.6);
   const [requested, setRequested] = useState(true);
+  const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(false);
   const [cursor, setCursor] = useState<{ x: number; y: number; pressed: boolean } | null>(null);
   const reduced = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
   const visible = useSyncExternalStore(subscribeVisibility, () => document.visibilityState === "visible", () => false);
-  const playing = enabled && autoplay && requested && inView && visible && !reduced;
+  const playing = enabled && autoplay && requested && inView && visible && !reduced && !focused;
 
   useEffect(() => {
     if (!enabled || !frame.current) return;
@@ -88,5 +89,5 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   }, [playing, screen, setScreen, setPostIndex]);
 
   return { frame, viewport, scale, cursor: playing ? cursor : null, playing, requested, reduced,
-    pause: () => setRequested(false), toggle: () => setRequested(value => !value) };
+    hold: () => setFocused(true), release: () => setFocused(false), pause: () => setRequested(false), toggle: () => setRequested(value => !value) };
 }
