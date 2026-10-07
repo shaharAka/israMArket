@@ -1,15 +1,14 @@
 /* Public website showcases. Screens are actual app captures; artwork has its own palette. */
-.lv2-site { font-family: var(--font-ui), sans-serif; }
-html[lang="en"] .lv2-site, html[lang="ru"] .lv2-site { font-family: var(--font-inter), sans-serif; }
-html[lang="ar"] .lv2-site { font-family: var(--font-arabic), sans-serif; }
+.lv2-site { --font-ui: var(--font-site-clean); font-family: var(--font-ui), sans-serif; }
+html[lang="he"] .lv2-site[data-hero-type="sans"] { --font-ui: var(--font-heebo); }
+html[lang="en"] .lv2-site, html[lang="ru"] .lv2-site { --font-ui: var(--font-inter); }
+html[lang="ar"] .lv2-site { --font-ui: var(--font-arabic); }
 .lv2-site .lv2-fine { color: var(--ink-muted); }
 .lv2-wordmark { font-family: var(--font-inter), sans-serif; font-size: 29px; font-weight: 600; letter-spacing: -.065em; line-height: 1; color: var(--ink); }
 .lv2-wordmark > span { color: var(--primary); }
 .lv2-compact-mark { display: none; background: var(--primary); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -.035em; line-height: .82; text-align: center; padding: 4px 0; }
 .lv2-hero { background: var(--paper); }
 .lv2-site .lv2-hero-grid { grid-template-columns: minmax(0, .86fr) minmax(0, 1.24fr); padding-block: 48px 40px; gap: clamp(32px, 4vw, 56px); align-items: start; }
-.lv2-site .lv2-display { font-size: clamp(44px, 4.7vw, 66px); line-height: 1.04; font-weight: 600; letter-spacing: -.045em; }
-.lv2-site .lv2-display > span { color: var(--primary); }
 .lv2-site .lv2-hero-text .lv2-lead { font-size: 18px; line-height: 1.55; margin-block: 24px; max-width: 32ch; }
 .lv2-site .lv2-hero-cta { gap: 24px; margin-top: 24px; }
 .lv2-site .lv2-btn { border-radius: 10px; height: 54px; padding-inline: 22px; box-shadow: 0 6px 16px rgb(40 83 199 / 14%); }
@@ -56,18 +55,20 @@ html[lang="ar"] .lv2-site { font-family: var(--font-arabic), sans-serif; }
  .lv2-nav-end > .lv2-btn-quiet { display: none; }
 }
 /* The whole page belongs to a business role; these are real, shareable page links. */
-.lv2-role-nav { display: flex; align-items: center; gap: 4px 16px; flex-wrap: wrap; margin-block: 20px; }
-.lv2-role-nav > span { width: 100%; font-size: 13px; font-weight: 500; color: var(--ink-muted); }
-.lv2-role-nav > a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--ink-soft); text-underline-offset: 7px; text-decoration-thickness: 2px; }
-.lv2-role-nav > a[aria-current="page"] { color: var(--primary); text-decoration-line: underline; font-weight: 600; }
-.lv2-role-nav > a:hover { text-decoration-line: underline; }
+.lv2-role-nav { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-block: 20px; }
+.lv2-role-nav > a { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; padding: 8px 14px; border-radius: 999px; background: var(--soft); font-size: 14px; font-weight: 500; color: var(--ink-soft); transition: background 160ms var(--ease); }
+.lv2-role-nav > a[aria-current="page"] { color: var(--primary); background: var(--primary-soft); }
+.lv2-role-nav > a:hover { background: var(--primary-soft); }
 .lv2-role-nav > a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.lv2-site .lv2-display { font-family: inherit; font-weight: 700; letter-spacing: -.035em; font-size: clamp(46px, 4.2vw, 60px); line-height: 1.08; }
-html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: clamp(36px, 3.2vw, 46px); line-height: 1.12; letter-spacing: -.045em; }
+@media (prefers-reduced-motion: reduce) { .lv2-role-nav > a { transition: none; } }
+.lv2-site .lv2-display { font-family: inherit; font-weight: 500; letter-spacing: normal; font-size: clamp(42px, 3.9vw, 56px); line-height: 1.14; }
+html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: clamp(36px, 3.2vw, 46px); font-weight: 600; line-height: 1.16; letter-spacing: -.025em; }
 html[lang="ar"] .lv2-site .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
-.lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-art-serif), Georgia, serif; font-weight: 500; }
-html[lang="en"] .lv2-site[data-hero-type="serif"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-site-serif), Georgia, serif; }
-html[lang="ar"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-arabic), sans-serif; }
+.lv2-site[data-hero-type="sans"] .lv2-display { font-weight: 700; font-size: clamp(46px, 4.2vw, 60px); letter-spacing: -.035em; line-height: 1.08; }
+html[lang="en"] .lv2-site[data-hero-type="sans"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp(36px, 3.2vw, 46px); line-height: 1.12; letter-spacing: -.045em; }
+html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
+.lv2-site[data-hero-type="modern"] .lv2-hero section[data-compact="true"] h2,
+.lv2-site[data-hero-type="modern"] [data-product-screen] h2 { font-weight: 600; letter-spacing: normal; }
 .lv2-hero-stack { margin-block: 24px 0; font-size: 18px; font-weight: 600; color: var(--ink); }
 .lv2-site .lv2-hero-text .lv2-lead { margin-block: 20px; font-size: 18px; max-width: 100%; }
 .lv2-team-demo { min-width: 0; }
@@ -134,10 +135,13 @@ html[lang="ar"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: va
  .lv2-team-work { min-height: 360px; }
 }
 @media (max-width: 520px) {
- .lv2-role-nav { gap: 4px 20px; margin-block: 16px; }
+ .lv2-role-nav { gap: 8px; margin-block: 16px; }
  .lv2-role-nav > a { font-size: 14px; }
- .lv2-site .lv2-display { font-size: 40px; line-height: 1.12; }
+ .lv2-site .lv2-display { font-size: 38px; line-height: 1.16; }
+ .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 40px; line-height: 1.12; }
  html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: 36px; }
+ html[lang="en"] .lv2-site[data-hero-type="sans"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 36px; }
+ html[lang="ar"] .lv2-site .lv2-display, html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 40px; }
  .lv2-site .lv2-hero-grid { padding-block: 28px 36px; gap: 32px; }
  .lv2-hero-stack { font-size: 16px; margin-top: 20px; }
  .lv2-site .lv2-hero-text .lv2-lead { font-size: 17px; }
@@ -175,7 +179,7 @@ html[lang="ar"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: va
 @media (max-width: 600px) { .lv2-phone-grid { grid-template-columns: 1fr; } .lv2-phone-proof { margin-inline: auto; max-width: 100%; } }
 /* Keep the decision in view on a short laptop; long translations still get natural wrapping. */
 @media (min-width: 1024px) and (max-width: 1280px) {
- .lv2-site .lv2-hero-grid { padding-block: 32px; }
+ .lv2-site .lv2-hero-grid { padding-block: 28px; }
  .lv2-site .lv2-hero-text .lv2-lead { margin-block: 16px; }
  .lv2-role-nav { margin-block: 16px; }
  .lv2-site .lv2-hero-cta { margin-top: 16px; }

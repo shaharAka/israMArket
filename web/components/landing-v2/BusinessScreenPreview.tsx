@@ -12,8 +12,8 @@ export function BusinessScreenPreview({ path, screen }: { path: ExamplePath; scr
   const t = useCopy();
   const { locale } = useLanguage();
   return <main className={styles.page}>
-    <header><Link href={`/design/hero?persona=${path}&lang=${locale}`}><Copy text="לבדיקת האתר" /></Link><p><Copy text="נתוני דוגמה בלבד" /></p></header>
-    <div className={styles.heading}><p><Copy text="רכיבים מהמערכת" /></p><h1><Copy text={BUSINESS_EXAMPLES[path].name} /></h1></div>
+    <header><Link href={`/design/hero?persona=${path}&lang=${locale}`}><Copy text="לבדיקת האתר" /></Link><p><Copy text="נתונים להמחשה" /></p></header>
+    <div className={styles.heading}><h1><Copy text={BUSINESS_EXAMPLES[path].name} /></h1></div>
     <nav className={styles.roles} aria-label={t("עסק לדוגמה")}>
       {Object.entries(PERSONA_PAGES).map(([key, item]) => <Link key={key} href={`/design/business?persona=${key}&screen=${screen}&lang=${locale}`} aria-current={path === key ? "page" : undefined}><Copy text={item.role} /></Link>)}
     </nav>

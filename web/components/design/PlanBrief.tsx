@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
+import { IconChevron } from "@/lib/icons";
 import styles from "./plan-brief.module.css";
 
 /**
@@ -27,7 +28,7 @@ export function PlanBrief({ businessName, direction, measure, baseline, ownerAct
     <div className={styles.body}>
       <h2>{direction}</h2>
       {context && <div className={styles.context}>{context}</div>}
-      {why && <details className={styles.why}><summary><Copy text="למה הכיוון הזה?" /></summary><p>{why}</p></details>}
+      {why && <details className={styles.why}><summary><Copy text="למה הכיוון הזה?" /><IconChevron className="h-4 w-4" /></summary><p>{why}</p></details>}
       {(measure || baseline) && <div className={styles.measure}>
         {measure && <p className={styles.measureLabel}><Copy text="איך נדע" /></p>}
         <div>{measure && <p className={styles.measureValue}>{measure}</p>}{baseline && <p className={styles.baseline}>{baseline}</p>}</div>

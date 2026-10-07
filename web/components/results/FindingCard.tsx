@@ -68,7 +68,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
       {t(changed || "הצעה לבדיקה")}{payload.created_at ? t(" · הוכנה ב־{arg_0}", { arg_0: checkedDate(payload.created_at) }) : ""}
     </p>
-    <h2 id={`${id}-title`} className="mt-3 text-[24px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{item.title}</h2>
+    <h2 id={`${id}-title`} className="mt-3 text-[24px] font-semibold leading-snug text-[color:var(--ink)]">{item.title}</h2>
     {/* The changed state's explanation comes before the numbers it qualifies. */}
     {changed && note ? <p className="mt-2 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">{note}</p> : null}
     {legacy ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="זו הצעה ישנה, בלי פירוט של המקורות. כדאי לבדוק מספרים עדכניים לפני שמשנים משהו." /></p> : <>
@@ -88,13 +88,16 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       {missing.length ? <p className="mt-2 text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="חסר:" />{" "}{missing.map(source => source.label).join(", ")}<Copy text=". זה לא אומר שלא הייתה פעילות." /></p> : null}
     </>}
     {!legacy && basis?.limits?.[0] ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">{basis.limits[0]}</p> : null}
-    <p className="mt-4 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]"><strong className="font-semibold text-[color:var(--ink)]"><Copy text="מה ננסה:" /></strong>{" "}{item.action}</p>
-    {note && !legacy && !changed ? <p className="mt-3 rounded-lg bg-[var(--soft)] px-3 py-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">{note}</p> : null}
-    <Link href={review?.href || "/strategy"} onClick={onReview ? event => { event.preventDefault(); onReview(); } : undefined} className={primary
-      ? "drawn-button group mt-5 inline-flex min-h-11 items-center gap-2 bg-[var(--primary)] px-5 py-3 text-[14px] text-white hover:bg-[var(--primary-dark)]"
-      : "mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"}>
-      {review?.label || t("לבדוק את ההצעה בתוכנית")}<IconArrowLeft className="h-4 w-4 locale-arrow" />
-    </Link>
+    <section className="mt-5 rounded-xl bg-[var(--primary-soft)] p-4 sm:p-5" aria-label={t("הצעד הבא")}>
+      <p className="text-[13px] font-medium text-[color:var(--primary)]"><Copy text="מה ננסה:" /></p>
+      <p className="mt-2 max-w-[42em] text-[17px] font-medium leading-7 text-[color:var(--ink)]">{item.action}</p>
+      {note && !legacy && !changed ? <p className="mt-3 rounded-lg bg-[var(--soft)] px-3 py-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">{note}</p> : null}
+      <Link href={review?.href || "/strategy"} onClick={onReview ? event => { event.preventDefault(); onReview(); } : undefined} className={primary
+        ? "drawn-button group mt-4 inline-flex min-h-11 items-center gap-2 bg-[var(--primary)] px-5 py-3 text-[14px] text-white hover:bg-[var(--primary-dark)]"
+        : "mt-3 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"}>
+        {review?.label || t("לבדוק את ההצעה בתוכנית")}<IconArrowLeft className="h-4 w-4 locale-arrow" />
+      </Link>
+    </section>
     {/* The possible explanation is reasoning, so it opens with the sources (UI-RULES rule 2)
         and the proposal and its button follow the numbers directly. */}
     <details className="group mt-4 border-t border-[var(--rule)]">

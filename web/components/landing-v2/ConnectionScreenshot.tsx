@@ -7,6 +7,6 @@ export function ConnectionScreenshot({ src, alt }: { src: string; alt: string })
   const t = useCopy();
   return <figure className="lv2-real-screen">
     <Image src={src} width={1280} height={900} alt={t(alt)} sizes="(max-width: 800px) 95vw, 650px" />
-    <figcaption><Copy text="צילום מתוך המערכת בעברית · נתוני דוגמה בלבד" /></figcaption>
+    <figcaption><Copy text="נתונים להמחשה" /></figcaption>
   </figure>;
 }

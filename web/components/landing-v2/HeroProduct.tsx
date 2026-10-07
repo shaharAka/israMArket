@@ -31,6 +31,6 @@ export function HeroProduct({ path }: { path: ExamplePath }) {
         {view === 3 ? <div className="lv2-team-results"><p className="lv2-team-label"><Copy text="מה למדנו מהתוצאות" /></p><h2><Copy text={example.finding} /></h2><dl className="lv2-team-compare">{example.comparison.map((label, index) => <div key={label}><dt><Copy text={label} /></dt><dd><i style={{ width: index === 0 ? "80%" : "27%" }} /><span>{index === 0 ? "12" : "4"}</span></dd></div>)}</dl><p className="lv2-team-source"><Copy text={example.measure} /></p><div className="lv2-team-next"><p><Copy text={example.next} /></p></div><p className="lv2-team-missing"><Copy text={example.missing} /></p></div> : null}
       </article>
     </div>
-    <p className="lv2-team-caption"><Copy text="הדגמה עם עסק ונתונים לדוגמה. התוכנית מתקדמת מהמחקר ועד הפוסט הבא." /></p>
+    <p className="lv2-team-caption"><Copy text="נתונים להמחשה" /></p>
   </div>;
 }

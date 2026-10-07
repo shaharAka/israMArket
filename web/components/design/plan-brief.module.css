@@ -35,9 +35,9 @@
 .body h2 {
   max-width: 640px;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   text-wrap: pretty;
 }
 
@@ -46,6 +46,10 @@
 }
 
 .why summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
   width: fit-content;
   min-height: 44px;
   font-size: 14px;
@@ -53,6 +57,12 @@
   color: var(--im-muted, var(--ink-soft));
   transition: color 160ms ease;
 }
+
+.why summary::-webkit-details-marker { display: none; }
+.why summary svg { transform: rotate(-90deg); transition: transform 180ms var(--ease); }
+.why[open] summary svg { transform: rotate(90deg); }
+.why summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .why summary svg { transition: none; } }
 
 .why summary:hover {
   color: var(--im-ink, var(--ink));
@@ -131,9 +141,9 @@
 .decisionTitle {
   margin-top: 6px;
   font-size: 19px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 .decisionWhy {

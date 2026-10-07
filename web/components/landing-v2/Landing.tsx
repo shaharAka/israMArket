@@ -5,16 +5,16 @@ import { type ReactNode } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
-import { IconArrowLeft } from "@/lib/icons";
+import { IconArrowLeft, IconCheck } from "@/lib/icons";
 import { NO_CARD_AT_SIGNUP, PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
-import { TRUST } from "./content";
+import { HERO, TRUST } from "./content";
 import { type ExamplePath } from "./businessExamples";
 import { POST_EXAMPLES } from "./postExamples";
 import { HeroWorkspace } from "./HeroWorkspace";
 import { BusinessProductProof } from "./BusinessProductProof";
 import { HeroProduct } from "./HeroProduct";
 import { BrandWordmark } from "./BrandWordmark";
-import { artSerif, siteSerif } from "./siteFonts";
+import { artSerif, siteSerif, siteClean } from "./siteFonts";
 import { PERSONA_PAGES } from "./personaPages";
 import { CampaignPostExamples } from "./CampaignPostExamples";
 import { ConnectionShowcase } from "./ConnectionShowcase";
@@ -30,7 +30,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
 ];
 
 /** Role-specific pages use real product components with explicitly simulated business data. */
-export function Landing({ initialPath = "services", heroVariant = "workspace", heroTypeface = "sans", heroOnly = false }: { initialPath?: ExamplePath; heroVariant?: "workspace" | "tabs"; heroTypeface?: "sans" | "serif"; heroOnly?: boolean }) {
+export function Landing({ initialPath = "services", heroVariant = "workspace", heroTypeface = "modern", heroOnly = false }: { initialPath?: ExamplePath; heroVariant?: "workspace" | "tabs"; heroTypeface?: "modern" | "sans"; heroOnly?: boolean }) {
   const path = initialPath;
   const t = useCopy();
   const { locale } = useLanguage();
@@ -44,7 +44,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
     headline: t(item.headline), tip: t(item.tip), action: t(item.action), label: t(item.label),
     plan: t(item.plan), caption: t(item.caption), motion: item.motion?.map(line => t(line)),
   }));
-  return <div className={`lv2 lv2-site ${artSerif.variable} ${siteSerif.variable}`} data-business={path} data-hero-type={heroTypeface}>
+  return <div className={`lv2 lv2-site ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={path} data-hero-type={heroTypeface}>
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row">
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark /></Link>
       {!heroOnly && <nav aria-label={t("בעמוד הזה")} className="lv2-nav-links"><a href="#story"><Copy text="איך זה עובד" /></a><a href="#posts"><Copy text="הפוסטים" /></a><a href="#connections"><Copy text="חיבורים" /></a><a href="#price"><Copy text="מנוי" /></a><a href="#trust"><Copy text="המידע שלכם" /></a></nav>}
@@ -53,9 +53,9 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
     <main>
       <section className="lv2-hero" aria-labelledby="lv2-title"><div className="lv2-wrap lv2-hero-grid">
         <div className="lv2-hero-text">
-          <h1 id="lv2-title" className="lv2-display"><Copy text="צוות שיווק של AI." /><br /><span><Copy text={persona.title} /></span></h1>
+          <h1 id="lv2-title" className="lv2-display"><Copy text={HERO.title} /></h1>
           <p className="lv2-lead"><Copy text={persona.body} /></p>
-          <nav className="lv2-role-nav" aria-label={t("לבחור את התפקיד שלכם ולראות את העמוד המתאים")}><span><Copy text="מי אתם?" /></span>{Object.entries(PERSONA_PAGES).map(([key, item]) => <Link key={key} href={heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`} aria-current={key === path ? "page" : undefined}><Copy text={item.role} /></Link>)}</nav>
+          <nav className="lv2-role-nav" aria-label={t("לבחור את התפקיד שלכם ולראות את העמוד המתאים")}>{Object.entries(PERSONA_PAGES).map(([key, item]) => <Link key={key} href={heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`} aria-current={key === path ? "page" : undefined}>{key === path && <IconCheck className="h-3.5 w-3.5" />}<Copy text={item.role} /></Link>)}</nav>
           <div className="lv2-hero-cta"><Link href={start} className="lv2-btn"><Copy text={startLabel} /><IconArrowLeft className="h-4 w-4" /></Link></div>
           <p className="lv2-fine"><Copy text={canStart ? "בלי כרטיס אשראי. אתם בודקים ומפרסמים." : "המסלול לעמותות בפיתוח. בינתיים אפשר לראות את הכיוון בדוגמאות."} /></p>
         </div>
@@ -71,7 +71,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         <h2 id="lv2-post-title" className="lv2-h2"><Copy text={persona.postsTitle} /></h2>
         <p className="lv2-lead"><Copy text={persona.postsBody} /></p>
         <CampaignPostExamples key={path} examples={posts} selectionLabel={t("לבחור פוסט לדוגמה")} captionLabel={t("לקרוא את הטקסט שמלווה את הפוסט")} screenshot={{src:"/showcase/platform-week-desktop.png",alt:t("צילום אמיתי מתוך המערכת עם נתוני דוגמה")}} />
-        <p className="lv2-fine"><Copy text="עסקים, אנשים ומוצרים לדוגמה. התמונות נוצרו ב-AI ואינן עבודות לקוח או מוצרים למכירה. הפוסטים המונפשים כאן הם הדגמת תנועה מתמונות, ולא צילום אירוע או יכולת סרטון שכבר זמינה בחשבון." /></p>
+        <p className="lv2-fine"><Copy text="התמונות נוצרו ב-AI. התנועה מוצגת כאן להמחשה." /></p>
       </div></section>
       <section id="learn" className="lv2-feature-group lv2-learn-group" aria-labelledby="lv2-learn-title"><div className="lv2-wrap lv2-feature-grid">
         <div><p className="lv2-eyebrow"><Copy text="למידה מהתוצאות" /></p><h2 id="lv2-learn-title" className="lv2-h2"><Copy text={persona.learnTitle} /></h2><p className="lv2-lead"><Copy text={persona.learnBody} /></p><p className="lv2-fine"><Copy text="ממצא, הסבר וצעד לפוסט הבא. לא רק עוד גרף." /></p></div>

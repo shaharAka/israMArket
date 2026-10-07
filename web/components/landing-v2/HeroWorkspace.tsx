@@ -21,7 +21,7 @@ export function HeroWorkspace({ path }: { path: ExamplePath }) {
   const post = { ...source, business: t(source.business), headline: t(source.headline), tip: t(source.tip), action: t(source.action), alt: source.alt ? t(source.alt) : undefined };
   return <div className={styles.demo} id="homepage-business-example">
     <div className={styles.workspace}>
-      <header className={styles.header}><strong><Copy text={example.name} /></strong><span><Copy text="סביבת עבודה לדוגמה" /></span></header>
+      <header className={styles.header}><strong><Copy text={example.name} /></strong></header>
       <div className={styles.plan}>
         <PlanBrief compact businessName={t(example.name)} direction={t(example.plan)}
           context={<><Copy text="מהמחקר:" />{" "}<Copy text={example.learned} /></>}
@@ -38,9 +38,9 @@ export function HeroWorkspace({ path }: { path: ExamplePath }) {
         } />
       </div>
     </div>
-    <p className={styles.caption}><Copy text="הדגמת תהליך עם רכיבים מהמערכת. העסק, התמונות והתוצאות לדוגמה; זו אינה תמונת מצב של חשבון לקוח." /></p>
-    <UIDialog open={reviewing} onClose={() => setReviewing(false)} title={t("הפוסט שהכנו לפי התוכנית")} description={t("דוגמה בלבד. בודקים את התמונה, הנוסח והפרטים לפני הפרסום.")}>
-      <div className={styles.review}><PostArtwork item={post} /><div><p className={styles.label}><Copy text="בתוכנית" /></p><h3><Copy text={example.recommendation} /></h3><p><Copy text={example.caption} /></p><p className={styles.reviewNote}><Copy text="התמונה נוצרה ב-AI להמחשה. בעסק אמיתי משתמשים בפרטים ובתמונות שאישרתם." /></p><UIAction onClick={() => setReviewing(false)}><Copy text="לחזור לתוכנית לדוגמה" /></UIAction></div></div>
+    <p className={styles.caption}><Copy text="נתונים להמחשה" /></p>
+    <UIDialog open={reviewing} onClose={() => setReviewing(false)} title={t("הפוסט שהכנו לפי התוכנית")} description={t("בודקים את התמונה, הנוסח והפרטים לפני הפרסום.")}>
+      <div className={styles.review}><PostArtwork item={post} /><div><p className={styles.label}><Copy text="בתוכנית" /></p><h3><Copy text={example.recommendation} /></h3><p><Copy text={example.caption} /></p><UIAction onClick={() => setReviewing(false)}><Copy text="לחזור לתוכנית" /></UIAction></div></div>
     </UIDialog>
   </div>;
 }
