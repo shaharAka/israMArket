@@ -1,12 +1,14 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { FindingRehearsal } from "./FindingRehearsal";
 
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
-import { BrandMark, IconArrowLeft, IconArrowRight } from "@/lib/icons";
+import { IconArrowLeft, IconArrowRight } from "@/lib/icons";
 import { ResultsBrief, type ResultsBriefData } from "./ResultsBrief";
 import { DesignScope } from "./Primitives";
 import { SegmentedControl, UIAction } from "./Controls";
@@ -131,7 +133,7 @@ export function ResultsPreview() {
   const [view, setView] = useState("app");
   const { palette } = useDesignPalette();
   return <DesignScope palette={palette} className={styles.preview}><div className={styles.previewContainer}>
-    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark /><Copy text="ישראמארקט" /></Link><Link href="/design"><Copy text="לספריית העיצוב" /><IconArrowRight className="inline h-4 w-4 ms-2" /></Link></header>
+    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><Link href="/design"><Copy text="לספריית העיצוב" /><IconArrowRight className="inline h-4 w-4 ms-2" /></Link></header>
     <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label={t("תצוגת סקירת התוצאות")} value={view} onChange={setView} options={[{ value: "app", label: t("הרכיב באפליקציה") }, { value: "concept", label: t("הרעיון הקודם") }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
   </div></DesignScope>;
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { CARD, FIELD, LABEL } from "@/components/account/setupStyles";
@@ -30,7 +32,7 @@ import {
   type Stage,
 } from "@/lib/admin";
 import { ApiError, endpoints } from "@/lib/api";
-import { BrandMark, IconArrowRight, IconCopy } from "@/lib/icons";
+import { IconArrowRight, IconCopy } from "@/lib/icons";
 import { ToastHost, copyText, toast } from "@/lib/ui";
 import { SupportQueue } from "@/components/support/SupportQueue";
 
@@ -240,8 +242,7 @@ function Shell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-30 border-b border-[var(--rule)] bg-[var(--paper)]/95 pt-[env(safe-area-inset-top)] backdrop-blur-md">
         <div className="mx-auto flex min-h-16 max-w-[1360px] items-center justify-between gap-3 px-4 md:px-8">
           <Link href="/dashboard" className="flex min-h-11 items-center gap-2.5">
-            <BrandMark className="h-8 w-8 shrink-0 text-[color:var(--primary)]" />
-            <span className="text-[17px] font-bold tracking-tight">ישראמארקט</span>
+            <ProductWordmark />
             <span className="rounded-full bg-[var(--soft)] px-2.5 py-0.5 text-[12px] font-semibold text-[color:var(--ink-muted)]">ניהול</span>
           </Link>
           <Link

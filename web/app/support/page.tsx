@@ -1,5 +1,7 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -9,7 +11,6 @@ import { UIAction } from "@/components/design/Controls";
 import { Conversation } from "@/components/support/Conversation";
 import { ApiError, isDemo } from "@/lib/api";
 import { CONTACT_EMAIL } from "@/lib/company";
-import { BrandMark } from "@/lib/icons";
 import { support, SUPPORT_CATEGORIES, SUPPORT_STATUS, type Ticket } from "@/lib/support";
 
 export default function SupportPage() {
@@ -80,7 +81,7 @@ export default function SupportPage() {
   // A person who cannot sign in still sees the email fallback. Do not mount the app's
   // authenticated shell before the support read confirms the session.
   return signin || tickets === null ? <div className="app-blue min-h-screen bg-[var(--canvas)] p-5 text-[color:var(--ink)] sm:p-8">
-    <Link href="/" className="mb-8 inline-flex min-h-11 items-center gap-2 font-bold"><BrandMark className="h-7 w-7" /> ישראמארקט</Link>
+    <Link href="/" className="mb-8 inline-flex min-h-11 items-center gap-2 font-bold"><ProductWordmark /></Link>
     {content}
   </div> : <AppShell>{content}</AppShell>;
 }

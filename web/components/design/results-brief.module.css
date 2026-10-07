@@ -3,7 +3,7 @@
 .previewHeader { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--im-rule); }
 .previewHeader a { color: var(--im-muted); font-size: 13px; }
 .previewHeader .brand { display: flex; align-items: center; gap: 12px; color: var(--im-ink); font-weight: 700; font-size: 21px; text-decoration: none; }
-.brand svg { width: 36px; height: 36px; }
+.brand > svg { width: 36px; height: 36px; }
 .workshop { padding-block: 28px; }
 .workshopHeading { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 20px; }
 .eyebrow { margin: 0 0 8px; color: var(--im-muted); font-size: 12px; font-weight: 500; }

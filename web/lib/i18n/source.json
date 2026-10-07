@@ -39,7 +39,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -344,7 +344,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaReturn.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "jsx"
       }
     ]
@@ -692,7 +692,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -703,7 +703,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 148,
+        "line": 150,
         "kind": "jsx"
       }
     ]
@@ -781,7 +781,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 81,
+        "line": 83,
         "kind": "literal"
       },
       {
@@ -1086,7 +1086,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 729,
+        "line": 730,
         "kind": "literal"
       }
     ]
@@ -1392,7 +1392,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "jsx"
       }
     ]
@@ -1415,7 +1415,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "jsx"
       }
     ]
@@ -1611,7 +1611,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -1675,7 +1675,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 536,
+        "line": 537,
         "kind": "jsx"
       }
     ]
@@ -2095,7 +2095,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 83,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -2151,7 +2151,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -2410,7 +2410,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 526,
+        "line": 527,
         "kind": "template"
       }
     ]
@@ -2683,7 +2683,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "jsx"
       }
     ]
@@ -2717,12 +2717,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 360,
+        "line": 361,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 438,
+        "line": 439,
         "kind": "jsx"
       }
     ]
@@ -2862,7 +2862,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -3091,22 +3091,22 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       },
       {
@@ -3162,7 +3162,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "jsx"
       }
     ]
@@ -3196,7 +3196,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -3280,7 +3280,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -3471,7 +3471,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "jsx"
       }
     ]
@@ -3760,7 +3760,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 499,
+        "line": 500,
         "kind": "literal"
       }
     ]
@@ -4103,7 +4103,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 165,
+        "line": 167,
         "kind": "jsx"
       }
     ]
@@ -4651,7 +4651,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -4887,7 +4887,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "jsx"
       }
     ]
@@ -4955,7 +4955,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 90,
+        "line": 92,
         "kind": "jsx"
       }
     ]
@@ -4977,7 +4977,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "jsx"
       }
     ]
@@ -5045,7 +5045,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -5135,7 +5135,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -5181,7 +5181,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -5214,7 +5214,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 21,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -5236,7 +5236,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -5389,7 +5389,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -5440,7 +5440,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       },
       {
@@ -5512,12 +5512,12 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "jsx"
       }
     ]
@@ -5776,7 +5776,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -5995,7 +5995,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -6317,7 +6317,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 98,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -6660,7 +6660,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -6786,7 +6786,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -6888,7 +6888,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 526,
+        "line": 527,
         "kind": "literal"
       }
     ]
@@ -6911,7 +6911,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -7035,7 +7035,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -7091,7 +7091,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "jsx"
       }
     ]
@@ -7186,7 +7186,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7738,12 +7738,12 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "jsx"
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 137,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -8184,7 +8184,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -8377,7 +8377,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 697,
+        "line": 698,
         "kind": "literal",
         "purpose": "display"
       }
@@ -8486,12 +8486,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 591,
+        "line": 592,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 702,
+        "line": 703,
         "kind": "literal",
         "purpose": "display"
       },
@@ -8572,7 +8572,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -8584,7 +8584,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 149,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -9004,7 +9004,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -9054,7 +9054,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -9195,7 +9195,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -9516,7 +9516,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -9572,7 +9572,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -9594,7 +9594,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 774,
+        "line": 775,
         "kind": "jsx"
       },
       {
@@ -9645,7 +9645,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 98,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -9721,12 +9721,12 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -10245,7 +10245,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 123,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -10312,7 +10312,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 526,
+        "line": 527,
         "kind": "template",
         "purpose": "display"
       }
@@ -10421,7 +10421,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 186,
+        "line": 188,
         "kind": "literal",
         "purpose": "display"
       },
@@ -10650,7 +10650,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -11017,7 +11017,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -11028,7 +11028,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -11063,7 +11063,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "jsx"
       }
     ]
@@ -11129,7 +11129,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "jsx"
       }
     ]
@@ -11356,7 +11356,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 31,
+        "line": 33,
         "kind": "literal"
       },
       {
@@ -11565,7 +11565,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -11825,7 +11825,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 742,
+        "line": 743,
         "kind": "literal"
       }
     ]
@@ -12096,7 +12096,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 179,
+        "line": 181,
         "kind": "template"
       }
     ]
@@ -12129,7 +12129,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaReturn.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "jsx"
       }
     ]
@@ -12553,7 +12553,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -12587,7 +12587,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 569,
+        "line": 570,
         "kind": "literal",
         "purpose": "display"
       },
@@ -12928,7 +12928,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 150,
+        "line": 152,
         "kind": "jsx"
       }
     ]
@@ -12939,7 +12939,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 132,
+        "line": 134,
         "kind": "jsx"
       }
     ]
@@ -13039,7 +13039,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -13083,7 +13083,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 788,
+        "line": 789,
         "kind": "jsx"
       },
       {
@@ -13195,7 +13195,7 @@
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       },
@@ -13217,7 +13217,7 @@
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 177,
+        "line": 179,
         "kind": "jsx"
       }
     ]
@@ -13279,7 +13279,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "jsx"
       }
     ]
@@ -13324,7 +13324,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 39,
+        "line": 41,
         "kind": "jsx"
       }
     ]
@@ -13613,7 +13613,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -13670,7 +13670,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -13823,7 +13823,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -13834,7 +13834,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 42,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -13892,7 +13892,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -14243,7 +14243,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 113,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -14557,7 +14557,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       },
       {
@@ -14873,7 +14873,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -15107,7 +15107,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -15118,7 +15118,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -15489,7 +15489,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 86,
+        "line": 88,
         "kind": "jsx"
       }
     ]
@@ -15500,7 +15500,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 871,
+        "line": 872,
         "kind": "jsx"
       }
     ]
@@ -15659,7 +15659,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "jsx"
       },
       {
@@ -15822,12 +15822,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 572,
+        "line": 573,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 664,
+        "line": 665,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15920,7 +15920,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -16263,7 +16263,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -16309,7 +16309,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 23,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -16936,7 +16936,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 21,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -16991,7 +16991,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -17037,7 +17037,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "jsx"
       }
     ]
@@ -17978,7 +17978,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -18070,7 +18070,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -18148,7 +18148,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -18535,7 +18535,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18620,7 +18620,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 106,
+        "line": 108,
         "kind": "jsx"
       }
     ]
@@ -18911,7 +18911,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -18956,7 +18956,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -19024,7 +19024,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -19260,7 +19260,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 164,
+        "line": 166,
         "kind": "jsx"
       }
     ]
@@ -19470,7 +19470,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19506,7 +19506,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "literal"
       }
     ]
@@ -19945,7 +19945,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -19967,12 +19967,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 582,
+        "line": 583,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 686,
+        "line": 687,
         "kind": "literal"
       }
     ]
@@ -20237,7 +20237,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 94,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -20461,7 +20461,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -20619,7 +20619,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 59,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -20795,7 +20795,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -20972,7 +20972,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 131,
+        "line": 133,
         "kind": "jsx"
       }
     ]
@@ -21193,7 +21193,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -21312,7 +21312,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 37,
+        "line": 39,
         "kind": "jsx"
       }
     ]
@@ -21592,7 +21592,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       }
@@ -22119,7 +22119,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -22174,7 +22174,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 136,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -22218,7 +22218,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "jsx"
       }
     ]
@@ -22401,7 +22401,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 320,
+        "line": 321,
         "kind": "jsx"
       }
     ]
@@ -22566,7 +22566,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -22630,6 +22630,11 @@
         "kind": "jsx"
       },
       {
+        "file": "web/components/landing-v2/ProductWordmark.tsx",
+        "line": 5,
+        "kind": "jsx"
+      },
+      {
         "file": "web/components/start/StartFlow.tsx",
         "line": 433,
         "kind": "jsx"
@@ -22647,7 +22652,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 161,
+        "line": 163,
         "kind": "literal"
       },
       {
@@ -22731,7 +22736,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -22770,17 +22775,17 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       },
       {
@@ -23317,12 +23322,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 428,
+        "line": 429,
         "kind": "literal"
       },
       {
         "file": "web/app/login/page.tsx",
-        "line": 96,
+        "line": 97,
         "kind": "literal"
       },
       {
@@ -23378,7 +23383,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 547,
+        "line": 548,
         "kind": "jsx"
       }
     ]
@@ -23677,7 +23682,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "jsx"
       }
     ]
@@ -23847,7 +23852,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 160,
+        "line": 162,
         "kind": "jsx"
       }
     ]
@@ -24052,7 +24057,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -24189,7 +24194,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "literal"
       },
       {
@@ -24216,7 +24221,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 23,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -24653,7 +24658,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "jsx"
       }
     ]
@@ -24814,7 +24819,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -24891,7 +24896,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -25044,7 +25049,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -25055,7 +25060,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 454,
+        "line": 455,
         "kind": "literal",
         "purpose": "display"
       }
@@ -25078,7 +25083,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -25179,7 +25184,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 162,
+        "line": 164,
         "kind": "jsx"
       }
     ]
@@ -25416,27 +25421,27 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "jsx"
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 137,
+        "line": 139,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 56,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -25513,7 +25518,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "jsx"
       }
     ]
@@ -25869,7 +25874,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 57,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -25914,7 +25919,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -25936,7 +25941,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 149,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -26262,7 +26267,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 884,
+        "line": 885,
         "kind": "template"
       }
     ]
@@ -26592,7 +26597,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 207,
+        "line": 209,
         "kind": "literal",
         "purpose": "display"
       }
@@ -26871,7 +26876,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 137,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -27117,7 +27122,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 23,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -27276,7 +27281,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -27387,7 +27392,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 106,
+        "line": 108,
         "kind": "jsx"
       }
     ]
@@ -27625,7 +27630,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -27879,7 +27884,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -27974,7 +27979,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -27985,7 +27990,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       },
@@ -28164,7 +28169,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "jsx"
       }
     ]
@@ -28211,7 +28216,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -28303,7 +28308,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 772,
+        "line": 773,
         "kind": "literal"
       },
       {
@@ -28539,7 +28544,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -28673,7 +28678,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -28976,12 +28981,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 436,
+        "line": 437,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 461,
+        "line": 462,
         "kind": "literal"
       }
     ]
@@ -29207,7 +29212,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -29218,7 +29223,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -29263,7 +29268,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       },
@@ -29410,7 +29415,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -29455,7 +29460,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 24,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -29554,7 +29559,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -30172,7 +30177,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30397,7 +30402,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -30594,7 +30599,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30808,7 +30813,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 756,
+        "line": 757,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30895,7 +30900,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "jsx"
       }
     ]
@@ -31013,7 +31018,7 @@
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       }
@@ -31423,7 +31428,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "jsx"
       }
     ]
@@ -31535,7 +31540,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -31569,7 +31574,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       },
       {
@@ -31585,7 +31590,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 545,
+        "line": 546,
         "kind": "jsx"
       },
       {
@@ -31693,7 +31698,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -31766,7 +31771,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -31891,7 +31896,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -32269,7 +32274,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 86,
+        "line": 88,
         "kind": "jsx"
       }
     ]
@@ -32614,7 +32619,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -32754,7 +32759,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -32804,7 +32809,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "jsx"
       }
     ]
@@ -32895,7 +32900,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -32965,7 +32970,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 748,
+        "line": 749,
         "kind": "literal"
       }
     ]
@@ -33235,7 +33240,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 161,
+        "line": 163,
         "kind": "jsx"
       }
     ]
@@ -33457,7 +33462,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "jsx"
       }
     ]
@@ -33855,7 +33860,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "jsx"
       }
     ]
@@ -34591,7 +34596,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "jsx"
       }
     ]
@@ -34676,7 +34681,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "jsx"
       }
     ]
@@ -34726,7 +34731,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 132,
+        "line": 134,
         "kind": "literal"
       }
     ]
@@ -35082,7 +35087,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -35245,7 +35250,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 674,
+        "line": 675,
         "kind": "literal"
       },
       {
@@ -35305,7 +35310,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 160,
+        "line": 162,
         "kind": "jsx"
       },
       {
@@ -35553,7 +35558,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 725,
+        "line": 726,
         "kind": "literal"
       }
     ]
@@ -35686,7 +35691,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35744,7 +35749,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35963,7 +35968,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "jsx"
       }
     ]
@@ -36076,7 +36081,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36193,7 +36198,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 769,
+        "line": 770,
         "kind": "jsx"
       }
     ]
@@ -36400,7 +36405,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 123,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -36451,7 +36456,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 322,
+        "line": 323,
         "kind": "jsx"
       }
     ]
@@ -36690,7 +36695,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -36750,7 +36755,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 830,
+        "line": 831,
         "kind": "literal"
       }
     ]
@@ -36981,7 +36986,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37026,7 +37031,7 @@
       },
       {
         "file": "web/app/login/page.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -37222,7 +37227,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -37289,7 +37294,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 47,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37359,7 +37364,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -37517,7 +37522,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37563,7 +37568,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "jsx"
       }
     ]
@@ -37755,7 +37760,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -37823,7 +37828,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 155,
+        "line": 157,
         "kind": "jsx"
       }
     ]
@@ -37924,7 +37929,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "jsx"
       }
     ]
@@ -37997,7 +38002,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 673,
+        "line": 674,
         "kind": "template"
       }
     ]
@@ -38400,7 +38405,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -38739,7 +38744,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -39076,7 +39081,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -39282,7 +39287,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 665,
+        "line": 666,
         "kind": "template"
       }
     ]
@@ -39315,7 +39320,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 88,
+        "line": 89,
         "kind": "literal"
       },
       {
@@ -39418,7 +39423,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       },
       {
@@ -39507,7 +39512,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -39700,7 +39705,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -39877,7 +39882,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -39944,12 +39949,12 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "jsx"
       }
     ]
@@ -40273,7 +40278,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 455,
+        "line": 456,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40416,7 +40421,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -40479,7 +40484,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "jsx"
       }
     ]
@@ -40991,7 +40996,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -41068,7 +41073,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41115,7 +41120,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "jsx"
       }
     ]
@@ -41182,7 +41187,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 60,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -41259,7 +41264,7 @@
       },
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -41379,7 +41384,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 692,
+        "line": 693,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41391,7 +41396,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 481,
+        "line": 482,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41881,7 +41886,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 37,
+        "line": 39,
         "kind": "jsx"
       }
     ]
@@ -41971,7 +41976,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -42061,7 +42066,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -42242,7 +42247,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "display"
       }
@@ -42334,7 +42339,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal",
         "purpose": "display"
       }
@@ -42454,7 +42459,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -42846,7 +42851,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -43092,7 +43097,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 192,
+        "line": 194,
         "kind": "literal",
         "purpose": "display"
       }
@@ -43162,7 +43167,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -43195,7 +43200,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "jsx"
       }
     ]
@@ -43301,7 +43306,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 154,
+        "line": 156,
         "kind": "jsx"
       }
     ]
@@ -43396,7 +43401,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "jsx"
       }
     ]
@@ -43443,7 +43448,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -43915,7 +43920,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "literal",
         "purpose": "display"
       }
@@ -43932,7 +43937,7 @@
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       },
@@ -43975,7 +43980,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "jsx"
       }
     ]
@@ -44032,7 +44037,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "jsx"
       }
     ]
@@ -44280,7 +44285,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -44504,13 +44509,13 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "literal",
         "purpose": "display"
       }
@@ -44578,7 +44583,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       }
@@ -44679,7 +44684,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 21,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -44840,7 +44845,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       }
@@ -44987,7 +44992,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 95,
+        "line": 97,
         "kind": "template",
         "purpose": "display"
       }
@@ -45242,7 +45247,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -45253,7 +45258,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal",
         "purpose": "display"
       }
@@ -45321,7 +45326,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -45562,7 +45567,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 680,
+        "line": 681,
         "kind": "literal"
       }
     ]
@@ -45708,7 +45713,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 148,
+        "line": 150,
         "kind": "jsx"
       }
     ]
@@ -45996,7 +46001,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -46171,7 +46176,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 161,
+        "line": 163,
         "kind": "jsx"
       }
     ]
@@ -46469,7 +46474,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -46565,7 +46570,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 772,
+        "line": 773,
         "kind": "literal"
       }
     ]
@@ -47193,7 +47198,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       },
       {
@@ -47232,7 +47237,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "jsx"
       }
     ]
@@ -47333,7 +47338,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 103,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -47367,7 +47372,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 812,
+        "line": 813,
         "kind": "literal"
       },
       {
@@ -47605,7 +47610,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 439,
+        "line": 440,
         "kind": "jsx"
       },
       {
@@ -47644,7 +47649,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -48010,7 +48015,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "jsx"
       }
     ]
@@ -48092,7 +48097,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -48147,7 +48152,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 126,
+        "line": 128,
         "kind": "jsx"
       }
     ]
@@ -48507,7 +48512,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 143,
+        "line": 145,
         "kind": "jsx"
       }
     ]
@@ -48751,7 +48756,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -48885,7 +48890,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -48919,12 +48924,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 157,
+        "line": 159,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 245,
+        "line": 246,
         "kind": "jsx"
       }
     ]
@@ -49011,7 +49016,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 141,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -49033,7 +49038,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -49044,7 +49049,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 110,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -49078,7 +49083,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 757,
+        "line": 758,
         "kind": "jsx"
       }
     ]
@@ -49338,7 +49343,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       },
       {
@@ -49398,7 +49403,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
@@ -49615,7 +49620,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -49823,7 +49828,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -49869,7 +49874,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "jsx"
       }
     ]
@@ -50273,7 +50278,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 90,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50296,7 +50301,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 38,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -50399,7 +50404,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 496,
+        "line": 497,
         "kind": "jsx"
       }
     ]
@@ -50534,7 +50539,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -50831,7 +50836,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 737,
+        "line": 738,
         "kind": "literal"
       }
     ]
@@ -50876,7 +50881,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 832,
+        "line": 833,
         "kind": "template"
       }
     ]
@@ -50887,7 +50892,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 456,
+        "line": 457,
         "kind": "literal"
       }
     ]
@@ -50989,7 +50994,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 190,
+        "line": 192,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51125,12 +51130,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 575,
+        "line": 576,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 672,
+        "line": 673,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51301,7 +51306,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 737,
+        "line": 738,
         "kind": "literal"
       }
     ]
@@ -51375,12 +51380,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 586,
+        "line": 587,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 678,
+        "line": 679,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51404,7 +51409,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -52005,12 +52010,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 578,
+        "line": 579,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 696,
+        "line": 697,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52022,7 +52027,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 540,
+        "line": 541,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52123,7 +52128,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -52409,7 +52414,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -52431,7 +52436,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -52677,7 +52682,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 58,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -52688,7 +52693,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -52710,7 +52715,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "jsx"
       }
     ]
@@ -52765,7 +52770,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -53087,7 +53092,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 191,
+        "line": 193,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53115,7 +53120,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "jsx"
       }
     ]
@@ -53510,7 +53515,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 47,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -53947,7 +53952,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 126,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -53970,7 +53975,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 108,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -54070,7 +54075,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -54103,12 +54108,12 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 32,
+        "line": 34,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 47,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -54279,7 +54284,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -54868,7 +54873,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -55166,7 +55171,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 546,
+        "line": 547,
         "kind": "jsx"
       },
       {
@@ -55176,7 +55181,7 @@
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       },
@@ -55279,7 +55284,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -55442,7 +55447,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "jsx"
       }
     ]
@@ -55808,7 +55813,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55979,7 +55984,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal",
         "purpose": "display"
       },
@@ -56129,7 +56134,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 510,
+        "line": 511,
         "kind": "literal"
       }
     ]
@@ -56757,7 +56762,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -56913,7 +56918,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "jsx"
       }
     ]
@@ -57580,7 +57585,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 128,
+        "line": 130,
         "kind": "jsx"
       }
     ]
@@ -58154,7 +58159,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "jsx"
       }
     ]
@@ -58516,7 +58521,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 90,
+        "line": 92,
         "kind": "jsx"
       }
     ]
@@ -58527,7 +58532,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -58886,7 +58891,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -59022,7 +59027,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -59291,7 +59296,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -59357,7 +59362,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 89,
+        "line": 91,
         "kind": "jsx"
       }
     ]
@@ -59463,7 +59468,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -59810,7 +59815,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 129,
+        "line": 131,
         "kind": "jsx"
       }
     ]
@@ -59957,7 +59962,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "jsx"
       }
     ]
@@ -60135,7 +60140,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       },
       {
@@ -60278,7 +60283,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -60300,7 +60305,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 269,
+        "line": 270,
         "kind": "jsx"
       }
     ]
@@ -60368,7 +60373,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 57,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -60567,7 +60572,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 142,
+        "line": 144,
         "kind": "jsx"
       }
     ]
@@ -60916,7 +60921,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 38,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -60962,7 +60967,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61040,7 +61045,7 @@
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "literal"
       },
       {
@@ -61154,7 +61159,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 212,
+        "line": 214,
         "kind": "jsx"
       }
     ]
@@ -61278,7 +61283,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61324,7 +61329,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 760,
+        "line": 761,
         "kind": "jsx"
       },
       {
@@ -61430,7 +61435,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -61473,7 +61478,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -61775,7 +61780,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "jsx"
       }
     ]
@@ -61843,7 +61848,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -61870,7 +61875,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -61982,7 +61987,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "jsx"
       }
     ]
@@ -61993,7 +61998,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -62028,7 +62033,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "jsx"
       },
       {
@@ -62044,7 +62049,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62303,7 +62308,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -62336,7 +62341,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 113,
+        "line": 115,
         "kind": "jsx"
       }
     ]
@@ -62347,7 +62352,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 458,
+        "line": 459,
         "kind": "literal",
         "purpose": "display"
       },
@@ -62519,7 +62524,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 473,
+        "line": 474,
         "kind": "jsx"
       }
     ]
@@ -62739,7 +62744,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 100,
+        "line": 101,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62896,7 +62901,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 113,
+        "line": 115,
         "kind": "jsx"
       },
       {
@@ -63182,7 +63187,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 156,
+        "line": 158,
         "kind": "jsx"
       }
     ]
@@ -63279,7 +63284,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 684,
+        "line": 685,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63320,7 +63325,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 831,
+        "line": 832,
         "kind": "template"
       }
     ]
@@ -63669,7 +63674,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -64488,7 +64493,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 221,
+        "line": 223,
         "kind": "jsx"
       }
     ]
@@ -64758,7 +64763,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "jsx"
       }
     ]
@@ -64837,7 +64842,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -65129,7 +65134,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65536,7 +65541,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 57,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -65581,7 +65586,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -65954,7 +65959,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "jsx"
       }
     ]
@@ -66152,7 +66157,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -66329,7 +66334,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -66351,7 +66356,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 511,
+        "line": 512,
         "kind": "literal"
       },
       {
@@ -66367,7 +66372,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       },
@@ -66747,7 +66752,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -66939,7 +66944,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -67320,7 +67325,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 88,
+        "line": 90,
         "kind": "jsx"
       }
     ]
@@ -67401,7 +67406,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "jsx"
       }
     ]
@@ -67436,7 +67441,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -67493,7 +67498,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 21,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67870,7 +67875,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 159,
+        "line": 161,
         "kind": "jsx"
       }
     ]
@@ -67981,7 +67986,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -68032,7 +68037,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 105,
+        "line": 106,
         "kind": "jsx"
       }
     ]
@@ -68177,7 +68182,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "jsx"
       }
     ]
@@ -68335,7 +68340,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 99,
+        "line": 101,
         "kind": "jsx"
       }
     ]
@@ -68437,7 +68442,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 343,
+        "line": 344,
         "kind": "jsx"
       }
     ]
@@ -68448,7 +68453,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -68482,7 +68487,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 252,
+        "line": 253,
         "kind": "jsx"
       },
       {
@@ -68575,7 +68580,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 131,
+        "line": 133,
         "kind": "jsx"
       }
     ]
@@ -68693,7 +68698,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -69159,7 +69164,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -69182,7 +69187,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "jsx"
       }
     ]
@@ -69398,7 +69403,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 890,
+        "line": 891,
         "kind": "jsx"
       }
     ]
@@ -69475,7 +69480,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 137,
+        "line": 139,
         "kind": "jsx"
       }
     ]
@@ -70022,7 +70027,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -70291,7 +70296,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -71376,7 +71381,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 898,
+        "line": 899,
         "kind": "jsx"
       }
     ]
@@ -71387,7 +71392,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -71515,7 +71520,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 698,
+        "line": 699,
         "kind": "literal"
       }
     ]
@@ -71647,7 +71652,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 31,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -71970,7 +71975,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -72021,7 +72026,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 830,
+        "line": 831,
         "kind": "literal"
       }
     ]
@@ -72163,7 +72168,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -72208,7 +72213,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72697,7 +72702,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 375,
+        "line": 376,
         "kind": "literal"
       },
       {
@@ -72712,7 +72717,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 19,
+        "line": 21,
         "kind": "literal"
       },
       {
@@ -72735,7 +72740,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 113,
+        "line": 115,
         "kind": "jsx"
       }
     ]
@@ -72792,7 +72797,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 456,
+        "line": 457,
         "kind": "literal"
       },
       {
@@ -73007,17 +73012,17 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 57,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -73635,7 +73640,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 299,
+        "line": 300,
         "kind": "jsx"
       }
     ]
@@ -73936,7 +73941,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -74087,7 +74092,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -74202,7 +74207,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       },
       {
@@ -74337,7 +74342,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 110,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -74659,7 +74664,7 @@
       },
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -74960,7 +74965,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -75196,7 +75201,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -75285,7 +75290,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 106,
+        "line": 108,
         "kind": "jsx"
       }
     ]
@@ -75296,7 +75301,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 666,
+        "line": 667,
         "kind": "literal"
       }
     ]
@@ -75381,7 +75386,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -75426,7 +75431,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -75913,7 +75918,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 116,
+        "line": 118,
         "kind": "jsx"
       }
     ]
@@ -75982,7 +75987,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 554,
+        "line": 555,
         "kind": "template",
         "purpose": "display"
       }
@@ -76074,7 +76079,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -76503,7 +76508,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -76744,7 +76749,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -76910,7 +76915,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -76933,7 +76938,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaReturn.tsx",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -77212,7 +77217,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 129,
+        "line": 131,
         "kind": "jsx"
       }
     ]
@@ -77285,7 +77290,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "jsx"
       }
     ]
@@ -77364,7 +77369,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       },
@@ -77415,7 +77420,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -77673,7 +77678,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 18,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -77723,7 +77728,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "jsx"
       }
     ]
@@ -77979,7 +77984,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 203,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -78268,7 +78273,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "jsx"
       }
     ]
@@ -78279,7 +78284,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -78593,7 +78598,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 668,
+        "line": 669,
         "kind": "literal"
       }
     ]
@@ -78638,12 +78643,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 578,
+        "line": 579,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 691,
+        "line": 692,
         "kind": "literal",
         "purpose": "display"
       }
@@ -78706,7 +78711,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 32,
+        "line": 34,
         "kind": "literal"
       },
       {
@@ -78873,7 +78878,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -79566,7 +79571,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -79801,7 +79806,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 160,
+        "line": 162,
         "kind": "jsx"
       }
     ]
@@ -80311,7 +80316,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 81,
+        "line": 83,
         "kind": "literal"
       },
       {
@@ -80690,7 +80695,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 374,
+        "line": 375,
         "kind": "jsx"
       }
     ]
@@ -80842,7 +80847,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 64,
+        "line": 65,
         "kind": "literal"
       },
       {
@@ -80995,7 +81000,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 106,
+        "line": 108,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81007,7 +81012,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -81173,7 +81178,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -81184,12 +81189,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 850,
+        "line": 851,
         "kind": "literal"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 864,
+        "line": 865,
         "kind": "literal"
       }
     ]
@@ -81233,7 +81238,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 104,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -81791,7 +81796,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -81825,7 +81830,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "jsx"
       }
     ]
@@ -81917,7 +81922,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -82092,7 +82097,7 @@
       },
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "jsx"
       }
     ]
@@ -82476,7 +82481,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 506,
+        "line": 507,
         "kind": "literal",
         "purpose": "display"
       },
@@ -82544,7 +82549,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82645,7 +82650,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 65,
+        "line": 66,
         "kind": "jsx"
       }
     ]
@@ -82715,7 +82720,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -82964,7 +82969,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 123,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -83221,7 +83226,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -83617,7 +83622,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 90,
+        "line": 92,
         "kind": "jsx"
       }
     ]
@@ -83971,7 +83976,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityMark.tsx",
-        "line": 47,
+        "line": 36,
         "kind": "jsx"
       }
     ]
@@ -84136,7 +84141,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "jsx"
       }
     ]
@@ -84415,7 +84420,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 120,
+        "line": 122,
         "kind": "jsx"
       }
     ]
@@ -84579,12 +84584,12 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 121,
+        "line": 122,
         "kind": "literal"
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
-        "line": 35,
+        "line": 36,
         "kind": "literal",
         "purpose": "display"
       },
@@ -84671,7 +84676,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -84807,7 +84812,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "jsx"
       }
     ]
@@ -84885,7 +84890,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 32,
+        "line": 34,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84994,7 +84999,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 557,
+        "line": 558,
         "kind": "template",
         "purpose": "display"
       }
@@ -85095,7 +85100,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -85221,7 +85226,7 @@
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -85350,7 +85355,7 @@
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -85423,7 +85428,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 119,
+        "line": 121,
         "kind": "jsx"
       }
     ]
@@ -85525,7 +85530,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -86081,7 +86086,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86147,13 +86152,13 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86525,7 +86530,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 104,
+        "line": 105,
         "kind": "literal"
       },
       {
@@ -86660,7 +86665,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -86695,7 +86700,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 23,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -86999,7 +87004,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -87393,7 +87398,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 32,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -87404,7 +87409,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 733,
+        "line": 734,
         "kind": "literal"
       }
     ]
@@ -87432,7 +87437,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -87448,7 +87453,7 @@
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -87566,7 +87571,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -87611,7 +87616,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -87729,7 +87734,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -87763,7 +87768,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -87880,7 +87885,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "template"
       }
     ]
@@ -87993,7 +87998,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 87,
+        "line": 89,
         "kind": "jsx"
       }
     ]
@@ -88068,7 +88073,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -88339,7 +88344,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 289,
+        "line": 290,
         "kind": "jsx"
       }
     ]
@@ -88425,7 +88430,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 101,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -89264,7 +89269,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 109,
+        "line": 111,
         "kind": "jsx"
       }
     ]
@@ -89421,7 +89426,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -89522,7 +89527,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 56,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -89828,7 +89833,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 473,
+        "line": 474,
         "kind": "jsx"
       }
     ]
@@ -89850,7 +89855,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -89896,7 +89901,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 120,
+        "line": 122,
         "kind": "jsx"
       }
     ]
@@ -89954,7 +89959,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 703,
+        "line": 704,
         "kind": "template"
       }
     ]
@@ -89993,7 +89998,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 35,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -90016,7 +90021,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 160,
+        "line": 162,
         "kind": "literal"
       }
     ]
@@ -90093,7 +90098,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 39,
+        "line": 41,
         "kind": "jsx"
       }
     ]
@@ -90262,7 +90267,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -90419,7 +90424,7 @@
       },
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -90550,17 +90555,17 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 147,
+        "line": 149,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 341,
+        "line": 342,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 869,
+        "line": 870,
         "kind": "jsx"
       },
       {
@@ -90855,7 +90860,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -90948,7 +90953,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -91261,7 +91266,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaReturn.tsx",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -91319,7 +91324,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "jsx"
       }
     ]
@@ -91342,7 +91347,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -91376,7 +91381,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -91614,7 +91619,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 116,
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -91767,7 +91772,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "jsx"
       }
     ]
@@ -91948,7 +91953,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "jsx"
       }
     ]
@@ -92051,7 +92056,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -92195,7 +92200,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 138,
+        "line": 140,
         "kind": "jsx"
       }
     ]
@@ -92324,7 +92329,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 61,
+        "line": 62,
         "kind": "jsx"
       }
     ]
@@ -92396,7 +92401,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 601,
+        "line": 602,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92408,7 +92413,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 126,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -92447,7 +92452,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -92504,7 +92509,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -92567,7 +92572,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 71,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -92800,7 +92805,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 154,
+        "line": 156,
         "kind": "jsx"
       },
       {
@@ -93062,7 +93067,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "jsx"
       }
     ]
@@ -93097,7 +93102,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 769,
+        "line": 770,
         "kind": "jsx"
       }
     ]
@@ -93238,7 +93243,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "jsx"
       },
       {
@@ -93254,7 +93259,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 70,
+        "line": 71,
         "kind": "jsx"
       }
     ]
@@ -93356,7 +93361,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -93379,7 +93384,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 96,
+        "line": 98,
         "kind": "jsx"
       }
     ]
@@ -93614,7 +93619,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -94069,12 +94074,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 361,
+        "line": 362,
         "kind": "jsx"
       },
       {
         "file": "web/app/admin/page.tsx",
-        "line": 440,
+        "line": 441,
         "kind": "jsx"
       }
     ]
@@ -94126,7 +94131,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 294,
+        "line": 295,
         "kind": "literal",
         "purpose": "display"
       }
@@ -94320,7 +94325,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -94371,7 +94376,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 116,
+        "line": 118,
         "kind": "jsx"
       }
     ]
@@ -94472,7 +94477,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 130,
+        "line": 132,
         "kind": "jsx"
       }
     ]
@@ -94647,12 +94652,12 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "jsx"
       },
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 134,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -94811,12 +94816,12 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 376,
+        "line": 377,
         "kind": "literal"
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       },
       {
@@ -94938,7 +94943,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 148,
+        "line": 150,
         "kind": "jsx"
       }
     ]
@@ -94949,7 +94954,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 127,
+        "line": 129,
         "kind": "jsx"
       }
     ]
@@ -95007,7 +95012,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -95098,7 +95103,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 136,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -95358,7 +95363,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 85,
+        "line": 87,
         "kind": "jsx"
       }
     ]
@@ -95369,7 +95374,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "jsx"
       }
     ]
@@ -95426,7 +95431,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -95548,7 +95553,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 782,
+        "line": 783,
         "kind": "jsx"
       }
     ]
@@ -95651,7 +95656,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -95749,7 +95754,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -95941,7 +95946,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 803,
+        "line": 804,
         "kind": "jsx"
       },
       {
@@ -96042,7 +96047,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96332,7 +96337,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 180,
+        "line": 182,
         "kind": "literal"
       }
     ]
@@ -96502,7 +96507,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96734,7 +96739,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 704,
+        "line": 705,
         "kind": "literal"
       },
       {
@@ -96970,7 +96975,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 301,
+        "line": 302,
         "kind": "jsx"
       }
     ]
@@ -97501,7 +97506,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 310,
+        "line": 311,
         "kind": "jsx"
       }
     ]
@@ -97659,21 +97664,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/admin/page.tsx",
-        "line": 244,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/app/login/page.tsx",
-        "line": 123,
-        "kind": "literal"
-      },
-      {
-        "file": "web/app/support/page.tsx",
-        "line": 83,
-        "kind": "jsx"
-      },
-      {
         "file": "web/components/AppShell.tsx",
         "line": 204,
         "kind": "literal"
@@ -97681,26 +97671,6 @@
       {
         "file": "web/components/billing/PayPalSubscribe.tsx",
         "line": 56,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 104,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/design/DesignLibrary.tsx",
-        "line": 27,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/design/FlowBoard.tsx",
-        "line": 85,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 134,
         "kind": "literal"
       },
       {
@@ -97725,22 +97695,7 @@
       },
       {
         "file": "web/components/landing/LegalPage.tsx",
-        "line": 37,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/landing/LegalPage.tsx",
         "line": 68,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/landing/PublicNotice.tsx",
-        "line": 18,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/components/motion/MotionGallery.tsx",
-        "line": 91,
         "kind": "jsx"
       },
       {
@@ -98124,7 +98079,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -98221,7 +98176,7 @@
       },
       {
         "file": "web/app/support/page.tsx",
-        "line": 50,
+        "line": 51,
         "kind": "jsx"
       }
     ]
@@ -98277,12 +98232,12 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 104,
+        "line": 106,
         "kind": "jsx"
       },
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "jsx"
       }
     ]
@@ -98293,7 +98248,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 447,
+        "line": 448,
         "kind": "jsx"
       }
     ]
@@ -98550,7 +98505,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityMark.tsx",
-        "line": 47,
+        "line": 36,
         "kind": "jsx"
       }
     ]
@@ -98561,7 +98516,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 476,
+        "line": 477,
         "kind": "literal"
       }
     ]
@@ -98650,7 +98605,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -98952,7 +98907,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -99129,7 +99084,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -99445,12 +99400,12 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 135,
+        "line": 137,
         "kind": "jsx"
       },
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 154,
+        "line": 156,
         "kind": "jsx"
       }
     ]
@@ -99674,7 +99629,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "jsx"
       }
     ]
@@ -99727,7 +99682,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 456,
+        "line": 457,
         "kind": "literal",
         "purpose": "display"
       },
@@ -100286,7 +100241,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -100427,7 +100382,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -100664,7 +100619,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "jsx"
       }
     ]
@@ -100722,7 +100677,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 141,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -100817,7 +100772,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 95,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -100840,7 +100795,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 123,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -101075,7 +101030,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -101098,7 +101053,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -101241,7 +101196,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 596,
+        "line": 597,
         "kind": "jsx"
       }
     ]
@@ -101414,7 +101369,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 66,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -101425,7 +101380,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101583,7 +101538,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -101878,7 +101833,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -102389,7 +102344,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 457,
+        "line": 458,
         "kind": "literal",
         "purpose": "display"
       },
@@ -102547,7 +102502,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "jsx"
       }
     ]
@@ -102602,7 +102557,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "jsx"
       }
     ]
@@ -102905,7 +102860,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -103413,7 +103368,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 28,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -103590,7 +103545,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -103747,7 +103702,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 148,
+        "line": 150,
         "kind": "jsx"
       }
     ]
@@ -103977,7 +103932,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 122,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -104434,7 +104389,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -104616,7 +104571,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "jsx"
       }
     ]
@@ -104649,7 +104604,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "jsx"
       }
     ]
@@ -104763,7 +104718,7 @@
     "references": [
       {
         "file": "web/components/design/DesignLibrary.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "jsx"
       }
     ]
@@ -104855,7 +104810,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 118,
+        "line": 120,
         "kind": "jsx"
       }
     ]
@@ -104866,7 +104821,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 693,
+        "line": 694,
         "kind": "literal"
       },
       {
@@ -105079,7 +105034,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 100,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -105204,7 +105159,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 323,
+        "line": 324,
         "kind": "jsx"
       }
     ]
@@ -105381,7 +105336,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -105486,7 +105441,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -105788,7 +105743,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 679,
+        "line": 680,
         "kind": "template"
       }
     ]
@@ -105895,7 +105850,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -106077,7 +106032,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 143,
+        "line": 145,
         "kind": "jsx"
       }
     ]
@@ -106434,7 +106389,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -106519,7 +106474,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106554,7 +106509,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 111,
+        "line": 113,
         "kind": "jsx"
       }
     ]
@@ -107121,7 +107076,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 125,
+        "line": 127,
         "kind": "jsx"
       }
     ]
@@ -107426,7 +107381,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "jsx"
       }
     ]
@@ -107465,7 +107420,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 99,
+        "line": 101,
         "kind": "template",
         "purpose": "display"
       }
@@ -107534,7 +107489,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 520,
+        "line": 521,
         "kind": "jsx"
       },
       {
@@ -107795,7 +107750,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "jsx"
       }
     ]
@@ -108422,7 +108377,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 153,
+        "line": 155,
         "kind": "jsx"
       }
     ]
@@ -108502,7 +108457,7 @@
     "references": [
       {
         "file": "web/components/design/FlowBoard.tsx",
-        "line": 108,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -108969,7 +108924,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -109216,7 +109171,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       },
       {
@@ -109313,7 +109268,7 @@
     "references": [
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
-        "line": 21,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -109370,7 +109325,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 685,
+        "line": 686,
         "kind": "template"
       }
     ]
@@ -109439,7 +109394,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 102,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -109768,7 +109723,7 @@
     "references": [
       {
         "file": "web/components/motion/MotionGallery.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "jsx"
       }
     ]
@@ -109801,7 +109756,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 52,
+        "line": 54,
         "kind": "jsx"
       }
     ]
@@ -109824,7 +109779,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 24,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -109881,7 +109836,7 @@
     "references": [
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
-        "line": 117,
+        "line": 119,
         "kind": "jsx"
       }
     ]
@@ -110472,7 +110427,7 @@
     "references": [
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
-        "line": 99,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -110516,7 +110471,7 @@
     "references": [
       {
         "file": "web/app/admin/page.tsx",
-        "line": 544,
+        "line": 545,
         "kind": "jsx"
       },
       {

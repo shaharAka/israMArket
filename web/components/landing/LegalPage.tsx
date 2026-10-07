@@ -1,6 +1,7 @@
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { BrandMark, IconChevron } from "@/lib/icons";
+import { IconChevron } from "@/lib/icons";
 import styles from "./legal.module.css";
 
 /**
@@ -33,8 +34,7 @@ export function LegalPage({
       <header className={styles.nav}>
         <div className={`${styles.wrap} ${styles.navRow}`}>
           <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
-            <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-            <span>ישראמארקט</span>
+            <ProductWordmark />
           </Link>
           <Link href="/" className={styles.home}>
             לעמוד הראשי

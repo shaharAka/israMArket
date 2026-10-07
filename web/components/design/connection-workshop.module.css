@@ -4,7 +4,7 @@
 .header a, .resultLink { color: var(--primary); font-weight: 600; text-underline-offset: 4px; }
 .header a:hover, .resultLink:hover { text-decoration: underline; }
 .brand { display: flex; gap: 10px; align-items: center; }
-.brand svg { width: 32px; height: 32px; }
+.brand > svg { width: 32px; height: 32px; }
 .previewNote { font-size: 13px; color: var(--ink-muted); line-height: 1.7; margin-block: 24px; }
 .heading { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-block: 32px; }
 .heading h1 { font-size: 30px; font-weight: 700; line-height: 1.35; letter-spacing: -.025em; margin: 0 0 12px; }

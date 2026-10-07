@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import Link from "next/link";
 import { useEffect, useRef, useState, type ComponentType } from "react";
-import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
+import { MarketStalls, IconArrowLeft, IconChevron } from "@/lib/icons";
 import { emptyFlow, type FlowState } from "@/lib/draft";
 import { StepName, StepWhat, StepDifferent, StepTried, type StepProps } from "@/components/start/steps";
 import { StepBaseline } from "@/components/start/StepNumbers";
@@ -82,7 +84,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
   const capture = !RealStep && scenario === "normal" ? flowCapture(node.id) : null;
 
   return <div className={styles.page} dir="rtl"><div className={styles.container}>
-    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><div><Link href="/design/flows/shorter">הצעה להצצה ראשונית</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
+    <header className={styles.header}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><div><Link href="/design/flows/shorter">הצעה להצצה ראשונית</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
     <section className={styles.intro}><div><h1>מסכים, פעולות ומעברים.</h1><p className={styles.caption}>גרירה להזזה · + / − להגדלה · לחיצה לפתיחת מסך · קו מקווקו: הצעה. נתוני הדוגמה אינם חשבון לקוח.</p></div></section>
     <details ref={filterRef} className={styles.filters} open><summary>סינון המסלול · {PERSONAS[persona].label} · {PHASES.find(p=>p.value===phase)?.label}</summary><div className={styles.toolbar}>
       <label>עסק<select value={persona} onChange={e=>choosePersona(e.target.value)}>{Object.entries(PERSONAS).map(([value,p])=><option key={value} value={value}>{p.label}</option>)}</select></label>
@@ -98,7 +100,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
         <div className={styles.previewTop}><span>{RealStep && scenario === "normal" ? "רכיב השאלה הקיים, עם תשובות מקומיות" : capture ? flowCaptureNote(node.id) : "סקיצת מצב · אינה צילום של החשבון"}</span><code>{node.route}</code></div>
         {capture && <a href={capture} target="_blank" rel="noopener noreferrer" className={styles.captureLink}><Image src={capture} alt={`העמוד הקיים: ${node.title}, נתוני דמו`} width={1170} height={615} unoptimized/><span>לפתוח צילום בגודל מלא</span></a>}
         <div className={styles.screen} key={`${persona}-${node.id}-${scenario}`}>
-          <div className={styles.screenBrand}><BrandMark /><strong>{PERSONAS[persona].name}</strong></div>
+          <div className={styles.screenBrand}><MarketStalls /><strong>{PERSONAS[persona].name}</strong></div>
           {scenario !== "normal" ? <><p className={styles.state}>{scenario === "failure" ? "ניסיון שלא הצליח" : scenario === "cancel" ? "המשתמש עצר את הפעולה" : "אין מספיק מידע"}</p><h3>מה נשמר, ואיך ממשיכים?</h3><p>{node.recovery}</p><UIAction onClick={() => setScenario("normal")}>לחזור לשלב ולנסות שוב</UIAction><UIAction variant="text" onClick={() => go(nextFor(node, branchPersona), true)}>לראות את ההמשך במפה</UIAction><small>המחשת מסלול התאוששות, לא ביצוע פעולה או התחייבות שהדילוג קיים בכל שלב.</small></> : RealStep ? <RealStep {...common} /> : <Schematic node={node} persona={persona} next={() => go(nextFor(node, branchPersona), true)} alternate={() => node.alternate && go(node.alternate.next, true)} branch={id=>go(id,true)} />}
         </div>
         <div className={styles.transition}><span>לחיצה</span><strong>{actionLabel}</strong><IconArrowLeft /><span>{following.title}</span></div>

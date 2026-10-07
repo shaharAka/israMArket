@@ -6,10 +6,7 @@
   flex-direction: column;
   min-height: 100dvh;
   color: var(--ink);
-  background:
-    radial-gradient(55% 480px at 85% 0%, color-mix(in srgb, var(--primary) 7%, transparent), transparent 70%),
-    radial-gradient(40% 360px at 10% 100%, color-mix(in srgb, var(--sun) 10%, transparent), transparent 70%),
-    var(--paper);
+  background: var(--paper);
   overflow-x: clip;
 }
 

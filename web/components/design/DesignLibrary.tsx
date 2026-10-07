@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark } from "@/lib/icons";
+import { MarketStalls } from "@/lib/icons";
 import { DesignScope } from "./Primitives";
 import { PalettePicker } from "./PalettePicker";
 import { useDesignPalette } from "./palette";
@@ -24,7 +26,7 @@ export function DesignLibrary() {
   const [mood, setMood] = useState<MotionMood>("quiet");
   const [reduced, setReduced] = useState(false);
   return <DesignScope className={styles.page} palette={palette} mood={mood} reduced={reduced}><div className={styles.container}>
-    <header className={styles.header}><Link href="/preview" className={styles.brand}><BrandMark className={styles.brandMark} />ישראמארקט</Link><span className={styles.headerLabel}>ספריית העיצוב</span><Link href="/preview" className={styles.openProduct}>למוצר ←</Link></header>
+    <header className={styles.header}><Link href="/preview" className={styles.brand}><ProductWordmark /></Link><span className={styles.headerLabel}>ספריית העיצוב</span><Link href="/preview" className={styles.openProduct}>למוצר ←</Link></header>
     <p className={styles.openProduct}><Link href="/design/connections">לנסות את החיבורים אחרי ההרשמה ←</Link></p>
     <p className={styles.openProduct}><Link href="/design/flows">לוח מסעות המשתמש · לפני ואחרי הרשמה ←</Link></p>
     <nav className={styles.libraryNav} aria-label="חלקי ספריית העיצוב">{[{id:"language",label:"השפה"},{id:"components",label:"רכיבים"},{id:"results",label:"תוצאות"},{id:"transitions",label:"מעברים ותנועה"}].map(item => <button key={item.id} type="button" aria-pressed={area === item.id} onClick={() => setArea(item.id)}>{item.label}</button>)}</nav>
@@ -36,7 +38,7 @@ export function DesignLibrary() {
           <div className={styles.typeReference}><h2>טיפוגרפיה אחת. סדר ברור.</h2><p className={styles.typeDisplay}>הכיוון לפני הפרטים.</p><p className={styles.typeBody}>Heebo בכל הממשק. כותרת, טקסט ומידע משלים; משקל ומרווח יוצרים את ההיררכיה.</p><span className={styles.referenceCaption}>כותרת 28 · טקסט 14 · משלים 12</span></div>
           <div className={styles.iconReference}><h2>סימנים קטנים, עם תפקיד</h2><div>{icons.map(icon => <span key={icon.kind}><EditorIcon kind={icon.kind} /><small>{icon.label}</small></span>)}</div><p>אותו קו בכלי הפוסטים. צבע השמש נשאר פרט קטן.</p></div>
         </section>
-        <div className={styles.brandRule}><BrandMark className={styles.detailMark} /><div><h2>לממשק יש שפה. לעסק יש מותג.</h2><p>הלוגו, הצבעים והתמונות של העסק מופיעים במותג ובפוסטים שלו. בחירת צבעי הממשק כאן עוברת גם לדמו.</p></div></div>
+        <div className={styles.brandRule}><MarketStalls className={styles.detailMark} /><div><h2>לממשק יש שפה. לעסק יש מותג.</h2><p>הלוגו, הצבעים והתמונות של העסק מופיעים במותג ובפוסטים שלו. בחירת צבעי הממשק כאן עוברת גם לדמו.</p></div></div>
       </>}
       {area === "components" && <>
         <ComponentWorkshop />

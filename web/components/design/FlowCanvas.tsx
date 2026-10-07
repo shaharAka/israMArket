@@ -7,7 +7,7 @@ import {
   type Edge, type Node, type NodeProps,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { BrandMark } from "@/lib/icons";
+import { MarketStalls } from "@/lib/icons";
 import { emptyFlow } from "@/lib/draft";
 import { isStepId, nextStepLabel } from "@/components/start/script";
 import { FLOW_NODES, PERSONAS, nextFor, nodesFor, type FlowNode, type FlowPersona, type FlowPhase } from "@/lib/uxFlows";
@@ -113,7 +113,7 @@ function ScreenThumbnail({data,selected}:NodeProps<ScreenNode>) {
   return <div className={styles.screenNode} dir="rtl" data-selected={selected || undefined} data-proposed={node.proposed || undefined}>
     <div className={`screen-drag-handle ${styles.nodeTitle}`}><strong>{node.title}</strong><span>{data.external ? "המשך בחלק אחר" : node.proposed ? "הצעה" : node.group}</span></div>
     <button type="button" className={`nodrag ${styles.thumbnail}`} aria-label={`לפתוח מסך ${node.title}`} onClick={e=>{e.stopPropagation();data.inspect(node.id);}}>
-      {capture ? <Image src={capture} alt={`צילום ${node.title} בדמו`} width={1170} height={615} className={styles.capture} unoptimized/> : <><div className={styles.miniHeader}><BrandMark /><span>{PERSONAS[data.persona].name}</span><small>{node.route.split("?")[0]}</small></div>
+      {capture ? <Image src={capture} alt={`צילום ${node.title} בדמו`} width={1170} height={615} className={styles.capture} unoptimized/> : <><div className={styles.miniHeader}><MarketStalls /><span>{PERSONAS[data.persona].name}</span><small>{node.route.split("?")[0]}</small></div>
       <h4>{node.headline}</h4><ThumbnailContent node={node} persona={data.persona} />
       <span className={styles.miniAction}>{action}</span></>}
     </button>

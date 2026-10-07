@@ -20,11 +20,8 @@ function Sketch({ className = "w-5 h-5", children, navigation = false }: IconPro
   );
 }
 
-/**
- * Brand mark: two open market stalls sharing a sun and a small central aisle.
- * Shared by the app shell, the favicon (app/icon.svg) and the apple icon.
- */
-export const BRAND_MARK_PATHS = [
+/** Business illustration for sample shops; never the IsraMarket brand identity. */
+export const MARKET_STALL_PATHS = [
   // sun
   "M9.6 5.8a2.4 2.4 0 014.8 0",
   "M12 1v1M8.5 2.3l.7.7M15.5 2.3l-.7.7",
@@ -34,11 +31,11 @@ export const BRAND_MARK_PATHS = [
   "M2.3 13.3v4M9.3 13.3v4M14.7 13.3v4M21.7 13.3v4M1.6 17.3H10v3.2H1.6zM14 17.3h8.4v3.2H14zM1 22h22",
 ];
 
-export function BrandMark({ className = "w-8 h-8" }: IconProps) {
+export function MarketStalls({ className = "w-8 h-8" }: IconProps) {
   return (
     <Sketch className={className}>
       <path d="M9.6 5.8a2.4 2.4 0 014.8 0Z" fill="var(--sun)" stroke="none" />
-      {BRAND_MARK_PATHS.map((d, index) => (
+      {MARKET_STALL_PATHS.map((d, index) => (
         <path key={d} d={d} stroke={index < 2 ? "var(--sun-edge)" : "currentColor"} />
       ))}
     </Sketch>

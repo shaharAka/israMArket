@@ -1,5 +1,7 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import Link from "next/link";
@@ -11,7 +13,6 @@ import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { ApiError, endpoints } from "@/lib/api";
 import { CONTACT_EMAIL } from "@/lib/company";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
-import { BrandMark } from "@/lib/icons";
 import form from "@/components/start/form.module.css";
 import auth from "./auth.module.css";
 
@@ -119,8 +120,7 @@ export function AuthCard({ title, children }: { title: React.ReactNode; children
       <header className={auth.bar}>
         <div className={auth.barRow}>
           <Link href="/" className={auth.brand} aria-label={t("ישראמארקט, לעמוד הבית")}>
-            <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-            <span><Copy text="ישראמארקט" /></span>
+            <ProductWordmark />
           </Link>
         </div>
       </header>

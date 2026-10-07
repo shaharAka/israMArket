@@ -11,7 +11,7 @@
 .header > div, .brand { display: flex; align-items: center; gap: 24px; }
 .header a, .review a, .reviewLinks a, .footer a, .details a { color: var(--primary); font-weight: 600; text-underline-offset: 4px; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
 .header a:hover, .review a:hover, .reviewLinks a:hover, .footer a:hover, .details a:hover { text-decoration: underline; }
-.brand svg { width: 32px; height: 32px; }
+.brand > svg { width: 32px; height: 32px; }
 .header svg:not(.brand svg), .footer svg { width: 18px; height: 18px; }
 .intro { display: flex; align-items: center; justify-content: space-between; gap: 40px; margin-block: 20px; }
 .intro h1 { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin-block: 0 8px; }

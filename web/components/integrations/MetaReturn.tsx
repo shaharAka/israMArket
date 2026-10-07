@@ -1,7 +1,9 @@
 "use client";
+
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
 import { useEffect } from "react";
 import Link from "next/link";
-import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { IconArrowLeft } from "@/lib/icons";
 export function MetaReturn({ result }: { result: string }) {
   useEffect(() => {
     if (window.opener) {
@@ -12,7 +14,7 @@ export function MetaReturn({ result }: { result: string }) {
   return (
     <main dir="rtl" className="flex min-h-screen items-center justify-center bg-[var(--canvas)] px-4 py-16">
       <section className="w-full max-w-md rounded-[20px] bg-[var(--paper)] p-8 text-center shadow-[var(--shadow-pop)]">
-        <BrandMark className="mx-auto h-10 w-10 text-[var(--primary)]" />
+        <ProductWordmark />
         <h1 className="mt-5 text-[26px] font-bold tracking-tight text-[var(--ink)]">
           {result === "success" ? "האישור התקבל" : "לחזור לחיבור העסק"}
         </h1>

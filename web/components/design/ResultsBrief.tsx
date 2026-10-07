@@ -3,7 +3,7 @@
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { useId, type ReactNode } from "react";
-import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { MarketStalls, IconArrowLeft } from "@/lib/icons";
 import { FindingSummary } from "./FindingSummary";
 import { UIAction } from "./Controls";
 import styles from "./results-brief.module.css";
@@ -35,7 +35,7 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
   const id = useId();
   return <article className={styles.brief} aria-label={data.heading} data-state={data.state}>
     <header className={styles.businessHeader}>
-      <div className={styles.businessIdentity}><BrandMark className={styles.store} /><div><strong>{data.business}</strong><span>{data.goal}</span></div></div>
+      <div className={styles.businessIdentity}><MarketStalls className={styles.store} /><div><strong>{data.business}</strong><span>{data.goal}</span></div></div>
       <p>{data.period}</p>
     </header>
     <FindingSummary heading={data.heading} explanation={data.explanation} uncertainty={data.uncertainty} evidence={

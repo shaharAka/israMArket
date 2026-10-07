@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
-import { BrandMark } from "@/lib/icons";
+import { MarketStalls } from "@/lib/icons";
 import { EXAMPLE } from "./content";
 
 const STAGES = ["חוקרים", "מחברים", "יוצרים", "מודדים"];
@@ -69,7 +69,7 @@ export function PlanCycleHero() {
         <div className="lv2-cycle-business">
           <span className="lv2-cycle-mark" aria-hidden>
             <i className="lv2-cycle-sun" />
-            <BrandMark className="h-9 w-9" />
+            <MarketStalls className="h-9 w-9" />
           </span>
           <p><strong><Copy text={EXAMPLE.name} /></strong><span><Copy text={EXAMPLE.kind} /></span></p>
           <span className="lv2-cycle-example"><Copy text="דוגמה" /></span>

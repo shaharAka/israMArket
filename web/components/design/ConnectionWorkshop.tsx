@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark, IconChevron } from "@/lib/icons";
+import { IconChevron } from "@/lib/icons";
 import { SunProgress } from "@/components/brand/SunProgress";
 import { PixelSetupGuide } from "@/components/integrations/PixelSetupGuide";
 import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
@@ -101,7 +103,7 @@ export function ConnectionWorkshop() {
   const title = step === "intro" ? data.title : step === "consent" ? "מאשרים אצל " + data.provider : step === "select" ? (provider === "google" ? "איזה אתר שייך לעסק?" : "איזה דף שייך לעסק?") : step === "recovery" ? "נמצא את החשבון הנכון" : step === "extras" ? "גם נתוני המודעות?" : step === "pixel" ? "המעקב באתר" : "החשבון נבחר";
 
   return <div className={`app-blue ${styles.page}`}><div className={styles.container}>
-    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><Link href="/design">לספריית העיצוב ←</Link></header>
+    <header className={styles.header}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><Link href="/design">לספריית העיצוב ←</Link></header>
     <main>
       <div className={styles.heading}><div><h1>מחברים רק את מה שיעזור לתוכנית.</h1><p>בתוכנית של פרג ושמרים: יותר הזמנות למארזי שישי.</p></div><SunProgress value={Object.values(connections).filter(state => state === "ready").length} total={2} label="קריאות נתונים שהתקבלו" className={styles.store} /></div>
       {notice && <p className={styles.notice} role="status">{notice}</p>}
