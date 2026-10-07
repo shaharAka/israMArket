@@ -207,3 +207,8 @@ summary.row:hover {
     transition: none;
   }
 }
+
+/* Current work stays readable without a disclosure; only other weeks fold. */
+.currentWeek { background: var(--paper); }
+.currentWeek > .row { cursor: default; align-items: baseline; padding-top: 20px; }
+.currentWeek .detail { padding-bottom: 24px; }

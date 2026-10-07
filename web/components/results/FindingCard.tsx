@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useId } from "react";
 import type { RecommendationPayload } from "@/lib/api";
 import { dateRange, dayMonth } from "@/lib/dates";
-import { IconArrowLeft, IconChevron } from "@/lib/icons";
+import { IconChevron } from "@/lib/icons";
 import { checkedDate } from "@/components/integrations/SourceReadState";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import { LOCALE_META } from "@/lib/i18n/locales";
@@ -95,11 +95,12 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
     <section className="mt-5 rounded-xl bg-[var(--primary-soft)] p-4 sm:p-5" aria-label={t("הצעד הבא")}>
       <p className="text-[13px] font-medium text-[color:var(--primary)]"><Copy text="מה ננסה:" /></p>
       <p className="mt-2 max-w-[42em] text-[17px] font-medium leading-7 text-[color:var(--ink)]">{item.action}</p>
+      {item.success_check ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><strong className="font-medium"><Copy text="איך נבדוק:" /></strong>{" "}{item.success_check}</p> : <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="עוד לא קבענו איך נדע אם זה הצליח. בחרו בתוכנית מה למדוד לפני שמסיקים מסקנה." /></p>}
       {note && !legacy && !changed ? <p className="mt-3 rounded-lg bg-[var(--soft)] px-3 py-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">{note}</p> : null}
       <Link href={review?.href || "/strategy"} onClick={onReview ? event => { event.preventDefault(); onReview(); } : undefined} className={primary
         ? "drawn-button group mt-4 inline-flex min-h-11 items-center gap-2 bg-[var(--primary)] px-5 py-3 text-[14px] text-white hover:bg-[var(--primary-dark)]"
         : "mt-3 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"}>
-        {review?.label || t("לבדוק את ההצעה בתוכנית")}<IconArrowLeft className="h-4 w-4 locale-arrow" />
+        {review?.label || t("לבדוק את ההצעה בתוכנית")}
       </Link>
     </section>
     {/* The possible explanation is reasoning, so it opens with the sources (UI-RULES rule 2)
@@ -117,7 +118,6 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
         </>}</p>)}
         {item.evidence ? <p><strong className="font-semibold"><Copy text="הנימוק להצעה, לפי הניתוח:" /></strong>{" "}{item.evidence}</p> : null}
         {limits.slice(legacy ? 0 : 1).map(limit => <p key={limit}>{limit}</p>)}
-        {item.success_check ? <p><strong className="font-semibold"><Copy text="איך נבדוק:" /></strong>{" "}{item.success_check}</p> : <p><Copy text="עוד לא קבענו איך נדע אם זה הצליח. בחרו בתוכנית מה למדוד לפני שמסיקים מסקנה." /></p>}
         <p>{review?.note_he || t("ההצעה לא משנה את התוכנית ולא מפרסמת תוכן. אתם מחליטים מה לערוך ולאשר.")}</p>
       </div>
     </details>

@@ -304,13 +304,10 @@ export default function DashboardPage() {
             ) : null}
           </section>
 
-          {/* This week's posts, and how far along the month is — the plan's execution
-              tool, folded. In the free month they wait for the week-2 foundations: posts
-              are not pushed before measurement, the products and the owner's photos are in
-              (Revision 8). */}
+          {/* Ready work is visible; availability still follows the existing plan state. */}
           {postsOpen ? (
-            <details className="group/posts drawn-card overflow-hidden">
-              <summary className="flex min-h-14 cursor-pointer list-none items-center gap-3 px-5 py-3 transition-colors hover:bg-[var(--soft)] sm:px-6 [&::-webkit-details-marker]:hidden">
+            <div className="drawn-card overflow-hidden">
+              <div className="flex min-h-14 items-center gap-3 px-5 py-3 sm:px-6">
                 <span className="min-w-0 flex-1 text-[15px] font-semibold text-[color:var(--ink)]">
                   {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`} ·{" "}
                   <span className="font-normal tabular-nums text-[color:var(--ink-soft)]">
@@ -331,8 +328,7 @@ export default function DashboardPage() {
                     style={{ width: `${(approvedCount / posts.length) * 100}%` }}
                   />
                 </span>
-                <FoldChevron group="posts" />
-              </summary>
+              </div>
               <section aria-labelledby="week-heading" className="border-t border-[var(--rule)]">
                 <h2 id="week-heading" className="sr-only">
                   {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`}
@@ -354,11 +350,10 @@ export default function DashboardPage() {
                     className="inline-flex min-h-12 items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
                   >
                     כל הפוסטים
-                    <IconChevron className="h-4 w-4" />
                   </Link>
                 </div>
               </section>
-            </details>
+            </div>
           ) : null}
 
           <ContactLink className="pt-2 text-center" />

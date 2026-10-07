@@ -594,27 +594,19 @@
   transform: translateX(-3px);
 }
 
-/* The consultant saying back what they heard: a quiet blue dot, not a chat bubble. */
+/* The previous answer is secondary context, not another headline or chat bubble. */
 .reflection {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   max-width: 36rem;
-  font-size: 15px;
+  font-size: 13px;
   line-height: 1.6;
-  color: var(--ink-soft);
+  color: var(--ink-muted);
   text-wrap: pretty;
 }
 
-.sunDot {
-  flex: none;
-  width: 8px;
-  height: 8px;
-  margin: 8px 4px 0;
-  border-radius: 999px;
-  background: var(--primary-soft);
-  box-shadow: 0 0 0 4px var(--sand);
-}
+
 
 /* A quiet notice above the question (a link we could not read, the site scan). */
 .notice {

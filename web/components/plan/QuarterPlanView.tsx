@@ -230,7 +230,15 @@ function Section({
   );
   const body = <div className={`transition-opacity duration-300 motion-reduce:transition-none ${index > 1 ? `mt-2 ${styles.foldBody}` : "mt-3"} ${busy ? "opacity-50" : ""}`}>{children}</div>;
 
-  // Supporting sections fold in both the first meeting and the signed-in plan.
+  // The core plan must be readable without opening several supporting sections.
+  if (id === "measure" || id === "calendar" || id === "content") {
+    return <section id={`plan-${id}`} data-reveal aria-labelledby={headingId} aria-busy={busy} className={`scroll-mt-28 ${styles.fold}`}>
+      <h2 className={`${styles.foldHead} ${styles.visibleHead}`}>{heading}</h2>
+      {body}
+    </section>;
+  }
+
+  // Optional budget, channels and supporting reasoning stay one level down.
   if (index > 1) {
     return (
       // `data-reveal`: once the section reaches the screen, its budget bars and month dots

@@ -250,6 +250,9 @@
   display: none;
 }
 
+.visibleHead { cursor: default; }
+.visibleHead:hover .foldTitle { color: var(--ink); }
+
 .foldTitle {
   font-size: 18px;
   font-weight: 700;

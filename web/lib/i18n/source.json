@@ -988,7 +988,7 @@
       },
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 317,
+        "line": 314,
         "kind": "jsx"
       },
       {
@@ -1274,7 +1274,7 @@
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 145,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -4319,7 +4319,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 113,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -6247,7 +6247,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -6362,7 +6362,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 112,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -6588,7 +6588,7 @@
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 345,
+        "line": 341,
         "kind": "template"
       },
       {
@@ -6832,7 +6832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -7810,7 +7810,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 115,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -7907,7 +7907,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 484,
+        "line": 492,
         "kind": "jsx"
       }
     ]
@@ -8081,7 +8081,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 723,
+        "line": 731,
         "kind": "jsx"
       }
     ]
@@ -8813,7 +8813,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -9015,12 +9015,12 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 315,
+        "line": 312,
         "kind": "template"
       },
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 338,
+        "line": 334,
         "kind": "template"
       }
     ]
@@ -9874,7 +9874,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -10484,7 +10484,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -10516,7 +10516,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -10718,7 +10718,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 307,
+        "line": 315,
         "kind": "template"
       },
       {
@@ -11220,7 +11220,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 583,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -11990,7 +11990,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 629,
+        "line": 637,
         "kind": "jsx"
       }
     ]
@@ -12486,7 +12486,7 @@
       },
       {
         "file": "web/components/plan/MonthPlanOverview.tsx",
-        "line": 158,
+        "line": 151,
         "kind": "literal",
         "purpose": "display"
       }
@@ -12673,7 +12673,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 313,
+        "line": 321,
         "kind": "literal"
       },
       {
@@ -13869,7 +13869,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 537,
+        "line": 532,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15348,7 +15348,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 654,
+        "line": 662,
         "kind": "jsx"
       }
     ]
@@ -15726,7 +15726,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15799,7 +15799,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 635,
+        "line": 643,
         "kind": "jsx"
       }
     ]
@@ -16958,7 +16958,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 565,
+        "line": 560,
         "kind": "jsx"
       }
     ]
@@ -17481,7 +17481,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17593,7 +17593,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 369,
+        "line": 377,
         "kind": "jsx"
       }
     ]
@@ -18820,7 +18820,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -19529,7 +19529,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -20139,7 +20139,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 403,
+        "line": 398,
         "kind": "literal"
       }
     ]
@@ -20642,7 +20642,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 10,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -20699,7 +20704,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 711,
+        "line": 719,
         "kind": "literal",
         "purpose": "display"
       },
@@ -21843,7 +21848,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 563,
+        "line": 571,
         "kind": "jsx"
       }
     ]
@@ -22681,7 +22686,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 651,
+        "line": 659,
         "kind": "jsx"
       }
     ]
@@ -24330,7 +24335,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 461,
+        "line": 456,
         "kind": "jsx"
       },
       {
@@ -27016,7 +27021,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 907,
+        "line": 915,
         "kind": "literal"
       }
     ]
@@ -28041,7 +28046,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 469,
+        "line": 477,
         "kind": "jsx"
       },
       {
@@ -29645,7 +29650,7 @@
     "references": [
       {
         "file": "web/components/plan/MonthPlanOverview.tsx",
-        "line": 171,
+        "line": 163,
         "kind": "literal"
       }
     ]
@@ -29846,7 +29851,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 356,
+        "line": 352,
         "kind": "jsx"
       }
     ]
@@ -29880,7 +29885,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 679,
+        "line": 687,
         "kind": "jsx"
       }
     ]
@@ -30224,7 +30229,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -30934,7 +30939,7 @@
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 508,
+        "line": 516,
         "kind": "literal"
       }
     ]
@@ -31341,6 +31346,17 @@
         "line": 243,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_4801bfeb07dc0104": {
+    "source": "רואים את משימות השבוע, הפוסטים המוכנים ומה נבדוק, בלי לפתוח כמה חלקים בדרך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -32017,7 +32033,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 538,
+        "line": 533,
         "kind": "literal"
       }
     ]
@@ -32766,7 +32782,7 @@
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 813,
+        "line": 821,
         "kind": "jsx"
       }
     ]
@@ -33894,7 +33910,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 118,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -34687,7 +34703,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -34940,7 +34956,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 835,
+        "line": 843,
         "kind": "jsx"
       }
     ]
@@ -35384,7 +35400,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35571,7 +35587,7 @@
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 345,
+        "line": 341,
         "kind": "template"
       },
       {
@@ -36083,7 +36099,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 314,
+        "line": 322,
         "kind": "template"
       }
     ]
@@ -36094,7 +36110,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 907,
+        "line": 915,
         "kind": "template"
       }
     ]
@@ -36396,7 +36412,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 415,
+        "line": 423,
         "kind": "literal"
       },
       {
@@ -37133,12 +37149,12 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 331,
+        "line": 339,
         "kind": "template"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 334,
+        "line": 342,
         "kind": "template"
       }
     ]
@@ -37467,7 +37483,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -38144,7 +38160,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 120,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -38825,7 +38841,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 314,
+        "line": 322,
         "kind": "template"
       }
     ]
@@ -39441,7 +39457,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 340,
+        "line": 348,
         "kind": "jsx"
       }
     ]
@@ -39933,7 +39949,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -41388,7 +41404,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -42107,7 +42123,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -42130,7 +42146,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 581,
+        "line": 576,
         "kind": "jsx"
       }
     ]
@@ -42176,7 +42192,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 548,
+        "line": 543,
         "kind": "jsx"
       }
     ]
@@ -42540,7 +42556,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -42678,7 +42694,7 @@
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 439,
+        "line": 447,
         "kind": "jsx"
       },
       {
@@ -43146,7 +43162,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -44286,7 +44302,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 422,
+        "line": 417,
         "kind": "literal"
       }
     ]
@@ -44308,7 +44324,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 114,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -46122,7 +46138,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -46177,7 +46193,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -46302,7 +46318,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47440,7 +47456,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 688,
+        "line": 696,
         "kind": "literal"
       }
     ]
@@ -47966,6 +47982,17 @@
       }
     ]
   },
+  "m_6f168ec4ff2e29ed": {
+    "source": "מערכת שלומדת את המוצר והשוק, מכינה תמונות וטקסטים בסגנון שלכם, ומשפרת את התוכנית לפי התוצאות. אתם בודקים ומפרסמים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/personaPages.ts",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6f188568567080a5": {
     "source": "לקרוא את הטקסט שמלווה את הפוסט",
     "language": "he",
@@ -48314,7 +48341,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49490,7 +49517,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 934,
+        "line": 942,
         "kind": "jsx"
       }
     ]
@@ -49685,7 +49712,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 893,
+        "line": 901,
         "kind": "jsx"
       }
     ]
@@ -50804,7 +50831,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 610,
+        "line": 618,
         "kind": "template"
       }
     ]
@@ -52268,7 +52295,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52631,7 +52658,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 543,
+        "line": 538,
         "kind": "literal",
         "purpose": "display"
       },
@@ -53271,7 +53298,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 403,
+        "line": 398,
         "kind": "literal"
       }
     ]
@@ -53693,7 +53720,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 459,
+        "line": 467,
         "kind": "jsx"
       },
       {
@@ -54401,7 +54428,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 731,
+        "line": 739,
         "kind": "jsx"
       }
     ]
@@ -55297,7 +55324,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -56646,6 +56673,17 @@
       }
     ]
   },
+  "m_82d8d7480fe2b0d0": {
+    "source": "בהיכרות, השאלה הנוכחית מובילה. בתוכנית, התוכן, המדידה והלוח גלויים. בתוצאות, ההצעה ואיך נבדוק אותה מופיעים יחד; המקורות והפירוט עדיין זמינים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_82df56b5c562cb56": {
     "source": "מעלים ובודקים…",
     "language": "he",
@@ -56741,7 +56779,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 423,
+        "line": 418,
         "kind": "literal"
       }
     ]
@@ -57723,7 +57761,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 520,
+        "line": 528,
         "kind": "jsx"
       }
     ]
@@ -59051,7 +59089,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 313,
+        "line": 321,
         "kind": "template"
       },
       {
@@ -60205,7 +60243,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 337,
+        "line": 345,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61588,7 +61626,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 376,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -61750,6 +61788,18 @@
         "file": "web/components/motion/MotionGallery.tsx",
         "line": 106,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_8ed2558f00533c0b": {
+    "source": "התוכנית והעבודה הקרובה ברורות יותר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -65368,7 +65418,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 610,
+        "line": 618,
         "kind": "jsx"
       }
     ]
@@ -66855,7 +66905,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -67063,7 +67113,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -67236,7 +67286,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 453,
+        "line": 448,
         "kind": "jsx"
       }
     ]
@@ -67721,7 +67771,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 120,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -69459,7 +69509,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 405,
+        "line": 413,
         "kind": "literal"
       }
     ]
@@ -70313,7 +70363,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -70449,7 +70499,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 535,
+        "line": 530,
         "kind": "literal"
       }
     ]
@@ -71419,7 +71469,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 840,
+        "line": 848,
         "kind": "jsx"
       }
     ]
@@ -71619,7 +71669,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 892,
+        "line": 900,
         "kind": "jsx"
       },
       {
@@ -71845,17 +71895,6 @@
       }
     ]
   },
-  "m_a6d0fa287e17b07b": {
-    "source": "חוקרים את המוצר והשוק, בונים תוכנית ומכינים פוסטים שמראים את הערך. לומדים מההתנסות ומשפרים את הצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/personaPages.ts",
-        "line": 23,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_a6d5c0390b387c94": {
     "source": "להסביר למי המוצר מתאים ומה הוא פותר",
     "language": "he",
@@ -71908,7 +71947,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 527,
+        "line": 535,
         "kind": "jsx"
       }
     ]
@@ -71982,7 +72021,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 282,
+        "line": 290,
         "kind": "jsx"
       }
     ]
@@ -72004,7 +72043,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 864,
+        "line": 872,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72192,7 +72231,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 115,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -72849,7 +72888,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 566,
+        "line": 574,
         "kind": "template"
       }
     ]
@@ -73795,7 +73834,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73820,6 +73859,18 @@
         "file": "web/app/performance/page.tsx",
         "line": 765,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_abcb104c5783e399": {
+    "source": "AI שמכין לכם תוכנית שיווק ופוסטים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -74507,7 +74558,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 583,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -75493,17 +75544,6 @@
       }
     ]
   },
-  "m_afb548baabe51c83": {
-    "source": "מכירים את השירות והלקוחות, בונים תוכנית ומכינים פוסטים עם האופי שלכם. לומדים מהתוצאות ומשפרים את הצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/personaPages.ts",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_afb6daef46b19aa0": {
     "source": "מה המחיר?",
     "language": "he",
@@ -75527,7 +75567,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 374,
+        "line": 382,
         "kind": "jsx"
       }
     ]
@@ -75851,7 +75891,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -78649,12 +78689,12 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 508,
+        "line": 516,
         "kind": "literal"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 545,
+        "line": 553,
         "kind": "jsx"
       }
     ]
@@ -79286,7 +79326,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 465,
+        "line": 473,
         "kind": "jsx"
       }
     ]
@@ -79320,7 +79360,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 805,
+        "line": 813,
         "kind": "jsx"
       }
     ]
@@ -79745,7 +79785,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 474,
+        "line": 482,
         "kind": "jsx"
       },
       {
@@ -79996,6 +80036,22 @@
       {
         "file": "web/lib/dna/samples.ts",
         "line": 358,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ba2e3d1d578e83bc": {
+    "source": "מערכת שלומדת את העסק והקהל, מכינה תמונות וטקסטים בסגנון שלכם, ומשפרת את התוכנית לפי התוצאות. אתם בודקים ומפרסמים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/personaPages.ts",
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -81260,7 +81316,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 565,
+        "line": 573,
         "kind": "template"
       }
     ]
@@ -81565,7 +81621,7 @@
       },
       {
         "file": "web/components/plan/MonthPlanOverview.tsx",
-        "line": 161,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       },
@@ -81860,7 +81916,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 619,
+        "line": 627,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82158,7 +82214,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -82277,7 +82333,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -82865,7 +82921,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 732,
+        "line": 740,
         "kind": "jsx"
       }
     ]
@@ -82887,7 +82943,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 380,
+        "line": 375,
         "kind": "jsx"
       },
       {
@@ -83402,7 +83458,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 415,
+        "line": 423,
         "kind": "literal"
       }
     ]
@@ -83458,7 +83514,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 917,
+        "line": 925,
         "kind": "jsx"
       }
     ]
@@ -83701,12 +83757,12 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 315,
+        "line": 312,
         "kind": "literal"
       },
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 338,
+        "line": 334,
         "kind": "literal"
       }
     ]
@@ -83808,7 +83864,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 674,
+        "line": 682,
         "kind": "jsx"
       }
     ]
@@ -83938,17 +83994,6 @@
       {
         "file": "web/app/decisions/page.tsx",
         "line": 576,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_c353325e2e9153e1": {
-    "source": "חוקרים את החנות והקהל, בונים תוכנית ומכינים פוסטים בסגנון שלכם. לומדים ממה שנמדד ומשפרים את הצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/personaPages.ts",
-        "line": 7,
         "kind": "literal"
       }
     ]
@@ -84887,7 +84932,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 565,
+        "line": 573,
         "kind": "literal"
       }
     ]
@@ -87265,7 +87310,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -87857,7 +87902,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 752,
+        "line": 760,
         "kind": "jsx"
       }
     ]
@@ -89201,7 +89246,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 529,
+        "line": 524,
         "kind": "jsx"
       }
     ]
@@ -90273,7 +90318,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 332,
+        "line": 340,
         "kind": "literal"
       }
     ]
@@ -90465,7 +90510,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -91524,7 +91569,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 338,
+        "line": 346,
         "kind": "jsx"
       }
     ]
@@ -92867,7 +92912,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 326,
+        "line": 323,
         "kind": "literal",
         "purpose": "display"
       },
@@ -93164,7 +93209,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 720,
+        "line": 728,
         "kind": "jsx"
       }
     ]
@@ -93519,7 +93564,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 348,
+        "line": 344,
         "kind": "jsx"
       }
     ]
@@ -93670,7 +93715,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -94493,7 +94538,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 445,
+        "line": 453,
         "kind": "jsx"
       },
       {
@@ -95221,18 +95266,6 @@
       }
     ]
   },
-  "m_dd2369ea375c34f4": {
-    "source": "תוכנית שיווק אישית לעסק שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 20,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_dd2f4020763f0864": {
     "source": "התעלמו מהמטמון ובנו מחדש",
     "language": "he",
@@ -95499,12 +95532,12 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 516,
+        "line": 524,
         "kind": "jsx"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 552,
+        "line": 560,
         "kind": "jsx"
       }
     ]
@@ -95840,7 +95873,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 275,
+        "line": 283,
         "kind": "jsx"
       }
     ]
@@ -96469,7 +96502,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -97993,7 +98026,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 538,
+        "line": 546,
         "kind": "jsx"
       }
     ]
@@ -98418,7 +98451,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 306,
+        "line": 314,
         "kind": "literal"
       },
       {
@@ -100579,6 +100612,17 @@
       }
     ]
   },
+  "m_e9480eadd539a708": {
+    "source": "מערכת שלומדת את החנות והקהל, מכינה תמונות וטקסטים בסגנון שלכם, ומשפרת את התוכנית לפי התוצאות. אתם בודקים ומפרסמים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/personaPages.ts",
+        "line": 7,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e9531b1611a6afb6": {
     "source": "אפשר",
     "language": "he",
@@ -100700,7 +100744,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 876,
+        "line": 884,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100751,7 +100795,7 @@
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 88,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -101404,7 +101448,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -101484,7 +101528,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 376,
+        "line": 371,
         "kind": "literal"
       },
       {
@@ -101968,7 +102012,7 @@
     "references": [
       {
         "file": "web/components/plan/MonthPlanOverview.tsx",
-        "line": 180,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -103087,7 +103131,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 541,
+        "line": 536,
         "kind": "literal"
       }
     ]
@@ -103098,7 +103142,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 102,
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -104264,12 +104308,12 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 317,
+        "line": 314,
         "kind": "jsx"
       },
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 453,
+        "line": 448,
         "kind": "jsx"
       },
       {
@@ -105103,7 +105147,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 907,
+        "line": 915,
         "kind": "template"
       }
     ]
@@ -105602,7 +105646,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 534,
+        "line": 529,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106401,7 +106445,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -106632,7 +106676,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 452,
+        "line": 460,
         "kind": "jsx"
       }
     ]
@@ -108198,7 +108242,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 115,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -108332,7 +108376,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 660,
+        "line": 668,
         "kind": "jsx"
       }
     ]
@@ -108682,7 +108726,7 @@
     "references": [
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 610,
+        "line": 618,
         "kind": "literal"
       }
     ]
@@ -108704,7 +108748,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -109557,12 +109601,12 @@
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 674,
+        "line": 682,
         "kind": "jsx"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 881,
+        "line": 889,
         "kind": "jsx"
       },
       {
@@ -109649,7 +109693,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 540,
+        "line": 535,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109825,7 +109869,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109923,17 +109967,6 @@
         "line": 1158,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_fe23777e25f6da0c": {
-    "source": "לעסקים קטנים שעושים את השיווק לבד. חוקרים את העסק ואת הקהל, בונים תוכנית ומכינים פוסטים בסגנון שלכם. מחברים נתונים, בודקים מה הצליח ומעדכנים את הצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 21,
-        "kind": "literal"
       }
     ]
   },
@@ -110488,17 +110521,17 @@
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 730,
+        "line": 738,
         "kind": "jsx"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 800,
+        "line": 808,
         "kind": "jsx"
       },
       {
         "file": "web/components/plan/QuarterPlanView.tsx",
-        "line": 861,
+        "line": 869,
         "kind": "jsx"
       }
     ]

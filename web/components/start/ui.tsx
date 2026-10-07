@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { HowToFind } from "@/components/help/HowToFind";
 import type { HelpTopic } from "@/components/help/guides";
-import { IconArrowLeft } from "@/lib/icons";
 import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
 import form from "./form.module.css";
@@ -22,13 +21,12 @@ export function PrimaryButton({
   disabled,
   type = "submit",
   onClick,
-  forward = false,
 }: {
   children: React.ReactNode;
   disabled?: boolean;
   type?: "submit" | "button";
   onClick?: () => void;
-  /** Moves the conversation on: an arrow that points the RTL way. */
+  /** Kept for existing callers; the destination is expressed in the button label. */
   forward?: boolean;
 }) {
   return (
@@ -39,7 +37,6 @@ export function PrimaryButton({
       className={`${styles.primary} !min-h-[50px] w-full !px-7 !text-base sm:w-auto sm:min-w-[240px]`}
     >
       {children}
-      {forward ? <IconArrowLeft className="h-4 w-4 shrink-0" /> : null}
     </UIAction>
   );
 }
@@ -71,12 +68,11 @@ export function QuietLink({
   );
 }
 
-/** The consultant saying back what they heard. Proves we listened; one line. */
+/** A short recap of the previous answer, kept secondary to the current question. */
 export function Reflection({ text }: { text: string | null }) {
   if (!text) return null;
   return (
     <p className={`${styles.reflection} ${styles.rise}`} aria-live="polite">
-      <span aria-hidden className={styles.sunDot} />
       <span>
         <BidiText text={text} />
       </span>
@@ -154,13 +150,13 @@ export function StepShell({
       }}
       className={`${styles.step} ${direction === "fwd" ? styles.stepFwd : styles.stepBack}`}
     >
-      <Reflection text={reflection ?? null} />
       {notice}
       <div className={styles.question}>
         <h1 ref={heading} tabIndex={-1} className={styles.title}>
           {title}
         </h1>
         <p className={styles.why}>{why}</p>
+        <Reflection text={reflection ?? null} />
       </div>
       <div className={styles.answer}>{children}</div>
       <div

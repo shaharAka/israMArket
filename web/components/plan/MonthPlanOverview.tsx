@@ -4,7 +4,7 @@ import { useId, type ReactNode } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { HypothesisStatusLine, reviewByKey, reviewFor } from "./HypothesisStatusLine";
 import type { StrategyPayload, WeeklyBreakdownItem } from "@/lib/api";
-import { IconBell, IconChevron, IconEye, IconFlag, IconMegaphone } from "@/lib/icons";
+import { IconBell, IconChevron, IconFlag } from "@/lib/icons";
 import styles from "./month-plan.module.css";
 
 export type MonthPlanData = Pick<StrategyPayload, "weekly_breakdown" | "roadmap" | "monthly_horizon_plan" | "usp" | "month_name_he" | "hypothesis_review">;
@@ -136,13 +136,53 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
         <span className="sr-only"><Copy text="שבוע {arg_0}:" args={{ arg_0: week.week }} />{" "}</span>
         {week.focus}
       </span>
-      {isNow ? <span className="shrink-0 text-xs font-semibold text-[color:var(--sand-dark)]"><Copy text="השבוע" /></span> : null}
+      {isNow ? <span className="shrink-0 text-xs font-semibold text-[color:var(--primary)]"><Copy text="השבוע" /></span> : null}
     </>
   );
 
   if (!hasDetails) {
     return <li className={styles.row}>{face}</li>;
   }
+
+  const content = (
+    <div className={styles.detail}>
+      <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+        {week.what_we_do?.length ? (
+          <DetailList title="מה אנחנו עושים" items={week.what_we_do} />
+        ) : null}
+        {week.what_user_does?.length ? (
+          <DetailList title="מה צריך מכם" items={week.what_user_does} accent />
+        ) : null}
+      </div>
+
+      {week.metrics_target?.length || week.media_distribution ? (
+        <div className="mt-5 flex flex-col gap-2 border-t border-[var(--rule)] pt-4 sm:flex-row sm:flex-wrap sm:gap-x-8">
+          {week.metrics_target?.length ? (
+            <p className="flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
+              <span>
+                <span className="font-semibold text-[color:var(--ink)]"><Copy text="מה מודדים:" />{" "}</span>
+                {week.metrics_target.join(" · ")}
+              </span>
+            </p>
+          ) : null}
+          {week.media_distribution ? (
+            <p className="flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
+              <span>
+                <span className="font-semibold text-[color:var(--ink)]"><Copy text="איפה מפרסמים:" />{" "}</span>
+                {week.media_distribution}
+              </span>
+            </p>
+          ) : null}
+        </div>
+      ) : null}
+    </div>
+  );
+
+  // This week's work is the main artifact, not optional detail to discover.
+  if (isNow) return <li className={styles.currentWeek}>
+    <div className={styles.row}>{face}</div>
+    {content}
+  </li>;
 
   return (
     <li>
@@ -152,39 +192,7 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
           <Chevron />
         </summary>
 
-        <div className={styles.detail}>
-          <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
-            {week.what_we_do?.length ? (
-              <DetailList title="מה אנחנו עושים" items={week.what_we_do} />
-            ) : null}
-            {week.what_user_does?.length ? (
-              <DetailList title="מה צריך מכם" items={week.what_user_does} accent />
-            ) : null}
-          </div>
-
-          {week.metrics_target?.length || week.media_distribution ? (
-            <div className="mt-5 flex flex-col gap-2 border-t border-[var(--rule)] pt-4 sm:flex-row sm:flex-wrap sm:gap-x-8">
-              {week.metrics_target?.length ? (
-                <p className="flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
-                  <IconEye className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
-                  <span>
-                    <span className="font-semibold text-[color:var(--ink)]"><Copy text="מה מודדים:" />{" "}</span>
-                    {week.metrics_target.join(" · ")}
-                  </span>
-                </p>
-              ) : null}
-              {week.media_distribution ? (
-                <p className="flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
-                  <IconMegaphone className="mt-1 h-4 w-4 shrink-0 text-[color:var(--ink-muted)]" />
-                  <span>
-                    <span className="font-semibold text-[color:var(--ink)]"><Copy text="איפה מפרסמים:" />{" "}</span>
-                    {week.media_distribution}
-                  </span>
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
+        {content}
       </details>
     </li>
   );

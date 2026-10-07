@@ -85,3 +85,15 @@ Public feature sections pair a concise benefit with a large product view. They r
 same presentation components as the app; public fixtures never cause customer writes.
 Autoplay is limited to the user-requested hero, feature and reel demonstrations, with manual pause, reduced
 motion and visibility guards. Other product interactions follow the user.
+
+
+## Interview and platform hierarchy
+
+Lead the interview with the current question and its purpose. Previous-answer recaps are
+secondary context, with no ornamental dot or extra card. A clearly worded primary action
+does not need a decorative direction arrow. Preserve back navigation and source disclosures.
+
+Essential work stays visible: plan direction, measurement, content and schedule; this week's
+tasks and ready posts; a finding's proposed change and how to evaluate it. Optional evidence,
+budget detail and other weeks may sit one level down. Do not stack disclosures to reach the
+next action. Keep customer wording, figures, missing-data states and owner approval intact.
