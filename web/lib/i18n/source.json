@@ -46900,7 +46900,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -78479,6 +78479,17 @@
       }
     ]
   },
+  "m_bec6bd43e2b59c3a": {
+    "source": "לקהל שקורא בכמה שפות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
+        "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bec92300526806ce": {
     "source": "דוגמה: שניים מתוך ארבעה",
     "language": "he",
@@ -92476,6 +92487,17 @@
       }
     ]
   },
+  "m_dfd7e377b36c1514": {
+    "source": "אפשר לבחור שפה קבועה לעסק. לפני הכתיבה אפשר לבחור שפה אחרת רק לפוסטים שנכין עכשיו. לקהל שקורא בכמה שפות אפשר לאשר ניסוי קטן, עם הסבר לפני הפרסום. פוסטים וטיוטות קיימים נשארים כמו שהם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dfd967b5fda8d8d4": {
     "source": "נחדש את המדידה, בלי לעצור את התוכנית",
     "language": "he",
@@ -99579,7 +99601,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 65,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -104280,7 +104302,7 @@
     "references": [
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -104496,17 +104518,6 @@
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 19,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_fbd908bb1897a197": {
-    "source": "אפשר לבחור שפה קבועה לעסק או רק לפוסטים שנכתבים עכשיו. לקהל שקורא בכמה שפות אפשר לאשר ניסוי קטן, עם הסבר לפני הפרסום. פוסטים וטיוטות קיימים נשארים כמו שהם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 9,
         "kind": "literal"
       }
     ]
