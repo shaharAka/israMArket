@@ -131,6 +131,31 @@ class LogoCandidatesTest(unittest.TestCase):
     def ranked(self, html: str, base: str) -> list[dict]:
         return scraper.logo_candidates(base, BeautifulSoup(html, "lxml"))
 
+    def test_unnamed_header_identity_beats_sponsor_and_footer_logos(self):
+        html = """<header data-elementor-type="header"><div><a href="https://www.cause.example">
+        <img src="/uploads/Group-152.png" width="164" height="55" alt=""></a></div>
+        <a href="/donate"><img src="/donate_button.svg" width="215" height="97"></a></header>
+        <main><img src="/uploads/לוגו-חברה.jpg" width="647" height="120">
+        <a href="https://partner.example/"><img src="/logo-company.png" width="706" height="129"></a></main>
+        <footer><a href="/"><img src="/logo_footer.png" width="215" height="73"></a></footer>"""
+        ranked = self.ranked(html, "https://cause.example/")
+        self.assertEqual(ranked[0]["url"], "https://cause.example/uploads/Group-152.png")
+        self.assertEqual(ranked[0]["source"], "header_home_img")
+
+    def test_cms_header_and_banner_are_identity_landmarks(self):
+        for attrs in ('data-elementor-type="header"', 'role="banner"'):
+            with self.subTest(attrs=attrs):
+                html = f'<div {attrs}><a href="/"><img src="/identity.png" width="164" height="55"></a></div><img src="/other-logo.png">'
+                self.assertEqual(self.ranked(html, "https://cause.example/")[0]["url"], "https://cause.example/identity.png")
+
+    def test_external_roots_and_section_links_do_not_count_as_home(self):
+        for href in ('https://another.example/', '#contact', '/#about', '#', ''):
+            with self.subTest(href=href):
+                self.assertFalse(scraper._links_to_site_home("https://cause.example/", href))
+        for href in ('/', 'https://www.cause.example', '//cause.example/'):
+            with self.subTest(href=href):
+                self.assertTrue(scraper._links_to_site_home("https://cause.example/", href))
+
     def test_wix_header_logo_beats_jsonld_image_and_skips_the_default_favicon(self):
         ranked = self.ranked(WIX_HTML, "https://www.tazizi.example/")
         self.assertEqual(ranked[0]["source"], "img_logo")

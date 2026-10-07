@@ -441,6 +441,29 @@ def _int_attr(node, name: str) -> int:
         return 0
 
 
+def _in_brand_region(img, region: str) -> bool:
+    """Semantic landmarks and CMS header/footer templates carry the same evidence."""
+    role = "banner" if region == "header" else "contentinfo"
+    return any(
+        parent.name == region or parent.get("role") == role
+        or parent.get("data-elementor-type") == region
+        for parent in img.parents if getattr(parent, "attrs", None) is not None
+    )
+
+
+def _links_to_site_home(base: str, href: str) -> bool:
+    if not href or href.startswith("#"):
+        return False
+    target, site = urlparse(_abs(base, href) or ""), urlparse(base)
+    # A partner's root URL and a menu's in-page link are not the site's identity.
+    target_host = (target.hostname or "").lower().removeprefix("www.")
+    site_host = (site.hostname or "").lower().removeprefix("www.")
+    return bool(
+        target.scheme in {"http", "https"} and target_host == site_host
+        and target.path in {"", "/"} and not target.fragment
+    )
+
+
 def logo_candidates(base: str, soup: BeautifulSoup) -> list[dict]:
     """Where the business's logo is likely to be, best first: `[{url, source, score}]`.
 
@@ -450,7 +473,8 @@ def logo_candidates(base: str, soup: BeautifulSoup) -> list[dict]:
        `itemprop="logo"` element — the site telling us outright.
     2. An `<img>` whose alt / class / id / filename says "logo" or "לוגו" — ranked up when
        it sits in `<header>` or near the top of the document, links home, or is wide
-       (wordmarks are); a wide image at the top of `<header>` with no such word, last.
+       (wordmarks are). A header image linking to the site's own home is stronger
+       identity evidence than an unrelated image whose filename happens to say logo.
     3. `og:logo`, then the JSON-LD `image` of an Organization / LocalBusiness.
     4. `apple-touch-icon` / a large `icon`, unless it is a platform default (Wix's
        `f94c49_` favicon is on every site that never set one).
@@ -499,12 +523,12 @@ def logo_candidates(base: str, soup: BeautifulSoup) -> list[dict]:
             words += " " + (" ".join(parent_class) if isinstance(parent_class, list) else str(parent_class or ""))
             words += " " + str(parent.get("id") or "")
             parent = parent.parent
-        in_header = img.find_parent("header") is not None
+        in_header = _in_brand_region(img, "header")
         links_home = False
         anchor = img.find_parent("a")
         if anchor is not None:
             href = str(anchor.get("href") or "").strip()
-            links_home = href in {"/", "./", "#"} or urlparse(_abs(base, href) or "").path in {"", "/"}
+            links_home = _links_to_site_home(base, href)
         width, height = _int_attr(img, "width"), _int_attr(img, "height")
         wide = bool(width and height and width / height >= 1.6)
         own_words = " ".join([str(img.get("alt") or ""), classes, unquote(str(src))])
@@ -513,12 +537,14 @@ def logo_candidates(base: str, soup: BeautifulSoup) -> list[dict]:
         if _LOGO_WORD_RE.search(words):
             score = 60.0
             score += 12 if in_header else 0
-            score -= 20 if img.find_parent("footer") is not None else 0
+            score -= 20 if _in_brand_region(img, "footer") else 0
             score += 8 if links_home else 0
             score += 6 if wide else 0
             score -= 8 if (width and height and max(width, height) < 64) else 0
             score += max(0.0, 8 - position)  # top of the document
             offer(src, "img_logo", min(score, 94))
+        elif in_header and links_home and position < 12:
+            offer(src, "header_home_img", min(84 + (6 if wide else 0) + max(0, 4 - position), 94))
         elif in_header and wide and position < 12:
             offer(src, "header_img", 35 - position)
 
