@@ -1,3 +1,5 @@
+.overview { display: grid; gap: 28px; min-width: 0; font-family: var(--font-ui), sans-serif; }
+.overview summary:focus-visible { outline: 2px solid var(--primary); outline-offset: -3px; }
 /* התוכנית (/strategy): the month as a plan sheet, the weeks as one calm list.
    Surfaces are depth, not frames (DESIGN-STANDARD.md §3); the page's reference is the plan
    sheet on the landing page (components/landing-v2/PlanSheet). */
@@ -45,7 +47,7 @@
   overflow: hidden;
   border-radius: 20px;
   background: var(--paper);
-  box-shadow: var(--shadow-pop);
+  box-shadow: var(--shadow-card);
 }
 
 .sheetBody {
@@ -55,16 +57,17 @@
 .hypothesis {
   margin-top: 12px;
   font-size: 22px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   color: var(--ink);
   text-wrap: balance;
 }
 
-.targets {
+.targetsGroup {
   margin-top: 20px;
 }
+.targetsLabel { margin-bottom: 4px; font-size: 13px; font-weight: 500; color: var(--ink-muted); }
 
 .targets li {
   display: flex;
@@ -95,7 +98,7 @@
   gap: 12px;
   margin-top: 16px;
   padding: 16px 24px;
-  background: var(--sand);
+  background: var(--soft);
   color: var(--ink);
   font-size: 15px;
   line-height: 1.6;
@@ -103,7 +106,7 @@
 
 .ask strong {
   font-weight: 600;
-  color: var(--sand-dark);
+  color: var(--ink-soft);
 }
 
 .askIcon {
@@ -111,7 +114,7 @@
   width: 18px;
   height: 18px;
   margin-top: 3px;
-  color: var(--sand-dark);
+  color: var(--ink-soft);
 }
 
 /* A list that is one object: paper, depth, hairlines between rows. */
@@ -169,7 +172,7 @@ summary.row:hover {
 
 /* "This week" wears the sun, like "you are here" on the landing page's map. */
 .num[data-state="now"] {
-  background: var(--sun);
+  background: var(--primary-soft);
   box-shadow: none;
   color: var(--ink);
 }
@@ -204,3 +207,8 @@ summary.row:hover {
     transition: none;
   }
 }
+
+/* Current work stays readable without a disclosure; only other weeks fold. */
+.currentWeek { background: var(--paper); }
+.currentWeek > .row { cursor: default; align-items: baseline; padding-top: 20px; }
+.currentWeek .detail { padding-bottom: 24px; }

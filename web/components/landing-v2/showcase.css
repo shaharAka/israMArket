@@ -1,0 +1,239 @@
+/* Public website showcases. Screens are actual app captures; artwork has its own palette. */
+.lv2-site { --font-ui: var(--font-site-clean); font-family: var(--font-ui), sans-serif; }
+html[lang="he"] .lv2-site[data-hero-type="sans"] { --font-ui: var(--font-heebo); }
+html[lang="en"] .lv2-site, html[lang="ru"] .lv2-site { --font-ui: var(--font-inter); }
+html[lang="ar"] .lv2-site { --font-ui: var(--font-arabic); }
+.lv2-site .lv2-fine { color: var(--ink-muted); }
+.lv2-wordmark { font-family: var(--font-inter), sans-serif; font-size: 29px; font-weight: 600; letter-spacing: -.065em; line-height: 1; color: var(--ink); }
+.lv2-wordmark > span { color: inherit; }
+.lv2-compact-mark { display: none; background: var(--ink); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -.035em; line-height: .82; text-align: center; padding: 4px 0; }
+.lv2-hero { background: var(--paper); }
+.lv2-site .lv2-hero-grid { grid-template-columns: minmax(0, .86fr) minmax(0, 1.24fr); padding-block: 48px 40px; gap: clamp(32px, 4vw, 56px); align-items: start; }
+.lv2-site .lv2-hero-text .lv2-lead { font-size: 18px; line-height: 1.55; margin-block: 24px; max-width: 32ch; }
+.lv2-site .lv2-hero-cta { gap: 24px; margin-top: 24px; }
+.lv2-site .lv2-btn { border-radius: 10px; height: 54px; padding-inline: 22px; box-shadow: 0 6px 16px rgb(40 83 199 / 14%); }
+.lv2-showcase-section { padding-block: clamp(48px, 7vw, 88px); }
+.lv2-post-section { background: var(--soft); }
+.lv2-connection-detail h3 { font-size: clamp(22px, 2.4vw, 29px); line-height: 1.4; font-weight: 700; margin: 0; }
+.lv2-connection-detail p { color: var(--ink-soft); font-size: 16px; line-height: 1.7; margin: 0 0 16px; }
+.lv2-real-screen { margin: 0; min-width: 0; }
+.lv2-real-screen > img { width: 100%; height: auto; border-radius: 14px; box-shadow: var(--shadow-card); }
+.lv2-real-screen figcaption { font-size: 12px; line-height: 1.6; color: var(--ink-muted); margin-top: 12px; }
+.lv2-connection-detail { display: grid; grid-template-columns: minmax(260px, .85fr) minmax(0, 1.15fr); gap: 48px; align-items: center; }
+.lv2-connection-detail h3 { margin-bottom: 16px; }
+.lv2-connection-detail .lv2-fine { margin-top: 20px; font-size: 13px; }
+.lv2-connection-page { padding-block: 48px 72px; }
+.lv2-connection-page > .lv2-lead { margin-block: 24px 48px; }
+.lv2-connection-page h2 { font-size: 20px; line-height: 1.4; font-weight: 700; margin-bottom: 16px; }
+.lv2-setup-steps { list-style: decimal; padding-inline-start: 22px; color: var(--ink-soft); line-height: 1.7; margin-bottom: 24px; }
+.lv2-setup-steps li { padding-block: 8px; }
+.lv2-connection-note { padding-top: 32px; margin-top: 32px; border-top: 1px solid var(--rule); max-width: 840px; }
+.lv2-connection-note p { font-size: 16px; line-height: 1.7; color: var(--ink-soft); }
+@media (max-width: 1023px) {
+ .lv2-nav-row { flex-wrap: wrap; gap: 12px; }
+ .lv2-nav-links { display: flex; width: 100%; order: 3; gap: 16px; justify-content: flex-start; flex-wrap: wrap; padding-block: 4px; font-size: 13px; }
+ .lv2-nav-links a { min-height: 44px; display: inline-flex; align-items: center; }
+ .lv2-nav-end { gap: 12px; }
+ .lv2-hero-grid { padding-block: 32px 48px; gap: 32px; }
+ .lv2-site .lv2-hero-grid { grid-template-columns: 1fr; padding-block: 32px 48px; gap: 24px; }
+ .lv2-site .lv2-hero-text .lv2-lead { max-width: 42ch; }
+ .lv2-connection-detail { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 520px) {
+ .lv2-site .lv2-display { font-size: 43px; line-height: 1.08; }
+ .lv2-site .lv2-hero-text .lv2-lead { font-size: 17px; margin-block: 16px; }
+ .lv2-wordmark { display: none; }
+ .lv2-compact-mark { display: flex; flex-direction: column; justify-content: center; }
+ .lv2-nav-row { height: auto; min-height: 68px; padding-block: 10px 4px; }
+ .lv2-site .lv2-hero-cta { gap: 16px; margin-top: 20px; }
+ .lv2-site .lv2-btn { padding-inline: 18px; font-size: 16px; }
+ .lv2-site .lv2-hero-text .lv2-fine { font-size: 12px; }
+ .lv2-hero-text .lv2-lead { font-size: 16px; margin-top: 16px; }
+ .lv2-nav-end > .lv2-btn-quiet { display: none; }
+}
+.lv2-site .lv2-display { font-family: inherit; font-weight: 500; letter-spacing: normal; font-size: clamp(42px, 3.9vw, 56px); line-height: 1.14; }
+html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: clamp(36px, 3.2vw, 46px); font-weight: 600; line-height: 1.16; letter-spacing: -.025em; }
+html[lang="ar"] .lv2-site .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
+.lv2-site[data-hero-type="sans"] .lv2-display { font-weight: 700; font-size: clamp(46px, 4.2vw, 60px); letter-spacing: -.035em; line-height: 1.08; }
+html[lang="en"] .lv2-site[data-hero-type="sans"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp(36px, 3.2vw, 46px); line-height: 1.12; letter-spacing: -.045em; }
+html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
+.lv2-site[data-hero-type="modern"] .lv2-hero section[data-compact="true"] h2,
+.lv2-site[data-hero-type="modern"] [data-product-screen] h2 { font-weight: 600; letter-spacing: normal; }
+.lv2-hero-stack { margin-block: 24px 0; font-size: 18px; font-weight: 600; color: var(--ink); }
+.lv2-site .lv2-hero-text .lv2-lead { margin-block: 20px; font-size: 18px; max-width: 100%; }
+.lv2-team-demo { min-width: 0; }
+.lv2-team-agents { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+.lv2-team-agents button { appearance: none; background: transparent; border: none; border-block-end: 2px solid var(--rule); color: var(--ink-soft); text-align: start; font: inherit; font-weight: 500; min-height: 60px; cursor: pointer; padding: 8px 0; }
+.lv2-team-agents button > small { display: block; color: var(--ink-muted); font-family: var(--font-inter), sans-serif; font-size: 11px; line-height: 1; margin-bottom: 8px; }
+.lv2-team-agents button > span { font-size: 17px; }
+.lv2-team-agents button[aria-pressed="true"] { color: var(--primary); border-color: var(--primary); }
+.lv2-team-agents button:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.lv2-team-stage { background: var(--sun); padding: 20px; border-radius: 16px; }
+.lv2-team-work { background: var(--paper); border-radius: 10px; overflow: hidden; min-height: 390px; box-shadow: 0 20px 40px -24px rgb(20 32 58 / 35%); }
+.lv2-team-work > header { display: flex; justify-content: space-between; gap: 16px; padding: 18px 24px; background: var(--business-soft); color: var(--business-ink); font-size: 14px; }
+.lv2-team-work > header > span { font-size: 12px; font-weight: 400; }
+.lv2-team-plan, .lv2-team-research, .lv2-team-results { padding: 28px 24px; }
+.lv2-team-label { font-size: 12px; color: var(--ink-muted); font-weight: 500; margin-bottom: 12px; }
+.lv2-team-work h2 { font-size: 27px; font-weight: 600; line-height: 1.3; letter-spacing: -.02em; }
+.lv2-team-audience { font-size: 15px; line-height: 1.5; color: var(--ink-soft); margin-top: 16px; }
+.lv2-team-next { border-block-start: 1px solid var(--rule); margin-top: 24px; padding-top: 18px; }
+.lv2-team-next > small { color: var(--ink-muted); font-size: 12px; }
+.lv2-team-next > p { font-size: 17px; line-height: 1.45; margin-top: 8px; color: var(--business-ink); font-weight: 500; }
+.lv2-team-source, .lv2-team-missing { font-size: 12px; line-height: 1.5; color: var(--ink-muted); margin-top: 16px; }
+.lv2-team-results h2 { font-size: 23px; }
+.lv2-team-results .lv2-team-next { margin-top: 12px; padding-top: 8px; }
+.lv2-team-compare { display: grid; gap: 12px; margin-top: 20px; }
+.lv2-team-compare > div { display: grid; grid-template-columns: 1fr 1.5fr; gap: 16px; align-items: center; }
+.lv2-team-compare dt { font-size: 13px; color: var(--ink-soft); }
+.lv2-team-compare dd { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--ink); font-size: 15px; font-weight: 600; }
+.lv2-team-compare i { display: block; height: 8px; background: var(--business-ink); }
+.lv2-team-post-work { display: grid; grid-template-columns: 1fr .8fr; gap: 20px; padding: 24px; align-items: center; }
+.lv2-team-post-work > div > p:not(.lv2-team-label) { font-size: 14px; line-height: 1.5; margin-top: 16px; color: var(--ink-soft); }
+.lv2-team-post-work small { display: block; color: var(--ink-muted); font-size: 11px; margin-top: 20px; }
+.lv2-feature-group { padding-block: 72px; }
+.lv2-plan-group { background: var(--soft); }
+.lv2-feature-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 64px; align-items: center; }
+.lv2-feature-grid .lv2-eyebrow { margin-bottom: 16px; }
+.lv2-feature-grid .lv2-h2 { font-weight: 600; }
+.lv2-feature-grid .lv2-lead { font-size: 18px; line-height: 1.6; margin-block: 20px; max-width: 31ch; }
+.lv2-site .lv2-post-section { background: var(--paper); }
+.lv2-post-section > .lv2-wrap > .lv2-lead { margin-top: 20px; max-width: 48ch; font-size: 18px; }
+.lv2-learn-group { background: var(--sand); }
+.lv2-connector-logos { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; margin-top: 32px; }
+.lv2-connector-link { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; min-height: 180px; border-radius: 10px; padding: 20px 12px; background: var(--soft); color: var(--ink); transition: background 160ms var(--ease); }
+.lv2-connector-link:hover { background: var(--primary-soft); }
+.lv2-connector-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.lv2-connector-logo { display: inline-flex; gap: 8px; align-items: center; height: 48px; }
+.lv2-connector-link > span:nth-child(2) { font-size: 15px; font-weight: 600; }
+.lv2-connector-link > small { font-size: 12px; color: var(--ink-soft); }
+.lv2-website-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 600; letter-spacing: -.06em; font-size: 28px; color: var(--primary); }
+#connections > .lv2-wrap > .lv2-lead { font-size: 17px; margin-top: 20px; max-width: 50ch; }
+.lv2-phone-group { background: var(--soft); padding-block: 56px; }
+.lv2-phone-grid { display: grid; grid-template-columns: 1fr 230px; gap: 80px; align-items: center; max-width: 880px; }
+.lv2-phone-grid > img { width: 230px; height: auto; border: 5px solid var(--ink); border-radius: 26px; box-shadow: var(--shadow-pop); }
+.lv2-phone-grid .lv2-lead { margin-top: 20px; font-size: 18px; max-width: 29ch; }
+.campaign-caption > summary { cursor: pointer; color: var(--primary); min-height: 44px; padding-block: 8px; }
+.campaign-caption > p { margin-top: 12px; }
+.campaign-art--bakery .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(47 20 10 / 80%), transparent 60%); }
+.campaign-art--bakery h3 { inset-block-start: auto; inset-block-end: 18%; color: #fff3df; font-family: var(--font-art-serif), Georgia, serif; font-size: 13cqw; }
+.campaign-art--bakery .campaign-business, .campaign-art--bakery .campaign-art-footer { color: #fff3df; }
+@media (max-width: 1023px) {
+ .lv2-feature-grid { grid-template-columns: 1fr; gap: 32px; }
+ .lv2-feature-grid .lv2-lead { max-width: 45ch; }
+ .lv2-connector-logos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+ .lv2-team-work { min-height: 360px; }
+}
+@media (max-width: 520px) {
+ .lv2-site .lv2-display { font-size: 38px; line-height: 1.16; }
+ .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 40px; line-height: 1.12; }
+ html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: 36px; }
+ html[lang="en"] .lv2-site[data-hero-type="sans"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 36px; }
+ html[lang="ar"] .lv2-site .lv2-display, html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: 40px; }
+ .lv2-site .lv2-hero-grid { padding-block: 28px 36px; gap: 32px; }
+ .lv2-hero-stack { font-size: 16px; margin-top: 20px; }
+ .lv2-site .lv2-hero-text .lv2-lead { font-size: 17px; }
+ .lv2-team-agents button > span { font-size: 15px; }
+ .lv2-team-stage { padding: 12px; border-radius: 12px; }
+ .lv2-team-work { min-height: 340px; }
+ .lv2-team-work > header { padding: 16px; font-size: 13px; }
+ .lv2-team-plan, .lv2-team-research, .lv2-team-results { padding: 24px 18px; }
+ .lv2-team-work h2 { font-size: 24px; }
+ .lv2-team-next > p { font-size: 16px; }
+ .lv2-team-post-work { padding: 20px 16px; gap: 16px; }
+ .lv2-team-post-work h2 { font-size: 22px; }
+ .lv2-team-post-work > div > p:not(.lv2-team-label) { font-size: 13px; }
+ .lv2-team-compare { gap: 8px; margin-top: 16px; }
+ .lv2-team-results .lv2-team-next > p { font-size: 14px; }
+ .lv2-feature-group { padding-block: 48px; }
+ .lv2-feature-grid .lv2-lead { font-size: 16px; margin-block: 16px; }
+ .lv2-connector-logos { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+ .lv2-connector-link { min-height: 150px; padding: 16px 8px; }
+ .lv2-connector-link > span:nth-child(2) { font-size: 13px; }
+ .lv2-connector-link > small { font-size: 11px; }
+ .lv2-phone-grid { grid-template-columns: 1fr; gap: 32px; }
+ .lv2-phone-grid > img { margin-inline: auto; }
+}
+/* A single software/cause example reads as an image-led feature rather than an empty grid. */
+.campaign-examples:has(.campaign-grid[data-count="1"]) { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 64px; align-items: center; }
+.campaign-examples:has(.campaign-grid[data-count="1"]) .campaign-detail { margin-top: 0; padding-top: 0; border: 0; }
+@media (max-width: 700px) { .campaign-examples:has(.campaign-grid[data-count="1"]) { display: block; } .campaign-examples:has(.campaign-grid[data-count="1"]) .campaign-detail { padding-top: 24px; } }
+
+/* A live rendering of the shared plan component keeps phone proof relevant and translated. */
+.lv2-phone-grid { grid-template-columns: minmax(0, 1fr) 300px; }
+.lv2-phone-proof { width: 300px; min-width: 0; background: var(--canvas); border: 5px solid var(--ink); padding: 20px 8px; border-radius: 26px; box-shadow: var(--shadow-pop); }
+.lv2-phone-proof > div > p { padding-inline: 8px; }
+@media (max-width: 600px) { .lv2-phone-grid { grid-template-columns: 1fr; } .lv2-phone-proof { margin-inline: auto; max-width: 100%; } }
+/* Keep the decision in view on a short laptop; long translations still get natural wrapping. */
+@media (min-width: 1024px) and (max-width: 1280px) {
+ .lv2-site .lv2-hero-grid { padding-block: 28px; }
+ .lv2-site .lv2-hero-text .lv2-lead { margin-block: 16px; }
+ .lv2-site .lv2-hero-cta { margin-top: 16px; }
+}
+
+/* One compact header; language remains a labelled native selector without a visible caption. */
+.lv2-site .lv2-nav { background: var(--paper); }
+.lv2-site .lv2-nav-end { gap: 20px; }
+.lv2-site .lv2-login { padding: 10px 8px 6px; border-bottom: 1px solid var(--ink-muted); white-space: nowrap; }
+.lv2-site .lv2-nav-end > .lv2-btn-quiet,
+.lv2-site .lv2-hero-cta .lv2-btn { background: var(--ink); color: white; border-color: var(--ink); box-shadow: none; border-radius: 999px; font-weight: 600; }
+.lv2-site .lv2-nav-end > .lv2-btn-quiet:hover,
+.lv2-site .lv2-hero-cta .lv2-btn:hover { background: #30434e; }
+.lv2-site .lv2-hero-cta { margin-top: 36px; }
+.lv2-site .lv2-hero-cta .lv2-btn { min-width: 210px; justify-content: center; }
+.lv2-site .lv2-nav-links { gap: 18px; }
+@media (max-width: 1200px) { .lv2-site .lv2-nav-row { flex-wrap: wrap; height: auto; min-height: 76px; gap: 8px; padding-block: 12px; } .lv2-site .lv2-nav-links { order: 3; width: 100%; justify-content: center; } }
+@media (max-width: 600px) {
+ .lv2-site .lv2-nav-end { gap: 8px; }
+ .lv2-site .lv2-nav-end > .lv2-btn-quiet { display: inline-flex; padding-inline: 10px; font-size: 11px; min-height: 40px; }
+ .lv2-site .lv2-login { padding-inline: 4px; font-size: 12px; }
+ .lv2-site .product-utilities-inline select { width: 78px; padding-inline: 2px; font-size: 12px; }
+ .lv2-site .lv2-hero-cta { margin-top: 28px; }
+ .lv2-site .lv2-nav-links { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; gap: 16px; scrollbar-width: thin; padding-block: 0; }
+ .lv2-site .lv2-nav-links a { flex-shrink: 0; white-space: nowrap; }
+ .lv2-site .lv2-nav { background: var(--paper); }
+}
+@media (max-width: 360px) {
+ .lv2-site .lv2-nav-row { padding-inline: 16px; gap: 4px; }
+ .lv2-site .lv2-nav-end { gap: 4px; }
+ .lv2-site .product-utilities-inline select { width: 70px; }
+ .lv2-site .lv2-nav-end > .lv2-btn-quiet { padding-inline: 8px; font-size: 10px; }
+}
+
+/* Identity studies stay opt-in on /design/identity. */
+.lv2-identity-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 750; font-size: 29px; letter-spacing: -.045em; line-height: 1; color: var(--ink); }
+.lv2-identity-symbol { display: none; width: 50px; min-height: 44px; padding-block: 6px; font-size: 17px; color: var(--ink); }
+.lv2-identity-symbol svg { width: 100%; height: 100%; }
+@media (max-width: 520px) { .lv2-identity-wordmark { display: none; } .lv2-identity-symbol { display: block; } }
+
+/* Benefit-led feature chapters. Color belongs to a large product stage, not every control. */
+.lv2-site .lv2-learn-group { background: var(--paper); padding-block: 80px; }
+.lv2-site .lv2-learn-group .lv2-feature-grid { grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); }
+.lv2-site .lv2-post-section { background: var(--paper); }
+.lv2-site .lv2-connections-band { background: var(--primary-soft); }
+.lv2-site .lv2-connections-band .lv2-lead { max-width: 60ch; margin-block: 20px 36px; }
+.lv2-provider-logo { display: inline-flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; }
+.lv2-site .lv2-connector-logos { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
+.lv2-site .lv2-connector-link { background: var(--paper); min-height: 180px; border: 0; box-shadow: none; border-radius: 10px; padding: 24px 12px; display: flex; flex-direction: column; gap: 28px; justify-content: center; align-items: center; }
+.lv2-site .lv2-connector-link:hover { box-shadow: var(--shadow-card); background: var(--paper); }
+.lv2-site .lv2-connector-link > span:last-child { font-size: 14px; font-weight: 500; text-align: center; }
+.lv2-connection-hero { padding-block: 64px 80px; display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: 64px; align-items: center; }
+.lv2-connection-pair { display: flex; align-items: center; gap: 20px; margin-bottom: 36px; }
+.lv2-connection-pair > span:nth-child(2) { color: var(--ink-faint); font-size: 24px; }
+.lv2-connection-hero .lv2-h2 { margin-top: 16px; }
+.lv2-connection-hero .lv2-lead { font-size: 18px; margin-block: 24px 32px; }
+.lv2-site .lv2-value-cta { background: var(--ink); color: white; box-shadow: none; border-radius: 999px; }
+.lv2-connection-hero .lv2-fine { margin-top: 16px; }
+.lv2-connection-art { background: var(--primary-soft); border-radius: 20px; padding: 28px; min-width: 0; }
+.lv2-connection-art-title { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; font-size: 15px; }
+.lv2-connection-benefits { padding-block: 48px 80px; }
+.lv2-connection-benefits ol { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 40px; margin-top: 40px; }
+.lv2-connection-benefits li { border-top: 1px solid var(--rule-dark); padding-top: 24px; }
+.lv2-connection-benefits li > span { font-family: var(--font-inter),sans-serif; font-size: 13px; color: var(--ink-muted); }
+.lv2-connection-benefits h3 { font-size: 24px; line-height: 1.3; font-weight: 500; margin-top: 20px; }
+.lv2-connection-practical { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 64px; padding-block: 48px 80px; }
+.lv2-connection-practical .lv2-lead { margin-block: 20px; font-size: 17px; }
+.lv2-connection-availability { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+.lv2-connection-practical details { border-block: 1px solid var(--rule); margin-top: 24px; }
+.lv2-connection-practical summary { cursor: pointer; min-height: 56px; padding-block: 16px; font-weight: 500; }
+@media(max-width:900px) { .lv2-site .lv2-learn-group .lv2-feature-grid,.lv2-connection-hero,.lv2-connection-practical { grid-template-columns: 1fr; gap: 32px; } .lv2-site .lv2-connector-logos { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media(max-width:600px) { .lv2-site .lv2-connector-logos { grid-template-columns: repeat(2,minmax(0,1fr)); } .lv2-connection-hero { padding-block: 40px; } .lv2-connection-art { padding: 16px; } .lv2-connection-benefits ol { grid-template-columns: 1fr; gap: 28px; } .lv2-connection-pair .lv2-wordmark { display: block; font-size: 25px; } }

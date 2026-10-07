@@ -3,7 +3,8 @@
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { useId, type ReactNode } from "react";
-import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
+import { MarketStalls, IconArrowLeft } from "@/lib/icons";
+import { FindingSummary } from "./FindingSummary";
 import { UIAction } from "./Controls";
 import styles from "./results-brief.module.css";
 
@@ -32,26 +33,18 @@ export function ResultsBrief({ data, onAction, onContinue, expanded = false, act
 }) {
   const t = useCopy();
   const id = useId();
-  return <article className={styles.brief} aria-labelledby={`${id}-heading`} data-state={data.state}>
+  return <article className={styles.brief} aria-label={data.heading} data-state={data.state}>
     <header className={styles.businessHeader}>
-      <div className={styles.businessIdentity}><BrandMark className={styles.store} /><div><strong>{data.business}</strong><span>{data.goal}</span></div></div>
+      <div className={styles.businessIdentity}><MarketStalls className={styles.store} /><div><strong>{data.business}</strong><span>{data.goal}</span></div></div>
       <p>{data.period}</p>
     </header>
-    <section className={styles.finding}>
-      <p className={styles.eyebrow}><Copy text="מה זה אומר לעסק שלכם" /></p>
-      <h2 id={`${id}-heading`}>{data.heading}</h2>
-      <p className={styles.explanation}>{data.explanation}</p>
-      <details className={styles.evidence}>
-        <summary><Copy text="למה זו ההמלצה שלנו?" /><IconChevron className={styles.chevron} /></summary>
-        <div className={styles.evidenceBody}>
-          <p className={styles.eyebrow}><Copy text="המידע שחיברנו בדוגמה הזו" /></p>
-          <ol>{data.evidence.map(item => <li key={item.source}>
-            <strong>{item.source}</strong><div><h3>{item.observation}</h3><p>{item.detail}</p><small>{item.period}</small></div>
-          </li>)}</ol>
-          <p className={styles.uncertainty}>{data.uncertainty}</p>
-        </div>
-      </details>
-    </section>
+    <FindingSummary heading={data.heading} explanation={data.explanation} uncertainty={data.uncertainty} evidence={
+      <div className={styles.evidenceBody}>
+        <ol>{data.evidence.map(item => <li key={item.source}>
+          <strong>{item.source}</strong><div><h3>{item.observation}</h3><p>{item.detail}</p><small>{item.period}</small></div>
+        </li>)}</ol>
+      </div>
+    } />
     <section className={styles.nextAction} aria-label={t("מה עושים עכשיו")}>
       <div className={styles.actionIntro}><div><p className={styles.eyebrow}><Copy text="מה נעשה עכשיו" /></p><h3>{data.nextAction.title}</h3></div><span className={styles.effort}>{data.nextAction.effort}</span></div>
       <p className={styles.actionExplanation}>{data.nextAction.explanation}</p>

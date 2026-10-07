@@ -1,12 +1,14 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { FindingRehearsal } from "./FindingRehearsal";
 
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
-import { BrandMark, IconArrowLeft, IconArrowRight } from "@/lib/icons";
+import { IconArrowLeft, IconArrowRight } from "@/lib/icons";
 import { ResultsBrief, type ResultsBriefData } from "./ResultsBrief";
 import { DesignScope } from "./Primitives";
 import { SegmentedControl, UIAction } from "./Controls";
@@ -17,53 +19,53 @@ type Scenario = ResultsBriefData["state"];
 const businessFacts = {
   source: "המידע על העסק",
   observation: "פרטי המארז והאיסוף כבר ידועים",
-  detail: "בדוגמה, בעל העסק אישר: חלה ושישה מאפים, 89 ₪, הזמנה עד חמישי ב־20:00 ואיסוף בשישי בין 08:00 ל־12:00 מהמאפייה.",
-  period: "פרטי עסק מומצאים שאושרו בתוך התרחיש, ולא בחשבון שלכם",
+  detail: "בעל העסק אישר: חלה ושישה מאפים, 89 ₪, הזמנה עד חמישי ב־20:00 ואיסוף בשישי בין 08:00 ל־12:00 מהמאפייה.",
+  period: "פרטי העסק שאושרו",
 };
 const successCheck = "נשווה הזמנות ששולמו באתר בשני שבועות מלאים. שמירות ולחיצות לבדן לא ייחשבו להזמנות.";
 const examples: Record<Scenario, ResultsBriefData> = {
   finding: {
     business: "פרג ושמרים", state: "finding", period: "בדיקת השבוע · 20–26 בספטמבר 2026",
     goal: "בתוכנית: יותר הזמנות למארזי שישי",
-    source: "בדוגמה: נתוני אינסטגרם, נתוני האתר, בדיקת עמוד ההזמנה ופרטי העסק",
+    source: "נתוני אינסטגרם, נתוני האתר, בדיקת עמוד ההזמנה ופרטי העסק",
     heading: "יש עניין במארזי שישי. כדאי להבהיר איך מזמינים.",
     explanation: "הפוסט על המארז נשמר, ויש ביקורים בעמוד שלו באתר. בעמוד חסרים פרטי האיסוף — מידע שלקוח צריך לפני שהוא מחליט להזמין.",
     uncertainty: "אנחנו עדיין לא יודעים אם פרטי האיסוף החסרים הם מה שמונע הזמנות. זו הסיבה שננסה שינוי קטן ונבדוק את התוצאות.",
     nextAction: { title: "נוסיף הסבר קצר להזמנה, באתר ובפוסט הבא", explanation: "כבר הכנו נוסח עם תכולת המארז, המחיר וזמני האיסוף. אתם בודקים שהפרטים נכונים; אחר כך מוסיפים אותו לעמוד ומשתמשים בו בפוסט שבתוכנית.", effort: "רק לבדוק את הפרטים", successCheck },
     actionLabel: "לראות את ההסבר שהכנו",
     evidence: [
-      { source: "אינסטגרם", observation: "הפוסט על המארז מעורר עניין", detail: "הוא נשמר 24 פעמים, לעומת 6 ו־8 שמירות בשני הפוסטים האחרים באותו שבוע. שמירה מעידה על עניין, ואינה הזמנה.", period: "20–26 בספטמבר · נתונים מומצאים משלושה פוסטים" },
-      { source: "האתר", observation: "יש ביקורים, אבל פרטי האיסוף חסרים", detail: "בעמוד המארז נרשמו 32 ביקורים. בנפרד, נמדדו 3 הזמנות ששולמו באתר. בדיקת העמוד בדוגמה מצאה שחסרים מקום ושעות האיסוף. איננו יודעים אם אלו אותם מבקרים או אם החוסר מנע קנייה.", period: "20–26 בספטמבר · נתוני אתר ובדיקת עמוד מומצאים" },
+      { source: "אינסטגרם", observation: "הפוסט על המארז מעורר עניין", detail: "הוא נשמר 24 פעמים, לעומת 6 ו־8 שמירות בשני הפוסטים האחרים באותו שבוע. שמירה מעידה על עניין, ואינה הזמנה.", period: "20–26 בספטמבר · שלושה פוסטים" },
+      { source: "האתר", observation: "יש ביקורים, אבל פרטי האיסוף חסרים", detail: "בעמוד המארז נרשמו 32 ביקורים. בנפרד, נמדדו 3 הזמנות ששולמו באתר. בדיקת העמוד מצאה שחסרים מקום ושעות האיסוף. איננו יודעים אם אלו אותם מבקרים או אם החוסר מנע קנייה.", period: "20–26 בספטמבר · נתוני האתר ובדיקת העמוד" },
       businessFacts,
     ],
   },
   learning: {
     business: "פרג ושמרים", state: "learning", period: "תחילת המדידה",
     goal: "בתוכנית: יותר הזמנות למארזי שישי",
-    source: "בדוגמה: המידע על העסק קיים; עדיין אין מספיק נתוני תוצאות",
+    source: "המידע על העסק קיים; עדיין אין מספיק נתוני תוצאות",
     heading: "מוקדם לדעת מה עובד. אפשר כבר להסביר מה מזמינים.",
     explanation: "המדידה רק התחילה. בינתיים נמשיך בצעד שבתוכנית: להציג את המארז בצורה ברורה, כדי שלקוחות ידעו מה מקבלים ואיך מזמינים.",
     uncertainty: "הצעד נשען על התוכנית ופרטי העסק, ולא על מסקנה מהתוצאות. נתונים שעדיין לא נאספו אינם אפס הזמנות.",
     nextAction: { title: "ההסבר למארז כבר מוכן לבדיקה", explanation: "לא צריך לפענח נתונים כדי להתחיל. בדקו את התכולה, המחיר ושעות האיסוף בנוסח שהכנו.", effort: "רק לבדוק את הפרטים", successCheck },
     actionLabel: "לראות את ההסבר שהכנו",
     evidence: [
-      { source: "אינסטגרם", observation: "אין עדיין בסיס להשוואה", detail: "בתוך התרחיש, הפרסום התחיל לפני שלושה ימים. לא נסיק ממנו מהו סוג התוכן שעובד הכי טוב.", period: "שלושה ימים בלבד · נתונים לדוגמה" },
-      { source: "האתר", observation: "המדידה עדיין בתחילת הדרך", detail: "נמדדו שתי הזמנות ששולמו בשלושה ימים. אין שבוע קודם להשוואה, ולא נשווה שלושה ימים לשבוע מלא.", period: "שלושה ימים בלבד · נתונים לדוגמה" },
+      { source: "אינסטגרם", observation: "אין עדיין בסיס להשוואה", detail: "הפרסום התחיל לפני שלושה ימים. לא נסיק ממנו מהו סוג התוכן שעובד הכי טוב.", period: "שלושה ימים בלבד" },
+      { source: "האתר", observation: "המדידה עדיין בתחילת הדרך", detail: "נמדדו שתי הזמנות ששולמו בשלושה ימים. אין שבוע קודם להשוואה, ולא נשווה שלושה ימים לשבוע מלא.", period: "שלושה ימים בלבד" },
       businessFacts,
     ],
   },
   disconnected: {
     business: "פרג ושמרים", state: "disconnected", period: "נתוני האתר נעצרו ב־19 בספטמבר 2026",
     goal: "בתוכנית: יותר הזמנות למארזי שישי",
-    source: "בדוגמה: אינסטגרם ופרטי העסק זמינים; נתוני האתר דורשים חיבור מחדש",
+    source: "אינסטגרם ופרטי העסק זמינים; נתוני האתר דורשים חיבור מחדש",
     heading: "ההסבר למארז מוכן. חסרים לנו נתוני ההזמנות.",
     explanation: "אפשר להמשיך עם מה שכבר הכנו. כדי לדעת אם זה עוזר להזמנות, צריך לחדש את החיבור לנתוני האתר.",
     uncertainty: "נתוני האתר החסרים אינם הוכחה שההזמנות ירדו. לא נציג מסקנה על המכירות בלי קריאה עדכנית.",
     nextAction: { title: "נחדש את המדידה, בלי לעצור את התוכנית", explanation: "ההסבר והפוסט עדיין זמינים. החיבור מחדש רק מאפשר לנו להמשיך לבדוק את ההזמנות באתר.", effort: "ההרשאה צריכה חידוש", successCheck },
-    actionLabel: "לחדש את החיבור בדוגמה",
+    actionLabel: "לחדש את החיבור",
     evidence: [
-      { source: "אינסטגרם", observation: "עדיין יש נתוני עניין בפוסט", detail: "הפוסט על המארז נשמר 24 פעמים בתרחיש. אי אפשר ללמוד מהשמירות כמה הזמנות התקבלו.", period: "20–26 בספטמבר · נתונים מומצאים" },
-      { source: "האתר", observation: "אין קריאה עדכנית של ההזמנות", detail: "העדכון האחרון הצליח ב־19 בספטמבר. הנתונים מאז חסרים; הם לא אפס.", period: "חיבור שנעצר · תרחיש לדוגמה" },
+      { source: "אינסטגרם", observation: "עדיין יש נתוני עניין בפוסט", detail: "הפוסט על המארז נשמר 24 פעמים. אי אפשר ללמוד מהשמירות כמה הזמנות התקבלו.", period: "20–26 בספטמבר" },
+      { source: "האתר", observation: "אין קריאה עדכנית של ההזמנות", detail: "העדכון האחרון הצליח ב־19 בספטמבר. הנתונים מאז חסרים; הם לא אפס.", period: "חיבור שנעצר" },
       businessFacts,
     ],
   },
@@ -97,25 +99,25 @@ export function ResultsWorkshop() {
   const data = reconnected ? {
     ...examples.learning,
     period: "החיבור חודש · ממתינים לעדכון",
-    source: "בדוגמה: החיבור חזר; עדיין לא התקבלו נתוני אתר חדשים",
+    source: "החיבור חזר; עדיין לא התקבלו נתוני אתר חדשים",
     heading: "החיבור חזר. בינתיים נמשיך עם ההסבר שהכנו.",
     explanation: "שמרנו את העבודה בתוכנית. כשיגיעו נתוני הזמנות חדשים, נוכל להמשיך לבדוק את התוצאות.",
     uncertainty: "לא ננחש מה קרה להזמנות בזמן שהחיבור לא פעל.",
-    evidence: [examples.disconnected.evidence[0], { source: "האתר", observation: "החיבור חזר, ומחכים לנתונים", detail: "ההרשאה חודשה בתוך התרחיש. חיבור פעיל לבדו לא אומר שהנתונים כבר התעדכנו.", period: "התאוששות מדומה · אין מדידה חדשה" }, businessFacts],
+    evidence: [examples.disconnected.evidence[0], { source: "האתר", observation: "החיבור חזר, ומחכים לנתונים", detail: "ההרשאה חודשה. חיבור פעיל לבדו לא אומר שהנתונים כבר התעדכנו.", period: "אין מדידה חדשה" }, businessFacts],
   } : examples[scenario];
   return <div className={styles.workshop}>
-    <div className={styles.workshopHeading}><div><p className={styles.eyebrow}><Copy text="רכיב המלצה לעסק" /></p><h1><Copy text="המידע מורכב. הצעד הבא ברור." /></h1></div><p><Copy text="תרחיש מומצא מכמה מקורות." /><br />{" "}<Copy text="האישור נשאר בתצוגה הזו." /></p></div>
+    <div className={styles.workshopHeading}><div><p className={styles.eyebrow}><Copy text="רכיב המלצה לעסק" /></p><h1><Copy text="המידע מורכב. הצעד הבא ברור." /></h1></div></div>
     <div className={styles.scenarios}><span><Copy text="לנסות מצב אחר" /></span><SegmentedControl label={t("מצב נתוני התוצאות")} value={scenario} onChange={changeScenario} options={[{ value: "finding", label: t("יש המלצה") }, { value: "learning", label: t("מעט נתונים") }, { value: "disconnected", label: t("מקור חסר") }]} /></div>
-    {reconnected && <p className={styles.recovery} role="status"><Copy text="החיבור חודש בדוגמה. הנתונים עוד לא התעדכנו; בינתיים אפשר להמשיך עם ההסבר שהכנו." /></p>}
+    {reconnected && <p className={styles.recovery} role="status"><Copy text="החיבור חודש. הנתונים עוד לא התעדכנו; בינתיים אפשר להמשיך עם ההסבר שהכנו." /></p>}
     <ResultsBrief key={scenario} data={{ ...data, period: t(data.period), source: t(data.source), goal: t(data.goal), heading: t(data.heading), explanation: t(data.explanation), uncertainty: t(data.uncertainty), actionLabel: t(data.actionLabel), nextAction: { title: t(data.nextAction.title), explanation: t(data.nextAction.explanation), effort: t(data.nextAction.effort), successCheck: t(data.nextAction.successCheck) }, evidence: data.evidence.map(item => ({ source: t(item.source), observation: t(item.observation), detail: t(item.detail), period: t(item.period) })) }} onAction={act} onContinue={scenario === "disconnected" ? () => setExpanded(value => !value) : undefined} expanded={expanded} actionContent={<section className={styles.proposal} aria-labelledby={`${id}-plan-title`}>
       <div className={styles.proposalHeader}><p className={styles.eyebrow}><Copy text="הצעד בתוכנית · להסביר איך מזמינים" /></p><UIAction variant="text" onClick={() => setExpanded(false)}><Copy text="לסגור" /></UIAction></div>
       <h3 id={`${id}-plan-title`}><Copy text="זה ההסבר שנוסיף לעמוד המארז" /></h3>
       <p className={styles.proposalIntro}><Copy text="בדקו שהפרטים נכונים. אפשר לתקן את הנוסח כאן לפני האישור." /></p>
       <label className={styles.copyLabel} htmlFor={`${id}-copy`}><Copy text="הנוסח ללקוחות" /></label>
       <textarea ref={copyField} id={`${id}-copy`} value={copy} rows={3} onChange={event => { setCopy(event.target.value); setAcceptedCopy(null); setCopyStatus(""); }} aria-describedby={`${id}-copy-help`} className={styles.copyField} />
-      <p id={`${id}-copy-help`} className={styles.copyHelp}><Copy text="פרטי המארז מומצאים לצורך הדוגמה. בחשבון אמיתי משתמשים בפרטים שאישרתם." /></p>
+      <p id={`${id}-copy-help`} className={styles.copyHelp}><Copy text="בדקו שתכולת המארז, המחיר וזמני האיסוף נכונים." /></p>
       <div className={styles.proposalActions}>
-        <UIAction disabled={!copy.trim()} variant={acceptedCopy ? "secondary" : "primary"} onClick={() => setAcceptedCopy(acceptedCopy ? null : copy)}>{acceptedCopy ? t("לבטל את האישור בדוגמה") : t("לאשר את ההסבר לתוכנית בדוגמה")}</UIAction>
+        <UIAction disabled={!copy.trim()} variant={acceptedCopy ? "secondary" : "primary"} onClick={() => setAcceptedCopy(acceptedCopy ? null : copy)}>{acceptedCopy ? t("לבטל את האישור") : t("לאשר את ההסבר לתוכנית")}</UIAction>
         <UIAction variant="text" disabled={!copy.trim()} onClick={copyForWebsite}><Copy text="להעתיק לאתר" /></UIAction>
       </div>
       {copyStatus && <p className={styles.accepted} role="status">{t(copyStatus)}</p>}
@@ -131,7 +133,7 @@ export function ResultsPreview() {
   const [view, setView] = useState("app");
   const { palette } = useDesignPalette();
   return <DesignScope palette={palette} className={styles.preview}><div className={styles.previewContainer}>
-    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark /><Copy text="ישראמארקט" /></Link><Link href="/design"><Copy text="לספריית העיצוב" /><IconArrowRight className="inline h-4 w-4 ms-2" /></Link></header>
+    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><Link href="/design"><Copy text="לספריית העיצוב" /><IconArrowRight className="inline h-4 w-4 ms-2" /></Link></header>
     <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label={t("תצוגת סקירת התוצאות")} value={view} onChange={setView} options={[{ value: "app", label: t("הרכיב באפליקציה") }, { value: "concept", label: t("הרעיון הקודם") }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
   </div></DesignScope>;
 }

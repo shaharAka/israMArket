@@ -1,0 +1,114 @@
+/* Individual creative directions, rather than a template with swapped colors. */
+.campaign-examples { margin-block: 32px; }
+.campaign-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; align-items: start; }
+.campaign-grid[data-count="1"] { max-width: 480px; grid-template-columns: 1fr; }
+.campaign-item { min-width: 0; }
+.campaign-art { --art-paper: #f4e8d3; --art-ink: #542619; --art-accent: #b67851; position: relative; margin: 0; aspect-ratio: 4 / 5; overflow: hidden; background: var(--art-paper); color: var(--art-ink); box-shadow: 0 12px 36px rgb(30 35 45 / 10%); container-type: inline-size; scroll-margin-top: 160px; }
+.campaign-photo { position: absolute; inset: 0; overflow: hidden; }
+.campaign-photo img { object-fit: cover; object-position: center; }
+.campaign-business { position: absolute; z-index: 2; inset-block-start: 7%; inset-inline-start: 7%; max-width: 86%; font-size: 3.6cqw; font-weight: 600; line-height: 1.35; }
+.campaign-art h3 { position: absolute; z-index: 2; margin: 0; inset-inline: 7%; inset-block-start: 16%; font-size: 10.6cqw; font-weight: 600; line-height: 1.08; letter-spacing: -.045em; white-space: pre-line; text-wrap: balance; }
+.campaign-art-footer { position: absolute; z-index: 2; inset-inline: 7%; inset-block-end: 6%; max-width: 78%; font-size: 3.4cqw; font-weight: 500; line-height: 1.45; }
+/* Interior: a magazine spread; light observations in the quiet margin. */
+.campaign-art--interior { --art-paper: #efeee3; --art-ink: #38442f; }
+.campaign-art--interior .campaign-photo { inset: 0; }
+.campaign-art--interior .campaign-photo img { object-position: center 68%; }
+.campaign-art--interior .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(32 42 25 / 80%), transparent 47%); }
+.campaign-art--interior .campaign-business { inset-block-start: 5%; font-size: 3.2cqw; color: #38442f; }
+.campaign-art--interior h3 { inset-block-start: 13%; inset-inline-start: 7%; inset-inline-end: 20%; font-family: var(--font-art-serif), Georgia, serif; font-size: 14cqw; line-height: .97; }
+.campaign-light-notes { position: absolute; inset-block-end: 14%; inset-inline-end: 7%; display: flex; flex-direction: column; gap: 1.5cqw; font-size: 4cqw; color: #efeee3; }
+.campaign-light-notes > span { border-inline-end: 1px solid #efeee3; padding-inline-end: 2cqw; }
+.campaign-art--interior .campaign-art-footer { inset-block-end: 5%; font-size: 2.8cqw; color: #efeee3; }
+/* DJ: full-scale music-poster type, three-track running order. */
+.campaign-art--dj { color: #fff2e5; }
+.campaign-art--dj .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgb(9 14 33 / 30%), transparent 65%), linear-gradient(0deg, rgb(9 14 33 / 88%), transparent 55%); }
+.campaign-art--dj .campaign-business { font-size: 3.1cqw; color: #fff2e5; }
+.campaign-art--dj h3 { inset-block-start: 17%; font-family: var(--font-site-hebrew), var(--font-ui), sans-serif; font-size: 21cqw; font-weight: 700; line-height: .83; letter-spacing: -.055em; color: #fff2e5; text-shadow: 0 2px 18px rgb(9 14 33 / 30%); }
+.campaign-track-list { list-style: none; position: absolute; z-index: 2; inset-inline: 7%; inset-block-end: 12%; display: flex; gap: 4%; color: #fff2e5; margin: 0; padding: 0; width: 86%; }
+.campaign-track-list li { flex: 1; border-top: 1px solid #f78362; padding-top: 2cqw; font-size: 3.5cqw; line-height: 1.2; }
+.campaign-track-list small { color: #f78362; display: block; font-size: 4cqw; margin-bottom: 1.4cqw; }
+.campaign-track-list li[data-current="true"] { color: #f78362; }
+.campaign-art--dj .campaign-art-footer { font-size: 2.8cqw; inset-block-end: 4%; color: #fff2e5; }
+/* Beauty: a portrait and a narrow editorial type column, not top/bottom bands. */
+.campaign-art--makeup .campaign-photo { inset-inline-start: 34%; inset-block-end: 0; inset-block-start: 0; }
+.campaign-art--makeup .campaign-photo img { object-position: center 22%; }
+.campaign-art--makeup .campaign-business { inset-block-start: 7%; inset-inline-start: 5%; max-width: 24%; font-size: 3cqw; color: #672f43; }
+.campaign-art--makeup h3 { inset-block-start: 24%; inset-inline-start: 5%; inset-inline-end: 70%; font-family: var(--font-art-serif), Georgia, serif; font-size: 8cqw; line-height: 1.03; font-weight: 500; white-space: normal; }
+.campaign-art--makeup .campaign-art-footer { inset-inline-start: 5%; inset-inline-end: 70%; inset-block-end: 7%; font-size: 2.8cqw; max-width: 25%; }
+/* Clothing: a full-bleed look with oversized outlined typography. */
+.campaign-art--clothing .campaign-photo img { object-position: center 16%; }
+.campaign-art--clothing .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(15 30 54 / 74%), transparent 36%); }
+.campaign-art--clothing .campaign-business { color: #254a9c; inset-block-start: 5%; letter-spacing: .03em; font-size: 3.4cqw; }
+.campaign-art--clothing h3 { inset-block-start: auto; inset-block-end: 16%; font-size: 20cqw; line-height: .87; font-weight: 500; color: #fff9ef; -webkit-text-stroke: 1px #fff9ef; }
+.campaign-art--clothing .campaign-art-footer { color: #fff9ef; inset-block-end: 5%; font-size: 3.3cqw; max-width: 72%; }
+/* Phone: macro product detail, followed by a needs-first comparison. */
+.campaign-art--mobile { background: #253e8d; color: #fff; }
+.campaign-art--mobile .campaign-photo { inset-block-start: 18%; inset-block-end: 0; }
+.campaign-art--mobile .campaign-photo img { object-position: center 58%; }
+.campaign-art--mobile .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #253e8d, transparent 35%); }
+.campaign-art--mobile .campaign-business { inset-block-start: 5%; color: #fff; font-size: 3.2cqw; }
+.campaign-art--mobile h3 { inset-block-start: 12%; font-size: 11.2cqw; color: #fff; text-shadow: 0 2px 18px rgb(18 36 80 / 25%); }
+.campaign-phone-notes { position: absolute; z-index: 2; inset-block-end: 12%; inset-inline: 7%; display: flex; justify-content: space-between; color: #fff; font-size: 4.1cqw; font-weight: 500; }
+.campaign-phone-notes span { border-block-end: 1px solid #c6c6ff; padding-block-end: 1.5cqw; }
+.campaign-art--mobile .campaign-art-footer { font-size: 2.8cqw; }
+/* Daily essentials: an asymmetric packing list beside the actual objects. */
+.campaign-art--wellness .campaign-photo { inset-inline-start: 18%; inset-block-start: 31%; inset-block-end: 8%; }
+.campaign-art--wellness .campaign-photo img { object-position: center 64%; }
+.campaign-art--wellness .campaign-business { inset-block-start: 5%; font-size: 3.2cqw; }
+.campaign-art--wellness h3 { inset-block-start: 12%; font-size: 12.2cqw; line-height: .96; }
+.campaign-kit-list { position: absolute; z-index: 2; list-style: none; padding: 0; margin: 0; inset-inline-start: 7%; inset-block-start: 38%; display: flex; flex-direction: column; gap: 5cqw; font-size: 4.5cqw; color: #345444; }
+.campaign-kit-list li { background: #e8eee4; padding-inline-end: 2cqw; }
+.campaign-kit-list li::before { content: "✓"; color: #345444; margin-inline-end: 1.5cqw; }
+.campaign-art--wellness .campaign-art-footer { font-size: 3cqw; inset-block-end: 2.5%; }
+/* Software: natural people and actual product proof in a restrained collage. */
+.campaign-art--software { --art-paper: #eaf0ff; --art-ink: #203b7e; }
+.campaign-art--software .campaign-photo { inset-block-start: 32%; inset-block-end: 12%; inset-inline-start: 0; inset-inline-end: 8%; }
+.campaign-art--software .campaign-photo img { object-position: center 20%; }
+.campaign-art--software .campaign-business { font-family: var(--font-inter), sans-serif; font-size: 4.5cqw; letter-spacing: -.04em; inset-block-start: 5%; }
+.campaign-art--software h3 { inset-block-start: 13%; font-size: 12.5cqw; line-height: .95; }
+.campaign-software-screen { position: absolute; z-index: 3; width: 64%; inset-inline-end: 0; inset-block-end: 5%; overflow: hidden; box-shadow: 0 8px 20px rgb(22 45 91 / 25%); }
+.campaign-software-screen img { width: 100%; height: auto; }
+.campaign-art--software .campaign-art-footer { display: none; }
+/* Community: documentary warmth; no invented impact numbers. */
+.campaign-art--nonprofit .campaign-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(49 17 40 / 90%), transparent 65%); }
+.campaign-art--nonprofit .campaign-photo img { object-position: center 17%; }
+.campaign-art--nonprofit .campaign-business { font-size: 3.4cqw; color: #fff; background: #6e3459; padding: 2cqw 3cqw; inset-block-start: 5%; inset-inline-start: 0; }
+.campaign-art--nonprofit h3 { inset-block-start: auto; inset-block-end: 17%; font-size: 12.2cqw; font-weight: 500; color: #fff6ed; line-height: .98; }
+.campaign-art--nonprofit .campaign-art-footer { color: #fff6ed; font-size: 3.6cqw; inset-block-end: 7%; max-width: 65%; }
+.campaign-beat { position: absolute; z-index: 4; inset-inline: 7%; inset-block-end: 7%; font-size: 5cqw; color: #fff; font-weight: 600; }
+.campaign-art--clothing .campaign-beat { inset-block-end: 9%; font-size: 4cqw; }
+.campaign-context { color: var(--ink-muted); font-size: 12px; line-height: 1.6; margin: 12px 0 4px; }
+.campaign-read { appearance: none; font: inherit; font-size: 14px; min-height: 44px; background: none; border: 0; color: var(--primary); padding: 8px 0; cursor: pointer; display: block; }
+.campaign-read:hover, .campaign-read[aria-pressed="true"] { text-decoration: underline; text-underline-offset: 4px; }
+.campaign-read:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.campaign-detail { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--rule); }
+.campaign-explanation h3 { font-size: 18px; font-weight: 600; margin-bottom: 16px; }
+.campaign-plan { color: var(--ink); font-size: 21px; font-weight: 500; line-height: 1.6; margin: 0 0 16px; max-width: 42ch; }
+.campaign-caption { color: var(--ink-soft); font-size: 15px; line-height: 1.7; max-width: 66ch; }
+.campaign-motion { margin-block: 16px; font-size: 14px; line-height: 1.6; }
+.campaign-motion ol { margin-block: 8px; padding-inline-start: 22px; }
+.campaign-motion li { padding: 4px; }
+.campaign-motion li[aria-current="step"] { color: var(--primary); background: var(--primary-soft); }
+html[lang="en"] .campaign-art h3, html[lang="ru"] .campaign-art h3 { font-family: var(--font-inter), sans-serif; font-size: 8.2cqw; line-height: 1.08; }
+html[lang="en"] .campaign-art--dj h3, html[lang="ru"] .campaign-art--dj h3 { font-size: 16cqw; line-height: .91; }
+html[lang="en"] .campaign-art--clothing h3, html[lang="ru"] .campaign-art--clothing h3 { font-size: 14cqw; line-height: .96; }
+html[lang="en"] .campaign-art--makeup .campaign-photo, html[lang="ru"] .campaign-art--makeup .campaign-photo { inset-inline-start: 43%; }
+html[lang="en"] .campaign-art--makeup .campaign-business, html[lang="ru"] .campaign-art--makeup .campaign-business { max-width: 33%; }
+html[lang="en"] .campaign-art--makeup h3, html[lang="ru"] .campaign-art--makeup h3 { inset-inline-end: 62%; font-size: 5.2cqw; line-height: 1.2; letter-spacing: -.045em; }
+html[lang="en"] .campaign-art--makeup .campaign-art-footer, html[lang="ru"] .campaign-art--makeup .campaign-art-footer { inset-inline-end: 62%; max-width: 33%; }
+html[lang="ar"] .campaign-art h3 { font-family: var(--font-arabic), sans-serif; font-size: 9cqw; line-height: 1.1; letter-spacing: normal; }
+html[lang="ar"] .campaign-art--dj h3 { font-size: 17cqw; }
+html[lang="ar"] .campaign-art--makeup h3 { font-size: 7cqw; line-height: 1.35; }
+@media (prefers-reduced-motion: reduce) { .campaign-art .campaign-photo img { transition: none !important; transform: none !important; } .campaign-item > .campaign-read:not([aria-controls]) { display: none; } }
+@media (max-width: 700px) { .campaign-grid { grid-template-columns: 1fr; max-width: 480px; margin-inline: auto; gap: 32px; } .campaign-plan { max-width: 100%; font-size: 20px; } }
+
+.campaign-examples[data-gallery="true"] { display: block !important; }
+.campaign-examples[data-gallery="true"] .campaign-item { position: relative; }
+.campaign-examples[data-gallery="true"] .campaign-grid[data-count="1"] { grid-template-columns: minmax(0,420px); justify-content: center; }
+.campaign-play { position: absolute; inset-inline: 16px; bottom: 16px; width: fit-content; margin-inline: auto; min-height: 44px; padding: 10px 16px; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 12px; box-shadow: var(--shadow-card); cursor: pointer; z-index: 5; }
+.campaign-play:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+.campaign-play { inset-inline-start: 16px; inset-inline-end: auto; width: 44px; height: 44px; min-width: 44px; padding: 0; transform: none; display: grid; place-items: center; font-size: 16px; }
+
+.campaign-player { position: relative; min-width: 0; }
+.campaign-photo video { width: 100%; height: 100%; object-fit: cover; }

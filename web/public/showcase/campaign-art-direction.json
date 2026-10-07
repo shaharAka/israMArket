@@ -1,0 +1,48 @@
+{
+  "generation": {
+    "mode": "built-in image_gen",
+    "prompts": {
+      "bakery": "Use case: ads-marketing. Create an extraordinarily beautiful editorial food photograph for a fictional independent neighborhood Israeli bakery's Instagram campaign. Portrait 4:5 image, raster photorealism, no text anywhere. Scene: intimate close-up of flour-dusted adult baker hands gently pulling apart a freshly baked braided challah; the tender ivory torn interior and delicate golden sesame crust are hero, tactile and appetizing, a few honest crumbs on a worn walnut bakery counter. A whole second challah and softly rumpled natural linen recede in the background. Candid craft, generous human warmth, late morning directional window light from the left, subtle analog film character, terracotta and toasted honey palette, deep warm brown shadows, premium food magazine art direction. Authentic everyday bread rather than glossy supermarket stock. Hands anatomically natural with five fingers, no extra fingers. Composition: bread and hands occupy middle and lower two thirds; upper quarter is an out-of-focus deep warm bakery environment suitable for optional headline overlay, but do NOT add text. Not a flat lay. Sharp torn crumb detail; shallow depth of field. No logo, no watermark, no packaging, no illustrated shapes, no vector art, no gradient graphic, no promotional stickers. Fictional scene, not a real bakery or customer.",
+      "interior": "Use case: ads-marketing. Portrait 4:5 natural architectural editorial photograph for an independent fictional Israeli interior designer's educational Instagram post about testing paint in actual daylight. A beautiful modest lived-in Mediterranean apartment, not a mansion, with warm off-white plaster walls, vintage honey-oak sideboard, small sculptural terracotta vase, sheer linen curtain beside a tall window. The main subject is one large warm cream painted sample board leaning against the wall on the sideboard, visibly divided by real angled afternoon window light and a soft cool shadow; beside it a second smaller off-white paint sample board and a compact fan of actual paper paint swatches with NO readable labels. The visual insight is the same paint looking warmer in sun and cooler in shadow. An adult woman's natural hand enters unobtrusively at lower right holding a third paint sample, suggesting a thoughtful designer at work; no face needed. Rich olive foliage only at extreme edge, restrained ceramic objects, elegant livable space with tactile plaster and linen. Premium interiors magazine photo, realistic material imperfections, confident quiet composition, warm ivory / muted olive / honey wood colors. Subject concentrated in center and lower two thirds, top fifth quiet wall suitable for HTML title later. No text, letters, numbers, logo, watermark, graphics, grids, collages, CGI perfection, fake before-and-after. Strong yet realistic sunlight, no graphic gradients. Fictional AI scene, must not depict a real client project."
+    }
+  },
+  "examples": [
+    {
+      "key": "bakery",
+      "business": "פת לחם",
+      "kind": "מאפייה שכונתית לדוגמה",
+      "image": "/showcase/bakery-challah-ai.png",
+      "alt": "ידיים בוצעות חלה זהובה על שולחן מאפייה, בתמונה שנוצרה ב-AI",
+      "headline": "החלה של שישי.\nגם בשבת בבוקר.",
+      "tip": "נשארה חלה? פרסו והקפיאו כשהיא טרייה. מחר, ישר לטוסטר.",
+      "action": "לשמור לבוקר שאחרי",
+      "label": "עסק לדוגמה · תמונה שנוצרה ב-AI",
+      "plan": "בתוכנית: לתת ללקוחות סיבה לזכור את המאפייה גם אחרי הקנייה.",
+      "caption": "הפרוסה האחרונה ראויה לבוקר משלה. אם נשארה לכם חלה, פרסו והקפיאו כשהיא עוד טרייה. מחר אפשר להעביר פרוסה קפואה ישר לטוסטר. עם חמאה או עם מה שאתם אוהבים. שמרו את הטיפ לשבת הבאה."
+    },
+    {
+      "key": "interior",
+      "business": "יעל · עיצוב פנים",
+      "kind": "מעצבת פנים לדוגמה",
+      "image": "/showcase/interior-paint-ai.png",
+      "alt": "דוגמאות צבע בגוני שמנת באור ובצל ליד חלון, בהמחשה שנוצרה ב-AI",
+      "headline": "אותו צבע.\nבית אחר לגמרי.",
+      "tip": "לפני שצובעים, בדקו דוגמה גדולה בבית: בבוקר, בערב ועם האור דולק.",
+      "action": "לשמור לפני בחירת הצבע",
+      "label": "עסק לדוגמה · המחשה שנוצרה ב-AI",
+      "plan": "בתוכנית: להמחיש שיקול מקצועי אחד לפני שמציעים פגישת ייעוץ.",
+      "caption": "בחנות הוא נראה בדיוק נכון. בבית הוא יכול להרגיש צהוב, אפור או קר מדי. לפני שבוחרים צבע לכל החדר, נסו דוגמה גדולה ליד הרצפה והריהוט שלכם. הסתכלו עליה בבוקר, בערב וגם בתאורה הביתית. כך בוחרים צבע לפי הבית, ולא רק לפי המניפה."
+    },
+    {
+      "key": "software",
+      "business": "IsraMarket",
+      "kind": "תוכנה לעסקים קטנים",
+      "headline": "מה מפרסמים?\nמתחילים בתוכנית.",
+      "tip": "מחקר על העסק והשוק. פוסטים שמתאימים לכם. ממצאים שמכוונים את ההמשך.",
+      "action": "להכיר את התוכנית של העסק",
+      "label": "פוסט לדוגמה של IsraMarket",
+      "plan": "בתוכנית: להראות איך המחקר, הפוסטים והמדידה משתלבים בתוכנית מתמשכת.",
+      "caption": "לפני הפוסט הבא, כדאי לדעת למי פונים ומה רוצים שיקרה. ב-IsraMarket מתחילים במחקר על העסק והשוק, בונים תוכנית ומכינים פוסטים שמתאימים לה. כשיש נתונים, בודקים מה למדנו ומעדכנים את ההמשך. התוכנית נשארת במרכז, גם כשהעסק משתנה."
+    }
+  ]
+}

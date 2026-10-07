@@ -137,3 +137,76 @@ updating the runner. Credentials stay local and ignored, never in these docs or 
 Do not send customer assets, analytics, tokens or private owner declarations as routine
 review context. Report actual token usage; do not invent an exact cost without the
 current account/model pricing.
+
+
+## Human images and generated reel shots, 7 October 2026
+
+Shahar requested a more colorful, lively public website, with independent service-provider
+and retail examples. The marketing plan remains the main artifact: each post has an
+audience, a useful idea and a next action. This extends the current homepage task #154.
+
+The homepage preview now has distinct designer, DJ, makeup, phone-shop, everyday wellness
+and clothing examples. Built-in image generation produced fictional artwork, including a
+makeup session and a clothing model with natural skin and a believable working pose. Full
+prompts and provenance are in `web/public/showcase/*art-direction.json`; these are website
+creative samples, not a benchmark of the application's Muse/Gemini pipeline. The DJ and
+clothing motion previews animate still photographs. They are explicitly labelled and do
+not claim a generative video capability in the app.
+
+Three practical creative directions:
+
+- **Expert at work:** a makeup brush, a designer comparing colors, a DJ changing the mix.
+  Show the specific decision that demonstrates the professional's character.
+- **Product in use:** a person handling fabric or a phone, with one useful buying tip.
+  For an actual customer's campaign preserve their real product, not a fictional stand-in.
+- **People plus product proof:** a brief human moment followed by an actual IsraMarket
+  plan/screen and the next action. Avoid a synthetic spokesperson explaining the whole app.
+
+For a first generated-video comparison, keep one approved source image and one short
+9:16 shot brief consistent across providers. Add our own editable caption and brand layer
+when assembling the reel. The current local Remotion export prototype (#71) is relevant
+to that assembly stage; it does not prove the generated-shot stage.
+
+Official API documentation, checked 7 October 2026:
+
+- Google now recommends [Gemini Omni Flash](https://ai.google.dev/gemini-api/docs/video)
+  as its default video generator. Its [generation guide](https://ai.google.dev/gemini-api/docs/omni)
+  documents 9:16 output, subject references and first/last-frame roles. Character consistency
+  is a provider claim to test on our shots. The [published price](https://ai.google.dev/gemini-api/docs/pricing)
+  is approximately $0.10 per second of 720p video output, plus inputs/text output. Eight
+  seconds is therefore about $0.80 in video output alone; retries, edits and assembly are
+  additional. Veo 3.1 remains an option for particular shot controls.
+- [Runway's API](https://docs.dev.runwayml.com/guides/using-the-api/) is a comparison
+  candidate for image-to-video. Its [current pricing](https://docs.dev.runwayml.com/guides/pricing/)
+  lists Gen-4.5 at 12 credits per second and $0.01 per credit, equivalent to $0.12 per
+  output second before applicable tax. Model availability and shot quality still need an
+  actual test; a higher price is not evidence of a better result.
+
+Recommended first comparison: makeup brush motion and a clothing sleeve/fabric shot.
+Score identity/product preservation, face/hands, movement, crop, brand fit, required edits
+and cost **per accepted shot**, including retries. Then compare a generated shot with an
+animated still in the same reel. No new paid video provider, billed video request or public
+campaign publication was performed in this review. Before running paid jobs, agree the
+small benchmark's spending ceiling with Shahar.
+
+### October 8: first real human-motion website asset
+
+At Shahar’s request and with an explicit US$2 total generation cap, one eight-second
+720p portrait clip was generated using the existing Gemini account and
+`veo-3.1-fast-generate-preview`. Google’s published 720p Fast price at generation
+was US$0.10/second: approximately US$0.80 for this successful output, excluding any
+account-specific tax. One job, no retry. Reference: the existing fictional adult
+woman in `clothing-linen-ai.png`; direction: finish rolling a cuff, turn and walk
+naturally, with a locked camera. It is generated movement, not a still-image zoom.
+
+Asset: `web/public/showcase/clothing-human-motion-ai.mp4`. The provider’s padding was
+cropped to the reference’s 4:5 composition; muted website playback contains no audio
+track. It remains a local marketing asset and does not enable customer API generation.
+The second post feature shows it; the first feature uses only still artwork. Browser
+review checked movement, looping, pause and the separate static view. Original model
+operation metadata and prompt are retained privately in `.runtime/media/`, not in git.
+
+Customer video generation must first ship the actual export pipeline (#71) and bounded
+allowances/extra credits (#158). The current proposal is two short successful clips per
+billing month, not unlimited regenerations under the ₪99 subscription. Trial allowance,
+rollover, exact model/duration and extra-credit prices still need a commercial decision.

@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { useState } from "react";
 import Link from "next/link";
-import { BrandMark, IconChevron } from "@/lib/icons";
+import { IconChevron } from "@/lib/icons";
 import { SunProgress } from "@/components/brand/SunProgress";
 import { PixelSetupGuide } from "@/components/integrations/PixelSetupGuide";
 import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
@@ -20,7 +22,7 @@ const providers = {
   meta: { title: "פייסבוק ואינסטגרם", benefit: "כדי להבין אילו פוסטים מעוררים עניין, ולדייק את הפוסט הבא בתוכנית.", action: "לחבר את פייסבוק ואינסטגרם", provider: "פייסבוק" },
 };
 const states: Record<State, string> = {
-  missing: "עוד לא חובר", selected: "החשבון נבחר, מחכים לקריאה הראשונה", ready: "התקבלה קריאה בדוגמה",
+  missing: "עוד לא חובר", selected: "החשבון נבחר, מחכים לקריאה הראשונה", ready: "התקבלה קריאה",
   no_history: "החשבון מחובר, עדיין אין נתונים לתקופה", reconnect: "צריך לחדש את האישור",
 };
 
@@ -41,7 +43,7 @@ function ReadinessRehearsal() {
   const state: SourceReadiness = { status, note_he: readNotes[status],
     ...(priorRead ? { period: { start: "2026-09-02", end: "2026-09-29" }, last_success_at: "2026-09-30T09:00:00Z" } : {}) };
   return <section className={`${styles.recommendation} mt-8`} aria-labelledby="real-read-states">
-    <div><h2 id="real-read-states">מצב נתוני האתר</h2><p className={styles.caption}>הרכיב שמופיע במוצר, עם מצבים ונתונים לדוגמה. אין קריאה מחשבון אמיתי.</p></div>
+    <div><h2 id="real-read-states">מצב נתוני האתר</h2><p className={styles.caption}>הרכיב שמופיע במוצר, עם מצבי המדידה והחיבורים.</p></div>
     <label className={styles.field}>המצב שמוצג למשתמש<select value={status} onChange={event => setStatus(event.target.value as SourceReadiness["status"])}>
       {(Object.keys(readNotes) as SourceReadiness["status"][]).map(value => <option key={value} value={value}>{sourcePresentation({ status: value, note_he: "" }).label}</option>)}
     </select></label>
@@ -80,7 +82,7 @@ export function ConnectionWorkshop() {
   }
   function approveExample() {
     if (scenario === "cancelled") {
-      setOpen(false); setStep("intro"); setNotice("האישור בוטל בדוגמה. התוכנית זמינה, ותוכלו לחזור לחיבור כשנוח לכם."); return;
+      setOpen(false); setStep("intro"); setNotice("האישור בוטל. התוכנית זמינה, ותוכלו לחזור לחיבור כשנוח לכם."); return;
     }
     if (scenario === "wrong_account" || scenario === "reconnect") { setStep("recovery"); return; }
     setStep("select");
@@ -101,40 +103,39 @@ export function ConnectionWorkshop() {
   const title = step === "intro" ? data.title : step === "consent" ? "מאשרים אצל " + data.provider : step === "select" ? (provider === "google" ? "איזה אתר שייך לעסק?" : "איזה דף שייך לעסק?") : step === "recovery" ? "נמצא את החשבון הנכון" : step === "extras" ? "גם נתוני המודעות?" : step === "pixel" ? "המעקב באתר" : "החשבון נבחר";
 
   return <div className={`app-blue ${styles.page}`}><div className={styles.container}>
-    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><Link href="/design">לספריית העיצוב ←</Link></header>
+    <header className={styles.header}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><Link href="/design">לספריית העיצוב ←</Link></header>
     <main>
-      <div className={styles.previewNote}>תצוגת UX אינטראקטיבית. פרג ושמרים הוא עסק לדוגמה; כל הפעולות נשארות כאן.</div>
-      <div className={styles.heading}><div><h1>מחברים רק את מה שיעזור לתוכנית.</h1><p>בתוכנית של פרג ושמרים: יותר הזמנות למארזי שישי.</p></div><SunProgress value={Object.values(connections).filter(state => state === "ready").length} total={2} label="קריאות נתונים שהתקבלו בדוגמה" className={styles.store} /></div>
+      <div className={styles.heading}><div><h1>מחברים רק את מה שיעזור לתוכנית.</h1><p>בתוכנית של פרג ושמרים: יותר הזמנות למארזי שישי.</p></div><SunProgress value={Object.values(connections).filter(state => state === "ready").length} total={2} label="קריאות נתונים שהתקבלו" className={styles.store} /></div>
       {notice && <p className={styles.notice} role="status">{notice}</p>}
       {remaining ? <section className={styles.recommendation} aria-labelledby="recommended-connection">
         <span className={styles.caption}>כדאי להתחיל כאן</span><h2 id="recommended-connection">{providers[recommended].title}</h2>
         <p>{providers[recommended].benefit}</p><UIAction onClick={() => start(recommended)}>{providers[recommended].action}</UIAction>
-        <button className={styles.textAction} type="button" onClick={() => setNotice("אפשר להמשיך בתוכנית עכשיו ולחזור לחיבורים בהמשך. הבחירות בדוגמה נשמרות כל עוד הדף פתוח.")}>להמשיך בתוכנית ולחבר אחר כך</button>
-      </section> : <section className={styles.recommendation}><h2>החשבונות נבחרו. ממשיכים בתוכנית.</h2><p>אישור גישה לבדו אינו נתוני תוצאות. במצב החיבורים רואים אם כבר התקבלה קריאה.</p><Link href="/design/results" className={styles.resultLink}>לראות איך נתונים הופכים לצעד בתוכנית בדוגמה ←</Link></section>}
+        <button className={styles.textAction} type="button" onClick={() => setNotice("אפשר להמשיך בתוכנית עכשיו ולחזור לחיבורים בהמשך. הבחירות נשמרות כל עוד הדף פתוח.")}>להמשיך בתוכנית ולחבר אחר כך</button>
+      </section> : <section className={styles.recommendation}><h2>החשבונות נבחרו. ממשיכים בתוכנית.</h2><p>אישור גישה לבדו אינו נתוני תוצאות. במצב החיבורים רואים אם כבר התקבלה קריאה.</p><Link href="/design/results" className={styles.resultLink}>לראות איך נתונים הופכים לצעד בתוכנית ←</Link></section>}
       <section className={styles.connections} aria-labelledby="connection-status"><h2 id="connection-status">החיבורים של העסק</h2>
-        {(["google", "meta"] as Provider[]).map(key => <div className={styles.row} key={key}><div><strong>{providers[key].title}</strong>{selections[key] && <small>{selections[key]}</small>}<p><span className={styles.dot} data-state={connections[key]} aria-hidden="true" />{states[connections[key]]}</p>{key === "meta" && adsSaved && <small>גם חשבון הפרסום נבחר{pixel ? pixelChecked ? ", המעקב נבדק בדוגמה" : ", המעקב עדיין לא נבדק" : ""}</small>}</div><UIAction variant="text" onClick={() => start(key)}>{connections[key] === "missing" ? "לחבר" : connections[key] === "reconnect" ? "לחדש את האישור" : "לראות את החיבור"}</UIAction></div>)}
+        {(["google", "meta"] as Provider[]).map(key => <div className={styles.row} key={key}><div><strong>{providers[key].title}</strong>{selections[key] && <small>{selections[key]}</small>}<p><span className={styles.dot} data-state={connections[key]} aria-hidden="true" />{states[connections[key]]}</p>{key === "meta" && adsSaved && <small>גם חשבון הפרסום נבחר{pixel ? pixelChecked ? ", המעקב נבדק" : ", המעקב עדיין לא נבדק" : ""}</small>}</div><UIAction variant="text" onClick={() => start(key)}>{connections[key] === "missing" ? "לחבר" : connections[key] === "reconnect" ? "לחדש את האישור" : "לראות את החיבור"}</UIAction></div>)}
       </section>
       <details className={styles.disclosure}><summary>ומה עם חיבורים נוספים?<IconChevron /></summary><p>קישור וואטסאפ יכול למדוד לחיצות, לא הודעות או מכירות. חיבור לכרטיס העסק בגוגל ולכלים נוספים יוצע כשיהיה זמין; התוכנית אינה תלויה בהם.</p></details>
-      <div className={styles.reviewControls}><label>מצב לבדיקה<select value={scenario} onChange={event => changeScenario(event.target.value as Scenario)}><option value="normal">חיבור רגיל</option><option value="wrong_account">החשבון הלא נכון</option><option value="cancelled">האישור בוטל</option><option value="no_history">אין נתונים לתקופה</option><option value="reconnect">האישור צריך חידוש</option></select></label><UIAction variant="text" onClick={() => changeScenario("normal")}>להתחיל את הדוגמה מחדש</UIAction></div>
+      <div className={styles.reviewControls}><label>מצב לבדיקה<select value={scenario} onChange={event => changeScenario(event.target.value as Scenario)}><option value="normal">חיבור רגיל</option><option value="wrong_account">החשבון הלא נכון</option><option value="cancelled">האישור בוטל</option><option value="no_history">אין נתונים לתקופה</option><option value="reconnect">האישור צריך חידוש</option></select></label><UIAction variant="text" onClick={() => changeScenario("normal")}>להתחיל מחדש</UIAction></div>
       <ReadinessRehearsal />
     </main>
-    <UIDialog open={open} onClose={() => setOpen(false)} title={title} description="דוגמה בלבד. לא נפתח חיבור אמיתי ולא ניתנת גישה לחשבונות שלכם.">
+    <UIDialog open={open} onClose={() => setOpen(false)} title={title}>
       <div className={styles.sheet}>
         {step === "intro" && <>
           <p>{data.benefit}</p>
           {provider === "google" ? <p>הכניסה עם Google מזהה אתכם. כדי לקרוא את נתוני האתר צריך אישור נוסף, עם החשבון שמנהל את המדידה.</p> : <p>נבחר את הדף העסקי שלכם. אם האינסטגרם מקצועי ומקושר אליו, הוא יתחבר יחד עם הדף.</p>}
           <p className={styles.caption}>קריאת נתונים בלבד. לא משנים מודעות ולא מפרסמים פוסטים.</p>
-          <UIAction onClick={() => setStep("consent")}>לראות את שלב האישור בדוגמה</UIAction>
+          <UIAction onClick={() => setStep("consent")}>לראות את שלב האישור</UIAction>
         </>}
         {step === "consent" && <>
           <p>בחיבור אמיתי, כאן נפתח חלון מאובטח של {data.provider}. בחרו את החשבון שמנהל את העסק ואשרו קריאת נתונים.</p>
           {provider === "meta" && <p className={styles.caption}>בשלב הזה מחברים את הדף. נתוני מודעות ומעקב באתר הם בחירה נפרדת בהמשך.</p>}
           <UIAction onClick={approveExample}>לדמות אישור ולבחור את העסק</UIAction>
-          <UIAction variant="text" onClick={() => { setOpen(false); setStep("intro"); setNotice("האישור בוטל בדוגמה. אפשר להמשיך בתוכנית ולנסות שוב בהמשך."); }}>לדמות ביטול ולחזור לתוכנית</UIAction>
+          <UIAction variant="text" onClick={() => { setOpen(false); setStep("intro"); setNotice("האישור בוטל. אפשר להמשיך בתוכנית ולנסות שוב בהמשך."); }}>לדמות ביטול ולחזור לתוכנית</UIAction>
         </>}
         {step === "select" && <>
           <label className={styles.field}>{provider === "google" ? "האתר של העסק" : "הדף העסקי"}<select value={choice} onChange={event => setChoice(event.target.value)}><option value="">לבחור לפי השם</option><option value="shop">פרג ושמרים{provider === "google" ? " · החנות" : ""}</option>{provider === "google" && <option value="journal">פרג ושמרים · המגזין</option>}</select></label>
-          <p className={styles.caption}>{provider === "google" ? "בחרו את האתר שבו הלקוחות מזמינים. פרטי המדידה הטכניים אינם נחוצים כאן." : "אינסטגרם של פרג ושמרים מקושר לדף הזה בדוגמה."}</p>
+          <p className={styles.caption}>{provider === "google" ? "בחרו את האתר שבו הלקוחות מזמינים. פרטי המדידה הטכניים אינם נחוצים כאן." : "אינסטגרם של פרג ושמרים מקושר לדף הזה."}</p>
           <UIAction disabled={!choice} onClick={() => { setSelections(current => ({ ...current, [provider]: provider === "meta" ? "פרג ושמרים" : choice === "shop" ? "פרג ושמרים · החנות" : "פרג ושמרים · המגזין" })); update("selected"); setStep("read"); }}>זה העסק שלי, להמשיך</UIAction>
           <UIAction variant="text" onClick={() => setStep("recovery")}>העסק שלי לא מופיע</UIAction>
         </>}
@@ -147,8 +148,8 @@ export function ConnectionWorkshop() {
           <strong>{selections[provider]}</strong>
           <p role="status">{states[connections[provider]]}</p>
           {connections[provider] === "selected" ? <><p>נבדוק אם אפשר לקרוא נתונים. רק אחרי קריאה מוצלחת נוכל להשתמש בהם בניתוח.</p><UIAction onClick={readExample}>לדמות את הקריאה הראשונה</UIAction></> : connections[provider] === "no_history" ? <p>החיבור זמין, אבל אין נתונים בתקופה שבדקנו. זה אינו אפס הזמנות. נמשיך עם הצעדים בתוכנית עד שיצטבר מידע.</p> : <p>אפשר להתחיל לבדוק את התוצאות. חיבור מקור אחד אינו מאפשר לנו לדעת הכול על המכירות.</p>}
-          {provider === "meta" && <UIAction variant={connections.meta === "selected" ? "text" : "primary"} onClick={() => setStep("extras")}>{adsSaved ? "לראות את נתוני המודעות והמעקב" : "יש לכם מודעות? לחבר גם אותן בדוגמה"}</UIAction>}
-          <Link href="/design/results" className={styles.textAction}>איך זה הופך לצעד בתוכנית? לראות דוגמה ←</Link>
+          {provider === "meta" && <UIAction variant={connections.meta === "selected" ? "text" : "primary"} onClick={() => setStep("extras")}>{adsSaved ? "לראות את נתוני המודעות והמעקב" : "יש לכם מודעות? לחבר גם אותן"}</UIAction>}
+          <Link href="/design/results" className={styles.textAction}>איך זה הופך לצעד בתוכנית? ←</Link>
         </>}
         {step === "extras" && <>
           <p>אם אתם מפרסמים בתשלום, נתוני ההוצאות והתוצאות יעזרו לנו לבדוק מה כדאי לשנות.</p>
@@ -159,7 +160,7 @@ export function ConnectionWorkshop() {
         {step === "pixel" && <>
           <p>המעקב באתר עוזר לבדוק פעולות שקרו אחרי מודעות. אפשר לחבר אותו גם בהמשך.</p>
           <label className={styles.field}>המעקב של העסק<select value={pixel} onChange={event => { setPixel(event.target.value); setPixelChecked(false); }}><option value="">בלי מעקב כרגע</option><option value="example-pixel">החנות של פרג ושמרים</option></select></label>
-          {pixel && <><UIAction onClick={() => setPixelChecked(true)}>לדמות בדיקת קבלת אירועים</UIAction>{pixelChecked && <p role="status">בתוך הדוגמה התקבלו אירועים מהחנות. הבדיקה אינה מאשרת סכומי רכישה או מניעת ספירה כפולה.</p>}</>}
+          {pixel && <><UIAction onClick={() => setPixelChecked(true)}>לדמות בדיקת קבלת אירועים</UIAction>{pixelChecked && <p role="status">התקבלו אירועים מהחנות. הבדיקה אינה מאשרת סכומי רכישה או מניעת ספירה כפולה.</p>}</>}
           {!pixel && <><p className={styles.caption}>חשבון הפרסום נבחר. אפשר לבדוק נתוני מודעות גם בלי מעקב באתר.</p><PixelSetupGuide busy={false} onRefresh={() => { setPixel("example-pixel"); setPixelChecked(false); }} /></>}
         </>}
         <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך בתוכנית</UIAction>

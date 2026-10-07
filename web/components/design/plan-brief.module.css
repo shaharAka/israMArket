@@ -35,9 +35,9 @@
 .body h2 {
   max-width: 640px;
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.015em;
+  letter-spacing: normal;
   text-wrap: pretty;
 }
 
@@ -46,6 +46,10 @@
 }
 
 .why summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
   width: fit-content;
   min-height: 44px;
   font-size: 14px;
@@ -53,6 +57,12 @@
   color: var(--im-muted, var(--ink-soft));
   transition: color 160ms ease;
 }
+
+.why summary::-webkit-details-marker { display: none; }
+.why summary svg { transform: rotate(-90deg); transition: transform 180ms var(--ease); }
+.why[open] summary svg { transform: rotate(90deg); }
+.why summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { .why summary svg { transition: none; } }
 
 .why summary:hover {
   color: var(--im-ink, var(--ink));
@@ -131,9 +141,9 @@
 .decisionTitle {
   margin-top: 6px;
   font-size: 19px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 .decisionWhy {
@@ -209,4 +219,26 @@
 .hypothesis .evidence {
   font-size: 13px;
   color: var(--ink-muted);
+}
+
+/* The same brief is used in the app and in explicit public workflow demonstrations. */
+.context { margin-top: 12px; color: var(--ink-muted); font-size: 13px; line-height: 1.6; }
+.brief[data-compact="true"] .head { padding: 12px 24px; min-height: 48px; }
+.brief[data-compact="true"] .body { padding: 20px 24px 24px; }
+.brief[data-compact="true"] .body h2 { font-size: 23px; line-height: 1.4; }
+.brief[data-compact="true"] .decision { margin-top: 16px; padding: 16px; }
+.brief[data-compact="true"] .decisionTitle { font-size: 17px; }
+.brief[data-compact="true"] .action { margin-top: 8px; }
+@media (max-width: 600px) {
+  .brief[data-compact="true"] .head { padding-inline: 20px; }
+  .brief[data-compact="true"] .body { padding: 20px; }
+  .brief[data-compact="true"] .body h2 { font-size: 21px; }
+}
+
+.brief[data-compact="true"] { container-type: inline-size; }
+@container (min-width: 480px) {
+ .brief[data-compact="true"] .decision { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 16px; align-items: center; }
+ .brief[data-compact="true"] .decisionLabel { grid-column: 1 / -1; }
+ .brief[data-compact="true"] .decisionTitle { grid-column: 1; font-size: 16px; }
+ .brief[data-compact="true"] .action { grid-column: 2; grid-row: 2; margin-top: 0; }
 }

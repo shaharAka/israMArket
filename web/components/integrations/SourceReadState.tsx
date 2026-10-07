@@ -27,7 +27,7 @@ export function checkedDate(value?: string | null) {
   return Number.isNaN(instant.valueOf()) ? "" : instant.toLocaleDateString("he-IL");
 }
 
-/** Actual source state; the design workshop reuses this with labeled synthetic examples. */
+/** Actual source state; the design workshop reuses the same presentation. */
 export function SourceReadState({ state, checking = false, onRetry, onReconnect, primary = false, resultsHref = "/performance", provider = "ga4" }: {
   state: SourceReadiness | MetaSourceReadiness;
   provider?: "ga4" | "meta";
@@ -38,6 +38,8 @@ export function SourceReadState({ state, checking = false, onRetry, onReconnect,
   resultsHref?: string;
 }) {
   const status = checking ? "reading" : state.status;
+  // Hide the legacy fixture caption, keeping provider errors and measurement limits intact.
+  const note = state.note_he === "נתונים לדוגמה בלבד, ללא קריאה מחשבון אמיתי." ? "" : state.note_he;
   const date = checkedDate(state.last_success_at);
   const sections = provider === "meta" ? (state as MetaSourceReadiness).sections : undefined;
   const renew = ["reconnect", "no_properties", "no_assets", "permission", "link_instagram"].includes(status) ||
@@ -45,9 +47,9 @@ export function SourceReadState({ state, checking = false, onRetry, onReconnect,
   const retry = ["unchecked", "unavailable", "empty", "partial"].includes(status) && !renew;
   // Full width, also inside the Meta row's start-aligned grid, so the expand's rule spans the card.
   return <div className="mt-4 w-full space-y-2">
-    <p role="status" aria-live="polite" className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-      {checking ? provider === "meta" ? "קוראים את נתוני פייסבוק ואינסטגרם. אפשר להמשיך לעבוד בתוכנית." : "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית." : state.note_he}
-    </p>
+    {checking || note ? <p role="status" aria-live="polite" className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
+      {checking ? provider === "meta" ? "קוראים את נתוני פייסבוק ואינסטגרם. אפשר להמשיך לעבוד בתוכנית." : "בודקים את נתוני האתר. אפשר להמשיך לעבוד על התוכנית." : note}
+    </p> : null}
     {state.period?.start && state.period.end && (provider !== "meta" || ["ready", "empty"].includes(sections?.ads?.status || "")) ? <p className="text-[12px] tabular-nums text-[color:var(--ink-muted)]">
       {provider === "meta" ? "תקופת המודעות" : "התקופה שנקראה"}: <bdi>{dateRange(state.period.start, state.period.end)}</bdi>{date ? <> · נקראה ב־<bdi>{dayMonth(state.last_success_at)}</bdi></> : null}
     </p> : date ? <p className="text-[12px] text-[color:var(--ink-muted)]">נקרא ב־{date}</p> : null}

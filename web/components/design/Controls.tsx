@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode } from "react";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { MotionCheck } from "@/components/motion";
 import styles from "./controls.module.css";
 
@@ -64,10 +65,11 @@ export function TransitionPanel({ children, transitionKey }: { children: ReactNo
 
 /** Native modal supplies focus containment, Escape and focus return without a new dependency. */
 export function UIDialog({ open, onClose, title, description, children, variant = "modal" }: { open: boolean; onClose: () => void; title: string; description?: string; children: ReactNode; variant?: "modal" | "drawer" }) {
+  const t = useCopy();
   const ref = useRef<HTMLDialogElement>(null); const id = useId();
   useEffect(() => { const el = ref.current; if (!el) return; if (open && !el.open) el.showModal(); else if (!open && el.open) el.close(); }, [open]);
   return <dialog ref={ref} className={styles.dialog} data-variant={variant} aria-labelledby={`${id}-title`} aria-describedby={description ? `${id}-description` : undefined} onCancel={e => { e.preventDefault(); onClose(); }} onClose={onClose}>
-    <header><h2 id={`${id}-title`}>{title}</h2><UIAction variant="text" onClick={onClose} aria-label="לסגור את החלון">סגירה ×</UIAction></header>
+    <header><h2 id={`${id}-title`}>{title}</h2><UIAction variant="text" onClick={onClose} aria-label={t("לסגור את החלון")}><Copy text="סגירה" /> ×</UIAction></header>
     {description && <p id={`${id}-description`} className={styles.dialogDescription}>{description}</p>}{children}
   </dialog>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, type ButtonHTMLAttributes, type ReactNode } from "react";
-import { BrandMark, IconArrowLeft } from "@/lib/icons";
+import { MarketStalls, IconArrowLeft } from "@/lib/icons";
 import { type MotionMood } from "@/components/motion/catalog";
 import { MotionButton, MotionCheck, MotionScope } from "@/components/motion/Motion";
 import { paletteVariables } from "./palette";
@@ -30,7 +30,7 @@ export function JourneyRail({ steps, label }: { steps: JourneyStep[]; label: str
 }
 
 export function StatusLine({ state, children }: { state: "ready" | "waiting" | "attention"; children: ReactNode }) {
-  return <div className={styles.status} data-state={state} role="status">{state === "ready" ? <MotionCheck /> : state === "attention" ? <span className={styles.statusSymbol} aria-hidden="true">!</span> : <BrandMark className={styles.statusSymbol} />}<span>{children}</span></div>;
+  return <div className={styles.status} data-state={state} role="status">{state === "ready" ? <MotionCheck /> : state === "attention" ? <span className={styles.statusSymbol} aria-hidden="true">!</span> : <MarketStalls className={styles.statusSymbol} />}<span>{children}</span></div>;
 }
 
 export function NotebookField({ label, hint, value, onChange }: { label: string; hint?: string; value: string; onChange: (value: string) => void }) {

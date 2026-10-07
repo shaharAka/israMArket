@@ -1,4 +1,22 @@
 .editor { color:var(--ink); }
+.workspace { max-width: 1024px; margin-inline: auto; color: var(--ink); font-family: var(--font-ui), sans-serif; }
+.workspaceHeader { margin-bottom: 16px; }
+.workspaceHeader h1 { font-weight: 600; letter-spacing: normal; }
+.workspaceBody { display: grid; gap: 16px; align-items: start; }
+.previewColumn, .panelColumn { min-width: 0; }
+.preview { --reserve: var(--reserve-phone); max-width: 100%; margin-inline: auto; }
+.previewSurface { overflow: hidden; border-radius: 16px; background: var(--paper); box-shadow: var(--shadow-card); }
+.actionPanel { min-width: 0; }
+.reason { padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+.reasonLabel { color: var(--ink-muted); font-size: 13px; font-weight: 500; }
+.reasonText { margin-top: 6px; font-size: 17px; font-weight: 500; line-height: 1.65; color: var(--ink); }
+.primary { margin-top: 24px; }
+@media (min-width: 768px) {
+ .preview { --reserve: 290px; }
+ .workspaceHeader { margin-bottom: 28px; }
+ .workspaceBody { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); gap: 32px; }
+ .panelColumn > aside { border-radius: 16px; box-shadow: none; border: 1px solid var(--rule); }
+}
 /* The empty photo slot inside the preview: chrome around the artwork, not the artwork. */
 .placeholder { display:flex; width:100%; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:12px; padding:24px 20px; background:var(--im-soft,var(--primary-soft)); }
 .placeholderDrawing { width:120px; max-width:75%; height:auto; }.placeholderSmall { width:50px; max-width:100%; height:auto; }.placeholder h3 { font-size:15px; font-weight:600; line-height:1.6; max-width:230px; }.placeholder p { font-size:13px; line-height:1.7; color:var(--im-muted,var(--ink-soft)); max-width:240px; }.placeholder button { display:inline-flex; align-items:center; gap:6px; min-height:44px; font-size:14px; font-weight:600; color:var(--im-primary,var(--primary)); text-underline-offset:5px; cursor:pointer; }.placeholder button:hover:not(:disabled) { text-decoration-line:underline; }.placeholder button:disabled { color:var(--im-muted,var(--ink-muted)); cursor:default; }

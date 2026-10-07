@@ -1,10 +1,11 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import Link from "next/link";
 import { useState } from "react";
 import { Background, Controls, Handle, MarkerType, Position, ReactFlow, type NodeProps, type Node } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { BrandMark } from "@/lib/icons";
 import styles from "./flow-board.module.css";
 import preview from "./optional-preview.module.css";
 
@@ -27,7 +28,7 @@ const quick: Screen[] = [
   { id: "business", title: "מה העסק עושה?", body: "שם והצעה, כדי שהדוגמה תתחיל להיות שלכם.", action: "לעבור ללקוחות", detail: "מסך קצר עם שם העסק ומה מציעים. בלי תקציב ובלי פרטי קשר." },
   { id: "customer", title: "למי אתם עוזרים?", body: "קהל ראשוני. אפשר לומר שעוד לא יודעים.", action: "לעבור לאתר ולרשתות", detail: "זו נקודת פתיחה שנוכל לתקן יחד, ולא מסקנה שאומתה במחקר." },
   { id: "links", title: "איפה רואים את העסק?", body: "אתר, תיק עבודות או פרופיל. אפשר גם בלי קישור.", action: "לראות טיוטה ראשונית", detail: "קריאת מידע ציבורי בלבד. עוד אין חיבור לנתוני האתר או לרשתות." },
-  { id: "draft", title: "ככה התוכנית יכולה להיראות", body: "טיוטה ראשונית עם כיוון ופעולה לדוגמה. בלי יעד או נתונים מומצאים.", action: "להמשיך להיכרות המלאה", detail: "אפשר להתרשם מהמבנה ומהדרך שבה נלווה את העסק. זו טיוטה, לא תוכנית שיווק שנבדקה." },
+  { id: "draft", title: "ככה התוכנית יכולה להיראות", body: "טיוטה ראשונית עם כיוון ופעולה ראשונה.", action: "להמשיך להיכרות המלאה", detail: "אפשר להתרשם מהמבנה ומהדרך שבה נלווה את העסק. זו טיוטה, לא תוכנית שיווק שנבדקה." },
   { id: "complete", title: "ממשיכים מאיפה שעצרתם", body: "אותו מסלול מלא, עם התשובות שכבר נתתם.", action: "לראות את התוכנית המלאה", detail: "מציגים רק שאלות שעוד לא נענו, כולל בידול, עונתיות, מה נוסה, מספרים ותקציב. ההמלצה והיעד נבנים מחדש אחרי השלמת המידע. אפשר לעצור ולחזור.", group: true },
   ...full.slice(-2),
 ];
@@ -49,7 +50,7 @@ export function ShorterPathPreview() {
   function advance() { setSelectedId(screens[(screens.findIndex(screen => screen.id === selected.id) + 1) % screens.length].id); }
 
   return <main className={styles.page} dir="rtl"><div className={styles.container}>
-    <header className={styles.header}><Link className={styles.brand} href="/design/flows"><BrandMark />ללוח המסכים הקיים</Link><a href="https://github.com/shaharAka/israMArket/issues/69">ההצעה והדיון · #69</a></header>
+    <header className={styles.header}><Link className={styles.brand} href="/design/flows"><ProductWordmark /><span>ללוח המסכים הקיים</span></Link><a href="https://github.com/shaharAka/israMArket/issues/69">ההצעה והדיון · #69</a></header>
     <section className={styles.intro}><div><h1>היכרות מלאה. הצצה כשזמנכם קצר.</h1><p className={styles.caption}>סקירה בלבד. המסלול המלא נשאר ברירת המחדל; השאלות באתר החי לא השתנו.</p></div></section>
     <div className={preview.routeHeading}><label>המסלול במפה<select value={mode} onChange={e => { setMode(e.target.value as Mode); setSelectedId("entry"); }}><option value="full">היכרות מלאה · ברירת המחדל</option><option value="quick">רק לראות איך זה ייראה · הצעה</option></select></label><details><summary>מה בדיוק נספר כאן?</summary><p>13 שלבי תשובה ואישור לחנות, 12 לשירותים, ואחריהם סיכום, תוכנית ושמירה. קבוצות המסכים במפה המלאה אינן קיצור של השאלות.</p></details></div>
     <div className={styles.proposalLayout}><div className={styles.proposalCanvas} dir="ltr"><ReactFlow key={mode} nodes={nodes} edges={edges} nodeTypes={nodeTypes} onNodeClick={(_, n) => setSelectedId(n.data.screen.id)} fitView fitViewOptions={{ nodes: nodes.slice(0, 3), maxZoom: 1, padding: .12 }} minZoom={.3} maxZoom={1.5} nodesDraggable={false} nodesConnectable={false} edgesReconnectable={false} deleteKeyCode={null}><Background /><Controls showInteractive={false} /></ReactFlow></div>

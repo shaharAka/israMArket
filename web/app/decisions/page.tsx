@@ -5,13 +5,11 @@ import { useEffect, useState } from "react";
 import { AppShell, Button, ErrorNote } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { SectionHeader } from "@/components/SectionHeader";
-import { SystemNote } from "@/components/SystemNote";
 import { TargetRanker, MAX_TARGETS } from "@/components/TargetRanker";
 import { ANSWER_IDS, OwnerAnswers } from "@/components/decisions/OwnerAnswers";
 import { AGENT_NAME } from "@/lib/agent";
 import {
   endpoints,
-  isDemo,
   type Audience,
   type AudiencePayload,
   type Business,
@@ -152,7 +150,6 @@ export default function DecisionsPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const [demo, setDemo] = useState(false);
 
   // The budget lives as text so the field can be cleared while typing; the number is derived.
   const [budgetText, setBudgetText] = useState("");
@@ -200,10 +197,6 @@ export default function DecisionsPage() {
   const [answerFocus, setAnswerFocus] = useState<string | null>(null);
 
   useEffect(() => {
-    // isDemo() reads localStorage, so it cannot run during the prerender — same reason
-    // AppShell defers its own check.
-    const timer = window.setTimeout(() => setDemo(isDemo()), 0);
-
     endpoints
       .business()
       .then((res) => {
@@ -238,8 +231,6 @@ export default function DecisionsPage() {
         setLoadError(err instanceof Error ? err.message : "לא הצלחנו לטעון את ההחלטות.");
       })
       .finally(() => setLoading(false));
-
-    return () => window.clearTimeout(timer);
   }, []);
 
   /**
@@ -294,7 +285,7 @@ export default function DecisionsPage() {
       setOpenGroup(hash);
       document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
     };
-    // Deferred like the demo check above: the URL is a client-only input, and the state
+    // Deferred because the URL is a client-only input, and the state
     // has to be set from a callback rather than synchronously in the effect body.
     const timer = window.setTimeout(openFromHash, 0);
     // Also listen, because navigating from /decisions to /decisions#budget is a
@@ -678,12 +669,6 @@ export default function DecisionsPage() {
           title="ההחלטות שלי"
           subtitle={`מה שקבעתם עם ${AGENT_NAME}. אפשר לשנות בכל רגע.`}
         />
-
-        {demo ? (
-          <SystemNote variant="inline" className="mb-5">
-            דמו: הנתונים לדוגמה. מה שתשנו כאן לא משפיע על עסק אמיתי.
-          </SystemNote>
-        ) : null}
 
         {loadError ? (
           <div className="mb-5">

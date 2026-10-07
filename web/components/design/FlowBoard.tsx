@@ -1,8 +1,10 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import Link from "next/link";
 import { useEffect, useRef, useState, type ComponentType } from "react";
-import { BrandMark, IconArrowLeft, IconChevron } from "@/lib/icons";
+import { MarketStalls, IconArrowLeft, IconChevron } from "@/lib/icons";
 import { emptyFlow, type FlowState } from "@/lib/draft";
 import { StepName, StepWhat, StepDifferent, StepTried, type StepProps } from "@/components/start/steps";
 import { StepBaseline } from "@/components/start/StepNumbers";
@@ -82,7 +84,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
   const capture = !RealStep && scenario === "normal" ? flowCapture(node.id) : null;
 
   return <div className={styles.page} dir="rtl"><div className={styles.container}>
-    <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark />ישראמארקט</Link><div><Link href="/design/flows/shorter">הצעה להצצה ראשונית</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
+    <header className={styles.header}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><div><Link href="/design/flows/shorter">הצעה להצצה ראשונית</Link><a href={ISSUE} target="_blank" rel="noopener noreferrer">דיון משותף ב-GitHub</a><Link href="/design">לספריית העיצוב <IconArrowLeft /></Link></div></header>
     <section className={styles.intro}><div><h1>מסכים, פעולות ומעברים.</h1><p className={styles.caption}>גרירה להזזה · + / − להגדלה · לחיצה לפתיחת מסך · קו מקווקו: הצעה. נתוני הדוגמה אינם חשבון לקוח.</p></div></section>
     <details ref={filterRef} className={styles.filters} open><summary>סינון המסלול · {PERSONAS[persona].label} · {PHASES.find(p=>p.value===phase)?.label}</summary><div className={styles.toolbar}>
       <label>עסק<select value={persona} onChange={e=>choosePersona(e.target.value)}>{Object.entries(PERSONAS).map(([value,p])=><option key={value} value={value}>{p.label}</option>)}</select></label>
@@ -98,7 +100,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
         <div className={styles.previewTop}><span>{RealStep && scenario === "normal" ? "רכיב השאלה הקיים, עם תשובות מקומיות" : capture ? flowCaptureNote(node.id) : "סקיצת מצב · אינה צילום של החשבון"}</span><code>{node.route}</code></div>
         {capture && <a href={capture} target="_blank" rel="noopener noreferrer" className={styles.captureLink}><Image src={capture} alt={`העמוד הקיים: ${node.title}, נתוני דמו`} width={1170} height={615} unoptimized/><span>לפתוח צילום בגודל מלא</span></a>}
         <div className={styles.screen} key={`${persona}-${node.id}-${scenario}`}>
-          <div className={styles.screenBrand}><BrandMark /><strong>{PERSONAS[persona].name}</strong></div>
+          <div className={styles.screenBrand}><MarketStalls /><strong>{PERSONAS[persona].name}</strong></div>
           {scenario !== "normal" ? <><p className={styles.state}>{scenario === "failure" ? "ניסיון שלא הצליח" : scenario === "cancel" ? "המשתמש עצר את הפעולה" : "אין מספיק מידע"}</p><h3>מה נשמר, ואיך ממשיכים?</h3><p>{node.recovery}</p><UIAction onClick={() => setScenario("normal")}>לחזור לשלב ולנסות שוב</UIAction><UIAction variant="text" onClick={() => go(nextFor(node, branchPersona), true)}>לראות את ההמשך במפה</UIAction><small>המחשת מסלול התאוששות, לא ביצוע פעולה או התחייבות שהדילוג קיים בכל שלב.</small></> : RealStep ? <RealStep {...common} /> : <Schematic node={node} persona={persona} next={() => go(nextFor(node, branchPersona), true)} alternate={() => node.alternate && go(node.alternate.next, true)} branch={id=>go(id,true)} />}
         </div>
         <div className={styles.transition}><span>לחיצה</span><strong>{actionLabel}</strong><IconArrowLeft /><span>{following.title}</span></div>
@@ -114,7 +116,7 @@ export function FlowBoard({ initialPersona, initialStep }: { initialPersona?: st
       </aside>
     </section>}
     </div>
-    {persona === "designer" && <section className={styles.review}><h2>המסלול של נותנת שירות</h2><p>כבר קיים: מודל שירותים, פניות, שווי לקוח וקיבולת. כעת אפשר להתחיל משירות אחד ותמונה אחת, עם בדיקת הסגנון. עדיין נשארו שאלות כמעט באותו אורך כמו חנות, ומדידה שאינה יודעת לבדה איזו פנייה התאימה או הפכה לפרויקט.</p><ol className={styles.funnel}><li>עניין בתיק עבודות</li><li>לחיצה ליצירת קשר</li><li>פנייה שהתקבלה</li><li>פנייה מתאימה</li><li>פרויקט שנסגר</li></ol><p>השלבים אינם אותו נתון. קליק ניתן למדידה; התאמה וסגירה דורשות דיווח בעלים או חיבור מתאים. אין כאן מספרים מומצאים.</p><a href="https://github.com/shaharAka/israMArket/issues/67" target="_blank" rel="noopener noreferrer">סקירה ושיפורים לנותני שירותים · #67</a></section>}
+    {persona === "designer" && <section className={styles.review}><h2>המסלול של נותנת שירות</h2><p>כבר קיים: מודל שירותים, פניות, שווי לקוח וקיבולת. כעת אפשר להתחיל משירות אחד ותמונה אחת, עם בדיקת הסגנון. עדיין נשארו שאלות כמעט באותו אורך כמו חנות, ומדידה שאינה יודעת לבדה איזו פנייה התאימה או הפכה לפרויקט.</p><ol className={styles.funnel}><li>עניין בתיק עבודות</li><li>לחיצה ליצירת קשר</li><li>פנייה שהתקבלה</li><li>פנייה מתאימה</li><li>פרויקט שנסגר</li></ol><p>השלבים אינם אותו נתון. קליק ניתן למדידה; התאמה וסגירה דורשות דיווח בעלים או חיבור מתאים.</p><a href="https://github.com/shaharAka/israMArket/issues/67" target="_blank" rel="noopener noreferrer">סקירה ושיפורים לנותני שירותים · #67</a></section>}
     {persona === "software" && <section className={styles.review}><h2>המסלול של חברת תוכנה</h2><p>מפרידים בין כל מוצרי החברה לבין המוצר שמקדמים קודם. ההצעה, הבעיה, הקונה ודרך ההצטרפות מכוונים את התוכנית ואת הפוסטים. אם יש אתר, קוראים עד שני עמודי מוצר או תמחור עם מקור ותאריך; מחיר, אתר או חיבור חסרים אינם עוצרים את ההתחלה.</p><ol className={styles.funnel}><li>עניין בבעיה שהמוצר פותר</li><li>בקשה להדגמה או התחלת התנסות</li><li>שימוש שנותן ערך</li><li>לקוח משלם</li><li>המשך שימוש</li></ol><p>אלה שלבים שונים. בלי אירועים שנמדדו או דיווח בעלים, לא מציגים משתמשים, המרה או הכנסה כאילו נמדדו. בתוכן מראים יכולת אמיתית; דוגמה למוצר או סיפור לקוח דורשים חומר אמיתי.</p><a href="https://github.com/shaharAka/israMArket/issues/137" target="_blank" rel="noopener noreferrer">מסלול תוכנה, מחקר וכיוון לתוכן · #137</a></section>}
     {persona === "isramarket" && <section className={styles.review}><h2>נשתמש במוצר כדי לשווק את המוצר</h2><p>ההשערה: דוגמה קצרה שמתחילה בבעיה של בעל העסק ומראה תוכנית ופעולה אחת תוביל לשימוש, יותר מהבטחה כללית ל״AI לשיווק״. זו השערה לבדיקה.</p><ol className={styles.funnel}><li>ביקור מקישור מסומן</li><li>התחלת היכרות</li><li>שמירת תוכנית בחשבון</li><li>קריאת נתונים או פוסט ראשון</li><li>חזרה בשבוע הבא</li></ol><p>מסלול התוכנה מפריד עכשיו בין מוצר, קונה, התנסות ושימוש. עוד צריך להגדיר ולחבר את אירועי ההפעלה בפועל. אין מחליף עסקים או פרסום אוטומטי, ואירועי ההפעלה האלה עדיין דורשים מכשור. הפיילוט יעבור את הזרימה הרגילה כדי לגלות גם את הפערים האלה.</p><a href="https://github.com/shaharAka/israMArket/issues/66" target="_blank" rel="noopener noreferrer">הפיילוט והנכסים שצריך לחבר · #66</a></section>}
     <footer className={styles.footer}><span>מפה, פעולה, התאוששות, ראיה. ההחלטות המשותפות נשמרות ב-GitHub.</span><Link href="/design/connections">לתצוגת החיבורים המפורטת <IconArrowLeft /></Link></footer>

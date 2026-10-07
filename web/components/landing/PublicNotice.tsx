@@ -1,6 +1,6 @@
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { BrandMark } from "@/lib/icons";
 import styles from "./PublicNotice.module.css";
 
 /**
@@ -14,8 +14,7 @@ export function PublicNotice({ title, lead, actions }: { title: string; lead: st
       <header className={styles.nav}>
         <div className={`${styles.wrap} ${styles.navRow}`}>
           <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הראשי">
-            <BrandMark className="h-8 w-8 text-[var(--primary)]" />
-            <span>ישראמארקט</span>
+            <ProductWordmark />
           </Link>
         </div>
       </header>

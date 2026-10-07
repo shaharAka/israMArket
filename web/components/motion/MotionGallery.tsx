@@ -1,8 +1,9 @@
 "use client";
 
+import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { BrandMark } from "@/lib/icons";
 import { PalettePicker } from "@/components/design/PalettePicker";
 import { paletteVariables, useDesignPalette } from "@/components/design/palette";
 import { MotionButton, MotionChoice, MotionDisclosure, MotionIllustration, MotionProgress, MotionResult, MotionScope } from "./Motion";
@@ -88,7 +89,7 @@ export function MotionGallery() {
 
   return <MotionScope mood={mood} reduced={reduced} style={paletteVariables(palette)} className={styles.page}>
     <div className={styles.container}>
-      <header className={styles.header}><Link href="/design" className={styles.brand}><BrandMark className={styles.brandMark} /><span>ישראמארקט</span></Link><span className={styles.labBadge}><span />מעבדת תנועה</span><Link href="/design" className={styles.version}>לספריית העיצוב ←</Link></header>
+      <header className={styles.header}><Link href="/design" className={styles.brand}><ProductWordmark /></Link><span className={styles.labBadge}><span />מעבדת תנועה</span><Link href="/design" className={styles.version}>לספריית העיצוב ←</Link></header>
       <main>
         <section className={styles.intro} aria-labelledby="motion-title">
           <div><p className={styles.eyebrow}>דברים קטנים, תחושה אחרת</p><h1 id="motion-title">קצת תנועה.<br /><span>הרבה אופי.</span></h1><p className={styles.description}>בוחרים, שומרים, מתקדמים. אוסף קטן של תגובות שהופכות כל פעולה לקצת יותר כיפית.</p></div>

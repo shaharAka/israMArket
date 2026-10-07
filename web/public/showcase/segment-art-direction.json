@@ -1,0 +1,119 @@
+{
+  "generation": {
+    "mode": "built-in image_gen",
+    "totalCalls": 5,
+    "prompts": {
+      "dj": "Create a portrait 4:5 premium editorial photograph for a fictional independent DJ's promotional post. Tight dramatic stage-side angle on real unbranded DJ mixer and decks, performer's two natural hands adjusting a rotary EQ and resting on jog wheel. Joyful small dancing crowd softly out of focus behind, warm coral practical stage lighting mixed with vivid electric cobalt, human energy and tactile authentic equipment. Crisp realistic hands and controls, cinematic photographic grain, premium music magazine composition, no festival grandeur or fabricated identifiable event. Fill the composition with gear in foreground, hands middle, atmospheric crowd upper third. Natural photographic lighting only, no graphic gradients or geometric decoration. No readable text, logos, labels, watermark, fake interface or celebrity. Fictional AI scene. Save as a beautiful photograph, not illustration.",
+      "makeup": "Create a portrait 4:5 premium tactile beauty editorial photograph for a fictional independent makeup artist. Close overhead-oblique composition showing an artist's natural hand using a professional clean flat makeup brush to mix a small dab of warm rose cream on a stainless steel artist mixing palette. Beautiful kit laid out on warm blush work surface: clean brushes with burgundy handles, unbranded powder compact, neatly sharpened wooden lip pencil, a closed cobalt blue cosmetic pouch partly visible. Hero is the craft of mixing and matching color, textured creamy pigment, brushed steel and fine brush hairs in sharp focus. Deep wine red and soft pink palette with one tiny cobalt accent, sophisticated fashionable editorial photography, beautifully controlled real daylight and shadows. Keep hand anatomically natural. No face, no before-and-after, no medical claims, no readable text, branding, product labels or watermark. Not a flat vector graphic. Fictional AI illustration in photographic style, not claimed as real client work. Full image with no baked-in text.",
+      "mobile": "Portrait 4:5 photoreal premium editorial product campaign for a fictional online mobile phone shop. Close-up of a natural adult hand holding a beautiful contemporary unbranded smartphone with matte pale lavender metal back, simple generic two-lens camera in its upper corner, absolutely no logo or lettering, no recognizable distinctive brand design. Phone turned three-quarter angle to reveal camera glass reflections and slim metal edge, real tactile hand and natural nails. Deep cobalt blue tabletop behind with a loosely coiled white charging cable and soft coral fabric pouch, believable sophisticated studio still-life. Main subject centered, strong dimensional real softbox lighting, precise material detail, colorful friendly tech retail art direction. Entire device visible, attractive crop of hand only, no face needed. No UI, no fake specifications, no price, no text, no watermark, no counterfeit logo, no graphic gradients or abstract geometric decoration. Fictional AI example product, not an actual retail item or endorsement.",
+      "wellness": "Portrait 4:5 premium colorful natural editorial still-life photograph for a fictional everyday wellness accessories shop. A beautiful reusable matte forest-green water bottle with simple cap, a rolled lavender exercise mat with realistic finely textured surface, an ivory cotton hand towel and pair of simple coral resistance bands being tucked into an open natural canvas tote by a fictional adult hand. Scene on a sunlit light oak bench beside a leafy window, reassuring ordinary routine rather than athlete performance. Bottles and products completely unbranded, no text. Tactile woven canvas, rubber, cotton and brushed bottle finish in excellent sharp detail, optimistic green/lavender/coral color story, sophisticated real photography with natural light, useful practical products in believable proportions. No pills, supplements, medicine, clinical equipment, weight loss, health promises, fake specifications, logos or watermark. No geometric illustration or decorative graphics. Fictional AI example products, not actual inventory. Compose hand and open tote at middle right, rolled mat and bottle as center-left hero; rich lifelike composition.",
+      "clothing": "Portrait 4:5 beautiful photoreal colorful fashion editorial photograph for a fictional small online clothing boutique. Fictional adult woman around 30 with natural curly dark brown hair, olive skin, friendly candid thoughtful expression, wearing a relaxed cobalt blue linen overshirt over ivory ribbed cotton top and warm tan trousers. In a small sunlit dressing studio she is looking down while folding back the cuff of her overshirt, highlighting real tactile weave, stitching and drape. Medium three-quarter portrait from head to hips, elegant relatable real person, no celebrity likeness, natural face and hands, editorial authenticity rather than polished influencer glamour. A single coral garment on wooden hanger blurred behind her against a warm off-white plaster wall, minimal believable boutique setting. Rich cobalt and coral with neutral cream, real window sunshine, subtle photographic grain, high-end independent fashion campaign. Clothing is opaque, everyday and modest. No text, labels, logos, watermark, sales graphics or geometric decoration. Not a real customer or portfolio photo; fictional AI campaign illustration. Correct fingers and natural anatomy."
+    }
+  },
+  "examples": [
+    {
+      "key": "dj",
+      "business": "קצב · מוזיקה לאירועים",
+      "kind": "דיג׳יי",
+      "image": "/showcase/dj-stage-ai.png",
+      "alt": "דיג׳יי מפעיל ציוד מוזיקה מול קהל רוקד באור כחול וכתום, בהמחשה שנוצרה ב-AI",
+      "headline": "השיר שלכם.\nהרגע של כולם.",
+      "tip": "לפני שבונים רשימת שירים, בוחרים 3 רגעים: הכניסה, פתיחת הרחבה והשיר האחרון.",
+      "action": "לתכנן את המוזיקה לאירוע",
+      "label": "עסק לדוגמה · אנשים ואירוע שנוצרו ב-AI",
+      "plan": "בתוכנית: להמחיש איך בחירת המוזיקה מתחילה בהקשבה לזוג ולקהל.",
+      "caption": "הפלייליסט מתחיל בשיחה. איזה שיר מזכיר לכם איך נפגשתם? מה יקים את החברים? ואיך תרצו לסיים את הערב? בחרו 3 רגעים שחשובים לכם, ומשם נבנה את הדרך ביניהם.",
+      "colors": {
+        "paper": "#172544",
+        "ink": "#fff2e5",
+        "accent": "#f78362"
+      }
+    },
+    {
+      "key": "makeup",
+      "business": "גוון · סטודיו לאיפור",
+      "kind": "מאפרת",
+      "image": "/showcase/makeup-artistry-ai.png",
+      "alt": "יד של מאפרת מערבבת גוונים ורודים על פלטת מתכת לצד מברשות, בהמחשה שנוצרה ב-AI",
+      "headline": "אותו גוון?\nלא על כל אחת.",
+      "tip": "תמונת השראה היא התחלה. התאמת האיפור ממשיכה בגוון, באור ובהרגשה שלכם.",
+      "action": "לשמור לקראת פגישת האיפור",
+      "label": "עסק לדוגמה · המחשה שנוצרה ב-AI",
+      "plan": "בתוכנית: להראות את שיקול הדעת וההתאמה האישית שמאחורי פגישת האיפור.",
+      "caption": "אהבתם איפור בתמונה? שמרו אותה, וגם את מה שאהבתם בה: צבע השפתיים, העיניים או התחושה הכללית. בפגישה אפשר להתאים את ההשראה לגוון שלכם, לתאורה באירוע ולמה שנוח לכם ללבוש.",
+      "colors": {
+        "paper": "#f6e4e4",
+        "ink": "#672f43",
+        "accent": "#b94568"
+      }
+    },
+    {
+      "key": "mobile",
+      "business": "מובייל · חנות אונליין",
+      "kind": "חנות סלולר",
+      "image": "/showcase/mobile-detail-ai.png",
+      "alt": "יד אוחזת בטלפון סגול ללא מותג מעל שולחן כחול, הדמיית מוצר שנוצרה ב-AI",
+      "headline": "לפני הדגם.\nמה חשוב לכם?",
+      "tip": "מצלמה, נפח אחסון או גודל שנוח ביד? התחילו במה שאתם עושים בטלפון כל יום.",
+      "action": "לשמור לפני שמשווים מכשירים",
+      "label": "חנות לדוגמה · המכשיר נוצר ב-AI ואינו מוצר למכירה",
+      "plan": "בתוכנית: לעזור ללקוחות להגדיר צורך לפני שמשווים דגמים ומחירים.",
+      "caption": "קל ללכת לאיבוד בין הדגמים. לפני ההשוואה, כתבו 3 דברים שאתם עושים הכי הרבה בטלפון. מצלמים את הילדים? שומרים הרבה סרטונים? עובדים בדרך? עכשיו אפשר לבדוק את הפרטים שחשובים לכם באמת, לצד המחיר והאחריות.",
+      "colors": {
+        "paper": "#e6e6ff",
+        "ink": "#253e8d",
+        "accent": "#6977da"
+      }
+    },
+    {
+      "key": "wellness",
+      "business": "יום טוב · אביזרים לשגרה",
+      "kind": "מוצרי בריאות ואורח חיים",
+      "image": "/showcase/wellness-kit-ai.png",
+      "alt": "בקבוק רב פעמי, מזרן מגולגל ומגבת ליד תיק בד, בהדמיית מוצרים שנוצרה ב-AI",
+      "headline": "פחות לחפש.\nיותר לצאת.",
+      "tip": "בקבוק, מגבת והאביזרים שאתם משתמשים בהם. תיק שמכינים מראש מקל על ההתארגנות.",
+      "action": "לשמור לרשימת הציוד",
+      "label": "חנות לדוגמה · המוצרים נוצרו ב-AI ואינם מלאי אמיתי",
+      "plan": "בתוכנית: להציג שימוש יומיומי ברור במוצרים, בלי הבטחות בריאותיות.",
+      "caption": "הרגע שלפני היציאה לא חייב להפוך לחיפוש בבית. הכינו מקום קבוע לבקבוק, למגבת ולציוד שמתאים לפעילות שלכם. לפני קנייה, בדקו מידות, חומר והוראות ניקוי כדי לבחור מה שנוח לשגרה שלכם.",
+      "colors": {
+        "paper": "#e8eee4",
+        "ink": "#345444",
+        "accent": "#8c78bd"
+      }
+    },
+    {
+      "key": "clothing",
+      "business": "קפל · בגדים ליומיום",
+      "kind": "חנות בגדים",
+      "image": "/showcase/clothing-linen-ai.png",
+      "alt": "דמות אישה בוגרת עם חולצת פשתן כחולה מקפלת שרוול, בהמחשה שנוצרה ב-AI",
+      "headline": "המידה היא\nרק ההתחלה.",
+      "tip": "בקנייה אונליין, השוו את מידות הפריט לבגד שכבר נוח לכם. בדקו גם את הרכב הבד.",
+      "action": "לשמור לפני ההזמנה הבאה",
+      "label": "חנות ודמות לדוגמה · התמונה נוצרה ב-AI",
+      "plan": "בתוכנית: לעזור לבחור בגד אונליין באמצעות מידע על הגזרה והבד.",
+      "caption": "על הקולב כתובה מידה. אבל הנוחות נמצאת גם באורך, בגזרה ובבד. לפני ההזמנה, מדדו בגד שאתם אוהבים והשוו לטבלת המידות של הפריט. הסתכלו גם על הרכב הבד ועל הוראות הטיפול, כדי לדעת מה מגיע לארון.",
+      "colors": {
+        "paper": "#f4e9da",
+        "ink": "#254a9c",
+        "accent": "#d9806c"
+      }
+    }
+  ],
+  "motionConcepts": [
+    {
+      "key": "dj-three-moments",
+      "label": "דוגמת פוסט מונפש · תמונה שנוצרה ב-AI",
+      "durationSeconds": 9,
+      "description": "Three deliberate editorial beats using different crops of the same still: 0–3s crowd crop with הכניסה, 3–6s mixer crop with פתיחת הרחבה, 6–9s wider frame with השיר האחרון. End line: 3 רגעים שמתחילים בשיחה. Use restrained 3% scale motion, clear play/pause and one cycle; do not imply actual video footage or promise AI video generation."
+    },
+    {
+      "key": "clothing-check-before-order",
+      "label": "דוגמת פוסט מונפש · דמות שנוצרה ב-AI",
+      "durationSeconds": 9,
+      "description": "A useful shopping checklist: 0–3s full portrait with הגזרה, 3–6s close crop of woven sleeve with הבד, 6–9s full portrait with להשוות לבגד שנוח לכם. Typography changes on a solid brand-color panel, photo makes a slow crop shift. No fabricated measurements, material claims for a real SKU or animated body deformation. Reduced-motion displays full still and all three points."
+    }
+  ]
+}

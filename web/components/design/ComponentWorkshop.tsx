@@ -41,14 +41,14 @@ export function ComponentWorkshop() {
         <details className={styles.secondary}><summary>ההשערות וההחלטות</summary><div className={styles.stack}><h3>מה עדיין צריך לברר</h3><HypothesisNote hypothesis="לקוחות יעדיפו להזמין מראש אם התהליך קצר וברור." ifWrong="נבדוק את תהליך ההזמנה ואת ההצעה לפני שמגדילים את הפרסום." evidence="השערה לדוגמה, עדיין ללא בדיקה." /><p className={styles.note}>לא קובעים אילו מוצרים זמינים או רווחיים. את זה בוחרים עם בעל העסק.</p><Link href="/preview">לתוכנית במסך האמיתי ←</Link></div></details>
         </div>
         <div>
-          <p className={styles.note}>העסק במבט אחד · תרחיש עיצוב עם נתונים לדוגמה בלבד</p>
+          <p className={styles.note}>העסק במבט אחד</p>
           <BusinessOverview
             connections={[{ key: "whatsapp", name: "קישור וואטסאפ", ready: true, status: "מוכן" }, { key: "meta", name: "אינסטגרם ופייסבוק", ready: true, status: "מחובר" }, { key: "ga4", name: "נתוני האתר", ready: false, status: "צריך לחבר" }]}
             posts={[{ key: "one", title: "הזמנות לסוף השבוע", status: "לבדיקה", note: "יום רביעי · אינסטגרם" }, { key: "two", title: "מה יוצא היום מהתנור", status: "אושר", note: "יום שישי · פייסבוק" }]}
             measure={{ name: "הזמנות מראש", note: "משווים לנקודת ההתחלה שנאספה." }}
-            figure={{ title: "הזמנות שנרשמו", unit: "הזמנות לשבוע", caption: "תרחיש עיצוב · נתונים לדוגמה בלבד", points: [{ label: "שבוע 1", value: 12, display: "12" }, { label: "שבוע 2", value: 14, display: "14" }, { label: "שבוע 3", value: 11, display: "11" }, { label: "שבוע 4", value: 18, display: "18" }] }}
+            figure={{ title: "הזמנות שנרשמו", unit: "הזמנות לשבוע", caption: "הזמנות שנרשמו", points: [{ label: "שבוע 1", value: 12, display: "12" }, { label: "שבוע 2", value: 14, display: "14" }, { label: "שבוע 3", value: 11, display: "11" }, { label: "שבוע 4", value: 18, display: "18" }] }}
           />
-          <MetricComparison title="תוצאות לפי פוסט · דוגמה" unit="לחיצות" source="תרחיש עיצוב · נתונים לדוגמה בלבד" period="שבוע לדוגמה"
+          <MetricComparison title="תוצאות לפי פוסט" unit="לחיצות" source="הזמנות שנרשמו" period="השבוע"
             points={[{ key: "one", label: "הזמנות לסוף השבוע", value: 18 }, { key: "two", label: "מה יוצא היום מהתנור", value: 0 }, { key: "three", label: "מאחורי הקלעים" }]} />
         </div>
       </div>}
@@ -57,7 +57,7 @@ export function ComponentWorkshop() {
         <details className={styles.secondary}><summary>מצבים משלימים</summary><div className={styles.stack}><div className={styles.row}><UIAction disabled>עדיין חסרה תמונה</UIAction><UIAction variant="danger" onClick={() => setDialog("modal")}>לבדוק חלון אישור</UIAction></div><div className={styles.confirmation}><MotionIllustration kind="save" active={saved} replayKey={saved ? 1 : 0} className={styles.illustration} /><p>לחיצה קטנה מגיבה מיד. הסימן של השמירה מופיע רק עם התוצאה.</p></div></div></details>
       </div>}
       {category === "fields" && <div className={styles.twoColumns}>
-        <form className={styles.stack} noValidate onSubmit={e => { e.preventDefault(); setSubmitted(true); }}><h3>קודם ברור, אחר כך יפה</h3><TextField label="שם העסק לדוגמה" placeholder="למשל, לחם תום" value={name} onChange={e => { setName(e.target.value); setSubmitted(false); }} error={submitted && !name.trim() ? "צריך שם כדי להמשיך." : undefined} hint="התווית נשארת גלויה גם אחרי שמקלידים." maxLength={60} /><TextField label="הכתובת שזוהתה" value="https://example.com" disabled hint="שדה שאי אפשר לערוך מציג את הערך שלו." /><UIAction type="submit">לבדוק את השדה</UIAction>{submitted && name.trim() && <InlineNotice tone="success" title={`נעים להכיר, ${name.trim()}.`} />}</form>
+        <form className={styles.stack} noValidate onSubmit={e => { e.preventDefault(); setSubmitted(true); }}><h3>קודם ברור, אחר כך יפה</h3><TextField label="שם העסק" placeholder="למשל, לחם תום" value={name} onChange={e => { setName(e.target.value); setSubmitted(false); }} error={submitted && !name.trim() ? "צריך שם כדי להמשיך." : undefined} hint="התווית נשארת גלויה גם אחרי שמקלידים." maxLength={60} /><TextField label="הכתובת שזוהתה" value="https://example.com" disabled hint="שדה שאי אפשר לערוך מציג את הערך שלו." /><UIAction type="submit">לבדוק את השדה</UIAction>{submitted && name.trim() && <InlineNotice tone="success" title={`נעים להכיר, ${name.trim()}.`} />}</form>
         <details className={styles.secondary}><summary>בחירה עם משמעות</summary><div className={styles.stack}><div role="group" aria-label="סגנון לדוגמה"><ChoiceCard selected={choice === "simple"} onClick={() => setChoice("simple")} title="בגובה העיניים" description="קצר, ברור, עם המילים של העסק." /><div className={styles.gap} /><ChoiceCard selected={choice === "playful"} onClick={() => setChoice("playful")} title="קצת שובב" description="אותו בסיס נקי, עם רגע קטן של אופי." /></div><ToggleField checked={weekly} onChange={setWeekly} label="סיכום שבועי לדוגמה" hint="מתג להעדפה שאפשר להדליק או לכבות." /><FileField label="לבחור תמונה לדוגמה" onSelect={f => setFile(f?.name ?? "")} hint="הקובץ נבחר לתצוגה בלבד ואינו נשלח לשרת." />{file && <InlineNotice title="הקובץ נבחר לתצוגה">{file}</InlineNotice>}</div></details>
       </div>}
       {category === "navigation" && <div className={styles.twoColumns}>

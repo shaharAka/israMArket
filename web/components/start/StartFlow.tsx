@@ -1,5 +1,6 @@
 "use client";
 
+import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -22,7 +23,8 @@ import {
   type OnboardingDraft,
 } from "@/lib/draft";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
-import { BrandMark, IconArrowRight } from "@/lib/icons";
+import { applyLandingBusinessRoute } from "@/lib/landingBusinessRoute";
+import { IconArrowRight } from "@/lib/icons";
 import { BusinessCard, CardBar } from "./BusinessCard";
 import {
   CHAPTERS,
@@ -125,7 +127,14 @@ export function StartFlow() {
       setMockPreview(new URLSearchParams(window.location.search).get("mock") === "1");
       if (googleError) setSaveError(googleError);
       const saved = loadFlow();
-      const loaded = saved ?? emptyFlow();
+      const loaded = applyLandingBusinessRoute(saved ?? emptyFlow(), params.get("model"));
+      // Consume the landing choice once. A later in-interview change survives refresh.
+      if (params.has("model")) {
+        params.delete("model");
+        const rest = params.toString();
+        window.history.replaceState(null, "", `${window.location.pathname}${rest ? `?${rest}` : ""}`);
+        saveFlow(loaded);
+      }
       if (saved && (saved.step !== "name" || saved.draft.business_name.trim())) setResumed(true);
       loaded.step = migrateStep(loaded.step);
       if (!isStepId(loaded.step)) loaded.step = "name";
@@ -421,7 +430,7 @@ export function StartFlow() {
           </button>
         ) : (
           <Link href="/" aria-label="לעמוד הבית" className="flex min-h-11 shrink-0 items-center px-1">
-            <BrandMark className="h-7 w-7 text-[color:var(--primary)]" />
+            <span className="product-wordmark !text-[18px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
           </Link>
         )}
         <CardBar flow={flow} open={cardOpen} onToggle={toggleCard} onPickStyle={() => setStyleOpen(true)} />
@@ -431,8 +440,7 @@ export function StartFlow() {
       <header className={styles.topbar}>
         <div className={`${styles.wrap} ${styles.topbarRow}`}>
           <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
-            <BrandMark className="h-8 w-8 text-[color:var(--primary)]" />
-            <span>ישראמארקט</span>
+            <span className="product-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
           </Link>
           {loggedIn ? null : (
             <p className={styles.signin}>
