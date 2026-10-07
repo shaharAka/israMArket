@@ -51,7 +51,7 @@ export function BillingReminder() {
           {status.state === "payment_failed" ? "לבדוק את המנוי" : "להפעיל מנוי"}
         </span>
       </span>
-      <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+      <IconChevron navigation className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
 }

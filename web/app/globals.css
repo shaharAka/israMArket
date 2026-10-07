@@ -59,12 +59,15 @@ body {
 }
 
 html[lang="ar"] { --font-ui: var(--font-arabic); }
-html[lang="ru"] { --font-ui: var(--font-noto); }
-html[dir="ltr"] .locale-arrow { transform: scaleX(-1); }
+html[lang="en"], html[lang="ru"] { --font-ui: var(--font-inter); }
+/* Only navigation arrows follow interface direction; plots, artwork and media keep theirs. */
+html[dir="ltr"] [data-navigation-arrow] > path { transform: scaleX(-1); transform-origin: 12px 12px; }
+html[lang="ar"], html[lang="ar"] .tracking-tight, html[lang="ar"] .tracking-tighter { letter-spacing: normal; }
 .product-utilities { background: var(--paper); border-bottom: 1px solid var(--rule); }
 .product-utilities-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; max-width: 1200px; margin-inline: auto; padding-inline: 24px; }
-.translation-preview-note { margin: 0; padding: 4px 24px 8px; font-size: 12px; line-height: 1.7; color: var(--ink-muted); background: var(--soft); }
-@media (max-width: 600px) { .product-utilities-row { padding-inline: 16px; } .translation-preview-note { padding-inline: 16px; } }
+.product-language-control { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex-shrink: 0; font-size: 13px; color: var(--ink-soft); }
+.product-language-control > span { width: 64px; text-align: end; }
+@media (max-width: 600px) { .product-utilities-row { padding-inline: 16px; } }
 
 input::placeholder,
 textarea::placeholder {

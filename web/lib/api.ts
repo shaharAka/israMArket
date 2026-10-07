@@ -1,3 +1,4 @@
+import type { ContentLanguage } from "./content-language";
 import type { OnboardingDraft } from "./draft";
 import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign, type PostPrice } from "./dna/library";
 import { DEMO_DNA, DEMO_DNA_ALTERNATIVES, DEMO_PHOTO_AREAS, adjustDna } from "./dna/samples";
@@ -4018,10 +4019,10 @@ export const endpoints = {
   generationStatus: () => api<GenerationStatus>("/onboarding/generate/status"),
   /** Write the month's posts in the background: one week, or every week still pending
    *  (Revision 8: once the owner chose what to feature). Answers with the status. */
-  startPosts: (week?: 1 | 2 | 3 | 4) =>
+  startPosts: (week?: 1 | 2 | 3 | 4, content_language?: ContentLanguage) =>
     api<GenerationStatus>("/onboarding/posts/start", {
       method: "POST",
-      body: JSON.stringify(week ? { week } : {}),
+      body: JSON.stringify({ ...(week ? { week } : {}), ...(content_language ? { content_language } : {}) }),
     }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
   editablePlan: () => api<PlanEditPayload>("/strategy/edit"),
@@ -4593,6 +4594,9 @@ export type OverlayTheme =
   | "type_hero";
 
 export type RoadmapPost = {
+  /** Saved content language; independent of the interface locale. Older posts use Hebrew. */
+  content_language?: ContentLanguage;
+  language_reason?: string;
   week: number;
   date_hint: string;
   format: "reel" | "carousel" | "image" | "story";

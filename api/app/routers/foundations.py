@@ -29,7 +29,7 @@ from app.db import get_db
 from app.deps import get_business
 from app.models import Business, PerformanceSnapshot
 from app.services.connected_posts import FEATURED_REASONS_HE, featured_item_id
-from app.services import featured_recommendations
+from app.services import featured_recommendations, content_language
 from app.services.jsonutil import dumps, loads
 
 router = APIRouter(prefix="/business", tags=["foundations"])
@@ -291,3 +291,23 @@ def put_voice(body: VoiceCheckIn, business: Business = Depends(get_business), db
     stored["voice_check"] = {"ok": body.ok, "note": _clean(body.note, 400), "at": _now()}
     _save(db, business, stored)
     return _voice_payload(business)
+
+
+class ContentLanguageIn(BaseModel):
+    default_language: Literal["he", "en", "ar", "ru"] = "he"
+    audience_languages: list[Literal["he", "en", "ar", "ru"]] = Field(default_factory=lambda: ["he"], min_length=1, max_length=4)
+    allow_language_tests: bool = False
+
+
+@router.get("/content-language")
+def get_content_language(business: Business = Depends(get_business)) -> dict:
+    return content_language.preferences(_stored(business))
+
+
+@router.put("/content-language")
+def save_content_language(body: ContentLanguageIn, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    stored = _stored(business)
+    prefs = content_language.preferences({"content_language": body.model_dump()})
+    stored["content_language"] = prefs
+    _save(db, business, stored)
+    return prefs

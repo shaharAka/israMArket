@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCopy } from "@/components/language/LanguageProvider";
 import { useEffect, useState } from "react";
 import { AppShell, PageHeader, useLogOut } from "@/components/AppShell";
 import { CARD, GROUP_LABEL, LIST_ROW, ROW_CHEVRON, ROW_ICON } from "@/components/account/setupStyles";
@@ -54,6 +55,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
   {
     title: "ההגדרות",
     rows: [
+      { href: "/prepare?stage=write", title: "שפת הפוסטים", hint: "שפה קבועה וניסויים לקהל שלכם", icon: IconMegaphone },
       { href: "/decisions", title: "ההחלטות שלי", hint: "תקציב, יעדים ועדיפויות", icon: IconFlag },
       { href: "/integrations", title: "חיבורים", hint: "אינסטגרם, פייסבוק ונתוני האתר", icon: IconLink },
       { href: "/account", title: "החשבון", hint: "שינוי הסיסמה", icon: IconUser },
@@ -63,6 +65,7 @@ const GROUPS: { title: string; rows: Row[] }[] = [
 ];
 
 export default function BusinessPage() {
+  const t = useCopy();
   const [businessName, setBusinessName] = useState("");
   const logOut = useLogOut();
 
@@ -87,9 +90,9 @@ export default function BusinessPage() {
         {/* A label and whitespace per group, one card per group, hairlines between rows. */}
         <div className="space-y-8">
           {GROUPS.map((group, index) => (
-            <section key={group.title} aria-labelledby={`business-group-${index}`}>
+            <section key={t(group.title)} aria-labelledby={`business-group-${index}`}>
               <h2 id={`business-group-${index}`} className={GROUP_LABEL}>
-                {group.title}
+                {t(group.title)}
               </h2>
               <ul className={`${CARD} divide-y divide-[var(--rule)] overflow-hidden`}>
                 {group.rows.map((row) => (
@@ -99,10 +102,10 @@ export default function BusinessPage() {
                         <row.icon className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{row.title}</span>
-                        <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{row.hint}</span>
+                        <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{t(row.title)}</span>
+                        <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{t(row.hint)}</span>
                       </span>
-                      <IconChevron className={ROW_CHEVRON} />
+                      <IconChevron navigation className={ROW_CHEVRON} />
                     </Link>
                   </li>
                 ))}

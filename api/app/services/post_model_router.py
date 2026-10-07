@@ -42,7 +42,7 @@ def _meta_model_for(model_name: str) -> str | None:
 
 
 def write_posts_with(
-    model_name: str, prompt: str, schema: dict[str, Any], *, timeout: float | None = None
+    model_name: str, prompt: str, schema: dict[str, Any], *, timeout: float | None = None, system: str | None = None
 ) -> str:
     """Run `prompt` through the named model and return its JSON reply as a string.
 
@@ -52,11 +52,11 @@ def write_posts_with(
     """
     name = (model_name or GEMINI).strip().lower()
     if name == GEMINI:
-        return gemini.strategy_json(prompt, schema)
+        return gemini.strategy_json(prompt, schema, **({"system": system} if system else {}))
     meta_id = _meta_model_for(name)
     if meta_id is None:
         raise ValueError(f"Unknown post model {model_name!r}. Use one of: {', '.join(MODEL_NAMES)}.")
-    parsed = meta_model.chat_json(prompt, schema, model=meta_id, system=gemini.SYSTEM_HE, timeout=timeout)
+    parsed = meta_model.chat_json(prompt, schema, model=meta_id, system=system or gemini.SYSTEM_HE, timeout=timeout)
     return dumps(parsed)
 
 
@@ -78,7 +78,7 @@ def _within(seconds: float, fn: Callable[[], str]) -> str:
         raise meta_model.ModelTimeout(f"Meta Model API: no answer within {seconds:.0f}s.", code="timeout") from exc
 
 
-def post_json(prompt: str, schema: dict[str, Any]) -> str:
+def post_json(prompt: str, schema: dict[str, Any], *, system: str | None = None) -> str:
     """Drop-in replacement for `gemini.strategy_json` on the post-writing path.
 
     Follows POST_MODEL. When that is a Meta model and the call fails (billing not
@@ -90,15 +90,15 @@ def post_json(prompt: str, schema: dict[str, Any]) -> str:
     settings = get_settings()
     name = settings.post_model or GEMINI
     if name.strip().lower() == GEMINI:
-        return write_posts_with(name, prompt, schema)
+        return write_posts_with(name, prompt, schema, **({"system": system} if system else {}))
     budget = float(getattr(settings, "post_model_timeout_seconds", 0) or 0)
     try:
         if budget > 0:
             # The client stops itself at `budget`; the guard is for anything it misses.
-            return _within(budget + GUARD_GRACE_SECONDS, lambda: write_posts_with(name, prompt, schema, timeout=budget))
-        return write_posts_with(name, prompt, schema)
+            return _within(budget + GUARD_GRACE_SECONDS, lambda: write_posts_with(name, prompt, schema, timeout=budget, **({"system": system} if system else {})))
+        return write_posts_with(name, prompt, schema, **({"system": system} if system else {}))
     except meta_model.MetaModelError as exc:
         if not settings.post_model_fallback:
             raise
         log.warning("POST_MODEL=%s failed (%s: %s); falling back to Gemini.", name, type(exc).__name__, exc.code)
-        return gemini.strategy_json(prompt, schema)
+        return gemini.strategy_json(prompt, schema, **({"system": system} if system else {}))

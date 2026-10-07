@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api";
+import type { ContentLanguage } from "@/lib/content-language";
 import { SECTIONS } from "@/lib/sections";
 import { useMonthBuild, type MonthBuild } from "@/lib/useMonthBuild";
 
@@ -34,8 +35,11 @@ export function MonthBuildProgress({
   onDone,
   onProgress,
   idle,
+  contentLanguage,
 }: {
   kind?: GenerationStatus["kind"];
+  /** Optional choice for this writing batch, never a UI-language setting. */
+  contentLanguage?: ContentLanguage;
   autoStart?: boolean;
   /** Keep retries from bypassing unfinished or unsaved preparation. */
   canStart?: boolean;
@@ -45,7 +49,8 @@ export function MonthBuildProgress({
   /** An explicit next action when no build is running; never starts work on mount. */
   idle?: (build: MonthBuild) => ReactNode;
 }) {
-  const build = useMonthBuild({ kind, onDone, onProgress, startCall: START[kind] });
+  const startPosts = useCallback(() => endpoints.startPosts(undefined, contentLanguage).then(job => ({ job, done: job.done })), [contentLanguage]);
+  const build = useMonthBuild({ kind, onDone, onProgress, startCall: kind === "posts" ? startPosts : START[kind] });
   const { status, loaded, starting, running, error, start } = build;
   const autoStarted = useRef(false);
 

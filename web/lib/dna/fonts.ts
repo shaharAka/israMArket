@@ -15,7 +15,7 @@
  * Static families list their weights; a variable family covers its whole range.
  */
 
-import {
+import { Inter, IBM_Plex_Sans_Arabic,
   Amatic_SC,
   Assistant,
   Bellefair,
@@ -54,6 +54,9 @@ const amaticSc = Amatic_SC({ subsets: ["hebrew", "latin"], weight: ["400", "700"
 // next/font has no metrics to build a size-adjusted fallback for this family.
 const playpenSansHebrew = Playpen_Sans_Hebrew({ subsets: ["hebrew", "latin"], preload: false, display: "swap", adjustFontFallback: false });
 
+const international = Inter({ subsets: ["latin", "cyrillic"], preload: false, display: "swap" });
+const arabic = IBM_Plex_Sans_Arabic({ subsets: ["arabic"], weight: ["400", "500", "600", "700"], preload: false, display: "swap" });
+
 const LOADED: Record<FontKey, { style: { fontFamily: string } }> = {
   "frank-ruhl-libre": frankRuhlLibre,
   "noto-serif-hebrew": notoSerifHebrew,
@@ -74,5 +77,5 @@ const LOADED: Record<FontKey, { style: { fontFamily: string } }> = {
 /** The CSS `font-family` stack for a library font (its self-hosted face, then a system fallback). */
 export function fontStack(key: FontKey, category: "serif" | "sans" = "sans"): string {
   const generic = category === "serif" ? "'Times New Roman', serif" : "Arial, sans-serif";
-  return `${LOADED[key].style.fontFamily}, ${generic}`;
+  return `${LOADED[key].style.fontFamily}, ${international.style.fontFamily}, ${arabic.style.fontFamily}, ${generic}`;
 }

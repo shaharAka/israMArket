@@ -396,6 +396,7 @@ def connected_view(
     `design` is the post's Design DNA layout as `post_design.view_designs` computed it
     for the whole month (an old post's `overlay_theme` mapped onto a composition)."""
     view = {key: value for key, value in post.items() if key != "learning_key"}  # internal
+    view["content_language"] = post.get("content_language") if post.get("content_language") in {"he", "en", "ar", "ru"} else "he"
     view["design"] = design or view_designs([post], None)[0]
     view["uid"] = _clean(post.get("uid"), 40) or backfill_uid(business_id, year, month, index)
     view["channel"] = channel_of(post)
@@ -559,7 +560,8 @@ def measured(records: list[dict], exclude_uid: str | None = None) -> list[dict]:
 def _record_line(record: dict, model: str) -> str:
     view = record["view"]
     parts = [mix_name(view["mix_type"], model) if view.get("mix_type") else "",
-             CHANNEL_HE.get(view["channel"], ""), FORMAT_HE.get(view.get("format"), "")]
+             CHANNEL_HE.get(view["channel"], ""), FORMAT_HE.get(view.get("format"), ""),
+             f"שפת הפוסט: {view.get('content_language') or 'he'}"]
     meta = ", ".join(part for part in parts if part)
     shown = ", ".join(label for key, label in traits(view) if not key.startswith(("mix:", "format:")))
     line = f"\"{_clean(view.get('title'), 80)}\" ({meta}): {count_he(record['metric'], record['value'])}."

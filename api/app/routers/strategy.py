@@ -54,6 +54,7 @@ from app.services.post_design import (
     view_designs,
 )
 from app.services.instagram_signal import signal_for
+from app.services import content_language
 from app.services.jsonutil import dumps, loads
 from app.services.meta import account_digest
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
@@ -1180,6 +1181,7 @@ def run_next_month_stage(db: Session, business: Business) -> bool:
         # Revision 8: the products/services the owner chose to feature, when they have.
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst ("" when none).
+        "content_language": content_language.preferences(stored),
         "what_worked": connected_posts.what_worked(db, business),
     }
 

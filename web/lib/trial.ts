@@ -11,6 +11,7 @@
  */
 import { useEffect, useSyncExternalStore } from "react";
 import { ApiError, api, endpoints, isDemo, type HypothesisReviewStatus } from "./api";
+import { DEFAULT_CONTENT_LANGUAGE, type ContentLanguagePreferences } from "./content-language";
 import { whatsappEndpoints } from "./whatsapp";
 
 /* --------------------------------- Types --------------------------------- */
@@ -333,7 +334,21 @@ function refreshAfter<T>(request: Promise<T>): Promise<T> {
   });
 }
 
+let demoContentLanguage = DEFAULT_CONTENT_LANGUAGE;
+const DEMO_CONTENT_LANGUAGE_KEY = "isramarket.demo-post-language";
+function readDemoContentLanguage(): ContentLanguagePreferences {
+  try {
+    const prefs = JSON.parse(localStorage.getItem(DEMO_CONTENT_LANGUAGE_KEY) || "null");
+    if (prefs && ["he", "en", "ar", "ru"].includes(prefs.default_language) && Array.isArray(prefs.audience_languages) && prefs.audience_languages.every((code: unknown) => ["he", "en", "ar", "ru"].includes(String(code))) && typeof prefs.allow_language_tests === "boolean") return prefs;
+  } catch { /* Preview stays usable without local storage. */ }
+  return demoContentLanguage;
+}
 export const foundations = {
+  contentLanguage: (): Promise<ContentLanguagePreferences> => isDemo() ? Promise.resolve(readDemoContentLanguage()) : api<ContentLanguagePreferences>("/business/content-language"),
+  saveContentLanguage: (prefs: ContentLanguagePreferences): Promise<ContentLanguagePreferences> => {
+    if (isDemo()) { demoContentLanguage = prefs; try { localStorage.setItem(DEMO_CONTENT_LANGUAGE_KEY, JSON.stringify(prefs)); } catch { /* Keep it for this visit. */ } return Promise.resolve(prefs); }
+    return api<ContentLanguagePreferences>("/business/content-language", { method: "PUT", body: JSON.stringify(prefs) });
+  },
   baseline: (): Promise<BaselinePayload> =>
     isDemo() ? Promise.resolve(demoBaseline()) : api<BaselinePayload>("/business/baseline"),
   saveBaseline: (values: Partial<Record<BaselineKey, number | null>>): Promise<BaselinePayload> => {

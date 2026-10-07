@@ -22,7 +22,7 @@ import { Logo } from "./Signature";
  */
 export const PhotoSizesContext = createContext<string | undefined>(undefined);
 
-export type Stacks = { display: string; text: string };
+export type Stacks = { display: string; text: string; direction?: "rtl" | "ltr" };
 
 /* ------------------------------------------------------------------ */
 /* Photo                                                               */
@@ -161,7 +161,7 @@ export function TextBlock({ text, dna, stacks }: { text: TextPlan; dna: Resolved
         fontWeight: sub.weight,
         lineHeight: sub.leading,
         color: text.soft,
-        textAlign: center ? "center" : "right",
+        textAlign: center ? "center" : stacks.direction === "ltr" ? "left" : "right",
         textWrap: "balance",
         textShadow: text.shadow,
         ...(sub.above ? { marginBottom: Math.round(text.gap * 0.7), letterSpacing: "0.01em" } : { marginTop: text.gap }),
@@ -196,7 +196,7 @@ export function TextBlock({ text, dna, stacks }: { text: TextPlan; dna: Resolved
           lineHeight: headline.leading,
           letterSpacing: letter,
           color: text.fg,
-          textAlign: center ? "center" : "right",
+          textAlign: center ? "center" : stacks.direction === "ltr" ? "left" : "right",
           textWrap: "balance",
           textTransform: dna.headlineCase === "upper" ? "uppercase" : undefined,
           textShadow: text.shadow,

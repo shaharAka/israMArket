@@ -2,10 +2,11 @@ import type { ReactNode } from "react";
 
 type IconProps = { className?: string };
 
-function Sketch({ className = "w-5 h-5", children }: IconProps & { children: ReactNode }) {
+function Sketch({ className = "w-5 h-5", children, navigation = false }: IconProps & { children: ReactNode; navigation?: boolean }) {
   return (
     <svg
       className={className}
+      data-navigation-arrow={navigation || undefined}
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
@@ -95,7 +96,7 @@ export function IconCheck({ className }: IconProps) {
 }
 
 export function IconArrowLeft({ className }: IconProps) {
-  return <Sketch className={className}><path d="M20 12H4M9.3 6.7L4 12l5.3 5.3" /></Sketch>;
+  return <Sketch className={className} navigation><path d="M20 12H4M9.3 6.7L4 12l5.3 5.3" /></Sketch>;
 }
 
 export function IconImage({ className }: IconProps) {
@@ -157,13 +158,13 @@ export function IconEye({ className }: IconProps) {
 }
 
 /** "Go into this row". Points left because the app is RTL: forward is leftward. */
-export function IconChevron({ className }: IconProps) {
-  return <Sketch className={className}><path d="M14.5 6L8.5 12l6 6" /></Sketch>;
+export function IconChevron({ className, navigation = false }: IconProps & { navigation?: boolean }) {
+  return <Sketch className={className} navigation={navigation}><path d="M14.5 6L8.5 12l6 6" /></Sketch>;
 }
 
 /** "Back". Points right because the app is RTL: back is rightward. */
 export function IconArrowRight({ className }: IconProps) {
-  return <Sketch className={className}><path d="M4 12h16M14.7 6.7L20 12l-5.3 5.3" /></Sketch>;
+  return <Sketch className={className} navigation><path d="M4 12h16M14.7 6.7L20 12l-5.3 5.3" /></Sketch>;
 }
 
 /** A single person — the owner's account. */
