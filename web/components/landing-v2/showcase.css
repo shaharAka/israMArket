@@ -1,13 +1,13 @@
 /* Public website showcases. Screens are actual app captures; artwork has its own palette. */
-.lv2-site { font-family: var(--font-site-hebrew), var(--font-ui), sans-serif; }
+.lv2-site { font-family: var(--font-ui), sans-serif; }
 html[lang="en"] .lv2-site, html[lang="ru"] .lv2-site { font-family: var(--font-inter), sans-serif; }
 html[lang="ar"] .lv2-site { font-family: var(--font-arabic), sans-serif; }
 .lv2-site .lv2-fine { color: var(--ink-muted); }
 .lv2-wordmark { font-family: var(--font-inter), sans-serif; font-size: 29px; font-weight: 600; letter-spacing: -.065em; line-height: 1; color: var(--ink); }
 .lv2-wordmark > span { color: var(--primary); }
-.lv2-compact-mark { display: none; background: var(--primary); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 24px; font-weight: 600; letter-spacing: -.1em; line-height: .73; text-align: center; padding: 4px 4px 6px 0; }
+.lv2-compact-mark { display: none; background: var(--primary); color: var(--paper); width: 44px; height: 44px; border-radius: 5px; font-family: var(--font-inter), sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -.035em; line-height: .82; text-align: center; padding: 4px 0; }
 .lv2-hero { background: var(--paper); }
-.lv2-site .lv2-hero-grid { grid-template-columns: minmax(0, .86fr) minmax(0, 1.24fr); padding-block: 48px 40px; gap: clamp(32px, 4vw, 56px); align-items: center; }
+.lv2-site .lv2-hero-grid { grid-template-columns: minmax(0, .86fr) minmax(0, 1.24fr); padding-block: 48px 40px; gap: clamp(32px, 4vw, 56px); align-items: start; }
 .lv2-site .lv2-display { font-size: clamp(44px, 4.7vw, 66px); line-height: 1.04; font-weight: 600; letter-spacing: -.045em; }
 .lv2-site .lv2-display > span { color: var(--primary); }
 .lv2-site .lv2-hero-text .lv2-lead { font-size: 18px; line-height: 1.55; margin-block: 24px; max-width: 32ch; }
@@ -56,16 +56,20 @@ html[lang="ar"] .lv2-site { font-family: var(--font-arabic), sans-serif; }
  .lv2-nav-end > .lv2-btn-quiet { display: none; }
 }
 /* The whole page belongs to a business role; these are real, shareable page links. */
-.lv2-role-nav { display: flex; align-items: center; gap: 8px; padding-block: 24px 4px; flex-wrap: wrap; }
-.lv2-role-nav > span { font-size: 16px; font-weight: 600; margin-inline-end: 16px; }
-.lv2-role-nav > a { display: inline-flex; align-items: center; min-height: 44px; padding: 10px 18px; border-radius: 6px; font-size: 15px; color: var(--ink-soft); background: var(--soft); border: 1px solid transparent; }
-.lv2-role-nav > a[aria-current="page"] { color: var(--primary); background: var(--primary-soft); border-color: var(--primary); }
+.lv2-role-nav { display: flex; align-items: center; gap: 4px 16px; flex-wrap: wrap; margin-block: 20px; }
+.lv2-role-nav > span { width: 100%; font-size: 13px; font-weight: 500; color: var(--ink-muted); }
+.lv2-role-nav > a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: var(--ink-soft); text-underline-offset: 7px; text-decoration-thickness: 2px; }
+.lv2-role-nav > a[aria-current="page"] { color: var(--primary); text-decoration-line: underline; font-weight: 600; }
+.lv2-role-nav > a:hover { text-decoration-line: underline; }
 .lv2-role-nav > a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.lv2-site .lv2-display { font-family: var(--font-art-serif), Georgia, serif; font-weight: 500; letter-spacing: -.04em; font-size: clamp(46px, 4.7vw, 64px); line-height: 1.04; }
-html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-family: var(--font-site-serif), Georgia, serif; font-size: clamp(40px, 4vw, 56px); line-height: 1.1; letter-spacing: -.04em; }
-html[lang="ar"] .lv2-site .lv2-display { font-family: var(--font-arabic), sans-serif; letter-spacing: normal; line-height: 1.16; }
+.lv2-site .lv2-display { font-family: inherit; font-weight: 700; letter-spacing: -.035em; font-size: clamp(46px, 4.2vw, 60px); line-height: 1.08; }
+html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: clamp(36px, 3.2vw, 46px); line-height: 1.12; letter-spacing: -.045em; }
+html[lang="ar"] .lv2-site .lv2-display { font-size: clamp(40px, 3.6vw, 52px); letter-spacing: normal; line-height: 1.2; }
+.lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-art-serif), Georgia, serif; font-weight: 500; }
+html[lang="en"] .lv2-site[data-hero-type="serif"] .lv2-display, html[lang="ru"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-site-serif), Georgia, serif; }
+html[lang="ar"] .lv2-site[data-hero-type="serif"] .lv2-display { font-family: var(--font-arabic), sans-serif; }
 .lv2-hero-stack { margin-block: 24px 0; font-size: 18px; font-weight: 600; color: var(--ink); }
-.lv2-site .lv2-hero-text .lv2-lead { margin-block: 12px 24px; font-size: 18px; max-width: 36ch; }
+.lv2-site .lv2-hero-text .lv2-lead { margin-block: 20px; font-size: 18px; max-width: 100%; }
 .lv2-team-demo { min-width: 0; }
 .lv2-team-agents { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
 .lv2-team-agents button { appearance: none; background: transparent; border: none; border-block-end: 2px solid var(--rule); color: var(--ink-soft); text-align: start; font: inherit; font-weight: 500; min-height: 60px; cursor: pointer; padding: 8px 0; }
@@ -130,11 +134,10 @@ html[lang="ar"] .lv2-site .lv2-display { font-family: var(--font-arabic), sans-s
  .lv2-team-work { min-height: 360px; }
 }
 @media (max-width: 520px) {
- .lv2-role-nav { gap: 8px; padding-block: 20px 0; }
- .lv2-role-nav > span { width: 100%; margin-inline-end: 0; margin-bottom: 4px; font-size: 15px; }
- .lv2-role-nav > a { font-size: 13px; padding: 10px 12px; }
- .lv2-site .lv2-display { font-size: 44px; line-height: 1.06; }
- html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: 35px; }
+ .lv2-role-nav { gap: 4px 20px; margin-block: 16px; }
+ .lv2-role-nav > a { font-size: 14px; }
+ .lv2-site .lv2-display { font-size: 40px; line-height: 1.12; }
+ html[lang="en"] .lv2-site .lv2-display, html[lang="ru"] .lv2-site .lv2-display { font-size: 36px; }
  .lv2-site .lv2-hero-grid { padding-block: 28px 36px; gap: 32px; }
  .lv2-hero-stack { font-size: 16px; margin-top: 20px; }
  .lv2-site .lv2-hero-text .lv2-lead { font-size: 17px; }
@@ -164,3 +167,16 @@ html[lang="ar"] .lv2-site .lv2-display { font-family: var(--font-arabic), sans-s
 .campaign-examples:has(.campaign-grid[data-count="1"]) { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 64px; align-items: center; }
 .campaign-examples:has(.campaign-grid[data-count="1"]) .campaign-detail { margin-top: 0; padding-top: 0; border: 0; }
 @media (max-width: 700px) { .campaign-examples:has(.campaign-grid[data-count="1"]) { display: block; } .campaign-examples:has(.campaign-grid[data-count="1"]) .campaign-detail { padding-top: 24px; } }
+
+/* A live rendering of the shared plan component keeps phone proof relevant and translated. */
+.lv2-phone-grid { grid-template-columns: minmax(0, 1fr) 300px; }
+.lv2-phone-proof { width: 300px; min-width: 0; background: var(--canvas); border: 5px solid var(--ink); padding: 20px 8px; border-radius: 26px; box-shadow: var(--shadow-pop); }
+.lv2-phone-proof > div > p { padding-inline: 8px; }
+@media (max-width: 600px) { .lv2-phone-grid { grid-template-columns: 1fr; } .lv2-phone-proof { margin-inline: auto; max-width: 100%; } }
+/* Keep the decision in view on a short laptop; long translations still get natural wrapping. */
+@media (min-width: 1024px) and (max-width: 1280px) {
+ .lv2-site .lv2-hero-grid { padding-block: 32px; }
+ .lv2-site .lv2-hero-text .lv2-lead { margin-block: 16px; }
+ .lv2-role-nav { margin-block: 16px; }
+ .lv2-site .lv2-hero-cta { margin-top: 16px; }
+}

@@ -4,7 +4,7 @@ import { Copy } from "@/components/language/LanguageProvider";
 import { CONNECTION_EXAMPLES, type ConnectionExampleKey } from "@/components/landing-v2/connectionExamples";
 import { ConnectionScreenshot } from "@/components/landing-v2/ConnectionScreenshot";
 import { BrandWordmark } from "@/components/landing-v2/BrandWordmark";
-import { siteSans, artSerif, siteSerif } from "@/components/landing-v2/siteFonts";
+import { artSerif, siteSerif } from "@/components/landing-v2/siteFonts";
 import { IconArrowRight } from "@/lib/icons";
 import "@/components/landing-v2/lv2.css";
 import "@/components/landing-v2/showcase.css";
@@ -16,7 +16,7 @@ export default async function ConnectionPage({ params }: PageProps<"/connections
   const { provider } = await params;
   if (!Object.hasOwn(CONNECTION_EXAMPLES, provider)) notFound();
   const connection = CONNECTION_EXAMPLES[provider as ConnectionExampleKey];
-  return <div className={`lv2 lv2-site ${siteSans.variable} ${artSerif.variable} ${siteSerif.variable}`}>
+  return <div className={`lv2 lv2-site ${artSerif.variable} ${siteSerif.variable}`}>
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row"><Link href="/" className="lv2-brand"><BrandWordmark /></Link><Link href="/#connections" className="lv2-nav-end"><IconArrowRight className="h-4 w-4" /><Copy text="לכל החיבורים" /></Link></div></header>
     <main className="lv2-wrap lv2-connection-page">
       <p className="lv2-eyebrow"><Copy text={connection.name} /></p>

@@ -1,0 +1,18 @@
+.finding { color: var(--im-ink, var(--ink)); padding: 28px 32px 24px; }
+.label { color: var(--im-muted, var(--ink-muted)); font-size: 13px; font-weight: 500; margin-bottom: 8px; }
+.finding h2 { font-size: clamp(24px, 3vw, 30px); font-weight: 700; line-height: 1.35; letter-spacing: -.02em; max-width: 25em; text-wrap: pretty; }
+.explanation { font-size: 16px; line-height: 1.65; color: var(--im-muted, var(--ink-soft)); margin-top: 12px; max-width: 42em; }
+.uncertainty { font-size: 14px; line-height: 1.6; color: var(--im-muted, var(--ink-soft)); margin-top: 12px; max-width: 48em; }
+.evidence { margin-top: 8px; font-size: 14px; line-height: 1.65; }
+.evidence summary { display: flex; align-items: center; gap: 8px; width: fit-content; min-height: 44px; list-style: none; font-weight: 600; cursor: pointer; color: var(--im-primary, var(--primary)); }
+.evidence summary::-webkit-details-marker { display: none; }
+.evidence summary:hover { text-decoration: underline; text-underline-offset: 4px; }
+.evidence summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.chevron { width: 16px; height: 16px; rotate: -90deg; flex: none; transition: rotate 180ms var(--ease); }
+.evidence[open] .chevron { rotate: 90deg; }
+.evidenceBody { padding-block: 8px; }
+.finding[data-compact="true"] { padding: 20px 24px; }
+.finding[data-compact="true"] h3 { font-size: 17px; line-height: 1.5; font-weight: 600; }
+.finding[data-compact="true"] .uncertainty { font-size: 13px; margin-top: 8px; }
+@media (max-width: 600px) { .finding { padding: 24px 20px; } .finding h2 { font-size: 24px; } .finding[data-compact="true"] { padding: 20px; } }
+@media (prefers-reduced-motion: reduce) { .chevron { transition: none; } }

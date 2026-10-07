@@ -1,6 +1,6 @@
 {
   "reviewer": "Codex source-context check; not a native-speaker or legal review",
-  "reason": "Source-context checks for conversion rates, approval vs evidence, alternate selection, subscriber units, natural labels, grammatical duals and Google Business Profile terminology.",
+  "reason": "Source-context checks for conversion rates, approval vs evidence, alternate selection, subscriber units, natural labels, grammatical duals and Google Business Profile terminology. Hero copy keeps the AI team as the actor (not instructions for the owner) and ongoing-plan headlines stay concise.",
   "messages": {
     "m_213840f281fa09b3": {
       "en": "This is the published conversion rate for the “{arg_0}” industry. It was not measured on your website.",
@@ -159,6 +159,41 @@
     },
     "m_dd31ebb274376821": {
       "en": "Review the suggestion in the post"
+    },
+    "m_e0f4d7c2b247f570": {
+      "en": "An AI marketing team.",
+      "ar": "فريق تسويق بالذكاء الاصطناعي.",
+      "ru": "AI-команда для маркетинга."
+    },
+    "m_0f8f75fed75e7877": {
+      "en": "A plan that grows with your business.",
+      "ar": "خطة تتطور مع نشاطكم التجاري.",
+      "ru": "План растёт вместе с бизнесом."
+    },
+    "m_6d854a5fb4c28a74": {
+      "en": "A plan that grows with your store.",
+      "ar": "خطة تتطور مع متجركم.",
+      "ru": "План растёт вместе с магазином."
+    },
+    "m_1e1338dd48f28afb": {
+      "en": "A plan that grows with your product.",
+      "ar": "خطة تتطور مع منتجكم.",
+      "ru": "План растёт вместе с продуктом."
+    },
+    "m_c353325e2e9153e1": {
+      "en": "We research your store and audience, build a plan and create posts in your style. We learn from the data and improve the next step.",
+      "ar": "ندرس متجركم وجمهوركم، ونبني خطة ونجهّز منشورات بأسلوبكم. نتعلم مما نقيسه ونحسّن الخطوة التالية.",
+      "ru": "Изучаем Ваш магазин и аудиторию, строим план и создаём посты в Вашем стиле. Учимся на измеренных результатах и улучшаем следующий шаг."
+    },
+    "m_afb548baabe51c83": {
+      "en": "We learn about your services and clients, build a plan and create posts with your character. We learn from the results and improve the next step.",
+      "ar": "نتعرف على خدماتكم وعملائكم، ونبني خطة ونجهّز منشورات تعكس طابعكم. نتعلم من النتائج ونحسّن الخطوة التالية.",
+      "ru": "Изучаем Ваши услуги и клиентов, строим план и создаём посты с Вашим характером. Учимся на результатах и улучшаем следующий шаг."
+    },
+    "m_a6d0fa287e17b07b": {
+      "en": "We research your product and market, build a plan and create posts that show its value. We learn from trials and improve the next step.",
+      "ar": "ندرس منتجكم والسوق، ونبني خطة ونجهّز منشورات توضّح قيمته. نتعلم من التجربة ونحسّن الخطوة التالية.",
+      "ru": "Изучаем Ваш продукт и рынок, строим план и создаём посты, показывающие его ценность. Учимся на пробном использовании и улучшаем следующий шаг."
     }
   },
   "numberForms": {

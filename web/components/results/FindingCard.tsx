@@ -68,13 +68,13 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
       {t(changed || "הצעה לבדיקה")}{payload.created_at ? t(" · הוכנה ב־{arg_0}", { arg_0: checkedDate(payload.created_at) }) : ""}
     </p>
-    <h2 id={`${id}-title`} className="mt-3 text-[20px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{item.title}</h2>
+    <h2 id={`${id}-title`} className="mt-3 text-[24px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{item.title}</h2>
     {/* The changed state's explanation comes before the numbers it qualifies. */}
     {changed && note ? <p className="mt-2 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">{note}</p> : null}
     {legacy ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="זו הצעה ישנה, בלי פירוט של המקורות. כדאי לבדוק מספרים עדכניים לפני שמשנים משהו." /></p> : <>
       <div className={onlyOwnerFacts ? "mt-4 grid grid-cols-3 gap-3" : "mt-4 flex flex-wrap gap-x-8 gap-y-3"} aria-label={ownerFacts.length ? t("מה ידוע") : t("מה נמדד")}>
         {visibleFacts.map(fact => <div key={`${fact.source}-${fact.metric}`}>
-          <p className="text-[12px] text-[color:var(--ink-muted)]">{fact.label}</p>
+          <p className="text-[13px] text-[color:var(--ink-muted)]">{fact.label}</p>
           <p className={changed ? "mt-0.5 text-[16px] font-semibold tabular-nums text-[color:var(--ink-soft)]" : "mt-1 text-[24px] font-bold tabular-nums tracking-tight text-[color:var(--ink)]"}>{new Intl.NumberFormat(LOCALE_META[locale].formatLocale, { maximumFractionDigits: 1 }).format(fact.value)}</p>
         </div>)}
       </div>
@@ -83,10 +83,11 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
           {period.ranges.map(([range, group], i) => <span key={range}>{i ? " · " : ""}{period.ranges.length > 1 ? `${group.map(source => source.label).join(", ")}: ` : ""}<bdi>{range}</bdi></span>)}
           {period.read ? <>{" "}<Copy text="· נקרא ב־" />{" "}<bdi>{period.read}</bdi></> : null}
         </p> : null}
-      {observations.length === 0 ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="אין מספיק מספרים כדי להסיק מסקנה. זו הצעה לניסוי, לא תוצאה מוכחת." /></p> : <p className="mt-3 text-[12px] leading-6 text-[color:var(--ink-muted)]">{ownerFacts.length ? t("הפניות והלקוחות הם הדיווח שלכם. לקוח יכול להגיע מפנייה של חודש קודם. אי אפשר לדעת מאיזה פוסט הם הגיעו, וכל מקור נספר לבד.") : t("אלה לא בהכרח פניות או הזמנות. כל מספר מגיע ממקור אחר, ולא מחברים ביניהם.")}</p>}
+      {observations.length === 0 ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]"><Copy text="אין מספיק מספרים כדי להסיק מסקנה. זו הצעה לניסוי, לא תוצאה מוכחת." /></p> : <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-muted)]">{ownerFacts.length ? t("הפניות והלקוחות הם הדיווח שלכם. לקוח יכול להגיע מפנייה של חודש קודם. אי אפשר לדעת מאיזה פוסט הם הגיעו, וכל מקור נספר לבד.") : t("אלה לא בהכרח פניות או הזמנות. לא מחברים לחיצות, צפיות ותוצאות מסוגים שונים.")}</p>}
       {stale ? <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-soft)]"><Copy text="חלק מהמספרים מעדכון קודם, ולכן הם לא מראים את המצב היום." /></p> : null}
       {missing.length ? <p className="mt-2 text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="חסר:" />{" "}{missing.map(source => source.label).join(", ")}<Copy text=". זה לא אומר שלא הייתה פעילות." /></p> : null}
     </>}
+    {!legacy && basis?.limits?.[0] ? <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">{basis.limits[0]}</p> : null}
     <p className="mt-4 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]"><strong className="font-semibold text-[color:var(--ink)]"><Copy text="מה ננסה:" /></strong>{" "}{item.action}</p>
     {note && !legacy && !changed ? <p className="mt-3 rounded-lg bg-[var(--soft)] px-3 py-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">{note}</p> : null}
     <Link href={review?.href || "/strategy"} onClick={onReview ? event => { event.preventDefault(); onReview(); } : undefined} className={primary
@@ -108,7 +109,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
           {source.status === "historical" ? source.key === "service_owner" ? t(" · הדיווח השתנה מאז ההצעה") : t(" · החיבור אינו פעיל כרגע") : source.status === "different_selection" ? t(" · נבחר אתר או חשבון אחר מאז הקריאה") : ""}
         </>}</p>)}
         {item.evidence ? <p><strong className="font-semibold"><Copy text="הנימוק להצעה, לפי הניתוח:" /></strong>{" "}{item.evidence}</p> : null}
-        {(basis?.limits ?? []).map(limit => <p key={limit}>{limit}</p>)}
+        {(basis?.limits ?? []).slice(legacy ? 0 : 1).map(limit => <p key={limit}>{limit}</p>)}
         {item.success_check ? <p><strong className="font-semibold"><Copy text="איך נבדוק:" /></strong>{" "}{item.success_check}</p> : <p><Copy text="עוד לא קבענו איך נדע אם זה הצליח. בחרו בתוכנית מה למדוד לפני שמסיקים מסקנה." /></p>}
         <p>{review?.note_he || t("ההצעה לא משנה את התוכנית ולא מפרסמת תוכן. אתם מחליטים מה לערוך ולאשר.")}</p>
       </div>
