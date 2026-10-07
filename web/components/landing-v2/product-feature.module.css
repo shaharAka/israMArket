@@ -7,7 +7,7 @@
 .featureDot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); visibility: hidden; }
 .selector button[aria-pressed="true"] .featureDot { visibility: visible; }
 .views { display: grid; }
-.showcase[data-presentation="hero"] .views { zoom: .8; }
+
 /* Reserve the tallest view, like a product player: choosing a feature keeps its controls still. */
 .screen { grid-area: 1 / 1; visibility: hidden; }
 .screen[data-active="true"] { visibility: visible; animation: featureReveal 180ms ease-out; }
@@ -31,11 +31,11 @@
 .playback:hover { background: var(--soft); }
 .playback:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .frame { position: relative; overflow: hidden; }
-.showcase[data-presentation="hero"] .views { height: 570px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
-.showcase[data-presentation="hero"] .screen { display: none; }
+.showcase[data-presentation="hero"] .views { display: block; position: relative; height: 456px; overflow: hidden; }
+.showcase[data-presentation="hero"] .screen { display: none; position: absolute; top: 12px; left: 50%; width: 760px; transform: translateX(-50%) scale(var(--preview-scale, .6)); transform-origin: top center; transition: transform 300ms ease; }
 .showcase[data-presentation="hero"] .screen[data-active="true"] { display: block; }
 .cursorLayer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.cursor { position: absolute; z-index: 2; margin: -4px 0 0 -12px; filter: drop-shadow(0 2px 3px #17252c25); animation: cursorArrive 750ms cubic-bezier(.22,.65,.3,1) both; }
+.cursor { position: absolute; z-index: 2; transition: left 250ms ease, top 250ms ease; margin: -4px 0 0 -16px; filter: drop-shadow(0 2px 3px #17252c25); animation: cursorArrive 750ms cubic-bezier(.22,.65,.3,1) both; }
 .cursor[data-pressed="true"] svg { animation: cursorPress 400ms ease-out; }
 .cursor[data-pressed="true"]::before { content: ""; position: absolute; left: 6px; top: -7px; width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 50%; animation: clickRing 500ms ease-out both; }
 @keyframes cursorArrive { from { opacity: 0; transform: translate(58px, 48px); } to { opacity: 1; transform: translate(0,0); } }
@@ -43,3 +43,5 @@
 @keyframes clickRing { from { opacity: .8; transform: scale(.5); } to { opacity: 0; transform: scale(2); } }
 @media (prefers-reduced-motion: reduce) { .cursorLayer { display: none; } }
 @media (max-width: 600px) { .selector button { padding-inline: 4px; font-size: 12px; gap: 5px; } }
+
+@media (prefers-reduced-motion: reduce) { .showcase[data-presentation="hero"] .screen { transition: none; } }

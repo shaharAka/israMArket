@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useRef, useState, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { MonthPlanOverview } from "@/components/plan/MonthPlanOverview";
 import { PostFeed } from "@/components/posts/PostFeed";
@@ -29,7 +29,7 @@ export function ProductFeatureShowcase({ path, initialScreen = "plan", initialPo
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const [screen, setScreen] = useState<ProductScreen>(initialScreen);
   const [postIndex, setPostIndex] = useState<number | null>(initialPost ?? 0);
-  const { frame, viewport, cursor, playing, requested, reduced, pause, toggle } = useProductPlayback(presentation === "hero", screen, setScreen, setPostIndex);
+  const { frame, viewport, scale, cursor, playing, requested, reduced, pause, toggle } = useProductPlayback(presentation === "hero", screen, setScreen, setPostIndex);
   const business = BUSINESS_EXAMPLES[path];
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];
@@ -41,7 +41,7 @@ export function ProductFeatureShowcase({ path, initialScreen = "plan", initialPo
 
     <div className={styles.frame} ref={frame}>
       <header className={styles.header}><strong><Copy text={business.name} /></strong><p className="sr-only" aria-live={playing ? "off" : "polite"}><Copy text={active.benefit} /></p></header>
-      <div className={styles.views} ref={viewport}>
+      <div className={styles.views} ref={viewport} style={{ "--preview-scale": scale } as CSSProperties}>
       {FEATURES.map(item => <section key={item.key} className={styles.screen} data-active={screen === item.key}
         aria-hidden={screen !== item.key} inert={screen !== item.key}
         id={`${id}-${item.key}-view`} aria-labelledby={`${id}-${item.key}-control`}>
@@ -60,7 +60,7 @@ export function ProductFeatureShowcase({ path, initialScreen = "plan", initialPo
       </section>)}
       </div>
       {cursor ? <div className={styles.cursorLayer} aria-hidden="true"><span className={styles.cursor} data-pressed={cursor.pressed} style={{ left: cursor.x, top: cursor.y }}>
-        <svg width="34" height="42" viewBox="0 0 34 42" fill="none"><path d="M10 22V5a3 3 0 0 1 6 0v12-3a3 3 0 0 1 6 0v4-2a3 3 0 0 1 6 0v4a3 3 0 0 1 5 2v7c0 4-3 7-4 10H13c-1-5-4-7-7-11L2 23c-2-3 2-6 5-3l3 2Z" fill="white" stroke="#17252c" strokeWidth="2" strokeLinejoin="round"/></svg>
+        <svg width="44" height="54" viewBox="0 0 34 42" fill="none"><path d="M10 22V5a3 3 0 0 1 6 0v12-3a3 3 0 0 1 6 0v4-2a3 3 0 0 1 6 0v4a3 3 0 0 1 5 2v7c0 4-3 7-4 10H13c-1-5-4-7-7-11L2 23c-2-3 2-6 5-3l3 2Z" fill="white" stroke="#17252c" strokeWidth="2" strokeLinejoin="round"/></svg>
       </span></div> : null}
     </div>
     <div className={styles.controls}>

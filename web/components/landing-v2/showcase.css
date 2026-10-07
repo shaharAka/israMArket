@@ -201,3 +201,9 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
  .lv2-site .product-utilities-inline select { width: 70px; }
  .lv2-site .lv2-nav-end > .lv2-btn-quiet { padding-inline: 8px; font-size: 10px; }
 }
+
+/* Identity studies stay opt-in on /design/identity. */
+.lv2-identity-wordmark { font-family: var(--font-inter), sans-serif; font-weight: 750; font-size: 29px; letter-spacing: -.045em; line-height: 1; color: var(--ink); }
+.lv2-identity-symbol { display: none; width: 44px; height: 44px; color: var(--ink); }
+.lv2-identity-symbol svg { width: 100%; height: 100%; }
+@media (max-width: 520px) { .lv2-identity-wordmark { display: none; } .lv2-identity-symbol { display: block; } }

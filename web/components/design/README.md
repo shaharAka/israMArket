@@ -240,10 +240,12 @@ opens an actual weekly disclosure, local post and finding evidence. It only targ
 these read-only fixture controls. Manual pointer/keyboard/wheel interaction pauses it;
 the adjacent play/pause control resumes it. Offscreen/hidden pages suspend timers,
 and reduced-motion preferences disable autoplay and the hand. Timers clean up on each
-stage, pause and unmount. Programmatic scrolling is confined to the product viewport.
+stage, pause and unmount. The active screen is measured with ResizeObserver and scaled to fit the player, including expanded content; no automatic page or panel scrolling is needed. Cursor space is reserved beneath it.
 The full-screen design preview remains manual. Landing headers embed the existing native
 language selector beside login/start, with its accessible label retained but visually hidden.
 
 Public shell palette: paper, ink, neutral surfaces and the existing blue interaction accent.
 The wordmark and ISMT mark are monochrome; CTAs use ink. Business-specific colors belong
 inside artwork and real product content, not separate colors for each navigation option.
+
+`/design/identity` compares three original SVG mark studies at 20px, 32px and reversed, with an opt-in real landing-page header preview. The production wordmark is not replaced by an unselected study.

@@ -255,7 +255,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -310,7 +310,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -582,7 +582,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -2615,7 +2615,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 103,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -2873,7 +2873,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -5702,7 +5702,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/BrandWordmark.tsx",
-        "line": 7,
+        "line": 13,
         "kind": "jsx"
       }
     ]
@@ -9912,6 +9912,18 @@
         "file": "web/components/landing-v2/personaPages.ts",
         "line": 32,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_17545cee54505c40": {
+    "source": "השמש מעל מבנה פתוח. קשר למוטיב שלנו, בלי גג של בית ובלי ציור מפורט של חנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -14913,7 +14925,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -15041,7 +15053,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       },
       {
@@ -19370,7 +19382,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -22414,7 +22426,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/BrandWordmark.tsx",
-        "line": 6,
+        "line": 7,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/BrandWordmark.tsx",
+        "line": 12,
+        "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 31,
         "kind": "jsx"
       }
     ]
@@ -22510,6 +22532,17 @@
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 114,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_333c36903a2c2c30": {
+    "source": "הסימן לבדו בטלפון. השם המלא במחשב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -24889,7 +24922,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -27947,7 +27980,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/BrandWordmark.tsx",
-        "line": 7,
+        "line": 13,
         "kind": "jsx"
       }
     ]
@@ -30518,7 +30551,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -31914,7 +31947,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -34556,7 +34589,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -36598,7 +36631,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -36699,7 +36732,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -41021,6 +41054,18 @@
       }
     ]
   },
+  "m_5fce03f155525f80": {
+    "source": "אות M מזוויות של דף מקופל. צורה חדה ובולטת, עם קשר לתוכנית שאנחנו בונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 14,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_5fd465b4091263c0": {
     "source": "דוגמאות צבע בגוני שמנת באור ובצל ליד חלון, בהמחשה שנוצרה ב-AI",
     "language": "he",
@@ -42185,7 +42230,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -44975,7 +45020,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 100,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -46361,7 +46406,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -47512,7 +47557,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -48180,7 +48225,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -49960,6 +50005,17 @@
         "line": 1514,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_74300ec69d7b839c": {
+    "source": "קודם צורה וקריאות. הצבע יכול לחכות. בחרו כיוון כדי לראות אותו בכותרת האתר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 25,
+        "kind": "literal"
       }
     ]
   },
@@ -53329,7 +53385,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -53848,7 +53904,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 84,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -55940,6 +55996,17 @@
         "line": 30,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_82825c959b4c5d58": {
+    "source": "לחזור לתצוגת האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 23,
+        "kind": "literal"
       }
     ]
   },
@@ -60898,7 +60965,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -63828,7 +63895,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -65040,6 +65107,18 @@
       }
     ]
   },
+  "m_97c0af50cbde8dc1": {
+    "source": "סימן קצר מתוך השם. אותיות שמתחברות לצורה אחת, בלי לדחוס ארבע אותיות לתוך קופסה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_97cbad5bdaeda645": {
     "source": "האישור לגוגל לא הושלם. התוכנית נשמרה; אפשר לחבר שוב כשנוח לכם.",
     "language": "he",
@@ -65129,7 +65208,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 100,
+        "line": 101,
         "kind": "literal"
       },
       {
@@ -67553,7 +67632,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       },
       {
@@ -68112,6 +68191,18 @@
       }
     ]
   },
+  "m_9fdcea51c8bf60a1": {
+    "source": "תוכנית בתנועה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 14,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_9ff9a39e6a1d0705": {
     "source": "שורת תקציב לערוץ שלא בתוכנית או שלא שמים בו כסף: {arg_0}.",
     "language": "he",
@@ -68496,6 +68587,18 @@
         "line": 1043,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a0a5af7be18deb9c": {
+    "source": "השמש נשארת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -70763,6 +70866,17 @@
       }
     ]
   },
+  "m_a5b542bc38bb6307": {
+    "source": "שם אחד. שלושה כיוונים לסימן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a5b941a281bb5736": {
     "source": "תוכנית",
     "language": "he",
@@ -70875,7 +70989,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -71250,7 +71364,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 68,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -72573,7 +72687,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -72932,7 +73046,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -73266,7 +73380,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -74834,7 +74948,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -75312,6 +75426,18 @@
         "file": "web/lib/businessModel.ts",
         "line": 107,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b0c2742675d8678a": {
+    "source": "זהות המותג — ישראמארקט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/design/identity/page.tsx",
+        "line": 4,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -76185,7 +76311,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -76554,6 +76680,17 @@
         "line": 284,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_b3560664e501ef21": {
+    "source": "ככה זה נראה באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 36,
+        "kind": "literal"
       }
     ]
   },
@@ -78515,7 +78652,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -78599,7 +78736,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 101,
+        "line": 102,
         "kind": "literal"
       },
       {
@@ -81444,7 +81581,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -81807,7 +81944,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -83518,12 +83655,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 97,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -83580,7 +83717,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -83753,6 +83890,17 @@
         "line": 103,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c4417ef2575a4587": {
+    "source": "לבחור כיוון לזהות המותג",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 27,
+        "kind": "literal"
       }
     ]
   },
@@ -84407,7 +84555,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 97,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -85831,7 +85979,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       },
       {
@@ -90797,7 +90945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -92776,7 +92924,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 96,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -93723,7 +93871,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       },
       {
@@ -96752,7 +96900,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -96944,17 +97092,22 @@
       },
       {
         "file": "web/components/landing-v2/BrandWordmark.tsx",
-        "line": 8,
+        "line": 9,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/BrandWordmark.tsx",
+        "line": 14,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 51,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       },
       {
@@ -97091,7 +97244,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 82,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -101590,7 +101743,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 52,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -103557,6 +103710,18 @@
         "file": "web/components/help/guides.ts",
         "line": 557,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_f10b6dd6e70563e5": {
+    "source": "חתימה טיפוגרפית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -109559,7 +109724,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       }
     ]

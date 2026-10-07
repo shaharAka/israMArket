@@ -19,6 +19,7 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   setScreen: (screen: ProductScreen) => void, setPostIndex: (index: number | null) => void) {
   const frame = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(.6);
   const [requested, setRequested] = useState(true);
   const [inView, setInView] = useState(false);
   const [cursor, setCursor] = useState<{ x: number; y: number; pressed: boolean } | null>(null);
@@ -34,6 +35,18 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   }, [enabled]);
 
   useEffect(() => {
+    if (!enabled || !viewport.current) return;
+    const view = viewport.current;
+    const active = view.querySelector<HTMLElement>('[data-active="true"]');
+    if (!active) return;
+    const fit = () => setScale(Math.min(1, (view.clientWidth - 24) / 760, (view.clientHeight - 56) / active.offsetHeight));
+    const observer = new ResizeObserver(fit);
+    observer.observe(view);
+    observer.observe(active);
+    return () => observer.disconnect();
+  }, [enabled, screen]);
+
+  useEffect(() => {
     if (!playing) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
     const later = (delay: number, work: () => void) => timers.push(setTimeout(work, delay));
@@ -41,21 +54,12 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
     const target = () => screen === "posts"
       ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]')
       : panel()?.querySelector<HTMLElement>("details > summary");
-    const panTo = (element: HTMLElement) => {
-      const view = viewport.current;
-      if (!view) return;
-      const bounds = view.getBoundingClientRect();
-      const rect = element.getBoundingClientRect();
-      const scale = bounds.width / view.offsetWidth;
-      view.scrollBy({ top: (rect.top - bounds.top - bounds.height * .3) / scale, behavior: "smooth" });
-    };
     later(0, () => {
       setCursor(null);
       viewport.current?.scrollTo({ top: 0, behavior: "instant" });
       panel()?.querySelectorAll("details").forEach(detail => { detail.open = false; });
       if (screen === "posts") setPostIndex(null);
     });
-    later(1100, () => { const node = target(); if (node) panTo(node); });
     later(1800, () => {
       const node = target();
       const bounds = frame.current?.getBoundingClientRect();
@@ -63,18 +67,26 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
       const rect = node.getBoundingClientRect();
       setCursor({ x: rect.left - bounds.left + rect.width * .62, y: rect.top - bounds.top + rect.height * .5, pressed: false });
     });
-    later(2600, () => {
+    later(3000, () => {
       const node = target();
       if (!node) return;
       setCursor(point => point && { ...point, pressed: true });
       node.click();
       if (screen === "posts") viewport.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
-    later(3100, () => setCursor(null));
+    later(3500, () => {
+      if (screen === "posts") { setCursor(null); return; }
+      const node = target();
+      const bounds = frame.current?.getBoundingClientRect();
+      if (!node || !bounds) return;
+      const rect = node.getBoundingClientRect();
+      setCursor({ x: rect.left - bounds.left + rect.width * .62, y: rect.top - bounds.top + rect.height * .5, pressed: false });
+    });
+    later(4600, () => setCursor(null));
     later(8500, () => setScreen(screen === "plan" ? "posts" : screen === "posts" ? "results" : "plan"));
     return () => timers.forEach(clearTimeout);
   }, [playing, screen, setScreen, setPostIndex]);
 
-  return { frame, viewport, cursor: playing ? cursor : null, playing, requested, reduced,
+  return { frame, viewport, scale, cursor: playing ? cursor : null, playing, requested, reduced,
     pause: () => setRequested(false), toggle: () => setRequested(value => !value) };
 }

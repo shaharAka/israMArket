@@ -14,6 +14,7 @@ import { POST_EXAMPLES } from "./postExamples";
 import { HeroWorkspace } from "./HeroWorkspace";
 import { BusinessProductProof } from "./BusinessProductProof";
 import { HeroProduct } from "./HeroProduct";
+import type { IdentityDirection } from "./IdentityMark";
 import { BrandWordmark } from "./BrandWordmark";
 import { artSerif, siteSerif, siteClean } from "./siteFonts";
 import { PERSONA_PAGES } from "./personaPages";
@@ -32,7 +33,7 @@ const FAQ: { q: string; a: ReactNode }[] = [
 ];
 
 /** Role-specific pages use real product components with explicitly simulated business data. */
-export function Landing({ initialPath = "services", heroVariant = "workspace", heroTypeface = "modern", heroOnly = false }: { initialPath?: ExamplePath; heroVariant?: "workspace" | "tabs"; heroTypeface?: "modern" | "sans"; heroOnly?: boolean }) {
+export function Landing({ initialPath = "services", heroVariant = "workspace", heroTypeface = "modern", heroOnly = false, identity }: { initialPath?: ExamplePath; heroVariant?: "workspace" | "tabs"; heroTypeface?: "modern" | "sans"; heroOnly?: boolean; identity?: IdentityDirection }) {
   const path = initialPath;
   const t = useCopy();
   const { locale } = useLanguage();
@@ -48,7 +49,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
   }));
   return <div className={`lv2 lv2-site ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={path} data-hero-type={heroTypeface}>
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row">
-      <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark /></Link>
+      <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
       {!heroOnly && <nav aria-label={t("בעמוד הזה")} className="lv2-nav-links"><a href="#story"><Copy text="איך זה עובד" /></a><a href="#posts"><Copy text="הפוסטים" /></a><a href="#connections"><Copy text="חיבורים" /></a><a href="#price"><Copy text="מנוי" /></a><a href="#trust"><Copy text="המידע שלכם" /></a></nav>}
       <div className="lv2-nav-end"><ProductUtilities inline /><Link href="/login" className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={canStart ? "להתחיל בחינם" : "דוגמאות לעמותות"} /></Link></div>
     </div></header>
