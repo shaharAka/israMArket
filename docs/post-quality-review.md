@@ -188,3 +188,25 @@ and cost **per accepted shot**, including retries. Then compare a generated shot
 animated still in the same reel. No new paid video provider, billed video request or public
 campaign publication was performed in this review. Before running paid jobs, agree the
 small benchmark's spending ceiling with Shahar.
+
+### October 8: first real human-motion website asset
+
+At Shahar’s request and with an explicit US$2 total generation cap, one eight-second
+720p portrait clip was generated using the existing Gemini account and
+`veo-3.1-fast-generate-preview`. Google’s published 720p Fast price at generation
+was US$0.10/second: approximately US$0.80 for this successful output, excluding any
+account-specific tax. One job, no retry. Reference: the existing fictional adult
+woman in `clothing-linen-ai.png`; direction: finish rolling a cuff, turn and walk
+naturally, with a locked camera. It is generated movement, not a still-image zoom.
+
+Asset: `web/public/showcase/clothing-human-motion-ai.mp4`. The provider’s padding was
+cropped to the reference’s 4:5 composition; muted website playback contains no audio
+track. It remains a local marketing asset and does not enable customer API generation.
+The second post feature shows it; the first feature uses only still artwork. Browser
+review checked movement, looping, pause and the separate static view. Original model
+operation metadata and prompt are retained privately in `.runtime/media/`, not in git.
+
+Customer video generation must first ship the actual export pipeline (#71) and bounded
+allowances/extra credits (#158). The current proposal is two short successful clips per
+billing month, not unlimited regenerations under the ₪99 subscription. Trial allowance,
+rollover, exact model/duration and extra-credit prices still need a commercial decision.

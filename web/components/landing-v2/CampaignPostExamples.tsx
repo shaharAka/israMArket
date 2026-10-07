@@ -20,6 +20,7 @@ export type CampaignExample = {
   caption: string;
   colors?: { paper: string; ink: string; accent?: string };
   motion?: string[];
+  video?: string;
 };
 
 /** Copy is passed by the landing page so interface translations stay with its catalog.
@@ -73,8 +74,8 @@ function CampaignArtwork({ item, galleryOnly, screenshot }: { item: CampaignExam
   const { ref: cycleRef, index: activeIndex, paused, reduced, playing, toggle } = useFeatureCycle(item.motion?.length ?? 1, 3000);
   const t = useCopy();
   return <div ref={cycleRef} className="campaign-player">
-    <PostArtwork item={item} playing={Boolean(item.motion && playing)} beat={activeIndex} screenshot={screenshot} />
-    {item.motion && !reduced ? <button type="button" className={galleryOnly ? "campaign-play" : "campaign-read"}
+    <PostArtwork item={item} playing={Boolean(item.video && playing)} beat={activeIndex} screenshot={screenshot} />
+    {item.video && !reduced ? <button type="button" className={galleryOnly ? "campaign-play" : "campaign-read"}
       aria-label={t(paused ? "לראות את הפוסט בתנועה" : "לעצור את התנועה")} onClick={toggle}>
       {galleryOnly ? <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span> : t(paused ? "לראות את הפוסט בתנועה" : "לעצור את התנועה")}
     </button> : null}

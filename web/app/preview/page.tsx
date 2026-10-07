@@ -1,5 +1,6 @@
 "use client";
 
+import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { endpoints } from "@/lib/api";
@@ -27,7 +28,7 @@ export default function PreviewPage() {
   return (
     <main style={productPaletteVariables(palette)} className="app-blue mx-auto min-h-dvh max-w-4xl px-5 py-7 sm:px-10 sm:py-12">
       <header className="flex items-center justify-between gap-3 border-b border-[var(--rule)] pb-5">
-        <Link href="/design" className="flex items-center gap-2 text-[var(--primary)]"><span className="product-wordmark text-[var(--ink)]" dir="ltr">isramarket</span></Link>
+        <Link href="/design" className="flex items-center gap-2 text-[var(--primary)]"><span className="product-wordmark text-[var(--ink)]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span></Link>
         <span className="text-xs text-[var(--ink-soft)]">{palette.name} · תצוגה</span>
       </header>
       <div className="flex items-center justify-between gap-4 py-8 sm:py-12">

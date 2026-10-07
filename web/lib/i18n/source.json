@@ -4,8 +4,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 17,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -266,7 +266,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 79,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -321,7 +321,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 32,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -593,7 +593,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 79,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -2615,7 +2615,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 95,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -2873,7 +2873,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 81,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -3069,7 +3069,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -3116,7 +3116,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 338,
+        "line": 339,
         "kind": "literal"
       },
       {
@@ -3413,7 +3413,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 32,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -4285,7 +4285,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -4816,7 +4816,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 13,
+        "line": 14,
         "kind": "literal"
       },
       {
@@ -4826,7 +4826,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal",
         "purpose": "display"
       },
@@ -4909,7 +4909,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -5496,12 +5496,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -5984,7 +5984,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 341,
+        "line": 342,
         "kind": "jsx"
       }
     ]
@@ -6638,7 +6638,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -6741,7 +6741,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 338,
+        "line": 339,
         "kind": "jsx"
       }
     ]
@@ -6843,7 +6843,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 573,
+        "line": 574,
         "kind": "jsx"
       }
     ]
@@ -6973,6 +6973,17 @@
       }
     ]
   },
+  "m_0fe437f5faffaac1": {
+    "source": "האם צריך עוד צבע?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 48,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0fe602cc06ef5e9f": {
     "source": "בסדר גמור. לרוב זה מסתתר במה שלקוחות מספרים עליכם, ונמצא את זה יחד.",
     "language": "he",
@@ -6990,7 +7001,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -7274,7 +7285,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 75,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -8104,7 +8115,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -9258,7 +9269,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 163,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -10097,7 +10108,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 160,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -10617,8 +10628,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 30,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -11802,8 +11813,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -12057,6 +12068,17 @@
       }
     ]
   },
+  "m_1b4353bd2f7d279a": {
+    "source": "בתצוגה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1b550896461952f7": {
     "source": "קל להתחיל",
     "language": "he",
@@ -12258,8 +12280,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 28,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 45,
         "kind": "literal"
       },
       {
@@ -13167,7 +13189,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       },
@@ -13214,18 +13236,6 @@
         "line": 59,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_1dbf3523d13170c3": {
-    "source": "חד וברור",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 12,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -13392,8 +13402,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 12,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -13717,7 +13727,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -13757,7 +13767,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 134,
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -13950,8 +13960,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 15,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -14151,6 +14161,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 131,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1ff9811da3c52fb6": {
+    "source": "צבע אחד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -15023,17 +15044,6 @@
       }
     ]
   },
-  "m_2172460c0b3b9343": {
-    "source": "פחות להתחיל מאפס. יותר זמן לעסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 87,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_217b54bb622e172d": {
     "source": "יותר מדי ניסיונות לחשבון הזה. נסו שוב בעוד כמה דקות.",
     "language": "he",
@@ -15157,7 +15167,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 98,
+        "line": 88,
         "kind": "literal"
       },
       {
@@ -15740,12 +15750,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 246,
+        "line": 247,
         "kind": "literal"
       }
     ]
@@ -16447,7 +16457,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -16936,18 +16946,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 22,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 17,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 16,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -17418,17 +17418,6 @@
       }
     ]
   },
-  "m_279f28358e9afc97": {
-    "source": "לבחור מה לראות בתוצאות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_27a33ab9aa7b262f": {
     "source": "לחיצה, שינוי והצלחה מקבלים תגובה קצרה. התוכן נשאר יציב בזמן שקוראים.",
     "language": "he",
@@ -17548,7 +17537,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -17788,17 +17777,6 @@
         "line": 45,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_287449ea148544df": {
-    "source": "לבחור מה לראות בפוסטים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 14,
-        "kind": "literal"
       }
     ]
   },
@@ -18705,7 +18683,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 147,
+        "line": 148,
         "kind": "literal"
       }
     ]
@@ -18852,8 +18830,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 14,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -18967,7 +18945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 76,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -19539,7 +19517,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 533,
+        "line": 534,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19562,7 +19540,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -20229,8 +20207,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 21,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -20883,7 +20861,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -21268,18 +21246,6 @@
         "file": "web/components/start/script.ts",
         "line": 290,
         "kind": "template"
-      }
-    ]
-  },
-  "m_300bfe3c630b7a46": {
-    "source": "אותיות גבוהות באותיות גדולות. כיוון חד שבולט גם כשאין הרבה מקום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 15,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -21800,7 +21766,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -22640,32 +22606,32 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 30,
+        "line": 31,
         "kind": "jsx"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 199,
+        "line": 200,
         "kind": "jsx"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 238,
+        "line": 239,
         "kind": "jsx"
       },
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 432,
+        "line": 433,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 442,
+        "line": 443,
         "kind": "jsx"
       }
     ]
@@ -23128,7 +23094,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -23236,18 +23202,6 @@
         "file": "web/components/help/guides.ts",
         "line": 532,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_34079dac4891dd85": {
-    "source": "שם מלא, משקל חזק וקצב צפוף. כיוון ענייני שמחזיק גם בכותרת קטנה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 12,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -23695,7 +23649,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LearningBridge.tsx",
-        "line": 11,
+        "line": 13,
         "kind": "literal",
         "purpose": "display"
       }
@@ -23773,7 +23727,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 12,
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -23784,7 +23738,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 422,
+        "line": 423,
         "kind": "jsx"
       }
     ]
@@ -24163,6 +24117,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 374,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_362ea81067345027": {
+    "source": "הפוסט הבא: פעילות וקישור לתרומה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -25164,7 +25129,18 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 65,
+        "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3846aae1cd583c50": {
+    "source": "על כהה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -25269,7 +25245,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -26030,7 +26006,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -26695,8 +26671,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 16,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       },
       {
@@ -27208,6 +27184,18 @@
       }
     ]
   },
+  "m_3decd014e3518d18": {
+    "source": "אותיות משלנו — הכיוון שנבחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_3df3c23b605c4f09": {
     "source": "גבות",
     "language": "he",
@@ -27317,7 +27305,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -27550,6 +27538,17 @@
       }
     ]
   },
+  "m_3ede2233069da8b6": {
+    "source": "איך נבדוק את השינוי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 26,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3edea3b09849fccc": {
     "source": "לראות את הפרופיל והפוסטים באינסטגרם העסקי",
     "language": "he",
@@ -27632,8 +27631,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 20,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -27804,6 +27803,11 @@
         "file": "web/components/design/FlowCanvas.tsx",
         "line": 130,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 34,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
@@ -28619,7 +28623,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 18,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -28816,17 +28820,6 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 599,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_41ed0017c31b47e2": {
-    "source": "השם הוא הסימן. ארבעה כיווני טיפוגרפיה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 25,
         "kind": "literal"
       }
     ]
@@ -29486,7 +29479,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 431,
+        "line": 432,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29933,7 +29926,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 131,
+        "line": 132,
         "kind": "literal"
       }
     ]
@@ -30002,6 +29995,17 @@
       {
         "file": "web/lib/draft.ts",
         "line": 331,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_448d3b43ec79b8f5": {
+    "source": "כיוון 2 נבחר למותג: אותיות שעוצבו במיוחד, בצבע אחד. אפשר להשוות כאן לבסיס ולנגיעה בכחול.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -30853,7 +30857,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -32243,25 +32247,13 @@
       }
     ]
   },
-  "m_49f8f85ddbf50b43": {
-    "source": "קליל ואנושי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 14,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_4a0038da302d0034": {
     "source": "אתם. אנחנו מכינים טיוטות לפי התוכנית ובסגנון שלכם. אתם בודקים את התמונה ואת הפרטים, משנים ומפרסמים בעצמכם.",
     "language": "he",
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 33,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -32529,7 +32521,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -32605,8 +32597,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 13,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -33763,12 +33755,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 221,
+        "line": 222,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 280,
+        "line": 281,
         "kind": "literal"
       }
     ]
@@ -34736,6 +34728,17 @@
       }
     ]
   },
+  "m_50196846609ad249": {
+    "source": "הפוסט הבא: מחיר וקישור להזמנה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 22,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5019b239e711cb0f": {
     "source": "5 ומעלה בשבוע",
     "language": "he",
@@ -34764,7 +34767,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -34897,13 +34900,25 @@
       }
     ]
   },
+  "m_507c1bb40a1433dd": {
+    "source": "הבסיס המקורי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_5085eddeb40e58b9": {
     "source": "מה קורה אחרי החודש החינמי?",
     "language": "he",
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 30,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -35074,7 +35089,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 164,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -35307,7 +35322,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       },
@@ -35610,8 +35625,8 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 15,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -36899,17 +36914,6 @@
       }
     ]
   },
-  "m_5579c38a4e6cfc5a": {
-    "source": "רואים את ההיכרות, המחקר, יצירת הפוסטים והלמידה בקבוצות נפרדות עם הדגמות מתמשכות. סוג העסק שבחרתם באתר ממשיך איתכם לשאלות המתאימות בהיכרות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 9,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_557a8aa4954eab08": {
     "source": "לא ראינו באתר אימות של גוגל.",
     "language": "he",
@@ -37034,17 +37038,6 @@
       }
     ]
   },
-  "m_55dda372b012f035": {
-    "source": "AI שיש לו מה לעשות בשבילכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_55de2be30c65c102": {
     "source": "נקרא ב־",
     "language": "he",
@@ -37118,7 +37111,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -37295,6 +37288,17 @@
         "line": 244,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_567b15e879d60acc": {
+    "source": "הפוסט הבא: טיפ והזמנה לשיחה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 22,
+        "kind": "literal"
       }
     ]
   },
@@ -37592,8 +37596,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 14,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -37771,18 +37775,6 @@
         "file": "web/app/dev/dna/fixtures.ts",
         "line": 63,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_579f433639644f6a": {
-    "source": "אותיות רחבות וצורות פתוחות. תחושה טכנולוגית, עם פרטים שנותנים לשם אופי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 13,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -39017,6 +39009,17 @@
       }
     ]
   },
+  "m_5b157ca5bf821bfc": {
+    "source": "יותר לחיצות על הטיפ המקצועי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 21,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5b1f9f1f06b79afe": {
     "source": "רק פוסט אחד",
     "language": "he",
@@ -39114,12 +39117,12 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 121,
+        "line": 122,
         "kind": "literal"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 277,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -39594,8 +39597,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 21,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       },
       {
@@ -39672,18 +39675,6 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 59,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_5c866f952a48a041": {
-    "source": "נוכחות קומפקטית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 15,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -40995,7 +40986,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 148,
+        "line": 149,
         "kind": "literal"
       }
     ]
@@ -41231,7 +41222,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 42,
+        "line": 43,
         "kind": "jsx"
       },
       {
@@ -41574,6 +41565,17 @@
         "line": 161,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_606079d29c96e112": {
+    "source": "יותר לחיצות אחרי הסבר על הפעילות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 21,
+        "kind": "literal"
       }
     ]
   },
@@ -42588,7 +42590,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 31,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -42969,7 +42971,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 36,
+        "line": 37,
         "kind": "jsx"
       }
     ]
@@ -44765,18 +44767,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 22,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 17,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 16,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -45025,7 +45017,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -45312,8 +45304,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 30,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -45410,7 +45402,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 92,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -45672,7 +45664,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 446,
+        "line": 447,
         "kind": "jsx"
       },
       {
@@ -46108,7 +46100,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 469,
+        "line": 470,
         "kind": "jsx"
       }
     ]
@@ -46483,7 +46475,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LearningBridge.tsx",
-        "line": 9,
+        "line": 11,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46808,7 +46800,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -47246,7 +47238,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 13,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -47414,6 +47406,17 @@
       }
     ]
   },
+  "m_6e34439a8206d8a1": {
+    "source": "גם תוכן בתנועה מתחיל ברעיון מתוך התוכנית. אתם בודקים את הפרטים לפני הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6e364fffb362b774": {
     "source": "קו של חוט",
     "language": "he",
@@ -47543,6 +47546,16 @@
       {
         "file": "web/components/landing-v2/BusinessProductProof.tsx",
         "line": 37,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 24,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -47958,8 +47971,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -48627,7 +48640,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 31,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -49314,7 +49327,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 476,
+        "line": 477,
         "kind": "jsx"
       }
     ]
@@ -49842,18 +49855,6 @@
         "file": "web/components/design/DesignLibrary.tsx",
         "line": 28,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_72c1cfba1a57482d": {
-    "source": "שני משקלים באותו צבע. שם נגיש ורך יותר, בלי סימן נוסף לידו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 14,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -51582,7 +51583,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 343,
+        "line": 344,
         "kind": "jsx"
       },
       {
@@ -52579,8 +52580,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 27,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -53646,7 +53647,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 33,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -54160,7 +54161,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -54340,7 +54341,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 18,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -54536,8 +54537,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 12,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -55225,7 +55226,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 471,
+        "line": 472,
         "kind": "jsx"
       },
       {
@@ -55287,6 +55288,17 @@
         "line": 647,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_80506439ab5f3a3f": {
+    "source": "ההסבר מתקדם עם הגלילה, ולצדו רואים את ההיכרות, המחקר, הפוסטים והצעד הבא בתצוגה קבועה. סוג העסק שבחרתם באתר ממשיך איתכם לשאלות המתאימות בהיכרות. האותיות החדשות בשם המותג מופיעות גם בהיכרות ובחשבון שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
       }
     ]
   },
@@ -55623,8 +55635,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 13,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -55669,6 +55681,17 @@
       {
         "file": "web/lib/trial.ts",
         "line": 450,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_80e8a9456e89ed78": {
+    "source": "ההמלצה שלי: כיוון 2 בצבע אחד. האופי כבר נמצא באותיות. הנקודה הכחולה היא תוספת אפשרית, בלי לפצל את השם לשני צבעים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -56463,7 +56486,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 24,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -57739,8 +57762,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 12,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 56,
         "kind": "literal"
       },
       {
@@ -59000,7 +59023,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 18,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -61029,13 +61052,13 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 561,
+        "line": 562,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 577,
+        "line": 578,
         "kind": "jsx"
       }
     ]
@@ -61171,7 +61194,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 487,
+        "line": 488,
         "kind": "jsx"
       }
     ]
@@ -61217,7 +61240,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -61434,12 +61457,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 83,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -62296,7 +62319,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       },
       {
@@ -62749,17 +62772,6 @@
         "line": 77,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_91738fc5dd29c7a4": {
-    "source": "גם תוכן בתנועה מתחיל ברעיון מתוך התוכנית. אנחנו מכינים את התמונה, המילים והקצב — אתם בודקים את הפרטים לפני הפרסום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 13,
-        "kind": "literal"
       }
     ]
   },
@@ -63561,7 +63573,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 149,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -64099,7 +64111,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 37,
+        "line": 38,
         "kind": "jsx"
       }
     ]
@@ -65610,8 +65622,20 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 45,
+        "line": 46,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_97dff743df26bd12": {
+    "source": "חיבור בתוך השם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 14,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -65681,7 +65705,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 92,
+        "line": 82,
         "kind": "literal"
       },
       {
@@ -65934,7 +65958,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 138,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -66130,7 +66154,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -66525,8 +66549,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -67773,7 +67797,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -68098,7 +68122,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 98,
+        "line": 88,
         "kind": "literal"
       },
       {
@@ -68424,7 +68448,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 271,
+        "line": 272,
         "kind": "literal"
       }
     ]
@@ -68535,7 +68559,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 158,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -68886,7 +68910,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 55,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -69368,8 +69392,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -69445,8 +69469,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -70165,17 +70189,6 @@
       }
     ]
   },
-  "m_a363a49b539a40f2": {
-    "source": "השם המלא בשורה במחשב, ובשתי שורות בטלפון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 37,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_a364a73713fa52de": {
     "source": "הכתובת היא מה שכתוב בשורת הכתובת של הדפדפן כשהאתר פתוח, למשל myshop.co.il.",
     "language": "he",
@@ -70503,8 +70516,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 21,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -71080,8 +71093,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 30,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -71451,8 +71464,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -73099,12 +73112,12 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 317,
+        "line": 318,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 569,
+        "line": 570,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73139,7 +73152,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -73378,12 +73391,12 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 428,
+        "line": 429,
         "kind": "jsx"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 460,
+        "line": 461,
         "kind": "jsx"
       }
     ]
@@ -73493,7 +73506,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 46,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -73827,7 +73840,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 33,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -73940,12 +73953,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 252,
+        "line": 253,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 297,
+        "line": 298,
         "kind": "literal"
       }
     ]
@@ -74165,7 +74178,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -74596,12 +74609,12 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 255,
+        "line": 256,
         "kind": "literal"
       },
       {
@@ -74939,7 +74952,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 338,
+        "line": 339,
         "kind": "literal"
       },
       {
@@ -75406,7 +75419,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 79,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -75606,7 +75619,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -76769,7 +76782,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 93,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -77147,7 +77160,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 37,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -77210,7 +77223,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 136,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -77299,7 +77312,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -77943,6 +77956,18 @@
       }
     ]
   },
+  "m_b506c49a70817152": {
+    "source": "נגיעה אחת בכחול",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 15,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_b506f8b48a531ed0": {
     "source": "מאפים",
     "language": "he",
@@ -78456,6 +78481,17 @@
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 84,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_b64684e2d58027f9": {
+    "source": "נקודה בכחול",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 53,
+        "kind": "literal"
       }
     ]
   },
@@ -79100,7 +79136,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal"
       },
       {
@@ -79110,7 +79146,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -79194,7 +79230,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 93,
+        "line": 83,
         "kind": "literal"
       },
       {
@@ -80468,7 +80504,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -81333,8 +81369,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 29,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -82050,7 +82086,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -82072,7 +82108,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "jsx"
       }
     ]
@@ -82167,7 +82203,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -82413,7 +82449,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -83107,7 +83143,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 45,
+        "line": 46,
         "kind": "jsx"
       }
     ]
@@ -83230,6 +83266,17 @@
       }
     ]
   },
+  "m_c1f5989784712be1": {
+    "source": "השם המלא גם בטלפון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 57,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c1f66919bdc83c44": {
     "source": "לחם מתנור אבן, כל בוקר",
     "language": "he",
@@ -83316,7 +83363,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 35,
+        "line": 36,
         "kind": "jsx"
       }
     ]
@@ -83400,7 +83447,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 239,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -83437,17 +83484,6 @@
         "line": 599,
         "kind": "template",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_c276e3e8879b2007": {
-    "source": "בלי שמש, בלי אייקון נוסף. בוחרים לפי האופי של האותיות והקריאות, במחשב ובטלפון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 26,
-        "kind": "literal"
       }
     ]
   },
@@ -83844,7 +83880,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 422,
+        "line": 423,
         "kind": "jsx"
       }
     ]
@@ -83890,7 +83926,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityMark.tsx",
-        "line": 6,
+        "line": 47,
         "kind": "jsx"
       }
     ]
@@ -84100,7 +84136,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 171,
+        "line": 172,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84146,12 +84182,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 46,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -84208,7 +84239,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -84390,7 +84421,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 28,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -84525,7 +84556,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 441,
+        "line": 442,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84786,7 +84817,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 313,
+        "line": 314,
         "kind": "jsx"
       }
     ]
@@ -85040,17 +85071,6 @@
       }
     ]
   },
-  "m_c5eec5cd4675598f": {
-    "source": "לבנות תוכנית לעסק שלכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 89,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c5fb0d344efaec50": {
     "source": "מילים של לקוחות אמיתיים משכנעות יותר מכל מה שנכתוב.",
     "language": "he",
@@ -85149,8 +85169,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 16,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -85628,7 +85648,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 338,
+        "line": 339,
         "kind": "jsx"
       }
     ]
@@ -86044,23 +86064,23 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 173,
+        "line": 174,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 223,
+        "line": 224,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 269,
+        "line": 270,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 272,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -86481,12 +86501,12 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 447,
+        "line": 448,
         "kind": "jsx"
       },
       {
@@ -87437,6 +87457,18 @@
       }
     ]
   },
+  "m_cb01cd25dea97304": {
+    "source": "חיבור עדין בין r ל־a, מבנה צפוף וסיומות ישרות. אופי חד יותר, עדיין בצבע אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 14,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_cb0be6c37b43a4ed": {
     "source": "מחמצת ביתית מתכון",
     "language": "he",
@@ -87786,7 +87818,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 574,
+        "line": 575,
         "kind": "jsx"
       }
     ]
@@ -90043,6 +90075,18 @@
       }
     ]
   },
+  "m_d2226b207a1c854d": {
+    "source": "שתי אותיות a עגולות, כתף קצרה ב־r ונקודה מרובעת. אותו שם, עם קצב משלו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 13,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_d2253495b9ca7a58": {
     "source": "מחיר חלות",
     "language": "he",
@@ -90173,7 +90217,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -90503,7 +90547,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 181,
+        "line": 182,
         "kind": "literal"
       },
       {
@@ -90524,7 +90568,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 292,
+        "line": 293,
         "kind": "jsx"
       }
     ]
@@ -91447,7 +91491,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 32,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -92688,7 +92732,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 509,
+        "line": 510,
         "kind": "literal",
         "purpose": "display"
       }
@@ -93181,6 +93225,17 @@
       }
     ]
   },
+  "m_d8a4e4de4696126c": {
+    "source": "בקטן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d8a9fe259ee9636a": {
     "source": "נתוני האתר והמוצר",
     "language": "he",
@@ -93420,17 +93475,6 @@
       }
     ]
   },
-  "m_d92b9a6028c4086a": {
-    "source": "המחקר נותן כיוון. התוכנית מחברת בין הפעולות. הפוסטים כבר מחכים לבדיקה, והנתונים מגיעים עם הסבר והצעה לצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 88,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d92d8fc3fe857777": {
     "source": "נבנה ממה שאישרתם, בלי להמציא מספרים.",
     "language": "he",
@@ -93592,8 +93636,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -93705,6 +93749,17 @@
         "file": "web/app/integrations/page.tsx",
         "line": 444,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_da3a7119e8dcacb8": {
+    "source": "אותו שם. יותר אופי באותיות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 27,
+        "kind": "literal"
       }
     ]
   },
@@ -93869,6 +93924,17 @@
         "file": "web/components/results/RecommendationReview.tsx",
         "line": 62,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_da99a857447978cc": {
+    "source": "יותר לחיצות על הדגמת התוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 21,
+        "kind": "literal"
       }
     ]
   },
@@ -94208,8 +94274,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/LearningFeature.tsx",
-        "line": 13,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -94394,13 +94460,13 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostArtwork.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 49,
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/PostArtwork.tsx",
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -94417,17 +94483,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 128,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_dbaf8a09074a8d0b": {
-    "source": "מחברים את מה שזמין. מסבירים מה כדאי לנסות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LearningBridge.tsx",
-        "line": 21,
         "kind": "literal"
       }
     ]
@@ -95382,7 +95437,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 135,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -95460,7 +95515,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 130,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -95874,7 +95929,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 319,
+        "line": 320,
         "kind": "jsx"
       }
     ]
@@ -96368,7 +96423,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 133,
+        "line": 134,
         "kind": "literal"
       }
     ]
@@ -97395,6 +97450,17 @@
       }
     ]
   },
+  "m_e1dbe8dab7d4e9dd": {
+    "source": "בטלפון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e1e2b74777f07daa": {
     "source": "אין חיבור כזה",
     "language": "he",
@@ -97587,7 +97653,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       },
       {
@@ -97622,17 +97688,17 @@
       },
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 54,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 98,
+        "line": 88,
         "kind": "literal"
       },
       {
@@ -97660,6 +97726,17 @@
         "line": 18,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_e24b2754b14fa453": {
+    "source": "להציג באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 34,
+        "kind": "literal"
       }
     ]
   },
@@ -97764,7 +97841,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 74,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -98451,7 +98528,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/IdentityMark.tsx",
-        "line": 6,
+        "line": 47,
         "kind": "jsx"
       }
     ]
@@ -98785,7 +98862,7 @@
       },
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 486,
+        "line": 487,
         "kind": "literal",
         "purpose": "display"
       },
@@ -101373,7 +101450,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 155,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -101570,7 +101647,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -102105,7 +102182,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 36,
+        "line": 37,
         "kind": "jsx"
       }
     ]
@@ -102285,7 +102362,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -102851,6 +102928,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1261,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ee21ebeee4c33935": {
+    "source": "יותר לחיצות על הפוסט עם המחיר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -103773,7 +103861,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 161,
+        "line": 162,
         "kind": "literal"
       }
     ]
@@ -103981,7 +104069,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/postExamples.ts",
-        "line": 156,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -104003,8 +104091,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/PostsFeature.tsx",
-        "line": 15,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -104039,18 +104127,6 @@
         "file": "web/components/account/DeleteAccount.tsx",
         "line": 79,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_f0b860efe232ffaa": {
-    "source": "גאומטרי עם אופי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
-        "line": 13,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -104824,7 +104900,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 14,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -105228,7 +105304,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 475,
+        "line": 476,
         "kind": "jsx"
       }
     ]
@@ -105633,7 +105709,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 31,
+        "line": 32,
         "kind": "jsx"
       }
     ]
@@ -105989,8 +106065,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 19,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -106109,12 +106185,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 78,
+        "line": 79,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -106325,6 +106401,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
+        "line": 22,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f5f33c2f9abff035": {
+    "source": "הפוסט הבא: התוכנית שרואים לפני הרשמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/LearningBridge.tsx",
         "line": 22,
         "kind": "literal"
       }
@@ -106780,7 +106867,7 @@
     "references": [
       {
         "file": "web/components/start/StartFlow.tsx",
-        "line": 467,
+        "line": 468,
         "kind": "jsx"
       }
     ]
@@ -106791,7 +106878,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -107227,7 +107314,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal",
         "purpose": "display"
       }
@@ -107510,7 +107597,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -108376,6 +108463,18 @@
       }
     ]
   },
+  "m_fabcd9874dca8dbd": {
+    "source": "אותן אותיות של כיוון 2. רק הנקודה של ה־i בכחול, כדי לבדוק מה הצבע באמת מוסיף.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 15,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_face18cb387a0471": {
     "source": "נכסים",
     "language": "he",
@@ -108458,7 +108557,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -108593,8 +108692,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 18,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -108618,6 +108717,18 @@
         "file": "web/lib/api.ts",
         "line": 1053,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_fb64d85a1fea6bcc": {
+    "source": "השם המלא באותיות קטנות. צפוף, חד ובצבע אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/IdentityWorkshop.tsx",
+        "line": 12,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -108712,12 +108823,12 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 12,
+        "line": 13,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 37,
+        "line": 38,
         "kind": "literal",
         "purpose": "display"
       },
@@ -108924,8 +109035,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/FeatureStory.tsx",
-        "line": 18,
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -109089,7 +109200,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LearningBridge.tsx",
-        "line": 10,
+        "line": 12,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110350,7 +110461,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 34,
+        "line": 32,
         "kind": "literal"
       }
     ]

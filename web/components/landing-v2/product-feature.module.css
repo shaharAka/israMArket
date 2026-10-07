@@ -51,3 +51,6 @@
   .showcase:is([data-presentation="hero"], [data-presentation="feature"]) .screen { width: 500px; }
   .showcase:is([data-presentation="hero"], [data-presentation="feature"]) .views { height: 340px; }
 }
+
+.showcase[data-presentation="feature"] .views { height: 420px; }
+@media(max-width:600px) { .showcase[data-presentation="feature"] .views { height: 340px; } }

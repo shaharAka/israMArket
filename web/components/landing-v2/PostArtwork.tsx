@@ -1,15 +1,22 @@
 "use client";
 
 import Image from "next/image";
-import { type CSSProperties, type Ref } from "react";
+import { useEffect, useRef, type CSSProperties, type Ref } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import type { CampaignExample } from "./CampaignPostExamples";
 
 /** Shared media plumbing, deliberately different compositions and type per business. */
 export function PostArtwork({ item, artRef, playing = false, beat = 0, screenshot }: { item: CampaignExample; artRef?: Ref<HTMLElement>; playing?: boolean; beat?: number; screenshot?: { src: string; alt: string } }) {
   const t = useCopy();
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const element = video.current;
+    if (!element) return;
+    if (playing) void element.play().catch(() => { /* Native controls remain usable if autoplay is blocked. */ });
+    else element.pause();
+  }, [playing, item.video]);
   return <figure ref={artRef} className={`campaign-art campaign-art--${item.key}`} data-playing={playing} data-beat={beat} style={item.colors ? { "--art-paper": item.colors.paper, "--art-ink": item.colors.ink, "--art-accent": item.colors.accent ?? item.colors.ink } as CSSProperties : undefined}>
-    {item.image ? <div className="campaign-photo"><Image src={item.image} alt={item.alt ?? ""} fill sizes="(max-width: 700px) 90vw, 380px" />{item.motion && playing ? <span className="campaign-beat">{item.motion[beat]}</span> : null}</div> : null}
+    {item.image ? <div className="campaign-photo">{item.video ? <video ref={video} src={item.video} poster={item.image} muted loop playsInline preload="metadata" controls aria-label={item.alt ?? item.kind} /> : <Image src={item.image} alt={item.alt ?? ""} fill sizes="(max-width: 700px) 90vw, 380px" />}{item.video && item.motion && playing ? <span className="campaign-beat">{item.motion[beat]}</span> : null}</div> : null}
     <span className="campaign-business">{item.business}</span>
     <h3>{item.headline}</h3>
     {item.key === "interior" ? <div className="campaign-light-notes"><span><Copy text="בבוקר" /></span><span><Copy text="בערב" /></span><span><Copy text="באור של הבית" /></span></div> : null}

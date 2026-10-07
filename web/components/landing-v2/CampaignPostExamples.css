@@ -76,9 +76,6 @@
 .campaign-art--nonprofit h3 { inset-block-start: auto; inset-block-end: 17%; font-size: 12.2cqw; font-weight: 500; color: #fff6ed; line-height: .98; }
 .campaign-art--nonprofit .campaign-art-footer { color: #fff6ed; font-size: 3.6cqw; inset-block-end: 7%; max-width: 65%; }
 .campaign-beat { position: absolute; z-index: 4; inset-inline: 7%; inset-block-end: 7%; font-size: 5cqw; color: #fff; font-weight: 600; }
-.campaign-art[data-playing="true"] .campaign-photo img { transition: transform 3s ease; transform: scale(1.04); }
-.campaign-art[data-playing="true"][data-beat="1"] .campaign-photo img { transform: scale(1.12); }
-.campaign-art[data-playing="true"][data-beat="2"] .campaign-photo img { transform: scale(1.02); }
 .campaign-art--clothing .campaign-beat { inset-block-end: 9%; font-size: 4cqw; }
 .campaign-context { color: var(--ink-muted); font-size: 12px; line-height: 1.6; margin: 12px 0 4px; }
 .campaign-read { appearance: none; font: inherit; font-size: 14px; min-height: 44px; background: none; border: 0; color: var(--primary); padding: 8px 0; cursor: pointer; display: block; }
@@ -114,3 +111,4 @@ html[lang="ar"] .campaign-art--makeup h3 { font-size: 7cqw; line-height: 1.35; }
 .campaign-play { inset-inline-start: 16px; inset-inline-end: auto; width: 44px; height: 44px; min-width: 44px; padding: 0; transform: none; display: grid; place-items: center; font-size: 16px; }
 
 .campaign-player { position: relative; min-width: 0; }
+.campaign-photo video { width: 100%; height: 100%; object-fit: cover; }

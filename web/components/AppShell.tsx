@@ -1,5 +1,6 @@
 "use client";
 
+import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { WhatsNewLink } from "@/components/language/WhatsNewLink";
 
@@ -196,7 +197,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
         ) : (
           <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
-            {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr">isramarket</span>}
+            {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
             <span className="min-w-0 truncate text-[15px] font-semibold text-[color:var(--ink)]">
@@ -235,7 +236,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
-                <span className="product-wordmark block" dir="ltr">isramarket</span>
+                <span className="product-wordmark block" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>
               </div>
             </Link>

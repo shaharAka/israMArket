@@ -80,8 +80,8 @@ One visual language across landing pages, onboarding and the signed-in app: whit
 surfaces, dark primary actions, blue links/selections/focus, medium-weight headlines and
 quiet separators. Keep good/warning/danger colors semantic. Sun/yellow is not a brand motif;
 existing warning tokens remain for warnings only. Business artwork and vendor logos retain
-their colors. Use the full typographic name while /design/identity directions are reviewed.
+their colors. Use the selected direction 02 custom full-name lettering in one color.
 Public feature sections pair a concise benefit with a large product view. They reuse the
 same presentation components as the app; public fixtures never cause customer writes.
-Autoplay is limited to the user-requested hero demonstration, with manual pause, reduced
+Autoplay is limited to the user-requested hero, feature and reel demonstrations, with manual pause, reduced
 motion and visibility guards. Other product interactions follow the user.

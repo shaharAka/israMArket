@@ -127,6 +127,7 @@ export const POST_EXAMPLES: (CampaignExample & { path: string })[] = [
   },
   {
     "key": "clothing",
+    "video": "/showcase/clothing-human-motion-ai.mp4",
     "business": "קפל · בגדים ליומיום",
     "kind": "חנות בגדים",
     "image": "/showcase/clothing-linen-ai.png",

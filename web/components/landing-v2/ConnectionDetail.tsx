@@ -5,6 +5,7 @@ import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { CONNECTION_EXAMPLES, type ConnectionExampleKey } from "./connectionExamples";
 import { ConnectionScreenshot } from "./ConnectionScreenshot";
 import { ProviderLogo } from "./ProviderLogo";
+import { IdentityMark } from "./IdentityMark";
 import { BrandWordmark } from "./BrandWordmark";
 import { siteClean } from "./siteFonts";
 import "./lv2.css";
@@ -26,7 +27,7 @@ export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey 
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row"><Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark /></Link><div className="lv2-nav-end"><ProductUtilities inline /><Link href={`/?lang=${locale}#connections`} className="lv2-login"><Copy text="לכל החיבורים" /></Link></div></div></header>
     <main>
       <section className="lv2-connection-hero lv2-wrap">
-        <div><div className="lv2-connection-pair"><ProviderLogo provider={provider} size={56} /><span aria-hidden="true">+</span><span className="lv2-wordmark" dir="ltr">isramarket</span></div>
+        <div><div className="lv2-connection-pair"><ProviderLogo provider={provider} size={56} /><span aria-hidden="true">+</span><span className="lv2-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span></div>
           <p className="lv2-eyebrow"><Copy text={connection.short} /></p><h1 className="lv2-h2"><Copy text={connection.title} /></h1>
           <p className="lv2-lead"><Copy text={connection.benefit} /></p>
           <Link href={`/integrations?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לפתוח את החיבורים בחשבון" /></Link>

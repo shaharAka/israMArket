@@ -1,5 +1,6 @@
 "use client";
 
+import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -429,7 +430,7 @@ export function StartFlow() {
           </button>
         ) : (
           <Link href="/" aria-label="לעמוד הבית" className="flex min-h-11 shrink-0 items-center px-1">
-            <span className="product-wordmark !text-[18px]" dir="ltr">isramarket</span>
+            <span className="product-wordmark !text-[18px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
           </Link>
         )}
         <CardBar flow={flow} open={cardOpen} onToggle={toggleCard} onPickStyle={() => setStyleOpen(true)} />
@@ -439,7 +440,7 @@ export function StartFlow() {
       <header className={styles.topbar}>
         <div className={`${styles.wrap} ${styles.topbarRow}`}>
           <Link href="/" className={styles.brand} aria-label="ישראמארקט, לעמוד הבית">
-            <span className="product-wordmark" dir="ltr">isramarket</span>
+            <span className="product-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
           </Link>
           {loggedIn ? null : (
             <p className={styles.signin}>

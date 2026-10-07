@@ -19,9 +19,7 @@ import { BrandWordmark } from "./BrandWordmark";
 import { artSerif, siteSerif, siteClean } from "./siteFonts";
 import { PERSONA_PAGES } from "./personaPages";
 import { BusinessRoleSelector } from "./BusinessRoleSelector";
-import { PostsFeature } from "./PostsFeature";
-import { FeatureStory } from "./FeatureStory";
-import { LearningFeature } from "./LearningFeature";
+import { FeatureWalkthrough } from "./FeatureWalkthrough";
 import { ConnectionShowcase } from "./ConnectionShowcase";
 import "./lv2.css";
 import "./showcase.css";
@@ -44,7 +42,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
   const canStart = path !== "nonprofit";
   const start = canStart ? `/start?model=${path}&lang=${locale}` : heroOnly ? "/for/nonprofit#posts" : "#posts";
   const startLabel = canStart ? "להתחיל חודש בחינם" : "לראות דוגמאות לעמותות";
-  const posts = POST_EXAMPLES.filter(item => item.path === path && item.key !== "bakery").map(item => ({ ...item,
+  const posts = POST_EXAMPLES.filter(item => (item.path === path && item.key !== "bakery") || (path === "products" && item.key === "dj")).map(item => ({ ...item,
     business: t(item.business), kind: t(item.kind), alt: item.alt ? t(item.alt) : undefined,
     headline: t(item.headline), tip: t(item.tip), action: t(item.action), label: t(item.label),
     plan: t(item.plan), caption: t(item.caption), motion: item.motion?.map(line => t(line)),
@@ -67,9 +65,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         {heroVariant === "workspace" ? <HeroWorkspace key={path} path={path} /> : <HeroProduct key={path} path={path} />}
       </div></section>
       {!heroOnly && <>
-      <FeatureStory path={path} />
-      <PostsFeature key={`posts-${path}`} examples={posts} />
-      <LearningFeature key={`learning-${path}`} path={path} />
+      <FeatureWalkthrough key={path} path={path} examples={posts} />
       <section id="connections" className="lv2-showcase-section lv2-connections-band" aria-labelledby="lv2-connect-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="מתחילים ממה שאתם כבר משתמשים בו" /></p>
         <h2 id="lv2-connect-title" className="lv2-h2"><Copy text="הכלים שלכם. התמונה מתחברת אצלנו." /></h2>
@@ -81,12 +77,6 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         <h2 id="lv2-trust-title" className="lv2-h2"><Copy text="המידע של העסק נשאר שלכם." /></h2>
         <dl className="lv2-trust-rows">{TRUST.map(row => <div key={row.k}><dt><Copy text={row.k} /></dt><dd><Copy text={row.v} /></dd></div>)}</dl>
         <Link href="/security" className="lv2-link"><Copy text="איך שומרים על המידע שלכם" /></Link>
-      </div></section>
-      <section className="lv2-ai-work" aria-labelledby="lv2-ai-title"><div className="lv2-wrap">
-        <p className="lv2-eyebrow"><Copy text="AI שיש לו מה לעשות בשבילכם" /></p>
-        <h2 id="lv2-ai-title" className="lv2-h2"><Copy text="פחות להתחיל מאפס. יותר זמן לעסק." /></h2>
-        <p className="lv2-lead"><Copy text="המחקר נותן כיוון. התוכנית מחברת בין הפעולות. הפוסטים כבר מחכים לבדיקה, והנתונים מגיעים עם הסבר והצעה לצעד הבא." /></p>
-        <Link href={start} className="lv2-link"><Copy text={canStart ? "לבנות תוכנית לעסק שלכם" : "לראות דוגמאות לעמותות"} /><IconArrowLeft className="h-4 w-4" /></Link>
       </div></section>
       <section id="price" className="lv2-price" aria-labelledby="lv2-price-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="המנוי" /></p><h2 id="lv2-price-title" className="lv2-price-num"><span>{PRICE_ILS}</span><small><Copy text="₪ לחודש" /></small></h2>
