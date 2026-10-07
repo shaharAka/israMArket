@@ -107,7 +107,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
         and the proposal and its button follow the numbers directly. */}
     <details className="group mt-4 border-t border-[var(--rule)]">
       <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-[13px] font-semibold text-[color:var(--ink-soft)] [&::-webkit-details-marker]:hidden">
-        {item.hypothesis ? t("למה, המקורות ואיך נבדוק") : t("המקורות, המגבלות ואיך נבדוק")}<IconChevron className="h-4 w-4 -rotate-90 transition-transform duration-200 ease-[cubic-bezier(.2,.7,.2,1)] group-open:rotate-90 motion-reduce:transition-none" />
+        {item.hypothesis ? t("מה עומד מאחורי ההצעה") : t("המקורות והמגבלות")}<IconChevron className="h-4 w-4 -rotate-90 transition-transform duration-200 ease-[cubic-bezier(.2,.7,.2,1)] group-open:rotate-90 motion-reduce:transition-none" />
       </summary>
       <div className="space-y-3 pt-1 text-[13px] leading-6 text-[color:var(--ink-soft)]">
         {item.hypothesis ? <p><strong className="font-semibold"><Copy text="הסבר אפשרי:" /></strong>{" "}{item.hypothesis}</p> : null}

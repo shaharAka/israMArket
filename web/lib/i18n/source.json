@@ -26188,6 +26188,17 @@
       }
     ]
   },
+  "m_3b630cbe3b548214": {
+    "source": "מה עומד מאחורי ההצעה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 110,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3b66e0625f5b1f6c": {
     "source": "כן, מסודר",
     "language": "he",
@@ -41398,17 +41409,6 @@
       }
     ]
   },
-  "m_5fc042703ef89e94": {
-    "source": "למה, המקורות ואיך נבדוק",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 110,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_5fc123c987821271": {
     "source": "לחיצה אחת לוואטסאפ מהפוסטים",
     "language": "he",
@@ -43152,17 +43152,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 1267,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_641c69a2943e3813": {
-    "source": "המקורות, המגבלות ואיך נבדוק",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 110,
         "kind": "literal"
       }
     ]
@@ -106235,6 +106224,17 @@
       {
         "file": "web/components/landing-v2/CampaignPostExamples.tsx",
         "line": 80,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f571a9d1b56888cf": {
+    "source": "המקורות והמגבלות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 110,
         "kind": "literal"
       }
     ]
