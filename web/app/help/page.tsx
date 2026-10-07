@@ -36,7 +36,7 @@ export default function HelpPage() {
                       <span className="min-w-0 flex-1 text-[15px] font-semibold leading-6 text-[color:var(--ink)]">
                         {GUIDES[topic].title}
                       </span>
-                      <IconChevron className={ROW_CHEVRON} />
+                      <IconChevron navigation className={ROW_CHEVRON} />
                     </button>
                   </li>
                 ))}

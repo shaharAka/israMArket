@@ -21,6 +21,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import type { BrandLanguage, RoadmapPost } from "@/lib/api";
+import { contentDirection } from "@/lib/content-language";
 import { fontStack } from "@/lib/dna/fonts";
 import { typesetHebrew } from "@/lib/dna/hebrew";
 import { planCard, type CardPlan, type CardWords, type Channel } from "@/lib/dna/layout";
@@ -121,12 +122,13 @@ function amountOf(raw: unknown): string {
 export function wordsOf(post: RoadmapPost, mode: TextMode, businessName = ""): CardWords {
   // The owner turned the words off: a clean photo, not even one word.
   if (mode === "photo_only" && post.has_overlay === false) return { headline: "", sub: "" };
-  let headline = typesetHebrew((post.overlay_headline || post.overlay_text || "").trim());
-  if (!headline && mode === "type_led") headline = typesetHebrew(businessName);
+  const typeset = (value: string, options?: { bindLast?: boolean }) => !post.content_language || post.content_language === "he" ? typesetHebrew(value, options) : value.replace(/\s+/g, " ").trim();
+  let headline = typeset((post.overlay_headline || post.overlay_text || "").trim());
+  if (!headline && mode === "type_led") headline = typeset(businessName);
   // A price is printed only on a headline post, where it is the message.
   const amount = mode === "headline" ? amountOf(post.price?.amount) : "";
-  const note = amount ? typesetHebrew((post.price?.note || "").trim(), { bindLast: false }) : "";
-  const sub = typesetHebrew((post.overlay_sub || "").trim(), { bindLast: false }) || note;
+  const note = amount ? typeset((post.price?.note || "").trim(), { bindLast: false }) : "";
+  const sub = typeset((post.overlay_sub || "").trim(), { bindLast: false }) || note;
   return { headline, sub: mode === "photo_only" ? "" : sub, price: amount ? { amount, note } : undefined };
 }
 
@@ -205,6 +207,7 @@ export function CardCanvas({
   const { plan, dna } = useCardPlan({ post, brand, dna: dnaIn, businessName, size, logoUrl });
   const { W, H } = plan;
   const stacks: Stacks = {
+    direction: contentDirection(post.content_language),
     display: fontStack(dna.display.key, dna.display.meta.category === "serif" ? "serif" : "sans"),
     text: fontStack(dna.text.key, dna.text.meta.category === "serif" ? "serif" : "sans"),
   };
@@ -216,14 +219,14 @@ export function CardCanvas({
     overflow: "hidden",
     background: plan.background,
     fontFamily: stacks.text,
-    // Hebrew needs the bidi base direction set explicitly.
-    direction: "rtl",
-    textAlign: "right",
+    direction: contentDirection(post.content_language),
+    textAlign: contentDirection(post.content_language) === "rtl" ? "right" : "left",
     WebkitFontSmoothing: "antialiased",
   };
   return (
     <div
       ref={canvasRef}
+      lang={post.content_language || "he"}
       style={root}
       data-card-composition={plan.composition}
       data-card-outcome={plan.outcome}

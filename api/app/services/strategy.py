@@ -15,7 +15,7 @@ from app.services.calendar_il import israeli_events_for_month, posting_plan
 from app.services.gemini import extract_json, lite_json, strategy_json
 from app.config import get_settings
 from app.services.post_model_router import post_json
-from app.services import google_cost
+from app.services import google_cost, content_language
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import loads
 from app.services.schemas_llm import (
@@ -405,6 +405,8 @@ def posts_prompt(
     # What Instagram actually showed for this business: own top posts, the month's
     # pattern brief, or an explicit "no data, claim nothing". Built by the router.
     instagram = business.get("instagram_signal")
+    language_prefs = content_language.preferences({"content_language": business.get("content_language")})
+    copy_language = content_language.LANGUAGES[language_prefs["default_language"]]
     if len(weeks) == 1:
         count_line = count_line or f"כתוב 1 עד 2 פוסטים מוכנים לפרסום לשבוע {weeks[0]} בלבד."
     count_line = count_line or f"כתוב 3 עד 4 פוסטים מוכנים לפרסום לשבועות {week_text} בלבד."
@@ -429,12 +431,12 @@ USP: {usp}
 
 לכל פוסט חובה:
 - פורמט reel / carousel / image / story
-- title, angle, hook, caption, cta בעברית חדה
+- title, angle, hook, caption, cta בשפת התוכן שנבחרה: {copy_language}
 - cta חייב להיות קצר: 2 עד 4 מילים. הוא נכנס לכיתוב (caption), לא לתמונה.
 - why_now: משפט אחד לבעל העסק למה הפוסט הזה עכשיו
 {post_audience_rule(business.get("audiences") or [])}
-- image_prompt באנגלית לפי שפת העיצוב של האתר. בלי טקסט עברי בתוך התמונה.
-- מסר אחד לפוסט. על התמונה רק overlay_headline: עד 6 מילים בעברית, המסר האחד של הפוסט. overlay_sub: שורה קצרה אחת (עד 6 מילים) רק אם היא מוסיפה משהו, וברוב הפוסטים ריקה. overlay_text זהה ל-overlay_headline.
+- image_prompt באנגלית לפי שפת העיצוב של האתר. בלי טקסט בתוך התמונה.
+- מסר אחד לפוסט. על התמונה רק overlay_headline: עד 6 מילים בשפת הפוסט, המסר האחד של הפוסט. overlay_sub: שורה קצרה אחת (עד 6 מילים) רק אם היא מוסיפה משהו, וברוב הפוסטים ריקה. overlay_text זהה ל-overlay_headline.
 - הקריאה לפעולה, השעות, הכתובת והתנאים נשארים בכיתוב, אף פעם לא על התמונה.
 - price_amount: מחיר רק אם הוא המסר של הפוסט והוא מופיע בחומר המקור (ההצעה בתוכנית, המוצרים, מה שבעל העסק סיפר). אחרת 0. price_note: על מה המחיר, עד 4 מילים.
 - outlets, metrics_to_watch
@@ -449,7 +451,9 @@ USP: {usp}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
 {worked}
 
-{HEBREW_STYLE}
+{HEBREW_STYLE if language_prefs["default_language"] == "he" and not language_prefs["allow_language_tests"] else "Use natural, contemporary wording in each post’s content language. Match the business’s own character, not a literal translation of Hebrew."}
+
+{content_language.prompt_block(language_prefs)}
 
 {instagram_prompt_block(instagram)}
 """
@@ -474,7 +478,13 @@ def _write_posts_for_weeks(
     # Without that seed `plan` is None and this is the unchanged path.
     from app.services import strategy_reveal  # avoids an import cycle
 
-    plan = strategy_reveal.seeded_posts_plan(business.get("first_month_seed"), weeks)
+    language_prefs = content_language.preferences({"content_language": business.get("content_language")})
+    seed = business.get("first_month_seed")
+    if seed and language_prefs["default_language"] != "he":
+        # Preview samples were written in Hebrew. Keep the stored selection intact,
+        # but write fresh drafts in the chosen language from the same marketing plan.
+        seed = {**seed, "posts": []}
+    plan = strategy_reveal.seeded_posts_plan(seed, weeks)
     schema = MONTHLY_POSTS_SCHEMA
     count_line = extra = ""
     if plan is not None:
@@ -487,14 +497,16 @@ def _write_posts_for_weeks(
     # POST_MODEL=gemini (the default) keeps the direct call, so nothing changes unless the
     # Muse Spark experiment is switched on (see services/post_model_router.py).
     writer = strategy_json if (get_settings().post_model or "gemini") == "gemini" else post_json
-    posts = loads(writer(prompt, schema), {})
+    language_prefs = content_language.preferences({"content_language": business.get("content_language")})
+    language_system = content_language.system(language_prefs)
+    posts = loads(writer(prompt, content_language.schema_for(schema, language_prefs), **({"system": language_system} if language_system else {})), {})
     items = posts.get("posts") or []
     needed = (1 if len(weeks) == 1 else 2) if plan is None else max(1, min(2, plan["to_write"]))
     if len(items) < needed:
         raise RuntimeError(f"קיבלנו פחות מדי פוסטים לשבועות {week_text}. נסו שוב.")
     # Refs the model cited are resolved to real posts; an invented ref is dropped, and a
     # post with no real source carries `inspiration: None` rather than a made-up reason.
-    items = attach_inspiration(items, instagram)
+    items = content_language.tag_written(attach_inspiration(items, instagram), language_prefs)
     if plan is not None:
         items = plan["fixed"] + strategy_reveal.finish_seeded_posts(items, plan)
     # The model names a segment; only real segments exist. An unknown (or missing) name
@@ -681,6 +693,9 @@ def rewrite_post(
 
     The result carries `inspiration` (resolved sources, or None) instead of the raw refs.
     """
+    language = content_language.post_language(post)
+    language_prefs = content_language.for_batch(content_language.DEFAULT, language)
+    language_system = content_language.system(language_prefs)
     tones_he = {
         "direct": "ישיר, חד, מכירתי, קורא לפעולה מיידית בוואטסאפ או באתר",
         "neighborhood": "שכונתי, חם, אישי, כאילו כתוב בפתק בכתב יד על הדלפק",
@@ -715,11 +730,13 @@ owner_fact: פרט שרק בעל העסק יודע ושהפוסט תלוי בו 
 applied_learning: מזהה מבלוק "מה הצליח אצלכם" אם השכתוב ממשיך דפוס שלו. אחרת ריק.
 {_rewrite_context_block(context)}
 
-{HEBREW_STYLE}
+{HEBREW_STYLE if language == "he" else "Use natural contemporary wording in the original post’s language."}
+
+{content_language.prompt_block(language_prefs)}
 
 {instagram_prompt_block(instagram, rewrite=True)}
 """
-    rewritten = loads(lite_json(prompt, POST_REWRITE_SCHEMA, thinking_level="LOW"), {})
+    rewritten = loads(lite_json(prompt, content_language.copy_schema(POST_REWRITE_SCHEMA, language), thinking_level="LOW", **({"system": language_system} if language_system else {})), {})
     if not isinstance(rewritten, dict):
         return {}
     return attach_inspiration([rewritten], instagram)[0]
@@ -739,6 +756,8 @@ def generate_monthly_strategy(
     year = year or today.year
     month = month or today.month
     state = dict(state or {})
+    state.setdefault("content_language_preferences", content_language.preferences({"content_language": business.get("content_language")}))
+    business = {**business, "content_language": state["content_language_preferences"]}
     stage = state.get("stage") or "scan"
 
     def mark(next_stage: str, **extra) -> None:

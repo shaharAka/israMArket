@@ -6,7 +6,7 @@ import { FindingRehearsal } from "./FindingRehearsal";
 
 import { useId, useRef, useState } from "react";
 import Link from "next/link";
-import { BrandMark } from "@/lib/icons";
+import { BrandMark, IconArrowLeft, IconArrowRight } from "@/lib/icons";
 import { ResultsBrief, type ResultsBriefData } from "./ResultsBrief";
 import { DesignScope } from "./Primitives";
 import { SegmentedControl, UIAction } from "./Controls";
@@ -120,7 +120,7 @@ export function ResultsWorkshop() {
       </div>
       {copyStatus && <p className={styles.accepted} role="status">{t(copyStatus)}</p>}
       {acceptedCopy && <p className={styles.accepted} role="status"><Copy text="אושר בתצוגה הזו: קודם מוסיפים את ההסבר לאתר, ואז משתמשים בו בפוסט. האתר והתוכנית בחשבון שלכם לא השתנו." /></p>}
-      <div className={styles.planFollowThrough}><div><strong><Copy text="ואיך זה נכנס לתוכנית?" /></strong><p><Copy text="קודם מוסיפים את ההסבר לעמוד. הפוסט הבא משתמש באותם פרטים ומפנה אליו להזמנה." /></p></div><UIAction variant="text" onClick={() => setDraftOpen(value => !value)} aria-expanded={draftOpen} aria-controls={`${id}-draft`}>{draftOpen ? t("להסתיר את הפוסט") : t("לראות גם את הפוסט שהכנו")} ←</UIAction></div>
+      <div className={styles.planFollowThrough}><div><strong><Copy text="ואיך זה נכנס לתוכנית?" /></strong><p><Copy text="קודם מוסיפים את ההסבר לעמוד. הפוסט הבא משתמש באותם פרטים ומפנה אליו להזמנה." /></p></div><UIAction variant="text" onClick={() => setDraftOpen(value => !value)} aria-expanded={draftOpen} aria-controls={`${id}-draft`}>{draftOpen ? t("להסתיר את הפוסט") : t("לראות גם את הפוסט שהכנו")} <IconArrowLeft className="h-4 w-4" /></UIAction></div>
       {draftOpen && <div id={`${id}-draft`} className={styles.draft}><p className={styles.eyebrow}><Copy text="הפוסט הבא בתוכנית · טיוטה" /></p><h4><Copy text="מתכננים שישי בבית?" /></h4><p className={styles.postCopy}>{copy.trim() || t("הוסיפו את פרטי המארז בנוסח למעלה.")}</p><p><Copy text="לפרטים ולהזמנה, היכנסו לעמוד המארז באתר." /></p><small><Copy text="לפני פרסום: לוודא שהמארז זמין ושהקישור מוביל לעמוד המעודכן." /></small></div>}
     </section>} />
   </div>;
@@ -131,7 +131,7 @@ export function ResultsPreview() {
   const [view, setView] = useState("app");
   const { palette } = useDesignPalette();
   return <DesignScope palette={palette} className={styles.preview}><div className={styles.previewContainer}>
-    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark /><Copy text="ישראמארקט" /></Link><Link href="/design"><Copy text="לספריית העיצוב ←" /></Link></header>
+    <header className={styles.previewHeader}><Link href="/design" className={styles.brand}><BrandMark /><Copy text="ישראמארקט" /></Link><Link href="/design"><Copy text="לספריית העיצוב" /><IconArrowRight className="inline h-4 w-4 ms-2" /></Link></header>
     <main><div className="mx-auto max-w-3xl pt-4"><SegmentedControl label={t("תצוגת סקירת התוצאות")} value={view} onChange={setView} options={[{ value: "app", label: t("הרכיב באפליקציה") }, { value: "concept", label: t("הרעיון הקודם") }]} /></div>{view === "app" ? <FindingRehearsal /> : <ResultsWorkshop />}</main>
   </div></DesignScope>;
 }

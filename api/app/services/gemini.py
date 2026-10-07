@@ -162,6 +162,7 @@ def lite_json(
     schema: dict[str, Any],
     images: list[ImageBlob] | None = None,
     thinking_level: str = "LOW",
+    *, system: str | None = None,
 ) -> str:
     settings = get_settings()
     return generate_json(
@@ -170,6 +171,7 @@ def lite_json(
         schema=schema,
         thinking_level=thinking_level,
         images=images,
+        system=system,
     )
 
 
@@ -309,11 +311,12 @@ def generate_image(
         raise
 
 
-def strategy_json(prompt: str, schema: dict[str, Any]) -> str:
+def strategy_json(prompt: str, schema: dict[str, Any], *, system: str | None = None) -> str:
     settings = get_settings()
     return generate_json(
         model=settings.gemini_strategy_model,
         prompt=prompt,
         schema=schema,
         thinking_level="MEDIUM",
+        system=system,
     )

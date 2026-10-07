@@ -1,5 +1,7 @@
 "use client";
 
+import { ContentLanguageNote } from "./posts/ContentLanguageNote";
+import { contentDirection } from "@/lib/content-language";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
@@ -1390,6 +1392,8 @@ export function PostEditor({
           {editable ? (
             <textarea
               id="post-caption"
+              dir={contentDirection(currentPost.content_language)}
+              lang={currentPost.content_language || "he"}
               value={draft}
               rows={5}
               disabled={savingCaption}
@@ -1397,7 +1401,7 @@ export function PostEditor({
               className={`${ui.field} mt-1`}
             />
           ) : (
-            <p id="post-caption" className={`${ui.inset} mt-1 whitespace-pre-line px-4 py-3 text-[15px] leading-7 text-[color:var(--ink)]`}>
+            <p id="post-caption" dir={contentDirection(currentPost.content_language)} lang={currentPost.content_language || "he"} className={`${ui.inset} mt-1 whitespace-pre-line px-4 py-3 text-[15px] leading-7 text-[color:var(--ink)]`}>
               {activeCaption}
             </p>
           )}
@@ -1967,13 +1971,14 @@ export function PostEditor({
               className={`${ui.link} ${ui.linkQuiet} group shrink-0 text-[13px]`}
             >
               הבא בתור
-              <IconChevron className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              <IconChevron navigation className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
             </button>
           ) : null}
         </div>
-        <h1 className="line-clamp-2 text-[24px] font-bold leading-8 tracking-tight text-[color:var(--ink)] md:text-[30px] md:leading-10">
+        <h1 dir={contentDirection(currentPost.content_language)} lang={currentPost.content_language || "he"} className="line-clamp-2 text-[24px] font-bold leading-8 tracking-tight text-[color:var(--ink)] md:text-[30px] md:leading-10">
           {currentPost.title}
         </h1>
+        <ContentLanguageNote language={currentPost.content_language} reason={currentPost.language_reason} />
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 md:mt-2">
           <span className={ui.status} data-status={stage}>
             {LIFECYCLE_LABEL[stage]}

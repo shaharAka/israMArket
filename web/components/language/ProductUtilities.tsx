@@ -21,18 +21,17 @@ export function ProductUtilities() {
     return () => { window.clearTimeout(timer); window.removeEventListener(RELEASE_READ_EVENT, refresh); window.removeEventListener("storage", refresh); };
   }, []);
   return <div className="product-utilities" aria-label={t("שפה ועדכונים")}>
-    <div className="product-utilities-row">
-      <label htmlFor={id} className="inline-flex min-h-11 items-center gap-2 text-[13px] text-[var(--ink-soft)]">
-        <span>{t("שפה")}</span>
-        <select id={id} value={locale} disabled={busy} aria-busy={busy} onChange={event => { if (isLocale(event.target.value)) choose(event.target.value); }} className="min-h-11 max-w-36 cursor-pointer bg-transparent px-2 font-medium text-[var(--ink)] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-[var(--primary)]" dir="auto">
+    <div className="product-utilities-row" dir="rtl">
+      <label htmlFor={id} className="product-language-control">
+        <span dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"}>{t("שפה")}</span>
+        <select id={id} value={locale} disabled={busy} aria-busy={busy} onChange={event => { if (isLocale(event.target.value)) choose(event.target.value); }} className="min-h-11 w-28 cursor-pointer bg-transparent px-2 font-medium text-[var(--ink)] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-[var(--primary)]" dir="auto">
           {SUPPORTED_LOCALES.map(language => <option key={language} value={language} lang={language}>{LOCALE_META[language].name}</option>)}
         </select>
       </label>
-      <Link href="/updates" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)] hover:text-[var(--primary)] hover:underline" aria-label={unread ? t("מה חדש — עדכונים שעוד לא קראתם") : t("מה חדש")}>
+      <Link dir={locale === "he" || locale === "ar" ? "rtl" : "ltr"} href="/updates" className="inline-flex min-h-11 shrink-0 items-center gap-2 text-[13px] font-medium text-[var(--ink-soft)] hover:text-[var(--primary)] hover:underline" aria-label={unread ? t("מה חדש — עדכונים שעוד לא קראתם") : t("מה חדש")}>
         {t("מה חדש")}{unread && <span className="h-1.5 w-1.5 rounded-full bg-[var(--sun-edge)]" aria-hidden />}
       </Link>
     </div>
     {error ? <p role="alert" className="px-4 pb-2 text-[13px] text-[var(--danger)]">{t(error)}</p> : null}
-    {locale !== "he" ? <p className="translation-preview-note" role="status">{t("התרגום מתווסף בהדרגה. חלק מהמסכים והתוכן עדיין בעברית.")}</p> : null}
   </div>;
 }

@@ -391,7 +391,7 @@ function QuietRow({ href, icon, children }: { href: string; icon: ReactNode; chi
     <Link href={href} className="group flex min-h-14 items-center gap-3 py-3 text-[15px] leading-6 text-[color:var(--ink)]">
       <span className="shrink-0 text-[color:var(--ink-muted)]">{icon}</span>
       <span className="min-w-0 flex-1">{children}</span>
-      <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+      <IconChevron navigation className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   );
 }
@@ -491,7 +491,7 @@ function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
           <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${state === "needs_owner" || state === "ready" ? "bg-[var(--sun)]" : "bg-current"}`} />
           {LIFECYCLE_LABEL[state]}
         </span>
-        <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+        <IconChevron navigation className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
       </Link>
     </li>
   );
@@ -600,7 +600,7 @@ function InfoRow({ label, href, children }: { label: string; href: string | null
         <span className="mt-1 block text-[15px] font-medium leading-6 text-[color:var(--ink)]">{children}</span>
       </span>
       {href ? (
-        <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+        <IconChevron navigation className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
       ) : null}
     </>
   );

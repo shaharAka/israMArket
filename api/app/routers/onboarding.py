@@ -33,6 +33,7 @@ from app.services.onboarding_draft import (
 from app.services.preview import cached_scan
 from app.services.quarter_plan import QuarterPlanIn
 from app.services.strategy_reveal import SamplePostIn, StrategyIn
+from app.services import content_language
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates, image_alt_for
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -604,6 +605,7 @@ def _first_month_payload(db: Session, business: Business, stored: dict, *, with_
         "featured_items": featured_items_from(stored),
         # docs/posts-v2.md: this business's measured posts, best and worst. Empty until a
         # first post is measured; from then on every week's posts are written with it.
+        "content_language": content_language.preferences(stored),
         "what_worked": connected_posts.what_worked(db, business),
     }
 
@@ -762,6 +764,7 @@ def run_posts_stage(db: Session, business: Business) -> bool:
         .first()
     )
     payload = _first_month_payload(db, business, stored, with_seed=first is not None and first.id == strategy.id)
+    payload["content_language"] = extra.get("posts_language_preferences") or payload["content_language"]
     written = write_week_posts(payload, loads(strategy.usp_json, {}) or {}, core, brand, week)
     # Writing a week takes one to two minutes, and the weeks already written are on the
     # Posts page meanwhile: the owner may approve one, give it a photo or edit its text.
@@ -865,6 +868,7 @@ def generate_status(
 class PostsStartIn(BaseModel):
     # One week, or every week that is not written yet when omitted.
     week: int | None = Field(default=None, ge=1, le=4)
+    content_language: Literal["he", "en", "ar", "ru"] | None = None
 
 
 @router.post("/posts/start", dependencies=[Depends(require_generation_access)])
@@ -893,8 +897,19 @@ def start_posts(
             status_code=409,
             detail="עוד בונים את התוכנית של החודש. נכתוב את הפוסטים כשהיא תהיה מוכנה.",
         )
+    stored = loads(business.scraped_profile_json, {}) or {}
+    prefs = content_language.for_batch(content_language.preferences(stored), body.content_language if body else None)
+    extra = loads(strategy.roadmap_json, {}) or {}
+    if running is not None:
+        active = extra.get("posts_language_preferences") or content_language.preferences(stored)
+        if body and body.content_language and prefs != active:
+            raise HTTPException(status_code=409, detail="כבר כותבים פוסטים. אפשר לבחור שפה אחרת אחרי שהכתיבה תסתיים.")
     weeks = [body.week] if body and body.week else None
     queued = month_posts.queue_weeks(strategy, weeks)
+    if queued and running is None:
+        extra = loads(strategy.roadmap_json, {}) or {}
+        extra["posts_language_preferences"] = prefs
+        strategy.roadmap_json = dumps(extra)
     db.commit()
     if not queued:
         return generation_jobs.status(db, business)

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TranslationCoverage } from "./TranslationCoverage";
 import { useEffect } from "react";
 import { BrandMark, IconArrowLeft } from "@/lib/icons";
 import { RELEASES, LATEST_RELEASE, RELEASE_READ_KEY, RELEASE_READ_EVENT } from "@/lib/releases";
@@ -27,5 +28,6 @@ export function ReleaseNotes() {
         </article>
       </li>)}
     </ol>
+    <TranslationCoverage />
   </main>;
 }

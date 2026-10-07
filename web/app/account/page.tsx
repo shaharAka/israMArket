@@ -138,7 +138,7 @@ export default function AccountPage() {
                   <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">המנוי</span>
                   <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">החודש החינמי, התשלום והביטול</span>
                 </span>
-                <IconChevron className={ROW_CHEVRON} />
+                <IconChevron navigation className={ROW_CHEVRON} />
               </Link>
             </li>
             <li>
@@ -147,7 +147,7 @@ export default function AccountPage() {
                   <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">לסייר שוב</span>
                   <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">רוצים לראות שוב מה יש כאן?</span>
                 </span>
-                <IconChevron className={ROW_CHEVRON} />
+                <IconChevron navigation className={ROW_CHEVRON} />
               </Link>
             </li>
             {/* The backoffice: only in an admin's own account menu, and only while the server
@@ -159,7 +159,7 @@ export default function AccountPage() {
                     <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">ניהול החשבונות</span>
                     <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">כל החשבונות, איפוס סיסמה, השהיה ועלויות</span>
                   </span>
-                  <IconChevron className={ROW_CHEVRON} />
+                  <IconChevron navigation className={ROW_CHEVRON} />
                 </Link>
               </li>
             ) : null}

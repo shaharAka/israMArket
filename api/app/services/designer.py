@@ -14,6 +14,7 @@ Design DNA (services/post_design.py), and the scene is written to fit it.
 from app.services.business_fields import field_label
 from app.services.dna_library import COMPOSITIONS
 from app.services.gemini import strategy_json
+from app.services import content_language
 from app.services.images import composition_zone, generate_and_store, visual_message
 from app.services.jsonutil import loads
 from app.services.schemas_llm import DESIGNER_POST_CREATIVE_SCHEMA
@@ -74,6 +75,8 @@ def plan_post_design(
     custom_prompt: str = "",
     dna: dict | None = None,
 ) -> dict:
+    language = content_language.post_language(post)
+    language_prefs = content_language.for_batch(content_language.DEFAULT, language)
     palette_desc = ", ".join(
         f"{swatch.get('name', '')} ({swatch.get('hex', '')})" for swatch in brand.get("palette") or []
     )
@@ -162,13 +165,14 @@ def plan_post_design(
    - צילום אווירה, מלאכה או מאחורי הקלעים: לרוב has_overlay = false. תן לתמונה לנשום.
    - הודעה, שעות פתיחה, תזכורת אחרונה, מבצע או הכרזה: has_overlay = true.
 3. מסר אחד לפוסט. אם has_overlay הוא true:
-   - overlay_headline: עד 6 מילים בעברית, המסר האחד של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). לא כל כותרת הפוסט.
+   - overlay_headline: עד 6 מילים בשפת הפוסט ({content_language.LANGUAGES[language]}), המסר האחד של הפוסט (יום, מועד, שם מוצר או מספר מתוך הפוסט). לא כל כותרת הפוסט.
    - overlay_sub: שורה קצרה אחת, עד 6 מילים, רק אם היא מוסיפה משהו. לרוב ריקה.
    - הקריאה לפעולה, השעות והתנאים נשארים בכיתוב, לא על התמונה. overlay_badge תמיד ריק.
    - הכיתוב יושב על האזור השקט של הצילום, אף פעם לא על המוצר.
 4. אם has_overlay הוא false: overlay_headline, overlay_sub ו-overlay_badge ריקים ("").
 """
-    creative = loads(strategy_json(prompt, DESIGNER_POST_CREATIVE_SCHEMA), {})
+    language_system = content_language.system(language_prefs)
+    creative = loads(strategy_json(prompt, content_language.copy_schema(DESIGNER_POST_CREATIVE_SCHEMA, language), **({"system": language_system} if language_system else {})), {})
     if not creative.get("scene_description"):
         raise RuntimeError("לא הצלחנו לעצב את הפוסט. נסו שוב.")
     return creative
