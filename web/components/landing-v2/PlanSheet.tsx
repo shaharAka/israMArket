@@ -52,7 +52,7 @@ export function PartGoal({ live }: PartProps) {
           <span className="lv2-goal-num">
             <Count from={GOAL.today} to={GOAL.target} live={live} />
           </span>
-          <span className="lv2-goal-cap"><Copy text="בחודש השלישי" /></span>
+          <span className="lv2-goal-cap"><Copy text="יעד שנבדוק" /></span>
         </div>
         <p className="lv2-goal-unit"><Copy text={GOAL.unit} /></p>
       </div>
@@ -89,7 +89,7 @@ export function PartRoute() {
 export const PARTS = [
   { key: "learned", title: "מה למדנו", Body: PartLearned },
   { key: "goal", title: "המטרה", Body: PartGoal },
-  { key: "route", title: "המסלול", Body: PartRoute },
+  { key: "route", title: "מה עושים בהמשך", Body: PartRoute },
 ] as const;
 
 export function SheetHeader() {

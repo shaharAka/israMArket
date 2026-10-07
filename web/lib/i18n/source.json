@@ -510,6 +510,17 @@
       }
     ]
   },
+  "m_0147c408500e3fce": {
+    "source": "לראות מהתחלה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 132,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_015021b1bf5c4ca3": {
     "source": "להפעיל מנוי",
     "language": "he",
@@ -4502,11 +4513,6 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 112,
-        "kind": "literal"
-      },
-      {
         "file": "web/lib/api.ts",
         "line": 1199,
         "kind": "literal"
@@ -6543,7 +6549,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -8530,6 +8536,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 92,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/uxFlows.ts",
         "line": 42,
         "kind": "literal"
@@ -9277,6 +9288,17 @@
       }
     ]
   },
+  "m_16c7c582d9761900": {
+    "source": "מכירים את העסק לפני שמציעים מה לפרסם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 89,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_16c8ebf84a8d94d3": {
     "source": "נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.",
     "language": "he",
@@ -9397,7 +9419,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -10011,7 +10033,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -12851,11 +12873,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 219,
-        "kind": "literal"
-      },
-      {
         "file": "api/app/services/strategy_reveal.py",
         "line": 163,
         "kind": "literal",
@@ -14982,6 +14999,18 @@
       }
     ]
   },
+  "m_233ae7d1ea93c922": {
+    "source": "אפשר לראות איך התוכנית הופכת לפוסטים ומשתפרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_234154c3a820aa87": {
     "source": "שאלה ותשובה",
     "language": "he",
@@ -16654,7 +16683,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17361,6 +17390,17 @@
       }
     ]
   },
+  "m_294aaecd57c9efb2": {
+    "source": "מה מצאנו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 91,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_29525381fe1d5ce1": {
     "source": "אפשר לבחור כמה קבצים בבת אחת",
     "language": "he",
@@ -17813,6 +17853,18 @@
       {
         "file": "web/lib/trial.ts",
         "line": 492,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_2ac4cd8e7f0030e6": {
+    "source": "תוכנית שממשיכה להשתפר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 40,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18557,17 +18609,6 @@
       }
     ]
   },
-  "m_2c7c1589452905a2": {
-    "source": "לעסקים קטנים שעושים את השיווק לבד. כל שבוע מקבלים את הצעד הבא ופוסטים מוכנים בסגנון שלכם. אחר כך בודקים מה הצליח ומעדכנים את התוכנית.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 21,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2c84267d8f812919": {
     "source": "התקדמות ההיכרות",
     "language": "he",
@@ -18586,7 +18627,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -19678,7 +19719,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -20974,17 +21015,6 @@
       }
     ]
   },
-  "m_31bb87e2c6b16438": {
-    "source": "אוקטובר · נובמבר · דצמבר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 73,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_31bf1ddb4ea6cb5d": {
     "source": "לרשום את המספרים",
     "language": "he",
@@ -21501,17 +21531,6 @@
       }
     ]
   },
-  "m_32d63e2ff26ec542": {
-    "source": "המסלול של {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 227,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_32dc9f963ef129e5": {
     "source": "קרם",
     "language": "he",
@@ -21722,6 +21741,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 101,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/content.ts",
         "line": 85,
         "kind": "literal"
@@ -21837,6 +21861,17 @@
       }
     ]
   },
+  "m_336c53e24f9f3848": {
+    "source": "למשפחות מהשכונה, לקראת יום שישי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3373601da5ab387a": {
     "source": "נובמבר",
     "language": "he",
@@ -21844,11 +21879,6 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 61,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 111,
         "kind": "literal"
       },
       {
@@ -22179,17 +22209,6 @@
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 56,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_341f0065c7a7480c": {
-    "source": "חודש אחרי חודש, לפי העונות והחגים של העסק. כל חודש מתעדכן לפי מה שלמדנו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 41,
-        "kind": "literal"
       }
     ]
   },
@@ -23163,17 +23182,6 @@
         "file": "web/components/trial/TrialGuide.tsx",
         "line": 444,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_367bebda35b2c855": {
-    "source": "בתוכנית לדוגמה · הצעד הבא",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 256,
-        "kind": "literal"
       }
     ]
   },
@@ -26296,17 +26304,6 @@
       }
     ]
   },
-  "m_3ed240e60d2e2cef": {
-    "source": "תזכורת ללקוחות הקבועים, בוואטסאפ ובסטורי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 117,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_3ed475d382183ca8": {
     "source": "פרסמתי את הפוסט",
     "language": "he",
@@ -26460,7 +26457,7 @@
       },
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 124,
+        "line": 106,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28003,6 +28000,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 100,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/trial/WeeklyBrief.tsx",
         "line": 11,
         "kind": "literal"
@@ -28166,18 +28168,6 @@
         "line": 111,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_4334730814cc6768": {
-    "source": "המסלול",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 92,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -28947,6 +28937,17 @@
         "file": "web/lib/goals.ts",
         "line": 420,
         "kind": "template"
+      }
+    ]
+  },
+  "m_453393acde2909a3": {
+    "source": "לראות את הדוגמה באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -29772,11 +29773,6 @@
         "file": "web/components/landing-v2/content.ts",
         "line": 61,
         "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 111,
-        "kind": "literal"
       }
     ]
   },
@@ -29844,6 +29840,17 @@
         "file": "web/app/dev/dna/DnaQa.tsx",
         "line": 275,
         "kind": "template"
+      }
+    ]
+  },
+  "m_47877a8b1e988277": {
+    "source": "עם מחיר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 120,
+        "kind": "literal"
       }
     ]
   },
@@ -32297,6 +32304,17 @@
       }
     ]
   },
+  "m_4d8c60ffb7d4a3d1": {
+    "source": "מודדים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4d9541ca0e2ed7c9": {
     "source": "אחת",
     "language": "he",
@@ -33270,7 +33288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33458,22 +33476,6 @@
         "line": 1133,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_507587759f498405": {
-    "source": "{arg_0} הזמנות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 187,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 219,
-        "kind": "literal"
       }
     ]
   },
@@ -33927,7 +33929,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35834,7 +35836,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 126,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -36005,7 +36007,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -37532,6 +37534,17 @@
       }
     ]
   },
+  "m_5b58884ca881df97": {
+    "source": "בפוסט הבא: מחיר וקישור להזמנה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 82,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5b6550e93931641b": {
     "source": "מה כדאי לעשות השבוע",
     "language": "he",
@@ -37540,6 +37553,18 @@
         "file": "web/app/business/page.tsx",
         "line": 45,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_5b674a0b4736da8d": {
+    "source": "מה עושים בהמשך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanSheet.tsx",
+        "line": 92,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -38024,6 +38049,17 @@
       }
     ]
   },
+  "m_5c71ece8d0bac2ce": {
+    "source": "תוכנית השיווק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 79,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5c7a4b412ba43832": {
     "source": "הנוסח נשמר.",
     "language": "he",
@@ -38088,6 +38124,17 @@
       }
     ]
   },
+  "m_5c89608e3b392d3d": {
+    "source": "עדיין לא מחובר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 101,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5c8ef89634f7f087": {
     "source": "שומרים את המותג…",
     "language": "he",
@@ -38128,11 +38175,6 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 60,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 110,
         "kind": "literal"
       },
       {
@@ -38277,6 +38319,17 @@
       }
     ]
   },
+  "m_5cc929d94351cb5e": {
+    "source": "בלי מחיר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 121,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5ccf668c0ba92af0": {
     "source": "טורקיז עמוק, צהוב נקי וקורל",
     "language": "he",
@@ -38327,7 +38380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -38703,7 +38756,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 124,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -39080,6 +39133,17 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 94,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5e5829241f0717fc": {
+    "source": "מתעדכנת לאורך הדרך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -39517,11 +39581,6 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 60,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 110,
         "kind": "literal"
       }
     ]
@@ -40418,7 +40477,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -40829,7 +40888,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -40952,11 +41011,6 @@
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
         "line": 48,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 187,
         "kind": "literal"
       },
       {
@@ -42011,7 +42065,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 126,
+        "line": 108,
         "kind": "literal",
         "purpose": "display"
       }
@@ -44362,7 +44416,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -44417,7 +44471,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -44542,7 +44596,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -45996,6 +46050,17 @@
       }
     ]
   },
+  "m_6ef18abcfcf2f08b": {
+    "source": "לקוחות קבועים מגיעים בעיקר בשישי בבוקר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 91,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6ef28fe350d4ab04": {
     "source": "סימנייה מתקפלת, והשינוי נשמר.",
     "language": "he",
@@ -46124,6 +46189,11 @@
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 46,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -46400,7 +46470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47386,7 +47456,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 125,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -48702,17 +48772,6 @@
       }
     ]
   },
-  "m_75429c5797a2b1e2": {
-    "source": "בודקים מה הצליח ומעדכנים את החודש הבא",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 119,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7548e56a5aa302b0": {
     "source": "תור קבוע בשישי",
     "language": "he",
@@ -48972,6 +49031,17 @@
       }
     ]
   },
+  "m_761645c026644e01": {
+    "source": "לומדים, מפרסמים ומשפרים את התוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 128,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_761da5163ad1d87d": {
     "source": "Meta Model API: no answer within the time budget.",
     "language": "en",
@@ -49160,6 +49230,17 @@
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 52,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_766863f915ab9989": {
+    "source": "מכינים פוסטים, בודקים מה קרה ומשפרים את הצעד הבא. התוכנית מתעדכנת כל הזמן, לפי העסק והנתונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -50000,6 +50081,17 @@
       }
     ]
   },
+  "m_784ade2f5cb06aa4": {
+    "source": "הזמנות עדיין לא נמדדו. בינתיים מעדכנים את הפוסט הבא לפי הלחיצות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 123,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_78500da262625dd8": {
     "source": "קישור לתמונה",
     "language": "he",
@@ -50679,17 +50771,6 @@
         "file": "web/app/onboarding/page.tsx",
         "line": 481,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_7a2e3418176f2376": {
-    "source": "התע״ש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 94,
-        "kind": "literal"
       }
     ]
   },
@@ -51937,17 +52018,6 @@
         "line": 710,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_7cfc55e2027e34b1": {
-    "source": "ויצמן",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 93,
-        "kind": "literal"
       }
     ]
   },
@@ -57024,6 +57094,17 @@
         "line": 26,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8958c7ff8750091c": {
+    "source": "מחברים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -62927,6 +63008,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 102,
+        "kind": "literal"
+      },
+      {
         "file": "api/app/services/goal_numbers.py",
         "line": 888,
         "kind": "literal",
@@ -63164,6 +63250,17 @@
         "file": "web/components/instagram/HandlesEditor.tsx",
         "line": 61,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_97e4e5c6e9561591": {
+    "source": "מזמינים בחמישי, אוספים בשישי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 111,
+        "kind": "literal"
       }
     ]
   },
@@ -63446,17 +63543,6 @@
         "line": 276,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_987adc4e64528206": {
-    "source": "ירושלים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 95,
-        "kind": "literal"
       }
     ]
   },
@@ -64274,7 +64360,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -64482,7 +64568,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -66417,6 +66503,17 @@
       }
     ]
   },
+  "m_a0b2c09570b8ffdc": {
+    "source": "טיוטה לאינסטגרם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 111,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a0b49aea193bf69f": {
     "source": "צעיר",
     "language": "he",
@@ -67623,7 +67720,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -67961,6 +68058,17 @@
         "line": 983,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_a4834e07d00fc3f7": {
+    "source": "מכינים גם את התמונה. אתם בודקים, משנים ומפרסמים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 113,
+        "kind": "literal"
       }
     ]
   },
@@ -69666,6 +69774,17 @@
       }
     ]
   },
+  "m_a8b4355e82a4aa8c": {
+    "source": "להזכיר בחמישי שאפשר להזמין מראש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 92,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a8b746edb332177f": {
     "source": "תקועים? שלחו את זה למי שבנה לכם את האתר",
     "language": "he",
@@ -70392,6 +70511,17 @@
       }
     ]
   },
+  "m_aa7b041939b9ce30": {
+    "source": "מעדכנים ידנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 102,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_aa7c122e16068ba5": {
     "source": "אין מארז אירוח קטן לזוג.",
     "language": "he",
@@ -70940,7 +71070,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -71717,6 +71847,17 @@
         "file": "web/components/design/DesignLibrary.tsx",
         "line": 43,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_ad88110eb66c80b3": {
+    "source": "לפי האתר, הקהל ומה שסיפרתם לנו על העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 94,
+        "kind": "literal"
       }
     ]
   },
@@ -72837,7 +72978,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -73056,6 +73197,17 @@
         "line": 194,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_b11888d0b15df212": {
+    "source": "הפוסט עם המחיר הביא יותר לחיצות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 117,
+        "kind": "literal"
       }
     ]
   },
@@ -75135,17 +75287,6 @@
       }
     ]
   },
-  "m_b5e7d35333a761e4": {
-    "source": "הזמנות מראש לסופגניות, שבועיים לפני החג",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 118,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_b5fee1325070b3eb": {
     "source": "המספר הראשון צריך להיות קטן מהשני.",
     "language": "he",
@@ -75631,6 +75772,17 @@
       {
         "file": "web/app/baseline/page.tsx",
         "line": 76,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b6f383466bbd0dc5": {
+    "source": "מה מתווסף לתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -78610,6 +78762,17 @@
       }
     ]
   },
+  "m_bf1c135877acf4cb": {
+    "source": "לעצור את ההדגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 132,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bf1d73eff765fd7c": {
     "source": "לקראת סוף השבוע",
     "language": "he",
@@ -78858,7 +79021,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -81650,6 +81813,28 @@
       }
     ]
   },
+  "m_c5fb7056d4d85a64": {
+    "source": "מהתוכנית לפוסט בסגנון שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 108,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c603142f38f7e960": {
+    "source": "להזמנה מראש ולאיסוף בבוקר, שלחו לנו הודעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 111,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c60be25f10ab87ee": {
     "source": "ב-analytics.google.com או באפליקציה, לחצו על התמונה או האות בפינה העליונה. שם רואים באיזה חשבון אתם.",
     "language": "he",
@@ -82535,6 +82720,17 @@
         "file": "web/app/promotion/page.tsx",
         "line": 943,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_c86bb936bdf6adf9": {
+    "source": "מתחילים מהמידע שיש. אפשר לחבר עוד בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 104,
+        "kind": "literal"
       }
     ]
   },
@@ -83518,6 +83714,17 @@
         "line": 1559,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ca55d757e022f267": {
+    "source": "יותר הזמנות מראש, פחות קניות של הרגע האחרון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 81,
+        "kind": "literal"
       }
     ]
   },
@@ -84584,11 +84791,6 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 62,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 112,
         "kind": "literal"
       },
       {
@@ -86817,7 +87019,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -89063,6 +89265,17 @@
       }
     ]
   },
+  "m_d7d74685831910c0": {
+    "source": "פוסט ראשון · לקוחות קבועים · חגים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 73,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d7d9871ee62ecc32": {
     "source": "בדיקה וחזרה לתוכנית",
     "language": "he",
@@ -90066,18 +90279,6 @@
         "file": "web/lib/dna/samples.ts",
         "line": 377,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_da6f80eb6b9c4f28": {
-    "source": "מסלול לשלושה חודשים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 40,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -91430,6 +91631,17 @@
       }
     ]
   },
+  "m_dd4498c21930c415": {
+    "source": "חוקרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dd583a4b8e63a612": {
     "source": "אמון של השכונה",
     "language": "he",
@@ -92570,7 +92782,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -95092,6 +95304,17 @@
       }
     ]
   },
+  "m_e5f7d45b2fc33388": {
+    "source": "יעד שנבדוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanSheet.tsx",
+        "line": 55,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e603f26bb088491c": {
     "source": "בחרו אפשרות וראו מה קורה",
     "language": "he",
@@ -97352,6 +97575,17 @@
         "line": 108,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_eb486960a1bee7b7": {
+    "source": "אפשר לבחור כל שלב בהדגמה. המספרים להמחשה בלבד; לחיצות אינן הזמנות. התוכנית ממשיכה להתעדכן, ואפשר להתחיל גם בלי כל החיבורים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
       }
     ]
   },
@@ -99701,17 +99935,6 @@
       }
     ]
   },
-  "m_efb3311cc002ecc4": {
-    "source": "בחודש השלישי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 55,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_efb6ec6bb925eb5b": {
     "source": "מייל אחד בשבועיים",
     "language": "he",
@@ -99804,6 +100027,17 @@
         "line": 74,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_f023dfcca5e95b7f": {
+    "source": "לחיצות על קישור ההזמנה · נתונים לדוגמה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 118,
+        "kind": "literal"
       }
     ]
   },
@@ -101077,6 +101311,17 @@
       }
     ]
   },
+  "m_f3854ac5b387c53e": {
+    "source": "יוצרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f389587a9db56c6d": {
     "source": "תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש עולה באמת ולא רק את המספר שנשמע טוב.",
     "language": "he",
@@ -102160,6 +102405,17 @@
       }
     ]
   },
+  "m_f5ec9d5847f3b74a": {
+    "source": "באתר יש עכשיו תוכנית לדוגמה: מה לומדים על העסק, אילו נתונים מחברים, איזה פוסט מכינים ומה משנים לפי התוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f5f9f67d972d4a0d": {
     "source": "ציפורן",
     "language": "he",
@@ -102723,7 +102979,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/content.ts",
-        "line": 125,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -102812,17 +103068,6 @@
         "line": 16,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_f7517a6756b05a9c": {
-    "source": "מכינים פוסט מהחומרים שלכם וקישור למדידת לחיצות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 116,
-        "kind": "literal"
       }
     ]
   },
@@ -102992,6 +103237,17 @@
       {
         "file": "web/app/dev/dna/DnaQa.tsx",
         "line": 28,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f79f246be0d5219e": {
+    "source": "מחברים את הנתונים לתוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -105577,6 +105833,17 @@
       }
     ]
   },
+  "m_fe23777e25f6da0c": {
+    "source": "לעסקים קטנים שעושים את השיווק לבד. חוקרים את העסק ואת הקהל, בונים תוכנית ומכינים פוסטים בסגנון שלכם. מחברים נתונים, בודקים מה הצליח ומעדכנים את הצעד הבא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 21,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fe2aad6a60ac98fd": {
     "source": "כחול לילה",
     "language": "he",
@@ -105913,17 +106180,6 @@
       }
     ]
   },
-  "m_feff27cae47d5168": {
-    "source": "מגיעים בדצמבר · היום {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 234,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ff0b1fcfd424c2a8": {
     "source": "למי:",
     "language": "he",
@@ -106229,17 +106485,6 @@
       }
     ]
   },
-  "m_ff94ff2e847a7848": {
-    "source": "אוקטובר–דצמבר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ff9ae0b5cd1f69f4": {
     "source": "ההצעה לא משנה את התוכנית. בודקים אותה לפני שמחליטים מה לערוך.",
     "language": "he",
@@ -106301,13 +106546,13 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/PlanSheet.tsx",
-        "line": 103,
+        "file": "web/components/landing-v2/PlanCycleHero.tsx",
+        "line": 75,
         "kind": "literal"
       },
       {
-        "file": "web/components/landing-v2/RouteHero.tsx",
-        "line": 228,
+        "file": "web/components/landing-v2/PlanSheet.tsx",
+        "line": 103,
         "kind": "literal"
       }
     ]

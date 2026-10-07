@@ -8,11 +8,6 @@ import { useEffect } from "react";
  * on screen moves on a clock (requestAnimationFrame), setting the same custom properties
  * and attributes the CSS reads (--q, --p, --pp, data-state, data-reached, data-on).
  *
- * - `data-scene="route"` (the hero map): the route draws itself in about 6 s, with a short
- *   stop at every month, then rests at the goal. `--q` is how far along (0–1); the puck
- *   `[data-route-puck]` drives and turns along `[data-route-path]`, stops `[data-at]` get
- *   `data-reached`, and the `[data-next]` step for the stops passed gets `data-on`. It plays
- *   once more if the visitor scrolls away and comes back, then stays finished.
  * - `data-scene="steps"` (how the plan is built, the weekly screen): each `[data-i]` inside
  *   gets `data-state` (past / current / future) and `--pp` (the progress within its step),
  *   one step every `data-hold` ms. After the last step the scene gets `data-done` and the
@@ -26,8 +21,8 @@ import { useEffect } from "react";
  * A scene plays while at least half of it is on screen (or it fills half the screen), pauses
  * in place once most of it has left, and resumes from the same point. The server HTML is the
  * finished state, so nothing depends on JavaScript. The inline script in Landing marks
- * `html[data-lv2="on"]` before the first paint when motion is allowed, so the hero map starts
- * empty instead of flashing finished. Under prefers-reduced-motion nothing moves: every
+ * `html[data-lv2="on"]` before the first paint when motion is allowed, so the lower scenes start
+ * at their first step instead of flashing finished. Under prefers-reduced-motion nothing moves: every
  * scene shows its finished state, and picking a step still works, without animation.
  */
 
@@ -36,22 +31,15 @@ const PAUSE_BELOW = 0.3;
 const REVEAL_AT = 0.2;
 const REVEAL_MS = 1000;
 
-/** The hero route: a breath, the drive shared between the legs by distance, a stop per month. */
-const ROUTE_WAIT_MS = 400;
-const ROUTE_DRIVE_MS = 3500;
-const ROUTE_MIN_LEG_MS = 600;
-const ROUTE_STOP_MS = 650;
-
 /** A step's counter reaches its number in the first part of the step, then holds. */
 const COUNT_SHARE = 0.4;
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 type Scene = {
   el: HTMLElement;
-  kind: "route" | "steps" | "reveal";
+  kind: "steps" | "reveal";
   /** The whole play, in ms. */
   length: number;
   /** How far it has played, in ms. */
@@ -63,9 +51,6 @@ type Scene = {
   held: boolean;
   /** Keyboard focus is inside: wait. */
   paused: boolean;
-  /** Left the screen after finishing (a route plays once more when it comes back). */
-  away: boolean;
-  replays: number;
   draw: (t: number) => void;
   finish: () => void;
   pick?: (index: number) => void;
@@ -74,66 +59,7 @@ type Scene = {
 };
 
 function base(el: HTMLElement, kind: Scene["kind"], length: number) {
-  return { el, kind, length, t: 0, playing: false, done: false, held: false, paused: false, away: false, replays: 0 };
-}
-
-function routeScene(el: HTMLElement): Scene | null {
-  const path = el.querySelector<SVGPathElement>("[data-route-path]");
-  if (!path) return null;
-  const total = path.getTotalLength();
-  const puck = el.querySelector<SVGGElement>("[data-route-puck]");
-  const stops = Array.from(el.querySelectorAll<Element>("[data-at]"));
-  const next = Array.from(el.querySelectorAll<HTMLElement>("[data-next]"));
-  const labels = stops.filter((stop) => stop.hasAttribute("data-stop") && stop.tagName.toLowerCase() === "div");
-
-  // One leg per month stop, then the last one to the goal.
-  const marks = labels.map((stop) => Number(stop.getAttribute("data-at"))).sort((a, b) => a - b);
-  const ends = [...marks, 1];
-  const legs = ends.map((to, i) => {
-    const from = i ? ends[i - 1] : 0;
-    return { from, to, ms: Math.max(ROUTE_MIN_LEG_MS, ROUTE_DRIVE_MS * (to - from)) };
-  });
-  const length = ROUTE_WAIT_MS + legs.reduce((sum, leg) => sum + leg.ms, 0) + ROUTE_STOP_MS * (legs.length - 1);
-
-  const along = (t: number) => {
-    let left = t - ROUTE_WAIT_MS;
-    if (left <= 0) return 0;
-    for (let i = 0; i < legs.length; i += 1) {
-      const leg = legs[i];
-      if (left < leg.ms) return leg.from + (leg.to - leg.from) * easeInOut(left / leg.ms);
-      left -= leg.ms;
-      if (i < legs.length - 1) {
-        if (left < ROUTE_STOP_MS) return leg.to;
-        left -= ROUTE_STOP_MS;
-      }
-    }
-    return 1;
-  };
-
-  const show = (q: number) => {
-    el.style.setProperty("--q", q.toFixed(4));
-    if (puck) {
-      const here = path.getPointAtLength(total * q);
-      const ahead = path.getPointAtLength(Math.min(total, total * q + 2));
-      const behind = path.getPointAtLength(Math.max(0, total * q - 2));
-      const from = q >= 0.999 ? behind : here;
-      const to = q >= 0.999 ? here : ahead;
-      const angle = (Math.atan2(to.y - from.y, to.x - from.x) * 180) / Math.PI;
-      puck.setAttribute("transform", `translate(${here.x.toFixed(1)} ${here.y.toFixed(1)}) rotate(${angle.toFixed(1)})`);
-    }
-    for (const stop of stops) {
-      const value = q >= Number(stop.getAttribute("data-at")) ? "true" : "false";
-      if (stop.getAttribute("data-reached") !== value) stop.setAttribute("data-reached", value);
-    }
-    const passed = labels.filter((stop) => q >= Number(stop.getAttribute("data-at"))).length;
-    const current = q >= 0.985 ? next.length - 1 : Math.min(passed, next.length - 1);
-    next.forEach((item, i) => {
-      if (i === current) item.dataset.on = "true";
-      else delete item.dataset.on;
-    });
-  };
-
-  return { ...base(el, "route", length), draw: (t) => show(along(t)), finish: () => show(1) };
+  return { el, kind, length, t: 0, playing: false, done: false, held: false, paused: false };
 }
 
 function stepsScene(el: HTMLElement): Scene {
@@ -255,7 +181,7 @@ export function ScenePlayer() {
     const byElement = new Map<Element, Scene>();
     for (const el of Array.from(document.querySelectorAll<HTMLElement>("[data-scene]"))) {
       const kind = el.dataset.scene;
-      const scene = kind === "route" ? routeScene(el) : kind === "steps" ? stepsScene(el) : kind === "reveal" ? revealScene(el) : null;
+      const scene = kind === "steps" ? stepsScene(el) : kind === "reveal" ? revealScene(el) : null;
       if (!scene) continue;
       scenes.push(scene);
       byElement.set(el, scene);
@@ -325,18 +251,8 @@ export function ScenePlayer() {
           if (!scene || still) continue;
           const screen = entry.rootBounds?.height || window.innerHeight;
           const seen = entry.isIntersecting ? Math.max(entry.intersectionRatio, entry.intersectionRect.height / screen) : 0;
-          if (scene.done) {
-            if (scene.kind !== "route" || scene.held) continue;
-            if (seen === 0) scene.away = true;
-            else if (scene.away && seen >= PLAY_AT && scene.replays < 1) {
-              scene.replays += 1;
-              scene.away = false;
-              scene.done = false;
-              scene.t = 0;
-              scene.draw(0);
-              scene.playing = true;
-            }
-          } else if (seen >= (scene.kind === "reveal" ? REVEAL_AT : PLAY_AT)) {
+          if (scene.done) continue;
+          if (seen >= (scene.kind === "reveal" ? REVEAL_AT : PLAY_AT)) {
             scene.playing = true;
           } else if (seen < PAUSE_BELOW && scene.kind !== "reveal") {
             scene.playing = false;

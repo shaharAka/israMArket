@@ -12,13 +12,13 @@
 export const EXAMPLE = {
   name: "פרג ושמרים",
   kind: "מאפייה שכונתית · כפר סבא",
-  period: "אוקטובר–דצמבר",
+  period: "מתעדכנת לאורך הדרך",
 };
 
 /** The first screen: what it is, for whom, and what happens every week. */
 export const HERO = {
   title: "תוכנית שיווק אישית לעסק שלכם.",
-  lead: "לעסקים קטנים שעושים את השיווק לבד. כל שבוע מקבלים את הצעד הבא ופוסטים מוכנים בסגנון שלכם. אחר כך בודקים מה הצליח ומעדכנים את התוכנית.",
+  lead: "לעסקים קטנים שעושים את השיווק לבד. חוקרים את העסק ואת הקהל, בונים תוכנית ומכינים פוסטים בסגנון שלכם. מחברים נתונים, בודקים מה הצליח ומעדכנים את הצעד הבא.",
 };
 
 export type Step = {
@@ -37,8 +37,8 @@ export const STORY: Step[] = [
     body: "מתחילים ממה שקורה היום ובוחרים יעד שאפשר לבדוק. לא ״יותר עוקבים״, אלא כמה הזמנות.",
   },
   {
-    title: "מסלול לשלושה חודשים",
-    body: "חודש אחרי חודש, לפי העונות והחגים של העסק. כל חודש מתעדכן לפי מה שלמדנו.",
+    title: "תוכנית שממשיכה להשתפר",
+    body: "מכינים פוסטים, בודקים מה קרה ומשפרים את הצעד הבא. התוכנית מתעדכנת כל הזמן, לפי העסק והנתונים.",
   },
 ];
 
@@ -70,7 +70,7 @@ export const MEASURES = [
 ];
 
 /** One-line summaries of the plan parts, shown once a part is done in the story. */
-export const PART_SUMMARY = ["מאפייה שכונתית · משפחות מהשכונה", "40 ← 56 הזמנות מראש בחודש", "אוקטובר · נובמבר · דצמבר"];
+export const PART_SUMMARY = ["מאפייה שכונתית · משפחות מהשכונה", "40 ← 56 הזמנות מראש בחודש", "פוסט ראשון · לקוחות קבועים · חגים"];
 
 /**
  * The weekly screen, as the owner sees it in the middle of the plan: the week two weeks
@@ -99,24 +99,6 @@ export const TRUST = [
   { k: "קוראים, לא מפרסמים", v: "אין לנו הרשאה לפרסם בשמכם. אתם מאשרים ומפרסמים." },
   { k: "הסיסמאות נשארות אצלכם", v: "את אינסטגרם, פייסבוק וגוגל מחברים במסך שלהם. הסיסמה לא עוברת דרכנו." },
   { k: "מוחקים בכל רגע", v: "אפשר לנתק חיבור או למחוק את החשבון ואת כל המידע." },
-];
-
-/**
- * The hero route (a map, like a navigation app): stops on the way to the goal, in SVG
- * coordinates of the 640 × 560 map, and `at` = how far along the route (0–1) each one is.
- * The "next step" panel changes as the route passes each stop.
- */
-export const ROUTE_STOPS = [
-  { x: 430, y: 405, at: 0.25, month: "אוקטובר", text: "פוסט ראשון ומדידה", side: "left" },
-  { x: 340, y: 330, at: 0.45, month: "נובמבר", text: "הלקוחות הקבועים", side: "up" },
-  { x: 180, y: 180, at: 0.82, month: "דצמבר", text: "חנוכה", side: "down" },
-] as const;
-
-export const NEXT_STEPS = [
-  "מכינים פוסט מהחומרים שלכם וקישור למדידת לחיצות",
-  "תזכורת ללקוחות הקבועים, בוואטסאפ ובסטורי",
-  "הזמנות מראש לסופגניות, שבועיים לפני החג",
-  "בודקים מה הצליח ומעדכנים את החודש הבא",
 ];
 
 /** The weekly-screen tour: three points, each lighting up its part of the card. */

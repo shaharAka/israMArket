@@ -1,5 +1,5 @@
 /* The landing page (/), in the product's direction: blue and sun, the storefront,
- * the plan as a route. Scoped under .lv2; nothing here touches the app.
+ * the plan as a continuing process. Scoped under .lv2; nothing here touches the app.
  *
  * Craft rules: navy ink (never black), one blue for actions, sun only as a highlight,
  * weights 500–700 (no 900), an 8px rhythm, soft layered shadows instead of borders around
@@ -259,7 +259,7 @@ html:has(.lv2) {
 
 /* ---- Hero ---------------------------------------------------------------- */
 
-/* What it is, for whom, the one action; the map plays beside it. Not pinned: the page
+/* What it is, for whom, the one action; the example plan evolves beside it. Not pinned: the page
    scrolls normally and the next section shows below the fold on a laptop. */
 .lv2-hero {
   position: relative;
@@ -317,372 +317,428 @@ html:has(.lv2) {
   }
 }
 
-/* ---- The map ------------------------------------------------------------- */
-
-.lv2-map {
-  position: relative;
+/* ---- One plan: research, connections, generation, measurement ------------ */
+.lv2-cycle {
   width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+  text-align: start;
 }
 
-.lv2-map-canvas {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 640 / 560;
-  border-radius: 28px;
-  overflow: hidden;
-  background: #edf1f7;
-  box-shadow: var(--lv2-shadow-lg);
-}
-
-@media (min-width: 1024px) {
-  .lv2-map {
-    width: min(100%, calc((100vh - 150px) * 640 / 560));
-    margin-inline: auto;
-  }
-}
-
-.lv2-map-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.lv2-map-names text {
-  font-family: var(--font-ui), var(--font-heebo), Arial, sans-serif;
-  font-weight: 500;
-}
-
-/* Motion allowed: the map starts empty and ScenePlayer draws it (inline --q wins). */
-html[data-lv2="on"] .lv2-map {
-  --q: 0;
-}
-
-.lv2-route-plan {
-  fill: none;
-  stroke: #a4b5da;
-  stroke-width: 4;
-  stroke-linecap: round;
-  stroke-dasharray: 0.5 11;
-}
-
-.lv2-route-casing,
-.lv2-route-draw {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--q, 1));
-}
-
-.lv2-route-casing {
-  stroke: #fff;
-  stroke-width: 17;
-}
-
-.lv2-route-draw {
-  stroke: url(#lv2-route-grad);
-  stroke-width: 9;
-}
-
-.lv2-stop-dot {
-  fill: #fff;
-  stroke: #a4b5da;
-  stroke-width: 3;
-  transition:
-    fill 300ms ease,
-    stroke 300ms ease;
-}
-
-.lv2-stop-dot[data-reached="true"] {
-  fill: var(--lv2-blue);
-  stroke: #fff;
-}
-
-.lv2-map-start,
-.lv2-map-stop,
-.lv2-map-goal {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-.lv2-map-badge,
-.lv2-map-flag {
-  position: absolute;
-  left: 0;
-  top: 0;
+.lv2-cycle-steps {
   display: grid;
-  place-items: center;
-  transform: translate(-50%, -50%);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--rule);
 }
 
-.lv2-map-badge {
-  width: 46px;
-  height: 46px;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: var(--lv2-shadow-chip);
-}
-
-.lv2-map-flag {
-  width: 38px;
-  height: 38px;
-  border-radius: 13px;
-  background: var(--lv2-sun);
-  color: #6a4600;
-  box-shadow:
-    0 0 0 4px rgba(255, 196, 74, 0.25),
-    0 8px 18px -8px rgba(173, 115, 11, 0.6);
-  transition:
-    box-shadow 400ms ease,
-    scale 400ms var(--lv2-spring);
-}
-
-.lv2-map-goal[data-reached="true"] .lv2-map-flag {
-  scale: 1.08;
-  box-shadow:
-    0 0 0 8px rgba(255, 196, 74, 0.28),
-    0 10px 22px -8px rgba(173, 115, 11, 0.7);
-}
-
-.lv2-map-label {
-  position: absolute;
-  display: inline-flex;
-  align-items: baseline;
+.lv2-cycle-steps button {
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 7px 11px;
-  border-radius: 11px;
-  background: #fff;
-  box-shadow: var(--lv2-shadow-chip);
-  font-size: 13px;
-  line-height: 1.2;
-  color: var(--lv2-ink-2);
-  white-space: nowrap;
+  padding: 8px 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
 }
 
-.lv2-map-label strong {
-  color: var(--lv2-ink);
-  font-weight: 700;
+.lv2-cycle-steps button[aria-pressed="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--sun);
 }
 
-.lv2-map-start .lv2-map-label {
-  left: 0;
-  bottom: 32px;
-  transform: translateX(-50%);
+.lv2-cycle-steps button:hover {
+  background: var(--soft);
 }
 
-.lv2-map-stop[data-side="left"] .lv2-map-label {
-  right: 16px;
-  top: 0;
-  transform: translateY(-50%);
+.lv2-cycle button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 4px;
 }
 
-.lv2-map-stop[data-side="up"] .lv2-map-label {
-  left: 0;
-  bottom: 16px;
-  transform: translateX(-50%);
-}
-
-.lv2-map-stop[data-side="down"] .lv2-map-label {
-  left: 0;
-  top: 16px;
-  transform: translateX(-50%);
-}
-
-.lv2-map-goal .lv2-map-label {
-  left: 28px;
-  top: 0;
-  transform: translateY(-50%);
-}
-
-.lv2-map-label--goal strong {
-  color: #8a5b00;
-}
-
-html[data-lv2="on"] .lv2-map-stop .lv2-map-label {
-  opacity: 0;
-  scale: 0.88;
-  transition:
-    opacity 260ms ease,
-    scale 420ms var(--lv2-spring);
-}
-
-html[data-lv2="on"] .lv2-map-stop[data-reached="true"] .lv2-map-label {
-  opacity: 1;
-  scale: 1;
-}
-
-.lv2-map-eta {
-  margin-top: 14px;
-  padding: 14px 16px 16px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: var(--lv2-shadow-chip);
-}
-
-.lv2-map-eta-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--lv2-ink-3);
-}
-
-.lv2-map-tag {
-  border: 1px solid var(--lv2-line);
-  border-radius: 999px;
-  padding: 1px 8px;
-}
-
-.lv2-map-eta-main {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 6px;
-}
-
-.lv2-map-eta-main strong {
-  font-size: 34px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--lv2-blue);
+.lv2-cycle-step-num {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-muted);
   font-variant-numeric: tabular-nums;
 }
 
-.lv2-map-eta-main > span {
-  display: flex;
-  flex-direction: column;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.35;
-}
-
-.lv2-map-eta-main small {
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--lv2-ink-3);
-}
-
-.lv2-map-progress {
-  display: block;
-  position: relative;
-  height: 4px;
-  margin-top: 12px;
-  border-radius: 999px;
-  background: var(--lv2-line);
+.lv2-cycle-paper {
+  background: var(--paper);
+  border-radius: 18px;
+  box-shadow: var(--shadow-card);
   overflow: hidden;
 }
 
-.lv2-map-progress i {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--lv2-blue);
-  transform-origin: 100% 50%;
-  transform: scaleX(var(--q, 1));
+.lv2-cycle-business {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--rule);
 }
 
-.lv2-map-next {
+.lv2-cycle-business p {
+  display: grid;
+  gap: 2px;
+}
+
+.lv2-cycle-business strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.lv2-cycle-business p span, .lv2-cycle-example {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.lv2-cycle-example {
+  margin-inline-start: auto;
+}
+
+.lv2-cycle-mark {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+
+.lv2-cycle-mark svg {
+  position: relative;
+  z-index: 1;
+}
+
+.lv2-cycle-sun {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sun);
+  animation: lv2-cycle-sunrise 1600ms var(--lv2-ease) both;
+}
+
+@keyframes lv2-cycle-sunrise {
+  from {
+    transform: translateY(8px);
+    opacity: .4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.lv2-cycle-plan {
+  padding: 24px 24px 20px;
+  background: var(--sand);
+}
+
+.lv2-cycle-label {
+  font-size: 12px;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+
+.lv2-cycle-plan h2 {
+  display: grid;
+  font-size: clamp(20px, 2vw, 25px);
+  font-weight: 700;
+  letter-spacing: -.02em;
+  line-height: 1.35;
+  min-height: 2.7em;
+  text-wrap: balance;
+}
+
+.lv2-cycle-plan h2 > span {
+  grid-area: 1 / 1;
+}
+
+.lv2-cycle-plan h2 > span[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+.lv2-cycle-audience {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.lv2-cycle-detail {
+  min-height: 252px;
+  padding: 24px;
+  display: grid;
+}
+
+/* Retain the tallest translated panel's space so auto-play never moves the page. */
+.lv2-cycle-panel {
+  grid-area: 1 / 1;
+  min-width: 0;
+  align-self: start;
+}
+
+.lv2-cycle-panel[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.lv2-cycle-panel[aria-hidden="false"] {
+  animation: lv2-cycle-reveal 200ms var(--lv2-ease) both;
+}
+
+@keyframes lv2-cycle-reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lv2-cycle-panel h3 {
+  font-size: 16px;
+  font-weight: 650;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+.lv2-cycle-facts {
+  display: grid;
+  gap: 12px;
+}
+
+.lv2-cycle-facts > div {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 12px;
+}
+
+.lv2-cycle-facts dt {
+  color: var(--ink-muted);
+  font-size: 12px;
+  padding-top: 2px;
+}
+
+.lv2-cycle-facts dd {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.lv2-cycle-note {
+  margin-top: 16px;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--ink-muted);
+}
+
+.lv2-cycle-connections {
+  display: grid;
+  gap: 12px;
+}
+
+.lv2-cycle-connections > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.lv2-cycle-connections dd {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.lv2-cycle-connections dd[data-status="connected"] {
+  color: var(--good);
+}
+
+.lv2-cycle-connections dd[data-status="connected"]::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  margin-inline-end: 6px;
+  vertical-align: middle;
+}
+
+/* The bakery's draft has its own quiet artwork, independent of the app palette. */
+.lv2-cycle-draft {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 0;
-  background: var(--paper);
-  color: var(--lv2-ink);
-  border-top: 1px solid var(--lv2-line);
-  margin-top: 14px;
+  gap: 16px;
+  background: #f1eee3;
+  color: #354438;
+  border-radius: 10px;
+  padding: 16px;
 }
 
-@media (min-width: 640px) {
-  .lv2-map-eta {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: min(264px, 46%);
-    margin-top: 0;
-  }
-
-  .lv2-map-next {
-    position: absolute;
-    left: 16px;
-    bottom: 16px;
-    width: min(330px, 58%);
-    margin-top: 0;
-  }
+.lv2-cycle-draft small {
+  font-size: 11px;
 }
 
-.lv2-map-turn {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--lv2-sun-soft);
-  color: var(--lv2-ink);
+.lv2-cycle-draft strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 1.4;
 }
 
-.lv2-map-next-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.lv2-map-next-text small {
+.lv2-cycle-draft p {
+  margin-top: 6px;
   font-size: 12px;
-  color: var(--lv2-ink-3);
+  line-height: 1.6;
 }
 
-.lv2-map-next-steps {
+.lv2-cycle-loaf {
+  width: 68px;
+  height: 38px;
+  flex-shrink: 0;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transform: rotate(-25deg);
+}
+
+.lv2-cycle-loaf i {
+  width: 1.5px;
+  height: 20px;
+  background: currentColor;
+  transform: rotate(25deg);
+}
+
+.lv2-cycle-measure-label {
+  color: var(--ink-muted);
+  font-size: 12px;
+  margin-bottom: 14px;
+}
+
+.lv2-cycle-bars {
   display: grid;
+  gap: 12px;
 }
 
-.lv2-map-next-steps > span {
-  grid-area: 1 / 1;
-  font-size: 14.5px;
-  font-weight: 600;
-  line-height: 1.35;
-  text-wrap: pretty;
-  opacity: 0;
-  transform: translateY(6px);
-  transition:
-    opacity 300ms ease,
-    transform 420ms var(--lv2-ease);
+.lv2-cycle-bars > div {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
 }
 
-/* The finished state shows the last step; while it plays, the one ScenePlayer marks. */
-html:not([data-lv2="on"]) .lv2-map-next-steps > span:last-child,
-html[data-lv2="on"] .lv2-map-next-steps > span[data-on="true"] {
-  opacity: 1;
-  transform: none;
+.lv2-cycle-bars dt {
+  font-size: 12px;
+}
+
+.lv2-cycle-bars dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lv2-cycle-bars i {
+  background: var(--ink);
+  height: 8px;
+}
+
+.lv2-cycle-bars i[data-size="full"] {
+  width: 75%;
+}
+
+.lv2-cycle-bars i[data-size="third"] {
+  width: 25%;
+  background: var(--ink-faint);
+}
+
+.lv2-cycle-bars strong {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.lv2-cycle-footer {
+  padding: 4px 24px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+}
+
+.lv2-cycle-footer p {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.lv2-cycle-footer button {
+  color: var(--ink-soft);
+  font-size: 11px;
+  min-height: 44px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.lv2-cycle-footer button:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 639px) {
-  .lv2-map-label {
-    font-size: 11.5px;
-    padding: 5px 8px;
+  .lv2-cycle-steps button {
+    font-size: 12px;
+    gap: 4px;
   }
-  .lv2-map-badge {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+  .lv2-cycle-step-num {
+    display: none;
   }
-  .lv2-map-flag {
-    width: 30px;
-    height: 30px;
-    border-radius: 10px;
+  .lv2-cycle-business {
+    padding: 16px 20px;
   }
-  .lv2-map-canvas {
-    border-radius: 22px;
+  .lv2-cycle-plan, .lv2-cycle-detail {
+    padding: 20px;
+  }
+  .lv2-cycle-detail {
+    min-height: 266px;
+  }
+  .lv2-cycle-draft {
+    gap: 12px;
+  }
+  .lv2-cycle-loaf {
+    width: 44px;
+    height: 28px;
+    gap: 7px;
+  }
+  .lv2-cycle-loaf i {
+    height: 16px;
+  }
+  .lv2-cycle-footer {
+    padding-inline: 20px;
+  }
+  .lv2-cycle-footer p {
+    max-width: 180px;
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv2-cycle-sun, .lv2-cycle-panel[aria-hidden="false"] {
+    animation: none;
+  }
+}
+
 
 /* ---- The plan sheet ------------------------------------------------------ */
 
