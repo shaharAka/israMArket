@@ -28,5 +28,17 @@
     "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/whatsapp.svg",
     "license": "CC0-1.0",
     "retrieved": "2026-10-07"
+  },
+  {
+    "name": "tiktok",
+    "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/12.0.0/icons/tiktok.svg",
+    "license": "CC0-1.0",
+    "retrieved": "2026-10-08"
+  },
+  {
+    "name": "linkedin",
+    "source": "https://raw.githubusercontent.com/simple-icons/simple-icons/12.0.0/icons/linkedin.svg",
+    "license": "CC0-1.0",
+    "retrieved": "2026-10-08"
   }
 ]

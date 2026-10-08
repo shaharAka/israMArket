@@ -13,7 +13,10 @@ import { BUSINESS_EXAMPLES, type ExamplePath } from "./businessExamples";
 import { BusinessProductProof } from "./BusinessProductProof";
 import { productFixtures } from "./productFixtures";
 import styles from "./product-feature.module.css";
-import { useProductPlayback } from "./useProductPlayback";
+import { ProductWordmark } from "./ProductWordmark";
+import { TABS } from "@/components/AppShell";
+import { PlaybackProgress } from "./PlaybackProgress";
+import { PRODUCT_HOLD_MS, useProductPlayback } from "./useProductPlayback";
 
 export type ProductScreen = "research" | "plan" | "posts" | "results";
 const FEATURES = [
@@ -31,18 +34,26 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const [screen, setScreen] = useState<ProductScreen>(initialScreen ?? (presentation === "hero" ? "research" : "plan"));
   const [postIndex, setPostIndex] = useState<number | null>(initialPost ?? 0);
-  const { frame, viewport, scale, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero");
+  const { frame, viewport, scale, wide, setWide, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero");
   const business = BUSINESS_EXAMPLES[path];
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];
   const active = FEATURES.find(item => item.key === screen)!;
-  return <div className={styles.showcase} data-presentation={presentation} data-playing={playing}
+  return <div className={styles.showcase} data-presentation={presentation} data-playing={playing} data-wide={wide}
     onFocusCapture={event => { if (event.target.matches(":focus-visible") && (event.target as HTMLElement).closest('[data-active="true"]')) hold(); }}
     onBlurCapture={event => { if (!(event.relatedTarget instanceof Element) || !event.relatedTarget.closest('[data-active="true"]')) release(); }}>
 
 
     <div className={styles.frame} ref={frame}>
       <header className={styles.header}><strong><Copy text={business.name} /></strong><p className="sr-only" aria-live={playing ? "off" : "polite"}><Copy text={active.benefit} /></p></header>
+      {presentation === "hero" ? <aside className={styles.workspaceNav} aria-label={t("ניווט ראשי")}>
+        <ProductWordmark />
+        <span className={styles.workspaceBusiness}><Copy text={business.name} /></span>
+        {TABS.map(tab => { const key = tab.href === "/strategy" ? (screen === "research" ? "research" : "plan") : tab.href === "/posts" ? "posts" : tab.href === "/performance" ? "results" : null; const Icon = tab.icon;
+          if (!key) return <span className={styles.workspaceNavItem} key={tab.href}><Icon /><Copy text={tab.label} /></span>;
+          return <button key={tab.href} type="button" data-workspace-target={key} aria-pressed={screen === key} onClick={() => { setScreen(key); setWide(false); }}><Icon /><Copy text={tab.label} /></button>;
+        })}
+      </aside> : null}
       <div className={styles.views} ref={viewport} style={{ "--preview-scale": scale } as CSSProperties}>
       {FEATURES.map(item => <section key={item.key} className={styles.screen} data-active={screen === item.key}
         aria-hidden={screen !== item.key} inert={screen !== item.key}
@@ -75,8 +86,8 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
       {FEATURES.map((item, index) => <button key={item.key} type="button"
         id={`${id}-${item.key}-control`} aria-pressed={screen === item.key} aria-controls={`${id}-${item.key}-view`}
         ref={node => { buttons.current[index] = node; }}
-        onClick={() => { setScreen(item.key); if (item.key === "posts") setPostIndex(0); }}>
-        <span className={styles.featureDot} aria-hidden="true" /><Copy text={item.label} />
+        onClick={() => { setScreen(item.key); setWide(false); if (item.key === "posts") setPostIndex(0); }}>
+        <Copy text={item.label} />{playing && screen === item.key ? <PlaybackProgress cycle={screen} duration={PRODUCT_HOLD_MS} /> : null}
       </button>)}
     </div>
     {presentation === "hero" && !reduced ? <button type="button" className={styles.playback} data-playback-control

@@ -13,6 +13,7 @@ export function ConnectionShowcase() {
     {Object.entries(CONNECTION_EXAMPLES).map(([key, item]) => <Link key={key} href={`/connections/${key}?lang=${locale}`} className="lv2-connector-link">
       <ProviderLogo provider={key as ConnectionExampleKey} size={48} />
       <span><Copy text={item.short} /></span>
+      {"availability" in item ? <small><Copy text={item.availability} /></small> : null}
     </Link>)}
   </nav>;
 }

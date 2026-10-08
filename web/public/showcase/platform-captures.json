@@ -1,0 +1,23 @@
+[
+  {
+    "file": "platform-plan-clean.png",
+    "route": "/strategy",
+    "captured": "2026-10-08",
+    "source": "Built app, isolated /preview demo session; no customer account or provider request",
+    "verified": "Populated screen, no server error banner"
+  },
+  {
+    "file": "platform-connections-clean.png",
+    "route": "/integrations",
+    "captured": "2026-10-08",
+    "source": "Built app, isolated /preview demo session; no customer account or provider request",
+    "verified": "Populated screen, no server error banner"
+  },
+  {
+    "file": "platform-results-clean.png",
+    "route": "/performance",
+    "captured": "2026-10-08",
+    "source": "Built app, isolated /preview demo session; no customer account or provider request",
+    "verified": "Populated screen, no server error banner"
+  }
+]

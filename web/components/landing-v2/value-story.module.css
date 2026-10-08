@@ -2,7 +2,7 @@
 .copy h3 { font-size: clamp(28px,3vw,40px); font-weight: 500; line-height: 1.2; text-wrap: balance; margin-block: 16px 24px; }
 .copy > p:not(:first-child) { max-width: 38ch; font-size: 17px; line-height: 1.65; color: var(--ink-soft); }
 .featureChoices { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
-.featureChoices button { min-height: 44px; padding: 10px 16px; border-radius: 999px; background: var(--soft); color: var(--ink-soft); font-size: 13px; cursor: pointer; }
+.featureChoices button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 10px 16px; border-radius: 999px; background: var(--soft); color: var(--ink-soft); font-size: 13px; cursor: pointer; }
 .featureChoices button[aria-pressed="true"] { color: var(--primary); background: var(--primary-soft); }
 .featureChoices button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 .sources { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }

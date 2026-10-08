@@ -17,10 +17,13 @@ const VALUES = {
   "ads-pixel": ["לראות את ההוצאה מול התוצאות שנמדדו", "לגלות מה חסר במדידה", "לדייק את ההחלטה הבאה בתוכנית"],
   website: ["להתחיל מהמוצרים והשירותים שלכם", "להכיר את הסגנון והמותג", "להגיע לתוכנית עם פחות הקלדה"],
   whatsapp: ["לתת לקהל דרך פשוטה לפנות", "למדוד לחיצות על הקישור", "להוסיף את הפניות שדיווחתם עליהן"],
+  linkedin: ["לתכנן תוכן שמציג את המומחיות שלכם", "לכתוב באופי של העסק", "להכין פוסט ולפרסם אותו בעצמכם"],
+  tiktok: ["לבחור סיפור קצר מתוך התוכנית", "להכין כיוון לסרטון", "להוביל את הצופים לצעד ברור"],
 } as const;
 
 export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey }) {
   const connection = CONNECTION_EXAMPLES[provider];
+  const planned = "planned" in connection && connection.planned;
   const { locale } = useLanguage();
   const t = useCopy();
   return <div className={`lv2 lv2-site ${siteClean.variable}`}>
@@ -30,16 +33,15 @@ export function ConnectionDetail({ provider }: { provider: ConnectionExampleKey 
         <div><div className="lv2-connection-pair"><ProviderLogo provider={provider} size={56} /><span aria-hidden="true">+</span><span className="lv2-wordmark" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span></div>
           <p className="lv2-eyebrow"><Copy text={connection.short} /></p><h1 className="lv2-h2"><Copy text={connection.title} /></h1>
           <p className="lv2-lead"><Copy text={connection.benefit} /></p>
-          <Link href={`/integrations?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לפתוח את החיבורים בחשבון" /></Link>
-          <p className="lv2-fine"><Copy text="החיבור מתחיל מתוך המערכת. אתם בוחרים למה לתת גישה." /></p>
+          {planned ? <><p className="lv2-connection-availability"><Copy text={connection.availability} /></p><Link href={`/strategy?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לתוכנית שלי" /></Link></> : <><Link href={`/integrations?lang=${locale}`} className="lv2-btn lv2-value-cta"><Copy text="לפתוח את החיבורים בחשבון" /></Link><p className="lv2-fine"><Copy text="החיבור מתחיל מתוך המערכת. אתם בוחרים למה לתת גישה." /></p></>}
         </div>
         <div className="lv2-connection-art"><div className="lv2-connection-art-title"><ProviderLogo provider={provider} size={28} /><strong><Copy text="מהמידע שלכם, לצעד הבא בתוכנית" /></strong></div><ConnectionScreenshot src={connection.screenshot} alt={connection.alt} /></div>
       </section>
-      <section className="lv2-wrap lv2-connection-benefits"><h2 className="lv2-h2"><Copy text="מה החיבור נותן לעסק שלכם" /></h2><ol>{VALUES[provider].map((value, index) => <li key={value}><span aria-hidden="true">0{index+1}</span><h3><Copy text={value} /></h3></li>)}</ol></section>
+      <section className="lv2-wrap lv2-connection-benefits"><h2 className="lv2-h2"><Copy text={planned ? "מה אפשר להכין כבר עכשיו" : "מה החיבור נותן לעסק שלכם"} /></h2><ol>{VALUES[provider].map((value, index) => <li key={value}><span aria-hidden="true">0{index+1}</span><h3><Copy text={value} /></h3></li>)}</ol></section>
       <section className="lv2-wrap lv2-connection-practical">
         <div><h2 className="lv2-h2"><Copy text="הכל נשאר בשליטה שלכם." /></h2><p className="lv2-lead"><Copy text={connection.privacy} /></p><Link href="/security" className="lv2-link"><Copy text="איך שומרים על המידע שלכם" /></Link></div>
         <div><p className="lv2-connection-availability"><Copy text={connection.caveat} /></p>
-          <details><summary><Copy text="איך מתחילים לחבר" /></summary><ol className="lv2-setup-steps">{connection.steps.map(step => <li key={step}><Copy text={step} /></li>)}</ol></details>
+          <details><summary><Copy text={planned ? "מה אפשר לעשות עד שהחיבור יגיע" : "איך מתחילים לחבר"} /></summary><ol className="lv2-setup-steps">{connection.steps.map(step => <li key={step}><Copy text={step} /></li>)}</ol></details>
         </div>
       </section>
     </main>

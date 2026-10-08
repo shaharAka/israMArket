@@ -5,7 +5,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -59,6 +59,17 @@
         "line": 408,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_0022710cc4c8e94b": {
+    "source": "לבחור סיפור קצר מתוך התוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 21,
+        "kind": "literal"
       }
     ]
   },
@@ -206,7 +217,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 30,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -1698,6 +1709,11 @@
       {
         "file": "web/components/integrations/PendingLinks.tsx",
         "line": 9,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -3413,7 +3429,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 33,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -6213,7 +6229,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -6247,7 +6263,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -6832,7 +6848,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -7001,7 +7017,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 38,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -7467,6 +7483,17 @@
         "line": 742,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_10fa484e136498f2": {
+    "source": "תוכנית שיווק במערכת, לפני חיבור נתוני טיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 40,
+        "kind": "literal"
       }
     ]
   },
@@ -8692,7 +8719,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 20,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -8768,7 +8795,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -8813,7 +8840,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -8847,7 +8874,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 33,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -9857,6 +9884,18 @@
       }
     ]
   },
+  "m_16ee454af5212639": {
+    "source": "מכינים תוכן קצר עם כיוון ברור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 37,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_16f183a35f3e4b89": {
     "source": "להעתיק את ההודעה",
     "language": "he",
@@ -9874,7 +9913,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -10183,6 +10222,17 @@
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 215,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_17838e66b097c78d": {
+    "source": "החיבור המתוכנן דורש פיתוח ואישור TikTok. הוא יופיע במערכת כשיהיה זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -10516,7 +10566,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -10629,7 +10679,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       },
       {
@@ -11814,7 +11864,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -12281,7 +12331,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 45,
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -12461,6 +12511,17 @@
         "line": 463,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_1c61c3c321d02a14": {
+    "source": "מה אפשר להכין כבר עכשיו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 40,
+        "kind": "literal"
       }
     ]
   },
@@ -13222,6 +13283,18 @@
       }
     ]
   },
+  "m_1dbb600020089ee9": {
+    "source": "גם שיווק מקצועי מתחיל מתוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 28,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_1dbc2362039b4340": {
     "source": "מחפשים מידע",
     "language": "he",
@@ -13403,7 +13476,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -13961,7 +14034,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 53,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -14361,7 +14434,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 60,
+        "line": 71,
         "kind": "jsx"
       }
     ]
@@ -15621,7 +15694,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 22,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -15726,7 +15799,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16844,7 +16917,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 57,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -16947,7 +17020,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -17481,7 +17554,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18831,7 +18904,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -19396,6 +19469,17 @@
       }
     ]
   },
+  "m_2c442e886a7162a1": {
+    "source": "תוכנית שיווק במערכת, לפני חיבור נתוני לינקדאין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 31,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2c48c37a45671020": {
     "source": "\nסוג העסק: מוכר מוצרים.\nיחידת ההמרה היא רכישה. יעדים הם מכירות, סל קנייה, לקוחות חוזרים ותנועה.\n",
     "language": "he",
@@ -19529,7 +19613,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -20208,7 +20292,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -20641,13 +20725,18 @@
     "language": "he",
     "references": [
       {
-        "file": "web/lib/releases.ts",
-        "line": 10,
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 36,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 17,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -21692,6 +21781,17 @@
       }
     ]
   },
+  "m_3121bff650c127db": {
+    "source": "להכין כיוון לסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 21,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_312574881c7bf83f": {
     "source": "התקציב שבחרתם:",
     "language": "he",
@@ -21861,6 +21961,17 @@
         "file": "web/components/decisions/OwnerAnswers.tsx",
         "line": 134,
         "kind": "template"
+      }
+    ]
+  },
+  "m_318662ac8734236e": {
+    "source": "מה אפשר לעשות עד שהחיבור יגיע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 44,
+        "kind": "literal"
       }
     ]
   },
@@ -22538,7 +22649,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 83,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -22626,7 +22737,7 @@
       },
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 30,
+        "line": 33,
         "kind": "jsx"
       },
       {
@@ -23460,6 +23571,17 @@
         "line": 75,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_34999222c78d3f0e": {
+    "source": "לא מבקשים את הסיסמה שלכם. לא קוראים הודעות פרטיות ולא מפרסמים סרטון ללא אישורכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 43,
+        "kind": "literal"
       }
     ]
   },
@@ -24555,7 +24677,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 23,
+        "line": 26,
         "kind": "literal",
         "purpose": "display"
       }
@@ -25255,7 +25377,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -26010,6 +26132,17 @@
       }
     ]
   },
+  "m_3ad0ba9549090794": {
+    "source": "התוכנית עוזרת לבחור מה להראות בסרטון ומה לבקש מהצופים. החיבור המתוכנן יעזור להכיר את הסרטונים בחשבון ואת נתוני הצפייה הזמינים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3ad49ab14133158b": {
     "source": "להגיע לתוכנית עם פחות הקלדה",
     "language": "he",
@@ -26693,7 +26826,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       },
       {
@@ -27415,7 +27548,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 31,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -27653,7 +27786,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 58,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -28653,6 +28786,11 @@
     "source": "לינקדאין",
     "language": "he",
     "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 28,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/api.ts",
         "line": 344,
@@ -29727,7 +29865,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 60,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -30245,7 +30383,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -30357,7 +30495,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 41,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -30436,7 +30574,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 29,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -30514,7 +30652,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 31,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -31371,7 +31509,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -32630,7 +32768,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -34719,7 +34857,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35024,6 +35162,17 @@
       {
         "file": "web/components/landing-v2/personaPages.ts",
         "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_50c9b55f5d35cfb2": {
+    "source": "להכין פוסט ולפרסם אותו בעצמכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -35416,7 +35565,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35658,7 +35807,7 @@
       },
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -37499,7 +37648,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -37629,7 +37778,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -38681,7 +38830,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 37,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -39417,6 +39566,17 @@
       }
     ]
   },
+  "m_5beef2ae9969fca7": {
+    "source": "פרסום ישיר דורש אישור נפרד; עד אז מפרסמים את הסרטון מתוך טיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5bf9b140f0182f33": {
     "source": "גוגל לא מאפשר כרגע לקרוא את הנתונים. חברו מחדש עם חשבון שיש לו גישה לאתר.",
     "language": "he",
@@ -39630,7 +39790,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       },
       {
@@ -39640,7 +39800,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 21,
+        "line": 24,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39965,7 +40125,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -42128,7 +42288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -42453,6 +42613,17 @@
       }
     ]
   },
+  "m_627bd07718afafe5": {
+    "source": "אפשר כבר להוסיף קישור לפרופיל טיקטוק בהיכרות ולהכין תוכן מתוך התוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_62943a63db514677": {
     "source": "להסביר איך תיאום פגישות חוסך עבודה, עם הדגמה אמיתית.",
     "language": "he",
@@ -42561,7 +42732,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -43070,6 +43241,17 @@
         "line": 1365,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_63f35c46ecd10e18": {
+    "source": "להוביל את הצופים לצעד ברור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 21,
+        "kind": "literal"
       }
     ]
   },
@@ -44778,7 +44960,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -45315,7 +45497,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -46132,7 +46314,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -46187,7 +46369,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -46312,7 +46494,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47422,7 +47604,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -47993,7 +48175,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -48335,7 +48517,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48880,6 +49062,17 @@
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
         "line": 64,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_70fcdd8a215c40dd": {
+    "source": "תצוגות החיבורים רועננו. נוספו עמודי הסבר ללינקדאין ולטיקטוק, עם פירוט מה אפשר להכין היום ומה עדיין דורש חיבור חדש. חיבור הנתונים לשתי הרשתות עדיין לא זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
         "kind": "literal"
       }
     ]
@@ -52289,7 +52482,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52602,7 +52795,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 44,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -52642,6 +52835,17 @@
       {
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 266,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_79acfaca206c3319": {
+    "source": "עדיין לא ניתן לחבר חשבון TikTok או לקרוא ממנו נתונים. נתוני צפיות אינם פניות או מכירות. התצוגה כאן היא התוכנית במערכת, ללא נתונים מטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -52985,6 +53189,17 @@
       }
     ]
   },
+  "m_7a757dee14f79cf5": {
+    "source": "בהדגמות באתר רואים כמה זמן נשאר לכל שלב. מתחילים ממבט על סביבת העבודה ואז נכנסים לתוכנית, לפוסטים ולתוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7a7e079b3b8598f0": {
     "source": "פתחו את ערוץ Facebook & Instagram, ואז Settings ← Share data settings. בחרו את ה־Pixel ואת רמת שיתוף הנתונים שמתאימה לכם.",
     "language": "he",
@@ -53025,7 +53240,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 36,
+        "line": 54,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53668,7 +53883,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 34,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -53889,7 +54104,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 28,
+        "line": 46,
         "kind": "literal"
       },
       {
@@ -54182,7 +54397,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 36,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -54559,7 +54774,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -54712,7 +54927,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 56,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -55318,7 +55533,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -55657,7 +55872,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -56082,7 +56297,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 52,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -56673,7 +56888,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -57795,7 +58010,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       },
       {
@@ -58288,6 +58503,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 81,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_86811ba1586990c6": {
+    "source": "התוכנית עוזרת לחדד מה אתם מציעים ולמי. החיבור המתוכנן ללינקדאין יעזור ללמוד מנתוני העמוד העסקי ולתכנן תוכן שמציג את המומחיות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -61101,7 +61327,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 22,
+        "line": 25,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61489,7 +61715,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       },
       {
@@ -61791,7 +62017,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62085,6 +62311,18 @@
         "file": "web/components/start/script.ts",
         "line": 72,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_900a6a67f35f02f0": {
+    "source": "קל יותר לראות איך המערכת עובדת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -64897,7 +65135,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 20,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -66594,7 +66832,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -66899,7 +67137,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -67107,7 +67345,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -69437,7 +69675,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -69514,7 +69752,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -70357,7 +70595,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -70561,7 +70799,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -71138,7 +71376,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       },
       {
@@ -71509,7 +71747,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -71855,7 +72093,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 28,
+        "line": 46,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73673,7 +73911,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 23,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -73828,7 +74066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -74004,6 +74242,11 @@
       {
         "file": "web/components/AppShell.tsx",
         "line": 298,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -74212,7 +74455,7 @@
       },
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 28,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -75885,7 +76128,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -76397,6 +76640,17 @@
         "line": 198,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_b1a625eb0d569870": {
+    "source": "כשהחיבור יהיה זמין, תבחרו את העמוד ואת הרשאות הגישה מתוך המערכת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 32,
+        "kind": "literal"
       }
     ]
   },
@@ -77973,7 +78227,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 40,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -79185,7 +79439,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 59,
+        "line": 70,
         "kind": "literal"
       },
       {
@@ -80429,6 +80683,22 @@
       }
     ]
   },
+  "m_bb3ff5fe77c1bd2b": {
+    "source": "החיבור עדיין לא זמין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 29,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 38,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_bb4094df177d8fd5": {
     "source": "הקריאה לא הושלמה",
     "language": "he",
@@ -81420,7 +81690,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -81950,7 +82220,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 83,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -82208,7 +82478,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -82253,7 +82523,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -82327,7 +82597,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -83164,6 +83434,17 @@
       }
     ]
   },
+  "m_c1ba790bf71c4204": {
+    "source": "עד שהחיבור יגיע, אפשר לעבוד על הכיוון והמסרים בתוכנית. יצירת פוסטים ייעודית ללינקדאין עדיין לא זמינה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 32,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c1ccf7047454be55": {
     "source": "העסק מופיע, אבל לא אצלכם",
     "language": "he",
@@ -83595,7 +83876,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 63,
+        "line": 74,
         "kind": "literal"
       },
       {
@@ -85209,7 +85490,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -85790,7 +86071,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 38,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -87304,7 +87585,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -87932,6 +88213,17 @@
         "file": "web/components/PostEditor.tsx",
         "line": 1955,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_cc28eaccd9a3c127": {
+    "source": "לראות את האתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -89023,6 +89315,17 @@
       }
     ]
   },
+  "m_cf47cf2bc186933b": {
+    "source": "החיבור המתוכנן דורש פיתוח ואישור LinkedIn. הוא יופיע במערכת כשיהיה זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 32,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_cf58bdfda1aae53f": {
     "source": "יולי",
     "language": "he",
@@ -90109,7 +90412,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 36,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -90504,7 +90807,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -90871,7 +91174,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 74,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -91486,6 +91789,17 @@
       {
         "file": "web/components/PostEditor.tsx",
         "line": 1296,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d4cd01e241006119": {
+    "source": "לא מבקשים את הסיסמה שלכם ולא מפרסמים בשמכם. בחיבור העתידי תתבקשו לאשר רק את ההרשאות הנדרשות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -93676,7 +93990,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -94314,7 +94628,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -94500,7 +94814,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -96331,6 +96645,17 @@
       }
     ]
   },
+  "m_df8122edf8bddc6c": {
+    "source": "לתכנן תוכן שמציג את המומחיות שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 20,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_df893f0fde68c790": {
     "source": " · עלות AI היא הערכה לפי מחירון, בדולרים",
     "language": "he",
@@ -96428,7 +96753,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 32,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -96496,7 +96821,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -96598,6 +96923,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 583,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e018cfcf9d7e19ac": {
+    "source": "לכתוב באופי של העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ConnectionDetail.tsx",
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -97552,7 +97888,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 53,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -97680,7 +98016,7 @@
       },
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 27,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -97747,7 +98083,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 39,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -98461,6 +98797,17 @@
         "line": 471,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_e4b4af08a6148286": {
+    "source": "עדיין לא ניתן לחבר חשבון LinkedIn או לקרוא ממנו נתונים. התחברות עם LinkedIn לבדה אינה הרשאה לקרוא נתוני עמוד עסקי. התצוגה כאן היא התוכנית במערכת, ללא נתונים מלינקדאין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/connectionExamples.ts",
+        "line": 33,
+        "kind": "literal"
       }
     ]
   },
@@ -100986,7 +101333,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
-        "line": 31,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -101392,7 +101739,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -104080,7 +104427,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -106054,7 +106401,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -106400,7 +106747,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -107258,7 +107605,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 21,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -108556,7 +108903,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
-        "line": 27,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -108692,7 +109039,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -108703,7 +109050,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -109035,7 +109382,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -109824,7 +110171,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }

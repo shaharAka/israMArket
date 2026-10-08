@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { ProductScreen } from "./ProductFeatureShowcase";
 
+
+export const PRODUCT_HOLD_MS = 10500;
 const motionQuery = "(prefers-reduced-motion: reduce)";
 function subscribeMotion(listener: () => void) {
   const query = window.matchMedia(motionQuery);
@@ -23,10 +25,14 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
   const [requested, setRequested] = useState(true);
   const [focused, setFocused] = useState(false);
   const [inView, setInView] = useState(false);
+  const [wide, updateWide] = useState(true);
+  const wideRef = useRef(true);
+  const setWide = useCallback((value: boolean) => { wideRef.current = value; updateWide(value); }, []);
   const [cursor, setCursor] = useState<{ x: number; y: number; pressed: boolean } | null>(null);
   const reduced = useSyncExternalStore(subscribeMotion, () => window.matchMedia(motionQuery).matches, () => true);
   const visible = useSyncExternalStore(subscribeVisibility, () => document.visibilityState === "visible", () => false);
   const playing = enabled && autoplay && requested && inView && visible && !reduced && !focused;
+
 
   useEffect(() => {
     if (!enabled || !frame.current) return;
@@ -51,43 +57,48 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
     if (!playing) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
     const later = (delay: number, work: () => void) => timers.push(setTimeout(work, delay));
+    const moveCursor = (node: HTMLElement | undefined | null) => {
+      const bounds = frame.current?.getBoundingClientRect();
+      if (!node || !bounds) return;
+      const rect = node.getBoundingClientRect();
+      setCursor({
+        x: Math.max(20, Math.min(bounds.width - 32, rect.left - bounds.left + rect.width * .62)),
+        y: Math.max(8, Math.min(bounds.height - 54, rect.top - bounds.top + rect.height * .5)),
+        pressed: false,
+      });
+    };
     const panel = () => viewport.current?.querySelector<HTMLElement>('[data-active="true"]');
-    const target = () => screen === "posts"
+    const target = () => wideRef.current ? frame.current?.querySelector<HTMLElement>(`[data-workspace-target="${screen}"]`) : screen === "posts"
       ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]')
       : panel()?.querySelector<HTMLElement>("details > summary");
     later(0, () => {
+      setWide(true);
       setCursor(null);
       viewport.current?.scrollTo({ top: 0, behavior: "instant" });
       panel()?.querySelectorAll("details").forEach(detail => { detail.open = false; });
       if (screen === "posts") setPostIndex(null);
     });
-    later(1800, () => {
-      const node = target();
-      const bounds = frame.current?.getBoundingClientRect();
-      if (!node || !bounds) return;
-      const rect = node.getBoundingClientRect();
-      setCursor({ x: rect.left - bounds.left + rect.width * .62, y: rect.top - bounds.top + rect.height * .5, pressed: false });
-    });
-    later(3000, () => {
+    later(1200, () => moveCursor(target()));
+    later(2000, () => {
       const node = target();
       if (!node) return;
       setCursor(point => point && { ...point, pressed: true });
       node.click();
       if (screen === "posts") viewport.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
-    later(3500, () => {
-      if (screen === "posts") { setCursor(null); return; }
-      const node = target();
-      const bounds = frame.current?.getBoundingClientRect();
-      if (!node || !bounds) return;
-      const rect = node.getBoundingClientRect();
-      setCursor({ x: rect.left - bounds.left + rect.width * .62, y: rect.top - bounds.top + rect.height * .5, pressed: false });
+    later(3800, () => {
+      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>("details > summary");
+      moveCursor(node);
     });
-    later(4600, () => setCursor(null));
-    later(8500, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "posts" : screen === "posts" ? "results" : "research"));
+    later(4900, () => {
+      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>("details > summary");
+      if (node) { setCursor(point => point && { ...point, pressed: true }); node.click(); }
+    });
+    later(6000, () => setCursor(null));
+    later(PRODUCT_HOLD_MS, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "posts" : screen === "posts" ? "results" : "research"));
     return () => timers.forEach(clearTimeout);
-  }, [playing, screen, setScreen, setPostIndex]);
+  }, [playing, screen, setScreen, setPostIndex, setWide]);
 
-  return { frame, viewport, scale, cursor: playing ? cursor : null, playing, requested, reduced,
+  return { frame, viewport, scale, wide: playing && wide, setWide, cursor: playing ? cursor : null, playing, requested, reduced,
     hold: () => setFocused(true), release: () => setFocused(false), pause: () => setRequested(false), toggle: () => setRequested(value => !value) };
 }
