@@ -212,7 +212,7 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 .lv2-site .lv2-connections-band { background: var(--primary-soft); }
 .lv2-site .lv2-connections-band .lv2-lead { max-width: 60ch; margin-block: 20px 36px; }
 .lv2-provider-logo { display: inline-flex; align-items: center; justify-content: center; gap: 12px; flex-shrink: 0; }
-.lv2-site .lv2-connector-logos { display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px; }
+.lv2-site .lv2-connector-logos { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
 .lv2-site .lv2-connector-link { background: var(--paper); min-height: 180px; border: 0; box-shadow: none; border-radius: 10px; padding: 24px 12px; display: flex; flex-direction: column; gap: 28px; justify-content: center; align-items: center; }
 .lv2-site .lv2-connector-link:hover { box-shadow: var(--shadow-card); background: var(--paper); }
 .lv2-site .lv2-connector-link > span:last-child { font-size: 14px; font-weight: 500; text-align: center; }
@@ -237,3 +237,6 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 .lv2-connection-practical summary { cursor: pointer; min-height: 56px; padding-block: 16px; font-weight: 500; }
 @media(max-width:900px) { .lv2-site .lv2-learn-group .lv2-feature-grid,.lv2-connection-hero,.lv2-connection-practical { grid-template-columns: 1fr; gap: 32px; } .lv2-site .lv2-connector-logos { grid-template-columns: repeat(3,minmax(0,1fr)); } }
 @media(max-width:600px) { .lv2-site .lv2-connector-logos { grid-template-columns: repeat(2,minmax(0,1fr)); } .lv2-connection-hero { padding-block: 40px; } .lv2-connection-art { padding: 16px; } .lv2-connection-benefits ol { grid-template-columns: 1fr; gap: 28px; } .lv2-connection-pair .lv2-wordmark { display: block; font-size: 25px; } }
+
+.lv2-site .lv2-connector-link:has(small) { gap: 16px; }
+.lv2-site .lv2-connector-link > small { font-size: 12px; color: var(--ink-muted); }

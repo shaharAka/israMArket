@@ -4,8 +4,6 @@
 .selector button[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
 .selector button:hover { background: var(--soft); }
 .selector button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.featureDot { flex: 0 0 6px; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); visibility: hidden; }
-.selector button[aria-pressed="true"] .featureDot { visibility: visible; }
 .views { display: grid; }
 
 /* Reserve the tallest view, like a product player: choosing a feature keeps its controls still. */
@@ -38,7 +36,7 @@
 .cursor { position: absolute; z-index: 2; transition: left 250ms ease, top 250ms ease; margin: -4px 0 0 -16px; filter: drop-shadow(0 2px 3px #17252c25); animation: cursorArrive 750ms cubic-bezier(.22,.65,.3,1) both; }
 .cursor[data-pressed="true"] svg { animation: cursorPress 400ms ease-out; }
 .cursor[data-pressed="true"]::before { content: ""; position: absolute; left: 6px; top: -7px; width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 50%; animation: clickRing 500ms ease-out both; }
-@keyframes cursorArrive { from { opacity: 0; transform: translate(58px, 48px); } to { opacity: 1; transform: translate(0,0); } }
+@keyframes cursorArrive { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cursorPress { 50% { transform: scale(.88); } }
 @keyframes clickRing { from { opacity: .8; transform: scale(.5); } to { opacity: 0; transform: scale(2); } }
 @media (prefers-reduced-motion: reduce) { .cursorLayer { display: none; } }
@@ -54,3 +52,21 @@
 
 .showcase[data-presentation="feature"] .views { height: 420px; }
 @media(max-width:600px) { .showcase[data-presentation="feature"] .views { height: 340px; } }
+
+/* Begin inside the complete workspace, then move the same native view into focus. */
+.workspaceNav { position: absolute; inset-block: 0; inset-inline-start: 0; width: 166px; padding: 22px 12px; border-inline-end: 1px solid var(--rule); background: var(--paper); opacity: 0; visibility: hidden; transition: opacity 550ms ease; }
+.workspaceNav :global(.product-wordmark) { font-size: 23px; }
+.workspaceBusiness { display: block; margin: 24px 6px 16px; font-size: 13px; color: var(--ink-muted); }
+.workspaceNav button, .workspaceNavItem { display: flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; padding: 8px; border-radius: 8px; font-size: 13px; text-align: start; }
+.workspaceNav button { cursor: pointer; }
+.workspaceNav button svg, .workspaceNavItem svg { width: 18px; height: 18px; }
+.workspaceNav button[aria-pressed="true"] { color: var(--primary); background: var(--primary-soft); }
+.showcase[data-wide="true"] .workspaceNav { visibility: visible; opacity: 1; }
+.showcase[data-presentation="hero"] .views { transition: margin 650ms cubic-bezier(.2,.7,.2,1); }
+.showcase[data-wide="true"] .views { margin-inline-start: 166px; }
+.showcase[data-wide="true"] .header { padding-inline-start: 190px; }
+@media(max-width:600px) { .workspaceNav { width: 92px; padding: 16px 6px; } .workspaceNav :global(.product-wordmark) { font-size: 15px; } .workspaceBusiness { font-size: 10px; margin: 20px 4px 12px; } .workspaceNav button, .workspaceNavItem { gap: 4px; padding: 6px 2px; font-size: 10px; } .workspaceNav button svg, .workspaceNavItem svg { width: 13px; height: 13px; } .showcase[data-wide="true"] .views { margin-inline-start: 92px; } .showcase[data-wide="true"] .header { padding-inline-start: 108px; } .selector { flex-wrap: wrap; } .selector button { flex-basis: 42%; } }
+@media(prefers-reduced-motion:reduce) { .workspaceNav, .showcase[data-presentation="hero"] .views { transition: none; } }
+
+.selector button { position: relative; padding-bottom: 22px; }
+.selector button > [data-playback-progress] { position: absolute; bottom: 4px; }

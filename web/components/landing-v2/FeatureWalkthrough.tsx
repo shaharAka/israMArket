@@ -7,6 +7,7 @@ import { LearningBridge } from "./LearningBridge";
 import { BUSINESS_EXAMPLES, type ExamplePath } from "./businessExamples";
 import { PERSONA_PAGES } from "./personaPages";
 import { useFeatureCycle } from "./useFeatureCycle";
+import { PlaybackProgress } from "./PlaybackProgress";
 import styles from "./value-story.module.css";
 
 /** Normal page scrolling advances the explanation beside one stable product canvas. */
@@ -16,7 +17,7 @@ export function FeatureWalkthrough({ path, examples }: { path: ExamplePath; exam
   const current = useRef(0);
   const reels = examples.filter(item => item.video);
   const counts = [3, reels.length ? 2 : 1, 2];
-  const { ref: cycleRef, index: activeIndex, select, paused, reduced, toggle, setFocused } = useFeatureCycle(counts[group], group === 0 ? 7000 : 12000);
+  const { ref: cycleRef, index: activeIndex, select, paused, reduced, playing, toggle, setFocused } = useFeatureCycle(counts[group], group === 0 ? 7000 : 12000);
   const t = useCopy();
   const business = BUSINESS_EXAMPLES[path];
   useEffect(() => {
@@ -56,7 +57,7 @@ export function FeatureWalkthrough({ path, examples }: { path: ExamplePath; exam
           <div className={styles.copy}><p className="lv2-eyebrow"><Copy text={["מכירים, חוקרים ומתכננים", "מהתוכנית לפוסטים שלכם", "לומדים ומשפרים"][segment]} /></p>
             <h3 id={`feature-title-${tone}`}><Copy text={titles[segment]} /></h3><p><Copy text={bodies[segment]} /></p>
             <div className={styles.featureChoices} role="group" aria-label={t("לבחור יכולת לראות")}>
-              {labels[segment].map((label, feature) => <button key={label} aria-pressed={(group === segment ? index : 0) === feature} onClick={() => show(segment, feature)}><Copy text={label} /></button>)}
+              {labels[segment].map((label, feature) => <button key={label} aria-pressed={(group === segment ? index : 0) === feature} onClick={() => show(segment, feature)}><Copy text={label} />{playing && group === segment && index === feature && counts[segment] > 1 ? <PlaybackProgress cycle={`${group}-${index}`} duration={group === 0 ? 7000 : 12000} /> : null}</button>)}
               {counts[segment] > 1 && !reduced && <button onClick={toggle} aria-label={t(paused ? "להמשיך את המעבר בין התכונות" : "לעצור את המעבר בין התכונות")} title={t(paused ? "להמשיך את המעבר בין התכונות" : "לעצור את המעבר בין התכונות")}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span></button>}
             </div>
           </div>
