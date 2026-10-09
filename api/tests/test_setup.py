@@ -11,7 +11,7 @@ import re
 import shutil
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from unittest.mock import patch
 
@@ -418,18 +418,22 @@ class SetupChecklistTestCase(unittest.TestCase):
         self.db.commit()
         self.assert_guides_connection("instagram", "todo")
 
-    def test_facebook_only_plan_is_honestly_deferred_without_forcing_instagram(self):
+    def test_facebook_only_plan_requires_page_read_without_forcing_instagram(self):
         self.save_profile({"quarter_plan": {"integrations": [{"key": "facebook_insights"}]}})
-        self.connect("meta")
-        item = self.assert_guides_connection("instagram", "soon")
+        connection = self.connect("meta")
+        item = self.assert_guides_connection("instagram", "todo")
         self.assertNotIn("אינסטגרם", item["title"])
-        self.assertIn("עדיין לא זמינה", item["why"])
         for key in ("scan", "diagnostics", "priorities", "audiences", "media", "publish"):
             self.make_done(key)
         payload = self.payload()
-        self.assertEqual(payload["completed"], payload["total"])
-        self.assertIsNone(payload["next"])
+        self.assertEqual(payload["completed"], payload["total"] - 1)
+        self.assertEqual(payload["next"]["key"], "instagram")
         self.assertFalse(self.by_key(payload)["instagram"]["done"])
+        extra = loads(connection.extra_json, {})
+        extra["source_readiness"]["sections"]["facebook"] = {"status": "ready", "read_at": datetime.utcnow().isoformat()}
+        connection.extra_json = dumps(extra)
+        self.db.commit()
+        self.assert_guides_connection("instagram", "done")
 
     def test_unavailable_connection_is_excluded_from_both_guides_progress(self):
         self.save_profile({"quarter_plan": {"integrations": [{"key": "ga4"}, {"key": "meta_business"}]}})

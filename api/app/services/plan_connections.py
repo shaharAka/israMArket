@@ -50,18 +50,14 @@ def state(facts, provider: str, *, available: bool = True) -> dict:
     ads = bool(requested & {"meta_business", "meta_pixel"})
     facebook = "facebook_insights" in requested
     title = "נתוני האינסטגרם והפרסום" if social and ads else "נתוני הפרסום" if ads else "נתוני האינסטגרם" if social else "נתוני עמוד הפייסבוק"
-    # The reader implements IG insights, ads and Pixel verification. Selecting a Page
-    # does not implement Facebook post insights, or imply a linked Instagram account.
-    if facebook and not (social or ads):
-        return {"status": "soon", "title": title,
-                "why": "מדידת הפוסטים בעמוד הפייסבוק עדיין לא זמינה כאן. אפשר להמשיך בתוכנית ולפרסם.",
-                "action": "לבדוק את החיבורים"}
     selection = item.get("selection") or {}
     sections = read.get("sections") or {}
     checks = []
     if social:
         checks.append(bool(selection.get("page_id") and selection.get("instagram_id") and
                            _read(sections.get("social") or {}, {"ready", "empty"})))
+    if facebook:
+        checks.append(bool(selection.get("page_id") and _read(sections.get("facebook") or {}, {"ready", "empty"})))
     if "meta_business" in requested:
         checks.append(bool(selection.get("ad_account_id") and
                            _read(sections.get("ads") or {}, {"ready", "empty"})))
@@ -72,8 +68,6 @@ def state(facts, provider: str, *, available: bool = True) -> dict:
                 and checks and all(checks))
     why = read.get("note_he") or ("נלמד מה המודעות הביאו ונבחר את הפעולה הבאה." if ads else
                                   "נלמד מה עורר עניין בפוסטים, כדי לדייק את הפעולה הבאה בתוכנית.")
-    if facebook:
-        why += " מדידת הפוסטים בעמוד הפייסבוק עדיין לא זמינה כאן."
     return {"status": "done" if done else "todo" if available else "soon", "title": title,
             "why": why if done or available else "החיבור לנתוני הפרסום והפוסטים ייפתח כאן בקרוב. אפשר להמשיך בתוכנית.",
             "action": "לבדוק את החיבורים" if item else "לחבר את החשבון"}

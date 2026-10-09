@@ -123,12 +123,30 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
         limits.append("מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.")
     social = _dict(meta.get("account"))
     window = _dict(_dict(_dict(social.get("windows")).get("28")).get("current"))
-    source("meta_social", "נתוני אינסטגרם ופייסבוק", bool(meta.get("posts") or window),
+    source("meta_social", "נתוני אינסטגרם", bool(meta.get("posts") or window),
            {"start": window.get("start", ""), "end": window.get("end", "")} if window else meta.get("source_period") or fallback,
            _dict(_dict(meta.get("source_reads")).get("social")).get("read_at") or meta.get("source_read_at") or snapshot.get("created_at"))
     reach = _number(_dict(window.get("values")).get("reach"))
     if reach is not None:
         observations.append({"source": "meta_social", "metric": "reach", "label": "אנשים שראו באינסטגרם", "value": reach})
+    page_data = _dict(meta.get("facebook"))
+    page_posts = page_data.get("posts") or []
+    if page_posts:
+        # Each count keeps its own Page/post identity and capture date. Unique viewers
+        # across different posts overlap; summing them would invent an account audience.
+        source("facebook_posts", "פוסטים בפייסבוק", True, {},
+               _dict(_dict(meta.get("source_reads")).get("facebook")).get("read_at") or page_data.get("read_at"))
+        for post in page_posts[:20]:
+            post = _dict(post)
+            for metric, label in (("post_total_media_view_unique", "אנשים שצפו בפוסט בפייסבוק"), ("post_media_view", "צפיות בפוסט בפייסבוק")):
+                value = _number(_dict(post.get("insights")).get(metric))
+                stamp = _dict(_dict(post.get("observations")).get(metric))
+                if (value is not None and stamp.get("period") == "lifetime" and stamp.get("read_at")
+                    and stamp.get("account_id") == page_data.get("page_id") and stamp.get("media_id") == post.get("id")):
+                    observations.append({"source": "facebook_posts", "metric": metric, "label": label, "value": value,
+                        "media_id": post.get("id"), "account_id": page_data.get("page_id"), "scope": "cumulative",
+                        "period": "lifetime", "read_at": stamp["read_at"]})
+        limits.append("צפיות בפוסטים בפייסבוק מצטברות מאז הפרסום. אותו אדם יכול לצפות בכמה פוסטים; לא מחברים את הספירות לקהל אחד, ולא מסיקים מהן פניות או רכישות.")
     service = service_results.evidence(business)
     report = service.get("report") if service else None
     if service:

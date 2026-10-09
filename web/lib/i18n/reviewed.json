@@ -194,6 +194,66 @@
       "en": "We research your product and market, build a plan and create posts that show its value. We learn from trials and improve the next step.",
       "ar": "ندرس منتجكم والسوق، ونبني خطة ونجهّز منشورات توضّح قيمته. نتعلم من التجربة ونحسّن الخطوة التالية.",
       "ru": "Изучаем Ваш продукт и рынок, строим план и создаём посты, показывающие его ценность. Учимся на пробном использовании и улучшаем следующий шаг."
+    },
+    "m_0520e766896f7024": {
+      "en": "Instagram Stories",
+      "ar": "قصص إنستغرام",
+      "ru": "Истории Instagram"
+    },
+    "m_58d0b3f7a9982043": {
+      "en": "Facebook post views accumulate since publication. One person may view several posts; these counts do not add up to a single audience or prove inquiries or purchases.",
+      "ar": "تتراكم مشاهدات منشورات فيسبوك منذ نشرها. قد يشاهد الشخص نفسه عدة منشورات؛ لا نجمع هذه الأعداد باعتبارها جمهورًا واحدًا، ولا نستنتج منها استفسارات أو مشتريات.",
+      "ru": "Просмотры постов Facebook накапливаются с момента публикации. Один человек может смотреть несколько постов; эти числа нельзя складывать в общую аудиторию или считать обращениями и покупками."
+    },
+    "m_5bba5d3e34f68873": {
+      "en": "For a Page with post insights access, see how many people viewed each post and when the count was read. Add the published Facebook post’s link in the editor.",
+      "ar": "للصفحة التي تمنح صلاحية الوصول إلى إحصاءات المنشورات، يمكن رؤية عدد الأشخاص الذين شاهدوا كل منشور وتاريخ قراءة العدد. أضيفوا رابط المنشور الذي نشرتموه على فيسبوك في المحرر.",
+      "ru": "Для страницы с доступом к статистике постов видно, сколько людей посмотрели каждый пост и когда прочитаны данные. Добавьте ссылку на опубликованный пост Facebook в редакторе."
+    },
+    "m_70883e0268177ad8": {
+      "en": "Invalid Page response",
+      "ar": "استجابة غير صالحة من الصفحة",
+      "ru": "Некорректный ответ страницы"
+    },
+    "m_9de7d6674da5ea99": {
+      "en": "Facebook post views",
+      "ar": "مشاهدات المنشور على فيسبوك",
+      "ru": "Просмотры поста Facebook"
+    },
+    "m_b0f0aa5e0e4f73d2": {
+      "en": "The measurement belongs to the selected Page and post. Instagram data does not count as Facebook results, and missing data is not zero. If a read fails, previous counts keep their original dates.",
+      "ar": "القياس يخص الصفحة والمنشور المحددين. لا تُحتسب بيانات إنستغرام كنتائج لفيسبوك، والبيانات المفقودة لا تعني صفرًا. إذا فشلت القراءة، تُحفظ الأعداد السابقة مع تواريخها الأصلية.",
+      "ru": "Измерение относится к выбранной странице и посту. Данные Instagram не считаются результатами Facebook, а отсутствие данных не означает ноль. Если чтение не удалось, прежние числа сохраняются с исходными датами."
+    },
+    "m_c200c347c06b7a91": {
+      "en": "Instagram data",
+      "ar": "بيانات إنستغرام",
+      "ru": "Данные Instagram"
+    },
+    "m_d4d85cfdcc26ee59": {
+      "en": "People who viewed the Facebook post",
+      "ar": "الأشخاص الذين شاهدوا المنشور على فيسبوك",
+      "ru": "Люди, посмотревшие пост Facebook"
+    },
+    "m_d5247c9413f1e800": {
+      "en": "Facebook posts",
+      "ar": "منشورات فيسبوك",
+      "ru": "Посты Facebook"
+    },
+    "m_ddf864b7408ac95e": {
+      "en": "Separate results for Facebook posts",
+      "ar": "نتائج منفصلة لمنشورات فيسبوك",
+      "ru": "Отдельные результаты постов Facebook"
+    },
+    "m_dfc9cf6dc70fb6db": {
+      "en": "Page analyze access missing",
+      "ar": "صلاحية تحليل الصفحة مفقودة",
+      "ru": "Нет доступа к аналитике страницы"
+    },
+    "m_e3139c400b568910": {
+      "en": "Facebook post insights access is missing. Your Page connection is saved; you can continue with your plan.",
+      "ar": "لا تتوفر صلاحية الوصول إلى إحصاءات منشورات فيسبوك. حُفظ اتصال الصفحة؛ يمكنكم متابعة خطتكم.",
+      "ru": "Нет доступа к статистике постов Facebook. Подключение страницы сохранено; можно продолжать работать с планом."
     }
   },
   "numberForms": {

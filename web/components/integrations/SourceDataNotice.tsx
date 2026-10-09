@@ -1,6 +1,7 @@
 "use client";
 
-import { Copy, useCopy } from "@/components/language/LanguageProvider";
+import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
+import { LOCALE_META } from "@/lib/i18n/locales";
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -11,25 +12,27 @@ import { materiallyOlder } from "./sourceFreshness";
 /** Reading numbers and interpreting them are separate operations. */
 export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
   const t = useCopy();
+  const { locale } = useLanguage();
+  const formatLocale = LOCALE_META[locale].formatLocale;
   const source = payload.sources?.ga4;
   const analysis = payload.diagnostic?.analysis_status;
   const metaSource = payload.sources?.meta;
   const metaSelectionChanged = Boolean(metaSource?.selection && payload.meta?.source_selection &&
     Object.entries(metaSource.selection).some(([key, value]) => payload.meta.source_selection?.[key as keyof typeof metaSource.selection] !== value));
   const metaNote = metaSelectionChanged ? t("נבחר חשבון אחר. הנתונים המוצגים נשמרו מהחשבון הקודם, עד שתושלם הקריאה החדשה.")
-    : metaSource && metaSource.status !== "ready" ? metaSource.note_he : "";
+    : metaSource && metaSource.status !== "ready" ? t(metaSource.note_he || "") : "";
   const previousSite = Boolean(source?.property_id && payload.ga4?.property_id &&
     source.property_id.replace("properties/", "") !== payload.ga4.property_id.replace("properties/", ""));
   const emptyWithOlderData = source?.status === "empty" && payload.available !== false &&
     source.period?.end !== (payload.ga4?.period?.end || payload.period_end);
   const sourceNote = previousSite ? t("נבחר אתר אחר, אבל עוד לא התקבלו הנתונים שלו. המספרים המוצגים שייכים לאתר שנקרא קודם.")
     : emptyWithOlderData ? t("בבדיקה האחרונה לא נמצאו נתונים לתקופה. המספרים המוצגים נשמרו מהקריאה הקודמת.")
-    : source && source.status !== "ready" ? source.note_he : "";
+    : source && source.status !== "ready" ? t(source.note_he || "") : "";
   const analysisNote = analysis === "pending" ? t("הנתונים כבר כאן. מכינים מהם תובנה והצעה לתוכנית; הן יופיעו כאן אוטומטית.")
     : analysis === "unavailable" ? t("הנתונים נשמרו, אבל הניתוח לא הושלם. אפשר לעבוד בתוכנית ולנסות לרענן בהמשך.")
     : analysis === "paused" ? t("הנתונים זמינים. כדי להכין מהם הצעה חדשה לתוכנית, צריך מנוי פעיל.") : "";
-  const metaDate = checkedDate(payload.meta?.source_read_at);
-  const siteDate = checkedDate(payload.ga4?.read_at);
+  const metaDate = checkedDate(payload.meta?.source_read_at, formatLocale);
+  const siteDate = checkedDate(payload.ga4?.read_at, formatLocale);
   const siteReading = { readAt: payload.ga4?.read_at, ...payload.ga4?.period };
   const metaReading = { readAt: payload.meta?.source_read_at, ...payload.meta?.source_period };
   const siteOlder = materiallyOlder(siteReading, metaReading);
@@ -44,7 +47,7 @@ export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
     {metaOlder ? <Note small><Copy text="נתוני פייסבוק ואינסטגרם נשמרו מקריאה ב־" />{metaDate}<Copy text="; הם לא רועננו יחד עם נתוני האתר." /></Note> : null}
     {siteOlder ? <Note small><Copy text="נתוני האתר נשמרו מקריאה ב־" />{siteDate}<Copy text="; הם לא רועננו יחד עם פייסבוק ואינסטגרם." /></Note> : null}
     {partialSite ? <Note small><Copy text="סיכום האתר זמין, אבל חלק מהפירוט לא התקבל. ההצעה משתמשת רק בנתונים שנקראו; ננסה להשלים את הפירוט ברענון הבא." /></Note> : null}
-    {retained.map(([key, section]) => <Note key={key} small>{key === "ads" ? t("נתוני המודעות") : t("נתוני החשבון והפוסטים")} <Copy text="נשמרו מקריאה ב־" />{checkedDate(section.retained_at)}<Copy text="; הקריאה האחרונה שלהם לא הושלמה." /></Note>)}
+    {retained.map(([key, section]) => <Note key={key} small>{key === "ads" ? t("נתוני המודעות") : key === "facebook" ? t("פוסטים בפייסבוק") : t("נתוני החשבון והפוסטים")} <Copy text="נשמרו מקריאה ב־" />{checkedDate(section.retained_at, formatLocale)}<Copy text="; הקריאה האחרונה שלהם לא הושלמה." /></Note>)}
   </aside>;
 }
 

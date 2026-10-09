@@ -4806,7 +4806,7 @@ export type PostMeasure = {
 };
 
 export type PostObservation = {
-  source: "ga4" | "whatsapp" | "instagram";
+  source: "ga4" | "whatsapp" | "instagram" | "facebook";
   scope: "window" | "cumulative";
   start?: string | null;
   end?: string | null;
