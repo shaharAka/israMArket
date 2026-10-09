@@ -263,9 +263,9 @@ def _parse_insights(payload: dict) -> dict:
 
 
 def media_insights(
-    media_id: str, access_token: str, metrics: tuple[str, ...] = INSIGHT_METRICS
+    media_id: str, access_token: str, metrics: tuple[str, ...] = INSIGHT_METRICS, *, stop_on_auth: bool = False
 ) -> tuple[dict, dict]:
-    """(values, errors) for one media object. Never raises.
+    """(values, errors) for one media object. Optional stop on token/rate failures.
 
     One request for every metric first. Meta fails the whole request when any one metric
     is unsupported for that media, so on failure each metric is retried alone and the
@@ -279,6 +279,8 @@ def media_insights(
         return values, {name: MISSING_METRIC_HE for name in metrics if name not in values}
     except GraphError as exc:
         if exc.kind in {"token", "rate_limited", "unavailable"}:
+            if stop_on_auth:
+                raise
             # Retrying metric by metric would only spend more of the same budget.
             return {}, {name: str(exc) or MISSING_METRIC_HE for name in metrics}
     values: dict = {}
@@ -289,6 +291,8 @@ def media_insights(
                 graph_get(f"{media_id}/insights", {"metric": name}, access_token, timeout=15.0)
             )
         except GraphError as exc:
+            if stop_on_auth and exc.kind in {"token", "rate_limited", "unavailable"}:
+                raise
             errors[name] = str(exc) or MISSING_METRIC_HE
             continue
         if name in parsed:
@@ -364,6 +368,78 @@ def fetch_insights(page_access_token: str, instagram_id: str, page_id: str) -> d
     }
 
 
+# Verified 9 Oct 2026 in Meta's Stories and media Insights references:
+# /documentation/instagram-platform/instagram-graph-api/reference/ig-user/stories
+# /documentation/instagram-platform/reference/instagram-media/insights
+# Stories last 24 h and cannot be saved. Read using the granted Facebook USER token.
+STORY_METRICS = ("views", "reach", "shares", "link_clicks")
+STORY_FIELDS = "id,caption,timestamp,media_type,permalink,media_url,thumbnail_url"
+STORY_SCOPES = frozenset({"instagram_basic", "instagram_manage_insights", "pages_read_engagement"})
+
+
+def fetch_stories(access_token: str, instagram_id: str) -> dict:
+    """Bounded active-Story read. Partial failures never discard captured observations.
+
+    Never follow a provider-supplied next URL with a token; reuse the account endpoint
+    with its cursor. A limit is explicit instead of claiming all Stories were read.
+    No raw Graph errors are persisted or returned to the owner.
+    """
+    posts, seen, cursor, fields = [], set(), None, STORY_FIELDS
+    read_at = datetime.now(timezone.utc).isoformat()
+    status, limited = "empty", False
+    for _ in range(4):
+        params = {"fields": fields, "limit": 25}
+        if cursor:
+            params["after"] = cursor
+        try:
+            try:
+                payload = graph_get(f"{instagram_id}/stories", params, access_token)
+            except GraphError as exc:
+                if exc.kind != "invalid" or fields == "id,timestamp,media_type":
+                    raise
+                fields = "id,timestamp,media_type"
+                payload = graph_get(f"{instagram_id}/stories", {**params, "fields": fields}, access_token)
+        except GraphError as exc:
+            return {"posts": posts, "instagram_id": instagram_id, "read_at": read_at,
+                    "status": "partial" if posts else exc.kind, "failure": exc.kind, "limited": True}
+        if not isinstance(payload.get("data"), list):
+            return {"posts": posts, "instagram_id": instagram_id, "read_at": read_at,
+                    "status": "partial" if posts else "unavailable", "limited": True}
+        for item in payload["data"]:
+            if not isinstance(item, dict) or not item.get("id") or str(item["id"]) in seen:
+                continue
+            media_id = str(item["id"])
+            seen.add(media_id)
+            try:
+                insights, errors = media_insights(media_id, access_token, STORY_METRICS, stop_on_auth=True)
+            except GraphError as exc:
+                return {"posts": posts, "instagram_id": instagram_id, "read_at": read_at,
+                        "status": "partial" if posts else exc.kind, "failure": exc.kind, "limited": True}
+            # Only server-whitelisted scalar counts; missing is absent, never zero.
+            insights = {name: value for name, raw in insights.items()
+                        if name in STORY_METRICS and (value := _count(raw)) is not None and value >= 0}
+            stamp = datetime.now(timezone.utc).isoformat()
+            caption = str(item.get("caption") or "")
+            posts.append({**{k: item[k] for k in ("timestamp", "media_type", "permalink", "media_url", "thumbnail_url") if k in item},
+                          "id": media_id, "instagram_id": instagram_id, "media_product_type": "STORY",
+                          "caption": caption[:CAPTION_SNAPSHOT], "caption_full": caption[:CAPTION_MAX],
+                          "caption_length": len(caption), "insights": insights,
+                          "insight_errors": {k: MISSING_METRIC_HE for k in errors},
+                          "observations": {name: {"source": "instagram", "scope": "cumulative",
+                              "account_id": instagram_id, "media_id": media_id, "product_type": "STORY",
+                              "read_at": stamp} for name in insights}})
+        paging = payload.get("paging") or {}
+        next_cursor = (paging.get("cursors") or {}).get("after") if isinstance(paging, dict) else None
+        limited = bool(paging.get("next")) if isinstance(paging, dict) else False
+        if not limited:
+            break
+        if not next_cursor or next_cursor == cursor:
+            break
+        cursor = str(next_cursor)
+    status = "partial" if limited else "ready" if posts else "empty"
+    return {"posts": posts, "instagram_id": instagram_id, "read_at": read_at, "status": status, "limited": limited}
+
+
 # --- Own account insights ---------------------------------------------------------------
 
 # GET /{ig-user-id}/insights, checked on 30.9.2026 against
@@ -415,7 +491,7 @@ def _count(value) -> int | None:
         return None
     try:
         return int(value)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, OverflowError):
         return None
 
 
@@ -719,6 +795,10 @@ def snapshot_view(meta_data: dict) -> dict:
         return meta_data
     return {
         **meta_data,
+        **({"stories": {**meta_data["stories"], "posts": [
+            {key: value for key, value in post.items() if key != "caption_full"}
+            for post in meta_data["stories"].get("posts", []) if isinstance(post, dict)]}}
+           if isinstance(meta_data.get("stories"), dict) else {}),
         "posts": [
             {key: value for key, value in post.items() if key != "caption_full"}
             for post in meta_data.get("posts") or []

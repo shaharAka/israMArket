@@ -180,3 +180,22 @@ Spark post-writing experiment are not in it.
 - [ ] `curl -fsS https://your-host/backend/health` returns `{"ok":true,...}`.
 - [ ] `ADMIN_EMAILS` set, `ADMIN_REQUIRE_GOOGLE` left `true`, and `/admin` opens after a Google sign-in.
 - [ ] Every allowlisted owner's Google account has 2-Step Verification enabled.
+
+### Instagram Stories capture
+
+`deploy/gcp/install-story-capture.sh` installs `isramarket-stories.timer` on the VM,
+called by bootstrap/update. When deploying this addition with an older update script,
+run the installer once after health succeeds. Verify the timer with
+`systemctl list-timers isramarket-stories.timer` and use
+`isramarket-compose exec -T api python -m app.jobs.capture_stories --dry-run`
+to verify eligibility without contacting Meta.
+
+Hourly captures use only the selected account's existing Facebook user grant and known
+read scopes. Suspended/locked accounts and recent successful or failed reads are skipped;
+one failure does not stop other customers. No AI calls, new permissions or publishing.
+Counts captured while a Story is available survive expiry with their original read dates.
+They are captured observations, not guaranteed final totals: Meta can withhold small
+counts, reads can fail, and Stories deleted before a read cannot be recovered. The app
+matches pasted Story links by media ID, never by caption. C3 Page insights and authenticated
+`story_insights` webhooks are separate follow-ups; hourly polling uses the supported API.
+Rollbacks to a version without this job must disable the timer.

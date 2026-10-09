@@ -630,6 +630,11 @@ class ResultsTest(ConnectedTestCase):
         self.assertTrue(box["learning"])
 
     def test_instagram_numbers_by_the_posts_link_and_earlier_values_are_kept(self):
+        # This is an Instagram publication. A Facebook row cannot borrow its numbers.
+        strategy = self.current
+        roadmap = loads(strategy.roadmap_json, {})
+        roadmap["roadmap"]["posts"][2]["channel"] = "instagram"
+        strategy.roadmap_json = dumps(roadmap)
         self.db.add(InstagramPost(business_id=self.business.id, media_id="m1",
                                   permalink="https://www.instagram.com/p/ddddddddd4", caption="", reach=320, saved=None))
         self.db.commit()
@@ -637,7 +642,7 @@ class ResultsTest(ConnectedTestCase):
         self.db.commit()
         unmatched = self.current_posts()[2]
         self.assertEqual(unmatched["results"]["reach"], 320)
-        self.assertEqual(unmatched["results"]["value"], 320)  # a Facebook "לפרטים" post is measured by reach
+        self.assertEqual(unmatched["results"]["value"], 320)  # an Instagram "לפרטים" post is measured by reach
         self.assertNotIn("saves", unmatched["results"])  # Meta gave no number: absent, never 0
         self.assertEqual(unmatched["results"]["matched_by"], ["instagram_link"])
         # Next refresh, the media row is gone from the window: the earlier number stays.

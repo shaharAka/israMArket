@@ -113,6 +113,11 @@ def migrate_db():
         conn.exec_driver_sql(
             "CREATE UNIQUE INDEX IF NOT EXISTS ix_users_google_sub ON users (google_sub)"
         )
+        ig_cols = {row[1] for row in conn.exec_driver_sql("PRAGMA table_info(instagram_posts)").fetchall()}
+        if ig_cols:
+            for col, sql_type in (("instagram_id", "VARCHAR(64) DEFAULT ''"), ("insights_json", "TEXT DEFAULT '{}'")):
+                if col not in ig_cols:
+                    conn.exec_driver_sql(f"ALTER TABLE instagram_posts ADD COLUMN {col} {sql_type}")
         # Billing (models.Subscription, models.Payment) arrived as whole new tables, which
         # `Base.metadata.create_all` creates on boot with their unique indexes; there is
         # nothing to ALTER for them. A column added to either later goes in a block here,

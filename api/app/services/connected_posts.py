@@ -31,6 +31,7 @@ import logging
 import re
 import uuid
 from datetime import date, datetime
+from urllib.parse import urlsplit
 
 from app.services.gemini import lite_json
 from app.services.jsonutil import dumps, loads
@@ -282,7 +283,7 @@ def measure_for(post: dict, website: str = "", whatsapp_key: str = "") -> dict:
         f"{post.get('cta') or ''} {post.get('caption') or ''}"
     ):
         metric, code = "site_visits", str(utm.get("utm_content") or "")
-    elif channel == "instagram" and post.get("mix_type") == "value":
+    elif channel == "instagram" and post.get("mix_type") == "value" and post.get("format") != "story":
         metric, code = "saves", ""
     else:
         metric, code = "reach", ""
@@ -469,6 +470,7 @@ def measured_posts(views: list) -> dict:
             "channel": view.get("channel") or "",
             "metric": metric,
             "label_he": METRIC_LABEL_HE[metric],
+            "format": view.get("format") or "",
             "value": value,
             "compare": ({"label": compare.get("label") or COMPARE_LABEL_HE, "value": _number(compare.get("value")),
                          "direction": compare.get("direction")}
@@ -598,7 +600,11 @@ def what_worked(db, business, exclude_uid: str | None = None, max_best: int = 3)
     model = getattr(business, "business_model", None) or "products"
     by_metric: dict[str, list[dict]] = {}
     for record in records:
+        if record["view"].get("format") == "story":
+            continue  # Captured within 24h, not a comparable lifetime feed result.
         by_metric.setdefault(record["metric"], []).append(record)
+    if not by_metric:
+        return empty
     lines, refs = [], {}
     for metric, group in sorted(by_metric.items(), key=lambda item: -len(item[1]))[:max_best]:
         if metric == "site_visits":
@@ -871,27 +877,48 @@ def _permalink(value) -> str:
 
 
 def _media_rows(db, business_id: int, meta_data: dict | None) -> list[dict]:
-    """The business's Instagram posts with their numbers: this sync's, then the stored
-    table (lifetime numbers kept from earlier syncs). A missing number stays None."""
-    from app.models import InstagramPost
+    """Current and captured Instagram metrics, scoped to the selected account.
 
+    Story observations keep the date each metric was actually captured, including
+    after expiry. Legacy unscoped Stories are not assumed to belong to a selection.
+    """
+    from app.models import InstagramPost, Integration
+    report = meta_data or {}
+    account = str(report.get("instagram_id") or (report.get("source_selection") or {}).get("instagram_id") or "")
+    if not account:
+        item = db.query(Integration).filter_by(business_id=business_id, provider="meta", status="connected").first()
+        if item:
+            from app.services.meta_readiness import selection
+            account = selection(item)["instagram_id"]
     rows: dict[str, dict] = {}
-    for item in (meta_data or {}).get("posts") or []:
-        if not isinstance(item, dict):
-            continue
-        insights = item.get("insights") if isinstance(item.get("insights"), dict) else {}
-        key = str(item.get("id") or item.get("permalink") or "")
-        rows[key] = {"id": key, "permalink": item.get("permalink") or "",
-                     "caption": item.get("caption_full") or item.get("caption") or "",
-                     "reach": _number(insights.get("reach")), "saves": _number(insights.get("saved"))}
     for row in db.query(InstagramPost).filter(InstagramPost.business_id == business_id).all():
-        known = rows.get(row.media_id)
-        if known is None:
-            rows[row.media_id] = {"id": row.media_id, "permalink": row.permalink or "", "caption": row.caption or "",
-                                  "reach": row.reach, "saves": row.saved}
-        else:
-            known["reach"] = known["reach"] if known["reach"] is not None else row.reach
-            known["saves"] = known["saves"] if known["saves"] is not None else row.saved
+        story = row.media_product_type == "STORY"
+        if (story and (not account or row.instagram_id != account)) or (row.instagram_id and row.instagram_id != account):
+            continue
+        captured = loads(row.insights_json, {}) or {}
+        rows[row.media_id] = {"id": row.media_id, "permalink": row.permalink or "", "caption": row.caption or "",
+                             "product_type": row.media_product_type, "reach": row.reach, "saves": row.saved,
+                             "observations": captured.get("observations") or {}}
+    for item in [*(report.get("posts") or []), *((report.get("stories") or {}).get("posts") or [])]:
+        if not isinstance(item, dict) or not item.get("id"):
+            continue
+        story = item.get("media_product_type") == "STORY"
+        if story and (not account or str(item.get("instagram_id")) != account):
+            continue
+        key = str(item["id"])
+        prior = rows.get(key) or {}
+        insights = item.get("insights") if isinstance(item.get("insights"), dict) else {}
+        stamps = {**(prior.get("observations") or {}), **(item.get("observations") or {})}
+        if story:
+            from app.services.instagram_signal import merge_story_metrics
+            insights, stamps = merge_story_metrics({"values": {"reach": prior["reach"]} if prior.get("reach") is not None else {},
+                                                   "observations": prior.get("observations") or {}}, insights, item.get("observations") or {})
+        rows[key] = {"id": key, "permalink": item.get("permalink") or prior.get("permalink") or "",
+                     "caption": item.get("caption_full") or item.get("caption") or "",
+                     "product_type": item.get("media_product_type") or "",
+                     "reach": _number(insights.get("reach")) if "reach" in insights else prior.get("reach"),
+                     "saves": None if story else _number(insights.get("saved")) if "saved" in insights else prior.get("saves"),
+                     "observations": stamps}
     return list(rows.values())
 
 
@@ -910,24 +937,40 @@ def _clicks_by_key(db, business_id: int) -> dict[str, int]:
     return {key: int(total or 0) for key, total in rows}
 
 
+def _story_id(url: str) -> str:
+    try:
+        parsed = urlsplit(str(url or ""))
+        parts = parsed.path.strip("/").split("/")
+        if parsed.scheme in {"http", "https"} and parsed.hostname in {"instagram.com", "www.instagram.com", "m.instagram.com"} and len(parts) == 3 and parts[0] == "stories" and parts[2].isdigit():
+            return parts[2]
+    except ValueError:
+        pass
+    return ""
+
+
 def _match_media(view: dict, media: list[dict], used: set[str]) -> tuple[dict | None, str]:
+    if view["channel"] != "instagram":
+        return None, ""  # An Instagram permalink never measures a Facebook post.
+    story = view.get("format") == "story"
+    candidates = [item for item in media if (item.get("product_type") == "STORY") == story and item["id"] not in used]
     published = _permalink(view.get("published_url"))
     if published:
-        for item in media:
-            if item["id"] not in used and _permalink(item.get("permalink")) == published:
-                return item, "instagram_link"
-    if view["channel"] != "instagram":
-        return None, ""
+        story_id = _story_id(view.get("published_url")) if story else ""
+        for item in candidates:
+            if (story_id and story_id == item["id"]) or (_permalink(item.get("permalink")) and _permalink(item.get("permalink")) == published):
+                return item, "instagram_story_link" if story else "instagram_link"
+    if story:
+        return None, ""  # Caption is not a reliable identity for a Story.
     needle = _WS.sub(" ", str(view.get("caption") or "")).strip()[:40]
     if len(needle) < 20:
         return None, ""
-    for item in media:
-        if item["id"] not in used and needle in _WS.sub(" ", str(item.get("caption") or "")):
+    for item in candidates:
+        if needle in _WS.sub(" ", str(item.get("caption") or "")):
             return item, "instagram_caption"
     return None, ""
 
 
-def _measure_post(view: dict, *, clicks: dict, campaigns: list, media: list, used: set, whatsapp_key: str) -> tuple[dict, list]:
+def _measure_post(view: dict, *, clicks: dict, campaigns: list, media: list, used: set, whatsapp_key: str, observations: dict | None = None) -> tuple[dict, list]:
     """This refresh's numbers for one post: {metric: value} and how each was matched."""
     metrics: dict = {}
     matched: list[str] = []
@@ -955,6 +998,8 @@ def _measure_post(view: dict, *, clicks: dict, campaigns: list, media: list, use
         used.add(hit["id"])
         if hit.get("reach") is not None:
             metrics["reach"] = int(hit["reach"])
+            if observations is not None and (hit.get("observations") or {}).get("reach"):
+                observations["reach"] = hit["observations"]["reach"]
         if hit.get("saves") is not None:
             metrics["saves"] = int(hit["saves"])
         if hit.get("reach") is not None or hit.get("saves") is not None:
@@ -1004,6 +1049,8 @@ def _ga_observation(report: dict, now: str) -> dict:
 
 
 def compatible_observations(target: dict, other: dict) -> bool:
+    if target["view"].get("format") == "story" or other["view"].get("format") == "story":
+        return False
     if target["metric"] != "site_visits":
         return True  # Existing cumulative source comparisons are unchanged in C4.
     a = metric_observation(target["view"].get("results") or {}, "site_visits")
@@ -1024,7 +1071,7 @@ def learning_facts(target: dict, other: dict | None) -> dict:
     value, metric = int(target["value"]), target["metric"]
     facts = {"ref": target["view"]["uid"], "metric": metric, "value": value, "compare": None,
              "direction": "first", "only_here": "", "only_there": ""}
-    if metric == "site_visits" and other is None:
+    if other is None and (metric == "site_visits" or target["view"].get("format") == "story"):
         facts["direction"] = "observed"
     if other is None:
         return facts
@@ -1115,7 +1162,7 @@ similar = בערך כמו, first = אין עוד פוסט דומה), ומה הי
 
 
 def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: dict | None = None,
-                    now: str | None = None) -> dict:
+                    now: str | None = None, phrase: bool = True) -> dict:
     """Write `results` (and `learning`) back onto every post of the business.
 
     Sources: WhatsApp taps per post code (always), GA4 rows by UTM campaign + content
@@ -1154,14 +1201,16 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
             view = connected_view(post, index=index, business_id=strategy.business_id, year=strategy.year,
                                   month=strategy.month, core=core, website=website)
             key = post_key_for(strategy.year, strategy.month, index, post)
+            captured_observations: dict = {}
             metrics, matched = _measure_post(view, clicks=clicks, campaigns=campaigns, media=media, used=used,
-                                             whatsapp_key=key)
+                                             whatsapp_key=key, observations=captured_observations)
             if not metrics:
                 continue
             previous = post.get("results") if isinstance(post.get("results"), dict) else {}
             results = {k: v for k, v in previous.items() if k not in ("value", "compare")}
             results.update(metrics)
             observations = dict(previous.get("observations") or {}) if isinstance(previous.get("observations"), dict) else {}
+            observations.update(captured_observations)
             if "visits" in metrics or "conversions" in metrics:
                 observation = _ga_observation(ga4_data or {}, now)
                 published_day = str(view.get("published_at") or "")[:10]
@@ -1205,7 +1254,7 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
             phrases.append(facts)
             pending.append((record, post, signature))
     if phrases:
-        lines = phrase_learnings(phrases)
+        lines = phrase_learnings(phrases) if phrase else {facts["ref"]: template_learning(facts) for facts in phrases}
         for record, post, signature in pending:
             post["learning"] = lines.get(record["view"]["uid"]) or template_learning(learning_facts(record, None))
             post["learning_key"] = signature

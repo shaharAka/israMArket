@@ -1884,7 +1884,7 @@ export function PostEditor({
                 {compare.text}
               </p>
             ) : null}
-            {resultKey === "visits" ? <PostObservationLine observation={observation} google /> : meta ? <p className="mt-1 text-[12px] text-[color:var(--ink-muted)]">{meta}</p> : null}
+            {resultKey === "visits" || observation?.product_type === "STORY" ? <PostObservationLine observation={observation} google={resultKey === "visits"} /> : meta ? <p className="mt-1 text-[12px] text-[color:var(--ink-muted)]">{meta}</p> : null}
             {others.length ? (
               <details className="mt-1">
                 <summary className={`${ui.summary} text-[13px] font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>

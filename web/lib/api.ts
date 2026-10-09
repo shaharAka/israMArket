@@ -4806,12 +4806,15 @@ export type PostMeasure = {
 };
 
 export type PostObservation = {
-  source: "ga4" | "whatsapp";
+  source: "ga4" | "whatsapp" | "instagram";
   scope: "window" | "cumulative";
   start?: string | null;
   end?: string | null;
   read_at?: string;
   property_id?: string;
+  product_type?: string;
+  account_id?: string;
+  media_id?: string;
   exposure_start?: string | null;
   limited?: boolean;
 };
@@ -5316,6 +5319,7 @@ export type PerformancePayload = {
 
 /** One measured post on Results: the post's one number, as its card shows it. */
 export type MeasuredPost = {
+  format?: string;
   observation?: PostObservation | null;
   /** The post's place in the month, for `/posts?post=<index>`. */
   index: number;

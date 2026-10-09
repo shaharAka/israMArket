@@ -187,6 +187,8 @@ EOF
 systemctl daemon-reload
 systemctl enable --now isramarket-backup.timer isramarket-research.timer >/dev/null
 
+"$HERE/install-story-capture.sh"
+
 # --- 8. Start the stack ----------------------------------------------------------------
 # First boot builds the images (~5-10 min on e2-medium). Later boots reuse them; Docker's
 # restart policy has usually restarted the containers already and this is a no-op.

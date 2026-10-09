@@ -84,7 +84,7 @@ def _record(db, item, state):
 
 
 def aggregate(sections: dict) -> str:
-    data = [sections[k] for k in ("social", "ads") if k in sections]
+    data = [sections[k] for k in ("social", "stories", "ads") if k in sections]
     usable = [row for row in data if row["status"] in {"ready", "empty"}]
     problems = [row for row in sections.values() if row.get("incomplete") or row["status"] not in {"ready", "empty", "receiving"}]
     if usable:
@@ -139,6 +139,18 @@ def fetch(item: Integration, website: str, start: str, end: str) -> tuple[dict, 
                     report.pop(name, None)
                 sections["social"] = failure(exc)
                 report["social_error"] = sections["social"]
+    if chosen["instagram_id"] and meta.STORY_SCOPES.issubset(set(extra.get("scopes") or [])):
+        try:
+            stories = meta.fetch_stories(decrypt_secret(item.access_token_enc), chosen["instagram_id"])
+            report["stories"] = stories
+            story_status = stories.get("status")
+            sections["stories"] = {"status": "ready" if stories.get("posts") else "empty", "read_at": stories.get("read_at")}
+            if story_status not in {"ready", "empty"}:
+                recovery = failure(meta.GraphError("Story read incomplete", kind=stories.get("failure") or story_status))
+                sections["stories"] = ({**sections["stories"], "incomplete": True, "recovery_status": recovery["status"], "note_he": recovery["note_he"]}
+                                       if stories.get("posts") else {**recovery, "incomplete": True})
+        except Exception as exc:
+            sections["stories"] = failure(exc)
     try:
         token = decrypt_secret(item.access_token_enc) if chosen["ad_account_id"] or chosen["pixel_id"] else ""
         measured = meta_marketing.measurement(token, extra, website, start, end)
@@ -167,7 +179,8 @@ def retain_sections(report: dict, sections: dict, previous: PerformanceSnapshot 
     stamps = dict(report.get("source_reads") or {})
     for name, row in sections.items():
         if row["status"] in {"ready", "empty", "receiving", "waiting", "wrong_site", "site_unconfirmed"}:
-            stamps[name] = {"read_at": report["source_read_at"], "period": report["source_period"]}
+            stamps[name] = ({"read_at": (report.get("stories") or {}).get("read_at") or report["source_read_at"], "scope": "cumulative", "period": None}
+                            if name == "stories" else {"read_at": report["source_read_at"], "period": report["source_period"]})
             continue
         same = (name == "social" and bool(chosen["instagram_id"]) and older.get("instagram_id") == chosen["instagram_id"]) or (
             name == "ads" and bool(chosen["ad_account_id"]) and str((older.get("ads") or {}).get("account_id", "")).removeprefix("act_") == chosen["ad_account_id"].removeprefix("act_"))
@@ -185,6 +198,7 @@ def retain_sections(report: dict, sections: dict, previous: PerformanceSnapshot 
 
 def has_observations(report: dict) -> bool:
     values = [(report.get("page") or {}).get("fan_count"), (report.get("account") or {}).get("followers_count")]
+    values.extend(value for post in (report.get("stories") or {}).get("posts", []) for value in post.get("insights", {}).values())
     values.extend(value for post in report.get("posts", []) for value in (post.get("like_count"), post.get("comments_count"), *post.get("insights", {}).values()))
     values.extend(value for window in (report.get("account") or {}).get("windows", {}).values() for value in window.get("current", {}).get("values", {}).values())
     values.extend(value for metric, value in (report.get("ads") or {}).get("overview", {}).items() if metric not in {"id", "name", "currency"})
@@ -208,7 +222,7 @@ def read(db: Session, item: Integration, website: str, start: str, end: str) -> 
     report = retain_sections(report, sections, prior)
     status = aggregate(sections)
     state.update(status=status, note_he=NOTES[status], sections=sections, checked_at=datetime.utcnow().isoformat())
-    if any(row["status"] in {"ready", "empty"} for name, row in sections.items() if name in {"social", "ads"}):
+    if any(row["status"] in {"ready", "empty"} for name, row in sections.items() if name in {"social", "stories", "ads"}):
         state.update(last_success_at=report["source_read_at"], period=report["source_period"])
     extra = loads(item.extra_json, {}) or {}
     if "tracking" in report and sections.get("tracking", {}).get("read_at"):
@@ -219,6 +233,13 @@ def read(db: Session, item: Integration, website: str, start: str, end: str) -> 
     return report
 
 
+def media_for_storage(report: dict) -> dict:
+    """A successful Story read must not restamp a retained, failed feed read."""
+    reads = report.get("source_reads") or {}
+    fresh_social = not reads or (reads.get("social") or {}).get("read_at") == report.get("source_read_at")
+    return report if fresh_social else {**report, "posts": []}
+
+
 def initial_read(db: Session, item: Integration, website: str) -> dict | None:
     end = date.today() - timedelta(days=1)
     start = end - timedelta(days=27)
@@ -226,7 +247,7 @@ def initial_read(db: Session, item: Integration, website: str) -> dict | None:
     if report is None:
         return None
     state = public_state(item)
-    if not report or not has_observations(report) or not any(row["status"] in {"ready", "empty"} for name, row in (state.get("sections") or {}).items() if name in {"social", "ads"}):
+    if not report or not has_observations(report) or not any(row["status"] in {"ready", "empty"} for name, row in (state.get("sections") or {}).items() if name in {"social", "stories", "ads"}):
         return state
     # Persist new observations before any analysis. Preserve the site's own read date/window.
     previous = db.query(PerformanceSnapshot).filter_by(business_id=item.business_id).order_by(PerformanceSnapshot.created_at.desc(), PerformanceSnapshot.id.desc()).first()
@@ -234,11 +255,36 @@ def initial_read(db: Session, item: Integration, website: str) -> dict | None:
     if ga4_data:
         ga4_data.setdefault("read_at", previous.created_at.isoformat())
         ga4_data.setdefault("period", {"start": previous.period_start, "end": previous.period_end})
-    if (report.get("source_reads", {}).get("social") or {}).get("read_at") == report["source_read_at"]:
-        instagram_signal.store_media(db, item.business_id, report)
+    if (report.get("source_reads", {}).get("social") or {}).get("read_at") == report["source_read_at"] or (report.get("stories") or {}).get("posts"):
+        instagram_signal.store_media(db, item.business_id, media_for_storage(report))
     snap = PerformanceSnapshot(business_id=item.business_id, period_start=start.isoformat(), period_end=end.isoformat(),
            ga4_json=dumps(ga4_data), meta_json=dumps(meta.snapshot_view(report)), diagnostic_json=dumps({"analysis_status": "pending", "headline": "", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []}))
     db.add(snap)
     db.commit()
     analysis_jobs.enqueue(db, snap)
     return public_state(item)
+
+
+def capture_stories(db: Session, item: Integration) -> dict | None:
+    """Hourly model-free capture; the same selection/grant race guard as first read."""
+    chosen, selection_key = selection(item), key(item)
+    extra = loads(item.extra_json, {}) or {}
+    if item.status != "connected" or not chosen["instagram_id"] or not meta.STORY_SCOPES.issubset(set(extra.get("scopes") or [])):
+        return None
+    report = meta.fetch_stories(decrypt_secret(item.access_token_enc), chosen["instagram_id"])
+    try:
+        db.refresh(item)
+    except InvalidRequestError:
+        return None
+    if item.status != "connected" or key(item) != selection_key:
+        return None
+    instagram_signal.store_media(db, item.business_id, {"instagram_id": chosen["instagram_id"], "stories": report})
+    extra = loads(item.extra_json, {}) or {}
+    extra["story_capture"] = {"selection_key": selection_key, "read_at": report["read_at"],
+                              "status": report["status"], "limited": report.get("limited", False)}
+    item.extra_json = dumps(extra)
+    db.commit()
+    from app.services import connected_posts
+    connected_posts.refresh_results(db, item.business, meta_data={"instagram_id": chosen["instagram_id"], "stories": report}, phrase=False)
+    db.commit()
+    return report

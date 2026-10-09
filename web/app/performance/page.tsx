@@ -173,7 +173,7 @@ function ordered(items: MeasuredPost[]): MeasuredPost[] {
 }
 
 function comparablePosts(items: MeasuredPost[]): boolean {
-  if (items.length < 2) return false;
+  if (items.length < 2 || items.some(item => item.format === "story" || item.observation?.product_type === "STORY")) return false;
   if (items[0].metric !== "site_visits") return true;
   const a = items[0].observation;
   return Boolean(a && !a.limited && a.start && a.end && a.property_id && a.exposure_start && items.every(item => {
@@ -218,7 +218,7 @@ function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
         {`${item.value.toLocaleString(formatLocale)} ${t(item.label_he)}`}
         {compare ? <span className="text-[color:var(--ink-muted)]">{` · ${compare}`}</span> : null}
       </span>
-      {item.metric === "site_visits" ? <PostObservationLine observation={item.observation} google /> : null}
+      <PostObservationLine observation={item.observation} google={item.metric === "site_visits"} />
     </li>
   );
 }
@@ -354,12 +354,12 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
   const anyConnected = Boolean(connected.ga4 || connected.meta);
   const required = payload.measurement_setup?.requirements;
   const offline = required
-    ? required.filter(item => item.status !== "soon" && item.key !== "whatsapp" && !connected[item.key]).map(item => item.title)
+    ? required.filter(item => item.status !== "soon" && item.key !== "whatsapp" && !connected[item.key]).map(item => t(item.title))
     : [!connected.ga4 ? t("נתוני האתר") : "", !connected.meta ? t("אינסטגרם") : ""].filter(Boolean);
   const needsGoogle = !connected.ga4 && (!required || required.some(item => item.key === "ga4" && item.status !== "soon"));
   if (!offline.length) return null;
   if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-    <Copy text="אין כרגע חיבור ל" />{offline.join(t(" ול"))}<Copy text=". אפשר להמשיך עם הדיווח שלכם." /><Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline"><Copy text="לבדוק את החיבורים" /></Link>
+    {t("המקורות הבאים עוד לא מחוברים: {arg_0}. אפשר להמשיך עם הדיווח שלכם.", { arg_0: offline.join(t(" ול")) })}{" "}<Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline"><Copy text="לבדוק את החיבורים" /></Link>
   </p>;
 
   return (
@@ -1015,7 +1015,7 @@ function NoSnapshotYet({ payload, postTaps = 0 }: { payload: PerformancePayload;
   const explanation = whatsappOnly && needs.length
     ? t("הכינו קישור מדיד לוואטסאפ. נספור לחיצות עליו, ולא הודעות או לקוחות.")
     : needs.length
-    ? t("לפי התוכנית, נשאר לבדוק: {arg_0}. נציג רק נתונים שנמדדו בפועל.", { arg_0: needs.map(item => item.title).join(" ו") })
+    ? t("לפי התוכנית, נשאר לבדוק: {arg_0}. נציג רק נתונים שנמדדו בפועל.", { arg_0: needs.map(item => t(item.title)).join(" ו") })
     : later ? later.why
     : whatsappOnly ? t("התוכנית מודדת לחיצות על הקישור לוואטסאפ. הספירה מופיעה בהמשך העמוד; היא לא סופרת הודעות או לקוחות.")
     : t("עוד לא שמרנו נתונים מהחיבורים. קריאה מוצלחת תופיע כאן, עם המקור והתאריך. אפשר להמשיך לעבוד בתוכנית.");

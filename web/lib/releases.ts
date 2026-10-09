@@ -1,7 +1,16 @@
 /** Published newest first, in the owner's Asia/Jerusalem calendar dates.
  * Add customer-facing notes with each shipped release. Never list planned features as shipped.
  */
+// English purpose: keep a published Story's last captured reach visible after expiry.
+// Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  {
+    id: "2026-10-09-instagram-story-results", date: "2026-10-09",
+    title: "תוצאות הסטורי נשמרות גם אחרי שהוא נעלם",
+    summary: "לחשבון אינסטגרם מחובר קוראים את נתוני הסטורי פעם בשעה. הוסיפו את הקישור לסטורי שפרסמתם בעורך, וליד הפוסט תראו כמה אנשים הגיעו אליו ומתי הנתון נקרא.",
+    detail: "המספר האחרון שנקרא נשמר גם אחרי 24 שעות. סטורי שלא התקבל עבורו נתון נשאר ללא מדידה, ולא נספר כאפס.",
+    href: "/performance", action: "לראות תוצאות",
+  },
   {
     id: "2026-10-09-post-reporting-dates", date: "2026-10-09",
     title: "תאריכי המדידה ליד תוצאות הפוסט",

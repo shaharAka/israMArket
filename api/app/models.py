@@ -208,6 +208,9 @@ class InstagramPost(Base):
 
     __tablename__ = "instagram_posts"
 
+    # Account provenance and per-metric captured Story dates. Additive for legacy rows.
+    instagram_id: Mapped[str] = mapped_column(String(64), default="")
+    insights_json: Mapped[str] = mapped_column(Text, default="{}")
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
     media_id: Mapped[str] = mapped_column(String(64))

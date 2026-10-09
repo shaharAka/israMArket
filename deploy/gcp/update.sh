@@ -106,6 +106,12 @@ main() {
     sleep 5
   done
   log "healthy: https://$site_host/backend/health"
+  if [[ -x "$HERE/install-story-capture.sh" ]]; then
+    "$HERE/install-story-capture.sh"
+  else
+    # An old version must not run a newer job after a rollback.
+    systemctl disable --now isramarket-stories.timer 2>/dev/null || true
+  fi
 
   # Old images and build cache pile up on a 30 GB boot disk.
   docker image prune -f >/dev/null
