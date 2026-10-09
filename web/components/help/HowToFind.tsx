@@ -5,6 +5,7 @@ import { useIsDesktop } from "@/components/posts/BottomSheet";
 import { HelpSheet } from "@/components/help/HelpSheet";
 import { rich } from "@/components/help/richText";
 import { SendToHelper } from "@/components/help/SendToHelper";
+import { IconChevron } from "@/lib/icons";
 import { GUIDES, type Device, type Guide, type GuideBlock, type HelpTopic } from "@/components/help/guides";
 
 /**
@@ -130,9 +131,8 @@ function GuideBody({ guide }: { guide: Guide }) {
 
 function Block({ block, device, first }: { block: GuideBlock; device: Device; first: boolean }) {
   const steps = block[device] ?? block.steps;
-  return (
-    <section className={first ? "" : "border-t border-[var(--rule)] pt-5"}>
-      <h3 className="text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{block.title}</h3>
+  const content = (
+    <>
       {block.text ? <p className="mt-1.5">{rich(block.text)}</p> : null}
       {steps?.length ? (
         <ol className="mt-3 space-y-2.5">
@@ -160,6 +160,23 @@ function Block({ block, device, first }: { block: GuideBlock; device: Device; fi
         </dl>
       ) : null}
       {block.note ? <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink-muted)]">{rich(block.note)}</p> : null}
+    </>
+  );
+  if (block.disclosure) {
+    return (
+      <details className="group border-t border-[var(--rule)] pt-2">
+        <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
+          {block.title}
+          <IconChevron aria-hidden className="h-5 w-5 shrink-0 text-[var(--ink-muted)] transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
+        </summary>
+        <div className="mt-2">{content}</div>
+      </details>
+    );
+  }
+  return (
+    <section className={first ? "" : "border-t border-[var(--rule)] pt-5"}>
+      <h3 className="text-[15px] font-semibold leading-6 text-[color:var(--ink)]">{block.title}</h3>
+      {content}
     </section>
   );
 }

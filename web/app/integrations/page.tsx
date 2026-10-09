@@ -463,44 +463,10 @@ export default function IntegrationsPage() {
               <MetaConnection primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
             </div>
 
-            <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
-              <p>
-                מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה
-                הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית.
-              </p>
-              <p>
-                מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה
-                חברה.
-              </p>
-              <div>
-                <p className={DETAIL_TITLE}>1. החשבון שלכם פרטי?</p>
-                <p className="mt-1">
-                  פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל ›
-                  תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים › <strong>מעבר לחשבון מקצועי</strong> ›
-                  עסק או יוצר תוכן.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>2. האינסטגרם חייב להיות מקושר לדף בפייסבוק</p>
-                <p className="mt-1">
-                  במסלול החיבור שלנו, בלי דף עסקי בפייסבוק אין גישה לנתוני האינסטגרם. אפשר לפתוח דף
-                  פשוט בחינם, ולחבר אליו את האינסטגרם בהגדרות הדף, תחת <strong>חשבונות מקושרים</strong>.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>3. מישהו אחר מנהל לכם את הדף?</p>
-                <p className="mt-1">
-                  בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף.
-                </p>
-                <div className="mt-2">
-                  <SendToHelper
-                    title="ההודעה למי שמנהל את הדף"
-                    message={GUIDES.instagram_business.stuck.message}
-                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
-                  />
-                </div>
-              </div>
-            </RowDetails>
+            <div className="flex flex-wrap gap-x-5">
+              <HowToFind topic="instagram_business" label="איך מחברים את האינסטגרם?" />
+              <HowToFind topic="facebook_data" label="הדף לא מופיע?" />
+            </div>
           </section>
           </ConnectionSection>
     ),
@@ -587,6 +553,10 @@ export default function IntegrationsPage() {
 
         <div className="space-y-4">
           {sourceOrder.map(source => <div key={source}>{connectionRows[source]}</div>)}
+        </div>
+
+        <div className="mt-6">
+          <HowToFind topic="tiktok_data" label="מה אפשר למדוד בטיקטוק בינתיים?" />
         </div>
 
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
