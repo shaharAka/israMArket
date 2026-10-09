@@ -2148,17 +2148,6 @@
       }
     ]
   },
-  "m_0454e7dc1f5ad9d8": {
-    "source": "לקריאת העדכונים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 10,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_045822b15a128877": {
     "source": "לחצו על התפריט ☰ למעלה, ואז **הגדרות ופעילות** (Settings and activity).",
     "language": "he",
@@ -50037,6 +50026,17 @@
       {
         "file": "web/app/business/page.tsx",
         "line": 52,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_70e84374b3402de4": {
+    "source": "לשבוע שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
