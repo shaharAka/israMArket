@@ -1,6 +1,7 @@
 "use client";
 
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
+import { LOCALE_META } from "@/lib/i18n/locales";
 
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -11,7 +12,8 @@ import { materiallyOlder } from "./sourceFreshness";
 /** Reading numbers and interpreting them are separate operations. */
 export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
   const t = useCopy();
-  const { formatLocale } = useLanguage();
+  const { locale } = useLanguage();
+  const formatLocale = LOCALE_META[locale].formatLocale;
   const source = payload.sources?.ga4;
   const analysis = payload.diagnostic?.analysis_status;
   const metaSource = payload.sources?.meta;

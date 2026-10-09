@@ -7921,7 +7921,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -13953,7 +13953,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -16233,7 +16233,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -30438,7 +30438,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -34013,7 +34013,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 43,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -36032,7 +36032,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -41452,7 +41452,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -43660,7 +43660,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -45165,7 +45165,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -49605,7 +49605,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -59665,7 +59665,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -69452,7 +69452,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 31,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -78197,7 +78197,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -79117,7 +79117,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -80525,7 +80525,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -85205,7 +85205,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 47,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -91373,7 +91373,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -94538,7 +94538,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -102954,7 +102954,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal"
       }
     ]
