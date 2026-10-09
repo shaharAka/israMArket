@@ -45,7 +45,7 @@ def read(user_token: str, page_token: str, page_id: str) -> dict:
                     try:
                         response = meta.graph_get(f"{post_id}/insights", {"metric": name, "period": "lifetime"}, page_token)
                     except meta.GraphError as exc:
-                        if exc.kind in {"token", "permission", "rate_limited", "unavailable"}:
+                        if exc.kind != "invalid":
                             raise
                         continue  # Unsupported metric stays absent, never a made-up zero.
                     for metric in response.get("data") or []:

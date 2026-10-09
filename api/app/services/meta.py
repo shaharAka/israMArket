@@ -137,7 +137,7 @@ def list_pages(access_token: str) -> list[dict]:
 
 # Codes Meta documents across the Graph and Instagram APIs, grouped by what the product
 # should *say* to the owner rather than by Meta's own taxonomy.
-_RATE_LIMIT_CODES = {4, 17, 32, 613, 80002}
+_RATE_LIMIT_CODES = {4, 17, 32, 613, 80001, 80002}
 _TOKEN_CODES = {102, 190, 463, 467}
 _PERMISSION_CODES = {3, 10}
 # Business Discovery answers "Cannot find User" (code 110, subcode 2207013) for a

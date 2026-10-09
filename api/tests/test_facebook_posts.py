@@ -17,6 +17,9 @@ def report(posts=None,page="111",**extra):
     return {"page_id":page,"posts":[post()] if posts is None else posts,"read_at":STAMP,"status":"ready","limited":False,**extra}
 
 class PageGraphTest(unittest.TestCase):
+    def test_page_specific_rate_limit_code_stops_as_rate_limit(self):
+        from test_instagram_signal import graph_error
+        self.assertEqual(meta.graph_error(graph_error(80001)).kind,"rate_limited")
     def read(self, side_effect):
         with mock.patch.object(meta_marketing,"collection",return_value=[{"id":"111","tasks":["ANALYZE"]}]),mock.patch.object(meta,"graph_get",side_effect=side_effect):
             return fb.read("USER","PAGE","111")
