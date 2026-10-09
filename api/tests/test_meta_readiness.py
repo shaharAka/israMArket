@@ -87,8 +87,8 @@ class MetaReadinessTest(unittest.TestCase):
 
     def test_page_without_linked_instagram_does_not_claim_post_data(self):
         self.seed(instagram=""); response, fetch, _ = self.read()
-        self.assertEqual(response.json()["integration"]["source_readiness"]["status"], "link_instagram")
-        self.assertIn("קשרו", self.state()["note_he"]); self.assertEqual(self.db.query(PerformanceSnapshot).count(), 0)
+        self.assertEqual(response.json()["integration"]["source_readiness"]["status"], "permission")
+        self.assertNotIn("אינסטגרם", self.state()["sections"]["facebook"]["note_he"]); self.assertEqual(self.db.query(PerformanceSnapshot).count(), 0)
         fetch.assert_not_called()
 
     def test_partial_read_keeps_matching_old_social_with_its_own_date(self):

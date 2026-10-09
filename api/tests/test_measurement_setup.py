@@ -106,10 +106,10 @@ class MeasurementSetupTest(unittest.TestCase):
         self.assertEqual([(row["key"], row["title"], row["status"]) for row in setup["requirements"]],
                          [("meta", "נתוני הפרסום", "done")])
 
-    def test_unimplemented_facebook_read_is_not_promised(self):
+    def test_facebook_requires_its_own_read_before_counting_as_connected(self):
         self.plan(["facebook_insights"])
         setup = self.latest()["measurement_setup"]
-        self.assertEqual(setup["requirements"][0]["status"], "soon")
+        self.assertEqual(setup["requirements"][0]["status"], "todo")
         self.assertFalse(setup["can_refresh"])
 
     def test_saved_snapshot_keeps_current_plan_requirements_and_numbers(self):

@@ -11,10 +11,10 @@ export function PostObservationLine({ observation, google = false }: { observati
   const { locale } = useLanguage();
   const t = useCopy();
   const read = dayMonth(observation?.read_at, locale);
-  if (observation?.source === "instagram" && observation.product_type === "STORY") {
+  if (observation?.source === "facebook" || (observation?.source === "instagram" && observation.product_type === "STORY")) {
     // Message: this is the captured Story count, dated when Meta returned it.
     return <p className="mt-1 text-[12px] leading-5 text-[color:var(--ink-muted)]">
-      Instagram · {read ? t("נקרא ב־{arg_0}", { arg_0: read }) : null}
+      {observation.source === "facebook" ? "Facebook" : "Instagram"} · {read ? t("נקרא ב־{arg_0}", { arg_0: read }) : null}
     </p>;
   }
   if (!google && observation?.source !== "ga4") return null;

@@ -42,6 +42,10 @@ def _posts(business: Business, db: Session) -> list[dict]:
 def _attribute(posts: list[dict], ga4_data: dict, meta_data: dict) -> list[dict]:
     campaigns = ga4_data.get("campaigns") or []
     media = [*(meta_data.get("posts") or []), *((meta_data.get("stories") or {}).get("posts") or [])]
+    from app.services.facebook_posts import METRICS
+    media.extend({**p, "source": "facebook", "insights": {"reach": p["insights"][METRICS[0]]}}
+                 for p in (meta_data.get("facebook") or {}).get("posts") or []
+                 if isinstance(p, dict) and (p.get("insights") or {}).get(METRICS[0]) is not None)
     rows = []
     for post in posts:
         utm = post.get("utm") or {}
@@ -212,7 +216,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
             meta_data = {**old_meta, "source_read_at": old_meta.get("source_read_at") or previous.created_at.isoformat(),
                          "source_period": old_meta.get("source_period") or {"start": previous.period_start, "end": previous.period_end}}
     meta_sections = (meta_readiness.public_state(meta_item).get("sections") or {}) if meta_item else {}
-    fresh_meta = any(section.get("status") in {"ready", "empty"} for name, section in meta_sections.items() if name in {"social", "stories", "ads"}) and meta_readiness.has_observations(meta_data)
+    fresh_meta = any(section.get("status") in {"ready", "empty"} for name, section in meta_sections.items() if name in {"social", "stories", "facebook", "ads"}) and meta_readiness.has_observations(meta_data)
     if not fresh_ga4 and not fresh_meta:
         # If neither provider delivered a fresh report, preserve the snapshot and
         # recommendation. A new timestamp must not make old evidence look new.
@@ -231,8 +235,8 @@ def _sync_payload(business: Business, db: Session) -> dict:
     meta_data = meta.snapshot_view(meta_data)
 
     posts = _posts(business, db)
-    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") else {})
-    post_results = _refresh_post_results(business, db, ga4_data if fresh_ga4 else None, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") else None)
+    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") or (meta_data.get("facebook") or {}).get("posts") else {})
+    post_results = _refresh_post_results(business, db, ga4_data if fresh_ga4 else None, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") or (meta_data.get("facebook") or {}).get("posts") else None)
 
     business_payload = {
         "name": business.name,

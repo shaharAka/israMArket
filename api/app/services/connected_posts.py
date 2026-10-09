@@ -429,6 +429,24 @@ def connected_view(
                        compare=None, observations=observations)
         view["results"] = results
     view["learning"] = _clean(post.get("learning"), 300) or None
+    if view["channel"] == "facebook" and view["results"]:
+        from app.services.facebook_posts import METRICS as PAGE_METRICS, permalink_key, post_id
+        results = dict(view["results"])
+        observations = dict(results.get("observations") or {})
+        reach = observations.get("reach") or {}
+        page_id = str(reach.get("account_id") or "")
+        linked = (post_id(view.get("published_url"), page_id) == reach.get("media_id") or
+                  bool(permalink_key(view.get("published_url")) and permalink_key(view.get("published_url")) == permalink_key(reach.get("permalink"))))
+        if not (reach.get("source") == "facebook" and reach.get("provider_metric") == PAGE_METRICS[0]
+                and reach.get("period") == "lifetime" and reach.get("read_at") and page_id and linked):
+            results.pop("reach", None)
+            observations.pop("reach", None)
+        results.pop("saves", None)
+        observations.pop("saves", None)
+        results.update(metric=view["measure"]["metric"], value=results.get(RESULT_KEY[view["measure"]["metric"]]), observations=observations)
+        if view["measure"]["metric"] == "reach":
+            results["compare"] = None
+        view["results"] = results
     if view["measure"]["metric"] == "site_visits" and view["results"] and not metric_observation(view["results"], "site_visits"):
         # Keep historical counts, but not a legacy comparison with unknown dates.
         view["results"] = {**view["results"], "compare": None}
@@ -897,7 +915,7 @@ def _media_rows(db, business_id: int, meta_data: dict | None) -> list[dict]:
     Story observations keep the date each metric was actually captured, including
     after expiry. Legacy unscoped Stories are not assumed to belong to a selection.
     """
-    from app.models import InstagramPost, Integration
+    from app.models import InstagramPost, Integration, PerformanceSnapshot
     report = meta_data or {}
     account = str(report.get("instagram_id") or (report.get("source_selection") or {}).get("instagram_id") or "")
     if not account:
@@ -934,6 +952,26 @@ def _media_rows(db, business_id: int, meta_data: dict | None) -> list[dict]:
                      "reach": _number(insights.get("reach")) if "reach" in insights else prior.get("reach"),
                      "saves": None if story else _number(insights.get("saved")) if "saved" in insights else prior.get("saves"),
                      "observations": stamps}
+    # Page posts live on owner-scoped snapshots, never in Instagram's media table.
+    connection = db.query(Integration).filter_by(business_id=business_id, provider="meta", status="connected").first()
+    if connection:
+        from app.services.meta_readiness import selection
+        from app.services.facebook_posts import merge, METRICS
+        page_id = selection(connection)["page_id"]
+        latest = db.query(PerformanceSnapshot).filter_by(business_id=business_id).order_by(PerformanceSnapshot.created_at.desc(), PerformanceSnapshot.id.desc()).first()
+        previous = ((loads(latest.meta_json, {}) or {}).get("facebook") or {}) if latest else {}
+        current = report.get("facebook") or {"page_id": page_id, "posts": []}
+        facebook = merge(current, previous)
+        if page_id and facebook.get("page_id") == page_id:
+            for post in facebook.get("posts") or []:
+                observed = (post.get("observations") or {}).get(METRICS[0]) or {}
+                value = (post.get("insights") or {}).get(METRICS[0])
+                if (post.get("page_id") == page_id and observed.get("source") == "facebook"
+                    and observed.get("account_id") == page_id and observed.get("media_id") == post.get("id")
+                    and observed.get("period") == "lifetime" and observed.get("read_at") and _number(value) is not None):
+                    rows["facebook:" + post["id"]] = {"id": post["id"], "source": "facebook", "page_id": page_id,
+                        "permalink": post.get("permalink") or "", "product_type": "PAGE_POST", "reach": value,
+                        "saves": None, "observations": {"reach": observed}}
     return list(rows.values())
 
 
@@ -964,10 +1002,22 @@ def _story_id(url: str) -> str:
 
 
 def _match_media(view: dict, media: list[dict], used: set[str]) -> tuple[dict | None, str]:
+    if view["channel"] == "facebook":
+        from app.services.facebook_posts import permalink_key, post_id
+        published = str(view.get("published_url") or "")
+        for item in media:
+            if item.get("source") != "facebook" or item["id"] in used:
+                continue
+            identity = post_id(published, item["page_id"])
+            # PHP links carry identity in the query: stripping it could match every post.
+            exact = bool(permalink_key(published) and permalink_key(published) == permalink_key(item.get("permalink")))
+            if (identity and identity == item["id"]) or exact:
+                return item, "facebook_link"
+        return None, ""
     if view["channel"] != "instagram":
         return None, ""  # An Instagram permalink never measures a Facebook post.
     story = view.get("format") == "story"
-    candidates = [item for item in media if (item.get("product_type") == "STORY") == story and item["id"] not in used]
+    candidates = [item for item in media if item.get("source") != "facebook" and (item.get("product_type") == "STORY") == story and item["id"] not in used]
     published = _permalink(view.get("published_url"))
     if published:
         story_id = _story_id(view.get("published_url")) if story else ""
@@ -1066,6 +1116,8 @@ def _ga_observation(report: dict, now: str) -> dict:
 def compatible_observations(target: dict, other: dict) -> bool:
     if target["view"].get("format") == "story" or other["view"].get("format") == "story":
         return False
+    if target["metric"] == "reach" and (target["view"].get("channel") == "facebook" or other["view"].get("channel") == "facebook"):
+        return False  # Lifetime counts have different exposure ages; do not invent a winner.
     if target["metric"] != "site_visits":
         return True  # Existing cumulative source comparisons are unchanged in C4.
     a = metric_observation(target["view"].get("results") or {}, "site_visits")
@@ -1086,8 +1138,10 @@ def learning_facts(target: dict, other: dict | None) -> dict:
     value, metric = int(target["value"]), target["metric"]
     facts = {"ref": target["view"]["uid"], "metric": metric, "value": value, "compare": None,
              "direction": "first", "only_here": "", "only_there": ""}
-    if other is None and (metric == "site_visits" or target["view"].get("format") == "story"):
+    if other is None and (metric == "site_visits" or target["view"].get("format") == "story" or target["view"].get("channel") == "facebook"):
         facts["direction"] = "observed"
+        if target["view"].get("format") == "story" or target["view"].get("channel") == "facebook":
+            facts["hide_repeated_count"] = True
     if other is None:
         return facts
     compare = int(other["value"])
@@ -1110,7 +1164,7 @@ def template_learning(facts: dict) -> str:
     count = count_he(facts["metric"], facts["value"])
     direction = facts["direction"]
     if direction == "observed":
-        return f"{count}."
+        return "" if facts.get("hide_repeated_count") else f"{count}."
     if direction == "first" or facts.get("compare") is None:
         return f"{count}. זה הפוסט הראשון מהסוג הזה שמדדנו, נשווה אליו את הבאים."
     compare = f"{int(facts['compare']):,}"
@@ -1265,7 +1319,7 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
             post["results"] = results
             _mark(stored, record)
         signature = dumps(facts)
-        if post.get("learning_key") != signature or not post.get("learning"):
+        if post.get("learning_key") != signature or (not post.get("learning") and facts["direction"] != "observed"):
             phrases.append(facts)
             pending.append((record, post, signature))
     if phrases:

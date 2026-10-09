@@ -4,6 +4,15 @@
 // English purpose: keep a published Story's last captured reach visible after expiry.
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  // Purpose: show a published Facebook post's own measured people count and date.
+  // Action: paste its Facebook link; Page insights require an existing read grant.
+  {
+    id: "2026-10-09-facebook-post-results", date: "2026-10-09",
+    title: "תוצאות נפרדות לפוסטים בפייסבוק",
+    summary: "לדף עם הרשאה לנתוני פוסטים אפשר לראות כמה אנשים צפו בכל פוסט, לצד תאריך הקריאה. הוסיפו בעורך את הקישור לפוסט שפרסמתם בפייסבוק.",
+    detail: "המדידה שייכת לדף ולפוסט שבחרתם. נתוני אינסטגרם אינם נספרים כתוצאות פייסבוק, ונתון חסר אינו אפס. אם הקריאה נכשלת, המספרים הקודמים נשמרים עם התאריך שלהם.",
+    href: "/performance", action: "לראות תוצאות",
+  },
   {
     id: "2026-10-09-instagram-story-results", date: "2026-10-09",
     title: "תוצאות הסטורי נשמרות גם אחרי שהוא נעלם",

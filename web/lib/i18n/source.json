@@ -1268,7 +1268,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 142,
+        "line": 160,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -2124,7 +2124,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 641,
+        "line": 659,
         "kind": "template",
         "purpose": "copy"
       }
@@ -2495,6 +2495,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1230,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0520e766896f7024": {
+    "source": "סטורי באינסטגרם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/SourceReadState.tsx",
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -4383,7 +4394,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 513,
+        "line": 531,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5120,7 +5131,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -6364,7 +6375,7 @@
     "references": [
       {
         "file": "api/app/services/meta_readiness.py",
-        "line": 113,
+        "line": 133,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6489,7 +6500,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -7052,7 +7063,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -7802,7 +7813,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -9076,7 +9087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -10170,7 +10181,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 146,
         "kind": "literal"
       }
     ]
@@ -10840,7 +10851,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -14732,11 +14743,6 @@
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
         "line": 84,
         "kind": "jsx"
-      },
-      {
-        "file": "web/components/results/PostObservationLine.tsx",
-        "line": 17,
-        "kind": "jsx"
       }
     ]
   },
@@ -15225,7 +15231,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -15419,7 +15425,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -15854,7 +15860,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 73,
+        "line": 69,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -15953,18 +15959,6 @@
       {
         "file": "api/app/services/design_dna.py",
         "line": 202,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
-  "m_22ee744f5841bc9c": {
-    "source": " מדידת הפוסטים בעמוד הפייסבוק עדיין לא זמינה כאן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/plan_connections.py",
-        "line": 76,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -16114,7 +16108,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 102,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16661,7 +16655,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 517,
+        "line": 535,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -17855,7 +17849,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 130,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18691,7 +18685,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 250,
+        "line": 268,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19670,7 +19664,7 @@
     "references": [
       {
         "file": "api/app/services/meta_readiness.py",
-        "line": 136,
+        "line": 156,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19682,7 +19676,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 18,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19974,7 +19968,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -20482,7 +20476,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 139,
+        "line": 157,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -20954,7 +20948,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 299,
+        "line": 303,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -21096,17 +21090,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 56,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 84,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -22028,7 +22022,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 153,
+        "line": 157,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -22470,7 +22464,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 139,
+        "line": 157,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -24857,7 +24851,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 519,
+        "line": 537,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25504,7 +25498,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -26559,7 +26553,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -27219,7 +27213,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 643,
+        "line": 661,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -28371,7 +28365,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 60,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28760,7 +28754,7 @@
     "references": [
       {
         "file": "api/app/services/meta_readiness.py",
-        "line": 131,
+        "line": 151,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29092,7 +29086,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 258,
+        "line": 276,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29307,7 +29301,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -31176,7 +31170,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -31691,7 +31685,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -32327,7 +32321,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -32621,12 +32615,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 14,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 28,
         "kind": "literal"
       },
       {
@@ -33061,18 +33060,6 @@
         "file": "web/lib/api.ts",
         "line": 323,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_4992ff928f4d584e": {
-    "source": "נתוני אינסטגרם ופייסבוק",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/recommendation_context.py",
-        "line": 126,
-        "kind": "literal",
-        "purpose": "copy"
       }
     ]
   },
@@ -35263,7 +35250,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 74,
+        "line": 70,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -35803,7 +35790,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 144,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36361,7 +36348,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -36528,7 +36515,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 116,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37077,7 +37064,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 302,
+        "line": 306,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38647,7 +38634,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -39423,6 +39410,18 @@
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 169,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_58d0b3f7a9982043": {
+    "source": "צפיות בפוסטים בפייסבוק מצטברות מאז הפרסום. אותו אדם יכול לצפות בכמה פוסטים; לא מחברים את הספירות לקהל אחד, ולא מסיקים מהן פניות או רכישות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 149,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -40475,6 +40474,17 @@
       }
     ]
   },
+  "m_5bba5d3e34f68873": {
+    "source": "לדף עם הרשאה לנתוני פוסטים אפשר לראות כמה אנשים צפו בכל פוסט, לצד תאריך הקריאה. הוסיפו בעורך את הקישור לפוסט שפרסמתם בפייסבוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5bc58eca7ce0bdb9": {
     "source": "כיוון ברור. צעדים קרובים.",
     "language": "he",
@@ -41175,7 +41185,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 139,
         "kind": "literal"
       }
     ]
@@ -42306,7 +42316,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 136,
+        "line": 154,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -42850,7 +42860,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1119,
+        "line": 1173,
         "kind": "template",
         "purpose": "copy"
       }
@@ -43389,7 +43399,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -43819,7 +43829,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -44232,7 +44242,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -45381,7 +45391,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 244,
+        "line": 262,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -47364,7 +47374,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47485,7 +47495,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 132,
         "kind": "literal"
       }
     ]
@@ -47540,7 +47550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -47665,7 +47675,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 137,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48946,7 +48956,13 @@
     "references": [
       {
         "file": "api/app/services/meta_readiness.py",
-        "line": 110,
+        "line": 109,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/meta_readiness.py",
+        "line": 130,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -49761,7 +49777,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 123,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50026,6 +50042,18 @@
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 199,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_70883e0268177ad8": {
+    "source": "Invalid Page response",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/facebook_posts.py",
+        "line": 31,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -50304,7 +50332,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -50337,7 +50365,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -51884,7 +51912,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1123,
+        "line": 1177,
         "kind": "template",
         "purpose": "copy"
       }
@@ -53755,7 +53783,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 95,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54083,7 +54111,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 236,
+        "line": 254,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54477,7 +54505,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -56880,7 +56908,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -57664,7 +57692,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 233,
+        "line": 251,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58266,7 +58294,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -60337,7 +60365,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 39,
         "kind": "literal",
         "purpose": "display"
       }
@@ -61013,7 +61041,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 645,
+        "line": 663,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61288,7 +61316,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 595,
+        "line": 613,
         "kind": "template",
         "purpose": "copy"
       }
@@ -61970,7 +61998,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 179,
+        "line": 183,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -63602,7 +63630,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 81,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63844,7 +63872,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 139,
+        "line": 157,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63917,7 +63945,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 74,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64862,7 +64890,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 243,
+        "line": 261,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -67422,7 +67450,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -68522,7 +68550,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1121,
+        "line": 1175,
         "kind": "template",
         "purpose": "copy"
       }
@@ -68753,7 +68781,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 238,
+        "line": 256,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -68871,7 +68899,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -69068,7 +69096,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -69922,7 +69950,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1152,
+        "line": 1206,
         "kind": "template",
         "purpose": "copy"
       }
@@ -70122,6 +70150,18 @@
         "file": "web/components/landing-v2/businessExamples.ts",
         "line": 45,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_9de7d6674da5ea99": {
+    "source": "צפיות בפוסט בפייסבוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -70900,7 +70940,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1118,
+        "line": 1172,
         "kind": "template",
         "purpose": "copy"
       }
@@ -71205,7 +71245,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -71905,7 +71945,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1122,
+        "line": 1176,
         "kind": "template",
         "purpose": "copy"
       }
@@ -72442,7 +72482,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -73007,7 +73047,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 182,
+        "line": 186,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -75924,7 +75964,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 109,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76866,7 +76906,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -77072,7 +77112,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 515,
+        "line": 533,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -77680,7 +77720,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 256,
+        "line": 274,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78044,7 +78084,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 133,
         "kind": "literal"
       }
     ]
@@ -78196,6 +78236,17 @@
       }
     ]
   },
+  "m_b0f0aa5e0e4f73d2": {
+    "source": "המדידה שייכת לדף ולפוסט שבחרתם. נתוני אינסטגרם אינם נספרים כתוצאות פייסבוק, ונתון חסר אינו אפס. אם הקריאה נכשלת, המספרים הקודמים נשמרים עם התאריך שלהם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 13,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b0f23c6984708072": {
     "source": "נשען רק על הערכה או על מידע חסר",
     "language": "he",
@@ -78259,7 +78310,7 @@
     "references": [
       {
         "file": "api/app/services/meta_readiness.py",
-        "line": 134,
+        "line": 154,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -79043,7 +79094,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 25,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82308,7 +82359,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 254,
+        "line": 272,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83606,7 +83657,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84645,7 +84696,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -84764,7 +84815,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -85270,7 +85321,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 521,
+        "line": 539,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -85829,6 +85880,18 @@
       }
     ]
   },
+  "m_c200c347c06b7a91": {
+    "source": "נתוני אינסטגרם",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 126,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_c201ada215908a59": {
     "source": "- אתר: {arg_0}",
     "language": "he",
@@ -86010,7 +86073,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 636,
+        "line": 654,
         "kind": "template",
         "purpose": "copy"
       }
@@ -89673,19 +89736,13 @@
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 58,
-        "kind": "literal",
-        "purpose": "copy"
-      },
-      {
-        "file": "api/app/services/plan_connections.py",
-        "line": 79,
+        "line": 73,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 240,
+        "line": 258,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -89854,7 +89911,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -90501,7 +90558,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -93149,7 +93206,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 111,
         "kind": "literal"
       }
     ]
@@ -93763,18 +93820,6 @@
       }
     ]
   },
-  "m_d4361e2974ac2926": {
-    "source": "מדידת הפוסטים בעמוד הפייסבוק עדיין לא זמינה כאן. אפשר להמשיך בתוכנית ולפרסם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/plan_connections.py",
-        "line": 57,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_d438d648211cb41f": {
     "source": "אם היא לא תתאמת:",
     "language": "he",
@@ -94221,6 +94266,18 @@
       }
     ]
   },
+  "m_d4d85cfdcc26ee59": {
+    "source": "אנשים שצפו בפוסט בפייסבוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_d4e76119201be107": {
     "source": "הכניסה עם Google מזהה אתכם בישראמארקט, ואינה מחברת את המדידה. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר.",
     "language": "he",
@@ -94475,6 +94532,23 @@
       }
     ]
   },
+  "m_d5247c9413f1e800": {
+    "source": "פוסטים בפייסבוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/SourceReadState.tsx",
+        "line": 75,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 137,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_d52d80a6caca6aa3": {
     "source": "איכות ללא פשרות",
     "language": "he",
@@ -94575,7 +94649,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -95232,7 +95306,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 46,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96370,7 +96444,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 588,
+        "line": 606,
         "kind": "template",
         "purpose": "copy"
       }
@@ -96548,7 +96622,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 301,
+        "line": 305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -98050,7 +98124,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 252,
+        "line": 270,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -98324,6 +98398,18 @@
       }
     ]
   },
+  "m_ddf864b7408ac95e": {
+    "source": "תוצאות נפרדות לפוסטים בפייסבוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_de01e8d6a9fe6fb2": {
     "source": "סיבה (לא חובה, רק לכם)",
     "language": "he",
@@ -98352,7 +98438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -98611,7 +98697,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -99147,7 +99233,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 637,
+        "line": 655,
         "kind": "template",
         "purpose": "copy"
       }
@@ -99266,6 +99352,18 @@
       }
     ]
   },
+  "m_dfc9cf6dc70fb6db": {
+    "source": "Page analyze access missing",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/facebook_posts.py",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_dfcd2d3169ebd930": {
     "source": "מכניסים לפוסט…",
     "language": "he",
@@ -99283,7 +99381,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 78,
+        "line": 72,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -99307,7 +99405,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -99369,7 +99467,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 235,
+        "line": 253,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100913,6 +101011,18 @@
       }
     ]
   },
+  "m_e3139c400b568910": {
+    "source": "חסרה הרשאה לנתוני הפוסטים בפייסבוק. חיבור הדף נשמר; אפשר להמשיך בתוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/meta_readiness.py",
+        "line": 122,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_e321fe78ac54f1fc": {
     "source": "לכל הפניות ולפנייה חדשה",
     "language": "he",
@@ -102231,7 +102341,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -102242,7 +102352,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -103902,7 +104012,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1115,
+        "line": 1169,
         "kind": "template",
         "purpose": "copy"
       }
@@ -104398,7 +104508,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -104582,7 +104692,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 79,
+        "line": 73,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -106013,7 +106123,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 203,
+        "line": 207,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -106176,7 +106286,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 231,
+        "line": 249,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -107486,7 +107596,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 418,
+        "line": 422,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -109563,7 +109673,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -110062,7 +110172,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 67,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111290,7 +111400,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 250,
+        "line": 268,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -111932,7 +112042,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -112426,7 +112536,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -112461,7 +112571,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 241,
+        "line": 259,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -113082,7 +113192,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 88,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113405,7 +113515,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -113867,7 +113977,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 231,
+        "line": 249,
         "kind": "literal",
         "purpose": "copy"
       }

@@ -9,7 +9,7 @@ from sqlalchemy.exc import InvalidRequestError
 
 from app.models import Integration, PerformanceSnapshot
 from app.security import decrypt_page_token, decrypt_secret
-from app.services import analysis_jobs, instagram_signal, meta, meta_marketing
+from app.services import analysis_jobs, facebook_posts, instagram_signal, meta, meta_marketing
 from app.services.jsonutil import dumps, loads
 
 NOTES = {
@@ -84,7 +84,7 @@ def _record(db, item, state):
 
 
 def aggregate(sections: dict) -> str:
-    data = [sections[k] for k in ("social", "stories", "ads") if k in sections]
+    data = [sections[k] for k in ("social", "stories", "facebook", "ads") if k in sections]
     usable = [row for row in data if row["status"] in {"ready", "empty"}]
     problems = [row for row in sections.values() if row.get("incomplete") or row["status"] not in {"ready", "empty", "receiving"}]
     if usable:
@@ -101,8 +101,28 @@ def fetch(item: Integration, website: str, start: str, end: str) -> tuple[dict, 
     report, sections = {}, {}
     now = datetime.utcnow().isoformat()
     if chosen["page_id"]:
+        scopes = set(extra.get("scopes") or [])
+        if facebook_posts.SCOPES.issubset(scopes):
+            try:
+                page_token = decrypt_page_token(extra, chosen["page_id"])
+                if not page_token:
+                    raise meta.GraphError("missing Page grant", kind="token")
+                page_report = facebook_posts.read(decrypt_secret(item.access_token_enc), page_token, chosen["page_id"])
+                report["facebook"] = page_report
+                status = page_report.get("status")
+                sections["facebook"] = {"status": "ready" if page_report.get("posts") else "empty", "read_at": page_report.get("read_at")}
+                if status not in {"ready", "empty"}:
+                    recovery = failure(meta.GraphError("Page read incomplete", kind=page_report.get("failure") or status))
+                    sections["facebook"] = ({**sections["facebook"], "incomplete": True, "recovery_status": recovery["status"], "note_he": recovery["note_he"]}
+                                            if page_report.get("posts") else {**recovery, "incomplete": True})
+            except Exception as exc:
+                sections["facebook"] = failure(exc)
+        elif not chosen["instagram_id"]:
+            # A Facebook-only customer should not be told to link Instagram as a prerequisite.
+            sections["facebook"] = {"status": "permission", "note_he": "חסרה הרשאה לנתוני הפוסטים בפייסבוק. חיבור הדף נשמר; אפשר להמשיך בתוכנית."}
         if not chosen["instagram_id"]:
-            sections["social"] = {"status": "link_instagram", "note_he": NOTES["link_instagram"]}
+            if "facebook" not in sections:
+                sections["social"] = {"status": "link_instagram", "note_he": NOTES["link_instagram"]}
         else:
             try:
                 token = decrypt_page_token(extra, chosen["page_id"])
@@ -178,6 +198,16 @@ def retain_sections(report: dict, sections: dict, previous: PerformanceSnapshot 
     chosen = report["source_selection"]
     stamps = dict(report.get("source_reads") or {})
     for name, row in sections.items():
+        if name == "facebook":
+            before = older.get("facebook") or {}
+            current = report.get("facebook") or {"page_id": chosen["page_id"], "posts": [], "status": row["status"]}
+            report["facebook"] = facebook_posts.merge(current, before)
+            if row["status"] in {"ready", "empty"}:
+                stamps[name] = {"read_at": report["source_read_at"], "scope": "cumulative", "period": None}
+            elif before.get("page_id") == chosen["page_id"]:
+                stamps[name] = (older.get("source_reads") or {}).get(name) or {"read_at": before.get("read_at"), "scope": "cumulative", "period": None}
+                row["retained_at"] = stamps[name].get("read_at")
+            continue
         if row["status"] in {"ready", "empty", "receiving", "waiting", "wrong_site", "site_unconfirmed"}:
             stamps[name] = ({"read_at": (report.get("stories") or {}).get("read_at") or report["source_read_at"], "scope": "cumulative", "period": None}
                             if name == "stories" else {"read_at": report["source_read_at"], "period": report["source_period"]})
@@ -199,6 +229,7 @@ def retain_sections(report: dict, sections: dict, previous: PerformanceSnapshot 
 def has_observations(report: dict) -> bool:
     values = [(report.get("page") or {}).get("fan_count"), (report.get("account") or {}).get("followers_count")]
     values.extend(value for post in (report.get("stories") or {}).get("posts", []) for value in post.get("insights", {}).values())
+    values.extend(value for post in (report.get("facebook") or {}).get("posts", []) for value in post.get("insights", {}).values())
     values.extend(value for post in report.get("posts", []) for value in (post.get("like_count"), post.get("comments_count"), *post.get("insights", {}).values()))
     values.extend(value for window in (report.get("account") or {}).get("windows", {}).values() for value in window.get("current", {}).get("values", {}).values())
     values.extend(value for metric, value in (report.get("ads") or {}).get("overview", {}).items() if metric not in {"id", "name", "currency"})
@@ -222,7 +253,9 @@ def read(db: Session, item: Integration, website: str, start: str, end: str) -> 
     report = retain_sections(report, sections, prior)
     status = aggregate(sections)
     state.update(status=status, note_he=NOTES[status], sections=sections, checked_at=datetime.utcnow().isoformat())
-    if any(row["status"] in {"ready", "empty"} for name, row in sections.items() if name in {"social", "stories", "ads"}):
+    if status == "permission" and set(sections) == {"facebook"} and sections["facebook"].get("note_he"):
+        state["note_he"] = sections["facebook"]["note_he"]
+    if any(row["status"] in {"ready", "empty"} for name, row in sections.items() if name in {"social", "stories", "facebook", "ads"}):
         state.update(last_success_at=report["source_read_at"], period=report["source_period"])
     extra = loads(item.extra_json, {}) or {}
     if "tracking" in report and sections.get("tracking", {}).get("read_at"):
@@ -247,7 +280,7 @@ def initial_read(db: Session, item: Integration, website: str) -> dict | None:
     if report is None:
         return None
     state = public_state(item)
-    if not report or not has_observations(report) or not any(row["status"] in {"ready", "empty"} for name, row in (state.get("sections") or {}).items() if name in {"social", "stories", "ads"}):
+    if not report or not has_observations(report) or not any(row["status"] in {"ready", "empty"} for name, row in (state.get("sections") or {}).items() if name in {"social", "stories", "facebook", "ads"}):
         return state
     # Persist new observations before any analysis. Preserve the site's own read date/window.
     previous = db.query(PerformanceSnapshot).filter_by(business_id=item.business_id).order_by(PerformanceSnapshot.created_at.desc(), PerformanceSnapshot.id.desc()).first()
@@ -261,6 +294,10 @@ def initial_read(db: Session, item: Integration, website: str) -> dict | None:
            ga4_json=dumps(ga4_data), meta_json=dumps(meta.snapshot_view(report)), diagnostic_json=dumps({"analysis_status": "pending", "headline": "", "top_content": [], "bottom_content": [], "funnel_issues": [], "metric_highlights": []}))
     db.add(snap)
     db.commit()
+    if (report.get("facebook") or {}).get("posts"):
+        from app.services import connected_posts
+        connected_posts.refresh_results(db, item.business, meta_data=report, phrase=False)
+        db.commit()
     analysis_jobs.enqueue(db, snap)
     return public_state(item)
 
