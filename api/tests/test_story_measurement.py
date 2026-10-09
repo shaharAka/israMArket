@@ -109,6 +109,12 @@ class StoryPostTest(ConnectedTestCase):
         measured=cp.measured_posts(self.current_posts())['items'][0]
         self.assertEqual(measured['observation']['read_at'],STAMP)
 
+    def test_legacy_story_cannot_display_feed_saves_or_undated_reach(self):
+        for legacy in [{'metric':'saves','value':8,'saves':8}, {'metric':'reach','value':80,'reach':80}]:
+            view=cp.connected_view({**stored_post('Legacy Story',uid='legacy001',format='story',channel='instagram',mix_type='value',cta='לפרטים',published_url='https://www.instagram.com/stories/example/178123/'), 'results':legacy},index=0,business_id=self.business.id,year=2026,month=10)
+            self.assertEqual(cp.measured_posts([view])['items'],[])
+            self.assertNotIn('saves',view.get('results') or {})
+
     def test_late_response_cannot_rewind_a_captured_count_or_its_date(self):
         sig.store_media(self.db,self.business.id,{'instagram_id':ACCOUNT,'stories':report([story(40, "2026-10-09T11:00:00+00:00", permalink="https://www.instagram.com/stories/example/178123/")])})
         self.db.commit()

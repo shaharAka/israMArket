@@ -413,6 +413,21 @@ def connected_view(
     view["measure"] = measure_for(view, website, whatsapp_key=key)
     view["owner_needs"] = owner_needs(view)
     view["results"] = post.get("results") if isinstance(post.get("results"), dict) else None
+    if view.get("format") == "story" and view["results"]:
+        # Old caption matching could attach a feed's counts to a Story. Expose only
+        # captured Story reach; Stories never support saves. Other sources still work.
+        results = dict(view["results"])
+        observations = dict(results.get("observations") or {})
+        reach = observations.get("reach") or {}
+        if not (reach.get("source") == "instagram" and reach.get("product_type") == "STORY"
+                and reach.get("read_at") and reach.get("media_id") == _story_id(view.get("published_url"))):
+            results.pop("reach", None)
+            observations.pop("reach", None)
+        results.pop("saves", None)
+        observations.pop("saves", None)
+        results.update(metric=view["measure"]["metric"], value=results.get(RESULT_KEY[view["measure"]["metric"]]),
+                       compare=None, observations=observations)
+        view["results"] = results
     view["learning"] = _clean(post.get("learning"), 300) or None
     if view["measure"]["metric"] == "site_visits" and view["results"] and not metric_observation(view["results"], "site_visits"):
         # Keep historical counts, but not a legacy comparison with unknown dates.
