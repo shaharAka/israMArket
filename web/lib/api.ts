@@ -5225,6 +5225,11 @@ export type PerformancePayload = {
   ga4: {
     property_id?: string;
     read_at?: string;
+    period?: { start: string; end: string };
+    report_scope?: "overview" | "partial" | "detailed";
+    report_reads?: Record<string, { status: "available" | "empty" | "unavailable"; limit?: number; limited?: boolean }>;
+    channels?: Record<string, string>[];
+    events?: Record<string, string>[];
     overview?: Record<string, string>;
     landing_pages?: Record<string, string>[];
     campaigns?: Record<string, string>[];

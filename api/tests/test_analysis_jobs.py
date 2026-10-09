@@ -257,3 +257,22 @@ class AutomaticAnalysisTest(unittest.TestCase):
             ga4_readiness.initial_read(self.db, self.item)
         self.assertEqual(self.db.query(AnalysisJob).count(), 0)
         self.diag.assert_not_called()
+
+    def test_first_connection_details_reach_diagnosis_and_plan_action_without_manual_refresh(self):
+        end = date.today() - timedelta(days=1)
+        details = {"property_id": "123", "overview": {"sessions": "42", "conversions": "4"},
+                   "period": {"start": (end - timedelta(days=27)).isoformat(), "end": end.isoformat()},
+                   "channels": [{"sessionSourceMedium": "instagram / social", "sessions": "21"}],
+                   "landing_pages": [{"landingPagePlusQueryString": "/book", "sessions": "21"}],
+                   "campaigns": [{"sessionManualAdContent": "p1", "sessions": "21"}],
+                   "events": [{"eventName": "generate_lead", "eventCount": "4"}],
+                   "report_reads": {"events": {"status": "available", "limit": 30, "limited": False}}}
+        with mock.patch.object(ga4, "fetch_report", return_value=details) as read:
+            response = self.client.post("/integrations/ga4/read")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(read.call_args.kwargs.get("overview_only", False))
+        self.assertTrue(jobs.run_next(self.factory))
+        for key in ("channels", "landing_pages", "campaigns", "events", "report_reads"):
+            self.assertEqual(self.diag.call_args.args[1][key], details[key])
+            self.assertEqual(self.rec.call_args.args[3][key], details[key])
+        self.assertIn('/posts?', self.client.get('/recommendations/latest').json()['suggestions']['suggestions'][0]['review']['href'])

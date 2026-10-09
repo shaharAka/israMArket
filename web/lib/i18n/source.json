@@ -401,7 +401,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 312,
+        "line": 316,
         "kind": "literal",
         "purpose": "display"
       }
@@ -526,7 +526,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 851,
+        "line": 842,
         "kind": "jsx"
       }
     ]
@@ -627,7 +627,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 223,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -638,7 +638,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 666,
+        "line": 657,
         "kind": "jsx"
       }
     ]
@@ -691,7 +691,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 163,
+        "line": 167,
         "kind": "literal",
         "purpose": "display"
       }
@@ -848,7 +848,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 132,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -937,7 +937,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 150,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       }
@@ -1211,7 +1211,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 113,
+        "line": 118,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -1256,7 +1256,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 597,
+        "line": 601,
         "kind": "literal",
         "purpose": "display"
       },
@@ -1509,7 +1509,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 524,
+        "line": 528,
         "kind": "literal"
       }
     ]
@@ -1804,7 +1804,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 738,
+        "line": 729,
         "kind": "literal"
       }
     ]
@@ -1997,7 +1997,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 232,
+        "line": 244,
         "kind": "jsx"
       }
     ]
@@ -2078,7 +2078,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 238,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -2189,7 +2189,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 595,
+        "line": 599,
         "kind": "literal",
         "purpose": "display"
       },
@@ -2749,7 +2749,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 358,
+        "line": 362,
         "kind": "literal"
       }
     ]
@@ -3074,7 +3074,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 780,
+        "line": 771,
         "kind": "literal"
       }
     ]
@@ -3411,13 +3411,24 @@
       }
     ]
   },
+  "m_0780b02e92d5a76b": {
+    "source": "מצאתם מזהה כמו G-AB12CD34EF? התג נמצא בקוד, אבל זה עדיין לא מאשר שנאספים נתונים. נשאר לחבר את החשבון ולבדוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 128,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_07880693af5b2937": {
     "source": "תקועים? שלחו את זה למי שמנהל לכם את הדף בפייסבוק",
     "language": "he",
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 289,
+        "line": 293,
         "kind": "literal",
         "purpose": "display"
       }
@@ -3619,7 +3630,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 606,
+        "line": 610,
         "kind": "literal"
       }
     ]
@@ -4063,7 +4074,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 256,
+        "line": 268,
         "kind": "jsx"
       }
     ]
@@ -5394,7 +5405,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 586,
+        "line": 590,
         "kind": "literal"
       }
     ]
@@ -5544,7 +5555,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 655,
+        "line": 659,
         "kind": "literal"
       }
     ]
@@ -5640,7 +5651,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 937,
+        "line": 928,
         "kind": "literal"
       },
       {
@@ -6150,7 +6161,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 268,
+        "line": 280,
         "kind": "jsx"
       }
     ]
@@ -6263,7 +6274,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -6425,7 +6436,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 592,
+        "line": 583,
         "kind": "literal"
       },
       {
@@ -6665,7 +6676,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 269,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -6813,7 +6824,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 205,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -6848,7 +6859,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -7028,7 +7039,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 834,
+        "line": 825,
         "kind": "literal"
       }
     ]
@@ -7163,7 +7174,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 246,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -7503,7 +7514,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 478,
+        "line": 482,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7634,17 +7645,6 @@
       }
     ]
   },
-  "m_1149b6b74b2ccd91": {
-    "source": "פייסבוק תפתח חלון לאישור קריאת הנתונים. אחריו תבחרו את הדף העסקי; האינסטגרם המקצועי שמקושר אליו ייבחר איתו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 209,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_114cab8fd36759a7": {
     "source": "צבעים",
     "language": "he",
@@ -7708,7 +7708,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -7911,7 +7911,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 389,
+        "line": 393,
         "kind": "literal"
       }
     ]
@@ -8041,7 +8041,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 278,
+        "line": 282,
         "kind": "literal"
       }
     ]
@@ -8153,7 +8153,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 205,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -8337,7 +8337,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 646,
+        "line": 650,
         "kind": "literal",
         "purpose": "display"
       }
@@ -8840,7 +8840,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -9026,7 +9026,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 585,
+        "line": 576,
         "kind": "jsx"
       },
       {
@@ -9127,7 +9127,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 181,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -9408,6 +9408,18 @@
       {
         "file": "api/app/services/dna_library.py",
         "line": 190,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_15d90bbcb8f57885": {
+    "source": "הרענון של נתוני האתר לא הושלם. המספרים נשמרו מקריאה קודמת; בדקו את התקופה לפני החלטה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 81,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -9764,7 +9776,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 617,
+        "line": 608,
         "kind": "literal",
         "purpose": "display"
       }
@@ -9787,7 +9799,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 250,
+        "line": 262,
         "kind": "jsx"
       }
     ]
@@ -9913,7 +9925,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -10136,7 +10148,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 249,
+        "line": 253,
         "kind": "literal"
       }
     ]
@@ -10566,7 +10578,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -10633,7 +10645,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 548,
+        "line": 552,
         "kind": "literal"
       }
     ]
@@ -10836,7 +10848,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 320,
+        "line": 324,
         "kind": "literal"
       }
     ]
@@ -10927,7 +10939,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 262,
+        "line": 266,
         "kind": "literal"
       }
     ]
@@ -11509,7 +11521,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 631,
+        "line": 635,
         "kind": "literal",
         "purpose": "display"
       }
@@ -13047,7 +13059,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 251,
+        "line": 263,
         "kind": "jsx"
       }
     ]
@@ -13154,24 +13166,13 @@
       }
     ]
   },
-  "m_1d89d16afede74c1": {
-    "source": "מצאתם מזהה כמו G-AB12CD34EF? יש לאתר גוגל אנליטיקס. נשאר רק למצוא איזה חשבון גוגל רואה אותו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 124,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_1d90d849d04a1c33": {
     "source": "האינסטגרם המקושר לדף הזה יתחבר יחד איתו.",
     "language": "he",
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 223,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -13204,7 +13205,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 15,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -13465,7 +13466,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 871,
+        "line": 862,
         "kind": "literal"
       }
     ]
@@ -13630,7 +13631,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 32,
+        "line": 36,
         "kind": "jsx"
       }
     ]
@@ -13652,7 +13653,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 589,
+        "line": 580,
         "kind": "literal"
       }
     ]
@@ -13675,7 +13676,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 806,
+        "line": 797,
         "kind": "jsx"
       }
     ]
@@ -13930,7 +13931,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 86,
+        "line": 88,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -14045,7 +14046,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -14119,7 +14120,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 936,
+        "line": 927,
         "kind": "literal"
       },
       {
@@ -14345,7 +14346,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 749,
+        "line": 740,
         "kind": "literal",
         "purpose": "display"
       },
@@ -14770,7 +14771,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 491,
+        "line": 495,
         "kind": "literal"
       }
     ]
@@ -14838,7 +14839,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 838,
+        "line": 829,
         "kind": "jsx"
       }
     ]
@@ -15089,7 +15090,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 522,
+        "line": 526,
         "kind": "literal"
       }
     ]
@@ -15213,7 +15214,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 487,
+        "line": 491,
         "kind": "literal"
       }
     ]
@@ -15317,7 +15318,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 571,
+        "line": 562,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15329,7 +15330,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 678,
+        "line": 682,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15539,7 +15540,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 271,
+        "line": 283,
         "kind": "jsx"
       }
     ]
@@ -15753,6 +15754,17 @@
       }
     ]
   },
+  "m_231dabbbd00fb570": {
+    "source": "לא מופיע האתר שלכם? בקשו ממי שמנהל אותו גישה לנתונים. אפשר להעתיק את ההודעה למטה ולשלוח לו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 121,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_23268b3a5a7341ac": {
     "source": "אלומיניום",
     "language": "he",
@@ -15799,7 +15811,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15924,7 +15936,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 37,
+        "line": 42,
         "kind": "jsx"
       }
     ]
@@ -15970,7 +15982,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 595,
+        "line": 599,
         "kind": "literal"
       }
     ]
@@ -16055,7 +16067,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 643,
+        "line": 647,
         "kind": "literal"
       }
     ]
@@ -16167,7 +16179,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 437,
+        "line": 441,
         "kind": "literal"
       }
     ]
@@ -16479,7 +16491,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 643,
+        "line": 634,
         "kind": "jsx"
       }
     ]
@@ -16620,7 +16632,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 319,
+        "line": 323,
         "kind": "literal"
       }
     ]
@@ -16746,7 +16758,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 260,
+        "line": 272,
         "kind": "jsx"
       }
     ]
@@ -16998,7 +17010,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 589,
+        "line": 580,
         "kind": "literal"
       }
     ]
@@ -17400,7 +17412,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 336,
+        "line": 340,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17554,7 +17566,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18356,7 +18368,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 210,
+        "line": 215,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18412,7 +18424,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 256,
+        "line": 268,
         "kind": "jsx"
       }
     ]
@@ -18586,7 +18598,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 631,
+        "line": 635,
         "kind": "literal"
       }
     ]
@@ -18882,7 +18894,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 168,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -18961,7 +18973,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 177,
+        "line": 181,
         "kind": "literal"
       }
     ]
@@ -19230,7 +19242,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 247,
+        "line": 251,
         "kind": "literal"
       }
     ]
@@ -19344,7 +19356,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 176,
+        "line": 180,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19578,7 +19590,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 442,
+        "line": 446,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19613,7 +19625,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -19715,7 +19727,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 750,
+        "line": 741,
         "kind": "literal"
       },
       {
@@ -20073,7 +20085,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 88,
+        "line": 93,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -20109,7 +20121,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 110,
+        "line": 115,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -20516,17 +20528,6 @@
       }
     ]
   },
-  "m_2e2d97046221245c": {
-    "source": "את זה בודקים מהמחשב, באתר עצמו:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 119,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2e306996e630f520": {
     "source": "החדרים באור של שעה אמיתית, קווים ישרים",
     "language": "he",
@@ -20589,7 +20590,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 272,
+        "line": 308,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -20731,12 +20732,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -20925,9 +20926,20 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 144,
+        "line": 148,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_2f1b28cb5fcee85f": {
+    "source": "אפשר להמשיך בתוכנית גם בלי החיבור, ולחזור אליו כשהגישה מוכנה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 122,
+        "kind": "literal"
       }
     ]
   },
@@ -21164,7 +21176,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 453,
+        "line": 457,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21209,7 +21221,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 201,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -21555,7 +21567,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 324,
+        "line": 328,
         "kind": "literal"
       }
     ]
@@ -21658,7 +21670,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 500,
+        "line": 504,
         "kind": "literal"
       }
     ]
@@ -21693,7 +21705,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 587,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -21860,7 +21872,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 875,
+        "line": 866,
         "kind": "literal"
       }
     ]
@@ -22003,7 +22015,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 110,
+        "line": 115,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22145,7 +22157,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 215,
+        "line": 227,
         "kind": "jsx"
       }
     ]
@@ -22241,7 +22253,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 265,
+        "line": 277,
         "kind": "jsx"
       }
     ]
@@ -22263,7 +22275,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 253,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -22489,7 +22501,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 653,
+        "line": 657,
         "kind": "literal"
       }
     ]
@@ -23102,7 +23114,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 537,
+        "line": 541,
         "kind": "literal"
       }
     ]
@@ -23321,7 +23333,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 532,
+        "line": 536,
         "kind": "literal"
       }
     ]
@@ -23539,7 +23551,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 278,
+        "line": 282,
         "kind": "literal",
         "purpose": "display"
       }
@@ -23678,25 +23690,25 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 317,
+        "line": 321,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 353,
+        "line": 357,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 386,
+        "line": 390,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 483,
+        "line": 487,
         "kind": "literal",
         "purpose": "display"
       }
@@ -24293,7 +24305,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 465,
+        "line": 469,
         "kind": "literal"
       }
     ]
@@ -24608,7 +24620,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 659,
+        "line": 663,
         "kind": "literal",
         "purpose": "display"
       }
@@ -24644,7 +24656,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 229,
+        "line": 241,
         "kind": "jsx"
       }
     ]
@@ -25116,7 +25128,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 598,
+        "line": 602,
         "kind": "literal"
       }
     ]
@@ -25127,7 +25139,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 240,
+        "line": 244,
         "kind": "literal"
       }
     ]
@@ -25227,7 +25239,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 621,
+        "line": 625,
         "kind": "literal"
       }
     ]
@@ -25606,7 +25618,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 327,
+        "line": 331,
         "kind": "literal"
       }
     ]
@@ -25769,7 +25781,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 179,
+        "line": 183,
         "kind": "literal"
       }
     ]
@@ -25837,7 +25849,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 364,
+        "line": 368,
         "kind": "literal"
       }
     ]
@@ -26160,7 +26172,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 283,
+        "line": 287,
         "kind": "literal",
         "purpose": "display"
       }
@@ -26787,12 +26799,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 335,
+        "line": 339,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 367,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -27020,7 +27032,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 429,
+        "line": 433,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27123,7 +27135,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 783,
+        "line": 774,
         "kind": "literal"
       }
     ]
@@ -27437,7 +27449,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 525,
+        "line": 529,
         "kind": "literal"
       }
     ]
@@ -27470,7 +27482,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 479,
+        "line": 483,
         "kind": "literal"
       }
     ]
@@ -27625,7 +27637,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 86,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -28382,7 +28394,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 218,
+        "line": 223,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -28446,7 +28458,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 902,
+        "line": 893,
         "kind": "literal"
       }
     ]
@@ -28937,13 +28949,13 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 132,
+        "line": 136,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 445,
+        "line": 449,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29530,7 +29542,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 129,
+        "line": 133,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29674,7 +29686,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 37,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -30203,7 +30215,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 628,
+        "line": 632,
         "kind": "literal"
       }
     ]
@@ -30383,7 +30395,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -30772,7 +30784,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 655,
+        "line": 659,
         "kind": "literal",
         "purpose": "display"
       }
@@ -31139,7 +31151,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 50,
+        "line": 52,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -31453,7 +31465,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 76,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -31486,7 +31498,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 293,
+        "line": 297,
         "kind": "literal"
       }
     ]
@@ -31509,7 +31521,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -31545,6 +31557,18 @@
         "file": "web/components/instagram/sources.ts",
         "line": 51,
         "kind": "template"
+      }
+    ]
+  },
+  "m_4824a653d0dfae3d": {
+    "source": "חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 84,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -31701,7 +31725,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 624,
+        "line": 628,
         "kind": "literal"
       }
     ]
@@ -31717,7 +31741,7 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 218,
+        "line": 230,
         "kind": "jsx"
       }
     ]
@@ -31944,7 +31968,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 555,
+        "line": 559,
         "kind": "literal"
       }
     ]
@@ -32209,7 +32233,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 97,
+        "line": 102,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -32221,7 +32245,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 243,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -32401,7 +32425,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 490,
+        "line": 494,
         "kind": "literal"
       }
     ]
@@ -32628,7 +32652,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 332,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -32662,7 +32686,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 388,
+        "line": 392,
         "kind": "literal"
       }
     ]
@@ -33155,7 +33179,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 33,
+        "line": 37,
         "kind": "jsx"
       }
     ]
@@ -33190,7 +33214,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 21,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -33201,7 +33225,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 895,
+        "line": 886,
         "kind": "jsx"
       }
     ]
@@ -33250,7 +33274,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 593,
+        "line": 597,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33543,7 +33567,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 300,
+        "line": 304,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33751,7 +33775,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 681,
+        "line": 685,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33787,7 +33811,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 166,
+        "line": 170,
         "kind": "literal"
       }
     ]
@@ -34109,6 +34133,17 @@
       }
     ]
   },
+  "m_4e272acf78e8859a": {
+    "source": "נסו לחבר את נתוני האתר כאן. אחרי האישור בגוגל תראו אילו אתרים זמינים לחשבון שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 120,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4e275cce63023499": {
     "source": "מפוספס",
     "language": "he",
@@ -34258,7 +34293,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 679,
+        "line": 683,
         "kind": "literal",
         "purpose": "display"
       }
@@ -34359,7 +34394,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 83,
+        "line": 85,
         "kind": "template",
         "purpose": "validation"
       }
@@ -34857,7 +34892,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -34948,7 +34983,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 646,
+        "line": 650,
         "kind": "literal"
       }
     ]
@@ -35099,7 +35134,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 13,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -35409,8 +35444,19 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 193,
+        "line": 205,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_5196e130e18b8408": {
+    "source": "בטלפון חוזרים מפייסבוק ישר לבחירת העסק. נתוני האתר כוללים גם מקורות כניסה, עמודים, קישורי תוכן ופעולות שנמדדו — כבר בחיבור הראשון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -35464,7 +35510,7 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 256,
+        "line": 268,
         "kind": "literal"
       }
     ]
@@ -35565,7 +35611,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35876,7 +35922,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 408,
+        "line": 412,
         "kind": "literal"
       }
     ]
@@ -35981,7 +36027,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 120,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -36094,7 +36140,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 275,
+        "line": 311,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36696,7 +36742,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -37648,7 +37694,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -37705,7 +37751,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 81,
+        "line": 86,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -37897,7 +37943,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 83,
+        "line": 88,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38272,7 +38318,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 140,
+        "line": 144,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38410,7 +38456,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 154,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -38577,7 +38623,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 399,
+        "line": 403,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38995,7 +39041,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 658,
+        "line": 662,
         "kind": "literal"
       }
     ]
@@ -39147,12 +39193,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 154,
+        "line": 158,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 158,
+        "line": 162,
         "kind": "literal"
       }
     ]
@@ -39353,7 +39399,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 945,
+        "line": 936,
         "kind": "literal"
       },
       {
@@ -39683,7 +39729,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 258,
+        "line": 270,
         "kind": "jsx"
       }
     ]
@@ -39853,7 +39899,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 409,
+        "line": 413,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40125,7 +40171,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -40392,7 +40438,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -40683,7 +40729,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 589,
+        "line": 580,
         "kind": "literal"
       }
     ]
@@ -40803,7 +40849,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 515,
+        "line": 519,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41245,7 +41291,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 107,
+        "line": 112,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -42057,7 +42103,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 257,
+        "line": 261,
         "kind": "literal"
       }
     ]
@@ -42114,7 +42160,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 647,
+        "line": 651,
         "kind": "literal"
       }
     ]
@@ -42288,7 +42334,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -42551,7 +42597,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 36,
+        "line": 40,
         "kind": "jsx"
       }
     ]
@@ -42732,7 +42778,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -42971,13 +43017,13 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 633,
+        "line": 637,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 657,
+        "line": 661,
         "kind": "literal",
         "purpose": "display"
       }
@@ -43124,6 +43170,17 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 511,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_63a60b3bb35f3f79": {
+    "source": "לחיבורים שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -43360,7 +43417,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 454,
+        "line": 458,
         "kind": "literal"
       }
     ]
@@ -43393,7 +43450,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 627,
+        "line": 631,
         "kind": "literal"
       }
     ]
@@ -44048,7 +44105,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 35,
+        "line": 39,
         "kind": "jsx"
       }
     ]
@@ -44185,7 +44242,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 813,
+        "line": 804,
         "kind": "template",
         "purpose": "display"
       }
@@ -44199,6 +44256,17 @@
         "file": "web/components/PublishPanel.tsx",
         "line": 404,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_65eae775510d30fe": {
+    "source": "כך נלמד מאיפה מגיעים לאתר ומה עושים בו. בפוסטים עם קישור מעקב נוכל לקשר כניסות לפוסט; כדי לדעת כמה הפכו ללקוחות, נצטרך גם נתוני רכישות או דיווח שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/help/guides.ts",
+        "line": 204,
+        "kind": "literal"
       }
     ]
   },
@@ -44242,7 +44310,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 133,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -44253,7 +44321,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 204,
+        "line": 209,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44289,7 +44357,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 934,
+        "line": 925,
         "kind": "literal"
       }
     ]
@@ -44361,7 +44429,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 863,
+        "line": 854,
         "kind": "jsx"
       }
     ]
@@ -44400,7 +44468,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 916,
+        "line": 907,
         "kind": "jsx"
       }
     ]
@@ -44456,7 +44524,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 541,
+        "line": 545,
         "kind": "literal"
       }
     ]
@@ -44777,7 +44845,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 393,
+        "line": 397,
         "kind": "literal"
       }
     ]
@@ -45373,7 +45441,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -45396,7 +45464,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 863,
+        "line": 854,
         "kind": "jsx"
       }
     ]
@@ -45782,7 +45850,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 243,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -45811,7 +45879,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 358,
+        "line": 362,
         "kind": "literal"
       }
     ]
@@ -46217,12 +46285,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 834,
+        "line": 825,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 914,
+        "line": 905,
         "kind": "jsx"
       }
     ]
@@ -46314,7 +46382,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -46347,7 +46415,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 446,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -46369,7 +46437,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -46494,7 +46562,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -46578,7 +46646,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 396,
+        "line": 400,
         "kind": "literal"
       }
     ]
@@ -47048,7 +47116,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 663,
+        "line": 654,
         "kind": "literal"
       }
     ]
@@ -47082,7 +47150,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 450,
+        "line": 454,
         "kind": "literal"
       }
     ]
@@ -47186,7 +47254,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 102,
+        "line": 107,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -47226,6 +47294,18 @@
       }
     ]
   },
+  "m_6d7aeafca96549bd": {
+    "source": "read budget reached",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/ga4.py",
+        "line": 224,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_6d854a5fb4c28a74": {
     "source": "תוכנית שמתפתחת עם החנות.",
     "language": "he",
@@ -47255,7 +47335,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 234,
+        "line": 238,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47385,7 +47465,7 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 200,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -47453,7 +47533,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 651,
+        "line": 655,
         "kind": "literal"
       }
     ]
@@ -47948,7 +48028,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 272,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -48357,7 +48437,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 37,
+        "line": 42,
         "kind": "jsx"
       }
     ]
@@ -48368,7 +48448,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 232,
+        "line": 244,
         "kind": "literal"
       }
     ]
@@ -48426,7 +48506,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 276,
+        "line": 280,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48438,7 +48518,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 462,
+        "line": 466,
         "kind": "literal"
       }
     ]
@@ -48517,7 +48597,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48638,7 +48718,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 122,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -48661,7 +48741,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 569,
+        "line": 560,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48781,7 +48861,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 563,
+        "line": 567,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48816,12 +48896,12 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 219,
+        "line": 231,
         "kind": "literal"
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 221,
+        "line": 233,
         "kind": "jsx"
       }
     ]
@@ -48893,7 +48973,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 167,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -49072,7 +49152,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -49214,17 +49294,6 @@
       }
     ]
   },
-  "m_71268922b9b4dd9b": {
-    "source": "לראות את הדמו של לחם תום",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/integrations/page.tsx",
-        "line": 557,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_712918413e301eb9": {
     "source": "6 מסכים לחנות, 5 לשירותים. כולל קישורים ומה שכבר נוסה.",
     "language": "he",
@@ -49303,7 +49372,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 584,
+        "line": 588,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49910,7 +49979,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 295,
+        "line": 299,
         "kind": "literal"
       }
     ]
@@ -50181,7 +50250,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 284,
+        "line": 288,
         "kind": "literal"
       }
     ]
@@ -50276,7 +50345,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 84,
+        "line": 89,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -50710,7 +50779,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 157,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -50815,17 +50884,6 @@
         "line": 449,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_74ca15530d220dea": {
-    "source": "דרך נוספת: הכניסו את כתובת האתר ב-tagassistant.google.com. מופיע תג שמתחיל ב-G-? יש לאתר גוגל אנליטיקס.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 126,
-        "kind": "literal"
       }
     ]
   },
@@ -51176,7 +51234,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 591,
+        "line": 582,
         "kind": "jsx"
       }
     ]
@@ -51510,7 +51568,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 205,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -52100,7 +52158,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 880,
+        "line": 871,
         "kind": "jsx"
       }
     ]
@@ -52482,7 +52540,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52662,7 +52720,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 189,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -52811,7 +52869,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 196,
+        "line": 201,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -52946,12 +53004,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5658,
+        "line": 5663,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5659,
+        "line": 5664,
         "kind": "literal"
       },
       {
@@ -53195,7 +53253,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -53217,7 +53275,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 169,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -53330,7 +53388,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 592,
+        "line": 583,
         "kind": "literal"
       },
       {
@@ -53432,7 +53490,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 652,
+        "line": 656,
         "kind": "literal"
       }
     ]
@@ -53672,7 +53730,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 193,
+        "line": 197,
         "kind": "literal"
       }
     ]
@@ -53906,7 +53964,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 349,
+        "line": 353,
         "kind": "literal"
       }
     ]
@@ -54036,7 +54094,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 780,
+        "line": 771,
         "kind": "literal"
       }
     ]
@@ -54121,7 +54179,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 214,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -54449,7 +54507,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 244,
+        "line": 256,
         "kind": "jsx"
       }
     ]
@@ -54588,7 +54646,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 634,
+        "line": 638,
         "kind": "literal"
       }
     ]
@@ -54626,7 +54684,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 213,
+        "line": 225,
         "kind": "jsx"
       }
     ]
@@ -54998,7 +55056,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 172,
+        "line": 176,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55146,7 +55204,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 647,
+        "line": 651,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55533,7 +55591,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -56091,7 +56149,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 145,
+        "line": 149,
         "kind": "literal"
       }
     ]
@@ -56102,7 +56160,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 194,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -56262,7 +56320,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 255,
+        "line": 267,
         "kind": "jsx"
       }
     ]
@@ -56285,7 +56343,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 193,
+        "line": 198,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56542,7 +56600,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 754,
+        "line": 745,
         "kind": "literal"
       }
     ]
@@ -56565,7 +56623,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 201,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -56888,7 +56946,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -57088,7 +57146,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 605,
+        "line": 609,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57167,7 +57225,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 486,
+        "line": 490,
         "kind": "literal"
       }
     ]
@@ -57693,7 +57751,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 182,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -57788,7 +57846,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 579,
+        "line": 583,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57839,7 +57897,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 381,
+        "line": 385,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57942,7 +58000,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 224,
+        "line": 236,
         "kind": "jsx"
       }
     ]
@@ -58192,7 +58250,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 31,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58245,7 +58303,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 257,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -58312,7 +58370,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 348,
+        "line": 352,
         "kind": "literal",
         "purpose": "display"
       }
@@ -58605,7 +58663,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 177,
+        "line": 189,
         "kind": "literal"
       }
     ]
@@ -58638,7 +58696,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 888,
+        "line": 879,
         "kind": "jsx"
       }
     ]
@@ -58964,7 +59022,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 247,
+        "line": 259,
         "kind": "jsx"
       }
     ]
@@ -58997,7 +59055,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 264,
+        "line": 268,
         "kind": "literal"
       }
     ]
@@ -59197,7 +59255,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 271,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -59599,7 +59657,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 267,
+        "line": 279,
         "kind": "jsx"
       }
     ]
@@ -60338,7 +60396,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 210,
+        "line": 222,
         "kind": "jsx"
       }
     ]
@@ -60426,6 +60484,12 @@
     "source": "Invalid source response",
     "language": "en",
     "references": [
+      {
+        "file": "api/app/routers/performance.py",
+        "line": 189,
+        "kind": "literal",
+        "purpose": "validation"
+      },
       {
         "file": "api/app/services/ga4_readiness.py",
         "line": 100,
@@ -60866,7 +60930,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 844,
+        "line": 835,
         "kind": "jsx"
       }
     ]
@@ -61118,7 +61182,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 390,
+        "line": 394,
         "kind": "literal"
       }
     ]
@@ -61605,7 +61669,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 270,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -62017,7 +62081,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62247,7 +62311,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 110,
+        "line": 115,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62320,7 +62384,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63243,7 +63307,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 203,
+        "line": 208,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63730,7 +63794,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 325,
+        "line": 329,
         "kind": "literal"
       }
     ]
@@ -64222,7 +64286,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 655,
+        "line": 659,
         "kind": "literal"
       }
     ]
@@ -64244,7 +64308,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 283,
+        "line": 287,
         "kind": "literal"
       }
     ]
@@ -64890,7 +64954,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 165,
+        "line": 169,
         "kind": "literal"
       }
     ]
@@ -65046,7 +65110,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 137,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -65119,12 +65183,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 431,
+        "line": 435,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 436,
+        "line": 440,
         "kind": "literal"
       }
     ]
@@ -65600,7 +65664,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 183,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -66096,7 +66160,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 650,
+        "line": 641,
         "kind": "jsx"
       }
     ]
@@ -66287,7 +66351,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 189,
+        "line": 201,
         "kind": "jsx"
       }
     ]
@@ -66333,7 +66397,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 261,
+        "line": 265,
         "kind": "literal"
       }
     ]
@@ -67029,7 +67093,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 198,
+        "line": 203,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -67137,7 +67201,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -67345,7 +67409,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -67507,7 +67571,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 191,
+        "line": 195,
         "kind": "literal"
       }
     ]
@@ -67713,7 +67777,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -67828,7 +67892,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 232,
+        "line": 244,
         "kind": "literal"
       }
     ]
@@ -68178,7 +68242,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 256,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -68807,7 +68871,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 888,
+        "line": 879,
         "kind": "jsx"
       }
     ]
@@ -68925,7 +68989,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 299,
+        "line": 303,
         "kind": "literal"
       }
     ]
@@ -69277,7 +69341,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 947,
+        "line": 938,
         "kind": "literal"
       },
       {
@@ -69579,7 +69643,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 400,
+        "line": 404,
         "kind": "literal"
       }
     ]
@@ -69950,7 +70014,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 280,
+        "line": 284,
         "kind": "literal",
         "purpose": "display"
       }
@@ -70159,7 +70223,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 235,
+        "line": 239,
         "kind": "literal"
       }
     ]
@@ -70477,7 +70541,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 425,
+        "line": 429,
         "kind": "literal"
       }
     ]
@@ -70595,7 +70659,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -70640,7 +70704,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 648,
+        "line": 652,
         "kind": "literal",
         "purpose": "display"
       },
@@ -71145,6 +71209,18 @@
       }
     ]
   },
+  "m_a4d0840112f787d0": {
+    "source": "בחירת האתר השתנתה בזמן הקריאה. רעננו את הנתונים שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/performance.py",
+        "line": 192,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_a4d0e08feb595e85": {
     "source": "קליק זול יותר, ואפשר לכוון לפי גיל, מקום ותחומי עניין",
     "language": "he",
@@ -71180,7 +71256,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 229,
+        "line": 241,
         "kind": "jsx"
       }
     ]
@@ -71668,7 +71744,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 151,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -71712,7 +71788,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 657,
+        "line": 661,
         "kind": "literal"
       }
     ]
@@ -71798,7 +71874,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 544,
+        "line": 548,
         "kind": "literal",
         "purpose": "display"
       }
@@ -71832,7 +71908,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 611,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -72190,7 +72266,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 185,
+        "line": 189,
         "kind": "literal"
       }
     ]
@@ -74066,7 +74142,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -74763,7 +74839,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 321,
+        "line": 325,
         "kind": "literal"
       }
     ]
@@ -75071,7 +75147,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 831,
+        "line": 822,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75500,7 +75576,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 245,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -75775,7 +75851,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 216,
+        "line": 221,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -76089,7 +76165,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 175,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -76128,7 +76204,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -76242,7 +76318,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 35,
+        "line": 39,
         "kind": "jsx"
       }
     ]
@@ -76275,7 +76351,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 624,
+        "line": 628,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76570,7 +76646,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 648,
+        "line": 652,
         "kind": "literal"
       }
     ]
@@ -76707,12 +76783,12 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 211,
+        "line": 223,
         "kind": "jsx"
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 239,
+        "line": 251,
         "kind": "jsx"
       }
     ]
@@ -76795,7 +76871,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 405,
+        "line": 409,
         "kind": "literal"
       }
     ]
@@ -76856,7 +76932,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 457,
+        "line": 461,
         "kind": "literal"
       }
     ]
@@ -77014,7 +77090,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 359,
+        "line": 363,
         "kind": "literal"
       }
     ]
@@ -77081,7 +77157,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -77436,7 +77512,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 284,
+        "line": 288,
         "kind": "literal",
         "purpose": "display"
       }
@@ -77686,7 +77762,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 382,
+        "line": 386,
         "kind": "literal"
       }
     ]
@@ -77833,7 +77909,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 126,
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -77921,7 +77997,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 547,
+        "line": 551,
         "kind": "literal"
       }
     ]
@@ -78057,7 +78133,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 211,
+        "line": 223,
         "kind": "jsx"
       }
     ]
@@ -78194,7 +78270,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 230,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -78480,7 +78556,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 37,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -78841,7 +78917,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 432,
+        "line": 436,
         "kind": "literal"
       }
     ]
@@ -78925,7 +79001,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 680,
+        "line": 684,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79283,7 +79359,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 228,
+        "line": 232,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79373,7 +79449,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 538,
+        "line": 542,
         "kind": "literal"
       }
     ]
@@ -79723,7 +79799,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 588,
+        "line": 592,
         "kind": "literal"
       }
     ]
@@ -80259,7 +80335,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 214,
+        "line": 219,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80366,7 +80442,7 @@
     "references": [
       {
         "file": "api/app/services/ga4.py",
-        "line": 152,
+        "line": 154,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -80654,7 +80730,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 226,
+        "line": 238,
         "kind": "jsx"
       }
     ]
@@ -81031,7 +81107,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 783,
+        "line": 774,
         "kind": "literal"
       }
     ]
@@ -81184,12 +81260,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 534,
+        "line": 538,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 539,
+        "line": 543,
         "kind": "literal"
       }
     ]
@@ -81557,7 +81633,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 201,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81740,7 +81816,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 546,
+        "line": 550,
         "kind": "literal"
       }
     ]
@@ -82264,7 +82340,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 485,
+        "line": 489,
         "kind": "literal"
       }
     ]
@@ -82478,7 +82554,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -82512,7 +82588,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 261,
+        "line": 273,
         "kind": "jsx"
       }
     ]
@@ -82534,7 +82610,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 625,
+        "line": 629,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82597,7 +82673,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -82620,7 +82696,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 262,
+        "line": 274,
         "kind": "jsx"
       }
     ]
@@ -82943,7 +83019,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 205,
+        "line": 217,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82957,6 +83033,17 @@
         "file": "web/lib/goals.ts",
         "line": 417,
         "kind": "template"
+      }
+    ]
+  },
+  "m_c08d0505bea938b1": {
+    "source": "סיכום האתר זמין, אבל חלק מהפירוט לא התקבל. ההצעה משתמשת רק בנתונים שנקראו; ננסה להשלים את הפירוט ברענון הבא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/SourceDataNotice.tsx",
+        "line": 41,
+        "kind": "jsx"
       }
     ]
   },
@@ -83110,7 +83197,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 466,
+        "line": 470,
         "kind": "literal",
         "purpose": "display"
       }
@@ -83219,17 +83306,6 @@
         "file": "web/app/performance/page.tsx",
         "line": 1171,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_c128338bf9386737": {
-    "source": "כך נדע כמה אנשים הגיעו לאתר מכל פוסט ומה עשו שם, ונבנה את החודש הבא לפי מה שבאמת הביא לקוחות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/help/guides.ts",
-        "line": 200,
-        "kind": "literal"
       }
     ]
   },
@@ -83451,7 +83527,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 530,
+        "line": 534,
         "kind": "literal",
         "purpose": "display"
       }
@@ -83592,7 +83668,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 192,
+        "line": 196,
         "kind": "literal"
       }
     ]
@@ -83970,7 +84046,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 252,
+        "line": 256,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84195,12 +84271,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 196,
+        "line": 200,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 558,
+        "line": 562,
         "kind": "literal"
       }
     ]
@@ -84798,7 +84874,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 944,
+        "line": 935,
         "kind": "literal"
       },
       {
@@ -84888,7 +84964,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 173,
+        "line": 177,
         "kind": "literal"
       }
     ]
@@ -85126,7 +85202,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 291,
+        "line": 295,
         "kind": "literal"
       }
     ]
@@ -85435,7 +85511,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 153,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -85698,7 +85774,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 180,
+        "line": 184,
         "kind": "literal"
       }
     ]
@@ -86690,7 +86766,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 273,
+        "line": 285,
         "kind": "jsx"
       }
     ]
@@ -86771,7 +86847,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 219,
+        "line": 231,
         "kind": "literal"
       }
     ]
@@ -86854,7 +86930,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 634,
+        "line": 625,
         "kind": "literal"
       }
     ]
@@ -87040,7 +87116,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 642,
+        "line": 646,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87416,7 +87492,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 200,
+        "line": 205,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -87529,7 +87605,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 629,
+        "line": 633,
         "kind": "literal"
       }
     ]
@@ -87585,7 +87661,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -88071,7 +88147,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 123,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -88082,7 +88158,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 521,
+        "line": 525,
         "kind": "literal",
         "purpose": "display"
       }
@@ -88222,7 +88298,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -88398,7 +88474,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 267,
+        "line": 271,
         "kind": "literal",
         "purpose": "display"
       }
@@ -88609,12 +88685,12 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 192,
+        "line": 204,
         "kind": "jsx"
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 259,
+        "line": 271,
         "kind": "jsx"
       }
     ]
@@ -88671,7 +88747,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 94,
+        "line": 99,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -88937,7 +89013,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 620,
+        "line": 624,
         "kind": "literal",
         "purpose": "display"
       }
@@ -88993,7 +89069,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -89193,7 +89269,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 356,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -89251,7 +89327,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 394,
+        "line": 398,
         "kind": "literal"
       }
     ]
@@ -89365,7 +89441,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 237,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -89627,7 +89703,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 294,
+        "line": 298,
         "kind": "literal"
       }
     ]
@@ -89846,7 +89922,7 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       },
       {
@@ -90807,7 +90883,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -90956,7 +91032,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 553,
+        "line": 557,
         "kind": "literal",
         "purpose": "display"
       }
@@ -91058,7 +91134,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 433,
+        "line": 437,
         "kind": "literal"
       }
     ]
@@ -91238,18 +91314,6 @@
       }
     ]
   },
-  "m_d3affdf012e361de": {
-    "source": "לא הצלחנו לקרוא את הנתונים כרגע. הנתונים הקודמים נשמרו; נסו שוב.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/routers/performance.py",
-        "line": 195,
-        "kind": "literal",
-        "purpose": "validation"
-      }
-    ]
-  },
   "m_d3b77ad44b72e4a2": {
     "source": "הוסיפו את פרטי המארז בנוסח למעלה.",
     "language": "he",
@@ -91414,7 +91478,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 274,
+        "line": 286,
         "kind": "jsx"
       }
     ]
@@ -91448,12 +91512,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 935,
+        "line": 926,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 946,
+        "line": 937,
         "kind": "literal"
       },
       {
@@ -92108,7 +92172,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 609,
+        "line": 600,
         "kind": "jsx"
       }
     ]
@@ -92336,7 +92400,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 281,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -92610,7 +92674,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 16,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -93124,7 +93188,7 @@
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 229,
+        "line": 241,
         "kind": "jsx"
       }
     ]
@@ -93238,7 +93302,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 562,
+        "line": 566,
         "kind": "literal"
       }
     ]
@@ -93793,7 +93857,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 650,
+        "line": 654,
         "kind": "literal",
         "purpose": "display"
       }
@@ -93811,7 +93875,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 92,
+        "line": 97,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -93861,7 +93925,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 355,
+        "line": 359,
         "kind": "literal"
       }
     ]
@@ -93979,7 +94043,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 633,
+        "line": 637,
         "kind": "literal"
       }
     ]
@@ -94012,7 +94076,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 761,
+        "line": 752,
         "kind": "jsx"
       }
     ]
@@ -94089,7 +94153,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 244,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -94133,7 +94197,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 274,
+        "line": 310,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94802,7 +94866,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 645,
+        "line": 649,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95360,7 +95424,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 141,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -95598,7 +95662,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 212,
+        "line": 217,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -95699,7 +95763,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 121,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -95880,6 +95944,17 @@
         "file": "web/app/promotion/page.tsx",
         "line": 615,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_de06a25666af0f28": {
+    "source": "תקלה בקריאת נתוני האתר לא עוצרת את נתוני פייסבוק ואינסטגרם. מספרים קודמים נשמרים עם התאריך שלהם, ופירוט שלא התקבל אינו מוצג כאפס. ההצעות מחברות את מה שנמדד לצעד בתוכנית או בפוסט ולבדיקה פשוטה בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
       }
     ]
   },
@@ -96103,7 +96178,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 923,
+        "line": 914,
         "kind": "jsx"
       }
     ]
@@ -96821,7 +96896,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -96883,7 +96958,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 195,
+        "line": 200,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96956,7 +97031,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 256,
+        "line": 268,
         "kind": "jsx"
       }
     ]
@@ -97481,7 +97556,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 556,
+        "line": 560,
         "kind": "literal"
       }
     ]
@@ -97695,7 +97770,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 236,
+        "line": 248,
         "kind": "jsx"
       }
     ]
@@ -97723,7 +97798,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 238,
+        "line": 250,
         "kind": "jsx"
       }
     ]
@@ -98285,7 +98360,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 906,
+        "line": 897,
         "kind": "jsx"
       },
       {
@@ -98720,7 +98795,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 497,
+        "line": 501,
         "kind": "literal"
       }
     ]
@@ -98963,7 +99038,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 635,
+        "line": 639,
         "kind": "literal",
         "purpose": "display"
       }
@@ -99591,7 +99666,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 313,
+        "line": 317,
         "kind": "literal"
       }
     ]
@@ -99835,7 +99910,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 189,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -100131,7 +100206,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 255,
+        "line": 259,
         "kind": "literal"
       }
     ]
@@ -100188,7 +100263,7 @@
     "references": [
       {
         "file": "web/components/integrations/SourceDataNotice.tsx",
-        "line": 36,
+        "line": 40,
         "kind": "jsx"
       }
     ]
@@ -100781,7 +100856,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 920,
+        "line": 911,
         "kind": "jsx"
       }
     ]
@@ -101439,7 +101514,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 533,
+        "line": 537,
         "kind": "literal"
       }
     ]
@@ -101739,7 +101814,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -102005,7 +102080,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 626,
+        "line": 630,
         "kind": "literal"
       }
     ]
@@ -102202,7 +102277,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 233,
+        "line": 245,
         "kind": "jsx"
       }
     ]
@@ -102280,7 +102355,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 214,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -102390,12 +102465,12 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 783,
+        "line": 774,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 875,
+        "line": 866,
         "kind": "literal"
       },
       {
@@ -102743,7 +102818,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 239,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -102815,7 +102890,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 637,
+        "line": 628,
         "kind": "jsx"
       }
     ]
@@ -103296,7 +103371,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 187,
+        "line": 213,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -103388,7 +103463,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 812,
+        "line": 803,
         "kind": "template"
       }
     ]
@@ -103416,6 +103491,17 @@
       }
     ]
   },
+  "m_ee5273005238f72c": {
+    "source": "נאשר בפייסבוק גישה לקריאת הנתונים, ואז נחזור לכאן לבחור את העסק. אם האינסטגרם המקצועי מקושר לדף, הוא ייבחר איתו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/MetaConnection.tsx",
+        "line": 221,
+        "kind": "jsx"
+      }
+    ]
+  },
   "m_ee609cf680a9db11": {
     "source": "עוד לא בחרנו יעדים",
     "language": "he",
@@ -103438,7 +103524,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 191,
+        "line": 196,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -103789,7 +103875,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 612,
+        "line": 616,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104072,7 +104158,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 241,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -104690,12 +104776,12 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 195,
+        "line": 199,
         "kind": "literal"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 557,
+        "line": 561,
         "kind": "literal"
       }
     ]
@@ -104718,7 +104804,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 390,
+        "line": 426,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -104828,7 +104914,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 527,
+        "line": 531,
         "kind": "literal"
       }
     ]
@@ -105099,7 +105185,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 424,
+        "line": 428,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105183,7 +105269,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 796,
+        "line": 787,
         "kind": "jsx"
       },
       {
@@ -105258,7 +105344,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 205,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -105392,7 +105478,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 260,
+        "line": 264,
         "kind": "literal"
       }
     ]
@@ -105728,7 +105814,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 590,
+        "line": 594,
         "kind": "literal"
       }
     ]
@@ -106412,13 +106498,13 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 136,
+        "line": 140,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/help/guides.ts",
-        "line": 449,
+        "line": 453,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106485,7 +106571,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 501,
+        "line": 505,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106747,7 +106833,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -106833,7 +106919,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 160,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -107241,6 +107327,18 @@
       }
     ]
   },
+  "m_f6c65669c6981076": {
+    "source": "חיבור פשוט יותר, ותובנות עם יותר הקשר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_f6e648a35c3e35ef": {
     "source": "כניסות",
     "language": "he",
@@ -107314,7 +107412,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 292,
+        "line": 296,
         "kind": "literal"
       }
     ]
@@ -107649,7 +107747,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 200,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -108232,7 +108330,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 603,
+        "line": 594,
         "kind": "jsx"
       }
     ]
@@ -108452,7 +108550,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 210,
+        "line": 215,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -108631,7 +108729,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 368,
+        "line": 372,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109050,7 +109148,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -109131,7 +109229,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 750,
+        "line": 741,
         "kind": "literal"
       }
     ]
@@ -109507,7 +109605,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 438,
+        "line": 442,
         "kind": "literal"
       }
     ]
@@ -109558,7 +109656,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 201,
+        "line": 206,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -109570,7 +109668,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 191,
+        "line": 203,
         "kind": "jsx"
       }
     ]
@@ -109604,7 +109702,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 601,
+        "line": 605,
         "kind": "literal"
       }
     ]
@@ -110149,7 +110247,7 @@
     "references": [
       {
         "file": "web/components/integrations/MetaConnection.tsx",
-        "line": 224,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -110171,7 +110269,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110440,7 +110538,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 517,
+        "line": 521,
         "kind": "literal"
       }
     ]
@@ -110501,7 +110599,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 863,
+        "line": 854,
         "kind": "jsx"
       }
     ]
@@ -110885,7 +110983,7 @@
     "references": [
       {
         "file": "web/components/help/guides.ts",
-        "line": 580,
+        "line": 584,
         "kind": "literal"
       }
     ]
@@ -110930,7 +111028,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 191,
+        "line": 196,
         "kind": "literal",
         "purpose": "copy"
       }

@@ -1,8 +1,10 @@
 from datetime import datetime, timedelta, timezone
+from time import monotonic
+from urllib.parse import urlencode
 
 import httpx
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import DateRange, Dimension, Metric, RunReportRequest
+from google.analytics.data_v1beta.types import DateRange, Dimension, Metric, OrderBy, RunReportRequest
 from google.oauth2.credentials import Credentials
 from google.auth.transport.requests import Request
 
@@ -61,7 +63,7 @@ def authorization_url(state: str, login_hint: str = "") -> str:
     }
     if login_hint:
         params["login_hint"] = login_hint
-    query = "&".join(f"{key}={httpx.QueryParams({key: value})[key]}" for key, value in params.items())
+    query = urlencode(params)
     return f"https://accounts.google.com/o/oauth2/v2/auth?{query}"
 
 
@@ -178,61 +180,54 @@ def fetch_report(
             rows.append(item)
         return rows
 
-    overview = client.run_report(
-        RunReportRequest(
+    # Keep the stored `conversions` key for existing consumers; Google now calls
+    # this metric keyEvents. It is not a count of confirmed customers or orders.
+    def read(dimensions, metrics, limit=0, order="", timeout=15):
+        request = RunReportRequest(
             property=property_name,
             date_ranges=[DateRange(start_date=start, end_date=end)],
-            metrics=[
-                Metric(name="sessions"),
-                Metric(name="engagedSessions"),
-                Metric(name="bounceRate"),
-                Metric(name="conversions"),
-                Metric(name="screenPageViews"),
-                Metric(name="averageSessionDuration"),
-            ],
-        ), timeout=15.0, retry=None,
-    )
-    if overview_only:
-        rows = _rows(overview)
-        return {"property_id": property_id, "period": {"start": start, "end": end},
-                "overview": rows[0] if rows else {}, "report_scope": "overview"}
-    landing = client.run_report(
-        RunReportRequest(
-            property=property_name,
-            date_ranges=[DateRange(start_date=start, end_date=end)],
-            dimensions=[Dimension(name="landingPagePlusQueryString"), Dimension(name="sessionDefaultChannelGroup")],
-            metrics=[
-                Metric(name="sessions"),
-                Metric(name="conversions"),
-                Metric(name="bounceRate"),
-                Metric(name="engagedSessions"),
-            ],
-            limit=15,
-        ), timeout=15.0, retry=None,
-    )
-    campaigns = client.run_report(
-        RunReportRequest(
-            property=property_name,
-            date_ranges=[DateRange(start_date=start, end_date=end)],
-            dimensions=[
-                Dimension(name="sessionCampaignName"),
-                Dimension(name="sessionSource"),
-                Dimension(name="sessionManualAdContent"),
-            ],
-            metrics=[
-                Metric(name="sessions"),
-                Metric(name="conversions"),
-                Metric(name="engagedSessions"),
-            ],
-            limit=30,
-        ), timeout=15.0, retry=None,
-    )
+            dimensions=[Dimension(name=name) for name in dimensions],
+            metrics=[Metric(name=name) for name in metrics],
+            limit=limit,
+            order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name=order), desc=True)] if order else [],
+        )
+        rows = _rows(client.run_report(request, timeout=timeout, retry=None))
+        for row in rows:
+            if "keyEvents" in row:
+                row["conversions"] = row.pop("keyEvents")
+        return rows
 
-    overview_rows = _rows(overview)
-    return {
-        "property_id": property_id,
-        "period": {"start": start, "end": end},
-        "overview": overview_rows[0] if overview_rows else {},
-        "landing_pages": _rows(landing),
-        "campaigns": _rows(campaigns),
+    deadline = monotonic() + 25
+    overview = read([], ["sessions", "engagedSessions", "bounceRate", "keyEvents",
+                         "screenPageViews", "averageSessionDuration"])
+    result = {"property_id": property_id, "period": {"start": start, "end": end},
+              "overview": overview[0] if overview else {}, "report_scope": "overview"}
+    if overview_only:
+        return result
+    # A failed optional breakdown must not discard a successful overview. Bound the
+    # entire read, including the first connection, and label unavailable/truncated
+    # reports explicitly so the analysis cannot mistake missing rows for no activity.
+    sections = {
+        "channels": (["sessionDefaultChannelGroup", "sessionSourceMedium"],
+                     ["sessions", "engagedSessions", "keyEvents"], 30, "sessions"),
+        "landing_pages": (["landingPagePlusQueryString", "sessionDefaultChannelGroup"],
+                          ["sessions", "keyEvents", "bounceRate", "engagedSessions"], 15, "sessions"),
+        "campaigns": (["sessionCampaignName", "sessionSource", "sessionManualAdContent"],
+                      ["sessions", "keyEvents", "engagedSessions"], 30, "sessions"),
+        "events": (["eventName"], ["eventCount", "keyEvents"], 30, "eventCount"),
     }
+    result["report_reads"] = {}
+    for name, (dimensions, metrics, limit, order) in sections.items():
+        remaining = deadline - monotonic()
+        try:
+            if remaining <= 0:
+                raise TimeoutError("read budget reached")
+            rows = read(dimensions, metrics, limit, order, timeout=min(6, remaining))
+            result[name] = rows
+            result["report_reads"][name] = {"status": "available" if rows else "empty",
+                                          "limit": limit, "limited": len(rows) >= limit}
+        except Exception:
+            result["report_reads"][name] = {"status": "unavailable"}
+    result["report_scope"] = "detailed" if all(
+        row["status"] != "unavailable" for row in result["report_reads"].values()) else "partial"
+    return result

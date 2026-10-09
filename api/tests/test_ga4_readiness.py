@@ -115,7 +115,7 @@ class SourceReadinessTest(unittest.TestCase):
         self.assertEqual(item["display_name"], "החנות (העסק)")
         self.assertEqual(item["source_readiness"]["status"], "ready")
         self.assertIn("last_success_at", item["source_readiness"])
-        self.assertTrue(read.call_args.kwargs["overview_only"])
+        self.assertFalse(read.call_args.kwargs.get("overview_only", False))
         listed.assert_called_once()
         diagnose.assert_not_called()
         latest = self.client.get("/performance/latest").json()

@@ -95,7 +95,7 @@ def initial_read(db: Session, item: Integration) -> dict:
     end = date.today() - timedelta(days=1)
     start = end - timedelta(days=27)
     try:
-        report = ga4.fetch_report(*tokens(item), property_id, start.isoformat(), end.isoformat(), overview_only=True)
+        report = ga4.fetch_report(*tokens(item), property_id, start.isoformat(), end.isoformat())
         if not isinstance(report, dict) or report.get("property_id") != property_id or not isinstance(report.get("overview"), dict):
             raise RuntimeError("Invalid source response")
     except Exception as exc:

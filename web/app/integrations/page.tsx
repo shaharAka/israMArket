@@ -546,16 +546,7 @@ export default function IntegrationsPage() {
               ) : null}
             </p>
 
-            <button
-              type="button"
-              onClick={async () => {
-                await endpoints.enterDemo();
-                window.location.reload();
-              }}
-              className={`${TEXT_ACTION} shrink-0`}
-            >
-              לראות את הדמו של לחם תום
-            </button>
+
           </div>
         )}
 
