@@ -104,6 +104,7 @@ export type SoftwareContext = {
 };
 
 export type OnboardingDraft = {
+  research_journey?: import("./researchJourney").ResearchJourney;
   software?: SoftwareContext;
   business_name: string;
   business_type: string; // a FieldKey (lib/businessFields.ts), "" until answered
@@ -146,6 +147,7 @@ export type BrandScan = {
 
 /** Everything /start needs to resume where the owner left off. */
 export type FlowState = {
+  researchOwnerId?: number;
   v: 2;
   step: string;
   draft: OnboardingDraft;
@@ -491,6 +493,7 @@ export function draftForApi(flow: FlowState): OnboardingDraft {
     business_name: d.business_name.trim(),
     business_type: d.business_type,
     offerings: d.offerings.trim(),
+    ...(d.research_journey ? { research_journey: d.research_journey } : {}),
     audiences: d.audiences
       .filter((a) => a.name.trim().length >= 2)
       .slice(0, 3)
@@ -585,6 +588,12 @@ export function isMockMode(): boolean {
   }
 }
 
+/** A review tab must not make a later real interview return fixture answers. */
+export function exitDraftMock() {
+  if (typeof window === "undefined") return;
+  try { window.sessionStorage.removeItem(MOCK_KEY); } catch { /* storage may be disabled */ }
+}
+
 async function withMock<T>(real: () => Promise<T>, mock: () => T | Promise<T>): Promise<T> {
   if (isMockMode()) return mock();
   return real();
@@ -596,7 +605,7 @@ function wait(ms: number) {
 
 export async function scanBrand(url: string, draft: OnboardingDraft): Promise<PublicBrandResult> {
   return withMock(
-    () => endpoints.publicBrand(url, draft.business_model),
+    () => endpoints.publicBrand(url, draft.business_model, Boolean(draft.research_journey)),
     async () => {
       await wait(2600);
       return mockBrand(url, draft);

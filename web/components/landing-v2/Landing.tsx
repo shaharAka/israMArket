@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
@@ -35,12 +35,18 @@ const FAQ: { q: string; a: ReactNode }[] = [
 /** Role-specific pages use real product components with explicitly simulated business data. */
 export function Landing({ initialPath = "services", heroVariant = "workspace", heroTypeface = "modern", heroOnly = false, identity }: { initialPath?: ExamplePath; heroVariant?: "workspace" | "tabs"; heroTypeface?: "modern" | "sans"; heroOnly?: boolean; identity?: IdentityDirection }) {
   const path = initialPath;
+  const [segment, setSegment] = useState<string | undefined>();
+  useEffect(() => {
+    const read = () => setSegment(new URLSearchParams(window.location.search).get("segment") ?? undefined);
+    const timer = window.setTimeout(read, 0); window.addEventListener("popstate", read);
+    return () => { window.clearTimeout(timer); window.removeEventListener("popstate", read); };
+  }, [initialPath]);
   const t = useCopy();
   const { locale } = useLanguage();
   const persona = PERSONA_PAGES[path];
-  // The fundraising journey is tracked in #155; never send it through a shop fallback.
-  const canStart = path !== "nonprofit";
-  const start = canStart ? `/start?model=${path}&lang=${locale}` : heroOnly ? "/for/nonprofit#posts" : "#posts";
+  // Each landing choice carries its interview segment; nonprofit platform extensions remain tracked in #155.
+  const canStart = true;
+  const start = `/start?model=${path}&lang=${locale}${segment ? `&segment=${segment}` : ""}`;
   const startLabel = canStart ? "להתחיל חודש בחינם" : "לראות דוגמאות לעמותות";
   const posts = POST_EXAMPLES.filter(item => (item.path === path && item.key !== "bakery") || (path === "products" && item.key === "dj")).map(item => ({ ...item,
     business: t(item.business), kind: t(item.kind), alt: item.alt ? t(item.alt) : undefined,
@@ -58,7 +64,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
         <div className="lv2-hero-text">
           <h1 id="lv2-title" className="lv2-display"><Copy text={HERO.title} /></h1>
           <p className="lv2-lead"><Copy text={persona.body} /></p>
-          <BusinessRoleSelector path={path} hrefFor={key => heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`} />
+          <BusinessRoleSelector path={path} segment={segment ?? (path === "products" ? "online_shop" : undefined)} onSelect={setSegment} hrefFor={(key, selected) => (heroOnly ? `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}` : `/for/${key}?lang=${locale}`) + `&segment=${selected}`} />
           <div className="lv2-hero-cta"><Link href={start} className="lv2-btn"><Copy text={startLabel} /><IconArrowLeft className="h-4 w-4" /></Link></div>
           <p className="lv2-fine"><Copy text={canStart ? "בלי כרטיס אשראי. אתם בודקים ומפרסמים." : "המסלול לעמותות בפיתוח. בינתיים אפשר לראות את הכיוון בדוגמאות."} /></p>
         </div>
@@ -68,7 +74,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
       <FeatureWalkthrough key={path} path={path} examples={posts} />
       <section id="connections" className="lv2-showcase-section lv2-connections-band" aria-labelledby="lv2-connect-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="מתחילים ממה שאתם כבר משתמשים בו" /></p>
-        <h2 id="lv2-connect-title" className="lv2-h2"><Copy text="הכלים שלכם. התמונה מתחברת אצלנו." /></h2>
+        <h2 id="lv2-connect-title" className="lv2-h2"><Copy text="כל כלי השיווק והקידום שלכם במקום אחד." /></h2>
         <p className="lv2-lead"><Copy text="פחות מעבר בין מסכים. יותר הבנה של מה מביא אנשים לעסק ומה כדאי לפרסם בהמשך." /></p>
         <ConnectionShowcase />
       </div></section>
@@ -80,6 +86,7 @@ export function Landing({ initialPath = "services", heroVariant = "workspace", h
       </div></section>
       <section id="price" className="lv2-price" aria-labelledby="lv2-price-title"><div className="lv2-wrap">
         <p className="lv2-eyebrow"><Copy text="המנוי" /></p><h2 id="lv2-price-title" className="lv2-price-num"><span>{PRICE_ILS}</span><small><Copy text="₪ לחודש" /></small></h2>
+        <h3 className="lv2-price-includes-title"><Copy text="מה כלול במנוי?" /></h3><ul className="lv2-price-includes">{["מחקר על העסק והקהל ותוכנית שיווק שמתעדכנת", "פוסטים ועיצובים מתוך התוכנית, בסגנון של העסק", "ערכת פרסום עם טקסט, תמונה וקישור", "חיבור מקורות הנתונים והסבר פשוט של התוצאות"].map(item => <li key={item}><Copy text={item} /></li>)}</ul><p className="lv2-fine"><Copy text="תקציב הפרסום ברשתות אינו כלול במנוי." /></p>
         <p className="lv2-lead"><Copy text={TRIAL_LABEL} />{NO_CARD_AT_SIGNUP ? <Copy text=", בלי כרטיס אשראי" /> : null}<Copy text=". אין התחייבות." /></p><p className="lv2-fine"><Copy text={VAT_NOTE} /></p><Link href={start} className="lv2-btn-quiet lv2-btn-quiet--lg lv2-price-cta"><Copy text={startLabel} /></Link>
       </div></section>
       <section id="faq" className="lv2-faq" aria-labelledby="lv2-faq-title"><div className="lv2-wrap lv2-faq-grid"><h2 id="lv2-faq-title" className="lv2-h2"><Copy text="שאלות ששואלים אותנו" /></h2><div>{FAQ.map(({q,a}) => <details key={q}><summary><Copy text={q} /></summary><p>{typeof a === "string" ? <Copy text={a} /> : a}</p></details>)}</div></div></section>

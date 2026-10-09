@@ -527,13 +527,23 @@ def build_roadmap(
     prior: dict | None = None,
     long_horizon: dict | None = None,
 ) -> dict:
-    cost_block = prompt_block(
-        plan_from_budget(int(business.get('monthly_budget_ils') or 0), business.get('primary_goal') or 'sales')
-    )
-    # Search is offered as a real option, with the published Google ranges and the same
-    # refusal to invent numbers. It stays small: enough to let the month plan decide
-    # whether search suits this business, not a second strategy document.
-    google_block = google_cost.prompt_block(google_cost.plan_for_business(business))
+    interview = (business.get("owner_context") or {}).get("research_journey")
+    if interview:
+        # No agency-derived universal CPA/CPC/ROAS projections for the new interview.
+        from app.services.channel_evidence import planning_prompt
+        records = business.get("channel_evidence")
+        cost_block = planning_prompt(records if isinstance(records, list) else [],
+            missing=["A relevant official forecast or dated account/industry evidence is needed before suggesting numerical channel costs."])
+        cost_block += "\nאין להמציא עלות לקליק או לתוצאה, ואין להמיר טווח תשובה לממוצע."
+        google_block = "תחזית ממומנת דורשת נתוני חשבון או תחזית רשמית מזוהה; חיבור Analytics לבדו אינו תחזית Google Ads."
+    else:
+        cost_block = prompt_block(
+            plan_from_budget(int(business.get('monthly_budget_ils') or 0), business.get('primary_goal') or 'sales')
+        )
+        # Search is offered as a real option, with the published Google ranges and the same
+        # refusal to invent numbers. It stays small: enough to let the month plan decide
+        # whether search suits this business, not a second strategy document.
+        google_block = google_cost.prompt_block(google_cost.plan_for_business(business))
     # --- research hook (services/research.py) -------------------------------------------
     # The latest "what we learned" insights, each with its source and what it should
     # change. "" when the business has no recent research (or the payload has no "id"),
@@ -760,6 +770,15 @@ def generate_monthly_strategy(
     business = {**business, "content_language": state["content_language_preferences"]}
     stage = state.get("stage") or "scan"
 
+    def publication_plan() -> dict:
+        if isinstance((business.get("owner_context") or {}).get("research_journey"), dict):
+            # Cadence and creative follow owner choices and research. The legacy
+            # budget model carries agency forecasts, including in resumed state.
+            return {"business_model": business.get("business_model", "products"),
+                    "primary_goal": business["primary_goal"]}
+        return posting_plan(int(business["monthly_budget_ils"]), business["primary_goal"],
+                            business.get("business_model", "products"))
+
     def mark(next_stage: str, **extra) -> None:
         state.update(extra)
         state["stage"] = next_stage
@@ -810,11 +829,7 @@ def generate_monthly_strategy(
             competitor_profiles.append(extract_competitor(scraped, competitor["name"]))
         usp = build_usp(profile, competitor_profiles, business, brand, prior=prior)
         events = israeli_events_for_month(year, month)
-        plan = posting_plan(
-            int(business["monthly_budget_ils"]),
-            business["primary_goal"],
-            business.get("business_model", "products"),
-        )
+        plan = publication_plan()
         # A cadence the owner chose at /start replaces the budget-derived one.
         from app.services import strategy_reveal  # avoids an import cycle
 
@@ -832,11 +847,11 @@ def generate_monthly_strategy(
         competitor_profiles = state.get("competitors") or []
         usp = state.get("usp") or {}
         events = state.get("calendar") or israeli_events_for_month(year, month)
-        plan = state.get("posting_plan") or posting_plan(
-            int(business["monthly_budget_ils"]),
-            business["primary_goal"],
-            business.get("business_model", "products"),
-        )
+        if isinstance((business.get("owner_context") or {}).get("research_journey"), dict):
+            plan = publication_plan()
+            state["posting_plan"] = plan
+        else:
+            plan = state.get("posting_plan") or publication_plan()
 
     if stage == "plan" or (stage in {"scan", "usp"} and not one_stage):
         core = build_roadmap(

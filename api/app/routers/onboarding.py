@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any, Annotated, Literal
 
-from fastapi import APIRouter, BackgroundTasks, Body, Depends, HTTPException
+from fastapi import Request, APIRouter, BackgroundTasks, Body, Depends, HTTPException
 from pydantic import BaseModel, Field, ValidationError
 from sqlalchemy.orm import Session
 
@@ -127,6 +127,7 @@ def current_business(user: User = Depends(get_current_user), db: Session = Depen
 
 
 class FromDraftIn(BaseModel):
+    locale: Literal["he", "en", "ar", "ru"] = "he"
     draft: OnboardingDraft
     # Expected from the web flow; optional so a signup never fails because the plan
     # preview could not be shown. Without it the first month is planned as before.
@@ -165,9 +166,13 @@ def from_draft(
     style preset) and the chosen direction/idea (see onboarding_draft.apply_draft).
     """
     business = db.query(Business).filter(Business.user_id == user.id).order_by(Business.id.desc()).first()
+    if business and (business.onboarding_complete or loads(business.scraped_profile_json, {}).get("quarter_plan")) and body.draft.research_journey:
+        raise HTTPException(status_code=409, detail="כבר יש עסק בחשבון הזה. הפרטים הקיימים נשמרו; אפשר להיכנס אליו.")
     if not business:
         business = Business(user_id=user.id)
         db.add(business)
+    if body.draft.research_journey and any((body.chosen_direction, body.chosen_idea, body.strategy, body.chosen_posts, body.quarter_plan)):
+        raise HTTPException(status_code=422, detail="התוכנית והפוסטים נבנים אחרי ההיכרות בחשבון, ולא מצורפים להרשמה.")
     apply_draft(
         db,
         business,
@@ -197,7 +202,7 @@ def from_draft(
     db.commit()
     db.refresh(business)
     # The business's Design DNA, after the response: never holds up the signup.
-    if background_tasks is not None:
+    if background_tasks is not None and not body.draft.research_journey:
         background_tasks.add_task(design_dna.refresh_after_scan, db.get_bind(), business.id)
     return {"business": _business_payload(business)}
 
@@ -559,7 +564,29 @@ def _generation_precheck(business: Business | None) -> tuple[Business, dict]:
             status_code=400,
             detail="הזינו את כתובת האתר של העסק, ואז נבנה את התוכנית.",
         )
+    interview = (stored.get("owner_context") or {}).get("research_journey")
+    if interview and (interview.get("phase") != "after" or interview.get("step") != "build"):
+        raise HTTPException(status_code=409, detail="נשלים קודם את ההיכרות בחשבון, ואז נבנה את התוכנית.")
     return business, stored
+
+
+@router.post("/interview")
+def interview_questions(body: FromDraftIn, request: Request, user: User = Depends(get_current_user)):
+    from app.services.discovery_interview import research_questions, evidence_revision
+    from app.services.ratelimit import allow
+    if not allow(f"interview:{user.id}", 20, 3600):
+        raise HTTPException(status_code=429, detail="אפשר להמשיך עם התשובות שיש ולחזור לשאלה בהמשך.")
+    from app.routers.public_onboarding import _cached_or_start, _models
+    hit, future = _cached_or_start(request, gate=_models,
+        key=f"interview:{user.id}:" + body.draft.fingerprint("deeper-interview:" + body.locale + ":" + evidence_revision(body.draft)),
+        name="deeper-interview", per_ip=20, global_cap=300,
+        work=lambda: research_questions(body.draft, after_signup=True, locale=body.locale))
+    if hit is not None:
+        return hit
+    try:
+        return future.result(timeout=30)
+    except TimeoutError as exc:
+        raise HTTPException(status_code=504, detail="המחקר נמשך. אפשר להמשיך ולחזור לשאלה בהמשך.") from exc
 
 
 def _first_month_of(stored: dict) -> dict:

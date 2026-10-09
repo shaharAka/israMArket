@@ -7,6 +7,7 @@ import type { LinkKey } from "@/lib/draft";
 import styles from "./start.module.css";
 import form from "./form.module.css";
 import { UIAction } from "@/components/design/Controls";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 /**
  * Building blocks shared by the /start screens.
@@ -102,6 +103,7 @@ export function StepShell({
   onSkip,
   focus,
   direction,
+  hidePrimary = false,
   stickyAction = false,
   stickyDesktop = false,
   reassure,
@@ -127,11 +129,13 @@ export function StepShell({
   focus: boolean;
   direction: "fwd" | "back";
   stickyAction?: boolean;
+  hidePrimary?: boolean;
   /** Keep the action sticky on desktop too (the long plan page). */
   stickyDesktop?: boolean;
   /** A short live line right above the primary button (e.g. "מה השתנה"). */
   actionNote?: React.ReactNode;
 }) {
+  const t = useCopy();
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => {
     if (!focus) return;
@@ -153,9 +157,9 @@ export function StepShell({
       {notice}
       <div className={styles.question}>
         <h1 ref={heading} tabIndex={-1} className={styles.title}>
-          {title}
+          {t(title)}
         </h1>
-        <p className={styles.why}>{why}</p>
+        <p className={styles.why}>{t(why)}</p>
         <Reflection text={reflection ?? null} />
       </div>
       <div className={styles.answer}>{children}</div>
@@ -164,12 +168,12 @@ export function StepShell({
       >
         {actionNote}
         <div className={styles.actionRow}>
-          <PrimaryButton disabled={primaryDisabled} forward={forward}>
-            {label}
-          </PrimaryButton>
-          {skip && onSkip ? <QuietLink onClick={onSkip}>{skip}</QuietLink> : null}
+          {!hidePrimary ? <PrimaryButton disabled={primaryDisabled} forward={forward}>
+            {t(label)}
+          </PrimaryButton> : null}
+          {skip && onSkip ? <QuietLink onClick={onSkip}>{t(skip)}</QuietLink> : null}
         </div>
-        {reassure ? <p className={styles.reassure}>{reassure}</p> : null}
+        {reassure ? <p className={styles.reassure}>{t(reassure)}</p> : null}
       </div>
     </form>
   );
@@ -199,8 +203,8 @@ export function Chip({
       className={`${form.chip} ${className}`}
     >
       {selected ? <CheckMark /> : null}
-      <span>{label}</span>
-      {hint ? <small>{hint}</small> : null}
+      <span><Copy text={label} /></span>
+      {hint ? <small><Copy text={hint} /></small> : null}
     </button>
   );
 }
@@ -233,7 +237,7 @@ export function TextInput({
   onChange: (value: string) => void;
   placeholder?: string;
   dir?: "ltr" | "rtl";
-  inputMode?: "url" | "text" | "email";
+  inputMode?: "url" | "text" | "email" | "decimal" | "numeric";
   autoComplete?: string;
   note?: React.ReactNode;
   maxLength?: number;
@@ -241,11 +245,12 @@ export function TextInput({
   /** Adds an "איך מוצאים את זה?" link that opens the matching guide. */
   helpTopic?: HelpTopic;
 }) {
+  const t = useCopy();
   return (
     <div data-help-topic={helpTopic}>
       <div className="flex items-end justify-between gap-3">
         <label htmlFor={id} className={form.label}>
-          {label}
+          {t(label)}
         </label>
         {helpTopic ? (
           <span className="-my-2.5">
@@ -263,7 +268,7 @@ export function TextInput({
           id={id}
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          placeholder={placeholder}
+          placeholder={placeholder ? t(placeholder) : undefined}
           dir={dir}
           inputMode={inputMode}
           autoComplete={autoComplete}

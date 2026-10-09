@@ -468,8 +468,13 @@ def build_brand_preview(url: str, include_products: bool = False) -> dict:
             entry = _cache_get(cache_key(url))
             if entry and not (entry["scan"].get("raw") or {}).get("product_research"):
                 from app.services.software_site import read_product_pages
-                entry["scan"]["raw"].update(read_product_pages(entry["scan"]["raw"]))
-                _cache_put(cache_key(url), entry)
+                enrichment = read_product_pages(entry["scan"]["raw"])
+                # Merge into the current entry; a concurrent post/brand pass must not
+                # be replaced by an older cache snapshot just to add source pages.
+                with _cache_lock:
+                    current = _cache.get(cache_key(url))
+                    if current and current[0] >= time.monotonic():
+                        current[1]["scan"].setdefault("raw", {}).update(copy.deepcopy(enrichment))
         return cached
     key = cache_key(url)
     started = time.monotonic()

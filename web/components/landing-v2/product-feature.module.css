@@ -70,3 +70,7 @@
 
 .selector button { position: relative; padding-bottom: 22px; }
 .selector button > [data-playback-progress] { position: absolute; bottom: 4px; }
+
+.showcase[data-presentation="hero"] .controls { margin: 0 0 12px; }
+.showcase[data-presentation="hero"] .views { height: 500px; }
+@media(max-width:600px) { .showcase[data-presentation="hero"] .views { height: 360px; } }
