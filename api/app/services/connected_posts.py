@@ -30,7 +30,7 @@ import hashlib
 import logging
 import re
 import uuid
-from datetime import datetime
+from datetime import date, datetime
 
 from app.services.gemini import lite_json
 from app.services.jsonutil import dumps, loads
@@ -413,6 +413,10 @@ def connected_view(
     view["owner_needs"] = owner_needs(view)
     view["results"] = post.get("results") if isinstance(post.get("results"), dict) else None
     view["learning"] = _clean(post.get("learning"), 300) or None
+    if view["measure"]["metric"] == "site_visits" and view["results"] and not metric_observation(view["results"], "site_visits"):
+        # Keep historical counts, but not a legacy comparison with unknown dates.
+        view["results"] = {**view["results"], "compare": None}
+        view["learning"] = None
     view["informed_by_note"] = _clean(post.get("informed_by_note"), 200) or None
     # "שונה לפי: קצר יותר": the last one-instruction rewrite, until the text is saved or approved.
     view["rewrite_instruction"] = _clean(post.get("rewrite_instruction"), 60) or None
@@ -471,6 +475,7 @@ def measured_posts(views: list) -> dict:
                         if compare and _number(compare.get("value")) is not None else None),
             "matched_by": [str(key) for key in results.get("matched_by") or []] if isinstance(results.get("matched_by"), list) else [],
             "updated_at": str(results.get("updated_at") or ""),
+            "observation": metric_observation(results, metric),
         })
     return {"items": items, "waiting": waiting}
 
@@ -567,6 +572,9 @@ def _record_line(record: dict, model: str) -> str:
     meta = ", ".join(part for part in parts if part)
     shown = ", ".join(label for key, label in traits(view) if not key.startswith(("mix:", "format:")))
     line = f"\"{_clean(view.get('title'), 80)}\" ({meta}): {count_he(record['metric'], record['value'])}."
+    observation = metric_observation(view.get("results") or {}, record["metric"])
+    if observation and observation.get("source") == "ga4":
+        line += f" Google Analytics, {observation.get('start')}–{observation.get('end')}; reporting window, not lifetime."
     return line + (f" מה היה בו: {shown}." if shown else "")
 
 
@@ -593,6 +601,12 @@ def what_worked(db, business, exclude_uid: str | None = None, max_best: int = 3)
         by_metric.setdefault(record["metric"], []).append(record)
     lines, refs = [], {}
     for metric, group in sorted(by_metric.items(), key=lambda item: -len(item[1]))[:max_best]:
+        if metric == "site_visits":
+            # Do not teach the writer that a different rolling window "won".
+            latest = max(group, key=lambda r: str((metric_observation(r["view"].get("results") or {}, metric) or {}).get("read_at") or ""))
+            group = [record for record in group if compatible_observations(latest, record)]
+            if not group:
+                continue
         group = sorted(group, key=lambda r: (-r["value"], _order_key(r)))
         best = group[0]
         ref = f"B{len(refs) + 1}"
@@ -960,9 +974,48 @@ def _similar_earlier(target: dict, pool: list[dict]) -> dict | None:
         and record["metric"] == target["metric"]
         and record["view"].get("mix_type") == view["mix_type"]
         and record["view"]["channel"] == view["channel"]
+        and compatible_observations(target, record)
         and _order_key(record) < key
     ]
     return max(candidates, key=_order_key) if candidates else None
+
+
+def metric_observation(results: dict, metric: str) -> dict | None:
+    observations = results.get("observations")
+    key = RESULT_KEY.get(metric, metric)
+    value = observations.get(key) if isinstance(observations, dict) else None
+    return value if isinstance(value, dict) else None
+
+
+def _ga_observation(report: dict, now: str) -> dict:
+    # Dates belong to the campaign report, never to an unrelated refresh or post.
+    period = report.get("period") if isinstance(report.get("period"), dict) else {}
+    try:
+        start, end = date.fromisoformat(period["start"]), date.fromisoformat(period["end"])
+        valid = start <= end
+    except (KeyError, TypeError, ValueError):
+        valid = False
+    reads = report.get("report_reads") or {}
+    campaign_read = (reads.get("campaigns") or {}) if isinstance(reads, dict) else {}
+    return {"source": "ga4", "scope": "window", "property_id": str(report.get("property_id") or ""),
+            "start": start.isoformat() if valid else None, "end": end.isoformat() if valid else None,
+            "read_at": report.get("read_at") or now,
+            "limited": bool(campaign_read.get("limited")) if isinstance(campaign_read, dict) else False}
+
+
+def compatible_observations(target: dict, other: dict) -> bool:
+    if target["metric"] != "site_visits":
+        return True  # Existing cumulative source comparisons are unchanged in C4.
+    a = metric_observation(target["view"].get("results") or {}, "site_visits")
+    b = metric_observation(other["view"].get("results") or {}, "site_visits")
+    if not a or not b or a.get("limited") or b.get("limited"):
+        return False
+    keys = ("source", "scope", "property_id", "start", "end")
+    if not all(a.get(key) and a.get(key) == b.get(key) for key in keys):
+        return False
+    # A recently published post has had less time inside the same reporting window.
+    exposure = lambda record: max(str(record.get("published_at") or "")[:10], a["start"])
+    return bool(target.get("published_at") and other.get("published_at") and exposure(target) == exposure(other))
 
 
 def learning_facts(target: dict, other: dict | None) -> dict:
@@ -971,6 +1024,8 @@ def learning_facts(target: dict, other: dict | None) -> dict:
     value, metric = int(target["value"]), target["metric"]
     facts = {"ref": target["view"]["uid"], "metric": metric, "value": value, "compare": None,
              "direction": "first", "only_here": "", "only_there": ""}
+    if metric == "site_visits" and other is None:
+        facts["direction"] = "observed"
     if other is None:
         return facts
     compare = int(other["value"])
@@ -992,6 +1047,8 @@ def template_learning(facts: dict) -> str:
     """The plain sentence, used as is when the cheap model is unavailable or strays."""
     count = count_he(facts["metric"], facts["value"])
     direction = facts["direction"]
+    if direction == "observed":
+        return f"{count}."
     if direction == "first" or facts.get("compare") is None:
         return f"{count}. זה הפוסט הראשון מהסוג הזה שמדדנו, נשווה אליו את הבאים."
     compare = f"{int(facts['compare']):,}"
@@ -1026,6 +1083,7 @@ def _acceptable(text: str, facts: dict) -> bool:
 def phrase_learnings(batch: list[dict]) -> dict[str, str]:
     """{ref: line} for every facts dict: the cheap model phrases, the server checks."""
     lines = {facts["ref"]: template_learning(facts) for facts in batch}
+    batch = [facts for facts in batch if facts["direction"] != "observed"]
     if not batch:
         return lines
     listed = "\n".join(
@@ -1051,7 +1109,7 @@ similar = בערך כמו, first = אין עוד פוסט דומה), ומה הי
         if not isinstance(item, dict):
             continue
         ref = str(item.get("ref") or "")
-        if ref in by_ref and _acceptable(item.get("text"), by_ref[ref]):
+        if ref in by_ref and by_ref[ref]["direction"] != "observed" and _acceptable(item.get("text"), by_ref[ref]):
             lines[ref] = _clean(item.get("text"), 160)
     return lines
 
@@ -1103,6 +1161,17 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
             previous = post.get("results") if isinstance(post.get("results"), dict) else {}
             results = {k: v for k, v in previous.items() if k not in ("value", "compare")}
             results.update(metrics)
+            observations = dict(previous.get("observations") or {}) if isinstance(previous.get("observations"), dict) else {}
+            if "visits" in metrics or "conversions" in metrics:
+                observation = _ga_observation(ga4_data or {}, now)
+                published_day = str(view.get("published_at") or "")[:10]
+                observation["exposure_start"] = max(published_day, observation["start"]) if published_day and observation["start"] else None
+                for metric in ("visits", "conversions"):
+                    if metric in metrics:
+                        observations[metric] = observation
+            if "whatsapp_clicks" in metrics:
+                observations["whatsapp_clicks"] = {"source": "whatsapp", "scope": "cumulative", "read_at": now}
+            results["observations"] = observations
             results["matched_by"] = sorted(set(previous.get("matched_by") or []) | set(matched))
             results["metric"] = view["measure"]["metric"]
             results["value"] = results.get(RESULT_KEY[view["measure"]["metric"]])

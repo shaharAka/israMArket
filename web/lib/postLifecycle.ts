@@ -142,7 +142,7 @@ export function resultShort(post: RoadmapPost): string {
 }
 
 /** The other numbers the sync wrote, without the one already leading. */
-export function otherResults(post: RoadmapPost): { label: string; value: number }[] {
+export function otherResults(post: RoadmapPost): { key: string; label: string; value: number }[] {
   const results = post.results;
   if (!results) return [];
   const lead: Partial<Record<PostMetric, keyof PostResults>> = {
@@ -163,7 +163,7 @@ export function otherResults(post: RoadmapPost): { label: string; value: number 
   ];
   return rows.flatMap(([key, label]) => {
     const value = results[key];
-    return key !== skip && typeof value === "number" && Number.isFinite(value) ? [{ label, value }] : [];
+    return key !== skip && typeof value === "number" && Number.isFinite(value) ? [{ key, label, value }] : [];
   });
 }
 
@@ -198,6 +198,8 @@ export function shortDate(iso: string | null | undefined): string {
  * within 15% of the other number, or 1.
  */
 export function compareOf(post: RoadmapPost): { direction: "up" | "down" | "same"; text: string } | null {
+  const observation = post.results?.observations?.visits;
+  if (post.measure?.metric === "site_visits" && (!observation?.start || !observation?.end || observation.limited)) return null;
   const value = resultValue(post);
   const compare = post.results?.compare;
   if (value === null || !compare || !Number.isFinite(compare.value)) return null;

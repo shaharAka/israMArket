@@ -4805,7 +4805,19 @@ export type PostMeasure = {
   link_code: string;
 };
 
+export type PostObservation = {
+  source: "ga4" | "whatsapp";
+  scope: "window" | "cumulative";
+  start?: string | null;
+  end?: string | null;
+  read_at?: string;
+  property_id?: string;
+  exposure_start?: string | null;
+  limited?: boolean;
+};
+
 export type PostResults = {
+  observations?: Record<string, PostObservation>;
   updated_at: string;
   /** Which measure `value` is (the post's `measure.metric` when it was counted). */
   metric?: PostMetric;
@@ -5304,6 +5316,7 @@ export type PerformancePayload = {
 
 /** One measured post on Results: the post's one number, as its card shows it. */
 export type MeasuredPost = {
+  observation?: PostObservation | null;
   /** The post's place in the month, for `/posts?post=<index>`. */
   index: number;
   uid: string;

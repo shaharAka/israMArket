@@ -3,6 +3,7 @@
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { ContentLanguageNote } from "./posts/ContentLanguageNote";
+import { PostObservationLine } from "./results/PostObservationLine";
 import { contentDirection } from "@/lib/content-language";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
@@ -1851,7 +1852,9 @@ export function PostEditor({
     const label = metricLabel(currentPost);
     const compare = compareOf(currentPost);
     const others = otherResults(currentPost);
-    const updated = shortDate(currentPost.results?.updated_at);
+    const resultKey = currentPost.measure?.metric === "site_visits" ? "visits" : currentPost.measure?.metric || "";
+    const observation = currentPost.results?.observations?.[resultKey];
+    const updated = shortDate(observation?.read_at || currentPost.results?.updated_at);
     const source = matchedByLabel(currentPost.results);
     const meta = [updated ? t("עודכן {arg_0}", { arg_0: updated }) : "", source].filter(Boolean).join(" · ");
     const learning = (currentPost.learning || "").trim();
@@ -1865,7 +1868,7 @@ export function PostEditor({
               <span className="text-[40px] font-bold leading-none tracking-tight tabular-nums text-[color:var(--ink)]">
                 {formatCount(value)}
               </span>
-              {label ? <span className="text-[15px] font-medium text-[color:var(--ink-soft)]">{label}</span> : null}
+              {label ? <span className="text-[15px] font-medium text-[color:var(--ink-soft)]">{t(label)}</span> : null}
             </p>
             {compare ? (
               <p
@@ -1881,7 +1884,7 @@ export function PostEditor({
                 {compare.text}
               </p>
             ) : null}
-            {meta ? <p className="mt-1 text-[12px] text-[color:var(--ink-muted)]">{meta}</p> : null}
+            {resultKey === "visits" ? <PostObservationLine observation={observation} google /> : meta ? <p className="mt-1 text-[12px] text-[color:var(--ink-muted)]">{meta}</p> : null}
             {others.length ? (
               <details className="mt-1">
                 <summary className={`${ui.summary} text-[13px] font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
@@ -1892,6 +1895,7 @@ export function PostEditor({
                     <div key={t(item.label)}>
                       <dt className="text-[12px] text-[color:var(--ink-muted)]">{t(item.label)}</dt>
                       <dd className="text-[17px] font-bold tracking-tight tabular-nums text-[color:var(--ink)]">{formatCount(item.value)}</dd>
+                      {item.key === "visits" || item.key === "conversions" ? <dd><PostObservationLine observation={currentPost.results?.observations?.[item.key]} google /></dd> : null}
                     </div>
                   ))}
                 </dl>
