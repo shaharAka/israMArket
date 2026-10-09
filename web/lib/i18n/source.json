@@ -2148,6 +2148,17 @@
       }
     ]
   },
+  "m_0454e7dc1f5ad9d8": {
+    "source": "לקריאת העדכונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_045822b15a128877": {
     "source": "לחצו על התפריט ☰ למעלה, ואז **הגדרות ופעילות** (Settings and activity).",
     "language": "he",
@@ -5084,7 +5095,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -6445,7 +6456,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -7008,7 +7019,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -9023,7 +9034,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -10119,7 +10130,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -10778,7 +10789,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -15351,7 +15362,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -16049,7 +16060,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16073,7 +16084,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       },
       {
@@ -17793,7 +17804,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 98,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19891,7 +19902,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 106,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -21015,17 +21026,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -23059,7 +23070,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 241,
+        "line": 240,
         "kind": "jsx"
       },
       {
@@ -25340,7 +25351,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -28182,7 +28193,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29093,7 +29104,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -30963,7 +30974,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -31458,6 +31469,17 @@
         "line": 687,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_469f93a1ef78deb6": {
+    "source": "במחשב האייקון ליד שם המערכת, ובטלפון בשורה העליונה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
       }
     ]
   },
@@ -32078,7 +32100,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -34598,12 +34620,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 283,
+        "line": 282,
         "kind": "literal"
       }
     ]
@@ -35561,7 +35583,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 112,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36119,7 +36141,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -36286,7 +36308,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38395,7 +38417,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -40912,7 +40934,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -43104,7 +43126,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -43536,7 +43558,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -43949,7 +43971,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -47089,7 +47111,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47210,7 +47232,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -47265,7 +47287,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -47390,7 +47412,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 105,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49481,7 +49503,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50047,7 +50069,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -53473,7 +53495,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54198,7 +54220,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -56604,7 +56626,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -56920,7 +56942,7 @@
       },
       {
         "file": "web/components/language/WhatsNewLink.tsx",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -57982,7 +58004,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -60061,6 +60083,18 @@
         "line": 1360,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8758ecd46c0844e7": {
+    "source": "העדכונים בראש המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -63304,7 +63338,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63619,7 +63653,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68548,7 +68582,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -68745,7 +68779,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -70163,7 +70197,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 274,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -70852,6 +70886,17 @@
         "line": 190,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a0c5015f62847943": {
+    "source": "אייקון המתנה בראש התפריט פותח את העדכונים. סרט כחול מסמן שיש משהו חדש לקרוא; אחרי הקריאה הוא חוזר לצבע רגיל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -72093,7 +72138,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -75591,7 +75636,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75766,7 +75811,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 300,
+        "line": 299,
         "kind": "literal"
       },
       {
@@ -77709,7 +77754,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -84260,7 +84305,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -84379,7 +84424,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -85593,7 +85638,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 242,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -88247,17 +88292,17 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 226,
+        "line": 227,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 272,
+        "line": 271,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 275,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -89453,7 +89498,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -90101,7 +90146,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -92750,7 +92795,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -94162,7 +94207,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -94815,7 +94860,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97942,7 +97987,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -98201,7 +98246,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -98908,7 +98953,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -101838,7 +101883,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -103998,7 +104043,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -109154,7 +109199,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -109654,7 +109699,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111527,7 +111572,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -112011,7 +112056,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -112670,7 +112715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
