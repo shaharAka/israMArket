@@ -254,6 +254,161 @@
       "en": "Facebook post insights access is missing. Your Page connection is saved; you can continue with your plan.",
       "ar": "لا تتوفر صلاحية الوصول إلى إحصاءات منشورات فيسبوك. حُفظ اتصال الصفحة؛ يمكنكم متابعة خطتكم.",
       "ru": "Нет доступа к статистике постов Facebook. Подключение страницы сохранено; можно продолжать работать с планом."
+    },
+    "m_05165daffcd6d215": {
+      "en": "Where to place the link",
+      "ar": "أين تضعون الرابط",
+      "ru": "Где разместить ссылку"
+    },
+    "m_0fbc31e3e11bcf42": {
+      "en": "In a Story",
+      "ar": "في قصة",
+      "ru": "В истории"
+    },
+    "m_2e39957f6b598a03": {
+      "en": "On the profile",
+      "ar": "في الملف الشخصي",
+      "ru": "В профиле"
+    },
+    "m_1784b5241c2f1ccf": {
+      "en": "Add your business website in My decisions to prepare a website link.",
+      "ar": "أضيفوا موقع نشاطكم في «قراراتي» لإنشاء رابط للموقع.",
+      "ru": "Добавьте сайт бизнеса в разделе «Мои решения», чтобы подготовить ссылку на сайт."
+    },
+    "m_1e1971f392964042": {
+      "en": "Anyone visiting the profile can use this link. Taps do not prove which post brought them there.",
+      "ar": "يمكن لأي زائر للملف الشخصي استخدام هذا الرابط. النقرات لا تثبت أي منشور أوصلهم إليه.",
+      "ru": "По этой ссылке может перейти любой посетитель профиля. Нажатия не доказывают, какой пост привёл человека."
+    },
+    "m_26678b59af145012": {
+      "en": "In the Instagram app: open the business profile, choose Edit profile, Links, then Add external link.",
+      "ar": "في تطبيق Instagram: افتحوا ملف النشاط، ثم اختاروا تعديل الملف الشخصي، والروابط، وإضافة رابط خارجي.",
+      "ru": "В приложении Instagram: откройте профиль бизнеса, выберите «Редактировать профиль», «Ссылки», затем «Добавить внешнюю ссылку»."
+    },
+    "m_2742ad0cef751137": {
+      "en": "Add the link to the caption before publishing.",
+      "ar": "أضيفوا الرابط إلى نص المنشور قبل النشر.",
+      "ru": "Добавьте ссылку в текст перед публикацией."
+    },
+    "m_2895179ee49fd92a": {
+      "en": "Add your WhatsApp number and prepare a link while getting your post ready to publish. For Instagram, choose Story or profile and see short instructions for each.",
+      "ar": "أضيفوا رقم WhatsApp وجهّزوا الرابط أثناء تجهيز المنشور للنشر. في Instagram، اختاروا القصة أو الملف الشخصي لتظهر تعليمات قصيرة لكل خيار.",
+      "ru": "Добавьте номер WhatsApp и подготовьте ссылку прямо при подготовке поста к публикации. Для Instagram выберите историю или профиль и получите краткие инструкции."
+    },
+    "m_3f8e5f3fa1793e25": {
+      "en": "The post has changed. Reopen it to prepare its link.",
+      "ar": "تغيّر المنشور. افتحوه مجددًا لتجهيز رابطه.",
+      "ru": "Пост изменился. Откройте его снова, чтобы подготовить ссылку."
+    },
+    "m_3f92e6d9fcc3262a": {
+      "en": "We could not prepare the link. Try again.",
+      "ar": "لم نتمكن من تجهيز الرابط. حاولوا مجددًا.",
+      "ru": "Не удалось подготовить ссылку. Попробуйте ещё раз."
+    },
+    "m_4226da53f47b5c84": {
+      "en": "Include this post’s link when publishing. Taps on it will appear here.",
+      "ar": "أضيفوا رابط هذا المنشور عند النشر. ستظهر النقرات عليه هنا.",
+      "ru": "Добавьте ссылку этого поста при публикации. Нажатия на неё появятся здесь."
+    },
+    "m_48e41dfefa39c0eb": {
+      "en": "Open posts",
+      "ar": "فتح المنشورات",
+      "ru": "Открыть посты"
+    },
+    "m_49b10e919b303352": {
+      "en": "Add website",
+      "ar": "إضافة موقع",
+      "ru": "Добавить сайт"
+    },
+    "m_4c1de84136155bbc": {
+      "en": "Each post gets a link for its call to action. A website link never substitutes for a missing WhatsApp link. A profile link can receive traffic from other posts too.",
+      "ar": "لكل منشور رابط يناسب الدعوة فيه إلى اتخاذ إجراء. رابط الموقع لا يحل محل رابط WhatsApp المفقود. وقد تأتي النقرات على رابط الملف الشخصي من منشورات أخرى أيضًا.",
+      "ru": "Для каждого поста показана ссылка, соответствующая его призыву к действию. Ссылка на сайт не заменяет отсутствующую ссылку WhatsApp. По ссылке в профиле могут переходить и из других постов."
+    },
+    "m_50a859fa055e9018": {
+      "en": "Prepare the WhatsApp link before copying the message.",
+      "ar": "جهّزوا رابط WhatsApp قبل نسخ الرسالة.",
+      "ru": "Подготовьте ссылку WhatsApp перед копированием сообщения."
+    },
+    "m_5c72d12d96422fd8": {
+      "en": "With website analytics connected, we can show visits through this link.",
+      "ar": "عند ربط بيانات الموقع، يمكننا عرض الزيارات عبر هذا الرابط.",
+      "ru": "При подключённой аналитике сайта мы сможем показать посещения по этой ссылке."
+    },
+    "m_7106eec714b6ed9e": {
+      "en": "We’ll prepare a link for this post and show how many times it was tapped.",
+      "ar": "سنجهّز رابطًا لهذا المنشور ونعرض عدد النقرات عليه.",
+      "ru": "Мы подготовим ссылку для этого поста и покажем число нажатий на неё."
+    },
+    "m_7b1d66f9a4a00877": {
+      "en": "Prepare the WhatsApp link in the publishing step to count taps.",
+      "ar": "جهّزوا رابط WhatsApp في خطوة نشر المنشور لعدّ النقرات.",
+      "ru": "Подготовьте ссылку WhatsApp на шаге публикации, чтобы считать нажатия."
+    },
+    "m_7b92560c31a094d8": {
+      "en": "Marked as published. Add a WhatsApp number to prepare a trackable link.",
+      "ar": "تم وضع علامة «منشور». أضيفوا رقم WhatsApp لتجهيز رابط يمكن قياس النقرات عليه.",
+      "ru": "Отмечено как опубликованное. Добавьте номер WhatsApp, чтобы подготовить отслеживаемую ссылку."
+    },
+    "m_81a37bb30d747076": {
+      "en": "In the Instagram app: open a Story, choose the Link sticker and paste the link.",
+      "ar": "في تطبيق Instagram: افتحوا قصة، واختاروا ملصق الرابط، ثم الصقوا الرابط.",
+      "ru": "В приложении Instagram: откройте историю, выберите стикер «Ссылка» и вставьте ссылку."
+    },
+    "m_9490755694880c5a": {
+      "en": "Marked as published. Taps on this post’s link will appear in Results.",
+      "ar": "تم وضع علامة «منشور». ستظهر النقرات على رابط هذا المنشور في النتائج.",
+      "ru": "Отмечено как опубликованное. Нажатия на ссылку этого поста появятся в результатах."
+    },
+    "m_a0a0217d8fd3821a": {
+      "en": "Preparing the link…",
+      "ar": "نجهّز الرابط…",
+      "ru": "Готовим ссылку…"
+    },
+    "m_a286baf2c529d232": {
+      "en": "This post’s link",
+      "ar": "رابط هذا المنشور",
+      "ru": "Ссылка этого поста"
+    },
+    "m_b3bdc5a4fe0165c0": {
+      "en": "The right link, beside your post",
+      "ar": "الرابط المناسب بجانب المنشور",
+      "ru": "Нужная ссылка рядом с постом"
+    },
+    "m_bfb5c0b413ab840a": {
+      "en": "Save and prepare link",
+      "ar": "حفظ وتجهيز الرابط",
+      "ru": "Сохранить и подготовить ссылку"
+    },
+    "m_d945be3c709200ca": {
+      "en": "We count taps on the link. Sent messages are visible in WhatsApp.",
+      "ar": "نعدّ النقرات على الرابط. الرسائل المرسلة تظهر في WhatsApp.",
+      "ru": "Мы считаем нажатия на ссылку. Отправленные сообщения видны в WhatsApp."
+    },
+    "m_f3858b014e21f0ce": {
+      "en": "Which number can customers message?",
+      "ar": "على أي رقم يمكن للعملاء مراسلتكم؟",
+      "ru": "На какой номер клиенты могут вам написать?"
+    },
+    "m_edd312798f2468f1": {
+      "en": "Open updated post",
+      "ar": "فتح المنشور المحدّث",
+      "ru": "Открыть обновлённый пост"
+    },
+    "m_1cf59fbe090960e5": {
+      "en": "What you need to publish on {arg_0}",
+      "ar": "ما تحتاجونه للنشر على {arg_0}",
+      "ru": "Что нужно для публикации в {arg_0}"
+    },
+    "m_9f2c96ebcd6a9d6f": {
+      "en": "Open {arg_0}",
+      "ar": "فتح {arg_0}",
+      "ru": "Открыть {arg_0}"
+    },
+    "m_96da16e105398650": {
+      "en": "This post also on {arg_0}",
+      "ar": "هذا المنشور أيضًا على {arg_0}",
+      "ru": "Этот пост также в {arg_0}"
     }
   },
   "numberForms": {

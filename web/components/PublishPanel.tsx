@@ -4,6 +4,7 @@ import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import { useEffect, useRef, useState } from "react";
 import {
+  ApiError,
   PUBLISH_SCOPE_LABELS,
   endpoints,
   type PostChannel,
@@ -15,6 +16,8 @@ import { CHANNEL_LABEL } from "@/lib/postLifecycle";
 import { IconCheck, IconChevron, IconCopy, IconImage, IconLink, IconWhatsApp } from "@/lib/icons";
 import { copyText, toast, whatsappShareUrl } from "@/lib/ui";
 import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
+import { loadTrial } from "@/lib/trial";
+import { messageWithLink, postDestination, wantsWhatsapp } from "@/lib/postTracking";
 import { ChannelIcon } from "@/components/posts/ChannelIcon";
 import { shortDay } from "@/components/posts/postMeta";
 import ui from "@/components/posts/chrome.module.css";
@@ -55,6 +58,7 @@ export type PublishPanelProps = {
   onMarkPublished: () => void;
   /** Open on the pasted link: the post is out and the link is what is missing. */
   linkFirst?: boolean;
+  onWhatsappLink?: (link: WhatsappPostLink) => void;
 };
 
 async function copy(text: string, success: string) {
@@ -95,6 +99,7 @@ export function PublishPanel({
   publishing,
   onMarkPublished,
   linkFirst = false,
+  onWhatsappLink,
 }: PublishPanelProps) {
   const t = useCopy();
   const [scheduleDate, setScheduleDate] = useState(post.scheduled_for || "");
@@ -125,24 +130,63 @@ export function PublishPanel({
     };
   }, []);
 
-  // The post's own WhatsApp tracked link, when its call to action is WhatsApp. The server
-  // creates it on first read and returns the same link after that. A failure here only
-  // hides the block; the rest of the kit does not depend on it.
   const [waLink, setWaLink] = useState<WhatsappPostLink | null>(null);
+  const [linkLoading, setLinkLoading] = useState(true);
+  const [linkError, setLinkError] = useState("");
+  const [linkStale, setLinkStale] = useState(false);
+  const [linkRetry, setLinkRetry] = useState(0);
+  const [numberDraft, setNumberDraft] = useState("");
+  const [savingNumber, setSavingNumber] = useState(false);
+  const linkVersion = useRef(0);
+  const [placement, setPlacement] = useState<"story" | "profile">(post.format === "story" ? "story" : "profile");
+  const needsWhatsapp = wantsWhatsapp(post) || Boolean(waLink?.cta_is_whatsapp);
+
   useEffect(() => {
-    let active = true;
-    whatsappEndpoints
-      .forPost(postIndex, post.cta || "")
-      .then((result) => {
-        if (active) setWaLink(result);
+    const version = ++linkVersion.current;
+    whatsappEndpoints.forPost(postIndex, post.cta || "", post.uid || "")
+      .then(async (result) => {
+        if (version !== linkVersion.current) return;
+        setWaLink(result);
+        if (result.cta_is_whatsapp && !result.number_set) {
+          // Offer a researched number, but never save it without the owner's action.
+          const settings = await whatsappEndpoints.get();
+          if (version === linkVersion.current) setNumberDraft((draft) => draft || settings.suggested_number);
+        }
       })
-      .catch(() => {
-        if (active) setWaLink(null);
+      .catch((error) => {
+        if (version !== linkVersion.current) return;
+        const stale = error instanceof ApiError && error.status === 409;
+        setLinkStale(stale);
+        setLinkError(stale ? "הפוסט השתנה. פתחו אותו שוב כדי להכין את הקישור." : "לא הצלחנו להכין את הקישור. נסו שוב.");
+      })
+      .finally(() => {
+        if (version === linkVersion.current) setLinkLoading(false);
       });
-    return () => {
-      active = false;
-    };
-  }, [postIndex, post.cta]);
+    return () => { linkVersion.current = version + 1; };
+  }, [postIndex, post.uid, post.cta, linkRetry]);
+
+  async function saveNumber(event: React.FormEvent) {
+    event.preventDefault();
+    if (savingNumber || !numberDraft.trim()) return;
+    const version = linkVersion.current;
+    setSavingNumber(true);
+    setLinkError("");
+    try {
+      await whatsappEndpoints.save({ number: numberDraft.trim() });
+      const result = await whatsappEndpoints.forPost(postIndex, post.cta || "", post.uid || "");
+      if (version !== linkVersion.current) return;
+      setWaLink(result);
+      onWhatsappLink?.(result);
+      void loadTrial(true);
+    } catch (error) {
+      if (version === linkVersion.current) {
+        setLinkStale(error instanceof ApiError && error.status === 409);
+        setLinkError(error instanceof Error ? error.message : "לא הצלחנו להכין את הקישור. נסו שוב.");
+      }
+    } finally {
+      if (version === linkVersion.current) setSavingNumber(false);
+    }
+  }
 
   useEffect(() => {
     if (linkFirst) linkInput.current?.focus({ preventScroll: true });
@@ -153,17 +197,12 @@ export function PublishPanel({
   // "which post is this" to keep in sync — and a failed save restores `storedDate` rather
   // than leaving a date on screen that was never stored.
   const storedDate = post.scheduled_for || "";
-  const trackingUrl = post.tracking_url || "";
-  // The link the WhatsApp message carries is the one the post is measured by: its own
-  // tracked WhatsApp link when it asks people to write on WhatsApp (taps are counted per
-  // post code), else the site link with tracking. The site link on a "write to us" post
-  // sent people to the site and left the post's WhatsApp taps at nothing.
-  const messageLink = waLink?.cta_is_whatsapp && waLink.link ? waLink.link.url : trackingUrl;
-  const whatsappText = (text: string) => (messageLink ? `${text}\n\n${messageLink}` : text);
+  const messageLink = postDestination(post, waLink);
+  const whatsappText = (text: string) => messageWithLink(text, messageLink);
   const published = Boolean(post.published_url);
   // Out: "פרסמתי" was tapped, with or without a link.
   const out = published || Boolean(post.published_at);
-  const channelLabel = CHANNEL_LABEL[channel];
+  const channelLabel = t(CHANNEL_LABEL[channel]);
   // The same post for the plan's other channels, when the plan wrote a caption for them.
   const crossPosts = (Object.keys(CHANNEL_LABEL) as PostChannel[]).flatMap((key) => {
     const text = key === channel ? "" : (post.outlet_captions?.[key] || "").trim();
@@ -203,7 +242,7 @@ export function PublishPanel({
   }
 
   // ---- closing the loop after posting by hand ----
-  // "פרסמתי" is the whole ask: WhatsApp taps are counted by the post's own code either way.
+  // "פרסמתי" records publication; taps require the prepared link to be placed in it.
   // The link is optional and says what it adds (Instagram's reach), never a demand.
   const linkField = channel === "whatsapp" ? null : (
     <div className={out ? "" : "mt-4"}>
@@ -236,7 +275,7 @@ export function PublishPanel({
   const doneSection = (
     <section key="done" className={linkFirst ? "pb-5" : "py-5"}>
       {out ? (
-        linkField ?? <p className="text-sm leading-6 text-[var(--ink-soft)]"><Copy text="סומן כפורסם. את הלחיצות בוואטסאפ נספור לפי הקוד של הפוסט." /></p>
+        linkField ?? <p className="text-sm leading-6 text-[var(--ink-soft)]">{messageLink ? t("סומן כפורסם. לחיצות על הקישור של הפוסט יופיעו בתוצאות.") : t("סומן כפורסם. הוסיפו מספר וואטסאפ כדי להכין קישור שאפשר למדוד.")}</p>
       ) : (
         <>
           <button
@@ -264,7 +303,7 @@ export function PublishPanel({
       <section className={linkFirst ? "py-5" : "pb-5"}>
         <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
           <ChannelIcon channel={channel} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
-          <Copy text="מה צריך כדי לפרסם ב" />{channelLabel}
+          {t("מה צריך כדי לפרסם ב{arg_0}", { arg_0: channelLabel })}
         </h3>
         <p className={`${ui.meta} mt-0.5 font-normal`}>
           {storedDate ? t("מתוכנן ליום {arg_0}", { arg_0: shortDay(storedDate) }) : t("עוד לא נקבע תאריך")}
@@ -276,7 +315,7 @@ export function PublishPanel({
             <IconImage />
             {exporting ? t("מורידים את הכרטיס…") : t("להוריד את הכרטיס")}
           </button>
-          {channel === "whatsapp" ? (
+          {channel === "whatsapp" && (!needsWhatsapp || messageLink) ? (
             <a href={whatsappShareUrl(whatsappText(caption))} target="_blank" rel="noopener noreferrer" className={ui.button}>
               <IconWhatsApp className="text-[color:var(--good)]" />
               <Copy text="לשלוח בוואטסאפ" /></a>
@@ -285,9 +324,9 @@ export function PublishPanel({
               <button type="button" onClick={() => void copy(caption, t("הכיתוב הועתק."))} className={ui.button}>
                 <IconCopy />
                 <Copy text="להעתיק את הכיתוב" /></button>
-              <a href={COMPOSER_HREF[channel]} target="_blank" rel="noopener noreferrer" className={`${ui.button} sm:col-span-2`}>
+              <a href={channel === "whatsapp" ? "https://web.whatsapp.com/" : COMPOSER_HREF[channel]} target="_blank" rel="noopener noreferrer" className={`${ui.button} sm:col-span-2`}>
                 <ChannelIcon channel={channel} />
-                <Copy text="לפתוח את" />{channelLabel}
+                {t("לפתוח את {arg_0}", { arg_0: channelLabel })}
               </a>
             </>
           )}
@@ -299,69 +338,54 @@ export function PublishPanel({
         </p>
       </section>
 
-      {/* The tracked link — or the reason there is none, never a dead button. */}
+      {/* One destination for this post, followed by the concrete place to use it. */}
       <section className="py-5">
-        <h3 className={ui.groupTitle}><Copy text="קישור עם מעקב" /></h3>
-        {trackingUrl ? (
-          <>
-            {/* A tracked URL is long and unreadable; two lines show it is there, the copy
-                button hands over all of it, and the tooltip carries the rest. */}
-            <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
-              <p title={trackingUrl} className="min-w-0 flex-1 truncate font-mono text-xs leading-5 text-[var(--ink-soft)]" dir="ltr">
-                {trackingUrl}
-              </p>
-              <button
-                type="button"
-                onClick={() => void copy(trackingUrl, t("הקישור הועתק."))}
-                className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
-              >
-                <IconLink />
-                <Copy text="להעתיק את הקישור" /></button>
+        <h3 className={ui.groupTitle}>{needsWhatsapp ? t("קישור הוואטסאפ של הפוסט") : t("הקישור של הפוסט")}</h3>
+        {needsWhatsapp && linkLoading ? <p className={`${ui.help} mt-2`} role="status"><Copy text="מכינים את הקישור…" /></p> : null}
+        {needsWhatsapp && waLink && !waLink.number_set ? (
+          <form onSubmit={saveNumber} className="mt-3">
+            <label htmlFor="post-whatsapp-number" className={ui.help}><Copy text="באיזה מספר לקוחות יכולים לכתוב לכם?" /></label>
+            <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
+              <input id="post-whatsapp-number" type="tel" autoComplete="tel" dir="ltr" placeholder="050-1234567"
+                value={numberDraft} onChange={(event) => setNumberDraft(event.target.value)} disabled={savingNumber}
+                className={`${ui.field} min-w-0 flex-1 text-left`} aria-describedby="post-link-help" />
+              <button type="submit" disabled={savingNumber || !numberDraft.trim()} className={`${ui.button} ${ui.matchField}`}>
+                {savingNumber ? t("שומרים…") : t("לשמור ולהכין קישור")}
+              </button>
             </div>
-            <p className={`${ui.help} mt-2`}>
-              <Copy text="כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט." /></p>
-          </>
-        ) : (
-          <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-            <Copy text="לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״, וניצור קישור לכל פוסט." /></p>
-        )}
-      </section>
-
-      {/* The post's WhatsApp link: only for a post that asks people to write on WhatsApp. */}
-      {waLink?.cta_is_whatsapp ? (
-        <section className="py-5">
-          <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
-            <IconWhatsApp className="h-[18px] w-[18px] text-[var(--good)]" />
-            <Copy text="קישור הוואטסאפ של הפוסט" /></h3>
-          {waLink.link ? (
-            <>
-              <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
-                <p title={waLink.link.url} className="min-w-0 flex-1 truncate font-mono text-xs leading-5 text-[var(--ink-soft)]" dir="ltr">
-                  {waLink.link.url.replace(/^https?:\/\//, "")}
+            <p id="post-link-help" className={`${ui.help} mt-2`}><Copy text="נכין קישור לפוסט הזה ונראה כמה לחצו עליו." /></p>
+          </form>
+        ) : null}
+        {linkError && needsWhatsapp ? (
+          <div className="mt-2">
+            <p role="alert" className={ui.error}>{t(linkError)}</p>
+            {!waLink || waLink.number_set || linkStale ? <button type="button" onClick={() => { if (linkStale) void endpoints.strategy().then(onStrategy).catch(() => setLinkError("לא הצלחנו להכין את הקישור. נסו שוב.")); else { setLinkLoading(true); setLinkError(""); setWaLink(null); setLinkRetry((value) => value + 1); } }} disabled={linkLoading || savingNumber} className={ui.link}>{linkStale ? t("לפתוח את הפוסט המעודכן") : t("לנסות שוב")}</button> : null}
+          </div>
+        ) : null}
+        {messageLink ? (
+          <>
+            <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
+              <p title={messageLink} className="min-w-0 flex-1 truncate font-mono text-xs leading-5 text-[var(--ink-soft)]" dir="ltr">{messageLink.replace(/^https?:\/\//, "")}</p>
+              <button type="button" onClick={() => void copy(messageLink, t("הקישור הועתק."))} className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}>
+                <IconLink /><Copy text="להעתיק את הקישור" />
+              </button>
+            </div>
+            {channel === "instagram" ? (
+              <div className="mt-3">
+                <div role="group" aria-label={t("איפה לשים את הקישור")} className="flex flex-wrap gap-2">
+                  <button type="button" aria-pressed={placement === "story"} onClick={() => setPlacement("story")} className={ui.chip}><Copy text="בסטורי" /></button>
+                  <button type="button" aria-pressed={placement === "profile"} onClick={() => setPlacement("profile")} className={ui.chip}><Copy text="בפרופיל" /></button>
+                </div>
+                <p className={`${ui.help} mt-2`}>
+                  {placement === "story" ? t("באפליקציית אינסטגרם: פתחו סטורי, בחרו במדבקת קישור והדביקו את הקישור.") : t("באפליקציית אינסטגרם: פתחו את הפרופיל של העסק, בחרו בעריכת הפרופיל, בקישורים ובהוספת קישור חיצוני.")}
                 </p>
-                <button
-                  type="button"
-                  onClick={() => void copy(waLink.link!.url, t("קישור הוואטסאפ הועתק."))}
-                  className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
-                >
-                  <IconCopy />
-                  <Copy text="להעתיק" /></button>
+                {placement === "profile" ? <p className={`${ui.help} mt-1`}><Copy text="הקישור משותף לכל מי שנכנס לפרופיל. הלחיצות אינן מוכיחות שהגיעו מפוסט מסוים." /></p> : null}
               </div>
-              <p className={`${ui.help} mt-2`}>
-                {/* Instagram does not make links in a feed caption tappable, so the honest
-                    place there is the story's link sticker. */}
-                <Copy text="בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו במדבקת קישור בסטורי. נספור כמה לחצו, וההודעה תגיע עם הקוד" />{" "}
-                <span dir="ltr">{waLink.link.tag}</span><Copy text=". אם נשלחה הודעה, רואים רק בוואטסאפ." /></p>
-            </>
-          ) : (
-            <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-              <Copy text="הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו." />{" "}
-              <a href="/integrations" className={`${ui.link} min-h-0`}>
-                <Copy text="להגדיר את מספר הוואטסאפ" /></a>
-            </p>
-          )}
-        </section>
-      ) : null}
+            ) : <p className={`${ui.help} mt-2`}><Copy text="הוסיפו את הקישור לכיתוב לפני הפרסום." /></p>}
+            <p className={`${ui.help} mt-2`}>{needsWhatsapp ? t("נספור לחיצות על הקישור. הודעות שנשלחו רואים בוואטסאפ.") : t("עם נתוני אתר מחוברים נראה ביקורים דרך הקישור הזה.")}</p>
+          </>
+        ) : !needsWhatsapp ? <p className={`${ui.help} mt-2`}><Copy text="הוסיפו אתר עסק ב״ההחלטות שלי״ כדי להכין קישור לאתר." /><a href="/decisions" className={ui.link}><Copy text="להוסיף אתר" /></a></p> : null}
+      </section>
 
       {/* "פרסמתי", once the post is up (and the optional link). */}
       {linkFirst ? null : doneSection}
@@ -407,12 +431,12 @@ export function PublishPanel({
             <details key={key} className="group">
               <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
                 <ChannelIcon channel={key} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
-                <span className="flex-1"><Copy text="אותו פוסט גם ל" />{CHANNEL_LABEL[key]}</span>
+                <span className="flex-1">{t("אותו פוסט גם ב{arg_0}", { arg_0: t(CHANNEL_LABEL[key]) })}</span>
                 <IconChevron />
               </summary>
               <p className={`${ui.inset} whitespace-pre-line px-4 py-3 text-sm leading-6 text-[color:var(--ink)]`}>{text}</p>
               <div className="mb-2 mt-1 flex flex-wrap gap-x-5">
-                {key === "whatsapp" ? (
+                {key === "whatsapp" && (!needsWhatsapp || messageLink) ? (
                   <a href={whatsappShareUrl(whatsappText(text))} target="_blank" rel="noopener noreferrer" className={ui.link}>
                     <IconWhatsApp />
                     <Copy text="לשלוח בוואטסאפ" /></a>
@@ -421,8 +445,8 @@ export function PublishPanel({
                     <button type="button" onClick={() => void copy(text, t("הכיתוב הועתק."))} className={ui.link}>
                       <IconCopy />
                       <Copy text="להעתיק את הכיתוב" /></button>
-                    <a href={COMPOSER_HREF[key]} target="_blank" rel="noopener noreferrer" className={`${ui.link} ${ui.linkQuiet}`}>
-                      <Copy text="לפתוח את" />{CHANNEL_LABEL[key]}
+                    <a href={key === "whatsapp" ? "https://web.whatsapp.com/" : COMPOSER_HREF[key]} target="_blank" rel="noopener noreferrer" className={`${ui.link} ${ui.linkQuiet}`}>
+                      {t("לפתוח את {arg_0}", { arg_0: t(CHANNEL_LABEL[key]) })}
                     </a>
                   </>
                 )}

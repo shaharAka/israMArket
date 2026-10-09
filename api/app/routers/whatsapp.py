@@ -87,7 +87,7 @@ def post_source(
 
 
 @router.get("/link/post/{index}")
-def post_link(index: int, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+def post_link(index: int, post_uid: str = "", business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     """The post's own link, created on first read. Idempotent: the same post always gets
     the same link. `link` is null — with the reason — when the number is not set or the
     post's call to action is not WhatsApp."""
@@ -99,6 +99,13 @@ def post_link(index: int, business: Business = Depends(get_business), db: Sessio
     if index < 0 or index >= len(posts):
         raise HTTPException(status_code=404, detail="לא מצאנו את הפוסט הזה בתוכנית של החודש.")
     post = posts[index]
+    # The editor may still display the previous month's same array position.
+    # Do not create or return a different post's link after a month/post switch.
+    if post_uid:
+        from app.services.connected_posts import backfill_uid
+        actual_uid = str(post.get("uid") or backfill_uid(business.id, strategy.year, strategy.month, index))
+        if post_uid != actual_uid:
+            raise HTTPException(status_code=409, detail="הפוסט השתנה. פתחו אותו שוב כדי להכין את הקישור.")
     cta_whatsapp = whatsapp.post_cta_is_whatsapp(post)
     link = whatsapp.link_for_post(db, business, strategy, index, post)
     if link:
