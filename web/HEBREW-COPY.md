@@ -7,10 +7,25 @@ SaaS product. Read every string out loud: if an Israeli wouldn't say it that way
 This complements `UI-RULES.md` (word budgets, one primary action, honesty). Nothing here
 overrides the honesty rule: caveats, "we can't measure this" and sources stay.
 
-## 1. Write Hebrew first, never translate
+## 1. Define the message in English, then write natural Hebrew
 
-The most common failure is English phrasing in Hebrew words. Rewrite the idea, don't
-swap the words.
+Before writing any page, define in English who it serves, what they need to understand,
+the main message, and the one next action. Write the English copy against that purpose.
+Then adapt it naturally into Hebrew, Arabic and Russian. Review the whole journey in
+context; matching catalog entries alone does not prove clear messaging.
+
+For example, the final interview screen answers: “What will my plan be based on, and
+what do I do now?” Show the owner's offer, audience and chosen outcome, followed by
+“Build my plan.” Do not replace those facts with several statements explaining that
+research, data and planning will happen. A recommendation should show the proposed
+change, why to try it and how to test it without requiring an expansion to understand it.
+
+Keep existing Hebrew message IDs where useful. This workflow does not translate owner
+answers or change the language of their posts. Draft the meaning in English; preserve
+that meaning while choosing words that people naturally use in each language.
+
+English-first product thinking does not mean English phrasing in Hebrew words. Rewrite
+the idea, don't swap the words.
 
 | Calque (avoid) | Why | Natural Hebrew |
 |---|---|---|

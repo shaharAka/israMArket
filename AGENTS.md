@@ -23,4 +23,8 @@ Keep private security findings, customer data and owner declarations in private 
 - Lanes: Claude owns product and design of every screen; Codex owns integrations, provider
   reviews, legal pages, deploy and infra. The owner decides. Details in `PLAN.md`.
 - Any screen follows `web/DESIGN-STANDARD.md`.
+- Before writing interface copy, define the screen's purpose, main message and next
+  action in English. Then adapt naturally into Hebrew, English, Arabic and Russian.
+  Follow `web/HEBREW-COPY.md` and `web/UI-RULES.md`: show actual business information
+  and essential decisions without expansion; avoid generic process and warning prose.
 - Never put secrets, tokens or passwords in code, logs, commits or chat.

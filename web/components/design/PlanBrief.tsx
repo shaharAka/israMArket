@@ -2,7 +2,6 @@
 
 import type { ReactNode } from "react";
 import { Copy, useCopy } from "@/components/language/LanguageProvider";
-import { IconChevron } from "@/lib/icons";
 import styles from "./plan-brief.module.css";
 
 /**
@@ -24,11 +23,13 @@ export function PlanBrief({ businessName, direction, measure, baseline, ownerAct
 }) {
   const t = useCopy();
   return <section className={styles.brief} data-compact={compact} aria-label={t("הכיוון והצעד הבא בתוכנית")}>
-    <p className={styles.head}><span className={styles.mark} aria-hidden />{businessName ? t("התוכנית של {arg_0}", { arg_0: businessName }) : t("הכיוון בתוכנית")}</p>
+    <p className={styles.head}>{businessName ? t("התוכנית של {arg_0}", { arg_0: businessName }) : t("הכיוון בתוכנית")}</p>
     <div className={styles.body}>
       <h2>{direction}</h2>
       {context && <div className={styles.context}>{context}</div>}
-      {why && <details className={styles.why}><summary><Copy text="למה הכיוון הזה?" /><IconChevron className="h-4 w-4" /></summary><p>{why}</p></details>}
+      {/* Purpose: let the owner judge the proposed direction. Its supplied reason is
+          essential content, not an extra action required to understand the plan. */}
+      {why && <p className={styles.why}>{why}</p>}
       {(measure || baseline) && <div className={styles.measure}>
         {measure && <p className={styles.measureLabel}><Copy text="איך נדע" /></p>}
         <div>{measure && <p className={styles.measureValue}>{measure}</p>}{baseline && <p className={styles.baseline}>{baseline}</p>}</div>

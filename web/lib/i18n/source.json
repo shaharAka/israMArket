@@ -206,7 +206,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -734,7 +734,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 151,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -1339,12 +1339,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 137,
+        "line": 150,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
+        "line": 221,
         "kind": "literal"
       },
       {
@@ -1714,7 +1714,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 216,
+        "line": 225,
         "kind": "literal",
         "purpose": "display"
       }
@@ -3387,7 +3387,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 174,
+        "line": 185,
         "kind": "literal"
       },
       {
@@ -4443,7 +4443,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 114,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -4775,7 +4775,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 191,
+        "line": 202,
         "kind": "literal"
       }
     ]
@@ -5045,7 +5045,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -5056,7 +5056,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 151,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -5089,7 +5089,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -5627,7 +5627,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 57,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -6450,7 +6450,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -6555,17 +6555,6 @@
       {
         "file": "web/components/MonthAhead.tsx",
         "line": 53,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_0e86191754fa4359": {
-    "source": "הסבר אפשרי:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 113,
         "kind": "literal"
       }
     ]
@@ -7035,7 +7024,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -8002,7 +7991,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -8217,7 +8206,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -9028,7 +9017,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -9804,6 +9793,17 @@
       }
     ]
   },
+  "m_1639e468cd5d139d": {
+    "source": "חונכות לילדים שצריכים עזרה בלימודים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 92,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_165dd8eeeeb437cd": {
     "source": "מילה או שתיים באותיות גבוהות, ומילה אחת בצבע של החלודה.",
     "language": "he",
@@ -10113,7 +10113,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -10608,7 +10608,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 223,
         "kind": "literal",
         "purpose": "display"
       }
@@ -10746,7 +10746,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 117,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -10773,7 +10773,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -10891,7 +10891,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       },
       {
@@ -12418,12 +12418,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 150,
+        "line": 163,
         "kind": "literal"
       },
       {
@@ -12473,7 +12473,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -13562,17 +13562,6 @@
       }
     ]
   },
-  "m_1dc07a7f77aa3a47": {
-    "source": "מה ננסה:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 96,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_1dc0e08f2498cfa1": {
     "source": "קצר, ברור, עם המילים של העסק.",
     "language": "he",
@@ -13937,17 +13926,6 @@
       {
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 116,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_1ea154fb69b35446": {
-    "source": "המספרים כאן הם דיווח שלכם. נוכל לאמת ולהשלים אותם דרך חיבור למערכת המדידה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 219,
         "kind": "literal"
       }
     ]
@@ -15424,7 +15402,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -16077,7 +16055,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17821,7 +17799,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18126,7 +18104,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 211,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -18352,12 +18330,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -19199,7 +19177,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 117,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -19349,6 +19327,11 @@
         "line": 879,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 47,
+        "kind": "literal"
       },
       {
         "file": "web/lib/uxFlows.ts",
@@ -19919,7 +19902,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -20086,17 +20069,6 @@
         "line": 37,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_2cb624361c319354": {
-    "source": "עיצוב מותג ואתרים לעסקים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 86,
-        "kind": "literal"
       }
     ]
   },
@@ -21054,12 +21026,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 10,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 38,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -21395,7 +21372,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 143,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -21474,12 +21451,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 201,
         "kind": "literal"
       },
       {
@@ -22619,7 +22596,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 79,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -23214,7 +23191,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -24165,6 +24142,17 @@
       }
     ]
   },
+  "m_3511b5299fc74db1": {
+    "source": "מה אתם מציעים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 46,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_351a654b37ed1a04": {
     "source": "בוחרים במה להתמקד, מביאים את הסגנון שלכם ומכינים טיוטות. אתם בודקים ומאשרים לפני הפרסום.",
     "language": "he",
@@ -24215,7 +24203,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -24466,7 +24454,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 223,
         "kind": "literal",
         "purpose": "display"
       }
@@ -25117,7 +25105,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 91,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -25335,7 +25323,7 @@
     "references": [
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 27,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -25616,17 +25604,6 @@
       }
     ]
   },
-  "m_37ea87cf6051c5fe": {
-    "source": "הפניות והלקוחות הם הדיווח שלכם. לקוח יכול להגיע מפנייה של חודש קודם. אי אפשר לדעת מאיזה פוסט הם הגיעו, וכל מקור נספר לבד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 90,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_37f5588b516a8824": {
     "source": "אישור גישה לבדו אינו נתוני תוצאות. במצב החיבורים רואים אם כבר התקבלה קריאה.",
     "language": "he",
@@ -25873,17 +25850,6 @@
       }
     ]
   },
-  "m_38d3f9159af71d28": {
-    "source": "מספר שלא נמסר או לא נמדד נשאר לא ידוע. אין הבטחה לכמות לקוחות או לתרומות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 155,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_38d9b74e4a9f5c51": {
     "source": "מדהים",
     "language": "he",
@@ -25978,7 +25944,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -26795,17 +26761,6 @@
       }
     ]
   },
-  "m_3b630cbe3b548214": {
-    "source": "מה עומד מאחורי ההצעה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 110,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_3b66e0625f5b1f6c": {
     "source": "כן, מסודר",
     "language": "he",
@@ -27342,7 +27297,7 @@
       },
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 95,
+        "line": 87,
         "kind": "literal"
       },
       {
@@ -28244,7 +28199,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28396,7 +28351,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -28686,7 +28641,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 215,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -29188,7 +29143,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -29385,17 +29340,6 @@
       {
         "file": "web/components/design/FlowBoard.tsx",
         "line": 104,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_41a17a4b76de7413": {
-    "source": ". זה לא אומר שלא הייתה פעילות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 92,
         "kind": "literal"
       }
     ]
@@ -29665,7 +29609,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -29750,7 +29694,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 160,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -30211,7 +30155,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
+        "line": 221,
         "kind": "literal",
         "purpose": "display"
       },
@@ -31025,7 +30969,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -32040,17 +31984,6 @@
       }
     ]
   },
-  "m_47b0c59f6ba073bc": {
-    "source": "אין מספיק מספרים כדי להסיק מסקנה. זו הצעה לניסוי, לא תוצאה מוכחת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 90,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_47beae922679ecba": {
     "source": "העבודה מקרוב",
     "language": "he",
@@ -32151,7 +32084,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -32575,7 +32508,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -33168,7 +33101,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 216,
+        "line": 225,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33767,17 +33700,6 @@
       }
     ]
   },
-  "m_4bb949e29afb469b": {
-    "source": "תוכנה לתיאום פגישות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4bdbc1685aff2548": {
     "source": "כמה אפשר להשקיע בשיווק בחודש?",
     "language": "he",
@@ -33962,7 +33884,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -34018,7 +33940,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 92,
+        "line": 111,
         "kind": "literal"
       }
     ]
@@ -34214,7 +34136,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -34671,7 +34593,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 193,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -34811,17 +34733,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 53,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_4e002bcda7536a2e": {
-    "source": "הנימוק להצעה, לפי הניתוח:",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 119,
         "kind": "literal"
       }
     ]
@@ -35661,7 +35572,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 98,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36219,7 +36130,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -36308,7 +36219,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -36386,7 +36297,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36766,7 +36677,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 113,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -37967,7 +37878,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 151,
+        "line": 164,
         "kind": "literal",
         "purpose": "display"
       },
@@ -38422,7 +38333,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -38496,7 +38407,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -38522,17 +38433,6 @@
         "line": 16,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_56fb2c93f6fe8974": {
-    "source": "ספרו בקצרה מה אתם מציעים ולמי. נשתמש בזה כדי להכיר את העסק, לפני שנמליץ על שיווק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 137,
-        "kind": "literal"
       }
     ]
   },
@@ -39184,7 +39084,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 98,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -39712,7 +39612,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 85,
+        "line": 104,
         "kind": "literal"
       },
       {
@@ -40045,7 +39945,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -41002,7 +40902,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -42303,6 +42203,11 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 23,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 52,
+        "kind": "literal"
       }
     ]
   },
@@ -43003,17 +42908,6 @@
       }
     ]
   },
-  "m_6147e3cd2efa62d8": {
-    "source": "תמיכה במשפחות ובקידום המחקר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_61586b87bd40efb4": {
     "source": "למשל: מי שקונים מתנה לאירוע מסוים. נבדוק אילו מוצרים מתאימים, איך מגיעים לקנייה והאם יש סיבה לחזור.",
     "language": "he",
@@ -43205,7 +43099,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -43620,17 +43514,6 @@
       }
     ]
   },
-  "m_62b48566d1f4eec5": {
-    "source": "הנתונים מומצאים לצורך הדגמה. פעולות חשובות אינן בהכרח פניות או הזמנות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/api.ts",
-        "line": 1597,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_62bc4556127d7a96": {
     "source": "מחברים במסך של גוגל או של פייסבוק עצמם. אנחנו לא רואים את הסיסמה שלכם שם, ומקבלים רק את ההרשאות שברשימה. החיבור לא חובה.",
     "language": "he",
@@ -43648,7 +43531,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -43771,6 +43654,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 467,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_633106670d419de9": {
+    "source": "נבנה את התוכנית של {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -44050,7 +43944,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -45456,7 +45350,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 115,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -46993,7 +46887,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -47179,6 +47073,18 @@
       }
     ]
   },
+  "m_6a931a40f1f67021": {
+    "source": "פרטי העסק והצעד הבא מופיעים ישר על המסך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_6aa1545ad6865ffa": {
     "source": "רשמו את 5 השאלות שהכי הרבה אנשים שואלים בטלפון, ופרסמו אותן כשאלות עם תשובה.",
     "language": "he",
@@ -47294,7 +47200,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -47349,7 +47255,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -47474,7 +47380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47558,7 +47464,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 201,
         "kind": "literal"
       },
       {
@@ -49486,7 +49392,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 216,
+        "line": 225,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49566,7 +49472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50121,7 +50027,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -51526,6 +51432,17 @@
       }
     ]
   },
+  "m_73c451edd7505ee1": {
+    "source": "לחמים וחלות במאפייה שכונתית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 96,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_73ca581642e318bb": {
     "source": "name@business.co.il",
     "language": "en",
@@ -51823,6 +51740,17 @@
         "line": 113,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_747ac9b05b1fd0a1": {
+    "source": "לחמים וחלות להזמנה מראש ולאיסוף במאפייה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 95,
+        "kind": "literal"
       }
     ]
   },
@@ -53525,7 +53453,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53849,7 +53777,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal"
       },
       {
@@ -54250,7 +54178,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -55079,7 +55007,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -55715,7 +55643,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -55973,6 +55901,17 @@
         "line": 69,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_7e5392965a56eb68": {
+    "source": "עיצוב פנים לדירות לפני שיפוץ",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 94,
+        "kind": "literal"
       }
     ]
   },
@@ -56634,7 +56573,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -57105,7 +57044,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -57869,7 +57808,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 78,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -58012,7 +57951,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -59336,7 +59275,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 195,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -59496,6 +59435,17 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 196,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_860944295c4e4469": {
+    "source": "תוכנית שיווק, פוסטים ולמידה מהתוצאות לעסקים קטנים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -60171,7 +60121,7 @@
     "references": [
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 26,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -60412,12 +60362,6 @@
     "source": "עכשיו יש בסיס לתוכנית שלכם",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
-        "kind": "literal",
-        "purpose": "display"
-      },
       {
         "file": "web/lib/uxFlows.ts",
         "line": 109,
@@ -62894,7 +62838,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 150,
+        "line": 163,
         "kind": "literal"
       }
     ]
@@ -63327,7 +63271,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63472,17 +63416,6 @@
       }
     ]
   },
-  "m_8f67719844c5b39d": {
-    "source": "בונים מתוך ההיכרות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8f72fb13b3a7da16": {
     "source": "התאריך לא תקין. הזינו תאריך כמו 2026-03-15 (שנה-חודש-יום).",
     "language": "he",
@@ -63597,7 +63530,7 @@
       },
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 33,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -63653,7 +63586,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64144,11 +64077,6 @@
         "line": 32,
         "kind": "literal",
         "purpose": "display"
-      },
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
-        "kind": "literal"
       }
     ]
   },
@@ -64553,17 +64481,6 @@
       }
     ]
   },
-  "m_919b9ce264b25e06": {
-    "source": "אנחנו עוד מכירים את העסק. כאן בודקים את ההבנה, לפני תוכנית או המלצות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_91a062f5b2dacd8d": {
     "source": "פוסט שקט בלי מכירה",
     "language": "he",
@@ -64798,7 +64715,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 185,
+        "line": 196,
         "kind": "literal"
       }
     ]
@@ -64820,7 +64737,7 @@
     "references": [
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 38,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -66381,7 +66298,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 79,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -67081,6 +66998,17 @@
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 618,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_9758eb0f8d04bf18": {
+    "source": "מקורות הנתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 119,
+        "kind": "literal"
       }
     ]
   },
@@ -68588,7 +68516,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -68796,7 +68724,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -69454,7 +69382,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 98,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -69827,7 +69755,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 144,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -70152,7 +70080,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 144,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -70759,6 +70687,17 @@
       }
     ]
   },
+  "m_a0744bd6f0b7a200": {
+    "source": "העשייה שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 46,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a076e6341dbe8722": {
     "source": "מחפשים לקנות או להזמין עכשיו. אלה המילים ששוות כסף בפרסום.",
     "language": "he",
@@ -70779,17 +70718,6 @@
         "line": 156,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_a09cb0fade8cf78d": {
-    "source": "השאלות מבוססות על מה שסיפרתם ועל מה שהצלחנו לקרוא. אפשר לענות בקצרה או להשלים בהמשך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
-        "kind": "literal"
       }
     ]
   },
@@ -71207,13 +71135,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 137,
+        "line": 150,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 138,
+        "line": 151,
         "kind": "literal"
       },
       {
@@ -71973,7 +71901,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 150,
+        "line": 163,
         "kind": "literal"
       },
       {
@@ -72017,17 +71945,6 @@
       {
         "file": "web/components/start/StepGoal.tsx",
         "line": 228,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_a359c1e475f5b07a": {
-    "source": "נבחר תוצאה עסקית אחת. הנתונים הנוספים יעזרו להסביר מה מוביל אליה. מספרים שלא ידועים לא הופכים לאפס או לממוצע משוער.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
         "kind": "literal"
       }
     ]
@@ -72156,7 +72073,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -73705,7 +73622,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 144,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -74046,7 +73963,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -75256,7 +75173,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 170,
         "kind": "literal"
       },
       {
@@ -75323,7 +75240,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 130,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -75481,7 +75398,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 73,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -75539,17 +75456,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_ab6c020fe8d91c72": {
-    "source": "ההצעה לא משנה את התוכנית ולא מפרסמת תוכן. אתם מחליטים מה לערוך ולאשר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 121,
         "kind": "literal"
       }
     ]
@@ -75670,7 +75576,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76070,7 +75976,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -76912,7 +76818,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 217,
+        "line": 226,
         "kind": "literal"
       }
     ]
@@ -77629,7 +77535,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -77760,7 +77666,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 46,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -77788,7 +77694,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -78048,6 +77954,17 @@
       }
     ]
   },
+  "m_b120c28be5b5aeae": {
+    "source": "עוד אין נתוני תוצאות להשוואה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 109,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b12550ac845d9795": {
     "source": "'{arg_0}' הוא לא שם משתמש תקין באינסטגרם. שם משתמש הוא עד 30 תווים: אותיות באנגלית, ספרות, נקודה וקו תחתון, ולא מתחיל או נגמר בנקודה.",
     "language": "he",
@@ -78285,7 +78202,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -78307,7 +78224,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 193,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -80163,7 +80080,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 143,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -80208,7 +80125,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 143,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80569,7 +80486,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 174,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -81215,6 +81132,17 @@
         "line": 1148,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_b7c6cc46587921a1": {
+    "source": "תקציב פרסום חודשי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 49,
+        "kind": "literal"
       }
     ]
   },
@@ -82524,7 +82452,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -82848,8 +82776,13 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 43,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 55,
         "kind": "literal"
       },
       {
@@ -82957,7 +82890,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -82996,7 +82929,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -84312,7 +84245,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -84431,7 +84364,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -85117,7 +85050,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 69,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -85780,17 +85713,6 @@
       }
     ]
   },
-  "m_c28bc1780e598906": {
-    "source": "ההיכרות נשמרת במכשיר עד פתיחת החשבון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 161,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c29793a54323eb27": {
     "source": "כל {arg_0} המילים, ומאיפה כל אחת באה",
     "language": "he",
@@ -85977,7 +85899,7 @@
       },
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 27,
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -86018,17 +85940,6 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 121,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_c30a4a09f5a98242": {
-    "source": "צפיות במוצרים, הוספות לסל והתחלות תשלום יעזרו להבין איפה אנשים נעצרים. המדד הראשי הוא רכישות שהושלמו. נוודא שהאירועים האלה נמדדים לפני שנציג אותם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 212,
         "kind": "literal"
       }
     ]
@@ -87286,7 +87197,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -87699,7 +87610,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -88940,7 +88851,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -89496,7 +89407,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -89507,7 +89418,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -89705,7 +89616,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 151,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -89716,7 +89627,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -90155,7 +90066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -92723,14 +92634,20 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/design/PlanBrief.tsx",
-        "line": 31,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 60,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_d2dbe1859f8467a6": {
+    "source": "מה רוצים להשיג",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/BuildReview.tsx",
+        "line": 48,
+        "kind": "literal"
       }
     ]
   },
@@ -92809,7 +92726,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -92912,7 +92829,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 122,
+        "line": 135,
         "kind": "literal"
       },
       {
@@ -93353,17 +93270,6 @@
       }
     ]
   },
-  "m_d3fc3cf1e1d7fdfb": {
-    "source": "נשלב את ההיכרות, המחקר והנתונים הזמינים. התוכנית תוביל לתוכן ולפוסטים שתבדקו לפני פרסום, ונעדכן אותה לפי התוצאות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d41382fc6f32fced": {
     "source": "לא הצלחנו לבדוק את הנתונים. נסו שוב.",
     "language": "he",
@@ -93455,7 +93361,7 @@
     "references": [
       {
         "file": "web/components/design/PlanBrief.tsx",
-        "line": 51,
+        "line": 52,
         "kind": "jsx"
       }
     ]
@@ -94171,7 +94077,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 143,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -94232,7 +94138,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -94624,17 +94530,6 @@
         "line": 36,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_d66439cfab700286": {
-    "source": "עלויות הפרסום משתנות לפי הקהל, האזור ומה שרוצים להשיג. נשתמש במחקר ובנתוני החשבונות הזמינים כדי להשוות בין הערוצים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 214,
-        "kind": "literal"
       }
     ]
   },
@@ -95165,17 +95060,6 @@
       }
     ]
   },
-  "m_d7b60d19bee99d5a": {
-    "source": "אלה לא בהכרח פניות או הזמנות. לא מחברים לחיצות, צפיות ותוצאות מסוגים שונים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 90,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d7bb57231813e499": {
     "source": "מה נציג בפוסטים הראשונים?",
     "language": "he",
@@ -95288,7 +95172,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -95503,17 +95387,6 @@
         "line": 73,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_d8385d612fef21d5": {
-    "source": "מה כבר עובד, ומה עוד לא ניסיתם? נבדוק את המקורות שמתאימים לכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 150,
-        "kind": "literal"
       }
     ]
   },
@@ -96119,7 +95992,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 117,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -97106,7 +96979,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 151,
+        "line": 164,
         "kind": "literal"
       },
       {
@@ -98024,7 +97897,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -98274,6 +98147,17 @@
         "line": 114,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_de8ed81ba4cfc612": {
+    "source": "לפני בניית התוכנית רואים את ההצעה שלכם, הקהל והתוצאה שבחרתם. בתוכנית ובתוצאות, ההסבר להמלצה מופיע לצד השינוי שננסה ואיך נבדוק אותו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
+        "kind": "literal"
       }
     ]
   },
@@ -98979,7 +98863,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -99830,7 +99714,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -99956,6 +99840,17 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 187,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e1d120f2189961f6": {
+    "source": "פעולות חשובות אינן בהכרח פניות או הזמנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/api.ts",
+        "line": 1597,
         "kind": "literal"
       }
     ]
@@ -100194,12 +100089,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
+        "line": 169,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 162,
+        "line": 173,
         "kind": "literal"
       },
       {
@@ -100691,17 +100586,6 @@
       }
     ]
   },
-  "m_e3a3231473aeea47": {
-    "source": "בונים את הבסיס לשיווק",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e3a4d946a2ddd423": {
     "source": "להיכנס לחשבון",
     "language": "he",
@@ -100785,7 +100669,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -101666,7 +101550,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 190,
+        "line": 201,
         "kind": "literal"
       },
       {
@@ -101898,7 +101782,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -102449,7 +102333,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -102728,17 +102612,6 @@
       {
         "file": "web/components/start/script.ts",
         "line": 273,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_e85e51a986c9518b": {
-    "source": "כאן מתחילה בניית התוכנית בחשבון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
         "kind": "literal"
       }
     ]
@@ -104058,7 +103931,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -104266,7 +104139,7 @@
     "references": [
       {
         "file": "web/components/design/FindingRehearsal.tsx",
-        "line": 26,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104830,6 +104703,17 @@
       }
     ]
   },
+  "m_ec918433569ce825": {
+    "source": "למה ננסה את זה?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/results/FindingCard.tsx",
+        "line": 85,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ec9f78b54aa2ad78": {
     "source": "תוכנית לעסק.",
     "language": "he",
@@ -105268,7 +105152,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 73,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -105554,7 +105438,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 138,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -105757,7 +105641,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 194,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -105813,7 +105697,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 103,
+        "line": 94,
         "kind": "literal"
       },
       {
@@ -107550,7 +107434,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 88,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -107928,7 +107812,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 124,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -108974,17 +108858,6 @@
       }
     ]
   },
-  "m_f571a9d1b56888cf": {
-    "source": "המקורות והמגבלות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/results/FindingCard.tsx",
-        "line": 110,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f58da7084778a98b": {
     "source": "אורך הכיתוב",
     "language": "he",
@@ -109203,7 +109076,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -109621,17 +109494,6 @@
       }
     ]
   },
-  "m_f6a69f40fc320f2b": {
-    "source": "עסק לבדיקה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 86,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f6a7bf616811c04e": {
     "source": "חדר מלון גנרי",
     "language": "he",
@@ -109714,7 +109576,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111035,7 +110897,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 116,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -111576,7 +111438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -112054,6 +111916,17 @@
       }
     ]
   },
+  "m_fc8e8c671bfb5f41": {
+    "source": "טווח תקציב נשאר טווח. מידע לא ידוע לא הופך לאפס. מקורות הנתונים זמינים בפירוט, ובעיות שמשפיעות על ההצעה מופיעות ליד המידע הרלוונטי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fca1cc01e2824143": {
     "source": "צילום מסך של דף הבית כפי שלקוח רואה אותו (1280x900)",
     "language": "he",
@@ -112090,17 +111963,6 @@
       }
     ]
   },
-  "m_fcb97cf6be3a20fb": {
-    "source": "התשובות נשמרות בחשבון בכל מעבר לשלב הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 161,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_fcbd7780189e8923": {
     "source": "לנהל את החיבור",
     "language": "he",
@@ -112132,17 +111994,6 @@
         "line": 81,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_fcc38983f96414c0": {
-    "source": "פיג׳מות בעיצוב מקומי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/start/ResearchJourney.tsx",
-        "line": 86,
-        "kind": "literal"
       }
     ]
   },
@@ -112730,7 +112581,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
