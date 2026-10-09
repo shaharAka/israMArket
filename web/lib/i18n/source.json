@@ -508,12 +508,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1485,
+        "line": 1493,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1516,
+        "line": 1524,
         "kind": "literal"
       }
     ]
@@ -1012,7 +1012,7 @@
     "references": [
       {
         "file": "api/app/routers/whatsapp.py",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -1217,7 +1217,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 277,
+        "line": 316,
         "kind": "literal"
       }
     ]
@@ -1413,7 +1413,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1102,
+        "line": 1106,
         "kind": "literal"
       }
     ]
@@ -2001,17 +2001,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1551,
+        "line": 1559,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1652,
+        "line": 1661,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1787,
+        "line": 1796,
         "kind": "literal"
       }
     ]
@@ -2499,6 +2499,17 @@
       }
     ]
   },
+  "m_05165daffcd6d215": {
+    "source": "איפה לשים את הקישור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 375,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0520e766896f7024": {
     "source": "סטורי באינסטגרם",
     "language": "he",
@@ -2566,7 +2577,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1381,
+        "line": 1389,
         "kind": "literal"
       }
     ]
@@ -4629,12 +4640,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 218,
+        "line": 219,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 219,
+        "line": 220,
         "kind": "literal"
       },
       {
@@ -4675,7 +4686,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 829,
+        "line": 833,
         "kind": "literal"
       }
     ]
@@ -5131,7 +5142,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -5232,7 +5243,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1670,
+        "line": 1679,
         "kind": "literal"
       }
     ]
@@ -6289,24 +6300,13 @@
       }
     ]
   },
-  "m_0df71ee7812a6233": {
-    "source": "מה צריך כדי לפרסם ב",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 267,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0dfa72fe2b53d402": {
     "source": "לא חובה. למשל: רק בשישי",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1463,
+        "line": 1471,
         "kind": "literal"
       }
     ]
@@ -6500,7 +6500,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -7063,7 +7063,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 133,
         "kind": "literal"
       }
     ]
@@ -7154,6 +7154,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 320,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0fbc31e3e11bcf42": {
+    "source": "בסטורי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 376,
         "kind": "literal"
       }
     ]
@@ -7276,7 +7287,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 668,
+        "line": 672,
         "kind": "literal"
       }
     ]
@@ -7287,7 +7298,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1020,
+        "line": 1024,
         "kind": "literal"
       }
     ]
@@ -7584,7 +7595,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1243,
+        "line": 1247,
         "kind": "literal"
       }
     ]
@@ -7813,7 +7824,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 34,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -7995,17 +8006,6 @@
       {
         "file": "web/lib/quarterPlan.ts",
         "line": 265,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_119eb441f4fb1946": {
-    "source": "לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״, וניצור קישור לכל פוסט.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 326,
         "kind": "literal"
       }
     ]
@@ -8299,7 +8299,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 112,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -8920,7 +8920,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1020,
+        "line": 1024,
         "kind": "literal"
       }
     ]
@@ -9087,7 +9087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -9143,7 +9143,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1571,
+        "line": 1579,
         "kind": "literal"
       }
     ]
@@ -9761,7 +9761,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1586,
+        "line": 1594,
         "kind": "literal"
       }
     ]
@@ -9845,7 +9845,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 741,
+        "line": 745,
         "kind": "literal"
       }
     ]
@@ -9894,7 +9894,7 @@
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 319,
+        "line": 370,
         "kind": "literal"
       }
     ]
@@ -10118,7 +10118,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1859,
+        "line": 1868,
         "kind": "literal"
       }
     ]
@@ -10181,7 +10181,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 146,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -10192,7 +10192,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1102,
+        "line": 1106,
         "kind": "literal"
       }
     ]
@@ -10501,6 +10501,17 @@
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1784b5241c2f1ccf": {
+    "source": "הוסיפו אתר עסק ב״ההחלטות שלי״ כדי להכין קישור לאתר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 387,
         "kind": "literal"
       }
     ]
@@ -10851,7 +10862,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 112,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -11502,7 +11513,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 662,
+        "line": 666,
         "kind": "literal"
       }
     ]
@@ -11970,7 +11981,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1456,
+        "line": 1464,
         "kind": "literal"
       }
     ]
@@ -12538,7 +12549,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1204,
+        "line": 1208,
         "kind": "literal"
       }
     ]
@@ -12811,7 +12822,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1603,
+        "line": 1611,
         "kind": "literal"
       }
     ]
@@ -12923,7 +12934,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1911,
+        "line": 1920,
         "kind": "literal"
       }
     ]
@@ -13058,7 +13069,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1938,
+        "line": 1947,
         "kind": "literal"
       }
     ]
@@ -13246,6 +13257,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1299,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1cf59fbe090960e5": {
+    "source": "מה צריך כדי לפרסם ב{arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 306,
         "kind": "literal"
       }
     ]
@@ -13528,7 +13550,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1117,
+        "line": 1121,
         "kind": "literal"
       }
     ]
@@ -13789,6 +13811,17 @@
       {
         "file": "web/app/integrations/page.tsx",
         "line": 828,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_1e1971f392964042": {
+    "source": "הקישור משותף לכל מי שנכנס לפרופיל. הלחיצות אינן מוכיחות שהגיעו מפוסט מסוים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 382,
         "kind": "literal"
       }
     ]
@@ -14112,7 +14145,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1742,
+        "line": 1751,
         "kind": "literal"
       }
     ]
@@ -14798,7 +14831,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 688,
+        "line": 692,
         "kind": "literal"
       }
     ]
@@ -15231,7 +15264,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -15425,7 +15458,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -15697,7 +15730,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1207,
+        "line": 1211,
         "kind": "literal"
       }
     ]
@@ -15708,7 +15741,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 298,
+        "line": 337,
         "kind": "literal"
       }
     ]
@@ -15815,7 +15848,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 249,
+        "line": 288,
         "kind": "literal"
       }
     ]
@@ -16108,7 +16141,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 111,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16386,7 +16419,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 622,
+        "line": 626,
         "kind": "literal"
       }
     ]
@@ -16465,7 +16498,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 518,
+        "line": 522,
         "kind": "literal"
       }
     ]
@@ -16679,7 +16712,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1995,
+        "line": 2004,
         "kind": "literal"
       }
     ]
@@ -16917,7 +16950,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1312,
+        "line": 1316,
         "kind": "literal"
       }
     ]
@@ -17444,6 +17477,17 @@
       }
     ]
   },
+  "m_26678b59af145012": {
+    "source": "באפליקציית אינסטגרם: פתחו את הפרופיל של העסק, בחרו בעריכת הפרופיל, בקישורים ובהוספת קישור חיצוני.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 380,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2680d8152f472380": {
     "source": "עוד אין כאן נתוני עסק. זו הדגמה של מבנה התוכנית.",
     "language": "he",
@@ -17545,7 +17589,7 @@
     "references": [
       {
         "file": "api/app/routers/whatsapp.py",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -17639,6 +17683,17 @@
       {
         "file": "web/lib/dna/layout.ts",
         "line": 40,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2742ad0cef751137": {
+    "source": "הוסיפו את הקישור לכיתוב לפני הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 384,
         "kind": "literal"
       }
     ]
@@ -17849,7 +17904,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 139,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18250,6 +18305,17 @@
       }
     ]
   },
+  "m_2895179ee49fd92a": {
+    "source": "אפשר להוסיף מספר וואטסאפ ולהכין קישור מתוך פרסום הפוסט. באינסטגרם בוחרים אם לשים אותו בסטורי או בפרופיל, עם הוראות קצרות לכל אפשרות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_289528aadc693bf4": {
     "source": "הסיסמה נשמרה. אפשר להיכנס גם עם אימייל וסיסמה.",
     "language": "he",
@@ -18505,7 +18571,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1124,
+        "line": 1128,
         "kind": "literal"
       }
     ]
@@ -18725,12 +18791,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1652,
+        "line": 1661,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1787,
+        "line": 1796,
         "kind": "literal"
       }
     ]
@@ -19641,7 +19707,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1603,
+        "line": 1611,
         "kind": "literal"
       }
     ]
@@ -19676,7 +19742,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 27,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19781,7 +19847,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 440,
+        "line": 444,
         "kind": "literal"
       }
     ]
@@ -19792,12 +19858,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1688,
+        "line": 1697,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1774,
+        "line": 1783,
         "kind": "literal"
       }
     ]
@@ -19808,7 +19874,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1042,
+        "line": 1046,
         "kind": "literal"
       }
     ]
@@ -19853,7 +19919,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 480,
+        "line": 484,
         "kind": "literal"
       }
     ]
@@ -19968,7 +20034,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 154,
         "kind": "literal"
       }
     ]
@@ -20909,6 +20975,17 @@
       }
     ]
   },
+  "m_2e39957f6b598a03": {
+    "source": "בפרופיל",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 377,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2e3ebd96bd756aa7": {
     "source": "שבוע 1 (1–7 בספטמבר)",
     "language": "he",
@@ -21090,17 +21167,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 65,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 93,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 126,
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -21447,7 +21524,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 217,
+        "line": 218,
         "kind": "literal"
       }
     ]
@@ -21653,7 +21730,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1451,
+        "line": 1459,
         "kind": "literal"
       }
     ]
@@ -23251,7 +23328,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1911,
+        "line": 1920,
         "kind": "literal"
       }
     ]
@@ -23329,7 +23406,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1413,
+        "line": 1421,
         "kind": "literal"
       }
     ]
@@ -24070,22 +24147,6 @@
         "line": 146,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_34b1884502542d32": {
-    "source": "לפתוח את",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 290,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 425,
-        "kind": "literal"
       }
     ]
   },
@@ -25065,7 +25126,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1210,
+        "line": 1214,
         "kind": "literal"
       },
       {
@@ -25498,7 +25559,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 48,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -25806,7 +25867,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1507,
+        "line": 1515,
         "kind": "literal"
       }
     ]
@@ -26191,7 +26252,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1805,
+        "line": 1814,
         "kind": "literal"
       }
     ]
@@ -26553,7 +26614,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 27,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -26564,7 +26625,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 605,
+        "line": 609,
         "kind": "literal"
       }
     ]
@@ -27074,7 +27135,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 440,
+        "line": 464,
         "kind": "literal"
       }
     ]
@@ -27989,7 +28050,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 230,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -28024,7 +28085,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1891,
+        "line": 1900,
         "kind": "literal"
       }
     ]
@@ -28059,7 +28120,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 372,
+        "line": 396,
         "kind": "literal"
       }
     ]
@@ -28365,7 +28426,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 69,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28544,7 +28605,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 114,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -28597,17 +28658,6 @@
         "file": "web/lib/draft.ts",
         "line": 1075,
         "kind": "template"
-      }
-    ]
-  },
-  "m_3f67bd8b785a4ff2": {
-    "source": "סומן כפורסם. את הלחיצות בוואטסאפ נספור לפי הקוד של הפוסט.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 239,
-        "kind": "literal"
       }
     ]
   },
@@ -28715,6 +28765,23 @@
       }
     ]
   },
+  "m_3f8e5f3fa1793e25": {
+    "source": "הפוסט השתנה. פתחו אותו שוב כדי להכין את הקישור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 160,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/routers/whatsapp.py",
+        "line": 108,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_3f8f47b4c67554a3": {
     "source": "צפוף ושמח, כמו דוכן בשוק ביום שישי בבוקר.",
     "language": "he",
@@ -28733,6 +28800,27 @@
       {
         "file": "web/components/start/StepSoftware.tsx",
         "line": 32,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3f92e6d9fcc3262a": {
+    "source": "לא הצלחנו להכין את הקישור. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 160,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 184,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 362,
         "kind": "literal"
       }
     ]
@@ -29268,7 +29356,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1917,
+        "line": 1926,
         "kind": "literal"
       }
     ]
@@ -29301,7 +29389,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -29687,7 +29775,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1038,
+        "line": 1042,
         "kind": "literal"
       }
     ]
@@ -29794,6 +29882,17 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 656,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_4226da53f47b5c84": {
+    "source": "הוסיפו את הקישור של הפוסט בפרסום. לחיצות עליו יופיעו כאן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PostEditor.tsx",
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -29934,7 +30033,7 @@
     "references": [
       {
         "file": "api/app/routers/whatsapp.py",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -31091,7 +31190,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1774,
+        "line": 1783,
         "kind": "literal"
       }
     ]
@@ -31170,7 +31269,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -31282,7 +31381,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 181,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -31304,7 +31403,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1240,
+        "line": 1244,
         "kind": "literal"
       }
     ]
@@ -31685,7 +31784,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 41,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -31696,7 +31795,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 277,
+        "line": 316,
         "kind": "literal"
       }
     ]
@@ -32321,7 +32420,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -32615,17 +32714,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 23,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 30,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -32784,6 +32883,17 @@
         "line": 1752,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_48e41dfefa39c0eb": {
+    "source": "לפתוח את הפוסטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 14,
+        "kind": "literal"
       }
     ]
   },
@@ -33120,6 +33230,17 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 101,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_49b10e919b303352": {
+    "source": "להוסיף אתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 387,
         "kind": "literal"
       }
     ]
@@ -33789,7 +33910,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1956,
+        "line": 1965,
         "kind": "literal"
       },
       {
@@ -34039,6 +34160,17 @@
         "line": 81,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_4c1de84136155bbc": {
+    "source": "לכל פוסט מוצג קישור לפי ההזמנה שלו לפעולה. קישור לאתר אינו מחליף קישור וואטסאפ שחסר. לחיצות על קישור בפרופיל יכולות להגיע גם מפוסטים אחרים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 13,
+        "kind": "literal"
       }
     ]
   },
@@ -34383,7 +34515,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1035,
+        "line": 1039,
         "kind": "literal"
       }
     ]
@@ -34394,7 +34526,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1243,
+        "line": 1247,
         "kind": "literal"
       }
     ]
@@ -34991,12 +35123,12 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 285,
+        "line": 324,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 421,
+        "line": 445,
         "kind": "literal"
       }
     ]
@@ -35274,7 +35406,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1756,
+        "line": 1765,
         "kind": "literal"
       }
     ]
@@ -35790,7 +35922,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 153,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36057,6 +36189,17 @@
         "line": 56,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_50a859fa055e9018": {
+    "source": "הכינו את קישור הוואטסאפ לפני העתקת ההודעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PostEditor.tsx",
+        "line": 1350,
+        "kind": "literal"
       }
     ]
   },
@@ -36348,7 +36491,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -36515,7 +36658,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 125,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37328,7 +37471,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 928,
+        "line": 932,
         "kind": "literal"
       }
     ]
@@ -37466,7 +37609,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1240,
+        "line": 1244,
         "kind": "literal"
       }
     ]
@@ -37643,7 +37786,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 588,
+        "line": 592,
         "kind": "literal"
       }
     ]
@@ -38133,7 +38276,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 454,
+        "line": 478,
         "kind": "literal"
       },
       {
@@ -38308,17 +38451,6 @@
         "line": 1443,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_5641e51d0513ff82": {
-    "source": ". אם נשלחה הודעה, רואים רק בוואטסאפ.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 354,
-        "kind": "literal"
       }
     ]
   },
@@ -38634,7 +38766,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -39460,7 +39592,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1580,
+        "line": 1588,
         "kind": "literal"
       }
     ]
@@ -40458,7 +40590,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 181,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -40480,7 +40612,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -40633,7 +40765,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 684,
+        "line": 688,
         "kind": "literal"
       }
     ]
@@ -40878,13 +41010,24 @@
       }
     ]
   },
+  "m_5c72d12d96422fd8": {
+    "source": "עם נתוני אתר מחוברים נראה ביקורים דרך הקישור הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 385,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5c7a4b412ba43832": {
     "source": "הנוסח נשמר.",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 827,
+        "line": 831,
         "kind": "literal"
       }
     ]
@@ -41185,7 +41328,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 139,
+        "line": 148,
         "kind": "literal"
       }
     ]
@@ -41386,7 +41529,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1727,
+        "line": 1736,
         "kind": "literal"
       },
       {
@@ -41909,7 +42052,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1742,
+        "line": 1751,
         "kind": "literal"
       }
     ]
@@ -42064,7 +42207,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1688,
+        "line": 1697,
         "kind": "literal"
       }
     ]
@@ -42113,7 +42256,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       },
       {
@@ -42362,7 +42505,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 520,
+        "line": 524,
         "kind": "literal"
       }
     ]
@@ -42529,7 +42672,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1076,
+        "line": 1080,
         "kind": "literal"
       },
       {
@@ -42957,7 +43100,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 120,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -43168,7 +43311,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 567,
+        "line": 571,
         "kind": "literal"
       }
     ]
@@ -43399,7 +43542,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -43829,7 +43972,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 119,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -43845,7 +43988,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 122,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -44242,7 +44385,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -45324,7 +45467,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 394,
+        "line": 418,
         "kind": "literal"
       }
     ]
@@ -45892,7 +46035,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1350,
+        "line": 1358,
         "kind": "literal"
       }
     ]
@@ -46245,7 +46388,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1497,
+        "line": 1505,
         "kind": "literal"
       }
     ]
@@ -47063,7 +47206,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1028,
         "kind": "literal"
       }
     ]
@@ -47374,7 +47517,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 62,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47495,7 +47638,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 132,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -47550,7 +47693,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -47572,7 +47715,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 622,
+        "line": 626,
         "kind": "literal"
       }
     ]
@@ -47675,7 +47818,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 146,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48365,7 +48508,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1059,
+        "line": 1063,
         "kind": "literal"
       }
     ]
@@ -49102,7 +49245,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1200,
+        "line": 1204,
         "kind": "literal"
       }
     ]
@@ -49141,7 +49284,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 470,
+        "line": 494,
         "kind": "literal"
       }
     ]
@@ -49186,7 +49329,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1151,
+        "line": 1155,
         "kind": "literal"
       }
     ]
@@ -49777,7 +49920,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 132,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50209,7 +50352,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 483,
+        "line": 487,
         "kind": "literal"
       }
     ]
@@ -50332,7 +50475,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -50365,7 +50508,18 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 76,
+        "line": 85,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7106eec714b6ed9e": {
+    "source": "נכין קישור לפוסט הזה ונראה כמה לחצו עליו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 356,
         "kind": "literal"
       }
     ]
@@ -50574,7 +50728,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 121,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -51507,7 +51661,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 739,
+        "line": 743,
         "kind": "literal"
       }
     ]
@@ -52144,7 +52298,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1263,
+        "line": 1267,
         "kind": "literal"
       }
     ]
@@ -52597,7 +52751,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 719,
+        "line": 723,
         "kind": "literal"
       }
     ]
@@ -53783,7 +53937,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 104,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53886,17 +54040,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 931,
+        "line": 935,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1028,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1766,
+        "line": 1775,
         "kind": "literal"
       }
     ]
@@ -54228,7 +54382,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 183,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -54505,7 +54659,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -54817,6 +54971,17 @@
       {
         "file": "web/app/dashboard/page.tsx",
         "line": 399,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_7b1d66f9a4a00877": {
+    "source": "כדי לספור לחיצות, הכינו את קישור הוואטסאפ בפרסום הפוסט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PostEditor.tsx",
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -55142,6 +55307,17 @@
       }
     ]
   },
+  "m_7b92560c31a094d8": {
+    "source": "סומן כפורסם. הוסיפו מספר וואטסאפ כדי להכין קישור שאפשר למדוד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 278,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7b93d5a35bac7376": {
     "source": "השפה החזותית",
     "language": "he",
@@ -55271,17 +55447,6 @@
       }
     ]
   },
-  "m_7bcec0cc8dbcc298": {
-    "source": "בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו במדבקת קישור בסטורי. נספור כמה לחצו, וההודעה תגיע עם הקוד",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 353,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7bd57de144ee83ec": {
     "source": "ניתוק מכל המכשירים",
     "language": "he",
@@ -55402,7 +55567,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1473,
+        "line": 1481,
         "kind": "literal"
       }
     ]
@@ -55533,17 +55698,6 @@
         "file": "web/components/design/ComponentWorkshop.tsx",
         "line": 36,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_7c7e43a386422a88": {
-    "source": "הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 358,
-        "kind": "literal"
       }
     ]
   },
@@ -56329,7 +56483,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 389,
+        "line": 413,
         "kind": "literal"
       }
     ]
@@ -56533,7 +56687,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 665,
+        "line": 669,
         "kind": "literal"
       }
     ]
@@ -56908,7 +57062,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 90,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -57026,7 +57180,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1071,
+        "line": 1075,
         "kind": "literal"
       }
     ]
@@ -57302,7 +57456,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1426,
+        "line": 1434,
         "kind": "literal"
       }
     ]
@@ -57794,6 +57948,17 @@
       }
     ]
   },
+  "m_81a37bb30d747076": {
+    "source": "באפליקציית אינסטגרם: פתחו סטורי, בחרו במדבקת קישור והדביקו את הקישור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 380,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_81a3f2c3a0c31f23": {
     "source": "לכל הפניות",
     "language": "he",
@@ -57925,7 +58090,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1289,
+        "line": 1293,
         "kind": "literal"
       }
     ]
@@ -58162,7 +58327,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1260,
+        "line": 1264,
         "kind": "literal"
       }
     ]
@@ -58294,7 +58459,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 83,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -59979,17 +60144,6 @@
       }
     ]
   },
-  "m_866a326559f91d64": {
-    "source": "כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 322,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_866ce28d30ae75ac": {
     "source": "הסדר שלי",
     "language": "he",
@@ -60365,7 +60519,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       }
@@ -60554,6 +60708,11 @@
       {
         "file": "web/components/MonthBuildProgress.tsx",
         "line": 85,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 362,
         "kind": "literal"
       },
       {
@@ -61628,17 +61787,6 @@
       }
     ]
   },
-  "m_8a874103cf6961b4": {
-    "source": "קישור הוואטסאפ הועתק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 344,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8a8e38ec9633ff0b": {
     "source": "לוח החודש",
     "language": "he",
@@ -61736,7 +61884,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 231,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -61769,7 +61917,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1608,
+        "line": 1616,
         "kind": "literal"
       },
       {
@@ -61835,17 +61983,6 @@
       }
     ]
   },
-  "m_8b45335d75442dec": {
-    "source": "אותו פוסט גם ל",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 410,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8b4967a6552b4d48": {
     "source": "בחרו מה ייחשב הצלחה מהרשימה.",
     "language": "he",
@@ -61897,7 +62034,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 423,
+        "line": 427,
         "kind": "literal"
       }
     ]
@@ -62857,7 +62994,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1554,
+        "line": 1562,
         "kind": "literal"
       },
       {
@@ -63021,7 +63158,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1364,
+        "line": 1372,
         "kind": "literal"
       }
     ]
@@ -63230,7 +63367,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 468,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -63368,7 +63505,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 471,
+        "line": 475,
         "kind": "literal"
       }
     ]
@@ -63630,7 +63767,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 90,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63945,7 +64082,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 83,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64165,17 +64302,6 @@
       }
     ]
   },
-  "m_908165996352f417": {
-    "source": "קישור עם מעקב",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 304,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_908378081a494cb0": {
     "source": "התחלת היכרות",
     "language": "he",
@@ -64248,7 +64374,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 846,
+        "line": 850,
         "kind": "literal"
       },
       {
@@ -65688,7 +65814,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1352,
+        "line": 1360,
         "kind": "literal"
       }
     ]
@@ -65972,7 +66098,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1282,
+        "line": 1286,
         "kind": "literal"
       }
     ]
@@ -66035,7 +66161,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1516,
+        "line": 1524,
         "kind": "literal"
       },
       {
@@ -66249,6 +66375,17 @@
       {
         "file": "web/app/account/page.tsx",
         "line": 148,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_9490755694880c5a": {
+    "source": "סומן כפורסם. לחיצות על הקישור של הפוסט יופיעו בתוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -66742,7 +66879,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1040,
+        "line": 1044,
         "kind": "literal"
       }
     ]
@@ -66930,7 +67067,7 @@
     "references": [
       {
         "file": "api/app/routers/whatsapp.py",
-        "line": 118,
+        "line": 125,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -67183,6 +67320,17 @@
       {
         "file": "web/lib/dna/library.ts",
         "line": 324,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_96da16e105398650": {
+    "source": "אותו פוסט גם ב{arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 434,
         "kind": "literal"
       }
     ]
@@ -67450,7 +67598,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -67884,7 +68032,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1864,
+        "line": 1873,
         "kind": "literal"
       }
     ]
@@ -68223,7 +68371,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1653,
+        "line": 1662,
         "kind": "literal"
       }
     ]
@@ -68899,7 +69047,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 125,
+        "line": 134,
         "kind": "literal"
       }
     ]
@@ -68933,7 +69081,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 684,
+        "line": 688,
         "kind": "literal"
       }
     ]
@@ -69096,7 +69244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 140,
+        "line": 149,
         "kind": "literal"
       }
     ]
@@ -69280,7 +69428,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 927,
+        "line": 931,
         "kind": "literal"
       }
     ]
@@ -69429,7 +69577,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 664,
+        "line": 668,
         "kind": "literal"
       }
     ]
@@ -70463,7 +70611,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1042,
+        "line": 1046,
         "kind": "literal"
       }
     ]
@@ -70624,6 +70772,22 @@
       {
         "file": "web/app/integrations/page.tsx",
         "line": 845,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_9f2c96ebcd6a9d6f": {
+    "source": "לפתוח את {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 329,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 449,
         "kind": "literal"
       }
     ]
@@ -70901,7 +71065,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 315,
+        "line": 369,
         "kind": "literal"
       }
     ]
@@ -71169,6 +71333,17 @@
       }
     ]
   },
+  "m_a0a0217d8fd3821a": {
+    "source": "מכינים את הקישור…",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 344,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a0a0fc71b27f34c2": {
     "source": "להיכנס עם גוגל",
     "language": "he",
@@ -71199,7 +71374,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1014,
+        "line": 1018,
         "kind": "literal"
       }
     ]
@@ -71245,7 +71420,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -71358,7 +71533,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 579,
+        "line": 583,
         "kind": "literal"
       }
     ]
@@ -71450,7 +71625,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1319,
+        "line": 1323,
         "kind": "literal"
       },
       {
@@ -72013,6 +72188,17 @@
       }
     ]
   },
+  "m_a286baf2c529d232": {
+    "source": "הקישור של הפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 343,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a298e31da5cc3245": {
     "source": "מתווך",
     "language": "he",
@@ -72482,7 +72668,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 147,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -72821,7 +73007,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1520,
+        "line": 1528,
         "kind": "literal"
       }
     ]
@@ -72911,7 +73097,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1015,
+        "line": 1019,
         "kind": "literal"
       }
     ]
@@ -73915,17 +74101,6 @@
       }
     ]
   },
-  "m_a6953148fb73ed2d": {
-    "source": "להגדיר את מספר הוואטסאפ",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 360,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_a6a0c1f08418757f": {
     "source": "החלות כבר נמכרות, וכל הביקוש מגיע ביום אחד. אפשר למכור בו יותר",
     "language": "he",
@@ -74571,7 +74746,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 271,
+        "line": 310,
         "kind": "literal"
       }
     ]
@@ -74688,7 +74863,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1554,
+        "line": 1562,
         "kind": "literal"
       }
     ]
@@ -75200,7 +75375,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 115,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -75964,7 +76139,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 118,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76166,7 +76341,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 927,
+        "line": 931,
         "kind": "literal"
       }
     ]
@@ -76306,7 +76481,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1085,
+        "line": 1089,
         "kind": "literal"
       }
     ]
@@ -76425,7 +76600,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1050,
+        "line": 1054,
         "kind": "literal"
       },
       {
@@ -76870,7 +77045,7 @@
     "references": [
       {
         "file": "api/app/routers/whatsapp.py",
-        "line": 143,
+        "line": 150,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -76906,7 +77081,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -77022,7 +77197,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 650,
+        "line": 654,
         "kind": "literal"
       },
       {
@@ -78084,7 +78259,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 133,
+        "line": 142,
         "kind": "literal"
       }
     ]
@@ -78242,7 +78417,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 13,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -78746,7 +78921,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 231,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -78969,7 +79144,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 518,
+        "line": 522,
         "kind": "literal"
       }
     ]
@@ -79094,7 +79269,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 34,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79262,7 +79437,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 624,
+        "line": 628,
         "kind": "literal"
       }
     ]
@@ -79296,7 +79471,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 590,
+        "line": 594,
         "kind": "literal"
       }
     ]
@@ -79693,6 +79868,18 @@
       }
     ]
   },
+  "m_b3bdc5a4fe0165c0": {
+    "source": "הקישור הנכון, ליד הפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_b3c39a8c3ab51eba": {
     "source": "נשאר עוד דבר אחד להגדיר",
     "language": "he",
@@ -79914,17 +80101,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1010,
+        "line": 1014,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1142,
+        "line": 1146,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1183,
+        "line": 1187,
         "kind": "literal"
       }
     ]
@@ -81073,12 +81260,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1651,
+        "line": 1660,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1749,
+        "line": 1758,
         "kind": "literal"
       }
     ]
@@ -81507,7 +81694,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1951,
+        "line": 1960,
         "kind": "literal"
       },
       {
@@ -81633,7 +81820,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1697,
+        "line": 1706,
         "kind": "literal"
       }
     ]
@@ -81752,12 +81939,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1653,
+        "line": 1662,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 211,
+        "line": 250,
         "kind": "literal"
       },
       {
@@ -81784,7 +81971,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 120,
+        "line": 121,
         "kind": "literal"
       },
       {
@@ -81936,7 +82123,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 928,
+        "line": 932,
         "kind": "literal"
       }
     ]
@@ -82882,7 +83069,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 708,
+        "line": 712,
         "kind": "literal"
       }
     ]
@@ -83270,7 +83457,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1302,
+        "line": 1306,
         "kind": "literal"
       }
     ]
@@ -83657,7 +83844,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 41,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84090,7 +84277,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1832,
+        "line": 1841,
         "kind": "literal"
       },
       {
@@ -84608,7 +84795,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 361,
+        "line": 363,
         "kind": "literal"
       }
     ]
@@ -84668,7 +84855,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 335,
+        "line": 343,
         "kind": "literal"
       }
     ]
@@ -84696,7 +84883,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -84742,6 +84929,17 @@
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
         "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_bfb5c0b413ab840a": {
+    "source": "לשמור ולהכין קישור",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 353,
         "kind": "literal"
       }
     ]
@@ -84815,7 +85013,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 97,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -84947,7 +85145,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1082,
+        "line": 1086,
         "kind": "literal"
       }
     ]
@@ -85105,7 +85303,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 427,
+        "line": 431,
         "kind": "literal"
       }
     ]
@@ -85344,12 +85542,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1652,
+        "line": 1661,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1787,
+        "line": 1796,
         "kind": "literal"
       }
     ]
@@ -85633,7 +85831,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 827,
+        "line": 831,
         "kind": "literal"
       }
     ]
@@ -85679,7 +85877,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1574,
+        "line": 1582,
         "kind": "literal"
       }
     ]
@@ -85735,7 +85933,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 474,
+        "line": 478,
         "kind": "literal"
       }
     ]
@@ -86872,7 +87070,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1062,
+        "line": 1066,
         "kind": "literal"
       }
     ]
@@ -88273,7 +88471,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 439,
+        "line": 443,
         "kind": "literal"
       }
     ]
@@ -89000,7 +89198,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 439,
+        "line": 463,
         "kind": "literal"
       }
     ]
@@ -89911,7 +90109,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 105,
         "kind": "literal"
       }
     ]
@@ -90452,7 +90650,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 297,
+        "line": 336,
         "kind": "literal"
       }
     ]
@@ -90547,7 +90745,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1967,
+        "line": 1976,
         "kind": "literal"
       }
     ]
@@ -90558,7 +90756,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -90734,7 +90932,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 477,
+        "line": 481,
         "kind": "literal"
       }
     ]
@@ -91215,7 +91413,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 535,
+        "line": 539,
         "kind": "literal"
       }
     ]
@@ -91250,7 +91448,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 715,
+        "line": 719,
         "kind": "literal"
       }
     ]
@@ -91791,7 +91989,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1439,
+        "line": 1447,
         "kind": "literal"
       }
     ]
@@ -92177,7 +92375,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1089,
+        "line": 1093,
         "kind": "literal"
       }
     ]
@@ -92941,7 +93139,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 571,
+        "line": 575,
         "kind": "literal"
       }
     ]
@@ -93206,7 +93404,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 111,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -94205,7 +94403,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1302,
+        "line": 1306,
         "kind": "literal"
       }
     ]
@@ -94504,7 +94702,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -94654,7 +94852,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 62,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -95266,7 +95464,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 969,
+        "line": 973,
         "kind": "literal"
       }
     ]
@@ -95311,7 +95509,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 55,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96345,6 +96543,17 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 510,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d945be3c709200ca": {
+    "source": "נספור לחיצות על הקישור. הודעות שנשלחו רואים בוואטסאפ.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 385,
         "kind": "literal"
       }
     ]
@@ -98409,7 +98618,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98443,7 +98652,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 69,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -98500,7 +98709,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 179,
+        "line": 180,
         "kind": "literal"
       },
       {
@@ -98702,7 +98911,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -98989,7 +99198,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       },
       {
@@ -99065,7 +99274,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 270,
+        "line": 309,
         "kind": "literal"
       }
     ]
@@ -99375,7 +99584,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1150,
+        "line": 1154,
         "kind": "literal"
       }
     ]
@@ -99410,7 +99619,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 118,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -99599,7 +99808,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       },
       {
@@ -99694,7 +99903,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 270,
+        "line": 309,
         "kind": "literal"
       }
     ]
@@ -99836,12 +100045,12 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 282,
+        "line": 321,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 418,
+        "line": 442,
         "kind": "literal"
       },
       {
@@ -100123,7 +100332,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1907,
+        "line": 1916,
         "kind": "literal"
       }
     ]
@@ -100784,7 +100993,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       },
       {
@@ -100897,12 +101106,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1385,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/PublishPanel.tsx",
-        "line": 348,
+        "line": 1393,
         "kind": "literal"
       }
     ]
@@ -101959,7 +102163,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1520,
+        "line": 1528,
         "kind": "literal"
       }
     ]
@@ -102081,7 +102285,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 739,
+        "line": 743,
         "kind": "literal"
       }
     ]
@@ -102187,7 +102391,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 713,
+        "line": 717,
         "kind": "literal"
       }
     ]
@@ -102346,7 +102550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 20,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -102357,7 +102561,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -103118,7 +103322,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1670,
+        "line": 1679,
         "kind": "literal"
       },
       {
@@ -103388,7 +103592,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 93,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -103755,13 +103959,13 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1717,
+        "line": 1726,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 219,
+        "line": 258,
         "kind": "literal",
         "purpose": "display"
       },
@@ -104238,7 +104442,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1943,
+        "line": 1952,
         "kind": "literal"
       }
     ]
@@ -104513,7 +104717,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 104,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -104598,7 +104802,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 402,
+        "line": 406,
         "kind": "literal"
       },
       {
@@ -104915,12 +105119,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 113,
+        "line": 114,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 157,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -104964,7 +105168,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1107,
+        "line": 1111,
         "kind": "literal"
       }
     ]
@@ -105215,32 +105419,37 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1413,
+        "line": 1421,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1614,
+        "line": 1622,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1727,
+        "line": 1736,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 230,
+        "line": 269,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 249,
+        "line": 288,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 391,
+        "line": 353,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 415,
         "kind": "literal"
       },
       {
@@ -105968,6 +106177,17 @@
       }
     ]
   },
+  "m_edd312798f2468f1": {
+    "source": "לפתוח את הפוסט המעודכן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 362,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_edd6eaeaf285bf3a": {
     "source": "התמונה מתאימה לנושאים של הפוסט: {arg_0}.",
     "language": "he",
@@ -106569,7 +106789,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 64,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -107460,12 +107680,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1760,
+        "line": 1769,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 230,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -107958,7 +108178,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 646,
+        "line": 650,
         "kind": "literal"
       }
     ]
@@ -108074,7 +108294,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1421,
+        "line": 1429,
         "kind": "literal"
       },
       {
@@ -108522,6 +108742,17 @@
       }
     ]
   },
+  "m_f3858b014e21f0ce": {
+    "source": "באיזה מספר לקוחות יכולים לכתוב לכם?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/PublishPanel.tsx",
+        "line": 347,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f389587a9db56c6d": {
     "source": "תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש עולה באמת ולא רק את המספר שנשמע טוב.",
     "language": "he",
@@ -108674,7 +108905,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1031,
+        "line": 1035,
         "kind": "literal"
       }
     ]
@@ -109678,7 +109909,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -109999,7 +110230,7 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 448,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -110177,7 +110408,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 76,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110325,12 +110556,12 @@
     "references": [
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 287,
+        "line": 326,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 423,
+        "line": 447,
         "kind": "literal"
       }
     ]
@@ -110498,7 +110729,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1163,
+        "line": 1167,
         "kind": "literal"
       }
     ]
@@ -112047,7 +112278,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -112541,7 +112772,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 55,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -113197,7 +113428,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 97,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113354,12 +113585,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1710,
+        "line": 1719,
         "kind": "literal"
       },
       {
         "file": "web/components/PublishPanel.tsx",
-        "line": 211,
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -113416,7 +113647,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1943,
+        "line": 1952,
         "kind": "literal"
       },
       {
@@ -113492,7 +113723,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       },
       {
@@ -113520,7 +113751,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -113632,7 +113863,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1014,
+        "line": 1018,
         "kind": "literal"
       }
     ]

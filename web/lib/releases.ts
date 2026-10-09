@@ -4,6 +4,15 @@
 // English purpose: keep a published Story's last captured reach visible after expiry.
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  // English purpose: prepare the right post link without leaving the editor.
+  // Action: save a WhatsApp number here, or copy the link to Instagram's chosen surface.
+  {
+    id: "2026-10-10-post-tracking-links", date: "2026-10-10",
+    title: "הקישור הנכון, ליד הפוסט",
+    summary: "אפשר להוסיף מספר וואטסאפ ולהכין קישור מתוך פרסום הפוסט. באינסטגרם בוחרים אם לשים אותו בסטורי או בפרופיל, עם הוראות קצרות לכל אפשרות.",
+    detail: "לכל פוסט מוצג קישור לפי ההזמנה שלו לפעולה. קישור לאתר אינו מחליף קישור וואטסאפ שחסר. לחיצות על קישור בפרופיל יכולות להגיע גם מפוסטים אחרים.",
+    href: "/posts", action: "לפתוח את הפוסטים",
+  },
   // Purpose: show a published Facebook post's own measured people count and date.
   // Action: paste its Facebook link; Page insights require an existing read grant.
   {

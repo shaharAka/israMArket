@@ -17,6 +17,7 @@ import {
   type CardRatio,
 } from "@/components/CardCanvas";
 import { downloadCardPng } from "@/lib/cardExport";
+import { messageWithLink, postDestination, wantsWhatsapp } from "@/lib/postTracking";
 import { whatsappEndpoints, type WhatsappPostLink } from "@/lib/whatsapp";
 import { COMPOSITION_LIBRARY } from "@/lib/dna/library";
 import { resolveDna } from "@/lib/dna/resolve";
@@ -225,7 +226,8 @@ const MEASURE_SOURCE: Record<string, { source: TrialPayload["measurement"]["conn
  * keep; with the source missing, say what it needs instead. Null: the journey has not
  * loaded, so the usual line stays.
  */
-function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null, t: ReturnType<typeof useCopy>): string | null {
+function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null, t: ReturnType<typeof useCopy>, whatsapp: WhatsappPostLink | null = null): string | null {
+  if (wantsWhatsapp(post)) return postDestination(post, whatsapp) ? t("הוסיפו את הקישור של הפוסט בפרסום. לחיצות עליו יופיעו כאן.") : t("כדי לספור לחיצות, הכינו את קישור הוואטסאפ בפרסום הפוסט.");
   const need = post.measure ? MEASURE_SOURCE[post.measure.metric] : undefined;
   if (!trial || !need || trial.measurement.connected.includes(need.source)) return null;
   return label ? t("כדי לספור כאן {arg_0}, {arg_1}.", { arg_0: label, arg_1: t(need.missing) }) : t("כדי למדוד את הפוסט, {arg_0}.", { arg_0: t(need.missing) });
@@ -371,16 +373,17 @@ export function PostEditor({
   /** The post's own tracked WhatsApp link, for the copied WhatsApp message of a post that
    *  is measured by WhatsApp taps (the publish kit reads the same link). Kept with the
    *  index it belongs to, so a switch of post never copies another post's link. */
-  const [postWaLink, setPostWaLink] = useState<{ index: number; link: WhatsappPostLink } | null>(null);
-  const waMeasured = posts[selectedIndex]?.measure?.metric === "whatsapp_clicks";
+  const [postWaLink, setPostWaLink] = useState<{ index: number; uid?: string; cta: string; link: WhatsappPostLink } | null>(null);
+  const waMeasured = Boolean(posts[selectedIndex] && wantsWhatsapp(posts[selectedIndex]));
+  const waPostUid = posts[selectedIndex]?.uid;
   const waCta = posts[selectedIndex]?.cta || "";
   useEffect(() => {
     if (!waMeasured) return;
     let active = true;
     whatsappEndpoints
-      .forPost(selectedIndex, waCta)
+      .forPost(selectedIndex, waCta, waPostUid || "")
       .then((link) => {
-        if (active) setPostWaLink({ index: selectedIndex, link });
+        if (active) setPostWaLink({ index: selectedIndex, uid: waPostUid, cta: waCta, link });
       })
       .catch(() => {
         if (active) setPostWaLink(null);
@@ -388,13 +391,14 @@ export function PostEditor({
     return () => {
       active = false;
     };
-  }, [selectedIndex, waMeasured, waCta]);
+  }, [selectedIndex, waMeasured, waCta, waPostUid]);
 
   /** True while any image operation is in flight. Every image control checks this, so a
    *  library pick, an AI generation and a source switch can never overlap. */
   const imageLocked = imageBusy !== null || designerBusy || assetBusyId !== null || uploadingPhoto;
 
   const currentPost = posts[selectedIndex];
+  const currentWaLink = postWaLink?.index === selectedIndex && postWaLink.uid === currentPost?.uid && postWaLink.cta === (currentPost?.cta || "") ? postWaLink.link : null;
 
   if (!currentPost) {
     return (
@@ -660,7 +664,7 @@ export function PostEditor({
       toast(
         alreadyOut
           ? t("הקישור נשמר. נראה לפיו גם כמה ראו.")
-          : pendingMeasureLine(currentPost, "", trial, t)
+          : pendingMeasureLine(currentPost, "", trial, t, currentWaLink)
             ? t("סימנו שהפוסט פורסם.")
             : t("סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא.")
       );
@@ -1340,11 +1344,15 @@ export function PostEditor({
     // WhatsApp gets the whole formatted message (bold title, caption, call to action and
     // link), which is what the WhatsApp mockup's copy button used to hand over. The link is
     // the one the post is measured by: its own WhatsApp link when it asks people to write.
-    const own = postWaLink?.index === selectedIndex && postWaLink.link.cta_is_whatsapp ? postWaLink.link.link?.url : "";
-    const text =
-      channel === "whatsapp"
-        ? `*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}\n${own || currentPost.tracking_url || ""}`.trim()
-        : activeCaption;
+    const destination = postDestination(currentPost, currentWaLink);
+    if (channel === "whatsapp" && wantsWhatsapp(currentPost) && !destination) {
+      openStep("publish");
+      toast(t("הכינו את קישור הוואטסאפ לפני העתקת ההודעה."));
+      return;
+    }
+    const text = channel === "whatsapp"
+      ? messageWithLink(`*${currentPost.title}*\n\n${activeCaption}\n\n${currentPost.cta || ""}`.trim(), destination)
+      : activeCaption;
     try {
       await navigator.clipboard.writeText(text);
       toast(t("נוסח ה{arg_0} הועתק.", { arg_0: channelLabel }), "copy");
@@ -1622,7 +1630,7 @@ export function PostEditor({
   function renderPublishStep() {
     return (
       <PublishPanel
-        key={`${selectedIndex}-${publishFocus}`}
+        key={`${currentPost.uid || selectedIndex}-${currentPost.cta || ""}-${publishFocus}`}
         post={currentPost}
         postIndex={selectedIndex}
         channel={channel}
@@ -1637,6 +1645,7 @@ export function PostEditor({
         publishing={publishing}
         onMarkPublished={() => void markPublished()}
         linkFirst={publishFocus === "link"}
+        onWhatsappLink={(link) => setPostWaLink({ index: selectedIndex, uid: currentPost.uid, cta: currentPost.cta || "", link })}
       />
     );
   }
@@ -1907,7 +1916,7 @@ export function PostEditor({
             <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]"><Copy text="לא נמדד עדיין" />
         </p>
             <p className={`${ui.help} mt-0.5`}>
-              {pendingMeasureLine(currentPost, label, trial, t) ??
+              {pendingMeasureLine(currentPost, label, trial, t, currentWaLink) ??
                 (label ? t("נספור {arg_0} בעדכון הנתונים הבא.", { arg_0: label }) : t("נמדוד אותו בעדכון הנתונים הבא."))}
             </p>
           </>

@@ -150,7 +150,7 @@ export const whatsappEndpoints = {
   },
   /** The post's own link — null, with the reason, when its CTA is not WhatsApp or the
    *  number is not set. */
-  forPost: async (index: number, cta = ""): Promise<WhatsappPostLink> => {
+  forPost: async (index: number, cta = "", postUid = ""): Promise<WhatsappPostLink> => {
     if (isDemo()) {
       const ctaIsWhatsapp = /וואטסאפ|ווטסאפ|whatsapp/i.test(cta);
       const post = DEMO.links.find((link) => link.source_key.startsWith("ig-post-"));
@@ -160,6 +160,6 @@ export const whatsappEndpoints = {
         link: ctaIsWhatsapp && post ? clone({ ...post, label_he: `פוסט ${index + 1} באינסטגרם`, tag: `IG-POST-${index + 1}` }) : null,
       };
     }
-    return api<WhatsappPostLink>(`/whatsapp/link/post/${index}`);
+    return api<WhatsappPostLink>(`/whatsapp/link/post/${index}${postUid ? `?post_uid=${encodeURIComponent(postUid)}` : ""}`);
   },
 };

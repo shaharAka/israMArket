@@ -347,6 +347,40 @@ class WhatsappLinkTestCase(unittest.TestCase):
         message = parse_qs(urlparse(response.headers["location"]).query)["text"][0]
         self.assertTrue(message.endswith("(קוד: IG-POST-1)"))
 
+    def test_post_uid_guard_does_not_create_a_link_for_replaced_post(self):
+        self.set_number()
+        before = self.db.query(WhatsappLink).count()
+        response = self.client.get("/whatsapp/link/post/0?post_uid=another-month-post")
+        self.assertEqual(response.status_code, 409)
+        self.assertEqual(self.db.query(WhatsappLink).count(), before)
+
+    def test_post_uid_guard_accepts_legacy_visible_uid(self):
+        from app.services.connected_posts import backfill_uid
+        self.set_number()
+        uid = backfill_uid(self.business.id, TODAY.year, TODAY.month, 0)
+        link = self.client.get(f"/whatsapp/link/post/0?post_uid={uid}")
+        self.assertEqual(link.status_code, 200)
+        self.assertEqual(link.json()["link"]["source_key"], f"ig-post-{TODAY.year}{TODAY.month:02d}-1")
+
+    def test_post_uid_guard_rejects_other_owners_uid(self):
+        from app.services.connected_posts import backfill_uid
+        self.set_number()
+        uid = backfill_uid(self.rival.id, TODAY.year, TODAY.month, 0)
+        self.assertEqual(self.client.get(f"/whatsapp/link/post/0?post_uid={uid}").status_code, 409)
+
+    def test_inline_number_save_preserves_message_and_enables_post_link(self):
+        self.assertIsNone(self.client.get("/whatsapp/link/post/0").json()["link"])
+        self.business.whatsapp_default_text_he = "Keep the owner's message"
+        self.db.commit()
+        saved = self.client.put("/whatsapp/link", json={"number": "050-1234567"})
+        self.assertEqual(saved.status_code, 200)
+        self.assertEqual(saved.json()["default_text_he"], "Keep the owner's message")
+        post = self.client.get("/whatsapp/link/post/0").json()
+        self.assertTrue(post["number_set"])
+        self.assertIsNotNone(post["link"])
+        self.assertIsNone(self.rival.whatsapp_number_e164)
+        self.assertEqual(self.db.query(WhatsappLink).filter_by(business_id=self.rival.id).count(), 0)
+
     def test_publish_kit_carries_the_per_post_link(self):
         before = self.client.get("/publish/queue").json()
         self.assertTrue(all(post["whatsapp_url"] == "" for post in before["unscheduled"]))
