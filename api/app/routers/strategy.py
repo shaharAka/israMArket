@@ -1287,6 +1287,8 @@ def approve_strategy(
     db: Session = Depends(get_db),
 ) -> dict:
     strategy = _active_strategy(db, business)
+    from app.services.strategy_writes import lock_and_refresh
+    lock_and_refresh(db, strategy)
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
     mgmnt = roadmap.get("management_and_checkpoints") or {}

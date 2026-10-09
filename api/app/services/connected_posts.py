@@ -1078,7 +1078,11 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
     website = business.website_url or ""
     stored: dict[int, tuple] = {}
     updated = 0
+    from app.services.strategy_writes import lock_and_refresh
     for strategy in strategies:
+        # Provider requests may have left this session holding an older month.
+        # Read the post array under the same SQLite write lock as draft/editor saves.
+        lock_and_refresh(db, strategy)
         extra = loads(strategy.roadmap_json, {}) or {}
         roadmap = extra.get("roadmap") if isinstance(extra.get("roadmap"), dict) else None
         if not roadmap or not isinstance(roadmap.get("posts"), list):

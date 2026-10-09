@@ -696,6 +696,8 @@ def refresh_strategy(db, business, strategy, *, closing: bool | None = None, tod
     """
     today = today or date.today()
     now = now or _now()
+    from app.services.strategy_writes import lock_and_refresh
+    lock_and_refresh(db, strategy)
     extra = loads(strategy.roadmap_json or "", {}) or {}
     roadmap = extra.get("roadmap") if isinstance(extra.get("roadmap"), dict) else {}
     core = cp.strategy_core(roadmap)

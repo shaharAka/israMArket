@@ -4742,7 +4742,7 @@
     "references": [
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2185,
+        "line": 2187,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4782,7 +4782,7 @@
       },
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2168,
+        "line": 2170,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5480,7 +5480,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 337,
+        "line": 339,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6628,7 +6628,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 246,
+        "line": 248,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -7079,7 +7079,7 @@
       },
       {
         "file": "api/app/routers/audiences.py",
-        "line": 377,
+        "line": 379,
         "kind": "template",
         "purpose": "copy"
       }
@@ -12282,7 +12282,7 @@
       },
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2191,
+        "line": 2193,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18381,7 +18381,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1362,
+        "line": 1364,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22567,7 +22567,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1321,
+        "line": 1323,
         "kind": "template",
         "purpose": "copy"
       }
@@ -29995,7 +29995,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 256,
+        "line": 258,
         "kind": "template",
         "purpose": "copy"
       }
@@ -30085,7 +30085,7 @@
     "references": [
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2159,
+        "line": 2161,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -35875,7 +35875,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 243,
+        "line": 245,
         "kind": "template",
         "purpose": "copy"
       }
@@ -42825,7 +42825,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1329,
+        "line": 1331,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -51140,7 +51140,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1338,
+        "line": 1340,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -60685,7 +60685,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1330,
+        "line": 1332,
         "kind": "template",
         "purpose": "copy"
       }
@@ -62663,7 +62663,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 379,
+        "line": 381,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63354,7 +63354,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 252,
+        "line": 254,
         "kind": "template",
         "purpose": "copy"
       }
@@ -64955,7 +64955,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1341,
+        "line": 1343,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65329,7 +65329,7 @@
     "references": [
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2188,
+        "line": 2190,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65775,13 +65775,13 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 276,
+        "line": 278,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/audiences.py",
-        "line": 314,
+        "line": 316,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -73929,7 +73929,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1340,
+        "line": 1342,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -74145,7 +74145,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 245,
+        "line": 247,
         "kind": "template",
         "purpose": "copy"
       }
@@ -75608,7 +75608,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1351,
+        "line": 1353,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -75830,7 +75830,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 190,
+        "line": 192,
         "kind": "template",
         "purpose": "validation"
       }
@@ -77399,7 +77399,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1331,
+        "line": 1333,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78284,7 +78284,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1322,
+        "line": 1324,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82137,7 +82137,7 @@
       },
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2189,
+        "line": 2191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83832,7 +83832,7 @@
     "references": [
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2187,
+        "line": 2189,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86256,7 +86256,7 @@
     "references": [
       {
         "file": "api/app/services/onboarding_draft.py",
-        "line": 2186,
+        "line": 2188,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -91068,7 +91068,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1330,
+        "line": 1332,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -92148,7 +92148,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 173,
+        "line": 175,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -92277,7 +92277,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 386,
+        "line": 388,
         "kind": "template",
         "purpose": "copy"
       }
@@ -93611,7 +93611,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1341,
+        "line": 1343,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94668,7 +94668,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 248,
+        "line": 250,
         "kind": "template",
         "purpose": "copy"
       }
@@ -96836,7 +96836,7 @@
       },
       {
         "file": "api/app/routers/audiences.py",
-        "line": 424,
+        "line": 428,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -101948,7 +101948,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1320,
+        "line": 1322,
         "kind": "template",
         "purpose": "copy"
       }
@@ -111166,7 +111166,7 @@
     "references": [
       {
         "file": "api/app/routers/audiences.py",
-        "line": 382,
+        "line": 384,
         "kind": "template",
         "purpose": "copy"
       }

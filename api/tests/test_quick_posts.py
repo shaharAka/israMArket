@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 from app.models import Business, Strategy, User
 from app.routers.strategy import upsert_generated_strategy
 from app.schemas import PostCreateIn
-from app.services import image_jobs, month_posts, quick_posts
+from app.services import connected_posts, image_jobs, month_posts, quick_posts
 from app.services.jsonutil import dumps, loads
 from test_post_rewrite import RewriteTestCase, post, CORE, YEAR, MONTH
 
@@ -122,6 +122,24 @@ class QuickPostsTest(RewriteTestCase):
         self.db.expire_all()
         self.assertEqual(len(loads(self.db.get(Strategy, strategy.id).roadmap_json)["roadmap"]["posts"]), 2)
         self.assertEqual(month_posts.posts_status(self.db.get(Strategy, strategy.id))["2"], "running")
+
+    def test_measurement_refresh_preserves_draft_created_after_month_was_loaded(self):
+        existing = post(utm={"utm_campaign": "owned", "utm_content": "same"})
+        strategy = self.month(existing)
+        factory = sessionmaker(bind=self.engine, autoflush=False)
+        with factory() as stale:
+            stale.get(Strategy, strategy.id)
+            business = stale.get(Business, self.business.id)
+            draft = self.create().json()
+            with mock.patch.object(connected_posts, "phrase_learnings", return_value={}):
+                connected_posts.refresh_results(stale, business, ga4_data={"campaigns": [
+                    {"sessionCampaignName": "owned", "sessionManualAdContent": "same", "sessions": 2}]})
+            stale.commit()
+        self.db.expire_all()
+        posts = loads(self.db.get(Strategy, strategy.id).roadmap_json)["roadmap"]["posts"]
+        self.assertEqual(len(posts), 2)
+        self.assertEqual(posts[1]["uid"], draft["post"]["uid"])
+        self.assertEqual(posts[0]["results"]["visits"], 2)
 
     def test_content_workspace_is_not_a_plan_for_recommendations(self):
         self.create()
