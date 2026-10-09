@@ -514,7 +514,7 @@ class ResultsTest(ConnectedTestCase):
                          (7, 7, 2))
         self.assertEqual(workshop["results"]["matched_by"], ["utm"])
         self.assertIsNone(workshop["results"]["compare"])
-        self.assertEqual(workshop["learning"], "7 כניסות לאתר. זה הפוסט הראשון מהסוג הזה שמדדנו, נשווה אליו את הבאים.")
+        self.assertEqual(workshop["learning"], "7 כניסות לאתר.")
         # Nothing matched: no results at all, not zeros.
         self.assertIsNone(unmatched["results"])
         self.assertEqual(unmatched["lifecycle"], "published")
@@ -523,6 +523,69 @@ class ResultsTest(ConnectedTestCase):
         self.assertIsNone(not_out["results"])
         previous = self.stored(self.previous)[0]
         self.assertEqual(previous["results"]["value"], 14)
+
+    def ga_report(self, count=7, start="2026-09-01", end="2026-09-28", read_at="2026-09-29T06:00:00"):
+        return {"property_id": "properties/1", "period": {"start": start, "end": end}, "read_at": read_at,
+                "campaigns": [{"sessionCampaignName": f"isramarket-{YEAR}-{MONTH:02d}",
+                               "sessionManualAdContent": "p-ccccccccc3", "sessions": str(count), "conversions": "2"}]}
+
+    def test_google_period_survives_other_source_refresh_and_window_can_decrease(self):
+        self.add_clicks("ig-post-ccccccccc3", 1)
+        with mock.patch.object(cp, "lite_json", side_effect=RuntimeError("offline")):
+            cp.refresh_results(self.db, self.business, ga4_data=self.ga_report(), now="2026-09-29T06:00:00")
+            self.db.commit()
+            before = self.current_posts()[1]["results"]["observations"]["visits"]
+            cp.refresh_results(self.db, self.business, now="2026-10-02T06:00:00")
+            self.db.commit()
+            post = self.current_posts()[1]
+            self.assertEqual(post["results"]["observations"]["visits"], before)
+            self.assertEqual(post["results"]["updated_at"], "2026-10-02T06:00:00")
+            self.assertEqual(post["results"]["observations"]["whatsapp_clicks"]["read_at"], "2026-10-02T06:00:00")
+            self.assertEqual(before["start"], "2026-09-01")
+            self.assertEqual(before["end"], "2026-09-28")
+            self.assertEqual(before["read_at"], "2026-09-29T06:00:00")
+            cp.refresh_results(self.db, self.business, ga4_data=self.ga_report(3, "2026-09-04", "2026-10-01", "2026-10-02T06:00:00"))
+            self.db.commit()
+            post = self.current_posts()[1]
+            self.assertEqual(post["results"]["value"], 3)  # Never replace by a fabricated lifetime maximum.
+            self.assertEqual(post["results"]["observations"]["visits"]["start"], "2026-09-04")
+            self.assertIsNone(post["results"]["compare"])
+            item = next(row for row in self.client.get("/performance/latest").json()["measured_posts"]["items"] if row["uid"] == "ccccccccc3")
+            self.assertEqual(item["observation"], post["results"]["observations"]["visits"])
+
+    def test_legacy_google_values_remain_without_unknown_date_comparisons(self):
+        posts = loads(self.current.roadmap_json, {})
+        post = posts["roadmap"]["posts"][1]
+        post["results"] = {"metric": "site_visits", "value": 7, "visits": 7, "updated_at": "2026-09-29T06:00:00", "compare": {"value": 2, "direction": "above"}}
+        post["learning"] = "A legacy comparison with no dates"
+        self.current.roadmap_json = dumps(posts)
+        self.db.commit()
+        view = self.current_posts()[1]
+        self.assertEqual(view["results"]["value"], 7)
+        self.assertIsNone(view["results"]["compare"])
+        self.assertIsNone(view["learning"])
+        self.assertEqual(cp.what_worked(self.db, self.business)["refs"], {})
+
+    def test_google_unknown_or_invalid_dates_are_not_inferred(self):
+        report = self.ga_report()
+        report["period"] = {"start": "tomorrow", "end": "2026-10-01"}
+        with mock.patch.object(cp, "lite_json", side_effect=RuntimeError("offline")):
+            cp.refresh_results(self.db, self.business, ga4_data=report)
+        self.db.commit()
+        observation = self.current_posts()[1]["results"]["observations"]["visits"]
+        self.assertIsNone(observation["start"])
+        self.assertIsNone(observation["end"])
+
+    def test_google_comparisons_require_same_property_window_and_exposure(self):
+        observation = {"source": "ga4", "scope": "window", "property_id": "properties/1", "start": "2026-09-01", "end": "2026-09-28"}
+        def record(obs, published="2026-08-01T10:00:00"):
+            return {"metric": "site_visits", "published_at": published, "view": {"results": {"observations": {"visits": obs}}}}
+        a = record(observation)
+        self.assertTrue(cp.compatible_observations(a, record(dict(observation))))
+        for change in ({"property_id": "properties/2"}, {"start": "2026-09-02"}, {"end": None}, {"limited": True}):
+            self.assertFalse(cp.compatible_observations(a, record({**observation, **change})))
+        self.assertFalse(cp.compatible_observations(a, record(observation, "2026-09-10T10:00:00")))
+        self.assertFalse(cp.compatible_observations(a, record(None)))
 
     def test_taps_on_a_post_not_out_yet_are_kept_but_never_make_it_measured(self):
         # The loop run of #111 (#123): the owner tried the tracked WhatsApp link of a post

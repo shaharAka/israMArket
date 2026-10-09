@@ -4,6 +4,7 @@ import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvid
 
 import Link from "next/link";
 import { FindingCard } from "@/components/results/FindingCard";
+import { PostObservationLine } from "@/components/results/PostObservationLine";
 import { ServiceCheckIn } from "@/components/results/ServiceCheckIn";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell, Button, ErrorNote, PageHeader } from "@/components/AppShell";
@@ -171,8 +172,19 @@ function ordered(items: MeasuredPost[]): MeasuredPost[] {
   );
 }
 
+function comparablePosts(items: MeasuredPost[]): boolean {
+  if (items.length < 2) return false;
+  if (items[0].metric !== "site_visits") return true;
+  const a = items[0].observation;
+  return Boolean(a && !a.limited && a.start && a.end && a.property_id && a.exposure_start && items.every(item => {
+    const b = item.observation;
+    return b && !b.limited && b.source === a.source && b.scope === a.scope && b.property_id === a.property_id && b.start === a.start && b.end === a.end && b.exposure_start === a.exposure_start;
+  }));
+}
+
 /** "יותר מאשר בפוסט דומה (14)": the card's comparison line, from the server's direction. */
 function comparisonText(item: MeasuredPost, t: ReturnType<typeof useCopy>, formatLocale: string): string {
+  if (item.metric === "site_visits" && (!item.observation?.start || !item.observation?.end || item.observation.limited)) return "";
   const compare = item.compare;
   if (!compare || !Number.isFinite(compare.value)) return "";
   const label = (compare.label || "").trim() || t("בפוסט דומה");
@@ -206,6 +218,7 @@ function ResultRow({ item, best }: { item: MeasuredPost; best?: boolean }) {
         {`${item.value.toLocaleString(formatLocale)} ${t(item.label_he)}`}
         {compare ? <span className="text-[color:var(--ink-muted)]">{` · ${compare}`}</span> : null}
       </span>
+      {item.metric === "site_visits" ? <PostObservationLine observation={item.observation} google /> : null}
     </li>
   );
 }
@@ -226,7 +239,7 @@ function PostResults({ results }: { results: PostResultsView }) {
   const rest = measured.slice(VISIBLE_POSTS);
   const lead = leadingMetric(measured);
   // "Best" only among posts counted the same way, and only when there is more than one.
-  const comparable = measured.filter((item) => item.metric === lead).length > 1;
+  const comparable = comparablePosts(measured.filter((item) => item.metric === lead));
 
   return (
     <section aria-labelledby="posts-heading">
@@ -267,7 +280,7 @@ function PostComparison({ results }: { results: PostResultsView }) {
   const t = useCopy();
   const metric = leadingMetric(results.items);
   const same = results.items.filter((item) => item.metric === metric);
-  if (!metric || same.length < 2) return null;
+  if (!metric || !comparablePosts(same)) return null;
   return <MetricComparison title={t("התוצאות לפי פוסט")} unit={t(same[0].label_he)}
     source={t(POST_SOURCE[metric])}
     points={ordered(same).slice(0, 5).map(item => ({ key: item.uid || String(item.index), label: item.title, value: item.value }))} />;
@@ -1211,7 +1224,7 @@ export default function PerformancePage() {
               {available && (hasProposal || siteNumbers) ? <Expand title={t("נתוני האתר")}>{hasProposal ? <Answer payload={data} /> : null}<TrafficMetrics payload={data} folded={hasProposal} /></Expand> : null}
               {available && (data.meta?.ads || data.meta?.tracking) ? <Expand title={t("המודעות והמעקב באתר")}><MetaAdsSummary ads={data.meta?.ads} tracking={data.meta?.tracking} /></Expand> : null}
               {account ? <Expand title={t("החשבון באינסטגרם")}><InstagramAccountBlock account={account} /><AccountMetrics account={account} /></Expand> : null}
-              {results ? <Expand title={t("השוואת תוצאות הפוסטים")}><PostComparison results={results} /></Expand> : null}
+              {results && comparablePosts(results.items.filter(item => item.metric === leadingMetric(results.items))) ? <Expand title={t("השוואת תוצאות הפוסטים")}><PostComparison results={results} /></Expand> : null}
               {whatsapp ? <Expand title={t("לחיצות על וואטסאפ")}><WhatsappClicks data={whatsapp} /></Expand> : null}
             </div>
 
