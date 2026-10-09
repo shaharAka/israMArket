@@ -197,3 +197,54 @@ class MetaReadinessTest(unittest.TestCase):
         self.business.website_url = "https://new.example.com"; self.db.commit()
         self.assertEqual(self.state()["status"], "unchecked")
         self.assertIsNone(self.client.get("/integrations").json()["integrations"][0]["pixel_verification"])
+
+    def test_google_failure_does_not_prevent_meta_read_and_preserves_dated_site_data(self):
+        fixture.SourceReadinessTest.connect(self); self.seed()
+        previous = fixture.SourceReadinessTest.snapshot(self)
+        old_ga = fixture.report(); old_ga['read_at'] = '2026-08-28T10:00:00'
+        old_ga['period'] = {'start': '2026-08-01', 'end': '2026-08-28'}
+        previous.ga4_json = dumps(old_ga); self.db.commit()
+        from google.api_core.exceptions import PermissionDenied
+        with mock.patch.object(ga4, 'fetch_report', side_effect=PermissionDenied('private')), \
+                mock.patch.object(meta, 'fetch_insights', return_value=social()) as social_read, \
+                mock.patch.object(meta, 'account_overview', return_value={}), \
+                mock.patch.object(meta_marketing, 'measurement', return_value={}), \
+                mock.patch.object(performance, 'diagnose', return_value={}), \
+                mock.patch.object(performance, '_refresh_post_results', return_value={}) as post_results:
+            response = self.client.post('/performance/sync')
+        self.assertEqual(response.status_code, 200, response.text)
+        result = response.json()
+        social_read.assert_called_once()
+        self.assertEqual(result['sources']['ga4']['status'], 'reconnect')
+        self.assertEqual(result['ga4']['read_at'], old_ga['read_at'])
+        self.assertEqual(result['ga4']['period'], old_ga['period'])
+        self.assertEqual(result['ga4']['overview']['sessions'], '42')
+        self.assertEqual(result['ga4']['source_error']['status'], 'reconnect')
+        self.assertEqual(result['meta']['page']['fan_count'], 12)
+        self.assertIsNone(post_results.call_args.args[2])  # old GA4 is not a new post read
+        self.assertNotEqual(result['id'], previous.id)
+        self.assertNotIn('private', response.text)
+
+    def test_old_google_data_from_another_property_is_not_carried_into_meta_refresh(self):
+        fixture.SourceReadinessTest.connect(self, property_id='999'); self.seed()
+        fixture.SourceReadinessTest.snapshot(self)
+        with mock.patch.object(ga4, 'fetch_report', side_effect=RuntimeError('offline')), \
+                mock.patch.object(meta, 'fetch_insights', return_value=social()), \
+                mock.patch.object(meta, 'account_overview', return_value={}), \
+                mock.patch.object(meta_marketing, 'measurement', return_value={}), \
+                mock.patch.object(performance, 'diagnose', return_value={}):
+            response = self.client.post('/performance/sync')
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertNotIn('overview', response.json()['ga4'])
+
+    def test_both_reads_fail_without_replacing_snapshot_or_running_analysis(self):
+        fixture.SourceReadinessTest.connect(self); self.seed()
+        previous = fixture.SourceReadinessTest.snapshot(self)
+        with mock.patch.object(ga4, 'fetch_report', side_effect=RuntimeError('offline')), \
+                mock.patch.object(meta, 'fetch_insights', side_effect=meta.GraphError('private', kind='token')) as social_read, \
+                mock.patch.object(meta_marketing, 'measurement', return_value={}), \
+                mock.patch.object(performance, 'diagnose') as analyse:
+            response = self.client.post('/performance/sync')
+        self.assertEqual(response.status_code, 502)
+        social_read.assert_called_once(); analyse.assert_not_called()
+        self.assertEqual(self.client.get('/performance/latest').json()['id'], previous.id)

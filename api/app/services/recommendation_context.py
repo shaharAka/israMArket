@@ -77,6 +77,11 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
         value = _number(overview.get(metric))
         if value is not None:
             observations.append({"source": "ga4", "metric": metric, "label": label, "value": value})
+    if ga.get("source_error"):
+        limits.append("הרענון של נתוני האתר לא הושלם. המספרים נשמרו מקריאה קודמת; בדקו את התקופה לפני החלטה.")
+    missing_reports = [name for name, value in _dict(ga.get("report_reads")).items() if _dict(value).get("status") == "unavailable"]
+    if missing_reports:
+        limits.append("חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.")
     if "conversions" in overview:
         limits.append("פעולות חשובות הן אירועים שהוגדרו בגוגל. הן אינן בהכרח פניות או הזמנות; לחיצה על וואטסאפ אינה הודעה שנשלחה.")
     if not overview:

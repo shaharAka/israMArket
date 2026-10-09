@@ -8,9 +8,11 @@ import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
 import { PixelSetupGuide } from "./PixelSetupGuide";
 import { SourceReadState } from "./SourceReadState";
+import { prefersFullPageConsent } from "./consentNavigation";
 
 type Item = IntegrationsPayload["integrations"][number];
 const NO_PAGE = "__no_page__";
+const ATTEMPT_KEY = "isramarket-meta-attempt";
 const RETURN_NOTES: Record<string, string> = {
   cancelled: "החיבור לא הושלם. אפשר לנסות שוב כשנוח לכם; התוכנית נשארת זמינה.",
   expired: "חלון החיבור פג או שנפתח בדפדפן אחר. התחילו שוב מכאן.",
@@ -78,7 +80,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setNote("");
       const current = latestItem.current;
       setAssets(result);
-      setPage(previous => previous === NO_PAGE || result.pages.some(p => p.page_id === previous) ? previous : result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : "");
+      setPage(previous => previous === NO_PAGE || result.pages.some(p => p.page_id === previous) ? previous : result.pages.some(p => p.page_id === current?.external_id) ? current!.external_id : result.pages.length === 1 ? result.pages[0].page_id : "");
       void chooseAccount(result.ad_accounts.some(a => a.id === current?.ad_account_id) ? current!.ad_account_id! : "");
       setStage("choose"); setOpen(true);
       setCanResume(false);
@@ -95,7 +97,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       returned.current = true;
       if (timer.current) clearInterval(timer.current);
       setWaiting(false); setBusy(false);
-      if (RETURN_NOTES[result]) { expectedAttempt.current = ""; setCanResume(false); setNote(RETURN_NOTES[result]); return; }
+      if (result !== "success") { expectedAttempt.current = ""; setCanResume(false); setNote(RETURN_NOTES[result] || RETURN_NOTES.failed); setStage("connect"); setOpen(true); return; }
       await changed.current();
       await loadAssets();
     }
@@ -105,7 +107,14 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     }
     window.addEventListener("message", receive);
     const result = new URLSearchParams(window.location.search).get("meta_result");
-    if (result) void complete(result);
+    if (result) {
+      expectedAttempt.current = sessionStorage.getItem(ATTEMPT_KEY) || "";
+      sessionStorage.removeItem(ATTEMPT_KEY);
+      const clean = new URL(window.location.href);
+      clean.searchParams.delete("meta_result");
+      window.history.replaceState(window.history.state, "", clean);
+      void complete(result);
+    }
     return () => { window.removeEventListener("message", receive); if (timer.current) clearInterval(timer.current); };
     // Mounted once: refs keep callbacks current without resetting the OAuth listener.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -131,13 +140,15 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     if (demo) { await loadAssets(); return; }
     if (!ready) { setNote("החיבור לפייסבוק עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך."); return; }
     // Open synchronously during the click so the browser can allow the consent window.
-    const child = window.open("about:blank", "isramarket-meta", "popup,width=620,height=740");
+    const fullPage = prefersFullPageConsent(query => window.matchMedia(query));
+    const child = fullPage ? null : window.open("about:blank", "isramarket-meta", "popup,width=620,height=740");
     if (timer.current) clearInterval(timer.current);
     popup.current = child; returned.current = false;
     setBusy(true); setNote("");
     try {
       const { url, attempt } = await endpoints.metaStart(includeAds, Boolean(child));
       expectedAttempt.current = attempt;
+      if (!child) sessionStorage.setItem(ATTEMPT_KEY, attempt);
       setCanResume(true);
       if (!child) { window.location.assign(url); return; }
       child.location.href = url; setWaiting(true);
@@ -151,6 +162,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
         }
       }, 700);
     } catch (err) {
+      sessionStorage.removeItem(ATTEMPT_KEY);
       child?.close(); setNote(err instanceof Error ? err.message : "לא הצלחנו לפתוח את החיבור. נסו שוב.");
     } finally { setBusy(false); }
   }
@@ -206,7 +218,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>
-          <p>פייסבוק תפתח חלון לאישור קריאת הנתונים. אחריו תבחרו את הדף העסקי; האינסטגרם המקצועי שמקושר אליו ייבחר איתו.</p>
+          <p>נאשר בפייסבוק גישה לקריאת הנתונים, ואז נחזור לכאן לבחור את העסק. אם האינסטגרם המקצועי מקושר לדף, הוא ייבחר איתו.</p>
           <details className={styles.setupGuide}><summary>יש לכם גם מודעות בתשלום?<IconChevron className={styles.disclosureIcon} /></summary>
             <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי לבדוק הוצאות ותוצאות. אפשר גם בהמשך.</small></span></label>
           </details>

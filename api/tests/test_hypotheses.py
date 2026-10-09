@@ -384,7 +384,7 @@ class EndpointTest(HypothesisTestCase):
         self.db.commit()
 
     def sync(self):
-        report = {"overview": {"sessions": "1500"}, "campaigns": [], "landing_pages": []}
+        report = {"property_id": "properties/1", "overview": {"sessions": "1500"}, "campaigns": [], "landing_pages": []}
         with mock.patch.object(performance_router, "tokens_for", return_value=("a", "r", None)), \
                 mock.patch.object(ga4_service, "fetch_report", return_value=report), \
                 mock.patch.object(performance_router, "diagnose", return_value={}):

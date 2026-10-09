@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PerformancePayload } from "@/lib/api";
 import { checkedDate } from "./SourceReadState";
+import { materiallyOlder } from "./sourceFreshness";
 
 /** Reading numbers and interpreting them are separate operations. */
 export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
@@ -15,7 +16,7 @@ export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
   const previousSite = Boolean(source?.property_id && payload.ga4?.property_id &&
     source.property_id.replace("properties/", "") !== payload.ga4.property_id.replace("properties/", ""));
   const emptyWithOlderData = source?.status === "empty" && payload.available !== false &&
-    source.period?.end !== payload.period_end;
+    source.period?.end !== (payload.ga4?.period?.end || payload.period_end);
   const sourceNote = previousSite ? "נבחר אתר אחר, אבל עוד לא התקבלו הנתונים שלו. המספרים המוצגים שייכים לאתר שנקרא קודם."
     : emptyWithOlderData ? "בבדיקה האחרונה לא נמצאו נתונים לתקופה. המספרים המוצגים נשמרו מהקריאה הקודמת."
     : source && source.status !== "ready" ? source.note_he : "";
@@ -24,16 +25,20 @@ export function SourceDataNotice({ payload }: { payload: PerformancePayload }) {
     : analysis === "paused" ? "הנתונים זמינים. כדי להכין מהם הצעה חדשה לתוכנית, צריך מנוי פעיל." : "";
   const metaDate = checkedDate(payload.meta?.source_read_at);
   const siteDate = checkedDate(payload.ga4?.read_at);
-  const siteOlder = Boolean(metaDate && siteDate && (payload.ga4.read_at || "") < (payload.meta.source_read_at || ""));
-  const metaOlder = Boolean(metaDate && siteDate && (payload.meta.source_read_at || "") < (payload.ga4.read_at || ""));
+  const siteReading = { readAt: payload.ga4?.read_at, ...payload.ga4?.period };
+  const metaReading = { readAt: payload.meta?.source_read_at, ...payload.meta?.source_period };
+  const siteOlder = materiallyOlder(siteReading, metaReading);
+  const metaOlder = materiallyOlder(metaReading, siteReading);
+  const partialSite = Object.values(payload.ga4?.report_reads || {}).some(report => report.status === "unavailable");
   const retained = Object.entries(metaSource?.sections || {}).filter(([, section]) => section.retained_at);
-  if (!sourceNote && !metaNote && !analysisNote && !metaOlder && !siteOlder && !retained.length) return null;
+  if (!sourceNote && !metaNote && !analysisNote && !metaOlder && !siteOlder && !retained.length && !partialSite) return null;
   return <aside aria-label="עדכניות הנתונים" className="space-y-2 rounded-xl bg-[var(--soft)] p-4 text-[14px] leading-6 text-[color:var(--ink-soft)]">
     {sourceNote ? <Note>{sourceNote}{" "}<Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">לבדוק את החיבור</Link></Note> : null}
     {metaNote ? <Note>{metaNote}{" "}<Link href="/integrations?source=meta" className="font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">לבדוק את החיבור לפייסבוק ואינסטגרם</Link></Note> : null}
     {analysisNote ? <Note waiting={analysis === "pending"}>{analysisNote}</Note> : null}
     {metaOlder ? <Note small>נתוני פייסבוק ואינסטגרם נשמרו מקריאה ב־{metaDate}; הם לא רועננו יחד עם נתוני האתר.</Note> : null}
     {siteOlder ? <Note small>נתוני האתר נשמרו מקריאה ב־{siteDate}; הם לא רועננו יחד עם פייסבוק ואינסטגרם.</Note> : null}
+    {partialSite ? <Note small>סיכום האתר זמין, אבל חלק מהפירוט לא התקבל. ההצעה משתמשת רק בנתונים שנקראו; ננסה להשלים את הפירוט ברענון הבא.</Note> : null}
     {retained.map(([key, section]) => <Note key={key} small>{key === "ads" ? "נתוני המודעות" : "נתוני החשבון והפוסטים"} נשמרו מקריאה ב־{checkedDate(section.retained_at)}; הקריאה האחרונה שלהם לא הושלמה.</Note>)}
   </aside>;
 }

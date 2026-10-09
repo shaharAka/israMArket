@@ -173,40 +173,76 @@ def _sync_payload(business: Business, db: Session) -> dict:
     start = end - timedelta(days=27)
     ga4_data: dict = {}
     meta_data: dict = {}
-    try:
-        if ga4_item:
+    fresh_ga4 = False
+    ga4_error = None
+    meta_error = None
+    # Providers are independent. Retain only matching, dated Google evidence if
+    # its read fails; never pass those older figures as a fresh post measurement.
+    previous = db.query(PerformanceSnapshot).filter_by(business_id=business.id).order_by(
+        PerformanceSnapshot.created_at.desc(), PerformanceSnapshot.id.desc()).first()
+    if ga4_item:
+        selected_property = ga4_item.external_id
+        try:
             access, refresh, expires = tokens_for(ga4_item)
-            try:
-                ga4_data = ga4.fetch_report(access, refresh, expires, ga4_item.external_id, start.isoformat(), end.isoformat())
-            except Exception as exc:
-                state = ga4_readiness.record(db, ga4_item, ga4_readiness.failure(exc)["status"])
-                raise HTTPException(status_code=502, detail=state["note_he"]) from exc
-        if meta_item:
-            result = meta_readiness.read(db, meta_item, business.website_url, start.isoformat(), end.isoformat())
-            if result is None:
-                raise HTTPException(409, "בחירת החשבון השתנתה בזמן הקריאה. רעננו את הנתונים שוב.")
-            meta_data = result
-            state = meta_readiness.public_state(meta_item)
-            if not ga4_item and state["status"] in {"reconnect", "permission", "link_instagram", "unavailable"}:
-                raise HTTPException(502, state["note_he"])
-            if not ga4_item and not meta_readiness.has_observations(meta_data):
-                return latest(business, db)
-    except RuntimeError as exc:
-        raise HTTPException(status_code=502, detail="לא הצלחנו לקרוא את הנתונים כרגע. הנתונים הקודמים נשמרו; נסו שוב.") from exc
+            report = ga4.fetch_report(access, refresh, expires, selected_property, start.isoformat(), end.isoformat())
+            if not isinstance(report, dict) or report.get("property_id") != selected_property or not isinstance(report.get("overview"), dict):
+                raise RuntimeError("Invalid source response")
+            db.refresh(ga4_item)
+            if ga4_item.external_id != selected_property:
+                raise HTTPException(409, "בחירת האתר השתנתה בזמן הקריאה. רעננו את הנתונים שוב.")
+            ga4_data = report
+            ga4_data["read_at"] = datetime.utcnow().isoformat()
+            fresh_ga4 = bool(report["overview"])
+            if not fresh_ga4:
+                ga4_readiness.record(db, ga4_item, "empty", report=report)
+        except HTTPException:
+            raise
+        except Exception as exc:
+            ga4_error = ga4_readiness.record(db, ga4_item, ga4_readiness.failure(exc)["status"])
+    if not fresh_ga4 and previous:
+        old_ga = loads(previous.ga4_json, {}) or {}
+        selected = next((i for i in business.integrations if i.provider == "ga4"), None)
+        if selected and selected.external_id and old_ga.get("property_id") == selected.external_id:
+            ga4_data = {**old_ga, "read_at": old_ga.get("read_at") or previous.created_at.isoformat(),
+                        "period": old_ga.get("period") or {"start": previous.period_start, "end": previous.period_end}}
+            if ga4_error:
+                ga4_data["source_error"] = {"status": ga4_error["status"], "note_he": ga4_error["note_he"]}
+    if meta_item:
+        result = meta_readiness.read(db, meta_item, business.website_url, start.isoformat(), end.isoformat())
+        if result is None:
+            raise HTTPException(409, "בחירת החשבון השתנתה בזמן הקריאה. רעננו את הנתונים שוב.")
+        meta_data = result
+        state = meta_readiness.public_state(meta_item)
+        if state["status"] in {"reconnect", "permission", "link_instagram", "unavailable"}:
+            meta_error = state
+    if not meta_item and previous:
+        old_meta = loads(previous.meta_json, {}) or {}
+        selected_meta = next((i for i in business.integrations if i.provider == "meta"), None)
+        if selected_meta and old_meta.get("source_selection") == meta_readiness.selection(selected_meta):
+            meta_data = {**old_meta, "source_read_at": old_meta.get("source_read_at") or previous.created_at.isoformat(),
+                         "source_period": old_meta.get("source_period") or {"start": previous.period_start, "end": previous.period_end}}
+    meta_sections = (meta_readiness.public_state(meta_item).get("sections") or {}) if meta_item else {}
+    fresh_meta = any(section.get("status") in {"ready", "empty"} for name, section in meta_sections.items() if name in {"social", "ads"}) and meta_readiness.has_observations(meta_data)
+    if not fresh_ga4 and not fresh_meta:
+        # If neither provider delivered a fresh report, preserve the snapshot and
+        # recommendation. A new timestamp must not make old evidence look new.
+        error = ga4_error or meta_error
+        if error:
+            raise HTTPException(502, error["note_he"])
+        return latest(business, db)
 
     # Every synced Instagram post, with the numbers Meta returned, feeds the post writer
     # (services/instagram_signal). The snapshot keeps the short caption as before.
     # Committed now, so a diagnostic failure below does not throw the numbers away.
-    fresh_social = not meta_data.get("source_reads") or (meta_data.get("source_reads", {}).get("social") or {}).get("read_at") == meta_data.get("source_read_at")
+    fresh_social = fresh_meta and meta_sections.get("social", {}).get("status") in {"ready", "empty"} and (
+        not meta_data.get("source_reads") or (meta_data.get("source_reads", {}).get("social") or {}).get("read_at") == meta_data.get("source_read_at"))
     if fresh_social and instagram_signal.store_media(db, business.id, meta_data):
         db.commit()
     meta_data = meta.snapshot_view(meta_data)
 
-    if ga4_item:
-        ga4_data["read_at"] = datetime.utcnow().isoformat()
     posts = _posts(business, db)
     ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social else {})
-    post_results = _refresh_post_results(business, db, ga4_data if ga4_item else None, meta_data if fresh_social else None)
+    post_results = _refresh_post_results(business, db, ga4_data if fresh_ga4 else None, meta_data if fresh_social else None)
 
     business_payload = {
         "name": business.name,
@@ -231,7 +267,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
     db.add(snap)
     db.commit()
     db.refresh(snap)
-    if ga4_item:
+    if fresh_ga4:
         ga4_readiness.record(db, ga4_item, "ready" if ga4_readiness.has_activity(ga4_data) else "empty", report=ga4_data)
     try:
         diagnostic = {**diagnose(business_payload, ga4_data, meta_data), "analysis_status": "ready"}
