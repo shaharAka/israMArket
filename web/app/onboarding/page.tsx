@@ -185,6 +185,10 @@ export default function OnboardingPage() {
         // Built by /start (from-draft): the budget was asked there too (Revision 5), so
         // nothing is left to ask here. The plan page shows the stored plan and builds the
         // first month from it.
+        if (business.owner_context?.research_journey) {
+          router.replace("/start?stage=continue");
+          return;
+        }
         const builtFromDraft = Boolean(business.owner_context || business.first_month_seed || business.quarter_plan);
         if ((builtFromDraft || new URLSearchParams(window.location.search).get("from") === "start") && business.name) {
           router.replace("/strategy");

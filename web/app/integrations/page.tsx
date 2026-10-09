@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
+import { Copy } from "@/components/language/LanguageProvider";
 import {
   AppShell,
   Button,
@@ -580,7 +581,7 @@ export default function IntegrationsPage() {
           </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 2 ? "החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : unavailableCount ? "חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : "אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם."}</p>}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}>לפתוח את החיבור המומלץ</UIAction> : null}
-            <Link href="/strategy" className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}>{recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"}</Link>
+            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?stage=continue" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? "לחזור לשאלות על העסק" : recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"} /></Link>
           </div>
         </div> : null}
 

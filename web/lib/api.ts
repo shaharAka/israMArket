@@ -4237,8 +4237,8 @@ export const endpoints = {
   /* ---- Onboarding v2 (/start). Anonymous except from-draft. See docs/onboarding-v2.md.
      Callers go through `web/lib/draft.ts`, which falls back to fixtures on 404. ---- */
   /** Fast brand read of a public site, started in the background at the links step. */
-  publicBrand: (url: string, businessModel?: BusinessModel) =>
-    api<PublicBrandResult>("/public/brand", { method: "POST", body: JSON.stringify({ url, business_model: businessModel }) }),
+  publicBrand: (url: string, businessModel?: BusinessModel, research = false) =>
+    api<PublicBrandResult>("/public/brand", { method: "POST", body: JSON.stringify({ url, business_model: businessModel, research }) }),
   /** Three suggested audiences, each with the reason we suggest it. */
   publicAudiences: (draft: OnboardingDraft) =>
     api<{ audiences: SuggestedAudience[] }>("/public/audiences", {
@@ -4441,6 +4441,7 @@ type OwnerTriedChannel = NonNullable<OnboardingDraft["tried"]>["channels"][numbe
 
 /** The first-meeting answers the API keeps in `owner_context` (see onboarding_draft.owner_context). */
 export type OwnerContext = {
+  research_journey?: import("./researchJourney").SavedResearchJourney;
   pending_links?: Partial<Record<"website" | "instagram" | "facebook" | "tiktok", { url: string; error: string }>>;
   differentiator?: string;
   seasons?: { busy: number[]; slow: number[] };

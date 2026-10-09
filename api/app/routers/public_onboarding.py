@@ -271,6 +271,7 @@ def _scan_brand(url: str, include_products: bool = False) -> dict | None:
 class BrandIn(BaseModel):
     url: str = Field(min_length=4, max_length=300)
     business_model: Literal["products", "services", "both", "saas"] | None = None
+    research: bool = False
 
 
 @router.post("/brand")
@@ -280,14 +281,15 @@ def public_brand(body: BrandIn, request: Request) -> dict:
     Always 200 with `status` — the web calls this in the background and only needs to
     know whether to paint the card — except for 429 (budget) and 503 (busy).
     """
+    include_pages = body.research or body.business_model == "saas"
     try:
         url = drafts.normalize_website(body.url)
-        key = f"brand:{preview_service.cache_key(url)}" + (":software" if body.business_model == "saas" else "")
+        key = f"brand:{preview_service.cache_key(url)}" + (":research" if include_pages else "")
     except (drafts.LinkError, ValueError) as exc:
         return {"status": "failed", "brand": None, "reason_he": str(exc)}
 
     hit = cached_brand(url)
-    if hit and (body.business_model != "saas" or ((preview_service.cached_scan(url) or {}).get("raw") or {}).get("product_research")):
+    if hit and (not include_pages or ((preview_service.cached_scan(url) or {}).get("raw") or {}).get("product_research")):
         return {"status": "ready", "brand": hit, "cached": True}
 
     if _scans.running(key) is None:
@@ -304,7 +306,7 @@ def public_brand(body: BrandIn, request: Request) -> dict:
         name="onboarding-brand",
         per_ip=BRAND_PER_IP,
         global_cap=BRAND_GLOBAL,
-        work=lambda: _scan_brand(url, True) if body.business_model == "saas" else _scan_brand(url),
+        work=lambda: _scan_brand(url, True) if include_pages else _scan_brand(url),
     )
     if future is None:  # cached between the two looks
         return {"status": "ready", "brand": answers.get(key), "cached": True}
@@ -388,7 +390,22 @@ def public_target_suggestion(request: Request, body: Any = Body(...)) -> dict:
 
 
 class DraftIn(BaseModel):
+    locale: Literal["he", "en", "ar", "ru"] = "he"
     draft: drafts.OnboardingDraft
+
+
+@router.post("/discovery")
+def public_discovery(body: DraftIn, request: Request) -> dict:
+    from app.services.discovery_interview import research_questions, evidence_revision
+    hit, future = _cached_or_start(request, gate=_models, key=body.draft.fingerprint("discovery:" + body.locale + ":" + evidence_revision(body.draft)),
+        name="onboarding-discovery", per_ip=10, global_cap=200,
+        work=lambda: research_questions(body.draft, locale=body.locale))
+    if hit is not None:
+        return hit
+    try:
+        return future.result(timeout=30)
+    except FutureTimeout as exc:
+        raise HTTPException(status_code=504, detail="הקריאה נמשכת. אפשר להמשיך בלי להמתין ולבדוק בהמשך.") from exc
 
 
 @router.post("/audiences")

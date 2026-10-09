@@ -32,7 +32,7 @@ export function BusinessRoute({ flow, update, onSelect }: Pick<StepProps, "flow"
   </div>;
   return (
     <fieldset>
-      <legend className={form.label}>איזה עסק יש לכם?</legend>
+      <legend className={form.label}><Copy text="איזה עסק יש לכם?" /></legend>
       <div role="radiogroup" aria-label="סוג העסק" className="grid grid-cols-2 gap-2">
         {ROUTES.map((route) => (
           <button key={route.key} type="button" role="radio"
@@ -59,13 +59,13 @@ export function ServiceClientSources({ flow, setDraft }: Pick<StepProps, "flow" 
   return (
     <div className="space-y-5">
       <fieldset>
-        <legend className={`${form.label} !mb-2`}>איך לקוחות מוצאים אתכם היום? אפשר לבחור כמה.</legend>
+        <legend className={`${form.label} !mb-2`}><Copy text="איך לקוחות מוצאים אתכם היום? אפשר לבחור כמה." /></legend>
         <div className="divide-y divide-[var(--rule)]">
           {CLIENT_SOURCE_OPTIONS.map((source) => (
             <label key={source.key} className="flex min-h-11 cursor-pointer items-center gap-3 py-2 text-[15px] text-[color:var(--ink)]">
               <input type="checkbox" checked={Boolean(value?.channels.includes(source.key))} onChange={() => toggle(source.key)}
                 className="h-4 w-4 shrink-0 accent-[var(--primary)]" />
-              {source.label}
+              <Copy text={source.label} />
             </label>
           ))}
         </div>
@@ -74,18 +74,18 @@ export function ServiceClientSources({ flow, setDraft }: Pick<StepProps, "flow" 
             <button key={option.key} type="button" aria-pressed={value?.status === option.key}
               onClick={() => set({ status: option.key, channels: [], main_channel: null })}
               className={`${form.option} !min-h-11 !px-3 !py-2 !text-[13px]`}>
-              {option.label}
+              <Copy text={option.label} />
             </button>
           ))}
         </div>
       </fieldset>
       {value?.channels && value.channels.length > 1 ? (
         <div>
-          <label htmlFor="client-main-source" className={form.label}>מה מביא את רוב הלקוחות? (לא חובה)</label>
+          <label htmlFor="client-main-source" className={form.label}><Copy text="מה מביא את רוב הלקוחות? (לא חובה)" /></label>
           <select id="client-main-source" className={form.input} value={value.main_channel ?? ""}
             onChange={(event) => set({ main_channel: event.target.value ? event.target.value as ClientSource : null })}>
-            <option value="">לא בטוחים / אין מקור עיקרי</option>
-            {CLIENT_SOURCE_OPTIONS.filter((source) => value.channels.includes(source.key)).map((source) => <option key={source.key} value={source.key}>{source.label}</option>)}
+            <option value=""><Copy text="לא בטוחים / אין מקור עיקרי" /></option>
+            {CLIENT_SOURCE_OPTIONS.filter((source) => value.channels.includes(source.key)).map((source) => <option key={source.key} value={source.key}><Copy text={source.label} /></option>)}
           </select>
         </div>
       ) : null}

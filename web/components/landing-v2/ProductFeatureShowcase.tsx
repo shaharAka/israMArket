@@ -39,11 +39,24 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];
   const active = FEATURES.find(item => item.key === screen)!;
+  const controls = (<div className={styles.controls}>
+    <div className={styles.selector} role="group" aria-label={t("לבחור מה לראות במערכת")}>
+      {FEATURES.map((item, index) => <button key={item.key} type="button"
+        id={`${id}-${item.key}-control`} aria-pressed={screen === item.key} aria-controls={`${id}-${item.key}-view`}
+        ref={node => { buttons.current[index] = node; }}
+        onClick={() => { setScreen(item.key); setWide(false); if (item.key === "posts") setPostIndex(0); }}>
+        <Copy text={item.label} />{playing && screen === item.key ? <PlaybackProgress cycle={screen} duration={PRODUCT_HOLD_MS} /> : null}
+      </button>)}
+    </div>
+    {presentation === "hero" && !reduced ? <button type="button" className={styles.playback} data-playback-control
+      onClick={toggle} aria-label={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")} title={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")}>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{requested ? <path d="M3 2h3v12H3zm7 0h3v12h-3z" /> : <path d="m4 2 10 6-10 6z" />}</svg>
+    </button> : null}
+    </div>);
   return <div className={styles.showcase} data-presentation={presentation} data-playing={playing} data-wide={wide}
     onFocusCapture={event => { if (event.target.matches(":focus-visible") && (event.target as HTMLElement).closest('[data-active="true"]')) hold(); }}
     onBlurCapture={event => { if (!(event.relatedTarget instanceof Element) || !event.relatedTarget.closest('[data-active="true"]')) release(); }}>
-
-
+    {presentation === "hero" ? controls : null}
     <div className={styles.frame} ref={frame}>
       <header className={styles.header}><strong><Copy text={business.name} /></strong><p className="sr-only" aria-live={playing ? "off" : "polite"}><Copy text={active.benefit} /></p></header>
       {presentation === "hero" ? <aside className={styles.workspaceNav} aria-label={t("ניווט ראשי")}>
@@ -81,19 +94,6 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
         <svg width="44" height="54" viewBox="0 0 34 42" fill="none"><path d="M10 22V5a3 3 0 0 1 6 0v12-3a3 3 0 0 1 6 0v4-2a3 3 0 0 1 6 0v4a3 3 0 0 1 5 2v7c0 4-3 7-4 10H13c-1-5-4-7-7-11L2 23c-2-3 2-6 5-3l3 2Z" fill="white" stroke="#17252c" strokeWidth="2" strokeLinejoin="round"/></svg>
       </span></div> : null}
     </div>
-    {presentation !== "feature" && <div className={styles.controls}>
-    <div className={styles.selector} role="group" aria-label={t("לבחור מה לראות במערכת")}>
-      {FEATURES.map((item, index) => <button key={item.key} type="button"
-        id={`${id}-${item.key}-control`} aria-pressed={screen === item.key} aria-controls={`${id}-${item.key}-view`}
-        ref={node => { buttons.current[index] = node; }}
-        onClick={() => { setScreen(item.key); setWide(false); if (item.key === "posts") setPostIndex(0); }}>
-        <Copy text={item.label} />{playing && screen === item.key ? <PlaybackProgress cycle={screen} duration={PRODUCT_HOLD_MS} /> : null}
-      </button>)}
-    </div>
-    {presentation === "hero" && !reduced ? <button type="button" className={styles.playback} data-playback-control
-      onClick={toggle} aria-label={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")} title={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")}>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{requested ? <path d="M3 2h3v12H3zm7 0h3v12h-3z" /> : <path d="m4 2 10 6-10 6z" />}</svg>
-    </button> : null}
-    </div>}
+    {presentation === "full" ? controls : null}
   </div>;
 }

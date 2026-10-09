@@ -334,6 +334,17 @@ class CompetitorTest(DbCase):
 
 
 class SearchTest(DbCase):
+    def test_new_journey_excludes_agency_costs_without_losing_search_evidence(self):
+        self.offline()
+        self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {}},
+                                                  "extracted": {"offers": ["הלבשה תחתונה", "פיג'מות"]}})
+        with mock.patch.object(research.google_cost, "plan_for_business", side_effect=AssertionError("agency cost forbidden")):
+            items, status, state = research.gather_search(self.db, self.business, self.ctx())
+        self.assertTrue(state["phrases"])
+        self.assertTrue(any(item["origin"].startswith("Google autocomplete") for item in items))
+        self.assertFalse(any(item["origin"] == research.google_cost.SOURCE_URL for item in items))
+        self.assertIn("google_search_console", status["needs"])
+
     def test_real_phrases_no_volumes_and_estimates_labelled(self):
         self.offline()
         items, status, state = research.gather_search(self.db, self.business, self.ctx())
@@ -598,6 +609,63 @@ class InsightTest(unittest.TestCase):
 
 
 class RunTest(DbCase):
+    def test_new_journey_publication_mix_cannot_carry_fresh_or_resumed_forecasts(self):
+        business = {"name": "QA", "monthly_budget_ils": 4500, "primary_goal": "sales",
+                    "business_model": "products", "owner_context": {"research_journey": {}}}
+        scan = {"extracted": {}, "brand_language": {"tone": "simple"}}
+        for stage in ("usp", "plan"):
+            state = {"stage": stage, "posting_plan": {"realistic_roas": [2, 3], "expected_clicks": [100, 200]}}
+            with self.subTest(stage=stage), mock.patch.object(strategy_service, "posting_plan", side_effect=AssertionError("agency model forbidden")), \
+                    mock.patch.object(strategy_service, "build_usp", return_value={}), \
+                    mock.patch.object(strategy_service, "build_roadmap", return_value={"theme": "QA"}) as roadmap:
+                result = strategy_service.generate_monthly_strategy(business, scan=scan, state=state, one_stage=True)
+            self.assertEqual(result["posting_plan"], {"business_model": "products", "primary_goal": "sales"})
+            self.assertEqual(result["generate_state"]["posting_plan"], result["posting_plan"])
+            if stage == "plan":
+                self.assertEqual(roadmap.call_args.args[3], result["posting_plan"])
+
+    def test_saved_agency_insights_are_removed_for_journey_in_both_prompts(self):
+        def insight(title, origin, kind="estimate"):
+            return {"title": title, "text": title, "plan_change": title, "confidence": "weak",
+                    "evidence": [{"origin": origin, "kind": kind}], "source_labels_he": ["חיפושים בגוגל"]}
+        agency_google = insight("old agency cpc", research.google_cost.SOURCE_URL)
+        agency_meta = insight("old agency roas", research.cost_model.SOURCE_URL)
+        # A mixed insight retains a measured citation but still contains an agency
+        # estimate. Removing just the citation would keep the unsupported claim.
+        mixed = insight("mixed derived forecast", "Google Search Console", "fact")
+        mixed["evidence"].append({"origin": research.google_cost.SOURCE_URL, "kind": "estimate"})
+        measured = insight("measured clicks", "Google Search Console", "fact")
+        saved = [agency_google, agency_meta, mixed, measured]
+        self.db.add(ResearchRun(business_id=self.business.id, status="done", created_at=datetime.utcnow(),
+                                insights_json=dumps({"items": saved})))
+        self.db.commit()
+        # Legacy businesses retain their existing behavior.
+        legacy = research.research_prompt_block(self.business, self.db)
+        self.assertIn("old agency cpc", legacy)
+        self.assertIn("old agency roas", legacy)
+        self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {"version": 1}}})
+        self.db.commit()
+        for business in (self.business, {"id": self.business.id},
+                         {"id": self.business.id, "owner_context": {"research_journey": {}}}):
+            with self.subTest(business=type(business).__name__):
+                block = research.research_prompt_block(business, self.db)
+                self.assertIn("measured clicks", block)
+                for text in ("old agency cpc", "old agency roas", "mixed derived forecast"):
+                    self.assertNotIn(text, block)
+        prompt = research.insights_prompt(self.db, self.business, [], {}, saved)
+        self.assertIn("measured clicks", prompt)
+        self.assertNotIn("old agency cpc", prompt)
+        self.assertNotIn("old agency roas", prompt)
+        self.assertNotIn("mixed derived forecast", prompt)
+
+    def test_only_saved_agency_evidence_leaves_no_research_claim(self):
+        self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {}}})
+        self.db.add(ResearchRun(business_id=self.business.id, status="done", created_at=datetime.utcnow(),
+                                insights_json=dumps({"items": [{"title": "unsupported", "text": "forecast",
+                                    "evidence": [{"origin": research.google_cost.SOURCE_URL}]}]})))
+        self.db.commit()
+        self.assertEqual(research.research_prompt_block(self.business, self.db), "")
+
     def test_run_persists_findings_insights_and_statuses(self):
         self.offline()
         run = research.run_research(self.db, self.business, trigger="manual", now=NOW)

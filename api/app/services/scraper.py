@@ -4,6 +4,7 @@ import struct
 import time
 from collections import Counter
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from urllib.parse import unquote, urljoin, urlparse
 
 import httpx
@@ -952,6 +953,7 @@ def capped_get(
     deadline: float,
     request_timeout: float = 8.0,
     max_redirects: int = 5,
+    allowed_origin: str | None = None,
     **_ignored,
 ) -> httpx.Response:
     """`netguard.safe_get` with a byte cap and a wall-clock deadline.
@@ -961,7 +963,17 @@ def capped_get(
     cap"), and the request is abandoned once `deadline` (a `time.monotonic()` value) has
     passed. Decoded bytes are counted, so a gzip bomb hits the cap too.
     """
-    current = assert_public_url(url)
+    def checked(target: str) -> str:
+        if allowed_origin is not None:
+            parts, allowed = urlparse(target), urlparse(allowed_origin)
+            def origin(parsed):
+                return (parsed.scheme.lower(), (parsed.hostname or "").lower(),
+                        parsed.port or (443 if parsed.scheme == "https" else 80))
+            if parts.username or parts.password or origin(parts) != origin(allowed):
+                raise UnsafeUrlError("קריאת העמוד מוגבלת לאתר של העסק.")
+        return assert_public_url(target)
+
+    current = checked(url)
     for _ in range(max_redirects + 1):
         remaining = deadline - time.monotonic()
         if remaining <= 0:
@@ -971,7 +983,7 @@ def capped_get(
         ) as response:
             location = response.headers.get("location")
             if response.status_code in _REDIRECT_CODES and location:
-                current = assert_public_url(str(httpx.URL(current).join(location)))
+                current = checked(str(httpx.URL(current).join(location)))
                 continue
             body = bytearray()
             for chunk in response.iter_bytes():
@@ -1098,6 +1110,7 @@ def scrape_site(url: str, limits: ScrapeLimits | None = None) -> dict:
 
     return {
         "url": page_url,
+        "read_at": datetime.now(timezone.utc).isoformat(),
         "title": title,
         "meta": metas[:5],
         "headings": headings[:15],

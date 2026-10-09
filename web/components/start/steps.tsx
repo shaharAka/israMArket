@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import { UIAction } from "@/components/design/Controls";
 import { BUSINESS_FIELDS } from "@/lib/businessFields";
 import {
@@ -60,13 +61,14 @@ function FieldError({ message }: { message: string }) {
 /* --------------------------------- העסק --------------------------------- */
 
 export function StepName(props: StepProps) {
+  const t = useCopy();
   const { flow, setDraft, next } = props;
   const [error, setError] = useState("");
   return (
     <StepShell
       {...props}
       title="איך קוראים לעסק?"
-      why="זו פגישת היכרות קצרה. נשאל, נקשיב, ונבנה יחד תוכנית שיווק."
+      why="נתחיל בהיכרות עם העסק. אפשר להמשיך בלי אתר ובלי לחבר חשבונות."
       primary="להמשיך לתחום של העסק"
       onPrimary={() => {
         if (flow.draft.business_name.trim().length < 2) {
@@ -78,7 +80,7 @@ export function StepName(props: StepProps) {
     >
       <div>
         <label htmlFor="business-name" className={form.label}>
-          שם העסק
+          <Copy text="שם העסק" />
         </label>
         <input
           id="business-name"
@@ -90,13 +92,13 @@ export function StepName(props: StepProps) {
             setError("");
             setDraft({ business_name: event.target.value });
           }}
-          placeholder="למשל: מאפיית השכונה"
+          placeholder={t("למשל: מאפיית השכונה")}
           autoComplete="organization"
           maxLength={80}
         />
         {error ? (
           <p id="business-name-error" role="alert" className={`${form.error} mt-2`}>
-            {error}
+            {t(error)}
           </p>
         ) : null}
       </div>
@@ -198,11 +200,7 @@ export function StepDifferent(props: StepProps) {
       primary="להמשיך ללקוחות"
       reassure={CHANGE_LATER}
       onPrimary={next}
-      skip="לא בטוחים? לדלג, ונמצא את זה יחד"
-      onSkip={() => {
-        setDraft({ differentiator: "" });
-        next();
-      }}
+      actionNote={<p className="text-sm text-[var(--ink-muted)]"><Copy text="לא בטוחים? אפשר להמשיך ולעדכן בהמשך." /></p>}
     >
       <TextInput
         id="differentiator"
@@ -213,7 +211,7 @@ export function StepDifferent(props: StepProps) {
         maxLength={200}
       />
       <div>
-        <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]">אפשר להתחיל מאחד מאלה:</p>
+        <p className="mb-2.5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="אפשר להתחיל מאחד מאלה:" /></p>
         <div className="flex flex-wrap gap-2">
           {(modelOf(flow) === "saas" ? ["קל להתחיל", "חוסך עבודה ידנית", "מתחבר לכלים שכבר יש", "נבנה לתחום שלנו"] : kit.differentiators).map((example) => (
             <Chip
@@ -234,13 +232,14 @@ export function StepDifferent(props: StepProps) {
 const MAX_AUDIENCES = 3;
 
 export function StepAudiences(props: StepProps) {
+  const t = useCopy();
   const { flow, update, setDraft, next } = props;
   const d = flow.draft;
   const suggestions = flow.suggestions ?? null;
   const want = signature([d.business_name, d.business_type, d.offerings, d.differentiator ?? ""]);
   const loading = flow.suggestionsFor !== want && !flow.suggestionsFailed;
   const [editing, setEditing] = useState<number | null>(null);
-  const [adding, setAdding] = useState(false);
+  const [, setAdding] = useState(false);
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
 
@@ -250,13 +249,13 @@ export function StepAudiences(props: StepProps) {
     suggestAudiences(draftForApi(flow))
       .then((list) => {
         if (!live) return;
-        const top = list.slice(0, MAX_AUDIENCES);
+        const top = list.slice(0, 2);
         update((f) => ({
           ...f,
           suggestions: top,
           suggestionsFor: want,
           suggestionsFailed: false,
-          // First time here: keep all three. After that, the owner's choice stands.
+          // First time here: keep the two suggestions. After that, the owner's choice stands.
           draft: f.draft.audiences.length || f.seen.includes("audiences")
             ? f.draft
             : { ...f.draft, audiences: top.map((a) => ({ name: a.name, description: a.description })) },
@@ -277,7 +276,7 @@ export function StepAudiences(props: StepProps) {
   const whyFor = (name: string) => suggestions?.find((s) => s.name === name)?.why_he;
   const removed = (suggestions ?? []).filter((s) => !kept.some((k) => k.name === s.name));
   const full = kept.length >= MAX_AUDIENCES;
-  const showAdd = adding || (flow.suggestionsFailed && kept.length === 0);
+  const showAdd = !full;
 
   function saveNew() {
     const name = newName.trim();
@@ -291,22 +290,21 @@ export function StepAudiences(props: StepProps) {
   return (
     <StepShell
       {...props}
-      title={modelOf(flow) === "saas" ? "מי צריך את המוצר שלכם?" : modelOf(flow) === "services" ? "למי מתאים השירות שלכם?" : "מי קונה מכם?"}
-      why={modelOf(flow) === "saas" ? "נציע קהל לפי הבעיה ומי שמחליט על הרכישה. אפשר לבחור, לשנות או להשלים בהמשך." : "ככה נדע למי לכתוב. הצענו 3 קהלים לפי מה שסיפרתם, ואפשר לשנות."}
+      title={d.research_journey?.segment === "fundraising" ? "מי האנשים שתרצו שיתמכו בעשייה?" : modelOf(flow) === "saas" ? "מי צריך את המוצר שלכם?" : modelOf(flow) === "services" ? "למי מתאים השירות שלכם?" : "מי קונה מכם?"}
+      why={modelOf(flow) === "saas" ? "נציע קהל לפי הבעיה ומי שמחליט על הרכישה. אפשר לבחור, לשנות או להשלים בהמשך." : "ככה נדע למי לכתוב. הצענו 2 קהלים לפי מה שסיפרתם, ואפשר לשנות."}
       primary="להמשיך לעונות השנה"
       reassure={CHANGE_LATER}
       onPrimary={() => {
         if (newName.trim()) saveNew();
         next();
       }}
-      skip="לא בטוחים? לדלג"
-      onSkip={() => next()}
+      actionNote={<p className="text-sm text-[var(--ink-muted)]"><Copy text="לא בטוחים? אפשר להמשיך ולעדכן בהמשך." /></p>}
     >
       {loading ? (
         <div className="space-y-2" role="status" aria-live="polite">
-          <p className="text-sm text-[color:var(--ink-muted)]">מחפשים את הלקוחות שלכם…</p>
+          <p className="text-sm text-[color:var(--ink-muted)]"><Copy text="מחפשים את הלקוחות שלכם…" /></p>
           <div className={form.list}>
-            {[0, 1, 2].map((i) => (
+            {[0, 1].map((i) => (
               <div key={i} className="space-y-2 border-t border-[var(--rule)] px-4 py-4 first:border-t-0">
                 <span className={`block h-3 w-32 rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
                 <span className={`block h-2.5 w-56 max-w-full rounded-full bg-[var(--soft)] ${styles.shimmer}`} />
@@ -317,7 +315,7 @@ export function StepAudiences(props: StepProps) {
       ) : (
         <>
           {flow.suggestionsFailed ? (
-            <p className="text-[15px] leading-6 text-[color:var(--ink-soft)]">לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי העסק שלכם מתאים.</p>
+            <p className="text-[15px] leading-6 text-[color:var(--ink-soft)]"><Copy text="לא הצלחנו להציע קהלים כרגע. כתבו בעצמכם למי העסק שלכם מתאים." /></p>
           ) : null}
           {kept.length ? (
             <ul className={`${form.list} ${styles.stagger}`}>
@@ -349,7 +347,7 @@ export function StepAudiences(props: StepProps) {
                         setEditing(null);
                       }}
                     >
-                      לשמור את הקהל
+                      <Copy text="לשמור את הקהל" />
                     </UIAction>
                   </li>
                 ) : (
@@ -360,13 +358,13 @@ export function StepAudiences(props: StepProps) {
                         {whyFor(audience.name) || audience.description}
                       </p>
                     </div>
-                    <IconButton label={`לערוך את ${audience.name}`} onClick={() => setEditing(index)}>
+                    <IconButton label={t("לערוך את {arg_0}", { arg_0: audience.name })} onClick={() => setEditing(index)}>
                       <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
                         <path d="M12.5 4.5l3 3L7 16H4v-3l8.5-8.5z" strokeLinejoin="round" />
                       </svg>
                     </IconButton>
                     <IconButton
-                      label={`להסיר את ${audience.name}`}
+                      label={t("להסיר את {arg_0}", { arg_0: audience.name })}
                       onClick={() => setDraft({ audiences: kept.filter((_, i) => i !== index) })}
                     >
                       <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.8} aria-hidden>
@@ -400,7 +398,7 @@ export function StepAudiences(props: StepProps) {
             <div className={`${form.panel} space-y-3`}>
               <TextInput
                 id="aud-new-name"
-                label="למי עוד אתם מוכרים?"
+                label="קהל נוסף משלכם"
                 value={newName}
                 onChange={setNewName}
                 placeholder="למשל: סטודנטים מהאזור"
@@ -414,17 +412,17 @@ export function StepAudiences(props: StepProps) {
                 maxLength={160}
               />
               <UIAction variant="secondary" onClick={saveNew} disabled={!newName.trim()}>
-                להוסיף את הקהל
+                <Copy text="להוסיף את הקהל" />
               </UIAction>
             </div>
           ) : !full ? (
             <div>
               <QuietLink tone="action" onClick={() => setAdding(true)}>
-                להוסיף קהל משלכם
+                <Copy text="להוסיף קהל משלכם" />
               </QuietLink>
             </div>
           ) : (
-            <p className="text-[13px] text-[color:var(--ink-muted)]">עד 3 קהלים. כדי להוסיף, הסירו אחד.</p>
+            <p className="text-[13px] text-[color:var(--ink-muted)]"><Copy text="עד 3 קהלים. כדי להוסיף, הסירו אחד." /></p>
           )}
         </>
       )}

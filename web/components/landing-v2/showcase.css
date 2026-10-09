@@ -240,3 +240,9 @@ html[lang="ar"] .lv2-site[data-hero-type="sans"] .lv2-display { font-size: clamp
 
 .lv2-site .lv2-connector-link:has(small) { gap: 16px; }
 .lv2-site .lv2-connector-link > small { font-size: 12px; color: var(--ink-muted); }
+
+/* Leave more room for legible product proof at desktop sizes. */
+@media(min-width:1081px) { .lv2-site .lv2-hero-grid { max-width: 1320px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.4fr); gap: 36px; } }
+.lv2-price-includes-title { margin-block: 24px 12px; font-size: 20px; font-weight: 600; }
+.lv2-price-includes { display: grid; gap: 12px; max-width: 560px; padding: 0; margin: 0 auto 20px; list-style: none; }
+.lv2-price-includes li { font-size: 16px; line-height: 1.6; }

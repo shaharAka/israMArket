@@ -1,6 +1,4 @@
-import { StartFlow } from "@/components/start/StartFlow";
+import { ResearchJourney } from "@/components/start/ResearchJourney";
 
-/** The first meeting: a short conversation that builds the business card and the plan. */
-export default function StartPage() {
-  return <StartFlow />;
-}
+/** Public discovery, signup, then the signed-in marketing interview. */
+export default function StartPage() { return <ResearchJourney />; }

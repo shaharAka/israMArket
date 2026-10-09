@@ -750,6 +750,9 @@ class DraftSuccess(BaseModel):
         raise ValueError("היעד: כתבו מספר או כמה מילים.")
 
 
+from app.services.discovery_interview import Interview, planning_context
+
+
 class OnboardingDraft(BaseModel):
     """The answers from /start. Mirrors `OnboardingDraft` in web/lib/draft.ts."""
 
@@ -774,6 +777,7 @@ class OnboardingDraft(BaseModel):
     tried: DraftTried = Field(default_factory=DraftTried)
     client_sources: DraftClientSources | None = None
     software: DraftSoftware | None = None
+    research_journey: Interview | None = None
     competitors: list[DraftCompetitor] = Field(default_factory=list, max_length=3)
     # Revision 5 (all optional): the marketing budget, where to grow, what counts as success.
     budget: DraftBudget | None = None
@@ -1107,6 +1111,8 @@ def _draft_block(draft: OnboardingDraft, today: date | None = None) -> str:
         f"- מוכרים: {MODEL_TITLES[draft.model]}",
         f"- מה הכי חשוב להם עכשיו: {title} ({desc})",
     ]
+    if draft.research_journey:
+        lines.append(planning_context(draft.research_journey.model_dump(mode="json")))
     if draft.grow_where:
         lines.append(f"- איפה הם רוצים לגדול: {GROW_WHERE_HE[draft.grow_where]}")
     if draft.baseline is not None or draft.lever is not None:
@@ -1192,7 +1198,7 @@ def _site_block(scan: dict | None, text_chars: int = SITE_TEXT_CHARS) -> str:
     text = clean_text(raw.get("text"), text_chars)
     if text:
         parts.append(f"- קטע מהטקסט באתר: \"{text}\"")
-    for page in (raw.get("product_pages") or [])[:2]:
+    for page in (raw.get("product_pages") or [])[:3]:
         if isinstance(page, dict):
             parts.append(f"- עמוד מוצר/תמחור שקראנו: {clean_text(page.get('url'), 300)} (נקרא: {clean_text(page.get('read_at'), 40)}): {clean_text(page.get('text'), 1800)}")
     if isinstance(raw.get("product_research"), dict):
@@ -1741,6 +1747,7 @@ def _direction_hypothesis(direction: dict) -> str:
 def owner_context(draft: OnboardingDraft) -> dict:
     """The first-meeting answers that have no column, in a stable JSON shape."""
     return {
+        **({"research_journey": {**draft.research_journey.model_dump(mode="json"), "answers": draft.model_dump(mode="json", exclude={"research_journey"})}} if draft.research_journey else {}),
         "differentiator": draft.differentiator,
         "seasons": {"busy": list(draft.seasons.busy), "slow": list(draft.seasons.slow)},
         "activity": draft.activity.as_dict(),
@@ -1761,6 +1768,8 @@ def owner_context_block(context: dict | None, seed: dict | None = None, *, inclu
     """
     lines: list[str] = []
     context = context if isinstance(context, dict) else {}
+    if discovery_block := planning_context(context.get("research_journey")):
+        lines.append(discovery_block)
     if product_block := software_block(context.get("software")):
         lines.append(product_block)
     if source_block := client_sources_block(context.get("client_sources")):
@@ -1977,7 +1986,11 @@ def apply_draft(
         business.primary_goal = draft.goal
     elif business.primary_goal not in allowed:
         business.primary_goal = allowed[0]
-    if draft.budget is not None:
+    if draft.research_journey:
+        # Only an explicit owner number can become a working budget, never a range midpoint.
+        stated = next((o for o in draft.research_journey.observations if o.key == 'marketing_budget'), None)
+        business.monthly_budget_ils = int(stated.lower) if stated and stated.status == 'exact' else 0
+    elif draft.budget is not None:
         # The budget question moved into /start; the post-signup budget step is skipped.
         business.monthly_budget_ils = draft.budget.monthly_ils() or 0
     if draft.city:
@@ -2023,6 +2036,15 @@ def apply_draft(
 
     # What the owner told us that has no column of its own. The month prompts read it
     # through strategy._owner_block (see `owner_context_block`).
+    if draft.research_journey and not (stored.get("owner_context") or {}).get("research_journey"):
+        # An incomplete legacy signup can resume here, but its speculative preview
+        # must not become evidence for this researched plan. Real owner data remains.
+        seed = seed_from_stored(stored) or {}
+        if stored.get("growth_hypothesis") == seed.get("hypothesis"):
+            stored.pop("growth_hypothesis", None)
+        stored.pop("first_month_seed", None)
+        if (stored.get("long_horizon_plan") or {}).get("source") == "quarter_plan":
+            stored.pop("long_horizon_plan", None)
     stored["owner_context"] = owner_context(draft)
     stored["onboarding_source"] = "start"
     # Revision 6: the numbers (today, what to grow, the 3-month target), with the
@@ -2036,7 +2058,7 @@ def apply_draft(
             "view": goal_numbers.numbers_view(draft),
         }
 
-    if draft.model == "saas":
+    if draft.model == "saas" or draft.research_journey:
         stored.pop("goal_numbers", None)  # never carry a former shop's revenue target into software
 
     # Brand: the scan we already paid for, else what is stored for the same site, else

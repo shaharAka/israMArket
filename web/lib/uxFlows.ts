@@ -1,6 +1,6 @@
 /** A source-grounded review map, not an alternative onboarding implementation. */
-export const FLOW_SOURCE = "1bac6c7f007dbf558c044e6ff2cf38a5664e2d36";
-export type FlowPersona = "store" | "designer" | "software" | "isramarket";
+export const FLOW_SOURCE = "codex/research-before-signup";
+export type FlowPersona = "store" | "physical" | "designer" | "software" | "fundraising" | "isramarket";
 export type FlowPhase = "before" | "after" | "ongoing";
 export type FlowCase = "normal" | "cancel" | "failure" | "missing";
 export type FlowNode = {
@@ -13,6 +13,8 @@ export type FlowNode = {
 };
 export const PERSONAS = {
   store: { label: "חנות", name: "פרג ושמרים", goal: "יותר הזמנות למארזי שישי", model: "products" },
+  physical: { label: "חנות פיזית", name: "חנות שכונתית", goal: "מכירות בחנות, בנפרד מביקורים באתר", model: "products" },
+  fundraising: { label: "גיוס תרומות", name: "עמותה", goal: "תרומות ותמיכה בעשייה", model: "services" },
   designer: { label: "מעצבת", name: "סטודיו נועה", goal: "פניות לפרויקטים שמתאימים לסטודיו וליומן", model: "services" },
   software: { label: "תוכנה", name: "מערכת לדוגמה", goal: "הדגמות והתנסות במוצר שפותר בעיה מוגדרת", model: "saas" },
   isramarket: { label: "ישראמארקט", name: "ישראמארקט", goal: "בעלי עסקים ששומרים תוכנית ומתחילים להשתמש בה", model: "saas" },
@@ -36,7 +38,7 @@ const post = (id: string, group: string, title: string, route: string, headline:
   event: `${id.replaceAll("-", "_")}_completed`, measure: "האם הושלמה הפעולה בפועל, ומה הפעולה הבאה — פתיחת עמוד לבדה אינה השלמה.", review,
 });
 
-export const FLOW_NODES: FlowNode[] = [
+const EXISTING_NODES: FlowNode[] = [
   { ...pre("landing", "כניסה", "עמוד הבית", "תוכנית שיווק לעסק שלכם.", "התחלה בלי הרשמה, דוגמאות לעסקים והסבר על התהליך.", "name", "להראות מוקדם שגם בעלי מקצוע יכולים להתחיל בלי חנות או אתר."), route: "/", action: "להתחיל את ההיכרות", source: "web/app/page.tsx", alternate: { label: "להיכנס לחשבון קיים", next: "login" } },
   pre("name", "העסק", "שם העסק", "איך קוראים לעסק?", "שם קצר כדי להתחיל את ההיכרות.", "what", "שם מספיק כאן. אין צורך בפרטי קשר לפני הערך הראשון."),
   pre("what", "העסק", "מה מציעים", "מה העסק שלכם עושה?", "תחום, הצעה, ומוצרים או שירותים. המודל קובע את שאלות המטרה.", "different", "לא להציג בעלת מקצוע כעסק שצריך למכור מוצר."),
@@ -84,28 +86,37 @@ export const FLOW_NODES: FlowNode[] = [
   { ...post("billing", "ממשיכים", "המשך המנוי", "/billing", "להמשיך עם התוכנית", "עמוד מצב המנוי. כשהחיוב מוגדר, מציגים הרשמה ב-PayPal. בלי הגדרה, מסבירים שהתשלום עוד לא פתוח.", "לחזור לתוכנית בדוגמה", "dashboard", "web/app/billing/page.tsx", "לבדוק יחס בין ערך שהושג למעבר לתשלום. לוח הסקירה אינו מבצע תשלום או מאשר שהחיוב פתוח בשרת."), phase: "ongoing", event: "subscription_started", measure: "מנוי שאושר בשרת ספק התשלום; צפייה בתמחור או לחיצה אינן תשלום." },
 ];
 
+// #164: the signup boundary follows public discovery, never a provisional plan.
+const preIds = new Set(["landing", "name", "what", "different", "audiences", "links", "save", "login", "direct-signup"]);
+const beforeOrder = ["landing", "name", "what", "different", "audiences", "links", "discovery", "save"];
+export const FLOW_NODES: FlowNode[] = [
+  ...EXISTING_NODES.filter(n => n.phase !== "before" || preIds.has(n.id)).map(n => {
+    if (n.phase !== "before") return n;
+    const next = beforeOrder[beforeOrder.indexOf(n.id) + 1];
+    const copy = n.id === "save" ? { title: "פתיחת חשבון", headline: "מכאן נבנה את השיווק שלכם", body: "אימייל או Google שומרים את ההיכרות בחשבון. ממשיכים את הראיון, מחברים מידע ובונים תוכנית רק בפנים.", action: "לפתוח חשבון ולהמשיך", next: "interview-sources" }
+      : n.id === "what" ? { headline: "מה אתם מציעים?", body: "בחירה קודמת של סוג העסק נשמרת. אפשר לשנות בין חנות אונליין, חנות פיזית, שירותים, תוכנה וגיוס תרומות." }
+      : n.id === "audiences" ? { body: "שתי הצעות לקהל, עם מקום גלוי לקהל נוסף משלכם. אפשר להמשיך גם בלי תשובה." }
+      : n.id === "links" ? { body: "קישורים ציבוריים לאתר, Instagram ו-Facebook. בלי סיסמה או הרשאות; קישור חסר או בעייתי אינו חסימה." }
+      : n.id === "landing" ? { body: "מה אתם עושים? חמישה מסלולים. מתחילים בהיכרות ובמחקר; לפני הרשמה אין תוכנית, יעד או פוסטים." } : {};
+    return { ...n, ...(next ? { next } : {}), ...copy, source: "web/components/start/ResearchJourney.tsx" };
+  }),
+  { ...pre("discovery", "היכרות", "בדיקת ההבנה", "בואו נוודא שהבנו אתכם", "קוראים את האתר הזמין ושואלים עד שתי שאלות. ציטוט חייב להופיע במקור. תוכן חברתי שלא נקרא מצוין במפורש. אין המלצות או תוכנית.", "save", "האם בעל העסק מזהה שהשאלה קשורה למשהו אמיתי? אין לשים עובדה מומצאת במקום מחקר."), source: "api/app/services/discovery_interview.py" },
+  ...["software_offer", "software"].map(id => ({ ...EXISTING_NODES.find(n => n.id === id)!, phase: "after" as const, next: id === "software_offer" ? "software" : "interview-sources", source: "web/components/start/ResearchJourney.tsx" })),
+  post("interview-sources", "הראיון בחשבון", "איך מגיעים לקוחות", "/start", "איך לקוחות מוצאים אתכם היום?", "מקורות קיימים, מה יודעים ומה עדיין לא. בגיוס תרומות מדברים על תומכים, בתוכנה על קונים ומשתמשים.", "להמשיך לחיבורים", "interview-connections", "web/components/start/ResearchJourney.tsx", "הראיון כבר בחשבון ונשמר במעבר בין שאלות."),
+  { ...post("interview-connections", "הראיון בחשבון", "חיבור מידע", "/start", "נחבר את המידע שכבר יש לכם", "הכלים נפתחים מתוך הראיון. חוזרים אליו אחרי הסכמה ובחירת הנכס. אפשר להמשיך ללא חיבור.", "להמשיך למה שנמדוד", "interview-metrics", "web/components/start/ResearchJourney.tsx", "הרשמה אינה אישור חיבור; חיבור אינו אישור שאירוע רכישה מותקן."), alternate: {label: "לבחור חיבורים", next: "connections"} },
+  post("interview-metrics", "הראיון בחשבון", "הצלחה וכלכלת העסק", "/start", "מה ייחשב הצלחה בשבילכם?", "מדד תוצאה לפי המסלול, תוצאה ב-30 ימים, סכום ממוצע להזמנה/עבודה/מנוי/תרומה ותקציב. מספר מדויק, טווח או לא ידוע. אין המרת טווח לממוצע.", "להמשיך", "interview-detail", "web/components/start/ResearchJourney.tsx", "פניות אינן רכישות; קליק אינו תרומה. מספר מהבעלים אינו נתון מאומת."),
+  post("interview-detail", "הראיון בחשבון", "העמקה מותאמת", "/start", "עוד פרט שיעזור לדייק את התוכנית", "Gemini שואל עד שתי שאלות נוספות מתוך ההצעה והתשובות שכבר נשמרו. חוסר מידע אינו סיבה להיתקע.", "להמשיך לבניית התוכנית", "interview-build", "api/app/services/discovery_interview.py", "אין להמציא נתוני חברה או לקרוא תוכן מאחורי כניסה כאילו הוא ציבורי."),
+  post("interview-build", "הראיון בחשבון", "בניית התוכנית", "/start", "עכשיו יש בסיס לתוכנית שלכם", "רק כאן מתחילה הבנייה בחשבון. המחקר והמידע הזמין מזינים את התוכנית שממנה נוצרים פוסטים, עם אישור בעלים ולמידה מתמשכת.", "לבנות את התוכנית שלי", "plan-first", "web/components/start/ResearchJourney.tsx", "חיבורים חסרים ומספרים לא ידועים מסומנים, בלי תחזיות על סמך ממוצעי סוכנויות."),
+];
 export function nodesFor(persona: FlowPersona, phase: FlowPhase) {
   const software = PERSONAS[persona].model === "saas";
-  return FLOW_NODES.filter(node => node.phase === phase &&
-    (!node.id.startsWith("software") || software) &&
-    (persona === "store" || node.id !== "grow") &&
-    (!software || !["seasons", "baseline", "lever", "target"].includes(node.id)))
-    .map(node => software && node.id === "what" ? { ...node, headline: "אילו מוצרים יש לחברה שלכם?", body: "מתארים את מוצרי החברה. בשלב הבא בוחרים מוצר והצעה אחת להתחלה." }
-      : software && node.id === "tried" ? { ...node, headline: "מאיפה מגיעים הלקוחות שלכם?", body: "מקורות לקוחות קיימים, או שעדיין מתחילים ולא יודעים. התשובה מכוונת את הערוצים שנבדוק." }
-      : software && node.id === "competitors" ? { ...node, headline: "מה עושים היום בלי המוצר שלכם?", body: "תוכנה אחרת, גיליון או עבודה ידנית. אפשר להמשיך בלי שם או קישור." }
-      : ["featured", "photos", "voice", "start-posts"].includes(node.id) ? { ...node,
-      ...(software && node.id === "featured" ? { body: "נושא אחד מהמוצר שבחרתם: יכולת אמיתית, הבעיה שהוא פותר או הדגמה. המחקר מסביר את ההצעה; הבחירה נשארת שלכם." } : {}),
-      transition: "אותו מסך /prepare: שלבים גלויים, גלילה לכותרת ושימור עריכות. שומרים בכל שלב; יצירה מתחילה רק בבקשה מפורשת.",
-      source: "web/components/posts/preparation/PostPreparation.tsx" } : node);
+  return FLOW_NODES.filter(node => node.phase === phase && (!node.id.startsWith("software") || software))
+    .map(node => persona === "fundraising" && node.id === "audiences" ? { ...node, headline: "מי האנשים שתרצו שיתמכו בעשייה?" } : node);
 }
 export function nextFor(node: FlowNode, persona: FlowPersona) {
-  const software = PERSONAS[persona].model === "saas";
-  if (software && node.id === "what") return "software_offer";
-  let next = node.next;
-  const included = new Set(nodesFor(persona, "before").map(item => item.id));
-  while (FLOW_NODES.some(item => item.id === next && item.phase === "before") && !included.has(next)) {
-    next = FLOW_NODES.find(item => item.id === next)!.next;
-  }
-  return next;
+  if (node.id === "save" && PERSONAS[persona].model === "saas") return "software_offer";
+  // An owner returns to the unfinished interview after any connector; the plan is built later.
+  if (["source-read", "pixel", "whatsapp", "gbp", "meta"].includes(node.id)) return "interview-metrics";
+  return node.next;
 }
 export function sourceUrl(path: string) { return `https://github.com/shaharAka/israMArket/blob/${FLOW_SOURCE}/${path}`; }

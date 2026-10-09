@@ -31,13 +31,14 @@ function screenPositions(phase: FlowPhase, persona: FlowPersona): Record<string,
       "plan-first":{x:600,y:840}, dashboard:{x:1500,y:-280}, "onboarding-gate":{x:600,y:-280}};
   }
   if (phase === "after") return {
-    "plan-first":{x:1500,y:0}, welcome:{x:1200,y:0}, dashboard:{x:900,y:0}, connections:{x:600,y:0},
+    "software_offer":{x:2100,y:-560}, software:{x:1800,y:-560}, "interview-sources":{x:1500,y:-560}, "interview-connections":{x:1200,y:-560}, "interview-metrics":{x:900,y:-560}, "interview-detail":{x:600,y:-560}, "interview-build":{x:300,y:-560},
+    "plan-first":{x:1500,y:280}, welcome:{x:1200,y:0}, dashboard:{x:900,y:0}, connections:{x:600,y:0},
     google:{x:300,y:0}, "source-read":{x:0,y:0},
     meta:{x:300,y:280}, pixel:{x:0,y:280}, whatsapp:{x:300,y:560}, gbp:{x:300,y:840},
     "baseline-post":{x:0,y:840}, featured:{x:-300,y:840}, photos:{x:-300,y:1120}, voice:{x:0,y:1120},
     "start-posts":{x:300,y:1120}, editor:{x:600,y:1120}, approval:{x:900,y:1120},
     publish:{x:1200,y:1120}, published:{x:1500,y:1120}, results:{x:1500,y:1400},
-    "onboarding-gate":{x:1500,y:280}, name:{x:1800,y:280},
+    "onboarding-gate":{x:1800,y:280}, name:{x:2100,y:280},
   };
   return {results:{x:900,y:0}, decision:{x:600,y:0}, "next-month":{x:300,y:0},
     dashboard:{x:0,y:0}, billing:{x:300,y:280}};
