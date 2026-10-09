@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type RefObject } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useCopy } from "@/components/language/LanguageProvider";
 import { ApiError, endpoints, type StrategyPayload } from "@/lib/api";
 import { CONTENT_LANGUAGES, CONTENT_LANGUAGE_NAMES, contentDirection, type ContentLanguage } from "@/lib/content-language";
@@ -13,28 +13,28 @@ export type QuickPostDraft = {
   text: string; destination: "instagram" | "facebook" | "whatsapp"; language: ContentLanguage;
   changedLanguage: boolean; requestId: string; pending: Parameters<typeof endpoints.createPost>[0] | null;
 };
-export function QuickPost({ open, onCancel, onCreated, draftRef }: {
+export function QuickPost({ open, onCancel, onCreated, draft, onDraftChange }: {
   open: boolean; onCancel: () => void;
   onCreated: (strategy: StrategyPayload, index: number) => void;
-  draftRef: RefObject<QuickPostDraft | null>;
+  draft: QuickPostDraft | null; onDraftChange: (value: QuickPostDraft | null) => void;
 }) {
   const t = useCopy();
   const id = useId();
-  const [text, setText] = useState(() => draftRef.current?.text ?? "");
-  const [destination, setDestination] = useState<"instagram" | "facebook" | "whatsapp">(() => draftRef.current?.destination ?? "instagram");
-  const [language, setLanguage] = useState<ContentLanguage>(() => draftRef.current?.language ?? "he");
-  const changedLanguage = useRef(draftRef.current?.changedLanguage ?? false);
-  const requestId = useRef(draftRef.current?.requestId ?? "");
-  const pending = useRef<Parameters<typeof endpoints.createPost>[0] | null>(draftRef.current?.pending ?? null);
+  const [text, setText] = useState(() => draft?.text ?? "");
+  const [destination, setDestination] = useState<"instagram" | "facebook" | "whatsapp">(() => draft?.destination ?? "instagram");
+  const [language, setLanguage] = useState<ContentLanguage>(() => draft?.language ?? "he");
+  const changedLanguage = useRef(draft?.changedLanguage ?? false);
+  const requestId = useRef(draft?.requestId ?? "");
+  const pending = useRef<Parameters<typeof endpoints.createPost>[0] | null>(draft?.pending ?? null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [savedConflict, setSavedConflict] = useState(false);
   useEffect(() => {
     // Kept only in this mounted workspace: returning from the editor preserves a
     // different, unsaved idea without storing it across sign-outs or accounts.
-    draftRef.current = { text, destination, language, changedLanguage: changedLanguage.current,
-      requestId: requestId.current, pending: pending.current };
-  }, [text, destination, language, busy, draftRef]);
+    onDraftChange({ text, destination, language, changedLanguage: changedLanguage.current,
+      requestId: requestId.current, pending: pending.current });
+  }, [text, destination, language, busy, onDraftChange]);
   useEffect(() => {
     let active = true;
     foundations.contentLanguage().then(prefs => {
@@ -53,7 +53,7 @@ export function QuickPost({ open, onCancel, onCreated, draftRef }: {
       setBusy(true); setError(""); setSavedConflict(false);
       try {
         const result = await endpoints.createPost({ client_ref: requestId.current, text, destination, content_language: language });
-        requestId.current = ""; pending.current = null; setText(""); draftRef.current = null;
+        requestId.current = ""; pending.current = null; setText(""); onDraftChange(null);
         if (window.location.pathname === "/posts" && new URLSearchParams(window.location.search).get("create") === "1") onCreated(result.strategy, result.post_index);
       } catch (err) {
         setSavedConflict(err instanceof ApiError && err.code === "draft_already_saved");
@@ -87,7 +87,7 @@ export function QuickPost({ open, onCancel, onCreated, draftRef }: {
           const result = await endpoints.createPost(pending.current);
           requestId.current = ""; pending.current = null; setSavedConflict(false); setError("");
           // Keep any newly typed text available when the owner returns to this form.
-          draftRef.current = { text, destination, language, changedLanguage: true, requestId: "", pending: null };
+          onDraftChange({ text, destination, language, changedLanguage: true, requestId: "", pending: null });
           if (window.location.pathname === "/posts" && new URLSearchParams(window.location.search).get("create") === "1") onCreated(result.strategy, result.post_index);
         } catch { setError("לא הצלחנו לפתוח את הטיוטה. אפשר לנסות שוב."); }
         finally { setBusy(false); }

@@ -82,7 +82,7 @@ function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (cale
 
 function PostsWorkspace() {
   const t = useCopy();
-  const quickDraft = useRef<QuickPostDraft | null>(null);
+  const [quickDraft, setQuickDraft] = useState<QuickPostDraft | null>(null);
   const { locale } = useLanguage();
   const params = useSearchParams();
   const location = readLocation(params);
@@ -350,7 +350,7 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      <QuickPost draftRef={quickDraft} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
+      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
         setStrategy(saved); setNoMonth(false); setError("");
         openedHere.current = false;
         go(`post=${index}`, "replace"); window.scrollTo(0, 0);
