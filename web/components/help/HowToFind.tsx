@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useState } from "react";
 import { useIsDesktop } from "@/components/posts/BottomSheet";
 import { HelpSheet } from "@/components/help/HelpSheet";
@@ -70,6 +72,7 @@ function hasDeviceSteps(guide: Guide) {
  * hand.
  */
 function GuideBody({ guide }: { guide: Guide }) {
+  const t = useCopy();
   const desktop = useIsDesktop();
   const [picked, setPicked] = useState<Device | null>(null);
   const device: Device = picked ?? (desktop ? "computer" : "phone");
@@ -83,7 +86,7 @@ function GuideBody({ guide }: { guide: Guide }) {
       </div>
 
       {toggle ? (
-        <div role="group" aria-label="ההסבר עבור" className="inline-flex gap-1 rounded-xl bg-[var(--soft)] p-1">
+        <div role="group" aria-label={t("ההסבר עבור")} className="inline-flex gap-1 rounded-xl bg-[var(--soft)] p-1">
           {(["phone", "computer"] as const).map((value) => (
             <button
               key={value}
@@ -96,7 +99,7 @@ function GuideBody({ guide }: { guide: Guide }) {
                   : "text-[color:var(--ink-muted)] hover:text-[color:var(--ink)]"
               }`}
             >
-              {value === "phone" ? "טלפון" : "מחשב"}
+              {value === "phone" ? t("טלפון") : t("מחשב")}
             </button>
           ))}
         </div>
@@ -110,7 +113,7 @@ function GuideBody({ guide }: { guide: Guide }) {
 
       <div className="space-y-1 border-t border-[var(--rule)] pt-5">
         <p className="text-[13px] leading-6 text-[color:var(--ink-soft)]">
-          <span className="font-semibold text-[color:var(--ink)]">למה אנחנו צריכים את זה: </span>
+          <span className="font-semibold text-[color:var(--ink)]"><Copy text="למה אנחנו צריכים את זה:" /></span>
           {guide.why}
         </p>
         <p className="text-[13px] leading-6 text-[color:var(--ink-soft)]">

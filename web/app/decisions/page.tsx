@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, Button, ErrorNote } from "@/components/AppShell";
@@ -142,6 +144,7 @@ const ICON_BUTTON =
  * replaced, and the save is a single bar that appears only once something is unsaved.
  */
 export default function DecisionsPage() {
+  const t = useCopy();
   const [business, setBusiness] = useState<Business | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -324,19 +327,19 @@ export default function DecisionsPage() {
    */
   const modelSummary = modelTitle;
   const budgetSummary = budgetInvalid
-    ? "לא הוזן"
-    : `${formatNis(budgetValue)} · שלב ${currentStage.title}`;
-  const diagnosticsSummary = `${diagnosticsAnswered} מתוך ${diagnosticQuestions.length} תשובות`;
+    ? t("לא הוזן")
+    : t("{arg_0} · שלב {arg_1}", { arg_0: formatNis(budgetValue), arg_1: currentStage.title });
+  const diagnosticsSummary = t("{arg_0} מתוך {arg_1} תשובות", { arg_0: diagnosticsAnswered, arg_1: diagnosticQuestions.length });
   const audiencesSummary = audiencesLoading
-    ? "טוענים…"
+    ? t("טוענים…")
     : audiences.length
-      ? `${audiences.length} קהלים${leadAudience ? ` · העיקרי: ${leadAudience}` : ""}`
-      : "לא הוגדרו";
+      ? t("{arg_0} קהלים{arg_1}", { arg_0: audiences.length, arg_1: leadAudience ? ` · העיקרי: ${leadAudience}` : "" })
+      : t("לא הוגדרו");
   /** Names what is inside, in three words: the budget allows no more (UI-RULES §7). */
-  const toldSummary = "עונות, מתחרים ועוד";
+  const toldSummary = t("עונות, מתחרים ועוד");
   const targetsSummary = rankedTargets.length
-    ? `${rankedTargets.length} מתוך ${MAX_TARGETS} · הראשונה: ${leadTarget}`
-    : "לא נבחרו";
+    ? t("{arg_0} מתוך {arg_1} · הראשונה: {arg_2}", { arg_0: rankedTargets.length, arg_1: MAX_TARGETS, arg_2: leadTarget })
+    : t("לא נבחרו");
 
   /** Any edit invalidates the "saved" confirmation and the previous error. */
   function markChanged() {
@@ -422,7 +425,7 @@ export default function DecisionsPage() {
     setCandidatesError("");
     setCapNote("");
     setModelNotice(
-      "העדיפויות והתוכנית נבנו לסוג העסק הקודם. הן נשארות כמו שהן, אבל כדאי לבנות אותן מחדש באשף כדי שיתאימו.",
+      t("העדיפויות והתוכנית נבנו לסוג העסק הקודם. הן נשארות כמו שהן, אבל כדאי לבנות אותן מחדש באשף כדי שיתאימו."),
     );
     markChanged();
   }
@@ -432,11 +435,11 @@ export default function DecisionsPage() {
     setSaveError("");
     setSaved(false);
     if (budgetInvalid) {
-      setSaveError("הזינו את התקציב החודשי במספרים, בשקלים.");
+      setSaveError(t("הזינו את התקציב החודשי במספרים, בשקלים."));
       return;
     }
     if (rankedTargets.length > MAX_TARGETS) {
-      setSaveError(`אפשר לשמור עד ${MAX_TARGETS} עדיפויות. הסירו אחת ונסו שוב.`);
+      setSaveError(t("אפשר לשמור עד {arg_0} עדיפויות. הסירו אחת ונסו שוב.", { arg_0: MAX_TARGETS }));
       return;
     }
 
@@ -469,9 +472,9 @@ export default function DecisionsPage() {
       await endpoints.saveProfile(payload);
       setDirty(false);
       setSaved(true);
-      toast("ההחלטות נשמרו");
+      toast(t("ההחלטות נשמרו"));
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : "לא הצלחנו לשמור את ההחלטות");
+      setSaveError(err instanceof Error ? err.message : t("לא הצלחנו לשמור את ההחלטות"));
     } finally {
       setSaving(false);
     }
@@ -485,10 +488,10 @@ export default function DecisionsPage() {
       const result = await endpoints.targets();
       setCandidates(result.targets);
       if (!result.targets.length) {
-        setCandidatesError("כרגע אין הצעות חדשות. אפשר לנסות שוב, או לשמור את מה שכבר יש.");
+        setCandidatesError(t("כרגע אין הצעות חדשות. אפשר לנסות שוב, או לשמור את מה שכבר יש."));
       }
     } catch (err) {
-      setCandidatesError(err instanceof Error ? err.message : "לא הצלחנו לקבל הצעות");
+      setCandidatesError(err instanceof Error ? err.message : t("לא הצלחנו לקבל הצעות"));
     } finally {
       setLoadingCandidates(false);
     }
@@ -522,11 +525,11 @@ export default function DecisionsPage() {
         result.note
           ? result.note
           : list.length
-            ? `${list.length === 1 ? "שמרנו קהל אחד" : `שמרנו ${list.length} קהלים`}. אפשר לערוך כל אחד מהם.`
-            : "לא מצאנו קהלים להציע. אפשר להוסיף קהל בעצמכם.",
+            ? t("{arg_0}. אפשר לערוך כל אחד מהם.", { arg_0: list.length === 1 ? "שמרנו קהל אחד" : `שמרנו ${list.length} קהלים` })
+            : t("לא מצאנו קהלים להציע. אפשר להוסיף קהל בעצמכם."),
       );
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו להציע קהלים");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו להציע קהלים"));
     } finally {
       setGeneratingAudiences(false);
     }
@@ -542,7 +545,7 @@ export default function DecisionsPage() {
   /** Edit is inline: the fields replace the card's text until saved or cancelled. */
   async function saveAudience(id: number) {
     if (!audienceDraft.name.trim()) {
-      setAudiencesError("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים.");
+      setAudiencesError(t("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים."));
       return;
     }
     setAudienceBusy(String(id));
@@ -553,9 +556,9 @@ export default function DecisionsPage() {
         current.map((audience) => (audience.id === id ? result.audience : audience)),
       );
       setEditingAudienceId(null);
-      audienceNotice("הקהל עודכן.");
+      audienceNotice(t("הקהל עודכן."));
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לעדכן את הקהל");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו לעדכן את הקהל"));
     } finally {
       setAudienceBusy("");
     }
@@ -563,7 +566,7 @@ export default function DecisionsPage() {
 
   async function addAudience() {
     if (!newAudience.name.trim()) {
-      setAudiencesError("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים.");
+      setAudiencesError(t("תנו לקהל שם. בלי שם אי אפשר לשייך אליו פוסטים."));
       return;
     }
     setAudienceBusy("new");
@@ -573,9 +576,9 @@ export default function DecisionsPage() {
       setAudiences((current) => [...current, result.audience]);
       setNewAudience(EMPTY_AUDIENCE_FORM);
       setShowAddAudience(false);
-      audienceNotice("הקהל נוסף. אפשר לסמן אותו כקהל העיקרי.");
+      audienceNotice(t("הקהל נוסף. אפשר לסמן אותו כקהל העיקרי."));
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו להוסיף את הקהל");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו להוסיף את הקהל"));
     } finally {
       setAudienceBusy("");
     }
@@ -588,9 +591,9 @@ export default function DecisionsPage() {
     try {
       const result = await endpoints.setPrimaryAudience(id);
       setAudiences(result.audiences ?? []);
-      audienceNotice("הקהל העיקרי עודכן. הפוסטים הבאים ייכתבו בשבילו.");
+      audienceNotice(t("הקהל העיקרי עודכן. הפוסטים הבאים ייכתבו בשבילו."));
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לסמן את הקהל העיקרי");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו לסמן את הקהל העיקרי"));
     } finally {
       setAudienceBusy("");
     }
@@ -614,10 +617,10 @@ export default function DecisionsPage() {
       }
       audienceNotice(
         result.message ||
-          "הקהל נמחק. הפוסטים שהיו שלו נשארו בלי קהל, ויופיעו כ״לא משויך״.",
+          t("הקהל נמחק. הפוסטים שהיו שלו נשארו בלי קהל, ויופיעו כ״לא משויך״."),
       );
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו למחוק את הקהל");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו למחוק את הקהל"));
     } finally {
       setAudienceBusy("");
     }
@@ -627,7 +630,7 @@ export default function DecisionsPage() {
     markChanged();
     if (next.length > MAX_TARGETS) {
       setRankedTargets(next.slice(0, MAX_TARGETS));
-      setCapNote(`אפשר להתמקד בעד ${MAX_TARGETS} עדיפויות, ולכן היעד האחרון לא נוסף.`);
+      setCapNote(t("אפשר להתמקד בעד {arg_0} עדיפויות, ולכן היעד האחרון לא נוסף.", { arg_0: MAX_TARGETS }));
       return;
     }
     setCapNote("");
@@ -651,12 +654,12 @@ export default function DecisionsPage() {
 
   /** The one wording for "where the save stands", shown by the save bar. */
   const saveState = saving
-    ? "שומרים…"
+    ? t("שומרים…")
     : dirty
-      ? "יש שינויים שלא נשמרו"
+      ? t("יש שינויים שלא נשמרו")
       : saved
-        ? "ההחלטות נשמרו ✓"
-        : "אין שינויים חדשים";
+        ? t("ההחלטות נשמרו ✓")
+        : t("אין שינויים חדשים");
   const savePending = saving || dirty || saved;
   /** The bar is the page's only save affordance, so it shows whenever it has news. */
   const showSaveBar = savePending || Boolean(saveError);
@@ -666,8 +669,8 @@ export default function DecisionsPage() {
       <div className="mx-auto max-w-3xl">
         <SectionHeader
           section="business"
-          title="ההחלטות שלי"
-          subtitle={`מה שקבעתם עם ${AGENT_NAME}. אפשר לשנות בכל רגע.`}
+          title={t("ההחלטות שלי")}
+          subtitle={t("מה שקבעתם עם {arg_0}. אפשר לשנות בכל רגע.", { arg_0: AGENT_NAME })}
         />
 
         {loadError ? (
@@ -676,21 +679,18 @@ export default function DecisionsPage() {
           </div>
         ) : null}
 
-        {loading && !business ? <LoadingMark label="טוענים את ההחלטות…" /> : null}
+        {loading && !business ? <LoadingMark label={t("טוענים את ההחלטות…")} /> : null}
 
         {!business && !loading && !loadError ? (
           <section className={`${CARD} px-6 py-10 text-center`}>
-            <h2 className="text-[17px] font-bold text-[var(--ink)]">עוד אין עסק מקושר לחשבון הזה</h2>
+            <h2 className="text-[17px] font-bold text-[var(--ink)]"><Copy text="עוד אין עסק מקושר לחשבון הזה" /></h2>
             <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[var(--ink-soft)]">
-              התקציב, האבחון והעדיפויות שייכים לעסק. ממלאים אותם באשף, ואחר כך אפשר לשנות אותם
-              כאן.
-            </p>
+              <Copy text="התקציב, האבחון והעדיפויות שייכים לעסק. ממלאים אותם באשף, ואחר כך אפשר לשנות אותם כאן." /></p>
             <Link
               href="/onboarding"
               className="drawn-button mt-6 inline-flex min-h-12 items-center bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]"
             >
-              לפתוח את האשף
-            </Link>
+              <Copy text="לפתוח את האשף" /></Link>
           </section>
         ) : null}
 
@@ -699,20 +699,19 @@ export default function DecisionsPage() {
             {/* One container with a hairline between rows: the decisions read as a list,
                 and the only boxes left on the page are the controls themselves. */}
             <section
-              aria-label="ההחלטות שלי"
+              aria-label={t("ההחלטות שלי")}
               className={`divide-y divide-[var(--rule)] overflow-hidden ${CARD}`}
             >
               <DecisionRow
                 id="model"
-                label="סוג העסק"
+                label={t("סוג העסק")}
                 value={modelSummary}
                 done
                 open={openGroup === "model"}
                 onToggle={() => toggleGroup("model")}
               >
                 <p className={INTRO}>
-                  סוג העסק קובע מה התוכנית מנסה להביא: מכירות בחנות או פניות.
-                </p>
+                  <Copy text="סוג העסק קובע מה התוכנית מנסה להביא: מכירות בחנות או פניות." /></p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-3">
                   {BUSINESS_MODEL_OPTIONS.map((option) => (
                     <ChoiceButton
@@ -730,7 +729,7 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="budget"
-                label="תקציב חודשי"
+                label={t("תקציב חודשי")}
                 value={budgetSummary}
                 muted={budgetInvalid}
                 done={!budgetInvalid}
@@ -738,8 +737,7 @@ export default function DecisionsPage() {
                 onToggle={() => toggleGroup("budget")}
               >
                 <p className={INTRO}>
-                  התקציב קובע כמה התוכנית יכולה לעשות החודש.
-                </p>
+                  <Copy text="התקציב קובע כמה התוכנית יכולה לעשות החודש." /></p>
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {BUDGET_STAGES.map((stage) => {
@@ -760,7 +758,7 @@ export default function DecisionsPage() {
                         </span>
                         <span className="mt-1 block text-[13px] leading-5 text-[var(--ink-soft)]">{stage.buys}</span>
                         <span className={`mt-3 block text-xs font-semibold tabular-nums ${selected ? "text-[var(--primary-dark)]" : "text-[var(--ink-muted)]"}`}>
-                          {selected ? "השלב הנוכחי · " : "בחירה מהירה · "}
+                          {selected ? t("השלב הנוכחי · ") : t("בחירה מהירה · ")}
                           {formatNis(stage.suggestion)}
                         </span>
                       </button>
@@ -770,8 +768,7 @@ export default function DecisionsPage() {
 
                 <div className="mt-6">
                   <label htmlFor="monthly-budget" className={FIELD_LABEL}>
-                    סכום מדויק לחודש (ש״ח)
-                  </label>
+                    <Copy text="סכום מדויק לחודש (ש״ח)" /></label>
                   <input
                     id="monthly-budget"
                     type="number"
@@ -791,16 +788,14 @@ export default function DecisionsPage() {
                 <div className={`mt-4 px-5 py-4 ${CARD}`}>
                   {budgetInvalid ? (
                     <p className="text-sm leading-6 text-[var(--danger)]">
-                      הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו.
-                    </p>
+                      <Copy text="הזינו תקציב חודשי במספרים, כדי שנדע מה אפשר לעשות איתו." /></p>
                   ) : (
                     <>
                       <div className="flex flex-wrap items-baseline justify-between gap-2">
                         <span className="metric-number text-lg font-bold text-[var(--ink)]">
-                          {formatNis(budgetValue)} בחודש
-                        </span>
+                          {formatNis(budgetValue)} <Copy text="בחודש" /></span>
                         <span className="text-xs font-semibold text-[var(--primary-dark)]">
-                          שלב: {currentStage.title} · {currentStage.range}
+                          <Copy text="שלב:" />{currentStage.title} · {currentStage.range}
                         </span>
                       </div>
                       <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">{currentStage.buys}</p>
@@ -811,15 +806,14 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="diagnostics"
-                label="אבחון"
+                label={t("אבחון")}
                 value={diagnosticsSummary}
                 done={diagnosticsAnswered > 0}
                 open={openGroup === "diagnostics"}
                 onToggle={() => toggleGroup("diagnostics")}
               >
                 <p className={INTRO}>
-                  התשובות קובעות מה {AGENT_NAME} תציע לשפר קודם. השאלות משתנות לפי סוג העסק.
-                </p>
+                  <Copy text="התשובות קובעות מה" />{AGENT_NAME} <Copy text="תציע לשפר קודם. השאלות משתנות לפי סוג העסק." /></p>
 
                 <div className="mt-6 space-y-6">
                   {/* The questions come from the fork, not from this file: a shop is asked
@@ -876,15 +870,14 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="audiences"
-                label="למי פונים"
+                label={t("למי פונים")}
                 value={audiencesSummary}
                 done={audiences.length > 0}
                 open={openGroup === "audiences"}
                 onToggle={() => toggleGroup("audiences")}
               >
                 <p className={INTRO}>
-                  את התוכנית ואת כל פוסט אנחנו בונים לפי הקהל שכאן: מה הוא צריך ואיפה הוא נמצא.
-                </p>
+                  <Copy text="את התוכנית ואת כל פוסט אנחנו בונים לפי הקהל שכאן: מה הוא צריך ואיפה הוא נמצא." /></p>
 
                 <div className="mt-5">
                   {audiencesNotice ? <p className={`mb-4 ${NOTE}`}>{audiencesNotice}</p> : null}
@@ -893,15 +886,12 @@ export default function DecisionsPage() {
 
                   {audiencesLoading && !audiences.length ? (
                     <p className={EMPTY}>
-                      טוענים את הקהלים…
-                    </p>
+                      <Copy text="טוענים את הקהלים…" /></p>
                   ) : null}
 
                   {!audiencesLoading && !audiences.length ? (
                     <p className={EMPTY}>
-                      עוד אין קהלים. אפשר לבקש הצעה מ{AGENT_NAME}, או לכתוב קהל אחד בעצמכם ולחזור
-                      אליו אחר כך.
-                    </p>
+                      <Copy text="עוד אין קהלים. אפשר לבקש הצעה מ" />{AGENT_NAME}<Copy text=", או לכתוב קהל אחד בעצמכם ולחזור אליו אחר כך." /></p>
                   ) : null}
 
                   {audiences.length ? (
@@ -931,8 +921,7 @@ export default function DecisionsPage() {
                                       {audience.name}
                                       {audience.is_primary ? (
                                         <span className="rounded-full bg-[var(--primary-soft)] px-2.5 py-0.5 text-xs font-semibold text-[var(--primary-dark)]">
-                                          הקהל העיקרי
-                                        </span>
+                                          <Copy text="הקהל העיקרי" /></span>
                                       ) : null}
                                     </h3>
                                     {audience.summary ? (
@@ -942,15 +931,15 @@ export default function DecisionsPage() {
                                     ) : null}
                                   </div>
                                   <span className="shrink-0 text-xs font-medium text-[var(--ink-muted)]">
-                                    {audience.source === "generated" ? `הצעה של ${AGENT_NAME}` : "כתבתם בעצמכם"}
+                                    {audience.source === "generated" ? t("הצעה של {arg_0}", { arg_0: AGENT_NAME }) : t("כתבתם בעצמכם")}
                                   </span>
                                 </div>
 
                                 {audience.needs.length ? (
-                                  <ChipRow label="מה הקהל צריך" items={audience.needs} />
+                                  <ChipRow label={t("מה הקהל צריך")} items={audience.needs} />
                                 ) : null}
                                 {audience.where.length ? (
-                                  <ChipRow label="איפה פוגשים אותו" items={audience.where} />
+                                  <ChipRow label={t("איפה פוגשים אותו")} items={audience.where} />
                                 ) : null}
 
                                 {audience.description ? (
@@ -969,7 +958,7 @@ export default function DecisionsPage() {
                                     onClick={() => void saveAudience(audience.id)}
                                     disabled={busy}
                                   >
-                                    {busy ? "שומרים…" : "לשמור"}
+                                    {busy ? t("שומרים…") : t("לשמור")}
                                   </Button>
                                   <button
                                     type="button"
@@ -977,8 +966,7 @@ export default function DecisionsPage() {
                                     disabled={busy}
                                     className={QUIET}
                                   >
-                                    לבטל
-                                  </button>
+                                    <Copy text="לבטל" /></button>
                                 </>
                               ) : (
                                 <>
@@ -987,8 +975,7 @@ export default function DecisionsPage() {
                                     onClick={() => startEditAudience(audience)}
                                     className={SECONDARY}
                                   >
-                                    לערוך
-                                  </button>
+                                    <Copy text="לערוך" /></button>
                                   {audience.is_primary ? null : (
                                     <button
                                       type="button"
@@ -996,21 +983,20 @@ export default function DecisionsPage() {
                                       disabled={busy}
                                       className={SECONDARY}
                                     >
-                                      {primaryBusy ? "מסמנים…" : "לסמן כקהל העיקרי"}
+                                      {primaryBusy ? t("מסמנים…") : t("לסמן כקהל העיקרי")}
                                     </button>
                                   )}
                                   {confirming ? (
                                     <>
                                       <span className="px-1 text-[13px] font-semibold text-[var(--danger)]">
-                                        למחוק את הקהל?
-                                      </span>
+                                        <Copy text="למחוק את הקהל?" /></span>
                                       <button
                                         type="button"
                                         onClick={() => void deleteAudience(audience.id)}
                                         disabled={deleteBusy}
                                         className="inline-flex min-h-11 items-center rounded-md border border-[var(--danger-rule)] bg-[var(--paper)] px-4 text-[13px] font-semibold text-[var(--danger)] transition-colors hover:bg-[var(--danger-soft)] disabled:opacity-40"
                                       >
-                                        {deleteBusy ? "מוחקים…" : "כן, למחוק"}
+                                        {deleteBusy ? t("מוחקים…") : t("כן, למחוק")}
                                       </button>
                                       <button
                                         type="button"
@@ -1018,8 +1004,7 @@ export default function DecisionsPage() {
                                         disabled={deleteBusy}
                                         className={QUIET}
                                       >
-                                        לא
-                                      </button>
+                                        <Copy text="לא" /></button>
                                     </>
                                   ) : (
                                     <button
@@ -1027,8 +1012,7 @@ export default function DecisionsPage() {
                                       onClick={() => setConfirmDeleteId(audience.id)}
                                       className="inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-[var(--ink-muted)] underline-offset-4 transition-colors hover:text-[var(--danger)] hover:underline"
                                     >
-                                      למחוק
-                                    </button>
+                                      <Copy text="למחוק" /></button>
                                   )}
                                 </>
                               )}
@@ -1041,7 +1025,7 @@ export default function DecisionsPage() {
 
                   <div className="mt-6 flex flex-col gap-3 border-t border-[var(--rule)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button tone="secondary" onClick={() => void generateAudiences()} disabled={generatingAudiences}>
-                      {generatingAudiences ? "מציעים קהלים…" : "להציע קהלים"}
+                      {generatingAudiences ? t("מציעים קהלים…") : t("להציע קהלים")}
                     </Button>
                     <button
                       type="button"
@@ -1052,22 +1036,20 @@ export default function DecisionsPage() {
                       className={`${SECONDARY} gap-2`}
                     >
                       {showAddAudience ? null : <IconPlus className="h-4 w-4" />}
-                      {showAddAudience ? "לסגור את הטופס" : "להוסיף קהל בעצמכם"}
+                      {showAddAudience ? t("לסגור את הטופס") : t("להוסיף קהל בעצמכם")}
                     </button>
                     <span className="text-[13px] leading-6 text-[var(--ink-muted)]">
                       {generatingAudiences
-                        ? "קוראים את פרטי העסק והאבחון. זה לוקח כמה שניות."
-                        : `${AGENT_NAME} תציע קהלים רק כשתלחצו.`}
+                        ? t("קוראים את פרטי העסק והאבחון. זה לוקח כמה שניות.")
+                        : t("{arg_0} תציע קהלים רק כשתלחצו.", { arg_0: AGENT_NAME })}
                     </span>
                   </div>
 
                   {showAddAudience ? (
                     <div className={`mt-5 p-5 ${CARD}`}>
-                      <h3 className="text-base font-semibold text-[var(--ink)]">קהל חדש</h3>
+                      <h3 className="text-base font-semibold text-[var(--ink)]"><Copy text="קהל חדש" /></h3>
                       <p className="mt-1 text-[13px] leading-6 text-[var(--ink-muted)]">
-                        לפי מה שתכתבו כאן נכתוב את הפוסטים ונמדוד את התוצאות. הקהל הראשון שתוסיפו יהיה
-                        הקהל העיקרי.
-                      </p>
+                        <Copy text="לפי מה שתכתבו כאן נכתוב את הפוסטים ונמדוד את התוצאות. הקהל הראשון שתוסיפו יהיה הקהל העיקרי." /></p>
                       <div className="mt-4">
                         <AudienceFormFields
                           form={newAudience}
@@ -1077,7 +1059,7 @@ export default function DecisionsPage() {
                       </div>
                       <div className="mt-4 flex flex-wrap items-center gap-2">
                         <Button size="sm" onClick={() => void addAudience()} disabled={audienceBusy === "new"}>
-                          {audienceBusy === "new" ? "מוסיפים…" : "להוסיף את הקהל"}
+                          {audienceBusy === "new" ? t("מוסיפים…") : t("להוסיף את הקהל")}
                         </Button>
                         <button
                           type="button"
@@ -1088,18 +1070,15 @@ export default function DecisionsPage() {
                           disabled={audienceBusy === "new"}
                           className={QUIET}
                         >
-                          לבטל
-                        </button>
+                          <Copy text="לבטל" /></button>
                       </div>
                     </div>
                   ) : null}
 
                   {audiencesError ? null : (
                     <p className="mt-4 text-[13px] leading-6 text-[var(--ink-muted)]">
-                      לאיזה קהל שייך כל פוסט אפשר לשנות בעורך הפוסטים. את התוצאות של כל קהל רואים ב
-                      <Link href="/performance" className="font-semibold text-[var(--primary)] underline-offset-4 hover:underline">
-                        עמוד התוצאות
-                      </Link>
+                      <Copy text="לאיזה קהל שייך כל פוסט אפשר לשנות בעורך הפוסטים. את התוצאות של כל קהל רואים ב" /><Link href="/performance" className="font-semibold text-[var(--primary)] underline-offset-4 hover:underline">
+                        <Copy text="עמוד התוצאות" /></Link>
                       .
                     </p>
                   )}
@@ -1108,15 +1087,14 @@ export default function DecisionsPage() {
 
               <DecisionRow
                 id="targets"
-                label="העדיפויות שלנו"
+                label={t("העדיפויות שלנו")}
                 value={targetsSummary}
                 done={rankedTargets.length > 0}
                 open={openGroup === "targets"}
                 onToggle={() => toggleGroup("targets")}
               >
                 <p className={INTRO}>
-                  עד 3 יעדים לפי סדר החשיבות. את התוכנית בונים סביב הראשון.
-                </p>
+                  <Copy text="עד 3 יעדים לפי סדר החשיבות. את התוכנית בונים סביב הראשון." /></p>
 
                 <div className="mt-5">
                   {rankedTargets.length && !candidates.length ? (
@@ -1137,8 +1115,8 @@ export default function DecisionsPage() {
                               type="button"
                               onClick={() => moveTarget(index, index - 1)}
                               disabled={index === 0}
-                              aria-label="להזיז למעלה"
-                              title="להזיז למעלה"
+                              aria-label={t("להזיז למעלה")}
+                              title={t("להזיז למעלה")}
                               className={ICON_BUTTON}
                             >
                               <IconChevron className="h-[18px] w-[18px] rotate-90" />
@@ -1147,8 +1125,8 @@ export default function DecisionsPage() {
                               type="button"
                               onClick={() => moveTarget(index, index + 1)}
                               disabled={index === rankedTargets.length - 1}
-                              aria-label="להזיז למטה"
-                              title="להזיז למטה"
+                              aria-label={t("להזיז למטה")}
+                              title={t("להזיז למטה")}
                               className={ICON_BUTTON}
                             >
                               <IconChevron className="h-[18px] w-[18px] -rotate-90" />
@@ -1156,8 +1134,8 @@ export default function DecisionsPage() {
                             <button
                               type="button"
                               onClick={() => removeTarget(target)}
-                              aria-label="להסיר את היעד"
-                              title="להסיר את היעד"
+                              aria-label={t("להסיר את היעד")}
+                              title={t("להסיר את היעד")}
                               className={ICON_BUTTON}
                             >
                               <IconPlus className="h-[18px] w-[18px] rotate-45" />
@@ -1180,14 +1158,12 @@ export default function DecisionsPage() {
 
                   {!candidates.length && !rankedTargets.length ? (
                     <p className={EMPTY}>
-                      עוד לא בחרתם עדיפויות. קבלו הצעות מ{AGENT_NAME} ובחרו מהן.
-                    </p>
+                      <Copy text="עוד לא בחרתם עדיפויות. קבלו הצעות מ" />{AGENT_NAME} <Copy text="ובחרו מהן." /></p>
                   ) : null}
 
                   {candidates.length && rankedTargets.length ? (
                     <p className="mt-4 text-[13px] leading-6 text-[var(--ink-muted)]">
-                      כאן אפשר לשנות את הסדר או להסיר. כדי להוסיף יעד, קבלו הצעות חדשות.
-                    </p>
+                      <Copy text="כאן אפשר לשנות את הסדר או להסיר. כדי להוסיף יעד, קבלו הצעות חדשות." /></p>
                   ) : null}
 
                   {capNote ? <p className={`mt-4 ${NOTE}`}>{capNote}</p> : null}
@@ -1196,11 +1172,10 @@ export default function DecisionsPage() {
 
                   <div className="mt-6 flex flex-col gap-3 border-t border-[var(--rule)] pt-5 sm:flex-row sm:flex-wrap sm:items-center">
                     <Button tone="secondary" onClick={() => void loadCandidates()} disabled={loadingCandidates}>
-                      {loadingCandidates ? "מביאים הצעות…" : "לקבל הצעות חדשות"}
+                      {loadingCandidates ? t("מביאים הצעות…") : t("לקבל הצעות חדשות")}
                     </Button>
                     <span className="text-[13px] leading-6 text-[var(--ink-muted)]">
-                      {AGENT_NAME} מציעה לפי העסק, האתר והאבחון, רק כשתלחצו.
-                    </span>
+                      {AGENT_NAME} <Copy text="מציעה לפי העסק, האתר והאבחון, רק כשתלחצו." /></span>
                   </div>
                 </div>
               </DecisionRow>
@@ -1209,7 +1184,7 @@ export default function DecisionsPage() {
                   room for one more line, not six. Each answer is its own row inside. */}
               <DecisionRow
                 id="told"
-                label="מה סיפרתם לנו"
+                label={t("מה סיפרתם לנו")}
                 value={toldSummary}
                 done={Boolean(business.owner_context)}
                 open={openGroup === "told"}
@@ -1232,12 +1207,10 @@ export default function DecisionsPage() {
 
             {/* Where the decisions are read. One quiet line instead of a card of its own. */}
             <p className="text-[13px] leading-6 text-[var(--ink-muted)]">
-              מההחלטות האלה נבנית{" "}
+              <Copy text="מההחלטות האלה נבנית" />{" "}
               <Link href="/strategy" className="font-semibold text-[var(--primary)] underline-offset-4 hover:underline">
-                התוכנית
-              </Link>{" "}
-              לצעדים הקרובים ולהמשך הדרך.
-            </p>
+                <Copy text="התוכנית" /></Link>{" "}
+              <Copy text="לצעדים הקרובים ולהמשך הדרך." /></p>
           </div>
         ) : null}
       </div>
@@ -1261,7 +1234,7 @@ export default function DecisionsPage() {
                 {saveState}
               </span>
               <Button onClick={() => void save()} disabled={saving}>
-                {saving ? "שומרים…" : "לשמור את ההחלטות"}
+                {saving ? t("שומרים…") : t("לשמור את ההחלטות")}
               </Button>
             </div>
             {saveError ? (
@@ -1302,6 +1275,7 @@ function DecisionRow({
   onToggle: () => void;
   children: React.ReactNode;
 }) {
+  const t = useCopy();
   return (
     <section id={id} className="scroll-mt-4">
       <h2>
@@ -1327,7 +1301,7 @@ function DecisionRow({
           <span
             className={`inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold ${open ? "text-[var(--ink-muted)]" : "text-[var(--primary)]"}`}
           >
-            {open ? "לסגור" : "לשנות"}
+            {open ? t("לסגור") : t("לשנות")}
             <IconChevron className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-90" : "-rotate-90"}`} />
           </span>
         </button>
@@ -1352,66 +1326,62 @@ function AudienceFormFields({
   onChange: (next: AudienceForm) => void;
   idPrefix: string;
 }) {
+  const t = useCopy();
   return (
     <div className="grid gap-4">
       <div>
         <label htmlFor={`${idPrefix}-name`} className={FIELD_LABEL}>
-          שם הקהל
-        </label>
+          <Copy text="שם הקהל" /></label>
         <input
           id={`${idPrefix}-name`}
           value={form.name}
           onChange={(event) => onChange({ ...form, name: event.target.value })}
-          placeholder="משפחות מיפו שקונות לשישי"
+          placeholder={t("משפחות מיפו שקונות לשישי")}
           className={INPUT}
         />
       </div>
       <div>
         <label htmlFor={`${idPrefix}-summary`} className={FIELD_LABEL}>
-          במשפט אחד: מי הם?
-        </label>
+          <Copy text="במשפט אחד: מי הם?" /></label>
         <input
           id={`${idPrefix}-summary`}
           value={form.summary}
           onChange={(event) => onChange({ ...form, summary: event.target.value })}
-          placeholder="מי שקונה לשולחן של שישי וחוזר כל שבוע"
+          placeholder={t("מי שקונה לשולחן של שישי וחוזר כל שבוע")}
           className={INPUT}
         />
       </div>
       <div>
         <label htmlFor={`${idPrefix}-needs`} className={FIELD_LABEL}>
-          מה הקהל צריך (מפרידים בפסיק)
-        </label>
+          <Copy text="מה הקהל צריך (מפרידים בפסיק)" /></label>
         <input
           id={`${idPrefix}-needs`}
           value={form.needs}
           onChange={(event) => onChange({ ...form, needs: event.target.value })}
-          placeholder="חלה טרייה לשישי, מארז חג, שעות פתיחה מדויקות"
+          placeholder={t("חלה טרייה לשישי, מארז חג, שעות פתיחה מדויקות")}
           className={INPUT}
         />
       </div>
       <div>
         <label htmlFor={`${idPrefix}-where`} className={FIELD_LABEL}>
-          איפה פוגשים אותו (מפרידים בפסיק)
-        </label>
+          <Copy text="איפה פוגשים אותו (מפרידים בפסיק)" /></label>
         <input
           id={`${idPrefix}-where`}
           value={form.where}
           onChange={(event) => onChange({ ...form, where: event.target.value })}
-          placeholder="שוק הפשפשים, קבוצות השכונה, אינסטגרם"
+          placeholder={t("שוק הפשפשים, קבוצות השכונה, אינסטגרם")}
           className={INPUT}
         />
       </div>
       <div>
         <label htmlFor={`${idPrefix}-description`} className={FIELD_LABEL}>
-          תיאור מלא (לא חובה)
-        </label>
+          <Copy text="תיאור מלא (לא חובה)" /></label>
         <textarea
           id={`${idPrefix}-description`}
           rows={3}
           value={form.description}
           onChange={(event) => onChange({ ...form, description: event.target.value })}
-          placeholder="מי הם, מה חשוב להם, ומה גורם להם לחזור"
+          placeholder={t("מי הם, מה חשוב להם, ומה גורם להם לחזור")}
           className={`${INPUT} leading-6`}
         />
       </div>
@@ -1459,8 +1429,7 @@ function QuestionBlock({
             onClick={onClear}
             className={`shrink-0 ${QUIET}`}
           >
-            לבטל את הבחירה
-          </button>
+            <Copy text="לבטל את הבחירה" /></button>
         ) : null}
       </div>
       {note ? <p className="mt-1 text-[13px] leading-6 text-[var(--ink-muted)]">{note}</p> : null}

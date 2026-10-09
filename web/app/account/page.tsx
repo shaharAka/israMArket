@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -11,6 +13,7 @@ import { IconChevron } from "@/lib/icons";
 import { toast } from "@/lib/ui";
 
 export default function AccountPage() {
+  const t = useCopy();
   // Which sign-in the account has: a Google-only account has no password to change, so it
   // is offered a first one instead (optional).
   const [me, setMe] = useState<AuthUser | null>(null);
@@ -34,11 +37,11 @@ export default function AccountPage() {
     event.preventDefault();
     setError("");
     if (next !== confirm) {
-      setError("הסיסמה החדשה לא זהה בשני השדות.");
+      setError(t("הסיסמה החדשה לא זהה בשני השדות."));
       return;
     }
     if (next.length < 8) {
-      setError("הסיסמה החדשה קצרה מדי. צריך לפחות 8 תווים.");
+      setError(t("הסיסמה החדשה קצרה מדי. צריך לפחות 8 תווים."));
       return;
     }
     setPending(true);
@@ -48,10 +51,10 @@ export default function AccountPage() {
       setCurrent("");
       setNext("");
       setConfirm("");
-      toast(settingFirst ? "הסיסמה נשמרה. אפשר להיכנס גם עם אימייל וסיסמה." : "הסיסמה החדשה נשמרה");
+      toast(settingFirst ? t("הסיסמה נשמרה. אפשר להיכנס גם עם אימייל וסיסמה.") : t("הסיסמה החדשה נשמרה"));
       if (settingFirst) loadMe();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו להחליף את הסיסמה. נסו שוב.");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו להחליף את הסיסמה. נסו שוב."));
     } finally {
       setPending(false);
     }
@@ -60,27 +63,26 @@ export default function AccountPage() {
   const settingFirst = me !== null && !me.has_password;
   const fields = settingFirst
     ? [
-        { label: "סיסמה חדשה", value: next, set: setNext },
-        { label: "הקלידו שוב את הסיסמה", value: confirm, set: setConfirm },
+        { label: t("סיסמה חדשה"), value: next, set: setNext },
+        { label: t("הקלידו שוב את הסיסמה"), value: confirm, set: setConfirm },
       ]
     : [
-        { label: "הסיסמה הנוכחית", value: current, set: setCurrent },
-        { label: "סיסמה חדשה", value: next, set: setNext },
-        { label: "הקלידו שוב את הסיסמה החדשה", value: confirm, set: setConfirm },
+        { label: t("הסיסמה הנוכחית"), value: current, set: setCurrent },
+        { label: t("סיסמה חדשה"), value: next, set: setNext },
+        { label: t("הקלידו שוב את הסיסמה החדשה"), value: confirm, set: setConfirm },
       ];
 
   return (
     <AppShell>
       <div className="mx-auto max-w-[640px]">
-        <PageHeader title="החשבון" />
+        <PageHeader title={t("החשבון")} />
 
         <div className="space-y-4">
           {me?.google_linked ? (
             <p className={`${CARD} flex flex-wrap items-center gap-x-3 gap-y-1 px-5 py-4 text-[15px] text-[color:var(--ink)] sm:px-6`}>
               <span className="inline-flex items-center gap-2 font-semibold">
                 <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--good)] shadow-[0_0_0_3px_var(--good-soft)]" />
-                מחובר עם Google
-              </span>
+                <Copy text="מחובר עם Google" /></span>
               <span dir="ltr" className="min-w-0 truncate text-[14px] text-[color:var(--ink-muted)]">
                 {me.email}
               </span>
@@ -90,23 +92,22 @@ export default function AccountPage() {
           <form onSubmit={submit} className={`${CARD} space-y-5 p-5 sm:p-7`}>
             {settingFirst ? (
               <div>
-                <h2 className="text-[17px] font-bold leading-7 text-[color:var(--ink)]">לקבוע סיסמה (לא חובה)</h2>
+                <h2 className="text-[17px] font-bold leading-7 text-[color:var(--ink)]"><Copy text="לקבוע סיסמה (לא חובה)" /></h2>
                 <p className="mt-1 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google.
-                </p>
+                  <Copy text="נכנסתם עם Google. עם סיסמה אפשר להיכנס גם עם האימייל, בלי Google." /></p>
               </div>
             ) : null}
             {fields.map((field, index) => (
-              <div key={field.label}>
+              <div key={t(field.label)}>
                 <label htmlFor={`pw-${index}`} className={LABEL}>
-                  {field.label}
+                  {t(field.label)}
                 </label>
                 <input
                   id={`pw-${index}`}
                   type="password"
                   value={field.value}
                   onChange={(e) => field.set(e.target.value)}
-                  autoComplete={field.label.includes("הנוכחית") ? "current-password" : "new-password"}
+                  autoComplete={field.label.includes(t("הנוכחית")) ? "current-password" : "new-password"}
                   className={FIELD}
                 />
               </div>
@@ -124,7 +125,7 @@ export default function AccountPage() {
                 disabled={pending || (!settingFirst && !current) || !next}
                 className="w-full sm:w-auto sm:!px-7"
               >
-                {pending ? "שומרים…" : settingFirst ? "לשמור סיסמה" : "להחליף סיסמה"}
+                {pending ? t("שומרים…") : settingFirst ? t("לשמור סיסמה") : t("להחליף סיסמה")}
               </UIAction>
             </div>
           </form>
@@ -135,8 +136,8 @@ export default function AccountPage() {
             <li>
               <Link href="/billing" className={`group ${LIST_ROW}`}>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">המנוי</span>
-                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">החודש החינמי, התשלום והביטול</span>
+                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]"><Copy text="המנוי" /></span>
+                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]"><Copy text="החודש החינמי, התשלום והביטול" /></span>
                 </span>
                 <IconChevron navigation className={ROW_CHEVRON} />
               </Link>
@@ -144,8 +145,8 @@ export default function AccountPage() {
             <li>
               <Link href="/dashboard?tour=1" className={`group ${LIST_ROW}`}>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">לסייר שוב</span>
-                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">רוצים לראות שוב מה יש כאן?</span>
+                  <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]"><Copy text="לסייר שוב" /></span>
+                  <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]"><Copy text="רוצים לראות שוב מה יש כאן?" /></span>
                 </span>
                 <IconChevron navigation className={ROW_CHEVRON} />
               </Link>
@@ -156,8 +157,8 @@ export default function AccountPage() {
               <li>
                 <Link href="/admin" className={`group ${LIST_ROW}`}>
                   <span className="min-w-0 flex-1">
-                    <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]">ניהול החשבונות</span>
-                    <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">כל החשבונות, איפוס סיסמה, השהיה ועלויות</span>
+                    <span className="block text-[15px] font-semibold leading-6 text-[color:var(--ink)]"><Copy text="ניהול החשבונות" /></span>
+                    <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]"><Copy text="כל החשבונות, איפוס סיסמה, השהיה ועלויות" /></span>
                   </span>
                   <IconChevron navigation className={ROW_CHEVRON} />
                 </Link>

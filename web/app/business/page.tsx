@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCopy } from "@/components/language/LanguageProvider";
+import { useCopy, Copy } from "@/components/language/LanguageProvider";
 import { WhatsNewLink } from "@/components/language/WhatsNewLink";
 import { useEffect, useState } from "react";
 import { AppShell, PageHeader, useLogOut } from "@/components/AppShell";
@@ -83,7 +83,7 @@ export default function BusinessPage() {
       <div className="mx-auto max-w-[720px]">
         {/* The business's name is the title; its brand sits beside it, as a way in. */}
         <PageHeader
-          title={businessName || "העסק שלי"}
+          title={businessName || t("העסק שלי")}
           action={
             <BrandLink className="-mx-1 font-semibold !text-[color:var(--ink)] hover:!bg-[var(--paper)] hover:shadow-[var(--shadow-card)]" />
           }
@@ -123,8 +123,7 @@ export default function BusinessPage() {
                 <IconLogout className="h-5 w-5" />
               </span>
               <span className="flex-1 text-[15px] font-semibold text-[color:var(--ink-soft)] transition-colors group-hover:text-[color:var(--ink)]">
-                יציאה מהחשבון
-              </span>
+                <Copy text="יציאה מהחשבון" /></span>
             </button>
           </div>
         </div>

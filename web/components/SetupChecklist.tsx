@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { HowToFind } from "@/components/help/HowToFind";
@@ -87,6 +89,7 @@ function HelpLink({ itemKey, className }: { itemKey: string; className?: string 
  * must not depend on this call succeeding.
  */
 export function SetupChecklist() {
+  const t = useCopy();
   const [setup, setSetup] = useState<SetupPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -139,7 +142,7 @@ export function SetupChecklist() {
         className="flex min-h-14 w-full items-center justify-between gap-3 py-3 text-right"
       >
         <span className="min-w-0 text-[15px] font-semibold text-[var(--ink)]">
-          {left === 1 ? "נשאר עוד דבר אחד להגדיר" : `נשארו עוד ${left} דברים להגדיר`}
+          {left === 1 ? t("נשאר עוד דבר אחד להגדיר") : t("נשארו עוד {arg_0} דברים להגדיר", { arg_0: left })}
         </span>
         <span className="flex shrink-0 items-center gap-3">
           <span
@@ -147,7 +150,7 @@ export function SetupChecklist() {
             aria-valuemin={0}
             aria-valuemax={setup.total}
             aria-valuenow={setup.completed}
-            aria-label={`הוגדרו ${setup.completed} מתוך ${setup.total}`}
+            aria-label={t("הוגדרו {arg_0} מתוך {arg_1}", { arg_0: setup.completed, arg_1: setup.total })}
             className="block h-1.5 w-14 overflow-hidden rounded-full bg-[var(--rule)] sm:w-20"
           >
             <span className="block h-full rounded-full" style={{ width: `${percent}%`, background: accent }} />
@@ -162,7 +165,7 @@ export function SetupChecklist() {
         <div className="space-y-5 pb-5">
           {setup.next ? (
             <div className="rounded-[14px] bg-[var(--soft)] p-4 sm:p-5">
-              <p className="text-[13px] font-semibold text-[var(--ink-muted)]">מה עכשיו</p>
+              <p className="text-[13px] font-semibold text-[var(--ink-muted)]"><Copy text="מה עכשיו" /></p>
               <p className="mt-1 text-[15px] font-semibold leading-6 text-[var(--ink)]">{setup.next.title}</p>
               {nextWhy ? <p className="mt-0.5 text-sm leading-6 text-[var(--ink-soft)]">{nextWhy}</p> : null}
               <HelpLink itemKey={setup.next.key} />
@@ -214,7 +217,7 @@ function ItemRow({ item }: { item: SetupItem }) {
         </p>
         {item.done || item.status === "soon" ? null : <HelpLink itemKey={item.key} className="-my-1" />}
       </div>
-      {item.done ? null : item.status === "soon" ? <span className="text-[13px] text-[var(--ink-muted)]">בהמשך</span> : (
+      {item.done ? null : item.status === "soon" ? <span className="text-[13px] text-[var(--ink-muted)]"><Copy text="בהמשך" /></span> : (
         <Link
           href={item.action_href}
           className="-my-2 inline-flex min-h-11 shrink-0 items-center text-[13px] font-semibold text-[var(--primary)] underline-offset-4 hover:underline"
@@ -228,29 +231,30 @@ function ItemRow({ item }: { item: SetupItem }) {
 
 /** The finished state: one quiet line, and the option to stop seeing it. */
 function CompleteLine({ onDismiss, deferred = false }: { onDismiss: () => void; deferred?: boolean }) {
+  const t = useCopy();
   return (
     <div className="flex min-h-14 items-center justify-between gap-3 py-2">
       <p className="flex min-w-0 items-center gap-2.5 text-[15px] font-medium text-[var(--ink-soft)]">
         <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[var(--primary)]">
           <IconCheck className="h-3 w-3" />
         </span>
-        <span>{deferred ? "ההגדרות הזמינות הושלמו" : "מה שצריך להתחלה מוגדר"}</span>
+        <span>{deferred ? t("ההגדרות הזמינות הושלמו") : t("מה שצריך להתחלה מוגדר")}</span>
       </p>
       <button
         type="button"
         onClick={onDismiss}
         className="-me-2 min-h-11 shrink-0 rounded-md px-2 text-[13px] font-medium text-[var(--ink-muted)] transition-colors hover:text-[var(--ink)]"
       >
-        להסתיר
-      </button>
+        <Copy text="להסתיר" /></button>
     </div>
   );
 }
 
 /** A beat of loading, at the row's own height so nothing jumps when it arrives. */
 function SetupSkeleton() {
+  const t = useCopy();
   return (
-    <div role="status" aria-label="בודקים מה כבר מוגדר" className="flex min-h-14 items-center py-3">
+    <div role="status" aria-label={t("בודקים מה כבר מוגדר")} className="flex min-h-14 items-center py-3">
       <div aria-hidden className="h-3 w-44 animate-pulse rounded-full bg-[var(--soft)] motion-reduce:animate-none" />
     </div>
   );

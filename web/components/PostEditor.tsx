@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { ContentLanguageNote } from "./posts/ContentLanguageNote";
 import { contentDirection } from "@/lib/content-language";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -169,11 +171,11 @@ function captionFor(post: RoadmapPost, channel: string) {
 }
 
 /** The why sentence. A post written before `why_line` says it with the older fields. */
-function whyOf(post: RoadmapPost): string {
+function whyOf(post: RoadmapPost, t: ReturnType<typeof useCopy>): string {
   const line = (post.why_line || "").trim();
   if (line) return line;
   const goal = (post.goal_fit || "").trim();
-  if (goal) return `בשביל ${goal.replace(/[.\s]+$/, "")}.`;
+  if (goal) return t("בשביל {arg_0}.", { arg_0: goal.replace(/[.\s]+$/, "") });
   return (post.why_now || "").trim();
 }
 
@@ -222,10 +224,10 @@ const MEASURE_SOURCE: Record<string, { source: TrialPayload["measurement"]["conn
  * keep; with the source missing, say what it needs instead. Null: the journey has not
  * loaded, so the usual line stays.
  */
-function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null): string | null {
+function pendingMeasureLine(post: RoadmapPost, label: string, trial: TrialPayload | null, t: ReturnType<typeof useCopy>): string | null {
   const need = post.measure ? MEASURE_SOURCE[post.measure.metric] : undefined;
   if (!trial || !need || trial.measurement.connected.includes(need.source)) return null;
-  return label ? `כדי לספור כאן ${label}, ${need.missing}.` : `כדי למדוד את הפוסט, ${need.missing}.`;
+  return label ? t("כדי לספור כאן {arg_0}, {arg_1}.", { arg_0: label, arg_1: t(need.missing) }) : t("כדי למדוד את הפוסט, {arg_0}.", { arg_0: t(need.missing) });
 }
 
 export function PostEditor({
@@ -240,7 +242,7 @@ export function PostEditor({
 }: {
   posts: RoadmapPost[];
   /** The month the posts belong to, for the week's focus when a post has no plan link. */
-  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown" | "brand_dna"> | null;
+  strategy?: Pick<StrategyPayload, "roadmap" | "weekly_breakdown" | "brand_dna" | "business_name"> | null;
   brandLanguage?: BrandLanguage | null;
   initialIndex?: number;
   onStrategyUpdated?: (strategy: StrategyPayload) => void;
@@ -252,6 +254,7 @@ export function PostEditor({
   /** The uids of the posts whose image the server's image job is making (lib/useImageJob). */
   imagesWaiting?: string[];
 }) {
+  const t = useCopy();
   const { palette } = useDesignPalette();
   const { payload: trial } = useTrial();
   // The business's Design DNA: every preview, thumbnail and export is drawn from it.
@@ -395,8 +398,8 @@ export function PostEditor({
   if (!currentPost) {
     return (
       <div className={`${ui.card} mx-auto max-w-3xl px-6 py-14 text-center text-sm text-[color:var(--ink-muted)]`}>
-        עוד מכינים את הפוסטים של החודש.
-      </div>
+        <Copy text="עוד מכינים את הפוסטים של החודש." />
+        </div>
     );
   }
 
@@ -416,11 +419,11 @@ export function PostEditor({
   async function handleExportCard() {
     const node = exportRef.current;
     if (!node) {
-      toast("הכרטיס עוד לא מוכן להורדה.");
+      toast(t("הכרטיס עוד לא מוכן להורדה."));
       return;
     }
     if (!currentPost.image_url && postNeedsPhoto(currentPost)) {
-      toast("צרו קודם תמונה, ואז נוכל להוריד את הכרטיס.");
+      toast(t("צרו קודם תמונה, ואז נוכל להוריד את הכרטיס."));
       return;
     }
     setExporting(true);
@@ -432,8 +435,8 @@ export function PostEditor({
     setExporting(false);
     toast(
       result.ok
-        ? `הכרטיס הורד בגודל ${exportSize.w}×${exportSize.h}.`
-        : `לא הצלחנו להוריד את הכרטיס: ${result.error}`,
+        ? t("הכרטיס הורד בגודל {arg_0}×{arg_1}.", { arg_0: exportSize.w, arg_1: exportSize.h })
+        : t("לא הצלחנו להוריד את הכרטיס: {arg_0}", { arg_0: result.error }),
     );
   }
 
@@ -461,22 +464,22 @@ export function PostEditor({
       // looked like a broken button.
       switch (result.post.image_action) {
         case "no_photo_theme":
-          toast("הכרטיס הזה בנוי מטקסט בלבד, בלי תמונה. ככה תכננו אותו.");
+          toast(t("הכרטיס הזה בנוי מטקסט בלבד, בלי תמונה. ככה תכננו אותו."));
           break;
         case "kept_existing":
-          toast("לפוסט הזה כבר יש תמונה, אז לא יצרנו חדשה.");
+          toast(t("לפוסט הזה כבר יש תמונה, אז לא יצרנו חדשה."));
           break;
         case "real_photo":
-          toast("לקחנו תמונה מהאתר שלכם.");
+          toast(t("לקחנו תמונה מהאתר שלכם."));
           break;
         case "pending":
-          toast("לא נוצרה תמונה. אפשר ליצור תמונה חדשה או לבחור אחת מהתמונות שלכם.");
+          toast(t("לא נוצרה תמונה. אפשר ליצור תמונה חדשה או לבחור אחת מהתמונות שלכם."));
           break;
         default:
-          toast("התמונה מוכנה, בצבעים ובסגנון של העסק.");
+          toast(t("התמונה מוכנה, בצבעים ובסגנון של העסק."));
       }
     } catch (err) {
-      setImageError(err instanceof Error ? err.message : "לא הצלחנו ליצור את התמונה");
+      setImageError(err instanceof Error ? err.message : t("לא הצלחנו ליצור את התמונה"));
     } finally {
       setImageBusy(null);
     }
@@ -511,9 +514,9 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(result.queued ? QUEUED_IMAGE_TOAST : source === "ai" ? "ניצור תמונה חדשה ב-AI." : "נשתמש בתמונה מהאתר שלכם.");
+      toast(result.queued ? QUEUED_IMAGE_TOAST : source === "ai" ? t("ניצור תמונה חדשה ב-AI.") : t("נשתמש בתמונה מהאתר שלכם."));
     } catch (err) {
-      setImageError(err instanceof Error ? err.message : "לא הצלחנו להחליף את התמונה");
+      setImageError(err instanceof Error ? err.message : t("לא הצלחנו להחליף את התמונה"));
     } finally {
       setImageBusy(null);
     }
@@ -528,7 +531,7 @@ export function PostEditor({
       const result = await endpoints.assets();
       setAssets(result.assets);
     } catch (err) {
-      setAssetsError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התמונות שלכם");
+      setAssetsError(err instanceof Error ? err.message : t("לא הצלחנו לטעון את התמונות שלכם"));
     } finally {
       setAssetsLoading(false);
     }
@@ -560,11 +563,11 @@ export function PostEditor({
       onStrategyUpdated?.(result.strategy);
       setShowAssets(false);
       setSuggestions(null);
-      toast("התמונה שלכם נכנסה לפוסט.");
+      toast(t("התמונה שלכם נכנסה לפוסט."));
     } catch (err) {
       // Kept apart from `assetsError`: a failed attach must not blank out the grid the
       // owner is choosing from.
-      setAttachError(err instanceof Error ? err.message : "לא הצלחנו להכניס את התמונה לפוסט");
+      setAttachError(err instanceof Error ? err.message : t("לא הצלחנו להכניס את התמונה לפוסט"));
     } finally {
       setAssetBusyId(null);
     }
@@ -572,7 +575,7 @@ export function PostEditor({
 
   async function uploadPhoto(file: File | undefined) {
     if (!file || imageLocked) return;
-    if (!file.type.startsWith("image/")) { setPhotoUploadError("בחרו קובץ תמונה. סרטונים אפשר להוסיף דרך התמונות שלי."); return; }
+    if (!file.type.startsWith("image/")) { setPhotoUploadError(t("בחרו קובץ תמונה. סרטונים אפשר להוסיף דרך התמונות שלי.")); return; }
     const postIndex = selectedIndex;
     setUploadingPhoto(true); setPhotoUploadError(""); setImageError("");
     try {
@@ -581,9 +584,9 @@ export function PostEditor({
       const result = await endpoints.attachPostAsset(postIndex, uploaded.asset.id);
       setPosts(result.strategy.roadmap.posts); onStrategyUpdated?.(result.strategy);
       setShowAssets(false); setSuggestions(null);
-      toast("התמונה נוספה לפוסט. אפשר לבדוק אותה בתצוגה.");
+      toast(t("התמונה נוספה לפוסט. אפשר לבדוק אותה בתצוגה."));
     } catch (err) {
-      setPhotoUploadError(err instanceof Error ? err.message : "לא הצלחנו להוסיף את התמונה. אם ההעלאה הסתיימה, אפשר לבחור אותה מהתמונות שלי.");
+      setPhotoUploadError(err instanceof Error ? err.message : t("לא הצלחנו להוסיף את התמונה. אם ההעלאה הסתיימה, אפשר לבחור אותה מהתמונות שלי."));
     } finally { setUploadingPhoto(false); if (photoInput.current) photoInput.current.value = ""; }
   }
 
@@ -598,7 +601,7 @@ export function PostEditor({
       const result = await endpoints.suggestPostAssets(selectedIndex);
       setSuggestions(result.suggestions);
     } catch (err) {
-      setSuggestError(err instanceof Error ? err.message : "לא הצלחנו לבדוק אילו תמונות מתאימות");
+      setSuggestError(err instanceof Error ? err.message : t("לא הצלחנו לבדוק אילו תמונות מתאימות"));
     } finally {
       setSuggesting(false);
     }
@@ -615,9 +618,9 @@ export function PostEditor({
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
       const name = audienceId === null ? "" : audiences.find((item) => item.id === audienceId)?.name || "";
-      toast(name ? `הפוסט מיועד עכשיו לקהל: ${name}.` : "הפוסט כבר לא מיועד לקהל מסוים.");
+      toast(name ? t("הפוסט מיועד עכשיו לקהל: {arg_0}.", { arg_0: name }) : t("הפוסט כבר לא מיועד לקהל מסוים."));
     } catch (err) {
-      setAudiencesError(err instanceof Error ? err.message : "לא הצלחנו לשמור את הקהל");
+      setAudiencesError(err instanceof Error ? err.message : t("לא הצלחנו לשמור את הקהל"));
     } finally {
       setAudienceBusy(false);
     }
@@ -639,11 +642,11 @@ export function PostEditor({
     const url = publishUrl.trim();
     const alreadyOut = Boolean(currentPost.published_url || currentPost.published_at);
     if (alreadyOut && !url) {
-      toast("הדביקו את הקישור לפוסט");
+      toast(t("הדביקו את הקישור לפוסט"));
       return;
     }
     if (url && !/^https?:\/\//i.test(url)) {
-      toast("הקישור צריך להתחיל ב-https://");
+      toast(t("הקישור צריך להתחיל ב-https://"));
       return;
     }
     setPublishing(true);
@@ -655,13 +658,13 @@ export function PostEditor({
       setActive(null);
       toast(
         alreadyOut
-          ? "הקישור נשמר. נראה לפיו גם כמה ראו."
-          : pendingMeasureLine(currentPost, "", trial)
-            ? "סימנו שהפוסט פורסם."
-            : "סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא."
+          ? t("הקישור נשמר. נראה לפיו גם כמה ראו.")
+          : pendingMeasureLine(currentPost, "", trial, t)
+            ? t("סימנו שהפוסט פורסם.")
+            : t("סימנו שהפוסט פורסם. נמדוד אותו בעדכון הנתונים הבא.")
       );
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו לסמן שהפוסט פורסם");
+      toast(err instanceof Error ? err.message : t("לא הצלחנו לסמן שהפוסט פורסם"));
     } finally {
       setPublishing(false);
     }
@@ -677,11 +680,11 @@ export function PostEditor({
       // The post stays on screen and its one button moves on to "לפרסם" (posts-v2,
       // Revision 1). The next post waiting is one tap away in the header ("הבא בתור").
       toast(
-        updatedPosts.every(isDone) ? "הפוסט אושר. כל הפוסטים של החודש אושרו." : "הפוסט אושר.",
+        updatedPosts.every(isDone) ? t("הפוסט אושר. כל הפוסטים של החודש אושרו.") : t("הפוסט אושר."),
         "milestone"
       );
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו לאשר את הפוסט");
+      toast(err instanceof Error ? err.message : t("לא הצלחנו לאשר את הפוסט"));
     } finally {
       setApproving(false);
     }
@@ -701,18 +704,18 @@ export function PostEditor({
         // Show the new version: the side panel's text on a desktop, the preview on a phone.
         setActive(isDesktop ? "text" : null);
         setInstructionDraft("");
-        toast("הכנו גרסה חדשה");
+        toast(t("הכנו גרסה חדשה"));
         return;
       }
       // The post stayed as it was, and the server said why. A missing price is one the
       // owner can type right here, so the field is ready for it.
-      setRewriteMessage(result.message || "הפוסט נשאר כמו שהוא.");
+      setRewriteMessage(result.message || t("הפוסט נשאר כמו שהוא."));
       if (PRICE_WORDS.test(text) && !/\d/.test(text)) {
-        setInstructionDraft("להוסיף מחיר ");
+        setInstructionDraft(t("להוסיף מחיר "));
         window.requestAnimationFrame(() => instructionInput.current?.focus());
       }
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו להכין גרסה חדשה");
+      toast(err instanceof Error ? err.message : t("לא הצלחנו להכין גרסה חדשה"));
     } finally {
       setRewriting(null);
     }
@@ -732,9 +735,9 @@ export function PostEditor({
       });
       setPosts(result.strategy.roadmap.posts);
       onStrategyUpdated?.(result.strategy);
-      toast(generateImage ? "עיצבנו מחדש ויצרנו תמונה חדשה." : "העיצוב עודכן.");
+      toast(generateImage ? t("עיצבנו מחדש ויצרנו תמונה חדשה.") : t("העיצוב עודכן."));
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו לעצב את הפוסט");
+      toast(err instanceof Error ? err.message : t("לא הצלחנו לעצב את הפוסט"));
     } finally {
       setDesignerBusy(false);
     }
@@ -820,9 +823,9 @@ export function PostEditor({
       const result = await endpoints.savePost(selectedIndex, savePayload(currentPost, captionDraft));
       applyStrategy(result.strategy);
       setCaptionDraft(null);
-      toast(wasApproved ? "הנוסח נשמר. צריך לאשר את הפוסט שוב." : "הנוסח נשמר.", "save");
+      toast(wasApproved ? t("הנוסח נשמר. צריך לאשר את הפוסט שוב.") : t("הנוסח נשמר."), "save");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "לא הצלחנו לשמור את הנוסח");
+      toast(err instanceof Error ? err.message : t("לא הצלחנו לשמור את הנוסח"));
     } finally {
       setSavingCaption(false);
     }
@@ -837,9 +840,9 @@ export function PostEditor({
   // The one channel the plan chose. There is no channel switch: the plan already knows
   // where this post goes, and the same post elsewhere is a quiet option when publishing.
   const channel = channelOf(currentPost);
-  const channelLabel = CHANNEL_LABEL[channel];
+  const channelLabel = t(CHANNEL_LABEL[channel]);
   const activeCaption = captionFor(currentPost, channel);
-  const businessName = brandLanguage?.business_name || "העסק";
+  const businessName = brandLanguage?.business_name || strategy?.business_name || t("העסק");
   const isPreparingImage = imageBusy === selectedIndex;
   // The server's image job is making this post's image (or it is next in line).
   const jobPreparing = Boolean(currentPost.uid && imagesWaiting?.includes(currentPost.uid));
@@ -883,7 +886,7 @@ export function PostEditor({
     exportRatio === "auto" ? undefined : exportRatio,
   );
   const primaryOutlet = primaryOutletOf(currentPost);
-  const primaryOutletLabel = CHANNEL_LABEL[primaryOutlet as PostChannel] || "";
+  const primaryOutletLabel = t(CHANNEL_LABEL[primaryOutlet as PostChannel] || "");
 
   // Where the post stands, and what that asks of the owner.
   const stage = lifecycleOf(currentPost);
@@ -894,7 +897,7 @@ export function PostEditor({
   // the owner has decided, and the need is history.
   const photoNeeded = pending && needs.some((need) => need.kind === "photo");
   const showNeeds = pending && needs.length > 0;
-  const why = whyOf(currentPost);
+  const why = whyOf(currentPost, t);
   const workedNote = (currentPost.informed_by_note || "").trim() || (currentPost.inspiration?.note || "").trim();
   const week = postWeek(currentPost);
   const focus = week ? weekFocus(week, currentPost, strategy) : "";
@@ -920,12 +923,11 @@ export function PostEditor({
       return (
         <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
           <PhotoPlaceholder />
-          <h3>{isPreparingImage || uploadingPhoto || jobPreparing ? "מכינים את התמונה…" : "כאן נכנסת תמונה מהעסק"}</h3>
-          <p>{isPreparingImage || uploadingPhoto || jobPreparing ? "התצוגה תתעדכן כשהתמונה מוכנה." : "צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל."}</p>
-          {imageError && <p role="alert">{imageError}</p>}
+          <h3>{isPreparingImage || uploadingPhoto || jobPreparing ? t("מכינים את התמונה…") : t("כאן נכנסת תמונה מהעסק")}</h3>
+          <p>{isPreparingImage || uploadingPhoto || jobPreparing ? t("התצוגה תתעדכן כשהתמונה מוכנה.") : t("צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל.")}</p>
+          {imageError && <p role="alert">{t(imageError)}</p>}
           <button type="button" disabled={imageLocked} onClick={openLibrary}>
-            לבחור מהתמונות שלי
-            <IconArrowLeft className="h-4 w-4" />
+            <Copy text="לבחור מהתמונות שלי" /><IconArrowLeft className="h-4 w-4" />
           </button>
         </div>
       );
@@ -963,8 +965,8 @@ export function PostEditor({
       <button
         type="button"
         onClick={() => openStep("text")}
-        aria-label="לקרוא ולשנות את הטקסט"
-        className="block min-h-11 w-full px-3.5 py-2.5 text-right text-[13px] leading-5 text-[color:var(--ink-soft)] transition-colors duration-200 hover:bg-[var(--soft)]"
+        aria-label={t("לקרוא ולשנות את הטקסט")}
+        className="block min-h-11 w-full px-3.5 py-2.5 text-start text-[13px] leading-5 text-[color:var(--ink-soft)] transition-colors duration-200 hover:bg-[var(--soft)]"
       >
         <span className="line-clamp-1 md:line-clamp-2">
           <span className="ml-1.5 font-semibold text-[color:var(--ink)]">{businessName}</span>{" "}
@@ -1004,34 +1006,39 @@ export function PostEditor({
       <div>
         <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
           {IMAGE_SOURCE_LABELS[imageSourceKey]}
-          {currentAsset ? ` · ${currentAsset.description || "תמונה בלי תיאור"}` : ""}
+          {currentAsset ? t(" · {arg_0}", { arg_0: currentAsset.description || t("תמונה בלי תיאור") }) : ""}
         </p>
 
         {cardNeedsPhoto && <div className={editorStyles.photoGuide}>
-          <h3 className={ui.groupTitle}>{currentPost.image_url ? "להחליף את התמונה" : "1. בוחרים תמונה מהעסק"}</h3>
-          <p className={ui.help}>בחרו צילום של מה שהפוסט מדבר עליו. השאירו קצת מרווח סביב הנושא כדי שיתאים גם לחיתוך אנכי.</p>
+          <h3 className={ui.groupTitle}>{currentPost.image_url ? t("להחליף את התמונה") : t("1. בוחרים תמונה מהעסק")}</h3>
+          <p className={ui.help}><Copy text="בחרו צילום של מה שהפוסט מדבר עליו. השאירו קצת מרווח סביב הנושא כדי שיתאים גם לחיתוך אנכי." />
+        </p>
           <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()} className={ui.button}>
               <EditorIcon kind="photo" />
-              {uploadingPhoto ? "מעלים ומוסיפים…" : "להעלות מהמכשיר"}
+              {uploadingPhoto ? t("מעלים ומוסיפים…") : t("להעלות מהמכשיר")}
             </button>
             <button type="button" disabled={imageLocked} onClick={toggleAssetPicker} aria-expanded={showAssets} className={ui.button}>
               <IconPhotos />
-              {showAssets ? "לסגור את התמונות שלי" : "לבחור מהתמונות שלי"}
+              {showAssets ? t("לסגור את התמונות שלי") : t("לבחור מהתמונות שלי")}
             </button>
           </div>
-          {photoUploadError && <p role="alert" className={`${ui.error} mt-3`}>{photoUploadError}</p>}
+          {photoUploadError && <p role="alert" className={`${ui.error} mt-3`}>{t(photoUploadError)}</p>}
         </div>}
         <details className={editorStyles.photoOptions}>
           <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
-            <span className="flex-1">תמונה מהאתר או יצירה ב-AI</span>
+            <span className="flex-1"><Copy text="תמונה מהאתר או יצירה ב-AI" />
+        </span>
             <IconChevron />
           </summary>
-          <p className={`${ui.help} mt-1`}>תמונה מהעסק נותנת לפוסט אמינות. אפשר גם לקחת מהאתר או ליצור תמונה לפי העיצוב.</p>
+          <p className={`${ui.help} mt-1`}><Copy text="תמונה מהעסק נותנת לפוסט אמינות. אפשר גם לקחת מהאתר או ליצור תמונה לפי העיצוב." />
+        </p>
           <div className="mt-1 flex flex-wrap gap-x-5">
-            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("real")} className={ui.link}>לקחת תמונה מהאתר</button>
-            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("ai")} className={ui.link}>לבחור יצירה ב-AI</button>
-            <button type="button" disabled={imageLocked} onClick={() => void prepareImage(selectedIndex, true)} className={ui.link}>{isPreparingImage ? "יוצרים תמונה…" : "ליצור לפי העיצוב"}</button>
+            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("real")} className={ui.link}><Copy text="לקחת תמונה מהאתר" />
+        </button>
+            <button type="button" disabled={imageLocked} onClick={() => void chooseImageSource("ai")} className={ui.link}><Copy text="לבחור יצירה ב-AI" />
+        </button>
+            <button type="button" disabled={imageLocked} onClick={() => void prepareImage(selectedIndex, true)} className={ui.link}>{isPreparingImage ? t("יוצרים תמונה…") : t("ליצור לפי העיצוב")}</button>
           </div>
         </details>
 
@@ -1039,7 +1046,7 @@ export function PostEditor({
           <div className={`${ui.inset} mt-4 p-4`}>
             <div className="flex items-center justify-between gap-2">
               <p className={ui.groupTitle}>
-                התמונות שלי{assets ? <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">{` · ${assets.length}`}</span> : ""}
+                <Copy text="התמונות שלי" />{assets ? <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">{` · ${assets.length}`}</span> : ""}
               </p>
               <span className="-my-2 flex items-center gap-4">
                 <button
@@ -1048,38 +1055,38 @@ export function PostEditor({
                   onClick={() => void loadAssets()}
                   className={`${ui.link} ${ui.linkQuiet} text-[13px]`}
                 >
-                  לרענן
-                </button>
+                  <Copy text="לרענן" />
+        </button>
                 <Link href="/assets" className={`${ui.link} text-[13px]`}>
-                  לכל התמונות
-                </Link>
+                  <Copy text="לכל התמונות" />
+        </Link>
               </span>
             </div>
 
-            {attachError ? <p className={`${ui.error} mt-3`}>{attachError}</p> : null}
+            {attachError ? <p className={`${ui.error} mt-3`}>{t(attachError)}</p> : null}
 
             {!cardNeedsPhoto ? (
               <p className="mt-3 rounded-[12px] bg-[var(--paper)] px-3.5 py-2.5 text-[13px] leading-6 text-[color:var(--ink-soft)] shadow-[var(--shadow-card)]">
-                הכרטיס הזה בנוי מטקסט בלבד, אז התמונה שתבחרו לא תופיע עליו. כדי שתופיע, בחרו
-                עיצוב עם תמונה ב״לשנות עיצוב״.
-              </p>
+                <Copy text="הכרטיס הזה בנוי מטקסט בלבד, אז התמונה שתבחרו לא תופיע עליו. כדי שתופיע, בחרו עיצוב עם תמונה ב״לשנות עיצוב״." />
+        </p>
             ) : null}
 
             {assetsLoading && !assets ? (
-              <p className={`${ui.help} mt-3`}>טוענים את התמונות…</p>
+              <p className={`${ui.help} mt-3`}><Copy text="טוענים את התמונות…" />
+        </p>
             ) : assetsError ? (
-              <p className={`${ui.error} mt-3`}>{assetsError}</p>
+              <p className={`${ui.error} mt-3`}>{t(assetsError)}</p>
             ) : libraryEmpty ? (
               <div className={`${ui.card} mt-3 px-4 py-6 text-center`}>
-                <p className="text-sm font-semibold text-[color:var(--ink)]">עוד אין לכם כאן תמונות</p>
+                <p className="text-sm font-semibold text-[color:var(--ink)]"><Copy text="עוד אין לכם כאן תמונות" />
+        </p>
                 <p className={`${ui.help} mx-auto mt-1 max-w-xs`}>
-                  להוספת צילום לחצו על ״להעלות מהמכשיר״ למעלה. אפשר גם להוסיף סרטון או קישור
-                  או תנו לנו לקרוא את האתר.
-                </p>
+                  <Copy text="להוספת צילום לחצו על ״להעלות מהמכשיר״ למעלה. אפשר גם להוסיף סרטון או קישור או תנו לנו לקרוא את האתר." />
+        </p>
                 <Link href="/assets" className={`${ui.button} mt-4`}>
                   <EditorIcon kind="photo" />
-                  להוסיף תמונות
-                </Link>
+                  <Copy text="להוסיף תמונות" />
+        </Link>
               </div>
             ) : (
               <>
@@ -1091,32 +1098,30 @@ export function PostEditor({
                     className={`${ui.button} w-full`}
                   >
                     <EditorIcon kind="tone" />
-                    {suggesting ? "מחפשים מה מתאים…" : "למצוא תמונה שמתאימה לפוסט"}
+                    {suggesting ? t("מחפשים מה מתאים…") : t("למצוא תמונה שמתאימה לפוסט")}
                   </button>
 
                   {suggesting ? (
                     <p className={`${ui.help} mt-2`}>
-                      עוברים על התמונות שלכם ובודקים מה מתאים לנושא הפוסט. זה לוקח כמה שניות,
-                      השאירו את החלון פתוח.
-                    </p>
+                      <Copy text="עוברים על התמונות שלכם ובודקים מה מתאים לנושא הפוסט. זה לוקח כמה שניות, השאירו את החלון פתוח." />
+        </p>
                   ) : null}
 
                   {!suggesting && suggestError ? (
-                    <p className={`${ui.error} mt-2`}>{suggestError}</p>
+                    <p className={`${ui.error} mt-2`}>{t(suggestError)}</p>
                   ) : null}
 
                   {!suggesting && suggestions && !rankedSuggestions.length ? (
                     <p className={`${ui.help} mt-2`}>
-                      לא מצאנו תמונה שמתאימה לפוסט הזה, ולא נציע אחת בכוח. אפשר לבחור בעצמכם
-                      מהתמונות למטה.
-                    </p>
+                      <Copy text="לא מצאנו תמונה שמתאימה לפוסט הזה, ולא נציע אחת בכוח. אפשר לבחור בעצמכם מהתמונות למטה." />
+        </p>
                   ) : null}
 
                   {rankedSuggestions.length ? (
                     <>
                       <p className="mt-4 text-[13px] font-semibold text-[color:var(--ink-muted)]">
-                        מה הכי מתאים, לפי הסדר:
-                      </p>
+                        <Copy text="מה הכי מתאים, לפי הסדר:" />
+        </p>
                       <ul className="mt-2 space-y-2">
                         {rankedSuggestions.map(({ suggestion, asset }, rank) => (
                           <li key={asset.id}>
@@ -1124,7 +1129,7 @@ export function PostEditor({
                               type="button"
                               disabled={imageLocked}
                               onClick={() => void attachAsset(asset)}
-                              className="flex w-full items-start gap-3 rounded-[12px] bg-[var(--paper)] p-2.5 text-right shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[0_0_0_2px_var(--primary)] disabled:opacity-50"
+                              className="flex w-full items-start gap-3 rounded-[12px] bg-[var(--paper)] p-2.5 text-start shadow-[var(--shadow-card)] transition-shadow duration-200 hover:shadow-[0_0_0_2px_var(--primary)] disabled:opacity-50"
                             >
                               <AssetPickerThumb asset={asset} className="h-12 w-12 shrink-0 rounded-[10px]" />
                               <span className="min-w-0 flex-1">
@@ -1133,7 +1138,7 @@ export function PostEditor({
                                     {rank + 1}
                                   </span>
                                   <span className="line-clamp-2 text-[13px] font-semibold leading-5 text-[color:var(--ink)]">
-                                    {asset.description || "תמונה בלי תיאור"}
+                                    {asset.description || t("תמונה בלי תיאור")}
                                   </span>
                                 </span>
                                 <span className="mt-1 block text-[13px] leading-5 text-[color:var(--ink-soft)]">
@@ -1141,8 +1146,8 @@ export function PostEditor({
                                 </span>
                                 <span className="mt-1 block text-xs font-semibold text-[color:var(--primary)]">
                                   {assetBusyId === asset.id
-                                    ? "מכניסים לפוסט…"
-                                    : "לחצו כדי להכניס לפוסט"}
+                                    ? t("מכניסים לפוסט…")
+                                    : t("לחצו כדי להכניס לפוסט")}
                                 </span>
                               </span>
                             </button>
@@ -1154,8 +1159,8 @@ export function PostEditor({
                 </div>
 
                 <p className="mt-5 text-[13px] font-semibold text-[color:var(--ink-muted)]">
-                  כל התמונות שלכם. לחיצה מכניסה את התמונה לפוסט:
-                </p>
+                  <Copy text="כל התמונות שלכם. לחיצה מכניסה את התמונה לפוסט:" />
+        </p>
                 <ul className="mt-2 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                   {(assets ?? []).map((asset) => {
                     const inPost = currentAssetId === asset.id;
@@ -1165,7 +1170,7 @@ export function PostEditor({
                           type="button"
                           disabled={imageLocked}
                           onClick={() => void attachAsset(asset)}
-                          className={`flex w-full flex-col overflow-hidden rounded-[12px] bg-[var(--paper)] text-right transition-shadow duration-200 disabled:opacity-50 ${
+                          className={`flex w-full flex-col overflow-hidden rounded-[12px] bg-[var(--paper)] text-start transition-shadow duration-200 disabled:opacity-50 ${
                             inPost
                               ? "shadow-[0_0_0_2px_var(--primary)]"
                               : "shadow-[var(--shadow-card)] hover:shadow-[0_0_0_2px_var(--primary)]"
@@ -1174,7 +1179,7 @@ export function PostEditor({
                           <AssetPickerThumb asset={asset} className="h-24 w-full" />
                           <span className="block w-full p-2.5">
                             <span className="line-clamp-2 block text-xs leading-5 text-[color:var(--ink)]">
-                              {asset.description || "תמונה בלי תיאור"}
+                              {asset.description || t("תמונה בלי תיאור")}
                             </span>
                             {asset.tags.length ? (
                               <span className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
@@ -1190,19 +1195,18 @@ export function PostEditor({
                             ) : null}
                             <span className="mt-1.5 flex items-center justify-between gap-1 text-[11px] text-[color:var(--ink-muted)]">
                               <span>
-                                {ASSET_SOURCE_LABELS[asset.source]}
-                                {asset.kind === "video" ? " · סרטון" : ""}
+                                {t(ASSET_SOURCE_LABELS[asset.source])}
+                                {asset.kind === "video" ? t(" · סרטון") : ""}
                               </span>
                               <span className="inline-flex items-center gap-1 font-semibold text-[color:var(--primary)]">
                                 {assetBusyId === asset.id ? (
-                                  "מכניסים…"
+                                  t("מכניסים…")
                                 ) : inPost ? (
                                   <>
-                                    בפוסט הזה
-                                    <IconCheck className="h-3 w-3" />
+                                    <Copy text="בפוסט הזה" /><IconCheck className="h-3 w-3" />
                                   </>
                                 ) : (
-                                  "לבחור"
+                                  t("לבחור")
                                 )}
                               </span>
                             </span>
@@ -1232,10 +1236,10 @@ export function PostEditor({
         <div>
           <div className="flex items-center justify-between gap-3">
             <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
-              {resolvedDna.isDefault ? "שלושה עיצובים לפוסט:" : "שלושה עיצובים בסגנון שלכם:"}
+              {resolvedDna.isDefault ? t("שלושה עיצובים לפוסט:") : t("שלושה עיצובים בסגנון שלכם:")}
             </p>
             <Link href="/brand#style" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px]`}>
-              {resolvedDna.isDefault ? "לבחור סגנון לעסק" : "לשנות את הסגנון"}
+              {resolvedDna.isDefault ? t("לבחור סגנון לעסק") : t("לשנות את הסגנון")}
             </Link>
           </div>
           <DesignOptions
@@ -1252,9 +1256,10 @@ export function PostEditor({
         {/* The card's shape. It changes the preview as well as the download, so it is a
             design choice, not a download setting. */}
         <div>
-          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">גודל הכרטיס:</p>
+          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]"><Copy text="גודל הכרטיס:" />
+        </p>
           <div className="mt-2 grid grid-cols-2 gap-2">
-            {([{ key: "auto" as const, label: "אוטומטי" }, ...CARD_RATIOS]).map((r) => (
+            {([{ key: "auto" as const, label: t("אוטומטי") }, ...CARD_RATIOS]).map((r) => (
               <button
                 key={r.key}
                 type="button"
@@ -1262,7 +1267,7 @@ export function PostEditor({
                 onClick={() => setExportRatio(r.key)}
                 className={ui.option}
               >
-                {r.label}
+                {t(r.label)}
               </button>
             ))}
           </div>
@@ -1273,14 +1278,14 @@ export function PostEditor({
             htmlFor="custom-design-prompt"
             className="mb-2 block text-[13px] font-semibold text-[color:var(--ink-muted)]"
           >
-            או תארו במילים שלכם:
-          </label>
+            <Copy text="או תארו במילים שלכם:" />
+        </label>
           <div className="flex gap-2">
             <input
               id="custom-design-prompt"
               value={customDesignPrompt}
               onChange={(e) => setCustomDesignPrompt(e.target.value)}
-              placeholder="למשל: ידיים לשות בצק מקרוב, שולחן חג עמוס"
+              placeholder={t("למשל: ידיים לשות בצק מקרוב, שולחן חג עמוס")}
               disabled={imageLocked}
               className={`${ui.field} min-w-0 flex-1 text-sm`}
             />
@@ -1293,7 +1298,7 @@ export function PostEditor({
                 onClick={() => void handleApplyDesignPreset("custom", false)}
                 className={`${ui.button} ${ui.matchField} shrink-0`}
               >
-                {designerBusy ? "מעצבים…" : "לעצב לפי זה"}
+                {designerBusy ? t("מעצבים…") : t("לעצב לפי זה")}
               </button>
             ) : null}
           </div>
@@ -1303,13 +1308,15 @@ export function PostEditor({
           <div className={`${ui.inset} px-4 py-3 text-[13px] leading-6 text-[color:var(--ink)]`}>
             {currentPost.creative_concept ? (
               <p>
-                <span className="font-semibold">הרעיון: </span>
+                <span className="font-semibold"><Copy text="הרעיון:" />
+        </span>
                 {currentPost.creative_concept}
               </p>
             ) : null}
             {currentPost.visual_style ? (
               <p className="mt-1 text-[color:var(--ink-soft)]">
-                <span className="font-semibold">הסגנון: </span>
+                <span className="font-semibold"><Copy text="הסגנון:" />
+        </span>
                 {currentPost.visual_style}
               </p>
             ) : null}
@@ -1339,9 +1346,9 @@ export function PostEditor({
         : activeCaption;
     try {
       await navigator.clipboard.writeText(text);
-      toast(`נוסח ה${channelLabel} הועתק.`, "copy");
+      toast(t("נוסח ה{arg_0} הועתק.", { arg_0: channelLabel }), "copy");
     } catch {
-      toast("לא הצלחנו להעתיק. אפשר לסמן את הנוסח ולהעתיק ידנית.");
+      toast(t("לא הצלחנו להעתיק. אפשר לסמן את הנוסח ולהעתיק ידנית."));
     }
   }
 
@@ -1353,7 +1360,7 @@ export function PostEditor({
     return (
       <p className={`flex items-center gap-1.5 text-[13px] font-medium leading-5 text-[color:var(--ink-muted)] ${className}`}>
         <EditorIcon kind="text" className="h-4 w-4 shrink-0" />
-        <span className="min-w-0">שונה לפי: {label}</span>
+        <span className="min-w-0"><Copy text="שונה לפי:" />{label}</span>
       </p>
     );
   }
@@ -1370,12 +1377,12 @@ export function PostEditor({
         <div className="pb-5">
           <div className="-mt-2 flex items-center justify-between gap-2">
             <label htmlFor="post-caption" className={ui.groupTitle}>
-              הנוסח ל{channelLabel}
+              <Copy text="הנוסח ל" />{channelLabel}
             </label>
             <button type="button" onClick={copyCaption} className={ui.link}>
               <IconCopy />
-              להעתיק
-            </button>
+              <Copy text="להעתיק" />
+        </button>
           </div>
           {renderRewriteNote("-mt-1 mb-1.5")}
           {editable ? (
@@ -1402,7 +1409,7 @@ export function PostEditor({
                 onClick={() => void saveCaption()}
                 className={ui.button}
               >
-                {savingCaption ? "שומרים…" : "לשמור את הנוסח"}
+                {savingCaption ? t("שומרים…") : t("לשמור את הנוסח")}
               </button>
               <button
                 type="button"
@@ -1410,12 +1417,12 @@ export function PostEditor({
                 onClick={() => setCaptionDraft(null)}
                 className={`${ui.link} ${ui.linkQuiet}`}
               >
-                לבטל
-              </button>
+                <Copy text="לבטל" />
+        </button>
             </div>
           ) : null}
           {!editable && primaryOutletLabel ? (
-            <p className={`${ui.help} mt-2`}>אפשר לערוך רק את הנוסח ל{primaryOutletLabel}.</p>
+            <p className={`${ui.help} mt-2`}>{t("אפשר לערוך רק את הנוסח ל{arg_0}.", { arg_0: primaryOutletLabel })}</p>
           ) : null}
         </div>
 
@@ -1428,8 +1435,8 @@ export function PostEditor({
           <div className="space-y-4 py-5">
             <div>
               <label htmlFor="post-overlay-headline" className={`${ui.groupTitle} mb-2 block`}>
-                הכותרת על התמונה
-              </label>
+                <Copy text="הכותרת על התמונה" />
+        </label>
               <input
                 id="post-overlay-headline"
                 value={overlayHeadline}
@@ -1440,19 +1447,19 @@ export function PostEditor({
                   })
                 }
                 className={ui.field}
-                placeholder="עד 6 מילים"
+                placeholder={t("עד 6 מילים")}
               />
             </div>
             <div>
               <label htmlFor="post-overlay-sub" className={`${ui.groupTitle} mb-2 block`}>
-                שורה קצרה
-              </label>
+                <Copy text="שורה קצרה" />
+        </label>
               <input
                 id="post-overlay-sub"
                 value={overlaySub}
                 onChange={(e) => void updateDesignField({ overlay_sub: e.target.value })}
                 className={ui.field}
-                placeholder="לא חובה. למשל: רק בשישי"
+                placeholder={t("לא חובה. למשל: רק בשישי")}
               />
             </div>
           </div>
@@ -1462,8 +1469,8 @@ export function PostEditor({
             written with the plan and what already worked, and keeps what they confirmed. */}
         <div className="py-5">
           <p id="post-rewrite-title" className={ui.groupTitle}>
-            לנסח מחדש
-          </p>
+            <Copy text="לנסח מחדש" />
+        </p>
           <div role="group" aria-labelledby="post-rewrite-title" className="mt-3 flex flex-wrap gap-2">
             {INSTRUCTION_CHIPS.map((label) => (
               <button
@@ -1474,7 +1481,7 @@ export function PostEditor({
                 onClick={() => void requestRewrite(label, label)}
                 className={ui.chip}
               >
-                {rewriting === label ? "כותבים…" : label}
+                {rewriting === label ? t("כותבים…") : t(label)}
               </button>
             ))}
           </div>
@@ -1486,8 +1493,8 @@ export function PostEditor({
             }}
           >
             <label htmlFor="post-instruction" className={`${ui.help} block`}>
-              או במילים שלכם
-            </label>
+              <Copy text="או במילים שלכם" />
+        </label>
             <div className="mt-1.5 flex gap-2">
               <input
                 id="post-instruction"
@@ -1496,7 +1503,7 @@ export function PostEditor({
                 maxLength={MAX_INSTRUCTION}
                 disabled={rewriting !== null}
                 onChange={(event) => setInstructionDraft(event.target.value)}
-                placeholder="למשל: להזכיר שפתוחים גם בשבת"
+                placeholder={t("למשל: להזכיר שפתוחים גם בשבת")}
                 className={`${ui.field} min-w-0 flex-1 text-sm`}
               />
               <button
@@ -1505,11 +1512,12 @@ export function PostEditor({
                 aria-busy={rewriting === OWN_WORDS}
                 className={`${ui.button} ${ui.matchField} shrink-0`}
               >
-                {rewriting === OWN_WORDS ? "כותבים…" : "לשנות"}
+                {rewriting === OWN_WORDS ? t("כותבים…") : t("לשנות")}
               </button>
             </div>
             {instructionDraft.length > MAX_INSTRUCTION - 40 ? (
-              <p className={`${ui.help} mt-1.5`}>נשארו {MAX_INSTRUCTION - instructionDraft.length} תווים</p>
+              <p className={`${ui.help} mt-1.5`}><Copy text="נשארו" />{MAX_INSTRUCTION - instructionDraft.length} <Copy text="תווים" />
+        </p>
             ) : null}
           </form>
           {rewriteMessage ? (
@@ -1535,14 +1543,14 @@ export function PostEditor({
             aria-expanded={showDesigner}
             disabled={imageLocked}
             onClick={() => setShowDesigner((open) => !open)}
-            className="group flex min-h-12 w-full items-center justify-between gap-3 text-right text-[15px] font-semibold text-[color:var(--ink)] disabled:opacity-40"
+            className="group flex min-h-12 w-full items-center justify-between gap-3 text-start text-[15px] font-semibold text-[color:var(--ink)] disabled:opacity-40"
           >
             <span className="inline-flex items-center gap-2">
               <EditorIcon kind="paper" className="h-5 w-5 text-[color:var(--ink-muted)]" />
-              לשנות עיצוב
-            </span>
+              <Copy text="לשנות עיצוב" />
+        </span>
             <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[color:var(--ink-muted)] transition-colors group-hover:text-[color:var(--ink)]">
-              {showDesigner ? "לסגור" : "לפתוח"}
+              {showDesigner ? t("לסגור") : t("לפתוח")}
               <IconChevron className={`h-4 w-4 transition-transform duration-200 ${showDesigner ? "rotate-90" : "-rotate-90"}`} />
             </span>
           </button>
@@ -1559,22 +1567,23 @@ export function PostEditor({
         <div className="-mt-2 flex items-center justify-between gap-2">
           <label htmlFor="post-audience-select" className={`${ui.groupTitle} inline-flex items-center gap-2`}>
             <IconUsers className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
-            למי הפוסט
-          </label>
+            <Copy text="למי הפוסט" />
+        </label>
           <Link href="/decisions#audiences" className={`${ui.link} ${ui.linkQuiet} text-[13px]`}>
-            לכל הקהלים
-          </Link>
+            <Copy text="לכל הקהלים" />
+        </Link>
         </div>
         {/* A load in flight, a failed read and "no audiences yet" are all things the owner
             has to know without asking. */}
         {audiencesLoading ? (
-          <p className={ui.help}>טוענים את הקהלים…</p>
+          <p className={ui.help}><Copy text="טוענים את הקהלים…" />
+        </p>
         ) : audiencesError ? (
-          <p className={ui.error}>{audiencesError}</p>
+          <p className={ui.error}>{t(audiencesError)}</p>
         ) : !audiences.length ? (
           <p className={ui.help}>
-            עוד לא הגדרתם קהלים, אז אי אפשר לבחור למי הפוסט פונה.
-          </p>
+            <Copy text="עוד לא הגדרתם קהלים, אז אי אפשר לבחור למי הפוסט פונה." />
+        </p>
         ) : (
           <>
             <span className={ui.select}>
@@ -1590,18 +1599,19 @@ export function PostEditor({
                 className={`${ui.field} text-sm`}
               >
                 <option value="" dir="rtl" lang="he">
-                  {currentAudienceId !== null && !currentAudienceName ? "קהל שהוגדר קודם" : "לא נבחר קהל"}
+                  {currentAudienceId !== null && !currentAudienceName ? t("קהל שהוגדר קודם") : t("לא נבחר קהל")}
                 </option>
                 {audiences.map((audience) => (
                   <option key={audience.id} value={audience.id} dir="rtl" lang="he">
                     {audience.name}
-                    {audience.is_primary ? " (הקהל העיקרי)" : ""}
+                    {audience.is_primary ? t(" (הקהל העיקרי)") : ""}
                   </option>
                 ))}
               </select>
               <IconChevron />
             </span>
-            {audienceBusy ? <p className={`${ui.help} mt-1.5`}>שומרים…</p> : null}
+            {audienceBusy ? <p className={`${ui.help} mt-1.5`}><Copy text="שומרים…" />
+        </p> : null}
           </>
         )}
       </div>
@@ -1637,9 +1647,9 @@ export function PostEditor({
   }
 
   function stepTitle(step: Step) {
-    if (step === "text") return "לשנות את הטקסט";
-    if (step === "photo") return cardNeedsPhoto ? (currentPost.image_url ? "להחליף תמונה" : "לבחור תמונה") : "לשנות עיצוב";
-    return publishFocus === "link" ? "הקישור לפוסט" : `לפרסם ב${channelLabel}`;
+    if (step === "text") return t("לשנות את הטקסט");
+    if (step === "photo") return cardNeedsPhoto ? (currentPost.image_url ? t("להחליף תמונה") : t("לבחור תמונה")) : t("לשנות עיצוב");
+    return publishFocus === "link" ? t("הקישור לפוסט") : t("לפרסם ב{arg_0}", { arg_0: channelLabel });
   }
 
   /* ------------------------------------------------------------------ *
@@ -1656,7 +1666,7 @@ export function PostEditor({
       return (
         <button type="button" disabled={imageLocked} onClick={() => photoInput.current?.click()} className={primaryClass}>
           <EditorIcon kind="photo" className="h-5 w-5" />
-          {uploadingPhoto ? "מעלים את התמונה…" : "להעלות תמונה"}
+          {uploadingPhoto ? t("מעלים את התמונה…") : t("להעלות תמונה")}
         </button>
       );
     }
@@ -1674,7 +1684,7 @@ export function PostEditor({
           className={primaryClass}
         >
           <IconCheck className="h-5 w-5" />
-          {approving ? "מאשרים…" : "לאשר"}
+          {approving ? t("מאשרים…") : t("לאשר")}
         </button>
       );
     }
@@ -1683,7 +1693,7 @@ export function PostEditor({
         <button type="button" onClick={() => openStep("publish")} className={primaryClass}>
           {/* Mirrored: in RTL, "forward" flies left. */}
           <EditorIcon kind="publish" className="h-5 w-5 -scale-x-100" />
-          לפרסם
+          <Copy text="לפרסם" />
         </button>
       );
     }
@@ -1696,7 +1706,7 @@ export function PostEditor({
     return (
       <div className="mt-5">
         <label htmlFor="post-link-later" className={`${ui.help} block`}>
-          להדביק קישור לפוסט, כדי לראות גם כמה ראו
+          <Copy text="להדביק קישור לפוסט, כדי לראות גם כמה ראו" />
         </label>
         <div className="mt-1.5 flex gap-2">
           <input
@@ -1713,7 +1723,7 @@ export function PostEditor({
             onClick={() => void markPublished()}
             className={`${ui.button} ${ui.matchField} shrink-0`}
           >
-            {publishing ? "שומרים…" : "לשמור"}
+            {publishing ? t("שומרים…") : t("לשמור")}
           </button>
         </div>
       </div>
@@ -1728,31 +1738,31 @@ export function PostEditor({
     const icon = "h-[18px] w-[18px]";
     const download: Quiet = {
       key: "download",
-      label: exporting ? "מורידים…" : "להוריד",
+      label: exporting ? t("מורידים…") : t("להוריד"),
       icon: <EditorIcon kind="download" className={icon} />,
       onClick: () => void handleExportCard(),
       disabled: downloadDisabled,
     };
     const text: Quiet = {
       key: "text",
-      label: "לשנות את הטקסט",
+      label: t("לשנות את הטקסט"),
       icon: <EditorIcon kind="text" className={icon} />,
       onClick: () => openStep("text"),
     };
     if (out) {
       return [
         ...(currentPost.published_url
-          ? [{ key: "view", label: "לראות את הפוסט", icon: <IconEye className={icon} />, href: currentPost.published_url }]
+          ? [{ key: "view", label: t("לראות את הפוסט"), icon: <IconEye className={icon} />, href: currentPost.published_url }]
           : []),
         download,
         ...(currentPost.published_url
-          ? [{ key: "link", label: "לעדכן את הקישור", icon: <IconLink className={icon} />, onClick: () => openStep("publish", "link") }]
+          ? [{ key: "link", label: t("לעדכן את הקישור"), icon: <IconLink className={icon} />, onClick: () => openStep("publish", "link") }]
           : []),
       ];
     }
     if (photoNeeded) {
       return [
-        { key: "library", label: "לבחור מהתמונות שלי", icon: <IconPhotos className={icon} />, onClick: openLibrary, disabled: imageLocked },
+        { key: "library", label: t("לבחור מהתמונות שלי"), icon: <IconPhotos className={icon} />, onClick: openLibrary, disabled: imageLocked },
         text,
         // The plan asked for the owner's own photo, but the post already has a picture: the
         // owner may decide it is good enough. Never a dead end.
@@ -1760,7 +1770,7 @@ export function PostEditor({
           ? [
               {
                 key: "approve",
-                label: approving ? "מאשרים…" : "לאשר עם התמונה הזו",
+                label: approving ? t("מאשרים…") : t("לאשר עם התמונה הזו"),
                 icon: <IconCheck className={icon} />,
                 onClick: () => void approveCurrentPost(),
                 disabled: approving || imageLocked,
@@ -1773,7 +1783,7 @@ export function PostEditor({
       text,
       {
         key: "photo",
-        label: cardNeedsPhoto ? (currentPost.image_url ? "להחליף תמונה" : "לבחור תמונה") : "לשנות עיצוב",
+        label: cardNeedsPhoto ? (currentPost.image_url ? t("להחליף תמונה") : t("לבחור תמונה")) : t("לשנות עיצוב"),
         icon: <EditorIcon kind="photo" className={icon} />,
         onClick: () => openStep("photo"),
       },
@@ -1791,7 +1801,7 @@ export function PostEditor({
     return (
       <div
         role="toolbar"
-        aria-label="עוד פעולות על הפוסט"
+        aria-label={t("עוד פעולות על הפוסט")}
         className={`mt-2 grid gap-1 md:flex md:flex-wrap md:items-center md:gap-x-6 md:gap-y-0 ${
           actions.length === 3 ? "grid-cols-3" : actions.length === 2 ? "grid-cols-2" : "grid-cols-1"
         } ${centered ? "md:justify-center" : "md:justify-start"}`}
@@ -1818,8 +1828,7 @@ export function PostEditor({
     return (
       <section aria-labelledby="post-needs" className="mt-3 rounded-[14px] bg-[var(--soft)] px-4 py-3 md:mt-5 md:py-3.5">
         <h2 id="post-needs" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
-          מה צריך מכם
-        </h2>
+          <Copy text="מה צריך מכם" /></h2>
         <ul className="mt-1 space-y-1 md:mt-1.5 md:space-y-1.5">
           {needs.map((need, index) => (
             <li key={`${need.kind}-${index}`} className="flex items-start gap-2.5 text-[15px] leading-6 text-[color:var(--ink)]">
@@ -1827,7 +1836,7 @@ export function PostEditor({
                 kind={need.kind === "photo" ? "photo" : "badge"}
                 className="mt-0.5 h-5 w-5 shrink-0 text-[color:var(--ink-muted)]"
               />
-              <span className="min-w-0">{need.text}</span>
+              <span className="min-w-0">{t(need.text)}</span>
             </li>
           ))}
         </ul>
@@ -1844,13 +1853,12 @@ export function PostEditor({
     const others = otherResults(currentPost);
     const updated = shortDate(currentPost.results?.updated_at);
     const source = matchedByLabel(currentPost.results);
-    const meta = [updated ? `עודכן ${updated}` : "", source].filter(Boolean).join(" · ");
+    const meta = [updated ? t("עודכן {arg_0}", { arg_0: updated }) : "", source].filter(Boolean).join(" · ");
     const learning = (currentPost.learning || "").trim();
     return (
       <section aria-labelledby="post-results" className="mt-6 border-t border-[var(--rule)] pt-5">
         <h2 id="post-results" className="text-[13px] font-semibold text-[color:var(--ink-muted)]">
-          מה קרה
-        </h2>
+          <Copy text="מה קרה" /></h2>
         {value !== null ? (
           <>
             <p className="mt-1 flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
@@ -1877,13 +1885,12 @@ export function PostEditor({
             {others.length ? (
               <details className="mt-1">
                 <summary className={`${ui.summary} text-[13px] font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
-                  עוד מספרים
-                  <IconChevron />
+                  <Copy text="עוד מספרים" /><IconChevron />
                 </summary>
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-3 pb-1">
                   {others.map((item) => (
-                    <div key={item.label}>
-                      <dt className="text-[12px] text-[color:var(--ink-muted)]">{item.label}</dt>
+                    <div key={t(item.label)}>
+                      <dt className="text-[12px] text-[color:var(--ink-muted)]">{t(item.label)}</dt>
                       <dd className="text-[17px] font-bold tracking-tight tabular-nums text-[color:var(--ink)]">{formatCount(item.value)}</dd>
                     </div>
                   ))}
@@ -1893,16 +1900,17 @@ export function PostEditor({
           </>
         ) : (
           <>
-            <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]">לא נמדד עדיין</p>
+            <p className="mt-1 text-[17px] font-semibold text-[color:var(--ink)]"><Copy text="לא נמדד עדיין" />
+        </p>
             <p className={`${ui.help} mt-0.5`}>
-              {pendingMeasureLine(currentPost, label, trial) ??
-                (label ? `נספור ${label} בעדכון הנתונים הבא.` : "נמדוד אותו בעדכון הנתונים הבא.")}
+              {pendingMeasureLine(currentPost, label, trial, t) ??
+                (label ? t("נספור {arg_0} בעדכון הנתונים הבא.", { arg_0: label }) : t("נמדוד אותו בעדכון הנתונים הבא."))}
             </p>
           </>
         )}
         {learning ? (
           <div className="mt-5">
-            <h3 className="text-[13px] font-semibold text-[color:var(--ink-muted)]">מה לומדים</h3>
+            <h3 className="text-[13px] font-semibold text-[color:var(--ink-muted)]"><Copy text="מה לומדים" /></h3>
             <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink)]">{learning}</p>
           </div>
         ) : null}
@@ -1923,12 +1931,12 @@ export function PostEditor({
 
   return (
     <div className={`${editorStyles.editor} mx-auto max-w-5xl`}>
-      <input ref={photoInput} type="file" accept="image/*" aria-label="להעלות תמונה לפוסט" hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
+      <input ref={photoInput} type="file" accept="image/*" aria-label={t("להעלות תמונה לפוסט")} hidden onChange={e => void uploadPhoto(e.target.files?.[0])} />
 
       {/* Where this post sits in the plan, its title and its state. */}
       <PostWorkspace header={<>
         <div className="flex items-center justify-between gap-3">
-          <nav aria-label="איפה הפוסט בתוכנית" className="flex min-w-0 items-center text-[13px]">
+          <nav aria-label={t(currentPost.creation_source === "quick" ? "פוסט משלכם" : "איפה הפוסט בתוכנית")} className="flex min-w-0 items-center text-[13px]">
             {onClose ? (
               <button
                 type="button"
@@ -1936,12 +1944,12 @@ export function PostEditor({
                 className={`${ui.link} ${ui.linkQuiet} group -ms-1 shrink-0 px-1 text-[13px]`}
               >
                 <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                הפוסטים
-              </button>
+                <Copy text="הפוסטים" />
+        </button>
             ) : null}
             {week ? (
               <span className="min-w-0 truncate text-[color:var(--ink-muted)]">
-                {onClose ? " · " : ""}שבוע {week}
+                {onClose ? " · " : ""}<Copy text="שבוע" />{week}
                 {focus ? ` · ${focus}` : ""}
               </span>
             ) : null}
@@ -1952,8 +1960,7 @@ export function PostEditor({
               onClick={() => goTo(nextPending)}
               className={`${ui.link} ${ui.linkQuiet} group shrink-0 text-[13px]`}
             >
-              הבא בתור
-              <IconChevron navigation className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+              <Copy text="הבא בתור" /><IconChevron navigation className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
             </button>
           ) : null}
         </div>
@@ -1963,7 +1970,7 @@ export function PostEditor({
         <ContentLanguageNote language={currentPost.content_language} reason={currentPost.language_reason} />
         <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1 md:mt-2">
           <span className={ui.status} data-status={stage}>
-            {LIFECYCLE_LABEL[stage]}
+            {t(LIFECYCLE_LABEL[stage])}
           </span>
           <span className={`${ui.meta} inline-flex items-center gap-1.5 font-normal`}>
             <ChannelIcon channel={channel} className="h-4 w-4" />
@@ -1981,8 +1988,8 @@ export function PostEditor({
                   className={`${ui.link} ${ui.linkQuiet} group -ms-1 -mt-2 px-1 text-[13px]`}
                 >
                   <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                  לחזור לפוסט
-                </button>
+                  <Copy text="לחזור לפוסט" />
+        </button>
                 <h2 className="mt-1 text-lg font-bold tracking-tight text-[color:var(--ink)]">{stepTitle(active)}</h2>
                 <div className="mt-5">{renderStep(active)}</div>
               </>
@@ -1997,7 +2004,7 @@ export function PostEditor({
       <BottomSheet
         style={demo ? productPaletteVariables(palette) : undefined}
         open={!isDesktop && active !== null}
-        title={active ? stepTitle(active) : ""}
+        title={active ? t(stepTitle(active)) : ""}
         onClose={closeSection}
       >
         {active ? renderStep(active) : null}

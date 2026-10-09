@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { IconCheck } from "@/lib/icons";
 import { GENERATE_STAGES } from "./constants";
 
@@ -8,6 +10,7 @@ import { GENERATE_STAGES } from "./constants";
  * (`generate_state.stage`), so everything before it is done and it is the one running.
  */
 export function GenerationProgress({ stage, businessName }: { stage: string; businessName: string }) {
+  const t = useCopy();
   const current = Math.max(
     0,
     GENERATE_STAGES.findIndex((item) => item.key === stage),
@@ -16,8 +19,8 @@ export function GenerationProgress({ stage, businessName }: { stage: string; bus
   return (
     <div className="space-y-6" role="status" aria-live="polite">
       <div>
-        <h2 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)]">בונים את החודש{businessName ? ` של ${businessName}` : ""}</h2>
-        <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]">דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע.</p>
+        <h2 className="text-[28px] font-bold leading-tight tracking-tight text-[var(--ink)]"><Copy text="בונים את החודש" />{businessName ? t(" של {arg_0}", { arg_0: businessName }) : ""}</h2>
+        <p className="mt-2 text-base leading-relaxed text-[var(--ink-soft)]"><Copy text="דקה או שתיים. אפשר לסגור את הדף, ונמשיך לבנות ברקע." /></p>
       </div>
       <ol className="divide-y divide-[var(--rule)] overflow-hidden rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
         {GENERATE_STAGES.map((item, index) => {

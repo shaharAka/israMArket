@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -283,7 +285,7 @@ function CostRow({ label, value, basis }: { label: string; value: string | null;
             <Figure>{value}</Figure>
           </span>
         ) : (
-          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]">המקור לא מפרסם את הנתון הזה</span>
+          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]"><Copy text="המקור לא מפרסם את הנתון הזה" /></span>
         )}
       </div>
       <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">{basis}</p>
@@ -314,7 +316,7 @@ function FeeRow({
             <Figure>{amount}</Figure>
           </span>
         ) : (
-          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]">לא נמסר</span>
+          <span className="text-[13px] font-medium text-[color:var(--ink-muted)]"><Copy text="לא נמסר" /></span>
         )}
       </div>
     </li>
@@ -346,7 +348,7 @@ function MetricCell({
           </Figure>
         </span>
       ) : (
-        <span className="font-medium text-[color:var(--ink-muted)]">לא נמסר</span>
+        <span className="font-medium text-[color:var(--ink-muted)]"><Copy text="לא נמסר" /></span>
       )}
     </span>
   );
@@ -358,12 +360,13 @@ function MetricLine({ impressions, clicks, position, ctr }: {
   position: number | undefined;
   ctr: number | undefined;
 }) {
+  const t = useCopy();
   return (
     <p className="mt-1.5 flex flex-wrap gap-x-5 gap-y-1 text-[13px]">
-      <MetricCell label="חשיפות" value={impressions} />
-      <MetricCell label="קליקים" value={clicks} />
-      <MetricCell label="מיקום" value={position} />
-      <MetricCell label="אחוז הקלקה" value={singlePercent(ctr)} suffix="%" />
+      <MetricCell label={t("חשיפות")} value={impressions} />
+      <MetricCell label={t("קליקים")} value={clicks} />
+      <MetricCell label={t("מיקום")} value={position} />
+      <MetricCell label={t("אחוז הקלקה")} value={singlePercent(ctr)} suffix="%" />
     </p>
   );
 }
@@ -430,6 +433,7 @@ function SourceLine({
  * and the source link is still one click away.
  */
 export default function PromotionPage() {
+  const t = useCopy();
   const [promotion, setPromotion] = useState<GooglePromotionPayload | null>(null);
   const [promotionError, setPromotionError] = useState("");
   const [promotionAttempt, setPromotionAttempt] = useState(0);
@@ -543,19 +547,19 @@ export default function PromotionPage() {
     typeof budget === "number" && isRange(floor)
       ? budget < floor[0]
         ? {
-            verdict: "עוד לא כדאי לפרסם בגוגל.",
-            reason: "בפחות מזה, לפי המקור, לגוגל אין מספיק נתונים כדי ללמוד, והכסף נגמר בלי תוצאות.",
+            verdict: t("עוד לא כדאי לפרסם בגוגל."),
+            reason: t("בפחות מזה, לפי המקור, לגוגל אין מספיק נתונים כדי ללמוד, והכסף נגמר בלי תוצאות."),
             tone: "warn" as const,
           }
         : budget < floor[1]
           ? {
-              verdict: "אפשר להתחיל לפרסם בגוגל, אבל בזהירות.",
-              reason: "אתם בתחתית הטווח. אפשר להתחיל, אבל יש פחות מקום לטעויות.",
+              verdict: t("אפשר להתחיל לפרסם בגוגל, אבל בזהירות."),
+              reason: t("אתם בתחתית הטווח. אפשר להתחיל, אבל יש פחות מקום לטעויות."),
               tone: "neutral" as const,
             }
           : {
-              verdict: "יש מקום לנסות פרסום בגוגל.",
-              reason: "התקציב שלכם מעליו, ולכן יש מקום גם ללמוד וגם לטעות.",
+              verdict: t("יש מקום לנסות פרסום בגוגל."),
+              reason: t("התקציב שלכם מעליו, ולכן יש מקום גם ללמוד וגם לטעות."),
               tone: "good" as const,
             }
       : null;
@@ -570,8 +574,8 @@ export default function PromotionPage() {
   // below — nothing is dropped.
   const warnings = plan?.warnings ?? [];
   const extraWarning =
-    warnings.find((warning, index) => index > 0 && !warning.includes("נמוך מהמינימום")) ??
-    warnings.find((warning) => !warning.includes("נמוך מהמינימום")) ??
+    warnings.find((warning, index) => index > 0 && !warning.includes(t("נמוך מהמינימום"))) ??
+    warnings.find((warning) => !warning.includes(t("נמוך מהמינימום"))) ??
     null;
 
   const positionRange = thresholds?.quick_win_position;
@@ -590,14 +594,14 @@ export default function PromotionPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-3xl">
-        <SectionHeader section="business" title="קידום בגוגל" />
+        <SectionHeader section="business" title={t("קידום בגוגל")} />
 
-        {demo ? <p className="-mt-3 mb-5 text-[13px] text-[color:var(--ink-muted)]">בדמו המחירים והמילים לדוגמה.</p> : null}
+        {demo ? <p className="-mt-3 mb-5 text-[13px] text-[color:var(--ink-muted)]"><Copy text="בדמו המחירים והמילים לדוגמה." /></p> : null}
 
         {/* ---------- the answer, its reason, and the one ask ---------- */}
         {/* One card with depth, not a tinted panel: the answer is the page's one object. */}
-        <section aria-label="התשובה בקצרה" className="paper px-5 py-6 sm:px-8 sm:py-8">
-          {promotionLoading ? <LoadingMark label="מחשבים כמה יעלה לפרסם בגוגל…" /> : null}
+        <section aria-label={t("התשובה בקצרה")} className="paper px-5 py-6 sm:px-8 sm:py-8">
+          {promotionLoading ? <LoadingMark label={t("מחשבים כמה יעלה לפרסם בגוגל…")} /> : null}
 
           {promotionError ? (
             <ErrorPanel
@@ -612,8 +616,7 @@ export default function PromotionPage() {
 
           {!promotionLoading && !promotionError && !plan ? (
             <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">
-              לא קיבלנו תוכנית קידום מהשרת, ולא נמציא מספרים במקומה. אפשר לנסות שוב.
-            </p>
+              <Copy text="לא קיבלנו תוכנית קידום מהשרת, ולא נמציא מספרים במקומה. אפשר לנסות שוב." /></p>
           ) : null}
 
           {plan ? (
@@ -621,39 +624,38 @@ export default function PromotionPage() {
               <h2 className="max-w-[28em] text-[21px] font-bold leading-[1.4] tracking-tight text-balance text-[color:var(--ink)] sm:text-[24px]">
                 {budgetFigure ? (
                   <>
-                    {"בתקציב של "}
+                    {t("בתקציב של ")}
                     <Figure>{budgetFigure}</Figure>
-                    {" בחודש, "}
+                    {t(" בחודש, ")}
                   </>
                 ) : null}
-                {floorStatus ? floorStatus.verdict : `זו עלות הפרסום בגוגל בתחום ${plan.industry_label}.`}
+                {floorStatus ? floorStatus.verdict : t("זו עלות הפרסום בגוגל בתחום {arg_0}.", { arg_0: plan.industry_label })}
               </h2>
 
               <p className="mt-3 max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
                 {totalFigure ? (
                   <>
-                    {"בפועל זה "}
+                    {t("בפועל זה ")}
                     <Figure strong>{totalFigure}</Figure>
-                    {" בחודש, עם דמי הניהול. "}
+                    {t(" בחודש, עם דמי הניהול. ")}
                   </>
                 ) : (
-                  "המקור לא מפרסם עלות חודשית כוללת. "
+                  t("המקור לא מפרסם עלות חודשית כוללת. ")
                 )}
                 {cpcFigure ? (
                   <>
-                    {"כל כניסה לאתר מהמודעה עולה "}
+                    {t("כל כניסה לאתר מהמודעה עולה ")}
                     <Figure strong>{cpcFigure}</Figure>
                     {"."}
                   </>
                 ) : (
-                  "המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר."
+                  t("המקור לא מפרסם מחיר לכניסה בתחום הזה, ולכן אין כאן מספר.")
                 )}{" "}
                 <Link
                   href="/decisions"
                   className="font-semibold whitespace-nowrap text-[color:var(--primary)] hover:underline hover:underline-offset-4"
                 >
-                  לשנות את התקציב
-                </Link>
+                  <Copy text="לשנות את התקציב" /></Link>
               </p>
 
               {floorStatus ? (
@@ -667,9 +669,9 @@ export default function PromotionPage() {
                   }`}
                 >
                   <span className="font-semibold">
-                    {"המינימום שפורסם לתחום: "}
+                    {t("המינימום שפורסם לתחום: ")}
                     {floorFigure ? <Figure>{floorFigure}</Figure> : null}
-                    {" בחודש. "}
+                    {t(" בחודש. ")}
                   </span>
                   {floorStatus.reason}
                 </p>
@@ -691,8 +693,8 @@ export default function PromotionPage() {
                     className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 py-3 text-center text-[15px] leading-6 text-white hover:bg-[var(--primary-dark)] sm:w-auto"
                   >
                     {searchConsoleConnected
-                      ? "לחבר את נתוני האתר: מה קורה אחרי הקליק"
-                      : "לחבר את גוגל: באילו חיפושים אתם כבר מופיעים"}
+                      ? t("לחבר את נתוני האתר: מה קורה אחרי הקליק")
+                      : t("לחבר את גוגל: באילו חיפושים אתם כבר מופיעים")}
                   </Link>
                 </div>
               ) : null}
@@ -702,54 +704,54 @@ export default function PromotionPage() {
 
         {/* ---------- every figure and every warning, one level down ---------- */}
         {plan ? (
-          <section aria-label="כל המספרים והאזהרות" className="mt-4 divide-y divide-[var(--rule)] border-b border-[var(--rule)]">
+          <section aria-label={t("כל המספרים והאזהרות")} className="mt-4 divide-y divide-[var(--rule)] border-b border-[var(--rule)]">
             {(plan.assumptions?.length ||
               plan.warnings?.length ||
               plan.channel_comparison?.recommendation ||
               plan.source) ? (
-              <Expand title="כל המספרים והחישובים">
+              <Expand title={t("כל המספרים והחישובים")}>
                 <div className="space-y-8">
                   <div>
-                    <GroupTitle>הטווחים, כל אחד עם החישוב שלו</GroupTitle>
+                    <GroupTitle><Copy text="הטווחים, כל אחד עם החישוב שלו" /></GroupTitle>
                     <div className="mt-2 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                       <CostRow
-                        label="כמה עולה כל כניסה מהמודעה (קליק)"
+                        label={t("כמה עולה כל כניסה מהמודעה (קליק)")}
                         value={cpcFigure}
-                        basis="מה שמשלמים לגוגל על כל אדם שלוחץ על המודעה ונכנס. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד."
+                        basis={t("מה שמשלמים לגוגל על כל אדם שלוחץ על המודעה ונכנס. המחיר נקבע לכל חיפוש בנפרד, ולכן הוא טווח ולא מספר אחד.")}
                       />
                       <CostRow
-                        label="כניסות בחודש"
+                        label={t("כניסות בחודש")}
                         value={countRange(plan.expected_clicks)}
-                        basis="התקציב חלקי המחיר לכניסה. זה הגבול העליון של מה שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים."
+                        basis={t("התקציב חלקי המחיר לכניסה. זה הגבול העליון של מה שהתקציב יכול לקנות, לא תחזית של כמה אנשים מחפשים.")}
                       />
                       <CostRow
-                        label="כמה מהנכנסים פונים או מזמינים"
+                        label={t("כמה מהנכנסים פונים או מזמינים")}
                         value={percentRange(plan.conversion_rate_range)}
                         basis={
                           plan.sector_label
-                            ? `זה השיעור שפורסם למגזר ״${plan.sector_label}״. הוא לא נמדד באתר שלכם.`
-                            : "זה השיעור שפורסם למגזר שלכם. הוא לא נמדד באתר שלכם."
+                            ? t("זה השיעור שפורסם למגזר ״{arg_0}״. הוא לא נמדד באתר שלכם.", { arg_0: plan.sector_label })
+                            : t("זה השיעור שפורסם למגזר שלכם. הוא לא נמדד באתר שלכם.")
                         }
                       />
                       <CostRow
-                        label={plan.conversion_unit ? `פניות או הזמנות בחודש (${plan.conversion_unit})` : "פניות או הזמנות בחודש"}
+                        label={plan.conversion_unit ? t("פניות או הזמנות בחודש ({arg_0})", { arg_0: plan.conversion_unit }) : t("פניות או הזמנות בחודש")}
                         value={countRange(plan.expected_conversions)}
-                        basis="הכניסות כפול שיעור הפונים. זו הערכה לפי טווחים, לא הבטחה. בשפת המקצוע: המרות."
+                        basis={t("הכניסות כפול שיעור הפונים. זו הערכה לפי טווחים, לא הבטחה. בשפת המקצוע: המרות.")}
                       />
                       <CostRow
-                        label="כמה עולה להביא פנייה אחת"
+                        label={t("כמה עולה להביא פנייה אחת")}
                         value={nisRange(plan.cost_per_conversion)}
-                        basis="המחיר לכניסה חלקי שיעור הפונים. אם זה יותר ממה שאתם מרוויחים על מכירה, גוגל לא משתלמת, וכדאי לדעת את זה מראש."
+                        basis={t("המחיר לכניסה חלקי שיעור הפונים. אם זה יותר ממה שאתם מרוויחים על מכירה, גוגל לא משתלמת, וכדאי לדעת את זה מראש.")}
                       />
                       <CostRow
-                        label="המינימום שפורסם למגזר"
+                        label={t("המינימום שפורסם למגזר")}
                         value={floorFigure}
-                        basis="תקציב המינימום שפורסם למגזר. מתחתיו אין לגוגל מספיק נתונים כדי ללמוד ולהשתפר."
+                        basis={t("תקציב המינימום שפורסם למגזר. מתחתיו אין לגוגל מספיק נתונים כדי ללמוד ולהשתפר.")}
                       />
                     </div>
                     {plan.matched_keywords?.length ? (
                       <p className="mt-4 flex flex-wrap items-center gap-1.5 text-[13px] text-[color:var(--ink-muted)]">
-                        <span className="font-medium">זיהינו את התחום לפי:</span>
+                        <span className="font-medium"><Copy text="זיהינו את התחום לפי:" /></span>
                         {plan.matched_keywords.map((word) => (
                           <span key={word} className={`${PILL} bg-[var(--soft)] text-[color:var(--ink-soft)]`}>
                             {word}
@@ -759,20 +761,18 @@ export default function PromotionPage() {
                     ) : null}
                   </div>
                   <div>
-                    <GroupTitle>מה עוד משלמים, חוץ מתקציב המדיה</GroupTitle>
+                    <GroupTitle><Copy text="מה עוד משלמים, חוץ מתקציב המדיה" /></GroupTitle>
                     <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
-                      תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש
-                      עולה באמת ולא רק את המספר שנשמע טוב.
-                    </p>
+                      <Copy text="תקציב המדיה הולך לגוגל עצמה. כאן העלויות של העבודה סביבו, בנפרד, כדי שתראו כמה החודש עולה באמת ולא רק את המספר שנשמע טוב." /></p>
                     <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
-                      <FeeRow label="דמי ניהול בחודש" amount={nisRange(plan.management_fee?.percent_amount_ils)}>
+                      <FeeRow label={t("דמי ניהול בחודש")} amount={nisRange(plan.management_fee?.percent_amount_ils)}>
                         {plan.management_fee?.percent_label ? (
                           <span className="block">
                             <Figure>{plan.management_fee.percent_label}</Figure>
                             {nisRange(plan.management_fee?.flat_range_ils) ? (
                               <>
                                 {" "}
-                                או תשלום חודשי קבוע של{" "}
+                                <Copy text="או תשלום חודשי קבוע של" />{" "}
                                 <Figure>{nisRange(plan.management_fee?.flat_range_ils)}</Figure>
                               </>
                             ) : null}
@@ -782,24 +782,21 @@ export default function PromotionPage() {
                           <span className="mt-1 block">{plan.management_fee.note}</span>
                         ) : null}
                       </FeeRow>
-                      <FeeRow label="הקמה חד־פעמית" amount={nisRange(plan.setup_fee)}>
-                        העבודה עד שהמודעות עולות לאוויר. משלמים עליה פעם אחת, לא כל חודש.
-                      </FeeRow>
+                      <FeeRow label={t("הקמה חד־פעמית")} amount={nisRange(plan.setup_fee)}>
+                        <Copy text="העבודה עד שהמודעות עולות לאוויר. משלמים עליה פעם אחת, לא כל חודש." /></FeeRow>
                       <FeeRow
-                        label="עלות חודשית כוללת (מדיה + ניהול)"
+                        label={t("עלות חודשית כוללת (מדיה + ניהול)")}
                         amount={nisRange(plan.total_monthly_ils)}
                         emphasis
                       >
-                        זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל.
-                      </FeeRow>
-                      <FeeRow label="החודש הראשון (כולל הקמה)" amount={firstMonthFigure} emphasis>
-                        החודש הראשון הוא תמיד היקר ביותר. אם הוא לא מסתדר לכם בתזרים, עדיף לדחות את ההתחלה.
-                      </FeeRow>
+                        <Copy text="זה מה שיוצא בפועל בכל חודש, ולא רק מה שהולך לגוגל." /></FeeRow>
+                      <FeeRow label={t("החודש הראשון (כולל הקמה)")} amount={firstMonthFigure} emphasis>
+                        <Copy text="החודש הראשון הוא תמיד היקר ביותר. אם הוא לא מסתדר לכם בתזרים, עדיף לדחות את ההתחלה." /></FeeRow>
                     </ul>
                   </div>
 
                   <div>
-                    <GroupTitle>מה עומד מאחורי המספרים</GroupTitle>
+                    <GroupTitle><Copy text="מה עומד מאחורי המספרים" /></GroupTitle>
 
                     {plan.assumptions?.length ? (
                       <ul className="mt-3 space-y-2.5">
@@ -815,13 +812,12 @@ export default function PromotionPage() {
                       </ul>
                     ) : (
                       <p className="mt-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                        לא קיבלנו מהשרת את ההנחות שמאחורי החישוב. בלעדיהן אי אפשר לדעת מה הטווח כולל.
-                      </p>
+                        <Copy text="לא קיבלנו מהשרת את ההנחות שמאחורי החישוב. בלעדיהן אי אפשר לדעת מה הטווח כולל." /></p>
                     )}
 
                     {plan.channel_comparison?.recommendation ? (
                       <p className="mt-5 max-w-[42em] rounded-[12px] bg-[var(--soft)] px-4 py-3 text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                        <span className="font-semibold text-[color:var(--ink)]">ולא רק גוגל: </span>
+                        <span className="font-semibold text-[color:var(--ink)]"><Copy text="ולא רק גוגל:" /></span>
                         {plain(plan.channel_comparison.recommendation)}
                       </p>
                     ) : null}
@@ -834,7 +830,7 @@ export default function PromotionPage() {
                         className="mt-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4"
                       >
                         <IconLink className="h-4 w-4 shrink-0" />
-                        {plan.source_title || "המקור שממנו נלקחו טווחי המחירים"}
+                        {plan.source_title || t("המקור שממנו נלקחו טווחי המחירים")}
                       </a>
                     ) : null}
                   </div>
@@ -846,11 +842,11 @@ export default function PromotionPage() {
               <Expand
                 title={
                   plan.warnings.length === 1
-                    ? "אזהרה לקרוא לפני שמתחילים"
-                    : `${plan.warnings.length} אזהרות לקרוא לפני שמתחילים`
+                    ? t("אזהרה לקרוא לפני שמתחילים")
+                    : t("{arg_0} אזהרות לקרוא לפני שמתחילים", { arg_0: plan.warnings.length })
                 }
               >
-                <ol aria-label="אזהרות לפני שמתחילים" className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
+                <ol aria-label={t("אזהרות לפני שמתחילים")} className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                   {plan.warnings.map((warning, index) => (
                     <li key={`${warning.slice(0, 24)}-${index}`} className="flex gap-3 py-3.5">
                       <span
@@ -871,10 +867,9 @@ export default function PromotionPage() {
         {/* ---------- the terms worth targeting ---------- */}
         <section aria-labelledby="keywords-heading" className="mt-12">
           <h2 id="keywords-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
-            חיפושים שבהם אתם כמעט בעמוד הראשון
-          </h2>
+            <Copy text="חיפושים שבהם אתם כמעט בעמוד הראשון" /></h2>
 
-          {keywordsLoading ? <LoadingMark label="אוספים את המילים…" /> : null}
+          {keywordsLoading ? <LoadingMark label={t("אוספים את המילים…")} /> : null}
 
           {keywordsError ? (
             <div className="mt-4">
@@ -909,20 +904,20 @@ export default function PromotionPage() {
                         <span className="shrink-0 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
                           {typeof win.position === "number" ? (
                             <>
-                              {"מקום "}
+                              {t("מקום ")}
                               <Figure>{oneDecimal.format(win.position)}</Figure>
                             </>
                           ) : (
-                            "מקום לא נמסר"
+                            t("מקום לא נמסר")
                           )}
                           {" · "}
                           {typeof win.clicks === "number" ? (
                             <>
                               <Figure>{whole.format(win.clicks)}</Figure>
-                              {" נכנסו"}
+                              {t(" נכנסו")}
                             </>
                           ) : (
-                            "כניסות לא נמסרו"
+                            t("כניסות לא נמסרו")
                           )}
                         </span>
                       </li>
@@ -931,68 +926,60 @@ export default function PromotionPage() {
                 </div>
               ) : (
                 <p className="mt-2 text-[15px] leading-7 text-[color:var(--ink-soft)]">
-                  עוד אין חיפושים שבהם האתר קרוב לעמוד הראשון. זה משתנה ככל שגוגל סורקת את האתר.
-                </p>
+                  <Copy text="עוד אין חיפושים שבהם האתר קרוב לעמוד הראשון. זה משתנה ככל שגוגל סורקת את האתר." /></p>
               )}
 
               <div className="border-y border-[var(--rule)]">
-                <Expand title={`כל ${moreTerms} המילים, ומאיפה כל אחת באה`}>
+                <Expand title={t("כל {arg_0} המילים, ומאיפה כל אחת באה", { arg_0: moreTerms })}>
                   <div className="space-y-8">
                     <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                      אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון.
-                      {typeof periodDays === "number" ? ` הנתונים מ-${periodDays} הימים האחרונים.` : null} שיפור
-                      הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק.
-                      {isRange(positionRange) && typeof minImpressions === "number" ? (
+                      <Copy text="אלה חיפושים שבהם האתר שלכם כבר מופיע, קרוב לעמוד הראשון." />{typeof periodDays === "number" ? t(" הנתונים מ-{arg_0} הימים האחרונים.", { arg_0: periodDays }) : null} <Copy text="שיפור הכותרת או הטקסט בעמוד יכול לקדם אותם בלי לשלם על קליק." />{isRange(positionRange) && typeof minImpressions === "number" ? (
                         <>
                           {" "}
-                          בחרנו לפי מיקום <Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
-                          ולפחות <Figure>{whole.format(minImpressions)}</Figure> חשיפות.
-                        </>
+                          <Copy text="בחרנו לפי מיקום" /><Figure>{`${oneDecimal.format(positionRange[0])}–${oneDecimal.format(positionRange[1])}`}</Figure>{" "}
+                          <Copy text="ולפחות" /><Figure>{whole.format(minImpressions)}</Figure> <Copy text="חשיפות." /></>
                       ) : null}
                     </p>
                     <ul className="divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                       <SourceLine
-                        title="נתוני החיפוש של גוגל (Search Console)"
+                        title={t("נתוני החיפוש של גוגל (Search Console)")}
                         active={searchConsoleConnected}
-                        statusLabel={searchConsoleConnected ? "מחובר" : "לא מחובר"}
+                        statusLabel={searchConsoleConnected ? t("מחובר") : t("לא מחובר")}
                         note={
                           kwSources?.search_console?.note ||
-                          "החיפושים שבהם האתר שלכם כבר מופיע, עם מספרים אמיתיים."
+                          t("החיפושים שבהם האתר שלכם כבר מופיע, עם מספרים אמיתיים.")
                         }
                         detail={
                           searchConsoleConnected && kwSources?.search_console?.site_url ? (
                             <>
-                              האתר בגוגל: <Figure>{kwSources.search_console.site_url}</Figure>
+                              <Copy text="האתר בגוגל:" /><Figure>{kwSources.search_console.site_url}</Figure>
                             </>
                           ) : null
                         }
                       />
                       <SourceLine
-                        title="ההשלמה האוטומטית של גוגל"
+                        title={t("ההשלמה האוטומטית של גוגל")}
                         active={kwSources?.autocomplete?.available === true}
-                        statusLabel={kwSources?.autocomplete?.available ? "פעיל" : "לא זמין כרגע"}
-                        note={kwSources?.autocomplete?.note || "מה שאנשים מקלידים בפועל. רק ביטויים, בלי מספר חיפושים."}
+                        statusLabel={kwSources?.autocomplete?.available ? t("פעיל") : t("לא זמין כרגע")}
+                        note={kwSources?.autocomplete?.note || t("מה שאנשים מקלידים בפועל. רק ביטויים, בלי מספר חיפושים.")}
                       />
                     </ul>
 
                     {/* The house rule, in the backend's own words: no volume column, anywhere.
                         A quiet inset in the page's own tones (it used to be a dark panel). */}
                     <section className="rounded-[14px] bg-[var(--soft)] px-5 py-4">
-                      <h3 className="text-[14px] font-semibold text-[color:var(--ink)]">למה אין כאן מספר חיפושים</h3>
+                      <h3 className="text-[14px] font-semibold text-[color:var(--ink)]"><Copy text="למה אין כאן מספר חיפושים" /></h3>
                       <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-soft)]">
                         {kwSources?.search_volumes?.note ||
-                          "אין לנו גישה לנתון של גוגל על כמה מחפשים כל מילה, ולכן לא תמצאו כאן מספר חיפושים."}
+                          t("אין לנו גישה לנתון של גוגל על כמה מחפשים כל מילה, ולכן לא תמצאו כאן מספר חיפושים.")}
                       </p>
                     </section>
 
                     {rowsWithNumbers.length ? (
                       <div>
-                        <GroupTitle>מילים עם מספרים אמיתיים מגוגל</GroupTitle>
+                        <GroupTitle><Copy text="מילים עם מספרים אמיתיים מגוגל" /></GroupTitle>
                         <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
-                          חיפושים שבהם האתר שלכם הופיע
-                          {typeof periodDays === "number" ? ` ב-${periodDays} הימים האחרונים` : ""}. המספרים
-                          מגוגל, לא הערכה שלנו.
-                        </p>
+                          <Copy text="חיפושים שבהם האתר שלכם הופיע" />{typeof periodDays === "number" ? t(" ב-{arg_0} הימים האחרונים", { arg_0: periodDays }) : ""}<Copy text=". המספרים מגוגל, לא הערכה שלנו." /></p>
                         <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {rowsWithNumbers.map((row: PromotionKeyword, index) => {
                             const quick = quickWinTerms.has(row.term);
@@ -1001,9 +988,9 @@ export default function PromotionPage() {
                                 <div className="flex flex-wrap items-center gap-2">
                                   <span className="text-[15px] font-medium text-[color:var(--ink)]">{row.term}</span>
                                   <IntentChip intent={row.intent} label={row.intent_label} />
-                                  {quick ? <span className={`${PILL} ${ACCENT_PILL}`}>הזדמנות מהירה</span> : null}
+                                  {quick ? <span className={`${PILL} ${ACCENT_PILL}`}><Copy text="הזדמנות מהירה" /></span> : null}
                                   {row.source === "autocomplete+search_console" ? (
-                                    <span className="text-xs text-[color:var(--ink-muted)]">מופיעה גם בהשלמה האוטומטית</span>
+                                    <span className="text-xs text-[color:var(--ink-muted)]"><Copy text="מופיעה גם בהשלמה האוטומטית" /></span>
                                   ) : null}
                                 </div>
                                 <MetricLine
@@ -1021,7 +1008,7 @@ export default function PromotionPage() {
 
                     {restQuickWins.length ? (
                       <div>
-                        <GroupTitle>עוד {restQuickWins.length} הזדמנויות מהירות</GroupTitle>
+                        <GroupTitle><Copy text="עוד" />{restQuickWins.length} <Copy text="הזדמנויות מהירות" /></GroupTitle>
                         <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {restQuickWins.map((win: PromotionQuickWin, index) => (
                             <li key={`${win.query}-${index}`} className="py-4">
@@ -1041,11 +1028,9 @@ export default function PromotionPage() {
 
                     {phraseRows.length ? (
                       <div>
-                        <GroupTitle>ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים</GroupTitle>
+                        <GroupTitle><Copy text="ביטויים מההשלמה האוטומטית של גוגל, בלי מספרים" /></GroupTitle>
                         <p className="mt-1 max-w-[42em] text-[13px] leading-6 text-[color:var(--ink-muted)]">
-                          מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה תוך כדי הקלדה. אין עליהן נתונים של
-                          חשיפות, קליקים או מיקום, ולא נעמיד פנים שיש.
-                        </p>
+                          <Copy text="מילים שאנשים מקלידים בפועל, לפי מה שגוגל משלימה תוך כדי הקלדה. אין עליהן נתונים של חשיפות, קליקים או מיקום, ולא נעמיד פנים שיש." /></p>
                         <ul className="mt-3 divide-y divide-[var(--rule)] border-y border-[var(--rule)]">
                           {phraseRows.map((row: PromotionKeyword, index) => (
                             <li
@@ -1055,7 +1040,7 @@ export default function PromotionPage() {
                               <span className="text-[15px] text-[color:var(--ink)]">{row.term}</span>
                               <span className="flex items-center gap-3">
                                 <IntentChip intent={row.intent} label={row.intent_label} />
-                                <span className="text-xs text-[color:var(--ink-muted)]">אין מספרים</span>
+                                <span className="text-xs text-[color:var(--ink-muted)]"><Copy text="אין מספרים" /></span>
                               </span>
                             </li>
                           ))}
@@ -1065,7 +1050,7 @@ export default function PromotionPage() {
 
                     {legend.length ? (
                       <div>
-                        <GroupTitle>מה כל תווית אומרת</GroupTitle>
+                        <GroupTitle><Copy text="מה כל תווית אומרת" /></GroupTitle>
                         <ul className="mt-3 grid gap-x-8 gap-y-3 sm:grid-cols-2">
                           {legend.map((item) => (
                             <li key={item.intent} className="flex items-start gap-3">
@@ -1081,25 +1066,20 @@ export default function PromotionPage() {
 
                     {keywords?.seeds?.length ? (
                       <p className="text-xs leading-6 text-[color:var(--ink-muted)]">
-                        חיפשנו השלמות לפי מה שכתוב בפרופיל העסק:{" "}
+                        <Copy text="חיפשנו השלמות לפי מה שכתוב בפרופיל העסק:" />{" "}
                         <span className="text-[color:var(--ink-soft)]">{keywords.seeds.slice(0, 4).join(" · ")}</span>
-                        {keywords.seeds.length > 4 ? ` ועוד ${keywords.seeds.length - 4}` : ""}
+                        {keywords.seeds.length > 4 ? t(" ועוד {arg_0}", { arg_0: keywords.seeds.length - 4 }) : ""}
                       </p>
                     ) : null}
 
                     {!searchConsoleConnected ? (
                       <div className="rounded-[14px] bg-[var(--primary-soft)] px-5 py-5">
                         <h3 className="text-[15px] font-semibold text-[color:var(--ink)]">
-                          מה תרוויחו מחיבור נתוני החיפוש של גוגל
-                        </h3>
+                          <Copy text="מה תרוויחו מחיבור נתוני החיפוש של גוגל" /></h3>
                         <p className="mt-1.5 max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                          זה כלי חינמי של גוגל (Search Console) שמראה באילו חיפושים האתר שלכם כבר מופיע, עם
-                          חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים על מה שמחפשים בגוגל.
-                          בלעדיהם יש לנו רק את הביטויים.
-                        </p>
+                          <Copy text="זה כלי חינמי של גוגל (Search Console) שמראה באילו חיפושים האתר שלכם כבר מופיע, עם חשיפות, קליקים ומיקום ממוצע. אלה הנתונים האמיתיים היחידים על מה שמחפשים בגוגל. בלעדיהם יש לנו רק את הביטויים." /></p>
                         <Link href="/integrations" className={`mt-4 ${QUIET_BUTTON}`}>
-                          לעמוד החיבורים
-                        </Link>
+                          <Copy text="לעמוד החיבורים" /></Link>
                       </div>
                     ) : null}
                   </div>
@@ -1113,11 +1093,11 @@ export default function PromotionPage() {
               <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
                 <IconEye className="h-6 w-6" />
               </span>
-              <h3 className="mt-4 text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין מילים להציג</h3>
+              <h3 className="mt-4 text-lg font-bold tracking-tight text-[color:var(--ink)]"><Copy text="עוד אין מילים להציג" /></h3>
               <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[color:var(--ink-soft)]">
                 {searchConsoleConnected
-                  ? "נתוני החיפוש של גוגל מחוברים, אבל האתר עוד לא הופיע בחיפושים שאפשר לבנות עליהם תוכנית. זה משתנה ככל שגוגל סורקת את האתר."
-                  : "אחרי שתחברו את נתוני החיפוש של גוגל, נראה לכם באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום. בלי לנחש כמה מחפשים."}
+                  ? t("נתוני החיפוש של גוגל מחוברים, אבל האתר עוד לא הופיע בחיפושים שאפשר לבנות עליהם תוכנית. זה משתנה ככל שגוגל סורקת את האתר.")
+                  : t("אחרי שתחברו את נתוני החיפוש של גוגל, נראה לכם באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום. בלי לנחש כמה מחפשים.")}
               </p>
             </div>
           ) : null}
@@ -1128,32 +1108,30 @@ export default function PromotionPage() {
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
             {/* Our own Hebrew name: the backend's title carries "(Google Business Profile)". */}
             <h2 id="profile-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
-              הכרטיס של העסק בגוגל
-            </h2>
-            {profile?.free ? <span className={`${PILL} bg-[var(--good-soft)] text-[color:var(--good)]`}>בחינם</span> : null}
+              <Copy text="הכרטיס של העסק בגוגל" /></h2>
+            {profile?.free ? <span className={`${PILL} bg-[var(--good-soft)] text-[color:var(--good)]`}><Copy text="בחינם" /></span> : null}
           </div>
           {profile?.steps?.length ? (
             <div className="mt-1.5">
               <p className="max-w-[42em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
-                {profile.steps.length} צעדים
-                {criticalSteps ? `, ${criticalSteps} מהם דחופים` : ""}. הראשון: {profile.steps[0].title}.
+                {profile.steps.length} <Copy text="צעדים" />{criticalSteps ? t(", {arg_0} מהם דחופים", { arg_0: criticalSteps }) : ""}<Copy text=". הראשון:" />{profile.steps[0].title}.
               </p>
               <GbpConfirm />
 
               <details className="group/fold mt-4 border-y border-[var(--rule)]">
                 <summary className={FOLD_SUMMARY}>
-                  <span>כל הצעדים, ומה שחשוב לדעת</span>
+                  <span><Copy text="כל הצעדים, ומה שחשוב לדעת" /></span>
                   <Caret />
                 </summary>
                 <div className="pb-8 pt-1">
                   {/* What the profile is, and which category to pick, explain the list —
                       so they sit with the list rather than above it. */}
                   <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                    {profile?.summary || "המקום היחיד בגוגל שבו מופיעים בחינם, ודרכו אפשר לבקש ביקורות."}
+                    {profile?.summary || t("המקום היחיד בגוגל שבו מופיעים בחינם, ודרכו אפשר לבקש ביקורות.")}
                   </p>
                   {profile?.suggested_category_hint ? (
                     <p className="mt-2 text-[14px] text-[color:var(--ink-soft)]">
-                      הקטגוריה הראשית שכדאי לבחור:{" "}
+                      <Copy text="הקטגוריה הראשית שכדאי לבחור:" />{" "}
                       <span className="font-semibold text-[color:var(--ink)]">{profile.suggested_category_hint}</span>
                     </p>
                   ) : null}
@@ -1172,12 +1150,12 @@ export default function PromotionPage() {
                               <span className={`${PILL} ${priority.className}`}>{priority.label}</span>
                             </div>
                             <p className="mt-2 max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                              <span className="font-semibold text-[color:var(--ink)]">למה זה חשוב: </span>
+                              <span className="font-semibold text-[color:var(--ink)]"><Copy text="למה זה חשוב:" /></span>
                               {step.why}
                             </p>
                             {step.how?.length ? (
                               <div className="mt-3">
-                                <span className="text-[13px] font-semibold text-[color:var(--ink)]">איך עושים:</span>
+                                <span className="text-[13px] font-semibold text-[color:var(--ink)]"><Copy text="איך עושים:" /></span>
                                 <ul className="mt-1.5 space-y-1.5">
                                   {step.how.map((line, lineIndex) => (
                                     <li
@@ -1215,9 +1193,7 @@ export default function PromotionPage() {
             </div>
           ) : (
             <p className="mt-2 text-[15px] leading-7 text-[color:var(--ink-soft)]">
-              לא קיבלנו מהשרת את רשימת הצעדים לכרטיס בגוגל. נסו שוב מאוחר יותר. בינתיים, את הכרטיס עצמו
-              מוצאים כשמחפשים בגוגל את שם העסק.
-            </p>
+              <Copy text="לא קיבלנו מהשרת את רשימת הצעדים לכרטיס בגוגל. נסו שוב מאוחר יותר. בינתיים, את הכרטיס עצמו מוצאים כשמחפשים בגוגל את שם העסק." /></p>
           )}
         </section>
 
@@ -1228,28 +1204,25 @@ export default function PromotionPage() {
             because it is the hand-off, not the answer, and it is an Expand because the
             page's word budget belongs to the answer above it. */}
         <section className="mt-12 border-y border-[var(--rule)]">
-          <Expand title={brief ? `סיכום ${brief.month_name_he} למי שמפרסם בשבילכם` : "סיכום החודש למי שמפרסם בשבילכם"}>
+          <Expand title={brief ? t("סיכום {arg_0} למי שמפרסם בשבילכם", { arg_0: brief.month_name_he }) : t("סיכום החודש למי שמפרסם בשבילכם")}>
             {briefError ? (
               <div>
                 <p className="text-[15px] text-[color:var(--danger)]">{briefError}</p>
                 <RetryButton onClick={() => setBriefAttempt((attempt) => attempt + 1)} />
               </div>
             ) : !brief ? (
-              <p className="text-[15px] text-[color:var(--ink-soft)]">מכינים את הסיכום…</p>
+              <p className="text-[15px] text-[color:var(--ink-soft)]"><Copy text="מכינים את הסיכום…" /></p>
             ) : (
               <>
                 <p className="max-w-[42em] text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  כל התוכנית של החודש בטקסט אחד להעתקה ולשליחה: המטרה, התקציב ואיך מחלקים אותו, הקהלים,
-                  כמה מפרסמים והקישור למעקב.
-                </p>
+                  <Copy text="כל התוכנית של החודש בטקסט אחד להעתקה ולשליחה: המטרה, התקציב ואיך מחלקים אותו, הקהלים, כמה מפרסמים והקישור למעקב." /></p>
                 <button
                   type="button"
-                  onClick={() => void copyText(brief.text, "הסיכום הועתק.")}
+                  onClick={() => void copyText(brief.text, t("הסיכום הועתק."))}
                   className={`mt-4 ${QUIET_BUTTON}`}
                 >
                   <IconCopy className="h-4 w-4" />
-                  להעתיק את הסיכום
-                </button>
+                  <Copy text="להעתיק את הסיכום" /></button>
                 {/* The text itself, exactly what the button copies, and scrollable so a
                     long month cannot push the page's real content off the screen. */}
                 <pre className="mt-4 max-h-96 overflow-auto rounded-[14px] bg-[var(--soft)] p-5 font-sans text-[13px] leading-6 whitespace-pre-wrap text-[color:var(--ink)]">

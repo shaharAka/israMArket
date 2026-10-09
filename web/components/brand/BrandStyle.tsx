@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 /**
  * "הסגנון שלכם" — the business's Design DNA, shown the way a designer would present it to
  * the owner: the direction in words (the feeling first, then the place, the photos, the
@@ -154,6 +156,7 @@ const ADJUSTMENTS: { label: string; group: string; adjust: Adjust; key: string; 
 ];
 
 export function BrandStyle({ business, brand }: { business: Business; brand: BrandLanguage | null }) {
+  const t = useCopy();
   const [dna, setDna] = useState<BrandDna | null>(null);
   const [dnaLoaded, setDnaLoaded] = useState(false);
   const [posts, setPosts] = useState<RoadmapPost[]>([]);
@@ -211,7 +214,7 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
   }
 
   function failed(err: unknown, fallback: string) {
-    if (isPlanRequired(err)) setPlanNeeded(err.message && !/^Payment Required$/i.test(err.message) ? err.message : "כדי לנסות סגנון אחר צריך מנוי פעיל.");
+    if (isPlanRequired(err)) setPlanNeeded(err.message && !/^Payment Required$/i.test(err.message) ? err.message : t("כדי לנסות סגנון אחר צריך מנוי פעיל."));
     else setError(err instanceof Error ? err.message : fallback);
   }
 
@@ -227,7 +230,7 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
       setEdits({});
       setBrandDna(res.brand_dna);
     } catch (err) {
-      failed(err, "לא הצלחנו להציע סגנון אחר. נסו שוב.");
+      failed(err, t("לא הצלחנו להציע סגנון אחר. נסו שוב."));
     } finally {
       setBusy(null);
     }
@@ -245,7 +248,7 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
       setBrandDna(res.brand_dna);
       setNote(a.done);
     } catch (err) {
-      failed(err, "לא הצלחנו לשנות את הסגנון. נסו שוב.");
+      failed(err, t("לא הצלחנו לשנות את הסגנון. נסו שוב."));
     } finally {
       setBusy(null);
     }
@@ -260,9 +263,9 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
       setDna(res.brand_dna);
       setEdits({});
       setBrandDna(res.brand_dna);
-      setNote("הסגנון נשמר. כל הפוסטים שלכם יעוצבו לפיו.");
+      setNote(t("הסגנון נשמר. כל הפוסטים שלכם יעוצבו לפיו."));
     } catch (err) {
-      failed(err, "לא הצלחנו לשמור את הסגנון. השינויים עדיין כאן.");
+      failed(err, t("לא הצלחנו לשמור את הסגנון. השינויים עדיין כאן."));
     } finally {
       setBusy(null);
     }
@@ -283,23 +286,22 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
 
   const building = !dnaLoaded;
   const brief = [
-    { label: "המקום", text: d.world },
-    { label: "התמונות", text: d.photo },
-    { label: "הטקסט", text: d.text },
-    { label: "מה לא נעשה", text: d.never.join(" · ") },
+    { label: t("המקום"), text: d.world },
+    { label: t("התמונות"), text: d.photo },
+    { label: t("הטקסט"), text: d.text },
+    { label: t("מה לא נעשה"), text: d.never.join(" · ") },
   ].filter((row) => row.text);
   return (
     <section id="style" className={styles.card} aria-labelledby="brand-style" aria-busy={building || undefined}>
       <div className={styles.head}>
-        <h2 id="brand-style">הסגנון שלכם</h2>
+        <h2 id="brand-style"><Copy text="הסגנון שלכם" /></h2>
         {building ? (
           <p className={styles.line} role="status">
-            מעצבים לכם סגנון משלכם, לפי האתר, הלוגו והתמונות. זה לוקח כמה שניות.
-          </p>
+            <Copy text="מעצבים לכם סגנון משלכם, לפי האתר, הלוגו והתמונות. זה לוקח כמה שניות." /></p>
         ) : shown && d.feel ? (
           <p className={styles.lead}>{d.feel}</p>
         ) : !shown ? (
-          <p className={styles.line}>עוד אין לעסק סגנון משלו, אז הפוסטים מעוצבים בצבעים שלכם בלבד.</p>
+          <p className={styles.line}><Copy text="עוד אין לעסק סגנון משלו, אז הפוסטים מעוצבים בצבעים שלכם בלבד." /></p>
         ) : null}
       </div>
 
@@ -314,7 +316,7 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
         </dl>
       ) : null}
 
-      <div className={styles.samples} aria-label="שלושה פוסטים בסגנון שלכם" role="list">
+      <div className={styles.samples} aria-label={t("שלושה פוסטים בסגנון שלכם")} role="list">
         {inMix.map((post, i) => (
           <div key={`${i}-${post.design?.text_mode}-${post.design?.composition}`} role="listitem" className={styles.sample}>
             {building ? (
@@ -329,79 +331,76 @@ export function BrandStyle({ business, brand }: { business: Business; brand: Bra
       {/* While the first style is being built there is nothing to act on yet. */}
       <div className={styles.actions} hidden={building}>
         {dnaLoaded && (!kept || dirty) ? (
-          <UIAction onClick={() => void save()} busy={busy === "save"} busyLabel="שומרים…" disabled={Boolean(busy) && busy !== "save"}>
-            לשמור
-          </UIAction>
+          <UIAction onClick={() => void save()} busy={busy === "save"} busyLabel={t("שומרים…")} disabled={Boolean(busy) && busy !== "save"}>
+            <Copy text="לשמור" /></UIAction>
         ) : null}
-        <UIAction variant="secondary" onClick={() => void regenerate()} busy={busy === "regen"} busyLabel="מחפשים סגנון אחר…" disabled={building || (Boolean(busy) && busy !== "regen")}>
-          {dna ? "לנסות סגנון אחר" : "ליצור סגנון לעסק"}
+        <UIAction variant="secondary" onClick={() => void regenerate()} busy={busy === "regen"} busyLabel={t("מחפשים סגנון אחר…")} disabled={building || (Boolean(busy) && busy !== "regen")}>
+          {dna ? t("לנסות סגנון אחר") : t("ליצור סגנון לעסק")}
         </UIAction>
         {dirty ? (
           <UIAction variant="text" disabled={Boolean(busy)} onClick={() => edit({})}>
-            לבטל את השינויים
-          </UIAction>
+            <Copy text="לבטל את השינויים" /></UIAction>
         ) : kept && !note ? (
-          <span className={styles.kept}>שמרתם את הסגנון הזה</span>
+          <span className={styles.kept}><Copy text="שמרתם את הסגנון הזה" /></span>
         ) : null}
       </div>
       {planNeeded ? (
         <p role="status" className={styles.plan}>
           {planNeeded}{" "}
           <Link href="/billing" className={styles.planLink}>
-            לבחור מנוי
-          </Link>
+            <Copy text="לבחור מנוי" /></Link>
         </p>
       ) : null}
       {error ? <p role="alert" className={styles.error}>{error}</p> : null}
       {note ? <p role="status" className={styles.note}>{note}</p> : null}
 
       <details className={styles.details} onToggle={(e) => setDetailsOpen(e.currentTarget.open)} hidden={building}>
-        <summary>לשנות פרטים</summary>
+        <summary><Copy text="לשנות פרטים" /></summary>
         {detailsOpen ? (
           <div className={styles.adjust}>
             {(["tone", "text"] as const).map((group) => (
-              <div key={group} role="group" aria-label={group === "tone" ? "האופי" : "תמונה וטקסט"} className={styles.pair}>
+              <div key={group} role="group" aria-label={group === "tone" ? t("האופי") : t("תמונה וטקסט")} className={styles.pair}>
                 {ADJUSTMENTS.filter((a) => a.group === group).map((a) => (
                   <button key={a.key} type="button" className={styles.choice} disabled={Boolean(busy) || !dna} aria-busy={busy === a.key || undefined} onClick={() => void adjust(a)}>
-                    {busy === a.key ? "משנים…" : a.label}
+                    {busy === a.key ? t("משנים…") : a.label}
                   </button>
                 ))}
               </div>
             ))}
 
             <details className={styles.more} onToggle={(e) => setFontsOpen(e.currentTarget.open)}>
-              <summary>אותיות וצבעים</summary>
+              <summary><Copy text="אותיות וצבעים" /></summary>
               {/* Rendered only while open: each font preview downloads its family. */}
               {fontsOpen ? (
                 <div className={styles.pickers}>
                   <fieldset>
-                    <legend>אותיות לכותרות</legend>
+                    <legend><Copy text="אותיות לכותרות" /></legend>
                     <div className={styles.fonts}>
                       {FONT_KEYS.map((key) => (
                         <button key={key} type="button" aria-pressed={resolved.display.key === key} onClick={() => setType("display", key)} className={styles.font}>
-                          <span style={{ fontFamily: fontStack(key), fontWeight: FONT_LIBRARY[key].weights.includes(700) ? 700 : FONT_LIBRARY[key].weights[0] }}>אבג</span>
+                          <span style={{ fontFamily: fontStack(key), fontWeight: FONT_LIBRARY[key].weights.includes(700) ? 700 : FONT_LIBRARY[key].weights[0] }}><Copy text="אבג" /></span>
                           <small>{FONT_LIBRARY[key].label_he}</small>
                         </button>
                       ))}
                     </div>
                   </fieldset>
                   <fieldset>
-                    <legend>אותיות לטקסט</legend>
+                    <legend><Copy text="אותיות לטקסט" /></legend>
                     <div className={styles.fonts}>
                       {FONT_KEYS.filter((key) => FONT_LIBRARY[key].roles.includes("text")).map((key) => (
                         <button key={key} type="button" aria-pressed={resolved.text.key === key} onClick={() => setType("text", key)} className={styles.font}>
-                          <span style={{ fontFamily: fontStack(key), fontWeight: 400 }}>אבג</span>
+                          <span style={{ fontFamily: fontStack(key), fontWeight: 400 }}><Copy text="אבג" /></span>
                           <small>{FONT_LIBRARY[key].label_he}</small>
                         </button>
                       ))}
                     </div>
                   </fieldset>
                   <fieldset>
-                    <legend>צבעים</legend>
+                    <legend><Copy text="צבעים" /></legend>
                     <div className={styles.colors}>
                       {COLOR_ROLES.map((role) => (
                         <label key={role}>
-                          <input type="color" aria-label={`לשנות את ${COLOR_ROLE_LABEL[role]}`} value={colorOf(role)} onChange={(e) => setColor(role, e.target.value)} />
+                          <input type="color" aria-label={t("לשנות את {arg_0}", { arg_0: COLOR_ROLE_LABEL[role] })} value={colorOf(role)} onChange={(e) => setColor(role, e.target.value)} />
                           <span>{COLOR_ROLE_LABEL[role]}</span>
                         </label>
                       ))}

@@ -112,7 +112,7 @@ export function PostFeed({
               id={`posts-week-${week}`}
               className="mb-3 flex min-w-0 items-baseline gap-1.5 px-1 text-[15px] font-semibold leading-6 text-[color:var(--ink)]"
             >
-              <span className="shrink-0">{week ? t("שבוע {arg_0}", { arg_0: week }) : t("עוד פוסטים")}</span>
+              <span className="shrink-0">{week ? t("שבוע {arg_0}", { arg_0: week }) : t("פוסטים משלכם")}</span>
               {focus ? <span className="truncate font-normal text-[color:var(--ink-muted)]">· {focus}</span> : null}
             </h2>
             <ul className={`${ui.card} divide-y divide-[var(--rule)] overflow-hidden`}>

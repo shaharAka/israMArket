@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { endpoints, type GenerateResult, type GenerationStatus } from "@/lib/api";
 import type { ContentLanguage } from "@/lib/content-language";
@@ -49,6 +51,7 @@ export function MonthBuildProgress({
   /** An explicit next action when no build is running; never starts work on mount. */
   idle?: (build: MonthBuild) => ReactNode;
 }) {
+  const t = useCopy();
   const startPosts = useCallback(() => endpoints.startPosts(undefined, contentLanguage).then(job => ({ job, done: job.done })), [contentLanguage]);
   const build = useMonthBuild({ kind, onDone, onProgress, startCall: kind === "posts" ? startPosts : START[kind] });
   const { status, loaded, starting, running, error, start } = build;
@@ -66,28 +69,27 @@ export function MonthBuildProgress({
       <div role="alert" className="rounded-[14px] bg-[var(--danger-soft)] px-5 py-4 text-sm leading-6 text-[var(--danger)]">
         <p className="text-[15px] font-semibold">
           {kind === "posts"
-            ? "לא הצלחנו לסיים את הפוסטים."
+            ? t("לא הצלחנו לסיים את הפוסטים.")
             : status?.month_name_he
-              ? `לא הצלחנו לסיים את ${status.month_name_he}.`
-              : "לא הצלחנו לסיים את החודש."}
+              ? t("לא הצלחנו לסיים את {arg_0}.", { arg_0: status.month_name_he })
+              : t("לא הצלחנו לסיים את החודש.")}
         </p>
         <p>{error}</p>
-        {!canStart ? <p>בדקו ושמרו את הנושאים, התמונות והסגנון לפני שמנסים שוב.</p> : null}
+        {!canStart ? <p><Copy text="בדקו ושמרו את הנושאים, התמונות והסגנון לפני שמנסים שוב." /></p> : null}
         <button
           type="button"
           disabled={!canStart}
           onClick={() => { if (canStart) void start(); }}
           className="mt-3 inline-flex min-h-11 cursor-pointer items-center rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:border-[var(--ink-faint)]"
         >
-          לנסות שוב
-        </button>
+          <Copy text="לנסות שוב" /></button>
       </div>
     );
   }
 
   if (!running && !starting) return loaded ? idle?.(build) ?? null : null;
 
-  const label = status?.running ? status.label_he : kind === "posts" ? "מתחילים לכתוב את הפוסטים…" : "מתחילים לבנות את החודש…";
+  const label = status?.running ? status.label_he : kind === "posts" ? t("מתחילים לכתוב את הפוסטים…") : t("מתחילים לבנות את החודש…");
   const step = status?.running ? Math.min(status.stage_index + 1, status.stage_count) : 1;
   const steps = status?.stage_count || 4;
   return (
@@ -108,8 +110,8 @@ export function MonthBuildProgress({
           {/* Posts: a week takes one to two minutes (measured 80-130 s on Muse Spark),
               and the Posts page shows each week as soon as it is saved. */}
           {kind === "posts"
-            ? `שלב ${step} מתוך ${steps} · כשתי דקות לכל שבוע. כל שבוע שמוכן נכנס מיד לפוסטים, ואפשר לסגור את הדף.`
-            : `שלב ${step} מתוך ${steps}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.`}
+            ? t("שלב {arg_0} מתוך {arg_1} · כשתי דקות לכל שבוע. כל שבוע שמוכן נכנס מיד לפוסטים, ואפשר לסגור את הדף.", { arg_0: step, arg_1: steps })
+            : t("שלב {arg_0} מתוך {arg_1}. אפשר לסגור את הדף, ונמשיך לבנות ברקע.", { arg_0: step, arg_1: steps })}
         </span>
       </p>
     </div>

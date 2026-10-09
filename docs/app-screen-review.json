@@ -4,7 +4,7 @@
   "revision_reviewed": "1349016",
   "scope": "Source review of all customer-app routes and their major component states; browser review of selected local demo screens. Public marketing/legal routes and internal design tools are inventoried but are not claimed as fully reviewed here.",
   "method": "Define purpose and message in English first, assess actual evidence and next action, then localize naturally into Hebrew, Arabic and Russian. Proposed messages are design contracts, not assertions that missing features are already implemented.",
-  "implementation_status": "Audit complete. First recovery slice implemented in draft PR #168; broader screen, research, recommendation and localization findings remain open. Not deployed.",
+  "implementation_status": "Recovery PR #168 is merged and deployed at 2eed747. The next release candidate covers owner-authored posts, saved research/route evidence, recommendation-specific observations and core interface localization. Its code is not yet deployed. Whole-app/native-language and provider checks remain open on the linked issues.",
   "priorities": [
     {
       "id": "completion",

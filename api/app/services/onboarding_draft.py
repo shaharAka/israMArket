@@ -1936,6 +1936,8 @@ def link_draft_photos(db, business: Business, links: list[dict]) -> dict:
     business.scraped_profile_json = dumps(stored)
     if linked:
         for strategy in db.query(Strategy).filter(Strategy.business_id == business.id).all():
+            from app.services.strategy_writes import lock_and_refresh
+            lock_and_refresh(db, strategy)
             extra = loads(strategy.roadmap_json, {}) or {}
             roadmap = extra.get("roadmap") or {}
             changed = False

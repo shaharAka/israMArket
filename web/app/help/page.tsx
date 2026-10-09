@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useState } from "react";
 import Link from "next/link";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -14,13 +16,14 @@ import { IconChevron } from "@/lib/icons";
  * landing on the page that needs one. The same sheet opens here as next to the fields.
  */
 export default function HelpPage() {
+  const t = useCopy();
   const [open, setOpen] = useState<HelpTopic | null>(null);
 
   return (
     <AppShell>
       <div className="mx-auto max-w-[720px]">
-        <PageHeader title="איך מוצאים דברים" subtitle="הסברים קצרים, צעד אחר צעד." />
-        <Link href="/support" className="drawn-button mb-7 inline-flex min-h-11 items-center justify-center px-5">לדווח על בעיה או לשאול שאלה</Link>
+        <PageHeader title={t("איך מוצאים דברים")} subtitle={t("הסברים קצרים, צעד אחר צעד.")} />
+        <Link href="/support" className="drawn-button mb-7 inline-flex min-h-11 items-center justify-center px-5"><Copy text="לדווח על בעיה או לשאול שאלה" /></Link>
 
         {/* A label and whitespace per group, a card with hairlines per list: no boxes inside boxes. */}
         <div className="space-y-8">

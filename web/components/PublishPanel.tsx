@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useRef, useState } from "react";
 import {
   PUBLISH_SCOPE_LABELS,
@@ -94,6 +96,7 @@ export function PublishPanel({
   onMarkPublished,
   linkFirst = false,
 }: PublishPanelProps) {
+  const t = useCopy();
   const [scheduleDate, setScheduleDate] = useState(post.scheduled_for || "");
   const [savingSchedule, setSavingSchedule] = useState(false);
   const [scheduleError, setScheduleError] = useState("");
@@ -175,9 +178,9 @@ export function PublishPanel({
       const result = await endpoints.schedulePost(postIndex, value);
       setScheduleDate(result.post.scheduled_for || "");
       onStrategy(result.strategy);
-      toast(value ? "התאריך נשמר. הפוסט יופיע בתור לפרסום." : "התאריך הוסר מהפוסט.");
+      toast(value ? t("התאריך נשמר. הפוסט יופיע בתור לפרסום.") : t("התאריך הוסר מהפוסט."));
     } catch (err) {
-      setScheduleError(err instanceof Error ? err.message : "לא הצלחנו לשמור את התאריך");
+      setScheduleError(err instanceof Error ? err.message : t("לא הצלחנו לשמור את התאריך"));
       setScheduleDate(storedDate);
     } finally {
       setSavingSchedule(false);
@@ -205,7 +208,7 @@ export function PublishPanel({
   const linkField = channel === "whatsapp" ? null : (
     <div className={out ? "" : "mt-4"}>
       <label htmlFor="post-published-url" className={`${ui.help} block`}>
-        {published ? "הקישור לפוסט" : "להדביק קישור לפוסט, כדי לראות גם כמה ראו"}
+        {published ? t("הקישור לפוסט") : t("להדביק קישור לפוסט, כדי לראות גם כמה ראו")}
       </label>
       <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
         <input
@@ -224,7 +227,7 @@ export function PublishPanel({
             onClick={onMarkPublished}
             className={`${ui.button} ${ui.matchField} shrink-0`}
           >
-            {publishing ? "שומרים…" : published ? "לעדכן את הקישור" : "לשמור את הקישור"}
+            {publishing ? t("שומרים…") : published ? t("לעדכן את הקישור") : t("לשמור את הקישור")}
           </button>
         ) : null}
       </div>
@@ -233,7 +236,7 @@ export function PublishPanel({
   const doneSection = (
     <section key="done" className={linkFirst ? "pb-5" : "py-5"}>
       {out ? (
-        linkField ?? <p className="text-sm leading-6 text-[var(--ink-soft)]">סומן כפורסם. את הלחיצות בוואטסאפ נספור לפי הקוד של הפוסט.</p>
+        linkField ?? <p className="text-sm leading-6 text-[var(--ink-soft)]"><Copy text="סומן כפורסם. את הלחיצות בוואטסאפ נספור לפי הקוד של הפוסט." /></p>
       ) : (
         <>
           <button
@@ -243,7 +246,7 @@ export function PublishPanel({
             className="drawn-button inline-flex min-h-13 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white enabled:hover:bg-[var(--primary-dark)]"
           >
             <IconCheck className="h-5 w-5" />
-            {publishing ? "שומרים…" : "פרסמתי"}
+            {publishing ? t("שומרים…") : t("פרסמתי")}
           </button>
           {linkField}
         </>
@@ -261,46 +264,44 @@ export function PublishPanel({
       <section className={linkFirst ? "py-5" : "pb-5"}>
         <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
           <ChannelIcon channel={channel} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
-          מה צריך כדי לפרסם ב{channelLabel}
+          <Copy text="מה צריך כדי לפרסם ב" />{channelLabel}
         </h3>
         <p className={`${ui.meta} mt-0.5 font-normal`}>
-          {storedDate ? `מתוכנן ליום ${shortDay(storedDate)}` : "עוד לא נקבע תאריך"}
-          {out ? " · סומן כפורסם" : ""}
+          {storedDate ? t("מתוכנן ליום {arg_0}", { arg_0: shortDay(storedDate) }) : t("עוד לא נקבע תאריך")}
+          {out ? t(" · סומן כפורסם") : ""}
         </p>
 
         <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
           <button type="button" disabled={exportDisabled} onClick={onExportCard} className={ui.button}>
             <IconImage />
-            {exporting ? "מורידים את הכרטיס…" : "להוריד את הכרטיס"}
+            {exporting ? t("מורידים את הכרטיס…") : t("להוריד את הכרטיס")}
           </button>
           {channel === "whatsapp" ? (
             <a href={whatsappShareUrl(whatsappText(caption))} target="_blank" rel="noopener noreferrer" className={ui.button}>
               <IconWhatsApp className="text-[color:var(--good)]" />
-              לשלוח בוואטסאפ
-            </a>
+              <Copy text="לשלוח בוואטסאפ" /></a>
           ) : (
             <>
-              <button type="button" onClick={() => void copy(caption, "הכיתוב הועתק.")} className={ui.button}>
+              <button type="button" onClick={() => void copy(caption, t("הכיתוב הועתק."))} className={ui.button}>
                 <IconCopy />
-                להעתיק את הכיתוב
-              </button>
+                <Copy text="להעתיק את הכיתוב" /></button>
               <a href={COMPOSER_HREF[channel]} target="_blank" rel="noopener noreferrer" className={`${ui.button} sm:col-span-2`}>
                 <ChannelIcon channel={channel} />
-                לפתוח את {channelLabel}
+                <Copy text="לפתוח את" />{channelLabel}
               </a>
             </>
           )}
         </div>
         <p className={`${ui.help} mt-3`}>
           {channel === "whatsapp"
-            ? "וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה."
-            : `ב${channelLabel} אי אפשר למלא כיתוב מבחוץ: מורידים את הכרטיס, מעתיקים את הכיתוב ומדביקים באפליקציה.`}
+            ? t("וואטסאפ ייפתח עם הכיתוב והקישור, מוכנים לשליחה.")
+            : t("ב{arg_0} אי אפשר למלא כיתוב מבחוץ: מורידים את הכרטיס, מעתיקים את הכיתוב ומדביקים באפליקציה.", { arg_0: channelLabel })}
         </p>
       </section>
 
       {/* The tracked link — or the reason there is none, never a dead button. */}
       <section className="py-5">
-        <h3 className={ui.groupTitle}>קישור עם מעקב</h3>
+        <h3 className={ui.groupTitle}><Copy text="קישור עם מעקב" /></h3>
         {trackingUrl ? (
           <>
             {/* A tracked URL is long and unreadable; two lines show it is there, the copy
@@ -311,22 +312,18 @@ export function PublishPanel({
               </p>
               <button
                 type="button"
-                onClick={() => void copy(trackingUrl, "הקישור הועתק.")}
+                onClick={() => void copy(trackingUrl, t("הקישור הועתק."))}
                 className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
               >
                 <IconLink />
-                להעתיק את הקישור
-              </button>
+                <Copy text="להעתיק את הקישור" /></button>
             </div>
             <p className={`${ui.help} mt-2`}>
-              כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט.
-            </p>
+              <Copy text="כשמפרסמים עם הקישור הזה, נוכל לדעת אחר כך אילו לחיצות ופניות הגיעו מהפוסט." /></p>
           </>
         ) : (
           <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-            לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״,
-            וניצור קישור לכל פוסט.
-          </p>
+            <Copy text="לפוסט הזה אין קישור עם מעקב, כי לא רשמתם אתר לעסק. הוסיפו את האתר ב״ההחלטות שלי״, וניצור קישור לכל פוסט." /></p>
         )}
       </section>
 
@@ -335,8 +332,7 @@ export function PublishPanel({
         <section className="py-5">
           <h3 className={`${ui.groupTitle} flex items-center gap-2`}>
             <IconWhatsApp className="h-[18px] w-[18px] text-[var(--good)]" />
-            קישור הוואטסאפ של הפוסט
-          </h3>
+            <Copy text="קישור הוואטסאפ של הפוסט" /></h3>
           {waLink.link ? (
             <>
               <div className={`${ui.inset} mt-3 flex items-center gap-3 py-1 pe-1.5 ps-3.5`}>
@@ -345,27 +341,23 @@ export function PublishPanel({
                 </p>
                 <button
                   type="button"
-                  onClick={() => void copy(waLink.link!.url, "קישור הוואטסאפ הועתק.")}
+                  onClick={() => void copy(waLink.link!.url, t("קישור הוואטסאפ הועתק."))}
                   className={`${ui.link} shrink-0 rounded-[10px] px-2 text-[13px]`}
                 >
                   <IconCopy />
-                  להעתיק
-                </button>
+                  <Copy text="להעתיק" /></button>
               </div>
               <p className={`${ui.help} mt-2`}>
                 {/* Instagram does not make links in a feed caption tappable, so the honest
                     place there is the story's link sticker. */}
-                בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו
-                במדבקת קישור בסטורי. נספור כמה לחצו, וההודעה תגיע עם הקוד{" "}
-                <span dir="ltr">{waLink.link.tag}</span>. אם נשלחה הודעה, רואים רק בוואטסאפ.
-              </p>
+                <Copy text="בפייסבוק ובוואטסאפ שמים אותו בכיתוב. באינסטגרם קישור בכיתוב לא לחיץ, אז שמים אותו במדבקת קישור בסטורי. נספור כמה לחצו, וההודעה תגיע עם הקוד" />{" "}
+                <span dir="ltr">{waLink.link.tag}</span><Copy text=". אם נשלחה הודעה, רואים רק בוואטסאפ." /></p>
             </>
           ) : (
             <p className="mt-1 text-sm leading-6 text-[var(--ink-soft)]">
-              הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו.{" "}
+              <Copy text="הפוסט מזמין לכתוב בוואטסאפ, אז מגיע לו קישור משלו." />{" "}
               <a href="/integrations" className={`${ui.link} min-h-0`}>
-                להגדיר את מספר הוואטסאפ
-              </a>
+                <Copy text="להגדיר את מספר הוואטסאפ" /></a>
             </p>
           )}
         </section>
@@ -377,8 +369,7 @@ export function PublishPanel({
       {/* ---- when it goes out ---- */}
       <section className="py-5">
         <label htmlFor="post-scheduled-for" className={`${ui.groupTitle} block`}>
-          מתי לפרסם
-        </label>
+          <Copy text="מתי לפרסם" /></label>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
           <input
             id="post-scheduled-for"
@@ -395,13 +386,12 @@ export function PublishPanel({
               onClick={() => void saveSchedule("")}
               className={`${ui.link} ${ui.linkQuiet} text-[13px]`}
             >
-              להסיר את התאריך
-            </button>
+              <Copy text="להסיר את התאריך" /></button>
           ) : null}
-          {savingSchedule ? <span className={ui.help}>שומרים…</span> : null}
+          {savingSchedule ? <span className={ui.help}><Copy text="שומרים…" /></span> : null}
         </div>
         {storedDate ? null : (
-          <p className={`${ui.help} mt-2`}>בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום.</p>
+          <p className={`${ui.help} mt-2`}><Copy text="בלי תאריך, הפוסט לא ייכנס לרשימת הפוסטים שמחכים לפרסום." /></p>
         )}
         {scheduleError ? (
           <p className={`${ui.error} mt-3`}>
@@ -417,7 +407,7 @@ export function PublishPanel({
             <details key={key} className="group">
               <summary className={`${ui.summary} text-sm font-semibold text-[color:var(--ink-soft)] hover:text-[color:var(--ink)]`}>
                 <ChannelIcon channel={key} className="h-[18px] w-[18px] text-[color:var(--ink-muted)]" />
-                <span className="flex-1">אותו פוסט גם ל{CHANNEL_LABEL[key]}</span>
+                <span className="flex-1"><Copy text="אותו פוסט גם ל" />{CHANNEL_LABEL[key]}</span>
                 <IconChevron />
               </summary>
               <p className={`${ui.inset} whitespace-pre-line px-4 py-3 text-sm leading-6 text-[color:var(--ink)]`}>{text}</p>
@@ -425,16 +415,14 @@ export function PublishPanel({
                 {key === "whatsapp" ? (
                   <a href={whatsappShareUrl(whatsappText(text))} target="_blank" rel="noopener noreferrer" className={ui.link}>
                     <IconWhatsApp />
-                    לשלוח בוואטסאפ
-                  </a>
+                    <Copy text="לשלוח בוואטסאפ" /></a>
                 ) : (
                   <>
-                    <button type="button" onClick={() => void copy(text, "הכיתוב הועתק.")} className={ui.link}>
+                    <button type="button" onClick={() => void copy(text, t("הכיתוב הועתק."))} className={ui.link}>
                       <IconCopy />
-                      להעתיק את הכיתוב
-                    </button>
+                      <Copy text="להעתיק את הכיתוב" /></button>
                     <a href={COMPOSER_HREF[key]} target="_blank" rel="noopener noreferrer" className={`${ui.link} ${ui.linkQuiet}`}>
-                      לפתוח את {CHANNEL_LABEL[key]}
+                      <Copy text="לפתוח את" />{CHANNEL_LABEL[key]}
                     </a>
                   </>
                 )}
@@ -448,8 +436,8 @@ export function PublishPanel({
       <section className="pt-5">
         <h3 className="text-sm font-semibold leading-6 text-[var(--ink-soft)]">
           {capability?.auto_publish
-            ? "יש הרשאה לפרסום אוטומטי"
-            : "אין לנו הרשאה ממטא לפרסם אוטומטית באינסטגרם ובפייסבוק"}
+            ? t("יש הרשאה לפרסום אוטומטי")
+            : t("אין לנו הרשאה ממטא לפרסם אוטומטית באינסטגרם ובפייסבוק")}
         </h3>
 
         {capabilityError ? (
@@ -457,14 +445,13 @@ export function PublishPanel({
             {capabilityError}
           </p>
         ) : !capability ? (
-          <p className={`${ui.help} mt-1`}>בודקים מה מותר לנו לפרסם…</p>
+          <p className={`${ui.help} mt-1`}><Copy text="בודקים מה מותר לנו לפרסם…" /></p>
         ) : (
           // The conclusion is the heading above and stays on the face; the API's reasons are
           // the explanation of it, one tap down (UI-RULES rule 2 and 7).
           <details>
             <summary className={`${ui.summary} text-[13px] font-semibold text-[var(--primary)] hover:text-[var(--primary-dark)]`}>
-              למה
-              <IconChevron />
+              <Copy text="למה" /><IconChevron />
             </summary>
             {/* The API's own sentences, shown as written. Paraphrasing them into
                 "permissions" and "scopes" would be the jargon this panel exists to avoid,
@@ -480,8 +467,7 @@ export function PublishPanel({
             {capability.missing.length ? (
               <details className="mt-1">
                 <summary className={`${ui.summary} text-[13px] font-semibold text-[var(--ink-soft)] hover:text-[var(--ink)]`}>
-                  מה בדיוק חסר (למי שמנהל את החשבון במטא)
-                  <IconChevron />
+                  <Copy text="מה בדיוק חסר (למי שמנהל את החשבון במטא)" /><IconChevron />
                 </summary>
                 <ul className="space-y-1">
                   {capability.missing.map((scope) => (

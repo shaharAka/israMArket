@@ -3,6 +3,7 @@ from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import ValidationError
+from sqlalchemy import update
 from sqlalchemy.orm import Session, object_session
 
 from app.db import get_db
@@ -11,6 +12,7 @@ from app.deps import get_business
 from app.models import Asset, Business, PerformanceSnapshot, Recommendation, Strategy, User
 from app.schemas import (
     PostApprovalIn,
+    PostCreateIn,
     PostAssetIn,
     PostDesignIn,
     PostImageIn,
@@ -32,6 +34,7 @@ from app.services import (
     photo_choice,
     post_rewrite,
     plan_editing,
+    quick_posts,
 )
 from app.services.assets import (
     asset_catalogue,
@@ -82,6 +85,8 @@ def serialize_strategy(
     usp = loads(strategy.usp_json, {})
     payload = {
         "id": strategy.id,
+        "post_workspace_only": bool(extra.get(quick_posts.WORKSPACE_ONLY)),
+        "business_name": business.name if business else None,
         "plan_revision": plan_editing.revision(business),
         **gregorian_month_meta(strategy.year, strategy.month),
         "year": strategy.year,
@@ -147,6 +152,8 @@ def _post_view(strategy: Strategy, business: Business, index: int, post: dict) -
 
 
 def upsert_generated_strategy(db: Session, business: Business, generated: dict) -> Strategy:
+    table = Business.__table__
+    db.execute(update(table).where(table.c.id == business.id).values(id=table.c.id))
     existing = (
         db.query(Strategy)
         .filter(
@@ -161,6 +168,13 @@ def upsert_generated_strategy(db: Session, business: Business, generated: dict) 
     roadmap_posts = (generated.get("roadmap") or {}).get("posts")
     if isinstance(roadmap_posts, list):
         assign_designs(roadmap_posts, design_dna.dna_for_posts(business))
+    generated = copy.deepcopy(generated)
+    if existing:
+        db.execute(update(Strategy).where(Strategy.id == existing.id).values(id=Strategy.id))
+        db.refresh(existing)
+        old_posts = (loads(existing.roadmap_json, {}).get("roadmap") or {}).get("posts") or []
+        generated["roadmap"]["posts"] = quick_posts.merge_generated_posts(
+            old_posts, generated["roadmap"].get("posts") or [], business.id, generated["year"], generated["month"])
     payload = dumps(
         {
             "posting_plan": generated["posting_plan"],
@@ -516,7 +530,8 @@ def _editable_strategy(db: Session, business: Business) -> Strategy | None:
 
 @router.get("/strategy/edit")
 def editable_plan(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
-    return plan_editing.view(db, business, _editable_strategy(db, business))
+    strategy = _editable_strategy(db, business)
+    return plan_editing.view(db, business, None if quick_posts.workspace_only(strategy) else strategy)
 
 
 @router.patch("/strategy/edit")
@@ -525,13 +540,28 @@ def save_plan_edit(body: dict, business: Business = Depends(get_business), db: S
         edit = plan_editing.EditIn.model_validate(body)
     except ValidationError:
         raise HTTPException(422, "מלאו כיוון וקהל. הכיוון וההנחות יכולים להכיל עד 300 תווים, והקהל עד 160. אפשר להוסיף עד 4 הנחות.")
-    return plan_editing.save(db, business, _editable_strategy(db, business), edit)
+    strategy = _editable_strategy(db, business)
+    return plan_editing.save(db, business, None if quick_posts.workspace_only(strategy) else strategy, edit)
 
 
 @router.get("/strategy/current")
 def current_strategy(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     strategy = _active_strategy(db, business)
+    if quick_posts.workspace_only(strategy):
+        raise HTTPException(404, "עוד אין תוכנית לחודש.")
     return serialize_strategy(strategy, business, horizon=_horizon_for(db, business, strategy))
+
+
+@router.get("/strategy/posts/workspace")
+def posts_workspace(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    return serialize_strategy(_active_strategy(db, business), business)
+
+
+@router.post("/strategy/posts/create")
+def create_post(body: PostCreateIn, business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
+    strategy, index = quick_posts.create(db, business, body)
+    return {"post_index": index, "post": _post_view(strategy, business, index, _posts_of(strategy)[index]),
+            "strategy": serialize_strategy(strategy, business)}
 
 
 @router.post("/strategy/posts/image", dependencies=[Depends(require_generation_access)])
@@ -1257,6 +1287,8 @@ def approve_strategy(
     db: Session = Depends(get_db),
 ) -> dict:
     strategy = _active_strategy(db, business)
+    from app.services.strategy_writes import lock_and_refresh
+    lock_and_refresh(db, strategy)
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
     mgmnt = roadmap.get("management_and_checkpoints") or {}

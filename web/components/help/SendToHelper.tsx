@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy } from "@/components/language/LanguageProvider";
+
 import { isolate } from "@/components/help/richText";
 import { IconCopy, IconWhatsApp } from "@/lib/icons";
 import { copyText, whatsappShareUrl } from "@/lib/ui";
@@ -45,8 +47,7 @@ export function SendToHelper({
           className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[color:var(--primary)] underline-offset-4 transition-colors hover:text-[color:var(--primary-dark)] hover:underline"
         >
           <IconWhatsApp className="h-4 w-4" />
-          לשלוח בוואטסאפ
-        </a>
+          <Copy text="לשלוח בוואטסאפ" /></a>
         <button
           type="button"
           onClick={() => {
@@ -55,8 +56,7 @@ export function SendToHelper({
           className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-[color:var(--primary)] underline-offset-4 transition-colors hover:text-[color:var(--primary-dark)] hover:underline"
         >
           <IconCopy className="h-4 w-4" />
-          להעתיק את ההודעה
-        </button>
+          <Copy text="להעתיק את ההודעה" /></button>
       </div>
     </div>
   );

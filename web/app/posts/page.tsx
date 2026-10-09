@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
+import { QuickPost, type QuickPostDraft } from "@/components/posts/QuickPost";
 import { FirstPosts } from "@/components/posts/FirstPosts";
 import { MonthBuildProgress } from "@/components/MonthBuildProgress";
 import { PostEditor } from "@/components/PostEditor";
@@ -51,6 +52,7 @@ function readLocation(params: URLSearchParams | ReturnType<typeof useSearchParam
   return {
     post: raw !== null && /^\d+$/.test(raw) ? Number(raw) : null,
     calendar: params.get("view") === "calendar",
+    creating: params.get("create") === "1",
   };
 }
 
@@ -80,6 +82,7 @@ function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (cale
 
 function PostsWorkspace() {
   const t = useCopy();
+  const [quickDraft, setQuickDraft] = useState<QuickPostDraft | null>(null);
   const { locale } = useLanguage();
   const params = useSearchParams();
   const location = readLocation(params);
@@ -116,7 +119,7 @@ function PostsWorkspace() {
     let active = true;
     async function loadPosts() {
       try {
-        const current = await endpoints.strategy();
+        const current = await endpoints.postsWorkspace();
         if (!active) return;
         setStrategy(current);
         setError("");
@@ -237,7 +240,7 @@ function PostsWorkspace() {
   const showDue = Boolean(due && firstPending >= 0 && !firstPublicationDue);
   // The page's one ask is the next post that needs the owner, worded as what it needs.
   const primary =
-    strategy && !location.calendar
+    strategy && !location.calendar && !location.creating
       ? firstPublicationDue
         ? { label: "לפרסם את הפוסט הראשון", index: due.index }
         : firstPending >= 0
@@ -260,15 +263,16 @@ function PostsWorkspace() {
     <div className={`mx-auto ${location.calendar && posts.length ? "max-w-6xl" : "max-w-3xl"}`}>
       <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
-        <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
+        {!strategy?.post_workspace_only ? <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
           {t("כלי הביצוע של התוכנית")}
-        </Link>
+        </Link> : null}
         <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">
-          {strategy ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
+          {strategy && !strategy.post_workspace_only ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
         </h1>
 
-        <div className="mt-5 flex items-center justify-between gap-4">
-          {strategy && posts.length ? (
+        {!location.creating ? <button type="button" className={`${ui.link} mt-3 min-h-11`} onClick={() => go("create=1", "push")}>{t("ליצור פוסט משלכם")}</button> : null}
+        {!location.creating ? <div className="mt-5 flex items-center justify-between gap-4">
+          {strategy && !strategy.post_workspace_only && posts.length && !location.creating ? (
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <p className="shrink-0 text-sm font-semibold tabular-nums text-[color:var(--ink)]">
                 {t("{arg_0} מתוך {arg_1} אושרו", { arg_0: doneCount, arg_1: posts.length })}
@@ -296,12 +300,12 @@ function PostsWorkspace() {
               onChange={(calendar) => go(calendar ? "view=calendar" : "", "replace")}
             />
           ) : null}
-        </div>
+        </div> : null}
       </header>
 
       {/* The rest of the month still being written: the weeks below are ready to work on
           now, and each new week joins them as it is saved. Nothing when no build runs. */}
-      {strategy && posts.length ? (
+      {strategy && !strategy.post_workspace_only && posts.length && !location.creating ? (
         <div className="mt-6 empty:hidden">
           <MonthBuildProgress
             kind="posts"
@@ -346,10 +350,15 @@ function PostsWorkspace() {
         </div>
       ) : null}
 
-      <div className="mt-8">
+      <QuickPost draft={quickDraft} onDraftChange={setQuickDraft} open={location.creating} onCancel={() => go("", "replace")} onCreated={(saved, index) => {
+        setStrategy(saved); setNoMonth(false); setError("");
+        openedHere.current = false;
+        go(`post=${index}`, "replace"); window.scrollTo(0, 0);
+      }} />
+      {!location.creating ? <div className="mt-8">
         {!strategy ? (
           noMonth ? (
-            <NoPostsYet />
+            <NoPostsYet onCreate={() => go("create=1", "push")} />
           ) : !error ? (
             <p className="text-sm text-[color:var(--ink-muted)]">{t("טוענים את הפוסטים של החודש…")}</p>
           ) : null
@@ -367,7 +376,7 @@ function PostsWorkspace() {
         ) : (
           <PostFeed posts={posts} brand={strategy.brand_language} strategy={strategy} onOpen={openPost} />
         )}
-      </div>
+      </div> : null}
     </div>
   );
 }
@@ -376,19 +385,18 @@ function PostsWorkspace() {
  * No execution plan yet. Preparation is already inline when a plan exists; here
  * the owner must reach that plan first, without a competing connection checklist.
  */
-function NoPostsYet() {
-  // English intent: create content from the plan; the next action opens that plan.
+function NoPostsYet({ onCreate }: { onCreate: () => void }) {
+  // English intent: make a timely post now, or continue building the marketing plan.
   const t = useCopy();
   return (
     <section className={`${ui.card} px-6 py-12 text-center sm:px-10`}>
-      <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">{t("נכין פוסטים לפי התוכנית שלכם")}</h2>
+      <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">{t("יש לכם משהו לספר ללקוחות?")}</h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        {t("מתחילים בתוכנית, ואז בוחרים נושא ומכינים פוסט שתוכלו לערוך ולפרסם.")}
+        {t("כתבו את הרעיון או הטקסט, והמשיכו לערוך את הפוסט.")}
       </p>
       <div className="mt-6 flex flex-col items-center gap-2">
-        <Link href="/strategy" className={ui.button}>
-          {t("להמשיך לתוכנית")}
-        </Link>
+        <button type="button" onClick={onCreate} className={ui.button}>{t("ליצור פוסט משלכם")}</button>
+        <Link href="/strategy" className={`${ui.link} min-h-11`}>{t("להמשיך לתוכנית")}</Link>
       </div>
     </section>
   );

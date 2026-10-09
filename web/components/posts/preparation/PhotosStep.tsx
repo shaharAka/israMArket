@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ChangeEvent, type FormEvent } from "react";
 import Link from "next/link";
 import { AssetSheet, AssetTile } from "@/components/AssetCard";
@@ -70,6 +72,7 @@ function mergeAssets(current: Asset[], incoming: Asset[]) {
  * hidden from the audit — the page simply opens on the library instead of on a toolbar.
  */
 export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embedded?: boolean; onNext?: () => void; onPendingChange?: (pending: boolean) => void }) {
+  const t = useCopy();
   const [assets, setAssets] = useState<Asset[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
@@ -133,14 +136,14 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
         added.push(res.asset);
         setPending((prev) => ({ ...prev, [file.name]: "done" }));
       } catch (err) {
-        failures.push(`${file.name}: ${message(err, "לא הצלחנו להעלות")}`);
+        failures.push(t("{arg_0}: {arg_1}", { arg_0: file.name, arg_1: message(err, "לא הצלחנו להעלות") }));
         setPending((prev) => ({ ...prev, [file.name]: "error" }));
       }
     }
 
     if (added.length) {
       setAssets((prev) => mergeAssets(prev, added));
-      toast(countLabel(added.length, "קובץ נוסף לתמונות שלכם", "קבצים נוספו לתמונות שלכם"));
+      toast(countLabel(added.length, t("קובץ נוסף לתמונות שלכם"), t("קבצים נוספו לתמונות שלכם")));
       void describeNew(added);
     }
     if (failures.length) {
@@ -185,15 +188,15 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setNotice(
         res.skipped
-          ? `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור. ${res.skipped} לא נוספו, כי כבר היו כאן או שאי אפשר להשתמש בהם.`
-          : `הוספנו ${countLabel(res.assets.length, "קובץ", "קבצים")} מהקישור.`
+          ? t("הוספנו {arg_0} מהקישור. {arg_1} לא נוספו, כי כבר היו כאן או שאי אפשר להשתמש בהם.", { arg_0: countLabel(res.assets.length, "קובץ", "קבצים"), arg_1: res.skipped })
+          : t("הוספנו {arg_0} מהקישור.", { arg_0: countLabel(res.assets.length, "קובץ", "קבצים") })
       );
       if (res.assets.length) {
         setUrl("");
         setAddOpen(false);
       }
     } catch (err) {
-      setLoadError(message(err, "לא הצלחנו להביא את הקובץ מהקישור"));
+      setLoadError(message(err, t("לא הצלחנו להביא את הקובץ מהקישור")));
     } finally {
       setImporting(false);
     }
@@ -208,16 +211,14 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
       if (res.assets.length) setAssets((prev) => mergeAssets(prev, res.assets));
       setScanResult(
         res.assets.length
-          ? `מצאנו באתר ${countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות")}.${
-              res.skipped ? ` ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}, ולא הוספנו אותן שוב.` : ""
-            }`
+          ? t("מצאנו באתר {arg_0}.{arg_1}", { arg_0: countLabel(res.assets.length, "תמונה חדשה", "תמונות חדשות"), arg_1: res.skipped ? ` ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}, ולא הוספנו אותן שוב.` : "" })
           : res.skipped
-            ? `לא מצאנו תמונות חדשות. ${countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן")}.`
-            : "לא מצאנו תמונות באתר."
+            ? t("לא מצאנו תמונות חדשות. {arg_0}.", { arg_0: countLabel(res.skipped, "תמונה כבר הייתה כאן", "תמונות כבר היו כאן") })
+            : t("לא מצאנו תמונות באתר.")
       );
-      toast("סיימנו לעבור על האתר");
+      toast(t("סיימנו לעבור על האתר"));
     } catch (err) {
-      setLoadError(message(err, "לא הצלחנו לעבור על האתר"));
+      setLoadError(message(err, t("לא הצלחנו לעבור על האתר")));
       // The site could not be read: the other ways in, open, right under the reason.
       setAddOpen(true);
     } finally {
@@ -228,19 +229,19 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
   async function handleSave(id: number, patch: { description: string; tags: string[] }) {
     const res = await endpoints.updateAsset(id, patch);
     setAssets((prev) => mergeAssets(prev, [res.asset]));
-    toast("השינויים נשמרו");
+    toast(t("השינויים נשמרו"));
   }
 
   async function handleDescribe(id: number) {
     const res = await endpoints.describeAsset(id);
     setAssets((prev) => mergeAssets(prev, [res.asset]));
-    toast("התיאור והתגיות עודכנו");
+    toast(t("התיאור והתגיות עודכנו"));
   }
 
   async function handleDelete(id: number) {
     await endpoints.deleteAsset(id);
     setAssets((prev) => prev.filter((asset) => asset.id !== id));
-    toast("נמחק");
+    toast(t("נמחק"));
   }
 
   const imageCount = assets.filter((asset) => asset.kind === "image").length;
@@ -251,7 +252,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
     () => Array.from(new Set(assets.flatMap((asset) => asset.tags))).sort((a, b) => a.localeCompare(b, "he")),
     [assets]
   );
-  const uploadLabel = Object.values(pending).includes("uploading") ? "מעלים…" : "להעלות קבצים";
+  const uploadLabel = Object.values(pending).includes("uploading") ? t("מעלים…") : t("להעלות קבצים");
 
   const openAsset = openId === null ? null : assets.find((asset) => asset.id === openId) ?? null;
 
@@ -262,8 +263,8 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
           level={embedded ? 2 : 1}
           eyebrow={embedded ? null : undefined}
           section="business"
-          title="התמונות שלי"
-          subtitle="בחרו תמונות של הנושאים שבחרתם: מוצר, עבודה אמיתית או תהליך. מהן נכין את התמונות לפוסטים."
+          title={t("התמונות שלי")}
+          subtitle={t("בחרו תמונות של הנושאים שבחרתם: מוצר, עבודה אמיתית או תהליך. מהן נכין את התמונות לפוסטים.")}
           action={
             hasSite === false ? (
               <button
@@ -273,7 +274,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                 className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
               >
                 <IconImage className="h-[18px] w-[18px]" />
-                {Object.values(pending).includes("uploading") ? "מעלים…" : "להעלות תמונות מהטלפון"}
+                {Object.values(pending).includes("uploading") ? t("מעלים…") : t("להעלות תמונות מהטלפון")}
               </button>
             ) : (
               <button
@@ -283,7 +284,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                 className="drawn-button inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-5 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
               >
                 <IconEye className="h-[18px] w-[18px]" />
-                {scanning ? "אוספים מהאתר…" : "לאסוף את התמונות מהאתר"}
+                {scanning ? t("אוספים מהאתר…") : t("לאסוף את התמונות מהאתר")}
               </button>
             )
           }
@@ -291,8 +292,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
 
         {demo ? (
           <p className={`${ui.meta} -mt-3 mb-4 font-normal`}>
-            דמו: אלה תמונות לדוגמה.
-          </p>
+            <Copy text="דמו: אלה תמונות לדוגמה." /></p>
         ) : null}
 
         {/* One disclosure holds the two other ways in. Closed by default, so the page opens
@@ -310,7 +310,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                 <IconImage className="h-[18px] w-[18px]" />
               </span>
               {/* Without a website the header button is already the upload: this is the link. */}
-              {hasSite === false ? "להוסיף מקישור או עוד קבצים" : "להעלות מהטלפון או מקישור"}
+              {hasSite === false ? t("להוסיף מקישור או עוד קבצים") : t("להעלות מהטלפון או מקישור")}
             </span>
             <IconChevron
               className={`h-4 w-4 shrink-0 text-[var(--ink-muted)] transition-transform duration-200 ${addOpen ? "rotate-90" : "-rotate-90"}`}
@@ -340,13 +340,12 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                   <IconImage />
                   {uploadLabel}
                 </button>
-                <span className={ui.help}>אפשר לבחור כמה קבצים בבת אחת</span>
+                <span className={ui.help}><Copy text="אפשר לבחור כמה קבצים בבת אחת" /></span>
               </div>
 
               <form onSubmit={(event) => void handleImport(event)} className="flex flex-wrap items-center gap-2 border-t border-[var(--rule)] pt-5">
                 <label className="sr-only" htmlFor="asset-import-url">
-                  קישור לתמונה
-                </label>
+                  <Copy text="קישור לתמונה" /></label>
                 <input
                   id="asset-import-url"
                   type="url"
@@ -362,9 +361,9 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                   className={`${ui.button} ${ui.matchField}`}
                 >
                   <IconLink />
-                  {importing ? "מביאים…" : "להוסיף מקישור"}
+                  {importing ? t("מביאים…") : t("להוסיף מקישור")}
                 </button>
-                <span className={`${ui.help} basis-full`}>קישור לתמונה אחת ברשת.</span>
+                <span className={`${ui.help} basis-full`}><Copy text="קישור לתמונה אחת ברשת." /></span>
               </form>
             </div>
           ) : null}
@@ -375,8 +374,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
         {scanning ? (
           <p className="mt-5 flex items-center gap-2.5 text-sm leading-6 text-[color:var(--ink-soft)]">
             <span aria-hidden className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-[var(--primary)] motion-reduce:animate-none" />
-            עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח.
-          </p>
+            <Copy text="עוברים על דפי האתר ומחפשים תמונות. זה יכול לקחת כמה דקות, השאירו את החלון פתוח." /></p>
         ) : null}
         {scanResult ? <p className="mt-5 text-[15px] leading-7 text-[color:var(--ink)]">{scanResult}</p> : null}
         {notice ? <p className="mt-4 text-[15px] leading-7 text-[color:var(--ink)]">{notice}</p> : null}
@@ -395,7 +393,7 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
                 )}
                 <span className="truncate">{name}</span>
                 <span className="text-[var(--ink-muted)]">
-                  {state === "uploading" ? "מעלים ובודקים…" : state === "done" ? "נוסף" : "נכשל"}
+                  {state === "uploading" ? t("מעלים ובודקים…") : state === "done" ? t("נוסף") : t("נכשל")}
                 </span>
               </li>
             ))}
@@ -405,19 +403,18 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
         {fileError ? <p className={`${ui.error} mt-4`}>{fileError}</p> : null}
 
         {loading ? (
-          <LoadingMark label="טוענים את התמונות…" />
+          <LoadingMark label={t("טוענים את התמונות…")} />
         ) : assets.length ? (
           <>
             <div className="mt-10 flex flex-wrap items-center justify-between gap-x-4">
               {/* Both counts, always — including a zero. The split is real information
                   about what is in the library; the total is the two added up. */}
               <p className={ui.meta}>
-                {countLabel(imageCount, "תמונה", "תמונות")} ·{" "}
-                {countLabel(assets.length - imageCount, "סרטון", "סרטונים")}
+                {countLabel(imageCount, t("תמונה"), t("תמונות"))} ·{" "}
+                {countLabel(assets.length - imageCount, t("סרטון"), t("סרטונים"))}
               </p>
               {!embedded ? <Link href="/posts" className={ui.link}>
-                לפוסטים שבנינו מהן
-                <IconArrowLeft data-forward="" />
+                <Copy text="לפוסטים שבנינו מהן" /><IconArrowLeft data-forward="" />
               </Link> : null}
             </div>
 
@@ -448,18 +445,18 @@ export function PhotosStep({ embedded = false, onNext, onPendingChange }: { embe
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-[14px] bg-[var(--primary-soft)] text-[var(--primary)]">
               <IconImage className="h-6 w-6" />
             </span>
-            <h2 className="mt-4 text-lg font-bold tracking-tight text-[var(--ink)]">עוד אין כאן תמונות</h2>
+            <h2 className="mt-4 text-lg font-bold tracking-tight text-[var(--ink)]"><Copy text="עוד אין כאן תמונות" /></h2>
             <p className="mx-auto mt-2 max-w-xl text-[15px] leading-7 text-[var(--ink-soft)]">
               {hasSite === false
-                ? "תמונות של העבודה, המקום או המוצרים, ישר מהטלפון. מהן נבנה את הפוסטים."
-                : "לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק."}
+                ? t("תמונות של העבודה, המקום או המוצרים, ישר מהטלפון. מהן נבנה את הפוסטים.")
+                : t("לחצו על ״לאסוף את התמונות מהאתר״, ונביא לכאן את התמונות והסרטונים של העסק.")}
             </p>
             {!embedded ? <StepLink stepKey="photos" className="mt-2" /> : null}
           </section>
         )}
         {embedded ? <div className="mt-8 flex flex-wrap items-center gap-4">
-          <button type="button" disabled={busy || loading} onClick={onNext} className={ui.button}>לבדיקת סגנון הכתיבה <IconArrowLeft /></button>
-          <span className={ui.help}>אפשר להשלים תמונות בהמשך; הכתיבה תתחיל כשיהיה מספיק חומר.</span>
+          <button type="button" disabled={busy || loading} onClick={onNext} className={ui.button}><Copy text="לבדיקת סגנון הכתיבה" /><IconArrowLeft /></button>
+          <span className={ui.help}><Copy text="אפשר להשלים תמונות בהמשך; הכתיבה תתחיל כשיהיה מספיק חומר." /></span>
         </div> : null}
       </div>
     </>

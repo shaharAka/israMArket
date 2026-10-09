@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 /* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
@@ -14,9 +16,10 @@ export function Swatches({
   preview: { palette: BrandSwatch[] };
   size?: "sm" | "md";
 }) {
+  const t = useCopy();
   const dot = size === "sm" ? "h-5 w-5" : "h-8 w-8";
   return (
-    <ul className="flex flex-wrap items-center gap-2" aria-label="הצבעים מהאתר">
+    <ul className="flex flex-wrap items-center gap-2" aria-label={t("הצבעים מהאתר")}>
       {preview.palette.slice(0, 6).map((swatch, index) => (
         <li key={`${swatch.hex}-${index}`} title={swatch.name || swatch.hex}>
           <span
@@ -41,13 +44,14 @@ export function BrandLogo({
   brand: Pick<SiteBrand, "logo_url" | "brand_language" | "business_name">;
   className?: string;
 }) {
+  const t = useCopy();
   const url = previewLogo(brand);
   const [failed, setFailed] = useState<string | null>(null);
   if (!url || failed === url) return null;
   return (
     <img
       src={url}
-      alt={`הלוגו של ${brand.business_name || "העסק"}`}
+      alt={t("הלוגו של {arg_0}", { arg_0: brand.business_name || "העסק" })}
       referrerPolicy="no-referrer"
       onError={() => setFailed(url)}
       className={`block h-12 w-auto max-w-[220px] object-contain sm:h-16 sm:max-w-[300px] ${className}`}
@@ -75,6 +79,7 @@ export function BrandCard({
   showVoice?: boolean;
   className?: string;
 }) {
+  const t = useCopy();
   const Heading = `h${headingLevel}` as "h1" | "h2" | "h3";
   return (
     <div className={`space-y-4 ${className}`}>
@@ -82,13 +87,13 @@ export function BrandCard({
         {label ? <p className="text-[13px] font-semibold text-[var(--primary)]">{label}</p> : null}
         <BrandLogo brand={brand} className="mt-3" />
         <Heading className="mt-1 text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-          {brand.business_name || "העסק שלכם"}
+          {brand.business_name || t("העסק שלכם")}
         </Heading>
       </div>
       <Swatches preview={brand} />
       {showVoice && brand.voice ? (
         <p className="text-sm leading-6 text-[var(--ink-soft)] sm:text-base sm:leading-7">
-          <span className="font-bold text-[var(--ink)]">הסגנון: </span>
+          <span className="font-bold text-[var(--ink)]"><Copy text="הסגנון:" /></span>
           {brand.voice}
         </p>
       ) : null}

@@ -1,3 +1,7 @@
+"use client";
+
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Image from "next/image";
 import type { InstagramOwnPost } from "@/lib/api";
 import { IconCamera } from "./SourceLink";
@@ -12,12 +16,12 @@ const SHOWN = 3;
  * opens the post on Instagram.
  */
 export function OwnTopPosts({ posts }: { posts: InstagramOwnPost[] }) {
+  const t = useCopy();
   if (!posts.length) return null;
   return (
     <section aria-labelledby="own-heading">
       <h2 id="own-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
-        הפוסטים שלכם שהכי הצליחו
-      </h2>
+        <Copy text="הפוסטים שלכם שהכי הצליחו" /></h2>
       <ul className="paper mt-4 divide-y divide-[var(--rule)] overflow-hidden">
         {posts.slice(0, SHOWN).map((post) => {
           const thumb = post.thumbnail_url || (post.format === "reel" || post.format === "video" ? "" : post.media_url);
@@ -45,7 +49,7 @@ export function OwnTopPosts({ posts }: { posts: InstagramOwnPost[] }) {
                   href={post.permalink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title="לפתוח באינסטגרם"
+                  title={t("לפתוח באינסטגרם")}
                   className="flex min-h-[72px] items-center gap-4 px-4 py-3 transition-colors hover:bg-[var(--soft)] sm:px-5"
                 >
                   {body}

@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
@@ -41,12 +43,12 @@ function cards(trial: TrialPayload): Card[] {
       body: (
         <ol className={styles.month}>
           {/* Each week's name is its own line now, so it carries no colon. */}
-          <li><b>מחברים מדידה</b> רק את המקורות שהתוכנית צריכה. הנתונים שכבר נתתם נשמרים.</li>
-          <li><b>מכינים תוכן</b> בוחרים מה לקדם, מוסיפים חומר אמיתי ובודקים את הסגנון.</li>
-          <li><b>מאשרים ומפרסמים</b> אפשר להתחיל ברגע שהחומרים מוכנים, גם ביום הראשון.</li>
-          <li><b>מודדים ומתאימים</b> מה קרה בעקבות הפעולות, ומה כדאי לנסות בהמשך.</li>
+          <li><b><Copy text="מחברים מדידה" /></b> <Copy text="רק את המקורות שהתוכנית צריכה. הנתונים שכבר נתתם נשמרים." /></li>
+          <li><b><Copy text="מכינים תוכן" /></b> <Copy text="בוחרים מה לקדם, מוסיפים חומר אמיתי ובודקים את הסגנון." /></li>
+          <li><b><Copy text="מאשרים ומפרסמים" /></b> <Copy text="אפשר להתחיל ברגע שהחומרים מוכנים, גם ביום הראשון." /></li>
+          <li><b><Copy text="מודדים ומתאימים" /></b> <Copy text="מה קרה בעקבות הפעולות, ומה כדאי לנסות בהמשך." /></li>
           <li>
-            {trial.days_total} יום חינם{NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}.
+            {trial.days_total} <Copy text="יום חינם" />{NO_CARD_AT_SIGNUP ? ", בלי כרטיס אשראי" : ""}.
           </li>
         </ol>
       ),
@@ -55,7 +57,7 @@ function cards(trial: TrialPayload): Card[] {
       title: "מה צריך מכם",
       body: (
         <div className="space-y-4 text-[15px] leading-relaxed text-[color:var(--ink)]">
-          <p>כמה דקות ביום, ובעיקר החלטות. את הכתיבה, העיצוב והמחקר אנחנו עושים.</p>
+          <p><Copy text="כמה דקות ביום, ובעיקר החלטות. את הכתיבה, העיצוב והמחקר אנחנו עושים." /></p>
           {asks.length ? (
             <ul className="divide-y divide-[var(--rule)] rounded-[14px] bg-[var(--soft)] px-4">
               {asks.map((ask) => (
@@ -66,7 +68,7 @@ function cards(trial: TrialPayload): Card[] {
               ))}
             </ul>
           ) : null}
-          <p className="text-sm text-[color:var(--ink-soft)]">בעמוד ״השבוע״ תמיד יחכה לכם הצעד הבא.</p>
+          <p className="text-sm text-[color:var(--ink-soft)]"><Copy text="בעמוד ״השבוע״ תמיד יחכה לכם הצעד הבא." /></p>
         </div>
       ),
     },
@@ -90,6 +92,7 @@ function Row({ primary = false, title, text }: { primary?: boolean; title: strin
  * of the page it sits on — nor of that page's word budget.
  */
 export function TrialWelcome() {
+  const t = useCopy();
   const { payload } = useTrial();
   const pathname = usePathname();
   const router = useRouter();
@@ -157,15 +160,14 @@ export function TrialWelcome() {
       >
         <div className="flex items-center justify-between gap-3">
           <p className="text-[13px] font-semibold text-[color:var(--primary)]">
-            ברוכים הבאים <span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· {index + 1} מתוך {all.length}</span>
+            <Copy text="ברוכים הבאים" /><span className="font-medium tabular-nums text-[color:var(--ink-muted)]">· {index + 1} <Copy text="מתוך" />{all.length}</span>
           </p>
           <button
             type="button"
             onClick={() => close(false)}
             className="-me-2 min-h-11 rounded-md px-2 text-sm font-medium text-[color:var(--ink-soft)] underline-offset-4 transition-colors hover:text-[color:var(--ink)] hover:underline"
           >
-            לדלג
-          </button>
+            <Copy text="לדלג" /></button>
         </div>
         <div className="mt-1 flex items-center justify-between gap-4">
           <h2 id="welcome-title" className="text-[26px] font-bold leading-tight tracking-tight text-[color:var(--ink)]">{card.title}</h2>
@@ -192,15 +194,14 @@ export function TrialWelcome() {
               onClick={() => setIndex(index - 1)}
               className="min-h-12 rounded-md px-3 text-[15px] font-medium text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)]"
             >
-              הקודם
-            </button>
+              <Copy text="הקודם" /></button>
           ) : null}
           <button
             type="button"
             onClick={() => (last ? close(true) : setIndex(index + 1))}
             className="drawn-button inline-flex min-h-12 items-center justify-center whitespace-nowrap bg-[var(--primary)] px-6 text-[15px] font-semibold text-white hover:bg-[var(--primary-dark)] sm:px-7"
           >
-            {last ? "לראות את הצעד הראשון" : "הבא"}
+            {last ? t("לראות את הצעד הראשון") : t("הבא")}
           </button>
         </div>
       </div>

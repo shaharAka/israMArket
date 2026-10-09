@@ -1,3 +1,4 @@
+from app.services import marketing_outcome
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -10,14 +11,15 @@ from app.services.jsonutil import dumps, loads
 from app.services.webhooks import deliver
 from app.services.business_fields import field_label
 from app.services.billing import require_generation_access  # the one billing gate
-from app.services import recommendation_context, service_results
+from app.services import recommendation_context, service_results, quick_posts
 
 router = APIRouter(prefix="/recommendations", tags=["recommendations"])
 
 
 def current_plan(db: Session, business: Business) -> dict:
     try:
-        return serialize_strategy(_active_strategy(db, business), business)
+        strategy = _active_strategy(db, business)
+        return {} if quick_posts.workspace_only(strategy) else serialize_strategy(strategy, business)
     except HTTPException as exc:
         if exc.status_code != 404:
             raise
@@ -65,6 +67,8 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
     # gating the weekly loop on it made half the product unreachable for them —
     # the prompt already knows how to work from the plan alone and say so.
     strategy = _active_strategy(db, business)
+    if quick_posts.workspace_only(strategy):
+        raise HTTPException(409, "הטיוטה שלכם נשמרה. השלימו את התוכנית לפני שמכינים הצעות לשיפור שלה.")
     plan = serialize_strategy(strategy, business)
     ga4_data, meta_data, basis = recommendation_context.prepare(business, plan, recommendation_context.snapshot_view(snap))
 
@@ -76,7 +80,8 @@ def generate(business: Business = Depends(get_business), db: Session = Depends(g
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
         "analysis_basis": basis,
-        **service_results.model_context(business),
+        **marketing_outcome.context(business),
+                       **service_results.model_context(business),
     }
     try:
         proposed = recommend(

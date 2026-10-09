@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy } from "@/components/language/LanguageProvider";
+
 import { useState } from "react";
 import { IconCheck } from "@/lib/icons";
 import { confirmStep, useTrialStep } from "@/lib/trial";
@@ -18,8 +20,7 @@ export function GbpConfirm() {
     return (
       <p className="mt-2 flex items-center gap-2 text-xs font-bold text-[color:var(--primary)]">
         <IconCheck className="h-4 w-4" />
-        סימנתם שהכרטיס קיים ומעודכן
-      </p>
+        <Copy text="סימנתם שהכרטיס קיים ומעודכן" /></p>
     );
   }
   return (
@@ -32,7 +33,6 @@ export function GbpConfirm() {
       }}
       className="mt-2 inline-flex min-h-11 items-center rounded-xl border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[var(--soft)] disabled:opacity-50"
     >
-      בדקנו, הכרטיס קיים ומעודכן
-    </button>
+      <Copy text="בדקנו, הכרטיס קיים ומעודכן" /></button>
   );
 }

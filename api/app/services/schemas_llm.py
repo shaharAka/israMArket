@@ -880,6 +880,7 @@ RECOMMENDATION_SCHEMA = {
                     "title": {"type": "string"},
                     "action": {"type": "string", "description": "פעולה קונקרטית"},
                     "evidence": {"type": "string", "description": "על סמך איזה מדד"},
+                    "evidence_keys": {"type": "array", "maxItems": 3, "items": {"type": "string"}, "description": "Exact source:metric keys from analysis_basis.observations that support this suggestion; empty when no observed metric supports it."},
                     "target": {"type": "string", "description": "פוסט, CTA, קהל או עמוד"},
                     "action_kind": {"type": "string", "enum": ["post", "plan", "measurement", "website"]},
                     "post_uid": {"type": "string", "description": "UID מדויק של פוסט מהתוכנית, או מחרוזת ריקה"},

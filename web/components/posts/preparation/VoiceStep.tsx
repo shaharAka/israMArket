@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LoadingMark } from "@/components/Doodles";
@@ -17,6 +19,7 @@ import { toast } from "@/lib/ui";
  * the posts are fixed before they are written, not after.
  */
 export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embedded?: boolean; onNext?: () => void; onPendingChange?: (pending: boolean) => void }) {
+  const t = useCopy();
   const [data, setData] = useState<VoicePayload | null>(null);
   const [adjusting, setAdjusting] = useState(false);
   const [note, setNote] = useState("");
@@ -44,10 +47,10 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
       setData(saved);
       setNote(saved.check?.note ?? "");
       setAdjusting(false);
-      toast(ok ? "מעולה, כותבים בסגנון הזה" : "תודה, נכתוב לפי זה");
+      toast(ok ? t("מעולה, כותבים בסגנון הזה") : t("תודה, נכתוב לפי זה"));
       if (embedded) onNext?.();
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור. נסו שוב.");
+      setError(err instanceof Error && err.message ? err.message : t("לא הצלחנו לשמור. נסו שוב."));
     } finally {
       setSaving(false);
     }
@@ -72,14 +75,14 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
           level={embedded ? 2 : 1}
           eyebrow={embedded ? null : undefined}
           section="business"
-          title="זה נשמע כמוכם?"
+          title={t("זה נשמע כמוכם?")}
           subtitle={
             // A preset was never read off a site: say what it is instead.
             !data
-              ? "ככה נכתוב את הפוסטים."
+              ? t("ככה נכתוב את הפוסטים.")
               : data.from_site === false
-                ? "עוד לא קראנו אתר שלכם, אז התחלנו מסגנון לפי סוג העסק. ככה נכתוב את הפוסטים."
-                : "כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים."
+                ? t("עוד לא קראנו אתר שלכם, אז התחלנו מסגנון לפי סוג העסק. ככה נכתוב את הפוסטים.")
+                : t("כך קראנו את הסגנון שלכם מהאתר. ככה נכתוב את הפוסטים.")
           }
         />
 
@@ -87,7 +90,7 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
           error ? (
             <p role="alert" className={ui.error}>{error}</p>
           ) : (
-            <LoadingMark label="טוענים…" />
+            <LoadingMark label={t("טוענים…")} />
           )
         ) : (
           <div>
@@ -106,8 +109,8 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
               ) : (
                 <p className={`${data.voice_he ? "mt-3 " : ""}text-[15px] leading-7 text-[color:var(--ink-soft)]`}>
                   {data.from_site === false
-                    ? "אם זה לא הסגנון שלכם, כתבו למטה איך אתם מדברים עם לקוחות."
-                    : "עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים."}
+                    ? t("אם זה לא הסגנון שלכם, כתבו למטה איך אתם מדברים עם לקוחות.")
+                    : t("עוד לא קראנו דוגמאות מהאתר. ספרו לנו במילים שלכם איך אתם מדברים.")}
                 </p>
               )}
             </section>
@@ -115,11 +118,10 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
             {check && !adjusting ? (
               <p className="mt-8 flex flex-wrap items-center gap-x-3 text-[15px] leading-7 text-[color:var(--ink)]">
                 <span className={`${ui.status} text-[15px] font-medium text-[color:var(--ink)]`} data-status={check.ok ? "published" : "review"}>
-                  {check.ok ? "אישרתם: כותבים בסגנון הזה." : `ביקשתם לשנות: ${check.note || "בלי פרטים"}.`}
+                  {check.ok ? t("אישרתם: כותבים בסגנון הזה.") : t("ביקשתם לשנות: {arg_0}.", { arg_0: check.note || "בלי פרטים" })}
                 </span>{" "}
                 <button type="button" onClick={() => setAdjusting(true)} className={ui.link}>
-                  לשנות
-                </button>
+                  <Copy text="לשנות" /></button>
               </p>
             ) : (
               <div className="mt-8">
@@ -129,19 +131,17 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
                   disabled={saving}
                   className="drawn-button inline-flex min-h-12 w-full items-center justify-center bg-[var(--primary)] px-6 text-[15px] text-white enabled:hover:bg-[var(--primary-dark)] sm:w-auto"
                 >
-                  כן, ככה אנחנו מדברים
-                </button>
+                  <Copy text="כן, ככה אנחנו מדברים" /></button>
                 <div className="mt-8 border-t border-[var(--rule)] pt-6">
                   <label htmlFor="voice-note" className={`${ui.groupTitle} mb-2 block`}>
-                    לא בדיוק? מה לשנות
-                  </label>
+                    <Copy text="לא בדיוק? מה לשנות" /></label>
                   <textarea
                     id="voice-note"
                     value={note}
                     maxLength={400}
                     rows={3}
                     onChange={(event) => setNote(event.target.value)}
-                    placeholder="למשל: פחות רשמי, בלי אימוג׳ים, לפנות בלשון רבים"
+                    placeholder={t("למשל: פחות רשמי, בלי אימוג׳ים, לפנות בלשון רבים")}
                     className={ui.field}
                   />
                   <button
@@ -150,8 +150,7 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
                     disabled={saving || !note.trim()}
                     className={`${ui.button} mt-3`}
                   >
-                    לשמור את התיקון
-                  </button>
+                    <Copy text="לשמור את התיקון" /></button>
                 </div>
               </div>
             )}
@@ -162,10 +161,9 @@ export function VoiceStep({ embedded = false, onNext, onPendingChange }: { embed
               </p>
             ) : null}
             <div className="mt-6 flex flex-col items-start">
-              {check && embedded ? <button type="button" onClick={onNext} className={ui.button}>להכנת הפוסטים <IconArrowLeft /></button> : check ? (
+              {check && embedded ? <button type="button" onClick={onNext} className={ui.button}><Copy text="להכנת הפוסטים" /><IconArrowLeft /></button> : check ? (
                 <Link href="/dashboard" className={ui.link}>
-                  לצעד הבא
-                  <IconArrowLeft data-forward="" />
+                  <Copy text="לצעד הבא" /><IconArrowLeft data-forward="" />
                 </Link>
               ) : null}
               {!embedded ? <StepLink stepKey="voice" /> : null}

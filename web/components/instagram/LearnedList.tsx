@@ -1,3 +1,7 @@
+"use client";
+
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import type { InspirationBrief, InspirationPattern } from "@/lib/api";
 import { IconChevron } from "@/lib/icons";
 import { SourceLink } from "./SourceLink";
@@ -27,6 +31,7 @@ function Chevron({ open }: { open: string }) {
 }
 
 function PatternRow({ item }: { item: InspirationPattern }) {
+  const t = useCopy();
   const strong = item.strength === "strong";
   return (
     <li className="flex items-start gap-3 py-4">
@@ -41,15 +46,14 @@ function PatternRow({ item }: { item: InspirationPattern }) {
           {item.pattern}
           {strong ? null : (
             <span
-              title="יש על זה מעט נתונים. שווה לנסות ולראות."
+              title={t("יש על זה מעט נתונים. שווה לנסות ולראות.")}
               className="ms-2 inline-block rounded-full bg-[var(--soft)] px-2.5 align-middle text-xs font-medium leading-6 text-[color:var(--ink-muted)]"
             >
-              לבדיקה
-            </span>
+              <Copy text="לבדיקה" /></span>
           )}
         </p>
         <p className="mt-0.5 text-[13px] leading-6 text-[color:var(--ink-muted)]">
-          לפי:{" "}
+          <Copy text="לפי:" />{" "}
           {item.sources.map((source, index) => (
             <span key={source.ref}>
               {index > 0 ? ", " : null}
@@ -64,6 +68,7 @@ function PatternRow({ item }: { item: InspirationPattern }) {
 
 /** "What we learned": the brief's summary, its patterns with their sources, its caveats. */
 export function LearnedList({ brief }: { brief: InspirationBrief }) {
+  const t = useCopy();
   const patterns = ordered(brief.patterns);
   const shown = patterns.slice(0, VISIBLE);
   const more = patterns.slice(VISIBLE);
@@ -83,7 +88,7 @@ export function LearnedList({ brief }: { brief: InspirationBrief }) {
             <li>
               <details className="group/more">
                 <summary className="flex min-h-12 cursor-pointer list-none items-center gap-1.5 text-[13px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-                  {more.length === 1 ? "עוד דבר אחד" : `עוד ${more.length} דברים`}
+                  {more.length === 1 ? t("עוד דבר אחד") : t("עוד {arg_0} דברים", { arg_0: more.length })}
                   <Chevron open="group-open/more:rotate-90" />
                 </summary>
                 <ul className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
@@ -105,8 +110,7 @@ export function LearnedList({ brief }: { brief: InspirationBrief }) {
       {patterns.some((item) => item.evidence) ? (
         <details className="group/how mt-1">
           <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 text-[13px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-            איך הגענו לזה
-            <Chevron open="group-open/how:rotate-90" />
+            <Copy text="איך הגענו לזה" /><Chevron open="group-open/how:rotate-90" />
           </summary>
           <ul className="mt-1 max-w-[46em] space-y-2 pb-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
             {patterns

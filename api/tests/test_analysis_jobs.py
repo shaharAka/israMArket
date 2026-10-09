@@ -178,7 +178,7 @@ class AutomaticAnalysisTest(unittest.TestCase):
         self.assertNotIn("private", snap.diagnostic_json)
 
     def test_account_or_newer_snapshot_wins_over_inflight_analysis(self):
-        for change in ("property", "grant", "disconnect", "newer_snapshot"):
+        for change in ("property", "grant", "disconnect", "newer_snapshot", "outcome"):
             with self.subTest(change=change):
                 self.read()
                 def changed(*args):
@@ -187,6 +187,9 @@ class AutomaticAnalysisTest(unittest.TestCase):
                         if change == "property": item.external_id = "456"
                         elif change == "grant": item.access_token_enc = encrypt_secret("new-grant")
                         elif change == "disconnect": item.status = "disconnected"
+                        elif change == "outcome":
+                            business = db.get(Business, self.business.id)
+                            business.scraped_profile_json = dumps({"owner_context": {"research_journey": {"segment": "software", "metric": "paid_accounts"}}})
                         else:
                             db.add(PerformanceSnapshot(business_id=self.business.id, period_start="", period_end=""))
                         db.commit()

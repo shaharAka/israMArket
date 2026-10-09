@@ -99,6 +99,8 @@ def _detach_posts(
     changed = 0
     strategies = db.query(Strategy).filter(Strategy.business_id == business.id).all()
     for strategy in strategies:
+        from app.services.strategy_writes import lock_and_refresh
+        lock_and_refresh(db, strategy)
         extra = loads(strategy.roadmap_json, {})
         if not isinstance(extra, dict):
             continue
@@ -417,6 +419,8 @@ def tag_post_audience(
 ) -> dict:
     """Tag one planned post with the audience it serves. `null` clears the tag."""
     strategy = _active_strategy(db, business)
+    from app.services.strategy_writes import lock_and_refresh
+    lock_and_refresh(db, strategy)
     extra = loads(strategy.roadmap_json, {})
     roadmap = extra.get("roadmap") or {}
     posts = list(roadmap.get("posts") or [])

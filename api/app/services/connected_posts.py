@@ -395,17 +395,19 @@ def connected_view(
 
     `design` is the post's Design DNA layout as `post_design.view_designs` computed it
     for the whole month (an old post's `overlay_theme` mapped onto a composition)."""
-    view = {key: value for key, value in post.items() if key != "learning_key"}  # internal
+    view = {key: value for key, value in post.items() if key not in {"learning_key", "create_request_id", "create_request_hash"}}  # internal
     view["content_language"] = post.get("content_language") if post.get("content_language") in {"he", "en", "ar", "ru"} else "he"
     view["design"] = design or view_designs([post], None)[0]
     view["uid"] = _clean(post.get("uid"), 40) or backfill_uid(business_id, year, month, index)
     view["channel"] = channel_of(post)
     stored_link = post.get("plan_link") if isinstance(post.get("plan_link"), dict) else None
-    link = plan_link(core, post.get("week")) if _has_plan(core) else (stored_link or plan_link(None, post.get("week")))
+    link = plan_link(core, post.get("week")) if _has_plan(core) and post.get("creation_source") != "quick" else (stored_link or plan_link(None, post.get("week")))
     view["plan_link"] = link
     view["mix_type"] = post.get("mix_type") if post.get("mix_type") in MIX_TYPES else None
     view["featured_item_id"] = _clean(post.get("featured_item_id"), 40) or None
     view["why_line"] = why_line(link.get("goal") or "", _audience_of(post)) or _clean(post.get("why_line"), 200)
+    if post.get("creation_source") == "quick":
+        view["why_line"] = ""
     key = post_key_for(int(year or 0), int(month or 0), index, view)
     view["measure"] = measure_for(view, website, whatsapp_key=key)
     view["owner_needs"] = owner_needs(view)
@@ -1076,7 +1078,11 @@ def refresh_results(db, business, *, ga4_data: dict | None = None, meta_data: di
     website = business.website_url or ""
     stored: dict[int, tuple] = {}
     updated = 0
+    from app.services.strategy_writes import lock_and_refresh
     for strategy in strategies:
+        # Provider requests may have left this session holding an older month.
+        # Read the post array under the same SQLite write lock as draft/editor saves.
+        lock_and_refresh(db, strategy)
         extra = loads(strategy.roadmap_json, {}) or {}
         roadmap = extra.get("roadmap") if isinstance(extra.get("roadmap"), dict) else None
         if not roadmap or not isinstance(roadmap.get("posts"), list):

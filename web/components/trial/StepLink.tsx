@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { CONTACT_EMAIL } from "@/lib/company";
@@ -24,6 +26,7 @@ export function StepLink({
   stepKey: string | string[];
   className?: string;
 }) {
+  const t = useCopy();
   const { payload } = useTrial();
   const pathname = usePathname();
   const keys = Array.isArray(stepKey) ? stepKey : [stepKey];
@@ -40,7 +43,7 @@ export function StepLink({
         href={`/dashboard#step-${step.key}`}
         className={`inline-flex min-h-11 items-center gap-1.5 text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline ${className}`}
       >
-        <span>לכל הצעדים של החודש</span>
+        <span><Copy text="לכל הצעדים של החודש" /></span>
         <IconArrowLeft className="h-3.5 w-3.5 shrink-0" />
       </Link>
     );
@@ -52,7 +55,7 @@ export function StepLink({
     >
       {/* The step by its name, as Today's readiness stages call it (not by its week). */}
       <span>
-        הצעד הבא: {step.title_he}
+        <Copy text="הצעד הבא:" />{t(step.title_he)}
         {step.status === "todo" ? ` · ${minutesLabel(step.minutes)}` : ""}
       </span>
       <IconArrowLeft className="h-3.5 w-3.5 shrink-0" />
@@ -64,14 +67,13 @@ export function StepLink({
 export function ContactLink({ className = "" }: { className?: string }) {
   return (
     <p className={`text-sm text-[color:var(--ink-soft)] ${className}`}>
-      שאלות?{" "}
+      <Copy text="שאלות?" />{" "}
       <Link
         href="/support"
         className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
       >
-        כתבו לנו
-      </Link>
-      {" · "}<a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-4 hover:underline">או במייל</a>
+        <Copy text="כתבו לנו" /></Link>
+      {" · "}<a href={`mailto:${CONTACT_EMAIL}`} className="underline-offset-4 hover:underline"><Copy text="או במייל" /></a>
     </p>
   );
 }

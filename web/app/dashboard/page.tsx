@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
@@ -68,7 +70,7 @@ type MonthState = "loading" | "ready" | "none" | "error";
 function TodayHeader({ trial }: { trial?: TrialPayload | null }) {
   return (
     <header className="mb-8 flex flex-col gap-3 sm:mb-10 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-      <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">השבוע</h1>
+      <h1 className="text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]"><Copy text="השבוע" /></h1>
       {trial && !trial.ended ? (
         <div className="sm:pb-1.5">
           <TrialDay trial={trial} />
@@ -112,6 +114,7 @@ function FoldChevron({ group }: { group: "posts" | "more" }) {
  * a redirect, so every call catches, and a 401 renders nothing rather than an error.
  */
 export default function DashboardPage() {
+  const t = useCopy();
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [month, setMonth] = useState<MonthState>("loading");
@@ -150,7 +153,7 @@ export default function DashboardPage() {
       <AppShell>
         <div className="mx-auto max-w-3xl">
           <TodayHeader trial={guided ? trial : null} />
-          <LoadingMark label="טוענים את החודש…" />
+          <LoadingMark label={t("טוענים את החודש…")} />
         </div>
       </AppShell>
     );
@@ -190,7 +193,7 @@ export default function DashboardPage() {
   const ownerAction: ReactNode = guided && trial
     ? step
       ? step.title_he
-      : allDoneText(trial)
+      : allDoneText(trial, t)
     : strategy?.weekly_breakdown?.find((week) => week.week === shownWeek)?.what_user_does?.[0];
 
   const postsOpen = posts.length > 0 && (!guided || (trial && foundationsDone(trial)));
@@ -261,14 +264,13 @@ export default function DashboardPage() {
                 <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
                   <IconCheck className="h-3.5 w-3.5" />
                 </span>
-                כל הפוסטים של {strategy.month_name_he} אושרו
-              </p>
+                <Copy text="כל הפוסטים של" />{strategy.month_name_he} <Copy text="אושרו" /></p>
               {/* With the month approved, next month *is* the ask — so here, and only
                   here, its build button is the page's dark one. */}
               {strategy.horizon ? (
                 <MonthAhead horizon={strategy.horizon} onReady={setStrategy} tone="primary" variant="row" />
               ) : (
-                <p className="py-3 text-sm text-[color:var(--ink-soft)]">ממשיכים לעקוב אחרי התוצאות.</p>
+                <p className="py-3 text-sm text-[color:var(--ink-soft)]"><Copy text="ממשיכים לעקוב אחרי התוצאות." /></p>
               )}
             </section>
           ) : (
@@ -309,10 +311,9 @@ export default function DashboardPage() {
             <div className="drawn-card overflow-hidden">
               <div className="flex min-h-14 items-center gap-3 px-5 py-3 sm:px-6">
                 <span className="min-w-0 flex-1 text-[15px] font-semibold text-[color:var(--ink)]">
-                  {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`} ·{" "}
+                  {currentWeek ? t("פוסטים השבוע") : t("פוסטים לשבוע {arg_0}", { arg_0: shownWeek })} ·{" "}
                   <span className="font-normal tabular-nums text-[color:var(--ink-soft)]">
-                    {approvedCount} מתוך {posts.length} אושרו
-                  </span>
+                    {approvedCount} <Copy text="מתוך" />{posts.length} <Copy text="אושרו" /></span>
                 </span>
                 {/* How far along the month is, beside the count it draws. */}
                 <span
@@ -320,7 +321,7 @@ export default function DashboardPage() {
                   aria-valuemin={0}
                   aria-valuemax={posts.length}
                   aria-valuenow={approvedCount}
-                  aria-label="פוסטים שאושרו החודש"
+                  aria-label={t("פוסטים שאושרו החודש")}
                   className="block h-1.5 w-12 shrink-0 overflow-hidden rounded-full bg-[var(--rule)] sm:w-20"
                 >
                   <span
@@ -331,7 +332,7 @@ export default function DashboardPage() {
               </div>
               <section aria-labelledby="week-heading" className="border-t border-[var(--rule)]">
                 <h2 id="week-heading" className="sr-only">
-                  {currentWeek ? "פוסטים השבוע" : `פוסטים לשבוע ${shownWeek}`}
+                  {currentWeek ? t("פוסטים השבוע") : t("פוסטים לשבוע {arg_0}", { arg_0: shownWeek })}
                 </h2>
 
                 {weekPosts.length ? (
@@ -341,7 +342,7 @@ export default function DashboardPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="px-5 py-4 text-[15px] text-[color:var(--ink-soft)] sm:px-6">אין פוסטים בשבוע הזה.</p>
+                  <p className="px-5 py-4 text-[15px] text-[color:var(--ink-soft)] sm:px-6"><Copy text="אין פוסטים בשבוע הזה." /></p>
                 )}
 
                 <div className="border-t border-[var(--rule)] px-5 sm:px-6">
@@ -349,8 +350,7 @@ export default function DashboardPage() {
                     href="/posts"
                     className="inline-flex min-h-12 items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
                   >
-                    כל הפוסטים
-                  </Link>
+                    <Copy text="כל הפוסטים" /></Link>
                 </div>
               </section>
             </div>
@@ -365,15 +365,15 @@ export default function DashboardPage() {
 
 /** No month to show, outside the free month: say why, never a blank card. */
 function MonthNotReady({ month }: { month: MonthState }) {
+  const t = useCopy();
   return (
     <section className="drawn-card p-6 sm:p-8">
       <p className="text-[15px] leading-relaxed text-[color:var(--ink-soft)]">
-        {month === "error" ? "לא הצלחנו לטעון את החודש. נסו לרענן את העמוד." : "עוד מכינים את הפוסטים של החודש."}
+        {month === "error" ? t("לא הצלחנו לטעון את החודש. נסו לרענן את העמוד.") : t("עוד מכינים את הפוסטים של החודש.")}
       </p>
       {month === "none" ? (
         <Link href="/strategy" className="mt-1 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-          לתוכנית
-          <IconChevron className="h-4 w-4" />
+          <Copy text="לתוכנית" /><IconChevron className="h-4 w-4" />
         </Link>
       ) : null}
     </section>
@@ -393,9 +393,10 @@ function QuietRow({ href, icon, children }: { href: string; icon: ReactNode; chi
 
 /** In the free month the journey is the ask; the missing month is one quiet row. */
 function MonthNotReadyRow({ month }: { month: MonthState }) {
+  const t = useCopy();
   return (
     <QuietRow href="/strategy" icon={<IconImage className="h-[18px] w-[18px]" />}>
-      {month === "error" ? "לא הצלחנו לטעון את הפוסטים של החודש" : "הפוסטים של החודש עוד נכתבים"}
+      {month === "error" ? t("לא הצלחנו לטעון את הפוסטים של החודש") : t("הפוסטים של החודש עוד נכתבים")}
     </QuietRow>
   );
 }
@@ -411,11 +412,12 @@ function needsInstagram(payload: InstagramBriefPayload) {
 
 /** One quiet row, not a second ask: the dark button on this page belongs to the post. */
 function InstagramNudge({ connected }: { connected: boolean }) {
+  const t = useCopy();
   return (
     <QuietRow href="/instagram" icon={<IconCamera className="h-[18px] w-[18px]" />}>
       {connected
-        ? "עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם"
-        : "לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם"}
+        ? t("עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם")
+        : t("לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם")}
     </QuietRow>
   );
 }
@@ -445,7 +447,7 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
         <div className="min-w-0">
           <h2 className="text-[19px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{post.title}</h2>
           <p className="mt-1 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
-            {postDay(post)} · פוסט {index + 1} מתוך {total}
+            {postDay(post)} <Copy text="· פוסט" />{index + 1} <Copy text="מתוך" />{total}
           </p>
         </div>
       </div>
@@ -453,8 +455,7 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
         href={postHref(index)}
         className="drawn-button group mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] font-semibold text-white sm:w-auto"
       >
-        לבדוק ולאשר
-        <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
+        <Copy text="לבדוק ולאשר" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
       </Link>
     </section>
   );
@@ -510,6 +511,7 @@ function MoreAboutMonth({
   currentWeek: number | null;
   children?: ReactNode;
 }) {
+  const t = useCopy();
   const monthly = strategy.monthly_horizon_plan || strategy.roadmap?.monthly_horizon_plan;
   const weeks = strategy.weekly_breakdown || strategy.roadmap?.weekly_breakdown || [];
   const nextUserAction = weeks.flatMap((week) => week.what_user_does || []).find(Boolean);
@@ -521,26 +523,26 @@ function MoreAboutMonth({
   return (
     <details className="group/more">
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-        <span>עוד על החודש</span>
+        <span><Copy text="עוד על החודש" /></span>
         <FoldChevron group="more" />
       </summary>
 
       <div className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
-        <InfoRow label="צריך מכם" href={null}>
-          {nextUserAction || "כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים."}
+        <InfoRow label={t("צריך מכם")} href={null}>
+          {nextUserAction || t("כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים.")}
         </InfoRow>
-        <InfoRow label="הכי חשוב השבוע" href="/recommendations">
-          {oneThing || "נעדכן כשיהיו נתונים"}
+        <InfoRow label={t("הכי חשוב השבוע")} href="/recommendations">
+          {oneThing || t("נעדכן כשיהיו נתונים")}
         </InfoRow>
-        <InfoRow label="יעד העבודה העיקרי" href="/plan">
-          {leadingTarget || "עוד לא בחרנו יעדים"}
+        <InfoRow label={t("יעד העבודה העיקרי")} href="/plan">
+          {leadingTarget || t("עוד לא בחרנו יעדים")}
         </InfoRow>
-        <InfoRow label="תקציב חודשי" href="/decisions">
+        <InfoRow label={t("תקציב חודשי")} href="/decisions">
           {formatNis(budget)} · {stageFor(budget).title}
         </InfoRow>
 
         <div className="py-4">
-          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">כיוון החודש</p>
+          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]"><Copy text="כיוון החודש" /></p>
           <p className="mt-1.5 text-[15px] font-semibold leading-relaxed text-[color:var(--ink)]">
             {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.roadmap.theme}
           </p>
@@ -557,7 +559,7 @@ function MoreAboutMonth({
         </div>
 
         <div className="py-4">
-          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]">השבועות</p>
+          <p className="text-[13px] font-semibold text-[color:var(--ink-muted)]"><Copy text="השבועות" /></p>
           <ol className="mt-3 space-y-2.5">
             {[1, 2, 3, 4].map((week) => {
               const item = weeks.find((entry) => entry.week === week);
@@ -573,7 +575,7 @@ function MoreAboutMonth({
                   </span>
                   <span className={`min-w-0 flex-1 text-[15px] leading-6 ${isNow ? "font-semibold text-[color:var(--ink)]" : "text-[color:var(--ink-soft)]"}`}>
                     {item?.focus || "—"}
-                    {isNow ? <span className="ms-2 text-[13px] font-medium text-[color:var(--primary)]">(השבוע)</span> : null}
+                    {isNow ? <span className="ms-2 text-[13px] font-medium text-[color:var(--primary)]"><Copy text="(השבוע)" /></span> : null}
                   </span>
                 </li>
               );

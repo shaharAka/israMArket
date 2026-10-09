@@ -30,3 +30,26 @@ for (const source of ["", "abc", "עברית / العربية / Русский /
   assert.equal(idModule.messageId(source), "m_" + crypto.createHash("sha256").update(source).digest("hex").slice(0,16));
 }
 console.log(`Runtime source IDs: ${Object.keys(sources).length} catalog messages and UTF-8/block boundaries match independent Node crypto`);
+
+// A catalog can be complete while a translated component crashes at render time.
+// Check literal calls as well: interpolation arguments belong to the call that formats it.
+function checkCalls(directory) {
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    const file = new URL(entry.name + (entry.isDirectory() ? "/" : ""), directory);
+    if (entry.isDirectory()) { checkCalls(file); continue; }
+    if (!/\.tsx?$/.test(entry.name)) continue;
+    const source = fs.readFileSync(file, "utf8");
+    const ast = ts.createSourceFile(file.pathname, source, ts.ScriptTarget.Latest, true);
+    function visit(node) {
+      if (ts.isCallExpression(node) && ["t", "copy", "stepT"].includes(node.expression.getText(ast))
+          && node.arguments.length && ts.isStringLiteral(node.arguments[0])
+          && /\{arg_\d+\}/.test(node.arguments[0].text)) {
+        assert.ok(node.arguments.length > 1, `Missing interpolation arguments: ${file.pathname}:${ast.getLineAndCharacterOfPosition(node.getStart()).line + 1}`);
+      }
+      ts.forEachChild(node, visit);
+    }
+    visit(ast);
+  }
+}
+for (const directory of ["../components/", "../app/", "../lib/"]) checkCalls(new URL(directory, import.meta.url));
+console.log("Literal translated component calls include their interpolation arguments");

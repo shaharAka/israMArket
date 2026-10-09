@@ -118,6 +118,7 @@ export function MonthPlanOverview({ strategy, currentWeek, nextAction, weekActio
  * under every week doubled the height of the list for a label that said nothing.
  */
 function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek: number | null }) {
+  const t = useCopy();
   const isNow = currentWeek === week.week;
   const isPast = currentWeek !== null && week.week < currentWeek;
   const hasDetails = Boolean(
@@ -148,10 +149,10 @@ function WeekRow({ week, currentWeek }: { week: WeeklyBreakdownItem; currentWeek
     <div className={styles.detail}>
       <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
         {week.what_we_do?.length ? (
-          <DetailList title="מה אנחנו עושים" items={week.what_we_do} />
+          <DetailList title={t("מה אנחנו עושים")} items={week.what_we_do} />
         ) : null}
         {week.what_user_does?.length ? (
-          <DetailList title="מה צריך מכם" items={week.what_user_does} accent />
+          <DetailList title={t("מה צריך מכם")} items={week.what_user_does} accent />
         ) : null}
       </div>
 

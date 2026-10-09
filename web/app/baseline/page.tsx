@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell, PageHeader } from "@/components/AppShell";
@@ -19,6 +21,7 @@ import { toast } from "@/lib/ui";
  * asks nothing. Every field is optional; empty means "לא בטוחים", never zero.
  */
 export default function BaselinePage() {
+  const t = useCopy();
   const [data, setData] = useState<BaselinePayload | null>(null);
   const [values, setValues] = useState<Partial<Record<BaselineKey, string>>>({});
   const [saving, setSaving] = useState(false);
@@ -55,14 +58,14 @@ export default function BaselinePage() {
         })
       ) as Partial<Record<BaselineKey, number | null>>;
       if (Object.values(body).some((value) => value !== null && Number.isNaN(value))) {
-        setError("כתבו מספר בלבד, או השאירו ריק אם לא בטוחים.");
+        setError(t("כתבו מספר בלבד, או השאירו ריק אם לא בטוחים."));
         setSaving(false);
         return;
       }
       setData(await foundations.saveBaseline(body));
-      toast("נקודת הפתיחה נשמרה");
+      toast(t("נקודת הפתיחה נשמרה"));
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור. נסו שוב.");
+      setError(err instanceof Error && err.message ? err.message : t("לא הצלחנו לשמור. נסו שוב."));
     } finally {
       setSaving(false);
     }
@@ -72,31 +75,30 @@ export default function BaselinePage() {
     <AppShell>
       <div className="mx-auto max-w-[640px]">
         <PageHeader
-          title="איפה העסק היום"
-          subtitle="בערך מספיק. כך נדע בסוף החודש מה באמת השתנה. לא בטוחים? השאירו ריק."
+          title={t("איפה העסק היום")}
+          subtitle={t("בערך מספיק. כך נדע בסוף החודש מה באמת השתנה. לא בטוחים? השאירו ריק.")}
         />
 
         {!data ? (
           error ? (
             <p role="alert" className="text-[14px] text-[color:var(--danger)]">{error}</p>
           ) : (
-            <LoadingMark label="טוענים…" />
+            <LoadingMark label={t("טוענים…")} />
           )
         ) : (
           <div className="space-y-6">
             {data.from_integrations ? (
               <p className="flex items-start gap-3 rounded-xl bg-[var(--good-soft)] px-4 py-3.5 text-[14px] leading-6 text-[color:var(--ink)]">
                 <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--good)]" />
-                כבר יש לנו מספרים אמיתיים מהחיבורים, והם נקודת הפתיחה. אפשר להוסיף כאן גם מה שהם לא רואים.
-              </p>
+                <Copy text="כבר יש לנו מספרים אמיתיים מהחיבורים, והם נקודת הפתיחה. אפשר להוסיף כאן גם מה שהם לא רואים." /></p>
             ) : data.from_start_he && !data.saved_at ? (
               // The owner answered this at /start: say it back, so the page is a chance to
               // be more exact, not the same question asked again.
               <div className="flex items-start gap-3 rounded-xl bg-[var(--good-soft)] px-4 py-3.5 text-[14px] leading-6 text-[color:var(--ink)]">
                 <span aria-hidden className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--good)]" />
                 <p>
-                  <b className="font-semibold">מה שסיפרתם בהתחלה:</b> {data.from_start_he}{" "}
-                  <span className="text-[color:var(--ink-soft)]">זו כבר נקודת פתיחה. מספר מדויק יותר כאן הוא לא חובה.</span>
+                  <b className="font-semibold"><Copy text="מה שסיפרתם בהתחלה:" /></b> {data.from_start_he}{" "}
+                  <span className="text-[color:var(--ink-soft)]"><Copy text="זו כבר נקודת פתיחה. מספר מדויק יותר כאן הוא לא חובה." /></span>
                 </p>
               </div>
             ) : null}
@@ -117,7 +119,7 @@ export default function BaselinePage() {
                       inputMode="numeric"
                       value={values[field.key] ?? ""}
                       onChange={(event) => setValues({ ...values, [field.key]: event.target.value })}
-                      placeholder="לא בטוחים"
+                      placeholder={t("לא בטוחים")}
                       className={`${FIELD} !w-40 tabular-nums`}
                     />
                     <span className="min-w-12 text-[14px] text-[color:var(--ink-muted)]">{field.unit_he}</span>
@@ -134,12 +136,11 @@ export default function BaselinePage() {
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
               <UIAction onClick={() => void save()} disabled={saving} className="w-full sm:w-auto sm:!px-7">
-                {saving ? "שומרים…" : "לשמור את נקודת הפתיחה"}
+                {saving ? t("שומרים…") : t("לשמור את נקודת הפתיחה")}
               </UIAction>
               {data.saved_at || data.from_start_he ? (
                 <Link href="/dashboard" className={TEXT_ACTION}>
-                  לצעד הבא
-                  <IconArrowLeft className="h-4 w-4" />
+                  <Copy text="לצעד הבא" /><IconArrowLeft className="h-4 w-4" />
                 </Link>
               ) : null}
             </div>
