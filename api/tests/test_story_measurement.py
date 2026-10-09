@@ -55,6 +55,14 @@ class StoryGraphTest(unittest.TestCase):
         self.assertEqual(result['posts'][0]['insights'], {'reach':20})
         self.assertNotIn('private-token', dumps(result))
 
+    def test_revoked_insight_permission_stops_without_claiming_a_successful_read(self):
+        def get(url, **kw):
+            return FakeResponse({'data':[{'id':'178123'},{'id':'178456'}]}) if url.endswith('/stories') else graph_error(10,'Application has no insights permission')
+        with mock.patch.object(meta.httpx,'get',side_effect=get) as calls:
+            result=meta.fetch_stories('USER_TOKEN',ACCOUNT)
+        self.assertEqual(calls.call_count,2)
+        self.assertEqual(result['status'],'permission');self.assertEqual(result['posts'],[])
+
     def test_small_counts_are_unknown_not_zero_or_reconnect(self):
         def get(url, **kw):
             return FakeResponse({'data':[{'id':'178123'}]}) if url.endswith('/stories') else graph_error(10, 'Not enough viewers')

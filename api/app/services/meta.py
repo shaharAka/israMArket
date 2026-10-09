@@ -262,6 +262,13 @@ def _parse_insights(payload: dict) -> dict:
     return parsed
 
 
+def _stop_media_read(exc: GraphError) -> bool:
+    # Code 10 also means a Story has too few viewers, per Meta's media reference.
+    # That is missing data, not a reason to request access again.
+    low_viewers = exc.code == 10 and "not enough viewers" in str(exc).lower()
+    return exc.kind in {"token", "rate_limited", "unavailable"} or (exc.kind == "permission" and not low_viewers)
+
+
 def media_insights(
     media_id: str, access_token: str, metrics: tuple[str, ...] = INSIGHT_METRICS, *, stop_on_auth: bool = False
 ) -> tuple[dict, dict]:
@@ -278,7 +285,7 @@ def media_insights(
         )
         return values, {name: MISSING_METRIC_HE for name in metrics if name not in values}
     except GraphError as exc:
-        if exc.kind in {"token", "rate_limited", "unavailable"}:
+        if (stop_on_auth and _stop_media_read(exc)) or exc.kind in {"token", "rate_limited", "unavailable"}:
             if stop_on_auth:
                 raise
             # Retrying metric by metric would only spend more of the same budget.
@@ -291,7 +298,7 @@ def media_insights(
                 graph_get(f"{media_id}/insights", {"metric": name}, access_token, timeout=15.0)
             )
         except GraphError as exc:
-            if stop_on_auth and exc.kind in {"token", "rate_limited", "unavailable"}:
+            if stop_on_auth and _stop_media_read(exc):
                 raise
             errors[name] = str(exc) or MISSING_METRIC_HE
             continue
