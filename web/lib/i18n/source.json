@@ -79,25 +79,25 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 416,
+        "line": 418,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 738,
+        "line": 740,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 622,
+        "line": 647,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/meta.py",
-        "line": 681,
+        "line": 764,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -109,7 +109,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 757,
+        "line": 759,
         "kind": "literal"
       }
     ]
@@ -1932,7 +1932,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -2124,7 +2124,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 620,
+        "line": 641,
         "kind": "template",
         "purpose": "copy"
       }
@@ -2136,7 +2136,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 952,
+        "line": 977,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -2237,7 +2237,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 382,
+        "line": 407,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -2897,7 +2897,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 756,
+        "line": 758,
         "kind": "literal"
       }
     ]
@@ -3099,7 +3099,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 334,
+        "line": 335,
         "kind": "template",
         "purpose": "copy"
       }
@@ -3398,7 +3398,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 374,
+        "line": 399,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -3467,7 +3467,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 298,
+        "line": 299,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -3800,7 +3800,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1031,
+        "line": 1033,
         "kind": "literal"
       }
     ]
@@ -4156,13 +4156,13 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 48,
+        "line": 49,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 302,
+        "line": 303,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4383,7 +4383,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 496,
+        "line": 513,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5120,7 +5120,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -5300,7 +5300,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1247,
+        "line": 1249,
         "kind": "literal"
       }
     ]
@@ -5492,7 +5492,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6489,7 +6489,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -7052,7 +7052,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 106,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -7802,7 +7802,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -8040,6 +8040,17 @@
       {
         "file": "web/components/results/FindingCard.tsx",
         "line": 125,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_11d7dd469045e469": {
+    "source": "המקורות הבאים עוד לא מחוברים: {arg_0}. אפשר להמשיך עם הדיווח שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/performance/page.tsx",
+        "line": 364,
         "kind": "literal"
       }
     ]
@@ -8310,7 +8321,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 625,
+        "line": 627,
         "kind": "literal"
       }
     ]
@@ -8835,13 +8846,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 418,
+        "line": 420,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/meta.py",
-        "line": 683,
+        "line": 766,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -9065,7 +9076,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -9794,7 +9805,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 65,
+        "line": 66,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -9947,7 +9958,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 258,
+        "line": 259,
         "kind": "template",
         "purpose": "copy"
       }
@@ -10159,7 +10170,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -10829,7 +10840,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -10884,7 +10895,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 400,
+        "line": 483,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -11228,7 +11239,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 742,
+        "line": 744,
         "kind": "literal",
         "purpose": "display"
       },
@@ -11249,19 +11260,19 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 50,
+        "line": 51,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 302,
+        "line": 303,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 624,
+        "line": 649,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -11988,7 +11999,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 890,
+        "line": 892,
         "kind": "literal"
       }
     ]
@@ -12010,7 +12021,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1188,
+        "line": 1190,
         "kind": "literal"
       }
     ]
@@ -12412,7 +12423,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 680,
+        "line": 763,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -13234,7 +13245,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1225,
+        "line": 1227,
         "kind": "literal"
       }
     ]
@@ -13557,7 +13568,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1185,
+        "line": 1187,
         "kind": "literal"
       },
       {
@@ -13823,7 +13834,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 381,
+        "line": 406,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -14721,6 +14732,11 @@
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
         "line": 84,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/results/PostObservationLine.tsx",
+        "line": 17,
+        "kind": "jsx"
       }
     ]
   },
@@ -14767,17 +14783,6 @@
         "line": 1266,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_2052240e4ca24d52": {
-    "source": ". אפשר להמשיך עם הדיווח שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/performance/page.tsx",
-        "line": 362,
-        "kind": "literal"
       }
     ]
   },
@@ -15220,7 +15225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -15414,7 +15419,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -16109,7 +16114,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16245,7 +16250,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 259,
+        "line": 260,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -16656,7 +16661,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 500,
+        "line": 517,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -17850,7 +17855,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 112,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17922,7 +17927,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 138,
+        "line": 139,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -18058,7 +18063,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 322,
+        "line": 333,
         "kind": "template",
         "purpose": "validation"
       }
@@ -18138,7 +18143,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 259,
+        "line": 284,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18467,7 +18472,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 427,
+        "line": 429,
         "kind": "literal"
       }
     ]
@@ -19552,7 +19557,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 257,
+        "line": 282,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19668,6 +19673,18 @@
         "line": 136,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2be01786d54499eb": {
+    "source": "תוצאות הסטורי נשמרות גם אחרי שהוא נעלם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -19957,7 +19974,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 127,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -20857,7 +20874,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 611,
+        "line": 636,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -20937,7 +20954,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 310,
+        "line": 299,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -21079,17 +21096,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -21300,7 +21317,12 @@
     "references": [
       {
         "file": "web/components/results/PostObservationLine.tsx",
-        "line": 18,
+        "line": 17,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/results/PostObservationLine.tsx",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -21558,7 +21580,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 1086,
+        "line": 1111,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22006,7 +22028,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 164,
+        "line": 153,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -22482,7 +22504,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 377,
+        "line": 402,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22533,7 +22555,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 303,
+        "line": 304,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22863,7 +22885,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 199,
+        "line": 200,
         "kind": "template",
         "purpose": "copy"
       }
@@ -23336,7 +23358,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 358,
+        "line": 359,
         "kind": "literal"
       },
       {
@@ -23438,7 +23460,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 55,
+        "line": 56,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -23836,7 +23858,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1021,
+        "line": 1023,
         "kind": "literal"
       }
     ]
@@ -24835,7 +24857,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 502,
+        "line": 519,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25104,7 +25126,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 359,
+        "line": 360,
         "kind": "template",
         "purpose": "copy"
       }
@@ -25482,7 +25504,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -25956,7 +25978,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 615,
+        "line": 640,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -26025,7 +26047,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 762,
+        "line": 849,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -26537,7 +26559,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -27022,7 +27044,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 1068,
+        "line": 1093,
         "kind": "template",
         "purpose": "copy"
       }
@@ -27197,7 +27219,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 622,
+        "line": 643,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -27500,7 +27522,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 395,
+        "line": 478,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -27787,7 +27809,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 634,
+        "line": 659,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -28298,7 +28320,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 514,
+        "line": 516,
         "kind": "literal"
       },
       {
@@ -28349,7 +28371,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28861,7 +28883,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1117,
+        "line": 1119,
         "kind": "literal"
       }
     ]
@@ -29285,7 +29307,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -29584,7 +29606,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 64,
+        "line": 65,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29777,7 +29799,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 654,
+        "line": 656,
         "kind": "literal"
       }
     ]
@@ -30124,12 +30146,12 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 358,
+        "line": 359,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1224,
+        "line": 1226,
         "kind": "literal"
       },
       {
@@ -31154,7 +31176,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -31205,7 +31227,7 @@
     "references": [
       {
         "file": "web/components/results/PostObservationLine.tsx",
-        "line": 17,
+        "line": 23,
         "kind": "jsx"
       }
     ]
@@ -31669,7 +31691,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -31756,7 +31778,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -32045,7 +32067,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1214,
+        "line": 1216,
         "kind": "literal"
       }
     ]
@@ -32305,7 +32327,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -32599,7 +32621,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 12,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 19,
         "kind": "literal"
       },
       {
@@ -33171,7 +33198,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 66,
+        "line": 67,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -33223,7 +33250,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 936,
+        "line": 961,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -33463,7 +33490,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 489,
+        "line": 491,
         "kind": "literal"
       }
     ]
@@ -33552,7 +33579,7 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 829,
+        "line": 831,
         "kind": "literal"
       },
       {
@@ -33847,7 +33874,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 684,
+        "line": 767,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -34255,7 +34282,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 752,
+        "line": 754,
         "kind": "literal"
       }
     ]
@@ -34653,7 +34680,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 589,
+        "line": 591,
         "kind": "literal"
       }
     ]
@@ -35474,7 +35501,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 541,
+        "line": 543,
         "kind": "literal"
       }
     ]
@@ -35776,7 +35803,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 126,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36097,7 +36124,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 685,
+        "line": 768,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36334,7 +36361,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -36350,7 +36377,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 1079,
+        "line": 1104,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36400,7 +36427,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 934,
+        "line": 959,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36434,7 +36461,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 807,
+        "line": 809,
         "kind": "literal"
       },
       {
@@ -36501,7 +36528,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36654,7 +36681,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 980,
+        "line": 982,
         "kind": "literal"
       }
     ]
@@ -37050,7 +37077,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 313,
+        "line": 302,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38608,7 +38635,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 397,
+        "line": 480,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38620,7 +38647,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 120,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -39786,7 +39813,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 743,
+        "line": 745,
         "kind": "literal",
         "purpose": "display"
       },
@@ -39802,7 +39829,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 625,
+        "line": 650,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -40012,7 +40039,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 749,
+        "line": 751,
         "kind": "literal"
       }
     ]
@@ -40203,7 +40230,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 856,
+        "line": 858,
         "kind": "literal"
       }
     ]
@@ -40321,13 +40348,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 433,
+        "line": 435,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 979,
+        "line": 981,
         "kind": "literal"
       }
     ]
@@ -41148,7 +41175,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -41722,13 +41749,13 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 201,
+        "line": 202,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 334,
+        "line": 335,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -42245,7 +42272,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 416,
+        "line": 418,
         "kind": "literal"
       }
     ]
@@ -42347,7 +42374,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1204,
+        "line": 1206,
         "kind": "literal"
       }
     ]
@@ -42601,7 +42628,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 420,
+        "line": 422,
         "kind": "literal",
         "purpose": "display"
       }
@@ -42613,7 +42640,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1030,
+        "line": 1032,
         "kind": "literal"
       }
     ]
@@ -42823,7 +42850,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1057,
+        "line": 1119,
         "kind": "template",
         "purpose": "copy"
       }
@@ -42954,7 +42981,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 419,
+        "line": 421,
         "kind": "literal"
       }
     ]
@@ -43362,7 +43389,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -43514,7 +43541,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 505,
+        "line": 507,
         "kind": "literal"
       }
     ]
@@ -43639,7 +43666,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 612,
+        "line": 637,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -43792,7 +43819,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -44205,7 +44232,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -44884,7 +44911,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 496,
+        "line": 521,
         "kind": "template",
         "purpose": "validation"
       }
@@ -45747,12 +45774,12 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 503,
+        "line": 505,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1226,
+        "line": 1228,
         "kind": "literal"
       }
     ]
@@ -46727,7 +46754,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 773,
+        "line": 860,
         "kind": "template",
         "purpose": "validation"
       }
@@ -46751,13 +46778,13 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 158,
+        "line": 159,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 159,
+        "line": 160,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -46893,7 +46920,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 541,
+        "line": 543,
         "kind": "literal"
       }
     ]
@@ -47218,7 +47245,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 370,
+        "line": 372,
         "kind": "literal"
       }
     ]
@@ -47258,7 +47285,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 418,
+        "line": 420,
         "kind": "literal"
       }
     ]
@@ -47337,7 +47364,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47458,7 +47485,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -47480,7 +47507,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1093,
+        "line": 1095,
         "kind": "literal"
       }
     ]
@@ -47513,7 +47540,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 113,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -47638,7 +47665,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 119,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48162,7 +48189,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 299,
+        "line": 300,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48184,7 +48211,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 138,
+        "line": 139,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -48602,7 +48629,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 211,
+        "line": 212,
         "kind": "template",
         "purpose": "copy"
       }
@@ -48681,7 +48708,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 750,
+        "line": 752,
         "kind": "literal"
       }
     ]
@@ -49734,7 +49761,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50277,7 +50304,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -50310,7 +50337,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -51793,7 +51820,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -51857,7 +51884,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1061,
+        "line": 1123,
         "kind": "template",
         "purpose": "copy"
       }
@@ -51942,7 +51969,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 985,
+        "line": 987,
         "kind": "literal"
       }
     ]
@@ -52888,7 +52915,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 434,
+        "line": 436,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53588,7 +53615,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 655,
+        "line": 680,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -53728,7 +53755,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54189,12 +54216,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5707,
+        "line": 5711,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5708,
+        "line": 5712,
         "kind": "literal"
       },
       {
@@ -54450,7 +54477,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -54664,7 +54691,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 391,
+        "line": 393,
         "kind": "literal"
       }
     ]
@@ -54807,13 +54834,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 737,
+        "line": 739,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 627,
+        "line": 652,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -55841,7 +55868,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 369,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -56002,7 +56029,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 57,
+        "line": 58,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56658,7 +56685,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 260,
+        "line": 285,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56853,7 +56880,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -57535,7 +57562,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 679,
+        "line": 681,
         "kind": "literal"
       },
       {
@@ -57859,7 +57886,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1020,
+        "line": 1022,
         "kind": "literal"
       }
     ]
@@ -58186,13 +58213,13 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 203,
+        "line": 204,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 202,
+        "line": 203,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58239,7 +58266,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -58417,12 +58444,12 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 923,
+        "line": 925,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1228,
+        "line": 1230,
         "kind": "literal"
       },
       {
@@ -59638,7 +59665,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 63,
+        "line": 64,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -60310,7 +60337,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -60986,7 +61013,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 624,
+        "line": 645,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61226,7 +61253,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61261,7 +61288,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 578,
+        "line": 595,
         "kind": "template",
         "purpose": "copy"
       }
@@ -61368,7 +61395,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 58,
+        "line": 59,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61410,7 +61437,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 55,
+        "line": 56,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -61943,7 +61970,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 190,
+        "line": 179,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -62084,7 +62111,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 682,
+        "line": 765,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62272,7 +62299,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -63231,7 +63258,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1106,
+        "line": 1108,
         "kind": "literal"
       }
     ]
@@ -63290,7 +63317,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 398,
+        "line": 481,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63575,7 +63602,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63648,7 +63675,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 846,
+        "line": 848,
         "kind": "literal"
       }
     ]
@@ -63805,7 +63832,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 637,
+        "line": 720,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63890,7 +63917,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64071,7 +64098,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 297,
+        "line": 298,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -64256,13 +64283,13 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 646,
+        "line": 671,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 1009,
+        "line": 1034,
         "kind": "literal",
         "purpose": "generation-instruction"
       },
@@ -64930,7 +64957,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 995,
+        "line": 997,
         "kind": "literal"
       }
     ]
@@ -64941,7 +64968,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 1082,
+        "line": 1107,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65005,7 +65032,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 930,
+        "line": 932,
         "kind": "literal"
       }
     ]
@@ -65194,7 +65221,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 602,
+        "line": 604,
         "kind": "literal"
       }
     ]
@@ -65554,7 +65581,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 761,
+        "line": 763,
         "kind": "literal"
       },
       {
@@ -65700,12 +65727,12 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 558,
+        "line": 560,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 780,
+        "line": 782,
         "kind": "literal"
       },
       {
@@ -66720,7 +66747,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 426,
+        "line": 428,
         "kind": "literal"
       },
       {
@@ -67389,6 +67416,17 @@
       }
     ]
   },
+  "m_97733ddbdd0076aa": {
+    "source": "לחשבון אינסטגרם מחובר קוראים את נתוני הסטורי פעם בשעה. הוסיפו את הקישור לסטורי שפרסמתם בעורך, וליד הפוסט תראו כמה אנשים הגיעו אליו ומתי הנתון נקרא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_97787973eebe0aef": {
     "source": "נוכל למדוד לחיצות לפנייה אליכם. לחיצה אינה הודעה או לקוח.",
     "language": "he",
@@ -67435,7 +67473,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 992,
+        "line": 994,
         "kind": "literal"
       }
     ]
@@ -68484,7 +68522,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1059,
+        "line": 1121,
         "kind": "template",
         "purpose": "copy"
       }
@@ -68833,7 +68871,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -69030,7 +69068,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -69163,13 +69201,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 410,
+        "line": 412,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 419,
+        "line": 421,
         "kind": "literal",
         "purpose": "display"
       }
@@ -69468,7 +69506,7 @@
     "references": [
       {
         "file": "web/components/results/PostObservationLine.tsx",
-        "line": 17,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -69884,7 +69922,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1090,
+        "line": 1152,
         "kind": "template",
         "purpose": "copy"
       }
@@ -70049,7 +70087,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 715,
+        "line": 717,
         "kind": "literal"
       }
     ]
@@ -70862,7 +70900,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1056,
+        "line": 1118,
         "kind": "template",
         "purpose": "copy"
       }
@@ -71167,7 +71205,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -71212,7 +71250,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 486,
+        "line": 488,
         "kind": "literal"
       }
     ]
@@ -71335,11 +71373,6 @@
     "source": "אין כרגע חיבור ל",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/performance/page.tsx",
-        "line": 362,
-        "kind": "literal"
-      },
       {
         "file": "api/app/services/audiences.py",
         "line": 615,
@@ -71583,7 +71616,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 597,
+        "line": 599,
         "kind": "literal"
       },
       {
@@ -71616,7 +71649,7 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 735,
+        "line": 737,
         "kind": "literal",
         "purpose": "display"
       }
@@ -71736,7 +71769,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 399,
+        "line": 482,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -71872,7 +71905,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1060,
+        "line": 1122,
         "kind": "template",
         "purpose": "copy"
       }
@@ -72409,7 +72442,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -72533,7 +72566,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1240,
+        "line": 1242,
         "kind": "literal"
       }
     ]
@@ -72577,7 +72610,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 961,
+        "line": 986,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -72974,7 +73007,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 193,
+        "line": 182,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -73003,7 +73036,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 939,
+        "line": 964,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -73525,7 +73558,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 985,
+        "line": 987,
         "kind": "literal"
       }
     ]
@@ -73791,7 +73824,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 317,
+        "line": 328,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -73803,7 +73836,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 968,
+        "line": 970,
         "kind": "literal"
       }
     ]
@@ -75510,7 +75543,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 847,
+        "line": 849,
         "kind": "literal"
       }
     ]
@@ -75891,7 +75924,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75914,7 +75947,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 800,
+        "line": 802,
         "kind": "literal"
       }
     ]
@@ -76126,7 +76159,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 755,
+        "line": 757,
         "kind": "literal"
       }
     ]
@@ -76833,7 +76866,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -77039,7 +77072,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 498,
+        "line": 515,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -77084,12 +77117,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 370,
-        "kind": "literal"
-      },
-      {
-        "file": "web/app/performance/page.tsx",
-        "line": 1018,
+        "line": 1020,
         "kind": "literal"
       },
       {
@@ -78016,7 +78044,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -78491,7 +78519,7 @@
     "references": [
       {
         "file": "web/components/results/PostObservationLine.tsx",
-        "line": 19,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -78678,7 +78706,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 754,
+        "line": 756,
         "kind": "literal"
       }
     ]
@@ -78912,7 +78940,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 421,
+        "line": 423,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79015,7 +79043,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79801,7 +79829,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1032,
+        "line": 1034,
         "kind": "literal"
       }
     ]
@@ -79984,7 +80012,7 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 734,
+        "line": 736,
         "kind": "literal",
         "purpose": "display"
       },
@@ -80539,7 +80567,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 845,
+        "line": 847,
         "kind": "literal"
       }
     ]
@@ -80861,16 +80889,6 @@
     "source": " ול",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/performance/page.tsx",
-        "line": 362,
-        "kind": "literal"
-      },
-      {
-        "file": "web/app/performance/page.tsx",
-        "line": 369,
-        "kind": "literal"
-      },
       {
         "file": "api/app/services/audiences.py",
         "line": 616,
@@ -81329,7 +81347,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 491,
+        "line": 493,
         "kind": "literal"
       }
     ]
@@ -82261,7 +82279,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 334,
+        "line": 335,
         "kind": "template",
         "purpose": "copy"
       }
@@ -82876,7 +82894,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 425,
+        "line": 427,
         "kind": "literal"
       }
     ]
@@ -82954,7 +82972,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 380,
+        "line": 405,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82994,7 +83012,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 564,
+        "line": 589,
         "kind": "template",
         "purpose": "copy"
       }
@@ -83267,7 +83285,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 616,
+        "line": 641,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83532,7 +83550,7 @@
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 614,
+        "line": 639,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83588,7 +83606,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84215,7 +84233,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 654,
+        "line": 679,
         "kind": "template",
         "purpose": "copy"
       }
@@ -84249,7 +84267,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 636,
+        "line": 638,
         "kind": "literal"
       }
     ]
@@ -84627,7 +84645,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -84746,7 +84764,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -84844,7 +84862,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 258,
+        "line": 283,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -85252,7 +85270,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 504,
+        "line": 521,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -85393,12 +85411,12 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1042,
+        "line": 1044,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1206,
+        "line": 1208,
         "kind": "literal"
       }
     ]
@@ -85992,7 +86010,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 615,
+        "line": 636,
         "kind": "template",
         "purpose": "copy"
       }
@@ -86423,7 +86441,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 943,
+        "line": 968,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86457,7 +86475,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 437,
+        "line": 439,
         "kind": "literal"
       },
       {
@@ -87227,7 +87245,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 133,
+        "line": 134,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -88075,19 +88093,19 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 408,
+        "line": 410,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 415,
+        "line": 417,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 741,
+        "line": 743,
         "kind": "literal",
         "purpose": "display"
       },
@@ -88123,7 +88141,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 51,
+        "line": 52,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -88725,7 +88743,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 949,
+        "line": 974,
         "kind": "template",
         "purpose": "copy"
       }
@@ -88827,7 +88845,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1032,
+        "line": 1034,
         "kind": "literal"
       }
     ]
@@ -89571,7 +89589,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 369,
+        "line": 371,
         "kind": "literal"
       }
     ]
@@ -89639,12 +89657,12 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 362,
+        "line": 364,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 396,
+        "line": 398,
         "kind": "literal"
       },
       {
@@ -89836,7 +89854,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -89980,7 +89998,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 372,
+        "line": 374,
         "kind": "literal"
       },
       {
@@ -90483,7 +90501,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -91054,7 +91072,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -91418,7 +91436,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 300,
+        "line": 301,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -92400,7 +92418,7 @@
     "references": [
       {
         "file": "api/app/services/meta.py",
-        "line": 394,
+        "line": 477,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -92641,7 +92659,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 417,
+        "line": 419,
         "kind": "literal"
       }
     ]
@@ -93131,7 +93149,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -93479,7 +93497,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 359,
+        "line": 360,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -93799,7 +93817,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -93940,7 +93958,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1227,
+        "line": 1229,
         "kind": "literal"
       }
     ]
@@ -94557,7 +94575,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -95214,7 +95232,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95259,13 +95277,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 736,
+        "line": 738,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 626,
+        "line": 651,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -95707,7 +95725,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1018,
+        "line": 1020,
         "kind": "literal"
       }
     ]
@@ -96168,7 +96186,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1087,
+        "line": 1089,
         "kind": "literal"
       }
     ]
@@ -96352,7 +96370,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 571,
+        "line": 588,
         "kind": "template",
         "purpose": "copy"
       }
@@ -96530,7 +96548,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 312,
+        "line": 301,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96542,7 +96560,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 955,
+        "line": 980,
         "kind": "template",
         "purpose": "copy"
       }
@@ -96639,7 +96657,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 753,
+        "line": 755,
         "kind": "literal"
       }
     ]
@@ -97605,7 +97623,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 55,
+        "line": 56,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -98334,7 +98352,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -98396,13 +98414,13 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 213,
+        "line": 214,
         "kind": "template",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 215,
+        "line": 216,
         "kind": "template",
         "purpose": "copy"
       }
@@ -98593,7 +98611,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -99129,7 +99147,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 616,
+        "line": 637,
         "kind": "template",
         "purpose": "copy"
       }
@@ -99289,7 +99307,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -99935,7 +99953,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 415,
+        "line": 417,
         "kind": "literal"
       }
     ]
@@ -100091,7 +100109,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 379,
+        "line": 404,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100148,7 +100166,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 261,
+        "line": 286,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100223,7 +100241,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 932,
+        "line": 934,
         "kind": "literal"
       },
       {
@@ -100827,7 +100845,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 623,
+        "line": 648,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -102207,13 +102225,24 @@
       }
     ]
   },
+  "m_e675d16b01f428d0": {
+    "source": "המספר האחרון שנקרא נשמר גם אחרי 24 שעות. סטורי שלא התקבל עבורו נתון נשאר ללא מדידה, ולא נספר כאפס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e6821bd977506f3a": {
     "source": "להיכרות עם העסק",
     "language": "he",
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -102855,7 +102884,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -102878,7 +102907,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 428,
+        "line": 430,
         "kind": "literal"
       }
     ]
@@ -103873,7 +103902,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 1053,
+        "line": 1115,
         "kind": "template",
         "purpose": "copy"
       }
@@ -104369,7 +104398,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -105270,12 +105299,12 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 377,
+        "line": 379,
         "kind": "literal"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1046,
+        "line": 1048,
         "kind": "literal"
       }
     ]
@@ -105464,7 +105493,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 429,
+        "line": 431,
         "kind": "literal"
       }
     ]
@@ -105521,7 +105550,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 394,
+        "line": 396,
         "kind": "literal"
       }
     ]
@@ -105984,7 +106013,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 214,
+        "line": 203,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -106007,7 +106036,7 @@
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 733,
+        "line": 735,
         "kind": "literal",
         "purpose": "display"
       },
@@ -106039,13 +106068,13 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 49,
+        "line": 50,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 302,
+        "line": 303,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -106699,7 +106728,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 748,
+        "line": 750,
         "kind": "literal"
       }
     ]
@@ -106957,7 +106986,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 806,
+        "line": 808,
         "kind": "literal"
       },
       {
@@ -107457,7 +107486,7 @@
     "references": [
       {
         "file": "api/app/routers/performance.py",
-        "line": 429,
+        "line": 418,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -107825,7 +107854,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 887,
+        "line": 889,
         "kind": "literal"
       }
     ]
@@ -109139,7 +109168,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 656,
+        "line": 658,
         "kind": "literal"
       }
     ]
@@ -109295,7 +109324,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1188,
+        "line": 1190,
         "kind": "literal"
       }
     ]
@@ -109322,7 +109351,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 613,
+        "line": 638,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -109345,7 +109374,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 544,
+        "line": 569,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -109414,7 +109443,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 751,
+        "line": 753,
         "kind": "literal"
       }
     ]
@@ -109534,7 +109563,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -109969,13 +109998,13 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 409,
+        "line": 411,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/app/performance/page.tsx",
-        "line": 417,
+        "line": 419,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110033,7 +110062,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110933,7 +110962,7 @@
     "references": [
       {
         "file": "api/app/services/instagram_signal.py",
-        "line": 378,
+        "line": 403,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -111567,7 +111596,7 @@
     "references": [
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 190,
+        "line": 191,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -111903,7 +111932,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -112397,7 +112426,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -112585,7 +112614,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 740,
+        "line": 742,
         "kind": "literal",
         "purpose": "display"
       },
@@ -112935,7 +112964,7 @@
       },
       {
         "file": "api/app/services/connected_posts.py",
-        "line": 62,
+        "line": 63,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -113042,7 +113071,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 1016,
+        "line": 1018,
         "kind": "literal"
       }
     ]
@@ -113053,7 +113082,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113376,7 +113405,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -113922,7 +113951,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 680,
+        "line": 682,
         "kind": "literal"
       }
     ]
@@ -113933,7 +113962,7 @@
     "references": [
       {
         "file": "web/app/performance/page.tsx",
-        "line": 798,
+        "line": 800,
         "kind": "literal"
       }
     ]

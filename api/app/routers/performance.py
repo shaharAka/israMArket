@@ -41,7 +41,7 @@ def _posts(business: Business, db: Session) -> list[dict]:
 
 def _attribute(posts: list[dict], ga4_data: dict, meta_data: dict) -> list[dict]:
     campaigns = ga4_data.get("campaigns") or []
-    media = meta_data.get("posts") or []
+    media = [*(meta_data.get("posts") or []), *((meta_data.get("stories") or {}).get("posts") or [])]
     rows = []
     for post in posts:
         utm = post.get("utm") or {}
@@ -54,19 +54,8 @@ def _attribute(posts: list[dict], ga4_data: dict, meta_data: dict) -> list[dict]
                 or row.get("sessionManualAdContent") == utm.get("utm_content")
             )
         ]
-        published = (post.get("published_url") or "").rstrip("/")
-        media_hit = None
-        for item in media:
-            permalink = (item.get("permalink") or "").rstrip("/")
-            if published and permalink and published == permalink:
-                media_hit = item
-                break
-        if not media_hit and post.get("caption"):
-            needle = (post.get("caption") or "")[:40]
-            for item in media:
-                if needle and needle in (item.get("caption") or ""):
-                    media_hit = item
-                    break
+        media_hit, _ = connected_posts._match_media({**post, "channel": connected_posts.channel_of(post)},
+            [{**item, "id": str(item.get("id") or item.get("permalink") or ""), "product_type": item.get("media_product_type") or ""} for item in media], set())
         rows.append(
             {
                 "title": post.get("title"),
@@ -223,7 +212,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
             meta_data = {**old_meta, "source_read_at": old_meta.get("source_read_at") or previous.created_at.isoformat(),
                          "source_period": old_meta.get("source_period") or {"start": previous.period_start, "end": previous.period_end}}
     meta_sections = (meta_readiness.public_state(meta_item).get("sections") or {}) if meta_item else {}
-    fresh_meta = any(section.get("status") in {"ready", "empty"} for name, section in meta_sections.items() if name in {"social", "ads"}) and meta_readiness.has_observations(meta_data)
+    fresh_meta = any(section.get("status") in {"ready", "empty"} for name, section in meta_sections.items() if name in {"social", "stories", "ads"}) and meta_readiness.has_observations(meta_data)
     if not fresh_ga4 and not fresh_meta:
         # If neither provider delivered a fresh report, preserve the snapshot and
         # recommendation. A new timestamp must not make old evidence look new.
@@ -237,13 +226,13 @@ def _sync_payload(business: Business, db: Session) -> dict:
     # Committed now, so a diagnostic failure below does not throw the numbers away.
     fresh_social = fresh_meta and meta_sections.get("social", {}).get("status") in {"ready", "empty"} and (
         not meta_data.get("source_reads") or (meta_data.get("source_reads", {}).get("social") or {}).get("read_at") == meta_data.get("source_read_at"))
-    if fresh_social and instagram_signal.store_media(db, business.id, meta_data):
+    if (fresh_social or (meta_data.get("stories") or {}).get("posts")) and instagram_signal.store_media(db, business.id, meta_readiness.media_for_storage(meta_data)):
         db.commit()
     meta_data = meta.snapshot_view(meta_data)
 
     posts = _posts(business, db)
-    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social else {})
-    post_results = _refresh_post_results(business, db, ga4_data if fresh_ga4 else None, meta_data if fresh_social else None)
+    ga4_data["post_attribution"] = _attribute(posts, ga4_data, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") else {})
+    post_results = _refresh_post_results(business, db, ga4_data if fresh_ga4 else None, meta_data if fresh_social or (meta_data.get("stories") or {}).get("posts") else None)
 
     business_payload = {
         "name": business.name,

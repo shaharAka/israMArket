@@ -176,13 +176,30 @@ def _sum(*values: int | None) -> int | None:
 # --- own posts: persistence -----------------------------------------------------------
 
 
+def merge_story_metrics(prior: dict, incoming: dict, observations: dict) -> tuple[dict, dict]:
+    """Keep a metric and its capture date together; late concurrent reads cannot rewind it."""
+    values, stamps = dict(prior.get("values") or {}), dict(prior.get("observations") or {})
+    def order(observation):
+        try:
+            return datetime.fromisoformat(observation["read_at"].replace("Z", "+00:00")).timestamp()
+        except (KeyError, TypeError, ValueError):
+            return 0
+    for metric, value in incoming.items():
+        stamp = observations.get(metric) or {}
+        if _num(value) is not None and (metric not in values or order(stamp) >= order(stamps.get(metric) or {})):
+            values[metric], stamps[metric] = value, stamp
+    return values, stamps
+
+
 def store_media(db: Session, business_id: int, meta_data: dict | None) -> int:
     """Upsert every post of one sync into `instagram_posts`. Caller commits.
 
-    Latest numbers win. A metric that did not come back this time keeps NULL (and its
-    reason) rather than an older value, so the table never mixes two syncs in one row.
+    Feed rows describe the latest sync. Stories keep each last captured metric and
+    its original read date, because the endpoint disappears after 24 hours.
     """
-    posts = [item for item in (meta_data or {}).get("posts") or [] if isinstance(item, dict) and item.get("id")]
+    stories = (meta_data or {}).get("stories") or {}
+    posts = [item for item in [*((meta_data or {}).get("posts") or []), *(stories.get("posts") or [])]
+             if isinstance(item, dict) and item.get("id")]
     if not posts:
         return 0
     ids = [str(item["id"]) for item in posts]
@@ -201,19 +218,27 @@ def store_media(db: Session, business_id: int, meta_data: dict | None) -> int:
             db.add(row)
             existing[media_id] = row
         insights = item.get("insights") if isinstance(item.get("insights"), dict) else {}
-        row.caption = item.get("caption_full") or item.get("caption") or ""
-        row.media_type = item.get("media_type") or ""
+        is_story = item.get("media_product_type") == "STORY"
+        row.caption = item.get("caption_full") or item.get("caption") or (row.caption if is_story else "") or ""
+        row.media_type = item.get("media_type") or (row.media_type if is_story else "") or ""
         row.media_product_type = item.get("media_product_type") or ""
-        row.permalink = item.get("permalink") or ""
-        row.media_url = item.get("media_url") or ""
-        row.thumbnail_url = item.get("thumbnail_url") or ""
-        row.posted_at = item.get("timestamp") or ""
+        row.permalink = item.get("permalink") or (row.permalink if is_story else "") or ""
+        row.media_url = item.get("media_url") or (row.media_url if is_story else "") or ""
+        row.thumbnail_url = item.get("thumbnail_url") or (row.thumbnail_url if is_story else "") or ""
+        row.posted_at = item.get("timestamp") or (row.posted_at if is_story else "") or ""
         row.like_count = _num(item.get("like_count"))
         row.comments_count = _num(item.get("comments_count"))
-        row.views = _num(insights.get("views"))
-        row.reach = _num(insights.get("reach"))
-        row.saved = _num(insights.get("saved"))
-        row.shares = _num(insights.get("shares"))
+        account_id = str(item.get("instagram_id") or (meta_data or {}).get("instagram_id") or "")
+        is_story = row.media_product_type == "STORY"
+        older = loads(row.insights_json, {}) or {}
+        prior = older if row.instagram_id == account_id else {}
+        row.instagram_id = account_id
+        values, observations = merge_story_metrics(prior, insights, item.get("observations") or {}) if is_story else (insights, {})
+        row.insights_json = dumps({"values": values, "observations": observations})
+        row.views = _num(values.get("views"))
+        row.reach = _num(values.get("reach"))
+        row.saved = None if is_story else _num(values.get("saved"))
+        row.shares = _num(values.get("shares"))
         row.metric_errors_json = dumps(item.get("insight_errors") or {})
         row.synced_at = now
     db.flush()
@@ -335,7 +360,7 @@ def own_posts(business: Business, db: Session | None = None, limit: int = 60) ->
 
 def top_own_posts(business: Business, n: int = 5, db: Session | None = None) -> list[dict]:
     """The business's best posts, labelled O1..On, with caption, format, hook and numbers."""
-    return _label(rank_posts(own_posts(business, db), n), "O")
+    return _label(rank_posts([post for post in own_posts(business, db) if post.get("media_product_type") != "STORY"], n), "O")
 
 
 # --- Meta connection ------------------------------------------------------------------

@@ -58,7 +58,14 @@ def snapshot(db, business, draft):
     same_business = site_matches or (not draft.links.website and draft.business_name == business.name)
     if not same_business:
         return {}
-    posts = db.query(InstagramPost).filter(InstagramPost.business_id == business.id).order_by(
+    # Story captures are measurement evidence, not the established feed examples
+    # used to personalize this interview. Tagged feed rows belong to the selection.
+    meta_item = db.query(Integration).filter_by(business_id=business.id, provider="meta").first()
+    from app.services.meta_readiness import selection
+    account = selection(meta_item)["instagram_id"] if meta_item else ""
+    posts = db.query(InstagramPost).filter(InstagramPost.business_id == business.id,
+        InstagramPost.media_product_type != "STORY",
+        (InstagramPost.instagram_id == "") | (InstagramPost.instagram_id == account)).order_by(
         InstagramPost.synced_at.desc(), InstagramPost.id.desc()).limit(6).all()
     social = [{"kind": "instagram", "url": p.permalink, "text": p.caption[:1800],
                "read_at": p.synced_at.isoformat(), "published_at": p.posted_at}
