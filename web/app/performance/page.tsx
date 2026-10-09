@@ -347,6 +347,7 @@ function BigNumber({ label, value }: { label: string; value?: string }) {
  * anything to learn that.
  */
 function MeasurementGaps({ payload, ownerReport = false }: { payload: PerformancePayload; ownerReport?: boolean }) {
+  const { locale } = useLanguage();
   const t = useCopy();
   const data = payload.audiences as AudiencePerformance | null | undefined;
   const connected = data?.connected;
@@ -358,16 +359,17 @@ function MeasurementGaps({ payload, ownerReport = false }: { payload: Performanc
     : [!connected.ga4 ? t("נתוני האתר") : "", !connected.meta ? t("אינסטגרם") : ""].filter(Boolean);
   const needsGoogle = !connected.ga4 && (!required || required.some(item => item.key === "ga4" && item.status !== "soon"));
   if (!offline.length) return null;
+  const sourceList = new Intl.ListFormat(LOCALE_META[locale].formatLocale, { style: "long", type: "conjunction" }).format(offline);
   if (ownerReport && !anyConnected) return <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">
-    {t("המקורות הבאים עוד לא מחוברים: {arg_0}. אפשר להמשיך עם הדיווח שלכם.", { arg_0: offline.join(t(" ול")) })}{" "}<Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline"><Copy text="לבדוק את החיבורים" /></Link>
+    {t("המקורות הבאים עוד לא מחוברים: {arg_0}. אפשר להמשיך עם הדיווח שלכם.", { arg_0: sourceList })}{" "}<Link href="/integrations" className="font-semibold text-[color:var(--primary)] hover:underline"><Copy text="לבדוק את החיבורים" /></Link>
   </p>;
 
   return (
     <div className="rounded-[14px] bg-[var(--sand)] px-5 py-4 text-[14px] leading-6 text-[color:var(--sand-dark)]">
       <p>
         {anyConnected
-          ? t("אין כרגע חיבור ל{arg_0}, ולכן חלק מהמספרים חסרים.{arg_1}", { arg_0: offline.join(" ול"), arg_1: data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : "" })
-          : t("המקורות שהתוכנית צריכה עדיין לא מחוברים: {arg_0}.", { arg_0: offline.join(" ו") })}{" "}
+          ? t("אין כרגע חיבור ל{arg_0}, ולכן חלק מהמספרים חסרים.{arg_1}", { arg_0: sourceList, arg_1: data?.synced_at ? " מה שמופיע כאן הוא מהרענון האחרון." : "" })
+          : t("המקורות שהתוכנית צריכה עדיין לא מחוברים: {arg_0}.", { arg_0: sourceList })}{" "}
         <Link href="/integrations" className="font-semibold text-[color:var(--ink)] underline decoration-[var(--sand-rule)] underline-offset-4 hover:decoration-current">
           <Copy text="לחבר" /></Link>
       </p>
