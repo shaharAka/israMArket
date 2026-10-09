@@ -1,5 +1,28 @@
 # Meta measurement and customer approval plan — updated 2 October 2026
 
+## Facebook Page post reader — 9 October 2026
+
+PR #173 adds a separate Page post reader, gated on the selected owner's existing
+`pages_read_engagement` and `read_insights` grants and current Page ANALYZE task.
+The app's OAuth request does **not** yet ask for `read_insights`: add it to the public
+review scope and genuine permission-specific pilot evidence before enabling that request.
+Implementation, app approval and successful customer consent/read are separate gates.
+
+The reader uses the selected Page token, reads at most 100 recent published posts,
+and retains up to 200 post records on owner-scoped snapshots. It requests
+`post_total_media_view_unique` (people) and `post_media_view` (views), accepting only
+returned lifetime scalar counts. Retired impressions metrics are not requested.
+Individual successful counts retain their own capture dates after partial failure.
+Exact Facebook links match Page/post identities; Instagram or caption similarity
+cannot supply a Facebook result. Different lifetime exposure ages do not produce
+winner badges or post-writer comparisons. Analysis receives individual post counts,
+not a sum of overlapping unique audiences.
+
+Primary references checked in-browser on 9 October:
+[Page Insights](https://developers.facebook.com/documentation/pages-api/platforminsights/page),
+[retired metrics and replacements](https://developers.facebook.com/documentation/pages-api/platforminsights/page/deprecated-metrics).
+Public approvals and live-read proof remain in #41/#104; offline tests do not satisfy them.
+
 ## Customer rollout and console progress — 2 October 2026
 
 Tazizi is one pilot customer. Every business uses its own encrypted Meta grant,
