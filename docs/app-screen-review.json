@@ -4,7 +4,7 @@
   "revision_reviewed": "1349016",
   "scope": "Source review of all customer-app routes and their major component states; browser review of selected local demo screens. Public marketing/legal routes and internal design tools are inventoried but are not claimed as fully reviewed here.",
   "method": "Define purpose and message in English first, assess actual evidence and next action, then localize naturally into Hebrew, Arabic and Russian. Proposed messages are design contracts, not assertions that missing features are already implemented.",
-  "implementation_status": "Audit complete; findings remain open. Existing draft PR #168 has a limited initial implementation, not all-app completion.",
+  "implementation_status": "Audit complete. First recovery slice implemented in draft PR #168; broader screen, research, recommendation and localization findings remain open. Not deployed.",
   "priorities": [
     {
       "id": "completion",
@@ -193,7 +193,8 @@
       "optional": "Security guidance only when an actual sign-in error requires it.",
       "recovery": "Wrong password, provider failure and access restriction need distinct next actions.",
       "keep": "Keep the clean sign-in layout and new shared identity.",
-      "status": "Proposed; not implemented by this audit"
+      "status": "Safe return implemented in draft; account-recovery entry remains open",
+      "implementation": "Password and Google next/back preserve a validated local destination and interface language. AppShell retains task/query/fragment on expired-session redirects. No recovery service invented."
     },
     {
       "id": "reset",
@@ -396,7 +397,8 @@
       "optional": "Future months and personal-note editing.",
       "recovery": "No dates: offer scheduling. Fetch failure: retry without discarding known posts. Do not imply local notes sync.",
       "keep": "Keep list/calendar access and keyboard navigation, with direction corrected.",
-      "status": "Proposed; not implemented by this audit"
+      "status": "Period, read recovery and direction fixes implemented in draft; broader scheduling review remains open",
+      "implementation": "Current-month fallback and current-day selection; plan month retained; failed reads distinguished from 404/no plan with retry/billing action. Locale-aware dates and keyboard direction. Personal notes remain browser-local."
     },
     {
       "id": "prepare",
@@ -546,13 +548,14 @@
       "purpose": "Find the next post to prepare, review or publish.",
       "proposed_message": "Your posts, ready for the next step.",
       "primary_action": "Open next post",
-      "finding": "List/calendar and editor context work well. The empty state sends the owner to the plan rather than directly into the first-post task.",
+      "finding": "List/calendar and editor context work well. Source follow-up confirmed first-post preparation already stays inline when a plan exists; only the missing-plan state sends the owner to the plan. Failed reads previously lacked an in-place retry.",
       "change": "Use readiness-aware empty-state actions; distinguish draft, approved, scheduled and published. Preserve return context from editor.",
       "visible": "Next post, status, date and list/calendar control.",
       "optional": "Older work and secondary filters.",
       "recovery": "No drafts: prepare one. Failed read: retry. Approved does not mean published; app opening must not trigger paid generation.",
       "keep": "Keep weekly grouping and editor/list navigation.",
-      "status": "Proposed; not implemented by this audit"
+      "status": "Recovery slice implemented in draft; broader content hierarchy and journey review remain open",
+      "implementation": "Missing-plan state has one plan action; read failures retry in place or lead to billing when required. Existing FirstPosts/PostPreparation flow preserved. Page chrome and month labels localized; nested components still need review."
     },
     {
       "id": "editor",
@@ -965,7 +968,8 @@
       "optional": "Past tickets and diagnostic detail.",
       "recovery": "History failure must not block a new report; submission failure retains text and exposes retry/contact. Keep real AI-processing consent.",
       "keep": "Keep human escalation and no automatic AI call just for opening the page.",
-      "status": "Proposed; not implemented by this audit"
+      "status": "Independent reporting/retry implemented in draft; context prefill and cross-sign-in draft retention remain open",
+      "implementation": "History cannot disable reporting. Send failure retains body and client_ref; late history cannot erase new reports. History retry and localized form/conversation dates. Expired-session body can be copied; automatic restoration across sign-in is still open."
     },
     {
       "id": "help",
@@ -1146,5 +1150,11 @@
       ],
       "acceptance": "Route-specific fixtures match actual capabilities and shared components. Run all journey/failure/resume checks before deployment; only shipped features enter What's new."
     }
-  ]
+  ],
+  "implementation_verification": {
+    "environment": "Isolated local QA proxy; every backend request synthetic, no live OAuth/tickets/publishing/model generation",
+    "automated": "44 support/Google-login API tests; 9 frontend redirect/calendar/tracked-route tests; web typecheck/lint/build and HE/EN/AR/RU catalog checks",
+    "browser": "Support failed send/retry/idempotency, history failure/retry and pending-history race; locale changes retain report body; calendar 503 recovery, actual current month, saved November plan, RTL/LTR keyboard and four-language rendering; posts read failure/missing plan/billing action; password return and synthetic Google cancellation/success next/back",
+    "limits": "Browser viewport override did not change the observed 1280px viewport; narrow-screen validation remains open. Synthetic Google flow checks navigation, not live provider approval. No native-language expert review claimed."
+  }
 }

@@ -2,7 +2,7 @@
 
 import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
 
-import { Copy, useCopy } from "@/components/language/LanguageProvider";
+import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,12 +13,15 @@ import { GoogleButton, OrDivider } from "@/components/GoogleButton";
 import { ApiError, endpoints } from "@/lib/api";
 import { CONTACT_EMAIL } from "@/lib/company";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
+import { safeReturnPath, signInDestination, withInterfaceLanguage } from "@/lib/authNavigation";
 import form from "@/components/start/form.module.css";
 import auth from "./auth.module.css";
 
 export default function LoginPage() {
   const t = useCopy();
+  const { locale } = useLanguage();
   const router = useRouter();
+  const [returnPath, setReturnPath] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   // From a one-time reset link (`?reset=1`), or an account the backoffice suspended
@@ -30,6 +33,7 @@ export default function LoginPage() {
   useEffect(() => {
     const timer = window.setTimeout(() => {
       const query = new URLSearchParams(window.location.search);
+      setReturnPath(safeReturnPath(query.get("next")));
       const isSuspended = query.get("suspended") === "1" || query.get("google_error") === "account_suspended";
       setResetDone(query.get("reset") === "1");
       setSuspended(isSuspended);
@@ -49,8 +53,14 @@ export default function LoginPage() {
         email: String(form.get("email")),
         password: String(form.get("password")),
       });
-      const { business } = await endpoints.business();
-      router.replace(business?.onboarding_complete ? "/dashboard" : "/onboarding");
+      const requested = safeReturnPath(new URLSearchParams(window.location.search).get("next"));
+      if (requested) {
+        router.replace(signInDestination(requested, null, locale));
+      } else {
+        // A failed business read is not a failed password. The app can retry that read.
+        const { business } = await endpoints.business().catch(() => ({ business: undefined }));
+        router.replace(business === undefined ? withInterfaceLanguage("/dashboard", locale) : signInDestination(null, business, locale));
+      }
     } catch (err) {
       if (err instanceof ApiError && err.code === "account_suspended") {
         setSuspended(true);
@@ -78,7 +88,7 @@ export default function LoginPage() {
         </div>
       ) : null}
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
-      <GoogleButton next="/dashboard" back="/login" disabled={pending} />
+      <GoogleButton next={withInterfaceLanguage(returnPath ?? "/dashboard", locale)} back={withInterfaceLanguage(returnPath ? `/login?${new URLSearchParams({ next: returnPath })}` : "/login", locale)} disabled={pending} />
       <div className="my-5">
         <OrDivider />
       </div>
@@ -100,7 +110,7 @@ export default function LoginPage() {
           dir="ltr"
           autoComplete="current-password"
         />
-        <ErrorNote message={error} />
+        <ErrorNote message={t(error)} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
           {pending ? t("נכנסים…") : t("להיכנס")}
         </Button>

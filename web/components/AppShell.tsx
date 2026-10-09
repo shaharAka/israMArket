@@ -16,6 +16,7 @@ import { SYSTEM_TONE } from "@/lib/tone";
 import { UIAction } from "@/components/design/Controls";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
 import { ToastHost } from "@/lib/ui";
+import { signInUrl } from "@/lib/authNavigation";
 
 type Tab = {
   href: string;
@@ -121,8 +122,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .me()
       .then((user) => setName(user.full_name))
       .catch((err: unknown) => {
-        if (err instanceof ApiError && err.code === "account_suspended") router.replace("/login?suspended=1");
-        else if (err instanceof ApiError && err.status === 401) router.replace("/login");
+        const login = signInUrl(window.location.pathname + window.location.search + window.location.hash, document.documentElement.lang);
+        if (err instanceof ApiError && err.code === "account_suspended") router.replace(`${login}&suspended=1`);
+        else if (err instanceof ApiError && err.status === 401) router.replace(login);
       });
 
     endpoints

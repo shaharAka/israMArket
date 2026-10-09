@@ -1055,11 +1055,6 @@
         "file": "web/app/dashboard/page.tsx",
         "line": 314,
         "kind": "jsx"
-      },
-      {
-        "file": "web/app/posts/page.tsx",
-        "line": 258,
-        "kind": "jsx"
       }
     ]
   },
@@ -2432,8 +2427,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 337,
-        "kind": "jsx"
+        "line": 354,
+        "kind": "literal"
       }
     ]
   },
@@ -4973,7 +4968,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       },
@@ -5089,7 +5084,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 15,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -5475,8 +5470,8 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 58,
-        "kind": "jsx"
+        "line": 65,
+        "kind": "literal"
       }
     ]
   },
@@ -6450,7 +6445,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -6857,17 +6852,6 @@
       }
     ]
   },
-  "m_0f3b6de56f923d87": {
-    "source": "מהתוכנית ·",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 187,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_0f417501644b186b": {
     "source": "בפוסטים פונים ללקוחות ברבים.",
     "language": "he",
@@ -7024,7 +7008,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -7115,6 +7099,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 320,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0fc22cc518e5ca74": {
+    "source": "מה ניסיתם לעשות, ומה לא הסתדר?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -7411,6 +7406,17 @@
         "line": 69,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_104cea1a0a224ab8": {
+    "source": "פנייה {arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/support/Conversation.tsx",
+        "line": 50,
+        "kind": "literal"
       }
     ]
   },
@@ -7754,8 +7760,8 @@
     "references": [
       {
         "file": "web/app/calendar/page.tsx",
-        "line": 53,
-        "kind": "jsx"
+        "line": 54,
+        "kind": "literal"
       }
     ]
   },
@@ -9017,7 +9023,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -9108,7 +9114,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 61,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -10113,7 +10119,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -10689,9 +10695,8 @@
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 65,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 70,
+        "kind": "literal"
       }
     ]
   },
@@ -10773,7 +10778,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -12251,8 +12256,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 189,
-        "kind": "jsx"
+        "line": 200,
+        "kind": "literal"
       }
     ]
   },
@@ -12863,8 +12868,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 64,
-        "kind": "jsx"
+        "line": 87,
+        "kind": "literal"
       }
     ]
   },
@@ -13361,7 +13366,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 73,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -13500,7 +13505,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "literal",
         "purpose": "display"
       },
@@ -14136,17 +14141,6 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 137,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_1f416c66b4db092f": {
-    "source": "לא הצלחנו לשמור את הפנייה. הטקסט נשאר כאן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/support/page.tsx",
-        "line": 43,
         "kind": "literal"
       }
     ]
@@ -14812,17 +14806,6 @@
       }
     ]
   },
-  "m_2079445a461470f2": {
-    "source": ", {arg_0} פוסטים, {arg_1} משימות, {arg_2} מועדים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 175,
-        "kind": "template"
-      }
-    ]
-  },
   "m_208b128bd7bcb498": {
     "source": "להכין רעיון לדוגמה",
     "language": "he",
@@ -15358,6 +15341,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 303,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2167967c707a97e3": {
+    "source": "לעזרה ותמיכה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -16055,7 +16049,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16079,12 +16073,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 214,
+        "line": 216,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 247,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -17719,7 +17713,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -17799,7 +17793,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18064,7 +18058,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -18556,11 +18550,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 167,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/posts/postMeta.ts",
         "line": 16,
         "kind": "literal"
@@ -18847,8 +18836,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 325,
-        "kind": "template"
+        "line": 342,
+        "kind": "literal"
       }
     ]
   },
@@ -19085,8 +19074,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 187,
-        "kind": "jsx"
+        "line": 198,
+        "kind": "literal"
       }
     ]
   },
@@ -19430,8 +19419,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 182,
-        "kind": "jsx"
+        "line": 193,
+        "kind": "literal"
       }
     ]
   },
@@ -19902,7 +19891,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -21026,17 +21015,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -21276,11 +21265,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 167,
-        "kind": "literal"
-      },
-      {
         "file": "api/app/services/business_fields.py",
         "line": 52,
         "kind": "literal",
@@ -21472,9 +21456,8 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 41,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 48,
+        "kind": "literal"
       }
     ]
   },
@@ -23071,12 +23054,12 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 200,
+        "line": 202,
         "kind": "jsx"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 239,
+        "line": 241,
         "kind": "jsx"
       },
       {
@@ -23793,7 +23776,7 @@
       },
       {
         "file": "web/app/login/page.tsx",
-        "line": 97,
+        "line": 107,
         "kind": "literal"
       },
       {
@@ -24407,8 +24390,8 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 62,
-        "kind": "jsx"
+        "line": 69,
+        "kind": "literal"
       }
     ]
   },
@@ -24732,7 +24715,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 110,
+        "line": 120,
         "kind": "literal"
       },
       {
@@ -25351,13 +25334,24 @@
       }
     ]
   },
+  "m_376bbabd914c36b2": {
+    "source": "בלי תוכנית, הלוח נפתח בחודש הנוכחי. תקלה בטעינת הפוסטים או התוכנית מציעה ניסיון נוסף; בעיית מנוי מובילה לעמוד המנוי. הכיוון והתאריכים בלוח מתאימים לשפת הממשק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3786d22bd70a0079": {
     "source": "אפשר להיכנס איתה עכשיו.",
     "language": "he",
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 68,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -25368,7 +25362,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -25474,8 +25468,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 74,
-        "kind": "jsx"
+        "line": 78,
+        "kind": "literal"
       }
     ]
   },
@@ -26063,8 +26057,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 79,
-        "kind": "jsx"
+        "line": 105,
+        "kind": "literal"
       }
     ]
   },
@@ -27057,8 +27051,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 67,
-        "kind": "jsx"
+        "line": 72,
+        "kind": "literal"
       },
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
@@ -27886,17 +27880,6 @@
       }
     ]
   },
-  "m_3e2b549b39d4b9dd": {
-    "source": "משהו לא עובד, או לא ברור? כתבו לנו כאן.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/support/page.tsx",
-        "line": 47,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_3e3f33508d33b08e": {
     "source": "איך זה נעשה, מי עושה את זה",
     "language": "he",
@@ -28199,7 +28182,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 21,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28630,7 +28613,7 @@
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 14,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -28814,8 +28797,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 79,
-        "kind": "jsx"
+        "line": 105,
+        "kind": "literal"
       }
     ]
   },
@@ -28861,7 +28844,7 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 68,
+        "line": 91,
         "kind": "literal"
       }
     ]
@@ -29082,17 +29065,6 @@
       }
     ]
   },
-  "m_41098c2028b1823a": {
-    "source": "נבדוק אילו תמונות והצעות כבר יש לכם, ונכין פוסט לפי התוכנית. נחבר את המדידה הזמינה, והפוסט יחכה כאן לאישור ולפרסום שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/posts/page.tsx",
-        "line": 367,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_410fef4c054681e0": {
     "source": "אפשר גם תמונה אחרת.",
     "language": "he",
@@ -29111,6 +29083,17 @@
       {
         "file": "web/lib/dna/samples.ts",
         "line": 324,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_411bc13cf2175393": {
+    "source": "אחרי הכניסה חוזרים למסך שביקשתם. אפשר לשלוח פנייה לתמיכה גם כשהפניות הקודמות לא נטענו, ולנסות שוב בלי לאבד את הטקסט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 8,
         "kind": "literal"
       }
     ]
@@ -29166,7 +29149,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -29901,6 +29884,17 @@
       }
     ]
   },
+  "m_42c3cf9c58d934bb": {
+    "source": "{arg_0} פוסטים, {arg_1} משימות, {arg_2} מועדים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CalendarView.tsx",
+        "line": 186,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_42c778677f823ad8": {
     "source": "כדי לבדוק אם הפוסטים מביאים אנשים לעמוד ההזמנה, ומה קורה שם.",
     "language": "he",
@@ -30483,8 +30477,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 190,
-        "kind": "jsx"
+        "line": 201,
+        "kind": "literal"
       }
     ]
   },
@@ -30969,7 +30963,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -32084,7 +32078,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -33345,7 +33339,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -34604,12 +34598,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 222,
+        "line": 224,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 281,
+        "line": 283,
         "kind": "literal"
       }
     ]
@@ -34812,17 +34806,6 @@
       }
     ]
   },
-  "m_4e332c5405763166": {
-    "source": ", אין פריטים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 175,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4e443bc9b77afbb6": {
     "source": "טלפון",
     "language": "he",
@@ -34837,6 +34820,17 @@
         "line": 464,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_4e46c67ed80889fe": {
+    "source": "להמשיך לתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 390,
+        "kind": "literal"
       }
     ]
   },
@@ -35105,11 +35099,6 @@
     "source": "פנייה",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/support/Conversation.tsx",
-        "line": 43,
-        "kind": "jsx"
-      },
       {
         "file": "web/lib/api.ts",
         "line": 1883,
@@ -35572,7 +35561,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 105,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35768,7 +35757,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 50,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -36130,7 +36119,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -36235,13 +36224,13 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 14,
+        "line": 17,
         "kind": "literal"
       },
       {
@@ -36297,7 +36286,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36583,9 +36572,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 63,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 86,
+        "kind": "literal"
       }
     ]
   },
@@ -36860,8 +36848,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 251,
-        "kind": "template"
+        "line": 267,
+        "kind": "literal"
       }
     ]
   },
@@ -37940,7 +37928,7 @@
       },
       {
         "file": "web/app/login/page.tsx",
-        "line": 68,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -38407,7 +38395,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -38476,8 +38464,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 67,
-        "kind": "jsx"
+        "line": 90,
+        "kind": "literal"
       }
     ]
   },
@@ -38848,7 +38836,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 230,
+        "line": 246,
         "kind": "literal"
       }
     ]
@@ -39956,7 +39944,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 118,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -40021,6 +40009,17 @@
         "line": 23,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_5b4df80ab37aa5db": {
+    "source": "{arg_0} מתוך {arg_1} אושרו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 274,
+        "kind": "literal"
       }
     ]
   },
@@ -40223,6 +40222,17 @@
       }
     ]
   },
+  "m_5bc7747a1d78e290": {
+    "source": "לטעון את התוכנית שוב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/calendar/page.tsx",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5bc7bc399ff21958": {
     "source": "מוצר והצעה",
     "language": "he",
@@ -40252,7 +40262,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 89,
+        "line": 99,
         "kind": "literal"
       },
       {
@@ -40902,7 +40912,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -42185,11 +42195,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/posts/page.tsx",
-        "line": 372,
-        "kind": "jsx"
-      },
-      {
         "file": "web/app/preview/page.tsx",
         "line": 43,
         "kind": "jsx"
@@ -42503,8 +42508,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 162,
-        "kind": "jsx"
+        "line": 173,
+        "kind": "literal"
       }
     ]
   },
@@ -43099,7 +43104,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -43396,7 +43401,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -43531,7 +43536,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -43944,7 +43949,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -44197,17 +44202,6 @@
       }
     ]
   },
-  "m_644fdc0746f6c867": {
-    "source": ". התשובות לפניות כאן נשמרות באפליקציה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/support/page.tsx",
-        "line": 79,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_64548d9861ca40ae": {
     "source": "בדקו שהמותג אושר לפרסום ושהמדינות שאליהן תרצו להגיע זמינות בחשבון. עדיין לא אימתנו זמינות לפרסום בישראל.",
     "language": "he",
@@ -44260,8 +44254,13 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 182,
-        "kind": "jsx"
+        "line": 193,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CalendarView.tsx",
+        "line": 199,
+        "kind": "literal"
       }
     ]
   },
@@ -44903,6 +44902,17 @@
       }
     ]
   },
+  "m_65b7014ddc6cee8a": {
+    "source": "הטקסט שכתבתם לתמיכה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 74,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_65b76f7f129ba5bb": {
     "source": "שמירות של הפוסט",
     "language": "he",
@@ -45167,8 +45177,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 385,
-        "kind": "jsx"
+        "line": 403,
+        "kind": "literal"
       }
     ]
   },
@@ -46280,8 +46290,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 188,
-        "kind": "jsx"
+        "line": 199,
+        "kind": "literal"
       }
     ]
   },
@@ -47079,7 +47089,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 7,
+        "line": 14,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47200,7 +47210,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -47255,7 +47265,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -47380,7 +47390,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 98,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48289,8 +48299,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 73,
-        "kind": "jsx"
+        "line": 77,
+        "kind": "literal"
       }
     ]
   },
@@ -48902,9 +48912,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 158,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 169,
+        "kind": "literal"
       }
     ]
   },
@@ -49472,7 +49481,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49704,6 +49713,17 @@
       {
         "file": "web/lib/draft.ts",
         "line": 621,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_705f5542515ecdf8": {
+    "source": "לא הצלחנו לשלוח את הפנייה. הטקסט נשאר כאן, אפשר לנסות שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -50027,7 +50047,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -50435,8 +50455,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 192,
-        "kind": "jsx"
+        "line": 208,
+        "kind": "literal"
       }
     ]
   },
@@ -50595,17 +50615,6 @@
         "file": "web/components/landing-v2/content.ts",
         "line": 82,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_72211bbecb4d738b": {
-    "source": "יום {arg_0}, {arg_1}.{arg_2}.{arg_3}",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 26,
-        "kind": "template"
       }
     ]
   },
@@ -51449,7 +51458,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 91,
+        "line": 101,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53369,6 +53378,17 @@
       }
     ]
   },
+  "m_78723a519000075a": {
+    "source": "מהתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CalendarView.tsx",
+        "line": 198,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7875264f8f06d4c7": {
     "source": "כל פוסט שייך לאחד מנושאי התוכן של האסטרטגיה. pillar_key: המפתח של הנושא. לחלק את הפוסטים בין הנושאים.",
     "language": "he",
@@ -53453,7 +53473,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53477,8 +53497,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 70,
-        "kind": "jsx"
+        "line": 75,
+        "kind": "literal"
       },
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
@@ -54178,7 +54198,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -55184,7 +55204,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 109,
+        "line": 119,
         "kind": "literal"
       }
     ]
@@ -55944,8 +55964,8 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 57,
-        "kind": "jsx"
+        "line": 64,
+        "kind": "literal"
       }
     ]
   },
@@ -56293,6 +56313,17 @@
       }
     ]
   },
+  "m_7f921e0e5db06128": {
+    "source": "לא הצלחנו לטעון את הפוסטים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 132,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7f9761f25cf79772": {
     "source": "Google ונתוני האתר",
     "language": "he",
@@ -56497,8 +56528,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 73,
-        "kind": "jsx"
+        "line": 77,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/StartFlow.tsx",
@@ -56573,7 +56604,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -56702,8 +56733,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 68,
-        "kind": "jsx"
+        "line": 91,
+        "kind": "literal"
       }
     ]
   },
@@ -57662,8 +57693,8 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 63,
-        "kind": "jsx"
+        "line": 70,
+        "kind": "literal"
       }
     ]
   },
@@ -57852,7 +57883,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -57951,7 +57982,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -58196,8 +58227,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 50,
-        "kind": "jsx"
+        "line": 72,
+        "kind": "literal"
       }
     ]
   },
@@ -59377,9 +59408,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 189,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 200,
+        "kind": "literal"
       }
     ]
   },
@@ -59587,9 +59617,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 65,
-        "kind": "template",
-        "purpose": "display"
+        "line": 69,
+        "kind": "literal"
       }
     ]
   },
@@ -60232,8 +60261,8 @@
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 163,
-        "kind": "jsx"
+        "line": 174,
+        "kind": "literal"
       },
       {
         "file": "web/components/posts/preparation/ContentLanguagePicker.tsx",
@@ -60452,11 +60481,6 @@
     "source": "לא הצלחנו לטעון את הפניות.",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/support/page.tsx",
-        "line": 32,
-        "kind": "literal"
-      },
       {
         "file": "web/components/support/SupportQueue.tsx",
         "line": 17,
@@ -60767,7 +60791,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -61299,9 +61323,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 165,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 176,
+        "kind": "literal"
       }
     ]
   },
@@ -61830,7 +61853,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 58,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -62235,6 +62258,17 @@
       {
         "file": "web/app/strategy/edit/page.tsx",
         "line": 88,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_8cfa1c81e84c3f0e": {
+    "source": "אין פריטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CalendarView.tsx",
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -62752,9 +62786,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 47,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 69,
+        "kind": "literal"
       }
     ]
   },
@@ -63271,7 +63304,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63586,7 +63619,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63780,8 +63813,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 192,
-        "kind": "jsx"
+        "line": 203,
+        "kind": "literal"
       }
     ]
   },
@@ -64272,7 +64305,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 226,
+        "line": 242,
         "kind": "literal",
         "purpose": "display"
       },
@@ -66320,8 +66353,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 57,
-        "kind": "jsx"
+        "line": 80,
+        "kind": "literal"
       }
     ]
   },
@@ -66600,7 +66633,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -66645,7 +66678,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 61,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -66678,8 +66711,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 182,
-        "kind": "jsx"
+        "line": 193,
+        "kind": "literal"
       }
     ]
   },
@@ -67940,7 +67973,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 14,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -68443,9 +68476,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 72,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 76,
+        "kind": "literal"
       }
     ]
   },
@@ -68516,7 +68548,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -68583,8 +68615,8 @@
     "references": [
       {
         "file": "web/components/BrandLink.tsx",
-        "line": 19,
-        "kind": "jsx"
+        "line": 21,
+        "kind": "literal"
       }
     ]
   },
@@ -68707,24 +68739,13 @@
       }
     ]
   },
-  "m_9b63a21d39014ae8": {
-    "source": "פוסט ·",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 188,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_9b6f56fff429b194": {
     "source": "לראות איך מתחילים",
     "language": "he",
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -68898,17 +68919,6 @@
       {
         "file": "web/app/dashboard/page.tsx",
         "line": 448,
-        "kind": "jsx"
-      }
-    ]
-  },
-  "m_9c095c6709ff088a": {
-    "source": "עוד אין פוסטים לחודש הזה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/posts/page.tsx",
-        "line": 365,
         "kind": "jsx"
       }
     ]
@@ -69127,8 +69137,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 188,
-        "kind": "jsx"
+        "line": 199,
+        "kind": "literal"
       }
     ]
   },
@@ -70153,7 +70163,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 272,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -70218,9 +70228,8 @@
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 158,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 169,
+        "kind": "literal"
       }
     ]
   },
@@ -70968,6 +70977,17 @@
         "line": 354,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a12161f557d70263": {
+    "source": "הפניות הקודמות לא נטענו. אפשר לשלוח פנייה חדשה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 94,
+        "kind": "literal"
       }
     ]
   },
@@ -72073,7 +72093,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -73656,7 +73676,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -74014,8 +74034,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 163,
-        "kind": "jsx"
+        "line": 174,
+        "kind": "literal"
       }
     ]
   },
@@ -74166,8 +74186,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 62,
-        "kind": "jsx"
+        "line": 66,
+        "kind": "literal"
       }
     ]
   },
@@ -74338,12 +74358,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/CalendarView.tsx",
-        "line": 167,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -74672,7 +74687,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 232,
+        "line": 248,
         "kind": "literal"
       }
     ]
@@ -75576,7 +75591,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -75746,12 +75761,12 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 253,
+        "line": 255,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 298,
+        "line": 300,
         "kind": "literal"
       },
       {
@@ -76424,8 +76439,8 @@
       },
       {
         "file": "web/app/calendar/page.tsx",
-        "line": 51,
-        "kind": "jsx"
+        "line": 52,
+        "kind": "literal"
       },
       {
         "file": "web/app/preview/page.tsx",
@@ -76434,7 +76449,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 256,
+        "line": 258,
         "kind": "literal"
       },
       {
@@ -76706,8 +76721,8 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 248,
-        "kind": "jsx"
+        "line": 264,
+        "kind": "literal"
       }
     ]
   },
@@ -77694,7 +77709,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -78792,7 +78807,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 73,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -81076,7 +81091,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 251,
+        "line": 267,
         "kind": "literal"
       },
       {
@@ -81494,7 +81509,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 233,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -82091,7 +82106,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -82862,7 +82877,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 65,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -83275,7 +83290,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 105,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -84245,7 +84260,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -84364,7 +84379,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -84698,8 +84713,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 66,
-        "kind": "jsx"
+        "line": 89,
+        "kind": "literal"
       }
     ]
   },
@@ -84735,6 +84750,17 @@
         "file": "web/lib/goals.ts",
         "line": 417,
         "kind": "template"
+      }
+    ]
+  },
+  "m_c0819f28215db8b2": {
+    "source": "מתחילים בתוכנית, ואז בוחרים נושא ומכינים פוסט שתוכלו לערוך ולפרסם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 386,
+        "kind": "literal"
       }
     ]
   },
@@ -85567,7 +85593,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 240,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -86153,9 +86179,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 160,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 171,
+        "kind": "literal"
       }
     ]
   },
@@ -86245,7 +86270,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 172,
+        "line": 174,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86665,7 +86690,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 122,
+        "line": 132,
         "kind": "literal"
       },
       {
@@ -86850,6 +86875,17 @@
         "line": 110,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c4d4ad120e86ff4d": {
+    "source": "התשובות לפניות כאן נשמרות באפליקציה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 105,
+        "kind": "literal"
       }
     ]
   },
@@ -87722,7 +87758,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -87750,9 +87786,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 72,
-        "kind": "template",
-        "purpose": "display"
+        "line": 76,
+        "kind": "literal"
       }
     ]
   },
@@ -87994,7 +88029,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -88206,23 +88241,23 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 174,
+        "line": 176,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 224,
+        "line": 226,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 270,
+        "line": 272,
         "kind": "literal"
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 273,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -88633,7 +88668,7 @@
     "references": [
       {
         "file": "web/app/login/page.tsx",
-        "line": 105,
+        "line": 115,
         "kind": "literal"
       },
       {
@@ -88976,8 +89011,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 159,
-        "kind": "jsx"
+        "line": 170,
+        "kind": "literal"
       }
     ]
   },
@@ -89418,7 +89453,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -90066,7 +90101,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -90288,8 +90323,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 186,
-        "kind": "jsx"
+        "line": 197,
+        "kind": "literal"
       }
     ]
   },
@@ -91070,7 +91105,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 237,
+        "line": 253,
         "kind": "literal",
         "purpose": "display"
       }
@@ -91473,17 +91508,6 @@
       {
         "file": "web/components/landing/Security.tsx",
         "line": 32,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_cfd0647344a293b8": {
-    "source": "לא הצלחנו לטעון את הפוסטים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/posts/page.tsx",
-        "line": 120,
         "kind": "literal"
       }
     ]
@@ -92726,7 +92750,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -92808,7 +92832,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 182,
+        "line": 184,
         "kind": "literal"
       },
       {
@@ -94138,7 +94162,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -94556,9 +94580,8 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 184,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 195,
+        "kind": "literal"
       }
     ]
   },
@@ -94612,8 +94635,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 62,
-        "kind": "jsx"
+        "line": 85,
+        "kind": "literal"
       }
     ]
   },
@@ -94783,6 +94806,18 @@
         "file": "web/components/brand/BrandStyle.tsx",
         "line": 150,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_d6ee11bb4d47d056": {
+    "source": "קל יותר לחזור למשימה ולקבל עזרה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 7,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -95206,9 +95241,8 @@
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 262,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 278,
+        "kind": "literal"
       }
     ]
   },
@@ -95537,8 +95571,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 69,
-        "kind": "jsx"
+        "line": 96,
+        "kind": "literal"
       },
       {
         "file": "web/components/support/SupportQueue.tsx",
@@ -95553,8 +95587,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 71,
-        "kind": "jsx"
+        "line": 97,
+        "kind": "literal"
       }
     ]
   },
@@ -97287,7 +97321,18 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 51,
+        "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_dc5006041f0fca01": {
+    "source": "נכין פוסטים לפי התוכנית שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 384,
         "kind": "literal"
       }
     ]
@@ -97448,8 +97493,8 @@
     "references": [
       {
         "file": "web/app/calendar/page.tsx",
-        "line": 67,
-        "kind": "jsx"
+        "line": 71,
+        "kind": "literal"
       }
     ]
   },
@@ -97486,7 +97531,7 @@
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 13,
+        "line": 16,
         "kind": "literal"
       },
       {
@@ -97897,7 +97942,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -98156,7 +98201,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 8,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -98863,7 +98908,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -98898,7 +98943,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -100054,7 +100099,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 204,
+        "line": 206,
         "kind": "literal"
       },
       {
@@ -100478,8 +100523,8 @@
     "references": [
       {
         "file": "web/app/support/page.tsx",
-        "line": 53,
-        "kind": "jsx"
+        "line": 76,
+        "kind": "literal"
       }
     ]
   },
@@ -100564,6 +100609,17 @@
       }
     ]
   },
+  "m_e37f4e4ab664fbfc": {
+    "source": "לטעון את הפניות הקודמות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/support/page.tsx",
+        "line": 95,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e389fa46caf4aea4": {
     "source": "ככה נדע למי לכתוב. הצענו 2 קהלים לפי מה שסיפרתם, ואפשר לשנות.",
     "language": "he",
@@ -100597,8 +100653,8 @@
       },
       {
         "file": "web/app/support/page.tsx",
-        "line": 51,
-        "kind": "jsx"
+        "line": 73,
+        "kind": "literal"
       }
     ]
   },
@@ -101782,7 +101838,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -102350,6 +102406,17 @@
       }
     ]
   },
+  "m_e7ef0068c2373de3": {
+    "source": "לא הצלחנו לטעון את הפוסטים והמשימות של התוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/calendar/page.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e7f764c599edbd81": {
     "source": "להראות את הפתרון בפעולה",
     "language": "he",
@@ -102600,7 +102667,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 59,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -103931,7 +103998,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -106145,7 +106212,7 @@
     "references": [
       {
         "file": "web/components/support/Conversation.tsx",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -106893,11 +106960,6 @@
       {
         "file": "web/app/dashboard/page.tsx",
         "line": 448,
-        "kind": "jsx"
-      },
-      {
-        "file": "web/app/posts/page.tsx",
-        "line": 258,
         "kind": "jsx"
       },
       {
@@ -107790,6 +107852,22 @@
       {
         "file": "web/lib/api.ts",
         "line": 343,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f332fbf6f91d6bae": {
+    "source": "למנוי שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/calendar/page.tsx",
+        "line": 60,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -109076,7 +109154,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -109576,7 +109654,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110879,6 +110957,17 @@
       }
     ]
   },
+  "m_fa420aa749cd495c": {
+    "source": "לטעון את הפוסטים שוב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_fa556a02b97abbe2": {
     "source": "כמה שווה לקוח, בממוצע?",
     "language": "he",
@@ -111438,7 +111527,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -111562,7 +111651,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 38,
+        "line": 39,
         "kind": "literal",
         "purpose": "display"
       },
@@ -111849,7 +111938,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 325,
+        "line": 342,
         "kind": "literal"
       }
     ]
@@ -111911,7 +112000,7 @@
       },
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 145,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -111922,7 +112011,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -112581,7 +112670,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112728,7 +112817,7 @@
     "references": [
       {
         "file": "web/components/posts/CalendarView.tsx",
-        "line": 14,
+        "line": 17,
         "kind": "literal"
       }
     ]
