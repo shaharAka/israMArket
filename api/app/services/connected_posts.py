@@ -633,7 +633,7 @@ def what_worked(db, business, exclude_uid: str | None = None, max_best: int = 3)
     model = getattr(business, "business_model", None) or "products"
     by_metric: dict[str, list[dict]] = {}
     for record in records:
-        if record["view"].get("format") == "story":
+        if record["view"].get("format") == "story" or (record["metric"] == "reach" and record["view"].get("channel") == "facebook"):
             continue  # Captured within 24h, not a comparable lifetime feed result.
         by_metric.setdefault(record["metric"], []).append(record)
     if not by_metric:

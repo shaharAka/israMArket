@@ -173,7 +173,7 @@ function ordered(items: MeasuredPost[]): MeasuredPost[] {
 }
 
 function comparablePosts(items: MeasuredPost[]): boolean {
-  if (items.length < 2 || items.some(item => item.format === "story" || item.observation?.product_type === "STORY")) return false;
+  if (items.length < 2 || items.some(item => item.format === "story" || item.observation?.product_type === "STORY" || (item.metric === "reach" && item.channel === "facebook"))) return false;
   if (items[0].metric !== "site_visits") return true;
   const a = items[0].observation;
   return Boolean(a && !a.limited && a.start && a.end && a.property_id && a.exposure_start && items.every(item => {

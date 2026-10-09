@@ -82,6 +82,7 @@ class PageAttributionTest(ConnectedTestCase):
         self.assertEqual(saved["results"]["matched_by"],["facebook_link"])
         self.assertIsNone(saved["learning"]);self.assertIsNone(saved["results"]["compare"])
         self.assertEqual(cp.measured_posts([saved])["items"][0]["observation"]["read_at"],STAMP)
+        self.assertEqual(cp.what_worked(self.db,self.business),{"block":"","refs":{}})
     def test_link_channel_and_tenant_boundaries_not_caption_guessing(self):
         rows=cp._media_rows(self.db,self.business.id,{})
         owner=self.current_posts()[0]
