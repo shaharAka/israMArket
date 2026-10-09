@@ -1,0 +1,1160 @@
+{
+  "title": "IsraMarket: whole-app purpose and UX review",
+  "date": "2026-10-09",
+  "revision_reviewed": "1349016",
+  "scope": "Source review of all customer-app routes and their major component states; browser review of selected local demo screens. Public marketing/legal routes and internal design tools are inventoried but are not claimed as fully reviewed here.",
+  "method": "Define purpose and message in English first, assess actual evidence and next action, then localize naturally into Hebrew, Arabic and Russian. Proposed messages are design contracts, not assertions that missing features are already implemented.",
+  "implementation_status": "Audit complete. First recovery slice implemented in draft PR #168; broader screen, research, recommendation and localization findings remain open. Not deployed.",
+  "priorities": [
+    {
+      "id": "completion",
+      "title": "Finish a useful task",
+      "issues": [
+        159,
+        117,
+        167
+      ],
+      "detail": "Remove recovery traps and route discontinuities: resume saved answers, prepare a first post, return from setup, distinguish approval from publication."
+    },
+    {
+      "id": "meaning",
+      "title": "Turn evidence into a decision",
+      "issues": [
+        112,
+        165,
+        167
+      ],
+      "detail": "Use the business outcome and real source/period. Show why a plan or post changes; never substitute traffic, attributed conversions or clicks for sales/inquiries."
+    },
+    {
+      "id": "language",
+      "title": "Make the interface work in four languages",
+      "issues": [
+        142,
+        159
+      ],
+      "detail": "Browser review confirms English navigation alongside fixed Hebrew headings/actions. Catalog completeness alone is not completion. Keep owner/post language independent."
+    },
+    {
+      "id": "hierarchy",
+      "title": "Keep the work visible",
+      "issues": [
+        159
+      ],
+      "detail": "One useful primary task per customer state. Put its reason/evidence beside it; keep optional editing, methods and history secondary."
+    }
+  ],
+  "shared_rules": [
+    "A customer should understand what is happening, why it matters and what to do without opening a disclosure.",
+    "Keep optional editing and supporting source detail collapsible. Do not remove meaningful consent, irreversible-action consequences or actual source limitations.",
+    "Write one English purpose/message/action contract before translating. Use native Hebrew, Arabic and Russian, not word-for-word copies.",
+    "Use route-specific outcomes: online purchases; physical-store sales; qualified inquiries/booked work; software demos/trials/paid accounts; donations/recurring donors.",
+    "Never turn an upper bound or range into an average. Unknown is different from zero.",
+    "Show connected account, selected asset and usable measured data as different states.",
+    "A recommendation names the evidence, period, proposed change and next test. It does not claim causality without support.",
+    "Preserve drafts, post language, route and return destination across setup, errors and navigation.",
+    "Show only real capabilities. Public connector pages do not mean working LinkedIn/TikTok integrations; consent does not mean publishing approval.",
+    "Do not trigger paid generation or customer writes during review. Do not deploy this audit as if its fixes were complete."
+  ],
+  "browser_review": {
+    "origin": "http://127.0.0.1:3130",
+    "environment": "Isolated local demo; selected screens only",
+    "screens": [
+      "/dashboard",
+      "/strategy",
+      "/posts",
+      "/posts?post=4",
+      "/performance",
+      "/integrations"
+    ],
+    "limits": "No live OAuth, publishing, paid generation, privileged backoffice or exhaustive device/error-path test was performed. Owner-supplied/generated Hebrew business content is not counted as an untranslated interface defect."
+  },
+  "screens": [
+    {
+      "id": "entry",
+      "group": "Getting started",
+      "name": "Pre-signup discovery",
+      "routes": [
+        "/start"
+      ],
+      "source": "web/components/start/ResearchJourney.tsx",
+      "priority": 1,
+      "issues": [
+        167,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Recognize the business before asking for an account.",
+      "proposed_message": "Tell us about your business. We’ll use your website and public information to ask better questions.",
+      "primary_action": "See what we found",
+      "finding": "The new gate has the right order, but source checks run sequentially and public social URLs can be present without having been read. Findings and fallback explanations compete with the tailored questions.",
+      "change": "Show two verified observations and one relevant question. Distinguish a supplied link from a source actually read; parallelize independent reads with bounded timeouts.",
+      "visible": "Business type, offer, uniqueness, two suggested audiences plus free entry, source results, one tailored question.",
+      "optional": "Source excerpts and read details.",
+      "recovery": "Keep answers when a source fails; show the failed source beside its retry, and continue with the supplied facts.",
+      "keep": "No plan or finished posts before signup; optional links and unknown answers remain possible.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "post_signup",
+      "group": "Getting started",
+      "name": "Post-signup interview",
+      "routes": [
+        "/start"
+      ],
+      "source": "web/components/start/ResearchJourney.tsx",
+      "priority": 1,
+      "issues": [
+        167,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Complete the evidence needed to choose a marketing approach.",
+      "proposed_message": "What would you like your marketing to achieve?",
+      "primary_action": "Choose the outcome to measure",
+      "finding": "Connections are introduced as a generic process and a link away. Route-specific outcome choices are a good start, but deeper funnel questions and researched offers are still incomplete.",
+      "change": "Recommend one connection for the chosen goal, return to the same interview step, then ask only unresolved route-specific questions.",
+      "visible": "Selected goal, available evidence, time period, exact value/range/unknown, recommended next question.",
+      "optional": "Other connections and later funnel details.",
+      "recovery": "Missing connections must not erase the interview or silently turn unknown into zero.",
+      "keep": "Keep separate shop, physical-store, service, software and fundraising outcomes.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "final_review",
+      "group": "Getting started",
+      "name": "Interview review / build",
+      "routes": [
+        "/start"
+      ],
+      "source": "web/components/start/BuildReview.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        167
+      ],
+      "review": "Source review",
+      "purpose": "Confirm the owner's facts before building the plan.",
+      "proposed_message": "Here’s what we’ll build your plan around.",
+      "primary_action": "Build my plan",
+      "finding": "The latest draft replaces generic reassurance with business facts. Editing those facts still requires leaving the review, and build status must distinguish a plan from generated posts.",
+      "change": "Provide an edit link on each relevant fact and show plan-building outputs, followed by the next content-preparation action.",
+      "visible": "Offer, audience, goal, supplied budget range and build action.",
+      "optional": "Supporting research evidence.",
+      "recovery": "Show saved work and retry the failed build; never claim that finished posts exist merely because a plan structure was created.",
+      "keep": "Keep the factual review and preserve ranges instead of converting them into averages.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "signup",
+      "group": "Getting started",
+      "name": "Save / sign up",
+      "routes": [
+        "/signup"
+      ],
+      "source": "web/app/signup/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        167
+      ],
+      "review": "Source review",
+      "purpose": "Save the research and continue the interview in an account.",
+      "proposed_message": "Save your business research and continue building your plan.",
+      "primary_action": "Create my account",
+      "finding": "The legacy signup copy and branches still refer to what has already been built and a first month; entry paths can differ from the new research gate.",
+      "change": "Use the same gate contract for Google and password signup. Restore the selected business route and answers; explain the actual next task.",
+      "visible": "Account options, saved business identity, actual next step.",
+      "optional": "Legal links and password requirements when relevant.",
+      "recovery": "A failed signup retains the draft and offers the specific retry or alternative sign-in.",
+      "keep": "Keep signup after useful discovery, without promising an unresearched plan.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "login",
+      "group": "Getting started",
+      "name": "Sign in",
+      "routes": [
+        "/login"
+      ],
+      "source": "web/app/login/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Return to the user's saved work.",
+      "proposed_message": "Welcome back.",
+      "primary_action": "Sign in",
+      "finding": "Password sign-in selects a destination from onboarding status; it does not visibly use the requested return path. A self-service recovery entry is not visible.",
+      "change": "Restore the requested safe destination after sign-in, respecting unfinished onboarding. Make account recovery reachable without inventing a recovery service.",
+      "visible": "Google/password options and one recovery link.",
+      "optional": "Security guidance only when an actual sign-in error requires it.",
+      "recovery": "Wrong password, provider failure and access restriction need distinct next actions.",
+      "keep": "Keep the clean sign-in layout and new shared identity.",
+      "status": "Safe return implemented in draft; account-recovery entry remains open",
+      "implementation": "Password and Google next/back preserve a validated local destination and interface language. AppShell retains task/query/fragment on expired-session redirects. No recovery service invented."
+    },
+    {
+      "id": "reset",
+      "group": "Getting started",
+      "name": "Password reset",
+      "routes": [
+        "/reset/[token]"
+      ],
+      "source": "web/app/reset/[token]/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Recover access without losing the workspace.",
+      "proposed_message": "Choose a new password.",
+      "primary_action": "Save password and sign in",
+      "finding": "An expired reset asks the user to request another link from its sender, which assumes they know who issued it.",
+      "change": "Give one supported route to request help or another link; explain expiration only when it occurs.",
+      "visible": "New-password input, password requirements and submission.",
+      "optional": "Security details.",
+      "recovery": "Expired or invalid links expose a usable support path; successful reset routes back to sign-in.",
+      "keep": "Keep sensitive-token handling and password validation.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "legacy",
+      "group": "Getting started",
+      "name": "Existing unfinished onboarding",
+      "routes": [
+        "/onboarding"
+      ],
+      "source": "web/app/onboarding/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        167
+      ],
+      "review": "Source review",
+      "purpose": "Resume older accounts without repeating or contradicting the new interview.",
+      "proposed_message": "Continue setting up your business.",
+      "primary_action": "Resume setup",
+      "finding": "The older path can require a valid website and block on website scanning; it has a default budget and different questions from the new route.",
+      "change": "Migrate or resume saved facts through one interview contract. Support businesses without websites and never prefill an unprovided budget as fact.",
+      "visible": "Saved answers, remaining task and actual missing information.",
+      "optional": "Previously completed questions.",
+      "recovery": "Failed website research is recoverable and optional; retain existing workspace data.",
+      "keep": "Keep already saved answers and account identity.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "week",
+      "group": "Plan and work",
+      "name": "This week",
+      "routes": [
+        "/dashboard"
+      ],
+      "source": "web/app/dashboard/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Tell the owner what is happening and the one useful thing to do now.",
+      "proposed_message": "Your next task: review the post for this week.",
+      "primary_action": "Review post",
+      "finding": "The page has a useful PlanBrief and next-post card, but important owner requests and the week's recommendation can sit under More about the month. Trial-step counts compete with the actual work.",
+      "change": "Lead with the real current task and its reason. Show a small plan/work/results summary; leave completed setup history secondary.",
+      "visible": "Next task, why it matters, current post/publication state, relevant learning and owner input needed.",
+      "optional": "Past setup steps, future months and supporting hypotheses.",
+      "recovery": "No plan: build it. No posts: prepare the first draft. Read failure: retry in place. Approval is not publication.",
+      "keep": "Keep four main app sections, the PlanBrief and direct next-post actions.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "plan",
+      "group": "Plan and work",
+      "name": "Marketing plan",
+      "routes": [
+        "/strategy",
+        "/plan"
+      ],
+      "source": "web/app/strategy/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        167
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Explain the marketing choice and turn it into the next work.",
+      "proposed_message": "Here’s how we’ll reach the customers you want.",
+      "primary_action": "Review this week’s work",
+      "finding": "Strategy, calendar and content are structured, but central post messages, why a choice was made and what the owner needs to provide can be folded away. Legacy three-month labels remain in supporting views.",
+      "change": "Keep an ongoing strategy with a current execution period. Make the main choice, one reason and current owner request visible; keep future detail secondary.",
+      "visible": "Goal and period, recommended approach, evidence behind it, current work and next review.",
+      "optional": "Future weeks, full channel detail, budget breakdown and source excerpts.",
+      "recovery": "Saved plan remains usable when a connection or refresh fails. Never overwrite approved work with a silent rebuild.",
+      "keep": "Keep open current-week rows and the distinct strategy/content/calendar views.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "plan_edit",
+      "group": "Plan and work",
+      "name": "Edit the plan",
+      "routes": [
+        "/strategy/edit"
+      ],
+      "source": "web/app/strategy/edit/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117
+      ],
+      "review": "Source review",
+      "purpose": "Change a business decision while understanding the effect on work.",
+      "proposed_message": "What would you like to change in the plan?",
+      "primary_action": "Save changes",
+      "finding": "The form has useful draft protection, but the explanation of all possible consequences is long; conflict comparison can be hidden.",
+      "change": "Show the actual affected fields and outputs before saving. Put conflicting saved/new values side by side when a conflict exists.",
+      "visible": "Editable offer/audience/direction and concrete effect on drafts.",
+      "optional": "Advanced plan fields.",
+      "recovery": "Keep edits on failure. Require deliberate conflict resolution and preserve already approved/published work.",
+      "keep": "Keep local draft restoration and protection while generation runs.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "business_facts",
+      "group": "Plan and work",
+      "name": "Business answers / decisions",
+      "routes": [
+        "/decisions"
+      ],
+      "source": "web/app/decisions/page.tsx",
+      "priority": 1,
+      "issues": [
+        167,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Correct the facts used to make marketing decisions.",
+      "proposed_message": "Your business information.",
+      "primary_action": "Save business information",
+      "finding": "Editable groups are useful, but several examples and outcome explanations still assume a shop or service provider. Budget purpose can be unclear.",
+      "change": "Make examples, fields and success measures route-aware; label advertising budget separately from subscription price. Keep a readable current-value summary before editing.",
+      "visible": "Current business facts, selected route, changed values and save state.",
+      "optional": "Optional detailed editing and historical answers.",
+      "recovery": "Unknown remains unknown; saving preserves ranges and does not manufacture averages.",
+      "keep": "Keep summary-first editing disclosures rather than expanding every field.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "baseline",
+      "group": "Plan and work",
+      "name": "Starting measurements",
+      "routes": [
+        "/baseline"
+      ],
+      "source": "web/app/baseline/page.tsx",
+      "priority": 1,
+      "issues": [
+        167,
+        117
+      ],
+      "review": "Source review",
+      "purpose": "Establish the starting value for the chosen outcome.",
+      "proposed_message": "What can we compare future results with?",
+      "primary_action": "Save starting measurements",
+      "finding": "It is separate from the new interview metrics and can ask for information already supplied. The next-step label does not say where it goes.",
+      "change": "Use one starting-measurement record with source and dates. Only ask for missing values; choose the actual next-action label.",
+      "visible": "Selected outcome, date range, measured/supplied range/unknown and source.",
+      "optional": "Additional diagnostic counts.",
+      "recovery": "No connection or missing estimate must not block posting; offer the supported way to supply it later.",
+      "keep": "Keep unknown distinct from zero and prefilled connected data.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "calendar",
+      "group": "Plan and work",
+      "name": "Calendar",
+      "routes": [
+        "/calendar"
+      ],
+      "source": "web/app/calendar/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "See upcoming posts and tasks, and open the right work.",
+      "proposed_message": "Your upcoming posts and tasks.",
+      "primary_action": "Open the next scheduled item",
+      "finding": "The route has a hardcoded September 2026 fallback and can silently treat a failed plan read as an empty calendar. Calendar arrow-key behavior is fixed to RTL; personal notes are local to the browser.",
+      "change": "Use the actual current/plan period, distinguish failure from emptiness, make direction language-aware, and clarify local-note storage when creating a note.",
+      "visible": "Dated posts/tasks, status, selected date and details.",
+      "optional": "Future months and personal-note editing.",
+      "recovery": "No dates: offer scheduling. Fetch failure: retry without discarding known posts. Do not imply local notes sync.",
+      "keep": "Keep list/calendar access and keyboard navigation, with direction corrected.",
+      "status": "Period, read recovery and direction fixes implemented in draft; broader scheduling review remains open",
+      "implementation": "Current-month fallback and current-day selection; plan month retained; failed reads distinguished from 404/no plan with retry/billing action. Locale-aware dates and keyboard direction. Personal notes remain browser-local."
+    },
+    {
+      "id": "prepare",
+      "group": "Content",
+      "name": "Prepare a first post",
+      "routes": [
+        "/prepare"
+      ],
+      "source": "web/components/posts/preparation/PostPreparation.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117
+      ],
+      "review": "Source review",
+      "purpose": "Turn researched priorities and available material into a draft.",
+      "proposed_message": "Let’s prepare your first post.",
+      "primary_action": "Create drafts",
+      "finding": "The four stages stay mounted and preserve navigation, which is good. Completion and missing-input explanations can read like a checklist rather than one guided task.",
+      "change": "Prefill a researched topic and useful material. Show one actual unresolved choice at a time, with all stages visible and a precise generation action.",
+      "visible": "Topic, chosen material, voice, post language and generation readiness.",
+      "optional": "Extra preparation options.",
+      "recovery": "Retain inputs when navigating or failing. If generation is blocked, say exactly which input enables it and offer only real alternatives.",
+      "keep": "Keep the single-page stage flow, URL state and mounted forms.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "topics",
+      "group": "Content",
+      "name": "What to feature",
+      "routes": [
+        "/featured",
+        "/prepare"
+      ],
+      "source": "web/components/posts/preparation/TopicsStep.tsx",
+      "priority": 1,
+      "issues": [
+        167,
+        159,
+        155
+      ],
+      "review": "Source review",
+      "purpose": "Choose something worth saying to this business's audience.",
+      "proposed_message": "Start with this topic from your business.",
+      "primary_action": "Use this topic",
+      "finding": "Researched suggestions and reasons are present, but the editor resembles an item-management list. Underlying service-model wording can leak into fundraising.",
+      "change": "Recommend one grounded angle and show the post it would support. Offer another topic without making the owner construct a content strategy from scratch.",
+      "visible": "Recommended topic, business evidence, audience and intended response.",
+      "optional": "Additional topics, reordering and detailed notes.",
+      "recovery": "When research cannot verify an offer or example, ask for one fact rather than inventing it.",
+      "keep": "Keep source-grounded suggestions and real work examples for service providers.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "images",
+      "group": "Content",
+      "name": "Photos and visual material",
+      "routes": [
+        "/assets",
+        "/prepare"
+      ],
+      "source": "web/components/posts/preparation/PhotosStep.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        158
+      ],
+      "review": "Source review",
+      "purpose": "Choose topic-relevant material for an actual post.",
+      "proposed_message": "Choose a photo for this post.",
+      "primary_action": "Use selected photo",
+      "finding": "Upload/link input is folded; website scan can ask users to keep the page open for minutes. Continuing without photos can conflict with later readiness requirements.",
+      "change": "Show suitable existing material first, then upload or generate with clear cost/allowance. Make any supported text-only option explicit before allowing continuation.",
+      "visible": "Relevant thumbnails, selected material, scan state and direct upload.",
+      "optional": "Asset metadata and the wider library.",
+      "recovery": "A failed scan offers retry/upload and keeps selections. Later generation must honor the path offered here.",
+      "keep": "Keep soft placeholders, topic context and original-asset handling.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "voice",
+      "group": "Content",
+      "name": "Writing style",
+      "routes": [
+        "/voice",
+        "/prepare"
+      ],
+      "source": "web/components/posts/preparation/VoiceStep.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Confirm whether a short example sounds like the business.",
+      "proposed_message": "Does this sound like your business?",
+      "primary_action": "Use this writing style",
+      "finding": "Actual example copy and yes/adjust actions are stronger than style jargon; long fallback explanations and a generic next-step label dilute the decision.",
+      "change": "Lead with the example and two clear choices. Keep editing preferences secondary and name the actual next stage.",
+      "visible": "Example text and accept/adjust controls.",
+      "optional": "Detailed tone preferences.",
+      "recovery": "Unavailable source material prompts a sample or a choice without implying it was read.",
+      "keep": "Keep example-based confirmation and saved preferences.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "post_language",
+      "group": "Content",
+      "name": "Post language",
+      "routes": [
+        "/prepare",
+        "/brand"
+      ],
+      "source": "web/components/posts/preparation/ContentLanguagePicker.tsx",
+      "priority": 1,
+      "issues": [
+        142,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Choose the language of generated content independently of the interface.",
+      "proposed_message": "Which language should these posts use?",
+      "primary_action": "Save post language",
+      "finding": "The app correctly separates UI and post language, but repeated explanatory prose is longer than needed. Audience-language optimization is an advanced choice.",
+      "change": "Keep one clear default and show the audience override only when requested; preserve the setting when changing interface language.",
+      "visible": "Default post language and any active override.",
+      "optional": "Audience/batch language settings.",
+      "recovery": "Never silently change a post's language or translate saved owner content as UI chrome.",
+      "keep": "Keep separate UI and content language.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "posts",
+      "group": "Content",
+      "name": "Posts list",
+      "routes": [
+        "/posts"
+      ],
+      "source": "web/app/posts/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Find the next post to prepare, review or publish.",
+      "proposed_message": "Your posts, ready for the next step.",
+      "primary_action": "Open next post",
+      "finding": "List/calendar and editor context work well. Source follow-up confirmed first-post preparation already stays inline when a plan exists; only the missing-plan state sends the owner to the plan. Failed reads previously lacked an in-place retry.",
+      "change": "Use readiness-aware empty-state actions; distinguish draft, approved, scheduled and published. Preserve return context from editor.",
+      "visible": "Next post, status, date and list/calendar control.",
+      "optional": "Older work and secondary filters.",
+      "recovery": "No drafts: prepare one. Failed read: retry. Approved does not mean published; app opening must not trigger paid generation.",
+      "keep": "Keep weekly grouping and editor/list navigation.",
+      "status": "Recovery slice implemented in draft; broader content hierarchy and journey review remain open",
+      "implementation": "Missing-plan state has one plan action; read failures retry in place or lead to billing when required. Existing FirstPosts/PostPreparation flow preserved. Page chrome and month labels localized; nested components still need review."
+    },
+    {
+      "id": "editor",
+      "group": "Content",
+      "name": "Post editor",
+      "routes": [
+        "/posts"
+      ],
+      "source": "web/components/PostEditor.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        158
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Make a useful post ready to publish without changing pages.",
+      "proposed_message": "Review this post before publishing.",
+      "primary_action": "Approve post",
+      "finding": "The visible image/caption, reason and action toolbar already form a strong layout. AI options are split across several similar choices and their cost/readiness can be unclear.",
+      "change": "Preserve the main layout. Give one Generate visual entry with the applicable allowance/cost; keep design and audience tools secondary.",
+      "visible": "Post, caption, reason, required correction and approval.",
+      "optional": "Fine design controls, variant settings and full audience detail.",
+      "recovery": "Keep edits and existing visual on generation failure; never invent prices, results, reviews or client stories.",
+      "keep": "Keep the direct text/design/download actions and post reason.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "publish",
+      "group": "Content",
+      "name": "Publishing / handoff",
+      "routes": [
+        "/posts"
+      ],
+      "source": "web/components/PublishPanel.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        161
+      ],
+      "review": "Source review",
+      "purpose": "Get an approved post onto the chosen channel and record the actual outcome.",
+      "proposed_message": "Publish this post to your chosen channel.",
+      "primary_action": "Publish, or open the supported manual handoff",
+      "finding": "The manual kit combines download, caption, links, scheduling and status changes. A tracked link is described as knowing inquiries, and a missing website points to Decisions rather than its actual setting.",
+      "change": "Separate supported automatic publishing from a clear ordered manual handoff. Expose permission recovery at the blocked action and fix the website destination.",
+      "visible": "Chosen channel, actual capability, required asset/caption and publication state.",
+      "optional": "Tracking configuration and advanced scheduling.",
+      "recovery": "Keep the approved post if auth fails. Explain exactly what to finish outside the app; a click alone is not an inquiry or sale.",
+      "keep": "Keep real publication permissions and explicit mark-as-published behavior.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "results",
+      "group": "Learning",
+      "name": "Results",
+      "routes": [
+        "/performance"
+      ],
+      "source": "web/app/performance/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        112,
+        117,
+        167
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Turn evidence into a business decision and the next post.",
+      "proposed_message": "Here’s what we learned, and what to try next.",
+      "primary_action": "Review the proposed change",
+      "finding": "FindingCard now exposes reason/action/test, but What worked and friction can remain folded and provider panels compete with the business answer. Unmapped conversions are still too easy to treat as generic important actions.",
+      "change": "Lead with one business finding, two pieces of dated evidence and one proposed change. Show whether the chosen outcome is measured before interpreting traffic. Keep source dashboards below.",
+      "visible": "Finding, goal, evidence period/source, recommendation and next test.",
+      "optional": "Full GA4/Meta/Instagram tables, calculation methods and source details.",
+      "recovery": "No mapped outcome: offer the exact measurement fix plus legitimate post/traffic learning. No recent data: show the real last-read date and next refresh.",
+      "keep": "Keep the new visible FindingCard and preserve provider attribution differences.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "recommendations",
+      "group": "Learning",
+      "name": "Recommended plan changes",
+      "routes": [
+        "/recommendations"
+      ],
+      "source": "web/app/recommendations/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        117,
+        112
+      ],
+      "review": "Source review",
+      "purpose": "Decide whether to apply a specific change based on evidence.",
+      "proposed_message": "A suggested change to your plan.",
+      "primary_action": "Review change",
+      "finding": "One proposal is a good focus, but generic empty copy and generating from saved data do not explain what period is available or why a new analysis is useful.",
+      "change": "Preview what will change and why before applying it; make no-proposal states useful without prompting pointless regeneration.",
+      "visible": "Evidence, before/after change, next test and approval action.",
+      "optional": "Full analysis and source records.",
+      "recovery": "A stale proposal cannot silently apply to a newer plan or different post; preserve existing review guards.",
+      "keep": "Keep owner approval and stable plan/post identity checks.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "instagram",
+      "group": "Learning",
+      "name": "Instagram insights",
+      "routes": [
+        "/instagram"
+      ],
+      "source": "web/app/instagram/page.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        112
+      ],
+      "review": "Source review",
+      "purpose": "Learn from the business's own posts without making the owner interpret metrics.",
+      "proposed_message": "What your Instagram posts are telling us.",
+      "primary_action": "Try the recommended post",
+      "finding": "The screen has learned items and own-post data, but the evidence distinction between actual own outcomes and examples needs to be explicit.",
+      "change": "Explain one pattern and its next content experiment. Put the supporting own-post comparison next to it, with a date range.",
+      "visible": "Finding, relevant posts, business goal and proposed experiment.",
+      "optional": "All metrics and peer inspiration.",
+      "recovery": "Not connected: show the specific value and connection. Sparse data: ask for a small test without declaring a winner.",
+      "keep": "Keep actual own-post evidence and direct connection entry.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "promotion",
+      "group": "Learning",
+      "name": "Channels / promotion",
+      "routes": [
+        "/promotion"
+      ],
+      "source": "web/app/promotion/page.tsx",
+      "priority": 1,
+      "issues": [
+        165,
+        159,
+        112
+      ],
+      "review": "Source review",
+      "purpose": "Choose a channel and understand the next practical test.",
+      "proposed_message": "Which channel is worth testing for your business?",
+      "primary_action": "Review the recommended channel test",
+      "finding": "Google promotion, Search Console, business-profile setup and agency brief are mixed into one long screen. Fixed industry minimum-spend claims imply learning thresholds without adequate evidence.",
+      "change": "Separate a recommended channel test from organic search, profile setup and exportable brief. Use account forecasts or explicitly unknown costs; do not turn advisory ranges into hard gates.",
+      "visible": "Recommended channel, evidence/forecast provenance, test budget and chosen outcome.",
+      "optional": "Other channels, full query tables and agency brief.",
+      "recovery": "Missing cost evidence does not become a confident estimate; offer a supported forecast or owner-approved test.",
+      "keep": "Keep real Search Console opportunities, separated from inferred demand.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "connections",
+      "group": "Connections",
+      "name": "Connections overview",
+      "routes": [
+        "/integrations"
+      ],
+      "source": "web/app/integrations/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        112,
+        116,
+        161
+      ],
+      "review": "Source + local demo browser",
+      "purpose": "Connect the tool that will answer the owner's next marketing question.",
+      "proposed_message": "Bring your marketing tools together.",
+      "primary_action": "Connect the recommended tool",
+      "finding": "Rows mainly show account/status and hide benefit/setup until expansion. A saved website link can imply more source understanding than has actually been read.",
+      "change": "Put the benefit and real read status on each row. Recommend one connection, preserve the caller/step, and separate account consent from asset selection and usable data.",
+      "visible": "Tool/logo, business benefit, connection/read status and next action.",
+      "optional": "Other tools, technical callbacks and detailed permissions.",
+      "recovery": "Missing access/assets/data have distinct reconnect/select/wait/retry actions; optional connections do not trap onboarding.",
+      "keep": "Keep direct app-triggered setup and recommended-tool return links.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "ga4",
+      "group": "Connections",
+      "name": "Google Analytics setup",
+      "routes": [
+        "/integrations"
+      ],
+      "source": "web/components/integrations/SourceReadState.tsx",
+      "priority": 1,
+      "issues": [
+        112,
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Select the right property and obtain a useful measurement.",
+      "proposed_message": "See which visits lead to your business goal.",
+      "primary_action": "Connect Google Analytics",
+      "finding": "Status components distinguish connection, empty data, permission and partial reads, which is good. Generic setup explanations can crowd the single current action.",
+      "change": "Show the selected property, site match and actual readable period; then help map the route's outcome. Show only the guide needed for the current access failure.",
+      "visible": "Account/property, site, period, goal readiness and one next action.",
+      "optional": "All permission instructions and detailed metrics.",
+      "recovery": "Wrong property, denied access, no data and unmapped outcome are different states. Retry in place and return to the original task.",
+      "keep": "Keep real read dates and source-specific retry/reconnect.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "meta",
+      "group": "Connections",
+      "name": "Facebook / Instagram setup",
+      "routes": [
+        "/integrations",
+        "/integrations/meta/complete"
+      ],
+      "source": "web/components/integrations/MetaConnection.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        41,
+        112
+      ],
+      "review": "Source review",
+      "purpose": "Choose the customer's assets and grant the minimum useful capabilities.",
+      "proposed_message": "Choose the business accounts you want to connect.",
+      "primary_action": "Connect selected accounts",
+      "finding": "The staged consent/choose/done flow is useful, but read permissions, ads permissions and publishing capabilities must remain distinct; optional ads/pixel can be postponed.",
+      "change": "Show each selected asset and the capability enabled. Return from OAuth to asset selection, then to the task that triggered setup.",
+      "visible": "Correct account, Page/Instagram assets, access status and supported capability.",
+      "optional": "Advanced permissions and ads/pixel choices.",
+      "recovery": "No eligible asset prompts the correct account/access action, not another blind consent loop. Provider approval remains an external gate.",
+      "keep": "Keep optional ads/pixel and never equate OAuth return with completed setup.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "pixel",
+      "group": "Connections",
+      "name": "Pixel and ads evidence",
+      "routes": [
+        "/integrations"
+      ],
+      "source": "web/components/integrations/MetaAdsSummary.tsx",
+      "priority": 1,
+      "issues": [
+        112,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Verify customer-specific tracking and interpret attributed ad results.",
+      "proposed_message": "Check that your website tracking is working.",
+      "primary_action": "Verify selected Pixel",
+      "finding": "Verification has specific wrong-site/permission/event states. Ads data has an attribution window that must not be merged with GA4 counts as the same sales.",
+      "change": "Show site match, last observed event and verification action. Explain attributed outcomes beside the ad comparison and keep their window/source.",
+      "visible": "Customer's selected Pixel, site, real verification state, ad period and attributed outcome.",
+      "optional": "Full event lists and attribution methodology.",
+      "recovery": "No events, wrong site and denied access need different recoveries; PageView or lead events do not prove a paid order.",
+      "keep": "Keep per-customer asset selection and source attribution, without Tazizi defaults.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "whatsapp",
+      "group": "Connections",
+      "name": "WhatsApp / contact links",
+      "routes": [
+        "/integrations",
+        "/posts"
+      ],
+      "source": "web/components/PublishPanel.tsx",
+      "priority": 1,
+      "issues": [
+        112,
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Give the post a usable contact path and measure only what can be observed.",
+      "proposed_message": "Let interested customers contact you.",
+      "primary_action": "Save business contact link",
+      "finding": "The contact path is useful, but link clicks must not be presented as conversations or qualified inquiries.",
+      "change": "Validate the business contact and label clicks accurately. Use owner-reported or supported downstream outcomes for inquiry counts.",
+      "visible": "Business contact destination, link preview and observed clicks.",
+      "optional": "Tracking parameters.",
+      "recovery": "Wrong number or absent website has a direct edit action. No downstream observation remains unknown.",
+      "keep": "Keep an accessible contact path without requiring all analytics tools.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "brand",
+      "group": "Workspace and help",
+      "name": "Business brand",
+      "routes": [
+        "/brand"
+      ],
+      "source": "web/app/brand/page.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Make generated content look and sound like the actual business.",
+      "proposed_message": "Your business’s look and voice.",
+      "primary_action": "Save brand changes",
+      "finding": "Palette and style editing are appropriately optional, but style adjectives are weaker evidence than a finished post; voice settings are also accessed elsewhere.",
+      "change": "Show a real post preview using saved brand settings and one authoritative editing path for voice/colors.",
+      "visible": "Business identity, colors, example post and changed state.",
+      "optional": "Detailed visual/tone preferences.",
+      "recovery": "A scan failure preserves user-entered brand data and lets them upload the actual logo.",
+      "keep": "Keep business-specific palettes, separate from the platform's interface palette.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "business_hub",
+      "group": "Workspace and help",
+      "name": "Business menu",
+      "routes": [
+        "/business"
+      ],
+      "source": "web/app/business/page.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Find workspace settings without crowding the main navigation.",
+      "proposed_message": "Your business and workspace.",
+      "primary_action": "Open the relevant setting",
+      "finding": "Grouped utility links are useful, but post-language configuration routes through preparation and some labels describe process rather than destinations.",
+      "change": "Use clear destination names; keep post language/brand/settings/support findable from one stable location.",
+      "visible": "Grouped settings and visible destinations.",
+      "optional": "Rare maintenance actions.",
+      "recovery": "Opening a setting preserves unsaved work; support remains reachable when a connection fails.",
+      "keep": "Keep the four main navigation tabs and utility grouping.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "account",
+      "group": "Workspace and help",
+      "name": "Account",
+      "routes": [
+        "/account"
+      ],
+      "source": "web/app/account/page.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Understand the signed-in identity and manage access.",
+      "proposed_message": "Your account.",
+      "primary_action": "Edit the relevant account setting",
+      "finding": "Adding a password for Google users appears early even when it is not their task; workspace identity is less prominent than maintenance actions.",
+      "change": "Show current account identity first, then optional password/security settings and separate destructive actions.",
+      "visible": "Account identity, sign-in method and relevant setting.",
+      "optional": "Optional password creation and account deletion.",
+      "recovery": "Expose supported access recovery; deleting an account requires actual informed consent.",
+      "keep": "Keep destructive actions separate and preserve their real consequences.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "billing",
+      "group": "Workspace and help",
+      "name": "Subscription",
+      "routes": [
+        "/billing"
+      ],
+      "source": "web/app/billing/page.tsx",
+      "priority": 1,
+      "issues": [
+        158,
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Understand the subscription and what generation it includes.",
+      "proposed_message": "Your subscription and included usage.",
+      "primary_action": "Manage subscription",
+      "finding": "Trial/paid/failed/cancelled states are represented, but the complete content/video allowance and extra-credit contract still needs to be made explicit.",
+      "change": "Show price, included deliverables, usage/allowance and the actual renewal/payment state. Offer extra generation only with a real implemented charging path.",
+      "visible": "Current state, price, included usage, renewal and action.",
+      "optional": "Invoice/payment detail.",
+      "recovery": "Payment failure offers a usable retry; do not promise included video or credits before limits and charging work.",
+      "keep": "Keep state-specific billing actions and deliberate cancellation.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "support",
+      "group": "Workspace and help",
+      "name": "Report an issue",
+      "routes": [
+        "/support"
+      ],
+      "source": "web/app/support/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Get help with the current problem while preserving work.",
+      "proposed_message": "What were you trying to do?",
+      "primary_action": "Send report",
+      "finding": "The form and human escalation exist. Report submission can be disabled until ticket history loads, so a history-read failure may block help itself.",
+      "change": "Prefill screen/task, let reporting work independently of history, preserve typed text and show a concise next response/status.",
+      "visible": "Problem input, useful context, send action and ticket status.",
+      "optional": "Past tickets and diagnostic detail.",
+      "recovery": "History failure must not block a new report; submission failure retains text and exposes retry/contact. Keep real AI-processing consent.",
+      "keep": "Keep human escalation and no automatic AI call just for opening the page.",
+      "status": "Independent reporting/retry implemented in draft; context prefill and cross-sign-in draft retention remain open",
+      "implementation": "History cannot disable reporting. Send failure retains body and client_ref; late history cannot erase new reports. History retry and localized form/conversation dates. Expired-session body can be copied; automatic restoration across sign-in is still open."
+    },
+    {
+      "id": "help",
+      "group": "Workspace and help",
+      "name": "Help",
+      "routes": [
+        "/help"
+      ],
+      "source": "web/app/help/page.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Solve a specific obstacle and return to the task.",
+      "proposed_message": "What do you need help with?",
+      "primary_action": "Open the relevant guide",
+      "finding": "Provider guides are organized, but the first choice is a tool rather than the owner's problem.",
+      "change": "Offer common task/problem entries while retaining provider guides. Each guide should lead back to the app action, not a generic settings tour.",
+      "visible": "Common problem choices and contextual guide.",
+      "optional": "Other tool documentation.",
+      "recovery": "When a guide cannot solve access, offer a direct support report with its context.",
+      "keep": "Keep focused guides and clear return links.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "updates",
+      "group": "Workspace and help",
+      "name": "What’s new",
+      "routes": [
+        "/updates"
+      ],
+      "source": "web/components/language/ReleaseNotes.tsx",
+      "priority": 2,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Understand a shipped improvement and where to use it.",
+      "proposed_message": "What’s new in IsraMarket.",
+      "primary_action": "Open the updated feature",
+      "finding": "The platform already has dated updates and destination links. Do not turn internal plans or this audit into shipped release notes.",
+      "change": "Write each update as a user benefit with a working destination and affected language/route when relevant.",
+      "visible": "Latest shipped changes, date and destination.",
+      "optional": "Older releases.",
+      "recovery": "A failed release read has a retry; unread/read behavior must not claim features shipped early.",
+      "keep": "Keep updates inside the platform.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "preview",
+      "group": "Review and operations",
+      "name": "Demo workspace",
+      "routes": [
+        "/preview"
+      ],
+      "source": "web/app/preview/page.tsx",
+      "priority": 1,
+      "issues": [
+        159,
+        142
+      ],
+      "review": "Source review",
+      "purpose": "Let someone inspect the actual experience without touching customer data.",
+      "proposed_message": "Explore the marketing workspace.",
+      "primary_action": "Open the demo",
+      "finding": "The demo uses older sun/progress styling and a single bakery dataset. Its dates, goals and outcomes must remain coherent for trustworthy screenshots and reviews.",
+      "change": "Use shared production components with internally consistent route-specific fixtures and the current identity; keep demo writes local and generation offline.",
+      "visible": "Selected business route and actual task/state in the demo.",
+      "optional": "Demo configuration controls.",
+      "recovery": "A demo must not charge models, publish externally or modify a real workspace.",
+      "keep": "Keep the isolated demo origin/data and use accurate screens for marketing captures.",
+      "status": "Proposed; not implemented by this audit"
+    },
+    {
+      "id": "admin",
+      "group": "Review and operations",
+      "name": "Backoffice",
+      "routes": [
+        "/admin"
+      ],
+      "source": "web/app/admin/page.tsx",
+      "priority": 2,
+      "issues": [
+        159
+      ],
+      "review": "Source review",
+      "purpose": "Help an operator act on support and service failures.",
+      "proposed_message": "Support and service operations.",
+      "primary_action": "Open the item needing attention",
+      "finding": "Accounts/audit/support tabs exist, but this is an operator workflow and should not be forced into the customer screen pattern. Only source review was performed.",
+      "change": "Prioritize unresolved tickets and failed jobs with enough context to act. Retain traceability and security controls.",
+      "visible": "Action queue, affected workspace, status and audit context.",
+      "optional": "Historical records and advanced operator tools.",
+      "recovery": "Failures must remain visible; access restrictions and privileged changes need real safeguards.",
+      "keep": "Keep operator/customer separation and audit history.",
+      "status": "Proposed; not implemented by this audit"
+    }
+  ],
+  "public_boundary": [
+    "/",
+    "/for/[business]",
+    "/connections/[provider]",
+    "/terms",
+    "/security",
+    "/data-deletion"
+  ],
+  "internal_excluded": [
+    "/design",
+    "/design/hero",
+    "/design/identity",
+    "/design/flows",
+    "/design/flows/shorter",
+    "/design/connections",
+    "/design/results",
+    "/design/business",
+    "/motion",
+    "/dev/dna",
+    "/dev/cards"
+  ],
+  "execution_order": [
+    {
+      "stage": "1",
+      "title": "Task continuity and recovery",
+      "screens": [
+        "legacy",
+        "signup",
+        "login",
+        "support",
+        "calendar",
+        "prepare",
+        "posts",
+        "connections"
+      ],
+      "acceptance": "Each route can resume, retry or continue through supported alternatives without losing answers/drafts or requiring unrelated data. No paid generation merely on entry."
+    },
+    {
+      "stage": "2",
+      "title": "Outcome, evidence and channel costs",
+      "screens": [
+        "post_signup",
+        "business_facts",
+        "baseline",
+        "plan",
+        "results",
+        "recommendations",
+        "promotion",
+        "pixel"
+      ],
+      "acceptance": "All five routes use the correct outcome. Dates/sources/attribution remain explicit; unknown costs and ranges stay honest. Recommendations preview a concrete plan/post change."
+    },
+    {
+      "stage": "3",
+      "title": "Screen hierarchy and localized journeys",
+      "screens": [
+        "week",
+        "editor",
+        "publish",
+        "ga4",
+        "meta",
+        "images",
+        "brand",
+        "account",
+        "billing"
+      ],
+      "acceptance": "One understandable primary action per state; useful information visible, optional detail secondary. Rendered HE/EN/AR/RU, RTL/LTR, narrow/large screens tested; post language preserved."
+    },
+    {
+      "stage": "4",
+      "title": "Demo and release proof",
+      "screens": [
+        "preview",
+        "help",
+        "updates",
+        "admin"
+      ],
+      "acceptance": "Route-specific fixtures match actual capabilities and shared components. Run all journey/failure/resume checks before deployment; only shipped features enter What's new."
+    }
+  ],
+  "implementation_verification": {
+    "environment": "Isolated local QA proxy; every backend request synthetic, no live OAuth/tickets/publishing/model generation",
+    "automated": "44 support/Google-login API tests; 9 frontend redirect/calendar/tracked-route tests; web typecheck/lint/build and HE/EN/AR/RU catalog checks",
+    "browser": "Support failed send/retry/idempotency, history failure/retry and pending-history race; locale changes retain report body; calendar 503 recovery, actual current month, saved November plan, RTL/LTR keyboard and four-language rendering; posts read failure/missing plan/billing action; password return and synthetic Google cancellation/success next/back",
+    "limits": "Browser viewport override did not change the observed 1280px viewport; narrow-screen validation remains open. Synthetic Google flow checks navigation, not live provider approval. No native-language expert review claimed."
+  }
+}

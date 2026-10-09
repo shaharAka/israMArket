@@ -20,6 +20,8 @@ export function FindingRehearsal() {
   if (scenario === "partial" || scenario === "empty") {
     basis.sources = basis.sources.map(source => scenario === "empty" || source.key === "meta_ads" ? { ...source, status: "missing", read_at: "", period: {} } : source);
     basis.observations = scenario === "empty" ? [] : basis.observations.filter(fact => fact.source === "ga4");
+    // No measured actions in this scenario: their definition is not relevant guidance.
+    if (scenario === "empty") basis.limits = [];
   }
   if (scenario === "stale") {
     basis.sources = structuredClone(DEMO_RECS.suggestions.basis!.sources);

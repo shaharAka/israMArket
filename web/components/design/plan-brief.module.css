@@ -20,13 +20,6 @@
   font-weight: 600;
 }
 
-.mark {
-  flex: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--im-sun, var(--sun));
-}
 
 .body {
   padding: 28px 32px 32px;
@@ -42,36 +35,9 @@
 }
 
 .why {
-  margin-top: 6px;
-}
-
-.why summary {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  list-style: none;
-  width: fit-content;
-  min-height: 44px;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--im-muted, var(--ink-soft));
-  transition: color 160ms ease;
-}
-
-.why summary::-webkit-details-marker { display: none; }
-.why summary svg { transform: rotate(-90deg); transition: transform 180ms var(--ease); }
-.why[open] summary svg { transform: rotate(90deg); }
-.why summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; border-radius: 4px; }
-@media (prefers-reduced-motion: reduce) { .why summary svg { transition: none; } }
-
-.why summary:hover {
-  color: var(--im-ink, var(--ink));
-}
-
-.why p {
+  margin-top: 8px;
   max-width: 600px;
-  padding-bottom: 8px;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: var(--im-muted, var(--ink-soft));
 }

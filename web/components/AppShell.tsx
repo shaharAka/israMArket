@@ -16,6 +16,7 @@ import { SYSTEM_TONE } from "@/lib/tone";
 import { UIAction } from "@/components/design/Controls";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
 import { ToastHost } from "@/lib/ui";
+import { signInUrl } from "@/lib/authNavigation";
 
 type Tab = {
   href: string;
@@ -121,8 +122,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .me()
       .then((user) => setName(user.full_name))
       .catch((err: unknown) => {
-        if (err instanceof ApiError && err.code === "account_suspended") router.replace("/login?suspended=1");
-        else if (err instanceof ApiError && err.status === 401) router.replace("/login");
+        const login = signInUrl(window.location.pathname + window.location.search + window.location.hash, document.documentElement.lang);
+        if (err instanceof ApiError && err.code === "account_suspended") router.replace(`${login}&suspended=1`);
+        else if (err instanceof ApiError && err.status === 401) router.replace(login);
       });
 
     endpoints
@@ -206,6 +208,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
         )}
         <div className="flex shrink-0 items-center gap-2">
+          <WhatsNewLink iconOnly />
           {demo ? (
             <span
               className="px-2 py-0.5 text-[11px] font-medium"
@@ -230,9 +233,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className="sticky top-0 z-40 hidden h-screen w-[260px] shrink-0 flex-col border-e border-[var(--rule)] bg-[var(--paper)] md:flex"
       >
         <div>
-          {/* Identity gets the whole first row. The brand trigger used to share it and
-              refused to shrink, which crushed the logo to a 7px column of wrapping text
-              that the trigger then sat on top of. */}
+          {/* Keep the compact updates utility beside the identity, away from account actions. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
             <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
@@ -240,6 +241,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>
               </div>
             </Link>
+            <WhatsNewLink iconOnly />
             {demo ? (
               <span
                 className="shrink-0 px-2 py-0.5 text-[11px] font-medium"
@@ -259,7 +261,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         {!inSetup && <div className="px-3 pb-1"><BrandLink /></div>}
-        <div className="px-5"><WhatsNewLink className="inline-flex min-h-11 items-center gap-2 text-[13px] font-medium text-[var(--ink-muted)] hover:text-[var(--primary)] hover:underline aria-[current=page]:text-[var(--primary)]" /></div>
 
         <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link

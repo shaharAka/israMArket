@@ -23,8 +23,11 @@ If two actions genuinely compete, one of them is not a page-level action. Demote
 A page should be understandable in one pass without scrolling where possible.
 
 - Lead with the conclusion, not the reasoning.
-- Explanation, caveats, method and sources go behind an expand — not inline above the
-  thing they explain.
+- Show the proposed action and the specific reason to try it in the main view. Do not
+  require an expansion to understand the plan or the next decision.
+- Source provenance and technical method may sit behind one disclosure. Keep an actual
+  stale/missing/changed state beside the information it qualifies. Avoid generic warnings
+  and explanations repeated on every screen.
 - Target **1–1.5 screens** for a normal page. A dashboard or an editor may reach 2.
   Anything past 2 screens needs a justification.
 
@@ -100,5 +103,8 @@ When a page is over budget the answer is almost never to delete information. It 
    the monthly budget.
 4. Delete the "why this matters" line when the item itself is self-evident.
 
-What is never allowed: dropping a caveat, a warning, a source, or a "we cannot measure
-this" statement to hit the number. Those are the product's honesty and they stay visible.
+Never remove a specific limitation or source to hit a word count, or turn an unknown
+measurement into zero. That does not require blanket warnings beside every control.
+For example, label a number as ad clicks and name its source; show that completed orders
+have not been measured when that affects the proposed decision. Do not repeat a general
+paragraph about all the ways clicks differ from customers across unrelated screens.

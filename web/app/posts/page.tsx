@@ -12,11 +12,12 @@ import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
 import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
 import { ownerNeedsOf } from "@/lib/postLifecycle";
-import { StepLink } from "@/components/trial/StepLink";
+import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import ui from "@/components/posts/chrome.module.css";
-import { ApiError, endpoints, type PublishQueue, type StrategyPayload } from "@/lib/api";
+import { ApiError, endpoints, isPlanRequired, type PublishQueue, type StrategyPayload } from "@/lib/api";
 import { IconArrowLeft, IconChevron } from "@/lib/icons";
 import { useImageJob } from "@/lib/useImageJob";
+import { LOCALE_META } from "@/lib/i18n/locales";
 
 /**
  * What the header's due line depends on.
@@ -54,26 +55,32 @@ function readLocation(params: URLSearchParams | ReturnType<typeof useSearchParam
 }
 
 function go(query: string, mode: "push" | "replace") {
-  const url = query ? `/posts?${query}` : "/posts";
+  const next = new URLSearchParams(query);
+  const language = new URLSearchParams(window.location.search).get("lang");
+  if (language) next.set("lang", language);
+  const url = next.size ? `/posts?${next}` : "/posts";
   if (mode === "push") window.history.pushState(null, "", url);
   else window.history.replaceState(null, "", url);
 }
 
 /** List or month — a quiet two-way switch, not a second call to action. */
 function ViewToggle({ calendar, onChange }: { calendar: boolean; onChange: (calendar: boolean) => void }) {
+  const t = useCopy();
   return (
-    <div role="group" aria-label="תצוגה" className={`${ui.segmented} shrink-0`}>
+    <div role="group" aria-label={t("תצוגה")} className={`${ui.segmented} shrink-0`}>
       <button type="button" aria-pressed={!calendar} onClick={() => onChange(false)}>
-        רשימה
+        {t("רשימה")}
       </button>
       <button type="button" aria-pressed={calendar} onClick={() => onChange(true)}>
-        לוח
+        {t("לוח")}
       </button>
     </div>
   );
 }
 
 function PostsWorkspace() {
+  const t = useCopy();
+  const { locale } = useLanguage();
   const params = useSearchParams();
   const location = readLocation(params);
   const reviewing = params.has("recommendation");
@@ -81,6 +88,7 @@ function PostsWorkspace() {
   const reviewUid = params.get("post_uid");
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [error, setError] = useState("");
+  const [readNeedsPlan, setReadNeedsPlan] = useState(false);
   const [noMonth, setNoMonth] = useState(false);
   // Bumped when the posts being written on the server are done: load them again.
   const [reload, setReload] = useState(0);
@@ -111,13 +119,18 @@ function PostsWorkspace() {
         const current = await endpoints.strategy();
         if (!active) return;
         setStrategy(current);
+        setError("");
+        setReadNeedsPlan(false);
+        setNoMonth(false);
       } catch (err) {
         if (!active) return;
         // No month yet (right after /start, while it is written) is a normal state with
         // its own screen, not an error. A 401 is AppShell's redirect to make.
         if (err instanceof ApiError && err.status === 404) setNoMonth(true);
-        else if (!(err instanceof ApiError && err.status === 401))
-          setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את הפוסטים");
+        else if (!(err instanceof ApiError && err.status === 401)) {
+          setReadNeedsPlan(isPlanRequired(err));
+          setError(err instanceof ApiError && err.status > 0 && err.status < 500 ? err.message : "לא הצלחנו לטעון את הפוסטים.");
+        }
       }
     }
     void loadPosts();
@@ -147,6 +160,8 @@ function PostsWorkspace() {
   }, [signature]);
 
   const posts = strategy?.roadmap?.posts ?? [];
+  function retryRead() { setError(""); setReadNeedsPlan(false); setNoMonth(false); setReload(n => n + 1); }
+  const readRecovery = readNeedsPlan ? <Link href="/billing" className={`${ui.link} mt-2 min-h-11`}>{t("למנוי שלי")}</Link> : <button type="button" className={`${ui.link} mt-2 min-h-11`} onClick={retryRead}>{t("לטעון את הפוסטים שוב")}</button>;
   const matching = reviewUid ? posts.map((post, index) => post.uid === reviewUid ? index : -1).filter(index => index >= 0) : [];
   const reviewPost = matching.length === 1 ? posts[matching[0]] : null;
   const guardedIndex = reviewing
@@ -185,11 +200,12 @@ function PostsWorkspace() {
 
   if (location.post !== null && !strategy && !noMonth) {
     return error ? (
-      <p className={`${ui.error} mx-auto max-w-3xl`}>
-        {error}
-      </p>
+      <div role="alert" className={`${ui.error} mx-auto max-w-3xl`}>
+        <p>{t(error)}</p>
+        {readRecovery}
+      </div>
     ) : (
-      <p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">טוענים את הפוסט…</p>
+      <p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">{t("טוענים את הפוסט…")}</p>
     );
   }
 
@@ -245,21 +261,21 @@ function PostsWorkspace() {
       <RecommendationReview planId={strategy?.id} targetUnavailable={reviewing && Boolean(strategy) && openIndex === null} />
       <header>
         <Link href="/strategy" className={`${ui.link} ${ui.linkQuiet} -my-2 text-[13px] font-medium`}>
-          כלי הביצוע של התוכנית
+          {t("כלי הביצוע של התוכנית")}
         </Link>
         <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-[color:var(--ink)] sm:text-[32px]">
-          {strategy ? `הפוסטים של ${strategy.month_name_he}` : "הפוסטים"}
+          {strategy ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
         </h1>
 
         <div className="mt-5 flex items-center justify-between gap-4">
           {strategy && posts.length ? (
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <p className="shrink-0 text-sm font-semibold tabular-nums text-[color:var(--ink)]">
-                {doneCount} מתוך {posts.length} אושרו
+                {t("{arg_0} מתוך {arg_1} אושרו", { arg_0: doneCount, arg_1: posts.length })}
               </p>
               <div
                 role="progressbar"
-                aria-label="פוסטים שאושרו החודש"
+                aria-label={t("פוסטים שאושרו החודש")}
                 aria-valuemin={0}
                 aria-valuemax={posts.length}
                 aria-valuenow={doneCount}
@@ -296,9 +312,10 @@ function PostsWorkspace() {
       ) : null}
 
       {error ? (
-        <p className={`${ui.error} mt-6`}>
-          {error}
-        </p>
+        <div role="alert" className={`${ui.error} mt-6`}>
+          <p>{t(error)}</p>
+          {readRecovery}
+        </div>
       ) : null}
 
       {/* The page's one filled button — the next thing we are asking for — and beside it the
@@ -311,7 +328,7 @@ function PostsWorkspace() {
               onClick={() => openPost(primary.index)}
               className="drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2.5 bg-[var(--primary)] px-6 text-base text-white hover:bg-[var(--primary-dark)] sm:w-auto"
             >
-              {primary.label}
+              {t(primary.label)}
               <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
             </button>
           ) : null}
@@ -322,7 +339,7 @@ function PostsWorkspace() {
               className="group inline-flex min-h-11 items-center gap-2.5 self-start rounded-full bg-[var(--sand)] ps-4 pe-3 text-sm font-semibold text-[color:var(--ink)] transition-colors hover:bg-[var(--sand-rule)] sm:self-auto"
             >
               <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-[var(--sun)] shadow-[0_0_0_3px_var(--paper)]" />
-              {queue && queue.due.length > 1 ? `${queue.due.length} פוסטים מחכים לפרסום` : "פוסט אחד מחכה לפרסום"}
+              {queue && queue.due.length > 1 ? t("{arg_0} פוסטים מחכים לפרסום", { arg_0: queue.due.length }) : t("פוסט אחד מחכה לפרסום")}
               <IconChevron className="h-4 w-4 shrink-0 text-[color:var(--sand-dark)] transition-transform duration-200 group-hover:-translate-x-0.5" />
             </button>
           ) : null}
@@ -334,7 +351,7 @@ function PostsWorkspace() {
           noMonth ? (
             <NoPostsYet />
           ) : !error ? (
-            <p className="text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים של החודש…</p>
+            <p className="text-sm text-[color:var(--ink-muted)]">{t("טוענים את הפוסטים של החודש…")}</p>
           ) : null
         ) : posts.length === 0 ? (
           <FirstPosts onDone={() => setReload((n) => n + 1)} onWeekReady={() => setReload((n) => n + 1)} />
@@ -356,33 +373,34 @@ function PostsWorkspace() {
 }
 
 /**
- * No month yet — normal in the free month: posts are written only once the week-2
- * foundations are in (Revision 8). Says why, and links to the step that is next.
+ * No execution plan yet. Preparation is already inline when a plan exists; here
+ * the owner must reach that plan first, without a competing connection checklist.
  */
 function NoPostsYet() {
+  // English intent: create content from the plan; the next action opens that plan.
+  const t = useCopy();
   return (
     <section className={`${ui.card} px-6 py-12 text-center sm:px-10`}>
-      <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">עוד אין פוסטים לחודש הזה</h2>
+      <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">{t("נכין פוסטים לפי התוכנית שלכם")}</h2>
       <p className="mx-auto mt-2 max-w-md text-[15px] leading-7 text-[color:var(--ink-soft)]">
-        נבדוק אילו תמונות והצעות כבר יש לכם, ונכין פוסט לפי התוכנית. נחבר את המדידה הזמינה,
-        והפוסט יחכה כאן לאישור ולפרסום שלכם.
+        {t("מתחילים בתוכנית, ואז בוחרים נושא ומכינים פוסט שתוכלו לערוך ולפרסם.")}
       </p>
       <div className="mt-6 flex flex-col items-center gap-2">
         <Link href="/strategy" className={ui.button}>
-          לראות את התוכנית
+          {t("להמשיך לתוכנית")}
         </Link>
-        <StepLink stepKey={["instagram", "site_data", "whatsapp", "gbp", "baseline", "photos", "featured", "voice", "start_posts"]} />
       </div>
     </section>
   );
 }
 
 export default function PostsPage() {
+  const t = useCopy();
   return (
     <AppShell>
       {/* The workspace reads the URL, which a prerender does not have (Next's rule for
           useSearchParams), so it renders inside its own Suspense boundary. */}
-      <Suspense fallback={<p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">טוענים את הפוסטים…</p>}>
+      <Suspense fallback={<p className="mx-auto max-w-3xl text-sm text-[color:var(--ink-muted)]">{t("טוענים את הפוסטים…")}</p>}>
         <PostsWorkspace />
       </Suspense>
     </AppShell>

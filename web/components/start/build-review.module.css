@@ -1,0 +1,22 @@
+.facts {
+  border-top: 1px solid var(--rule);
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: baseline;
+  gap: 12px 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.facts dt { color: var(--ink-soft); }
+.facts dd { color: var(--ink); overflow-wrap: anywhere; }
+.action { margin-top: 12px; }
+
+@media (max-width: 560px) {
+  .facts > div { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
+}

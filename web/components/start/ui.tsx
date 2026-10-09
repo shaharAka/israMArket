@@ -159,7 +159,7 @@ export function StepShell({
         <h1 ref={heading} tabIndex={-1} className={styles.title}>
           {t(title)}
         </h1>
-        <p className={styles.why}>{t(why)}</p>
+        {why ? <p className={styles.why}>{t(why)}</p> : null}
         <Reflection text={reflection ?? null} />
       </div>
       <div className={styles.answer}>{children}</div>

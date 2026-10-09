@@ -16,7 +16,8 @@ import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvid
 import { HowToFind } from "@/components/help/HowToFind";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { IdentityMark } from "@/components/landing-v2/IdentityMark";
-import { MonthBuildProgress } from "@/components/MonthBuildProgress";
+import { BuildReview, REVIEW_PATHS } from "./BuildReview";
+import { BUSINESS_EXAMPLES } from "@/components/landing-v2/businessExamples";
 import { inferField } from "@/lib/businessFields";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import styles from "./start.module.css";
@@ -83,7 +84,19 @@ export function ResearchJourney() {
     if (params.get("site") && !loaded.draft.links.website) loaded.draft.links.website = params.get("site")!;
         const reviewStep = params.get("review_step");
     if (preview && reviewStep) {
-      loaded.draft.business_name = "עסק לבדיקה"; loaded.draft.offerings = segment === "fundraising" ? "תמיכה במשפחות ובקידום המחקר" : segment === "software" ? "תוכנה לתיאום פגישות" : segment === "services" ? "עיצוב מותג ואתרים לעסקים" : "פיג׳מות בעיצוב מקומי";
+      const example = BUSINESS_EXAMPLES[REVIEW_PATHS[segment]];
+      // Review-only fixture: the preview uses the same business as its plan view.
+      // Never loads or saves a customer's draft or calls generation.
+      loaded.draft.business_name = t(example.name);
+      loaded.draft.offerings = t({
+        fundraising: "חונכות לילדים שצריכים עזרה בלימודים",
+        software: "תוכנית שיווק, פוסטים ולמידה מהתוצאות לעסקים קטנים",
+        services: "עיצוב פנים לדירות לפני שיפוץ",
+        online_shop: "לחמים וחלות להזמנה מראש ולאיסוף במאפייה",
+        physical_shop: "לחמים וחלות במאפייה שכונתית",
+      }[segment]);
+      loaded.draft.audiences = [{ name: t(example.audience), description: "" }];
+      loaded.draft.research_journey!.metric = METRICS[segment][0].key;
       loaded.draft.business_type = "other"; loaded.modelConfirmed = true;
       loaded.draft.research_journey!.phase = params.get("phase") === "after" ? "after" : "before";
       if (sequence(loaded.draft.research_journey!).includes(reviewStep)) loaded.draft.research_journey!.step = reviewStep;
@@ -134,7 +147,7 @@ export function ResearchJourney() {
   let screen;
   switch (journey.step) {
     case "name": screen = <StepName {...common} />; break;
-    case "offer": screen = <StepShell {...common} title="מה אתם עושים?" why="ספרו בקצרה מה אתם מציעים ולמי. נשתמש בזה כדי להכיר את העסק, לפני שנמליץ על שיווק." primary="להמשיך" primaryDisabled={busy || !flow.modelConfirmed || flow.draft.offerings.trim().length < 3} onPrimary={() => { const field = inferField(flow.draft.offerings); setDraft({ business_type: field ?? "other" }); void advance(); }}>
+    case "offer": screen = <StepShell {...common} title="מה אתם עושים?" why="" primary="להמשיך" primaryDisabled={busy || !flow.modelConfirmed || flow.draft.offerings.trim().length < 3} onPrimary={() => { const field = inferField(flow.draft.offerings); setDraft({ business_type: field ?? "other" }); void advance(); }}>
       {showSegments || !flow.modelConfirmed ? <fieldset><legend className={form.label}><Copy text="מה אתם עושים?" /></legend><div className="flex flex-wrap gap-2">{BUSINESS_SEGMENTS.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={journey.segment === item.key} onClick={() => { update(f => selectSegment(f, item.key)); setShowSegments(false); }}><Copy text={item.label} /></button>)}</div></fieldset> : <div className="flex items-center justify-between gap-3 border-b border-[var(--rule)] pb-3"><Copy text={BUSINESS_SEGMENTS.find(item => item.key === journey.segment)!.label} /><button type="button" onClick={() => setShowSegments(true)} className="min-h-11 text-sm text-[var(--primary)]"><Copy text="לשנות את סוג העסק" /></button></div>}
       <TextInput id="offering" label={journey.segment === "fundraising" ? "למען מה אתם פועלים ומבקשים תמיכה?" : "מה אתם מציעים ללקוחות?"} value={flow.draft.offerings} onChange={offerings => setDraft({ offerings })} maxLength={900} />
     </StepShell>; break;
@@ -147,18 +160,16 @@ export function ResearchJourney() {
     case "signup": screen = <StepSave {...common} researchOnly loggedIn={signedIn || mock} saving={busy} saveError={error} onSave={enterAccount} />; break;
     case "software_offer": screen = <StepSoftwareOffer {...common} />; break;
     case "software": screen = <StepSoftware {...common} />; break;
-    case "sources": screen = <StepShell {...common} title={journey.segment === "fundraising" ? "איך אנשים מגיעים לעשייה שלכם?" : "איך לקוחות מוצאים אתכם היום?"} why="מה כבר עובד, ומה עוד לא ניסיתם? נבדוק את המקורות שמתאימים לכם." primary="להמשיך לחיבורים" primaryDisabled={busy} onPrimary={() => void advance()}><ServiceClientSources flow={flow} setDraft={setDraft} /></StepShell>; break;
+    case "sources": screen = <StepShell {...common} title={journey.segment === "fundraising" ? "איך אנשים מגיעים לעשייה שלכם?" : "איך לקוחות מוצאים אתכם היום?"} why="" primary="להמשיך לחיבורים" primaryDisabled={busy} onPrimary={() => void advance()}><ServiceClientSources flow={flow} setDraft={setDraft} /></StepShell>; break;
     case "connections": screen = <StepShell {...common} title="נחבר את המידע שכבר יש לכם" why="החיבורים עוזרים לראות מה מביא רכישות, פניות או תרומות. תוכלו לחזור לכאן אחרי אישור החיבור; התשובות נשמרות בחשבון." primary="להמשיך למה שנמדוד" primaryDisabled={busy} onPrimary={() => void advance()}><Link href="/integrations" className="inline-flex min-h-11 items-center font-semibold text-[var(--primary)]"><Copy text="לבחור ולחבר את הכלים שלי" /></Link><p><Copy text="אפשר להמשיך גם בלי חיבור. נציין מה עוד לא נמדד, ונשלים בהמשך." /></p></StepShell>; break;
     case "metrics": screen = <MetricsStep {...common} onChange={patchJourney} />; break;
-    case "build": screen = <StepShell {...common} title="עכשיו יש בסיס לתוכנית שלכם" why="נשלב את ההיכרות, המחקר והנתונים הזמינים. התוכנית תוביל לתוכן ולפוסטים שתבדקו לפני פרסום, ונעדכן אותה לפי התוצאות." hidePrimary primary="בונים מתוך ההיכרות" primaryDisabled onPrimary={() => {}}>
-      {mock ? <p><Copy text="כאן מתחילה בניית התוכנית בחשבון." /></p> : <MonthBuildProgress canStart={signedIn && !busy} onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} idle={build => <button type="button" className={styles.primary} disabled={build.starting || busy} onClick={() => void build.start()}><Copy text="לבנות את התוכנית שלי" /></button>} />}
-      <p className="text-sm text-[var(--ink-muted)]"><Copy text="מספר שלא נמסר או לא נמדד נשאר לא ידוע. אין הבטחה לכמות לקוחות או לתרומות." /></p>
-    </StepShell>; break;
+    case "build": screen = <BuildReview {...common} mock={mock} busy={busy} canStart={signedIn && !busy}
+      onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} />; break;
   }
-  return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><span className="hidden text-sm text-[var(--ink-muted)] sm:inline"><Copy text={journey.phase === "before" ? "מכירים את העסק" : "בונים את הבסיס לשיווק"} /></span><ProductUtilities inline /></div></header>
+  return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
     <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
       <div className="mb-7 flex gap-1" aria-label={t("התקדמות בהיכרות")} role="progressbar" aria-valuenow={Math.max(1, index + 1)} aria-valuemin={1} aria-valuemax={steps.length}>{steps.map((step, i) => <span key={step} className={`h-1 flex-1 ${i <= index ? "bg-[var(--primary)]" : "bg-[var(--rule)]"}`} />)}</div>
-      <div key={journey.step}>{screen}</div><p className="mt-8 text-xs text-[var(--ink-muted)]"><Copy text={journey.phase === "before" ? "ההיכרות נשמרת במכשיר עד פתיחת החשבון." : "התשובות נשמרות בחשבון בכל מעבר לשלב הבא."} /></p>
+      <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;
 }
@@ -187,7 +198,7 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     // This screen runs one bounded research request per entry, never on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <StepShell {...props} title={props.after ? "עוד פרט שיעזור לדייק את התוכנית" : "בואו נוודא שהבנו אתכם"} why={props.after ? "השאלות מבוססות על מה שסיפרתם ועל מה שהצלחנו לקרוא. אפשר לענות בקצרה או להשלים בהמשך." : "אנחנו עוד מכירים את העסק. כאן בודקים את ההבנה, לפני תוכנית או המלצות."} primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
+  return <StepShell {...props} title={props.after ? "עוד פרט שיעזור לדייק את התוכנית" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
     {loading ? <p role="status"><Copy text="קוראים את המידע ומכינים שאלה להיכרות…" /></p> : null}
     {error ? <p role="status">{error}</p> : null}
     {result?.facts?.length ? <section className="space-y-3 border-b border-[var(--rule)] pb-5"><h2 className="font-semibold"><Copy text="מה ראינו באתר שלכם" /></h2>{result.facts.map((fact, i) => <blockquote key={i} className="border-s-2 border-[var(--rule)] ps-3 text-sm"><p>{fact.quote}</p><a className="text-xs underline" href={fact.url} target="_blank" rel="noopener noreferrer"><Copy text="למקור באתר" /></a></blockquote>)}</section> : null}
@@ -207,16 +218,13 @@ function MetricsStep(props: StepProps & { onChange: (patch: Partial<Journey>) =>
   function observations(next: Observation[]) { return [...j.observations.filter(value => value.key === "order_value"), ...next]; }
   const [error, setError] = useState("");
   function change(index: number, value: Observation) { props.onChange({ metric, observations: observations(values.map((x, i) => i === index ? value : x)) }); }
-  return <StepShell {...props} title="מה ייחשב הצלחה בשבילכם?" why="נבחר תוצאה עסקית אחת. הנתונים הנוספים יעזרו להסביר מה מוביל אליה. מספרים שלא ידועים לא הופכים לאפס או לממוצע משוער." primary="להמשיך" onPrimary={() => { if (!values.every(observationValid)) { setError("הזינו מספרים חיוביים או אפס. כמות צריכה להיות מספר שלם, ובטווח המספר השני צריך להיות גדול מהראשון או שווה לו."); return; } props.onChange({ metric, observations: observations(values) }); props.next(); }}>
-    <fieldset><legend className={form.label}><Copy text="התוצאה שהכי חשובה לכם כרגע" /></legend><div className="flex flex-wrap gap-2">{choices.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={metric === item.key} onClick={() => props.onChange({ metric: item.key, observations: j.observations.filter(x => x.key !== "outcomes") })}><Copy text={item.label} /></button>)}</div></fieldset>
-    {segment === "online_shop" ? <p><Copy text="צפיות במוצרים, הוספות לסל והתחלות תשלום יעזרו להבין איפה אנשים נעצרים. המדד הראשי הוא רכישות שהושלמו. נוודא שהאירועים האלה נמדדים לפני שנציג אותם." /></p> : null}
+  return <StepShell {...props} title="מה ייחשב הצלחה בשבילכם?" why="" primary="להמשיך" onPrimary={() => { if (!values.every(observationValid)) { setError("הזינו מספרים חיוביים או אפס. כמות צריכה להיות מספר שלם, ובטווח המספר השני צריך להיות גדול מהראשון או שווה לו."); return; } props.onChange({ metric, observations: observations(values) }); props.next(); }}>
+    <fieldset><legend className="sr-only"><Copy text="התוצאה שהכי חשובה לכם כרגע" /></legend><div className="flex flex-wrap gap-2">{choices.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={metric === item.key} onClick={() => props.onChange({ metric: item.key, observations: j.observations.filter(x => x.key !== "outcomes") })}><Copy text={item.label} /></button>)}</div></fieldset>
     <TextInput id="campaign-location" label="באיזה אזור או מדינה תרצו לפרסם?" placeholder="למשל: חיפה והסביבה, כל ישראל או ארצות הברית" value={props.flow.draft.city ?? ""} onChange={city => props.setDraft({ city })} maxLength={80} />
-    <p className="text-sm text-[var(--ink-muted)]"><Copy text="עלויות הפרסום משתנות לפי הקהל, האזור ומה שרוצים להשיג. נשתמש במחקר ובנתוני החשבונות הזמינים כדי להשוות בין הערוצים." /></p>
     {values.map((value, i) => <fieldset key={value.key} className="space-y-3 border-t border-[var(--rule)] pt-5"><legend className={form.label}><Copy text={i === 0 ? baselineLabel : "כמה תרצו להשקיע בפרסום בחודש?"} /></legend>
       <div className="flex flex-wrap gap-2">{[{ key: "unknown", label: "לא יודעים כרגע" }, { key: "exact", label: "יש לי מספר" }, { key: "range", label: "יש לי טווח" }].map(option => <button key={option.key} type="button" className={form.chip} aria-pressed={value.status === option.key} onClick={() => change(i, { ...value, status: option.key as Observation["status"], lower: null, upper: null })}><Copy text={option.label} /></button>)}</div>
       {value.status !== "unknown" ? <div className="grid gap-3 sm:grid-cols-2"><TextInput id={`metric-${i}-lower`} label={t(value.status === "range" ? "המספר הנמוך בטווח" : value.unit === "ILS" ? "סכום בשקלים" : "מספר")} value={value.lower == null ? "" : String(value.lower)} onChange={text => change(i, { ...value, lower: text.trim() ? Number(text) : null })} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" />{value.status === "range" ? <TextInput id={`metric-${i}-upper`} label={t("המספר הגבוה בטווח")} value={value.upper == null ? "" : String(value.upper)} onChange={text => change(i, { ...value, upper: text.trim() ? Number(text) : null })} inputMode={value.unit === "count" ? "numeric" : "decimal"} dir="ltr" /> : null}</div> : null}
     </fieldset>)}
-    <p className="text-xs text-[var(--ink-muted)]"><Copy text="המספרים כאן הם דיווח שלכם. נוכל לאמת ולהשלים אותם דרך חיבור למערכת המדידה." /></p>
     {error ? <p role="alert" className={form.error}>{error}</p> : null}
   </StepShell>;
 }
