@@ -10,7 +10,18 @@ from urllib.parse import urlencode
 
 from app.services.jsonutil import loads
 from app.services.plan_editing import revision as plan_revision
-from app.services import service_results
+from app.services import service_results, marketing_outcome
+from app.services.interview_evidence import EVENT_STAGES
+
+EVENT_LABELS = {
+    "view_item": "אירועי צפייה במוצר", "add_to_cart": "אירועי הוספה לסל",
+    "begin_checkout": "אירועי התחלת תשלום", "purchase": "אירועי רכישה שדווחו באתר",
+    "click_directions": "אירועי בקשת מסלול", "click_to_call": "אירועי לחיצה להתקשרות",
+    "generate_lead": "אירועי פנייה שדווחו באתר", "appointment_booked": "אירועי קביעת פגישה",
+    "sign_up": "אירועי הרשמה", "demo_requested": "אירועי בקשת הדגמה",
+    "activation": "אירועי התחלת שימוש", "donation": "אירועי תרומה שדווחו באתר",
+    "recurring_donation": "אירועי תרומה חוזרת",
+}
 
 
 def _dict(value) -> dict:
@@ -77,6 +88,19 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
         value = _number(overview.get(metric))
         if value is not None:
             observations.append({"source": "ga4", "metric": metric, "label": label, "value": value})
+    # Only supplied route-relevant event rows. Missing events remain unknown, and
+    # repeated events are never described as unique customers or paid orders.
+    segment = marketing_outcome.context(business)["marketing_outcome"]["segment"]
+    events = ga.get("events")
+    seen = set()
+    for event in (events[:30] if isinstance(events, list) else []):
+        event = _dict(event)
+        name = event.get("eventName")
+        value = _number(event.get("eventCount"))
+        if name not in EVENT_STAGES[segment] or name in seen or value is None:
+            continue
+        seen.add(name)
+        observations.append({"source": "ga4", "metric": name, "label": EVENT_LABELS[name], "value": value})
     if ga.get("source_error"):
         limits.append("הרענון של נתוני האתר לא הושלם. המספרים נשמרו מקריאה קודמת; בדקו את התקופה לפני החלטה.")
     missing_reports = [name for name, value in _dict(ga.get("report_reads")).items() if _dict(value).get("status") == "unavailable"]
@@ -120,6 +144,7 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
              "sources": [_freshness(source) for source in sources], "observations": observations, "limits": limits,
              "excluded_sources": wrong_site or wrong_ads or wrong_meta,
              "service_fingerprint": service_results.fingerprint(business),
+             "outcome_fingerprint": marketing_outcome.fingerprint(business),
              "selection": {"ga4": selected, "meta_ads": selected_ads or ""}}
     return ga, meta, basis
 
@@ -161,7 +186,16 @@ def bind(model_result, basis: dict, plan: dict) -> dict:
                             "action_kind": kind, "post_uid": uid if valid_post else "",
                             "target_valid": kind != "post" or valid_post,
                             "post_revision": _revision(matches[0]) if valid_post else ""})
+        # Do not let the model supply values or metric names outside this snapshot.
+        suggestions[-1]["evidence_keys"] = evidence_keys(row, basis)
     return {"week_summary": _text(result.get("week_summary")), "suggestions": suggestions, "basis": basis}
+
+
+def evidence_keys(row: dict, basis: dict) -> list[str]:
+    allowed = {f"{item.get('source')}:{item.get('metric')}" for item in basis.get("observations", []) if isinstance(item, dict)}
+    keys = row.get("evidence_keys")
+    return list(dict.fromkeys(key for key in (keys if isinstance(keys, list) else [])
+                              if isinstance(key, str) and key in allowed))[:3]
 
 
 def _freshness(source: dict) -> dict:
@@ -185,6 +219,7 @@ def serialize(rec, plan: dict, business=None) -> dict:
     current_revision = plan_revision(business) if business is not None else plan.get("plan_revision", 0)
     same_plan = provenance and same_id and basis.get("plan_revision", 0) == current_revision
     same_service = business is None or not service_results.enabled(business) or basis.get("service_fingerprint", "") == service_results.fingerprint(business)
+    same_outcome = business is None or "outcome_fingerprint" not in basis or basis["outcome_fingerprint"] == marketing_outcome.fingerprint(business)
     rows = stored.get("suggestions")
     items = []
     for row in (rows[:3] if isinstance(rows, list) else []):
@@ -199,7 +234,7 @@ def serialize(rec, plan: dict, business=None) -> dict:
         elif not same_plan:
             status, note = "stale", ("התוכנית נערכה מאז ההמלצה. בדקו אם ההצעה מתאימה לכיוון המעודכן." if same_id else
                                      "התוכנית התחלפה מאז ההמלצה. בדקו מה עדיין מתאים לתוכנית הנוכחית.")
-        elif not same_service:
+        elif not same_service or not same_outcome:
             status, note = "stale", "הדיווח שלכם או פרטי העסק השתנו מאז ההמלצה. הכינו הצעה עדכנית לפני שינוי בתוכנית."
         elif row.get("action_kind") == "measurement":
             kind, href, label = "measurement", "/integrations", "לבדוק את החיבורים"
@@ -225,6 +260,8 @@ def serialize(rec, plan: dict, business=None) -> dict:
                       "priority": row.get("priority") if row.get("priority") in ("high", "medium", "low") else "medium",
                       "review": {"kind": kind, "status": status, "href": href, "label": label, "note_he": note,
                                  "plan_id": plan.get("id"), "post_uid": row.get("post_uid") if kind == "post" else None}})
+        if "evidence_keys" in row:
+            items[-1]["evidence_keys"] = evidence_keys(row, basis)
     public_basis = {**basis, "sources": [_freshness(source) for source in basis.get("sources", []) if isinstance(source, dict)]} if provenance else None
     if public_basis and business is not None:
         current = {item.provider: item for item in business.integrations}

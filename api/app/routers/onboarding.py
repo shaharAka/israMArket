@@ -33,7 +33,7 @@ from app.services.onboarding_draft import (
 from app.services.preview import cached_scan
 from app.services.quarter_plan import QuarterPlanIn
 from app.services.strategy_reveal import SamplePostIn, StrategyIn
-from app.services import content_language
+from app.services import content_language, quick_posts
 from app.services.jsonutil import dumps, loads
 from app.services.scraper import fetch_photo_candidates, image_alt_for
 from app.routers.strategy import serialize_strategy, upsert_generated_strategy
@@ -571,16 +571,18 @@ def _generation_precheck(business: Business | None) -> tuple[Business, dict]:
 
 
 @router.post("/interview")
-def interview_questions(body: FromDraftIn, request: Request, user: User = Depends(get_current_user)):
+def interview_questions(body: FromDraftIn, request: Request, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     from app.services.discovery_interview import research_questions, evidence_revision
     from app.services.ratelimit import allow
+    from app.services.interview_evidence import snapshot
+    saved_evidence = snapshot(db, _owned_business(db, user), body.draft)
     if not allow(f"interview:{user.id}", 20, 3600):
         raise HTTPException(status_code=429, detail="אפשר להמשיך עם התשובות שיש ולחזור לשאלה בהמשך.")
     from app.routers.public_onboarding import _cached_or_start, _models
     hit, future = _cached_or_start(request, gate=_models,
-        key=f"interview:{user.id}:" + body.draft.fingerprint("deeper-interview:" + body.locale + ":" + evidence_revision(body.draft)),
+        key=f"interview:{user.id}:" + body.draft.fingerprint("deeper-interview:" + body.locale + ":" + evidence_revision(body.draft, saved_evidence)),
         name="deeper-interview", per_ip=20, global_cap=300,
-        work=lambda: research_questions(body.draft, after_signup=True, locale=body.locale))
+        work=lambda: research_questions(body.draft, after_signup=True, locale=body.locale, saved_evidence=saved_evidence))
     if hit is not None:
         return hit
     try:
@@ -654,7 +656,8 @@ def _store_structure(db: Session, business: Business, state: dict, scraped_profi
                                   catalogue_for(db, business))
         weeks = {int(post.get("week") or 0) for post in tagged}
         extra = loads(strategy.roadmap_json, {}) or {}
-        extra["roadmap"] = {**(extra.get("roadmap") or {}), "posts": tagged}
+        extra["roadmap"] = {**(extra.get("roadmap") or {}), "posts": quick_posts.merge_generated_posts(
+            (extra.get("roadmap") or {}).get("posts") or [], tagged, business.id, year, month)}
         strategy.roadmap_json = dumps(extra)
         month_posts.save_posts_status(
             strategy, {str(w): ("done" if w in weeks else "pending") for w in month_posts.WEEKS}
@@ -916,7 +919,7 @@ def start_posts(
     if not business:
         raise HTTPException(status_code=404, detail="עוד אין עסק.")
     strategy = generation_jobs.target_strategy(db, business)
-    if strategy is None:
+    if strategy is None or quick_posts.workspace_only(strategy):
         raise HTTPException(status_code=400, detail="עוד אין תוכנית לחודש. קודם בונים אותה, ואז כותבים את הפוסטים.")
     running = generation_jobs.busy(db, business)
     if running is not None and running.kind != generation_jobs.POSTS:

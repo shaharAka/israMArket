@@ -1,3 +1,4 @@
+from app.services import marketing_outcome
 import logging
 from datetime import date, datetime, timedelta
 
@@ -251,6 +252,7 @@ def _sync_payload(business: Business, db: Session) -> dict:
         "primary_goal": business.primary_goal,
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
+        **marketing_outcome.context(business),
         **service_results.model_context(business),
     }
     # Store the observations before analysis: a model outage must not lose source data.
@@ -387,8 +389,8 @@ def sync(business: Business = Depends(get_business), db: Session = Depends(get_d
 @router.post("/weekly", dependencies=[Depends(require_generation_access)])
 def weekly(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
     snap = _sync_payload(business, db)
-    strategy = _active_strategy(db, business)
-    plan = serialize_strategy(strategy, business)
+    from app.routers.recommendations import current_plan
+    plan = current_plan(db, business)
     if snap.get("available") is False:
         # Only WhatsApp taps (nothing connected): the posts got their numbers, and there is
         # no new site or Instagram read to propose from. The last proposal stays as it was.
@@ -412,6 +414,7 @@ def weekly(business: Business = Depends(get_business), db: Session = Depends(get
         "business_model": business.business_model or "products",
         "monthly_budget_ils": business.monthly_budget_ils,
         "analysis_basis": basis,
+        **marketing_outcome.context(business),
         **service_results.model_context(business),
     }
     try:

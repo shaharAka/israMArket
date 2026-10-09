@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState, type ComponentType } from "react";
 import type { Business, StrategyPayload } from "@/lib/api";
@@ -85,6 +87,7 @@ export function WeeklyBrief({
   strategy: StrategyPayload | null;
   business: Business | null;
 }) {
+  const t = useCopy();
   const [headline, setHeadline] = useState("");
   useEffect(() => {
     researchLatest()
@@ -100,11 +103,11 @@ export function WeeklyBrief({
       }`}
     >
       {focus ? (
-        <BriefCell href="/strategy" Icon={IconFlag} label="הפוקוס השבוע">
+        <BriefCell href="/strategy" Icon={IconFlag} label={t("הפוקוס השבוע")}>
           {focus}
         </BriefCell>
       ) : null}
-      <BriefCell href={headline ? "/performance#research" : trial.measurement.pending_sources?.length ? "/integrations" : "/performance"} Icon={IconLightbulb} label="מה למדנו">
+      <BriefCell href={headline ? "/performance#research" : trial.measurement.pending_sources?.length ? "/integrations" : "/performance"} Icon={IconLightbulb} label={t("מה למדנו")}>
         {learnedLine(trial, headline)}
       </BriefCell>
     </div>
@@ -124,7 +127,7 @@ export function HypothesisStatus({ trial, className = "" }: { trial: TrialPayloa
     <details className={`group/hyp ${className}`}>
       <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 py-3 text-[15px] font-semibold text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
         <span>
-          ההשערות שבודקים ·{" "}
+          <Copy text="ההשערות שבודקים ·" />{" "}
           <span className="font-normal text-[color:var(--ink-soft)]">{statusSummary(items)}</span>
         </span>
         <IconChevron className="h-4 w-4 shrink-0 -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open/hyp:rotate-90 motion-reduce:transition-none" />

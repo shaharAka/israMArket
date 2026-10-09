@@ -1599,6 +1599,7 @@ export const DEMO_RECS: RecommendationPayload = {
     suggestions: [
       {
         priority: "medium", title: "נסביר מה יש במארז לפני שמבקשים להזמין",
+        evidence_keys: ["ga4:sessions", "ga4:conversions"],
         action: "בפוסט המארז נוסיף פירוט קצר של התכולה ומועד האיסוף, ונשאיר בקשה אחת להזמנה.",
         evidence: "בתרחיש יש כניסות ופעולות באתר, אבל אין מדידה מאומתת של הזמנות. אפשר לבדוק ניסוח אחד בלי להסיק מה גרם לתוצאות.",
         target: "טיוטת מארז סוכות בתוכנית", hypothesis: "ייתכן שפרטי המארז יעזרו לבחור. הנתונים אינם מוכיחים שחוסר במידע מונע הזמנות.",
@@ -1607,6 +1608,7 @@ export const DEMO_RECS: RecommendationPayload = {
       },
       {
         priority: "medium", title: "נוודא מה נחשב לפעולה חשובה באתר",
+        evidence_keys: ["ga4:conversions"],
         action: "בדקו עם מי שמנהל את האתר אם הזמנה או פנייה נמדדות בנפרד מלחיצה.", evidence: "63 הפעולות בדוגמה אינן ספירה מאומתת של הזמנות.", target: "מדידת האתר",
         success_check: "ננסה פנייה או הזמנה לבדיקה, ונוודא שהיא נספרה בנתוני האתר.",
         review: { kind: "measurement", status: "ready", href: "/integrations", label: "לבדוק את החיבורים", note_he: "חיבור פעיל אינו מאשר מה בדיוק נמדד באתר.", plan_id: DEMO_STRATEGY.id },
@@ -2340,6 +2342,8 @@ function demoSyncTextMode(design: RoadmapPost["design"], hasOverlay: boolean): R
   if (hasOverlay && (!current || current === "photo_only" || current === "type_led")) return { ...design, text_mode: "headline" };
   return design;
 }
+
+const demoQuickRequests = new Map<string, { body: string; index: number }>();
 
 function cloneDemoStrategy(): StrategyPayload {
   return {
@@ -3102,9 +3106,27 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     }
     return { business_id: DEMO_BUSINESS.id, strategy_id: DEMO_STRATEGY.id, available: true, blocked: false, version, revision, saved_at: demoPlanSavedAt, fields } as T;
   }
-  if (path === "/strategy/current") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
+  if (path === "/strategy/current" || path === "/strategy/posts/workspace") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
+  }
+  if (path === "/strategy/posts/create" && method === "POST") {
+    const body = JSON.parse(String(options.body || "{}")) as { client_ref: string; text: string; destination: PostChannel; content_language: ContentLanguage };
+    const found = demoQuickRequests.get(body.client_ref);
+    if (found && found.body !== String(options.body)) throw new ApiError("טיוטה זו כבר נשמרה. פתחו אותה כדי לערוך את הטקסט.", 409, "draft_already_saved");
+    if (!body.text?.trim()) throw new ApiError("כתבו נושא או טקסט לפוסט.", 422);
+    const index = found?.index ?? POSTS.length;
+    if (!found) {
+      POSTS.push({ uid: crypto.randomUUID().replaceAll("-", "").slice(0, 10), creation_source: "quick", owner_brief: body.text,
+        week: 0, date_hint: "", format: "image", title: body.text.trim().split("\n")[0].slice(0, 300), caption: body.text,
+        hook: "", cta: "", angle: "", calendar_tie: "", goal_fit: "", content_language: body.content_language,
+        primary_outlet: body.destination, channel: body.destination, outlets: [body.destination],
+        outlet_captions: { [body.destination]: body.text }, has_overlay: false, approval_status: "review", image_source: "pending" });
+      demoQuickRequests.set(body.client_ref, { body: String(options.body), index });
+      DEMO_STRATEGY.roadmap.posts = POSTS;
+    }
+    const strategy = cloneDemoStrategy();
+    return { strategy, post: strategy.roadmap.posts[index], post_index: index } as T;
   }
   if (path === "/strategy/posts/images" && method === "POST") {
     POSTS.forEach((post, index) => {
@@ -4025,6 +4047,9 @@ export const endpoints = {
       body: JSON.stringify({ ...(week ? { week } : {}), ...(content_language ? { content_language } : {}) }),
     }),
   strategy: () => api<StrategyPayload>("/strategy/current"),
+  postsWorkspace: () => api<StrategyPayload>("/strategy/posts/workspace"),
+  createPost: (draft: { client_ref: string; text: string; destination: PostChannel; content_language: ContentLanguage }) =>
+    api<{ strategy: StrategyPayload; post: RoadmapPost; post_index: number }>("/strategy/posts/create", { method: "POST", body: JSON.stringify(draft) }),
   editablePlan: () => api<PlanEditPayload>("/strategy/edit"),
   savePlanEdit: (version: string, fields: PlanEditFields) =>
     api<PlanEditPayload>("/strategy/edit", { method: "PATCH", body: JSON.stringify({ version, ...fields }) }),
@@ -4595,6 +4620,8 @@ export type OverlayTheme =
   | "type_hero";
 
 export type RoadmapPost = {
+  creation_source?: "quick";
+  owner_brief?: string;
   /** Saved content language; independent of the interface locale. Older posts use Hebrew. */
   content_language?: ContentLanguage;
   language_reason?: string;
@@ -4983,6 +5010,8 @@ export type PlanEditPayload = {
 };
 
 export type StrategyPayload = {
+  post_workspace_only?: boolean;
+  business_name?: string | null;
   id: number;
   plan_revision?: number;
   calendar_kind: "gregorian";
@@ -5397,6 +5426,7 @@ export type RecommendationPayload = {
       title: string;
       action: string;
       evidence: string;
+      evidence_keys?: string[];
       target: string;
       hypothesis?: string;
       success_check?: string;

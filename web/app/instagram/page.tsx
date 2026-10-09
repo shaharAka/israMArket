@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -25,6 +27,7 @@ import { toast } from "@/lib/ui";
  * nothing unless there is no brief yet, and then its one ask is to build it.
  */
 export default function InstagramPage() {
+  const t = useCopy();
   const [data, setData] = useState<InstagramBriefPayload | null>(null);
   const [loadError, setLoadError] = useState("");
   const [refreshing, setRefreshing] = useState(false);
@@ -49,15 +52,15 @@ export default function InstagramPage() {
         Object.fromEntries(outcome.competitors.filter((item) => !item.ok).map((item) => [item.handle, item.error_he]))
       );
       if (outcome.status === "empty") setRefreshNote(outcome.reason_he);
-      else toast("למדנו מחדש מהאינסטגרם");
+      else toast(t("למדנו מחדש מהאינסטגרם"));
     } catch (err) {
-      setRefreshNote(err instanceof Error ? err.message : "לא הצלחנו ללמוד מהאינסטגרם. נסו שוב בעוד כמה דקות.");
+      setRefreshNote(err instanceof Error ? err.message : t("לא הצלחנו ללמוד מהאינסטגרם. נסו שוב בעוד כמה דקות."));
     } finally {
       setRefreshing(false);
     }
   }
 
-  const header = <SectionHeader section="business" title="מה מצליח באינסטגרם" />;
+  const header = <SectionHeader section="business" title={t("מה מצליח באינסטגרם")} />;
 
   if (!data) {
     return (
@@ -69,7 +72,7 @@ export default function InstagramPage() {
               {loadError}
             </p>
           ) : (
-            <LoadingMark label="טוענים את מה שלמדנו…" />
+            <LoadingMark label={t("טוענים את מה שלמדנו…")} />
           )}
         </div>
       </AppShell>
@@ -102,7 +105,7 @@ export default function InstagramPage() {
           : "inline-flex min-h-11 shrink-0 items-center rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-4 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-50"
       }
     >
-      {refreshing ? "לומדים…" : refreshIsPrimary ? "ללמוד מהאינסטגרם" : "ללמוד מחדש"}
+      {refreshing ? t("לומדים…") : refreshIsPrimary ? t("ללמוד מהאינסטגרם") : t("ללמוד מחדש")}
     </button>
   ) : null;
 
@@ -114,21 +117,19 @@ export default function InstagramPage() {
         <div className="space-y-10 sm:space-y-12">
           {connected ? null : (
             <section className="paper px-5 py-6 sm:px-7 sm:py-7">
-              <p className="text-lg font-bold tracking-tight text-[color:var(--ink)]">האינסטגרם עוד לא מחובר</p>
+              <p className="text-lg font-bold tracking-tight text-[color:var(--ink)]"><Copy text="האינסטגרם עוד לא מחובר" /></p>
               {data.meta_ready ? (
                 <>
                   <p className="mt-1.5 max-w-[40em] text-[15px] leading-7 text-[color:var(--ink-soft)]">
-                    אחרי החיבור נלמד ממה שכבר הצליח לכם ומהחשבונות שתבחרו.
-                  </p>
+                    <Copy text="אחרי החיבור נלמד ממה שכבר הצליח לכם ומהחשבונות שתבחרו." /></p>
                   <Link
                     href="/integrations"
                     className="drawn-button group mt-5 inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)] sm:w-auto"
                   >
-                    לחבר את האינסטגרם
-                    <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
+                    <Copy text="לחבר את האינסטגרם" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5" />
                   </Link>
                   <div className="mt-2 flex flex-wrap items-center gap-x-5">
-                    <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
+                    <HowToFind topic="instagram_business" label={t("מה צריך כדי לחבר?")} />
                     <StepLink stepKey="instagram" />
                   </div>
                 </>
@@ -142,8 +143,7 @@ export default function InstagramPage() {
             <section aria-labelledby="learned-heading">
               <div className="flex items-center justify-between gap-3">
                 <h2 id="learned-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
-                  מה למדנו
-                </h2>
+                  <Copy text="מה למדנו" /></h2>
                 {brief ? refreshButton : null}
               </div>
               {brief ? (

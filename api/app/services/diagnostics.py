@@ -13,6 +13,15 @@ def week_of(today: date | None = None) -> str:
 
 def diagnose(business: dict, ga4: dict, meta: dict) -> dict:
     prompt = f"""
+Product brief (define meaning before writing localized copy):
+The owner needs one useful marketing decision, not a list of analytics labels.
+Use marketing_outcome to understand the specific offer, buyer and selected outcome.
+Explain an observed fact, one possible change to the actual plan/post/website, and a check
+using the available measure and its own time window. Do not equate interest with the
+route's outcome. Owner-reported baselines are planning inputs, never provider results.
+When evidence is insufficient for a change, name the one missing observation and the
+smallest next task that obtains it. Avoid generic cautions and unrelated setup advice.
+The field descriptions below specify the current response language and schema.
 אבחן ביצועי תוכן לעסק ישראלי קטן. השתמש רק במדדים שסופקו.
 source_reads מתעד מתי נקרא כל חלק מפייסבוק ואינסטגרם. חלק שנשמר מקריאה קודמת אינו עדכון חדש;
 כבדו את התאריך והתקופה שלו בנפרד, ואת מצב הקריאה החסר ב-social_error.
@@ -54,7 +63,19 @@ GA4: {ga4}
 
 def recommend(business: dict, strategy: dict, diagnostic: dict, ga4: dict, meta: dict) -> dict:
     prompt = f"""
+Product brief (define meaning before writing localized copy):
+The owner needs one useful marketing decision, not a list of analytics labels.
+Use marketing_outcome to understand the specific offer, buyer and selected outcome.
+Explain an observed fact, one possible change to the actual plan/post/website, and a check
+using the available measure and its own time window. Do not equate interest with the
+route's outcome. Owner-reported baselines are planning inputs, never provider results.
+When evidence is insufficient for a change, name the one missing observation and the
+smallest next task that obtains it. Avoid generic cautions and unrelated setup advice.
+The field descriptions below specify the current response language and schema.
 הפק המלצות שבועיות קונקרטיות לשיפור ביצועים.
+For each suggestion, select up to three evidence_keys using exact source:metric keys
+from analysis_basis.observations. Select only relevant facts; use [] when none supports
+the proposal. Never invent a number, source, metric or missing event count.
 כל המלצה חייבת להסתמך על מדד שסופק או על פער מפורש בנתונים.
 כתבו בעברית פשוטה. week_summary: ממצא אחד עד 25 מילים.
 בפלט השתמשו ב״נתוני האתר״, ״פעולות חשובות״ ו״נתוני אינסטגרם ופייסבוק״.

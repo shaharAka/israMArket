@@ -15,6 +15,9 @@ before this existed has no such key: a week with posts is "done", one without "p
 
 from __future__ import annotations
 
+from sqlalchemy import update
+from sqlalchemy.orm import object_session
+
 from app.models import Strategy
 from app.services.jsonutil import dumps, loads
 
@@ -54,6 +57,10 @@ def save_posts_status(strategy: Strategy, status: dict[str, str]) -> None:
 
 def queue_weeks(strategy: Strategy, weeks: list[int] | None) -> list[int]:
     """Mark the asked weeks (all when None) that are not done as "running". Returns them."""
+    db = object_session(strategy)
+    if db:
+        db.execute(update(Strategy).where(Strategy.id == strategy.id).values(id=Strategy.id))
+        db.refresh(strategy)
     status = posts_status(strategy)
     asked = [week for week in (weeks or list(WEEKS)) if week in WEEKS]
     queued = [week for week in asked if status[str(week)] != "done"]
@@ -79,6 +86,10 @@ def add_week_posts(strategy: Strategy, week: int, posts: list[dict], dna: dict |
     from app.services.connected_posts import ensure_uids  # avoids an import cycle
     from app.services.post_design import assign_designs
 
+    db = object_session(strategy)
+    if db:
+        db.execute(update(Strategy).where(Strategy.id == strategy.id).values(id=Strategy.id))
+        db.refresh(strategy)
     extra = _extra(strategy)
     roadmap = dict(extra.get("roadmap") or {})
     existing = list(roadmap.get("posts") or [])
@@ -96,6 +107,10 @@ def add_week_posts(strategy: Strategy, week: int, posts: list[dict], dna: dict |
 
 def stop_queue(strategy: Strategy, failed_week: int | None) -> None:
     """The job stopped: the failing week is "error", the rest it did not reach "pending"."""
+    db = object_session(strategy)
+    if db:
+        db.execute(update(Strategy).where(Strategy.id == strategy.id).values(id=Strategy.id))
+        db.refresh(strategy)
     status = posts_status(strategy)
     for week in WEEKS:
         if status[str(week)] == "running":

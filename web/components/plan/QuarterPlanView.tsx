@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
+import { useEffect, useRef } from "react";
 import { HypothesisNote } from "@/components/design/PlanBrief";
 import { HypothesisStatusLine, reviewByKey, reviewFor, statusSummary } from "@/components/plan/HypothesisStatusLine";
 import { HowToFind } from "@/components/help/HowToFind";
@@ -103,6 +105,7 @@ export function QuarterPlanView({
   /** Where each assumption stands (docs/posts-v2.md, Phase C), once there is a month. */
   review?: HypothesisReview | null;
 }) {
+  const t = useCopy();
   const root = useRef<HTMLDivElement>(null);
   useReveal(root, plan);
   const colors = channelColors(plan as QuarterPlan);
@@ -122,7 +125,7 @@ export function QuarterPlanView({
 
         <Glance plan={plan} months={months} />
       </div>
-      {mode === "start" && <section className={styles.firstStep} aria-label="הצעד הראשון בתוכנית"><p>הצעד הראשון</p><h3>לבדוק מה כבר יש לכם לפוסט הראשון.</h3><span>נחבר את המדידה הזמינה, נכין פוסט לאישור ולפרסום ונלמד מהתוצאות.</span></section>}
+      {mode === "start" && <section className={styles.firstStep} aria-label={t("הצעד הראשון בתוכנית")}><p><Copy text="הצעד הראשון" /></p><h3><Copy text="לבדוק מה כבר יש לכם לפוסט הראשון." /></h3><span><Copy text="נחבר את המדידה הזמינה, נכין פוסט לאישור ולפרסום ונלמד מהתוצאות." /></span></section>}
 
       <div className={styles.folds}>
       <Section id="measure" index={2} busy={isBusy("measure")} mode={mode} summary={measureSummary(plan)}>
@@ -134,12 +137,12 @@ export function QuarterPlanView({
         index={3}
         busy={isBusy("channels")}
         mode={mode}
-        summary={channelsSummary(plan)}
+        summary={channelsSummary(plan, t)}
       >
         <ChannelsBlock plan={plan} months={months} colors={colors} />
       </Section>
 
-      <Section id="budget" index={4} busy={isBusy("budget")} mode={mode} summary={budgetSummary(plan)}>
+      <Section id="budget" index={4} busy={isBusy("budget")} mode={mode} summary={budgetSummary(plan, t)}>
         <BudgetBlock plan={plan} colors={colors} />
       </Section>
 
@@ -151,11 +154,11 @@ export function QuarterPlanView({
         <ContentBlock plan={plan} cadenceSlot={slots.cadence} />
       </Section>
 
-      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={betsSummary(plan, review)}>
+      <Section id="bets" index={7} busy={isBusy("bets")} mode={mode} summary={betsSummary(plan, review, t)}>
         <BetsBlock plan={plan} mode={mode} review={review} />
       </Section>
 
-      {plan.inside?.length ? (
+      {mode === "start" && plan.inside?.length ? (
         <Section id="inside" index={8} busy={false} mode={mode} summary={plan.inside.map((i) => i.title_he).slice(0, 3).join(" · ")}>
           <InsideBlock plan={plan} />
         </Section>
@@ -170,8 +173,9 @@ export function QuarterPlanView({
 /* --------------------------------- Frame --------------------------------- */
 
 function SectionNav({ top }: { top: string }) {
+  const t = useCopy();
   return (
-    <nav aria-label="חלקי התוכנית" className={`sticky ${top} z-20 -mx-4 bg-[var(--canvas)]/95 px-4 py-2 backdrop-blur lg:mx-0 lg:px-0`}>
+    <nav aria-label={t("חלקי התוכנית")} className={`sticky ${top} z-20 -mx-4 bg-[var(--canvas)]/95 px-4 py-2 backdrop-blur lg:mx-0 lg:px-0`}>
       <ol className={`flex gap-1 overflow-x-auto ${styles.nav}`}>
         {SECTIONS.map((section, index) => (
           <li key={section.key} className="shrink-0">
@@ -189,7 +193,7 @@ function SectionNav({ top }: { top: string }) {
               className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-2.5 text-[13px] font-medium text-[color:var(--ink-soft)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
             >
               <span className="tabular-nums text-[color:var(--ink-muted)]">{index + 1}</span>
-              {section.short}
+              <Copy text={section.short} />
             </a>
           </li>
         ))}
@@ -223,15 +227,15 @@ function Section({
         {index}
       </span>
       <span id={headingId} className={styles.foldTitle}>
-        {title}
+        <Copy text={title} />
       </span>
-      {busy ? <span className={`text-xs font-semibold text-[color:var(--ink-soft)] ${styles.busy}`}>מעדכנים…</span> : null}
+      {busy ? <span className={`text-xs font-semibold text-[color:var(--ink-soft)] ${styles.busy}`}><Copy text="מעדכנים…" /></span> : null}
     </span>
   );
   const body = <div className={`transition-opacity duration-300 motion-reduce:transition-none ${index > 1 ? `mt-2 ${styles.foldBody}` : "mt-3"} ${busy ? "opacity-50" : ""}`}>{children}</div>;
 
   // The core plan must be readable without opening several supporting sections.
-  if (id === "measure" || id === "calendar" || id === "content") {
+  if (id === "measure" || id === "calendar" || id === "content" || id === "channels") {
     return <section id={`plan-${id}`} data-reveal aria-labelledby={headingId} aria-busy={busy} className={`scroll-mt-28 ${styles.fold}`}>
       <h2 className={`${styles.foldHead} ${styles.visibleHead}`}>{heading}</h2>
       {body}
@@ -266,34 +270,13 @@ function Section({
   );
 }
 
-/** "למה?" that opens in place, with the finding it came from. */
+/** English purpose: make the reason for the direction visible; keep its source secondary. */
 function Why({ why, insight }: { why: string; insight?: PlanInsight }) {
-  const [open, setOpen] = useState(false);
-  const id = useId();
   if (!why) return null;
-  return (
-    <div>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((v) => !v)}
-        className="mt-1 inline-flex min-h-11 cursor-pointer items-center gap-1.5 text-[13px] font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
-      >
-        למה?
-        <IconChevron className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-90" : "-rotate-90"}`} />
-      </button>
-      <div id={id} hidden={!open} className="mt-1 rounded-xl bg-[var(--soft)] px-4 py-3 text-sm leading-6 text-[color:var(--ink)]">
-        <p>{why}</p>
-        {insight ? (
-          <p className="mt-2 text-[color:var(--ink-soft)]">
-            <b className="font-semibold text-[color:var(--ink)]">מתוך מה שגילינו: </b>
-            {insight.text_he}
-          </p>
-        ) : null}
-      </div>
-    </div>
-  );
+  return <div className="mt-3 max-w-[48em] text-[15px] leading-7 text-[var(--ink-soft)]">
+    <p>{why}</p>
+    {insight ? <details className="mt-2"><summary className="min-h-11 cursor-pointer py-2 text-sm font-medium"><Copy text="המידע שעליו הסתמכנו" /></summary><p>{insight.text_he}</p></details> : null}
+  </div>;
 }
 
 /* --------------------------------- Glance --------------------------------- */
@@ -310,16 +293,16 @@ function isolate(text: string): string {
   return rangeSafe(text).replace(/(?<![\d.,])\+?\d[\d,.]*%?(?:-\+?\d[\d,.]*%?)*/g, (m) => `\u2066${m}\u2069`);
 }
 
-function budgetSummary(plan: AnyPlan): string {
-  if (plan.budget.organic_only || !plan.budget.monthly_ils) return "בלי תקציב פרסום";
-  return `${formatIls(plan.budget.monthly_ils)} בחודש`;
+function budgetSummary(plan: AnyPlan, t: ReturnType<typeof useCopy>): string {
+  if (plan.budget.organic_only || !plan.budget.monthly_ils) return t("בלי תקציב פרסום");
+  return t("{arg_0} בחודש", { arg_0: formatIls(plan.budget.monthly_ils) });
 }
 
-function channelsSummary(plan: AnyPlan): string {
+function channelsSummary(plan: AnyPlan, t: ReturnType<typeof useCopy>): string {
   const existing = plan.channels.filter((c) => c.kind === "existing").length;
   const fresh = plan.channels.filter((c) => c.kind === "new").length;
-  if (!existing) return fresh === 1 ? "ערוץ חדש אחד" : `${fresh} ערוצים חדשים`;
-  return fresh ? `${existing} שכבר יש, ${fresh} חדשים` : `${existing} ערוצים שכבר יש`;
+  if (!existing) return fresh === 1 ? t("ערוץ חדש אחד") : t("{arg_0} ערוצים חדשים", { arg_0: fresh });
+  return fresh ? t("{arg_0} שכבר יש, {arg_1} חדשים", { arg_0: existing, arg_1: fresh }) : t("{arg_0} ערוצים שכבר יש", { arg_0: existing });
 }
 
 function contentSummary(plan: AnyPlan): string {
@@ -330,27 +313,28 @@ function contentSummary(plan: AnyPlan): string {
 }
 
 function Glance({ plan, months }: { plan: AnyPlan; months: string[] }) {
+  const t = useCopy();
   // Revision 6: with the owner's numbers, the glance names the lever and the calculated
   // target; without them it falls back to the KPI and its own target.
   const numbers = plan.numbers;
   const target = numbers?.target && numbers.target.kind !== "qualitative" ? numbers.target.text_he : "";
   const targetLine = numbers
     ? target
-      ? `היעד: ${isolate(target)}`
-      : "היעד: אחרי חודש של מדידה"
+      ? t("היעד: {arg_0}", { arg_0: isolate(target) })
+      : ""
     : plan.kpi.target
-      ? `היעד: ${plan.kpi.target}`
+      ? t("היעד: {arg_0}", { arg_0: plan.kpi.target })
       : "";
   return (
-    <section className={styles.glance} aria-label="איך נדע שהתוכנית מצליחה">
-      <p>איך נדע שזה מצליח</p>
+    <section className={styles.glance} aria-label={t("איך נדע שהתוכנית מצליחה")}>
+      <p><Copy text="איך נדע שזה מצליח" /></p>
       <h3>{plan.kpi.name_he}</h3>
-      {numbers ? <p>מה מגדילים: {numbers.lever.name_he}</p> : null}
+      {numbers ? <p><Copy text="מה מגדילים:" />{numbers.lever.name_he}</p> : null}
       {targetLine ? <p>{targetLine}</p> : null}
       <p className={styles.baseline}>
         <BidiText text={numbers?.baseline_he || plan.kpi.baseline_he} />
       </p>
-      <div><span>{months.join(" · ")}</span><span>{budgetSummary(plan)}</span></div>
+      <div><span>{months.join(" · ")}</span><span>{budgetSummary(plan, t)}</span></div>
     </section>
   );
 }
@@ -374,12 +358,12 @@ function StrategyBlock({
       <div>
         <p className={styles.oneLiner}>{directionTitle || plan.strategy.one_liner_he}</p>
         {plan.strategy.angle_he ? <p className="mt-3 text-base leading-7 text-[color:var(--ink-soft)]">
-          <b className="text-[color:var(--ink)]">הזווית: </b>
+          <b className="text-[color:var(--ink)]"><Copy text="הזווית:" /></b>
           {plan.strategy.angle_he}
         </p> : null}
         <Why why={directionTitle && directionTitle !== plan.strategy.one_liner_he ? `${plan.strategy.one_liner_he} ${plan.strategy.why_he}` : plan.strategy.why_he} insight={insight} />
       </div>
-      {audienceSlot && <details className={styles.adjustment}><summary>לשנות עם מי מתחילים</summary>{audienceSlot}</details>}
+      {audienceSlot && <details className={styles.adjustment}><summary><Copy text="לשנות עם מי מתחילים" /></summary>{audienceSlot}</details>}
     </div>
   );
 }
@@ -395,6 +379,7 @@ const STATUS_STYLE: Record<IntegrationStatus, string> = {
 };
 
 function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolean }) {
+  const t = useCopy();
   return (
     <span className={`inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold leading-6 ${STATUS_STYLE[status]}`}>
       {status === "have" ? (
@@ -410,17 +395,18 @@ function StatusChip({ status, live }: { status: IntegrationStatus; live?: boolea
       ) : (
         <span aria-hidden>?</span>
       )}
-      {live ? "עובד מהיום הראשון" : STATUS_LABEL[status]}
+      {live ? t("עובד מהיום הראשון") : t(STATUS_LABEL[status])}
     </span>
   );
 }
 
 /** Whether a measure works today: the words, with a small dot beside them. */
 function Availability({ now }: { now: boolean }) {
+  const t = useCopy();
   return (
     <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${now ? "text-[var(--good)]" : "text-[color:var(--ink-muted)]"}`}>
       <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${now ? "bg-[var(--good)]" : "bg-[var(--ink-faint)]"}`} />
-      {now ? "אפשר למדוד מהיום" : "אחרי חיבור"}
+      {now ? t("אפשר למדוד מהיום") : t("אחרי חיבור")}
     </span>
   );
 }
@@ -444,42 +430,42 @@ function NumbersBlock({ numbers, accent, targetSlot }: { numbers: PlanNumbers; a
     <div className="space-y-4">
       <ol className={styles.card}>
         <li className="px-5 py-4">
-          <p className={LABEL}>היום</p>
+          <p className={LABEL}><Copy text="היום" /></p>
           <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink)]">
             <BidiText text={numbers.baseline_he} />
           </p>
         </li>
         <li className="border-t border-[var(--rule)] px-5 py-4">
-          <p className={LABEL}>מה מגדילים</p>
+          <p className={LABEL}><Copy text="מה מגדילים" /></p>
           <p className="mt-1 text-[17px] font-bold leading-7 text-[color:var(--ink)]">{lever.name_he}</p>
           <p className="mt-0.5 text-[13px] leading-6 text-[color:var(--ink-soft)]">
             {lever.recommended_key === lever.key ? (
               <BidiText text={lever.recommended_he} />
             ) : (
               <>
-                <b className="font-semibold text-[color:var(--ink)]">המלצנו על {lever.recommended_name_he}: </b>
+                <b className="font-semibold text-[color:var(--ink)]"><Copy text="המלצנו על" />{lever.recommended_name_he}: </b>
                 <BidiText text={lever.recommended_he} />
               </>
             )}
           </p>
         </li>
         <li className="border-t border-[var(--rule)] px-5 py-5" style={{ background: `color-mix(in srgb, ${accent} 6%, var(--paper))` }}>
-          <p className={LABEL}>יעד העבודה</p>
+          <p className={LABEL}><Copy text="יעד העבודה" /></p>
           {target?.text_he ? (
             <p className={`mt-1 font-bold tracking-tight text-[color:var(--ink)] ${target.kind === "qualitative" ? "text-[17px] leading-7" : "text-[22px] leading-8 tabular-nums"}`}>
               <BidiText text={target.text_he} />
             </p>
           ) : (
-            <p className="mt-1 text-[15px] text-[color:var(--ink-soft)]">בלי יעד במספרים בינתיים.</p>
+            <p className="mt-1 text-[15px] text-[color:var(--ink-soft)]"><Copy text="בלי יעד במספרים בינתיים." /></p>
           )}
           {target?.level_he ? (
             <p className="text-[15px] text-[color:var(--ink)]">
-              כלומר <BidiText text={target.level_he} />
+              <Copy text="כלומר" /><BidiText text={target.level_he} />
             </p>
           ) : null}
           {target?.edited_by_owner && target.suggested_he ? (
             <p className="text-[13px] text-[color:var(--ink-soft)]">
-              החישוב שלנו: <BidiText text={target.suggested_he} />
+              <Copy text="החישוב שלנו:" /><BidiText text={target.suggested_he} />
             </p>
           ) : null}
           <MathLines lines={numbers.math_he} />
@@ -489,7 +475,7 @@ function NumbersBlock({ numbers, accent, targetSlot }: { numbers: PlanNumbers; a
       </ol>
       {numbers.unit_economics_he ? (
         <p className={`rounded-xl px-4 py-3 text-[13px] leading-6 ${PAYBACK_STYLE[numbers.payback ?? "partly"] ?? PAYBACK_STYLE.partly}`}>
-          <b className="block text-xs font-semibold">כמה עולה להביא לקוח, וכמה הוא שווה</b>
+          <b className="block text-xs font-semibold"><Copy text="כמה עולה להביא לקוח, וכמה הוא שווה" /></b>
           <BidiText text={numbers.unit_economics_he} />
         </p>
       ) : null}
@@ -503,6 +489,7 @@ function NumbersBlock({ numbers, accent, targetSlot }: { numbers: PlanNumbers; a
 }
 
 function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: string; targetSlot?: React.ReactNode }) {
+  const t = useCopy();
   const integrations = plan.integrations;
   const ready = integrations.filter((i) => i.status === "have").length;
   const todo = integrations.length - ready;
@@ -513,7 +500,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
       {numbers ? <NumbersBlock numbers={numbers} accent={accent} targetSlot={targetSlot} /> : null}
       {/* The KPI leads: the one number the plan answers to. */}
       <div className={numbers ? `${styles.card} px-5 py-4` : "rounded-2xl px-5 py-4"} style={numbers ? undefined : { background: `color-mix(in srgb, ${accent} 6%, var(--paper))` }}>
-        <p className={LABEL}>{numbers ? "איך סופרים את זה" : "היעד העיקרי"}</p>
+        <p className={LABEL}>{numbers ? t("איך סופרים את זה") : t("היעד העיקרי")}</p>
         <p className="mt-1 text-xl font-bold leading-8 tracking-tight text-[color:var(--ink)]">{plan.kpi.name_he}</p>
         <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink-soft)]">{plan.kpi.how_he}</p>
         {plan.kpi.needs ? (
@@ -521,18 +508,18 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
             <Availability now={Boolean(plan.kpi.available_now)} />
             {plan.kpi.needs.length ? (
               <span>
-                <b className="font-semibold">צריך: </b>
+                <b className="font-semibold"><Copy text="צריך:" /></b>
                 {plan.kpi.needs.map(nameOf).join(" · ")}
               </span>
             ) : (
-              <span>סופרים בעצמכם, בלי חיבור.</span>
+              <span><Copy text="סופרים בעצמכם, בלי חיבור." /></span>
             )}
           </p>
         ) : null}
         {numbers ? null : targetSlot ? (
           <div className="mt-3">{targetSlot}</div>
         ) : plan.kpi.target ? (
-          <p className="mt-3 text-[15px] font-semibold text-[color:var(--ink)]">היעד שלכם: {plan.kpi.target}</p>
+          <p className="mt-3 text-[15px] font-semibold text-[color:var(--ink)]"><Copy text="היעד שלכם:" />{plan.kpi.target}</p>
         ) : null}
         {numbers ? null : (
           <p className="mt-3 flex items-start gap-2 text-[13px] leading-6 text-[color:var(--ink-soft)]">
@@ -543,21 +530,21 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
       </div>
 
       <div>
-        <h3 className={SUBHEAD}>איך נמדוד</h3>
+        <h3 className={SUBHEAD}><Copy text="איך נמדוד" /></h3>
         <ul className={`mt-3 ${styles.card}`}>
           {plan.measures.map((measure, index) => (
             <li key={measure.name_he} className={`px-5 py-4 ${index ? "border-t border-[var(--rule)]" : ""}`}>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <p className="text-[15px] font-semibold text-[color:var(--ink)]">{measure.name_he}</p>
                 {measure.name_he === plan.kpi.name_he ? (
-                  <span className="text-xs font-semibold text-[color:var(--primary)]">היעד העיקרי</span>
+                  <span className="text-xs font-semibold text-[color:var(--primary)]"><Copy text="היעד העיקרי" /></span>
                 ) : null}
                 <Availability now={measure.available_now} />
               </div>
               <p className="mt-0.5 text-[13px] leading-6 text-[color:var(--ink-soft)]">{measure.how_he}</p>
               {measure.needs.length ? (
                 <p className="mt-0.5 text-[13px] leading-6 text-[color:var(--ink)]">
-                  <b className="font-semibold">צריך: </b>
+                  <b className="font-semibold"><Copy text="צריך:" /></b>
                   {measure.needs.map(nameOf).join(" · ")}
                 </p>
               ) : null}
@@ -568,10 +555,10 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
 
       <div>
         <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-          <h3 className={SUBHEAD}>מה צריך כדי למדוד</h3>
+          <h3 className={SUBHEAD}><Copy text="מה צריך כדי למדוד" /></h3>
           <p className="text-[13px] text-[color:var(--ink-muted)]">
-            {ready ? `${ready} כבר עובד` : "עוד לא מחובר כלום"}
-            {todo ? ` · ${todo} לחבר אחרי ההרשמה` : ""}
+            {ready ? t("{arg_0} כבר עובד", { arg_0: ready }) : t("עוד לא מחובר כלום")}
+            {todo ? t(" · {arg_0} לחבר אחרי ההרשמה", { arg_0: todo }) : ""}
           </p>
         </div>
         <ul className={`mt-3 ${styles.card}`}>
@@ -588,7 +575,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
                 <div className="flex flex-wrap items-center justify-between gap-x-3">
                   <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">{integration.effort_he}</p>
                   {guide && !live ? (
-                    <HowToFind topic={guide} label={integration.status === "install" ? "איך מתקינים?" : "איך מחברים?"} className="-my-1.5" />
+                    <HowToFind topic={guide} label={integration.status === "install" ? t("איך מתקינים?") : t("איך מחברים?")} className="-my-1.5" />
                   ) : null}
                 </div>
               </li>
@@ -603,6 +590,7 @@ function MeasureBlock({ plan, accent, targetSlot }: { plan: AnyPlan; accent: str
 /* ---------------------------------- 3 ---------------------------------- */
 
 function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string[]; colors: Record<string, string> }) {
+  const t = useCopy();
   const existing = plan.channels.filter((c) => c.kind === "existing");
   const fresh = plan.channels.filter((c) => c.kind === "new").sort((a, b) => a.starts_month - b.starts_month);
   const list = (items: typeof plan.channels, isNew: boolean) => (
@@ -615,7 +603,7 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
               <p className="text-[15px] font-semibold text-[color:var(--ink)]">{channel.name_he}</p>
               {isNew ? (
                 <span className="text-xs font-semibold text-[color:var(--primary)]">
-                  {channel.availability === "needs_check" ? "בודקים התאמה לפני שמתחילים" : <>חדש · מ{months[channel.starts_month - 1] ?? `חודש ${channel.starts_month}`}</>}
+                  {channel.availability === "needs_check" ? t("בודקים התאמה לפני שמתחילים") : <><Copy text="חדש · מ" />{months[channel.starts_month - 1] ?? t("חודש {arg_0}", { arg_0: channel.starts_month })}</>}
                 </span>
               ) : null}
             </div>
@@ -624,7 +612,7 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
               {channel.cadence_he ? `${channel.cadence_he} · ` : ""}
               {channel.effort_he}
             </p>
-            {channel.key === "chatgpt_ads" ? <HowToFind topic="chatgpt_ads" label="מה זה, והאם זה מתאים לעסק שלכם?" /> : null}
+            {channel.key === "chatgpt_ads" ? <HowToFind topic="chatgpt_ads" label={t("מה זה, והאם זה מתאים לעסק שלכם?")} /> : null}
           </div>
         </li>
       ))}
@@ -634,13 +622,13 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
     <div className="space-y-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-5 lg:space-y-0">
       {existing.length ? (
         <div>
-          <h3 className={`mb-3 ${SUBHEAD}`}>מחזקים את מה שיש</h3>
+          <h3 className={`mb-3 ${SUBHEAD}`}><Copy text="מחזקים את מה שיש" /></h3>
           {list(existing, false)}
         </div>
       ) : null}
       {fresh.length ? (
         <div className={existing.length ? "" : "lg:col-span-2"}>
-          <h3 className={`mb-3 ${SUBHEAD}`}>ערוצים חדשים שנפתח</h3>
+          <h3 className={`mb-3 ${SUBHEAD}`}><Copy text="ערוצים חדשים שנפתח" /></h3>
           {list(fresh, true)}
         </div>
       ) : null}
@@ -651,21 +639,22 @@ function ChannelsBlock({ plan, months, colors }: { plan: AnyPlan; months: string
 /* ---------------------------------- 4 ---------------------------------- */
 
 function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, string> }) {
+  const t = useCopy();
   const b = plan.budget;
   if (b.organic_only || !b.months.some((m) => m.lines.length)) {
     return (
       <div className="space-y-4">
         <div className={`${styles.card} px-5 py-4`}>
-          <p className="text-base font-semibold text-[color:var(--ink)]">בלי תקציב פרסום. התוכנית בנויה על הזמן שתוכלו להשקיע.</p>
+          <p className="text-base font-semibold text-[color:var(--ink)]"><Copy text="בלי תקציב פרסום. התוכנית בנויה על הזמן שתוכלו להשקיע." /></p>
           {plan.channels.length ? (
             <p className="mt-1 text-sm leading-6 text-[color:var(--ink-soft)]">
-              כל הערוצים בתוכנית עובדים בלי לשלם על פרסום: {plan.channels.map((c) => c.name_he).join(", ")}.
+              <Copy text="כל הערוצים בתוכנית עובדים בלי לשלם על פרסום:" />{plan.channels.map((c) => c.name_he).join(", ")}.
             </p>
           ) : null}
         </div>
         {b.unlock_he ? (
           <p className="text-sm leading-6 text-[color:var(--ink)]">
-            <b className="font-semibold text-[color:var(--ink)]">מה סכום קטן היה מוסיף: </b>
+            <b className="font-semibold text-[color:var(--ink)]"><Copy text="מה סכום קטן היה מוסיף:" /></b>
             {b.unlock_he}
           </p>
         ) : null}
@@ -679,12 +668,11 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
     <div className="space-y-4">
       {b.monthly_ils ? (
         <p className="text-[15px] leading-7 text-[color:var(--ink)]">
-          <b className="font-bold tabular-nums text-[color:var(--ink)]">{formatIls(b.monthly_ils)} בחודש</b>, מחולקים לפי מה שמתחיל מתי.
-          {b.basis_he ? <span className="block text-[13px] text-[color:var(--ink-muted)]">{b.basis_he}</span> : null}
+          <b className="font-bold tabular-nums text-[color:var(--ink)]">{formatIls(b.monthly_ils)} <Copy text="בחודש" /></b><Copy text=", מחולקים לפי מה שמתחיל מתי." />{b.basis_he ? <span className="block text-[13px] text-[color:var(--ink-muted)]">{b.basis_he}</span> : null}
         </p>
       ) : null}
       <figure className={`${styles.card} px-5 py-5`}>
-        <figcaption className="sr-only">חלוקת התקציב לפי חודש וערוץ</figcaption>
+        <figcaption className="sr-only"><Copy text="חלוקת התקציב לפי חודש וערוץ" /></figcaption>
         <ul className="space-y-4">
           {b.months.map((month, index) => {
             const low = month.lines.reduce((s, l) => s + l.ils_range[0], 0);
@@ -693,7 +681,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
               <li key={month.month_label}>
                 <div className="flex items-baseline justify-between gap-2 text-[13px]">
                   <span className="font-semibold text-[color:var(--ink)]">{month.month_label}</span>
-                  <span className="font-semibold tabular-nums text-[color:var(--ink)]">{month.lines.length ? formatRange([low, high]) : "בלי פרסום"}</span>
+                  <span className="font-semibold tabular-nums text-[color:var(--ink)]">{month.lines.length ? formatRange([low, high]) : t("בלי פרסום")}</span>
                 </div>
                 <div className="mt-1.5 flex h-5 gap-[2px] overflow-hidden rounded-md" style={{ width: `${Math.max(8, (totals[index] / max) * 100)}%` }}>
                   {month.lines.length ? (
@@ -716,7 +704,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
             );
           })}
         </ul>
-        <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-[var(--rule)] pt-4" aria-label="מקרא">
+        <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 border-t border-[var(--rule)] pt-4" aria-label={t("מקרא")}>
           {keys.map((key) => (
             <li key={key} className="flex items-center gap-2 text-[13px] text-[color:var(--ink-soft)]">
               <span aria-hidden className="h-2.5 w-2.5 rounded-full" style={{ background: colors[key] }} />
@@ -725,19 +713,18 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
           ))}
         </ul>
       </figure>
-      <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]">טווחים לתכנון, לא הבטחה לתוצאה. בלי דמי ניהול.</p>
+      <p className="text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="טווחים לתכנון, לא הבטחה לתוצאה. בלי דמי ניהול." /></p>
       <details className="group">
         <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-sm font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-          הסכומים לפי ערוץ, ומאיפה המספרים
-          <IconChevron className="h-[18px] w-[18px] -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
+          <Copy text="הסכומים לפי ערוץ, ומאיפה המספרים" /><IconChevron className="h-[18px] w-[18px] -rotate-90 text-[color:var(--ink-muted)] transition-transform duration-200 group-open:rotate-90 motion-reduce:transition-none" />
         </summary>
         <div className="mt-2 space-y-4 text-sm leading-6 text-[color:var(--ink)]">
           <table className="w-full text-right text-[13px]">
             <thead>
               <tr className="text-[color:var(--ink-muted)]">
-                <th className="py-2 text-xs font-semibold">חודש</th>
-                <th className="py-2 text-xs font-semibold">ערוץ</th>
-                <th className="py-2 text-xs font-semibold">סכום</th>
+                <th className="py-2 text-xs font-semibold"><Copy text="חודש" /></th>
+                <th className="py-2 text-xs font-semibold"><Copy text="ערוץ" /></th>
+                <th className="py-2 text-xs font-semibold"><Copy text="סכום" /></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[var(--rule)] border-t border-[var(--rule)]">
@@ -757,7 +744,7 @@ function BudgetBlock({ plan, colors }: { plan: AnyPlan; colors: Record<string, s
           </table>
           {b.sources?.length || b.sources_he.length ? (
             <div>
-              <p className={LABEL}>המקורות</p>
+              <p className={LABEL}><Copy text="המקורות" /></p>
               <ul className="mt-2 space-y-1.5 text-[13px] text-[color:var(--ink-soft)]">
                 {b.sources?.length
                   ? b.sources.map((source) => (
@@ -805,12 +792,12 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
             <div className={`min-w-0 flex-1 px-5 py-4 lg:h-full ${styles.card}`}>
               <p className="flex items-center gap-2">
                 <span aria-hidden className={`hidden h-2.5 w-2.5 rounded-full border-2 lg:block ${styles.dot}`} style={{ borderColor: accent }} />
-                <span className="text-xs font-semibold text-[color:var(--ink-muted)]">חודש {index + 1}</span>
+                <span className="text-xs font-semibold text-[color:var(--ink-muted)]"><Copy text="חודש" />{index + 1}</span>
                 <span className="text-base font-bold text-[color:var(--ink)]">{month.month_label}</span>
               </p>
               {opens.length ? (
                 <p className="mt-3 text-[13px] leading-6 text-[color:var(--ink)]">
-                  <b className="font-semibold">נפתח: </b>
+                  <b className="font-semibold"><Copy text="נפתח:" /></b>
                   {opens.map((c) => c.name_he).join(", ")}
                 </p>
               ) : null}
@@ -818,7 +805,7 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
                 <ol className="mt-3 space-y-1.5">
                   {month.weeks.map((week) => (
                     <li key={week.week} className="flex gap-2 text-[13px] leading-6 text-[color:var(--ink)]">
-                      <span className="w-12 shrink-0 font-medium text-[color:var(--ink-muted)]">שבוע {week.week}</span>
+                      <span className="w-12 shrink-0 font-medium text-[color:var(--ink-muted)]"><Copy text="שבוע" />{week.week}</span>
                       <span className="min-w-0">
                         {week.focus_he}
                         {week.dates_he ? <span className="block text-xs text-[color:var(--ink-muted)] tabular-nums">{week.dates_he}</span> : null}
@@ -840,12 +827,12 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-[13px] text-[color:var(--ink-muted)]">אין תאריכים מיוחדים. חודש של קצב קבוע.</p>
+                <p className="mt-3 text-[13px] text-[color:var(--ink-muted)]"><Copy text="אין תאריכים מיוחדים. חודש של קצב קבוע." /></p>
               )}
               <p className="mt-4 flex items-start gap-2 border-t border-[var(--rule)] pt-3 text-[13px] leading-6 text-[color:var(--ink)]">
                 <IconCheck className="mt-1 h-4 w-4 shrink-0 text-[color:var(--good)]" />
                 <span>
-                  <b className="block text-xs font-semibold text-[color:var(--ink-muted)]">נקודת בדיקה</b>
+                  <b className="block text-xs font-semibold text-[color:var(--ink-muted)]"><Copy text="נקודת בדיקה" /></b>
                   {month.checkpoint_he}
                 </span>
               </p>
@@ -860,16 +847,17 @@ function CalendarBlock({ plan, accent }: { plan: AnyPlan; accent: string }) {
 /* ---------------------------------- 6 ---------------------------------- */
 
 function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: React.ReactNode }) {
+  const t = useCopy();
   return (
     <div className="space-y-4">
       <ol className="grid gap-4 lg:grid-cols-3">
         {plan.content.map((month, index) => (
           <li key={month.month_label} className={`px-5 py-4 ${styles.card}`}>
             <p className="text-xs font-semibold text-[color:var(--ink-muted)]">
-              חודש {index + 1} · <span className="text-[color:var(--ink)]">{month.month_label}</span>
+              <Copy text="חודש" />{index + 1} · <span className="text-[color:var(--ink)]">{month.month_label}</span>
             </p>
             {/* Topics, not states: a short list, not pills. */}
-            <ul className="mt-2 space-y-0.5" aria-label="הנושאים">
+            <ul className="mt-2 space-y-0.5" aria-label={t("הנושאים")}>
               {month.pillars.map((pillar) => (
                 <li key={pillar.key} title={pillar.description_he} className="flex items-start gap-2.5 text-[15px] font-semibold leading-7 text-[color:var(--ink)]">
                   <span aria-hidden className="mt-[11px] h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--primary)]" />
@@ -881,12 +869,12 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
               {month.cadence.map((c) => `${channelName(plan as QuarterPlan, c.channel_key)} ${c.per_week}`).join(" · ")}
             </p>
             {month.mix?.length ? (
-              <ul className="mt-3 space-y-2.5 border-t border-[var(--rule)] pt-3" aria-label="תמהיל הפוסטים">
+              <ul className="mt-3 space-y-2.5 border-t border-[var(--rule)] pt-3" aria-label={t("תמהיל הפוסטים")}>
                 {month.mix.map((item) => (
                   <li key={item.type_key} className="text-sm leading-6 text-[color:var(--ink)]">
                     <span className="flex items-baseline justify-between gap-2">
                       <b className="font-semibold">{item.name_he}</b>
-                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[color:var(--ink-muted)]">{rangeSafe(item.per_month)} בחודש</span>
+                      <span className="shrink-0 text-xs font-semibold tabular-nums text-[color:var(--ink-muted)]">{rangeSafe(item.per_month)} <Copy text="בחודש" /></span>
                     </span>
                     {item.purpose_he ? <span className="block text-[13px] leading-5 text-[color:var(--ink-soft)]">{item.purpose_he}</span> : null}
                   </li>
@@ -897,9 +885,8 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
         ))}
       </ol>
       <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
-        נציע מה להבליט בפוסטים לפי העסק והתוכנית. אתם מחליטים כאן ומשנים לפי הצורך.{" "}
-        את הפוסטים עצמם נכתוב ונעצב יחד.
-      </p>
+        <Copy text="נציע מה להבליט בפוסטים לפי העסק והתוכנית. אתם מחליטים כאן ומשנים לפי הצורך." />{" "}
+        <Copy text="את הפוסטים עצמם נכתוב ונעצב יחד." /></p>
       {cadenceSlot}
     </div>
   );
@@ -908,11 +895,11 @@ function ContentBlock({ plan, cadenceSlot }: { plan: AnyPlan; cadenceSlot?: Reac
 /* ---------------------------------- 7 ---------------------------------- */
 
 /** The section's one line: how many, and, once measured, where they stand. */
-function betsSummary(plan: AnyPlan, review?: HypothesisReview | null): string {
+function betsSummary(plan: AnyPlan, review: HypothesisReview | null | undefined, t: ReturnType<typeof useCopy>): string {
   const items = reviewByKey(review);
   const states = plan.assumptions.flatMap((bet, index) => reviewFor(items, `assumption:${index}`, bet.bet_he) ?? []);
   const decided = states.some((state) => state.status !== "measuring");
-  return decided ? `${plan.assumptions.length} השערות · ${statusSummary(states)}` : plan.assumptions.length === 1 ? "השערה אחת שנבדוק" : `${plan.assumptions.length} השערות שנבדוק`;
+  return decided ? t("{arg_0} השערות · {arg_1}", { arg_0: plan.assumptions.length, arg_1: t(statusSummary(states)) }) : plan.assumptions.length === 1 ? t("השערה אחת שנבדוק") : t("{arg_0} השערות שנבדוק", { arg_0: plan.assumptions.length });
 }
 
 function BetsBlock({ plan, mode, review }: { plan: AnyPlan; mode: "start" | "app"; review?: HypothesisReview | null }) {
@@ -922,7 +909,7 @@ function BetsBlock({ plan, mode, review }: { plan: AnyPlan; mode: "start" | "app
     <div>
       {/* Before there is a month (and at /start) nothing is measured yet, and it says so. */}
       {states.some(Boolean) ? null : (
-        <p className="mb-4 text-[13px] leading-6 text-[color:var(--ink-muted)]">אלה ההשערות של התוכנית. אין עדיין תוצאות בדיקה מקושרות אליהן.</p>
+        <p className="mb-4 text-[13px] leading-6 text-[color:var(--ink-muted)]"><Copy text="אלה ההשערות של התוכנית. אין עדיין תוצאות בדיקה מקושרות אליהן." /></p>
       )}
       <ul className={styles.card}>
         {plan.assumptions.map((bet, index) => {
@@ -939,7 +926,7 @@ function BetsBlock({ plan, mode, review }: { plan: AnyPlan; mode: "start" | "app
         })}
       </ul>
       {/* Before signup there are no results to open. */}
-      {mode === "app" && <a href="/performance" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">לבדוק את התוצאות</a>}
+      {mode === "app" && <a href="/performance" className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"><Copy text="לבדוק את התוצאות" /></a>}
     </div>
   );
 }

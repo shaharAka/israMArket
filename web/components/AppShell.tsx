@@ -77,7 +77,7 @@ export function tabFor(pathname: string): Tab | null {
  * `/account` and `/billing` too: they belong to the account, not the business. Paying,
  * changing a password or deleting the account must not require finishing the wizard.
  */
-const FIRST_RUN_ROUTES = ["/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
+const FIRST_RUN_ROUTES = ["/posts", "/integrations", "/onboarding", "/start", "/login", "/signup", "/decisions", "/strategy", "/account", "/billing", "/help", "/support", "/updates"];
 
 /** Log out from anywhere: the sidebar, the business hub, the wizard's top bar. */
 export function useLogOut() {
@@ -101,6 +101,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const logOut = useLogOut();
   const [name, setName] = useState("");
   const [businessName, setBusinessName] = useState("");
+  const [setupHref, setSetupHref] = useState("/start");
   const [businessLogo, setBusinessLogo] = useState<string | null>(null);
   const [businessColor, setBusinessColor] = useState<string | undefined>();
   const [demo, setDemo] = useState(false);
@@ -140,12 +141,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         // A business built at /start (it has the stored 3-month plan) is in the app from
         // signup on: its free month starts there, with or without the first month's
         // posts (Revision 7 B). Only the older wizard still gates on `onboarding_complete`.
+        const resume = res.business?.owner_context?.research_journey ? "/start?phase=after" : res.business ? "/onboarding" : "/start";
+        setSetupHref(resume);
         const incomplete = !res.business?.onboarding_complete && !res.business?.quarter_plan;
         setSetupIncomplete(incomplete);
         if (incomplete && !onFirstRunRoute) {
           // No business at all: the /start conversation builds it. A started one finishes
           // in /onboarding (budget and the first month).
-          router.replace(res.business ? "/onboarding" : "/start");
+          router.replace(resume);
           return; // stay un-ready: render nothing rather than the wrong screen
         }
         setCheckedOnboarding(true);
@@ -171,7 +174,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const back = inSetup
     ? pathname.startsWith("/onboarding") || pathname.startsWith("/strategy")
       ? null
-      : { href: "/onboarding", label: "חזרה להגדרה" }
+      : { href: setupHref, label: "חזרה להגדרה" }
     : BUSINESS_UTILITIES.some(route => underRoute(pathname, route))
       ? { href: "/business", label: "העסק שלי" }
       : activeTab && pathname !== activeTab.href
@@ -198,7 +201,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span><Copy text={back.label} /></span>
           </Link>
         ) : (
-          <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
+          <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
             {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
@@ -209,6 +212,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         )}
         <div className="flex shrink-0 items-center gap-2">
           <WhatsNewLink iconOnly />
+          {inSetup && businessName ? <Link href="/posts" className="inline-flex min-h-11 items-center px-2 text-sm text-[var(--ink-soft)]"><Copy text="הפוסטים" /></Link> : null}
           {demo ? (
             <span
               className="px-2 py-0.5 text-[11px] font-medium"
@@ -235,7 +239,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div>
           {/* Keep the compact updates utility beside the identity, away from account actions. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
-            <Link href={inSetup ? "/onboarding" : "/dashboard"} className="flex min-w-0 items-center gap-3">
+            <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
                 <span className="product-wordmark block" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>
@@ -253,7 +257,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
 
         <nav aria-label={t("ניווט ראשי")} className="flex-1 overflow-y-auto px-3 py-5">
-          {inSetup ? null : (
+          {inSetup ? businessName ? <div className="space-y-1">
+            <Link href={setupHref} className="flex min-h-11 items-center rounded-lg px-3 text-[15px] hover:bg-[var(--soft)]"><Copy text="להמשיך לבניית התוכנית" /></Link>
+            <Link href="/posts" aria-current={pathname === "/posts" ? "page" : undefined} className="flex min-h-11 items-center rounded-lg px-3 text-[15px] hover:bg-[var(--soft)] aria-[current=page]:text-[var(--primary)]"><Copy text="הפוסטים" /></Link>
+          </div> : null : (
             <div className="space-y-1">
               {TABS.map(tab => <div key={tab.href}><NavLink tab={tab} active={activeTab?.href === tab.href} />{tab.href === "/strategy" && activeTab?.href === "/strategy" && <Link href="/calendar" aria-current={pathname === "/calendar" ? "page" : undefined} className="ms-10 flex min-h-10 items-center gap-2 rounded-lg px-2 text-[13px] text-[color:var(--ink-muted)] hover:bg-[var(--soft)] hover:text-[color:var(--ink)] aria-[current=page]:text-[color:var(--primary)]"><IconCalendar className="h-4 w-4" /><Copy text="לוח התוכנית" /></Link>}</div>)}
             </div>
@@ -264,7 +271,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
         <div className="m-3 mt-1 flex items-center justify-between gap-2 rounded-2xl bg-[var(--soft)] p-2">
           <Link
-            href={inSetup ? "/onboarding" : "/business"}
+            href={inSetup ? setupHref : "/business"}
             aria-current={pathname === "/business" ? "page" : undefined}
             className="flex min-h-11 min-w-0 items-center gap-2.5 rounded-xl px-1.5 transition-colors hover:bg-[var(--paper)]"
           >
@@ -362,8 +369,8 @@ export function PageHeader({
   return (
     <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
       <div>
-        <h1 className="text-[28px] font-medium leading-tight text-[color:var(--ink)] sm:text-[32px]">{title}</h1>
-        {subtitle ? <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{subtitle}</p> : null}
+        <h1 className="text-[28px] font-medium leading-tight text-[color:var(--ink)] sm:text-[32px]">{<Copy text={title} />}</h1>
+        {subtitle ? <p className="mt-2 max-w-3xl text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{<Copy text={subtitle} />}</p> : null}
       </div>
       {action ? <div className="flex items-center gap-2 shrink-0">{action}</div> : null}
     </div>
@@ -437,7 +444,7 @@ export function ErrorNote({ message }: { message?: string }) {
   return (
     <div role="alert" className="flex items-start gap-2.5 rounded-xl bg-[var(--danger-soft)] px-4 py-3 text-sm leading-relaxed text-[var(--danger)]">
       <span aria-hidden className="mt-[7px] h-2 w-2 shrink-0 rounded-full bg-[var(--danger)]" />
-      <span>{message}</span>
+      <span><Copy text={message} /></span>
     </div>
   );
 }

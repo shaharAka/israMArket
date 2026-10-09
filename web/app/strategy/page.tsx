@@ -1,7 +1,9 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { LoadingMark } from "@/components/Doodles";
 import { MonthAhead } from "@/components/MonthAhead";
@@ -72,6 +74,7 @@ function currentWeekOf(strategy: StrategyPayload): number | null {
 }
 
 export default function StrategyPage() {
+  const t = useCopy();
   const { payload: trial } = useTrial();
   const firstAction = trial && !trial.ended ? nextStep(trial) : null;
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
@@ -82,7 +85,7 @@ export default function StrategyPage() {
   // null until the owner picks: then the default below (the month leads for a returning owner).
   const [planRange, setPlanRange] = useState<string | null>(null);
 
-  function loadStrategy() {
+  const loadStrategy = useCallback(() => {
     return endpoints
       .strategy()
       .then((payload) => {
@@ -94,7 +97,7 @@ export default function StrategyPage() {
         if (err instanceof ApiError && err.status === 404) return;
         setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את התוכנית.");
       });
-  }
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setWelcome(new URLSearchParams(window.location.search).get("welcome") === "1"), 0);
@@ -109,10 +112,10 @@ export default function StrategyPage() {
         .catch(() => {}),
     ]).finally(() => setLoaded(true));
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [loadStrategy]);
 
   const plan = strategy?.quarter_plan ?? business?.quarter_plan ?? mockStoredPlan();
-  const needsMonth = Boolean(business && !business.onboarding_complete && !strategy);
+  const needsMonth = Boolean(plan && business && !business.onboarding_complete && !strategy);
 
   // `/plan` and the hub link land on `#quarter`, but the section only exists once the
   // plan has loaded — the browser's own jump to the fragment has already happened by then.
@@ -130,7 +133,7 @@ export default function StrategyPage() {
 
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-6">
-      <h2 id="quarter-plan-heading" className="sr-only">הכיוון והצעדים הקרובים</h2>
+      <h2 id="quarter-plan-heading" className="sr-only"><Copy text="הכיוון והצעדים הקרובים" /></h2>
       <QuarterPlanView plan={plan} mode="app" accent={accent} navTop="top-14 md:top-0" review={strategy?.hypothesis_review} />
 
     </section>
@@ -139,14 +142,13 @@ export default function StrategyPage() {
   // The page's one filled button: the free month's next step, or this week of the plan.
   const nextAction = firstAction ? (
     <div className="w-full space-y-3">
-      <p className="text-base font-semibold">הצעד הקרוב: {firstAction.title_he}</p>
+      <p className="text-base font-semibold"><Copy text="הצעד הקרוב:" />{firstAction.title_he}</p>
       <p className="max-w-xl text-sm leading-6 text-[color:var(--ink-soft)]">{firstAction.why_he}</p>
       <NextStepAction step={firstAction} />
     </div>
   ) : strategy ? (
     <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
-      השבוע בתוכנית
-      <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+      <Copy text="השבוע בתוכנית" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   ) : null;
   // Right after signup the one action leads, under the title, not two screens down.
@@ -158,14 +160,14 @@ export default function StrategyPage() {
         <SectionHeader
           section="plan"
           eyebrow={null}
-          title={business?.name ? `התוכנית של ${business.name}` : "התוכנית"}
+          title={business?.name ? t("התוכנית של {arg_0}", { arg_0: business.name }) : t("התוכנית")}
           action={
             loaded && (plan || strategy) ? (
               <div className="flex flex-wrap items-center gap-3">
                 {plan && strategy ? <div className={styles.range}>
-                  <SegmentedControl label="מבט על התוכנית" value={range} onChange={setPlanRange} options={[{ value: "quarter", label: "התמונה הרחבה" }, { value: "month", label: strategy.month_name_he }]} />
+                  <SegmentedControl label={t("מבט על התוכנית")} value={range} onChange={setPlanRange} options={[{ value: "quarter", label: t("התמונה הרחבה") }, { value: "month", label: strategy.month_name_he }]} />
                 </div> : null}
-                <Link href="/strategy/edit" className={TEXT_ACTION}>לערוך את התוכנית</Link>
+                <Link href="/strategy/edit" className={TEXT_ACTION}><Copy text="לערוך את התוכנית" /></Link>
               </div>
             ) : undefined
           }
@@ -176,25 +178,24 @@ export default function StrategyPage() {
           <p className="mb-8 flex items-start gap-3 rounded-xl bg-[var(--sand)] px-4 py-3 text-[13px] leading-6 text-[color:var(--ink)]">
             <span aria-hidden className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[var(--sun)]" />
             <span>
-              התוכנית מוכנה. נשארו קישורים שלא יכולנו לקרוא.{" "}
+              <Copy text="התוכנית מוכנה. נשארו קישורים שלא יכולנו לקרוא." />{" "}
               <Link href="/integrations#pending-links" className="font-semibold text-[color:var(--sand-dark)] underline-offset-4 hover:underline">
-                לתקן בהמשך בחיבורים
-              </Link>
+                <Copy text="לתקן בהמשך בחיבורים" /></Link>
             </span>
           </p>
         ) : null}
 
         {error ? (
-          <p className="mb-6 rounded-xl bg-[var(--danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--danger)]">{error}</p>
+          <p className="mb-6 rounded-xl bg-[var(--danger-soft)] px-4 py-3 text-sm leading-6 text-[var(--danger)]">{t(error)}</p>
         ) : null}
 
-        {!loaded ? <LoadingMark label="טוענים את התוכנית…" /> : null}
+        {!loaded ? <LoadingMark label={t("טוענים את התוכנית…")} /> : null}
 
         {loaded ? (
           <div className="space-y-10 pb-2">
             {actionOnTop ? (
               <div className="space-y-5">
-                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">התוכנית שבניתם יחד איתנו שמורה, ומכאן נעבוד לפיה. אין צורך לחבר את כל הכלים כדי להתחיל.</p>
+                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]"><Copy text="התוכנית שבניתם יחד איתנו שמורה, ומכאן נעבוד לפיה. אין צורך לחבר את כל הכלים כדי להתחיל." /></p>
                 {nextAction}
               </div>
             ) : null}
@@ -203,7 +204,7 @@ export default function StrategyPage() {
               <MonthBuildProgress
                 autoStart
                 onDone={() => {
-                  toast("התוכנית של החודש מוכנה");
+                  toast(t("התוכנית של החודש מוכנה"));
                   void loadStrategy();
                   void loadTrial(true);
                 }}
@@ -215,10 +216,9 @@ export default function StrategyPage() {
             </TransitionPanel>
             {!plan && !strategy && !needsMonth && !error ? (
               <p className="paper px-5 py-4 text-[15px] text-[color:var(--ink-soft)]">
-                עוד אין תוכנית.{" "}
-                <Link href="/onboarding" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-                  לבנות אותה
-                </Link>
+                <Copy text="עוד אין תוכנית." />{" "}
+                <Link href={business?.owner_context?.research_journey ? "/start?phase=after" : "/onboarding"} className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
+                  <Copy text="לבנות אותה" /></Link>
               </p>
             ) : null}
             {/* The page's one filled button, beside the calendar that belongs to the plan. */}
@@ -226,8 +226,7 @@ export default function StrategyPage() {
               {actionOnTop ? null : nextAction}
               <Link href="/calendar" className={TEXT_ACTION}>
                 <IconCalendar className="h-[18px] w-[18px]" />
-                לוח התוכנית · פוסטים ומשימות
-              </Link>
+                <Copy text="לוח התוכנית · פוסטים ומשימות" /></Link>
             </footer>
           </div>
         ) : null}
@@ -241,9 +240,8 @@ function NoMonthYet() {
   return (
     <div className="paper px-5 py-4 text-[15px] leading-7 text-[color:var(--ink-soft)] sm:px-6">
       <p>
-        <b className="font-semibold text-[color:var(--ink)]">החודש עוד לא מוכן. </b>
-        בונים את צעדי העבודה מתוך התוכנית. בוחרים מה לקדם ומוסיפים חומרים, ואז כותבים פוסטים לאישור שלכם.
-      </p>
+        <b className="font-semibold text-[color:var(--ink)]"><Copy text="החודש עוד לא מוכן." /></b>
+        <Copy text="בונים את צעדי העבודה מתוך התוכנית. בוחרים מה לקדם ומוסיפים חומרים, ואז כותבים פוסטים לאישור שלכם." /></p>
       <StepLink stepKey={["start_posts", "approve_first"]} />
     </div>
   );
@@ -278,7 +276,7 @@ function MonthSection({
       {showQuarter ? (
         <section id="quarter" className="scroll-mt-24">
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-            <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]">הצעדים הבאים</h2>
+            <h2 className="text-lg font-bold tracking-tight text-[color:var(--ink)]"><Copy text="הצעדים הבאים" /></h2>
             {quarter?.milestones.length ? <p className="text-[13px] text-[color:var(--ink-muted)]">{quarter.milestones.map(milestone => milestone.month_label).join(" · ")}</p> : null}
           </div>
           {quarter ? (
@@ -292,10 +290,9 @@ function MonthSection({
             </>
           ) : (
             <p className="mt-2 text-[15px] leading-7 text-[color:var(--ink-soft)]">
-              עדיין אין כיוון להמשך התוכנית.{" "}
+              <Copy text="עדיין אין כיוון להמשך התוכנית." />{" "}
               <Link href="/onboarding" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-                לבנות אותה
-              </Link>
+                <Copy text="לבנות אותה" /></Link>
             </p>
           )}
         </section>
@@ -308,20 +305,18 @@ function MonthSection({
       <div className="-mt-4! flex items-start justify-between gap-4">
         <details className="group min-w-0 flex-1">
           <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 text-sm font-semibold text-[color:var(--ink-soft)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-            למה ככה, ומתי נצטרך אתכם
-            <Chevron />
+            <Copy text="למה ככה, ומתי נצטרך אתכם" /><Chevron />
           </summary>
           <div className="space-y-6 pt-3 pb-2 text-sm leading-6 text-[color:var(--ink-soft)]">
             <div>
-              <p className={LABEL}>המסר המרכזי בפוסטים</p>
+              <p className={LABEL}><Copy text="המסר המרכזי בפוסטים" /></p>
               <p className="mt-1.5 text-[15px] leading-7 text-[color:var(--ink)]">{strategy.usp.usp_one_liner}</p>
             </div>
             {events.length ? (
               <div>
                 <p className={`flex items-center gap-2 ${LABEL}`}>
                   <IconCalendar className="h-4 w-4" />
-                  המועדים שלקחנו בחשבון
-                </p>
+                  <Copy text="המועדים שלקחנו בחשבון" /></p>
                 <ul className="mt-2 space-y-2">
                   {events.slice(0, 4).map((event) => (
                     <li key={`${event.date}-${event.name}`}>
@@ -339,8 +334,7 @@ function MonthSection({
           </div>
         </details>
         <Link href="/decisions" className="inline-flex min-h-11 shrink-0 items-center text-sm font-medium text-[color:var(--ink-muted)] underline-offset-4 transition-colors hover:text-[color:var(--primary)] hover:underline">
-          לשנות את ההחלטות
-        </Link>
+          <Copy text="לשנות את ההחלטות" /></Link>
       </div>
     </div>
   );
@@ -386,7 +380,7 @@ function MonthRow({ milestone, index }: { milestone: LongHorizonMilestone; index
           {hiddenMilestone ? <p className="font-semibold text-[color:var(--ink)]">{milestone.milestone}</p> : null}
           {milestone.checkpoint ? (
             <p className="text-[color:var(--ink-soft)]">
-              <span className="font-semibold text-[color:var(--ink)]">איך נדע שהצלחנו: </span>
+              <span className="font-semibold text-[color:var(--ink)]"><Copy text="איך נדע שהצלחנו:" /></span>
               {milestone.checkpoint}
             </p>
           ) : null}
@@ -407,7 +401,7 @@ function QuarterDetails({
     <div className="space-y-6 text-sm leading-6 text-[color:var(--ink)]">
       {targets.length ? (
         <div>
-          <p className={LABEL}>יעדי העבודה, לפי סדר חשיבות</p>
+          <p className={LABEL}><Copy text="יעדי העבודה, לפי סדר חשיבות" /></p>
           <ol className="mt-2 space-y-1.5">
             {targets.map((target, index) => (
               <li key={`${target}-${index}`} className="flex items-start gap-2.5 text-[15px] leading-6">
@@ -423,7 +417,7 @@ function QuarterDetails({
 
       {management?.how_we_help ? (
         <div>
-          <p className={LABEL}>מה אנחנו עושים</p>
+          <p className={LABEL}><Copy text="מה אנחנו עושים" /></p>
           <p className="mt-1.5 text-[15px] leading-7">{management.how_we_help}</p>
         </div>
       ) : null}
@@ -432,7 +426,7 @@ function QuarterDetails({
         <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {management?.when_we_need_user?.length ? (
             <div>
-              <p className={LABEL}>מתי נצטרך אתכם</p>
+              <p className={LABEL}><Copy text="מתי נצטרך אתכם" /></p>
               <ul className="mt-2 space-y-1.5">
                 {management.when_we_need_user.map((item, index) => (
                   <li key={`${item}-${index}`} className="flex items-start gap-2.5 text-[13px] leading-6">
@@ -445,7 +439,7 @@ function QuarterDetails({
           ) : null}
           {management?.checkpoints?.length ? (
             <div>
-              <p className={LABEL}>מתי בודקים</p>
+              <p className={LABEL}><Copy text="מתי בודקים" /></p>
               <ul className="mt-2 space-y-3">
                 {management.checkpoints.map((checkpoint, index) => (
                   <li key={`${checkpoint.timing}-${index}`} className="text-[13px] leading-6">
@@ -456,7 +450,7 @@ function QuarterDetails({
                     </span>
                     {checkpoint.user_action ? (
                       <span className="block">
-                        <span className="font-semibold">מה צריך מכם: </span>
+                        <span className="font-semibold"><Copy text="מה צריך מכם:" /></span>
                         {checkpoint.user_action}
                       </span>
                     ) : null}

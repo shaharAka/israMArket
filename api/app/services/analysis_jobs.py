@@ -17,6 +17,8 @@ from sqlalchemy import func, or_, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import sessionmaker
 
+from app.services import marketing_outcome
+
 from app.models import AnalysisJob, Business, PerformanceSnapshot, Recommendation, User
 from app.services import billing, diagnostics, recommendation_context, service_results
 from app.services.business_fields import field_label
@@ -41,7 +43,7 @@ def context_key(business) -> str:
                     dumps(loads(item.extra_json, {}).get("page_tokens")))
                    for item in business.integrations if item.provider in {"ga4", "meta"})
     return hashlib.sha256(dumps([business.user_id, business.created_at.isoformat(),
-                                business.website_url, items, service_results.fingerprint(business)]).encode()).hexdigest()
+                                business.website_url, items, service_results.fingerprint(business), marketing_outcome.fingerprint(business)]).encode()).hexdigest()
 
 
 def enqueue(db, snap) -> None:
@@ -135,6 +137,7 @@ def _execute_job(factory, job_id, token):
                        "offerings": business.offerings, "primary_goal": business.primary_goal,
                        "business_model": business.business_model or "products",
                        "monthly_budget_ils": business.monthly_budget_ils, "analysis_basis": basis,
+                       **marketing_outcome.context(business),
                        **service_results.model_context(business)}
             diagnostic = loads(snap.diagnostic_json, {})
             if job.attempts > MAX_ATTEMPTS:

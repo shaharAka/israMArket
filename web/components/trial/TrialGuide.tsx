@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,8 +32,8 @@ function writeSeenDone(keys: string[]) {
   }
 }
 
-export function minutesLabel(minutes: number) {
-  return minutes <= 1 ? "דקה" : `${minutes} דק׳`;
+export function minutesLabel(minutes: number, t: (text: string, args?: Record<string, string | number>) => string = text => text) {
+  return minutes <= 1 ? t("דקה") : t("{arg_0} דק׳", { arg_0: minutes });
 }
 
 /** The price line of the last step, from the one place the price lives. */
@@ -45,22 +47,22 @@ function continueLine() {
  * beside the page title, so the journey below is only the map.
  */
 export function TrialDay({ trial }: { trial: TrialPayload }) {
+  const t = useCopy();
   if (trial.ended) {
-    return <p className="text-sm font-medium text-[color:var(--ink-soft)]">החודש החינמי הסתיים</p>;
+    return <p className="text-sm font-medium text-[color:var(--ink-soft)]"><Copy text="החודש החינמי הסתיים" /></p>;
   }
   const percent = Math.round((trial.day / trial.days_total) * 100);
   return (
     <div className="flex items-center gap-3">
       <p className="text-sm font-medium text-[color:var(--ink-soft)]">
-        יום <span className="font-semibold tabular-nums text-[color:var(--ink)]">{trial.day}</span> מתוך{" "}
-        <span className="tabular-nums">{trial.days_total}</span> בחודש החינמי
-      </p>
+        <Copy text="יום" /><span className="font-semibold tabular-nums text-[color:var(--ink)]">{trial.day}</span> <Copy text="מתוך" />{" "}
+        <span className="tabular-nums">{trial.days_total}</span> <Copy text="בחודש החינמי" /></p>
       <span
         role="progressbar"
         aria-valuemin={1}
         aria-valuemax={trial.days_total}
         aria-valuenow={trial.day}
-        aria-label="הימים בחודש החינמי"
+        aria-label={t("הימים בחודש החינמי")}
         className="block h-1.5 w-20 shrink-0 overflow-hidden rounded-full bg-[var(--rule)] sm:w-28"
       >
         <span
@@ -140,8 +142,7 @@ export function TrialGuide({
       <div className="drawn-card overflow-hidden">
         <div className="flex min-h-[52px] items-center border-b border-[var(--rule)] px-5 py-3 sm:px-6">
           <h2 id="trial-heading" className="text-sm font-semibold text-[color:var(--ink)]">
-            <span className="tabular-nums">{trial.done}</span> מתוך <span className="tabular-nums">{trial.total}</span> צעדים
-          </h2>
+            <span className="tabular-nums">{trial.done}</span> <Copy text="מתוך" /><span className="tabular-nums">{trial.total}</span> <Copy text="צעדים" /></h2>
         </div>
         <div className="divide-y divide-[var(--rule)]">
           {[1, 2, 3, 4].map((week) => {
@@ -168,14 +169,15 @@ export function TrialGuide({
 
 /** The one thing to do now: why, how long, and the page's dark button. */
 function NextStepCard({ step }: { step: TrialStep }) {
+  const t = useCopy();
   return (
     <div className="drawn-card p-6 sm:p-8">
       <div className="rounded-[14px] bg-[var(--primary-soft)] p-5 sm:p-6">
         <p className="text-[13px] font-semibold text-[color:var(--primary)]">
-          הצעד הבא <span className="font-medium text-[color:var(--ink-soft)]">· {minutesLabel(step.minutes)}</span>
+          <Copy text="הצעד הבא" /><span className="font-medium text-[color:var(--ink-soft)]">· {minutesLabel(step.minutes, t)}</span>
         </p>
-        <h3 className="mt-1.5 text-[19px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{step.title_he}</h3>
-        <p className="mt-1.5 max-w-[600px] text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{step.why_he}</p>
+        <h3 className="mt-1.5 text-[19px] font-bold leading-snug tracking-tight text-[color:var(--ink)]">{t(step.title_he)}</h3>
+        <p className="mt-1.5 max-w-[600px] text-[15px] leading-relaxed text-[color:var(--ink-soft)]">{t(step.why_he)}</p>
         <NextStepAction step={step} className="mt-5" />
       </div>
     </div>
@@ -205,6 +207,7 @@ export function NextStepAction({ step, className = "" }: { step: TrialStep; clas
 
 /** "להתחיל לכתוב את הפוסטים" is an action, not a page: it asks us to start, then shows the posts. */
 function StartPostsButton({ className, children }: { className: string; children: React.ReactNode }) {
+  const t = useCopy();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -217,10 +220,10 @@ function StartPostsButton({ className, children }: { className: string; children
     } catch (err) {
       setError(
         err instanceof ApiError && err.status === 404
-          ? "הכתיבה לפי הבחירות שלכם עוד לא פתוחה. נעדכן כאן כשהיא מוכנה."
+          ? t("הכתיבה לפי הבחירות שלכם עוד לא פתוחה. נעדכן כאן כשהיא מוכנה.")
           : err instanceof Error && err.message
             ? err.message
-            : "לא הצלחנו להתחיל לכתוב. נסו שוב."
+            : t("לא הצלחנו להתחיל לכתוב. נסו שוב.")
       );
       setBusy(false);
     }
@@ -228,7 +231,7 @@ function StartPostsButton({ className, children }: { className: string; children
   return (
     <>
       <button type="button" onClick={() => void start()} disabled={busy} aria-busy={busy} className={className}>
-        {busy ? "מתחילים לכתוב…" : children}
+        {busy ? t("מתחילים לכתוב…") : children}
       </button>
       {error ? (
         <p role="alert" className="mt-2 text-sm text-[var(--danger)]">
@@ -240,14 +243,15 @@ function StartPostsButton({ className, children }: { className: string; children
 }
 
 /** Nothing can be done right now: say so, and what unlocks next. */
-export function allDoneText(trial: TrialPayload): string {
+export function allDoneText(trial: TrialPayload, t: ReturnType<typeof useCopy> = text => text): string {
   const waiting = trial.steps.find((step) => step.status === "locked");
   return waiting
-    ? `כל מה שאפשר לעשות עכשיו, עשיתם. הבא בתור: ${waiting.title_he}. ${waiting.note_he ?? ""}`.trim()
-    : "עברתם את כל הצעדים של החודש";
+    ? t("כל מה שאפשר לעשות עכשיו, עשיתם. הבא בתור: {arg_0}. {arg_1}", { arg_0: t(waiting.title_he), arg_1: t(waiting.note_he || "") }).trim()
+    : t("עברתם את כל הצעדים של החודש");
 }
 
 function AllDone({ trial }: { trial: TrialPayload }) {
+  const t = useCopy();
   const waiting = trial.steps.find((step) => step.status === "locked");
   return (
     <div className="drawn-card p-6 sm:p-8">
@@ -255,11 +259,11 @@ function AllDone({ trial }: { trial: TrialPayload }) {
         <span aria-hidden className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
           <IconCheck className="h-3.5 w-3.5" />
         </span>
-        {waiting ? "כל מה שאפשר לעשות עכשיו, עשיתם" : "עברתם את כל הצעדים של החודש"}
+        {waiting ? t("כל מה שאפשר לעשות עכשיו, עשיתם") : t("עברתם את כל הצעדים של החודש")}
       </p>
       {waiting ? (
         <p className="mt-2 text-[15px] leading-relaxed text-[color:var(--ink-soft)]">
-          הבא בתור: {waiting.title_he}. {waiting.note_he}
+          <Copy text="הבא בתור:" />{t(waiting.title_he)}. {t(waiting.note_he || "")}
         </p>
       ) : null}
     </div>
@@ -294,6 +298,7 @@ function WeekGroup({
   fresh: Set<string>;
   target: string | null;
 }) {
+  const t = useCopy();
   const counted = steps.filter((step) => step.status !== "soon");
   const done = counted.filter((step) => step.status === "done").length;
   const complete = counted.length > 0 && done === counted.length;
@@ -333,7 +338,7 @@ function WeekGroup({
                 <span aria-hidden className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--primary-soft)] text-[color:var(--primary)]">
                   <IconCheck className="h-3 w-3" />
                 </span>
-                <span className="flex-1">{settled.length === 1 ? "צעד אחד בוצע" : `${settled.length} צעדים בוצעו`}</span>
+                <span className="flex-1">{settled.length === 1 ? t("צעד אחד בוצע") : t("{arg_0} צעדים בוצעו", { arg_0: settled.length })}</span>
                 <Disclosure group="done" />
               </summary>
               <ul className="journey-steps">
@@ -411,6 +416,7 @@ function StepRow({
   fresh: boolean;
   highlighted: boolean;
 }) {
+  const t = useCopy();
   const muted = step.status === "done" || step.status === "locked" || step.status === "soon";
   // The list is a map, not a second explanation: the why of a step is on the card when it
   // is the next one. Only what the owner cannot guess stays on the row — why a step waits,
@@ -426,7 +432,7 @@ function StepRow({
     <>
       <StatusMark step={step} fresh={fresh} isNext={isNext} />
       <span className="min-w-0 flex-1">
-        <span className="sr-only">{STATUS_SR[step.status]}: </span>
+        <span className="sr-only">{t(STATUS_SR[step.status])}: </span>
         <span
           className={`block text-[15px] leading-6 ${
             step.status === "done"
@@ -436,15 +442,15 @@ function StepRow({
                 : `${isNext ? "font-semibold" : "font-medium"} text-[color:var(--ink)]`
           } ${fresh ? "trial-fade-done" : ""}`}
         >
-          {step.title_he}
+          {t(step.title_he)}
         </span>
-        {detail ? <span className="mt-0.5 block text-[13px] leading-5 text-[color:var(--ink-muted)]">{detail}</span> : null}
+        {detail ? <span className="mt-0.5 block text-[13px] leading-5 text-[color:var(--ink-muted)]">{t(detail)}</span> : null}
       </span>
       {step.status === "soon" ? (
-        <span className="shrink-0 rounded-full bg-[var(--soft)] px-2.5 py-0.5 text-xs font-medium text-[color:var(--ink-soft)]">בקרוב</span>
+        <span className="shrink-0 rounded-full bg-[var(--soft)] px-2.5 py-0.5 text-xs font-medium text-[color:var(--ink-soft)]"><Copy text="בקרוב" /></span>
       ) : step.status === "todo" ? (
         <span className="flex h-6 shrink-0 items-center gap-2 text-[13px] tabular-nums text-[color:var(--ink-muted)]">
-          {minutesLabel(step.minutes)}
+          {minutesLabel(step.minutes, t)}
           <IconChevron className="h-4 w-4 transition-transform duration-200 group-hover/step:-translate-x-0.5 motion-reduce:transition-none" />
         </span>
       ) : null}

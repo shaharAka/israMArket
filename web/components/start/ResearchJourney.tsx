@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, api, endpoints, exitDemo, isDemo } from "@/lib/api";
 import { emptyFlow, loadFlow, saveFlow, draftForApi, clearSavedFlow, scanBrand, validateLinks, exitDraftMock, type FlowState, type OnboardingDraft, type LinkKey } from "@/lib/draft";
-import { BUSINESS_SEGMENTS, METRICS, observationValid, type Segment, type ResearchJourney as Journey, type Observation, type DiscoveryResult } from "@/lib/researchJourney";
+import { mergeResearchReplies, BUSINESS_SEGMENTS, METRICS, observationValid, type Segment, type ResearchJourney as Journey, type Observation, type DiscoveryResult } from "@/lib/researchJourney";
 import { StepName, StepDifferent, StepAudiences, type StepProps } from "./steps";
 import { StepSoftwareOffer } from "./StepSoftwareOffer";
 import { StepSoftware } from "./StepSoftware";
@@ -156,7 +156,7 @@ export function ResearchJourney() {
     case "links": screen = <StepShell {...common} title="איפה אפשר להכיר אתכם?" why="אתר ופרופילים עסקיים, אם יש. אין צורך בסיסמה או בחיבור חשבון בשלב הזה." primary="להכיר את העסק" primaryDisabled={busy} onPrimary={() => void advance()} actionNote={<p className="text-sm text-[var(--ink-muted)]"><Copy text="אין קישור כרגע? אפשר להמשיך עם מה שסיפרתם." /></p>}>
       {(["website", "instagram", "facebook"] as const).map(key => <div key={key}><TextInput id={`public-${key}`} label={{ website: "אתר העסק", instagram: "פרופיל האינסטגרם של העסק", facebook: "עמוד הפייסבוק של העסק" }[key]} value={flow.draft.links[key] ?? ""} onChange={value => setDraft({ links: { ...latest.current!.draft.links, [key]: value } })} dir="ltr" maxLength={300} /><HowToFind topic={key} /></div>)}
     </StepShell>; break;
-    case "discovery": case "detail": screen = <DiscoveryStep {...common} mock={mock} after={journey.phase === "after"} onReplies={replies => patchJourney({ replies: [...(journey.phase === "after" ? journey.replies.slice(0, 2) : []), ...replies].slice(0, 4) })} />; break;
+    case "discovery": case "detail": screen = <DiscoveryStep {...common} mock={mock} after={journey.phase === "after"} onReplies={replies => patchJourney({ replies: mergeResearchReplies(journey.replies, replies) })} />; break;
     case "signup": screen = <StepSave {...common} researchOnly loggedIn={signedIn || mock} saving={busy} saveError={error} onSave={enterAccount} />; break;
     case "software_offer": screen = <StepSoftwareOffer {...common} />; break;
     case "software": screen = <StepSoftware {...common} />; break;
@@ -185,10 +185,12 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
         setResult({ sources: [], assisted: true, questions: [{ question: props.after ? t("מה הכי חשוב להסביר על ההצעה שלכם לפני שמישהו מחליט?") : t("מה חשוב שאנשים יבינו על מה שאתם עושים?"), quote: "", source: "answers" }] });
         setAnswers([""]); return;
       }
-      const errors = await validateLinks(props.flow.draft.links).catch(() => Object.fromEntries(Object.keys(props.flow.draft.links).map(key => [key, "unchecked"])));
+      // Independent checks share one wait; the brand API applies its own URL guards.
+      const [errors, brand] = await Promise.all([
+        validateLinks(props.flow.draft.links).catch(() => Object.fromEntries(Object.keys(props.flow.draft.links).map(key => [key, "unchecked"]))),
+        props.flow.draft.links.website ? scanBrand(props.flow.draft.links.website, props.flow.draft).catch(() => null) : Promise.resolve(null),
+      ]);
       const safe = { ...props.flow, deferredLinks: Object.keys(errors) as LinkKey[] };
-      let brand = null;
-      if (!props.after && props.flow.draft.links.website && !errors.website) brand = await scanBrand(props.flow.draft.links.website, safe.draft).catch(() => null);
       if (live && brand) props.update(f => ({ ...f, brandScan: { ...brand, url: props.flow.draft.links.website! } }));
       const value = await api<DiscoveryResult>(props.after ? "/onboarding/interview" : "/public/discovery", { method: "POST", body: JSON.stringify({ draft: draftForApi(safe), locale }) });
       if (live) { setResult(value); setAnswers(value.questions.map(q => props.flow.draft.research_journey?.replies.find(r => r.question === q.question)?.answer ?? "")); }
@@ -198,10 +200,10 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     // This screen runs one bounded research request per entry, never on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <StepShell {...props} title={props.after ? "עוד פרט שיעזור לדייק את התוכנית" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
+  return <StepShell {...props} title={props.after ? "מה למדנו על העסק שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
     {loading ? <p role="status"><Copy text="קוראים את המידע ומכינים שאלה להיכרות…" /></p> : null}
     {error ? <p role="status">{error}</p> : null}
-    {result?.facts?.length ? <section className="space-y-3 border-b border-[var(--rule)] pb-5"><h2 className="font-semibold"><Copy text="מה ראינו באתר שלכם" /></h2>{result.facts.map((fact, i) => <blockquote key={i} className="border-s-2 border-[var(--rule)] ps-3 text-sm"><p>{fact.quote}</p><a className="text-xs underline" href={fact.url} target="_blank" rel="noopener noreferrer"><Copy text="למקור באתר" /></a></blockquote>)}</section> : null}
+    {result?.facts?.length ? <section className="space-y-3 border-b border-[var(--rule)] pb-5"><h2 className="font-semibold"><Copy text="מה למדנו על העסק שלכם" /></h2>{result.facts.map((fact, i) => <blockquote key={i} className="border-s-2 border-[var(--rule)] ps-3 text-sm"><p>{fact.quote}</p><a className="text-xs underline" href={fact.url} target="_blank" rel="noopener noreferrer"><Copy text="למקור" /></a></blockquote>)}</section> : null}
     {result?.sources.length ? <details className="text-sm text-[var(--ink-muted)]"><summary className="cursor-pointer"><Copy text="המידע שעליו הסתמכנו" /></summary><ul className="mt-3 space-y-2">{result.sources.map((source, i) => <li key={`${source.url}-${i}`}><bdi>{source.url}</bdi> · <Copy text={source.status === "read" ? "נקרא" : source.status === "not_read" ? "הקישור נשמר. תוכן הפרופיל עדיין לא נקרא." : source.status === "limited" || source.status === "blocked" ? "הקריאה מוגבלת. אפשר להמשיך בלי המידע הזה." : "לא הצלחנו לקרוא. נמשיך עם התשובות שלכם."} /></li>)}</ul></details> : null}
     {result && !result.assisted ? <p className="text-sm text-[var(--ink-muted)]"><Copy text="המחקר המותאם לא זמין כרגע. אפשר להמשיך בהיכרות ולהשלים אותו בחשבון." /></p> : null}
     <p className="border-b border-[var(--rule)] pb-4">{props.flow.draft.business_name} · {props.flow.draft.offerings}</p>

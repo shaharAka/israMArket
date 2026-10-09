@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import styles from "./help-sheet.module.css";
@@ -32,6 +34,7 @@ export function HelpSheet({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const t = useCopy();
   const panelRef = useRef<HTMLDivElement>(null);
   const desktop = useIsDesktop();
   // The parent usually passes an inline arrow. Keeping it in a ref stops every parent
@@ -91,7 +94,7 @@ export function HelpSheet({
       <button
         type="button"
         tabIndex={-1}
-        aria-label="לסגור"
+        aria-label={t("לסגור")}
         onClick={() => closeRef.current()}
         className={`${styles.backdrop} absolute inset-0 h-full w-full cursor-default`}
       />
@@ -120,8 +123,7 @@ export function HelpSheet({
             onClick={() => closeRef.current()}
             className="inline-flex min-h-11 shrink-0 items-center rounded-lg px-3 text-[14px] font-semibold text-[color:var(--ink-soft)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
           >
-            לסגור
-          </button>
+            <Copy text="לסגור" /></button>
         </div>
         <div className="overflow-y-auto overscroll-contain px-5 pb-[max(28px,env(safe-area-inset-bottom))] pt-5 sm:px-6">
           {children}

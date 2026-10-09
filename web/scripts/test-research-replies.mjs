@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import ts from 'typescript';
+const source = fs.readFileSync(new URL('../lib/researchJourney.ts', import.meta.url), 'utf8');
+const { outputText } = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } });
+const exports = {};
+vm.runInNewContext(outputText, { exports });
+const { mergeResearchReplies } = exports;
+const previous = [{ question: 'Who buys?', answer: 'Design studios' }, { question: 'Budget?', answer: '3000–7000' }];
+assert.equal(JSON.stringify(mergeResearchReplies(previous, [])), JSON.stringify(previous));
+const next = mergeResearchReplies(previous, [{ question: 'Who buys?', answer: 'Independent designers' }, { question: 'Offer?', answer: 'Monthly software subscription' }]);
+assert.equal(next.length, 3);
+assert.equal(next[0].answer, 'Independent designers');
+assert.equal(next[1].answer, '3000–7000');
+assert.equal(previous[0].answer, 'Design studios');
+assert.equal(mergeResearchReplies(next, [{ question: 'Fourth', answer: '' }, { question: 'Fifth', answer: '' }]).length, 4);
+console.log('Research replies preserved across follow-up, correction and empty results.');

@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useRef, useState } from "react";
 import type { Asset, AssetSource } from "@/lib/api";
 import { IconCheck, IconEye, IconImage, IconPen, IconSparkles, IconTrash } from "@/lib/icons";
@@ -73,8 +75,9 @@ function VideoPoster() {
 
 /** The thumbnail, shared by the grid tile and the sheet's preview. */
 function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
+  const t = useCopy();
   const [broken, setBroken] = useState(false);
-  const label = asset.description.trim() || `${kindWord(asset)} בלי תיאור`;
+  const label = asset.description.trim() || t("{arg_0} בלי תיאור", { arg_0: kindWord(asset) });
   const fit = mode === "tile" ? "object-cover" : "object-contain";
 
   if (asset.kind === "video") {
@@ -101,8 +104,7 @@ function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
         {mode === "tile" || broken || !asset.url ? <PlayMark size={mode === "sheet" ? "lg" : "md"} /> : null}
         {mode === "sheet" && (broken || !asset.url) ? (
           <span className="absolute inset-x-0 bottom-3 text-center text-xs text-[var(--ink-soft)]">
-            אי אפשר להציג את הסרטון כאן
-          </span>
+            <Copy text="אי אפשר להציג את הסרטון כאן" /></span>
         ) : null}
       </>
     );
@@ -118,7 +120,7 @@ function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
       className={`h-full w-full ${fit}`}
     />
   ) : (
-    <span className="flex h-full w-full items-center justify-center text-[var(--ink-faint)]" title="אין תצוגה מקדימה">
+    <span className="flex h-full w-full items-center justify-center text-[var(--ink-faint)]" title={t("אין תצוגה מקדימה")}>
       <IconImage className="h-8 w-8" />
     </span>
   );
@@ -133,12 +135,13 @@ function Preview({ asset, mode }: { asset: Asset; mode: "tile" | "sheet" }) {
  * opens everything about one of them in a sheet (`AssetSheet`).
  */
 export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void }) {
+  const t = useCopy();
   const described = Boolean(asset.description.trim());
   return (
     <button
       type="button"
       onClick={onOpen}
-      aria-label={`${kindWord(asset)}: ${asset.description.trim() || "בלי תיאור"}. לפתוח את הפרטים`}
+      aria-label={t("{arg_0}: {arg_1}. לפתוח את הפרטים", { arg_0: kindWord(asset), arg_1: asset.description.trim() || "בלי תיאור" })}
       title={asset.description.trim() || undefined}
       className="group relative block aspect-square w-full cursor-pointer overflow-hidden rounded-[14px] bg-[var(--soft)] shadow-[var(--shadow-card)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(.2,.7,.2,1)] after:pointer-events-none after:absolute after:inset-0 after:rounded-[14px] after:shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--ink)_8%,transparent)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-pop)] active:translate-y-0 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
     >
@@ -147,8 +150,7 @@ export function AssetTile({ asset, onOpen }: { asset: Asset; onOpen: () => void 
       {described ? null : (
         <span className="absolute right-2 bottom-2 z-[1] inline-flex items-center gap-1.5 rounded-full bg-[var(--paper)]/92 px-2.5 py-1 text-[11px] font-semibold text-[var(--ink-soft)] shadow-[var(--shadow-card)] backdrop-blur-sm">
           <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[var(--sun)]" />
-          בלי תיאור
-        </span>
+          <Copy text="בלי תיאור" /></span>
       )}
     </button>
   );
@@ -181,6 +183,7 @@ export function AssetSheet({
   onDelete: (id: number) => Promise<void>;
   onRedescribe: (id: number) => Promise<void>;
 }) {
+  const t = useCopy();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [editing, setEditing] = useState(false);
   const [draftDescription, setDraftDescription] = useState(asset.description);
@@ -211,7 +214,7 @@ export function AssetSheet({
     try {
       await onRedescribe(asset.id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לעדכן את התיאור");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לעדכן את התיאור"));
     } finally {
       setDescribing(false);
       setBusy(false);
@@ -227,7 +230,7 @@ export function AssetSheet({
       await onSave(asset.id, { description: draftDescription.trim(), tags });
       setEditing(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור"));
     } finally {
       setSaving(false);
       setBusy(false);
@@ -241,7 +244,7 @@ export function AssetSheet({
       await onDelete(asset.id);
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו למחוק");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו למחוק"));
       setDeleting(false);
       setConfirmingDelete(false);
     }
@@ -252,7 +255,7 @@ export function AssetSheet({
   return (
     <dialog
       ref={dialogRef}
-      aria-label={`פרטי ה${kindWord(asset)}`}
+      aria-label={t("פרטי ה{arg_0}", { arg_0: kindWord(asset) })}
       onClose={onClose}
       onClick={(event) => {
         // The backdrop is the dialog element itself; a tap on the sheet lands on a child.
@@ -261,12 +264,12 @@ export function AssetSheet({
       className="m-0 mt-auto max-h-[88dvh] w-full max-w-none overflow-y-auto rounded-t-[20px] bg-[var(--paper)] p-0 text-right text-[var(--ink)] shadow-[var(--shadow-pop)] backdrop:bg-[var(--ink)]/40 sm:m-auto sm:max-w-lg sm:rounded-[20px]"
     >
       <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-[var(--rule)] bg-[var(--paper)]/95 pe-2 ps-5 py-2 backdrop-blur-sm">
-        <p className="text-base font-bold tracking-tight text-[var(--ink)]">פרטי ה{kindWord(asset)}</p>
+        <p className="text-base font-bold tracking-tight text-[var(--ink)]"><Copy text="פרטי ה" />{kindWord(asset)}</p>
         <button
           type="button"
           onClick={() => dialogRef.current?.close()}
-          aria-label="לסגור"
-          title="לסגור"
+          aria-label={t("לסגור")}
+          title={t("לסגור")}
           className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-[var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[var(--ink)]"
         >
           <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -283,7 +286,7 @@ export function AssetSheet({
         {editing ? (
           <div className="space-y-4">
             <label className="block">
-              <span className={ui.groupTitle}>תיאור</span>
+              <span className={ui.groupTitle}><Copy text="תיאור" /></span>
               <textarea
                 value={draftDescription}
                 onChange={(event) => setDraftDescription(event.target.value)}
@@ -292,18 +295,18 @@ export function AssetSheet({
               />
             </label>
             <label className="block">
-              <span className={ui.groupTitle}>תגיות</span>
-              <span className={`${ui.help} block`}>הפרידו בפסיק</span>
+              <span className={ui.groupTitle}><Copy text="תגיות" /></span>
+              <span className={`${ui.help} block`}><Copy text="הפרידו בפסיק" /></span>
               <input
                 value={draftTags}
                 onChange={(event) => setDraftTags(event.target.value)}
-                placeholder="חלות, מחמצת, שישי"
+                placeholder={t("חלות, מחמצת, שישי")}
                 className={inputClass}
               />
             </label>
             {tagSuggestions.length ? (
               <div className="flex flex-wrap items-center gap-2">
-                <span className={ui.help}>תגיות שכבר יש:</span>
+                <span className={ui.help}><Copy text="תגיות שכבר יש:" /></span>
                 {tagSuggestions.map((tag) => (
                   <button
                     key={tag}
@@ -324,7 +327,7 @@ export function AssetSheet({
                 className="drawn-button inline-flex min-h-11 items-center gap-2 bg-[var(--primary)] px-5 text-sm text-white enabled:hover:bg-[var(--primary-dark)]"
               >
                 <IconCheck className="h-4 w-4" />
-                {saving ? "שומרים…" : "לשמור"}
+                {saving ? t("שומרים…") : t("לשמור")}
               </button>
               <button
                 type="button"
@@ -337,8 +340,7 @@ export function AssetSheet({
                 disabled={saving}
                 className={`${ui.link} ${ui.linkQuiet}`}
               >
-                לבטל
-              </button>
+                <Copy text="לבטל" /></button>
             </div>
           </div>
         ) : (
@@ -347,8 +349,7 @@ export function AssetSheet({
               <p className="text-[15px] leading-7 text-[var(--ink)]">{asset.description}</p>
             ) : (
               <p className="text-[15px] leading-7 text-[var(--ink-muted)]">
-                עדיין אין תיאור. לחצו ״לכתוב תיאור מחדש״, ונכתוב תיאור ותגיות לפי מה שרואים בתמונה.
-              </p>
+                <Copy text="עדיין אין תיאור. לחצו ״לכתוב תיאור מחדש״, ונכתוב תיאור ותגיות לפי מה שרואים בתמונה." /></p>
             )}
 
             {asset.tags.length ? (
@@ -363,7 +364,7 @@ export function AssetSheet({
                 ))}
               </ul>
             ) : (
-              <p className={ui.help}>עדיין אין תגיות.</p>
+              <p className={ui.help}><Copy text="עדיין אין תגיות." /></p>
             )}
 
             <p className={`${ui.meta} font-normal`}>
@@ -398,8 +399,7 @@ export function AssetSheet({
                 className={ui.button}
               >
                 <IconPen />
-                לערוך
-              </button>
+                <Copy text="לערוך" /></button>
               <button
                 type="button"
                 onClick={() => void runDescribe()}
@@ -407,7 +407,7 @@ export function AssetSheet({
                 className={ui.button}
               >
                 {describing ? <IconEye /> : <IconSparkles />}
-                {describing ? "כותבים תיאור…" : "לכתוב תיאור מחדש"}
+                {describing ? t("כותבים תיאור…") : t("לכתוב תיאור מחדש")}
               </button>
               {confirmingDelete ? (
                 <>
@@ -417,7 +417,7 @@ export function AssetSheet({
                     disabled={deleting}
                     className={`${ui.button} border-[var(--danger-rule)] bg-[var(--danger-soft)] text-[var(--danger)] hover:border-[var(--danger)] hover:bg-[var(--danger-soft)]`}
                   >
-                    {deleting ? "מוחקים…" : "כן, למחוק"}
+                    {deleting ? t("מוחקים…") : t("כן, למחוק")}
                   </button>
                   <button
                     type="button"
@@ -425,8 +425,7 @@ export function AssetSheet({
                     disabled={deleting}
                     className={`${ui.link} ${ui.linkQuiet} px-2`}
                   >
-                    לא, להשאיר
-                  </button>
+                    <Copy text="לא, להשאיר" /></button>
                 </>
               ) : (
                 <button
@@ -436,15 +435,13 @@ export function AssetSheet({
                   className={`${ui.link} ms-auto px-2 text-[var(--danger)] hover:text-[var(--danger)]`}
                 >
                   <IconTrash />
-                  למחוק
-                </button>
+                  <Copy text="למחוק" /></button>
               )}
             </div>
 
             {confirmingDelete ? (
               <p className="text-[13px] leading-6 text-[var(--danger)]">
-                {asset.kind === "video" ? "הסרטון יימחק" : "התמונה תימחק"}, ולא יהיה אפשר לשחזר.
-              </p>
+                {asset.kind === "video" ? t("הסרטון יימחק") : t("התמונה תימחק")}<Copy text=", ולא יהיה אפשר לשחזר." /></p>
             ) : null}
           </>
         )}

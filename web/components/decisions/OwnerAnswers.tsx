@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useState } from "react";
 import { Button } from "@/components/AppShell";
 import { ActivityPicker, TriedPicker } from "@/components/start/AnswerPickers";
@@ -82,6 +84,7 @@ export function OwnerAnswers({
   onSaved: (business: Business) => void;
   initialOpen?: string | null;
 }) {
+  const t = useCopy();
   const [open, setOpen] = useState<AnswerId | null>(
     initialOpen && (ANSWER_IDS as readonly string[]).includes(initialOpen) ? (initialOpen as AnswerId) : null,
   );
@@ -119,9 +122,9 @@ export function OwnerAnswers({
       // A fresh object: the demo answers with the same fixture it was handed.
       onSaved({ ...result.business });
       setOpen(null);
-      toast("נשמר");
+      toast(t("נשמר"));
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : "לא הצלחנו לשמור. נסו שוב.");
+      setError(err instanceof Error && err.message ? err.message : t("לא הצלחנו לשמור. נסו שוב."));
     } finally {
       setSaving(false);
     }
@@ -131,7 +134,7 @@ export function OwnerAnswers({
   const slow = context.seasons?.slow ?? [];
   const seasonsSummary =
     busy.length || slow.length
-      ? [busy.length ? `עמוס: ${monthsLabel(busy)}` : "", slow.length ? `שקט: ${monthsLabel(slow)}` : ""]
+      ? [busy.length ? t("עמוס: {arg_0}", { arg_0: monthsLabel(busy) }) : "", slow.length ? t("שקט: {arg_0}", { arg_0: monthsLabel(slow) }) : ""]
           .filter(Boolean)
           .join(" · ")
       : NOT_SET;
@@ -144,13 +147,13 @@ export function OwnerAnswers({
       .join(" · ") || NOT_SET;
   const competitorNames = competitorsOf(business).map((c) => c.name).filter(Boolean);
   const goals = goalsFor(businessModel);
-  const goalTitle = goals.find((g) => g.key === primaryGoal)?.title ?? "לא נבחרה";
+  const goalTitle = goals.find((g) => g.key === primaryGoal)?.title ?? t("לא נבחרה");
   const kit = kitFor(business.business_type);
 
   const actions = (onSave: () => void) => (
     <div className="mt-4 flex flex-wrap items-center gap-2">
       <Button size="sm" onClick={onSave} disabled={saving}>
-        {saving ? "שומרים…" : "לשמור"}
+        {saving ? t("שומרים…") : t("לשמור")}
       </Button>
       <button
         type="button"
@@ -158,8 +161,7 @@ export function OwnerAnswers({
         disabled={saving}
         className="inline-flex min-h-11 items-center px-2 text-[13px] font-semibold text-[var(--ink-muted)] underline-offset-4 transition-colors hover:text-[var(--ink)] hover:underline disabled:opacity-40"
       >
-        לבטל
-      </button>
+        <Copy text="לבטל" /></button>
       {error ? (
         <p role="alert" className="w-full text-[13px] font-semibold leading-6 text-[var(--danger)]">
           {error}
@@ -170,19 +172,19 @@ export function OwnerAnswers({
 
   return (
     <ul className="divide-y divide-[var(--rule)] overflow-hidden rounded-2xl bg-[var(--paper)] shadow-[var(--shadow-card)]">
-      <AnswerRow id="seasons" label="עונות השנה" value={seasonsSummary} open={open === "seasons"} onToggle={() => toggle("seasons")}>
+      <AnswerRow id="seasons" label={t("עונות השנה")} value={seasonsSummary} open={open === "seasons"} onToggle={() => toggle("seasons")}>
         <SeasonsPicker value={seasons} onChange={setSeasons} example={seasonsExampleFor(business.business_type)} />
         {actions(() => void save({ seasons }))}
       </AnswerRow>
 
       <AnswerRow
         id="different"
-        label="מה מייחד אתכם"
-        value={context.differentiator || "לא נכתב"}
+        label={t("מה מייחד אתכם")}
+        value={context.differentiator || t("לא נכתב")}
         open={open === "different"}
         onToggle={() => toggle("different")}
       >
-        <TextInput id="answer-different" label="במשפט אחד" value={different} onChange={setDifferent} maxLength={200} />
+        <TextInput id="answer-different" label={t("במשפט אחד")} value={different} onChange={setDifferent} maxLength={200} />
         <div className="mt-2 flex flex-wrap gap-2">
           {kit.differentiators.map((example) => {
             const parts = different.split(/,\s*/).map((p) => p.trim()).filter(Boolean);
@@ -201,7 +203,7 @@ export function OwnerAnswers({
         {actions(() => void save({ differentiator: different }))}
       </AnswerRow>
 
-      <AnswerRow id="tried" label="מה ניסיתם" value={triedSummary} open={open === "tried"} onToggle={() => toggle("tried")}>
+      <AnswerRow id="tried" label={t("מה ניסיתם")} value={triedSummary} open={open === "tried"} onToggle={() => toggle("tried")}>
         <TriedPicker
           channels={tried.channels}
           onToggle={(key) =>
@@ -214,7 +216,7 @@ export function OwnerAnswers({
         <div className="mt-3">
           <TextInput
             id="answer-worked"
-            label="מה הצליח? (לא חובה)"
+            label={t("מה הצליח? (לא חובה)")}
             value={tried.what_worked}
             onChange={(value) => setTried((t) => ({ ...t, what_worked: value }))}
             maxLength={200}
@@ -223,13 +225,13 @@ export function OwnerAnswers({
         {actions(() => void save({ tried }))}
       </AnswerRow>
 
-      <AnswerRow id="activity" label="איפה אתם פעילים" value={activitySummary} open={open === "activity"} onToggle={() => toggle("activity")}>
+      <AnswerRow id="activity" label={t("איפה אתם פעילים")} value={activitySummary} open={open === "activity"} onToggle={() => toggle("activity")}>
         <div className="space-y-3">
           {NETWORKS.map((network) => (
             <div key={network.key}>
               <p className="mb-1.5 text-[13px] font-semibold text-[var(--ink)]">{network.label}</p>
               <ActivityPicker
-                label={`כמה אתם מפרסמים ב${network.label}`}
+                label={t("כמה אתם מפרסמים ב{arg_0}", { arg_0: network.label })}
                 value={activity[network.key]}
                 onChange={(value) => setActivity((a) => ({ ...a, [network.key]: value }))}
                 clearable
@@ -250,8 +252,8 @@ export function OwnerAnswers({
 
       <AnswerRow
         id="competitors"
-        label="המתחרים"
-        value={competitorNames.length ? competitorNames.join(", ") : "לא נכתבו"}
+        label={t("המתחרים")}
+        value={competitorNames.length ? competitorNames.join(", ") : t("לא נכתבו")}
         open={open === "competitors"}
         onToggle={() => toggle("competitors")}
       >
@@ -260,15 +262,15 @@ export function OwnerAnswers({
             <div key={index} className="grid grid-cols-[1fr_1.1fr] items-end gap-2">
               <TextInput
                 id={`answer-comp-name-${index}`}
-                label={`מתחרה ${index + 1}`}
+                label={t("מתחרה {arg_0}", { arg_0: index + 1 })}
                 value={row.name}
                 onChange={(value) => setCompetitors((list) => list.map((r, i) => (i === index ? { ...r, name: value } : r)))}
-                placeholder="השם"
+                placeholder={t("השם")}
                 maxLength={80}
               />
               <TextInput
                 id={`answer-comp-link-${index}`}
-                label="אתר או אינסטגרם"
+                label={t("אתר או אינסטגרם")}
                 value={row.link}
                 onChange={(value) => setCompetitors((list) => list.map((r, i) => (i === index ? { ...r, link: value } : r)))}
                 placeholder="@name"
@@ -280,9 +282,9 @@ export function OwnerAnswers({
           ))}
         </div>
         {competitors.length < MAX_COMPETITORS ? (
-          <QuietLink onClick={() => setCompetitors((list) => [...list, { name: "", link: "" }])}>להוסיף עוד מתחרה</QuietLink>
+          <QuietLink onClick={() => setCompetitors((list) => [...list, { name: "", link: "" }])}><Copy text="להוסיף עוד מתחרה" /></QuietLink>
         ) : null}
-        <p className="text-[13px] text-[var(--ink-muted)]">כדי להסיר מתחרה, מחקו את השם.</p>
+        <p className="text-[13px] text-[var(--ink-muted)]"><Copy text="כדי להסיר מתחרה, מחקו את השם." /></p>
         {actions(() =>
           void save({
             competitors: competitors
@@ -292,8 +294,8 @@ export function OwnerAnswers({
         )}
       </AnswerRow>
 
-      <AnswerRow id="goal" label="מה הכי חשוב" value={goalTitle} open={open === "goal"} onToggle={() => toggle("goal")}>
-        <div role="radiogroup" aria-label="מה הכי חשוב" className="grid gap-3 sm:grid-cols-2">
+      <AnswerRow id="goal" label={t("מה הכי חשוב")} value={goalTitle} open={open === "goal"} onToggle={() => toggle("goal")}>
+        <div role="radiogroup" aria-label={t("מה הכי חשוב")} className="grid gap-3 sm:grid-cols-2">
           {goals.map((option) => {
             const on = primaryGoal === option.key;
             return (
@@ -316,7 +318,7 @@ export function OwnerAnswers({
             );
           })}
         </div>
-        <p className="mt-3 text-[13px] text-[var(--ink-muted)]">נשמר עם ״לשמור את ההחלטות״ למטה.</p>
+        <p className="mt-3 text-[13px] text-[var(--ink-muted)]"><Copy text="נשמר עם ״לשמור את ההחלטות״ למטה." /></p>
       </AnswerRow>
     </ul>
   );
@@ -337,6 +339,7 @@ function AnswerRow({
   onToggle: () => void;
   children: React.ReactNode;
 }) {
+  const t = useCopy();
   return (
     <li id={id} className="scroll-mt-4">
       <button
@@ -351,7 +354,7 @@ function AnswerRow({
           <span className={`min-w-0 truncate text-sm ${value === NOT_SET ? "text-[var(--ink-muted)]" : "text-[var(--ink-soft)]"}`}>{value}</span>
         </span>
         <span className={`inline-flex shrink-0 items-center gap-1 text-[13px] font-semibold ${open ? "text-[var(--ink-muted)]" : "text-[var(--primary)]"}`}>
-          {open ? "לסגור" : "לשנות"}
+          {open ? t("לסגור") : t("לשנות")}
           <IconChevron className={`h-4 w-4 transition-transform duration-200 motion-reduce:transition-none ${open ? "rotate-90" : "-rotate-90"}`} />
         </span>
       </button>

@@ -65,6 +65,33 @@ class ContextTest(unittest.TestCase):
         self.assertEqual(sources[1]["period"]["start"], "2025-12-01")
         self.assertEqual(sources[1]["read_at"], "2026-01-02T08:00:00")
 
+    def test_route_events_are_occurrences_and_missing_is_not_zero(self):
+        self.business.business_model = "products"
+        snap = snapshot()
+        snap["ga4"]["events"] = [{"eventName": "add_to_cart", "eventCount": "0"},
+            {"eventName": "purchase", "eventCount": "7"}, {"eventName": "purchase", "eventCount": "99"},
+            {"eventName": "sign_up", "eventCount": "50"}, {"eventName": "begin_checkout", "eventCount": "NaN"}]
+        basis = context.prepare(self.business, self.plan, snap)[2]
+        rows = {item["metric"]: item for item in basis["observations"]}
+        self.assertEqual(rows["purchase"]["value"], 7)
+        self.assertIn("אירועי", rows["purchase"]["label"])
+        self.assertEqual(rows["add_to_cart"]["value"], 0)
+        self.assertNotIn("begin_checkout", rows)
+        self.assertNotIn("sign_up", rows)
+
+    def test_evidence_keys_cannot_invent_or_replace_observations(self):
+        result = self.response(proposal(evidence_keys=["ga4:sessions", "ga4:sessions", "other:purchase", "ga4:purchase", "meta_ads:link_clicks", {}]))
+        item = result["suggestions"]["suggestions"][0]
+        self.assertEqual(item["evidence_keys"], ["ga4:sessions", "meta_ads:link_clicks"])
+        self.assertEqual([row["value"] for row in result["suggestions"]["basis"]["observations"]], [42, 0, 11])
+        self.assertEqual(self.response(proposal(evidence_keys=[]))["suggestions"]["suggestions"][0]["evidence_keys"], [])
+
+    def test_changed_marketing_outcome_makes_old_proposal_stale(self):
+        bound = context.bind(proposal(), self.basis, self.plan)
+        self.business.scraped_profile_json = dumps({"owner_context": {"research_journey": {"segment": "fundraising", "metric": "donations"}}})
+        item = context.serialize(record(bound), self.plan, self.business)["suggestions"]["suggestions"][0]
+        self.assertEqual(item["review"]["status"], "stale")
+
     def test_invalid_or_missing_numbers_do_not_become_zero(self):
         for value in (None, "", "NaN", "inf", True, -1, {}):
             snap = snapshot()

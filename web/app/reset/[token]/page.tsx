@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -21,6 +23,7 @@ const MAX_LENGTH = 200;
  * does not stay in the browser's history either.
  */
 export default function ResetPage() {
+  const t = useCopy();
   const router = useRouter();
   const params = useParams<{ token: string }>();
   const token = typeof params.token === "string" ? params.token : "";
@@ -50,9 +53,9 @@ export default function ResetPage() {
     const form = new FormData(event.currentTarget);
     const password = String(form.get("password") ?? "");
     const again = String(form.get("again") ?? "");
-    if (password.length < MIN_LENGTH) return setError("הסיסמה קצרה מדי. צריך לפחות 8 תווים.");
-    if (password.length > MAX_LENGTH) return setError("הסיסמה ארוכה מדי.");
-    if (password !== again) return setError("הסיסמה לא זהה בשני השדות.");
+    if (password.length < MIN_LENGTH) return setError(t("הסיסמה קצרה מדי. צריך לפחות 8 תווים."));
+    if (password.length > MAX_LENGTH) return setError(t("הסיסמה ארוכה מדי."));
+    if (password !== again) return setError(t("הסיסמה לא זהה בשני השדות."));
     setPending(true);
     try {
       await api("/auth/reset", { method: "POST", body: JSON.stringify({ token, new_password: password }) }, true);
@@ -60,38 +63,36 @@ export default function ResetPage() {
     } catch (err) {
       setPending(false);
       if (err instanceof ApiError && err.status === 400) setCheck({ valid: false });
-      else setError(err instanceof Error ? err.message : "לא הצלחנו לשמור. נסו שוב.");
+      else setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור. נסו שוב."));
     }
   }
 
   if (check === null) {
     return (
-      <AuthCard title="סיסמה חדשה">
+      <AuthCard title={t("סיסמה חדשה")}>
         <p role="status" className="text-[15px] text-[color:var(--ink-soft)]">
-          בודקים את הקישור…
-        </p>
+          <Copy text="בודקים את הקישור…" /></p>
       </AuthCard>
     );
   }
 
   if (!check.valid) {
     return (
-      <AuthCard title="הקישור כבר לא בתוקף">
+      <AuthCard title={t("הקישור כבר לא בתוקף")}>
         <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]">
-          קישור לסיסמה חדשה עובד פעם אחת, במשך 24 שעות. בקשו קישור חדש ממי ששלח לכם אותו.
-        </p>
+          <Copy text="קישור לסיסמה חדשה עובד פעם אחת, במשך 24 שעות. בקשו קישור חדש ממי ששלח לכם אותו." /></p>
         <p className={auth.foot}>
-          <Link href="/login">לכניסה לחשבון</Link>
+          <Link href="/login"><Copy text="לכניסה לחשבון" /></Link>
         </p>
       </AuthCard>
     );
   }
 
   return (
-    <AuthCard title="סיסמה חדשה">
+    <AuthCard title={t("סיסמה חדשה")}>
       {check.email_hint ? (
         <p className="-mt-4 mb-6 text-[15px] text-[color:var(--ink-soft)]">
-          לחשבון{" "}
+          <Copy text="לחשבון" />{" "}
           <span dir="ltr" className="font-semibold text-[color:var(--ink)]">
             {check.email_hint}
           </span>
@@ -100,16 +101,15 @@ export default function ResetPage() {
       <form onSubmit={onSubmit} className={auth.form}>
         {/* For password managers: which account this new password belongs to. */}
         <input type="text" name="username" autoComplete="username" value={check.email_hint} readOnly hidden />
-        <Field name="password" label="סיסמה חדשה (לפחות 8 תווים)" type="password" dir="ltr" autoComplete="new-password" />
-        <Field name="again" label="הקלידו אותה שוב" type="password" dir="ltr" autoComplete="new-password" />
+        <Field name="password" label={t("סיסמה חדשה (לפחות 8 תווים)")} type="password" dir="ltr" autoComplete="new-password" />
+        <Field name="again" label={t("הקלידו אותה שוב")} type="password" dir="ltr" autoComplete="new-password" />
         <ErrorNote message={error} />
         <Button type="submit" disabled={pending} tone="primary" size="md" className="mt-1 !min-h-[50px] w-full !text-[15px]">
-          {pending ? "שומרים…" : "לשמור סיסמה"}
+          {pending ? t("שומרים…") : t("לשמור סיסמה")}
         </Button>
       </form>
       <p className={auth.foot}>
-        אחרי השמירה נעביר אתכם לכניסה. כל מכשיר שהיה מחובר יתנתק.
-      </p>
+        <Copy text="אחרי השמירה נעביר אתכם לכניסה. כל מכשיר שהיה מחובר יתנתק." /></p>
     </AuthCard>
   );
 }

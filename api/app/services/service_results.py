@@ -11,7 +11,14 @@ from app.services.jsonutil import dumps, loads
 
 
 def enabled(business) -> bool:
-    return getattr(business, "business_model", "products") in {"services", "both"}
+    stored = loads(getattr(business, "scraped_profile_json", ""), {})
+    stored = stored if isinstance(stored, dict) else {}
+    owner = stored.get("owner_context")
+    owner = owner if isinstance(owner, dict) else {}
+    journey = owner.get("research_journey")
+    journey = journey if isinstance(journey, dict) else {}
+    route = journey.get("segment")
+    return route == "services" if route else getattr(business, "business_model", "products") in {"services", "both"}
 
 
 def latest(business):

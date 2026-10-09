@@ -1,5 +1,7 @@
 "use client";
 
+import { useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useRef, useSyncExternalStore, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 
@@ -46,6 +48,7 @@ export function BottomSheet({
   children: React.ReactNode;
   style?: CSSProperties;
 }) {
+  const t = useCopy();
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -75,10 +78,10 @@ export function BottomSheet({
   if (!open || typeof document === "undefined") return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[60]" dir="rtl" style={style}>
+    <div className="fixed inset-0 z-[60]" style={style}>
       <button
         type="button"
-        aria-label="לסגור"
+        aria-label={t("לסגור")}
         onClick={onClose}
         className="im-editor-backdrop absolute inset-0 h-full w-full cursor-default bg-[var(--ink)]/40"
       />
@@ -98,8 +101,8 @@ export function BottomSheet({
           <button
             type="button"
             onClick={onClose}
-            aria-label="לסגור"
-            title="לסגור"
+            aria-label={t("לסגור")}
+            title={t("לסגור")}
             className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)]"
           >
             <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">

@@ -1,4 +1,5 @@
 from typing import Literal, TypedDict
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field, HttpUrl, field_validator, model_validator
 
@@ -146,8 +147,23 @@ class OnboardingIn(BaseModel):
         return self
 
 
+class PostCreateIn(BaseModel):
+    client_ref: UUID
+    text: str = Field(min_length=1, max_length=4000)
+    title: str = Field(default="", max_length=300)
+    destination: Literal["instagram", "facebook", "whatsapp"] = "instagram"
+    content_language: Literal["he", "en", "ar", "ru"] | None = None
+
+    @field_validator("text")
+    @classmethod
+    def _nonempty(cls, value: str) -> str:
+        if not value.strip():
+            raise ValueError("Write a topic or the text of your post")
+        return value
+
+
 class PostUpdateIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     title: str = Field(min_length=1, max_length=300)
     format: Literal["reel", "carousel", "image", "story"]
     hook: str = Field(default="", max_length=500)
@@ -208,7 +224,7 @@ PostUpdateIn.model_rebuild()
 
 
 class PostDesignIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     vibe: str = Field(default="", max_length=120)
     custom_prompt: str = Field(default="", max_length=1000)
     generate_image: bool = True
@@ -278,7 +294,7 @@ class PostRewriteIn(BaseModel):
     """One instruction (docs/posts-v2.md, Phase C): a chip's words or the owner's own, at
     most 200 characters. The older tone-only call still works; one of the two is needed."""
 
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     tone: Literal["direct", "neighborhood", "punchy", "holiday", "story"] | None = None
     instruction: str | None = Field(default=None, max_length=200)
 
@@ -290,7 +306,7 @@ class PostRewriteIn(BaseModel):
 
 
 class PostApprovalIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     approved: bool = True
 
 
@@ -353,7 +369,7 @@ class WebsiteScanIn(BaseModel):
 
 
 class PostImageIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     force: bool = False
     # Explicit user request ("create an image") = True. Automatic preparation while
     # browsing = False, so merely clicking through the plan can never spend money.
@@ -369,7 +385,7 @@ class PostPublishIn(BaseModel):
     """"פרסמתי": marks the post published. The link is optional (it adds Instagram
     matching); WhatsApp taps are measured by the post's own code either way."""
 
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     published_url: str = Field(default="", max_length=800)
 
 
@@ -381,7 +397,7 @@ class PostScheduleIn(BaseModel):
     of a pydantic error.
     """
 
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     scheduled_for: str = Field(default="", max_length=40)
 
 
@@ -438,12 +454,12 @@ class AssetUpdateIn(BaseModel):
 
 
 class PostAssetIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     asset_id: int = Field(ge=1)
 
 
 class PostSuggestAssetsIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
 
 
 # --- Target audiences --------------------------------------------------------------
@@ -499,7 +515,7 @@ class AudienceUpdateIn(BaseModel):
 
 
 class PostAudienceIn(BaseModel):
-    post_index: int = Field(ge=0, le=50)
+    post_index: int = Field(ge=0, le=500)
     # null clears the tag; the post then reports under "לא משויך" instead of being lost.
     audience_id: int | None = Field(default=None, ge=1)
 

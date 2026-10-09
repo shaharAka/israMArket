@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useState, type FormEvent } from "react";
 import { HowToFind } from "@/components/help/HowToFind";
 import { endpoints } from "@/lib/api";
@@ -23,6 +25,7 @@ export function HandlesEditor({
   failures: Record<string, string>;
   onSaved: (handles: string[]) => void;
 }) {
+  const t = useCopy();
   const [draft, setDraft] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -35,7 +38,7 @@ export function HandlesEditor({
       onSaved(result.handles);
       return true;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור. נסו שוב.");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור. נסו שוב."));
       return false;
     } finally {
       setBusy(false);
@@ -55,15 +58,14 @@ export function HandlesEditor({
   return (
     <section aria-labelledby="handles-heading">
       <h2 id="handles-heading" className="text-lg font-bold tracking-tight text-[color:var(--ink)]">
-        חשבונות להשראה
-      </h2>
+        <Copy text="חשבונות להשראה" /></h2>
       <div className="mt-0.5 flex flex-wrap items-center justify-between gap-x-3">
-        <p className="text-[15px] text-[color:var(--ink-soft)]">עסקים שאתם אוהבים, עד {max}.</p>
-        <HowToFind topic="competitor_instagram" label="איך מוצאים שם משתמש?" />
+        <p className="text-[15px] text-[color:var(--ink-soft)]"><Copy text="עסקים שאתם אוהבים, עד" />{max}.</p>
+        <HowToFind topic="competitor_instagram" label={t("איך מוצאים שם משתמש?")} />
       </div>
 
       {handles.length ? (
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label="החשבונות שנשמרו">
+        <ul className="mt-3 flex flex-wrap gap-2" aria-label={t("החשבונות שנשמרו")}>
           {handles.map((handle) => (
             <li
               key={handle}
@@ -80,8 +82,8 @@ export function HandlesEditor({
                 type="button"
                 disabled={busy}
                 onClick={() => void save(handles.filter((item) => item !== handle))}
-                aria-label={`להסיר את @${handle}`}
-                title={`להסיר את @${handle}`}
+                aria-label={t("להסיר את @{arg_0}", { arg_0: handle })}
+                title={t("להסיר את @{arg_0}", { arg_0: handle })}
                 className="inline-flex h-9 w-9 items-center justify-center rounded-full text-[color:var(--ink-muted)] transition-colors hover:bg-[var(--soft)] hover:text-[color:var(--ink)] disabled:opacity-40"
               >
                 <IconPlus className="h-4 w-4 rotate-45" />
@@ -102,8 +104,7 @@ export function HandlesEditor({
       {full ? null : (
         <form onSubmit={(event) => void add(event)} className="mt-4 flex gap-2">
           <label htmlFor="handle-input" className="sr-only">
-            שם משתמש באינסטגרם או קישור לפרופיל
-          </label>
+            <Copy text="שם משתמש באינסטגרם או קישור לפרופיל" /></label>
           <input
             id="handle-input"
             dir="auto"
@@ -112,7 +113,7 @@ export function HandlesEditor({
               setDraft(event.target.value);
               if (error) setError("");
             }}
-            placeholder="@שם או קישור לפרופיל"
+            placeholder={t("@שם או קישור לפרופיל")}
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
@@ -125,7 +126,7 @@ export function HandlesEditor({
             disabled={busy || !draft.trim()}
             className="h-[46px] shrink-0 rounded-[12px] border border-[var(--rule-dark)] bg-[var(--paper)] px-5 text-[14px] font-semibold text-[color:var(--ink)] shadow-[0_1px_2px_rgba(20,32,58,0.05)] transition-colors hover:bg-[var(--soft)] disabled:opacity-45"
           >
-            {busy ? "שומרים…" : "להוסיף"}
+            {busy ? t("שומרים…") : t("להוסיף")}
           </button>
         </form>
       )}

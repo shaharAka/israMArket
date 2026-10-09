@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
+
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { UIDialog, UIAction, InlineNotice } from "@/components/design/Controls";
@@ -26,6 +28,7 @@ const EXAMPLE_ASSETS: MetaAssets = {
 
 export function MetaConnection({ item, ready, demo, website, onChanged, onDisconnect, primary = false }: {
   primary?: boolean; item?: Item; ready: boolean; demo: boolean; website: string; onChanged: () => Promise<void>; onDisconnect?: () => void }) {
+  const t = useCopy();
   const [open, setOpen] = useState(false);
   const [stage, setStage] = useState<"connect" | "choose" | "done">("connect");
   const [doneContext, setDoneContext] = useState<"saved" | "tracking">("saved");
@@ -62,7 +65,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setVerification(result.integration.pixel_verification || null);
       if (!demo) { await changed.current(); setReadState(null); }
     } catch {
-      setReadState({ ...(latestItem.current?.source_readiness as MetaSourceReadiness), status: "unavailable", note_he: "לא הצלחנו לקרוא כרגע. הבחירה נשמרה; אפשר לנסות שוב." });
+      setReadState({ ...(latestItem.current?.source_readiness as MetaSourceReadiness), status: "unavailable", note_he: t("לא הצלחנו לקרוא כרגע. הבחירה נשמרה; אפשר לנסות שוב.") });
     } finally { setReading(false); }
   }
 
@@ -75,7 +78,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     try {
       const result = await (demo ? Promise.resolve(EXAMPLE_ASSETS) : endpoints.metaAssets());
       if (expectedAttempt.current && result.connection_attempt !== expectedAttempt.current) {
-        throw new Error("האישור בפייסבוק עדיין לא התקבל. השלימו אותו בחלון של פייסבוק ולחצו כאן להמשיך, או נסו לחבר שוב.");
+        throw new Error(t("האישור בפייסבוק עדיין לא התקבל. השלימו אותו בחלון של פייסבוק ולחצו כאן להמשיך, או נסו לחבר שוב."));
       }
       setNote("");
       const current = latestItem.current;
@@ -85,7 +88,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setStage("choose"); setOpen(true);
       setCanResume(false);
     } catch (err) {
-      setNote(err instanceof Error ? err.message : "לא הצלחנו להביא את החשבונות. נסו לחבר מחדש.");
+      setNote(err instanceof Error ? err.message : t("לא הצלחנו להביא את החשבונות. נסו לחבר מחדש."));
       setStage("connect"); setOpen(true);
     } finally { setBusy(false); }
   }
@@ -126,19 +129,19 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     if (!value) { setLoadingPixels(false); return; }
     setLoadingPixels(true);
     try {
-      const result = demo ? { pixels: [{ id: "demo-pixel", name: "האתר של לחם תום" }], error: null } : await endpoints.metaPixels(value);
+      const result = demo ? { pixels: [{ id: "demo-pixel", name: t("האתר של לחם תום") }], error: null } : await endpoints.metaPixels(value);
       if (request !== pixelRequest.current) return;
       setPixels(result.pixels); setPixelNote(result.error?.note_he || "");
       const current = latestItem.current;
       setPixel(result.pixels.some(p => p.id === current?.pixel_id) ? current!.pixel_id! : result.pixels.length === 1 ? result.pixels[0].id : "");
     } catch (err) {
-      if (request === pixelRequest.current) setPixelNote(err instanceof Error ? err.message : "לא הצלחנו לקרוא את המעקב. אפשר להמשיך ולחבר אותו בהמשך.");
+      if (request === pixelRequest.current) setPixelNote(err instanceof Error ? err.message : t("לא הצלחנו לקרוא את המעקב. אפשר להמשיך ולחבר אותו בהמשך."));
     } finally { if (request === pixelRequest.current) setLoadingPixels(false); }
   }
 
   async function connect(includeAds = ads) {
     if (demo) { await loadAssets(); return; }
-    if (!ready) { setNote("החיבור לפייסבוק עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך."); return; }
+    if (!ready) { setNote(t("החיבור לפייסבוק עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך.")); return; }
     // Open synchronously during the click so the browser can allow the consent window.
     const fullPage = prefersFullPageConsent(query => window.matchMedia(query));
     const child = fullPage ? null : window.open("about:blank", "isramarket-meta", "popup,width=620,height=740");
@@ -163,7 +166,7 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       }, 700);
     } catch (err) {
       sessionStorage.removeItem(ATTEMPT_KEY);
-      child?.close(); setNote(err instanceof Error ? err.message : "לא הצלחנו לפתוח את החיבור. נסו שוב.");
+      child?.close(); setNote(err instanceof Error ? err.message : t("לא הצלחנו לפתוח את החיבור. נסו שוב."));
     } finally { setBusy(false); }
   }
 
@@ -177,16 +180,16 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
       setVerification(null); setDoneContext("saved"); setStage("done");
       // Read after the saved selection, without a model prerequisite or blocking the plan.
       void read();
-    } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לשמור את הבחירה. נסו שוב."); }
+    } catch (err) { setNote(err instanceof Error ? err.message : t("לא הצלחנו לשמור את הבחירה. נסו שוב.")); }
     finally { setBusy(false); }
   }
 
   async function verify() {
     setBusy(true); setNote("");
     try {
-      setVerification(demo ? { status: "receiving", note_he: "פייסבוק מקבלת אירועים מהאתר.", events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
+      setVerification(demo ? { status: "receiving", note_he: t("פייסבוק מקבלת אירועים מהאתר."), events: ["PageView", "Purchase"] } : await endpoints.metaVerify());
       if (!demo) await changed.current();
-    } catch (err) { setNote(err instanceof Error ? err.message : "לא הצלחנו לבדוק כרגע. אפשר לחזור לכאן בהמשך."); }
+    } catch (err) { setNote(err instanceof Error ? err.message : t("לא הצלחנו לבדוק כרגע. אפשר לחזור לכאן בהמשך.")); }
     finally { setBusy(false); }
   }
 
@@ -198,92 +201,92 @@ export function MetaConnection({ item, ready, demo, website, onChanged, onDiscon
     {item?.connected ? (
       // Same shape as the other connections: who is connected, and the actions beside it.
       <div className={styles.connected}>
-        <p>מחובר: <strong>{item.display_name}</strong>{item.ad_account_id ? " · נתוני פרסום" : ""}{item.pixel_id ? " · מעקב באתר" : ""}</p>
+        <p><Copy text="מחובר:" /><strong>{item.display_name}</strong>{item.ad_account_id ? t(" · נתוני פרסום") : ""}{item.pixel_id ? t(" · מעקב באתר") : ""}</p>
         <div className={styles.actions}>
-          <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}>לנהל את החיבור</button>
-          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setDoneContext("tracking"); setStage("done"); setOpen(true); }}>לבדוק את המעקב</button>}
-          {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}>לנתק</button>}
+          <button type="button" className={styles.textAction} onClick={() => { setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = ""; setBusy(true); void loadAssets(); }}><Copy text="לנהל את החיבור" /></button>
+          {item.pixel_id && <button type="button" className={styles.textAction} onClick={() => { setAccount(item.ad_account_id || ""); setPixel(item.pixel_id!); setVerification(item.pixel_verification || null); setDoneContext("tracking"); setStage("done"); setOpen(true); }}><Copy text="לבדוק את המעקב" /></button>}
+          {onDisconnect && <button type="button" className={styles.quietAction} onClick={onDisconnect}><Copy text="לנתק" /></button>}
         </div>
       </div>
     ) : <>
       <UIAction variant={primary ? "primary" : "secondary"} disabled={!ready && !demo && !needsChoice} onClick={() => {
         setNote(""); setOpen(true); setCanResume(false); expectedAttempt.current = "";
         if (needsChoice) { setBusy(true); void loadAssets(); } else setStage("connect");
-      }}>{needsChoice ? "לבחור את העסק שלי" : "לחבר את פייסבוק ואינסטגרם"}</UIAction>
-      <p className={styles.hint}>{!ready && !demo ? "החיבור עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך." : "עם חשבון הפייסבוק שמנהל את הדף. נתוני מודעות אפשר להוסיף בהמשך."}</p>
+      }}>{needsChoice ? t("לבחור את העסק שלי") : t("לחבר את פייסבוק ואינסטגרם")}</UIAction>
+      <p className={styles.hint}>{!ready && !demo ? t("החיבור עדיין לא זמין. אפשר להמשיך בתוכנית ולחבר בהמשך.") : t("עם חשבון הפייסבוק שמנהל את הדף. נתוני מודעות אפשר להוסיף בהמשך.")}</p>
     </>}
     {item?.connected && readState && <SourceReadState provider="meta" state={readState} checking={reading} primary={primary} onRetry={() => void read()} onReconnect={renewAccess} />}
     {note && !open && <p role="status">{note}</p>}
-    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? "לחבר את העסק לפייסבוק" : stage === "choose" ? "איזה עסק לחבר?" : doneContext === "tracking" ? "בדיקת המעקב באתר" : "החשבונות נשמרו"} description="הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם.">
+    <UIDialog open={open} onClose={() => setOpen(false)} title={stage === "connect" ? t("לחבר את העסק לפייסבוק") : stage === "choose" ? t("איזה עסק לחבר?") : doneContext === "tracking" ? t("בדיקת המעקב באתר") : t("החשבונות נשמרו")} description={t("הנתונים יעזרו לנו לדייק את התוכנית ואת הפוסטים שלכם.")}>
       <div className={styles.wizard}>
         {note && <InlineNotice tone="attention" title={note} />}
         {stage === "connect" && <>
-          <p>נאשר בפייסבוק גישה לקריאת הנתונים, ואז נחזור לכאן לבחור את העסק. אם האינסטגרם המקצועי מקושר לדף, הוא ייבחר איתו.</p>
-          <details className={styles.setupGuide}><summary>יש לכם גם מודעות בתשלום?<IconChevron className={styles.disclosureIcon} /></summary>
-            <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span>לחבר גם את נתוני המודעות<small>כדי לבדוק הוצאות ותוצאות. אפשר גם בהמשך.</small></span></label>
+          <p><Copy text="נאשר בפייסבוק גישה לקריאת הנתונים, ואז נחזור לכאן לבחור את העסק. אם האינסטגרם המקצועי מקושר לדף, הוא ייבחר איתו." /></p>
+          <details className={styles.setupGuide}><summary><Copy text="יש לכם גם מודעות בתשלום?" /><IconChevron className={styles.disclosureIcon} /></summary>
+            <label className={styles.check}><input type="checkbox" checked={ads} onChange={e => setAds(e.target.checked)} disabled={waiting} /><span><Copy text="לחבר גם את נתוני המודעות" /><small><Copy text="כדי לבדוק הוצאות ותוצאות. אפשר גם בהמשך." /></small></span></label>
           </details>
-          <p className={styles.hint}>גישה לקריאת נתונים בלבד. פרסום פוסטים ושינוי מודעות דורשים אישור נפרד.</p>
-          <UIAction onClick={() => void connect()} busy={busy} disabled={waiting}>{waiting ? "ממתינים לאישור בחלון של פייסבוק" : "לאשר בפייסבוק ולבחור את הדף"}</UIAction>
-          {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}>אישרתי, להמשיך לבחירת העסק</UIAction>}
+          <p className={styles.hint}><Copy text="גישה לקריאת נתונים בלבד. פרסום פוסטים ושינוי מודעות דורשים אישור נפרד." /></p>
+          <UIAction onClick={() => void connect()} busy={busy} disabled={waiting}>{waiting ? t("ממתינים לאישור בחלון של פייסבוק") : t("לאשר בפייסבוק ולבחור את הדף")}</UIAction>
+          {(waiting || canResume) && <UIAction variant="text" onClick={() => { setWaiting(false); void loadAssets(); }}><Copy text="אישרתי, להמשיך לבחירת העסק" /></UIAction>}
         </>}
         {stage === "choose" && assets && <>
-          <label className={styles.field}>הדף העסקי<select value={page} onChange={e => setPage(e.target.value)}>
-            <option value="" disabled={assets.pages.length > 0}>{assets.pages.length ? "בחרו את הדף" : "בלי דף כרגע"}</option>
+          <label className={styles.field}><Copy text="הדף העסקי" /><select value={page} onChange={e => setPage(e.target.value)}>
+            <option value="" disabled={assets.pages.length > 0}>{assets.pages.length ? t("בחרו את הדף") : t("בלי דף כרגע")}</option>
             {assets.pages.map(p => <option key={p.page_id} value={p.page_id}>{p.display_name}</option>)}
-            {assets.pages.length > 0 && <option value={NO_PAGE}>בלי דף כרגע</option>}
+            {assets.pages.length > 0 && <option value={NO_PAGE}><Copy text="בלי דף כרגע" /></option>}
           </select></label>
-          {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? "האינסטגרם המקושר לדף הזה יתחבר יחד איתו." : "לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף בפייסבוק ולחזור לכאן."}</p>}
-          {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || "לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס לפייסבוק מנהל את הדף ושבחרתם בו בחלון האישור."} במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק.</p>}
+          {selectedPage && <p className={styles.hint}>{selectedPage.instagram_id ? t("האינסטגרם המקושר לדף הזה יתחבר יחד איתו.") : t("לא נמצא אינסטגרם מקושר לדף. אפשר לחבר אותו לדף בפייסבוק ולחזור לכאן.")}</p>}
+          {!assets.pages.length && <p className={styles.hint}>{assets.errors.pages?.note_he || t("לא נמצאו דפים שאושרו. ודאו שהחשבון שנכנס לפייסבוק מנהל את הדף ושבחרתם בו בחלון האישור.")} <Copy text="במסלול הזה האינסטגרם צריך להיות מקצועי ומקושר לדף פייסבוק." /></p>}
           <details className={styles.setupGuide} open={Boolean(account) || undefined}>
-            <summary>גם נתוני מודעות ומעקב באתר?<IconChevron className={styles.disclosureIcon} /></summary>
+            <summary><Copy text="גם נתוני מודעות ומעקב באתר?" /><IconChevron className={styles.disclosureIcon} /></summary>
             <div className={styles.setupBody}>
               {assets.scopes.some(scope => ["ads_read", "ads_management"].includes(scope)) ? <>
-          <label className={styles.field}>חשבון הפרסום <small>אפשר גם בהמשך</small><select value={account} onChange={e => { void chooseAccount(e.target.value); }}><option value="">בלי נתוני מודעות כרגע</option>{assets.ad_accounts.map(a => <option key={a.id} value={a.id}>{a.name}{a.currency ? ` (${a.currency})` : ""}</option>)}</select></label>
-          {!assets.ad_accounts.length && <p className={styles.hint}>{assets.errors.ads?.note_he || "לא נמצאו חשבונות פרסום. אפשר להמשיך עם הדף ולחבר פרסום בהמשך."}</p>}
+          <label className={styles.field}><Copy text="חשבון הפרסום" /><small><Copy text="אפשר גם בהמשך" /></small><select value={account} onChange={e => { void chooseAccount(e.target.value); }}><option value=""><Copy text="בלי נתוני מודעות כרגע" /></option>{assets.ad_accounts.map(a => <option key={a.id} value={a.id}>{a.name}{a.currency ? ` (${a.currency})` : ""}</option>)}</select></label>
+          {!assets.ad_accounts.length && <p className={styles.hint}>{assets.errors.ads?.note_he || t("לא נמצאו חשבונות פרסום. אפשר להמשיך עם הדף ולחבר פרסום בהמשך.")}</p>}
           {account && <>
-            <label className={styles.field}>המעקב באתר (Meta Pixel)<select value={pixel} onChange={e => setPixel(e.target.value)} disabled={loadingPixels}><option value="">{loadingPixels ? "מחפשים את המעקב…" : "לבחור בהמשך"}</option>{pixels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
-            {pixelNote ? <p className={styles.hint}>{pixelNote}</p> : !loadingPixels && !pixels.length ? <p className={styles.hint}>לא נמצא מעקב בחשבון הזה. תוכלו לחבר אותו דרך מערכת האתר; החיבור לפרסום לא תלוי בכך.</p> : null}
+            <label className={styles.field}><Copy text="המעקב באתר (Meta Pixel)" /><select value={pixel} onChange={e => setPixel(e.target.value)} disabled={loadingPixels}><option value="">{loadingPixels ? t("מחפשים את המעקב…") : t("לבחור בהמשך")}</option>{pixels.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
+            {pixelNote ? <p className={styles.hint}>{pixelNote}</p> : !loadingPixels && !pixels.length ? <p className={styles.hint}><Copy text="לא נמצא מעקב בחשבון הזה. תוכלו לחבר אותו דרך מערכת האתר; החיבור לפרסום לא תלוי בכך." /></p> : null}
             {!loadingPixels && !pixels.length && <PixelSetupGuide onRefresh={() => { void chooseAccount(account); }} busy={busy} />}
           </>}
-          {!account && <p className={styles.hint}>כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף.</p>}
+          {!account && <p className={styles.hint}><Copy text="כדי לבחור מעקב לאתר, בחרו גם את חשבון הפרסום שמקושר אליו. אפשר להמשיך בינתיים עם נתוני הדף." /></p>}
               </> : <>
-                <p className={styles.hint}>אם אתם מפרסמים בתשלום, אפשר לאשר קריאה נוספת בפייסבוק. הדף נשאר בבחירה שלכם.</p>
-                <UIAction variant="secondary" onClick={() => void connect(true)} busy={busy}>לחבר גם את נתוני המודעות</UIAction>
+                <p className={styles.hint}><Copy text="אם אתם מפרסמים בתשלום, אפשר לאשר קריאה נוספת בפייסבוק. הדף נשאר בבחירה שלכם." /></p>
+                <UIAction variant="secondary" onClick={() => void connect(true)} busy={busy}><Copy text="לחבר גם את נתוני המודעות" /></UIAction>
               </>}
             </div>
           </details>
-          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (assets.pages.length > 0 && !page) || ((!page || page === NO_PAGE) && !account)}>{account ? "אלה החשבונות של העסק שלי" : "זה הדף של העסק שלי"}</UIAction>
-          <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}>החשבון חסר? לחבר שוב עם מנהל העסק</UIAction>
+          <UIAction onClick={save} busy={busy} disabled={loadingPixels || (assets.pages.length > 0 && !page) || ((!page || page === NO_PAGE) && !account)}>{account ? t("אלה החשבונות של העסק שלי") : t("זה הדף של העסק שלי")}</UIAction>
+          <UIAction variant="text" onClick={() => { setStage("connect"); setNote(""); }}><Copy text="החשבון חסר? לחבר שוב עם מנהל העסק" /></UIAction>
         </>}
         {stage === "done" && <>
-          {doneContext === "saved" ? <p>הבחירה נשמרה.</p> : null}
+          {doneContext === "saved" ? <p><Copy text="הבחירה נשמרה." /></p> : null}
           {readState && <SourceReadState provider="meta" state={readState} checking={reading} onRetry={() => void read()} onReconnect={renewAccess} />}
           {account && !pixel && <>
-            <p className={styles.hint}>נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק.</p>
-            <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב שלי</UIAction>
+            <p className={styles.hint}><Copy text="נתוני המודעות מחוברים. כדי למדוד גם פעולות באתר, בחרו את המעקב של העסק." /></p>
+            <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}><Copy text="לבחור את המעקב שלי" /></UIAction>
             <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />
           </>}
           {pixel && <div className={styles.tracking}>
-            <h3>האם המעקב באתר עובד?</h3>
-            <p className={styles.hint}><strong>{selectedPixel?.name || tracking?.name || "המעקב של העסק"}</strong><br />האתר לבדיקה: {website ? <bdi>{website}</bdi> : <>לא הוגדר אתר. <Link href="/business">להוסיף את כתובת האתר</Link></>}</p>
-            <p>{tracking?.note_he || "נבדוק אם פייסבוק מקבלת אירועים מהכתובת של העסק."}</p>
-            {tracking?.checked_at && <small>נבדק: {new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
-            <UIAction onClick={verify} busy={busy}>לבדוק את המעקב</UIAction>
-            {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer" className={styles.retry}>לפתוח את האתר ולנסות שוב</a>}
-            {tracking?.status === "wrong_site" && <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}>לבחור את המעקב של האתר שלי</UIAction>}
-            {tracking && ["permission", "reconnect"].includes(tracking.status) && <UIAction variant="text" onClick={renewAccess}>לחדש את הגישה למעקב</UIAction>}
+            <h3><Copy text="האם המעקב באתר עובד?" /></h3>
+            <p className={styles.hint}><strong>{selectedPixel?.name || tracking?.name || t("המעקב של העסק")}</strong><br /><Copy text="האתר לבדיקה:" />{website ? <bdi>{website}</bdi> : <><Copy text="לא הוגדר אתר." /><Link href="/business"><Copy text="להוסיף את כתובת האתר" /></Link></>}</p>
+            <p>{tracking?.note_he || t("נבדוק אם פייסבוק מקבלת אירועים מהכתובת של העסק.")}</p>
+            {tracking?.checked_at && <small><Copy text="נבדק:" />{new Date(tracking.checked_at).toLocaleString("he-IL", { day: "numeric", month: "numeric", hour: "2-digit", minute: "2-digit" })}</small>}
+            <UIAction onClick={verify} busy={busy}><Copy text="לבדוק את המעקב" /></UIAction>
+            {tracking && ["waiting", "site_unconfirmed"].includes(tracking.status) && website && <a href={website} target="_blank" rel="noopener noreferrer" className={styles.retry}><Copy text="לפתוח את האתר ולנסות שוב" /></a>}
+            {tracking?.status === "wrong_site" && <UIAction variant="text" onClick={() => { setBusy(true); void loadAssets(); }}><Copy text="לבחור את המעקב של האתר שלי" /></UIAction>}
+            {tracking && ["permission", "reconnect"].includes(tracking.status) && <UIAction variant="text" onClick={renewAccess}><Copy text="לחדש את הגישה למעקב" /></UIAction>}
             {(!tracking || tracking.status === "waiting") && <PixelSetupGuide onRefresh={() => { setBusy(true); void loadAssets(); }} busy={busy} />}
             <details className={styles.trackingDetails}>
-              <summary>פרטי המעקב ושינוי הבחירה<IconChevron className={styles.disclosureIcon} /></summary>
+              <summary><Copy text="פרטי המעקב ושינוי הבחירה" /><IconChevron className={styles.disclosureIcon} /></summary>
               <div className={styles.setupBody}>
-                <p>מזהה המעקב: <bdi>{pixel}</bdi></p>
-                <button type="button" className={styles.textAction} onClick={() => { setBusy(true); void loadAssets(); }} disabled={busy}>לבחור מעקב אחר</button>
+                <p><Copy text="מזהה המעקב:" /><bdi>{pixel}</bdi></p>
+                <button type="button" className={styles.textAction} onClick={() => { setBusy(true); void loadAssets(); }} disabled={busy}><Copy text="לבחור מעקב אחר" /></button>
               </div>
             </details>
-            <p className={styles.hint}>הבדיקה מראה שהאתר שולח אירועים. היא לא מאשרת הזמנות או סכומים.</p>
+            <p className={styles.hint}><Copy text="הבדיקה מראה שהאתר שולח אירועים. היא לא מאשרת הזמנות או סכומים." /></p>
           </div>}
-          <Link href="/strategy" className={styles.next}>להמשיך בתוכנית ←</Link>
-          <UIAction variant="text" onClick={() => setOpen(false)}>לסגור ולהמשיך אחר כך</UIAction>
+          <Link href="/strategy" className={styles.next}><Copy text="להמשיך בתוכנית ←" /></Link>
+          <UIAction variant="text" onClick={() => setOpen(false)}><Copy text="לסגור ולהמשיך אחר כך" /></UIAction>
         </>}
       </div>
     </UIDialog>

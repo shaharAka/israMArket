@@ -1,5 +1,7 @@
 "use client";
 
+import { Copy } from "@/components/language/LanguageProvider";
+
 import { useState } from "react";
 import { IconChevron } from "@/lib/icons";
 import styles from "./meta-connection.module.css";
@@ -36,18 +38,18 @@ export function PixelSetupGuide({ onRefresh, busy }: { onRefresh: () => void; bu
   const [platform, setPlatform] = useState<keyof typeof PLATFORMS | "">("");
   const guide = platform ? PLATFORMS[platform] : null;
   return <details className={styles.setupGuide}>
-    <summary>המעקב חסר? כך מחברים אותו לאתר<IconChevron className={styles.disclosureIcon} /></summary>
+    <summary><Copy text="המעקב חסר? כך מחברים אותו לאתר" /><IconChevron className={styles.disclosureIcon} /></summary>
     <div className={styles.setupBody}>
-      <label className={styles.field}>באיזו מערכת האתר שלכם?<select value={platform} onChange={e => setPlatform(e.target.value as keyof typeof PLATFORMS | "")}>
-        <option value="">לבחור את מערכת האתר</option>
+      <label className={styles.field}><Copy text="באיזו מערכת האתר שלכם?" /><select value={platform} onChange={e => setPlatform(e.target.value as keyof typeof PLATFORMS | "")}>
+        <option value=""><Copy text="לבחור את מערכת האתר" /></option>
         {Object.entries(PLATFORMS).map(([key, value]) => <option key={key} value={key}>{value.label}</option>)}
       </select></label>
       {guide && <>
         <p>{guide.instruction}</p>
         <p className={styles.hint}>{guide.note}</p>
-        {guide.url && <a href={guide.url} target="_blank" rel="noopener noreferrer">להוראות של {guide.label} ↗</a>}
-        <p>בסיום החיבור לאתר, חזרו לכאן ובחרו את המעקב שהופיע בחשבון הפרסום שלכם.</p>
-        <button type="button" className={styles.textAction} onClick={onRefresh} disabled={busy}>חיברתי באתר, לרענן את הרשימה</button>
+        {guide.url && <a href={guide.url} target="_blank" rel="noopener noreferrer"><Copy text="להוראות של" />{guide.label} ↗</a>}
+        <p><Copy text="בסיום החיבור לאתר, חזרו לכאן ובחרו את המעקב שהופיע בחשבון הפרסום שלכם." /></p>
+        <button type="button" className={styles.textAction} onClick={onRefresh} disabled={busy}><Copy text="חיברתי באתר, לרענן את הרשימה" /></button>
       </>}
     </div>
   </details>;

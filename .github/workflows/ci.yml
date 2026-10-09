@@ -51,7 +51,7 @@ jobs:
       - name: Connection guidance and tracked-link route tests
         run: node --test components/integrations/*.test.mjs tests/trackedLinkRoute.test.mjs tests/taskContinuity.test.mjs
       - name: Landing business-route handoff tests
-        run: node scripts/test-landing-business-route.mjs
+        run: node scripts/test-landing-business-route.mjs && node scripts/test-research-replies.mjs
       - name: Build
         run: npm run build
         env:

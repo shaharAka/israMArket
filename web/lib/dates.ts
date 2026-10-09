@@ -33,7 +33,8 @@ export function dateRange(start?: string | null, end?: string | null, locale: Lo
 }
 
 /** "5.9": a read date beside a range that already carries the year. */
-export function dayMonth(value?: string | null): string {
+export function dayMonth(value?: string | null, locale: Locale = "he"): string {
   const date = dayOf(value);
-  return date ? `${date.day}.${date.month}` : "";
+  if (!date) return "";
+  return locale === "he" ? `${date.day}.${date.month}` : new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { day: "numeric", month: "short", timeZone: "UTC" }).format(new Date(Date.UTC(date.year, date.month - 1, date.day)));
 }

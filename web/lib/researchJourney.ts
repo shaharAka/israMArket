@@ -25,7 +25,7 @@ export type SavedResearchJourney = ResearchJourney & { answers: Omit<OnboardingD
 export type DiscoveryResult = {
   sources: { kind: string; url: string; status: "read" | "limited" | "blocked" | "unavailable" | "not_read"; read_at?: string | null }[];
   facts?: { quote: string; url: string; read_at?: string | null }[];
-  questions: { question: string; quote: string; source: "website" | "answers"; url?: string }[];
+  questions: { question: string; quote: string; source: "website" | "instagram" | "answers"; url?: string }[];
   assisted: boolean;
 };
 export const METRICS: Record<Segment, { key: NonNullable<ResearchJourney["metric"]>; label: string }[]> = {
@@ -37,4 +37,15 @@ export const METRICS: Record<Segment, { key: NonNullable<ResearchJourney["metric
 };
 export function observationValid(value: Observation) {
   return value.status === "unknown" || (typeof value.lower === "number" && Number.isFinite(value.lower) && value.lower >= 0 && value.lower <= 1e9 && (value.unit !== "count" || Number.isInteger(value.lower)) && (value.status === "exact" || (typeof value.upper === "number" && Number.isFinite(value.upper) && value.upper >= value.lower && value.upper <= 1e9 && (value.unit !== "count" || Number.isInteger(value.upper)))));
+}
+
+/** Preserve answers when a follow-up read has nothing more to ask. */
+export function mergeResearchReplies(previous: ResearchJourney["replies"], next: ResearchJourney["replies"]) {
+  const merged = previous.map(reply => ({ ...reply }));
+  for (const reply of next) {
+    const index = merged.findIndex(saved => saved.question === reply.question);
+    if (index >= 0) merged[index] = reply;
+    else if (merged.length < 4) merged.push(reply);
+  }
+  return merged;
 }

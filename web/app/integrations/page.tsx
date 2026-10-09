@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Copy } from "@/components/language/LanguageProvider";
+import { Copy, useCopy } from "@/components/language/LanguageProvider";
 import {
   AppShell,
   Button,
@@ -72,6 +72,7 @@ const CODE_CHIP = "rounded-md bg-[var(--paper)] px-1.5 py-0.5 font-mono text-[12
  * operators; the customer screen explains availability and recovery instead.
  */
 export default function IntegrationsPage() {
+  const t = useCopy();
   const [data, setData] = useState<IntegrationsPayload | null>(null);
   const [business, setBusiness] = useState<Business | null>(null);
   const [demo] = useState(() => typeof window !== "undefined" && isDemo());
@@ -111,7 +112,7 @@ export default function IntegrationsPage() {
   // The WhatsApp tracked link. Loaded on its own so a failure here never blanks the page.
   const [whatsapp, setWhatsapp] = useState<WhatsappPayload | null>(null);
 
-  async function reload(forceLive = false) {
+  const reload = useCallback(async (forceLive = false) => {
     await endpoints
       .integrations(forceLive)
       .then((integrationsRes) => {
@@ -143,13 +144,13 @@ export default function IntegrationsPage() {
       .catch(() => {
         // Business not yet enrolled or non-blocking
       });
-  }
+  }, []);
 
   useEffect(() => {
     reload().catch((err) =>
       setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.")
     );
-  }, []);
+  }, [reload]);
 
   const ga4Item = data?.integrations.find((item) => item.provider === "ga4");
   const metaItem = data?.integrations.find((item) => item.provider === "meta");
@@ -167,12 +168,12 @@ export default function IntegrationsPage() {
     setError("");
     setSuccessNote("");
     if (demo) {
-      toast("בדמו מוצגים נתונים של מאפייה לדוגמה. כדי לחבר את נתוני האתר, עברו לעסק שלכם.");
+      toast(t("בדמו מוצגים נתונים של מאפייה לדוגמה. כדי לחבר את נתוני האתר, עברו לעסק שלכם."));
       return;
     }
     if (!data?.ga4_ready) {
       setError(
-        "החיבור לגוגל עדיין לא זמין. אפשר להמשיך בתוכנית ולחזור לכאן בהמשך."
+        t("החיבור לגוגל עדיין לא זמין. אפשר להמשיך בתוכנית ולחזור לכאן בהמשך.")
       );
       return;
     }
@@ -180,13 +181,13 @@ export default function IntegrationsPage() {
       const { url } = await endpoints.ga4Start();
       window.location.href = url;
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו להתחיל את החיבור לגוגל");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו להתחיל את החיבור לגוגל"));
     }
   }
 
   async function handleSaveGa4Property() {
     if (!selectedGa4Property) {
-      setError("בחרו את האתר מהרשימה");
+      setError(t("בחרו את האתר מהרשימה"));
       return;
     }
     const prop = ga4Item?.properties?.find((p) => p.property_id === selectedGa4Property);
@@ -199,55 +200,55 @@ export default function IntegrationsPage() {
       });
       setSuccessNote("");
       setData(previous => previous ? { ...previous, integrations: previous.integrations.map(item => item.provider === "ga4" ? result.integration : item) } : previous);
-      if (result.integration.source_readiness?.status === "ready") toast("קראנו את נתוני האתר");
+      if (result.integration.source_readiness?.status === "ready") toast(t("קראנו את נתוני האתר"));
       await reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את האתר שבחרתם");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור את האתר שבחרתם"));
     } finally {
       setSavingGa4(false);
     }
   }
 
   async function handleReadGa4() {
-    if (demo) { toast("זהו דמו. לא נקראים נתונים מחשבון אמיתי."); return; }
+    if (demo) { toast(t("זהו דמו. לא נקראים נתונים מחשבון אמיתי.")); return; }
     setSavingGa4(true); setError(""); setSuccessNote("");
     try {
       const result = await endpoints.ga4Read();
       setData(previous => previous ? { ...previous, integrations: previous.integrations.map(item => item.provider === "ga4" ? result.integration : item) } : previous);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לבדוק את הנתונים. נסו שוב.");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לבדוק את הנתונים. נסו שוב."));
     } finally { setSavingGa4(false); }
   }
 
   async function handleDisconnect(provider: "ga4" | "meta") {
     if (demo) {
-      toast("בדמו החיבורים הם רק לדוגמה");
+      toast(t("בדמו החיבורים הם רק לדוגמה"));
       return;
     }
     setError("");
     try {
       await endpoints.disconnectIntegration(provider);
-      toast(provider === "ga4" ? "החיבור לנתוני האתר נותק" : "החיבור לאינסטגרם נותק");
+      toast(provider === "ga4" ? t("החיבור לנתוני האתר נותק") : t("החיבור לאינסטגרם נותק"));
       await reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לנתק את החיבור");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לנתק את החיבור"));
     }
   }
 
   async function handleUpdateWebsite() {
     if (!websiteInput.trim()) {
-      setError("הזינו כתובת אתר מלאה, למשל https://myshop.co.il");
+      setError(t("הזינו כתובת אתר מלאה, למשל https://myshop.co.il"));
       return;
     }
     setScanningWebsite(true);
     setError("");
     try {
       await endpoints.scanWebsite(websiteInput.trim());
-      setSuccessNote("קראנו את האתר ועדכנו את הצבעים והסגנון.");
-      toast("הצבעים והסגנון עודכנו מהאתר");
+      setSuccessNote(t("קראנו את האתר ועדכנו את הצבעים והסגנון."));
+      toast(t("הצבעים והסגנון עודכנו מהאתר"));
       await reload();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לקרוא את האתר");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לקרוא את האתר"));
     } finally {
       setScanningWebsite(false);
     }
@@ -261,10 +262,10 @@ export default function IntegrationsPage() {
 
   const connectionRows: Record<ConnectionKey, ReactNode> = {
     website: (
-<ConnectionSection source="website" title="האתר של העסק" status={business?.website_url ? "כתובת נשמרה" : "לבחירה"} open={activeKey === "website"} onOpen={setExpanded}>
+<ConnectionSection source="website" title={t("האתר של העסק")} status={business?.website_url ? t("כתובת נשמרה") : t("לבחירה")} open={activeKey === "website"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
             <div className="pb-3">
-              <label htmlFor="business-website" className={LABEL}>כתובת האתר</label>
+              <label htmlFor="business-website" className={LABEL}><Copy text="כתובת האתר" /></label>
               <div className="flex flex-col gap-2.5 sm:flex-row">
                 <input
                   id="business-website"
@@ -283,21 +284,17 @@ export default function IntegrationsPage() {
                   onClick={handleUpdateWebsite}
                   className="shrink-0 whitespace-nowrap"
                 >
-                  {scanningWebsite ? "קוראים את האתר…" : business?.website_url ? "לקרוא שוב את האתר" : "לקרוא את האתר"}
+                  {scanningWebsite ? t("קוראים את האתר…") : business?.website_url ? t("לקרוא שוב את האתר") : t("לקרוא את האתר")}
                 </Button>
               </div>
               <HowToFind topic="website" className="mt-1" />
             </div>
 
-            <RowDetails summary="מה זה נותן, ומה אם אין לי אתר?">
+            <RowDetails summary={t("מה זה נותן, ומה אם אין לי אתר?")}>
               <p>
-                אנחנו קוראים מהאתר את הצבעים, הלוגו, הגופנים וסגנון הצילום, ואת מה שאתם מוכרים.
-                לפי זה אנחנו בונים פוסטים שנראים כאילו העסק שלכם הכין אותם.
-              </p>
+                <Copy text="אנחנו קוראים מהאתר את הצבעים, הלוגו, הגופנים וסגנון הצילום, ואת מה שאתם מוכרים. לפי זה אנחנו בונים פוסטים שנראים כאילו העסק שלכם הכין אותם." /></p>
               <p>
-                אין אתר, או שהוא עוד בבנייה? זה בסדר. השאירו את השדה ריק, ונעבוד מתיאור העסק
-                ומהעמודים באינסטגרם ובפייסבוק. כשהאתר יעלה, חזרו לכאן ולחצו ״לקרוא שוב את האתר״.
-              </p>
+                <Copy text="אין אתר, או שהוא עוד בבנייה? זה בסדר. השאירו את השדה ריק, ונעבוד מתיאור העסק ומהעמודים באינסטגרם ובפייסבוק. כשהאתר יעלה, חזרו לכאן ולחצו ״לקרוא שוב את האתר״." /></p>
             </RowDetails>
           </section>
 
@@ -307,21 +304,20 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     whatsapp: (
-<ConnectionSection source="whatsapp" title="קישור הוואטסאפ" status={whatsapp?.number_e164 ? "פעיל" : "לבחירה"} open={activeKey === "whatsapp"} onOpen={setExpanded}>
+<ConnectionSection source="whatsapp" title={t("קישור הוואטסאפ")} status={whatsapp?.number_e164 ? t("פעיל") : t("לבחירה")} open={activeKey === "whatsapp"} onOpen={setExpanded}>
           <WhatsappRow data={whatsapp} primary={primaryKey === "whatsapp"} onChange={setWhatsapp} />
           </ConnectionSection>
     ),
     ga4: (
-<ConnectionSection source="ga4" title="נתוני האתר" status={ga4NeedsSelection ? "נשאר לבחור אתר" : ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? "עדיין לא זמין" : "לא מחובר"} account={ga4Item?.display_name?.replace(/\s*\(GA4\)\s*$/, "")} open={activeKey === "ga4"} onOpen={setExpanded}>
+<ConnectionSection source="ga4" title={t("נתוני האתר")} status={ga4NeedsSelection ? t("נשאר לבחור אתר") : ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={ga4Item?.display_name?.replace(/\s*\(GA4\)\s*$/, "")} open={activeKey === "ga4"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
             <div className="pb-3">
               {/* "Signing in with Google is not measurement" is in the expand below. */}
               {ga4NeedsSelection ? (
                 <div className="rounded-xl bg-[var(--soft)] p-4 sm:p-5">
                   <p className="text-[14px] font-medium leading-6 text-[color:var(--ink)]">
-                    בחרו את האתר של העסק. אחרי הבחירה נבדוק את הנתונים שלו.
-                  </p>
-                  <label htmlFor="ga4-property" className={`${LABEL} mt-4`}>בחירת האתר</label>
+                    <Copy text="בחרו את האתר של העסק. אחרי הבחירה נבדוק את הנתונים שלו." /></p>
+                  <label htmlFor="ga4-property" className={`${LABEL} mt-4`}><Copy text="בחירת האתר" /></label>
                   <div className="flex flex-col gap-2.5 sm:flex-row">
                     <SelectFrame>
                     <select
@@ -330,10 +326,10 @@ export default function IntegrationsPage() {
                       onChange={(e) => setSelectedGa4Property(e.target.value)}
                       className={SELECT}
                     >
-                      <option value="">-- בחרו את האתר --</option>
+                      <option value=""><Copy text="-- בחרו את האתר --" /></option>
                       {ga4Item?.properties?.map((prop) => (
                         <option key={prop.property_id} value={prop.property_id}>
-                          {prop.display_name || "אתר ללא שם"}{prop.account ? ` (${prop.account})` : ""}
+                          {prop.display_name || t("אתר ללא שם")}{prop.account ? ` (${prop.account})` : ""}
                         </option>
                       ))}
                     </select>
@@ -347,7 +343,7 @@ export default function IntegrationsPage() {
                       onClick={handleSaveGa4Property}
                       className="shrink-0 whitespace-nowrap"
                     >
-                      {savingGa4 ? "בודקים את הנתונים…" : "זה האתר שלי"}
+                      {savingGa4 ? t("בודקים את הנתונים…") : t("זה האתר שלי")}
                     </Button>
                   </div>
                 </div>
@@ -356,7 +352,7 @@ export default function IntegrationsPage() {
                 <ConnectedLine
                   account={
                     <>
-                      האתר שנבחר:{" "}
+                      <Copy text="האתר שנבחר:" />{" "}
                       {/* Google's product code ("GA4") is not the owner's business name. */}
                       <strong className="font-semibold text-[color:var(--ink)]">
                         {(ga4Item?.display_name || ga4Item?.external_id || "").replace(/\s*\(GA4\)\s*$/, "")}
@@ -365,11 +361,9 @@ export default function IntegrationsPage() {
                   }
                 >
                   {!(["reconnect", "no_properties"].includes(ga4State?.status || "")) ? <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
-                    להחליף חשבון
-                  </button> : null}
+                    <Copy text="להחליף חשבון" /></button> : null}
                   <button type="button" onClick={() => handleDisconnect("ga4")} className={QUIET_ACTION}>
-                    לנתק
-                  </button>
+                    <Copy text="לנתק" /></button>
                 </ConnectedLine>
                 {ga4State ? <SourceReadState state={ga4State} checking={savingGa4} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} /> : null}
                 </>
@@ -385,11 +379,11 @@ export default function IntegrationsPage() {
                     disabled={!data?.ga4_ready}
                   >
                     <IconLink className="h-4 w-4" />
-                    <span>לחבר את נתוני האתר</span>
+                    <span><Copy text="לחבר את נתוני האתר" /></span>
                   </Button>
                   <span className="text-[13px] text-[color:var(--ink-muted)]">
                     {/* Shortened for the word budget; the full sentence is in the expand. */}
-                    {data && !data.ga4_ready ? "החיבור עדיין לא זמין. אפשר להמשיך בתוכנית." : "אישור לקריאת נתונים, בלי למסור סיסמה."}
+                    {data && !data.ga4_ready ? t("החיבור עדיין לא זמין. אפשר להמשיך בתוכנית.") : t("אישור לקריאת נתונים, בלי למסור סיסמה.")}
                   </span>
                 </div>
               )}
@@ -404,32 +398,26 @@ export default function IntegrationsPage() {
               {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
             </div>
 
-            <RowDetails summary="מה זה נותן, ואיך משיגים גישה?">
+            <RowDetails summary={t("מה זה נותן, ואיך משיגים גישה?")}>
               <p>
-                בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). הוא מראה כניסות לאתר ואת המקורות שלהן.
-                פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח.
-                החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר.
-              </p>
-              <p>הכניסה עם Google מזהה אתכם בישראמארקט, ואינה מחברת את המדידה. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר.</p>
+                <Copy text="בגוגל הכלי נקרא Google Analytics (גוגל אנליטיקס). הוא מראה כניסות לאתר ואת המקורות שלהן. פניות וקניות אפשר לספור רק אם הן הוגדרו ונמדדות באתר. לחיצה לבדה אינה לקוח. החיבור כאן קורא נתונים קיימים; הוא אינו מתקין את המדידה באתר." /></p>
+              <p><Copy text="הכניסה עם Google מזהה אתכם בישראמארקט, ואינה מחברת את המדידה. קריאת נתוני האתר דורשת אישור נפרד, עם חשבון שיש לו גישה למדידה. אפשר לבחור חשבון אחר." /></p>
               <div>
-                <p className={DETAIL_TITLE}>1. מישהו אחר בנה או מנהל לכם את האתר?</p>
+                <p className={DETAIL_TITLE}><Copy text="1. מישהו אחר בנה או מנהל לכם את האתר?" /></p>
                 <p className="mt-1">
-                  בקשו ממנו להוסיף את הג׳ימייל שלכם כ<strong>צופה</strong> בנתוני האתר בגוגל
-                  (שם ההרשאה באנגלית: Viewer). לא צריך הרשאות ניהול.
-                </p>
+                  <Copy text="בקשו ממנו להוסיף את הג׳ימייל שלכם כ" /><strong><Copy text="צופה" /></strong> <Copy text="בנתוני האתר בגוגל (שם ההרשאה באנגלית: Viewer). לא צריך הרשאות ניהול." /></p>
                 <div className="mt-2">
                   <SendToHelper
-                    title="ההודעה למי שבנה את האתר"
+                    title={t("ההודעה למי שבנה את האתר")}
                     message={GUIDES.google_analytics.stuck.message}
-                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר"
+                    copiedNote={t("ההודעה הועתקה. שלחו אותה בוואטסאפ למי שבנה את האתר")}
                   />
                 </div>
               </div>
               <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>2. האתר עוד לא מחובר לגוגל בכלל?</p>
+                <p className={DETAIL_TITLE}><Copy text="2. האתר עוד לא מחובר לגוגל בכלל?" /></p>
                 <p className="mt-1">
-                  פותחים חשבון בחינם ב-
-                  <a
+                  <Copy text="פותחים חשבון בחינם ב-" /><a
                     href="https://analytics.google.com"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -437,16 +425,12 @@ export default function IntegrationsPage() {
                   >
                     analytics.google.com
                   </a>
-                  , מוסיפים את האתר (בגוגל זה נקרא ״נכס״) ומדביקים את הקוד שקיבלתם בהגדרות האתר:
-                  בוויקס, בוורדפרס או בשופיפיי.
-                </p>
+                  <Copy text=", מוסיפים את האתר (בגוגל זה נקרא ״נכס״) ומדביקים את הקוד שקיבלתם בהגדרות האתר: בוויקס, בוורדפרס או בשופיפיי." /></p>
               </div>
               <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>3. אין לעסק אתר בכלל?</p>
+                <p className={DETAIL_TITLE}><Copy text="3. אין לעסק אתר בכלל?" /></p>
                 <p className="mt-1">
-                  אפשר לדלג על החיבור הזה ולחבר רק את אינסטגרם ופייסבוק. שם נמדוד כמה אנשים ראו
-                  את הפוסטים ואיך הגיבו.
-                </p>
+                  <Copy text="אפשר לדלג על החיבור הזה ולחבר רק את אינסטגרם ופייסבוק. שם נמדוד כמה אנשים ראו את הפוסטים ואיך הגיבו." /></p>
               </div>
             </RowDetails>
           </section>
@@ -457,46 +441,37 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     meta: (
-<ConnectionSection source="meta" title="פייסבוק ואינסטגרם" status={metaConnected ? sourcePresentation(metaItem?.source_readiness).label : metaNeedsSelection ? "נשאר לבחור דף" : data && !data.meta_ready ? "עדיין לא זמין" : "לא מחובר"} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
+<ConnectionSection source="meta" title={t("פייסבוק ואינסטגרם")} status={metaConnected ? sourcePresentation(metaItem?.source_readiness).label : metaNeedsSelection ? t("נשאר לבחור דף") : data && !data.meta_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
             <div className="pb-3">
               <MetaConnection primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
             </div>
 
-            <RowDetails summary="מה זה נותן, ומה אם האינסטגרם שלי פרטי?">
+            <RowDetails summary={t("מה זה נותן, ומה אם האינסטגרם שלי פרטי?")}>
               <p>
-                מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה
-                הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית.
-              </p>
+                <Copy text="מכאן אנחנו לומדים מה הקהל שלכם באמת אוהב: כמה אנשים ראו כל פוסט, כמה שמרו וכמה הגיבו. את מה שעבד נעשה שוב בעדכון הבא של התוכנית." /></p>
               <p>
-                מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה
-                חברה.
-              </p>
+                <Copy text="מתחברים עם חשבון הפייסבוק שמנהל את הדף, כי פייסבוק ואינסטגרם שייכות לאותה חברה." /></p>
               <div>
-                <p className={DETAIL_TITLE}>1. החשבון שלכם פרטי?</p>
+                <p className={DETAIL_TITLE}><Copy text="1. החשבון שלכם פרטי?" /></p>
                 <p className="mt-1">
-                  פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל ›
-                  תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים › <strong>מעבר לחשבון מקצועי</strong> ›
-                  עסק או יוצר תוכן.
+                  <Copy text="פייסבוק נותנת נתונים רק על חשבונות מקצועיים (זה בחינם). כדי לעבור: באפליקציית אינסטגרם › פרופיל › תפריט › הגדרות ופעילות (Settings and activity) › סוג חשבון וכלים ›" /><strong><Copy text="מעבר לחשבון מקצועי" /></strong> <Copy text="› עסק או יוצר תוכן." /></p>
+              </div>
+              <div className={DETAIL_BLOCK}>
+                <p className={DETAIL_TITLE}><Copy text="2. האינסטגרם חייב להיות מקושר לדף בפייסבוק" /></p>
+                <p className="mt-1">
+                  <Copy text="במסלול החיבור שלנו, בלי דף עסקי בפייסבוק אין גישה לנתוני האינסטגרם. אפשר לפתוח דף פשוט בחינם, ולחבר אליו את האינסטגרם בהגדרות הדף, תחת" /><strong><Copy text="חשבונות מקושרים" /></strong>.
                 </p>
               </div>
               <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>2. האינסטגרם חייב להיות מקושר לדף בפייסבוק</p>
+                <p className={DETAIL_TITLE}><Copy text="3. מישהו אחר מנהל לכם את הדף?" /></p>
                 <p className="mt-1">
-                  במסלול החיבור שלנו, בלי דף עסקי בפייסבוק אין גישה לנתוני האינסטגרם. אפשר לפתוח דף
-                  פשוט בחינם, ולחבר אליו את האינסטגרם בהגדרות הדף, תחת <strong>חשבונות מקושרים</strong>.
-                </p>
-              </div>
-              <div className={DETAIL_BLOCK}>
-                <p className={DETAIL_TITLE}>3. מישהו אחר מנהל לכם את הדף?</p>
-                <p className="mt-1">
-                  בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף.
-                </p>
+                  <Copy text="בקשו ממנו לוודא שיש לחשבון הפייסבוק שלכם הרשאת מנהל או גישת משימות בדף." /></p>
                 <div className="mt-2">
                   <SendToHelper
-                    title="ההודעה למי שמנהל את הדף"
+                    title={t("ההודעה למי שמנהל את הדף")}
                     message={GUIDES.instagram_business.stuck.message}
-                    copiedNote="ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף"
+                    copiedNote={t("ההודעה הועתקה. שלחו אותה בוואטסאפ למי שמנהל את הדף")}
                   />
                 </div>
               </div>
@@ -511,7 +486,7 @@ export default function IntegrationsPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-[800px]">
-        <PageHeader title="חיבורים" subtitle="מחברים את מה שיעזור לדייק את התוכנית." />
+        <PageHeader title={t("חיבורים")} subtitle={t("מחברים את מה שיעזור לדייק את התוכנית.")} />
 
         {/* The shell identifies demo mode; retain the switch back to the owner's account. */}
         {demo ? (
@@ -526,14 +501,13 @@ export default function IntegrationsPage() {
               }}
               className="shrink-0 self-start !min-h-11 !px-4 !text-[14px] sm:self-auto"
             >
-              לעבור לעסק שלי
-            </UIAction>
+              <Copy text="לעבור לעסק שלי" /></UIAction>
           </div>
         ) : (
           <div className="mb-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
             <p className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-[color:var(--ink-soft)]">
-              <span className="font-semibold text-[color:var(--ink)]">העסק:</span>
-              <span>{business?.name || "עסק בלי שם"}</span>
+              <span className="font-semibold text-[color:var(--ink)]"><Copy text="העסק:" /></span>
+              <span>{business?.name || t("עסק בלי שם")}</span>
               {business?.website_url ? (
                 <a
                   href={business.website_url}
@@ -558,9 +532,9 @@ export default function IntegrationsPage() {
             {/* A failed Google or Facebook sign-in is almost always the wrong account or a
                 missing link between accounts, and the guide is exactly that answer. */}
             {errorHelp(error) === "google_analytics" ? (
-              <HowToFind topic="google_analytics" label="איך מוצאים את החשבון הנכון?" />
+              <HowToFind topic="google_analytics" label={t("איך מוצאים את החשבון הנכון?")} />
             ) : errorHelp(error) === "instagram_business" ? (
-              <HowToFind topic="instagram_business" label="מה צריך כדי לחבר?" />
+              <HowToFind topic="instagram_business" label={t("מה צריך כדי לחבר?")} />
             ) : null}
           </div>
         ) : null}
@@ -568,20 +542,20 @@ export default function IntegrationsPage() {
         {successNote ? (
           <div className="mb-6 flex items-center gap-2.5 rounded-xl bg-[var(--good-soft)] px-4 py-3 text-[14px] font-medium leading-6 text-[color:var(--good)]">
             <IconCheck className="h-5 w-5 shrink-0" />
-            <span>{successNote}</span>
+            <span>{t(successNote)}</span>
           </div>
         ) : null}
 
         {data || error ? <div className="mb-6 space-y-2">
           {recommendation ? <>
-            <p className="text-[13px] font-medium text-[var(--ink-muted)]">כדאי להתחיל כאן</p>
+            <p className="text-[13px] font-medium text-[var(--ink-muted)]"><Copy text="כדאי להתחיל כאן" /></p>
             {/* The open row right below already carries the title; say it only when it is closed. */}
-            {activeKey !== primaryKey ? <h2 className="text-[20px] font-semibold text-[var(--ink)]">{recommendation.title}</h2> : null}
-            <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{recommendation.why}</p>
-          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 2 ? "החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : unavailableCount ? "חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם." : "אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם."}</p>}
+            {activeKey !== primaryKey ? <h2 className="text-[20px] font-semibold text-[var(--ink)]">{t(recommendation.title)}</h2> : null}
+            <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{t(recommendation.why)}</p>
+          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 2 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p>}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}>לפתוח את החיבור המומלץ</UIAction> : null}
-            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?stage=continue" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? "לחזור לשאלות על העסק" : recommendation ? "להמשיך בתוכנית ולחבר אחר כך" : "לחזור לתוכנית"} /></Link>
+            {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
+            <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : recommendation ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
           </div>
         </div> : null}
 
@@ -592,15 +566,13 @@ export default function IntegrationsPage() {
         {/* Technical, and only for the people who need it: no card, just a line that opens. */}
         <details className="group mt-10 border-t border-[var(--rule)]">
           <summary className="flex min-h-12 cursor-pointer list-none items-center gap-1.5 pt-2 text-[13px] font-semibold text-[color:var(--ink-muted)] transition-colors hover:text-[color:var(--ink)] [&::-webkit-details-marker]:hidden">
-            <span>חיבור למערכות אחרות (טכני)</span>
+            <span><Copy text="חיבור למערכות אחרות (טכני)" /></span>
             <Chevron />
           </summary>
 
           <div className="mt-3 space-y-4">
             <p className="text-[14px] leading-7 text-[color:var(--ink-soft)]">
-              הזינו כתובת, ונשלח אליה הודעה אוטומטית בכל פעם שנבנית תוכנית חודשית חדשה או המלצות לשבוע.
-              למשל, כדי להעביר אותן ל-Zapier או למערכת לניהול לקוחות. בשפה הטכנית: Webhook.
-            </p>
+              <Copy text="הזינו כתובת, ונשלח אליה הודעה אוטומטית בכל פעם שנבנית תוכנית חודשית חדשה או המלצות לשבוע. למשל, כדי להעביר אותן ל-Zapier או למערכת לניהול לקוחות. בשפה הטכנית: Webhook." /></p>
 
             <div className="flex flex-col gap-2.5 sm:flex-row">
               <input
@@ -623,23 +595,22 @@ export default function IntegrationsPage() {
                   setSecret(created.secret);
                   setWebhookUrl("");
                   await reload();
-                  toast("הכתובת נוספה");
+                  toast(t("הכתובת נוספה"));
                 }}
               >
-                להוסיף את הכתובת
-              </Button>
+                <Copy text="להוסיף את הכתובת" /></Button>
             </div>
 
             {secret ? (
               <div className="rounded-xl bg-[var(--soft)] p-4 text-[13px] leading-6 text-[color:var(--ink)]">
-                <span className="mb-2 block font-semibold">קוד סודי לחתימה (מוצג רק פעם אחת, שמרו אותו):</span>
+                <span className="mb-2 block font-semibold"><Copy text="קוד סודי לחתימה (מוצג רק פעם אחת, שמרו אותו):" /></span>
                 <code className={`${CODE_CHIP} inline-block break-all !px-2.5 !py-1.5`}>{secret}</code>
               </div>
             ) : null}
 
             {data?.webhooks && data.webhooks.length > 0 ? (
               <div className="pt-2">
-                <span className={LABEL}>כתובות פעילות:</span>
+                <span className={LABEL}><Copy text="כתובות פעילות:" /></span>
                 <ul className={`${CARD} divide-y divide-[var(--rule)]`}>
                   {data.webhooks.map((hook) => (
                     <li key={hook.id} className="flex items-center justify-between gap-3 px-4 py-2">
@@ -652,11 +623,10 @@ export default function IntegrationsPage() {
                         onClick={async () => {
                           await endpoints.deleteWebhook(hook.id);
                           await reload();
-                          toast("הכתובת נמחקה");
+                          toast(t("הכתובת נמחקה"));
                         }}
                       >
-                        למחוק את הכתובת
-                      </button>
+                        <Copy text="למחוק את הכתובת" /></button>
                     </li>
                   ))}
                 </ul>
@@ -699,6 +669,7 @@ function WhatsappRow({
   primary: boolean;
   onChange: (next: WhatsappPayload) => void;
 }) {
+  const t = useCopy();
   const isSet = Boolean(data?.number_e164);
   const [editing, setEditing] = useState(false);
   // null = untouched, so the field shows the stored (or suggested) value until typed in.
@@ -727,7 +698,7 @@ function WhatsappRow({
       setText(null);
       toast(done);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "לא הצלחנו לשמור את המספר. נסו שוב.");
+      setError(err instanceof Error ? err.message : t("לא הצלחנו לשמור את המספר. נסו שוב."));
     } finally {
       setSaving(false);
     }
@@ -738,20 +709,19 @@ function WhatsappRow({
     <section id="whatsapp" className={`${ROW_CARD} scroll-mt-20`}>
       <RowHead
         icon={IconWhatsApp}
-        title="קישור הוואטסאפ"
-        status={isSet ? "פעיל" : "לא הוגדר"}
+        title={t("קישור הוואטסאפ")}
+        status={isSet ? t("פעיל") : t("לא הוגדר")}
         tone={isSet ? "good" : "muted"}
         // What is counted and what is not, as the row's one line: on the face, never
         // behind the expand (UI-RULES rule 7 never drops a "we cannot measure this").
-        note="סופרים לחיצות, לא הודעות שנשלחו. הקוד בהודעה מראה מאיפה הגיעה הפנייה."
+        note={t("סופרים לחיצות, לא הודעות שנשלחו. הקוד בהודעה מראה מאיפה הגיעה הפנייה.")}
       />
 
       <div className="pb-3">
         {showForm ? (
           <div>
             <label htmlFor="whatsapp-number" className={LABEL}>
-              מספר הוואטסאפ של העסק
-            </label>
+              <Copy text="מספר הוואטסאפ של העסק" /></label>
             <div className="flex flex-col gap-2.5 sm:flex-row">
               <input
                 id="whatsapp-number"
@@ -769,10 +739,10 @@ function WhatsappRow({
                 tone="primary"
                 variant={primary ? "solid" : "outline"}
                 disabled={saving || !numberValue.trim()}
-                onClick={() => void save({ number: numberValue }, isSet ? "המספר עודכן" : "הקישורים מוכנים")}
+                onClick={() => void save({ number: numberValue }, isSet ? t("המספר עודכן") : t("הקישורים מוכנים"))}
                 className="shrink-0 whitespace-nowrap"
               >
-                {saving ? "שומרים…" : isSet ? "לשמור את המספר" : "ליצור את הקישורים"}
+                {saving ? t("שומרים…") : isSet ? t("לשמור את המספר") : t("ליצור את הקישורים")}
               </Button>
             </div>
             {editing ? (
@@ -785,8 +755,7 @@ function WhatsappRow({
                 }}
                 className={`${QUIET_ACTION} mt-1`}
               >
-                לבטל
-              </button>
+                <Copy text="לבטל" /></button>
             ) : null}
           </div>
         ) : (
@@ -795,14 +764,14 @@ function WhatsappRow({
           // (UI-RULES rule 7). The URL is in each button's tooltip, and the number moved
           // into the expand below — it is set once.
           <div>
-            <p className={LABEL}>להעתיק קישור:</p>
+            <p className={LABEL}><Copy text="להעתיק קישור:" /></p>
             <div className="flex flex-wrap gap-2">
               {fixed.map((link) => (
                 <button
                   key={link.code}
                   type="button"
-                  onClick={() => void copyText(link.url, `הקישור ל${link.label_he} הועתק`)}
-                  aria-label={`להעתיק את הקישור ל${link.label_he}`}
+                  onClick={() => void copyText(link.url, t("הקישור ל{arg_0} הועתק", { arg_0: link.label_he }))}
+                  aria-label={t("להעתיק את הקישור ל{arg_0}", { arg_0: link.label_he })}
                   title={link.url}
                   className="group/copy inline-flex min-h-11 items-center gap-2 rounded-md border border-[var(--rule-dark)] bg-[var(--paper)] px-3.5 text-[14px] font-medium text-[color:var(--ink)] transition-[border-color,background-color] duration-200 hover:border-[var(--ink-faint)] hover:bg-[var(--soft)] active:bg-[var(--primary-soft)]"
                 >
@@ -820,28 +789,26 @@ function WhatsappRow({
           </p>
         ) : null}
 
-        {isSet ? null : <HowToFind topic="whatsapp_business" label="איך כותבים את המספר?" className="mt-1" />}
+        {isSet ? null : <HowToFind topic="whatsapp_business" label={t("איך כותבים את המספר?")} className="mt-1" />}
       </div>
 
-      <RowDetails indent summary={isSet ? "המספר וההודעה" : "מה נספר ומה לא"}>
+      <RowDetails indent summary={isSet ? t("המספר וההודעה") : t("מה נספר ומה לא")}>
         {isSet && !editing ? (
           <p className="flex flex-wrap items-center gap-x-4">
             <span>
-              המספר:{" "}
+              <Copy text="המספר:" />{" "}
               <strong dir="ltr" className="font-semibold text-[color:var(--ink)]">
                 {data?.number_display}
               </strong>
             </span>
             <button type="button" onClick={() => setEditing(true)} className={TEXT_ACTION}>
-              לשנות את המספר
-            </button>
+              <Copy text="לשנות את המספר" /></button>
           </p>
         ) : null}
         {isSet ? (
           <div className={DETAIL_BLOCK}>
             <label htmlFor="whatsapp-text" className={LABEL}>
-              ההודעה שהלקוח שולח
-            </label>
+              <Copy text="ההודעה שהלקוח שולח" /></label>
             <textarea
               id="whatsapp-text"
               value={textValue}
@@ -852,24 +819,22 @@ function WhatsappRow({
               className={`${FIELD} resize-y`}
             />
             <p className="mt-2">
-              בסוף ההודעה נוסיף קוד קצר לפי המקום, למשל <bdi>(קוד: IG-BIO)</bdi>. אם הלקוח
-              מוחק אותו, לא נדע מאיפה הגיע.
-            </p>
+              <Copy text="בסוף ההודעה נוסיף קוד קצר לפי המקום, למשל" /><bdi><Copy text="(קוד: IG-BIO)" /></bdi><Copy text=". אם הלקוח מוחק אותו, לא נדע מאיפה הגיע." /></p>
             <Button
               size="md"
               variant="outline"
               disabled={saving || text === null}
               onClick={() =>
-                void save({ number: data?.number_e164 || "", default_text_he: textValue }, "ההודעה נשמרה")
+                void save({ number: data?.number_e164 || "", default_text_he: textValue }, t("ההודעה נשמרה"))
               }
               className="mt-3"
             >
-              {saving ? "שומרים…" : "לשמור את ההודעה"}
+              {saving ? t("שומרים…") : t("לשמור את ההודעה")}
             </Button>
           </div>
         ) : null}
         <div className={isSet ? DETAIL_BLOCK : ""}>
-          <p className={DETAIL_TITLE}>איפה שמים כל קישור</p>
+          <p className={DETAIL_TITLE}><Copy text="איפה שמים כל קישור" /></p>
           <ul className="mt-1 space-y-1">
             {FIXED_SOURCES.map((key) => (
               <li key={key}>
@@ -877,43 +842,36 @@ function WhatsappRow({
               </li>
             ))}
             <li>
-              <strong className="font-semibold text-[color:var(--ink)]">פוסטים:</strong> כל פוסט שמזמין לכתוב בוואטסאפ מקבל קישור משלו, בערכת הפרסום של
-              הפוסט.
-            </li>
+              <strong className="font-semibold text-[color:var(--ink)]"><Copy text="פוסטים:" /></strong> <Copy text="כל פוסט שמזמין לכתוב בוואטסאפ מקבל קישור משלו, בערכת הפרסום של הפוסט." /></li>
           </ul>
         </div>
         {postLinks.length ? (
           <div className={DETAIL_BLOCK}>
-            <p className={DETAIL_TITLE}>הקישורים של הפוסטים</p>
+            <p className={DETAIL_TITLE}><Copy text="הקישורים של הפוסטים" /></p>
             <ul className="mt-1 divide-y divide-[var(--rule)]">
               {postLinks.map((link) => (
                 <li key={link.code} className="flex items-center justify-between gap-3">
                   <span className="min-w-0 truncate">{link.label_he}</span>
                   <button
                     type="button"
-                    onClick={() => void copyText(link.url, "הקישור הועתק")}
+                    onClick={() => void copyText(link.url, t("הקישור הועתק"))}
                     className={`${TEXT_ACTION} shrink-0`}
                   >
                     <IconCopy className="h-4 w-4" />
-                    להעתיק
-                  </button>
+                    <Copy text="להעתיק" /></button>
                 </li>
               ))}
             </ul>
           </div>
         ) : null}
         <div className={DETAIL_BLOCK}>
-          <p className={DETAIL_TITLE}>מה נספר ומה לא</p>
+          <p className={DETAIL_TITLE}><Copy text="מה נספר ומה לא" /></p>
           <p className="mt-1">
-            נספרת כל לחיצה על הקישור, ואם אותו אדם לחץ פעמיים, זה נספר פעמיים. לא נדע אם ההודעה
-            נשלחה או אם נסגרה עסקה. את זה רק אתם רואים בוואטסאפ.
-          </p>
+            <Copy text="נספרת כל לחיצה על הקישור, ואם אותו אדם לחץ פעמיים, זה נספר פעמיים. לא נדע אם ההודעה נשלחה או אם נסגרה עסקה. את זה רק אתם רואים בוואטסאפ." /></p>
           <p className="mt-2">
-            תצוגה מקדימה של הקישור, למשל כשמדביקים אותו בצ׳אט, לא נספרת. על כל לחיצה אנחנו שומרים רק
-            את היום, את הקישור ואת סוג המכשיר בערך. לא את כתובת הרשת של המכשיר, ולא מי לחץ.{" "}
+            <Copy text="תצוגה מקדימה של הקישור, למשל כשמדביקים אותו בצ׳אט, לא נספרת. על כל לחיצה אנחנו שומרים רק את היום, את הקישור ואת סוג המכשיר בערך. לא את כתובת הרשת של המכשיר, ולא מי לחץ." />{" "}
             <a href="/security#whatsapp" className="font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline">
-              עוד על הפרטיות
-            </a>
+              <Copy text="עוד על הפרטיות" /></a>
           </p>
         </div>
       </RowDetails>
