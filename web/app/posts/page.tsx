@@ -270,6 +270,7 @@ function PostsWorkspace() {
           {strategy && !strategy.post_workspace_only ? t("הפוסטים של {arg_0}", { arg_0: new Intl.DateTimeFormat(LOCALE_META[locale].formatLocale, { month: "long" }).format(new Date(strategy.year, strategy.month - 1, 1)) }) : t("הפוסטים")}
         </h1>
 
+        {posts.length && !location.creating ? <Link href="/campaign" className={`${ui.link} mt-3 min-h-11 me-5`}>{t("לראות את הקמפיין")}</Link> : null}
         {!location.creating ? <button type="button" className={`${ui.link} mt-3 min-h-11`} onClick={() => go("create=1", "push")}>{t("ליצור פוסט משלכם")}</button> : null}
         {!location.creating ? <div className="mt-5 flex items-center justify-between gap-4">
           {strategy && !strategy.post_workspace_only && posts.length && !location.creating ? (

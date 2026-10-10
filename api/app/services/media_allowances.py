@@ -20,7 +20,7 @@ from sqlalchemy.orm import Session
 
 from app.db import SessionLocal
 from app.errors import CodedError
-from app.models import Business, ImageUsage, MediaAllowance, MediaAttempt, User
+from app.models import Business, CampaignRevision, ImageUsage, MediaAllowance, MediaAttempt, User
 from app.services import billing
 
 # Fixed bounded regular/trial policy; never supplied by the browser or disabled with
@@ -126,17 +126,20 @@ def status(db: Session, user: User, now: datetime | None = None) -> dict:
         except (CodedError, ValueError):
             pass
     minimum_image_cost = min(ceilings) if ceilings else None
+    from app.services import campaign_video
     for kind, (limit, attempts, budget) in POLICY[tier].items():
+        minimum_cost = minimum_image_cost if kind == "image" else campaign_video.CEILING
+        configured = kind == "image" or campaign_video.available()
         row = _row(db, user.id, kind, start)
         historical = _legacy_images(db, user.id, start, end) if row is None and kind == "image" else (0, 0, 0)
         used, held = (row.used, row.reserved) if row else (historical[0], 0)
         kinds[kind] = {
             "included": limit, "used": used, "reserved": held,
             "remaining": max(0, limit - used - held),
-            "generation_available": kind == "image" and not billing.locked(db, user, now)
-            and minimum_image_cost is not None and used + held < limit
-            and ((historical[1] < attempts and historical[2] + minimum_image_cost <= budget) if row is None else (
-                row.attempts < attempts and row.committed_microusd + row.reserved_microusd + minimum_image_cost <= budget)),
+            "generation_available": configured and not billing.locked(db, user, now)
+            and minimum_cost is not None and used + held < limit
+            and ((historical[1] < attempts and historical[2] + minimum_cost <= budget) if row is None else (
+                row.attempts < attempts and row.committed_microusd + row.reserved_microusd + minimum_cost <= budget)),
         }
     return {"tier": tier, "period_start": billing.iso_utc(start), "resets_at": billing.iso_utc(end)
             if tier == "regular" and end > now else None, "images": kinds["image"], "videos": kinds["video"]}
@@ -167,6 +170,11 @@ def reserve(db: Session | None, business_id: int, *, kind: str, key: str,
         _write_transaction(ledger)
         business = ledger.get(Business, business_id)
         user = ledger.get(User, business.user_id) if business else None
+        if key.startswith("campaign:"):
+            parts = key.split(":")
+            job = ledger.get(CampaignRevision, parts[1]) if len(parts) >= 3 else None
+            if not job or job.business_id != business_id or job.state != "working":
+                user = None
         if not user:
             raise CodedError(404, "media_account_required", "לא מצאנו את החשבון ליצירת התוכן.")
         now = now or datetime.utcnow()
@@ -211,7 +219,7 @@ def reserve(db: Session | None, business_id: int, *, kind: str, key: str,
 
 
 def settle(db: Session | None, attempt_id: int, *, state: str, cost_usd: float | None = None,
-           provider_ref: str = "") -> None:
+           provider_ref: str = "", expected_key: str | None = None) -> None:
     """Internal verified settlement, never a browser refund. Unknown keeps the hold.
 
     For definitive failures without token usage, conservatively keep the full cost
@@ -224,8 +232,10 @@ def settle(db: Session | None, attempt_id: int, *, state: str, cost_usd: float |
     with factory() as ledger:
         _write_transaction(ledger)
         attempt = ledger.get(MediaAttempt, attempt_id)
-        if not attempt:
-            raise ValueError("Missing media reservation")
+        if not attempt or (expected_key is not None and attempt.request_key != expected_key[:150]):
+            # An account can disappear while the provider is responding. A recycled
+            # integer id must never let that response settle somebody else's request.
+            return
         cost = attempt.reserved_microusd if cost_usd is None else math.ceil(max(0, cost_usd) * 1_000_000)
         changed = ledger.execute(update(MediaAttempt).where(
             MediaAttempt.id == attempt_id, MediaAttempt.state.in_(["reserved", "unknown"])

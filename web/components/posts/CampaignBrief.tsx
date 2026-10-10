@@ -26,7 +26,7 @@ export function CampaignBrief({ post, audience, dna }: { post: RoadmapPost; audi
     [t("הקהל"), audience],
     [t("המטרה"), goal],
     [t("הפעולה"), post.cta],
-    [t(learning ? "מה למדנו" : "מה נבדוק"), learning || measure],
+    [t(learning ? "מה למדנו" : "מה נבדוק"), learning || t(measure)],
   ].filter(([, value]) => value?.trim());
   if (!rows.length && !dna) return null;
   return <section aria-label={t("הפוסט בתוכנית")} className="mb-5">

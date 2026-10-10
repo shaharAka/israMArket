@@ -113,13 +113,17 @@ export async function downloadCardPng(
 ): Promise<ExportResult> {
   try {
     const dataUrl = await renderCardPng(node, { width, height });
+    // Large data URLs are not reliable download targets in embedded browsers.
+    // Keep the same rendered bytes, but download through an object URL like video.
+    const url = URL.createObjectURL(await (await fetch(dataUrl)).blob());
     const link = document.createElement("a");
     link.download = `${slug(title)}-${width}x${height}.png`;
-    link.href = dataUrl;
+    link.href = url;
     link.rel = "noopener";
     document.body.appendChild(link);
     link.click();
     link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     return { ok: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

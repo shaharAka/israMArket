@@ -87,6 +87,24 @@ class MediaCapsTest(unittest.TestCase):
         caps.settle(self.db, attempt, state="failed", cost_usd=0)
         self.assertEqual((self.row().used, self.row().attempts, self.row().committed_microusd), (1, 1, 80_000))
 
+    def test_late_callback_cannot_settle_a_recycled_attempt_id(self):
+        old = self.reserve("deleted-request")
+        self.db.query(MediaAttempt).delete()
+        self.db.query(MediaAllowance).delete()
+        self.db.commit()
+        new = self.reserve("new-owner-request")
+        self.assertEqual(new, old)
+        caps.settle(self.db, old, state="succeeded", cost_usd=.01, expected_key="deleted-request")
+        self.assertEqual((self.row().used, self.row().reserved), (0, 1))
+        caps.settle(self.db, new, state="succeeded", cost_usd=.01, expected_key="new-owner-request")
+        self.assertEqual((self.row().used, self.row().reserved), (1, 0))
+
+    def test_deleted_campaign_cannot_reserve_for_a_recycled_workspace(self):
+        with self.assertRaises(CodedError) as missing:
+            self.reserve("campaign:deleted-job:post")
+        self.assertEqual(missing.exception.status_code, 404)
+        self.assertEqual(self.db.query(MediaAttempt).count(), 0)
+
     def test_confirmed_failure_releases_unit_but_not_attempt_or_cost(self):
         attempt = self.reserve()
         caps.settle(self.db, attempt, state="failed")

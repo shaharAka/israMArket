@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), extra="ignore")
 
     gemini_api_key: str = ""
+    # Enable only after a bounded production canary. Fixed model/720p/5s and account
+    # ledger checks live in services/campaign_video.py, not in browser parameters.
+    campaign_video_enabled: bool = False
     jwt_secret: str = "dev-only-change-me"
     token_encryption_key: str = ""
     environment: str = "development"

@@ -409,6 +409,466 @@
       "en": "This post also on {arg_0}",
       "ar": "هذا المنشور أيضًا على {arg_0}",
       "ru": "Этот пост также в {arg_0}"
+    },
+    "m_03a3b72a69ba89e2": {
+      "en": "This version has changed. Refresh to see its current status.",
+      "ar": "تغيّرت هذه النسخة. حدّثوا الصفحة لرؤية حالتها الحالية.",
+      "ru": "Эта версия уже изменилась. Обновите страницу, чтобы увидеть её состояние."
+    },
+    "m_0526c0970fa51713": {
+      "en": "We couldn’t check this version. Your saved posts are unchanged; try reloading.",
+      "ar": "تعذّر التحقق من النسخة. لم تتغيّر منشوراتكم المحفوظة؛ جرّبوا إعادة التحميل.",
+      "ru": "Не удалось проверить версию. Сохранённые посты не изменились; попробуйте загрузить снова."
+    },
+    "m_054d80027e669eb0": {
+      "en": "Generation stopped. Your previous posts are saved; check your allowance before generating again.",
+      "ar": "توقّف الإنشاء. منشوراتكم السابقة محفوظة؛ راجعوا الرصيد المتاح قبل الإنشاء مجددًا.",
+      "ru": "Создание остановилось. Предыдущие посты сохранены; проверьте остаток лимита перед новой попыткой."
+    },
+    "m_05cb72bfca1be624": {
+      "en": "We couldn’t open your posts. Try reloading.",
+      "ar": "تعذّر فتح منشوراتكم. جرّبوا إعادة التحميل.",
+      "ru": "Не удалось открыть посты. Попробуйте загрузить снова."
+    },
+    "m_0705ec4e08106481": {
+      "en": "Previous version",
+      "ar": "النسخة السابقة",
+      "ru": "Предыдущая версия"
+    },
+    "m_1464fb958e57aa75": {
+      "en": "We’ll try a different layout in your brand’s style, using the same image.",
+      "ar": "سنجرّب تصميمًا مختلفًا بأسلوب نشاطكم، باستخدام الصورة نفسها.",
+      "ru": "Попробуем другую композицию в стиле вашего бренда с той же фотографией."
+    },
+    "m_2520958aa73df6e5": {
+      "en": "Review the selected posts before saving.",
+      "ar": "راجعوا المنشورات التي اخترتموها قبل الحفظ.",
+      "ru": "Просмотрите выбранные посты перед сохранением."
+    },
+    "m_2ee424749f49dbbc": {
+      "en": "Your posts will appear here, grouped by week.",
+      "ar": "ستظهر منشوراتكم هنا مرتّبة حسب الأسبوع.",
+      "ru": "Здесь появятся ваши посты, сгруппированные по неделям."
+    },
+    "m_356417c01f56c276": {
+      "en": "New version",
+      "ar": "النسخة الجديدة",
+      "ru": "Новая версия"
+    },
+    "m_3ad6fb42e986c377": {
+      "en": "Your photos and videos",
+      "ar": "صوركم وفيديوهاتكم",
+      "ru": "Ваши фото и видео"
+    },
+    "m_3b56e0564f0d2e94": {
+      "en": "Some versions couldn’t be completed. Your previous posts are still saved.",
+      "ar": "تعذّر إكمال بعض النسخ. منشوراتكم السابقة ما زالت محفوظة.",
+      "ru": "Не все версии удалось подготовить. Предыдущие посты сохранены."
+    },
+    "m_3f3f0d9f4d047948": {
+      "en": "Keep the previous version",
+      "ar": "الاحتفاظ بالنسخة السابقة",
+      "ru": "Оставить предыдущую версию"
+    },
+    "m_419559138c43742a": {
+      "en": "We couldn’t prepare this version. Your previous post is saved.",
+      "ar": "تعذّر إعداد هذه النسخة. منشوركم السابق محفوظ.",
+      "ru": "Не удалось подготовить эту версию. Предыдущий пост сохранён."
+    },
+    "m_4a35ae87e910773e": {
+      "en": "This change doesn’t use your image or video allowance.",
+      "ar": "هذا التغيير لا يستهلك رصيد الصور أو الفيديوهات.",
+      "ru": "Это изменение не расходует лимит изображений и видео."
+    },
+    "m_56288e3daf4f6988": {
+      "en": "Tell us in your own words",
+      "ar": "اكتبوا لنا بكلماتكم",
+      "ru": "Опишите своими словами"
+    },
+    "m_564429fd6687a3a3": {
+      "en": "Different layout",
+      "ar": "تصميم مختلف",
+      "ru": "Другая композиция"
+    },
+    "m_5d4bf2be71276b39": {
+      "en": "Your campaign",
+      "ar": "حملتكم",
+      "ru": "Ваша кампания"
+    },
+    "m_5dc94fd3e362d492": {
+      "en": "We couldn’t find this version.",
+      "ar": "لم نجد هذه النسخة.",
+      "ru": "Не удалось найти эту версию."
+    },
+    "m_6507832f21cd6c56": {
+      "en": "Selected",
+      "ar": "تم الاختيار",
+      "ru": "Выбрано"
+    },
+    "m_6faa5d224af48929": {
+      "en": "Choose your business’s style on the Brand page first.",
+      "ar": "اختاروا أسلوب نشاطكم أولًا في صفحة العلامة التجارية.",
+      "ru": "Сначала выберите стиль компании на странице бренда."
+    },
+    "m_7b927ff6b7ccabac": {
+      "en": "Date to choose",
+      "ar": "موعد للاختيار",
+      "ru": "Выберите дату"
+    },
+    "m_7bd35f4d21b1f052": {
+      "en": "A new version is already being prepared. Review it before making another change.",
+      "ar": "نُعدّ نسخة جديدة بالفعل. راجعوها قبل إجراء تغيير آخر.",
+      "ru": "Новая версия уже создаётся. Просмотрите её перед следующим изменением."
+    },
+    "m_7e175e9db62e5217": {
+      "en": "Prepare a version for {arg_0} posts",
+      "ar": "إعداد نسخة لـ {arg_0} منشورات",
+      "ru": "Подготовить версию для {arg_0} постов"
+    },
+    "m_7f5bf92d9df823f9": {
+      "en": "Select up to 3 drafts to create new versions.",
+      "ar": "اختاروا حتى 3 مسودات لإعداد نسخ جديدة منها.",
+      "ru": "Выберите до 3 черновиков, чтобы подготовить новые версии."
+    },
+    "m_82612e61cc08f58e": {
+      "en": "A post was changed or approved in the meantime. No posts were replaced; refresh the plan.",
+      "ar": "تغيّر أحد المنشورات أو تمت الموافقة عليه. لم نستبدل أي منشور؛ حدّثوا الخطة.",
+      "ru": "Один из постов уже изменён или одобрен. Ни один пост не заменён; обновите план."
+    },
+    "m_86fd12c62fe09bdb": {
+      "en": "Additional posts",
+      "ar": "منشورات إضافية",
+      "ru": "Другие посты"
+    },
+    "m_8755c2573d6428d0": {
+      "en": "Restore the previous version",
+      "ar": "استعادة النسخة السابقة",
+      "ru": "Вернуть предыдущую версию"
+    },
+    "m_8b7d137b78db5470": {
+      "en": "What would you like to change?",
+      "ar": "ما الذي تودّون تغييره؟",
+      "ru": "Что хотите изменить?"
+    },
+    "m_8bd4b042b83a5158": {
+      "en": "Approved or scheduled posts stay as they are. Select a draft to create a new version.",
+      "ar": "تبقى المنشورات المعتمدة أو المجدولة كما هي. اختاروا مسودة لإعداد نسخة جديدة.",
+      "ru": "Одобренные и запланированные посты остаются без изменений. Выберите черновик для новой версии."
+    },
+    "m_8da2e6f8091905a1": {
+      "en": "Posts without a plan week",
+      "ar": "منشورات دون أسبوع محدّد في الخطة",
+      "ru": "Посты без недели в плане"
+    },
+    "m_93842bcec9b74323": {
+      "en": "Select each post only once.",
+      "ar": "اختاروا كل منشور مرة واحدة فقط.",
+      "ru": "Выберите каждый пост только один раз."
+    },
+    "m_96b0d814b1d0125f": {
+      "en": "Tell us what to change in the wording.",
+      "ar": "اكتبوا ما تودّون تغييره في النص.",
+      "ru": "Напишите, что изменить в тексте."
+    },
+    "m_a27a744130fa537c": {
+      "en": "View the campaign",
+      "ar": "عرض الحملة",
+      "ru": "Посмотреть кампанию"
+    },
+    "m_a8594755fb2c9fab": {
+      "en": "Wording",
+      "ar": "النص",
+      "ru": "Текст"
+    },
+    "m_b1e2b7a940211d36": {
+      "en": "This request belongs to a different change. Refresh and select again.",
+      "ar": "هذا الطلب مرتبط بتغيير آخر. حدّثوا الصفحة واختاروا مجددًا.",
+      "ru": "Этот запрос относится к другому изменению. Обновите страницу и выберите снова."
+    },
+    "m_b891c08c3e3591f0": {
+      "en": "For example, less formal and focus on the product",
+      "ar": "مثلًا، أسلوب أقل رسمية مع التركيز على المنتج",
+      "ru": "Например: менее официально, с акцентом на продукт"
+    },
+    "m_c0a7e55c3effe651": {
+      "en": "Saved versions",
+      "ar": "النسخ المحفوظة",
+      "ru": "Сохранённые версии"
+    },
+    "m_c7b775dd171c50a7": {
+      "en": "The post changed after you selected it. Select it again to create an updated version.",
+      "ar": "تغيّر المنشور بعد اختياره. اختاروه مجددًا لإعداد نسخة محدثة.",
+      "ru": "Пост изменился после выбора. Выберите его снова для обновлённой версии."
+    },
+    "m_ca3b82cf97e58c05": {
+      "en": "This plan is no longer active. The version remains in your history.",
+      "ar": "هذه الخطة لم تعد نشطة. النسخة ما زالت محفوظة في السجل.",
+      "ru": "Этот план больше не активен. Версия осталась в истории."
+    },
+    "m_ce0269a95d4caa9d": {
+      "en": "A selected post is no longer in this plan. Refresh and select again.",
+      "ar": "أحد المنشورات المختارة لم يعد في الخطة. حدّثوا الصفحة واختاروا مجددًا.",
+      "ru": "Один из выбранных постов больше не входит в план. Обновите страницу и выберите снова."
+    },
+    "m_d3377b672012083c": {
+      "en": "Preparing the new version…",
+      "ar": "نُعدّ النسخة الجديدة…",
+      "ru": "Готовим новую версию…"
+    },
+    "m_d6411c694ca2f201": {
+      "en": "Remaining allowance",
+      "ar": "الرصيد المتبقي",
+      "ru": "Остаток лимита"
+    },
+    "m_dbde4977cfbcd345": {
+      "en": "Layout",
+      "ar": "التصميم",
+      "ru": "Дизайн"
+    },
+    "m_dcd178c2ed0959cc": {
+      "en": "View post",
+      "ar": "عرض المنشور",
+      "ru": "Посмотреть пост"
+    },
+    "m_e2ee52e6e8abe010": {
+      "en": "Save the new version",
+      "ar": "حفظ النسخة الجديدة",
+      "ru": "Сохранить новую версию"
+    },
+    "m_e4243859e1ddc10d": {
+      "en": "How does the new version look?",
+      "ar": "ما رأيكم في النسخة الجديدة؟",
+      "ru": "Как вам новая версия?"
+    },
+    "m_e44dffd4fe414247": {
+      "en": "Up to {arg_0} image units for {arg_1} posts",
+      "ar": "حتى {arg_0} صور من الرصيد لـ {arg_1} منشورات",
+      "ru": "До {arg_0} изображений из лимита для {arg_1} постов"
+    },
+    "m_ea9a0bbe284d3eb9": {
+      "en": "Opening your campaign…",
+      "ar": "نفتح حملتكم…",
+      "ru": "Открываем кампанию…"
+    },
+    "m_ead661a96c932911": {
+      "en": "Download the post",
+      "ar": "تنزيل المنشور",
+      "ru": "Скачать пост"
+    },
+    "m_f0546ca4ac1af7b1": {
+      "en": "{arg_0} videos",
+      "ar": "{arg_0} فيديوهات",
+      "ru": "{arg_0} видео"
+    },
+    "m_facbb72046506ee3": {
+      "en": "We couldn’t prepare this version. Try again.",
+      "ar": "تعذّر إعداد النسخة. جرّبوا مجددًا.",
+      "ru": "Не удалось подготовить версию. Попробуйте снова."
+    },
+    "m_fc48ff19cff666ac": {
+      "en": "View the approved post",
+      "ar": "عرض المنشور المعتمد",
+      "ru": "Посмотреть одобренный пост"
+    },
+    "m_56a505f700ebd261": {
+      "en": "{arg_0} of 3 posts selected",
+      "ar": "تم اختيار {arg_0} من 3 منشورات",
+      "ru": "Выбрано {arg_0} из 3 постов"
+    },
+    "m_a6c255cb9c4fc7ac": {
+      "en": "Work on the selected posts",
+      "ar": "تعديل المنشورات المختارة",
+      "ru": "Работать с выбранными постами"
+    },
+    "m_163d8048a4647cb6": {
+      "en": "Video editing is temporarily unavailable. Your original is saved.",
+      "ar": "تعديل الفيديو غير متاح حالياً. الفيديو الأصلي محفوظ.",
+      "ru": "Редактирование видео временно недоступно. Оригинал сохранён."
+    },
+    "m_1c8168e1a9c7d2b9": {
+      "en": "Trimming and adding your branded text use no AI allowance.",
+      "ar": "قص الفيديو وإضافة النص بأسلوب علامتكم لا يستهلكان رصيد الإنشاء.",
+      "ru": "Обрезка и добавление текста в вашем стиле не расходуют лимит генерации."
+    },
+    "m_248d473a7a6cfd1c": {
+      "en": "The video service returned no confirmed result. We won’t resend this request; your original is saved.",
+      "ar": "لم نحصل على نتيجة مؤكدة من خدمة الفيديو. لن نعيد إرسال الطلب؛ الفيديو الأصلي محفوظ.",
+      "ru": "Сервис видео не подтвердил результат. Мы не будем повторно отправлять запрос; оригинал сохранён."
+    },
+    "m_2706f0c341e45c9c": {
+      "en": "Choose a shorter video to edit.",
+      "ar": "اختاروا فيديو أقصر للتعديل.",
+      "ru": "Выберите более короткое видео для редактирования."
+    },
+    "m_2fd919bae5af2f84": {
+      "en": "We couldn’t find this file in your account.",
+      "ar": "لم نجد هذا الملف في حسابكم.",
+      "ru": "Этот файл не найден в вашем аккаунте."
+    },
+    "m_3e8c239a09cadd45": {
+      "en": "Choose a start and end within the video, up to 30 seconds apart.",
+      "ar": "اختاروا بداية ونهاية ضمن الفيديو، بفارق لا يتجاوز 30 ثانية.",
+      "ru": "Выберите начало и конец внутри видео, с интервалом до 30 секунд."
+    },
+    "m_50f9c7bae1b3e634": {
+      "en": "One video from your allowance · up to 5 seconds",
+      "ar": "فيديو واحد من الرصيد · حتى 5 ثوانٍ",
+      "ru": "Одно видео из лимита · до 5 секунд"
+    },
+    "m_5a6514cd1f5d8961": {
+      "en": "Choose a short section of the video.",
+      "ar": "اختاروا مقطعاً قصيراً من الفيديو.",
+      "ru": "Выберите короткий фрагмент видео."
+    },
+    "m_5fca415bedb16823": {
+      "en": "New video",
+      "ar": "فيديو جديد",
+      "ru": "Новое видео"
+    },
+    "m_6787a4d57ba6d26e": {
+      "en": "The video service declined this request. Your original is saved.",
+      "ar": "لم تقبل خدمة الفيديو هذا الطلب. الفيديو الأصلي محفوظ.",
+      "ru": "Сервис видео отклонил запрос. Оригинал сохранён."
+    },
+    "m_7a03a3c40787ab91": {
+      "en": "Describe what you want to change in the video.",
+      "ar": "اكتبوا ما تريدون تغييره في الفيديو.",
+      "ru": "Опишите, что хотите изменить в видео."
+    },
+    "m_7e9513c8154e21df": {
+      "en": "This post’s video",
+      "ar": "فيديو هذا المنشور",
+      "ru": "Видео этого поста"
+    },
+    "m_7f46beb8cc376a6e": {
+      "en": "Video {arg_0}",
+      "ar": "فيديو {arg_0}",
+      "ru": "Видео {arg_0}"
+    },
+    "m_85961e25ed659b81": {
+      "en": "Your existing video",
+      "ar": "فيديو لديكم",
+      "ru": "Ваше видео"
+    },
+    "m_8c2ea52c805700de": {
+      "en": "AI video creation isn’t open yet. You can use uploaded footage.",
+      "ar": "إنشاء الفيديو بالذكاء الاصطناعي لم يُفتح بعد. يمكنكم استخدام فيديو رفعتموه.",
+      "ru": "Генерация видео ещё не открыта. Можно использовать загруженное видео."
+    },
+    "m_93ad3e878a6d36ba": {
+      "en": "Choose a library video",
+      "ar": "اختيار فيديو من المكتبة",
+      "ru": "Выбрать видео из библиотеки"
+    },
+    "m_9d98f455f3e53df0": {
+      "en": "This account is no longer available to save the video.",
+      "ar": "هذا الحساب لم يعد متاحاً لحفظ الفيديو.",
+      "ru": "Аккаунт больше недоступен для сохранения видео."
+    },
+    "m_a9f14c2c1f213bdd": {
+      "en": "We couldn’t prepare the video for download. Your original is saved.",
+      "ar": "تعذّر تجهيز الفيديو للتنزيل. الفيديو الأصلي محفوظ.",
+      "ru": "Не удалось подготовить видео к скачиванию. Оригинал сохранён."
+    },
+    "m_ab9ba1c137566f82": {
+      "en": "We couldn’t read the text overlay. Try preparing the video again.",
+      "ar": "تعذّرت قراءة طبقة النص. حاولوا تجهيز الفيديو مرة أخرى.",
+      "ru": "Не удалось прочитать слой с текстом. Попробуйте подготовить видео ещё раз."
+    },
+    "m_ec759f3ecbcaa115": {
+      "en": "Choose a video",
+      "ar": "اختيار فيديو",
+      "ru": "Выбор видео"
+    },
+    "m_ac9569c3f0f705a8": {
+      "en": "Edit the video",
+      "ar": "تعديل الفيديو",
+      "ru": "Изменить видео"
+    },
+    "m_b4685ab345a8f0e0": {
+      "en": "End in seconds",
+      "ar": "النهاية بالثواني",
+      "ru": "Конец в секундах"
+    },
+    "m_b792bd9509dfd5b1": {
+      "en": "We couldn’t download the video. Try again.",
+      "ar": "تعذّر تنزيل الفيديو. حاولوا مرة أخرى.",
+      "ru": "Не удалось скачать видео. Попробуйте ещё раз."
+    },
+    "m_ba939edab67c6310": {
+      "en": "Create a new version",
+      "ar": "إنشاء نسخة جديدة",
+      "ru": "Создать новую версию"
+    },
+    "m_bbde8f4904683a1a": {
+      "en": "Download the video",
+      "ar": "تنزيل الفيديو",
+      "ru": "Скачать видео"
+    },
+    "m_bc4bf2da5d7d138f": {
+      "en": "Keep only the completed versions",
+      "ar": "حفظ النسخ المكتملة فقط",
+      "ru": "Сохранить только готовые версии"
+    },
+    "m_bd2a09a33c666383": {
+      "en": "Choose one post for a video.",
+      "ar": "اختاروا منشوراً واحداً للفيديو.",
+      "ru": "Выберите один пост для видео."
+    },
+    "m_c599c4862c0beb61": {
+      "en": "This file isn’t available to edit. Upload it again.",
+      "ar": "هذا الملف غير متاح للتعديل. ارفعوه مرة أخرى.",
+      "ru": "Файл недоступен для редактирования. Загрузите его снова."
+    },
+    "m_c7ddc434225482bc": {
+      "en": "Start in seconds",
+      "ar": "البداية بالثواني",
+      "ru": "Начало в секундах"
+    },
+    "m_c900cc0344e5b526": {
+      "en": "We couldn’t read this video. Upload a short MP4 and try again.",
+      "ar": "تعذّرت قراءة الفيديو. ارفعوا ملف MP4 قصيراً وحاولوا مرة أخرى.",
+      "ru": "Не удалось прочитать видео. Загрузите короткий MP4 и попробуйте снова."
+    },
+    "m_d5cd0d350eab76e7": {
+      "en": "Use your existing video",
+      "ar": "استخدام فيديو لديكم",
+      "ru": "Использовать ваше видео"
+    },
+    "m_f690912484ce6c24": {
+      "en": "Upload your own video",
+      "ar": "رفع فيديو خاص بكم",
+      "ru": "Загрузить своё видео"
+    },
+    "m_f696808fe9e9bf75": {
+      "en": "Select one post to create a video.",
+      "ar": "اختاروا منشوراً واحداً لإنشاء فيديو.",
+      "ru": "Выберите один пост для создания видео."
+    },
+    "m_5099e8a0941ddc51": {
+      "en": "Renews on {arg_0}",
+      "ar": "يتجدد في {arg_0}",
+      "ru": "Обновится {arg_0}"
+    },
+    "m_ae0668c61fccbb80": {
+      "en": "Leave empty for no text",
+      "ar": "يمكن تركه فارغاً دون نص",
+      "ru": "Оставьте пустым, если текст не нужен"
+    },
+    "m_c41bb7fc0ab97182": {
+      "en": "Text on the video",
+      "ar": "النص على الفيديو",
+      "ru": "Текст на видео"
+    },
+    "m_c896bce1de51b41c": {
+      "en": "Edited from your video",
+      "ar": "عدّلناه من الفيديو الخاص بكم",
+      "ru": "Создано из вашего видео"
+    },
+    "m_f2bd8f8a1ebf93eb": {
+      "en": "Created for you",
+      "ar": "أنشأناه لكم",
+      "ru": "Создано для вас"
     }
   },
   "numberForms": {

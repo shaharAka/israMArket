@@ -239,7 +239,7 @@ export function CardCanvas({
       {plan.bands.map((b, i) => (
         <div key={`band-${i}`} style={{ position: "absolute", left: b.box.x, top: b.box.y, width: b.box.w, height: b.box.h, background: b.color }} />
       ))}
-      {plan.photo ? <Photo plan={plan.photo} url={post.image_url || undefined} dna={dna} stacks={stacks} quiet={quietPlaceholder} /> : null}
+      {plan.photo ? <Photo key={post.image_url || ""} plan={plan.photo} url={post.image_url || undefined} dna={dna} stacks={stacks} quiet={quietPlaceholder} /> : null}
       {plan.motifs.map((m, i) => (
         <Motif key={`motif-${i}`} motif={m} />
       ))}

@@ -46,7 +46,7 @@ export const TABS: Tab[] = [
   },
   // The week-2 raw materials the posts are written from: photos, the products to feature
   // and the style check (Revision 8).
-  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/assets", "/featured", "/voice"] },
+  { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/campaign", "/assets", "/featured", "/voice"] },
   { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
 ];
 

@@ -17,6 +17,7 @@ from app.routers import (
     auth,
     billing,
     brand_dna,
+    campaign,
     foundations,
     instagram,
     integrations,
@@ -132,6 +133,7 @@ app.include_router(assets.router)
 app.include_router(brand_dna.router)
 app.include_router(audiences.router)
 app.include_router(strategy.router)
+app.include_router(campaign.router)
 app.include_router(publish.router)
 app.include_router(integrations.router)
 app.include_router(performance.router)
@@ -170,6 +172,12 @@ async def _coded_error(_request: Request, exc: CodedError) -> JSONResponse:
     """403 `account_suspended`, 403 `admin_only` (app/errors.py): `detail` plus `code` and
     `detail_he`, like the billing gate's 402."""
     return JSONResponse(status_code=exc.status_code, content=exc.body())
+
+
+@app.on_event("startup")
+def _stop_interrupted_campaign_work() -> None:
+    from app.services.campaign_revisions import stop_interrupted
+    stop_interrupted()
 
 
 @app.on_event("startup")

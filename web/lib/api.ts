@@ -1,3 +1,4 @@
+import { demoCampaign } from "./campaignDemo";
 import type { ContentLanguage } from "./content-language";
 import type { OnboardingDraft } from "./draft";
 import { DNA_LIBRARY, type BrandDna, type BrandDnaEdit, type DnaLibrary, type PostDesign, type PostPrice } from "./dna/library";
@@ -447,7 +448,7 @@ export type Asset = {
 
 export type AssetPatch = { description?: string; tags?: string[] };
 
-export type AssetSource = "upload" | "url" | "site";
+export type AssetSource = "upload" | "url" | "site" | "generated" | "processed";
 
 /** One library asset the model ranked against a post, with its short Hebrew reason. */
 export type AssetSuggestion = { asset_id: number; reason: string };
@@ -2944,6 +2945,7 @@ function demoContrast(a: string, b: string): number {
 }
 
 async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<T> {  const method = (options.method || "GET").toUpperCase();
+  if (path.startsWith("/campaign/revisions")) { await ensureDemoPlan(); return demoCampaign(path, method, String(options.body || "{}"), POSTS, cloneDemoStrategy, DEMO_ASSETS) as T; }
   if (path === "/auth/me") return DEMO_USER as T;
   if (path === "/auth/logout" && method === "POST") {
     exitDemo();
@@ -4669,6 +4671,10 @@ export type RoadmapPost = {
     overlay_position?: string;
     overlay_theme?: string;
   };
+  video_url?: string;
+  video_asset_id?: number;
+  video_raw_asset_id?: number;
+  video_source?: "asset" | "generated";
   image_url?: string;
   primary_outlet?: "instagram" | "facebook" | "whatsapp" | "tiktok";
   outlets?: string[];

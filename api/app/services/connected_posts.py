@@ -348,9 +348,9 @@ def owner_needs(post: dict) -> list[dict]:
         return []
     needs: list[dict] = []
     if post_needs_photo(post):
-        has_image = bool(_clean(post.get("image_url"), 800))
-        own = has_image and str(post.get("image_source") or "") in OWNER_PHOTO_SOURCES
-        chose_ai = has_image and str(post.get("image_preference") or "") == "ai"
+        has_image = bool(_clean(post.get("video_url") or post.get("image_url"), 800))
+        own = has_image and str(post.get("video_source") or post.get("image_source") or "") in OWNER_PHOTO_SOURCES
+        chose_ai = has_image and (str(post.get("image_preference") or "") == "ai" or post.get("video_source") == "generated")
         kind = post.get("featured_item_kind")
         real_subject = kind in {"product", "offering", "work", "story"} or (not kind and bool(post.get("featured_item_id")))
         product_like = post.get("mix_type") in PRODUCT_IMAGE_MIX or real_subject
