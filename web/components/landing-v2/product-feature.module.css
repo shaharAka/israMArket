@@ -21,6 +21,11 @@
 .postMeta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; color: var(--ink-muted); }
 .caption { padding: 12px 16px; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 .ownerCheck { margin-top: 20px; font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
+.campaignWeeks { display: flex; gap: 8px; margin-block: 12px 20px; }
+.campaignWeeks button { min-height: 44px; border-radius: 999px; padding: 8px 16px; font-size: 14px; background: var(--soft); }
+.campaignWeeks button[aria-pressed="true"] { background: var(--primary-soft); color: var(--primary); }
+.campaignWeeks button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.campaignPreview { min-width: 0; }
 @media (max-width: 600px) { .screen { padding: 16px; } .header { padding: 16px; } }
 
 .controls { display: flex; align-items: center; gap: 8px; margin-top: 12px; }

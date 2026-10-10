@@ -17,17 +17,19 @@ import { ProductWordmark } from "./ProductWordmark";
 import { TABS } from "@/components/AppShell";
 import { PlaybackProgress } from "./PlaybackProgress";
 import { PRODUCT_HOLD_MS, useProductPlayback } from "./useProductPlayback";
+import { CampaignProductPreview } from "./CampaignProductPreview";
 
-export type ProductScreen = "research" | "plan" | "posts" | "results";
+export type ProductScreen = "research" | "plan" | "campaign" | "posts" | "results";
 const FEATURES = [
   { key: "research", label: "מחקר", benefit: "מכירים את העסק, הקהל והכיוון." },
   { key: "plan", label: "תוכנית השיווק", benefit: "מהמחקר, לצעדים שאפשר לבצע." },
+  { key: "campaign", label: "תכנון הקמפיין", benefit: "לכל שבוע מטרה. לכל פוסט תפקיד." },
   { key: "posts", label: "יצירת פוסטים", benefit: "תוכן שנכתב לפי התוכנית ובאופי של העסק." },
   { key: "results", label: "תוצאות ושיפור", benefit: "מה למדנו ומה ננסה בפוסט הבא." },
 ] as const;
 
 /** Live product views, not independent marketing replicas. Fixtures are local to this view. */
-export function ProductFeatureShowcase({ path, initialScreen, initialPost, presentation = "full" }: { path: ExamplePath; initialScreen?: ProductScreen; initialPost?: number; presentation?: "full" | "hero" | "feature" }) {
+export function ProductFeatureShowcase({ path, initialScreen, initialPost, initialCampaignWeek, presentation = "full" }: { path: ExamplePath; initialScreen?: ProductScreen; initialPost?: number; initialCampaignWeek?: number; presentation?: "full" | "hero" | "feature" }) {
   const t = useCopy();
   const { locale } = useLanguage();
   const id = useId();
@@ -62,7 +64,7 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
       {presentation === "hero" ? <aside className={styles.workspaceNav} aria-label={t("ניווט ראשי")}>
         <ProductWordmark />
         <span className={styles.workspaceBusiness}><Copy text={business.name} /></span>
-        {TABS.map(tab => { const key = tab.href === "/strategy" ? (screen === "research" ? "research" : "plan") : tab.href === "/posts" ? "posts" : tab.href === "/performance" ? "results" : null; const Icon = tab.icon;
+        {TABS.map(tab => { const key = tab.href === "/strategy" ? (screen === "research" ? "research" : "plan") : tab.href === "/campaign" ? "campaign" : tab.href === "/posts" ? "posts" : tab.href === "/performance" ? "results" : null; const Icon = tab.icon;
           if (!key) return <span className={styles.workspaceNavItem} key={tab.href}><Icon /><Copy text={tab.label} /></span>;
           return <button key={tab.href} type="button" data-workspace-target={key} aria-pressed={screen === key} onClick={() => { setScreen(key); setWide(false); }}><Icon /><Copy text={tab.label} /></button>;
         })}
@@ -78,9 +80,10 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, prese
         ]} /> : null}
         {item.key === "plan" ? <MonthPlanOverview strategy={plan} currentWeek={1}
           nextAction={{ title_he: t("לבדוק את הפוסט שהכנו.") }}
-          weekAction={<button className={styles.textAction} onClick={() => { setPostIndex(0); setScreen("posts"); buttons.current[2]?.focus({ preventScroll: true }); }}><Copy text="לראות את הפוסט שבתוכנית" /></button>} /> : null}
+          weekAction={<button className={styles.textAction} onClick={() => { setScreen("campaign"); buttons.current[2]?.focus({ preventScroll: true }); }}><Copy text="לראות את הקמפיין שבתוכנית" /></button>} /> : null}
+        {item.key === "campaign" ? <CampaignProductPreview key={`${path}-${screen}`} path={path} initialWeek={initialCampaignWeek} /> : null}
         {item.key === "posts" ? post ? <PostWorkspace header={<>
-          <button className={styles.textAction} onClick={() => { setPostIndex(null); buttons.current[2]?.focus({ preventScroll: true }); }}><IconArrowRight className="h-4 w-4" /><Copy text="הפוסטים" /></button>
+          <button className={styles.textAction} onClick={() => { setPostIndex(null); buttons.current[3]?.focus({ preventScroll: true }); }}><IconArrowRight className="h-4 w-4" /><Copy text="הפוסטים" /></button>
           <h2 className={styles.postTitle}>{post.title}</h2><p className={styles.postMeta}><ChannelIcon channel="instagram" /> Instagram · <Copy text="מוכן לאישור" /></p>
         </>}
           preview={<PostPreview style={{ width: "min(100%, 240px)" }} media={<CardStage post={post} brand={brand} businessName={t(business.name)} rounded={false} />} caption={<p className={styles.caption}>{post.caption}</p>} />}

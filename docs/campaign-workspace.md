@@ -3,6 +3,19 @@
 `/campaign` groups the active plan's posts by week, orders dated posts chronologically,
 and shows the artwork, purpose, action and publication state together. The workspace
 response supplies the business's saved Design DNA; opening this screen creates no media.
+Campaign is a separate primary navigation view between Plan and Posts, with its own
+active state and megaphone icon on desktop and phone. It is not owned by the Posts tab.
+Each week has a visible brief drawn from its saved focus, goals, measurement targets and
+eligible post learning. Duplicate goals are combined; missing targets stay absent. This
+does not call a model on page open or invent a new finding. The website's campaign step
+reuses the same `CampaignWeek` and `CampaignPostCard` components with local fixtures:
+research → plan → campaign → posts → learning. Its automatic demonstration opens a post
+from the campaign; all public selections stay local and never create customer revisions.
+The refreshed, read-only product capture is
+[`platform-campaign-desktop.png`](../web/public/showcase/platform-campaign-desktop.png),
+captured from `/design/business?persona=services&screen=campaign&lang=he` at the desktop
+breakpoint. The live feature player remains interactive and uses those same components,
+including the campaign step in its automatic cursor/click sequence.
 
 Owners select up to three drafts and request a text, composition or image revision.
 Video generation, editing and free finishing operate on one selected draft. Every
@@ -69,8 +82,17 @@ third campaign request returned 429 without contacting the provider. This is not
 of two successful exports. The generation's recorded usage estimate is $0.530458; the edit
 retains its $1.20 ceiling. These are ledger estimates, not a provider invoice.
 
-A successful paid edit export still needs separate owner approval and verification.
-Direct video stays off by default. Product review, refreshed website captures and deployed
-verification also remain release work. Keep #190 and #158 In Progress until their
+After separate approval, one follow-up edit passed the actual campaign job, authenticated
+download, full-duration decode and Keep in a fresh isolated account. Its ledger usage
+estimate was $0.571798, below the $1.20 approved ceiling. The five-second 720×1280 output
+retained an audio stream; comparison with the original soundtrack gave 0.994746 normalized
+correlation. Frame review showed the requested blue background with closely aligned
+subject poses and movement; this is not a guarantee of pixel-identical foreground colours.
+Undo restored the original video/content language without replenishing its used unit.
+This did not reset the first account's unresolved edit reservation or submit a paid retry.
+
+The provider/export canary gate is verified. Direct video stays off by default until the
+reviewed release is deployed and activated. Product review, refreshed website captures
+and deployed verification remain release work. Keep #190 and #158 In Progress until their
 respective acceptance criteria are verified. The other parent issues are not closed by
 this change.

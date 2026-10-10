@@ -25,6 +25,7 @@
 .walkGrid { display: grid; grid-template-columns: minmax(0,.78fr) minmax(0,1.22fr); gap: 64px; align-items: start; }
 .explanation { min-height: max(650px, calc(100svh - 88px)); display: flex; flex-direction: column; justify-content: center; scroll-margin-top: 100px; }
 .productStage[data-tone="research"] { --feature-tint: #e8eff7; }
+.productStage[data-tone="campaign"] { --feature-tint: #eceef3; }
 .productStage[data-tone="posts"] { --feature-tint: #f3eee7; }
 .productStage[data-tone="learning"] { --feature-tint: #e8eeed; }
 .walkthrough .productStage { background: var(--feature-tint); height: 530px; min-height: 0; padding: 24px; transition: background 240ms ease; }

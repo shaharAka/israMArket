@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CardStage, cardSize } from "@/components/CardCanvas";
 import { CampaignBrief } from "./CampaignBrief";
-import { postDay, postWeek, weekFocus } from "./postMeta";
-import { LIFECYCLE_LABEL, lifecycleOf } from "@/lib/postLifecycle";
+import { postDay, postWeek } from "./postMeta";
+import { CampaignWeek } from "./CampaignWeek";
+import { CampaignPostCard } from "./CampaignPostCard";
 import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { billingEndpoints, type MediaAllowance } from "@/lib/billing";
 import { campaignEndpoints, protectedPost, supportsLayout, type CampaignRevision, type RevisionKind, type VideoOptions } from "@/lib/campaign";
@@ -146,11 +147,6 @@ export function CampaignTimeline() {
     } catch (e) { setError(e instanceof Error ? e.message : "לא הצלחנו לשמור. נסו שוב."); }
     finally { setBusy(false); }
   }
-  const dateLabel = (post: RoadmapPost) => {
-    const day = postDay(post);
-    if (!day) return post.date_hint?.trim() || t("מועד לבחירה");
-    return new Date(`${day}T12:00:00`).toLocaleDateString(LOCALE_META[locale].formatLocale, { day: "numeric", month: "short" });
-  };
   async function download() {
     if (!displayed) return;
     if (displayed.video_url) {
@@ -191,30 +187,14 @@ export function CampaignTimeline() {
     {posts.length ? <>
       <p className={styles.intro}>{t("בחרו עד 3 טיוטות כדי להכין להן גרסה חדשה.")}</p>
       <div className={styles.timeline}>
-        {weeks.map(week => <section className={styles.week} key={week} aria-label={week ? t("שבוע {arg_0}", { arg_0: week }) : t("פוסטים ללא שבוע בתוכנית")}>
-          <header className={styles.weekHeading}><span className={styles.marker} aria-hidden="true" />
-            <h2>{week ? t("שבוע {arg_0}", { arg_0: week }) : t("פוסטים נוספים")}</h2>
-            <p dir="auto">{weekFocus(week, posts.find(p => postWeek(p) === week), strategy)}</p>
-          </header>
-          <div className={styles.cards}>
-            {posts.map((post, index) => ({ post, index })).filter(({ post }) => postWeek(post) === week)
-              .sort((a, b) => (postDay(a.post) || "9999").localeCompare(postDay(b.post) || "9999"))
-              .map(({ post, index }) => <article key={post.uid || index} className={styles.card} data-active={selected.includes(post.uid || "")}>
-              <button type="button" aria-pressed={selected.includes(post.uid || "")} disabled={!protectedPost(post) && !selected.includes(post.uid || "") && selected.length >= 3 && !reviewing} className={styles.select} onClick={() => choose(post)}>
-                <span className={styles.thumbnail} data-vertical={post.format === "reel" || post.format === "story"}>
-                  {post.video_url ? <video src={post.video_url} muted playsInline preload="metadata" aria-label={post.title} /> : <CardStage post={post} brand={strategy?.brand_language} dna={dna} businessName={strategy?.business_name || ""} quietPlaceholder photoSizes="240px" />}
-                </span>
-                <span className={styles.cardBody}><span className={styles.date}>{dateLabel(post)} · {t(LIFECYCLE_LABEL[lifecycleOf(post)])}</span>
-                  <strong dir="auto">{post.title}</strong>
-                  {post.plan_link?.goal || post.goal_fit ? <span dir="auto">{post.plan_link?.goal || post.goal_fit}</span> : null}
-                  <span dir="auto">{post.cta || post.goal_fit}</span>
-                  <span className={styles.selected}>{selected.includes(post.uid || "") ? t("נבחר") : protectedPost(post) ? t("לצפות בפוסט") : t("לבחור")}</span>
-                </span>
-              </button>
-              <Link href={`/posts?post=${index}`} className={styles.cardLink}>{t("לפתוח בעורך")}</Link>
-            </article>)}
-          </div>
-        </section>)}
+        {weeks.map(week => <CampaignWeek key={week} week={week} posts={posts.filter(post => postWeek(post) === week)} strategy={strategy}>
+          {posts.map((post, index) => ({ post, index })).filter(({ post }) => postWeek(post) === week)
+            .sort((a, b) => (postDay(a.post) || "9999").localeCompare(postDay(b.post) || "9999"))
+            .map(({ post, index }) => <CampaignPostCard key={post.uid || index} post={post} strategy={strategy!}
+              selected={selected.includes(post.uid || "")}
+              disabled={!protectedPost(post) && !selected.includes(post.uid || "") && selected.length >= 3 && !reviewing}
+              onChoose={() => choose(post)} editorHref={`/posts?post=${index}`} />)}
+        </CampaignWeek>)}
       </div>
       {selected.length > 0 && !panelVisible && !reviewing && !changing ? <div className={styles.selectionBar}>
         <span>{t("{arg_0} מתוך 3 פוסטים נבחרו", { arg_0: selected.length })}</span>

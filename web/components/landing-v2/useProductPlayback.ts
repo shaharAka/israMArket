@@ -70,7 +70,7 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
     const panel = () => viewport.current?.querySelector<HTMLElement>('[data-active="true"]');
     const target = () => wideRef.current ? frame.current?.querySelector<HTMLElement>(`[data-workspace-target="${screen}"]`) : screen === "posts"
       ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]')
-      : panel()?.querySelector<HTMLElement>("details > summary");
+      : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
     later(0, () => {
       setWide(true);
       setCursor(null);
@@ -87,15 +87,15 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
       if (screen === "posts") viewport.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
     later(3800, () => {
-      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>("details > summary");
+      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
       moveCursor(node);
     });
     later(4900, () => {
-      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>("details > summary");
+      const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
       if (node) { setCursor(point => point && { ...point, pressed: true }); node.click(); }
     });
     later(6000, () => setCursor(null));
-    later(PRODUCT_HOLD_MS, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "posts" : screen === "posts" ? "results" : "research"));
+    later(PRODUCT_HOLD_MS, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "campaign" : screen === "campaign" ? "posts" : screen === "posts" ? "results" : "research"));
     return () => timers.forEach(clearTimeout);
   }, [playing, screen, setScreen, setPostIndex, setWide]);
 

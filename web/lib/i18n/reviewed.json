@@ -869,6 +869,156 @@
       "en": "Created for you",
       "ar": "أنشأناه لكم",
       "ru": "Создано для вас"
+    },
+    "m_aab2b24fab3842d4": {
+      "en": "Campaign",
+      "ar": "الحملة",
+      "ru": "Кампания"
+    },
+    "m_0201ebd8f61af97c": {
+      "en": "Back to campaign",
+      "ar": "العودة إلى الحملة",
+      "ru": "Вернуться к кампании"
+    },
+    "m_18b764b541d8700f": {
+      "en": "Thursday",
+      "ar": "الخميس",
+      "ru": "Четверг"
+    },
+    "m_29bc007b0d294b23": {
+      "en": "Campaign planning",
+      "ar": "تخطيط الحملة",
+      "ru": "Планирование кампании"
+    },
+    "m_29cffb4399c7cfae": {
+      "en": "Open campaign",
+      "ar": "فتح الحملة",
+      "ru": "Открыть кампанию"
+    },
+    "m_2bafa08f76b257a5": {
+      "en": "See the campaign in your plan",
+      "ar": "عرض الحملة ضمن خطتكم",
+      "ru": "Посмотреть кампанию по плану"
+    },
+    "m_483223a6af2550b6": {
+      "en": "This week’s goal",
+      "ar": "هدف هذا الأسبوع",
+      "ru": "Цель этой недели"
+    },
+    "m_4dc079a7db5475ff": {
+      "en": "Plan the weeks",
+      "ar": "تخطيط الأسابيع",
+      "ru": "План по неделям"
+    },
+    "m_639f1227c1912c47": {
+      "en": "The goal this week",
+      "ar": "هدف الأسبوع",
+      "ru": "Цель недели"
+    },
+    "m_6daaef3be6892ebe": {
+      "en": "Choose a campaign week",
+      "ar": "اختيار أسبوع في الحملة",
+      "ru": "Выбрать неделю кампании"
+    },
+    "m_79d752cdf7b005dd": {
+      "en": "Tuesday",
+      "ar": "الثلاثاء",
+      "ru": "Вторник"
+    },
+    "m_7bc0f3fe92564d51": {
+      "en": "We turn your plan into a series of posts across the weeks. See what you’re promoting, the action each post invites customers to take, and what we’ll measure next. Choose a post to work on it in your own style.",
+      "ar": "نحوّل خطتكم إلى سلسلة منشورات موزّعة على الأسابيع. ترون ما تروّجون له، وما يدعو كل منشور العملاء إلى فعله، وما سنقيسه لاحقًا. اختاروا منشورًا للعمل عليه بأسلوبكم.",
+      "ru": "Мы превращаем план в серию постов по неделям. Вы видите, что продвигаете, к какому действию каждый пост приглашает клиентов и что мы будем измерять дальше. Выберите пост, чтобы доработать его в своём стиле."
+    },
+    "m_8a7ed2f02ddd4da9": {
+      "en": "Your campaign, week by week",
+      "ar": "حملتكم، أسبوعًا بعد أسبوع",
+      "ru": "Ваша кампания по неделям"
+    },
+    "m_baefc14d78da4771": {
+      "en": "What we’ve learned",
+      "ar": "ما تعلّمناه حتى الآن",
+      "ru": "Что мы уже узнали"
+    },
+    "m_bc83e244dbbe1316": {
+      "en": "The next week",
+      "ar": "الأسبوع التالي",
+      "ru": "Следующая неделя"
+    },
+    "m_cc45ec2666900b01": {
+      "en": "Campaign now has its own place in the main navigation. See the week’s goal and what we’ll measure beside the posts. Choose drafts and prepare a new version in your business’s style.",
+      "ar": "أصبحت الحملة جزءًا من القائمة الرئيسية. بجانب المنشورات ترون هدف الأسبوع وما سنقيسه. يمكنكم اختيار مسوّدات وإعداد نسخة جديدة بأسلوب نشاطكم.",
+      "ru": "Кампания теперь находится в главном меню. Рядом с постами видны цель недели и то, что мы будем измерять. Выбирайте черновики и создавайте новую версию в стиле вашего бизнеса."
+    },
+    "m_d5a5f8461ab463fd": {
+      "en": "Next post: show how the plan becomes posts.",
+      "ar": "في المنشور التالي: نوضّح كيف تتحوّل الخطة إلى منشورات.",
+      "ru": "В следующем посте: показать, как план превращается в посты."
+    },
+    "m_df7f4e489572546e": {
+      "en": "A goal for every week. A role for every post.",
+      "ar": "هدف لكل أسبوع. ودور لكل منشور.",
+      "ru": "У каждой недели — цель. У каждого поста — своя роль."
+    },
+    "m_e0f50d5d9b7e40b4": {
+      "en": "Plan your campaign",
+      "ar": "نخطّط لحملتكم",
+      "ru": "Планируем кампанию"
+    },
+    "m_e37a81960a51639f": {
+      "en": "You review and save each change. Your allowance is shown before image or video generation; video generation is available only on accounts where it is enabled.",
+      "ar": "تراجعون كل تغيير وتحفظونه. يظهر الرصيد المتاح قبل إنشاء الصور أو الفيديو؛ إنشاء الفيديو متاح فقط للحسابات التي فُعّلت فيها هذه الميزة.",
+      "ru": "Вы проверяете и сохраняете каждое изменение. Лимит показан до создания изображений и видео; создание видео доступно только в аккаунтах, где эта функция включена."
+    },
+    "m_e719c6cea8373e00": {
+      "en": "Research, a plan and a campaign for your business. Start with a short introduction.",
+      "ar": "بحث وخطة وحملة لنشاطكم. نبدأ بالتعرّف إليكم باختصار.",
+      "ru": "Исследование, план и кампания для вашего бизнеса. Начинаем с короткого знакомства."
+    },
+    "m_0de0ad77a769bfdb": {
+      "en": "Book an introductory call",
+      "ar": "حجز مكالمة تعارف",
+      "ru": "Записаться на знакомство"
+    },
+    "m_44f954ca06aca56c": {
+      "en": "Start a trial",
+      "ar": "بدء التجربة",
+      "ru": "Начать пробный период"
+    },
+    "m_50b71a40384adaef": {
+      "en": "Choosing a colour for your home? Let’s choose it together.",
+      "ar": "تختارون لونًا للمنزل؟ لنختَر معًا.",
+      "ru": "Выбираете цвет для дома? Давайте выберем вместе."
+    },
+    "m_52890aedc4142140": {
+      "en": "What does your donation make possible?",
+      "ar": "ما الذي تتيحه تبرّعاتكم؟",
+      "ru": "Что становится возможным благодаря вашему пожертвованию?"
+    },
+    "m_567a38be910a1429": {
+      "en": "Order ahead",
+      "ar": "الطلب مسبقًا",
+      "ru": "Заказать заранее"
+    },
+    "m_9454265cb0376dca": {
+      "en": "Friday starts with an advance order.",
+      "ar": "الجمعة تبدأ بطلب مسبق.",
+      "ru": "Пятница начинается с предварительного заказа."
+    },
+    "m_c9ff292d13cb3156": {
+      "en": "Campaign planning with weekly goals and posts in your business’s style",
+      "ar": "تخطيط حملة بأهداف أسبوعية ومنشورات بأسلوب نشاطكم",
+      "ru": "Планирование кампании с целями на неделю и постами в стиле вашего бизнеса"
+    },
+    "m_dfe5edea1eb807eb": {
+      "en": "What will you post this week? Let’s build a campaign.",
+      "ar": "ماذا ستنشرون هذا الأسبوع؟ لنُعدّ حملة معًا.",
+      "ru": "Что вы опубликуете на этой неделе? Давайте построим кампанию."
+    },
+    "m_e3cd4811264cf19a": {
+      "en": "Support the work",
+      "ar": "دعم النشاط",
+      "ru": "Поддержать нашу работу"
     }
   },
   "numberForms": {

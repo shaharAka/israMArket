@@ -77,6 +77,7 @@ export function weekFocus(
     post?.plan_link?.week_focus?.trim() ||
     strategy?.roadmap?.weekly_focus?.find((item) => item.week === week)?.focus?.trim() ||
     strategy?.weekly_breakdown?.find((item) => item.week === week)?.focus?.trim() ||
+    strategy?.roadmap?.weekly_breakdown?.find((item) => item.week === week)?.focus?.trim() ||
     ""
   );
 }
