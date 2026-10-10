@@ -16878,7 +16878,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 226,
+        "line": 230,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -46850,7 +46850,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 199,
+        "line": 203,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -63195,7 +63195,7 @@
       },
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 156,
+        "line": 160,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -71055,7 +71055,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 133,
+        "line": 137,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -76307,7 +76307,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 105,
+        "line": 109,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -77053,13 +77053,13 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 112,
+        "line": 116,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 121,
+        "line": 125,
         "kind": "literal",
         "purpose": "validation"
       }

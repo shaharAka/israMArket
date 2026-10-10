@@ -56,6 +56,21 @@ content language, request deduplication, interruptions, partial proposals, owned
 fully decodable exports and shared generation/edit limits. Isolated shop and service
 campaigns exercise the real API and renderer without customer writes or paid media calls.
 
-The paid generation/edit canary, product review, refreshed website captures and deployed
-verification remain release work. Keep #190 and #158 In Progress until their respective
-acceptance criteria are verified. The other parent issues are not closed by this change.
+The 10 October canary made exactly one generation and one edit submission, with no paid
+retries. Generation produced a fully decoded five-second 720×1280 MP4 and passed Keep.
+The edit reached provider completion but failed during local soundtrack export: FFmpeg
+received output filters before the second input. That ordering is fixed. Offline tests
+now run real finishing both with/without the brand overlay and through the provider-edit
+path, checking that the original soundtrack survives and only one request is sent.
+
+The failed edit's provider usage was not persisted, so its conservative spend/unit hold
+remains. One completed unit plus that hold exhausted the account's two units; an actual
+third campaign request returned 429 without contacting the provider. This is not evidence
+of two successful exports. The generation's recorded usage estimate is $0.530458; the edit
+retains its $1.20 ceiling. These are ledger estimates, not a provider invoice.
+
+A successful paid edit export still needs separate owner approval and verification.
+Direct video stays off by default. Product review, refreshed website captures and deployed
+verification also remain release work. Keep #190 and #158 In Progress until their
+respective acceptance criteria are verified. The other parent issues are not closed by
+this change.

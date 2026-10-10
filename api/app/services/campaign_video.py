@@ -79,15 +79,19 @@ def finish_bytes(data, *, start=0.0, end=None, overlay=None, max_duration=30.0, 
         scale = "scale=720:1280:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:(oh-ih)/2:black,setsar=1,fps=24"
         if overlay:
             image = root / "overlay.png"; image.write_bytes(overlay)
-            command += ["-i", str(image), "-filter_complex", f"[0:v]{scale}[base];[base][1:v]overlay=0:0:format=auto[out]", "-map", "[out]"]
-        else:
-            command += ["-vf", scale, "-map", "0:v:0"]
+            command += ["-i", str(image)]
         audio_index = 0
         if audio_source:
             audio = root / "audio-source.mp4"; audio.write_bytes(audio_source)
             probe(audio)
             command += ["-i", str(audio)]
             audio_index = 2 if overlay else 1
+        # FFmpeg output filters and stream maps must follow every input, including
+        # the original soundtrack. Otherwise it rejects the edit before encoding.
+        if overlay:
+            command += ["-filter_complex", f"[0:v]{scale}[base];[base][1:v]overlay=0:0:format=auto[out]", "-map", "[out]"]
+        else:
+            command += ["-vf", scale, "-map", "0:v:0"]
         # Ordinary export preserves audio. For an AI visual edit, use the original
         # soundtrack instead of asking an unsupported voice-editing model to copy it.
         command += ([] if mute else ["-map", f"{audio_index}:a?"]) + ["-t", str(end-start), "-c:v", "libx264", "-threads", "2", "-preset", "veryfast", "-crf", "23",
