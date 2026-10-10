@@ -20,13 +20,13 @@ export function MediaAllowanceNote({ refreshKey }: { refreshKey: string }) {
     }).catch(() => { if (live) setFailed(true); });
     return () => { live = false; };
   }, [refreshKey, retry]);
-  if (failed) return <button type="button" onClick={() => setRetry(n => n + 1)} className="min-h-11 text-[13px] text-[var(--primary)]">{t("לבדוק שוב כמה יצירות נשארו")}</button>;
+  if (failed) return <button type="button" onClick={() => setRetry(n => n + 1)} className="min-h-11 text-[13px] text-[var(--primary)]">{t("לבדוק שוב כמה תמונות אפשר ליצור")}</button>;
   if (!allowance) return null;
   const images = allowance.images;
   const reset = allowance.resets_at ? new Date(allowance.resets_at).toLocaleDateString(locale, { day: "numeric", month: "short", timeZone: "Asia/Jerusalem" }) : "";
   return <aside className="mb-4 border-b border-[var(--rule)] pb-3 text-[13px] leading-6 text-[var(--ink-soft)]" aria-live="polite">
-    <p className="font-medium text-[var(--ink)]">{t("נשארו {arg_0} מתוך {arg_1} יצירות תמונה", { arg_0: images.remaining, arg_1: images.included })}</p>
-    {images.generation_available ? <p>{t("תמונה חדשה או שינוי תמונה בעזרת AI משתמשים ביצירה 1.")}</p>
+    <p className="font-medium text-[var(--ink)]">{t("אפשר ליצור עוד {arg_0} תמונות מתוך מכסה של {arg_1}", { arg_0: images.remaining, arg_1: images.included })}</p>
+    {images.generation_available ? <p>{t("כל יצירה או שינוי של תמונה בעזרת AI נספרים במכסה.")}</p>
       : <Link href="/assets" className="inline-flex min-h-11 items-center text-[var(--primary)]">{t("לבחור תמונה שכבר יש לכם")}</Link>}
     {reset ? <p>{t("המכסה מתחדשת ב־{arg_0}", { arg_0: reset })}</p> : null}
   </aside>;

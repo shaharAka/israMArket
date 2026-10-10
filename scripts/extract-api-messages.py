@@ -60,7 +60,9 @@ def inventory(root: Path) -> list[dict]:
             names = [target.id for p in ancestors if isinstance(p, ast.Assign)
                      for target in p.targets if isinstance(target, ast.Name)]
             purpose = "copy"
-            if any(isinstance(p, ast.Raise) for p in ancestors):
+            if file.name == "hebrew_style.py" and "HEBREW_STYLE" in names:
+                purpose = "generation-instruction"
+            elif any(isinstance(p, ast.Raise) for p in ancestors):
                 purpose = "validation"
             elif (file.name == "schemas_llm.py" or any(
                 any(word in name.lower() for word in ("prompt", "schema", "system")) for name in names

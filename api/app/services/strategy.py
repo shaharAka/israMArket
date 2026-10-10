@@ -451,7 +451,7 @@ USP: {usp}
 אל תחזור על כותרות שכבר אושרו בחודש הקודם.
 {worked}
 
-{HEBREW_STYLE if language_prefs["default_language"] == "he" and not language_prefs["allow_language_tests"] else "Use natural, contemporary wording in each post’s content language. Match the business’s own character, not a literal translation of Hebrew."}
+{"" if language_prefs["default_language"] == "he" else "Use natural, contemporary wording in each post’s content language. Match the business’s own character, not a literal translation of Hebrew."}
 
 {content_language.prompt_block(language_prefs)}
 
@@ -740,7 +740,7 @@ owner_fact: פרט שרק בעל העסק יודע ושהפוסט תלוי בו 
 applied_learning: מזהה מבלוק "מה הצליח אצלכם" אם השכתוב ממשיך דפוס שלו. אחרת ריק.
 {_rewrite_context_block(context)}
 
-{HEBREW_STYLE if language == "he" else "Use natural contemporary wording in the original post’s language."}
+{"" if language == "he" else "Use natural contemporary wording in the original post’s language."}
 
 {content_language.prompt_block(language_prefs)}
 

@@ -5,6 +5,8 @@ hypotheses within the owner's selected languages, never a claimed measured winne
 """
 from copy import deepcopy
 
+from app.services.hebrew_style import HEBREW_STYLE
+
 LANGUAGES = {"he": "Hebrew", "en": "English", "ar": "Arabic", "ru": "Russian"}
 DEFAULT = {"default_language": "he", "audience_languages": ["he"], "allow_language_tests": False}
 
@@ -44,7 +46,8 @@ def prompt_block(prefs: dict) -> str:
         "CONTENT LANGUAGE (independent of the interface language):",
         f"Write public-facing title, angle, hook, caption, cta, overlay text, price_note and all outlet_captions in {LANGUAGES[default]} ({default}).",
         "Keep JSON keys, IDs, URLs, product names and verified facts unchanged. English image_prompt describes the scene with no text in the image.",
-        "Owner-facing explanations (why_now, owner_fact, language_reason) remain Hebrew for compatibility; public copy uses the content language.",
+        "הסברים לבעל העסק והנחיות (why_now, owner_fact, language_reason, inspiration_note) נכתבים תחילה בעברית טבעית; טקסט לפרסום נכתב בשפת התוכן שנבחרה.",
+        HEBREW_STYLE,
         "Return content_language on each post. Never infer a reader's language from nationality, location or business type alone.",
     ]
     if prefs["allow_language_tests"]:

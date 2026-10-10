@@ -509,7 +509,7 @@ class ResultsTest(ConnectedTestCase):
         # Same mix type and channel, measured the same way, an earlier month.
         self.assertEqual(box["results"]["compare"], {"label": "בפוסט דומה", "value": 14, "uid": "aaaaaaaaa1", "direction": "above"})
         self.assertEqual(box["lifecycle"], "measured")
-        self.assertEqual(box["learning"], "21 לחיצות לוואטסאפ, יותר מהפוסט הדומה (14). מה היה רק בפוסט הזה: מחיר בטקסט.")
+        self.assertEqual(box["learning"], "21 לחיצות לוואטסאפ, יותר מהפוסט הדומה (14). הפוסט הזה כלל מחיר בטקסט.")
         self.assertEqual((workshop["results"]["value"], workshop["results"]["visits"], workshop["results"]["conversions"]),
                          (7, 7, 2))
         self.assertEqual(workshop["results"]["matched_by"], ["utm"])
@@ -719,7 +719,7 @@ class LearningTest(ConnectedTestCase):
     def test_the_plain_sentence_when_the_model_is_unavailable(self):
         with mock.patch.object(cp, "lite_json", side_effect=RuntimeError("402 RESOURCE_EXHAUSTED")):
             line = cp.phrase_learnings([self.FACTS])["u1"]
-        self.assertEqual(line, "21 לחיצות לוואטסאפ, יותר מהפוסט הדומה (14). מה היה רק בפוסט הזה: מחיר בטקסט.")
+        self.assertEqual(line, "21 לחיצות לוואטסאפ, יותר מהפוסט הדומה (14). הפוסט הזה כלל מחיר בטקסט.")
 
     def test_a_phrase_is_used_only_when_it_keeps_the_facts(self):
         plain = cp.template_learning(self.FACTS)
@@ -732,7 +732,7 @@ class LearningTest(ConnectedTestCase):
 
     def test_templates(self):
         below = {**self.FACTS, "value": 4, "direction": "below", "only_here": "", "only_there": "ריל"}
-        self.assertEqual(cp.template_learning(below), "4 לחיצות לוואטסאפ, פחות מהפוסט הדומה (14). מה היה רק בפוסט הדומה: ריל.")
+        self.assertEqual(cp.template_learning(below), "4 לחיצות לוואטסאפ, פחות מהפוסט הדומה (14). הפוסט הדומה היה ריל.")
         similar = {**self.FACTS, "value": 15, "direction": "similar"}
         self.assertEqual(cp.template_learning(similar), "15 לחיצות לוואטסאפ, בערך כמו הפוסט הדומה (14).")
         one = {**self.FACTS, "metric": "saves", "value": 1, "compare": None, "direction": "first"}

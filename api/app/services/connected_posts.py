@@ -1159,6 +1159,13 @@ def learning_facts(target: dict, other: dict | None) -> dict:
     return facts
 
 
+def _trait_observation(label: str, subject: str) -> str:
+    # Formats describe the post itself; other traits describe something it contains.
+    if label in FORMAT_HE.values():
+        return f"{subject} היה {label}."
+    return f"{subject} כלל {label}."
+
+
 def template_learning(facts: dict) -> str:
     """The plain sentence, used as is when the cheap model is unavailable or strays."""
     count = count_he(facts["metric"], facts["value"])
@@ -1170,10 +1177,10 @@ def template_learning(facts: dict) -> str:
     compare = f"{int(facts['compare']):,}"
     if direction == "above":
         line = f"{count}, יותר מהפוסט הדומה ({compare})."
-        return line + (f" מה היה רק בפוסט הזה: {facts['only_here']}." if facts.get("only_here") else "")
+        return line + (" " + _trait_observation(facts["only_here"], "הפוסט הזה") if facts.get("only_here") else "")
     if direction == "below":
         line = f"{count}, פחות מהפוסט הדומה ({compare})."
-        return line + (f" מה היה רק בפוסט הדומה: {facts['only_there']}." if facts.get("only_there") else "")
+        return line + (" " + _trait_observation(facts["only_there"], "הפוסט הדומה") if facts.get("only_there") else "")
     return f"{count}, בערך כמו הפוסט הדומה ({compare})."
 
 
@@ -1209,7 +1216,7 @@ def phrase_learnings(batch: list[dict]) -> dict[str, str]:
     prompt = f"""
 נסח מחדש לכל פוסט משפט אחד קצר של "מה לומדים" לבעל עסק קטן, בעברית ישראלית מדוברת, עד 16 מילים.
 מותר להשתמש רק בעובדות שכאן: המספר, המספר של הפוסט הדומה, הכיוון (above = יותר, below = פחות,
-similar = בערך כמו, first = אין עוד פוסט דומה), ומה היה רק באחד מהם. אל תוסיף מספר, סיבה, הסבר או עצה.
+similar = בערך כמו, first = אין עוד פוסט דומה), וההבדל המתועד ביניהם. נסח את ההבדל כתצפית ברורה, לא כרשימת רמזים ולא כסיבה לתוצאה. אל תוסיף מספר, סיבה, הסבר או עצה.
 אל תכתוב "בגלל", "כי" או "בזכות". אם אין לך ניסוח טוב יותר, החזר את משפט הבסיס כמו שהוא.
 לכל פוסט החזר ref ו-text.
 

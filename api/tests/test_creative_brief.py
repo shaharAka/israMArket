@@ -34,7 +34,7 @@ class BriefTest(DnaTestCase, unittest.TestCase):
         text = visual_message({"title": "Choosing a layout", "creative_brief": brief})
         self.assertIn("Renovating homeowners", text)
         self.assertIn("Book a consultation", text)
-        self.assertIn("approved brand identity", text)
+        self.assertIn("הסגנון המאושר של העסק", text)
         self.assertEqual(brief["learning_source"], "first_test")
 
     def test_a_foreign_or_unassigned_audience_is_not_substituted(self):
@@ -49,7 +49,7 @@ class BriefTest(DnaTestCase, unittest.TestCase):
     def test_existing_plan_learning_is_distinct_from_new_asset_performance(self):
         brief = self.brief(informed_by_note="Earlier layout examples brought inquiries")
         self.assertEqual(brief["learning_source"], "plan_learning")
-        self.assertIn("not evidence", prompt_context({"creative_brief": brief}))
+        self.assertIn("אינו הוכחה", prompt_context({"creative_brief": brief}))
 
     def test_verified_post_observation_can_supply_learning(self):
         brief = self.brief(learning="Consultation inquiries increased", results={
