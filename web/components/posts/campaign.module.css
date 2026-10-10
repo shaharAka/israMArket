@@ -1,0 +1,99 @@
+.workspace { max-width: 1060px; margin-inline: auto; color: var(--ink); }
+.heading { display: flex; justify-content: space-between; align-items: start; gap: 24px; margin-bottom: 32px; }
+.heading h1 { font-size: 30px; font-weight: 600; letter-spacing: -.025em; margin-top: 8px; }
+.heading p { color: var(--ink-soft); margin-top: 4px; }
+.textAction, .balance a, .cardLink { color: var(--primary); font-weight: 500; font-size: 14px; min-height: 44px; display: inline-flex; align-items: center; }
+.balance { display: flex; flex-wrap: wrap; justify-content: end; gap: 8px 20px; max-width: 320px; font-size: 14px; padding-top: 12px; }
+.balance span { font-weight: 600; }
+.balance a { flex-basis: 100%; justify-content: end; }
+.intro { font-size: 15px; color: var(--ink-soft); margin-bottom: 24px; }
+.timeline { position: relative; }
+.week { border-inline-start: 1px solid var(--rule-dark); padding-inline-start: 24px; padding-bottom: 32px; }
+.weekHeading { position: relative; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; padding-bottom: 16px; }
+.weekHeading h2 { font-size: 18px; font-weight: 600; }
+.weekHeading p { font-size: 14px; color: var(--ink-soft); }
+.marker { position: absolute; inset-inline-start: -30px; top: 8px; width: 11px; height: 11px; border-radius: 50%; background: var(--paper); border: 2px solid var(--ink-muted); }
+.cards { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.weekLayout { display: grid; grid-template-columns: minmax(0,220px) minmax(0,1fr); gap: 28px; align-items: start; }
+.weekLayout .cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.weekCount { font-size: 13px; color: var(--ink-muted); }
+.weekBrief h3 { font-size: 18px; font-weight: 500; line-height: 1.5; margin-bottom: 20px; }
+.weekBrief dl { display: grid; gap: 16px; }
+.weekBrief dt { font-size: 12px; color: var(--ink-muted); margin-bottom: 4px; }
+.weekBrief dd { font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+.weekBrief dd p + p { margin-top: 8px; }
+@media(max-width:800px) { .weekLayout { grid-template-columns: 1fr; gap: 20px; } .weekBrief dl { grid-template-columns: repeat(2,minmax(0,1fr)); } .weekBrief h3 { margin-bottom: 12px; } }
+@media(max-width:580px) { .weekLayout .cards { grid-template-columns: 1fr; } .weekBrief dl { grid-template-columns: 1fr; } }
+.card { border-radius: 16px; box-shadow: var(--shadow-card); background: var(--paper); min-width: 0; overflow: hidden; }
+.card[data-active="true"] { outline: 2px solid var(--primary); outline-offset: 3px; }
+.select { display: block; width: 100%; text-align: start; cursor: pointer; }
+.select:focus-visible, .choices button:focus-visible { outline: 3px solid var(--primary); outline-offset: -3px; }
+.thumbnail { display: block; background: var(--soft); padding: 16px 24px; max-height: 220px; overflow: hidden; }
+.thumbnail > div { max-width: 148px; margin-inline: auto; }
+.thumbnail[data-vertical="true"] > div { max-width: 100px; }
+.select:disabled { cursor: default; }
+.selectionBar { position: sticky; bottom: 16px; z-index: 5; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 12px 16px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-card); font-size: 14px; margin-bottom: 24px; }
+.selectionBar .primary { width: auto; }
+.cardBody { display: flex; flex-direction: column; gap: 6px; padding: 16px 16px 0; }
+.cardBody strong { font-size: 16px; font-weight: 600; }
+.cardBody > span { font-size: 13px; color: var(--ink-soft); line-height: 1.6; }
+.cardBody .date { font-size: 12px; color: var(--ink-muted); }
+.cardBody .selected { color: var(--primary); font-weight: 500; }
+.cardLink { margin-inline: 16px; font-size: 13px; }
+.studio { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 48px; padding-top: 32px; border-top: 1px solid var(--rule); scroll-margin-top: 96px; }
+.preview { background: var(--soft); padding: 24px; border-radius: 18px; }
+.preview > div { max-width: 320px; margin-inline: auto; }
+.caption { white-space: pre-wrap; font-size: 15px; line-height: 1.7; margin-top: 20px; }
+.controls h2 { font-size: 18px; font-weight: 600; margin-bottom: 12px; }
+.form { border-top: 1px solid var(--rule); padding-top: 20px; }
+.choices, .compare { display: flex; gap: 8px; margin-block: 16px; }
+.choices button, .compare button { min-height: 44px; padding-inline: 18px; border: 1px solid var(--rule-dark); border-radius: 10px; font-size: 14px; }
+.choices button[aria-pressed="true"], .compare button[aria-pressed="true"] { color: var(--primary); border-color: var(--primary); background: var(--primary-soft); }
+.form label { display: block; font-size: 14px; margin-bottom: 8px; }
+.form textarea { width: 100%; min-height: 96px; border-radius: 10px; border: 1px solid var(--rule-dark); padding: 12px; font-size: 15px; background: var(--paper); resize: vertical; }
+.form textarea:focus { outline: 3px solid var(--primary-soft); border-color: var(--primary); }
+.suggestions { display: flex; flex-wrap: wrap; gap: 12px; }
+.suggestions button { color: var(--primary); font-size: 13px; min-height: 44px; }
+.quote { font-size: 13px; color: var(--ink-soft); margin-block: 16px; }
+.primary { width: 100%; min-height: 48px; background: var(--action); color: var(--paper); border-radius: 12px; font-size: 15px; font-weight: 600; padding: 12px 20px; }
+.primary:disabled { opacity: .45; cursor: not-allowed; }
+.decision > button:not(.primary):not(.textAction) { display: block; width: 100%; min-height: 44px; text-align: start; padding-block: 8px; border-bottom: 1px solid var(--rule); font-size: 14px; }
+.decision > button[aria-pressed="true"] { color: var(--primary); }
+.decision p { color: var(--ink-soft); font-size: 14px; line-height: 1.7; margin-bottom: 16px; }
+.decision .primary { margin-top: 20px; }
+.history { margin-top: 24px; border-top: 1px solid var(--rule); padding-top: 20px; }
+.history > div { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 14px; border-bottom: 1px solid var(--rule); }
+.history button { color: var(--primary); min-height: 44px; }
+.error { background: var(--danger-soft); padding: 16px; border-radius: 12px; font-size: 14px; margin-bottom: 24px; }
+.error button { text-decoration: underline; min-height: 44px; margin-inline-start: 12px; }
+.empty { padding-block: 48px; }
+.empty a { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); }
+@media(max-width: 800px) { .cards { grid-template-columns: repeat(2,minmax(0,1fr)); } .studio { gap: 24px; } }
+@media(max-width: 580px) { .heading { flex-direction: column; gap: 8px; margin-bottom: 24px; } .balance { justify-content: start; max-width: none; padding-top: 0; } .balance a { flex-basis: auto; justify-content: start; } .week { padding-inline-start: 16px; } .marker { inset-inline-start: -22px; } .cards { grid-template-columns: 1fr; } .select { display: grid; grid-template-columns: 116px minmax(0,1fr); align-items: center; } .thumbnail { padding: 12px; max-height: 160px; } .thumbnail > div { max-width: 90px; } .cardBody { padding: 12px; } .studio { grid-template-columns: 1fr; } .preview { padding: 20px; } .preview > div { max-width: 250px; } }
+
+.choices { flex-wrap: wrap; }
+.videoOptions select, .videoOptions input { width: 100%; border: 1px solid var(--rule-dark); border-radius: 8px; padding: 10px; background: var(--paper); min-height: 44px; font-size: 14px; }
+.trim { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.exportOverlay { position: fixed; inset-inline-start: -10000px; top: 0; pointer-events: none; }
+.preview video { width: 100%; max-height: 560px; aspect-ratio: 9 / 16; object-fit: contain; display: block; background: #111; }
+.thumbnail video { display: block; width: 100%; height: 170px; object-fit: contain; }
+@media(max-width: 580px) { .thumbnail video { height: 130px; } .selectionBar { gap: 12px; } .selectionBar .primary { padding: 10px; font-size: 13px; } }
+
+/* Fit the same weekly view in a read-only product player without clipping content. */
+.week[data-campaign-preview="true"] { padding-bottom: 0; }
+.week[data-campaign-preview="true"] .weekLayout { grid-template-columns: minmax(0,170px) minmax(0,1fr); gap: 16px; }
+.week[data-campaign-preview="true"] .weekBrief h3 { font-size: 16px; margin-bottom: 12px; }
+.week[data-campaign-preview="true"] .weekBrief dl { grid-template-columns: 1fr; gap: 12px; }
+.week[data-campaign-preview="true"] .select { display: block; }
+.week[data-campaign-preview="true"] .thumbnail { padding: 12px; max-height: none; }
+.week[data-campaign-preview="true"] .thumbnail > div { max-width: 180px; }
+.week[data-campaign-preview="true"] [data-post-goal] { display: none; }
+.week[data-campaign-preview="true"] .cardBody { padding: 12px; gap: 4px; }
+.week[data-campaign-preview="true"] .cardBody strong { font-size: 14px; }
+.week[data-campaign-preview="true"] .cardBody > span { font-size: 12px; }
+@media(max-width:600px) {
+  .week[data-campaign-preview="true"] .weekLayout { grid-template-columns: 1fr; }
+  .week[data-campaign-preview="true"] .weekBrief dl { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .week[data-campaign-preview="true"] .cards { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+  .week[data-campaign-preview="true"] .thumbnail > div { max-width: 108px; }
+}

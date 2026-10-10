@@ -13,7 +13,7 @@ WORKDIR /app
 # lxml needs libxml2/libxslt at build time; the wheels cover runtime for most
 # platforms but installing build deps keeps this working on the ones that lack them.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends build-essential libxml2-dev libxslt1-dev curl \
+    && apt-get install -y --no-install-recommends build-essential libxml2-dev libxslt1-dev curl ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # Chromium for the one rendered screenshot per brand scan (services/screenshot.py).

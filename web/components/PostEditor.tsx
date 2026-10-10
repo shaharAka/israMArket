@@ -123,6 +123,8 @@ const ASSET_SOURCE_LABELS: Record<AssetSource, string> = {
   upload: "הועלה",
   url: "מקישור",
   site: "מהאתר",
+  generated: "נוצר בשבילכם",
+  processed: "ערכנו מהסרטון שלכם",
 };
 
 /** One thumbnail in the picker. Mirrors AssetCard: the owner's own clip shows a
@@ -925,6 +927,7 @@ export function PostEditor({
 
   // Visual Image Media Slot — the card itself renders inside CardStage.
   function renderMediaSlot() {
+    if (currentPost.video_url) return <div><video src={currentPost.video_url} controls playsInline style={{ width: "100%", aspectRatio: "9/16", objectFit: "contain", background: "#111" }} aria-label={currentPost.title} /><a href={currentPost.video_url} download className="inline-flex min-h-11 items-center text-[var(--primary)]">{t("להוריד את הסרטון")}</a></div>;
     const photoFree = !postNeedsPhoto(currentPost);
     if (!currentPost.image_url && !photoFree) {
       return (

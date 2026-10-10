@@ -50,6 +50,9 @@ export function Photo({ plan, url, dna, stacks, quiet }: { plan: PhotoPlan; url?
         {sizes ? (
           <Image
             src={url}
+            // Owned media requires the browser's session cookie. Next's server-side
+            // optimizer does not forward it; requesting the same-origin file does.
+            unoptimized={url.startsWith("/backend/media/") || url.startsWith("/media/")}
             alt=""
             fill
             sizes={sizes}

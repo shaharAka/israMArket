@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 function subscribeMotion(changed: () => void) {
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
   media.addEventListener("change", changed);
@@ -9,6 +9,8 @@ function subscribeMotion(changed: () => void) {
 export function useFeatureCycle(count: number, interval = 7000) {
   const ref = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
+  const [restart, setRestart] = useState(0);
+  const select = useCallback((next: number) => { setIndex(next); setRestart(value => value + 1); }, []);
   const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
@@ -26,6 +28,6 @@ export function useFeatureCycle(count: number, interval = 7000) {
     if (!playing || count < 2) return;
     const timer = setTimeout(() => setIndex((index + 1) % count), interval);
     return () => clearTimeout(timer);
-  }, [playing, count, index, interval]);
-  return { ref, index, select: setIndex, paused, reduced, playing, toggle: () => setPaused(value => !value), setFocused };
+  }, [playing, count, index, interval, restart]);
+  return { ref, index, select, restart, paused, reduced, playing, toggle: () => setPaused(value => !value), setFocused };
 }

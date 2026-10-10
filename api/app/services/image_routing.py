@@ -103,10 +103,14 @@ def route(
         photo = _upload_ready(photo)
 
     def reserve(provider_name: str, model_name: str, size: str = "") -> int:
+        nonlocal reservation_key
+        reservation_key = media_allowances.request_key(provider_name)
         ceiling = media_allowances.image_ceiling(provider_name, model_name, size)
         return media_allowances.reserve(db, business_id, kind="image",
-            key=media_allowances.request_key(provider_name), provider=provider_name,
+            key=reservation_key, provider=provider_name,
             model=model_name, ceiling=ceiling)
+
+    reservation_key = ""
 
     def record(**entry) -> None:
         attempts.append(entry)
@@ -126,7 +130,7 @@ def route(
                 isinstance(exc, muse_image.MuseImageError) and
                 (exc.code == "missing_key" or (exc.status and 400 <= exc.status < 500)))
             media_allowances.settle(db, reservation, state="failed" if definitive else "unknown",
-                                    cost_usd=0.0 if definitive else None)
+                                    cost_usd=0.0 if definitive else None, expected_key=reservation_key)
             record(provider="muse", model=settings.muse_image_model, image_size="", outcome=outcome,
                    fallback_reason="", cost_usd=0.0, latency_ms=int((time.monotonic() - started) * 1000))
             if not definitive:
@@ -135,7 +139,7 @@ def route(
                 raise ImageRoutingError("יצירת התמונה עדיין לא אושרה. התוכן הקיים שמור; אל תשלחו את אותה בקשה שוב.") from exc
         else:
             cost = estimate_cost("muse", settings.muse_image_model)
-            media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost)
+            media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost, expected_key=reservation_key)
             record(provider="muse", model=settings.muse_image_model, image_size="", outcome="ok",
                    fallback_reason="", cost_usd=cost, latency_ms=int((time.monotonic() - started) * 1000))
             return ImageOutcome(data, mime, task, "muse", settings.muse_image_model, "", cost, "", attempts)
@@ -156,13 +160,13 @@ def route(
         preflight = isinstance(exc, media_allowances.MediaPreflightRejected)
         definitive = preflight or (isinstance(code, int) and 400 <= code < 500)
         media_allowances.settle(db, reservation, state="failed" if definitive else "unknown",
-                                cost_usd=0.0 if preflight else None)
+                                cost_usd=0.0 if preflight else None, expected_key=reservation_key)
         record(provider="gemini", model=model, image_size=settings.gemini_image_size, outcome="error",
                fallback_reason=reason, cost_usd=0.0, latency_ms=int((time.monotonic() - started) * 1000))
         raise
     size = result.get("image_size") or settings.gemini_image_size
     cost = estimate_cost("gemini", model, image_size=size, usage=result.get("usage"))
-    media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost)
+    media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost, expected_key=reservation_key)
     record(provider="gemini", model=model, image_size=size, outcome="ok", fallback_reason=reason,
            cost_usd=cost, latency_ms=int((time.monotonic() - started) * 1000))
     return ImageOutcome(result["data"], result.get("mime") or "image/png", task, "gemini", model, size, cost,

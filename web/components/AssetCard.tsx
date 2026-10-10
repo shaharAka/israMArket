@@ -12,6 +12,8 @@ const SOURCE_LABEL: Record<AssetSource, string> = {
   upload: "העליתם בעצמכם",
   url: "מקישור",
   site: "מהאתר",
+  generated: "יצרנו בשבילכם",
+  processed: "ערכנו מהסרטון שלכם",
 };
 
 function formatDate(iso: string) {

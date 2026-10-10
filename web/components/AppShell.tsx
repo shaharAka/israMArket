@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { ApiError, endpoints, isDemo } from "@/lib/api";
-import { IconArrowRight, IconChart, IconHome, IconImage, IconCalendar, IconLogout, IconStore } from "@/lib/icons";
+import { IconArrowRight, IconChart, IconHome, IconImage, IconCalendar, IconLogout, IconStore, IconMegaphone } from "@/lib/icons";
 import { BusinessLogo } from "@/components/brand/BusinessLogo";
 import { BrandLink } from "@/components/BrandLink";
 import { TrialWelcome } from "@/components/trial/Welcome";
@@ -27,13 +27,14 @@ type Tab = {
 };
 
 /**
- * The whole app, in four tabs. The same four on the phone's bottom bar and the desktop
+ * The whole app, in five views. The same five on the phone's bottom bar and the desktop
  * sidebar, so the owner learns one map.
  *
  * It used to be nine, and the phone only had room for five: the quarterly plan, the
  * decisions, the connections, the account and log-out were unreachable on mobile, and
  * the calendar and the weekly recommendation were in no menu at all. Everything that is
- * not a daily task is a business utility. The calendar belongs to the plan.
+ * not a daily task is a business utility. The calendar belongs to the plan; the
+ * campaign is its own workspace for the sequence and coordinated creative revisions.
  */
 export const TABS: Tab[] = [
   { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
@@ -44,6 +45,7 @@ export const TABS: Tab[] = [
     // `/baseline`: the plan's starting numbers, the week-1 measurement step (Revision 8).
     owns: ["/strategy", "/plan", "/decisions", "/calendar", "/promotion", "/instagram", "/baseline"],
   },
+  { href: "/campaign", label: "קמפיין", icon: IconMegaphone, owns: ["/campaign"] },
   // The week-2 raw materials the posts are written from: photos, the products to feature
   // and the style check (Revision 8).
   { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/assets", "/featured", "/voice"] },
@@ -304,7 +306,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {inSetup ? null : (
         <nav
           aria-label={t("ניווט ראשי")}
-          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
+          className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[var(--rule)] bg-[var(--paper)]/95 pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] backdrop-blur-md md:hidden"
         >
           {TABS.map((tab) => {
             const active = activeTab?.href === tab.href;

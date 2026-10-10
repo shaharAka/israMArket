@@ -239,7 +239,7 @@ export function CardCanvas({
       {plan.bands.map((b, i) => (
         <div key={`band-${i}`} style={{ position: "absolute", left: b.box.x, top: b.box.y, width: b.box.w, height: b.box.h, background: b.color }} />
       ))}
-      {plan.photo ? <Photo plan={plan.photo} url={post.image_url || undefined} dna={dna} stacks={stacks} quiet={quietPlaceholder} /> : null}
+      {plan.photo ? <Photo key={post.image_url || ""} plan={plan.photo} url={post.image_url || undefined} dna={dna} stacks={stacks} quiet={quietPlaceholder} /> : null}
       {plan.motifs.map((m, i) => (
         <Motif key={`motif-${i}`} motif={m} />
       ))}
@@ -296,10 +296,13 @@ export function CardStage({
     const el = hostRef.current;
     if (!el) return;
     const measure = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.width <= 0) return;
+      // Measure local layout pixels. An ancestor may scale the entire product player;
+      // viewport bounds already include that transform and would shrink the artwork twice.
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+      if (width <= 0) return;
       // In fill mode the parent dictates both axes, so fit inside rather than assume.
-      const next = fill ? Math.min(rect.width / size.w, (rect.height || Infinity) / size.h) : rect.width / size.w;
+      const next = fill ? Math.min(width / size.w, (height || Infinity) / size.h) : width / size.w;
       if (next > 0 && Number.isFinite(next)) setScale(next);
     };
     const ro = new ResizeObserver(measure);

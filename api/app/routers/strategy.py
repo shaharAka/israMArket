@@ -287,6 +287,8 @@ def _produce_post_image(
     allow_generation: bool = True,
     preference: str = "auto",
     db: Session | None = None,
+    store_media=None,
+    strict: bool = False,
 ) -> str:
     """Decide where a card's image comes from, real first (docs/design-dna.md).
 
@@ -313,6 +315,8 @@ def _produce_post_image(
         return ""
 
     def stored(data: bytes, mime: str) -> str:
+        if store_media is not None:
+            return store_media(data, mime)
         # Where the photo's subject is and where text may sit (design.safe_area/focal):
         # one cheap vision call per photo, cached by its hash; never when browsing.
         photo_analysis.attach(db, business.id, post, data, mime, allow_model=allow_generation)
@@ -346,6 +350,8 @@ def _produce_post_image(
         try:
             outcome = edit_for_post(post, photo, biz_dict, dna, business_id=business.id, db=db)
         except Exception as exc:
+            if strict:
+                raise
             url = use_as_is(picked)
             post["image_edit_error"] = str(exc)[:200]
             return url

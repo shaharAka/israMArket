@@ -602,6 +602,28 @@ class GenerationJob(Base):
     finished_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, default=None)
 
 
+class CampaignRevision(Base):
+    """An owner's proposed creative changes, never a replacement until explicitly kept.
+
+    strategy_id is attribution rather than a parent FK: business deletion owns cleanup.
+    Each snapshot carries a stable post uid and a hash checked again on keep/undo.
+    """
+    __tablename__ = "campaign_revisions"
+    id: Mapped[str] = mapped_column(String(40), primary_key=True)
+    business_id: Mapped[int] = mapped_column(ForeignKey("businesses.id"), index=True)
+    strategy_id: Mapped[int] = mapped_column(Integer, index=True)
+    request_id: Mapped[str] = mapped_column(String(64))
+    kind: Mapped[str] = mapped_column(String(20))
+    instruction: Mapped[str] = mapped_column(Text, default="")
+    state: Mapped[str] = mapped_column(String(20), default="working")
+    items_json: Mapped[str] = mapped_column(Text, default="[]")
+    options_json: Mapped[str] = mapped_column(Text, default="{}")
+    error_he: Mapped[str] = mapped_column(Text, default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    __table_args__ = (UniqueConstraint("business_id", "request_id", name="uq_campaign_request"),)
+
+
 class ImageJob(Base):
     """The images being prepared for one business's posts (services/image_jobs.py, #123).
 
