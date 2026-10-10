@@ -73502,17 +73502,6 @@
       }
     ]
   },
-  "m_a560361ccf718c47": {
-    "source": "אייקון ריבועי עם אותיות גדולות מחליף את השם המלא בלשונית הדפדפן ובקיצור הדרך בטלפון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_a56160b23d7d8204": {
     "source": "להגדיל את המסכים",
     "language": "he",
@@ -100535,6 +100524,17 @@
       {
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 253,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e1a9d99eefaffd9c": {
+    "source": "האות m מתוך הלוגו מופיעה בלשונית הדפדפן ובקיצור הדרך בטלפון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
         "kind": "literal"
       }
     ]

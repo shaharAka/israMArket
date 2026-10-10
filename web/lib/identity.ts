@@ -13,5 +13,5 @@ export const IDENTITY_GLYPHS = {
 export const IDENTITY_FIRST: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["i", 0], ["s", 19], ["r", 69], ["a", 101]];
 export const IDENTITY_SECOND: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["m", 0], ["a", 91], ["r", 154], ["k", 193], ["e", 247], ["t", 301]];
 
-/** Compact initials keep the selected lettering legible at browser-tab sizes. */
-export const IDENTITY_COMPACT: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["i", 0], ["m", 27]];
+/** Standalone market letter: unchanged glyph, centered on a square icon canvas. */
+export const IDENTITY_ICON_VIEWBOX = "-6 3.5 96 96";
