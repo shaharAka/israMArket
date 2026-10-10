@@ -1,4 +1,4 @@
-/** Selected direction 02: original full-name lettering used at every brand size. */
+/** Selected direction 02: custom lettering for the wordmark and compact app icon. */
 export const IDENTITY_GLYPHS = {
   i: "M0 25H13V80H0Z M0 5H13V18H0Z",
   s: "M43 32L35 41C31 37 26 35 21 35C15 35 12 37 12 40C12 43 15 44 23 46C37 49 44 53 44 64C44 75 35 82 21 82C11 82 3 79-2 72L6 63C10 68 15 71 22 71C28 71 31 69 31 65C31 62 28 61 19 59C6 56 0 51 0 41C0 30 9 23 22 23C31 23 38 26 43 32Z",
@@ -12,3 +12,6 @@ export const IDENTITY_GLYPHS = {
 
 export const IDENTITY_FIRST: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["i", 0], ["s", 19], ["r", 69], ["a", 101]];
 export const IDENTITY_SECOND: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["m", 0], ["a", 91], ["r", 154], ["k", 193], ["e", 247], ["t", 301]];
+
+/** Compact initials keep the selected lettering legible at browser-tab sizes. */
+export const IDENTITY_COMPACT: readonly [keyof typeof IDENTITY_GLYPHS, number][] = [["i", 0], ["m", 27]];
