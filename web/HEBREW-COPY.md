@@ -7,25 +7,28 @@ SaaS product. Read every string out loud: if an Israeli wouldn't say it that way
 This complements `UI-RULES.md` (word budgets, one primary action, honesty). Nothing here
 overrides the honesty rule: caveats, "we can't measure this" and sources stay.
 
-## 1. Define the message in English, then write natural Hebrew
+## 1. Write and review Hebrew first, then translate
 
-Before writing any page, define in English who it serves, what they need to understand,
-the main message, and the one next action. Write the English copy against that purpose.
-Then adapt it naturally into Hebrew, Arabic and Russian. Review the whole journey in
-context; matching catalog entries alone does not prove clear messaging.
+Define who the screen serves, what they need to understand and its next action in
+Hebrew. Write the actual heading, instructions, findings and creative direction in
+natural Hebrew before adapting them into English, Arabic and Russian. This is the
+owner's current direction (10 October 2026), replacing the English-first convention.
 
-For example, the final interview screen answers: “What will my plan be based on, and
-what do I do now?” Show the owner's offer, audience and chosen outcome, followed by
-“Build my plan.” Do not replace those facts with several statements explaining that
-research, data and planning will happen. A recommendation should show the proposed
-change, why to try it and how to test it without requiring an expansion to understand it.
+Read the whole screen aloud before translating. Name the actual action or observation:
+“בפוסט הזה צוין מועד ההזמנה” rather than “מה היה רק בפוסט הזה”. Avoid abstract
+headings such as “מה נרצה שיעשו”; use “הפעולה” beside the actual invitation to order.
+Do not compress a clear sentence into disconnected fragments just to make it shorter.
 
-Keep existing Hebrew message IDs where useful. This workflow does not translate owner
-answers or change the language of their posts. Draft the meaning in English; preserve
-that meaning while choosing words that people naturally use in each language.
+A finding separates what we observed from what we suggest trying. A difference between
+two posts does not prove that a headline, colour or deadline caused their results.
+Translations must retain these facts and distinctions, while sounding natural in their
+own language. Review the screen in context, not just its catalog entries.
 
-English-first product thinking does not mean English phrasing in Hebrew words. Rewrite
-the idea, don't swap the words.
+Keep existing Hebrew message IDs where useful. Never rewrite saved customer answers or
+approved posts as part of a copy cleanup. The business's selected post-content language
+stays independent of interface language; a Hebrew-first product workflow must not force
+Hebrew posts on an owner who selected another language. Technical keys and image-provider
+scene prompts may retain their required language.
 
 | Calque (avoid) | Why | Natural Hebrew |
 |---|---|---|

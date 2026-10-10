@@ -111,6 +111,8 @@ class ContentLanguageTest(unittest.TestCase):
                 items = strategy.write_week_posts({'name': 'Studio', 'business_model': 'services', 'content_language': prefs}, {}, {}, {}, 1)
                 self.assertEqual([p['content_language'] for p in items], [language, language])
                 self.assertIn(cl.LANGUAGES[language], writer.call_args.args[0])
+                self.assertIn('הסברים לבעל העסק והנחיות', writer.call_args.args[0])
+                self.assertIn('אל תנסח אותם באנגלית ואז תתרגם', writer.call_args.args[0])
                 if language != 'he': self.assertEqual(writer.call_args.args[1]['properties']['posts']['items']['properties']['content_language']['enum'], [language])
                 if language != 'he':
                     self.assertIn(cl.LANGUAGES[language], writer.call_args.kwargs['system'])

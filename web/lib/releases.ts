@@ -4,6 +4,13 @@
 // English purpose: keep a published Story's last captured reach visible after expiry.
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  {
+    id: "2026-10-10-editor-hebrew", date: "2026-10-10",
+    title: "הסברים ברורים יותר ליד הפוסט",
+    summary: "ליד הפוסט מוצגים הקהל, המטרה והפעולה. ניסחנו מחדש את הממצאים ואת ההסבר על מכסת התמונות בעברית טבעית יותר.",
+    detail: "שפת הפוסטים שבחרתם נשארת ללא שינוי.",
+    href: "/posts", action: "לפתוח את הפוסטים",
+  },
   // Purpose: show the audience, objective and learning beside creative work; make the
   // included image allowance visible. Video generation is not announced as available.
   {
