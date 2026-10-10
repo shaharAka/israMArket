@@ -326,6 +326,18 @@
       }
     ]
   },
+  "m_00a3005528775116": {
+    "source": "Image input exceeds the bounded generation policy",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/gemini.py",
+        "line": 281,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_00a42f223bcddc13": {
     "source": "מכאן נבנה את השיווק שלכם",
     "language": "he",
@@ -508,12 +520,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1493,
+        "line": 1496,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1524,
+        "line": 1527,
         "kind": "literal"
       }
     ]
@@ -1413,7 +1425,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1106,
+        "line": 1109,
         "kind": "literal"
       }
     ]
@@ -2001,17 +2013,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1559,
+        "line": 1562,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1661,
+        "line": 1664,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1796,
+        "line": 1799,
         "kind": "literal"
       }
     ]
@@ -2577,7 +2589,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1389,
+        "line": 1392,
         "kind": "literal"
       }
     ]
@@ -4640,12 +4652,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 219,
+        "line": 221,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 220,
+        "line": 222,
         "kind": "literal"
       },
       {
@@ -4686,7 +4698,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 833,
+        "line": 835,
         "kind": "literal"
       }
     ]
@@ -5142,7 +5154,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -5243,7 +5255,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1679,
+        "line": 1682,
         "kind": "literal"
       }
     ]
@@ -6017,7 +6029,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 154,
+        "line": 155,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6306,7 +6318,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1471,
+        "line": 1474,
         "kind": "literal"
       }
     ]
@@ -6500,7 +6512,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -7063,7 +7075,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 141,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -7287,7 +7299,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 672,
+        "line": 674,
         "kind": "literal"
       }
     ]
@@ -7298,7 +7310,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1027,
         "kind": "literal"
       }
     ]
@@ -7572,7 +7584,7 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 683,
+        "line": 686,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -7595,7 +7607,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1247,
+        "line": 1250,
         "kind": "literal"
       }
     ]
@@ -7824,7 +7836,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -8299,7 +8311,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 113,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -8607,6 +8619,18 @@
         "file": "web/lib/trial.ts",
         "line": 453,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_12f9dde3956f5a40": {
+    "source": "יצירת התמונה עדיין לא אושרה. התוכן הקיים שמור; אל תשלחו את אותה בקשה שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/image_routing.py",
+        "line": 135,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -8920,7 +8944,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1027,
         "kind": "literal"
       }
     ]
@@ -9087,7 +9111,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 106,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -9143,7 +9167,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1579,
+        "line": 1582,
         "kind": "literal"
       }
     ]
@@ -9761,7 +9785,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1594,
+        "line": 1597,
         "kind": "literal"
       }
     ]
@@ -9845,7 +9869,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 745,
+        "line": 747,
         "kind": "literal"
       }
     ]
@@ -10118,7 +10142,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1868,
+        "line": 1871,
         "kind": "literal"
       }
     ]
@@ -10181,7 +10205,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -10192,7 +10216,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1106,
+        "line": 1109,
         "kind": "literal"
       }
     ]
@@ -10562,7 +10586,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 840,
+        "line": 850,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -10862,7 +10886,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -11513,7 +11537,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 666,
+        "line": 668,
         "kind": "literal"
       }
     ]
@@ -11750,7 +11774,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 768,
+        "line": 778,
         "kind": "template",
         "purpose": "validation"
       }
@@ -11981,7 +12005,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1464,
+        "line": 1467,
         "kind": "literal"
       }
     ]
@@ -12416,7 +12440,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 551,
+        "line": 552,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -12549,7 +12573,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1208,
+        "line": 1211,
         "kind": "literal"
       }
     ]
@@ -12822,7 +12846,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1611,
+        "line": 1614,
         "kind": "literal"
       }
     ]
@@ -12934,7 +12958,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1920,
+        "line": 1923,
         "kind": "literal"
       }
     ]
@@ -13069,7 +13093,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1947,
+        "line": 1952,
         "kind": "literal"
       }
     ]
@@ -13550,7 +13574,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1121,
+        "line": 1124,
         "kind": "literal"
       }
     ]
@@ -14145,7 +14169,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1751,
+        "line": 1754,
         "kind": "literal"
       }
     ]
@@ -14831,7 +14855,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 692,
+        "line": 694,
         "kind": "literal"
       }
     ]
@@ -15264,7 +15288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -15458,7 +15482,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -15730,7 +15754,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1211,
+        "line": 1214,
         "kind": "literal"
       }
     ]
@@ -15825,7 +15849,7 @@
     "references": [
       {
         "file": "api/app/schemas.py",
-        "line": 356,
+        "line": 357,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -16141,7 +16165,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 119,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16419,7 +16443,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 626,
+        "line": 628,
         "kind": "literal"
       }
     ]
@@ -16498,7 +16522,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 522,
+        "line": 524,
         "kind": "literal"
       }
     ]
@@ -16712,7 +16736,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 2004,
+        "line": 2009,
         "kind": "literal"
       }
     ]
@@ -16950,7 +16974,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1316,
+        "line": 1319,
         "kind": "literal"
       }
     ]
@@ -17404,7 +17428,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 157,
+        "line": 163,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -17733,6 +17757,17 @@
       }
     ]
   },
+  "m_27633510b87df1d0": {
+    "source": "לבחור תמונה שכבר יש לכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/MediaAllowanceNote.tsx",
+        "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_27642f0c506b5a2a": {
     "source": "מדיניות הפרטיות",
     "language": "he",
@@ -17904,7 +17939,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 147,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18311,7 +18346,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 20,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -18446,7 +18481,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1364,
+        "line": 1374,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18571,7 +18606,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1128,
+        "line": 1131,
         "kind": "literal"
       }
     ]
@@ -18791,12 +18826,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1661,
+        "line": 1664,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1796,
+        "line": 1799,
         "kind": "literal"
       }
     ]
@@ -19707,7 +19742,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1611,
+        "line": 1614,
         "kind": "literal"
       }
     ]
@@ -19742,7 +19777,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19847,7 +19882,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 444,
+        "line": 446,
         "kind": "literal"
       }
     ]
@@ -19858,12 +19893,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1697,
+        "line": 1700,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1783,
+        "line": 1786,
         "kind": "literal"
       }
     ]
@@ -19874,7 +19909,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1046,
+        "line": 1049,
         "kind": "literal"
       }
     ]
@@ -19919,7 +19954,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 484,
+        "line": 486,
         "kind": "literal"
       }
     ]
@@ -20034,7 +20069,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 162,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -20249,6 +20284,17 @@
         "line": 154,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_2cc7a1a24d262b9f": {
+    "source": "המכסה מתחדשת ב־{arg_0}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/MediaAllowanceNote.tsx",
+        "line": 31,
+        "kind": "literal"
       }
     ]
   },
@@ -21167,17 +21213,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 82,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 110,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -21524,7 +21570,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 218,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -21730,7 +21776,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1459,
+        "line": 1462,
         "kind": "literal"
       }
     ]
@@ -22259,7 +22305,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1003,
+        "line": 1013,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -22671,7 +22717,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1323,
+        "line": 1333,
         "kind": "template",
         "purpose": "copy"
       }
@@ -23328,7 +23374,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1920,
+        "line": 1923,
         "kind": "literal"
       }
     ]
@@ -23406,7 +23452,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1421,
+        "line": 1424,
         "kind": "literal"
       }
     ]
@@ -25126,7 +25172,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1214,
+        "line": 1217,
         "kind": "literal"
       },
       {
@@ -25559,7 +25605,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -25867,7 +25913,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1515,
+        "line": 1518,
         "kind": "literal"
       }
     ]
@@ -26252,7 +26298,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1814,
+        "line": 1817,
         "kind": "literal"
       }
     ]
@@ -26614,7 +26660,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -26625,7 +26671,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 609,
+        "line": 611,
         "kind": "literal"
       }
     ]
@@ -28085,7 +28131,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1900,
+        "line": 1903,
         "kind": "literal"
       }
     ]
@@ -28426,7 +28472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28605,7 +28651,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 115,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -28712,6 +28758,11 @@
         "line": 90,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 29,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/script.ts",
@@ -29356,7 +29407,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1926,
+        "line": 1929,
         "kind": "literal"
       }
     ]
@@ -29389,7 +29440,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -29775,7 +29826,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1042,
+        "line": 1045,
         "kind": "literal"
       }
     ]
@@ -29892,7 +29943,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 230,
+        "line": 232,
         "kind": "literal"
       }
     ]
@@ -31190,7 +31241,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1783,
+        "line": 1786,
         "kind": "literal"
       }
     ]
@@ -31269,7 +31320,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -31397,13 +31448,25 @@
       }
     ]
   },
+  "m_4569b05941729fea": {
+    "source": "Missing media reservation",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 228,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_456e8acd21d0e31e": {
     "source": "שלושה עיצובים לפוסט:",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1244,
+        "line": 1247,
         "kind": "literal"
       }
     ]
@@ -31784,7 +31847,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -32420,7 +32483,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -32714,17 +32777,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 40,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 54,
         "kind": "literal"
       },
       {
@@ -32892,7 +32955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -32949,7 +33012,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 677,
+        "line": 687,
         "kind": "template",
         "purpose": "validation"
       }
@@ -33910,7 +33973,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1965,
+        "line": 1970,
         "kind": "literal"
       },
       {
@@ -34169,7 +34232,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -34515,7 +34578,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1039,
+        "line": 1042,
         "kind": "literal"
       }
     ]
@@ -34526,7 +34589,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1247,
+        "line": 1250,
         "kind": "literal"
       }
     ]
@@ -35224,7 +35287,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 47,
+        "line": 53,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -35406,7 +35469,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1765,
+        "line": 1768,
         "kind": "literal"
       }
     ]
@@ -35922,7 +35985,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 161,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36198,7 +36261,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1350,
+        "line": 1353,
         "kind": "literal"
       }
     ]
@@ -36257,6 +36320,17 @@
         "line": 768,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_50db7ee3badf40dc": {
+    "source": "המכסה משותפת לכל העסקים בחשבון. תמונות שהעליתם, עריכת טקסט והורדת תוכן קיים נשארות זמינות גם כשהיא נגמרת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 13,
+        "kind": "literal"
       }
     ]
   },
@@ -36491,7 +36565,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -36658,7 +36732,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 133,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37471,7 +37545,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 932,
+        "line": 934,
         "kind": "literal"
       }
     ]
@@ -37609,7 +37683,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1244,
+        "line": 1247,
         "kind": "literal"
       }
     ]
@@ -37786,7 +37860,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 592,
+        "line": 594,
         "kind": "literal"
       }
     ]
@@ -38155,7 +38229,7 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 687,
+        "line": 690,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38766,7 +38840,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 155,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -39592,7 +39666,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1588,
+        "line": 1591,
         "kind": "literal"
       }
     ]
@@ -40612,7 +40686,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -40765,7 +40839,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 688,
+        "line": 690,
         "kind": "literal"
       }
     ]
@@ -41027,7 +41101,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 831,
+        "line": 833,
         "kind": "literal"
       }
     ]
@@ -41328,7 +41402,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -41364,6 +41438,17 @@
       {
         "file": "web/app/decisions/page.tsx",
         "line": 1178,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5d11a25b2741af73": {
+    "source": "בעורך רואים למי הפוסט מיועד, מה נרצה שישיג ומה למדנו. ליד יצירת התמונה מוצגת המכסה שנשארה; גם שינוי תמונה בעזרת AI נספר בה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
         "kind": "literal"
       }
     ]
@@ -41529,7 +41614,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1736,
+        "line": 1739,
         "kind": "literal"
       },
       {
@@ -42052,7 +42137,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1751,
+        "line": 1754,
         "kind": "literal"
       }
     ]
@@ -42207,7 +42292,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1697,
+        "line": 1700,
         "kind": "literal"
       }
     ]
@@ -42256,7 +42341,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       },
       {
@@ -42505,7 +42590,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 524,
+        "line": 526,
         "kind": "literal"
       }
     ]
@@ -42672,7 +42757,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1080,
+        "line": 1083,
         "kind": "literal"
       },
       {
@@ -43043,7 +43128,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1331,
+        "line": 1341,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43215,7 +43300,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 473,
+        "line": 478,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43239,6 +43324,17 @@
       {
         "file": "web/components/start/PostPhone.tsx",
         "line": 100,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_60ff1c2a83d2c0ee": {
+    "source": "נשארו {arg_0} מתוך {arg_1} יצירות תמונה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/MediaAllowanceNote.tsx",
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -43311,7 +43407,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 571,
+        "line": 573,
         "kind": "literal"
       }
     ]
@@ -43542,7 +43638,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 134,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -43576,7 +43672,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 542,
+        "line": 543,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -43972,7 +44068,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -43988,7 +44084,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 123,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -44385,7 +44481,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -46035,7 +46131,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1358,
+        "line": 1361,
         "kind": "literal"
       }
     ]
@@ -46336,6 +46432,17 @@
       }
     ]
   },
+  "m_67cfcacac4d9b2ad": {
+    "source": "לבדוק שוב כמה יצירות נשארו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/MediaAllowanceNote.tsx",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_67d43fc6d226926e": {
     "source": "קודם למי שכבר מכיר אתכם",
     "language": "he",
@@ -46388,7 +46495,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1505,
+        "line": 1508,
         "kind": "literal"
       }
     ]
@@ -46465,7 +46572,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 964,
+        "line": 974,
         "kind": "template",
         "purpose": "validation"
       }
@@ -47206,7 +47313,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1028,
+        "line": 1031,
         "kind": "literal"
       }
     ]
@@ -47517,7 +47624,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47638,7 +47745,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -47693,7 +47800,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 148,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -47715,7 +47822,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 626,
+        "line": 628,
         "kind": "literal"
       }
     ]
@@ -47794,6 +47901,11 @@
         "purpose": "display"
       },
       {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 27,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/start/script.ts",
         "line": 50,
         "kind": "literal"
@@ -47818,7 +47930,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 154,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48508,7 +48620,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1063,
+        "line": 1066,
         "kind": "literal"
       }
     ]
@@ -49040,7 +49152,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 165,
+        "line": 171,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -49245,7 +49357,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1204,
+        "line": 1207,
         "kind": "literal"
       }
     ]
@@ -49329,7 +49441,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1155,
+        "line": 1158,
         "kind": "literal"
       }
     ]
@@ -49647,7 +49759,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 48,
+        "line": 54,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -49920,7 +50032,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 140,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50018,7 +50130,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 310,
+        "line": 328,
         "kind": "template",
         "purpose": "validation"
       }
@@ -50138,7 +50250,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 705,
+        "line": 715,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -50352,7 +50464,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 487,
+        "line": 489,
         "kind": "literal"
       }
     ]
@@ -50475,12 +50587,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 13,
+        "line": 22,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -50513,7 +50625,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -50649,7 +50761,7 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 83,
+        "line": 84,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -50733,7 +50845,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 122,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -50923,6 +51035,18 @@
         "file": "web/components/posts/preparation/PhotosStep.tsx",
         "line": 232,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_71d37f0ba844217f": {
+    "source": "הכיוון והמכסה ליד הפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -51392,7 +51516,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1340,
+        "line": 1350,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -51666,7 +51790,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 743,
+        "line": 745,
         "kind": "literal"
       }
     ]
@@ -52303,7 +52427,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1267,
+        "line": 1270,
         "kind": "literal"
       }
     ]
@@ -52756,7 +52880,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 723,
+        "line": 725,
         "kind": "literal"
       }
     ]
@@ -53942,7 +54066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 112,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54045,17 +54169,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 935,
+        "line": 937,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1028,
+        "line": 1031,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1775,
+        "line": 1778,
         "kind": "literal"
       }
     ]
@@ -54664,7 +54788,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -54986,7 +55110,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 230,
+        "line": 232,
         "kind": "literal"
       }
     ]
@@ -55463,6 +55587,22 @@
       }
     ]
   },
+  "m_7bd7b4993e135d14": {
+    "source": "הכיוון של הפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 32,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 33,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7bd9959c6bcc4d8b": {
     "source": "בונים את החודש: {arg_0}…",
     "language": "he",
@@ -55572,7 +55712,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1481,
+        "line": 1484,
         "kind": "literal"
       }
     ]
@@ -56692,7 +56832,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 669,
+        "line": 671,
         "kind": "literal"
       }
     ]
@@ -57067,7 +57207,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -57185,7 +57325,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1075,
+        "line": 1078,
         "kind": "literal"
       }
     ]
@@ -57461,7 +57601,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1434,
+        "line": 1437,
         "kind": "literal"
       }
     ]
@@ -57559,7 +57699,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 285,
+        "line": 299,
         "kind": "template",
         "purpose": "validation"
       }
@@ -58072,7 +58212,7 @@
       },
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 680,
+        "line": 683,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -58095,7 +58235,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1293,
+        "line": 1296,
         "kind": "literal"
       }
     ]
@@ -58332,7 +58472,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1264,
+        "line": 1267,
         "kind": "literal"
       }
     ]
@@ -58464,7 +58604,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -59597,6 +59737,18 @@
       }
     ]
   },
+  "m_85457a9e72f5f1c1": {
+    "source": "הבקשה הזו כבר נשלחה. בדקו את התוצאה לפני יצירה נוספת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 197,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_85541cbd0b95ebac": {
     "source": "סופרים בעצמכם, בלי חיבור.",
     "language": "he",
@@ -60524,7 +60676,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -60942,7 +61094,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1332,
+        "line": 1342,
         "kind": "template",
         "purpose": "copy"
       }
@@ -61889,7 +62041,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 233,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -61922,7 +62074,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1616,
+        "line": 1619,
         "kind": "literal"
       },
       {
@@ -62039,7 +62191,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 427,
+        "line": 429,
         "kind": "literal"
       }
     ]
@@ -62560,7 +62712,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 66,
+        "line": 67,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62999,7 +63151,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1562,
+        "line": 1565,
         "kind": "literal"
       },
       {
@@ -63163,7 +63315,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1372,
+        "line": 1375,
         "kind": "literal"
       }
     ]
@@ -63372,7 +63524,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 472,
+        "line": 474,
         "kind": "literal"
       }
     ]
@@ -63510,7 +63662,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 475,
+        "line": 477,
         "kind": "literal"
       }
     ]
@@ -63772,7 +63924,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64087,7 +64239,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64379,7 +64531,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 850,
+        "line": 852,
         "kind": "literal"
       },
       {
@@ -65179,7 +65331,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1343,
+        "line": 1353,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65819,7 +65971,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1360,
+        "line": 1363,
         "kind": "literal"
       }
     ]
@@ -66103,7 +66255,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1286,
+        "line": 1289,
         "kind": "literal"
       }
     ]
@@ -66166,7 +66318,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1524,
+        "line": 1527,
         "kind": "literal"
       },
       {
@@ -66884,7 +67036,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1044,
+        "line": 1047,
         "kind": "literal"
       }
     ]
@@ -67603,7 +67755,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -68037,7 +68189,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1873,
+        "line": 1876,
         "kind": "literal"
       }
     ]
@@ -68376,7 +68528,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1662,
+        "line": 1665,
         "kind": "literal"
       }
     ]
@@ -69052,7 +69204,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -69086,7 +69238,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 688,
+        "line": 690,
         "kind": "literal"
       }
     ]
@@ -69249,7 +69401,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -69433,7 +69585,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 931,
+        "line": 933,
         "kind": "literal"
       }
     ]
@@ -69582,7 +69734,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 668,
+        "line": 670,
         "kind": "literal"
       }
     ]
@@ -69984,6 +70136,18 @@
         "file": "web/app/preview/page.tsx",
         "line": 19,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_9d426419426bfd5b": {
+    "source": "ניצלתם את מכסת היצירה לתקופה הזו. אפשר להמשיך לערוך ולהשתמש בתוכן שכבר יש לכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 47,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -70616,7 +70780,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1046,
+        "line": 1049,
         "kind": "literal"
       }
     ]
@@ -71379,7 +71543,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1018,
+        "line": 1021,
         "kind": "literal"
       }
     ]
@@ -71425,7 +71589,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -71538,7 +71702,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 583,
+        "line": 585,
         "kind": "literal"
       }
     ]
@@ -71630,7 +71794,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1323,
+        "line": 1326,
         "kind": "literal"
       },
       {
@@ -71788,6 +71952,18 @@
         "line": 256,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a16e6eb970af3d21": {
+    "source": "Invalid media settlement",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 222,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -72060,6 +72236,17 @@
         "line": 144,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_a23af6f35282d16f": {
+    "source": "תמונה חדשה או שינוי תמונה בעזרת AI משתמשים ביצירה 1.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/MediaAllowanceNote.tsx",
+        "line": 29,
+        "kind": "literal"
       }
     ]
   },
@@ -72673,7 +72860,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -73012,7 +73199,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1528,
+        "line": 1531,
         "kind": "literal"
       }
     ]
@@ -73102,7 +73289,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1019,
+        "line": 1022,
         "kind": "literal"
       }
     ]
@@ -74231,7 +74418,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1342,
+        "line": 1352,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -74868,7 +75055,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1562,
+        "line": 1565,
         "kind": "literal"
       }
     ]
@@ -75380,7 +75567,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 116,
+        "line": 118,
         "kind": "literal"
       }
     ]
@@ -75910,7 +76097,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1353,
+        "line": 1363,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -76144,7 +76331,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 126,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -76346,7 +76533,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 931,
+        "line": 933,
         "kind": "literal"
       }
     ]
@@ -76486,7 +76673,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1089,
+        "line": 1092,
         "kind": "literal"
       }
     ]
@@ -76605,7 +76792,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1054,
+        "line": 1057,
         "kind": "literal"
       },
       {
@@ -77086,7 +77273,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -77202,7 +77389,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 654,
+        "line": 656,
         "kind": "literal"
       },
       {
@@ -77212,7 +77399,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1120,
+        "line": 1130,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -77707,7 +77894,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1333,
+        "line": 1343,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78264,7 +78451,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -78422,7 +78609,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -78603,7 +78790,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1324,
+        "line": 1334,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78926,7 +79113,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 233,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -79149,7 +79336,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 522,
+        "line": 524,
         "kind": "literal"
       }
     ]
@@ -79274,7 +79461,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79442,7 +79629,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 628,
+        "line": 630,
         "kind": "literal"
       }
     ]
@@ -79476,7 +79663,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 594,
+        "line": 596,
         "kind": "literal"
       }
     ]
@@ -79879,7 +80066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80106,17 +80293,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1014,
+        "line": 1017,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1146,
+        "line": 1149,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1187,
+        "line": 1190,
         "kind": "literal"
       }
     ]
@@ -81265,12 +81452,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1660,
+        "line": 1663,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1758,
+        "line": 1761,
         "kind": "literal"
       }
     ]
@@ -81699,7 +81886,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1960,
+        "line": 1965,
         "kind": "literal"
       },
       {
@@ -81825,7 +82012,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1706,
+        "line": 1709,
         "kind": "literal"
       }
     ]
@@ -81944,7 +82131,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1662,
+        "line": 1665,
         "kind": "literal"
       },
       {
@@ -81976,7 +82163,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 121,
+        "line": 123,
         "kind": "literal"
       },
       {
@@ -82128,7 +82315,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 932,
+        "line": 934,
         "kind": "literal"
       }
     ]
@@ -82243,6 +82430,18 @@
         "file": "web/components/plan/QuarterPlanView.tsx",
         "line": 128,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b91480a4e62af6c3": {
+    "source": "Unbounded media reservation",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 162,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -82613,7 +82812,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 50,
+        "line": 56,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82794,7 +82993,7 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 692,
+        "line": 695,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -83074,7 +83273,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 712,
+        "line": 714,
         "kind": "literal"
       }
     ]
@@ -83462,7 +83661,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1306,
+        "line": 1309,
         "kind": "literal"
       }
     ]
@@ -83849,7 +84048,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84282,7 +84481,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1841,
+        "line": 1844,
         "kind": "literal"
       },
       {
@@ -84800,7 +84999,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 363,
+        "line": 365,
         "kind": "literal"
       }
     ]
@@ -84888,7 +85087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 127,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -85018,7 +85217,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -85066,6 +85265,18 @@
         "line": 24,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_bfec28a8e044e481": {
+    "source": "לא מצאנו את החשבון ליצירת התוכן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 171,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -85150,7 +85361,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1086,
+        "line": 1089,
         "kind": "literal"
       }
     ]
@@ -85308,7 +85519,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 431,
+        "line": 433,
         "kind": "literal"
       }
     ]
@@ -85547,12 +85758,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1661,
+        "line": 1664,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1796,
+        "line": 1799,
         "kind": "literal"
       }
     ]
@@ -85836,7 +86047,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 831,
+        "line": 833,
         "kind": "literal"
       }
     ]
@@ -85882,7 +86093,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1582,
+        "line": 1585,
         "kind": "literal"
       }
     ]
@@ -85938,7 +86149,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 478,
+        "line": 480,
         "kind": "literal"
       }
     ]
@@ -85971,7 +86182,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 298,
+        "line": 312,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -86544,7 +86755,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 509,
+        "line": 510,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -87075,7 +87286,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1066,
+        "line": 1069,
         "kind": "literal"
       }
     ]
@@ -87149,7 +87360,7 @@
       },
       {
         "file": "api/app/schemas.py",
-        "line": 304,
+        "line": 305,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -88476,7 +88687,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 443,
+        "line": 445,
         "kind": "literal"
       }
     ]
@@ -90114,7 +90325,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 113,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -90750,7 +90961,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1976,
+        "line": 1981,
         "kind": "literal"
       }
     ]
@@ -90761,7 +90972,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -90937,7 +91148,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 481,
+        "line": 483,
         "kind": "literal"
       }
     ]
@@ -91344,7 +91555,7 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 285,
+        "line": 286,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -91406,7 +91617,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 307,
+        "line": 325,
         "kind": "template",
         "purpose": "validation"
       }
@@ -91418,7 +91629,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 539,
+        "line": 541,
         "kind": "literal"
       }
     ]
@@ -91429,7 +91640,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1332,
+        "line": 1342,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -91453,7 +91664,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 719,
+        "line": 721,
         "kind": "literal"
       }
     ]
@@ -91994,7 +92205,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1447,
+        "line": 1450,
         "kind": "literal"
       }
     ]
@@ -92380,7 +92591,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1093,
+        "line": 1096,
         "kind": "literal"
       }
     ]
@@ -93144,7 +93355,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 575,
+        "line": 577,
         "kind": "literal"
       }
     ]
@@ -93409,7 +93620,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -93972,7 +94183,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1343,
+        "line": 1353,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94240,7 +94451,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 638,
+        "line": 644,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -94408,7 +94619,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1306,
+        "line": 1309,
         "kind": "literal"
       }
     ]
@@ -94707,7 +94918,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -94857,7 +95068,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -95154,25 +95365,25 @@
     "references": [
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 705,
+        "line": 708,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 629,
+        "line": 630,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 655,
+        "line": 658,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/image_jobs.py",
-        "line": 613,
+        "line": 614,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -95469,7 +95680,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 973,
+        "line": 975,
         "kind": "literal"
       }
     ]
@@ -95514,7 +95725,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97146,6 +97357,17 @@
       }
     ]
   },
+  "m_dae097528092fa08": {
+    "source": "לפתוח את העורך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 14,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dae14d50db41c06c": {
     "source": "חיפוש לפי אימייל, שם או עסק",
     "language": "he",
@@ -97236,61 +97458,61 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 410,
+        "line": 414,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 584,
+        "line": 585,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 633,
+        "line": 639,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 711,
+        "line": 721,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 751,
+        "line": 761,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 817,
+        "line": 827,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 904,
+        "line": 914,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1049,
+        "line": 1059,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1085,
+        "line": 1095,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1115,
+        "line": 1125,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -98030,6 +98252,17 @@
       }
     ]
   },
+  "m_dc497370c468c350": {
+    "source": "למי זה מיועד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 26,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dc784b9e19910b2a": {
     "source": "כל המספרים והאזהרות",
     "language": "he",
@@ -98623,7 +98856,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98657,7 +98890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -98714,7 +98947,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 180,
+        "line": 182,
         "kind": "literal"
       },
       {
@@ -98760,7 +98993,7 @@
     "references": [
       {
         "file": "api/app/services/image_routing.py",
-        "line": 126,
+        "line": 144,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -98916,7 +99149,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -99203,7 +99436,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 96,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -99589,7 +99822,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1154,
+        "line": 1157,
         "kind": "literal"
       }
     ]
@@ -99624,7 +99857,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -99813,7 +100046,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 96,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -100305,6 +100538,11 @@
         "file": "web/components/brand/BrandStyle.tsx",
         "line": 297,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -100337,7 +100575,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1916,
+        "line": 1919,
         "kind": "literal"
       }
     ]
@@ -100534,7 +100772,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -101009,7 +101247,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 96,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -101083,7 +101321,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 51,
+        "line": 57,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -101122,7 +101360,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1393,
+        "line": 1396,
         "kind": "literal"
       }
     ]
@@ -102179,7 +102417,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1528,
+        "line": 1531,
         "kind": "literal"
       }
     ]
@@ -102301,7 +102539,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 743,
+        "line": 745,
         "kind": "literal"
       }
     ]
@@ -102384,7 +102622,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1322,
+        "line": 1332,
         "kind": "template",
         "purpose": "copy"
       }
@@ -102407,7 +102645,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 717,
+        "line": 719,
         "kind": "literal"
       }
     ]
@@ -102566,7 +102804,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -102577,7 +102815,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -102923,7 +103161,7 @@
     "references": [
       {
         "file": "api/app/routers/billing.py",
-        "line": 49,
+        "line": 55,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -103338,7 +103576,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1679,
+        "line": 1682,
         "kind": "literal"
       },
       {
@@ -103406,7 +103644,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 19,
         "kind": "literal",
         "purpose": "display"
       }
@@ -103620,7 +103858,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 94,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -103987,7 +104225,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1726,
+        "line": 1729,
         "kind": "literal",
         "purpose": "display"
       },
@@ -104470,7 +104708,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1952,
+        "line": 1957,
         "kind": "literal"
       }
     ]
@@ -104745,7 +104983,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -104830,7 +105068,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 406,
+        "line": 408,
         "kind": "literal"
       },
       {
@@ -105147,12 +105385,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 114,
+        "line": 116,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 158,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -105196,7 +105434,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1111,
+        "line": 1114,
         "kind": "literal"
       }
     ]
@@ -105447,17 +105685,17 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1421,
+        "line": 1424,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1622,
+        "line": 1625,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1736,
+        "line": 1739,
         "kind": "literal"
       },
       {
@@ -107708,7 +107946,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1769,
+        "line": 1772,
         "kind": "literal"
       },
       {
@@ -108206,7 +108444,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 650,
+        "line": 652,
         "kind": "literal"
       }
     ]
@@ -108322,7 +108560,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1429,
+        "line": 1432,
         "kind": "literal"
       },
       {
@@ -108375,7 +108613,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 115,
+        "line": 116,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -108933,7 +109171,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1035,
+        "line": 1038,
         "kind": "literal"
       }
     ]
@@ -109379,6 +109617,11 @@
         "file": "web/components/design/FlowCanvas.tsx",
         "line": 127,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 29,
+        "kind": "literal"
       }
     ]
   },
@@ -109937,7 +110180,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 120,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -110436,7 +110679,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110485,6 +110728,17 @@
         "line": 342,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_f6f74b7b1b85257c": {
+    "source": "מה נרצה שיעשו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 28,
+        "kind": "literal"
       }
     ]
   },
@@ -110670,13 +110924,13 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1154,
+        "line": 1164,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1266,
+        "line": 1276,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -110757,7 +111011,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1167,
+        "line": 1170,
         "kind": "literal"
       }
     ]
@@ -111611,8 +111865,20 @@
     "language": "he",
     "references": [
       {
+        "file": "api/app/services/gemini.py",
+        "line": 255,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/gemini.py",
+        "line": 278,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
         "file": "api/app/services/image_jobs.py",
-        "line": 82,
+        "line": 83,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -112306,7 +112572,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -112800,7 +113066,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -113456,7 +113722,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113613,7 +113879,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1719,
+        "line": 1722,
         "kind": "literal"
       },
       {
@@ -113675,7 +113941,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1952,
+        "line": 1957,
         "kind": "literal"
       },
       {
@@ -113751,7 +114017,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 96,
+        "line": 98,
         "kind": "literal"
       },
       {
@@ -113779,7 +114045,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -113891,7 +114157,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1018,
+        "line": 1021,
         "kind": "literal"
       }
     ]
@@ -114244,6 +114510,24 @@
         "line": 249,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ffad441a9871fa1c": {
+    "source": "מודל התמונות הזה עדיין לא זמין ליצירה בחשבון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 153,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/media_allowances.py",
+        "line": 150,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },

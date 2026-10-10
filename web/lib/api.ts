@@ -4069,7 +4069,7 @@ export const endpoints = {
     // (a 202) when it is not ready yet: the post gets it once the job is done.
     api<{ post: RoadmapPost; strategy: StrategyPayload; job?: ImageJobStatus; queued?: boolean }>("/strategy/posts/image", {
       method: "POST",
-      body: JSON.stringify({ post_index, ...options }),
+      body: JSON.stringify({ post_index, generation_request_id: crypto.randomUUID(), ...options }),
     }),
   /** Point a post's image at one of the owner's own library assets. */
   attachPostAsset: (post_index: number, asset_id: number) =>
@@ -4090,7 +4090,7 @@ export const endpoints = {
   ) =>
     api<{ post: RoadmapPost; strategy: StrategyPayload }>("/strategy/posts/design", {
       method: "POST",
-      body: JSON.stringify({ post_index, ...options }),
+      body: JSON.stringify({ post_index, generation_request_id: crypto.randomUUID(), ...options }),
     }),
   /** Starts (or joins) the image job for the posts still missing one; answers at once.
    *  An explicit action only: no page calls it when it opens (#123). */

@@ -220,7 +220,8 @@ def visual_message(post: dict) -> str:
               "photo_needed": (post.get("photo_hint_he"), 400)}
     data = {key: re.sub(r"\s+", " ", str(value)).strip()[:limit]
             for key, (value, limit) in fields.items() if isinstance(value, (str, int, float)) and str(value).strip()}
-    return json.dumps(data, ensure_ascii=False)
+    from app.services.creative_brief import prompt_context
+    return json.dumps(data, ensure_ascii=False) + prompt_context(post)
 
 
 def build_image_prompt(post: dict, brand: dict, business: dict, dna: dict | None = None) -> str:

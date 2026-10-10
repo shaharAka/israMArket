@@ -32,6 +32,8 @@ from app.models import (
     InstagramPost,
     Integration,
     ModelUsage,
+    MediaAllowance,
+    MediaAttempt,
     PasswordResetToken,
     Payment,
     PerformanceSnapshot,
@@ -145,6 +147,13 @@ class AccountDeletionTest(unittest.TestCase):
             folder.mkdir()
             (folder / "1-card-abc.png").write_bytes(b"card")
             (folder / "asset-photo.png").write_bytes(b"photo")
+        allowance = MediaAllowance(user_id=user.id, kind="image", period_start=datetime(2026, 10, 1),
+                                   period_end=datetime(2026, 11, 1), used=1)
+        db.add(allowance)
+        db.flush()
+        db.add(MediaAttempt(user_id=user.id, workspace_id=ids[0] if ids else 0, allowance_id=allowance.id,
+                            request_key=f"seed-{user.id}", kind="image", provider="fake", model="offline",
+                            reserved_microusd=10000, state="succeeded", cost_microusd=10000))
         db.commit()
         user_id = user.id
         db.close()

@@ -27,6 +27,8 @@ import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
 import { PostWorkspace, PostPreview, PostActionPanel } from "@/components/posts/PostWorkspace";
 import { InspirationLine } from "@/components/posts/InspirationLine";
+import { CampaignBrief, briefLearning } from "@/components/posts/CampaignBrief";
+import { MediaAllowanceNote } from "@/components/posts/MediaAllowanceNote";
 import { ChannelIcon } from "@/components/posts/ChannelIcon";
 import {
   LIFECYCLE_LABEL,
@@ -1009,6 +1011,7 @@ export function PostEditor({
   function renderImageTools() {
     return (
       <div>
+        <MediaAllowanceNote refreshKey={`${currentPost.uid}:${currentPost.image_url}:${imageBusy}`} />
         <p className="text-sm leading-6 text-[color:var(--ink-soft)]">
           {IMAGE_SOURCE_LABELS[imageSourceKey]}
           {currentAsset ? t(" · {arg_0}", { arg_0: currentAsset.description || t("תמונה בלי תיאור") }) : ""}
@@ -1921,7 +1924,7 @@ export function PostEditor({
             </p>
           </>
         )}
-        {learning ? (
+        {learning && learning !== briefLearning(currentPost)?.trim() ? (
           <div className="mt-5">
             <h3 className="text-[13px] font-semibold text-[color:var(--ink-muted)]"><Copy text="מה לומדים" /></h3>
             <p className="mt-1 text-[15px] leading-7 text-[color:var(--ink)]">{learning}</p>
@@ -1933,8 +1936,10 @@ export function PostEditor({
 
   function renderPanel() {
     const primary = renderPrimary();
-    return <PostActionPanel why={why}
-      inspiration={<InspirationLine inspiration={currentPost.inspiration} note={currentPost.informed_by_note} />}
+    return <PostActionPanel
+      inspiration={<><CampaignBrief post={currentPost} audience={currentAudienceName} dna={brandDna} />
+        {!currentPost.plan_link?.goal && !currentPost.goal_fit && why ? <p className="mb-3 text-[14px] leading-6">{why}</p> : null}
+        <InspirationLine inspiration={currentPost.inspiration} /></>}
       notice={renderRewriteNote("mt-2")}
       needs={showNeeds ? renderNeeds() : null}
       results={out ? renderResults() : null}

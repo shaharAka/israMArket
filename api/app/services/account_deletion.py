@@ -37,6 +37,8 @@ from app.models import (
     Business,
     AnalysisJob,
     PerformanceSnapshot,
+    MediaAllowance,
+    MediaAttempt,
     User,
     WebhookDelivery,
     WebhookEndpoint,
@@ -49,7 +51,7 @@ from app.services import billing, images
 # The only foreign-key targets this module knows how to cascade from.
 # `whatsapp_links` is safe because every table pointing at it also has `business_id`.
 # Support messages carry their owning user_id, so they are deleted before their ticket.
-HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots", "support_tickets"}
+HANDLED_PARENTS = {"users", "businesses", "webhook_endpoints", "whatsapp_links", "performance_snapshots", "support_tickets", "media_allowances"}
 
 # Tables that deliberately outlive an account. `admin_audit` is the backoffice's record of
 # what the owner did, including "deleted account 12": it holds ids, an action name and a
@@ -98,6 +100,12 @@ def purge_orphans(db: Session) -> dict[str, int]:
     result = conn.execute(delete(jobs).where(~select(snapshots.c.id).where(
         snapshots.c.id == jobs.c.snapshot_id, snapshots.c.business_id == jobs.c.business_id).exists()))
     counts["analysis_jobs"] = counts.get("analysis_jobs", 0) + (result.rowcount or 0)
+    # Account-wide media attempts survive workspace deletion, but not a missing or
+    # foreign account allowance. Both tables are swept below by owning user_id.
+    attempts, allowances = MediaAttempt.__table__, MediaAllowance.__table__
+    result = conn.execute(delete(attempts).where(~select(allowances.c.id).where(
+        allowances.c.id == attempts.c.allowance_id, allowances.c.user_id == attempts.c.user_id).exists()))
+    counts["media_attempts"] = result.rowcount or 0
     result = conn.execute(delete(deliveries).where(deliveries.c.endpoint_id.not_in(select(endpoints.c.id))))
     counts["webhook_deliveries"] += result.rowcount or 0
     for table in user_scoped_tables():

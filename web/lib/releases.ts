@@ -4,6 +4,15 @@
 // English purpose: keep a published Story's last captured reach visible after expiry.
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  // Purpose: show the audience, objective and learning beside creative work; make the
+  // included image allowance visible. Video generation is not announced as available.
+  {
+    id: "2026-10-10-creative-brief-and-allowance", date: "2026-10-10",
+    title: "הכיוון והמכסה ליד הפוסט",
+    summary: "בעורך רואים למי הפוסט מיועד, מה נרצה שישיג ומה למדנו. ליד יצירת התמונה מוצגת המכסה שנשארה; גם שינוי תמונה בעזרת AI נספר בה.",
+    detail: "המכסה משותפת לכל העסקים בחשבון. תמונות שהעליתם, עריכת טקסט והורדת תוכן קיים נשארות זמינות גם כשהיא נגמרת.",
+    href: "/posts", action: "לפתוח את העורך",
+  },
   // Purpose: identify IsraMarket quickly among browser tabs and on a phone home screen.
   {
     id: "2026-10-10-square-app-icon", date: "2026-10-10",

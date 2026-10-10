@@ -57,6 +57,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.models import Business, ImageJob, Strategy, User
+from app.errors import CodedError
 from app.services.jsonutil import dumps, loads
 
 log = logging.getLogger(__name__)
@@ -648,6 +649,8 @@ def _run_item(factory: Callable[[], Session], business_id: int, token: str, item
         except Exception as exc:
             log.warning("image job %s: post %s failed: %s", business_id, item.get("uid"), exc)
             outcome = {"state": ERROR, "action": "", "error_he": _error_he(exc)}
+            if isinstance(exc, CodedError):
+                outcome.update(error_code=exc.code, error_status=exc.status_code)
             _note_tried(db, item)
 
     def change(row: ImageJob):

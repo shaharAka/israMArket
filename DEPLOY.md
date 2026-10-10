@@ -94,12 +94,15 @@ failed; the others still ran.
 
 Images go to Muse Image first ($0.01 each, new images and edits of the owner's own
 photos), and to Nano Banana 2 (`gemini-3.1-flash-image` at 1K, about $0.068) only when
-Muse refuses, errors or times out (docs/design-dna.md, "Model routing"). Each attempt and
+Muse definitively rejects the request (docs/design-dna.md, "Model routing"). Timeouts and
+ambiguous results retain a spend reservation without automatic fallback. Each attempt and
 its estimated cost is in the `image_usage` table. `REAL_PHOTO_FIRST=true` means a card
 starts from the business's own photo that best matches the post, edited to its Design DNA.
 `IMAGE_GENERATE_PROVIDER` / `IMAGE_EDIT_PROVIDER=gemini` skip Muse; set
-`GEMINI_IMAGE_MODEL=gemini-3-pro-image` and `GEMINI_IMAGE_SIZE=2K` for the "best" tier
-(about $0.14 an image).
+`GEMINI_IMAGE_MODEL=gemini-3-pro-image` at `GEMINI_IMAGE_SIZE=1K` for that tier.
+Customer image generation is restricted to allowlisted models at 1K. Account-level
+successful-unit, attempt and spend caps apply before submission, independently of the
+payment gate: see [media generation limits](docs/media-generation-limits.md).
 
 Nothing in the app generates an image while browsing — only an explicit click does.
 
