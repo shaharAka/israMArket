@@ -4,6 +4,14 @@
 // English purpose: keep a published Story's last captured reach visible after expiry.
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
+  // Purpose: identify IsraMarket quickly among browser tabs and on a phone home screen.
+  {
+    id: "2026-10-10-square-app-icon", date: "2026-10-10",
+    title: "אייקון ברור יותר ללשונית הדפדפן",
+    summary: "אייקון ריבועי עם אותיות גדולות מחליף את השם המלא בלשונית הדפדפן ובקיצור הדרך בטלפון.",
+    detail: "",
+    href: "/dashboard", action: "לשבוע שלי",
+  },
   // English purpose: prepare the right post link without leaving the editor.
   // Action: save a WhatsApp number here, or copy the link to Instagram's chosen surface.
   {

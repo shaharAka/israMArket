@@ -5142,7 +5142,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -6500,7 +6500,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -7063,7 +7063,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 133,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -7824,7 +7824,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -9087,7 +9087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 98,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -10181,7 +10181,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 155,
+        "line": 163,
         "kind": "literal"
       }
     ]
@@ -10862,7 +10862,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -15264,7 +15264,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -15458,7 +15458,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -16141,7 +16141,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 111,
+        "line": 119,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17904,7 +17904,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 139,
+        "line": 147,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18311,7 +18311,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -19742,7 +19742,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 27,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20034,7 +20034,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 154,
+        "line": 162,
         "kind": "literal"
       }
     ]
@@ -21167,17 +21167,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 73,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 101,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -25559,7 +25559,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -26614,7 +26614,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -28426,7 +28426,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 69,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29389,7 +29389,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -31269,7 +31269,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -31784,7 +31784,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -32420,7 +32420,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -32714,17 +32714,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 31,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 38,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 45,
         "kind": "literal"
       },
       {
@@ -32892,7 +32892,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 14,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -34169,7 +34169,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 13,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -35922,7 +35922,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 153,
+        "line": 161,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36491,7 +36491,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -36658,7 +36658,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 125,
+        "line": 133,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38766,7 +38766,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 147,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -40612,7 +40612,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 21,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -41328,7 +41328,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 148,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -43542,7 +43542,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 126,
+        "line": 134,
         "kind": "literal"
       }
     ]
@@ -43972,7 +43972,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -44385,7 +44385,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -47517,7 +47517,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 62,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -47638,7 +47638,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 141,
+        "line": 149,
         "kind": "literal"
       }
     ]
@@ -47693,7 +47693,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 140,
+        "line": 148,
         "kind": "literal"
       }
     ]
@@ -47818,7 +47818,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 146,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49920,7 +49920,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 132,
+        "line": 140,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50475,7 +50475,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 13,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -50508,7 +50513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -53937,7 +53942,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 104,
+        "line": 112,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54659,7 +54664,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 84,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -57062,7 +57067,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 99,
+        "line": 107,
         "kind": "literal"
       }
     ]
@@ -58459,7 +58464,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -60519,7 +60524,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 48,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63767,7 +63772,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 90,
+        "line": 98,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64082,7 +64087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 83,
+        "line": 91,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67598,7 +67603,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -69047,7 +69052,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 134,
+        "line": 142,
         "kind": "literal"
       }
     ]
@@ -69244,7 +69249,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -71420,7 +71425,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -72668,7 +72673,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -73494,6 +73499,17 @@
         "line": 245,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a560361ccf718c47": {
+    "source": "אייקון ריבועי עם אותיות גדולות מחליף את השם המלא בלשונית הדפדפן ובקיצור הדרך בטלפון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -76139,7 +76155,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 118,
+        "line": 126,
         "kind": "literal",
         "purpose": "display"
       }
@@ -77081,7 +77097,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -78259,7 +78275,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -78417,7 +78433,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 22,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -79269,7 +79285,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 34,
+        "line": 42,
         "kind": "literal",
         "purpose": "display"
       }
@@ -79874,7 +79890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 19,
         "kind": "literal",
         "purpose": "display"
       }
@@ -83844,7 +83860,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 41,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84883,7 +84899,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 119,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -85013,7 +85029,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 106,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -90109,7 +90125,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 105,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -90756,7 +90772,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -93404,7 +93420,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 120,
+        "line": 128,
         "kind": "literal"
       }
     ]
@@ -94852,7 +94868,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -95509,7 +95525,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 55,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98618,7 +98634,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 20,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98652,7 +98668,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -98911,7 +98927,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -99619,7 +99635,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 127,
+        "line": 135,
         "kind": "literal"
       }
     ]
@@ -102550,7 +102566,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 29,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -102561,7 +102577,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -103381,6 +103397,18 @@
         "line": 94,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_e856c3241bfdb382": {
+    "source": "אייקון ברור יותר ללשונית הדפדפן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -104717,7 +104745,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 113,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -109909,7 +109937,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 112,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -110408,7 +110436,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 76,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112278,7 +112306,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -112772,7 +112800,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -113428,7 +113456,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 97,
+        "line": 105,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113751,7 +113779,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 52,
         "kind": "literal"
       }
     ]
