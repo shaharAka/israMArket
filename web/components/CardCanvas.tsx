@@ -296,10 +296,13 @@ export function CardStage({
     const el = hostRef.current;
     if (!el) return;
     const measure = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.width <= 0) return;
+      // Measure local layout pixels. An ancestor may scale the entire product player;
+      // viewport bounds already include that transform and would shrink the artwork twice.
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+      if (width <= 0) return;
       // In fill mode the parent dictates both axes, so fit inside rather than assume.
-      const next = fill ? Math.min(rect.width / size.w, (rect.height || Infinity) / size.h) : rect.width / size.w;
+      const next = fill ? Math.min(width / size.w, (height || Infinity) / size.h) : width / size.w;
       if (next > 0 && Number.isFinite(next)) setScale(next);
     };
     const ro = new ResizeObserver(measure);

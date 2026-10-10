@@ -23,20 +23,20 @@ export type ProductScreen = "research" | "plan" | "campaign" | "posts" | "result
 const FEATURES = [
   { key: "research", label: "מחקר", benefit: "מכירים את העסק, הקהל והכיוון." },
   { key: "plan", label: "תוכנית השיווק", benefit: "מהמחקר, לצעדים שאפשר לבצע." },
-  { key: "campaign", label: "תכנון הקמפיין", benefit: "לכל שבוע מטרה. לכל פוסט תפקיד." },
+  { key: "campaign", label: "תכנון הקמפיין", benefit: "מה מפרסמים השבוע? כבר יש תוכנית." },
   { key: "posts", label: "יצירת פוסטים", benefit: "תוכן שנכתב לפי התוכנית ובאופי של העסק." },
   { key: "results", label: "תוצאות ושיפור", benefit: "מה למדנו ומה ננסה בפוסט הבא." },
 ] as const;
 
 /** Live product views, not independent marketing replicas. Fixtures are local to this view. */
-export function ProductFeatureShowcase({ path, initialScreen, initialPost, initialCampaignWeek, presentation = "full" }: { path: ExamplePath; initialScreen?: ProductScreen; initialPost?: number; initialCampaignWeek?: number; presentation?: "full" | "hero" | "feature" }) {
+export function ProductFeatureShowcase({ path, initialScreen, initialPost, initialCampaignWeek, presentation = "full", animate = false }: { path: ExamplePath; initialScreen?: ProductScreen; initialPost?: number; initialCampaignWeek?: number; presentation?: "full" | "hero" | "feature"; animate?: boolean }) {
   const t = useCopy();
   const { locale } = useLanguage();
   const id = useId();
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const [screen, setScreen] = useState<ProductScreen>(initialScreen ?? (presentation === "hero" ? "research" : "plan"));
   const [postIndex, setPostIndex] = useState<number | null>(initialPost ?? 0);
-  const { frame, viewport, scale, wide, setWide, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero");
+  const { frame, viewport, scale, wide, setWide, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero" || animate, presentation === "hero");
   const business = BUSINESS_EXAMPLES[path];
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];

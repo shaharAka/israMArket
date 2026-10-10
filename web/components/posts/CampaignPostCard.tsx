@@ -25,7 +25,7 @@ export function CampaignPostCard({ post, strategy, selected = false, disabled = 
       </span>
       <span className={styles.cardBody}><span className={styles.date}>{date} · {t(LIFECYCLE_LABEL[lifecycleOf(post)])}</span>
         <strong dir="auto">{post.title}</strong>
-        {post.plan_link?.goal || post.goal_fit ? <span dir="auto">{post.plan_link?.goal || post.goal_fit}</span> : null}
+        {post.plan_link?.goal || post.goal_fit ? <span dir="auto" data-post-goal>{post.plan_link?.goal || post.goal_fit}</span> : null}
         {post.cta ? <span dir="auto">{post.cta}</span> : null}
         <span className={styles.selected}>{selected ? t("נבחר") : !editorHref || protectedPost(post) ? t("לצפות בפוסט") : t("לבחור")}</span>
       </span>

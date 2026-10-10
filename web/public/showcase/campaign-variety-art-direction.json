@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-10",
+  "source": "Codex built-in image generation",
+  "use": "Fictional public product fixtures; never actual customer work or performance evidence",
+  "assets": [
+    {
+      "file": "interior-materials-ai.png",
+      "business": "Yael interior design",
+      "concept": "Pairing olive textile, oak and cream samples; close overhead creative-process photography"
+    },
+    {
+      "file": "bakery-braiding-ai.png",
+      "business": "Pat Lechem bakery",
+      "concept": "Hand braiding raw challah; low-angle warm craft photography"
+    },
+    {
+      "file": "nonprofit-volunteer-detail-ai.png",
+      "business": "Meagal Karov nonprofit",
+      "concept": "Volunteers preparing a canvas grocery tote; respectful close activity detail"
+    }
+  ],
+  "campaign_mix": "Photo-led useful advice, a typography-led invitation, then a different process image (or actual software capture) with an editorial headline. One palette and type pairing per business. No provider billing keys or paid Gemini calls."
+}

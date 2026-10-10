@@ -93,6 +93,37 @@ This did not reset the first account's unresolved edit reservation or submit a p
 
 The provider/export canary gate is verified. Direct video stays off by default until the
 reviewed release is deployed and activated. Product review, refreshed website captures
-and deployed verification remain release work. Keep #190 and #158 In Progress until their
-respective acceptance criteria are verified. The other parent issues are not closed by
+and deployed verification remain release work. Keep #190 and #158 open until their respective release gates are verified. The other parent issues are not closed by
 this change.
+
+
+## Website review: pace, artwork and copy
+
+The website hero changes features every seven seconds rather than 10.5. Research and
+learning details change every five seconds, campaign weeks every 6.5, and the post/reel
+section keeps nine seconds so its eight-second human-motion clip can finish. Progress
+bars share those durations. Campaign playback visibly opens a post and returns to its
+week; pause, keyboard focus, reduced motion and page visibility guards remain. Selecting
+a feature, including the currently selected one, restarts its reading time.
+
+Each business's public campaign now has three distinct creative roles using the actual
+CardStage renderer: photo-only advice, a typography-led invitation and a new process
+photograph with an editorial composition. Software uses a real product capture for the
+third asset. Business typefaces and palettes stay consistent across the sequence. Three
+new photographs and their provenance are in `public/showcase/campaign-variety-art-direction.json`.
+These are local website fixtures, not evidence of customer generation or performance.
+
+CardStage now measures its own layout size rather than transformed viewport bounds. A
+scaled product walkthrough used to apply its parent zoom again inside every post, leaving
+shrunken artwork inside blank frames. This fix applies to the shared editor renderer too.
+The campaign explanation was rewritten in natural Hebrew first, then reviewed in English,
+Arabic and Russian. This review does not change provider activation, quotas or customer drafts.
+
+Validation for this review: web typecheck/lint/production build and all 9,141 four-language
+messages passed. Sixteen hydrated business/language views had two week-one posts, correct
+locale/direction and no horizontal overflow. Desktop 1440px and phone 390px story reviews
+passed; on the phone the post opened at 2.5 seconds, returned by 5.5 and week two was visible
+by 6.8. Pausing froze the view and manual week/post navigation remained usable. The shared
+renderer’s painted width matched its stage in the zoomed walkthrough and the unscaled
+local customer campaign. The website capture was refreshed after this fix. Provider quotas
+and activation are unchanged; no new paid Gemini/provider calls were made.

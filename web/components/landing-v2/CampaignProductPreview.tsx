@@ -23,10 +23,10 @@ export function CampaignProductPreview({ path, initialWeek = 1 }: { path: Exampl
   const post = posts.find(item => item.uid === selected);
   return <div className={styles.campaignPreview}>
     {post ? <>
-      <button className={styles.textAction} onClick={() => setSelected(null)}>{t("לחזור לקמפיין")}</button>
+      <button className={styles.textAction} data-campaign-back onClick={() => setSelected(null)}>{t("לחזור לקמפיין")}</button>
       <PostWorkspace header={<h2 className={styles.postTitle}>{post.title}</h2>}
-        preview={<PostPreview style={{ width: "min(100%, 220px)" }} media={<CardStage post={post} brand={brand} businessName={t(BUSINESS_EXAMPLES[path].name)} rounded={false} />} caption={<p className={styles.caption}>{post.caption}</p>} />}
-        panel={<CampaignBrief post={post} audience={post.audience_name || ""} dna={null} />} />
+        preview={<PostPreview style={{ width: "min(100%, 220px)" }} media={<CardStage post={post} brand={brand} dna={campaign.brand_dna} businessName={t(BUSINESS_EXAMPLES[path].name)} rounded={false} />} caption={<p className={styles.caption}>{post.caption}</p>} />}
+        panel={<CampaignBrief post={post} audience={post.audience_name || ""} dna={campaign.brand_dna ?? null} />} />
     </> : <>
       <h2 className={styles.postTitle}>{t("הקמפיין שלכם")}</h2>
       <div className={styles.campaignWeeks} role="group" aria-label={t("לבחור שבוע בקמפיין")}>

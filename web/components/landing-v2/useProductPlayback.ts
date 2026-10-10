@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import type { ProductScreen } from "./ProductFeatureShowcase";
 
 
-export const PRODUCT_HOLD_MS = 10500;
+export const PRODUCT_HOLD_MS = 7000;
 const motionQuery = "(prefers-reduced-motion: reduce)";
 function subscribeMotion(listener: () => void) {
   const query = window.matchMedia(motionQuery);
@@ -18,7 +18,7 @@ function subscribeVisibility(listener: () => void) {
 
 /** Only operates on the local, read-only product showcase. Never clicks app actions. */
 export function useProductPlayback(enabled: boolean, screen: ProductScreen,
-  setScreen: (screen: ProductScreen) => void, setPostIndex: (index: number | null) => void, autoplay = true) {
+  setScreen: (screen: ProductScreen) => void, setPostIndex: (index: number | null) => void, autoplay = true, advance = true) {
   const frame = useRef<HTMLDivElement>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(.6);
@@ -72,32 +72,40 @@ export function useProductPlayback(enabled: boolean, screen: ProductScreen,
       ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]')
       : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
     later(0, () => {
-      setWide(true);
+      setWide(advance);
       setCursor(null);
       viewport.current?.scrollTo({ top: 0, behavior: "instant" });
       panel()?.querySelectorAll("details").forEach(detail => { detail.open = false; });
       if (screen === "posts") setPostIndex(null);
     });
-    later(1200, () => moveCursor(target()));
-    later(2000, () => {
+    later(advance ? 650 : 1300, () => moveCursor(target()));
+    later(advance ? 1250 : 2200, () => {
       const node = target();
       if (!node) return;
       setCursor(point => point && { ...point, pressed: true });
       node.click();
       if (screen === "posts") viewport.current?.scrollTo({ top: 0, behavior: "smooth" });
     });
-    later(3800, () => {
+    if (advance) later(2600, () => {
       const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
       moveCursor(node);
     });
-    later(4900, () => {
+    if (advance) later(3250, () => {
       const node = screen === "posts" ? panel()?.querySelector<HTMLElement>('a[href^="/design/business?"]') : panel()?.querySelector<HTMLElement>(screen === "campaign" ? "[data-campaign-post]" : "details > summary");
       if (node) { setCursor(point => point && { ...point, pressed: true }); node.click(); }
     });
-    later(6000, () => setCursor(null));
-    later(PRODUCT_HOLD_MS, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "campaign" : screen === "campaign" ? "posts" : screen === "posts" ? "results" : "research"));
+    later(4200, () => setCursor(null));
+    if (!advance && screen === "campaign") {
+      later(4700, () => moveCursor(panel()?.querySelector<HTMLElement>("[data-campaign-back]")));
+      later(5200, () => {
+        setCursor(point => point && { ...point, pressed: true });
+        panel()?.querySelector<HTMLElement>("[data-campaign-back]")?.click();
+      });
+      later(5750, () => setCursor(null));
+    }
+    if (advance) later(PRODUCT_HOLD_MS, () => setScreen(screen === "research" ? "plan" : screen === "plan" ? "campaign" : screen === "campaign" ? "posts" : screen === "posts" ? "results" : "research"));
     return () => timers.forEach(clearTimeout);
-  }, [playing, screen, setScreen, setPostIndex, setWide]);
+  }, [playing, screen, setScreen, setPostIndex, setWide, advance]);
 
   return { frame, viewport, scale, wide: playing && wide, setWide, cursor: playing ? cursor : null, playing, requested, reduced,
     hold: () => setFocused(true), release: () => setFocused(false), pause: () => setRequested(false), toggle: () => setRequested(value => !value) };

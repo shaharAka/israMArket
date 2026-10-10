@@ -5,7 +5,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -5481,6 +5481,17 @@
       }
     ]
   },
+  "m_0ba611bc870f59bd": {
+    "source": "לא בטוחים איך לחבר בין הצבע, הרצפה והריהוט? בשיחת היכרות נתחיל מהבית שלכם ומה שחשוב לכם בו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0bcfe3168ea129ce": {
     "source": "עבר הרבה זמן מאז שהתחברתם. התחברו שוב.",
     "language": "he",
@@ -6380,7 +6391,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 48,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -6451,6 +6462,17 @@
         "line": 239,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_0e0db35a69eabd32": {
+    "source": "בשבוע הראשון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -11118,7 +11140,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -11268,7 +11290,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 58,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -11422,7 +11444,7 @@
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 56,
+        "line": 90,
         "kind": "literal"
       },
       {
@@ -12345,7 +12367,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -12839,7 +12861,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 49,
+        "line": 51,
         "kind": "literal"
       },
       {
@@ -13952,6 +13974,17 @@
       }
     ]
   },
+  "m_1e03cfd70bf11e29": {
+    "source": "יש לכם עסק לנהל. תנו לנו להכין את השיווק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 66,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_1e0a7ae8e646c9e6": {
     "source": "מקום ",
     "language": "he",
@@ -14003,7 +14036,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -14548,7 +14581,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 58,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -14675,6 +14708,17 @@
         "line": 118,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_1fdc8520fd07d5a3": {
+    "source": "אנחנו מתכננים וכותבים את הפוסטים לפי המטרה שלכם, ומשבצים אותם לאורך השבוע. אתם רואים מה יעלה ומתי, ויכולים לערוך כל פוסט לפני הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 45,
+        "kind": "literal"
       }
     ]
   },
@@ -17549,7 +17593,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -19573,7 +19617,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -21009,7 +21053,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -22112,6 +22156,17 @@
         "file": "web/components/design/FlowBoard.tsx",
         "line": 120,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_2fe76f697144874e": {
+    "source": "בשבוע הבא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -27816,6 +27871,17 @@
       }
     ]
   },
+  "m_3c5a07c7230d318a": {
+    "source": "את החלה של שישי אפשר להזמין כבר בחמישי. שלחו לנו הודעה, ואנחנו נכין אותה לאיסוף בבוקר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 53,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3c6ea9cd61e8652d": {
     "source": "אין שורות: אין מספרים מומצאים. כשל: ניסיון נוסף או חידוש גישה, עם שמירת התוצאות הקודמות ותאריך שלהן.",
     "language": "he",
@@ -27883,7 +27949,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       },
       {
@@ -28866,7 +28932,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -31636,7 +31702,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 49,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -32136,6 +32202,17 @@
         "line": 404,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_4677a06b19153344": {
+    "source": "הבית מתחיל בחיבורים הקטנים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 61,
+        "kind": "literal"
       }
     ]
   },
@@ -34203,7 +34280,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -35493,17 +35570,6 @@
       }
     ]
   },
-  "m_4dc079a7db5475ff": {
-    "source": "תכנון השבועות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4dc741e43d4b227b": {
     "source": "13 שלבי תשובה ואישור לחנות, 12 לשירותים, ואחריהם סיכום, תוכנית ושמירה. קבוצות המסכים במפה המלאה אינן קיצור של השאלות.",
     "language": "he",
@@ -36714,18 +36780,6 @@
       }
     ]
   },
-  "m_50b71a40384adaef": {
-    "source": "בוחרים צבע לבית? בואו נבחר יחד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 48,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_50c87e14de1cb854": {
     "source": "מנהלי עמותה",
     "language": "he",
@@ -37422,7 +37476,7 @@
       },
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -37435,18 +37489,6 @@
         "file": "web/components/landing-v2/Landing.tsx",
         "line": 89,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_52890aedc4142140": {
-    "source": "מה התרומה שלכם מאפשרת?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 50,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -37656,6 +37698,22 @@
       {
         "file": "web/lib/api.ts",
         "line": 1239,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_53316643d77969f1": {
+    "source": "מה מפרסמים השבוע? כבר יש תוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
+        "line": 43,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -39145,7 +39203,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 47,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -39225,7 +39283,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -39490,7 +39548,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 45,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -41167,6 +41225,17 @@
       }
     ]
   },
+  "m_5b8c712e16f9efbb": {
+    "source": "גם אתם יכולים להיות חלק מהעשייה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 73,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5ba33eac4797f5e0": {
     "source": "מה עומד מאחורי הממצא",
     "language": "he",
@@ -41600,7 +41669,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       },
       {
@@ -41735,7 +41804,7 @@
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -46961,7 +47030,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 65,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -47521,7 +47590,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -49727,7 +49796,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 44,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -50303,7 +50372,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 54,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -53916,7 +53985,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -55027,7 +55096,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 48,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -55160,12 +55229,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 53,
+        "line": 86,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 62,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -56225,17 +56294,6 @@
       }
     ]
   },
-  "m_7bc0f3fe92564d51": {
-    "source": "אנחנו הופכים את התוכנית לסדרת פוסטים לאורך השבועות. רואים מה מקדמים, מה כל פוסט מזמין את הלקוחות לעשות ומה נבדוק בהמשך. בחרו פוסט כדי לעבוד עליו בסגנון שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7bcbf4a2bfc7090d": {
     "source": "יעד העבודה",
     "language": "he",
@@ -57109,7 +57167,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -58274,7 +58332,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -59918,7 +59976,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 31,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -60523,7 +60581,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       },
       {
@@ -64872,6 +64930,17 @@
       }
     ]
   },
+  "m_8f2b8ef5492a636f": {
+    "source": "לפני שבוחרים צבע, בוחרים איך רוצים להרגיש בבית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 59,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8f338f8c53dc185b": {
     "source": "לחודש.",
     "language": "he",
@@ -65305,12 +65374,12 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 34,
+        "line": 35,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 65,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -67243,18 +67312,6 @@
         "file": "web/app/preview/page.tsx",
         "line": 41,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_9454265cb0376dca": {
-    "source": "שישי מתחיל בהזמנה מראש.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 47,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -69808,7 +69865,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -72820,7 +72877,7 @@
       },
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -72920,7 +72977,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       },
       {
@@ -73976,7 +74033,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -74575,7 +74632,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 51,
+        "line": 53,
         "kind": "literal"
       },
       {
@@ -74946,7 +75003,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 54,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -76498,6 +76555,17 @@
         "line": 172,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a9eb93c836c36ff2": {
+    "source": "לשים, קולעים, נותנים לבצק זמן. החלה של שישי מתחילה אצלנו הרבה לפני שהמאפייה נפתחת. להזמנה מראש, שלחו הודעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 55,
+        "kind": "literal"
       }
     ]
   },
@@ -79606,6 +79674,17 @@
       {
         "file": "web/components/design/Primitives.tsx",
         "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b0e3d68594c4bc9b": {
+    "source": "ממיינים את המצרכים, מכינים את התיקים ואורזים יחד. כך נראה עוד יום של עשייה במעגל קרוב. בעמוד הפעילות תוכלו להכיר אותנו ולבחור איך לעזור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -84868,17 +84947,6 @@
       }
     ]
   },
-  "m_bc83e244dbbe1316": {
-    "source": "המשך הקמפיין",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_bc8f2188752bfe66": {
     "source": "מסעדה",
     "language": "he",
@@ -85422,7 +85490,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 50,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -87697,7 +87765,7 @@
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 32,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -89415,7 +89483,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -91238,6 +91306,17 @@
       }
     ]
   },
+  "m_ca28e6c097eec442": {
+    "source": "לפני התנור, הכול מתחיל בידיים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 54,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ca2c775c99ce6633": {
     "source": "אנרגטי",
     "language": "he",
@@ -91269,6 +91348,17 @@
       {
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ca3a2794f8f6e9d2": {
+    "source": "מהתוכנית לפוסט הבא שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -94010,7 +94100,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -94398,6 +94488,17 @@
       {
         "file": "web/app/admin/page.tsx",
         "line": 162,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d1ee1eff2b57cf93": {
+    "source": "העץ, הבד והצבע לא נבחרים בנפרד. אנחנו מניחים אותם יחד, בודקים באור של הבית ורק אז מחליטים. רוצים לחשוב על הבית שלכם יחד? בואו נדבר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -97364,6 +97465,17 @@
       }
     ]
   },
+  "m_d7c3e007edb6df09": {
+    "source": "זה מה שתראו בפלטפורמה: תוכנית לעסק שלכם, הפוסטים שנכין ממנה והסבר פשוט של התוצאות. מתחילים בהיכרות עם העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 69,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d7c7c84bad57b8dd": {
     "source": "חיבור מידע",
     "language": "he",
@@ -98231,7 +98343,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -98879,7 +98991,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -99063,7 +99175,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 54,
+        "line": 56,
         "kind": "literal"
       },
       {
@@ -100780,6 +100892,17 @@
       }
     ]
   },
+  "m_df1ea1769302473d": {
+    "source": "לא עוד רשימת רעיונות שנשארת במגירה. אנחנו חוקרים את העסק, בונים תוכנית ומכינים את הפוסטים. אתם בודקים ומאשרים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_df253a4f056b093e": {
     "source": "בונים את התוכנית שלכם…",
     "language": "he",
@@ -100976,22 +101099,6 @@
         "line": 97,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_df7f4e489572546e": {
-    "source": "לכל שבוע מטרה. לכל פוסט תפקיד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 26,
-        "kind": "literal"
       }
     ]
   },
@@ -101218,18 +101325,6 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 64,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
-  "m_dfe5edea1eb807eb": {
-    "source": "מה תפרסמו השבוע? בואו נבנה קמפיין.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101828,7 +101923,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -103036,7 +103131,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 50,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -104083,6 +104178,17 @@
       {
         "file": "web/components/PostEditor.tsx",
         "line": 721,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e6184184cc46c43e": {
+    "source": "מאחורי כל אריזה, אנשים שאכפת להם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -105319,6 +105425,17 @@
       {
         "file": "web/components/PostEditor.tsx",
         "line": 96,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e8a5b8358eede9c9": {
+    "source": "מחר בבוקר, החלה כבר מחכה לכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -108169,12 +108286,12 @@
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 60,
+        "line": 96,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
-        "line": 64,
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -109354,7 +109471,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 40,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -110744,6 +110861,17 @@
       }
     ]
   },
+  "m_f3eb48f2581f2462": {
+    "source": "רוצים להצטרף? בעמוד שלנו תוכלו לקרוא על הפעילות, לבחור איך לתמוך וליצור איתנו קשר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/productFixtures.ts",
+        "line": 74,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f3f2a3823259b28e": {
     "source": "מודעות בחיפוש בגוגל",
     "language": "he",
@@ -111391,7 +111519,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -114117,7 +114245,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -114483,7 +114611,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 41,
+        "line": 43,
         "kind": "literal"
       }
     ]

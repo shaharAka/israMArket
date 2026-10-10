@@ -85,8 +85,9 @@
 .week[data-campaign-preview="true"] .weekBrief h3 { font-size: 16px; margin-bottom: 12px; }
 .week[data-campaign-preview="true"] .weekBrief dl { grid-template-columns: 1fr; gap: 12px; }
 .week[data-campaign-preview="true"] .select { display: block; }
-.week[data-campaign-preview="true"] .thumbnail { padding: 12px; }
-.week[data-campaign-preview="true"] .thumbnail > div { max-width: 90px; }
+.week[data-campaign-preview="true"] .thumbnail { padding: 12px; max-height: none; }
+.week[data-campaign-preview="true"] .thumbnail > div { max-width: 180px; }
+.week[data-campaign-preview="true"] [data-post-goal] { display: none; }
 .week[data-campaign-preview="true"] .cardBody { padding: 12px; gap: 4px; }
 .week[data-campaign-preview="true"] .cardBody strong { font-size: 14px; }
 .week[data-campaign-preview="true"] .cardBody > span { font-size: 12px; }
@@ -94,5 +95,5 @@
   .week[data-campaign-preview="true"] .weekLayout { grid-template-columns: 1fr; }
   .week[data-campaign-preview="true"] .weekBrief dl { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .week[data-campaign-preview="true"] .cards { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
-  .week[data-campaign-preview="true"] .thumbnail > div { max-width: 65px; }
+  .week[data-campaign-preview="true"] .thumbnail > div { max-width: 108px; }
 }
