@@ -110,10 +110,15 @@ def gemini_result(model="gemini-3.1-flash-image", usage=None):
                                                        "thinking_tokens": 0, "output_image_tokens": 1120}}
 
 
-class RoutingTest(unittest.TestCase):
+class RoutingTest(DnaTestCase, unittest.TestCase):
+    def setUp(self):
+        self.setUp_dna()
+        self.business = self.add_business("Routing")
+
     def route(self, task="edit"):
         return image_routing.route(task, muse_prompt="muse prompt", gemini_prompt="gemini prompt", aspect="4:5",
-                                   photo=PHOTO if task == "edit" else None, label="REFERENCE PHOTO 1: x")
+                                   photo=PHOTO if task == "edit" else None, label="REFERENCE PHOTO 1: x",
+                                   business_id=self.business.id, db=self.db)
 
     def test_muse_makes_it_when_it_can(self):
         with mock.patch.object(muse_image, "edit", return_value=(b"muse", "image/jpeg")) as edit, \
@@ -140,9 +145,8 @@ class RoutingTest(unittest.TestCase):
         self.assertEqual(outcome.attempts[0]["cost_usd"], 0.0, "a refused Muse image is not billed")
         self.assertAlmostEqual(outcome.cost_usd, 0.0675, places=3)
 
-    def test_timeouts_and_errors_fall_back_too(self):
-        for exc, reason in ((muse_image.MuseTimeout("slow", code="timeout"), "muse timed out"),
-                            (muse_image.MuseImageError("missing", code="missing_key"), "muse error (missing_key)"),
+    def test_definitive_pre_generation_errors_can_fall_back(self):
+        for exc, reason in ((muse_image.MuseImageError("missing", code="missing_key"), "muse error (missing_key)"),
                             (ContributorModelRefused("no"), "muse model refused (contributor models are never used)")):
             with self.subTest(reason=reason), \
                     mock.patch.object(muse_image, "generate", side_effect=exc), \
@@ -318,7 +322,7 @@ class EndpointTest(DnaTestCase, unittest.TestCase):
         self.assertEqual(post["image_source"], "asset")
         self.assertFalse(post["image_edited"])
         self.assertTrue(post["image_url"])
-        self.assertIn("503", post["image_edit_error"])
+        self.assertIn("עדיין לא אושרה", post["image_edit_error"])
 
     def test_no_matching_photo_means_a_new_image_from_the_dna(self):
         with mock.patch.object(muse_image, "generate", return_value=(png_bytes(4, 5), "image/png")) as muse, \

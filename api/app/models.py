@@ -333,6 +333,46 @@ class Asset(Base):
     business: Mapped[Business] = relationship(back_populates="assets")
 
 
+class MediaAllowance(Base):
+    """Account-level, atomic media counters. Shared by every business of the account."""
+
+    __tablename__ = "media_allowances"
+    __table_args__ = (UniqueConstraint("user_id", "kind", "period_start"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(10))
+    period_start: Mapped[datetime] = mapped_column(DateTime)
+    period_end: Mapped[datetime] = mapped_column(DateTime)
+    used: Mapped[int] = mapped_column(Integer, default=0)
+    reserved: Mapped[int] = mapped_column(Integer, default=0)
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    # Integer millionths of USD; conservative reservations are not provider invoices.
+    committed_microusd: Mapped[int] = mapped_column(Integer, default=0)
+    reserved_microusd: Mapped[int] = mapped_column(Integer, default=0)
+
+
+class MediaAttempt(Base):
+    """One durable provider reservation; failures survive a post transaction rollback."""
+
+    __tablename__ = "media_attempts"
+    __table_args__ = (UniqueConstraint("user_id", "request_key"),)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    # Attribution only: deleting a workspace must not replenish account allowance.
+    workspace_id: Mapped[int] = mapped_column(Integer)
+    allowance_id: Mapped[int] = mapped_column(ForeignKey("media_allowances.id"), index=True)
+    request_key: Mapped[str] = mapped_column(String(150))
+    kind: Mapped[str] = mapped_column(String(10))
+    provider: Mapped[str] = mapped_column(String(20))
+    model: Mapped[str] = mapped_column(String(80))
+    state: Mapped[str] = mapped_column(String(20), default="reserved")
+    reserved_microusd: Mapped[int] = mapped_column(Integer)
+    cost_microusd: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    provider_ref: Mapped[str] = mapped_column(String(150), default="")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    completed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+
+
 class ImageUsage(Base):
     """One image-model call made for a business's post, and what it cost (estimated).
 

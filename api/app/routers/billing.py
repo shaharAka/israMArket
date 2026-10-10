@@ -32,6 +32,12 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/billing", tags=["billing"])
 
+
+@router.get("/media-allowance")
+def media_allowance(user: User = Depends(get_current_user), db: Session = Depends(get_db)) -> dict:
+    from app.services.media_allowances import status
+    return status(db, user)
+
 WEBHOOK_PATH = "/billing/paypal/webhook"
 
 SUBSCRIPTION_EVENTS = {

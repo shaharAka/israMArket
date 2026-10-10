@@ -1,4 +1,5 @@
 import copy
+import uuid
 from datetime import date, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
@@ -58,6 +59,9 @@ from app.services.post_design import (
 )
 from app.services.instagram_signal import signal_for
 from app.services import content_language
+from app.services import media_allowances
+from app.services import creative_brief
+from app.errors import CodedError
 from app.services.jsonutil import dumps, loads
 from app.services.meta import account_digest
 from app.services.month_loop import horizon_payload, next_civil_month, prior_month_review
@@ -422,6 +426,7 @@ def _prepare_post_image(
     scraped = loads(business.scraped_profile_json, {}) or {}
     dna = design_dna.dna_for_posts(business)
     target = posts[post_index]
+    target["creative_brief"] = creative_brief.for_post(target, business, strategy, db)
     biz_dict = _biz_dict(business, strategy)
     # The post's design first: the image is composed for it.
     ensure_post_design(
@@ -482,18 +487,14 @@ def _brand_of(business: Business, strategy: Strategy) -> dict:
 
 def _run_image_item(db: Session, business: Business, strategy: Strategy, posts: list, index: int, item: dict) -> dict:
     """How the image job (services/image_jobs.py) makes one post's image."""
-    return _prepare_post_image(
-        business,
-        strategy,
-        posts,
-        index,
-        force=bool(item.get("force")),
-        vibe=str(item.get("vibe") or ""),
-        custom_prompt=str(item.get("custom_prompt") or ""),
-        allow_generation=bool(item.get("allow_generation", True)),
-        preference=str(item.get("preference") or "auto"),
-        db=db,
-    )
+    with media_allowances.request_scope(f"image-job:{item['id']}"):
+        return _prepare_post_image(
+            business, strategy, posts, index,
+            force=bool(item.get("force")), vibe=str(item.get("vibe") or ""),
+            custom_prompt=str(item.get("custom_prompt") or ""),
+            allow_generation=bool(item.get("allow_generation", True)),
+            preference=str(item.get("preference") or "auto"), db=db,
+        )
 
 
 image_jobs.register(_run_image_item)
@@ -600,11 +601,16 @@ def generate_post_image(
         vibe=body.vibe,
         custom_prompt=body.custom_prompt,
     )
+    if body.generation_request_id:
+        item["id"] = body.generation_request_id
     job, ids = image_jobs.queue(db, business, [item])
     result = image_jobs.wait_for(db, business.id, ids[0]) if ids else None
     db.expire_all()
     strategy = db.get(Strategy, strategy.id)
     if result is not None and result.get("state") == image_jobs.ERROR:
+        if result.get("error_code"):
+            raise CodedError(int(result.get("error_status") or 429), result["error_code"],
+                             result.get("error_he") or image_jobs.ERROR_HE)
         raise HTTPException(status_code=502, detail=result.get("error_he") or image_jobs.ERROR_HE)
     stored = _posts_of(strategy)
     current = stored[body.post_index] if body.post_index < len(stored) else post
@@ -639,6 +645,7 @@ def design_post_endpoint(
 
     target = posts[body.post_index]
     before = copy.deepcopy(target)
+    target["creative_brief"] = creative_brief.for_post(target, business, strategy, db)
     biz_dict = _biz_dict(business, strategy)
     dna = design_dna.dna_for_posts(business)
     # A redesign draws the post from the DNA: the composition the editor chose, the one
@@ -657,9 +664,10 @@ def design_post_endpoint(
     candidates, used = _photo_pool(db, business, scraped, posts, body.post_index) if body.generate_image else ([], {})
 
     def provide(target_post: dict) -> str:
-        return _produce_post_image(
-            business, target_post, brand, biz_dict, candidates, used, index=body.post_index, dna=dna, db=db
-        )
+        with media_allowances.request_scope(f"design:{body.generation_request_id or uuid.uuid4().hex}"):
+            return _produce_post_image(
+                business, target_post, brand, biz_dict, candidates, used, index=body.post_index, dna=dna, db=db
+            )
 
     try:
         target, image_url = design_and_generate_post(
@@ -673,6 +681,8 @@ def design_post_endpoint(
             image_provider=provide,
             dna=dna,
         )
+    except CodedError:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=502, detail=f"לא הצלחנו לעצב את הפוסט: {exc}") from exc
 

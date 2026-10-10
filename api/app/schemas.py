@@ -225,6 +225,7 @@ PostUpdateIn.model_rebuild()
 
 class PostDesignIn(BaseModel):
     post_index: int = Field(ge=0, le=500)
+    generation_request_id: str = Field(default="", max_length=80, pattern=r"^[A-Za-z0-9_-]*$")
     vibe: str = Field(default="", max_length=120)
     custom_prompt: str = Field(default="", max_length=1000)
     generate_image: bool = True
@@ -370,6 +371,7 @@ class WebsiteScanIn(BaseModel):
 
 class PostImageIn(BaseModel):
     post_index: int = Field(ge=0, le=500)
+    generation_request_id: str = Field(default="", max_length=80, pattern=r"^[A-Za-z0-9_-]*$")
     force: bool = False
     # Explicit user request ("create an image") = True. Automatic preparation while
     # browsing = False, so merely clicking through the plan can never spend money.

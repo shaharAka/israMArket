@@ -2,7 +2,7 @@
 
     generate (no usable photo of the owner's)  -> Muse Image /images/generations
     edit (the owner's real photo)              -> Muse Image /images/edits
-    Muse refuses, errors or times out          -> Nano Banana 2 (gemini-3.1-flash-image, 1K);
+    Muse definitively rejects the request     -> Nano Banana 2 (gemini-3.1-flash-image, 1K);
                                                   an edit hands it the photo as a labelled
                                                   REFERENCE PHOTO 1
 
@@ -11,8 +11,8 @@ Both providers are settings (IMAGE_GENERATE_PROVIDER / IMAGE_EDIT_PROVIDER = "mu
 logged to `image_usage` with its provider, model, outcome and estimated cost, and the
 post records which provider made its image and why it fell back.
 
-At most one billed image per post: the fallback runs only after Muse produced nothing
-(a refused or failed Muse image is not billed).
+Timeouts and ambiguous responses retain their account reservation and never submit a
+fallback. Confirmed request/policy rejection is settled before the fallback reserves.
 """
 
 from __future__ import annotations
@@ -27,6 +27,7 @@ from app.services.gemini import generate_image
 from app.services.image_usage import estimate_cost, log_attempt
 from app.services.images import aspect_for, build_edit_prompt, build_image_prompt, reference_label
 from app.services.meta_model import ContributorModelRefused
+from app.services import media_allowances
 
 # Photos above this are re-encoded before upload (an owner's 25 MB phone original).
 _MAX_EDIT_BYTES = 1_500_000
@@ -101,23 +102,40 @@ def route(
     if task == "edit" and photo is not None:
         photo = _upload_ready(photo)
 
+    def reserve(provider_name: str, model_name: str, size: str = "") -> int:
+        ceiling = media_allowances.image_ceiling(provider_name, model_name, size)
+        return media_allowances.reserve(db, business_id, kind="image",
+            key=media_allowances.request_key(provider_name), provider=provider_name,
+            model=model_name, ceiling=ceiling)
+
     def record(**entry) -> None:
         attempts.append(entry)
         log_attempt(db, business_id, post_uid=post_uid, task=task, **entry)
 
     if provider == "muse":
+        reservation = reserve("muse", settings.muse_image_model)
         started = time.monotonic()
         try:
             if task == "edit":
                 data, mime = muse_image.edit(muse_prompt, photo, aspect)
             else:
                 data, mime = muse_image.generate(muse_prompt, aspect)
-        except Exception as exc:  # refused, timed out, failed: fall back
+        except Exception as exc:
             outcome, reason = _muse_reason(exc)
+            definitive = (isinstance(exc, muse_image.MuseRefused) and exc.code != "no_image") or isinstance(exc, ContributorModelRefused) or (
+                isinstance(exc, muse_image.MuseImageError) and
+                (exc.code == "missing_key" or (exc.status and 400 <= exc.status < 500)))
+            media_allowances.settle(db, reservation, state="failed" if definitive else "unknown",
+                                    cost_usd=0.0 if definitive else None)
             record(provider="muse", model=settings.muse_image_model, image_size="", outcome=outcome,
                    fallback_reason="", cost_usd=0.0, latency_ms=int((time.monotonic() - started) * 1000))
+            if not definitive:
+                # The provider may have generated/billed an image. Retain its unit and
+                # cost hold; neither a fallback nor an automatic retry is safe.
+                raise ImageRoutingError("יצירת התמונה עדיין לא אושרה. התוכן הקיים שמור; אל תשלחו את אותה בקשה שוב.") from exc
         else:
             cost = estimate_cost("muse", settings.muse_image_model)
+            media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost)
             record(provider="muse", model=settings.muse_image_model, image_size="", outcome="ok",
                    fallback_reason="", cost_usd=cost, latency_ms=int((time.monotonic() - started) * 1000))
             return ImageOutcome(data, mime, task, "muse", settings.muse_image_model, "", cost, "", attempts)
@@ -128,16 +146,23 @@ def route(
         model = settings.gemini_image_model
 
     labelled = [(photo[0], photo[1], label)] if task == "edit" and photo is not None else None
+    reservation = reserve("gemini", model, settings.gemini_image_size)
     started = time.monotonic()
     try:
         result = generate_image(gemini_prompt, aspect, model=model, image_size=settings.gemini_image_size,
                                 labelled=labelled)
-    except Exception:
+    except Exception as exc:
+        code = getattr(exc, "code", None) or getattr(exc.__cause__, "code", None)
+        preflight = isinstance(exc, media_allowances.MediaPreflightRejected)
+        definitive = preflight or (isinstance(code, int) and 400 <= code < 500)
+        media_allowances.settle(db, reservation, state="failed" if definitive else "unknown",
+                                cost_usd=0.0 if preflight else None)
         record(provider="gemini", model=model, image_size=settings.gemini_image_size, outcome="error",
                fallback_reason=reason, cost_usd=0.0, latency_ms=int((time.monotonic() - started) * 1000))
         raise
     size = result.get("image_size") or settings.gemini_image_size
     cost = estimate_cost("gemini", model, image_size=size, usage=result.get("usage"))
+    media_allowances.settle(db, reservation, state="succeeded", cost_usd=cost)
     record(provider="gemini", model=model, image_size=size, outcome="ok", fallback_reason=reason,
            cost_usd=cost, latency_ms=int((time.monotonic() - started) * 1000))
     return ImageOutcome(result["data"], result.get("mime") or "image/png", task, "gemini", model, size, cost,

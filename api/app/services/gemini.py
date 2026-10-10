@@ -28,17 +28,18 @@ _RETRYABLE = (
 )
 
 
-def _client(timeout_seconds: float | None = None) -> genai.Client:
+def _client(timeout_seconds: float | None = None, *, single_attempt: bool = False) -> genai.Client:
     settings = get_settings()
     if not settings.gemini_api_key:
         raise RuntimeError("חסר GEMINI_API_KEY. הוסיפו מפתח ב-.env כדי להריץ את מנוע האסטרטגיה.")
     # Without a timeout a request that never answers holds its caller (a month being
     # built in the background, services/generation_jobs.py) forever. HttpOptions is in ms.
     timeout = float(timeout_seconds if timeout_seconds is not None else (settings.gemini_timeout_seconds or 0))
-    if timeout > 0:
+    if timeout > 0 or single_attempt:
         return genai.Client(
             api_key=settings.gemini_api_key,
-            http_options=types.HttpOptions(timeout=int(timeout * 1000)),
+            http_options=types.HttpOptions(timeout=int(timeout * 1000) if timeout > 0 else None,
+                retry_options=types.HttpRetryOptions(attempts=1) if single_attempt else None),
         )
     return genai.Client(api_key=settings.gemini_api_key)
 
@@ -247,7 +248,11 @@ def generate_image(
     for older callers.
     """
     settings = get_settings()
-    client = _client()
+    from app.services.media_allowances import MediaPreflightRejected
+    try:
+        client = _client(single_attempt=True)
+    except Exception as exc:
+        raise MediaPreflightRejected("לא הצלחנו להכין את התמונה. אפשר לנסות שוב מהפוסט.") from exc
     model = model or settings.gemini_image_model
     size = image_size or settings.gemini_image_size
 
@@ -266,6 +271,14 @@ def generate_image(
         image_config["image_size"] = size
 
     def _run() -> dict:
+        from app.services.media_allowances import IMAGE_INPUT_TOKENS, IMAGE_OUTPUT_TOKENS, MediaInputTooLarge
+        try:
+            counted = client.models.count_tokens(model=model, contents=contents)
+        except Exception as exc:
+            raise MediaPreflightRejected("לא הצלחנו להכין את התמונה. אפשר לנסות שוב מהפוסט.") from exc
+        total = getattr(counted, "total_tokens", None)
+        if not isinstance(total, int) or total > IMAGE_INPUT_TOKENS:
+            raise MediaInputTooLarge("Image input exceeds the bounded generation policy")
         response = client.models.generate_content(
             model=model,
             contents=contents,
@@ -273,6 +286,7 @@ def generate_image(
                 response_modalities=["IMAGE"],
                 image_config=types.ImageConfig(**image_config),
                 thinking_config=types.ThinkingConfig(thinking_level="MINIMAL"),
+                max_output_tokens=IMAGE_OUTPUT_TOKENS,
             ),
         )
         parts = getattr(response, "parts", None) or []
@@ -298,8 +312,12 @@ def generate_image(
         raise RuntimeError("לא הצלחנו ליצור תמונה. בדקו את מודל התמונות ואת המפתח.")
 
     try:
-        return _call_with_retry(_run, attempts=2)
+        # The ledger reserves one provider attempt. SDK and application retries are
+        # both disabled for paid images; a timeout may already have been billed.
+        return _run()
     except Exception as exc:
+        if isinstance(exc, MediaPreflightRejected):
+            raise
         text = str(exc)
         if "429" in text or "RESOURCE_EXHAUSTED" in text:
             if "limit: 0" in text:

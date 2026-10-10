@@ -188,6 +188,21 @@ class ImageJobTestCase(unittest.TestCase):
         finally:
             db.close()
 
+    def test_exhausted_allowance_reaches_http_429_without_a_provider_call(self):
+        self.month([month_post(0)])
+        self.db.add_all([ImageUsage(business_id=self.business_id, provider="muse", outcome="ok",
+                                   est_cost_usd=.01) for _ in range(20)])
+        self.db.commit()
+        fake = FakeMuse()
+        with self.muse(fake):
+            response = self.client.post("/strategy/posts/image", json={
+                "post_index": 0, "image_preference": "ai", "generation_request_id": "cap-http-check",
+            })
+        self.assertEqual(response.status_code, 429, response.text)
+        self.assertEqual(response.json()["code"], "media_allowance_exhausted")
+        self.assertEqual(fake.calls, 0)
+        self.assertEqual(self.stored()[0]["image_url"], "")
+
     def job(self) -> ImageJob | None:
         db = self.Session()
         try:
