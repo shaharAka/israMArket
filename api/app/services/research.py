@@ -57,7 +57,7 @@ from app.models import (
 )
 from app.services import cost_model, google_cost, instagram_signal, keywords, meta
 from app.services.calendar_il import israeli_events_for_month
-from app.services.gemini import strategy_json
+from app.services.gemini import strategy_json, text_model
 from app.services.hebrew_style import HEBREW_STYLE
 from app.services.jsonutil import dumps, loads
 from app.services.month_loop import prior_month_review
@@ -1786,7 +1786,7 @@ def run_research(
             {"headline": headline, "items": insights, "error_he": error_he, "error_detail": error_detail}
         ),
         sources_json=dumps(statuses),
-        model=(model_label or settings.gemini_strategy_model) if run_status == "done" else "",
+        model=text_model(model_label or settings.gemini_strategy_model) if run_status == "done" else "",
         created_at=now,
     )
     db.add(run)

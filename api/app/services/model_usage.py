@@ -3,7 +3,7 @@
 Image calls were already logged per business (`image_usage`, services/image_usage.py).
 Text calls (plans, posts, research, Design DNA, photo checks) were not, so the backoffice
 could not say what an account costs. This is the minimal log: one `model_usage` row per
-Gemini text call, with token counts and an estimate from list prices. Never the prompt,
+Gemini or GPT text call, with token counts and an estimate from list prices. Never the prompt,
 the answer or the key.
 
 Attribution. `gemini.generate_json` knows nothing about accounts, so the account is
@@ -45,6 +45,10 @@ log = logging.getLogger(__name__)
 PRICES_PER_M = {
     "gemini-3.8-flash": {"in": 0.50, "out": 3.00},
     "gemini-3.5-flash-lite": {"in": 0.10, "out": 0.40},
+    # Standard Responses pricing, checked 2026-10-11. Cache writes replace ordinary
+    # input pricing; reasoning is already separated by openai_text.usage_numbers.
+    "gpt-6.1-sol": {"in": 2.00, "cached": 0.10, "write": 2.50, "out": 10.00},
+    "gpt-6-luna": {"in": 0.10, "cached": 0.01, "write": 0.125, "out": 0.50},
 }
 DEFAULT_PRICE = {"in": 0.50, "out": 3.00}
 
@@ -57,7 +61,12 @@ def estimate_cost(model: str, numbers: dict) -> float:
     price = PRICES_PER_M.get((model or "").strip(), DEFAULT_PRICE)
     prompt = int(numbers.get("prompt_tokens") or 0)
     out = int(numbers.get("output_tokens") or 0) + int(numbers.get("thinking_tokens") or 0)
-    return round((prompt * price["in"] + out * price["out"]) / 1e6, 6)
+    cached = min(prompt, max(0, int(numbers.get("cached_input_tokens") or 0)))
+    writes = min(prompt - cached, max(0, int(numbers.get("cache_write_tokens") or 0)))
+    return round(((prompt - cached - writes) * price["in"]
+                  + cached * price.get("cached", price["in"])
+                  + writes * price.get("write", price["in"])
+                  + out * price["out"]) / 1e6, 6)
 
 
 # --- scope ------------------------------------------------------------------------------

@@ -105,6 +105,7 @@ trap 'rm -f "$tmp"' EXIT
   line PUBLIC_BASE_URL "$PUBLIC_BASE_URL"
 
   line GEMINI_API_KEY "$(secret gemini-api-key required)"
+  line OPENAI_API_KEY "$(secret openai-api-key optional)"
   line JWT_SECRET "$(secret jwt-secret required)"
   line TOKEN_ENCRYPTION_KEY "$(secret token-encryption-key required)"
   line META_MODEL_API_KEY "$(secret meta-model-api-key optional)"
@@ -132,6 +133,14 @@ for key in GEMINI_API_KEY JWT_SECRET TOKEN_ENCRYPTION_KEY; do
     exit 1
   fi
 done
+
+# Optional on Gemini deployments, mandatory when the GPT text/post route is selected.
+# Fail before a build/restart if provisioning was forgotten.
+if grep -Eq "^(TEXT_PROVIDER|POST_MODEL)=['\"]?openai['\"]?$" "$tmp" &&
+  grep -q "^OPENAI_API_KEY=''$" "$tmp"; then
+  log "OPENAI_API_KEY is empty for the selected GPT route; refusing to render"
+  exit 1
+fi
 
 chmod 600 "$tmp"
 mv -f "$tmp" "$OUT_FILE"

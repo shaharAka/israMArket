@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -8,6 +9,13 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=(".env", "../.env"), extra="ignore")
 
     gemini_api_key: str = ""
+    # Keep the legacy Gemini slot names below as the rollback configuration. The
+    # shared text gateway resolves them to GPT when this provider is selected.
+    text_provider: Literal["gemini", "openai"] = "gemini"
+    openai_api_key: str = ""
+    openai_strategy_model: Literal["gpt-6.1-sol"] = "gpt-6.1-sol"
+    openai_lite_model: Literal["gpt-6-luna"] = "gpt-6-luna"
+    openai_timeout_seconds: float = 180.0
     # Enable only after a bounded production canary. Fixed model/720p/5s and account
     # ledger checks live in services/campaign_video.py, not in browser parameters.
     campaign_video_enabled: bool = False
@@ -113,7 +121,7 @@ class Settings(BaseSettings):
     meta_model_api_key: str = ""
     meta_model_base_url: str = "https://api.meta.ai/v1"
     meta_post_model: str = "muse-spark-1.3"
-    # "gemini" (default) | "muse-spark". See services/post_model_router.py.
+    # "gemini" (shared text gateway) | "openai" | "muse-spark".
     post_model: str = "gemini"
     # With POST_MODEL=muse-spark, fall back to Gemini when the Meta call fails, so an
     # experiment can never leave a user without posts.

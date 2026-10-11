@@ -45,7 +45,9 @@ production but it still has no TLS of its own.
 |---|---|
 | `JWT_SECRET` | Signs sessions. **The API refuses to boot with the default when `ENVIRONMENT=production`.** |
 | `TOKEN_ENCRYPTION_KEY` | Encrypts stored GA4/Meta OAuth tokens. Without it the key is derived from `JWT_SECRET` — acceptable only because a real `JWT_SECRET` is now mandatory. Rotating `JWT_SECRET` without setting this will make existing stored tokens undecryptable. |
-| `GEMINI_API_KEY` | Strategy, extraction and image generation. |
+| `OPENAI_API_KEY` | Text/vision workloads when `TEXT_PROVIDER=openai` or `POST_MODEL=openai`. Store in Secret Manager as `openai-api-key`. |
+| `TEXT_PROVIDER` | `openai`: Luna Low for fast tasks, Sol for deeper tasks. `gemini`: original text slots for rollback. |
+| `GEMINI_API_KEY` | Image/video generation and the Gemini text rollback route. |
 | `WEB_ORIGIN` | Must be the browser-facing origin **including scheme**. It is used for OAuth redirects *and* the CSRF origin check, so a mismatch makes the connect buttons fail. |
 | `API_ORIGIN` | Where the web tier proxies (`web/app/backend`). Not used for OAuth any more. |
 | `OAUTH_REDIRECT_BASE` | Optional. Base of every OAuth redirect URI (Google sign-in, GA4, Meta). Blank means `{WEB_ORIGIN}/backend`, so the registered URIs are `{WEB_ORIGIN}/backend/auth/google/callback`, `/backend/integrations/ga4/callback` and `/backend/integrations/meta/callback`. See `deploy/gcp/google-oauth.md`. |
@@ -167,7 +169,7 @@ payment reminder, and `/billing` says the account is open without payment.
 
 **Costs** are estimates at list prices, in USD, per calendar month (UTC): images from
 `image_usage`, text-model calls from `model_usage`. `model_usage` is new with the
-backoffice: one row per Gemini text call made for a signed-in account or a background job
+backoffice: one row per Gemini or GPT text call made for a signed-in account or a background job
 of one (token counts and an estimate, never the prompt or the answer). Text calls before
 this release, anonymous calls (the landing preview, `/start` before signup) and the Muse
 Spark post-writing experiment are not in it.
@@ -202,3 +204,45 @@ counts, reads can fail, and Stories deleted before a read cannot be recovered. T
 matches pasted Story links by media ID, never by caption. C3 Page insights and authenticated
 `story_insights` webhooks are separate follow-ups; hourly polling uses the supported API.
 Rollbacks to a version without this job must disable the timer.
+
+## GPT text routing (11 October 2026)
+
+Set these non-secret tunables in `/etc/isramarket/extra.env`:
+
+```text
+TEXT_PROVIDER=openai
+POST_MODEL=openai
+OPENAI_STRATEGY_MODEL=gpt-6.1-sol
+OPENAI_LITE_MODEL=gpt-6-luna
+```
+
+`openai-api-key` supplies `OPENAI_API_KEY` through `render-env.sh`. Provision the
+secret and grant the VM service account secretAccessor on this secret only, following
+`deploy/gcp/secrets.md`. A missing key refuses environment rendering/startup before
+serving the selected GPT route. Use the regular exact-revision update and backup path.
+
+Luna uses LOW reasoning for analytics, Hebrew interview questions, small rewrites and checks.
+Non-Hebrew interviews use Sol LOW because Luna Low sometimes returned Hebrew questions
+when Arabic/Russian was requested. A script check falls back to the existing localized
+question if a provider reply is primarily in the wrong language; it never retries.
+Sol uses the workload's LOW or MEDIUM setting for site extraction, research, strategy,
+post writing, support and Design DNA. All calls use Standard Responses processing,
+strict JSON output and `store=false`; no hosted tools or autonomous account actions.
+Our existing guarded site/source readers provide research evidence. Site screenshots
+and owner photos used for understanding can be sent as vision inputs. API abuse logs
+and prompt caching still follow the provider's data policy, disclosed on `/security`.
+
+Calls are capped at 4,096 output tokens for Luna or 16,384 for Sol unless the workload
+has a smaller explicit cap. At most two attempts on transient HTTP failures; explicit
+single-attempt callers stay single-attempt. No automatic retry of timeouts, billing,
+authentication, refusal or incomplete output. Backoffice costs count visible output,
+reasoning, cached input and cache writes once at the actual GPT model's rates.
+
+Media providers, allowances, existing saved plans/posts and connector grants are unchanged.
+No database migration is required. `/backend/health` reports `text_provider` and
+`text_ready` as configuration indicators, not proof of provider availability. Verify one
+fictional structured call inside the running API plus the affected customer journey.
+
+Rollback: restore `TEXT_PROVIDER=gemini` **and** `POST_MODEL=gemini` in extra.env and
+run `update.sh --recreate`. For code rollback, restore those tunables first, then deploy
+the previous commit printed by update.sh. Existing media engines retain their keys.

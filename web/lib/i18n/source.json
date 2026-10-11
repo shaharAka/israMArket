@@ -332,7 +332,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 281,
+        "line": 302,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -1608,6 +1608,18 @@
       }
     ]
   },
+  "m_034f50801442fa86": {
+    "source": "שירות ה-AI אינו זמין כרגע.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 164,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_0351d41476777f2c": {
     "source": "בחירה עם משמעות",
     "language": "he",
@@ -2414,18 +2426,6 @@
         "file": "web/lib/whatsapp.ts",
         "line": 54,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_04d11b8a74119ab8": {
-    "source": "מטא (Muse Spark)",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/security/page.tsx",
-        "line": 177,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -3546,7 +3546,7 @@
       },
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 125,
+        "line": 140,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4754,6 +4754,18 @@
       }
     ]
   },
+  "m_09fa11584ce9b083": {
+    "source": "השירות לא השיב בזמן. אפשר לנסות שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 138,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_09fdb57745a84af1": {
     "source": "\n\nרעיון לפוסט שבעל העסק בחר בהרשמה. אחד הפוסטים של השבועות האלה חייב להיות הרעיון הזה, מותאם לתוכנית החודש (אפשר לחדד את הניסוח, לא להחליף את הרעיון):\n- {arg_0} ({arg_1}): {arg_2} | {arg_3}\n",
     "language": "he",
@@ -5240,7 +5252,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -5431,7 +5443,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 243,
+        "line": 248,
         "kind": "jsx"
       }
     ]
@@ -6126,7 +6138,13 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 155,
+        "line": 176,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 102,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6431,17 +6449,6 @@
       }
     ]
   },
-  "m_0dfb31082a4572e7": {
-    "source": "ה-AI שכותב את התוכניות, קורא את האתר ומעצב את התמונות. אנחנו משתמשים בשירות בתשלום, ולפי התנאים של גוגל לשירות הזה, גוגל לא משתמש במה שנשלח אליו כדי לשפר את המוצרים שלו. הוא שומר אותו לזמן מוגבל, רק כדי לאתר שימוש לרעה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/security/page.tsx",
-        "line": 170,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0dfffeb6803d9df9": {
     "source": "לא הצלחנו לקרוא את האתר. בדקו את הכתובת בשלב הראשון ונסו שוב.",
     "language": "he",
@@ -6530,6 +6537,18 @@
       {
         "file": "api/app/services/meta.py",
         "line": 218,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
+  "m_0e27ad3ef25f35b2": {
+    "source": "Unsupported vision image type",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 121,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6631,7 +6650,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -7194,7 +7213,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -7955,7 +7974,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -8902,7 +8921,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 236,
+        "line": 241,
         "kind": "literal",
         "purpose": "display"
       },
@@ -9230,7 +9249,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -10347,7 +10366,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -11028,7 +11047,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -11583,7 +11602,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 192,
+        "line": 197,
         "kind": "literal",
         "purpose": "display"
       }
@@ -14541,7 +14560,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 223,
+        "line": 228,
         "kind": "literal",
         "purpose": "display"
       }
@@ -14823,7 +14842,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 228,
+        "line": 233,
         "kind": "jsx"
       },
       {
@@ -15479,7 +15498,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -15673,7 +15692,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -16356,7 +16375,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17938,7 +17957,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18188,7 +18207,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18385,7 +18404,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -18594,7 +18613,7 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 239,
+        "line": 241,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18606,7 +18625,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 50,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -19159,7 +19178,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -20083,7 +20102,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20254,6 +20273,18 @@
       }
     ]
   },
+  "m_2c4f4cdff1868520": {
+    "source": "התשובה לא הושלמה. אפשר לנסות שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 93,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_2c566ffa60d705b3": {
     "source": "התמונה מוכנה, בצבעים ובסגנון של העסק.",
     "language": "he",
@@ -20375,7 +20406,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -21519,17 +21550,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 110,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -21632,7 +21663,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 184,
+        "line": 189,
         "kind": "literal"
       }
     ]
@@ -22984,7 +23015,7 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 49,
+        "line": 51,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -23988,6 +24019,18 @@
         "file": "web/components/landing-v2/businessExamples.ts",
         "line": 10,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_3372a0d2e07b05a8": {
+    "source": "לא הצלחנו לקרוא את התשובה. אפשר לנסות שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 162,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -25989,7 +26032,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -27044,7 +27087,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -28099,7 +28142,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 183,
+        "line": 188,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28751,7 +28794,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 257,
+        "line": 262,
         "kind": "jsx"
       },
       {
@@ -28890,7 +28933,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29020,6 +29063,18 @@
         "file": "web/lib/businessFields.ts",
         "line": 68,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_3f390038fb51ff0a": {
+    "source": "חסר OPENAI_API_KEY",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/gemini.py",
+        "line": 67,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -29886,7 +29941,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -31394,6 +31449,18 @@
       }
     ]
   },
+  "m_44136388a96acfb6": {
+    "source": "Unsupported GPT text model",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 114,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_44153bb06f8fe2ae": {
     "source": "כל הפוסטים",
     "language": "he",
@@ -31794,7 +31861,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -32320,7 +32387,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -32961,7 +33028,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -33271,7 +33338,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 19,
         "kind": "literal"
       },
       {
@@ -33282,6 +33349,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 75,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 82,
         "kind": "literal"
       },
       {
@@ -33460,12 +33532,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -33601,7 +33673,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 202,
+        "line": 207,
         "kind": "jsx"
       },
       {
@@ -34777,7 +34849,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -36217,7 +36289,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 230,
+        "line": 235,
         "kind": "jsx"
       }
     ]
@@ -36263,6 +36335,17 @@
       {
         "file": "web/lib/trial.ts",
         "line": 493,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_4f46bed1467df26c": {
+    "source": "יצירה ועריכה של תמונות וסרטונים, וגם כתיבת תוכן אם נבחר במנוע הזה. נשלח אליו רק המידע על העסק שנחוץ לעבודה, לא סיסמאות ולא מפתחות חיבור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -36541,7 +36624,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36896,7 +36979,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 34,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -37143,7 +37226,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -37310,7 +37393,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37356,7 +37439,7 @@
     "references": [
       {
         "file": "api/app/services/post_model_router.py",
-        "line": 78,
+        "line": 82,
         "kind": "template",
         "purpose": "validation"
       }
@@ -37735,7 +37818,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 252,
+        "line": 257,
         "kind": "jsx"
       }
     ]
@@ -38219,7 +38302,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 188,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -39494,7 +39577,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -39856,7 +39939,7 @@
     "references": [
       {
         "file": "api/app/services/post_model_router.py",
-        "line": 58,
+        "line": 62,
         "kind": "template",
         "purpose": "validation"
       }
@@ -40355,7 +40438,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 187,
+        "line": 192,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41363,7 +41446,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -41807,7 +41890,7 @@
       },
       {
         "file": "api/app/services/post_model_router.py",
-        "line": 78,
+        "line": 82,
         "kind": "template",
         "purpose": "validation"
       }
@@ -42079,7 +42162,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -42125,7 +42208,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -43671,7 +43754,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 129,
+        "line": 144,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44363,7 +44446,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -44793,7 +44876,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -45217,7 +45300,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -47377,7 +47460,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 191,
+        "line": 213,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48383,7 +48466,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48398,6 +48481,18 @@
         "line": 809,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_6aa5ea635ae241c9": {
+    "source": "חסר OPENAI_API_KEY למנוע הטקסט שנבחר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/main.py",
+        "line": 47,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -48504,7 +48599,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -48559,7 +48654,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -48689,7 +48784,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50814,7 +50909,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50912,7 +51007,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 328,
+        "line": 349,
         "kind": "template",
         "purpose": "validation"
       }
@@ -51369,12 +51464,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -51385,7 +51480,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51419,7 +51514,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -51838,7 +51933,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51863,6 +51958,18 @@
         "file": "web/lib/api.ts",
         "line": 1230,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_71dcb83eb052b301": {
+    "source": "Open-ended output objects require an explicit schema",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 38,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -51934,17 +52041,6 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 107,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_7207cea5baab27fb": {
-    "source": "ה-AI שכותב את התוכניות והפוסטים ומעצב את התמונות. נשלח אליו מידע על העסק שצריך לעבודה, לא סיסמאות ולא מפתחות חיבור.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/security/page.tsx",
-        "line": 171,
         "kind": "literal"
       }
     ]
@@ -52647,7 +52743,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 195,
+        "line": 217,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54860,7 +54956,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55610,7 +55706,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -58069,7 +58165,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -58561,7 +58657,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 299,
+        "line": 320,
         "kind": "template",
         "purpose": "validation"
       }
@@ -59478,7 +59574,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -60363,7 +60459,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 189,
+        "line": 211,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -60816,12 +60912,12 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 226,
+        "line": 231,
         "kind": "jsx"
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 239,
+        "line": 244,
         "kind": "jsx"
       }
     ]
@@ -61577,7 +61673,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62469,7 +62565,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 190,
+        "line": 212,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62624,6 +62720,18 @@
         "line": 144,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8a259e3553aaef98": {
+    "source": "לא הצלחנו להכין תשובה לבקשה הזו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 98,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -62856,7 +62964,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63790,6 +63898,17 @@
       }
     ]
   },
+  "m_8cbdf9f7cc589780": {
+    "source": "יצירה ועריכה של תמונות וסרטונים, וגם כתיבת תוכן אם נבחר במנוע הזה. אנחנו משתמשים בשירות בתשלום, ולפי התנאים של גוגל לשירות הזה, גוגל לא משתמש במה שנשלח אליו כדי לשפר את המוצרים שלו. הוא שומר אותו לזמן מוגבל כדי לאתר שימוש לרעה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 170,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8cc0f0d7fca07a49": {
     "source": "המלצה היא הדרך הנפוצה להגיע לנותני שירות.",
     "language": "he",
@@ -64399,7 +64518,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 198,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -64410,7 +64529,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 192,
+        "line": 214,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -64917,7 +65036,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65243,7 +65362,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68819,7 +68938,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -69447,6 +69566,18 @@
         "file": "web/components/help/guides.ts",
         "line": 265,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_98b93e920090cdf6": {
+    "source": "מטא (Muse)",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 182,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -70268,7 +70399,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -70470,7 +70601,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -70561,13 +70692,13 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 261,
+        "line": 263,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/main.py",
-        "line": 269,
+        "line": 271,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -71496,6 +71627,17 @@
       }
     ]
   },
+  "m_9dce6a390506f89c": {
+    "source": "יצירת תמונות ועריכתן. אפשר להשתמש בו גם לכתיבת פוסטים אם נבחר במנוע הזה. אנחנו משתמשים רק בגרסה שלפי מטא לא משמשת לשיפור המוצרים שלה. המערכת שלנו מסרבת לעבוד עם הגרסה האחרת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 183,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9dd5e939a943851d": {
     "source": "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
     "language": "he",
@@ -71784,6 +71926,18 @@
         "file": "web/components/design/FlowBoard.tsx",
         "line": 101,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_9e75c58da7eb3ede": {
+    "source": "OpenAI (GPT)",
+    "language": "en",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 175,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -72670,7 +72824,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -73505,6 +73659,17 @@
       }
     ]
   },
+  "m_a2acfdacb96ddef8": {
+    "source": "המחקר, התוכנית והפוסטים נכתבים עכשיו בעזרת GPT. גם ניתוח התוצאות והשאלות על העסק משתמשים במנוע החדש.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a2b22ee4a357953a": {
     "source": "כדי שכל לקוח יוכל להתחבר, עדיין נדרש App Review. חשבון Meta אישי הוא מנהל, לא מותג העסק.",
     "language": "he",
@@ -73918,7 +74083,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -77474,7 +77639,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -78093,17 +78258,6 @@
       }
     ]
   },
-  "m_acd6c75549e43293": {
-    "source": "המודל שכותב את הפוסטים. אם הוא לא זמין, גוגל כותב במקומו. אנחנו משתמשים רק בגרסה שלפי מטא לא משמשת לשיפור המוצרים שלה. המערכת שלנו מסרבת לעבוד עם הגרסה האחרת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/security/page.tsx",
-        "line": 178,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ace510e3d8319782": {
     "source": "משפחות ופנאי.",
     "language": "he",
@@ -78444,7 +78598,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -79633,7 +79787,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -79807,7 +79961,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -80671,7 +80825,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81276,7 +81430,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -83788,6 +83942,18 @@
       }
     ]
   },
+  "m_b95aaa387d23c50f": {
+    "source": "Question language does not match the selected locale",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/discovery_interview.py",
+        "line": 198,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_b96ddecb62c61e43": {
     "source": "החנות של פרג ושמרים",
     "language": "he",
@@ -84408,7 +84574,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -85347,7 +85513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86077,7 +86243,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 131,
+        "line": 146,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86386,7 +86552,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -86516,7 +86682,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -86760,7 +86926,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 130,
+        "line": 145,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -87492,7 +87658,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 312,
+        "line": 333,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -89500,7 +89666,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 133,
+        "line": 148,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -91035,6 +91201,17 @@
       }
     ]
   },
+  "m_c97cdfa93a36ae58": {
+    "source": "שפת הפוסטים שבחרתם והמכסה ליצירת תמונות וסרטונים נשארות כפי שהיו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c9819527d5b086a0": {
     "source": "צריך להתחבר",
     "language": "he",
@@ -91770,7 +91947,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -92417,7 +92594,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -92472,7 +92649,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -93096,7 +93273,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 325,
+        "line": 346,
         "kind": "template",
         "purpose": "validation"
       }
@@ -93313,7 +93490,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 132,
+        "line": 147,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94680,6 +94857,18 @@
       }
     ]
   },
+  "m_d20dcaaecca83530": {
+    "source": "שירות ה-AI אינו זמין כרגע. אפשר לנסות שוב מאוחר יותר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 150,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_d2175b612d266a2c": {
     "source": "הדרך לפנייה בוואטסאפ",
     "language": "he",
@@ -95099,7 +95288,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -95648,6 +95837,18 @@
         "file": "web/lib/api.ts",
         "line": 1086,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_d3f127f637ffa7d9": {
+    "source": "מנועי כתיבה וניתוח חדשים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -96558,7 +96759,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -97248,7 +97449,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97791,7 +97992,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 241,
+        "line": 246,
         "kind": "jsx"
       },
       {
@@ -98897,7 +99098,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 35,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -99186,7 +99387,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 216,
+        "line": 221,
         "kind": "jsx"
       }
     ]
@@ -100346,6 +100547,17 @@
       }
     ]
   },
+  "m_ddd356d6f234cb15": {
+    "source": "מחקר, תוכניות, פוסטים וניתוח התוצאות. נשלחים המידע על העסק, נתוני המדידה והתמונות שנחוצים לעבודה, בלי סיסמאות או מפתחות חיבור. אנחנו מבטלים שמירת תשובות ב־API. לפי המדיניות של OpenAI, מידע מה־API אינו משמש לאימון כברירת מחדל; יומני ניטור שימוש לרעה עשויים להישמר עד 30 ימים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 176,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dde265fa2f3b3642": {
     "source": "{arg_0} בלי תיאור",
     "language": "he",
@@ -100401,7 +100613,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100435,7 +100647,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -100694,7 +100906,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -101413,7 +101625,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -102344,7 +102556,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 41,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -103159,7 +103371,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -103594,6 +103806,18 @@
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 9,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_e4bf9962fb92d1e8": {
+    "source": "חסר OPENAI_API_KEY.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/openai_text.py",
+        "line": 112,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -104459,7 +104683,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -104470,7 +104694,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -105322,7 +105546,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106706,7 +106930,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -106972,7 +107196,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -107595,7 +107819,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 194,
+        "line": 216,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -107785,7 +108009,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -109357,7 +109581,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 193,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -110394,7 +110618,7 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 116,
+        "line": 129,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -111845,7 +112069,7 @@
     "references": [
       {
         "file": "api/app/services/discovery_interview.py",
-        "line": 193,
+        "line": 215,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -111988,7 +112212,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -112509,7 +112733,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113674,13 +113898,13 @@
     "references": [
       {
         "file": "api/app/services/gemini.py",
-        "line": 255,
+        "line": 276,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/gemini.py",
-        "line": 278,
+        "line": 299,
         "kind": "literal",
         "purpose": "validation"
       },
@@ -113784,7 +114008,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 207,
+        "line": 212,
         "kind": "jsx"
       }
     ]
@@ -114391,7 +114615,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -114896,7 +115120,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -115496,7 +115720,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 197,
+        "line": 202,
         "kind": "literal",
         "purpose": "display"
       }
@@ -115552,7 +115776,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -115880,7 +116104,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
