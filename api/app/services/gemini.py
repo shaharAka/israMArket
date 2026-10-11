@@ -1,3 +1,4 @@
+import logging
 import re
 import time
 from typing import Any
@@ -8,6 +9,15 @@ from google.genai import types
 from app.config import get_settings
 
 ImageBlob = tuple[bytes, str]
+log = logging.getLogger(__name__)
+
+
+class ProviderText(str):
+    """A normal JSON string carrying the actual fallback model for source records."""
+    def __new__(cls, text: str, provider_model: str):
+        value = super().__new__(cls, text)
+        value.provider_model = provider_model
+        return value
 
 SYSTEM_HE = (
     "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. "
@@ -144,13 +154,42 @@ def generate_json(
     settings = get_settings()
     resolved = text_model(model)
     if resolved.startswith("gpt-"):
-        from app.services.openai_text import generate_json as openai_json
-        return openai_json(model=resolved, prompt=prompt, schema=schema,
-            thinking_level="LOW" if resolved == settings.openai_lite_model else thinking_level,
-            images=images, system=system or SYSTEM_HE, attempts=attempts,
-            timeout_seconds=timeout_seconds, max_output_tokens=max_output_tokens,
-            usage_hooks=USAGE_HOOKS)
-    client = _client(timeout_seconds)
+        from app.services.openai_text import OpenAITextError, generate_json as openai_json
+        fallback = settings.text_fallback_provider == "gemini" and bool(settings.gemini_api_key)
+        budget = float(timeout_seconds if timeout_seconds is not None else settings.openai_timeout_seconds) or 180
+        started = time.monotonic()
+        try:
+            return openai_json(model=resolved, prompt=prompt, schema=schema,
+                thinking_level="LOW" if resolved == settings.openai_lite_model else thinking_level,
+                images=images, system=system or SYSTEM_HE, attempts=attempts,
+                timeout_seconds=budget * 0.65 if fallback else timeout_seconds,
+                max_output_tokens=max_output_tokens, usage_hooks=USAGE_HOOKS)
+        except OpenAITextError as exc:
+            remaining = budget - (time.monotonic() - started)
+            if not fallback or not exc.fallback_eligible or remaining < 1:
+                raise
+            # A timed-out GPT call can still be billed. One alternative-provider call
+            # only, within the remaining budget; never fallback after a content refusal.
+            fallback_model = (settings.gemini_lite_model if resolved == settings.openai_lite_model
+                              else settings.gemini_strategy_model if model.startswith("gpt-") else model)
+            log.warning("GPT text unavailable; using Gemini model %s", fallback_model)
+            result = _google_json(model=fallback_model, prompt=prompt, schema=schema,
+                thinking_level=thinking_level, images=images, system=system,
+                attempts=1, timeout_seconds=remaining,
+                max_output_tokens=max_output_tokens or (4096 if resolved == settings.openai_lite_model else 16384),
+                single_attempt=True)
+            return ProviderText(result, fallback_model or settings.gemini_strategy_model)
+    return _google_json(model=model, prompt=prompt, schema=schema, thinking_level=thinking_level,
+        images=images, system=system, attempts=attempts, timeout_seconds=timeout_seconds,
+        max_output_tokens=max_output_tokens)
+
+
+def _google_json(*, model: str, prompt: str, schema: dict[str, Any], thinking_level: str,
+                 images: list[ImageBlob] | None = None, system: str | None = None,
+                 attempts: int = 5, timeout_seconds: float | None = None,
+                 max_output_tokens: int | None = None, single_attempt: bool = False) -> str:
+    settings = get_settings()
+    client = _client(timeout_seconds, single_attempt=True) if single_attempt else _client(timeout_seconds)
     config = types.GenerateContentConfig(
         system_instruction=system or SYSTEM_HE,
         response_mime_type="application/json",

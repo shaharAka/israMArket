@@ -24,6 +24,7 @@ os.environ["MEDIA_DIR"] = tempfile.mkdtemp(prefix="isramarket-tests-media-")
 
 os.environ["POST_MODEL"] = "gemini"
 os.environ["TEXT_PROVIDER"] = "gemini"
+os.environ["TEXT_FALLBACK_PROVIDER"] = "none"
 os.environ["OPENAI_API_KEY"] = ""
 os.environ["META_MODEL_API_KEY"] = ""
 os.environ["SITE_SCREENSHOT"] = "false"

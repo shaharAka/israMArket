@@ -47,9 +47,9 @@ def write_posts_with(
 ) -> str:
     """Run `prompt` through the named model and return its JSON reply as a string.
 
-    No fallback here: the caller asked for a specific model and should see its failure
-    (billing, rate limit, bad JSON, `timeout` seconds passing) rather than silently get
-    another provider's output. `timeout` applies to the Meta call; None keeps its own limits.
+    GPT follows the configured availability fallback in the shared text gateway.
+    Meta has no fallback here; post_json controls its experiment fallback.
+    `timeout` applies to the Meta call; None keeps its own limits.
     """
     name = (model_name or GEMINI).strip().lower()
     if name == GEMINI:

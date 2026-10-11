@@ -110,7 +110,7 @@ class GPTGatewayTest(unittest.TestCase):
                     self.assertEqual(original, schema)
 
     def test_auth_and_billing_errors_are_sanitized_and_not_retried(self):
-        for status, code in ((401, "invalid_api_key"), (429, "insufficient_quota"), (400, "invalid_json_schema")):
+        for status, code in ((401, "invalid_api_key"), (429, "insufficient_quota"), (400, "invalid_json_schema"), (403, "content_policy_violation")):
             with self.subTest(status=status):
                 calls = []
                 self.transport(lambda request: (calls.append(request), httpx.Response(status, json={"error": {
@@ -121,6 +121,7 @@ class GPTGatewayTest(unittest.TestCase):
                 self.assertNotIn("secret", str(caught.exception))
                 self.assertNotIn("test-only-key", str(caught.exception))
                 self.assertEqual(gemini.is_provider_unavailable(caught.exception), status in {401, 429})
+                self.assertEqual(caught.exception.fallback_eligible, status in {401, 429})
 
     def test_transient_retries_are_bounded_and_single_attempt_is_respected(self):
         for attempts, expected in ((5, 2), (1, 1)):
@@ -140,14 +141,16 @@ class GPTGatewayTest(unittest.TestCase):
             self.call()
         self.assertEqual(len(calls), 1)
         self.assertNotIn("private", str(caught.exception))
+        self.assertTrue(caught.exception.fallback_eligible)
 
     def test_incomplete_refused_and_bad_json_are_rejected_but_usage_recorded(self):
         for body in (completed(status="incomplete"), completed(output=[{"content": [{"type": "refusal"}]}]), completed("bad json")):
             usage = []
             self.transport(lambda _: httpx.Response(200, json=body))
-            with patch.object(gemini, "USAGE_HOOKS", [lambda *args: usage.append(args)]), self.assertRaises(openai_text.OpenAITextError):
+            with patch.object(gemini, "USAGE_HOOKS", [lambda *args: usage.append(args)]), self.assertRaises(openai_text.OpenAITextError) as caught:
                 self.call()
             self.assertEqual(len(usage), 1)
+            self.assertFalse(caught.exception.fallback_eligible)
 
     def test_missing_key_and_unknown_model_fail_before_network(self):
         self.settings.openai_api_key = ""

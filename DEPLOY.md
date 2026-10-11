@@ -205,12 +205,13 @@ matches pasted Story links by media ID, never by caption. C3 Page insights and a
 `story_insights` webhooks are separate follow-ups; hourly polling uses the supported API.
 Rollbacks to a version without this job must disable the timer.
 
-## GPT text routing (11 October 2026)
+## GPT text routing (12 October 2026)
 
 Set these non-secret tunables in `/etc/isramarket/extra.env`:
 
 ```text
 TEXT_PROVIDER=openai
+TEXT_FALLBACK_PROVIDER=gemini
 POST_MODEL=openai
 OPENAI_STRATEGY_MODEL=gpt-6.1-sol
 OPENAI_LITE_MODEL=gpt-6-luna
@@ -234,13 +235,26 @@ and prompt caching still follow the provider's data policy, disclosed on `/secur
 
 Calls are capped at 4,096 output tokens for Luna or 16,384 for Sol unless the workload
 has a smaller explicit cap. At most two attempts on transient HTTP failures; explicit
-single-attempt callers stay single-attempt. No automatic retry of timeouts, billing,
+single-attempt callers stay single-attempt with GPT. No GPT retry of timeouts, billing,
 authentication, refusal or incomplete output. Backoffice costs count visible output,
 reasoning, cached input and cache writes once at the actual GPT model's rates.
 
+With `TEXT_FALLBACK_PROVIDER=gemini`, GPT transport/timeouts, exhausted transient HTTP
+errors and unavailable quota/billing/auth can trigger one Gemini call. Refusals, invalid
+requests, malformed/incomplete output and programming errors do not switch providers.
+The fallback uses the same prompt, schema, language instructions and vision inputs:
+Luna tasks use the configured Gemini lite slot; Sol tasks use their original deeper
+slot, or the strategy slot for explicit GPT posts. SDK and app retries are disabled
+for that fallback call. GPT receives 65% of the configured timeout when fallback is
+enabled; Gemini receives only the remaining request budget, and starts only with at
+least one second remaining. Output caps carry across. A timed-out GPT request may still
+be billed; returned usage is attributed to the actual provider/model. Set the fallback
+to `none` to disable it. Startup refuses an enabled fallback without a Gemini key.
+
 Media providers, allowances, existing saved plans/posts and connector grants are unchanged.
 No database migration is required. `/backend/health` reports `text_provider` and
-`text_ready` as configuration indicators, not proof of provider availability. Verify one
+`text_ready`, `text_fallback_provider` and `text_fallback_ready` as configuration indicators,
+not proof of provider availability. Verify one
 fictional structured call inside the running API plus the affected customer journey.
 
 Rollback: restore `TEXT_PROVIDER=gemini` **and** `POST_MODEL=gemini` in extra.env and

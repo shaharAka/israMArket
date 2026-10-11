@@ -19,10 +19,12 @@ MODELS = {"gpt-6-luna", "gpt-6.1-sol"}
 
 
 class OpenAITextError(RuntimeError):
-    def __init__(self, message: str, *, retryable: bool = False, provider_unavailable: bool = False):
+    def __init__(self, message: str, *, retryable: bool = False, provider_unavailable: bool = False,
+                 fallback_eligible: bool = False):
         super().__init__(message)
         self.retryable = retryable
         self.provider_unavailable = provider_unavailable
+        self.fallback_eligible = fallback_eligible
 
 
 def strict_schema(schema: dict) -> dict:
@@ -109,7 +111,7 @@ def generate_json(*, model: str, prompt: str, schema: dict, thinking_level: str,
                   max_output_tokens: int | None = None, usage_hooks: list | None = None) -> str:
     settings = get_settings()
     if not settings.openai_api_key:
-        raise OpenAITextError("חסר OPENAI_API_KEY.", provider_unavailable=True)
+        raise OpenAITextError("חסר OPENAI_API_KEY.", provider_unavailable=True, fallback_eligible=True)
     if model not in MODELS:
         raise ValueError("Unsupported GPT text model")
     effort = (thinking_level or "MEDIUM").lower()
@@ -135,20 +137,22 @@ def generate_json(*, model: str, prompt: str, schema: dict, thinking_level: str,
                                        headers={"Authorization": "Bearer " + settings.openai_api_key})
             except httpx.RequestError:
                 # A timed-out request may have completed and been billed. No retry.
-                raise OpenAITextError("השירות לא השיב בזמן. אפשר לנסות שוב.") from None
+                raise OpenAITextError("השירות לא השיב בזמן. אפשר לנסות שוב.", fallback_eligible=True) from None
             if response.is_error:
                 try:
                     code = (response.json().get("error") or {}).get("code", "")
                 except (ValueError, AttributeError):
                     code = ""
-                unavailable = response.status_code in {401, 403, 402} or code in {"insufficient_quota", "billing_hard_limit_reached"}
-                retryable = not unavailable and response.status_code in {429, 500, 502, 503, 504}
+                policy_error = code in {"content_policy_violation", "safety_violation", "policy_violation"}
+                unavailable = not policy_error and (response.status_code in {401, 403, 402} or code in {"insufficient_quota", "billing_hard_limit_reached"})
+                retryable = not policy_error and not unavailable and response.status_code in {429, 500, 502, 503, 504}
                 if retryable and attempt + 1 < max(1, min(attempts, 2)):
                     time.sleep(2)
                     continue
                 # Do not expose provider bodies, submitted content or credentials.
                 raise OpenAITextError("שירות ה-AI אינו זמין כרגע. אפשר לנסות שוב מאוחר יותר.",
-                                      retryable=retryable, provider_unavailable=unavailable)
+                                      retryable=retryable, provider_unavailable=unavailable,
+                                      fallback_eligible=unavailable or retryable)
             body = response.json()
             for hook in list(usage_hooks or []):
                 try:
