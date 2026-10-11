@@ -23,6 +23,8 @@ os.environ["DATABASE_URL"] = f"sqlite:///{tempfile.mkdtemp(prefix='isramarket-te
 os.environ["MEDIA_DIR"] = tempfile.mkdtemp(prefix="isramarket-tests-media-")
 
 os.environ["POST_MODEL"] = "gemini"
+os.environ["TEXT_PROVIDER"] = "gemini"
+os.environ["OPENAI_API_KEY"] = ""
 os.environ["META_MODEL_API_KEY"] = ""
 os.environ["SITE_SCREENSHOT"] = "false"
 # Month generation runs as a background job (services/generation_jobs.py). In tests it

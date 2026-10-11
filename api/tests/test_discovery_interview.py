@@ -20,6 +20,16 @@ def payload(step='sources', observations=None):
     return {'business_name':'בדיקה','business_type':'other','offerings':'פיג׳מות בעיצוב מקומי','business_model':'products','research_journey':{'version':1,'segment':'online_shop','phase':'after','step':step,'observations':observations or []}}
 
 class ResearchTests(unittest.TestCase):
+    def test_question_language_contract_and_localized_recovery(self):
+        draft=drafts.OnboardingDraft(**{**payload(),'links':{'website':'https://shop.example'}})
+        for locale,language in [('he','Hebrew'),('en','English'),('ar','Arabic'),('ru','Russian')]:
+            with self.subTest(locale=locale),patch.object(discovery.preview,'cached_scan',return_value={'raw':{'text':'פיג׳מות בעיצוב מקומי.'}}),patch.object(discovery.gemini,'generate_json',return_value=json.dumps({'questions':[{'question':'מי קונה את הפיג׳מות?','quote':''}]})) as model:
+                result=discovery.research_questions(draft,locale=locale)
+                self.assertEqual(json.loads(model.call_args.kwargs['prompt'])['question_language'],language)
+                self.assertIn(language,model.call_args.kwargs['schema']['properties']['questions']['items']['properties']['question']['description'])
+                self.assertEqual(result['assisted'],locale=='he')
+                self.assertTrue(discovery._question_in_language(result['questions'][0]['question'],locale))
+
     def test_ranges_and_unknowns(self):
         value=discovery.Observation(key='order_value',status='range',lower=300,upper=2000,unit='ILS',period='per_order')
         self.assertEqual((value.lower,value.upper,value.status),(300,2000,'range'))

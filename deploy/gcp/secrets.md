@@ -1,6 +1,6 @@
 # IsraMarket secrets (Secret Manager)
 
-Commands only. Nothing here has been run. Run them from your Mac with `gcloud`
+Reference commands for initial setup and rotation. Run them from your Mac with `gcloud`
 authenticated as the project owner. Always pass `--project isramarket`, because the
 default project on this Mac is still `signal2-479711`.
 
@@ -12,7 +12,8 @@ container gets them from there. The web and Caddy containers never see them.
 
 | Secret Manager name | Env var in the API | Required | What it is / how to get it |
 |---|---|---|---|
-| `gemini-api-key` | `GEMINI_API_KEY` | **yes** | The Gemini API key for strategy, extraction and images. Prefer a key created in project `isramarket` (APIs & Services > Credentials), restricted to the Generative Language API. |
+| `openai-api-key` | `OPENAI_API_KEY` | when GPT selected | The funded project API key for GPT text/vision calls. No key in extra.env, git or command arguments. |
+| `gemini-api-key` | `GEMINI_API_KEY` | **yes** | The Gemini API key for media and the text rollback route. Prefer a key created in project `isramarket` (APIs & Services > Credentials), restricted to the Generative Language API. |
 | `jwt-secret` | `JWT_SECRET` | **yes** | Signs sessions. Generate it (below). The API refuses to boot in production with the default. Rotating it logs everyone out. |
 | `token-encryption-key` | `TOKEN_ENCRYPTION_KEY` | **yes** | A Fernet key that encrypts the stored GA4/Meta OAuth tokens. Generate it (below). **Never rotate it casually:** tokens stored under the old key become undecryptable and every owner has to reconnect. Keep an offline copy. |
 | `google-client-id` | `GOOGLE_CLIENT_ID` | no | OAuth client (type "Web application") in project `isramarket`. Needed for GA4/Search Console connect and, later, Google sign-in. |
@@ -32,7 +33,8 @@ switching `PAYPAL_ENV` means replacing all four values. The full checklist is
 `docs/billing.md`.
 
 A missing optional secret renders as blank, and that integration then reports "not
-configured". A missing required secret stops the render, so the old environment stays
+configured". The OpenAI key is optional on Gemini deployments, but rendering refuses a
+blank OpenAI key when TEXT_PROVIDER=openai or POST_MODEL=openai is selected. A missing required secret stops the render, so the old environment stays
 in place and nothing restarts on bad config.
 
 ## 0. Variables used below
@@ -55,7 +57,7 @@ Replication is pinned to `me-west1`, so the data stays in Israel and each versio
 billed for one location.
 
 ```bash
-for name in gemini-api-key jwt-secret token-encryption-key \
+for name in gemini-api-key openai-api-key jwt-secret token-encryption-key \
             google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key \
             paypal-client-id paypal-client-secret paypal-webhook-id; do
   gcloud secrets create "$name" --project "$PROJECT" \
@@ -75,6 +77,7 @@ tr -d '\n' < /tmp/jwt-secret            | gcloud secrets versions add jwt-secret
 tr -d '\n' < /tmp/token-encryption-key  | gcloud secrets versions add token-encryption-key --project "$PROJECT" --data-file=-
 
 # Each line waits for you to paste the value and press Enter (it is not echoed):
+read -rs v && printf %s "$v" | gcloud secrets versions add openai-api-key       --project "$PROJECT" --data-file=- ; unset v
 read -rs v && printf %s "$v" | gcloud secrets versions add gemini-api-key       --project "$PROJECT" --data-file=- ; unset v
 read -rs v && printf %s "$v" | gcloud secrets versions add google-client-id     --project "$PROJECT" --data-file=- ; unset v
 read -rs v && printf %s "$v" | gcloud secrets versions add google-client-secret --project "$PROJECT" --data-file=- ; unset v
@@ -94,7 +97,7 @@ A secret with no version yet, such as Meta before the app exists, is treated as 
 ## 4. Let only the VM's service account read them
 
 ```bash
-for name in gemini-api-key jwt-secret token-encryption-key \
+for name in gemini-api-key openai-api-key jwt-secret token-encryption-key \
             google-client-id google-client-secret meta-app-id meta-app-secret meta-model-api-key \
             paypal-client-id paypal-client-secret paypal-webhook-id; do
   gcloud secrets add-iam-policy-binding "$name" --project "$PROJECT" \
@@ -120,9 +123,9 @@ Checked 2026-09-30 against the Cloud Billing Catalog (Secret Manager SKUs):
 - Storage: $0.06 per active secret version per location per month, and the first 6 are free.
 - Access: $0.03 per 10,000 operations, and the first 10,000 are free.
 
-Eleven secrets with one version each (the eight above plus the three PayPal ones) come to
-11 − 6 = 5 billable, about **$0.30/month**; without PayPal, 8 − 6 = 2, about $0.12.
-Access is 11 reads per boot or deploy, which stays well inside the free tier.
+Using those rates, all twelve secrets with one active version each come to
+12 − 6 = 6 billable, about **$0.36/month**; without PayPal, 9 − 6 = 3, about $0.18.
+Access is 12 reads per boot or deploy, which stays well inside the free tier.
 
 ## Where secrets are visible on the VM
 

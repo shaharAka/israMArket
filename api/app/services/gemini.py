@@ -64,7 +64,7 @@ def _is_retryable(exc: Exception) -> bool:
     return any(token in text for token in _RETRYABLE)
 
 
-_UNAVAILABLE = ("402", "credits are depleted", "RESOURCE_EXHAUSTED", "limit: 0", "חסר GEMINI_API_KEY")
+_UNAVAILABLE = ("402", "credits are depleted", "RESOURCE_EXHAUSTED", "limit: 0", "חסר GEMINI_API_KEY", "חסר OPENAI_API_KEY")
 
 
 def is_provider_unavailable(exc: BaseException | None) -> bool:
@@ -73,12 +73,25 @@ def is_provider_unavailable(exc: BaseException | None) -> bool:
     usually see the provider error wrapped in their own."""
     seen = 0
     while exc is not None and seen < 5:
+        if getattr(exc, "provider_unavailable", False):
+            return True
         text = str(exc)
         if any(token in text for token in _UNAVAILABLE):
             return True
         exc = exc.__cause__ or exc.__context__
         seen += 1
     return False
+
+
+def text_model(model: str = "") -> str:
+    """Resolve an existing workload slot, without changing media model selection."""
+    settings = get_settings()
+    if model.startswith("gpt-"):
+        return model
+    model = model or settings.gemini_strategy_model
+    if settings.text_provider == "openai":
+        return settings.openai_lite_model if model == settings.gemini_lite_model else settings.openai_strategy_model
+    return model
 
 
 # Callables `(model, usage)` told about every text call's token usage (prompt, output,
@@ -129,6 +142,14 @@ def generate_json(
     max_output_tokens: int | None = None,
 ) -> str:
     settings = get_settings()
+    resolved = text_model(model)
+    if resolved.startswith("gpt-"):
+        from app.services.openai_text import generate_json as openai_json
+        return openai_json(model=resolved, prompt=prompt, schema=schema,
+            thinking_level="LOW" if resolved == settings.openai_lite_model else thinking_level,
+            images=images, system=system or SYSTEM_HE, attempts=attempts,
+            timeout_seconds=timeout_seconds, max_output_tokens=max_output_tokens,
+            usage_hooks=USAGE_HOOKS)
     client = _client(timeout_seconds)
     config = types.GenerateContentConfig(
         system_instruction=system or SYSTEM_HE,

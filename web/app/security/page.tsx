@@ -164,18 +164,23 @@ export default function SecurityPage() {
           <Rows
             rows={[
               {
-                // GEMINI_API_KEY: strategy, extraction and images (README, DEPLOY.md).
+                // GEMINI_API_KEY: media, plus the explicitly configured rollback route.
                 title: "גוגל (Gemini)",
                 body: GEMINI_PAID_TIER
-                  ? "ה-AI שכותב את התוכניות, קורא את האתר ומעצב את התמונות. אנחנו משתמשים בשירות בתשלום, ולפי התנאים של גוגל לשירות הזה, גוגל לא משתמש במה שנשלח אליו כדי לשפר את המוצרים שלו. הוא שומר אותו לזמן מוגבל, רק כדי לאתר שימוש לרעה."
-                  : "ה-AI שכותב את התוכניות והפוסטים ומעצב את התמונות. נשלח אליו מידע על העסק שצריך לעבודה, לא סיסמאות ולא מפתחות חיבור.",
+                  ? "יצירה ועריכה של תמונות וסרטונים, וגם כתיבת תוכן אם נבחר במנוע הזה. אנחנו משתמשים בשירות בתשלום, ולפי התנאים של גוגל לשירות הזה, גוגל לא משתמש במה שנשלח אליו כדי לשפר את המוצרים שלו. הוא שומר אותו לזמן מוגבל כדי לאתר שימוש לרעה."
+                  : "יצירה ועריכה של תמונות וסרטונים, וגם כתיבת תוכן אם נבחר במנוע הזה. נשלח אליו רק המידע על העסק שנחוץ לעבודה, לא סיסמאות ולא מפתחות חיבור.",
+              },
+              {
+                // Responses store=false; default API abuse-monitoring retention still applies.
+                title: "OpenAI (GPT)",
+                body: "מחקר, תוכניות, פוסטים וניתוח התוצאות. נשלחים המידע על העסק, נתוני המדידה והתמונות שנחוצים לעבודה, בלי סיסמאות או מפתחות חיבור. אנחנו מבטלים שמירת תשובות ב־API. לפי המדיניות של OpenAI, מידע מה־API אינו משמש לאימון כברירת מחדל; יומני ניטור שימוש לרעה עשויים להישמר עד 30 ימים.",
               },
               {
                 // services/meta_model.py: off unless POST_MODEL=muse-spark; refuses any `-contributor`
                 // model. https://dev.meta.ai/models/muse-spark/ — standard tier "Not used to improve
                 // our products"; contributor tier "Used to improve our products".
-                title: "מטא (Muse Spark)",
-                body: "המודל שכותב את הפוסטים. אם הוא לא זמין, גוגל כותב במקומו. אנחנו משתמשים רק בגרסה שלפי מטא לא משמשת לשיפור המוצרים שלה. המערכת שלנו מסרבת לעבוד עם הגרסה האחרת.",
+                title: "מטא (Muse)",
+                body: "יצירת תמונות ועריכתן. אפשר להשתמש בו גם לכתיבת פוסטים אם נבחר במנוע הזה. אנחנו משתמשים רק בגרסה שלפי מטא לא משמשת לשיפור המוצרים שלה. המערכת שלנו מסרבת לעבוד עם הגרסה האחרת.",
               },
               {
                 // routers/billing.py: the browser's PayPal buttons talk to PayPal directly; the API

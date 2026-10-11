@@ -1,4 +1,4 @@
-"""Which model writes the posts: Gemini (default) or Meta's Muse Spark (Stream H experiment).
+"""Post writer: the configured text gateway, explicit GPT, or Meta's Muse experiment.
 
 Both entry points return a raw JSON *string*, exactly like `gemini.strategy_json`, so the
 post-writing call in strategy.py can be switched with a one-line change:
@@ -6,7 +6,7 @@ post-writing call in strategy.py can be switched with a one-line change:
     posts = loads(post_json(prompt, MONTHLY_POSTS_SCHEMA), {})
 
 `post_json` follows the `POST_MODEL` setting. `write_posts_with` names the model
-explicitly — the comparison harness uses it to run the same prompt through both.
+explicitly. The legacy `gemini` alias follows TEXT_PROVIDER; `openai` pins Sol.
 """
 
 from __future__ import annotations
@@ -23,8 +23,9 @@ from app.services.jsonutil import dumps
 log = logging.getLogger(__name__)
 
 GEMINI = "gemini"
+OPENAI = "openai"
 MUSE_SPARK = "muse-spark"
-MODEL_NAMES = (GEMINI, MUSE_SPARK)
+MODEL_NAMES = (GEMINI, OPENAI, MUSE_SPARK)
 
 
 def _meta_model_for(model_name: str) -> str | None:
@@ -48,11 +49,14 @@ def write_posts_with(
 
     No fallback here: the caller asked for a specific model and should see its failure
     (billing, rate limit, bad JSON, `timeout` seconds passing) rather than silently get
-    Gemini's output. `timeout` applies to the Meta call; None keeps its own limits.
+    another provider's output. `timeout` applies to the Meta call; None keeps its own limits.
     """
     name = (model_name or GEMINI).strip().lower()
     if name == GEMINI:
         return gemini.strategy_json(prompt, schema, **({"system": system} if system else {}))
+    if name == OPENAI:
+        return gemini.generate_json(model=get_settings().openai_strategy_model,
+            prompt=prompt, schema=schema, thinking_level="MEDIUM", system=system)
     meta_id = _meta_model_for(name)
     if meta_id is None:
         raise ValueError(f"Unknown post model {model_name!r}. Use one of: {', '.join(MODEL_NAMES)}.")
@@ -83,13 +87,13 @@ def post_json(prompt: str, schema: dict[str, Any], *, system: str | None = None)
 
     Follows POST_MODEL. When that is a Meta model and the call fails (billing not
     configured, rate limit, unusable reply) or does not answer within
-    POST_MODEL_TIMEOUT_SECONDS, it falls back to Gemini unless POST_MODEL_FALLBACK is
+    POST_MODEL_TIMEOUT_SECONDS, it falls back to TEXT_PROVIDER unless POST_MODEL_FALLBACK is
     false, so the experiment can never cost a user their posts or stall their month.
     The contributor-model guard is never swallowed: that is a configuration error.
     """
     settings = get_settings()
     name = settings.post_model or GEMINI
-    if name.strip().lower() == GEMINI:
+    if name.strip().lower() in {GEMINI, OPENAI}:
         return write_posts_with(name, prompt, schema, **({"system": system} if system else {}))
     budget = float(getattr(settings, "post_model_timeout_seconds", 0) or 0)
     try:
@@ -100,5 +104,5 @@ def post_json(prompt: str, schema: dict[str, Any], *, system: str | None = None)
     except meta_model.MetaModelError as exc:
         if not settings.post_model_fallback:
             raise
-        log.warning("POST_MODEL=%s failed (%s: %s); falling back to Gemini.", name, type(exc).__name__, exc.code)
+        log.warning("POST_MODEL=%s failed (%s: %s); falling back to configured text provider.", name, type(exc).__name__, exc.code)
         return gemini.strategy_json(prompt, schema, **({"system": system} if system else {}))

@@ -43,6 +43,8 @@ from app.services import model_usage
 Base.metadata.create_all(bind=engine)
 migrate_db()
 settings = get_settings()
+if (settings.text_provider == "openai" or settings.post_model == "openai") and not settings.openai_api_key:
+    raise RuntimeError("חסר OPENAI_API_KEY למנוע הטקסט שנבחר.")
 
 if settings.jwt_secret == DEFAULT_JWT_SECRET and settings.environment != "development":
     raise RuntimeError(
@@ -275,6 +277,8 @@ def health() -> dict:
     return {
         "ok": True,
         "gemini": bool(settings.gemini_api_key),
+        "text_provider": settings.text_provider,
+        "text_ready": bool(settings.openai_api_key if settings.text_provider == "openai" else settings.gemini_api_key),
         "ga4": bool(settings.google_client_id and settings.google_client_secret),
         "meta": bool(settings.meta_app_id and settings.meta_app_secret),
     }
