@@ -1,0 +1,612 @@
+{
+  "date": "2026-10-11",
+  "method": "Qualitative review of fictional cases using the production diagnosis/recommendation code, Gemini 3.5 Flash Lite, MEDIUM thinking. No real customer data or provider approval validation.",
+  "calls_per_run_max": 8,
+  "paid_retries": 0,
+  "total_calls_this_correction": 16,
+  "total_calls_including_before_test": 24,
+  "limits": [
+    "One run per case per revision; no accuracy-rate estimate.",
+    "Offline regression tests verify evidence/citations, not semantic advice.",
+    "Live multi-source customer pilot and owner comprehension review remain acceptance work on issue 46."
+  ],
+  "runs": [
+    {
+      "phase": "before",
+      "revision": "27c94261c582ffc58810e82d8fe2b96f28b24cd2",
+      "calls_made": 8,
+      "usage": {
+        "input_tokens": 25456,
+        "output_tokens": 3596,
+        "thinking_tokens": 9369
+      },
+      "cases": [
+        {
+          "case": "shop_checkout",
+          "diagnosis": {
+            "headline": "בנתוני האתר נרשמו 1,000 כניסות ו-6 רכישות, אך נתוני אינסטגרם ופייסבוק אינם זמינים כרגע.",
+            "top_content": [
+              {
+                "label": "צפיות במוצרים",
+                "why": "600 אירועי צפייה מתוך 1,000 כניסות מעידים על התעניינות ראשונית בבגדי הפשתן."
+              },
+              {
+                "label": "הוספות לסל",
+                "why": "120 אירועי הוספה לסל מראים כוונה מתקדמת יותר לרכישה מצד המבקרים."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "התחלת תשלום",
+                "why": "60 אירועי התחלת תשלום הסתיימו ב-6 רכישות בלבד, מה שמצביע על נטישה בשלב הסגירה."
+              }
+            ],
+            "funnel_issues": [
+              "נתוני אינסטגרם ופייסבוק חסרים, ולכן אין אפשרות לחבר בין פרסום לבין פעולות באתר.",
+              "פער משמעותי בין 60 התחלות תשלום ל-6 רכישות בלבד בנתוני האתר."
+            ],
+            "metric_highlights": [
+              "1,000 כניסות ו-600 צפיות במוצרים בנתוני האתר בתקופה שנבדקה.",
+              "6 אירועי רכישה בלבד מתוך 1,000 כניסות."
+            ]
+          },
+          "proposal": {
+            "week_summary": "בנתוני האתר נרשמו 1,000 כניסות ו-6 רכישות, ויש לבחון את הפער בשלב התשלום ולחבר את מקורות המידע החסרים.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "לחדד את ההתאמה ללקוחות בטיוטה",
+                "action": "להשתמש בטיוטה 'למי ההצעה מתאימה' כדי להדגיש את ייחודיות בגדי הפשתן ומה לבקש מהלקוח לעשות בשלב הרכישה.",
+                "evidence": "בנתוני האתר נרשמו 60 אירועי התחלת תשלום לעומת 6 רכישות בלבד בתקופה שנבדקה.",
+                "evidence_keys": [
+                  "ga4:begin_checkout",
+                  "ga4:purchase"
+                ],
+                "target": "טיוטת פוסט draft-1",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "הגולשים עשויים להזדקק למידע נוסף ברור יותר לפני השלמת התשלום בחנות.",
+                "success_check": "לבדוק בנתוני האתר האם חל גידול ברכישות מתוך התחלות התשלום בשבוע הבא."
+              },
+              {
+                "priority": "low",
+                "title": "בדיקת נתוני אינסטגרם ופייסבוק",
+                "action": "לוודא את חיבור נתוני אינסטגרם ופייסבוק כדי לאפשר מבט רחב יותר על תנועת הלקוחות.",
+                "evidence": "נתוני אינסטגרם ופייסבוק אינם זמינים כרגע במערכת, ולכן חסרים נתונים על מקורות ההגעה.",
+                "evidence_keys": [],
+                "target": "הגדרות מעקב",
+                "action_kind": "measurement",
+                "post_uid": "",
+                "hypothesis": "",
+                "success_check": "לוודא אם הנתונים מופיעים כזמינים בעדכון הבא."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "FAIL: social draft action instead of checkout investigation"
+        },
+        {
+          "case": "designer_inquiry_fit",
+          "diagnosis": {
+            "headline": "נחשפו 2,000 אנשים באינסטגרם ונרשמו 80 כניסות לאתר, אך מתוך 20 פניות רק 2 נמצאו מתאימות.",
+            "top_content": [
+              {
+                "label": "פוסט עיצוב ושיפוץ דירות קטנות בחיפה",
+                "why": "הניב חשיפה ל-2,000 אנשים ו-90 שמירות בנתוני אינסטגרם ופייסבוק, המעידים על עניין רב בתוכן המוצג."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "פעולות חשובות באתר",
+                "why": "הוצגו 18 פעולות פנייה מתוך 80 כניסות בנתוני האתר, אך בפועל דווחו רק 2 פניות מתאימות לעבודה."
+              }
+            ],
+            "funnel_issues": [
+              "פער משמעותי בין כמות הפניות הכללית לבין פניות מתאימות לפרויקט.",
+              "חסרים נתוני פרסום ממומן המקשרים בין הקמפיין לאיכות הפניות."
+            ],
+            "metric_highlights": [
+              "נתוני האתר מציגים 80 כניסות ו-18 פעולות פנייה.",
+              "נתוני אינסטגרם ופייסבוק מציגים 2,000 חשבונות שנחשפו ו-90 שמירות."
+            ]
+          },
+          "proposal": {
+            "week_summary": "נרשמו 2,000 חשיפות ו-80 כניסות, אך מתוך 20 פניות רק 2 נמצאו מתאימות.",
+            "suggestions": [
+              {
+                "priority": "high",
+                "title": "חדדו את קהל היעד בטיוטת הפוסט",
+                "action": "עדכנו את טיוטת הפוסט כך שתבהיר במפורש שמדובר בפרויקט מלא בדירה קטנה בחיפה, כדי לצמצם פניות שאינן מתאימות.",
+                "evidence": "מתוך 20 פניות שהתקבלו בדיווח בעלי העסק, נמצאו רק 2 פניות מתאימות לעבודה.",
+                "evidence_keys": [
+                  "service_owner:inquiries",
+                  "service_owner:suitable"
+                ],
+                "target": "טיוטת פוסט למי ההצעה מתאימה",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "ניסוח כללי מדי ברשתות מושך פניות רבות שאינן עונות על תנאי הסף של השירות.",
+                "success_check": "נבדוק בדיווח הבא של בעלי העסק האם גדל מספר הפניות המתאימות מתוך סך הפניות."
+              },
+              {
+                "priority": "medium",
+                "title": "בחינת ההסבר בעמוד האתר",
+                "action": "הוסיפו בעמוד פירוט ברור לגבי מה מבקשים מהלקוח לעשות ומי הקהל המדויק של השירות.",
+                "evidence": "נתוני האתר מציגים 80 כניסות ו-18 פעולות פנייה, אך קיים פער מול הפניות המתאימות בפועל.",
+                "evidence_keys": [
+                  "ga4:sessions",
+                  "ga4:generate_lead"
+                ],
+                "target": "עמוד האתר",
+                "action_kind": "website",
+                "post_uid": "",
+                "hypothesis": "גולשים רבים מבצעים פעילות באתר טרם הבנה מלאה האם השירות מתאים לצרכיהם.",
+                "success_check": "נבדוק האם מספר הפניות המתאימות בדיווח הבא עולה בהשוואה לחודש הנוכחי."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PARTIAL: correct fit action, but cross-source enquiry inference and excessive urgency"
+        },
+        {
+          "case": "ads_cheap_clicks",
+          "diagnosis": {
+            "headline": "המודעות הביאו 1000 לחיצות ב-1000 שקל, אך נתוני האתר חסרים ואי אפשר לאמת כמה רכישות הושלמו בפועל.",
+            "top_content": [
+              {
+                "label": "נתוני אינסטגרם ופייסבוק",
+                "why": "התקציב של 1000 שקל ייצר בדיוק 1000 לחיצות על הקישור, כלומר עלות של שקל אחד ללחיצה."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "נתוני האתר",
+                "why": "נתוני האתר חסרים לתקופה הנבדקת, ולכן אי אפשר לדעת איזה פעולות חשובות בוצעו בחנות עצמה."
+              }
+            ],
+            "funnel_issues": [
+              "הקשר בין הלחיצות בחנות לבין רכישות אמיתיות אינו מאומת עקב חוסר בנתוני האתר."
+            ],
+            "metric_highlights": [
+              "הושקעו 1000 שקל והתקבלו 1000 לחיצות על הקישור במודעות.",
+              "מערכת הפרסום ציינה 2 רכישות משויכות, אך נתון זה דורש הצלבה עם המתרחש באתר."
+            ]
+          },
+          "proposal": {
+            "week_summary": "המודעות הביאו 1000 לחיצות, אך נתוני האתר חסרים ולכן יש לבדוק את הגדרת המדידה לפני הסקת מסקנות על רכישות.",
+            "suggestions": [
+              {
+                "priority": "high",
+                "title": "בדיקת המדידה באתר לפני שינויים בתקציב",
+                "action": "וודאו שפיקסל המדידה מותקן נכון באתר ומתעד רכישות בצורה תקינה כדי שתוכלו להשוות את נתוני האתר לדיווח מטא.",
+                "evidence": "נתוני האתר חסרים לתקופה הנבדקת, כך שאי אפשר לאמת כמה רכישות בוצעו בפועל מתוך 1000 הלחיצות.",
+                "evidence_keys": [],
+                "target": "נתוני האתר",
+                "action_kind": "measurement",
+                "post_uid": "",
+                "hypothesis": "ייתכן שהמדידה אינה מדווחת על כל הרכישות שהושלמו בפועל לאחר הלחיצה על המודעה.",
+                "success_check": "בדקו בנתוני האתר לאחר שבוע האם מופיעים נתוני רכישות תקינים ותואמים."
+              },
+              {
+                "priority": "medium",
+                "title": "הגדרת קהל היעד בטיוטת הפוסט",
+                "action": "עבדו על טיוטת הפוסט כדי להבהיר בדיוק למי בגדי הפשתן מתאימים, ובדקו האם הפניות משתפרות.",
+                "evidence": "התקבלו 1000 לחיצות מהמודעות אך נתוני האתר חסרים, ולכן כדאי לחזק את התאמת הקהל בתוכן.",
+                "evidence_keys": [
+                  "meta_ads:link_clicks"
+                ],
+                "target": "פוסט",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "מיקוד המסר בפוסט ימשוך לקוחות מדוייקים יותר שמתאימים להצעה בחנות.",
+                "success_check": "בדקו בדיווח הבא האם חל שיפור בפניות או ברכישות המתאימות לאחר פרסום התוכן המעודכן."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "FAIL: missing Google dominates supplied advertising outcome/cost evidence"
+        },
+        {
+          "case": "tracking_incomplete",
+          "diagnosis": {
+            "headline": "נרשמו 400 כניסות בנתוני האתר, אך נתוני אינסטגרם ופייסבוק חסרים, מה שמונע לדעת אילו פוסטים הביאו גולשים.",
+            "top_content": [
+              {
+                "label": "כניסות לאתר",
+                "why": "נמדדו 400 כניסות בתקופה שנבדקה, המעידות על נפח התנועה הכללי, אך חסר פירוט על מקור הגעת הגולשים."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "פעולות חשובות",
+                "why": "אין כרגע נתונים על פעולות נוספות באתר, ויש לוודא שחיבור הנתונים פועל תקין כדי לעקוב אחרי רכישות."
+              }
+            ],
+            "funnel_issues": [
+              "נתוני אינסטגרם ופייסבוק חסרים לחלוטין, ולכן אי אפשר לקשר בין התוכן ברשתות החברתיות לבין הכניסות בנתוני האתר."
+            ],
+            "metric_highlights": [
+              "בנתוני האתר מתועדות 400 כניסות בתקופה שבין 13 בספטמבר ל-10 באוקטובר 2026."
+            ]
+          },
+          "proposal": {
+            "week_summary": "נרשמו 400 כניסות בנתוני האתר, אך נתוני אינסטגרם ופייסבוק חסרים, ולכן יש לוודא תקינות מדידה לפני שינוי.",
+            "suggestions": [
+              {
+                "priority": "high",
+                "title": "בדיקת הגדרת מדידת הרכישות באתר",
+                "action": "יש לוודא מול איש הדיגיטל או בהגדרות נתוני האתר שאירועי הרכישה מוגדרים ומדווחים כראוי, היות ואין כרגע נתונים על פעולות חשובות מלבד כניסות.",
+                "evidence": "בנתוני האתר נצפו 400 כניסות אך נתוני האירועים אינם זמינים, ונתוני אינסטגרם ופייסבוק חסרים לחלוטין.",
+                "evidence_keys": [
+                  "ga4:sessions"
+                ],
+                "target": "עמוד",
+                "action_kind": "measurement",
+                "post_uid": "",
+                "hypothesis": "ייתכן שהמדידה באתר אינה אוספת פעולות חשובות נוספות מעבר לכניסות בגלל הגדרה חסרה.",
+                "success_check": "נבדוק בנתוני האתר לאחר שבוע האם מופיעים נתונים נוספים על פעולות חשובות."
+              },
+              {
+                "priority": "medium",
+                "title": "הכנת טיוטת תוכן לקהל היעד",
+                "action": "השתמשו בטיוטה הקיימת כדי להציג את בגדי הפשתן לקהל המתאים, כדי לוודא שיש חומר מוכן לפרסום ברשתות.",
+                "evidence": "חסרים נתוני אינסטגרם ופייסבוק, ולכן אין אפשרות לדעת אילו פוסטים הביאו גולשים בעבר.",
+                "evidence_keys": [],
+                "target": "פוסט",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "פרסום ממוקד לקהל המתאים יעזור להבהיר מי הלקוחות שעבורם מיועדים בגדי הפשתן.",
+                "success_check": "נבדוק לאחר פרסום הטיוטה האם יש שינוי במספר הכניסות בנתוני האתר בתום שבוע."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PARTIAL: measurement action incorrectly assumes installation gap; unrelated additional action"
+        }
+      ]
+    },
+    {
+      "phase": "first_correction",
+      "revision": "codex/decision-quality-working-tree",
+      "calls_made": 8,
+      "usage": {
+        "input_tokens": 28786,
+        "output_tokens": 2333,
+        "thinking_tokens": 5686
+      },
+      "cases": [
+        {
+          "case": "shop_checkout",
+          "diagnosis": {
+            "headline": "ראינו 60 התחלות תשלום ו-6 רכישות באתר, כדאי לבדוק את תהליך התשלום בחנות.",
+            "top_content": [
+              {
+                "label": "צפייה במוצרים והוספה לסל",
+                "why": "נרשמו 600 צפיות במוצרים ו-120 הוספות לסל, מה שמלמד על עניין ראשוני בבגדי הפשתן."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "מעבר מתשלום לרכישה",
+                "why": "מתוך 60 אירועי התחלת תשלום הסתיימו 6 רכישות, וכדאי לבדוק את שלבי הסגירה ותנאי התשלום."
+              }
+            ],
+            "funnel_issues": [
+              "הפער בין התחלות תשלום לרכישות בפועל מחייב בדיקה של תהליך התשלום בעמוד."
+            ],
+            "metric_highlights": [
+              "בתקופה הנבדקת היו 1,000 כניסות לאתר ודווחו 6 רכישות בסך הכל."
+            ]
+          },
+          "proposal": {
+            "week_summary": "ראינו 60 התחלות תשלום ו-6 רכישות באתר, כדאי לבדוק את תהליך התשלום בחנות.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "בדיקת תהליך התשלום באתר",
+                "action": "בצעו רכישה ניסיונית בחנות כדי לוודא ששלבי התשלום, אפשרויות המשלוח ותנאי הסגירה פועלים ללא תקלות עבור הלקוחות.",
+                "evidence": "בנתוני האתר נרשמו 60 אירועי התחלת תשלום מול 6 רכישות בלבד.",
+                "evidence_keys": [
+                  "begin_checkout",
+                  "purchase"
+                ],
+                "target": "עמוד התשלום בחנות",
+                "action_kind": "website",
+                "post_uid": "",
+                "hypothesis": "ייתכן שיש תקלה טכנית או חוסר בהירות בשלבי הסיום והתשלום באתר הגורמים לנטישת עגלות.",
+                "success_check": "נבדוק שוב את נתוני הרכישות והתחלות התשלום באתר בתקופה מקבילה לאחר תיקון אפשרי."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PARTIAL: correct checkout action, but diagnosis implies a cohort and citation keys lack source"
+        },
+        {
+          "case": "designer_inquiry_fit",
+          "diagnosis": {
+            "headline": "התקבלו 20 פניות אך רק 2 מהן נמצאו מתאימות, כדאי לחדד את תיאור ההצעה בעמוד.",
+            "top_content": [
+              {
+                "label": "עיצוב ושיפוץ דירות קטנות בחיפה",
+                "why": "הפוסט קיבל מעורבות טובה עם 90 שמירות ו-2,000 אנשים שנחשפו אליו."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "פניות כלליות מהאתר",
+                "why": "נרשמו 18 אירועי פנייה באתר אך רק 2 פניות נמצאו מתאימות בפועל."
+              }
+            ],
+            "funnel_issues": [
+              "יש פער בין כמות הפניות הכללית לבין הפניות המתאימות לפרויקט מלא."
+            ],
+            "metric_highlights": [
+              "התקבלו 20 פניות בסך הכל ומהן 2 מתאימות לפי הגדרת העסק."
+            ]
+          },
+          "proposal": {
+            "week_summary": "התקבלו 20 פניות אך רק 2 נמצאו מתאימות לפרויקט מלא, כדאי לחדד את קהל היעד.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "חדדו את תיאור ההצעה בפוסט הבא",
+                "action": "פרסמו את טיוטת הפוסט שמבהירה את היקף השירות ומי מתאים לפרויקט, כדי לצמצם פניות שאינן רלוונטיות.",
+                "evidence": "מתוך 20 פניות שהתקבלו החודש, רק 2 נמצאו מתאימות להגדרה שלכם.",
+                "evidence_keys": [
+                  "inquiries",
+                  "suitable"
+                ],
+                "target": "פוסט draft-1",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "ייתכן שהצגה מדויקת יותר של היקף השירות תפחית פניות כלליות ותעלה את מספר הפניות המתאימות.",
+                "success_check": "נבדוק בדיווח הבא כמה פניות מתאימות התקבלו מתוך סך הפניות."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PARTIAL: correct fit action, but diagnosis still pairs site events with owner-qualified enquiries; invalid citation keys"
+        },
+        {
+          "case": "ads_cheap_clicks",
+          "diagnosis": {
+            "headline": "ההוצאה על המודעות גבוהה בהרבה מערך הרכישות, ולכן נבדוק שינוי בהצעה בעמוד הנחיתה.",
+            "top_content": [
+              {
+                "label": "לחיצות על הקישור במודעות",
+                "why": "התקבלו 1000 לחיצות בעלות של שקל אחד לכל לחיצה, מה שמראה עניין ראשוני בבגדי הפשתן."
+              }
+            ],
+            "bottom_content": [
+              {
+                "label": "רכישות דרך המודעות",
+                "why": "הושקעו 1000 שקלים והתקבלו שתי רכישות בלבד בערך כולל של 240 שקלים, כך שהעלות לרכישה גבוהה מההכנסה."
+              }
+            ],
+            "funnel_issues": [
+              "הפער בין תקציב הפרסום לערך הרכישות מחייב לבחון את ההצעה והמחיר בעמוד שאליו המודעה מובילה."
+            ],
+            "metric_highlights": [
+              "הוצאה של 1000 שקלים לעומת שתי רכישות בסך 240 שקלים."
+            ]
+          },
+          "proposal": {
+            "week_summary": "ההוצאה על המודעות גבוהה ממכירות הפשתן, לכן נבדוק את ההצעה והמחיר בעמוד.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "בדיקת ההצעה והמחיר בעמוד הנחיתה",
+                "action": "יש לבחון את עמוד החנות שאליו המודעות מובילות, לוודא שהמחיר ותנאי הרכישה של בגדי הפשתן ברורים ומשתלמים למבקרים.",
+                "evidence": "הושקעו 1,000 שקלים במודעות והתקבלו שתי רכישות בערך כולל של 240 שקלים, כך שהעלות לרכישה גבוהה מאוד מהערך.",
+                "evidence_keys": [
+                  "meta_ads:spend",
+                  "meta_ads:website_purchases",
+                  "meta_ads:website_purchase_value"
+                ],
+                "target": "עמוד החנות",
+                "action_kind": "website",
+                "post_uid": "",
+                "hypothesis": "ייתכן שהמחיר או תנאי הרכישה בעמוד אינם משכנעים מספיק את מי שלוחץ על המודעה להשלים רכישה.",
+                "success_check": "נבדוק את נתוני המודעות והרכישות בדיווח הבא באותה תקופה כדי לראות אם העלות לרכישה ירדה."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PARTIAL: correct cost/landing-page action but attributed value described as income"
+        },
+        {
+          "case": "tracking_incomplete",
+          "diagnosis": {
+            "headline": "נתוני אירועי האתר לא התקבלו במלואם, ולכן נדרש לנסות לקרוא שוב את נתוני הפעולות בחנות.",
+            "top_content": [
+              {
+                "label": "כניסות לאתר",
+                "why": "נרשמו 400 כניסות בתקופה האחרונה, מה שמראה שיש עניין התחלתי במוצרים."
+              }
+            ],
+            "bottom_content": [],
+            "funnel_issues": [
+              "פירוט אירועי האתר אינו זמין כרגע, ולכן אי אפשר לראות את נתוני הרכישות."
+            ],
+            "metric_highlights": [
+              "זוהו 400 כניסות לאתר, אך נתוני הפעולות טרם נקראו בהצלחה."
+            ]
+          },
+          "proposal": {
+            "week_summary": "נרשמו 400 כניסות לאתר, אך פירוט אירועי האתר טרם התקבל במלואו.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "ניסיון חוזר לקריאת נתוני הפעולות",
+                "action": "יש לנסות לקרוא שוב את פירוט הפעולות והאירועים באתר כדי לבדוק האם הנתונים החסרים יתקבלו בהצלחה.",
+                "evidence": "נתוני כניסות האתר זמינים (400 כניסות), אך סטטוס קריאת אירועי האתר אינו זמין כרגע.",
+                "evidence_keys": [
+                  "ga4:sessions"
+                ],
+                "target": "נתוני האתר",
+                "action_kind": "measurement",
+                "post_uid": "",
+                "hypothesis": "ייתכן שהקריאה נכשלה זמנית וניסיון נוסף יאפשר לקבל את פירוט הפעולות המלא.",
+                "success_check": "קבלת פירוט הפעולות המלא בניסיון הקריאה הבא בדוח נתוני האתר."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PASS: retry the unavailable report; no zero-purchase or installation claim"
+        }
+      ]
+    },
+    {
+      "phase": "final_correction",
+      "revision": "0bce453e5bcbeb172de9efac45321429cd0e4dcd",
+      "calls_made": 8,
+      "usage": {
+        "input_tokens": 30882,
+        "output_tokens": 1695,
+        "thinking_tokens": 7900
+      },
+      "cases": [
+        {
+          "case": "shop_checkout",
+          "diagnosis": {
+            "headline": "דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה שדווחו באתר.",
+            "top_content": [],
+            "bottom_content": [],
+            "funnel_issues": [],
+            "metric_highlights": [
+              "1000 כניסות לאתר",
+              "60 אירועי התחלת תשלום",
+              "6 אירועי רכישה שדווחו באתר"
+            ]
+          },
+          "proposal": {
+            "week_summary": "דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה באתר.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "בדיקת תהליך התשלום בחנות המקוונת",
+                "action": "בדקו את עמוד התשלום והתנאים באתר כדי לוודא שאין מכשולים שמקשים על השלמת ההזמנה.",
+                "evidence": "באתר דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה בתקופה המדווחת.",
+                "evidence_keys": [
+                  "ga4:begin_checkout",
+                  "ga4:purchase"
+                ],
+                "target": "עמוד התשלום באתר",
+                "action_kind": "website",
+                "post_uid": "",
+                "hypothesis": "ייתכן שפרטים לא ברורים בעמוד התשלום או תנאי משלוח מעכבים את השלמת הרכישה.",
+                "success_check": "נבדוק אם יש עלייה באירועי הרכישה המדווחים באתר בתקופה הבאה לאחר תיקון העמוד."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PASS: checkout check; separate event counts, no abandonment rate; exact evidence citations"
+        },
+        {
+          "case": "designer_inquiry_fit",
+          "diagnosis": {
+            "headline": "בדיקת פניות מתאימות: מתוך 20 פניות שהתקבלו, דווחו 2 פניות מתאימות לפרויקט מלא.",
+            "top_content": [],
+            "bottom_content": [],
+            "funnel_issues": [],
+            "metric_highlights": [
+              "דיווח בעלי העסק עומד על 20 פניות ו-2 פניות מתאימות החודש."
+            ]
+          },
+          "proposal": {
+            "week_summary": "מתוך 20 פניות שהתקבלו, דווחו רק 2 פניות מתאימות. נמקד את המסר בקהל היעד.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "מיקוד פנייה ללקוחות המתאימים לפרויקט",
+                "action": "הכינו את טיוטת הפוסט 'למי ההצעה מתאימה' כדי להציג בבירור את סוג הפרויקטים והדרישות, וכך לסנן מראש פניות שאינן מתאימות.",
+                "evidence": "לפי דיווח בעלי העסק, התקבלו בחודש זה 20 פניות אך רק 2 מהן נמצאו מתאימות.",
+                "evidence_keys": [
+                  "service_owner:inquiries",
+                  "service_owner:suitable"
+                ],
+                "target": "פוסט טיוטה למי ההצעה מתאימה",
+                "action_kind": "post",
+                "post_uid": "draft-1",
+                "hypothesis": "ייתכן שהבלבול בנוגע להיקף השירות מביא פניות רבות שאינן מתאימות לדרישות הפרויקט.",
+                "success_check": "נבדוק בדיווח הבא האם גדל מספר הפניות המתאימות מתוך סך הפניות שיתקבלו."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PASS: prepare fit-focused draft for review using owner-reported inquiries/suitable inquiries; no cross-source inference or close-rate claim"
+        },
+        {
+          "case": "ads_cheap_clicks",
+          "diagnosis": {
+            "headline": "הוצאה של 1000 ש״ח הניבה 2 רכישות שמטא שייכה למודעות בשווי 240 ש״ח.",
+            "top_content": [],
+            "bottom_content": [],
+            "funnel_issues": [],
+            "metric_highlights": [
+              "הוצאה של 1000 ש״ח ו-2 רכישות שמטא שייכה למודעות בסך 240 ש״ח."
+            ]
+          },
+          "proposal": {
+            "week_summary": "הוצאה של 1000 ש״ח הניבה 2 רכישות שמטא שייכה למודעות בשווי 240 ש״ח, ולכן העלות לרכישה גבוהה מהערך שלה.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "בדיקת ההצעה ועמוד הנחיתה של החנות",
+                "action": "התאמה ובדיקה של עמוד היעד שאליו המודעה מובילה, לרבות תצוגת המוצרים, המחירים ותנאי הרכישה, כדי לבחון אם ההצעה ברורה ומושכת מספיק.",
+                "evidence": "לפי דיווח מטא, הוצאה של 1000 ש״ח הביאה 2 רכישות בלבד בשווי 240 ש״ח, כך שערך הרכישות נמוך משמעותית מההוצאה.",
+                "evidence_keys": [
+                  "meta_ads:spend",
+                  "meta_ads:website_purchases",
+                  "meta_ads:website_purchase_value"
+                ],
+                "target": "עמוד החנות אליו מגיעות המודעות",
+                "action_kind": "website",
+                "post_uid": "",
+                "hypothesis": "ייתכן שההצעה או המחיר בעמוד אינם תואמים את ציפיות הקהל שמגיע מהמודעות, ולכן מעטים משלימים רכישה.",
+                "success_check": "מעקב אחר נתוני מטא בתקופה העוקבת לבדיקה האם עלות הרכישה ירדה ומספר הרכישות גדל."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PASS: inspect landing-page offer using spend and Meta-attributed purchase/value; no Google prerequisite, profit claim or automatic ad change"
+        },
+        {
+          "case": "tracking_incomplete",
+          "diagnosis": {
+            "headline": "נקלטו 400 כניסות לאתר, אך פירוט הפעולות לא התקבל ויש לנסות לקרוא אותו שוב.",
+            "top_content": [],
+            "bottom_content": [],
+            "funnel_issues": [
+              "פירוט אירועי האתר לא התקבל בקריאה הנוכחית."
+            ],
+            "metric_highlights": [
+              "דווחו 400 כניסות לאתר."
+            ]
+          },
+          "proposal": {
+            "week_summary": "נקלטו 400 כניסות לאתר, אך פירוט הפעולות לא התקבל ויש לנסות לקרוא אותו שוב.",
+            "suggestions": [
+              {
+                "priority": "medium",
+                "title": "ניסיון חוזר לקריאת פירוט הפעולות באתר",
+                "action": "נסו לקרוא שוב את פירוט הפעולות באתר כדי לוודא שנתוני הפעילות נקלטים כראוי.",
+                "evidence": "דווחו 400 כניסות לאתר, אך פירוט הפעולות לא התקבל בקריאה הנוכחית.",
+                "evidence_keys": [
+                  "ga4:sessions"
+                ],
+                "target": "נתוני האתר",
+                "action_kind": "measurement",
+                "post_uid": "",
+                "hypothesis": "ייתכן שהקריאה נכשלה עקב תקלה זמנית במערכת ולא בגלל בעיה במעקב.",
+                "success_check": "קבלת פירוט הפעולות המלא בניסיון הקריאה הבא."
+              }
+            ]
+          },
+          "execution": "completed",
+          "assessment": "PASS: retry events read and verify its receipt; no installation or zero-purchase inference"
+        }
+      ]
+    }
+  ]
+}

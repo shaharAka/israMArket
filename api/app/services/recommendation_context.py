@@ -116,9 +116,27 @@ def prepare(business, plan: dict, snapshot: dict) -> tuple[dict, dict, dict]:
     ad_values = _dict(ads.get("overview")) if ads.get("status") == "available" else {}
     source("meta_ads", "המודעות בפייסבוק ובאינסטגרם", bool(ad_values), ads.get("period") or meta.get("source_period") or fallback,
            _dict(_dict(meta.get("source_reads")).get("ads")).get("read_at") or meta.get("source_read_at") or snapshot.get("created_at"))
-    clicks = _number(ad_values.get("link_clicks"))
-    if clicks is not None:
-        observations.append({"source": "meta_ads", "metric": "link_clicks", "label": "לחיצות על קישור במודעות", "value": clicks})
+    # Monetary facts keep the account's actual currency; absent currency is unknown.
+    currency = _text(ad_values.get("currency"), 16)
+    currency = currency if len(currency) == 3 and currency.isascii() and currency.isalpha() and currency.isupper() else ""
+    for metric, label, unit in (
+        ("link_clicks", "לחיצות על קישור במודעות", "count"),
+        ("spend", "הוצאה על המודעות", "money"),
+        ("website_purchases", "רכישות שמטא שייכה למודעות", "count"),
+        ("website_purchase_value", "ערך הרכישות שמטא שייכה למודעות", "money"),
+        ("leads", "פניות שמטא שייכה למודעות", "count"),
+        ("cost_per_link_click", "עלות לחיצה על קישור במודעות", "money"),
+        ("cost_per_purchase", "עלות רכישה לפי דיווח מטא", "money"),
+        ("purchase_roas", "ערך רכישות ביחס להוצאה על מודעות", "ratio"),
+    ):
+        value = _number(ad_values.get(metric))
+        if value is None or (unit == "money" and not currency):
+            continue
+        observation = {"source": "meta_ads", "metric": metric, "label": label, "value": value,
+                       "unit": unit, "scope": "meta_attributed"}
+        if unit == "money":
+            observation["currency"] = currency
+        observations.append(observation)
     if ad_values:
         limits.append("מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.")
     social = _dict(meta.get("account"))

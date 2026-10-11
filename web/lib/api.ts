@@ -5441,7 +5441,7 @@ export type RecommendationPayload = {
       snapshot_id?: number | null;
       plan_id?: number | null;
       sources: { key: string; label: string; status: string; period: { start?: string; end?: string }; read_at: string; stale?: boolean; age_days?: number | null }[];
-      observations: { source: string; metric: string; label: string; value: number }[];
+      observations: { source: string; metric: string; label: string; value: number; unit?: "count" | "money" | "ratio"; currency?: string; scope?: string }[];
       limits: string[];
     } | null;
     suggestions: {

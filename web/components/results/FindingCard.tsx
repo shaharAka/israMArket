@@ -10,6 +10,7 @@ import { IconChevron } from "@/lib/icons";
 import { checkedDate } from "@/components/integrations/SourceReadState";
 import { useLanguage } from "@/components/language/LanguageProvider";
 import { LOCALE_META } from "@/lib/i18n/locales";
+import { formatFindingValue } from "@/lib/finding-values";
 
 export type Finding = RecommendationPayload["suggestions"]["suggestions"][number];
 type Source = NonNullable<RecommendationPayload["suggestions"]["basis"]>["sources"][number];
@@ -100,7 +101,7 @@ export function FindingCard({ payload, index = 0, primary = true, onReview }: {
       <div className={onlyOwnerFacts ? "mt-4 grid grid-cols-3 gap-3" : "mt-4 flex flex-wrap gap-x-8 gap-y-3"} aria-label={onlyOwnerFacts ? t("מה ידוע") : t("מה נמדד")}>
         {visibleFacts.map(fact => <div key={`${fact.source}-${fact.metric}`}>
           <p className="text-sm text-[color:var(--ink-soft)]">{t(fact.label)}{sources.find(source => source.key === fact.source)?.label ? <> · {t(sources.find(source => source.key === fact.source)!.label)}</> : null}</p>
-          <p className={changed ? "mt-0.5 text-[16px] font-semibold tabular-nums text-[color:var(--ink-soft)]" : "mt-1 text-[24px] font-bold tabular-nums tracking-tight text-[color:var(--ink)]"}>{new Intl.NumberFormat(LOCALE_META[locale].formatLocale, { maximumFractionDigits: 1 }).format(fact.value)}</p>
+          <p className={changed ? "mt-0.5 text-[16px] font-semibold tabular-nums text-[color:var(--ink-soft)]" : "mt-1 text-[24px] font-bold tabular-nums tracking-tight text-[color:var(--ink)]"}><bdi>{formatFindingValue(fact, LOCALE_META[locale].formatLocale)}</bdi></p>
         </div>)}
       </div>
       {onlyOwnerFacts ? <p className="mt-2 text-sm text-[color:var(--ink-muted)]"><bdi>{dateRange(ownerPeriod?.start, ownerPeriod?.end, locale)}</bdi>{" "}<Copy text="· לפי הדיווח שלכם" /></p>

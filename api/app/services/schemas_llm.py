@@ -873,6 +873,7 @@ RECOMMENDATION_SCHEMA = {
         "week_summary": {"type": "string"},
         "suggestions": {
             "type": "array",
+            "maxItems": 1,
             "items": {
                 "type": "object",
                 "properties": {
@@ -887,7 +888,7 @@ RECOMMENDATION_SCHEMA = {
                     "hypothesis": {"type": "string", "description": "הסבר אפשרי, לא עובדה שנמדדה; ריק כשאין בסיס"},
                     "success_check": {"type": "string", "description": "איך נבדוק את הניסוי במדד זמין, או מה חסר כדי לבדוק"},
                 },
-                "required": ["priority", "title", "action", "evidence", "target", "action_kind", "post_uid", "hypothesis", "success_check"],
+                "required": ["priority", "title", "action", "evidence", "evidence_keys", "target", "action_kind", "post_uid", "hypothesis", "success_check"],
             },
         },
     },

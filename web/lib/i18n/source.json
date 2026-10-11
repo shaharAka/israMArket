@@ -1280,7 +1280,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 160,
+        "line": 178,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4595,7 +4595,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 123,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -5240,7 +5240,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -6631,7 +6631,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -7194,7 +7194,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -7955,7 +7955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -8181,7 +8181,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 125,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -9230,7 +9230,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -10347,7 +10347,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -11001,7 +11001,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 126,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -11028,7 +11028,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -15479,7 +15479,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -15673,7 +15673,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -16356,7 +16356,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17932,6 +17932,18 @@
       }
     ]
   },
+  "m_2727ae0a508175f7": {
+    "source": "הצעד הבא לפי התוצאות של העסק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_272a77fd71bdc270": {
     "source": "כותרת מתחת לתמונה",
     "language": "he",
@@ -18176,7 +18188,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18364,6 +18376,17 @@
         "line": 52,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2826377ef3c85074": {
+    "source": "כשפירוט הפעולות באתר לא מתקבל, ההצעה היא לקרוא אותו שוב. בחיבור חסר מטפלים כשהוא נחוץ להחלטה; הוא לא מסתיר מידע שימושי שכבר התקבל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -18583,7 +18606,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 43,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -19023,7 +19046,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 268,
+        "line": 286,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19136,7 +19159,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -19606,7 +19629,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 126,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -20060,7 +20083,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20352,7 +20375,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -20871,7 +20894,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 157,
+        "line": 175,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -21496,17 +21519,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 103,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -22915,7 +22938,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 157,
+        "line": 175,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -23164,7 +23187,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 100,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -24194,6 +24217,18 @@
         "file": "web/lib/quarterPlanMock.ts",
         "line": 489,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_33e89780293a638a": {
+    "source": "פניות שמטא שייכה למודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 127,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -25704,7 +25739,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 112,
+        "line": 113,
         "kind": "literal"
       }
     ]
@@ -25954,7 +25989,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -27009,7 +27044,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -27954,7 +27989,7 @@
       },
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 89,
+        "line": 90,
         "kind": "literal"
       },
       {
@@ -28855,7 +28890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29624,7 +29659,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 276,
+        "line": 294,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29728,6 +29763,18 @@
         "file": "api/app/services/onboarding_draft.py",
         "line": 1131,
         "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_40c401ba43ffa409": {
+    "source": "הוצאה על המודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 124,
+        "kind": "literal",
         "purpose": "copy"
       }
     ]
@@ -29839,7 +29886,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -31747,7 +31794,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -32273,7 +32320,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -32914,7 +32961,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -33219,7 +33266,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 12,
         "kind": "literal"
       },
       {
@@ -33230,6 +33277,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 68,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -33408,12 +33460,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -33473,6 +33525,18 @@
         "line": 693,
         "kind": "template",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_491178400615f68c": {
+    "source": "ערך הרכישות שמטא שייכה למודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 126,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -34486,6 +34550,18 @@
       }
     ]
   },
+  "m_4b8e1f5aebd3f3df": {
+    "source": "רכישות שמטא שייכה למודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 125,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_4b8f5dd4b02c05e0": {
     "source": "מה חדש מאז הפעם הקודמת.",
     "language": "he",
@@ -34701,7 +34777,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -34840,7 +34916,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 113,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -35565,7 +35641,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -36465,7 +36541,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36820,7 +36896,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 27,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -37067,7 +37143,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -37234,7 +37310,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39418,7 +39494,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -40107,7 +40183,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -40203,7 +40279,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 149,
+        "line": 167,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -40647,7 +40723,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 106,
+        "line": 107,
         "kind": "literal"
       },
       {
@@ -41287,7 +41363,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -41658,7 +41734,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -42003,7 +42079,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -42049,7 +42125,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -43200,7 +43276,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 154,
+        "line": 172,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44287,7 +44363,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -44717,7 +44793,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -45141,7 +45217,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -46301,7 +46377,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 262,
+        "line": 280,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -46559,7 +46635,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 124,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -48307,7 +48383,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48428,7 +48504,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -48483,7 +48559,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -48613,7 +48689,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49326,7 +49402,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 131,
+        "line": 149,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -50738,7 +50814,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51293,12 +51369,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 36,
+        "line": 43,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -51309,7 +51385,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51343,7 +51419,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -51762,7 +51838,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54784,7 +54860,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55112,7 +55188,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 254,
+        "line": 272,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -55534,7 +55610,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -57993,7 +58069,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -58777,7 +58853,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 251,
+        "line": 269,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -59259,7 +59335,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 99,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -59402,7 +59478,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -61501,7 +61577,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62780,7 +62856,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62829,6 +62905,18 @@
         "file": "web/app/decisions/page.tsx",
         "line": 561,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_8aad64ce5314d094": {
+    "source": "עלות לחיצה על קישור במודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 128,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -63390,7 +63478,7 @@
       },
       {
         "file": "api/app/services/schemas_llm.py",
-        "line": 987,
+        "line": 988,
         "kind": "literal",
         "purpose": "generation-instruction"
       },
@@ -64806,7 +64894,7 @@
       },
       {
         "file": "api/app/services/schemas_llm.py",
-        "line": 1002,
+        "line": 1003,
         "kind": "literal",
         "purpose": "generation-instruction"
       }
@@ -64829,7 +64917,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65082,7 +65170,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 157,
+        "line": 175,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65155,7 +65243,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -66109,7 +66197,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 261,
+        "line": 279,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -67910,7 +67998,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 100,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -68641,7 +68729,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 120,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -68731,7 +68819,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -70062,7 +70150,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 256,
+        "line": 274,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -70180,7 +70268,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -70382,7 +70470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -71039,7 +71127,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -71469,7 +71557,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 141,
+        "line": 159,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -72582,7 +72670,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -73830,7 +73918,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -75066,7 +75154,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -75706,7 +75794,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 125,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -77191,7 +77279,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 81,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -77386,7 +77474,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -77623,6 +77711,18 @@
         "file": "web/app/performance/page.tsx",
         "line": 757,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_ac105f4b771a284e": {
+    "source": "עלות רכישה לפי דיווח מטא",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 129,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -78344,7 +78444,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -79169,7 +79269,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 274,
+        "line": 292,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -79533,7 +79633,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -79707,7 +79807,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -79826,7 +79926,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 111,
+        "line": 112,
         "kind": "literal"
       }
     ]
@@ -80548,7 +80648,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 22,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -80571,7 +80671,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81176,7 +81276,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 42,
+        "line": 49,
         "kind": "literal",
         "purpose": "display"
       }
@@ -83893,7 +83993,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 272,
+        "line": 290,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -84308,7 +84408,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -84926,7 +85026,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 59,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -85247,7 +85347,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -86286,7 +86386,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -86416,7 +86516,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -87510,7 +87610,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 126,
+        "line": 144,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -91501,7 +91601,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 258,
+        "line": 276,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -91670,7 +91770,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -92317,7 +92417,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -92372,7 +92472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -92799,7 +92899,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 123,
+        "line": 141,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94999,7 +95099,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -96076,7 +96176,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 141,
+        "line": 159,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96352,7 +96452,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 137,
+        "line": 155,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96458,7 +96558,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -97148,7 +97248,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -98153,7 +98253,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 121,
+        "line": 123,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -98376,7 +98476,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 126,
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -98797,7 +98897,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 28,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -100021,7 +100121,7 @@
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 270,
+        "line": 288,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100301,7 +100401,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100335,7 +100435,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -100594,7 +100694,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -100738,7 +100838,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 23,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -101313,7 +101413,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -101375,7 +101475,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 253,
+        "line": 271,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -102244,7 +102344,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 34,
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -103059,7 +103159,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -103436,6 +103536,18 @@
         "file": "web/app/onboarding/page.tsx",
         "line": 402,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_e49b8c6dd823dac5": {
+    "source": "ערך רכישות ביחס להוצאה על מודעות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/recommendation_context.py",
+        "line": 130,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -104347,7 +104459,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -104358,7 +104470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -105210,7 +105322,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal",
         "purpose": "display"
       }
@@ -106594,7 +106706,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -106851,6 +106963,17 @@
         "line": 904,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_eba00f9487e895a6": {
+    "source": "בתוצאות מוצעת פעולה אחת עם המספרים שמסבירים אותה ואיך נבדוק אותה. נתוני המודעות כוללים עכשיו גם הוצאה, רכישות וערך רכישות לפי דיווח מטא, במטבע של חשבון הפרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -107399,7 +107522,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 87,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -107662,7 +107785,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -107855,7 +107978,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 81,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -107945,7 +108068,7 @@
       },
       {
         "file": "api/app/services/schemas_llm.py",
-        "line": 1003,
+        "line": 1004,
         "kind": "literal",
         "purpose": "generation-instruction"
       }
@@ -108420,12 +108543,12 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 96,
+        "line": 97,
         "kind": "literal"
       },
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 249,
+        "line": 267,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -110171,7 +110294,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 109,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -111458,7 +111581,7 @@
       },
       {
         "file": "api/app/services/schemas_llm.py",
-        "line": 990,
+        "line": 991,
         "kind": "literal",
         "purpose": "generation-instruction"
       }
@@ -111865,7 +111988,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -112386,7 +112509,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -113615,7 +113738,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 268,
+        "line": 286,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -113718,7 +113841,7 @@
     "references": [
       {
         "file": "web/components/results/FindingCard.tsx",
-        "line": 125,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -114268,7 +114391,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -114773,7 +114896,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -114808,7 +114931,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 259,
+        "line": 277,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -115429,7 +115552,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -115757,7 +115880,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -116219,7 +116342,7 @@
     "references": [
       {
         "file": "api/app/services/recommendation_context.py",
-        "line": 249,
+        "line": 267,
         "kind": "literal",
         "purpose": "copy"
       }
