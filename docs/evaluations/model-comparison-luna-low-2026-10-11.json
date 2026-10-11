@@ -1,0 +1,2293 @@
+{
+  "synthetic": true,
+  "model": "gpt-6-luna",
+  "provider": "openai",
+  "revision": "3e10fd2b3d3991be268a88624b1bae45159122ba",
+  "fixture_sha256": "58a4e4b19896fb4c4d9549b2e0eb05ea99058da82331974a508cbbae016f0a1b",
+  "method": "production two-stage pipeline; each model's own diagnosis informs its recommendation",
+  "thinking": "LOW; provider labels do not imply equal compute",
+  "production_prompt_thinking": "MEDIUM; API effort overridden only for this experiment",
+  "output_token_cap": 4096,
+  "timeout_seconds": 60,
+  "calls_limit": 8,
+  "paid_retries": 0,
+  "calls_made": 8,
+  "standard_rates_usd_per_million": {
+    "input": 0.1,
+    "cached": 0.01,
+    "cache_write": 0.125,
+    "output": 0.5
+  },
+  "price_date": "2026-10-11",
+  "cases": [
+    {
+      "case": "shop_checkout",
+      "expected": "Prioritize a checkout/offer check; no abandoned-cart rate or verified paid-order claim from aggregate event counts.",
+      "inputs": {
+        "business": {
+          "name": "בדיקת חנות בגדים",
+          "business_model": "products",
+          "offerings": "בגדי פשתן לנשים בחנות מקוונת",
+          "primary_goal": "purchases",
+          "monthly_budget_ils": 1000,
+          "analysis_basis": {
+            "version": 1,
+            "snapshot_id": 1,
+            "plan_id": 1,
+            "plan_revision": 0,
+            "sources": [
+              {
+                "key": "ga4",
+                "label": "נתוני האתר",
+                "status": "available",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_ads",
+                "label": "המודעות בפייסבוק ובאינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_social",
+                "label": "נתוני אינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              }
+            ],
+            "observations": [
+              {
+                "source": "ga4",
+                "metric": "sessions",
+                "label": "כניסות לאתר",
+                "value": 1000.0
+              },
+              {
+                "source": "ga4",
+                "metric": "view_item",
+                "label": "אירועי צפייה במוצר",
+                "value": 600.0
+              },
+              {
+                "source": "ga4",
+                "metric": "add_to_cart",
+                "label": "אירועי הוספה לסל",
+                "value": 120.0
+              },
+              {
+                "source": "ga4",
+                "metric": "begin_checkout",
+                "label": "אירועי התחלת תשלום",
+                "value": 60.0
+              },
+              {
+                "source": "ga4",
+                "metric": "purchase",
+                "label": "אירועי רכישה שדווחו באתר",
+                "value": 6.0
+              }
+            ],
+            "limits": [
+              "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+            ],
+            "excluded_sources": false,
+            "service_fingerprint": "",
+            "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+            "selection": {
+              "ga4": "123",
+              "meta_ads": ""
+            }
+          },
+          "marketing_outcome": {
+            "segment": "online_shop",
+            "selected_measure": "purchases",
+            "interpretation": "Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.",
+            "owner_reported_baseline": [],
+            "baseline_rule": "Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.",
+            "offer": "בגדי פשתן לנשים בחנות מקוונת",
+            "distinctive": "שירות אישי ומוצרים שנבחרו בקפידה",
+            "customers": [
+              "לקוחות מקומיים"
+            ],
+            "software_offer": null
+          }
+        },
+        "ga4": {
+          "property_id": "123",
+          "read_at": "2026-10-11T17:10:26.990512+00:00",
+          "period": {
+            "start": "2026-09-13",
+            "end": "2026-10-10"
+          },
+          "overview": {
+            "sessions": "1000"
+          },
+          "events": [
+            {
+              "eventName": "view_item",
+              "eventCount": "600"
+            },
+            {
+              "eventName": "add_to_cart",
+              "eventCount": "120"
+            },
+            {
+              "eventName": "begin_checkout",
+              "eventCount": "60"
+            },
+            {
+              "eventName": "purchase",
+              "eventCount": "6"
+            }
+          ],
+          "report_reads": {
+            "overview": {
+              "status": "available"
+            },
+            "events": {
+              "status": "available",
+              "limited": false
+            }
+          }
+        },
+        "meta": {},
+        "plan": {
+          "id": 1,
+          "goal": "purchases",
+          "roadmap": {
+            "posts": [
+              {
+                "uid": "draft-1",
+                "title": "למי ההצעה מתאימה",
+                "caption": "הצגת השירות או המוצר לקהל המתאים",
+                "channel": "instagram",
+                "primary_outlet": "instagram",
+                "approval_status": "draft",
+                "published_at": null
+              }
+            ]
+          }
+        }
+      },
+      "requests": [
+        {
+          "call": 1,
+          "case": "shop_checkout",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nאבחון: headline הוא ממצא אחד עד 25 מילים, המתמקד בתוצאה או בבדיקה הרלוונטית.\nלכל היותר פריט אחד בכל רשימה; כל הסבר עד 35 מילים. רשימה שאין לה ראיה נשארת ריקה.\ntop_content ו-bottom_content מיועדים להשוואה מדודה של תוכן מזוהה, לא לשלבי תשלום או ספירות כלליות.\nבלי בסיס להשוואת תוכן, השאירו את שתי הרשימות ריקות. אין לכנות מעורבות ״טובה״ בלי תקופת השוואה.\nfunnel_issues מציין רק בעיה שנמדדה או קריאה שנכשלה. חשד לתקלה שטרם נבדקה הוא השערה בהצעה,\nלא עובדה באבחון; במצב כזה השאירו את הרשימה ריקה. metric_highlights חוזר רק על המספרים ממקור ההחלטה.\nאין למלא רשימות כדי למלא את המבנה. בלי נתוני אירועים, הממצא הוא שהפירוט לא התקבל,\nלא שהלקוחות לא קנו ולא שחסר אינסטגרם. בפרסום, הממצא צריך להסביר את תוצאות הרכישה מול ההוצאה.\n\nעסק: {'name': 'בדיקת חנות בגדים', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 1, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 1000.0}, {'source': 'ga4', 'metric': 'view_item', 'label': 'אירועי צפייה במוצר', 'value': 600.0}, {'source': 'ga4', 'metric': 'add_to_cart', 'label': 'אירועי הוספה לסל', 'value': 120.0}, {'source': 'ga4', 'metric': 'begin_checkout', 'label': 'אירועי התחלת תשלום', 'value': 60.0}, {'source': 'ga4', 'metric': 'purchase', 'label': 'אירועי רכישה שדווחו באתר', 'value': 6.0}], 'limits': ['הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '1000'}, 'events': [{'eventName': 'view_item', 'eventCount': '600'}, {'eventName': 'add_to_cart', 'eventCount': '120'}, {'eventName': 'begin_checkout', 'eventCount': '60'}, {'eventName': 'purchase', 'eventCount': '6'}], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'available', 'limited': False}}}\nנתוני פייסבוק ואינסטגרם: {}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "PerformanceDiagnostic",
+            "description": "אבחון ביצועים מ-GA4 ומטא",
+            "properties": {
+              "headline": {
+                "type": "string"
+              },
+              "top_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "bottom_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "funnel_issues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric_highlights": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "headline",
+              "top_content",
+              "bottom_content",
+              "funnel_issues",
+              "metric_highlights"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"headline\": \"דווחו 60 התחלות תשלום ו-6 אירועי רכישה באתר; נבדוק את תהליך התשלום לפני שינוי תוכן.\",\n  \"top_content\": [],\n  \"bottom_content\": [],\n  \"funnel_issues\": [],\n  \"metric_highlights\": [\n    \"בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה.\"\n  ]\n}",
+          "execution": "completed"
+        },
+        {
+          "call": 2,
+          "case": "shop_checkout",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nהחזירו הצעה אחת בלבד: הצעד הראשון שיש טעם לעשות עכשיו. בלי פעולה שימושית, החזירו רשימה ריקה.\nweek_summary הוא הממצא שתומך בפעולה, עד 25 מילים. האבחון הוא טקסט עזר, לא מקור חדש לראיות;\nאם הוא מדגיש חיבור חסר במקום תוצאה זמינה, תקנו את המיקוד בהצעה.\nכל title עד 12 מילים, action עד 35 מילים, evidence עד 45 מילים.\npriority הוא medium לניסוי או בדיקה רגילים. high רק לסיכון דחוף ומתועד, לא רק למספר חלש או לחיבור חסר.\nבחרו עד 3 evidence_keys מדויקים מ-analysis_basis.observations שמסבירים את ההחלטה;\nבחרו את נתוני ההוצאה והתוצאה לפני קליקים כשמדובר ביעילות פרסום. אל תמציאו מפתח או מספר.\nכשמדובר רק בפירוט שלא התקבל, evidence_keys יכול להיות ריק והראיה היא מצב הקריאה המפורש.\nבלי מדידה מתאימה, אין לטעון להצלחה במכירות.\n\naction_kind הוא post, plan, measurement או website. בדיקת תשלום או שינוי בעמוד היעד היא website;\nניסיון חוזר לקריאת פירוט הוא measurement. שינוי מודעה הוא plan, לא טיוטת פוסט אורגני לא קשורה.\nלפוסט החזירו post_uid מדויק מתוך התוכנית; בלי פוסט מזוהה החזירו plan עם post_uid ריק.\nלעריכה בחרו טיוטה שלא פורסמה; מפוסט שפורסם לומדים לקראת הבא, לא משנים אותו בדיעבד.\nכשהפעולה היא פוסט, הציעו להכין או לערוך אותו לבדיקה, לא לדלג ישר לפרסום.\nאין להחזיר כתובות, לפרסם, לערוך תוכן או להציע שינוי תקציב אוטומטי.\nhypothesis הוא הסבר אפשרי בלבד, עד 25 מילים. התחילו ב״ייתכן״; בלי בסיס השאירו אותו ריק.\nsuccess_check הוא בדיקה אחת, עד 30 מילים: אותו מדד, המקור והתקופה לבדיקה.\nבבדיקת תשלום אפשר להתחיל בניסיון רכישה ולבדוק שהאירוע התקבל, ובהמשך להשוות תקופות דומות.\nבקריאה שנכשלה הבדיקה היא קבלת פירוט הפעולות בניסיון הבא, לא עלייה במספר לקוחות אחרי שבוע.\n\nעסק: {'name': 'בדיקת חנות בגדים', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 1, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 1000.0}, {'source': 'ga4', 'metric': 'view_item', 'label': 'אירועי צפייה במוצר', 'value': 600.0}, {'source': 'ga4', 'metric': 'add_to_cart', 'label': 'אירועי הוספה לסל', 'value': 120.0}, {'source': 'ga4', 'metric': 'begin_checkout', 'label': 'אירועי התחלת תשלום', 'value': 60.0}, {'source': 'ga4', 'metric': 'purchase', 'label': 'אירועי רכישה שדווחו באתר', 'value': 6.0}], 'limits': ['הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nהתוכנית: {'id': 1, 'goal': 'purchases', 'roadmap': {'posts': [{'uid': 'draft-1', 'title': 'למי ההצעה מתאימה', 'caption': 'הצגת השירות או המוצר לקהל המתאים', 'channel': 'instagram', 'primary_outlet': 'instagram', 'approval_status': 'draft', 'published_at': None}]}}\nאבחון קודם: {'headline': 'דווחו 60 התחלות תשלום ו-6 אירועי רכישה באתר; נבדוק את תהליך התשלום לפני שינוי תוכן.', 'top_content': [], 'bottom_content': [], 'funnel_issues': [], 'metric_highlights': ['בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה.']}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '1000'}, 'events': [{'eventName': 'view_item', 'eventCount': '600'}, {'eventName': 'add_to_cart', 'eventCount': '120'}, {'eventName': 'begin_checkout', 'eventCount': '60'}, {'eventName': 'purchase', 'eventCount': '6'}], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'available', 'limited': False}}}\nנתוני פייסבוק ואינסטגרם: {}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "WeeklyRecommendations",
+            "description": "המלצות איטרציה לשבוע הקרוב",
+            "properties": {
+              "week_summary": {
+                "type": "string"
+              },
+              "suggestions": {
+                "type": "array",
+                "maxItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string",
+                      "description": "פעולה קונקרטית"
+                    },
+                    "evidence": {
+                      "type": "string",
+                      "description": "על סמך איזה מדד"
+                    },
+                    "evidence_keys": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "ga4:add_to_cart",
+                          "ga4:begin_checkout",
+                          "ga4:purchase",
+                          "ga4:sessions",
+                          "ga4:view_item"
+                        ]
+                      },
+                      "description": "Exact source:metric keys from analysis_basis.observations that support this suggestion; empty when no observed metric supports it."
+                    },
+                    "target": {
+                      "type": "string",
+                      "description": "פוסט, CTA, קהל או עמוד"
+                    },
+                    "action_kind": {
+                      "type": "string",
+                      "enum": [
+                        "post",
+                        "plan",
+                        "measurement",
+                        "website"
+                      ]
+                    },
+                    "post_uid": {
+                      "type": "string",
+                      "description": "UID מדויק של פוסט מהתוכנית, או מחרוזת ריקה"
+                    },
+                    "hypothesis": {
+                      "type": "string",
+                      "description": "הסבר אפשרי, לא עובדה שנמדדה; ריק כשאין בסיס"
+                    },
+                    "success_check": {
+                      "type": "string",
+                      "description": "איך נבדוק את הניסוי במדד זמין, או מה חסר כדי לבדוק"
+                    }
+                  },
+                  "required": [
+                    "priority",
+                    "title",
+                    "action",
+                    "evidence",
+                    "evidence_keys",
+                    "target",
+                    "action_kind",
+                    "post_uid",
+                    "hypothesis",
+                    "success_check"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "week_summary",
+              "suggestions"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"week_summary\": \"בנתוני האתר ל־13.09–10.10 דווחו 60 התחלות תשלום ו־6 אירועי רכישה; כדאי לבדוק את התשלום לפני שינוי תוכן.\",\n  \"suggestions\": [\n    {\n      \"priority\": \"medium\",\n      \"title\": \"בדקו את תהליך התשלום\",\n      \"action\": \"עברו על תנאי התשלום וההצעה בעמוד, ובצעו ניסיון רכישה כדי לוודא שהתהליך ברור ושאירוע הרכישה מתקבל באתר.\",\n      \"evidence\": \"בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו־6 אירועי רכישה. אלו ספירות נפרדות ואינן מוכיחות נטישה או את סיבתה.\",\n      \"evidence_keys\": [\n        \"ga4:begin_checkout\",\n        \"ga4:purchase\"\n      ],\n      \"target\": \"עמוד התשלום באתר\",\n      \"action_kind\": \"website\",\n      \"post_uid\": \"\",\n      \"hypothesis\": \"ייתכן שתנאי התשלום או ההצעה בעמוד אינם ברורים מספיק.\",\n      \"success_check\": \"בניסיון רכישה בדקו שהרכישה הושלמה ושאירוע הרכישה התקבל באתר; בהמשך השוו ספירות לאותה תקופה באורך דומה.\"\n    }\n  ]\n}",
+          "execution": "completed"
+        }
+      ],
+      "diagnosis": {
+        "headline": "דווחו 60 התחלות תשלום ו-6 אירועי רכישה באתר; נבדוק את תהליך התשלום לפני שינוי תוכן.",
+        "top_content": [],
+        "bottom_content": [],
+        "funnel_issues": [],
+        "metric_highlights": [
+          "בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו-6 אירועי רכישה."
+        ]
+      },
+      "proposal": {
+        "week_summary": "בנתוני האתר ל־13.09–10.10 דווחו 60 התחלות תשלום ו־6 אירועי רכישה; כדאי לבדוק את התשלום לפני שינוי תוכן.",
+        "suggestions": [
+          {
+            "priority": "medium",
+            "title": "בדקו את תהליך התשלום",
+            "action": "עברו על תנאי התשלום וההצעה בעמוד, ובצעו ניסיון רכישה כדי לוודא שהתהליך ברור ושאירוע הרכישה מתקבל באתר.",
+            "evidence": "בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו־6 אירועי רכישה. אלו ספירות נפרדות ואינן מוכיחות נטישה או את סיבתה.",
+            "evidence_keys": [
+              "ga4:begin_checkout",
+              "ga4:purchase"
+            ],
+            "target": "עמוד התשלום באתר",
+            "action_kind": "website",
+            "post_uid": "",
+            "hypothesis": "ייתכן שתנאי התשלום או ההצעה בעמוד אינם ברורים מספיק.",
+            "success_check": "בניסיון רכישה בדקו שהרכישה הושלמה ושאירוע הרכישה התקבל באתר; בהמשך השוו ספירות לאותה תקופה באורך דומה."
+          }
+        ]
+      },
+      "bound": {
+        "week_summary": "בנתוני האתר ל־13.09–10.10 דווחו 60 התחלות תשלום ו־6 אירועי רכישה; כדאי לבדוק את התשלום לפני שינוי תוכן.",
+        "suggestions": [
+          {
+            "title": "בדקו את תהליך התשלום",
+            "action": "עברו על תנאי התשלום וההצעה בעמוד, ובצעו ניסיון רכישה כדי לוודא שהתהליך ברור ושאירוע הרכישה מתקבל באתר.",
+            "evidence": "בנתוני האתר לתקופה 13.09–10.10.2026 דווחו 60 אירועי התחלת תשלום ו־6 אירועי רכישה. אלו ספירות נפרדות ואינן מוכיחות נטישה או את סיבתה.",
+            "target": "עמוד התשלום באתר",
+            "hypothesis": "ייתכן שתנאי התשלום או ההצעה בעמוד אינם ברורים מספיק.",
+            "success_check": "בניסיון רכישה בדקו שהרכישה הושלמה ושאירוע הרכישה התקבל באתר; בהמשך השוו ספירות לאותה תקופה באורך דומה.",
+            "priority": "medium",
+            "action_kind": "website",
+            "post_uid": "",
+            "target_valid": true,
+            "post_revision": "",
+            "evidence_keys": [
+              "ga4:begin_checkout",
+              "ga4:purchase"
+            ]
+          }
+        ],
+        "basis": {
+          "version": 1,
+          "snapshot_id": 1,
+          "plan_id": 1,
+          "plan_revision": 0,
+          "sources": [
+            {
+              "key": "ga4",
+              "label": "נתוני האתר",
+              "status": "available",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_ads",
+              "label": "המודעות בפייסבוק ובאינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_social",
+              "label": "נתוני אינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            }
+          ],
+          "observations": [
+            {
+              "source": "ga4",
+              "metric": "sessions",
+              "label": "כניסות לאתר",
+              "value": 1000.0
+            },
+            {
+              "source": "ga4",
+              "metric": "view_item",
+              "label": "אירועי צפייה במוצר",
+              "value": 600.0
+            },
+            {
+              "source": "ga4",
+              "metric": "add_to_cart",
+              "label": "אירועי הוספה לסל",
+              "value": 120.0
+            },
+            {
+              "source": "ga4",
+              "metric": "begin_checkout",
+              "label": "אירועי התחלת תשלום",
+              "value": 60.0
+            },
+            {
+              "source": "ga4",
+              "metric": "purchase",
+              "label": "אירועי רכישה שדווחו באתר",
+              "value": 6.0
+            }
+          ],
+          "limits": [
+            "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+          ],
+          "excluded_sources": false,
+          "service_fingerprint": "",
+          "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+          "selection": {
+            "ga4": "123",
+            "meta_ads": ""
+          }
+        }
+      },
+      "execution": "completed"
+    },
+    {
+      "case": "designer_inquiry_fit",
+      "expected": "Explain who the service fits and measure suitable inquiries; do not attribute owner results to the social post or infer a close rate.",
+      "inputs": {
+        "business": {
+          "name": "בדיקת מעצבת פנים",
+          "business_model": "services",
+          "offerings": "עיצוב ושיפוץ דירות קטנות בחיפה",
+          "primary_goal": "suitable_inquiries",
+          "monthly_budget_ils": 1000,
+          "analysis_basis": {
+            "version": 1,
+            "snapshot_id": 2,
+            "plan_id": 1,
+            "plan_revision": 0,
+            "sources": [
+              {
+                "key": "ga4",
+                "label": "נתוני האתר",
+                "status": "available",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_ads",
+                "label": "המודעות בפייסבוק ובאינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_social",
+                "label": "נתוני אינסטגרם",
+                "status": "available",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "service_owner",
+                "label": "דיווח שלכם על פניות ולקוחות",
+                "status": "available",
+                "period": {
+                  "start": "2026-10-01",
+                  "end": "2026-10-11"
+                },
+                "read_at": "2026-10-11T17:10:26.990560",
+                "age_days": 0,
+                "stale": false
+              }
+            ],
+            "observations": [
+              {
+                "source": "ga4",
+                "metric": "sessions",
+                "label": "כניסות לאתר",
+                "value": 80.0
+              },
+              {
+                "source": "ga4",
+                "metric": "generate_lead",
+                "label": "אירועי פנייה שדווחו באתר",
+                "value": 18.0
+              },
+              {
+                "source": "meta_social",
+                "metric": "reach",
+                "label": "אנשים שראו באינסטגרם",
+                "value": 2000.0
+              },
+              {
+                "source": "service_owner",
+                "metric": "inquiries",
+                "label": "פניות שהתקבלו",
+                "value": 20
+              },
+              {
+                "source": "service_owner",
+                "metric": "suitable",
+                "label": "פניות מתאימות",
+                "value": 2
+              },
+              {
+                "source": "service_owner",
+                "metric": "clients_won",
+                "label": "לקוחות חדשים",
+                "value": 1
+              }
+            ],
+            "limits": [
+              "הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.",
+              "פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.",
+              "לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.",
+              "planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.",
+              "capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.",
+              "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+            ],
+            "excluded_sources": false,
+            "service_fingerprint": "30ad78c36c12573615f3a0719304399fa1a78b5dab27530b8ece7231a7888cdc",
+            "outcome_fingerprint": "628b4383d569a4b2bf3d029141c2b10413b4565626d1858bdc563fb677bcaaeb",
+            "selection": {
+              "ga4": "123",
+              "meta_ads": ""
+            }
+          },
+          "marketing_outcome": {
+            "segment": "services",
+            "selected_measure": "suitable_inquiries",
+            "interpretation": "Distinguish interest, qualified inquiries, booked appointments and completed paid work. Ask what makes an inquiry suitable for this specific service. A lead event alone does not prove qualification or a booked job.",
+            "owner_reported_baseline": [],
+            "baseline_rule": "Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.",
+            "offer": "עיצוב ושיפוץ דירות קטנות בחיפה",
+            "distinctive": "שירות אישי ומוצרים שנבחרו בקפידה",
+            "customers": [
+              "לקוחות מקומיים"
+            ],
+            "software_offer": null
+          },
+          "service_results": {
+            "report": {
+              "month": "2026-10",
+              "period": {
+                "start": "2026-10-01",
+                "end": "2026-10-11"
+              },
+              "inquiries": 20,
+              "suitable": 2,
+              "clients_won": 1,
+              "fit_criterion": "פרויקט מלא בדירה קטנה בחיפה",
+              "capacity": 2,
+              "capacity_outdated": false,
+              "source": "owner",
+              "revision": 1,
+              "updated_at": "2026-10-11T17:10:26.990560"
+            },
+            "planning_inputs": {},
+            "capacity_constraint": "",
+            "portfolio_available": null,
+            "limits": [
+              "הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.",
+              "פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.",
+              "לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.",
+              "planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.",
+              "capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים."
+            ]
+          }
+        },
+        "ga4": {
+          "property_id": "123",
+          "read_at": "2026-10-11T17:10:26.990512+00:00",
+          "period": {
+            "start": "2026-09-13",
+            "end": "2026-10-10"
+          },
+          "overview": {
+            "sessions": "80"
+          },
+          "events": [
+            {
+              "eventName": "generate_lead",
+              "eventCount": "18"
+            }
+          ],
+          "report_reads": {
+            "overview": {
+              "status": "available"
+            },
+            "events": {
+              "status": "available",
+              "limited": false
+            }
+          }
+        },
+        "meta": {
+          "source_read_at": "2026-10-11T17:10:26.990512+00:00",
+          "source_period": {
+            "start": "2026-09-13",
+            "end": "2026-10-10"
+          },
+          "account": {
+            "windows": {
+              "28": {
+                "current": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10",
+                  "values": {
+                    "reach": 2000,
+                    "total_interactions": 150
+                  }
+                }
+              }
+            }
+          },
+          "posts": [
+            {
+              "id": "own_post_1",
+              "caption": "עיצוב ושיפוץ דירות קטנות בחיפה",
+              "insights": {
+                "reach": 2000,
+                "saved": 90,
+                "shares": 20
+              }
+            }
+          ]
+        },
+        "plan": {
+          "id": 1,
+          "goal": "suitable_inquiries",
+          "roadmap": {
+            "posts": [
+              {
+                "uid": "draft-1",
+                "title": "למי ההצעה מתאימה",
+                "caption": "הצגת השירות או המוצר לקהל המתאים",
+                "channel": "instagram",
+                "primary_outlet": "instagram",
+                "approval_status": "draft",
+                "published_at": null
+              }
+            ]
+          }
+        }
+      },
+      "requests": [
+        {
+          "call": 3,
+          "case": "designer_inquiry_fit",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nאבחון: headline הוא ממצא אחד עד 25 מילים, המתמקד בתוצאה או בבדיקה הרלוונטית.\nלכל היותר פריט אחד בכל רשימה; כל הסבר עד 35 מילים. רשימה שאין לה ראיה נשארת ריקה.\ntop_content ו-bottom_content מיועדים להשוואה מדודה של תוכן מזוהה, לא לשלבי תשלום או ספירות כלליות.\nבלי בסיס להשוואת תוכן, השאירו את שתי הרשימות ריקות. אין לכנות מעורבות ״טובה״ בלי תקופת השוואה.\nfunnel_issues מציין רק בעיה שנמדדה או קריאה שנכשלה. חשד לתקלה שטרם נבדקה הוא השערה בהצעה,\nלא עובדה באבחון; במצב כזה השאירו את הרשימה ריקה. metric_highlights חוזר רק על המספרים ממקור ההחלטה.\nאין למלא רשימות כדי למלא את המבנה. בלי נתוני אירועים, הממצא הוא שהפירוט לא התקבל,\nלא שהלקוחות לא קנו ולא שחסר אינסטגרם. בפרסום, הממצא צריך להסביר את תוצאות הרכישה מול ההוצאה.\n\nעסק: {'name': 'בדיקת מעצבת פנים', 'business_model': 'services', 'offerings': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'primary_goal': 'suitable_inquiries', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 2, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'service_owner', 'label': 'דיווח שלכם על פניות ולקוחות', 'status': 'available', 'period': {'start': '2026-10-01', 'end': '2026-10-11'}, 'read_at': '2026-10-11T17:10:26.990560', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 80.0}, {'source': 'ga4', 'metric': 'generate_lead', 'label': 'אירועי פנייה שדווחו באתר', 'value': 18.0}, {'source': 'meta_social', 'metric': 'reach', 'label': 'אנשים שראו באינסטגרם', 'value': 2000.0}, {'source': 'service_owner', 'metric': 'inquiries', 'label': 'פניות שהתקבלו', 'value': 20}, {'source': 'service_owner', 'metric': 'suitable', 'label': 'פניות מתאימות', 'value': 2}, {'source': 'service_owner', 'metric': 'clients_won', 'label': 'לקוחות חדשים', 'value': 1}], 'limits': ['הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.', 'פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.', 'לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.', 'planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.', 'capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '30ad78c36c12573615f3a0719304399fa1a78b5dab27530b8ece7231a7888cdc', 'outcome_fingerprint': '628b4383d569a4b2bf3d029141c2b10413b4565626d1858bdc563fb677bcaaeb', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'services', 'selected_measure': 'suitable_inquiries', 'interpretation': 'Distinguish interest, qualified inquiries, booked appointments and completed paid work. Ask what makes an inquiry suitable for this specific service. A lead event alone does not prove qualification or a booked job.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}, 'service_results': {'report': {'month': '2026-10', 'period': {'start': '2026-10-01', 'end': '2026-10-11'}, 'inquiries': 20, 'suitable': 2, 'clients_won': 1, 'fit_criterion': 'פרויקט מלא בדירה קטנה בחיפה', 'capacity': 2, 'capacity_outdated': False, 'source': 'owner', 'revision': 1, 'updated_at': '2026-10-11T17:10:26.990560'}, 'planning_inputs': {}, 'capacity_constraint': '', 'portfolio_available': None, 'limits': ['הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.', 'פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.', 'לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.', 'planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.', 'capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.']}}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '80'}, 'events': [{'eventName': 'generate_lead', 'eventCount': '18'}], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'available', 'limited': False}}}\nנתוני פייסבוק ואינסטגרם: {'source_read_at': '2026-10-11T17:10:26.990512+00:00', 'source_period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'account': {'windows': {'28': {'current': {'start': '2026-09-13', 'end': '2026-10-10', 'values': {'reach': 2000, 'total_interactions': 150}}}}}, 'posts': [{'id': 'own_post_1', 'caption': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'insights': {'reach': 2000, 'saved': 90, 'shares': 20}}]}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "PerformanceDiagnostic",
+            "description": "אבחון ביצועים מ-GA4 ומטא",
+            "properties": {
+              "headline": {
+                "type": "string"
+              },
+              "top_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "bottom_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "funnel_issues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric_highlights": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "headline",
+              "top_content",
+              "bottom_content",
+              "funnel_issues",
+              "metric_highlights"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"headline\": \"בדיווח שלכם התקבלו 20 פניות, ומתוכן 2 התאימו לפרויקט מלא בדירה קטנה בחיפה.\",\n  \"top_content\": [],\n  \"bottom_content\": [],\n  \"funnel_issues\": [],\n  \"metric_highlights\": [\n    \"לפי דיווח בעלי העסק, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות.\"\n  ]\n}",
+          "execution": "completed"
+        },
+        {
+          "call": 4,
+          "case": "designer_inquiry_fit",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nהחזירו הצעה אחת בלבד: הצעד הראשון שיש טעם לעשות עכשיו. בלי פעולה שימושית, החזירו רשימה ריקה.\nweek_summary הוא הממצא שתומך בפעולה, עד 25 מילים. האבחון הוא טקסט עזר, לא מקור חדש לראיות;\nאם הוא מדגיש חיבור חסר במקום תוצאה זמינה, תקנו את המיקוד בהצעה.\nכל title עד 12 מילים, action עד 35 מילים, evidence עד 45 מילים.\npriority הוא medium לניסוי או בדיקה רגילים. high רק לסיכון דחוף ומתועד, לא רק למספר חלש או לחיבור חסר.\nבחרו עד 3 evidence_keys מדויקים מ-analysis_basis.observations שמסבירים את ההחלטה;\nבחרו את נתוני ההוצאה והתוצאה לפני קליקים כשמדובר ביעילות פרסום. אל תמציאו מפתח או מספר.\nכשמדובר רק בפירוט שלא התקבל, evidence_keys יכול להיות ריק והראיה היא מצב הקריאה המפורש.\nבלי מדידה מתאימה, אין לטעון להצלחה במכירות.\n\naction_kind הוא post, plan, measurement או website. בדיקת תשלום או שינוי בעמוד היעד היא website;\nניסיון חוזר לקריאת פירוט הוא measurement. שינוי מודעה הוא plan, לא טיוטת פוסט אורגני לא קשורה.\nלפוסט החזירו post_uid מדויק מתוך התוכנית; בלי פוסט מזוהה החזירו plan עם post_uid ריק.\nלעריכה בחרו טיוטה שלא פורסמה; מפוסט שפורסם לומדים לקראת הבא, לא משנים אותו בדיעבד.\nכשהפעולה היא פוסט, הציעו להכין או לערוך אותו לבדיקה, לא לדלג ישר לפרסום.\nאין להחזיר כתובות, לפרסם, לערוך תוכן או להציע שינוי תקציב אוטומטי.\nhypothesis הוא הסבר אפשרי בלבד, עד 25 מילים. התחילו ב״ייתכן״; בלי בסיס השאירו אותו ריק.\nsuccess_check הוא בדיקה אחת, עד 30 מילים: אותו מדד, המקור והתקופה לבדיקה.\nבבדיקת תשלום אפשר להתחיל בניסיון רכישה ולבדוק שהאירוע התקבל, ובהמשך להשוות תקופות דומות.\nבקריאה שנכשלה הבדיקה היא קבלת פירוט הפעולות בניסיון הבא, לא עלייה במספר לקוחות אחרי שבוע.\n\nעסק: {'name': 'בדיקת מעצבת פנים', 'business_model': 'services', 'offerings': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'primary_goal': 'suitable_inquiries', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 2, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'service_owner', 'label': 'דיווח שלכם על פניות ולקוחות', 'status': 'available', 'period': {'start': '2026-10-01', 'end': '2026-10-11'}, 'read_at': '2026-10-11T17:10:26.990560', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 80.0}, {'source': 'ga4', 'metric': 'generate_lead', 'label': 'אירועי פנייה שדווחו באתר', 'value': 18.0}, {'source': 'meta_social', 'metric': 'reach', 'label': 'אנשים שראו באינסטגרם', 'value': 2000.0}, {'source': 'service_owner', 'metric': 'inquiries', 'label': 'פניות שהתקבלו', 'value': 20}, {'source': 'service_owner', 'metric': 'suitable', 'label': 'פניות מתאימות', 'value': 2}, {'source': 'service_owner', 'metric': 'clients_won', 'label': 'לקוחות חדשים', 'value': 1}], 'limits': ['הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.', 'פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.', 'לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.', 'planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.', 'capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '30ad78c36c12573615f3a0719304399fa1a78b5dab27530b8ece7231a7888cdc', 'outcome_fingerprint': '628b4383d569a4b2bf3d029141c2b10413b4565626d1858bdc563fb677bcaaeb', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'services', 'selected_measure': 'suitable_inquiries', 'interpretation': 'Distinguish interest, qualified inquiries, booked appointments and completed paid work. Ask what makes an inquiry suitable for this specific service. A lead event alone does not prove qualification or a booked job.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}, 'service_results': {'report': {'month': '2026-10', 'period': {'start': '2026-10-01', 'end': '2026-10-11'}, 'inquiries': 20, 'suitable': 2, 'clients_won': 1, 'fit_criterion': 'פרויקט מלא בדירה קטנה בחיפה', 'capacity': 2, 'capacity_outdated': False, 'source': 'owner', 'revision': 1, 'updated_at': '2026-10-11T17:10:26.990560'}, 'planning_inputs': {}, 'capacity_constraint': '', 'portfolio_available': None, 'limits': ['הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.', 'פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.', 'לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.', 'planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.', 'capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.']}}\nהתוכנית: {'id': 1, 'goal': 'suitable_inquiries', 'roadmap': {'posts': [{'uid': 'draft-1', 'title': 'למי ההצעה מתאימה', 'caption': 'הצגת השירות או המוצר לקהל המתאים', 'channel': 'instagram', 'primary_outlet': 'instagram', 'approval_status': 'draft', 'published_at': None}]}}\nאבחון קודם: {'headline': 'בדיווח שלכם התקבלו 20 פניות, ומתוכן 2 התאימו לפרויקט מלא בדירה קטנה בחיפה.', 'top_content': [], 'bottom_content': [], 'funnel_issues': [], 'metric_highlights': ['לפי דיווח בעלי העסק, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות.']}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '80'}, 'events': [{'eventName': 'generate_lead', 'eventCount': '18'}], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'available', 'limited': False}}}\nנתוני פייסבוק ואינסטגרם: {'source_read_at': '2026-10-11T17:10:26.990512+00:00', 'source_period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'account': {'windows': {'28': {'current': {'start': '2026-09-13', 'end': '2026-10-10', 'values': {'reach': 2000, 'total_interactions': 150}}}}}, 'posts': [{'id': 'own_post_1', 'caption': 'עיצוב ושיפוץ דירות קטנות בחיפה', 'insights': {'reach': 2000, 'saved': 90, 'shares': 20}}]}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "WeeklyRecommendations",
+            "description": "המלצות איטרציה לשבוע הקרוב",
+            "properties": {
+              "week_summary": {
+                "type": "string"
+              },
+              "suggestions": {
+                "type": "array",
+                "maxItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string",
+                      "description": "פעולה קונקרטית"
+                    },
+                    "evidence": {
+                      "type": "string",
+                      "description": "על סמך איזה מדד"
+                    },
+                    "evidence_keys": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "ga4:generate_lead",
+                          "ga4:sessions",
+                          "meta_social:reach",
+                          "service_owner:clients_won",
+                          "service_owner:inquiries",
+                          "service_owner:suitable"
+                        ]
+                      },
+                      "description": "Exact source:metric keys from analysis_basis.observations that support this suggestion; empty when no observed metric supports it."
+                    },
+                    "target": {
+                      "type": "string",
+                      "description": "פוסט, CTA, קהל או עמוד"
+                    },
+                    "action_kind": {
+                      "type": "string",
+                      "enum": [
+                        "post",
+                        "plan",
+                        "measurement",
+                        "website"
+                      ]
+                    },
+                    "post_uid": {
+                      "type": "string",
+                      "description": "UID מדויק של פוסט מהתוכנית, או מחרוזת ריקה"
+                    },
+                    "hypothesis": {
+                      "type": "string",
+                      "description": "הסבר אפשרי, לא עובדה שנמדדה; ריק כשאין בסיס"
+                    },
+                    "success_check": {
+                      "type": "string",
+                      "description": "איך נבדוק את הניסוי במדד זמין, או מה חסר כדי לבדוק"
+                    }
+                  },
+                  "required": [
+                    "priority",
+                    "title",
+                    "action",
+                    "evidence",
+                    "evidence_keys",
+                    "target",
+                    "action_kind",
+                    "post_uid",
+                    "hypothesis",
+                    "success_check"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "week_summary",
+              "suggestions"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"week_summary\": \"לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות, ו־2 מהן התאימו לפרויקט מלא בדירה קטנה בחיפה.\",\n  \"suggestions\": [\n    {\n      \"priority\": \"medium\",\n      \"title\": \"חדדו למי השירות מתאים\",\n      \"action\": \"ערכו את הטיוטה כך שתבהיר שהשירות מיועד לפרויקט מלא בדירה קטנה בחיפה, ותסביר בקצרה מה כולל פרויקט מלא. הכינו לבדיקה לפני פרסום.\",\n      \"evidence\": \"לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות, לפי ההגדרה: פרויקט מלא בדירה קטנה בחיפה.\",\n      \"evidence_keys\": [\n        \"service_owner:inquiries\",\n        \"service_owner:suitable\"\n      ],\n      \"target\": \"טיוטת אינסטגרם „למי ההצעה מתאימה”\",\n      \"action_kind\": \"post\",\n      \"post_uid\": \"draft-1\",\n      \"hypothesis\": \"ייתכן שהסבר ברור יותר על היקף השירות יעזור לפונים להבין מראש אם הפרויקט מתאים להם.\",\n      \"success_check\": \"בדיווח הבא, באותה הגדרה ובתקופה דומה, בדקו כמה פניות התקבלו וכמה מהן מתאימות.\"\n    }\n  ]\n}",
+          "execution": "completed"
+        }
+      ],
+      "diagnosis": {
+        "headline": "בדיווח שלכם התקבלו 20 פניות, ומתוכן 2 התאימו לפרויקט מלא בדירה קטנה בחיפה.",
+        "top_content": [],
+        "bottom_content": [],
+        "funnel_issues": [],
+        "metric_highlights": [
+          "לפי דיווח בעלי העסק, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות."
+        ]
+      },
+      "proposal": {
+        "week_summary": "לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות, ו־2 מהן התאימו לפרויקט מלא בדירה קטנה בחיפה.",
+        "suggestions": [
+          {
+            "priority": "medium",
+            "title": "חדדו למי השירות מתאים",
+            "action": "ערכו את הטיוטה כך שתבהיר שהשירות מיועד לפרויקט מלא בדירה קטנה בחיפה, ותסביר בקצרה מה כולל פרויקט מלא. הכינו לבדיקה לפני פרסום.",
+            "evidence": "לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות, לפי ההגדרה: פרויקט מלא בדירה קטנה בחיפה.",
+            "evidence_keys": [
+              "service_owner:inquiries",
+              "service_owner:suitable"
+            ],
+            "target": "טיוטת אינסטגרם „למי ההצעה מתאימה”",
+            "action_kind": "post",
+            "post_uid": "draft-1",
+            "hypothesis": "ייתכן שהסבר ברור יותר על היקף השירות יעזור לפונים להבין מראש אם הפרויקט מתאים להם.",
+            "success_check": "בדיווח הבא, באותה הגדרה ובתקופה דומה, בדקו כמה פניות התקבלו וכמה מהן מתאימות."
+          }
+        ]
+      },
+      "bound": {
+        "week_summary": "לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות, ו־2 מהן התאימו לפרויקט מלא בדירה קטנה בחיפה.",
+        "suggestions": [
+          {
+            "title": "חדדו למי השירות מתאים",
+            "action": "ערכו את הטיוטה כך שתבהיר שהשירות מיועד לפרויקט מלא בדירה קטנה בחיפה, ותסביר בקצרה מה כולל פרויקט מלא. הכינו לבדיקה לפני פרסום.",
+            "evidence": "לפי דיווח שלכם, בין 1 ל־11 באוקטובר התקבלו 20 פניות ו־2 פניות מתאימות, לפי ההגדרה: פרויקט מלא בדירה קטנה בחיפה.",
+            "target": "טיוטת אינסטגרם „למי ההצעה מתאימה”",
+            "hypothesis": "ייתכן שהסבר ברור יותר על היקף השירות יעזור לפונים להבין מראש אם הפרויקט מתאים להם.",
+            "success_check": "בדיווח הבא, באותה הגדרה ובתקופה דומה, בדקו כמה פניות התקבלו וכמה מהן מתאימות.",
+            "priority": "medium",
+            "action_kind": "post",
+            "post_uid": "draft-1",
+            "target_valid": true,
+            "post_revision": "a326f92d9cb72a54afc2f015f95542c04764e69193910fca06301f835f52b64f",
+            "evidence_keys": [
+              "service_owner:inquiries",
+              "service_owner:suitable"
+            ]
+          }
+        ],
+        "basis": {
+          "version": 1,
+          "snapshot_id": 2,
+          "plan_id": 1,
+          "plan_revision": 0,
+          "sources": [
+            {
+              "key": "ga4",
+              "label": "נתוני האתר",
+              "status": "available",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_ads",
+              "label": "המודעות בפייסבוק ובאינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_social",
+              "label": "נתוני אינסטגרם",
+              "status": "available",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "service_owner",
+              "label": "דיווח שלכם על פניות ולקוחות",
+              "status": "available",
+              "period": {
+                "start": "2026-10-01",
+                "end": "2026-10-11"
+              },
+              "read_at": "2026-10-11T17:10:26.990560",
+              "age_days": 0,
+              "stale": false
+            }
+          ],
+          "observations": [
+            {
+              "source": "ga4",
+              "metric": "sessions",
+              "label": "כניסות לאתר",
+              "value": 80.0
+            },
+            {
+              "source": "ga4",
+              "metric": "generate_lead",
+              "label": "אירועי פנייה שדווחו באתר",
+              "value": 18.0
+            },
+            {
+              "source": "meta_social",
+              "metric": "reach",
+              "label": "אנשים שראו באינסטגרם",
+              "value": 2000.0
+            },
+            {
+              "source": "service_owner",
+              "metric": "inquiries",
+              "label": "פניות שהתקבלו",
+              "value": 20
+            },
+            {
+              "source": "service_owner",
+              "metric": "suitable",
+              "label": "פניות מתאימות",
+              "value": 2
+            },
+            {
+              "source": "service_owner",
+              "metric": "clients_won",
+              "label": "לקוחות חדשים",
+              "value": 1
+            }
+          ],
+          "limits": [
+            "הספירות הן דיווח של בעלי העסק, לא מדידה מגוגל או מאינסטגרם ולא שיוך לפוסט.",
+            "פניות מתאימות הן חלק מהפניות שהתקבלו בחודש הזה, לפי ההגדרה של בעלי העסק.",
+            "לקוחות חדשים יכולים להגיע מפניות של חודש קודם. אין לחשב שיעור סגירה בין הספירות האלה.",
+            "planning_inputs הן תשובות לתכנון, לעיתים טווחים או הערכות; הן אינן תוצאות שנמדדו.",
+            "capacity היא מספר הלקוחות הנוספים שאפשר לקבל עכשיו, רק אם הדיווח מהחודש הזה ועודכן בשבעת הימים האחרונים.",
+            "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+          ],
+          "excluded_sources": false,
+          "service_fingerprint": "30ad78c36c12573615f3a0719304399fa1a78b5dab27530b8ece7231a7888cdc",
+          "outcome_fingerprint": "628b4383d569a4b2bf3d029141c2b10413b4565626d1858bdc563fb677bcaaeb",
+          "selection": {
+            "ga4": "123",
+            "meta_ads": ""
+          }
+        }
+      },
+      "execution": "completed"
+    },
+    {
+      "case": "ads_cheap_clicks",
+      "expected": "Judge attributed purchase efficiency rather than cheap clicks; no verified profit, source summation or automatic budget change.",
+      "inputs": {
+        "business": {
+          "name": "בדיקת מודעות לחנות",
+          "business_model": "products",
+          "offerings": "בגדי פשתן לנשים בחנות מקוונת",
+          "primary_goal": "purchases",
+          "monthly_budget_ils": 1000,
+          "analysis_basis": {
+            "version": 1,
+            "snapshot_id": 3,
+            "plan_id": 1,
+            "plan_revision": 0,
+            "sources": [
+              {
+                "key": "ga4",
+                "label": "נתוני האתר",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_ads",
+                "label": "המודעות בפייסבוק ובאינסטגרם",
+                "status": "available",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_social",
+                "label": "נתוני אינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              }
+            ],
+            "observations": [
+              {
+                "source": "meta_ads",
+                "metric": "link_clicks",
+                "label": "לחיצות על קישור במודעות",
+                "value": 1000.0,
+                "unit": "count",
+                "scope": "meta_attributed"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "spend",
+                "label": "הוצאה על המודעות",
+                "value": 1000.0,
+                "unit": "money",
+                "scope": "meta_attributed",
+                "currency": "ILS"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "website_purchases",
+                "label": "רכישות שמטא שייכה למודעות",
+                "value": 2.0,
+                "unit": "count",
+                "scope": "meta_attributed"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "website_purchase_value",
+                "label": "ערך הרכישות שמטא שייכה למודעות",
+                "value": 240.0,
+                "unit": "money",
+                "scope": "meta_attributed",
+                "currency": "ILS"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "cost_per_link_click",
+                "label": "עלות לחיצה על קישור במודעות",
+                "value": 1.0,
+                "unit": "money",
+                "scope": "meta_attributed",
+                "currency": "ILS"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "cost_per_purchase",
+                "label": "עלות רכישה לפי דיווח מטא",
+                "value": 500.0,
+                "unit": "money",
+                "scope": "meta_attributed",
+                "currency": "ILS"
+              },
+              {
+                "source": "meta_ads",
+                "metric": "purchase_roas",
+                "label": "ערך רכישות ביחס להוצאה על מודעות",
+                "value": 0.24,
+                "unit": "ratio",
+                "scope": "meta_attributed"
+              }
+            ],
+            "limits": [
+              "אין נתוני אתר שמאפשרים לקבוע כמה פניות או הזמנות התקבלו. נתון חסר אינו אפס.",
+              "מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.",
+              "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+            ],
+            "excluded_sources": false,
+            "service_fingerprint": "",
+            "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+            "selection": {
+              "ga4": "",
+              "meta_ads": "act_123"
+            }
+          },
+          "marketing_outcome": {
+            "segment": "online_shop",
+            "selected_measure": "purchases",
+            "interpretation": "Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.",
+            "owner_reported_baseline": [],
+            "baseline_rule": "Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.",
+            "offer": "בגדי פשתן לנשים בחנות מקוונת",
+            "distinctive": "שירות אישי ומוצרים שנבחרו בקפידה",
+            "customers": [
+              "לקוחות מקומיים"
+            ],
+            "software_offer": null
+          }
+        },
+        "ga4": {},
+        "meta": {
+          "source_read_at": "2026-10-11T17:10:26.990512+00:00",
+          "source_period": {
+            "start": "2026-09-13",
+            "end": "2026-10-10"
+          },
+          "tracking": {
+            "status": "receiving",
+            "server_delivery": null,
+            "deduplication": null,
+            "purchase_value_currency": null
+          },
+          "ads": {
+            "status": "available",
+            "account_id": "act_123",
+            "period": {
+              "start": "2026-09-13",
+              "end": "2026-10-10"
+            },
+            "overview": {
+              "currency": "ILS",
+              "spend": 1000,
+              "link_clicks": 1000,
+              "website_purchases": 2,
+              "website_purchase_value": 240,
+              "cost_per_link_click": 1,
+              "cost_per_purchase": 500,
+              "purchase_roas": 0.24
+            },
+            "attribution": {
+              "action_attribution_windows": [
+                "7d_click",
+                "1d_view"
+              ],
+              "action_report_time": "conversion"
+            }
+          }
+        },
+        "plan": {
+          "id": 1,
+          "goal": "purchases",
+          "roadmap": {
+            "posts": [
+              {
+                "uid": "draft-1",
+                "title": "למי ההצעה מתאימה",
+                "caption": "הצגת השירות או המוצר לקהל המתאים",
+                "channel": "instagram",
+                "primary_outlet": "instagram",
+                "approval_status": "draft",
+                "published_at": null
+              }
+            ]
+          }
+        }
+      },
+      "requests": [
+        {
+          "call": 5,
+          "case": "ads_cheap_clicks",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nאבחון: headline הוא ממצא אחד עד 25 מילים, המתמקד בתוצאה או בבדיקה הרלוונטית.\nלכל היותר פריט אחד בכל רשימה; כל הסבר עד 35 מילים. רשימה שאין לה ראיה נשארת ריקה.\ntop_content ו-bottom_content מיועדים להשוואה מדודה של תוכן מזוהה, לא לשלבי תשלום או ספירות כלליות.\nבלי בסיס להשוואת תוכן, השאירו את שתי הרשימות ריקות. אין לכנות מעורבות ״טובה״ בלי תקופת השוואה.\nfunnel_issues מציין רק בעיה שנמדדה או קריאה שנכשלה. חשד לתקלה שטרם נבדקה הוא השערה בהצעה,\nלא עובדה באבחון; במצב כזה השאירו את הרשימה ריקה. metric_highlights חוזר רק על המספרים ממקור ההחלטה.\nאין למלא רשימות כדי למלא את המבנה. בלי נתוני אירועים, הממצא הוא שהפירוט לא התקבל,\nלא שהלקוחות לא קנו ולא שחסר אינסטגרם. בפרסום, הממצא צריך להסביר את תוצאות הרכישה מול ההוצאה.\n\nעסק: {'name': 'בדיקת מודעות לחנות', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 3, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'meta_ads', 'metric': 'link_clicks', 'label': 'לחיצות על קישור במודעות', 'value': 1000.0, 'unit': 'count', 'scope': 'meta_attributed'}, {'source': 'meta_ads', 'metric': 'spend', 'label': 'הוצאה על המודעות', 'value': 1000.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'website_purchases', 'label': 'רכישות שמטא שייכה למודעות', 'value': 2.0, 'unit': 'count', 'scope': 'meta_attributed'}, {'source': 'meta_ads', 'metric': 'website_purchase_value', 'label': 'ערך הרכישות שמטא שייכה למודעות', 'value': 240.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'cost_per_link_click', 'label': 'עלות לחיצה על קישור במודעות', 'value': 1.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'cost_per_purchase', 'label': 'עלות רכישה לפי דיווח מטא', 'value': 500.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'purchase_roas', 'label': 'ערך רכישות ביחס להוצאה על מודעות', 'value': 0.24, 'unit': 'ratio', 'scope': 'meta_attributed'}], 'limits': ['אין נתוני אתר שמאפשרים לקבוע כמה פניות או הזמנות התקבלו. נתון חסר אינו אפס.', 'מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '', 'meta_ads': 'act_123'}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nנתוני האתר: {}\nנתוני פייסבוק ואינסטגרם: {'source_read_at': '2026-10-11T17:10:26.990512+00:00', 'source_period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'tracking': {'status': 'receiving', 'server_delivery': None, 'deduplication': None, 'purchase_value_currency': None}, 'ads': {'status': 'available', 'account_id': 'act_123', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'currency': 'ILS', 'spend': 1000, 'link_clicks': 1000, 'website_purchases': 2, 'website_purchase_value': 240, 'cost_per_link_click': 1, 'cost_per_purchase': 500, 'purchase_roas': 0.24}, 'attribution': {'action_attribution_windows': ['7d_click', '1d_view'], 'action_report_time': 'conversion'}}}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "PerformanceDiagnostic",
+            "description": "אבחון ביצועים מ-GA4 ומטא",
+            "properties": {
+              "headline": {
+                "type": "string"
+              },
+              "top_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "bottom_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "funnel_issues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric_highlights": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "headline",
+              "top_content",
+              "bottom_content",
+              "funnel_issues",
+              "metric_highlights"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"headline\": \"בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪.\",\n  \"top_content\": [],\n  \"bottom_content\": [],\n  \"funnel_issues\": [],\n  \"metric_highlights\": [\n    \"לפי דיווח מטא, המודעות שויכו ל־2 רכישות, בעלות מדווחת של 500 ₪ לרכישה.\",\n    \"לפי דיווח מטא, יחס ערך הרכישות להוצאה היה 0.24.\"\n  ]\n}",
+          "execution": "completed"
+        },
+        {
+          "call": 6,
+          "case": "ads_cheap_clicks",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nהחזירו הצעה אחת בלבד: הצעד הראשון שיש טעם לעשות עכשיו. בלי פעולה שימושית, החזירו רשימה ריקה.\nweek_summary הוא הממצא שתומך בפעולה, עד 25 מילים. האבחון הוא טקסט עזר, לא מקור חדש לראיות;\nאם הוא מדגיש חיבור חסר במקום תוצאה זמינה, תקנו את המיקוד בהצעה.\nכל title עד 12 מילים, action עד 35 מילים, evidence עד 45 מילים.\npriority הוא medium לניסוי או בדיקה רגילים. high רק לסיכון דחוף ומתועד, לא רק למספר חלש או לחיבור חסר.\nבחרו עד 3 evidence_keys מדויקים מ-analysis_basis.observations שמסבירים את ההחלטה;\nבחרו את נתוני ההוצאה והתוצאה לפני קליקים כשמדובר ביעילות פרסום. אל תמציאו מפתח או מספר.\nכשמדובר רק בפירוט שלא התקבל, evidence_keys יכול להיות ריק והראיה היא מצב הקריאה המפורש.\nבלי מדידה מתאימה, אין לטעון להצלחה במכירות.\n\naction_kind הוא post, plan, measurement או website. בדיקת תשלום או שינוי בעמוד היעד היא website;\nניסיון חוזר לקריאת פירוט הוא measurement. שינוי מודעה הוא plan, לא טיוטת פוסט אורגני לא קשורה.\nלפוסט החזירו post_uid מדויק מתוך התוכנית; בלי פוסט מזוהה החזירו plan עם post_uid ריק.\nלעריכה בחרו טיוטה שלא פורסמה; מפוסט שפורסם לומדים לקראת הבא, לא משנים אותו בדיעבד.\nכשהפעולה היא פוסט, הציעו להכין או לערוך אותו לבדיקה, לא לדלג ישר לפרסום.\nאין להחזיר כתובות, לפרסם, לערוך תוכן או להציע שינוי תקציב אוטומטי.\nhypothesis הוא הסבר אפשרי בלבד, עד 25 מילים. התחילו ב״ייתכן״; בלי בסיס השאירו אותו ריק.\nsuccess_check הוא בדיקה אחת, עד 30 מילים: אותו מדד, המקור והתקופה לבדיקה.\nבבדיקת תשלום אפשר להתחיל בניסיון רכישה ולבדוק שהאירוע התקבל, ובהמשך להשוות תקופות דומות.\nבקריאה שנכשלה הבדיקה היא קבלת פירוט הפעולות בניסיון הבא, לא עלייה במספר לקוחות אחרי שבוע.\n\nעסק: {'name': 'בדיקת מודעות לחנות', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 3, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'meta_ads', 'metric': 'link_clicks', 'label': 'לחיצות על קישור במודעות', 'value': 1000.0, 'unit': 'count', 'scope': 'meta_attributed'}, {'source': 'meta_ads', 'metric': 'spend', 'label': 'הוצאה על המודעות', 'value': 1000.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'website_purchases', 'label': 'רכישות שמטא שייכה למודעות', 'value': 2.0, 'unit': 'count', 'scope': 'meta_attributed'}, {'source': 'meta_ads', 'metric': 'website_purchase_value', 'label': 'ערך הרכישות שמטא שייכה למודעות', 'value': 240.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'cost_per_link_click', 'label': 'עלות לחיצה על קישור במודעות', 'value': 1.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'cost_per_purchase', 'label': 'עלות רכישה לפי דיווח מטא', 'value': 500.0, 'unit': 'money', 'scope': 'meta_attributed', 'currency': 'ILS'}, {'source': 'meta_ads', 'metric': 'purchase_roas', 'label': 'ערך רכישות ביחס להוצאה על מודעות', 'value': 0.24, 'unit': 'ratio', 'scope': 'meta_attributed'}], 'limits': ['אין נתוני אתר שמאפשרים לקבוע כמה פניות או הזמנות התקבלו. נתון חסר אינו אפס.', 'מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '', 'meta_ads': 'act_123'}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nהתוכנית: {'id': 1, 'goal': 'purchases', 'roadmap': {'posts': [{'uid': 'draft-1', 'title': 'למי ההצעה מתאימה', 'caption': 'הצגת השירות או המוצר לקהל המתאים', 'channel': 'instagram', 'primary_outlet': 'instagram', 'approval_status': 'draft', 'published_at': None}]}}\nאבחון קודם: {'headline': 'בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪.', 'top_content': [], 'bottom_content': [], 'funnel_issues': [], 'metric_highlights': ['לפי דיווח מטא, המודעות שויכו ל־2 רכישות, בעלות מדווחת של 500 ₪ לרכישה.', 'לפי דיווח מטא, יחס ערך הרכישות להוצאה היה 0.24.']}\nנתוני האתר: {}\nנתוני פייסבוק ואינסטגרם: {'source_read_at': '2026-10-11T17:10:26.990512+00:00', 'source_period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'tracking': {'status': 'receiving', 'server_delivery': None, 'deduplication': None, 'purchase_value_currency': None}, 'ads': {'status': 'available', 'account_id': 'act_123', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'currency': 'ILS', 'spend': 1000, 'link_clicks': 1000, 'website_purchases': 2, 'website_purchase_value': 240, 'cost_per_link_click': 1, 'cost_per_purchase': 500, 'purchase_roas': 0.24}, 'attribution': {'action_attribution_windows': ['7d_click', '1d_view'], 'action_report_time': 'conversion'}}}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "WeeklyRecommendations",
+            "description": "המלצות איטרציה לשבוע הקרוב",
+            "properties": {
+              "week_summary": {
+                "type": "string"
+              },
+              "suggestions": {
+                "type": "array",
+                "maxItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string",
+                      "description": "פעולה קונקרטית"
+                    },
+                    "evidence": {
+                      "type": "string",
+                      "description": "על סמך איזה מדד"
+                    },
+                    "evidence_keys": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "meta_ads:cost_per_link_click",
+                          "meta_ads:cost_per_purchase",
+                          "meta_ads:link_clicks",
+                          "meta_ads:purchase_roas",
+                          "meta_ads:spend",
+                          "meta_ads:website_purchase_value",
+                          "meta_ads:website_purchases"
+                        ]
+                      },
+                      "description": "Exact source:metric keys from analysis_basis.observations that support this suggestion; empty when no observed metric supports it."
+                    },
+                    "target": {
+                      "type": "string",
+                      "description": "פוסט, CTA, קהל או עמוד"
+                    },
+                    "action_kind": {
+                      "type": "string",
+                      "enum": [
+                        "post",
+                        "plan",
+                        "measurement",
+                        "website"
+                      ]
+                    },
+                    "post_uid": {
+                      "type": "string",
+                      "description": "UID מדויק של פוסט מהתוכנית, או מחרוזת ריקה"
+                    },
+                    "hypothesis": {
+                      "type": "string",
+                      "description": "הסבר אפשרי, לא עובדה שנמדדה; ריק כשאין בסיס"
+                    },
+                    "success_check": {
+                      "type": "string",
+                      "description": "איך נבדוק את הניסוי במדד זמין, או מה חסר כדי לבדוק"
+                    }
+                  },
+                  "required": [
+                    "priority",
+                    "title",
+                    "action",
+                    "evidence",
+                    "evidence_keys",
+                    "target",
+                    "action_kind",
+                    "post_uid",
+                    "hypothesis",
+                    "success_check"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "week_summary",
+              "suggestions"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"week_summary\": \"בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪, בעלות מדווחת של 500 ₪ לרכישה.\",\n  \"suggestions\": [\n    {\n      \"priority\": \"medium\",\n      \"title\": \"בדקו ושפרו פרט אחד בעמוד המוצר\",\n      \"action\": \"בעמוד שאליו המודעה מובילה, נסו להבליט פרט אחד על הדגם—למשל הרכב הפשתן או הגזרה—רק אם המידע הזה כבר מופיע בעמוד. אל תשנו במקביל את המודעה.\",\n      \"evidence\": \"ההוצאה הייתה 1,000 ₪, ובדיווח מטא ערך הרכישות ששויכו למודעות היה 240 ₪; מטא שייכה למודעות 2 רכישות, בעלות מדווחת של 500 ₪ לרכישה. אלה דיווחי מטא, לא הזמנות שאומתו בעסק.\",\n      \"evidence_keys\": [\n        \"meta_ads:spend\",\n        \"meta_ads:website_purchase_value\",\n        \"meta_ads:cost_per_purchase\"\n      ],\n      \"target\": \"עמוד המוצר שאליו מובילות המודעות\",\n      \"action_kind\": \"website\",\n      \"post_uid\": \"\",\n      \"hypothesis\": \"\",\n      \"success_check\": \"באותו מקור ובתקופה דומה, בדקו אם ערך הרכישות שמטא משייכת למודעות ביחס להוצאה ועלות הרכישה המדווחת משתפרים.\"\n    }\n  ]\n}",
+          "execution": "completed"
+        }
+      ],
+      "diagnosis": {
+        "headline": "בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪.",
+        "top_content": [],
+        "bottom_content": [],
+        "funnel_issues": [],
+        "metric_highlights": [
+          "לפי דיווח מטא, המודעות שויכו ל־2 רכישות, בעלות מדווחת של 500 ₪ לרכישה.",
+          "לפי דיווח מטא, יחס ערך הרכישות להוצאה היה 0.24."
+        ]
+      },
+      "proposal": {
+        "week_summary": "בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪, בעלות מדווחת של 500 ₪ לרכישה.",
+        "suggestions": [
+          {
+            "priority": "medium",
+            "title": "בדקו ושפרו פרט אחד בעמוד המוצר",
+            "action": "בעמוד שאליו המודעה מובילה, נסו להבליט פרט אחד על הדגם—למשל הרכב הפשתן או הגזרה—רק אם המידע הזה כבר מופיע בעמוד. אל תשנו במקביל את המודעה.",
+            "evidence": "ההוצאה הייתה 1,000 ₪, ובדיווח מטא ערך הרכישות ששויכו למודעות היה 240 ₪; מטא שייכה למודעות 2 רכישות, בעלות מדווחת של 500 ₪ לרכישה. אלה דיווחי מטא, לא הזמנות שאומתו בעסק.",
+            "evidence_keys": [
+              "meta_ads:spend",
+              "meta_ads:website_purchase_value",
+              "meta_ads:cost_per_purchase"
+            ],
+            "target": "עמוד המוצר שאליו מובילות המודעות",
+            "action_kind": "website",
+            "post_uid": "",
+            "hypothesis": "",
+            "success_check": "באותו מקור ובתקופה דומה, בדקו אם ערך הרכישות שמטא משייכת למודעות ביחס להוצאה ועלות הרכישה המדווחת משתפרים."
+          }
+        ]
+      },
+      "bound": {
+        "week_summary": "בין 13 בספטמבר ל־10 באוקטובר הוצאו 1,000 ₪; לפי דיווח מטא, ערך הרכישות ששויכו למודעות היה 240 ₪, בעלות מדווחת של 500 ₪ לרכישה.",
+        "suggestions": [
+          {
+            "title": "בדקו ושפרו פרט אחד בעמוד המוצר",
+            "action": "בעמוד שאליו המודעה מובילה, נסו להבליט פרט אחד על הדגם—למשל הרכב הפשתן או הגזרה—רק אם המידע הזה כבר מופיע בעמוד. אל תשנו במקביל את המודעה.",
+            "evidence": "ההוצאה הייתה 1,000 ₪, ובדיווח מטא ערך הרכישות ששויכו למודעות היה 240 ₪; מטא שייכה למודעות 2 רכישות, בעלות מדווחת של 500 ₪ לרכישה. אלה דיווחי מטא, לא הזמנות שאומתו בעסק.",
+            "target": "עמוד המוצר שאליו מובילות המודעות",
+            "hypothesis": "",
+            "success_check": "באותו מקור ובתקופה דומה, בדקו אם ערך הרכישות שמטא משייכת למודעות ביחס להוצאה ועלות הרכישה המדווחת משתפרים.",
+            "priority": "medium",
+            "action_kind": "website",
+            "post_uid": "",
+            "target_valid": true,
+            "post_revision": "",
+            "evidence_keys": [
+              "meta_ads:spend",
+              "meta_ads:website_purchase_value",
+              "meta_ads:cost_per_purchase"
+            ]
+          }
+        ],
+        "basis": {
+          "version": 1,
+          "snapshot_id": 3,
+          "plan_id": 1,
+          "plan_revision": 0,
+          "sources": [
+            {
+              "key": "ga4",
+              "label": "נתוני האתר",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_ads",
+              "label": "המודעות בפייסבוק ובאינסטגרם",
+              "status": "available",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_social",
+              "label": "נתוני אינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            }
+          ],
+          "observations": [
+            {
+              "source": "meta_ads",
+              "metric": "link_clicks",
+              "label": "לחיצות על קישור במודעות",
+              "value": 1000.0,
+              "unit": "count",
+              "scope": "meta_attributed"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "spend",
+              "label": "הוצאה על המודעות",
+              "value": 1000.0,
+              "unit": "money",
+              "scope": "meta_attributed",
+              "currency": "ILS"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "website_purchases",
+              "label": "רכישות שמטא שייכה למודעות",
+              "value": 2.0,
+              "unit": "count",
+              "scope": "meta_attributed"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "website_purchase_value",
+              "label": "ערך הרכישות שמטא שייכה למודעות",
+              "value": 240.0,
+              "unit": "money",
+              "scope": "meta_attributed",
+              "currency": "ILS"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "cost_per_link_click",
+              "label": "עלות לחיצה על קישור במודעות",
+              "value": 1.0,
+              "unit": "money",
+              "scope": "meta_attributed",
+              "currency": "ILS"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "cost_per_purchase",
+              "label": "עלות רכישה לפי דיווח מטא",
+              "value": 500.0,
+              "unit": "money",
+              "scope": "meta_attributed",
+              "currency": "ILS"
+            },
+            {
+              "source": "meta_ads",
+              "metric": "purchase_roas",
+              "label": "ערך רכישות ביחס להוצאה על מודעות",
+              "value": 0.24,
+              "unit": "ratio",
+              "scope": "meta_attributed"
+            }
+          ],
+          "limits": [
+            "אין נתוני אתר שמאפשרים לקבוע כמה פניות או הזמנות התקבלו. נתון חסר אינו אפס.",
+            "מספרי המודעות הם הספירה של פייסבוק. לחיצה אינה לקוח, ורכישות שפייסבוק מייחס למודעות אינן הזמנות שאימתנו. לא מחברים אותן לספירה של גוגל.",
+            "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+          ],
+          "excluded_sources": false,
+          "service_fingerprint": "",
+          "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+          "selection": {
+            "ga4": "",
+            "meta_ads": "act_123"
+          }
+        }
+      },
+      "execution": "completed"
+    },
+    {
+      "case": "tracking_incomplete",
+      "expected": "Check purchase-event measurement before sales advice; missing purchases are unknown, not zero.",
+      "inputs": {
+        "business": {
+          "name": "בדיקת מדידה חסרה",
+          "business_model": "products",
+          "offerings": "בגדי פשתן לנשים בחנות מקוונת",
+          "primary_goal": "purchases",
+          "monthly_budget_ils": 1000,
+          "analysis_basis": {
+            "version": 1,
+            "snapshot_id": 4,
+            "plan_id": 1,
+            "plan_revision": 0,
+            "sources": [
+              {
+                "key": "ga4",
+                "label": "נתוני האתר",
+                "status": "available",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_ads",
+                "label": "המודעות בפייסבוק ובאינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              },
+              {
+                "key": "meta_social",
+                "label": "נתוני אינסטגרם",
+                "status": "missing",
+                "period": {
+                  "start": "2026-09-13",
+                  "end": "2026-10-10"
+                },
+                "read_at": "2026-10-11T17:10:26.990512+00:00",
+                "age_days": 0,
+                "stale": false
+              }
+            ],
+            "observations": [
+              {
+                "source": "ga4",
+                "metric": "sessions",
+                "label": "כניסות לאתר",
+                "value": 400.0
+              }
+            ],
+            "limits": [
+              "חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.",
+              "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+            ],
+            "excluded_sources": false,
+            "service_fingerprint": "",
+            "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+            "selection": {
+              "ga4": "123",
+              "meta_ads": ""
+            }
+          },
+          "marketing_outcome": {
+            "segment": "online_shop",
+            "selected_measure": "purchases",
+            "interpretation": "Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.",
+            "owner_reported_baseline": [],
+            "baseline_rule": "Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.",
+            "offer": "בגדי פשתן לנשים בחנות מקוונת",
+            "distinctive": "שירות אישי ומוצרים שנבחרו בקפידה",
+            "customers": [
+              "לקוחות מקומיים"
+            ],
+            "software_offer": null
+          }
+        },
+        "ga4": {
+          "property_id": "123",
+          "read_at": "2026-10-11T17:10:26.990512+00:00",
+          "period": {
+            "start": "2026-09-13",
+            "end": "2026-10-10"
+          },
+          "overview": {
+            "sessions": "400"
+          },
+          "events": [],
+          "report_reads": {
+            "overview": {
+              "status": "available"
+            },
+            "events": {
+              "status": "unavailable"
+            }
+          }
+        },
+        "meta": {},
+        "plan": {
+          "id": 1,
+          "goal": "purchases",
+          "roadmap": {
+            "posts": [
+              {
+                "uid": "draft-1",
+                "title": "למי ההצעה מתאימה",
+                "caption": "הצגת השירות או המוצר לקהל המתאים",
+                "channel": "instagram",
+                "primary_outlet": "instagram",
+                "approval_status": "draft",
+                "published_at": null
+              }
+            ]
+          }
+        }
+      },
+      "requests": [
+        {
+          "call": 7,
+          "case": "tracking_incomplete",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nאבחון: headline הוא ממצא אחד עד 25 מילים, המתמקד בתוצאה או בבדיקה הרלוונטית.\nלכל היותר פריט אחד בכל רשימה; כל הסבר עד 35 מילים. רשימה שאין לה ראיה נשארת ריקה.\ntop_content ו-bottom_content מיועדים להשוואה מדודה של תוכן מזוהה, לא לשלבי תשלום או ספירות כלליות.\nבלי בסיס להשוואת תוכן, השאירו את שתי הרשימות ריקות. אין לכנות מעורבות ״טובה״ בלי תקופת השוואה.\nfunnel_issues מציין רק בעיה שנמדדה או קריאה שנכשלה. חשד לתקלה שטרם נבדקה הוא השערה בהצעה,\nלא עובדה באבחון; במצב כזה השאירו את הרשימה ריקה. metric_highlights חוזר רק על המספרים ממקור ההחלטה.\nאין למלא רשימות כדי למלא את המבנה. בלי נתוני אירועים, הממצא הוא שהפירוט לא התקבל,\nלא שהלקוחות לא קנו ולא שחסר אינסטגרם. בפרסום, הממצא צריך להסביר את תוצאות הרכישה מול ההוצאה.\n\nעסק: {'name': 'בדיקת מדידה חסרה', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 4, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 400.0}], 'limits': ['חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '400'}, 'events': [], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'unavailable'}}}\nנתוני פייסבוק ואינסטגרם: {}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "PerformanceDiagnostic",
+            "description": "אבחון ביצועים מ-GA4 ומטא",
+            "properties": {
+              "headline": {
+                "type": "string"
+              },
+              "top_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "bottom_content": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "why": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "label",
+                    "why"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "funnel_issues": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric_highlights": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "headline",
+              "top_content",
+              "bottom_content",
+              "funnel_issues",
+              "metric_highlights"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"headline\": \"פירוט הפעולות באתר לא התקבל, ולכן אין כרגע נתון על רכישות; הצעד הראשון הוא לקרוא אותו שוב.\",\n  \"top_content\": [],\n  \"bottom_content\": [],\n  \"funnel_issues\": [\n    \"קריאת פירוט הפעולות באתר נכשלה בתקופה 13.9–10.10.2026; אין בכך הוכחה שלא היו רכישות.\"\n  ],\n  \"metric_highlights\": [\n    \"דווחו 400 כניסות לאתר בתקופה 13.9–10.10.2026; נתון הרכישות לא התקבל.\"\n  ]\n}",
+          "execution": "completed"
+        },
+        {
+          "call": 8,
+          "case": "tracking_incomplete",
+          "prompt": "\nאתם מנהלי השיווק של העסק. בחרו החלטה אחת מועילה מתוך המידע שנקרא בפועל.\nכתבו בעברית טבעית וקונקרטית לבעלי העסק: מה ראינו, מה ננסה ואיך נבדוק.\nmarketing_outcome מגדיר את ההצעה, הקהל והתוצאה שהעסק רוצה להשיג.\nanalysis_basis מכיל את המספרים, המקורות והתאריכים שאפשר להסתמך עליהם.\n\nבחירת ההחלטה:\n- התחילו בראיה הקרובה ביותר לתוצאה שהעסק בחר: רכישה, פנייה מתאימה, שימוש בתוכנה או תרומה.\n  לחיצות, חשיפה ושמירות מסבירות עניין; הן אינן תחליף לתוצאה הזו.\n- חיבור חסר לא מבטל מידע שימושי ממקור אחר. אין להוסיף חיבור לסיכום רק מפני שאינו זמין.\n  בפרט, נתוני פרסום ממטא שימושיים גם בלי נתוני גוגל. הזכירו מגבלה רק כשהיא משנה את ההחלטה.\n- כשיש נתוני הוצאה ורכישות במודעות, הסבירו את ההוצאה לעומת ערך הרכישות ואת העלות לרכישה.\n  קליקים זולים אינם הצלחה ברכישות. כשערך הרכישות שמטא שייכה נמוך מההוצאה, אמרו זאת במפורש.\n  בחנו שינוי אחד בהצעה או בעמוד שאליו המודעה מובילה, לפי מה שידוע עליו; אל תמציאו תקלה.\n  בדיקת מעקב חסרה מגבילה את אמינות הספירה, אך אינה מוחקת את תוצאות הפרסום שסופקו.\n- בחנות, נתוני התחלת תשלום ורכישה מצדיקים בדיקה של תהליך התשלום. אל תסיקו מהם שכיתוב\n  בפוסט הוא הבעיה. קודם הציעו לבדוק את התשלום, התנאים או ההצעה בעמוד; לא לכתוב פוסט לא קשור.\n  אלה ספירות אירועים, לא אותם סלים או אנשים. אין לחשב מהן שיעור נטישה או שיעור השלמת רכישה.\n  תארו כל ספירה בנפרד: ״דווחו 60 התחלות תשלום ו-6 אירועי רכישה״. אל תכתבו\n  ״מתוך 60 הסתיימו 6״, ״רכישות בפועל״ או שהוכחה נטישת עגלות.\n  אין סף הצלחה אוניברסלי: אם הנתונים אינם מצביעים על צורך בשינוי, אפשר להסתפק בבדיקה או לא להציע שינוי.\n- בשירותים, inquiries ו-suitable מאותו דיווח עוזרים לבדוק למי ההצעה מתאימה.\n  הציעו להסביר את היקף השירות ואת fit_criterion בניסוי אחד, אם הדיווח תומך בכך.\n  ניסוח כללי הוא הסבר אפשרי בלבד, לא הסיבה שהוכחה. אל תקשרו בין פניות באתר לפניות\n  בדיווח בעלי העסק בלי שיוך משותף. בדקו פניות מתאימות בדיווח הבא, באותה הגדרה ובתקופה דומה.\n  כשהפעולה נבחרה לפי דיווח הבעלים, כל הממצא והראיה הם מהדיווח הזה בלבד. אין להציג\n  את suitable כתוצאה של generate_lead באתר או של שמירות/חשיפה באינסטגרם.\n- report_reads.events.status=unavailable פירושו שהקריאה לא התקבלה: הצעד הראשון הוא\n  לנסות לקרוא שוב את פירוט הפעולות. אין להסיק שהמעקב לא הותקן או לשלוח מיד למתקין פיקסל.\n  רשימת אירועים ריקה או מוגבלת אינה הוכחה שלא היו רכישות. כשצריך, בדקו אם האירוע הרלוונטי נקרא.\n- הצלחה של הבדיקה נמדדת באותו מקור ובאותו סוג תוצאה שעליהם ההחלטה נשענת.\n  לא בודקים הצלחה של שינוי במודעות באמצעות פוסט אורגני או דרך נתון שאינו זמין.\n\nדיוק:\nנתון חסר אינו אפס. conversions סופר פעולות שהוגדרו כחשובות, לא בהכרח פניות או הזמנות.\neventCount סופר פעולות שדווחו באתר, לא אימות תשלום או לקוחות ייחודיים.\nwebsite_purchases ו-website_purchase_value הם דיווח מטא על רכישות ששויכו למודעות, לא הזמנות שאימתנו.\nבכל אזכור של סכום או ספירת רכישות ממטא, כולל בכותרת, כתבו ״לפי דיווח מטא״ או ״מטא שייכה למודעות״.\nאין לקרוא לערך הזה ״הכנסה״ או ״מכירות״ בלי הזמנות מאומתות ממקור העסק.\nspend ועלויות הם במטבע currency של חשבון הפרסום. אין לחבר רכישות של מטא וגוגל או להסיק רווח.\npurchase_roas הוא יחס ערך הרכישות המדווח להוצאה; אינו רווח או הוכחה שהמודעה גרמה לרכישה.\nאין לטעון לשינוי בלי תקופת השוואה, או לסיבה מוכחת מתוך קשר בין מספרים.\nservice_results הוא דיווח של בעלי העסק, בנפרד מנתוני האתר והרשתות; אין לחשב שיעור סגירה\nמ-inquiries ו-clients_won של חודש אחד, כי לקוחות יכולים להגיע מפניות מחודש קודם.\nplanning_inputs הם טווחים והערכות לתכנון, לא הכנסה או תוצאה שנמדדה.\ncapacity=0 אומר שלא מציעים להביא לקוחות נוספים עכשיו; capacity חסר אינו אפס.\nלא ממציאים תיק עבודות, המלצה, רשימת המתנה, מחיר, עלות או מדד ענפי שלא סופקו.\nלכל מקור התקופה ומועד הקריאה שלו: ga4.period/read_at ו-meta.source_reads/source_period.\nsource_error מציין רענון שנכשל; מספרים שנשמרו קודם אינם עדכון חדש. פירוט מוגבל אינו כל הפעילות.\nreceiving בפיקסל מאשר קבלת אירועים וכתובת בלבד, לא מניעת כפילויות, התאמה או תקינות ערך רכישה.\nהשתמשו במילים של בעלי העסק, בלי GA4, CTA, ROAS או אטריביוציה בפלט.\n\nהחזירו הצעה אחת בלבד: הצעד הראשון שיש טעם לעשות עכשיו. בלי פעולה שימושית, החזירו רשימה ריקה.\nweek_summary הוא הממצא שתומך בפעולה, עד 25 מילים. האבחון הוא טקסט עזר, לא מקור חדש לראיות;\nאם הוא מדגיש חיבור חסר במקום תוצאה זמינה, תקנו את המיקוד בהצעה.\nכל title עד 12 מילים, action עד 35 מילים, evidence עד 45 מילים.\npriority הוא medium לניסוי או בדיקה רגילים. high רק לסיכון דחוף ומתועד, לא רק למספר חלש או לחיבור חסר.\nבחרו עד 3 evidence_keys מדויקים מ-analysis_basis.observations שמסבירים את ההחלטה;\nבחרו את נתוני ההוצאה והתוצאה לפני קליקים כשמדובר ביעילות פרסום. אל תמציאו מפתח או מספר.\nכשמדובר רק בפירוט שלא התקבל, evidence_keys יכול להיות ריק והראיה היא מצב הקריאה המפורש.\nבלי מדידה מתאימה, אין לטעון להצלחה במכירות.\n\naction_kind הוא post, plan, measurement או website. בדיקת תשלום או שינוי בעמוד היעד היא website;\nניסיון חוזר לקריאת פירוט הוא measurement. שינוי מודעה הוא plan, לא טיוטת פוסט אורגני לא קשורה.\nלפוסט החזירו post_uid מדויק מתוך התוכנית; בלי פוסט מזוהה החזירו plan עם post_uid ריק.\nלעריכה בחרו טיוטה שלא פורסמה; מפוסט שפורסם לומדים לקראת הבא, לא משנים אותו בדיעבד.\nכשהפעולה היא פוסט, הציעו להכין או לערוך אותו לבדיקה, לא לדלג ישר לפרסום.\nאין להחזיר כתובות, לפרסם, לערוך תוכן או להציע שינוי תקציב אוטומטי.\nhypothesis הוא הסבר אפשרי בלבד, עד 25 מילים. התחילו ב״ייתכן״; בלי בסיס השאירו אותו ריק.\nsuccess_check הוא בדיקה אחת, עד 30 מילים: אותו מדד, המקור והתקופה לבדיקה.\nבבדיקת תשלום אפשר להתחיל בניסיון רכישה ולבדוק שהאירוע התקבל, ובהמשך להשוות תקופות דומות.\nבקריאה שנכשלה הבדיקה היא קבלת פירוט הפעולות בניסיון הבא, לא עלייה במספר לקוחות אחרי שבוע.\n\nעסק: {'name': 'בדיקת מדידה חסרה', 'business_model': 'products', 'offerings': 'בגדי פשתן לנשים בחנות מקוונת', 'primary_goal': 'purchases', 'monthly_budget_ils': 1000, 'analysis_basis': {'version': 1, 'snapshot_id': 4, 'plan_id': 1, 'plan_revision': 0, 'sources': [{'key': 'ga4', 'label': 'נתוני האתר', 'status': 'available', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_ads', 'label': 'המודעות בפייסבוק ובאינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}, {'key': 'meta_social', 'label': 'נתוני אינסטגרם', 'status': 'missing', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'read_at': '2026-10-11T17:10:26.990512+00:00', 'age_days': 0, 'stale': False}], 'observations': [{'source': 'ga4', 'metric': 'sessions', 'label': 'כניסות לאתר', 'value': 400.0}], 'limits': ['חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.', 'הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד.'], 'excluded_sources': False, 'service_fingerprint': '', 'outcome_fingerprint': '08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404', 'selection': {'ga4': '123', 'meta_ads': ''}}, 'marketing_outcome': {'segment': 'online_shop', 'selected_measure': 'purchases', 'interpretation': 'Completed paid orders are the outcome. Product views, cart additions and checkout starts are diagnostic events. Event counts cannot yield a customer conversion rate or abandoned-cart rate without a consistent user/cart cohort and period. An advertised price is not average order value.', 'owner_reported_baseline': [], 'baseline_rule': 'Owner-reported exact values, ranges and unknowns remain separate from provider events. No midpoint, top bound, revenue, trend or channel attribution is inferred.', 'offer': 'בגדי פשתן לנשים בחנות מקוונת', 'distinctive': 'שירות אישי ומוצרים שנבחרו בקפידה', 'customers': ['לקוחות מקומיים'], 'software_offer': None}}\nהתוכנית: {'id': 1, 'goal': 'purchases', 'roadmap': {'posts': [{'uid': 'draft-1', 'title': 'למי ההצעה מתאימה', 'caption': 'הצגת השירות או המוצר לקהל המתאים', 'channel': 'instagram', 'primary_outlet': 'instagram', 'approval_status': 'draft', 'published_at': None}]}}\nאבחון קודם: {'headline': 'פירוט הפעולות באתר לא התקבל, ולכן אין כרגע נתון על רכישות; הצעד הראשון הוא לקרוא אותו שוב.', 'top_content': [], 'bottom_content': [], 'funnel_issues': ['קריאת פירוט הפעולות באתר נכשלה בתקופה 13.9–10.10.2026; אין בכך הוכחה שלא היו רכישות.'], 'metric_highlights': ['דווחו 400 כניסות לאתר בתקופה 13.9–10.10.2026; נתון הרכישות לא התקבל.']}\nנתוני האתר: {'property_id': '123', 'read_at': '2026-10-11T17:10:26.990512+00:00', 'period': {'start': '2026-09-13', 'end': '2026-10-10'}, 'overview': {'sessions': '400'}, 'events': [], 'report_reads': {'overview': {'status': 'available'}, 'events': {'status': 'unavailable'}}}\nנתוני פייסבוק ואינסטגרם: {}\n",
+          "system": "אתה אסטרטג שיווק בכיר לעסקים קטנים בישראל. כל הפלט בעברית ישראלית חדה ומעשית. התחשב בלוח השנה העברי, ימי קניות ישראליים, שפה מדוברת, ווצאפ, אינסטגרם ומטא. אל תמציא מדדים. אם חסר מידע — ציין זאת במפורש.",
+          "schema": {
+            "type": "object",
+            "title": "WeeklyRecommendations",
+            "description": "המלצות איטרציה לשבוע הקרוב",
+            "properties": {
+              "week_summary": {
+                "type": "string"
+              },
+              "suggestions": {
+                "type": "array",
+                "maxItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "priority": {
+                      "type": "string",
+                      "enum": [
+                        "high",
+                        "medium",
+                        "low"
+                      ]
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "action": {
+                      "type": "string",
+                      "description": "פעולה קונקרטית"
+                    },
+                    "evidence": {
+                      "type": "string",
+                      "description": "על סמך איזה מדד"
+                    },
+                    "evidence_keys": {
+                      "type": "array",
+                      "maxItems": 3,
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "ga4:sessions"
+                        ]
+                      },
+                      "description": "Exact source:metric keys from analysis_basis.observations that support this suggestion; empty when no observed metric supports it."
+                    },
+                    "target": {
+                      "type": "string",
+                      "description": "פוסט, CTA, קהל או עמוד"
+                    },
+                    "action_kind": {
+                      "type": "string",
+                      "enum": [
+                        "post",
+                        "plan",
+                        "measurement",
+                        "website"
+                      ]
+                    },
+                    "post_uid": {
+                      "type": "string",
+                      "description": "UID מדויק של פוסט מהתוכנית, או מחרוזת ריקה"
+                    },
+                    "hypothesis": {
+                      "type": "string",
+                      "description": "הסבר אפשרי, לא עובדה שנמדדה; ריק כשאין בסיס"
+                    },
+                    "success_check": {
+                      "type": "string",
+                      "description": "איך נבדוק את הניסוי במדד זמין, או מה חסר כדי לבדוק"
+                    }
+                  },
+                  "required": [
+                    "priority",
+                    "title",
+                    "action",
+                    "evidence",
+                    "evidence_keys",
+                    "target",
+                    "action_kind",
+                    "post_uid",
+                    "hypothesis",
+                    "success_check"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "week_summary",
+              "suggestions"
+            ],
+            "additionalProperties": false
+          },
+          "response_status": "completed",
+          "incomplete_details": null,
+          "raw_output": "{\n  \"week_summary\": \"דווחו 400 כניסות לאתר בין 13.9 ל־10.10.2026, אבל קריאת פירוט הפעולות לא התקבלה; אין בכך הוכחה שלא היו רכישות.\",\n  \"suggestions\": [\n    {\n      \"priority\": \"medium\",\n      \"title\": \"לנסות שוב לקרוא את פירוט הפעולות באתר\",\n      \"action\": \"נסו שוב לקרוא את פירוט הפעולות באתר לאותה תקופה, כדי לבדוק אם דווחו רכישות.\",\n      \"evidence\": \"קריאת פירוט הפעולות באתר סומנה כלא זמינה. נתון הכניסות לבדו לא מאפשר לבדוק רכישות.\",\n      \"evidence_keys\": [],\n      \"target\": \"פירוט הפעולות באתר\",\n      \"action_kind\": \"measurement\",\n      \"post_uid\": \"\",\n      \"hypothesis\": \"\",\n      \"success_check\": \"בדקו אם פירוט הפעולות מתקבל בקריאה הבאה, עבור התקופה 13.9–10.10.2026.\"\n    }\n  ]\n}",
+          "execution": "completed"
+        }
+      ],
+      "diagnosis": {
+        "headline": "פירוט הפעולות באתר לא התקבל, ולכן אין כרגע נתון על רכישות; הצעד הראשון הוא לקרוא אותו שוב.",
+        "top_content": [],
+        "bottom_content": [],
+        "funnel_issues": [
+          "קריאת פירוט הפעולות באתר נכשלה בתקופה 13.9–10.10.2026; אין בכך הוכחה שלא היו רכישות."
+        ],
+        "metric_highlights": [
+          "דווחו 400 כניסות לאתר בתקופה 13.9–10.10.2026; נתון הרכישות לא התקבל."
+        ]
+      },
+      "proposal": {
+        "week_summary": "דווחו 400 כניסות לאתר בין 13.9 ל־10.10.2026, אבל קריאת פירוט הפעולות לא התקבלה; אין בכך הוכחה שלא היו רכישות.",
+        "suggestions": [
+          {
+            "priority": "medium",
+            "title": "לנסות שוב לקרוא את פירוט הפעולות באתר",
+            "action": "נסו שוב לקרוא את פירוט הפעולות באתר לאותה תקופה, כדי לבדוק אם דווחו רכישות.",
+            "evidence": "קריאת פירוט הפעולות באתר סומנה כלא זמינה. נתון הכניסות לבדו לא מאפשר לבדוק רכישות.",
+            "evidence_keys": [],
+            "target": "פירוט הפעולות באתר",
+            "action_kind": "measurement",
+            "post_uid": "",
+            "hypothesis": "",
+            "success_check": "בדקו אם פירוט הפעולות מתקבל בקריאה הבאה, עבור התקופה 13.9–10.10.2026."
+          }
+        ]
+      },
+      "bound": {
+        "week_summary": "דווחו 400 כניסות לאתר בין 13.9 ל־10.10.2026, אבל קריאת פירוט הפעולות לא התקבלה; אין בכך הוכחה שלא היו רכישות.",
+        "suggestions": [
+          {
+            "title": "לנסות שוב לקרוא את פירוט הפעולות באתר",
+            "action": "נסו שוב לקרוא את פירוט הפעולות באתר לאותה תקופה, כדי לבדוק אם דווחו רכישות.",
+            "evidence": "קריאת פירוט הפעולות באתר סומנה כלא זמינה. נתון הכניסות לבדו לא מאפשר לבדוק רכישות.",
+            "target": "פירוט הפעולות באתר",
+            "hypothesis": "",
+            "success_check": "בדקו אם פירוט הפעולות מתקבל בקריאה הבאה, עבור התקופה 13.9–10.10.2026.",
+            "priority": "medium",
+            "action_kind": "measurement",
+            "post_uid": "",
+            "target_valid": true,
+            "post_revision": "",
+            "evidence_keys": []
+          }
+        ],
+        "basis": {
+          "version": 1,
+          "snapshot_id": 4,
+          "plan_id": 1,
+          "plan_revision": 0,
+          "sources": [
+            {
+              "key": "ga4",
+              "label": "נתוני האתר",
+              "status": "available",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_ads",
+              "label": "המודעות בפייסבוק ובאינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            },
+            {
+              "key": "meta_social",
+              "label": "נתוני אינסטגרם",
+              "status": "missing",
+              "period": {
+                "start": "2026-09-13",
+                "end": "2026-10-10"
+              },
+              "read_at": "2026-10-11T17:10:26.990512+00:00",
+              "age_days": 0,
+              "stale": false
+            }
+          ],
+          "observations": [
+            {
+              "source": "ga4",
+              "metric": "sessions",
+              "label": "כניסות לאתר",
+              "value": 400.0
+            }
+          ],
+          "limits": [
+            "חלק מפירוט נתוני האתר לא התקבל. ההצעה מסתמכת רק על הנתונים הזמינים; פירוט חסר אינו אפס.",
+            "הנתונים האלה אינם מוכיחים למה משהו קרה. ההצעה היא ניסוי קטן, והצלחה נבדקת רק במה שאפשר למדוד."
+          ],
+          "excluded_sources": false,
+          "service_fingerprint": "",
+          "outcome_fingerprint": "08c0c4b58beeb922797d08cd26dfe38eb6c7a58d29b9322b232400b597156404",
+          "selection": {
+            "ga4": "123",
+            "meta_ads": ""
+          }
+        }
+      },
+      "execution": "completed"
+    }
+  ],
+  "usage": [
+    {
+      "input_tokens": 2910,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 2907,
+      "visible_output_tokens": 120,
+      "thinking_tokens": 130,
+      "billed_output_tokens": 250,
+      "call": 1,
+      "case": "shop_checkout",
+      "seconds": 3.0,
+      "raw_usage": {
+        "input_tokens": 2910,
+        "input_tokens_details": {
+          "cache_write_tokens": 2907,
+          "cached_tokens": 0
+        },
+        "output_tokens": 250,
+        "output_tokens_details": {
+          "reasoning_tokens": 130
+        },
+        "total_tokens": 3160
+      },
+      "estimated_cost_usd": 0.00048868
+    },
+    {
+      "input_tokens": 4089,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 4086,
+      "visible_output_tokens": 315,
+      "thinking_tokens": 0,
+      "billed_output_tokens": 315,
+      "call": 2,
+      "case": "shop_checkout",
+      "seconds": 3.899,
+      "raw_usage": {
+        "input_tokens": 4089,
+        "input_tokens_details": {
+          "cache_write_tokens": 4086,
+          "cached_tokens": 0
+        },
+        "output_tokens": 315,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 4404
+      },
+      "estimated_cost_usd": 0.00066855
+    },
+    {
+      "input_tokens": 3576,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 3573,
+      "visible_output_tokens": 108,
+      "thinking_tokens": 150,
+      "billed_output_tokens": 258,
+      "call": 3,
+      "case": "designer_inquiry_fit",
+      "seconds": 3.263,
+      "raw_usage": {
+        "input_tokens": 3576,
+        "input_tokens_details": {
+          "cache_write_tokens": 3573,
+          "cached_tokens": 0
+        },
+        "output_tokens": 258,
+        "output_tokens_details": {
+          "reasoning_tokens": 150
+        },
+        "total_tokens": 3834
+      },
+      "estimated_cost_usd": 0.00057592
+    },
+    {
+      "input_tokens": 4753,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 4750,
+      "visible_output_tokens": 322,
+      "thinking_tokens": 0,
+      "billed_output_tokens": 322,
+      "call": 4,
+      "case": "designer_inquiry_fit",
+      "seconds": 3.013,
+      "raw_usage": {
+        "input_tokens": 4753,
+        "input_tokens_details": {
+          "cache_write_tokens": 4750,
+          "cached_tokens": 0
+        },
+        "output_tokens": 322,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 5075
+      },
+      "estimated_cost_usd": 0.00075505
+    },
+    {
+      "input_tokens": 3268,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 3265,
+      "visible_output_tokens": 147,
+      "thinking_tokens": 126,
+      "billed_output_tokens": 273,
+      "call": 5,
+      "case": "ads_cheap_clicks",
+      "seconds": 3.127,
+      "raw_usage": {
+        "input_tokens": 3268,
+        "input_tokens_details": {
+          "cache_write_tokens": 3265,
+          "cached_tokens": 0
+        },
+        "output_tokens": 273,
+        "output_tokens_details": {
+          "reasoning_tokens": 126
+        },
+        "total_tokens": 3541
+      },
+      "estimated_cost_usd": 0.00054492
+    },
+    {
+      "input_tokens": 4495,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 4492,
+      "visible_output_tokens": 370,
+      "thinking_tokens": 326,
+      "billed_output_tokens": 696,
+      "call": 6,
+      "case": "ads_cheap_clicks",
+      "seconds": 7.712,
+      "raw_usage": {
+        "input_tokens": 4495,
+        "input_tokens_details": {
+          "cache_write_tokens": 4492,
+          "cached_tokens": 0
+        },
+        "output_tokens": 696,
+        "output_tokens_details": {
+          "reasoning_tokens": 326
+        },
+        "total_tokens": 5191
+      },
+      "estimated_cost_usd": 0.0009098
+    },
+    {
+      "input_tokens": 2739,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 2736,
+      "visible_output_tokens": 146,
+      "thinking_tokens": 0,
+      "billed_output_tokens": 146,
+      "call": 7,
+      "case": "tracking_incomplete",
+      "seconds": 1.897,
+      "raw_usage": {
+        "input_tokens": 2739,
+        "input_tokens_details": {
+          "cache_write_tokens": 2736,
+          "cached_tokens": 0
+        },
+        "output_tokens": 146,
+        "output_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "total_tokens": 2885
+      },
+      "estimated_cost_usd": 0.0004153
+    },
+    {
+      "input_tokens": 3921,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 3918,
+      "visible_output_tokens": 240,
+      "thinking_tokens": 82,
+      "billed_output_tokens": 322,
+      "call": 8,
+      "case": "tracking_incomplete",
+      "seconds": 3.271,
+      "raw_usage": {
+        "input_tokens": 3921,
+        "input_tokens_details": {
+          "cache_write_tokens": 3918,
+          "cached_tokens": 0
+        },
+        "output_tokens": 322,
+        "output_tokens_details": {
+          "reasoning_tokens": 82
+        },
+        "total_tokens": 4243
+      },
+      "estimated_cost_usd": 0.00065105
+    }
+  ],
+  "summary": {
+    "completed_analyses": 4,
+    "estimated_total_usd": 0.00500927,
+    "mean_analysis_cost_usd": 0.00125232,
+    "mean_analysis_seconds": 7.295,
+    "median_analysis_seconds": 6.588,
+    "token_totals": {
+      "input_tokens": 29751,
+      "cached_input_tokens": 0,
+      "cache_write_tokens": 29727,
+      "visible_output_tokens": 1768,
+      "thinking_tokens": 814,
+      "billed_output_tokens": 2582
+    }
+  },
+  "runner_sha256": "3c5890e29d2c1ba9d808a65991baf567d548fae96266e7af31652bef643e4e74"
+}

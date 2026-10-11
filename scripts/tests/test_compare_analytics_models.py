@@ -10,6 +10,17 @@ spec.loader.exec_module(comparison)
 
 
 class ModelComparisonTest(unittest.TestCase):
+    def test_luna_cached_and_written_input_accounting(self):
+        usage = {"input_tokens": 1000, "cached_input_tokens": 500,
+                 "cache_write_tokens": 300, "billed_output_tokens": 100}
+        self.assertEqual(comparison.cost("gpt-6-luna", usage), .0001125)
+
+    def test_explicit_model_preserved_and_wrong_provider_rejected(self):
+        self.assertEqual(comparison.select_model("openai", "gpt-6-luna"), "gpt-6-luna")
+        self.assertEqual(comparison.select_model("google", "gemini-3.5-flash-lite"), "gemini-3.5-flash-lite")
+        with self.assertRaises(ValueError):
+            comparison.select_model("google", "gpt-6-luna")
+
     def test_sol_actual_usage_accounts_for_writes_and_reasoning_once(self):
         # Saved first response: output_tokens=554 already includes 383 reasoning tokens.
         usage = {"input_tokens": 2910, "cached_input_tokens": 0,
