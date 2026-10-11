@@ -18,8 +18,18 @@ from unittest.mock import patch
 
 RATES = {  # Standard USD/million tokens, checked 2026-10-11; not invoice totals.
     "gemini-3.8-flash": {"input": .75, "cached": .075, "cache_write": 0., "output": 3.75},
+    "gemini-3.5-flash-lite": {"input": .30, "cached": .03, "cache_write": 0., "output": 2.50},
     "gpt-6.1-sol": {"input": 2., "cached": .10, "cache_write": 2.50, "output": 10.},
+    "gpt-6-luna": {"input": .10, "cached": .01, "cache_write": .125, "output": .50},
 }
+
+
+def select_model(provider, requested=None):
+    model = requested or ("gemini-3.8-flash" if provider == "google" else "gpt-6.1-sol")
+    prefix = "gemini-" if provider == "google" else "gpt-"
+    if model not in RATES or not model.startswith(prefix):
+        raise ValueError("Model must match the selected provider")
+    return model
 
 
 def closed_schema(schema):
@@ -52,6 +62,9 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--live", action="store_true")
     parser.add_argument("--provider", choices=("google", "openai"), required=True)
+    parser.add_argument("--model", choices=tuple(RATES), help="Explicit model; defaults preserve the original comparison")
+    parser.add_argument("--reasoning", choices=("medium", "low"), default="medium",
+                        help="Controlled reasoning configuration, independent of the unchanged production prompt")
     parser.add_argument("--env-file", type=Path, required=True)
     parser.add_argument("--fixtures", type=Path, required=True,
                         help="Saved synthetic evaluation containing exactly four cases")
@@ -59,6 +72,10 @@ def main():
     args = parser.parse_args()
     if not args.live or args.output.exists():
         parser.error("--live and a new output path are required; no requests made")
+    try:
+        model = select_model(args.provider, args.model)
+    except ValueError as exc:
+        parser.error(str(exc))
     fixture_bytes = args.fixtures.read_bytes()
     fixtures = json.loads(fixture_bytes)
     if fixtures.get("synthetic") is not True or len(fixtures.get("cases", [])) != 4:
@@ -76,12 +93,12 @@ def main():
     import httpx
     from google import genai
     from google.genai import types
-    model = "gemini-3.8-flash" if args.provider == "google" else "gpt-6.1-sol"
     results = {"synthetic": True, "model": model, "provider": args.provider,
                "revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=root, text=True).strip(),
                "fixture_sha256": hashlib.sha256(fixture_bytes).hexdigest(),
                "method": "production two-stage pipeline; each model's own diagnosis informs its recommendation",
-               "thinking": "MEDIUM; provider labels do not imply equal compute",
+               "thinking": f"{args.reasoning.upper()}; provider labels do not imply equal compute",
+               "production_prompt_thinking": "MEDIUM; API effort overridden only for this experiment",
                "output_token_cap": 4096, "timeout_seconds": 60,
                "calls_limit": 8, "paid_retries": 0, "calls_made": 0,
                "standard_rates_usd_per_million": RATES[model],
@@ -109,7 +126,7 @@ def main():
                 response = google.models.generate_content(model=model, contents=prompt,
                     config=types.GenerateContentConfig(system_instruction=SYSTEM_HE,
                         response_mime_type="application/json", response_json_schema=schema,
-                        thinking_config=types.ThinkingConfig(thinking_level="MEDIUM"), max_output_tokens=4096))
+                        thinking_config=types.ThinkingConfig(thinking_level=args.reasoning.upper()), max_output_tokens=4096))
                 raw = response.usage_metadata.model_dump(mode="json", exclude_none=True)
                 usage = {"input_tokens": raw.get("prompt_token_count", 0),
                          "cached_input_tokens": raw.get("cached_content_token_count", 0),
@@ -123,7 +140,7 @@ def main():
                 response = http.post("https://api.openai.com/v1/responses",
                     headers={"Authorization": "Bearer " + key}, json={
                         "model": model, "instructions": SYSTEM_HE, "input": prompt,
-                        "reasoning": {"effort": "medium"}, "max_output_tokens": 4096,
+                        "reasoning": {"effort": args.reasoning}, "max_output_tokens": 4096,
                         "store": False, "service_tier": "default",
                         "text": {"format": {"type": "json_schema", "name": "marketing_analysis",
                                              "strict": True, "schema": schema}}})

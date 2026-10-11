@@ -5,6 +5,8 @@ small evaluation it produced more specific actions and better comparison periods
 Gemini 3.8 Flash was less verbose. Both selected the intended primary action in all
 four cases. This supports a further Sol pilot, rather than a production-wide migration.
 
+For the faster tier, see the follow-up [GPT-6 Luna versus fresh Flash Lite evaluation](luna-comparison-2026-10-11.md).
+
 ## What we tested
 
 On 11 October 2026 we made eight text requests per model: diagnosis followed by one
