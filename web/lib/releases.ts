@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-12-text-fallback", date: "2026-10-12",
+    title: "מנוע גיבוי לכתיבה ולניתוח",
+    summary: "GPT נשאר המנוע הראשי. כשהשירות לא זמין, Gemini מנסה להשלים את הכתיבה או הניתוח באותה שפה ועם אותו מידע על העסק.",
+    detail: "יצירת תמונות וסרטונים נשארת במנועים הקיימים.",
+    href: "/posts", action: "לפתוח את הפוסטים",
+  },
+  {
     id: "2026-10-11-gpt-text-stack", date: "2026-10-11",
     title: "מנועי כתיבה וניתוח חדשים",
     summary: "המחקר, התוכנית והפוסטים נכתבים עכשיו בעזרת GPT. גם ניתוח התוצאות והשאלות על העסק משתמשים במנוע החדש.",

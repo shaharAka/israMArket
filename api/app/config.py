@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     # Keep the legacy Gemini slot names below as the rollback configuration. The
     # shared text gateway resolves them to GPT when this provider is selected.
     text_provider: Literal["gemini", "openai"] = "gemini"
+    text_fallback_provider: Literal["none", "gemini"] = "none"
     openai_api_key: str = ""
     openai_strategy_model: Literal["gpt-6.1-sol"] = "gpt-6.1-sol"
     openai_lite_model: Literal["gpt-6-luna"] = "gpt-6-luna"

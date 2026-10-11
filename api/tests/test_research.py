@@ -695,6 +695,15 @@ class RunTest(DbCase):
         default = research.run_research(self.db, self.business, now=NOW + timedelta(days=1))
         self.assertEqual(default.model, research.get_settings().gemini_strategy_model)
 
+    def test_google_fallback_records_actual_synthesizer(self):
+        from app.services.gemini import ProviderText
+        self.offline()
+        run = research.run_research(self.db, self.business, now=NOW,
+            synthesize=lambda prompt, schema: ProviderText(model_output(), "gemini-3.8-flash"),
+            model_label="gpt-6.1-sol")
+        self.assertEqual(run.model, "gemini-3.8-flash")
+        self.model.assert_not_called()
+
     def test_model_failure_keeps_findings(self):
         self.offline(model=mock.Mock(side_effect=RuntimeError("חסר GEMINI_API_KEY")))
         run = research.run_research(self.db, self.business, now=NOW)

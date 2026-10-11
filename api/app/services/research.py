@@ -1759,10 +1759,13 @@ def run_research(
     previous_list = (previous_insights or {}).get("items") if isinstance(previous_insights, dict) else []
     run_status = "done"
     headline, insights, error_he, error_detail = "", [], "", ""
+    actual_model = ""
     if findings:
         prompt = insights_prompt(db, business, findings, statuses, previous_list or [])
         try:
-            raw = loads(synthesize(prompt, INSIGHTS_SCHEMA), {})
+            response = synthesize(prompt, INSIGHTS_SCHEMA)
+            actual_model = getattr(response, "provider_model", "")
+            raw = loads(response, {})
             headline, insights = clean_insights(raw, findings, prompt)
             if not insights:
                 run_status, error_he = "insights_failed", "המודל לא החזיר תובנות שנשענות על הממצאים. הממצאים נשמרו."
@@ -1786,7 +1789,7 @@ def run_research(
             {"headline": headline, "items": insights, "error_he": error_he, "error_detail": error_detail}
         ),
         sources_json=dumps(statuses),
-        model=text_model(model_label or settings.gemini_strategy_model) if run_status == "done" else "",
+        model=(actual_model or text_model(model_label or settings.gemini_strategy_model)) if run_status == "done" else "",
         created_at=now,
     )
     db.add(run)
