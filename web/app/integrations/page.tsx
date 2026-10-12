@@ -15,6 +15,7 @@ import { GUIDES } from "@/components/help/guides";
 import { HowToFind } from "@/components/help/HowToFind";
 import { SendToHelper } from "@/components/help/SendToHelper";
 import { MetaConnection } from "@/components/integrations/MetaConnection";
+import { TikTokConnection } from "@/components/integrations/TikTokConnection";
 import { connectionRecommendation, type ConnectionKey } from "@/components/integrations/connectionRecommendation";
 import { PendingLinks } from "@/components/integrations/PendingLinks";
 import { SourceReadState, sourcePresentation } from "@/components/integrations/SourceReadState";
@@ -95,11 +96,9 @@ export default function IntegrationsPage() {
   const [secret, setSecret] = useState("");
   const [webhookUrl, setWebhookUrl] = useState("");
   const [setup, setSetup] = useState<SetupPayload | null>(null);
-  const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(() => {
-    if (typeof window === "undefined") return undefined;
-    const key = window.location.hash.slice(1);
-    return ["website", "whatsapp", "ga4", "meta"].includes(key) ? key as ConnectionKey : undefined;
-  });
+  // Fragments are not sent during server rendering. Read them after mount so
+  // hydration cannot close the consent-return row before its data arrives.
+  const [expanded, setExpanded] = useState<ConnectionKey | null | undefined>(undefined);
 
   // Selection still needs the owner's confirmation, even when only one site is listed.
   const [selectedGa4Property, setSelectedGa4Property] = useState("");
@@ -147,13 +146,23 @@ export default function IntegrationsPage() {
   }, []);
 
   useEffect(() => {
+    let active = true;
+    const key = window.location.hash.slice(1);
+    if (["website", "whatsapp", "ga4", "meta", "tiktok"].includes(key)) {
+      queueMicrotask(() => { if (active) setExpanded(key as ConnectionKey); });
+    }
     reload().catch((err) =>
       setError(err instanceof Error ? err.message : "לא הצלחנו לטעון את החיבורים.")
     );
+    return () => { active = false; };
   }, [reload]);
 
   const ga4Item = data?.integrations.find((item) => item.provider === "ga4");
   const metaItem = data?.integrations.find((item) => item.provider === "meta");
+  const tiktokItem = data?.integrations.find((item) => item.provider === "tiktok");
+  const tiktokStatus = tiktokItem?.status === "select_account" ? t("נשאר לבחור חשבון")
+    : tiktokItem?.connected ? t(({ ready: "יש נתונים", empty: "עוד אין פעילות", partial: "יש נתונים חלקיים", reconnect: "צריך לחדש גישה", permission: "צריך לאשר גישה", unavailable: "הקריאה לא הושלמה" } as Record<string, string>)[tiktokItem.tiktok_data?.source_readiness.status || ""] || "עוד לא נבדק")
+    : data?.tiktok_ready ? t("לא מחובר") : t("עדיין לא זמין");
 
   const ga4Connected = Boolean(ga4Item?.connected);
   const ga4State = ga4Item?.source_readiness;
@@ -257,10 +266,15 @@ export default function IntegrationsPage() {
   const recommendation = connectionRecommendation(business, setup, data, Boolean(whatsapp?.number_e164));
   const primaryKey = recommendation?.key || null;
   // Providers the server cannot offer yet, and that are not already connected (the demo's are).
-  const unavailableCount = data && !demo ? [!data.ga4_ready && !ga4Connected, !data.meta_ready && !metaConnected].filter(Boolean).length : 0;
+  const unavailableCount = data && !demo ? [!data.ga4_ready && !ga4Connected, !data.meta_ready && !metaConnected, !data.tiktok_ready && !tiktokItem?.connected].filter(Boolean).length : 0;
   const activeKey = expanded === undefined ? primaryKey : expanded;
 
   const connectionRows: Record<ConnectionKey, ReactNode> = {
+    tiktok: (
+      <ConnectionSection source="tiktok" title={t("טיקטוק")} status={tiktokStatus} account={tiktokItem?.display_name} open={activeKey === "tiktok"} onOpen={setExpanded}>
+        <TikTokConnection item={tiktokItem} ready={Boolean(data?.tiktok_ready)} demo={demo} primary={primaryKey === "tiktok"} onChanged={() => reload(true)} />
+      </ConnectionSection>
+    ),
     website: (
 <ConnectionSection source="website" title={t("האתר של העסק")} status={business?.website_url ? t("כתובת נשמרה") : t("לבחירה")} open={activeKey === "website"} onOpen={setExpanded}>
           <section className={ROW_CARD}>
@@ -480,7 +494,7 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
   };
-  const sourceOrder: ConnectionKey[] = ["website", "whatsapp", "ga4", "meta"];
+  const sourceOrder: ConnectionKey[] = ["website", "whatsapp", "ga4", "meta", "tiktok"];
   if (primaryKey) { sourceOrder.splice(sourceOrder.indexOf(primaryKey), 1); sourceOrder.unshift(primaryKey); }
 
   return (
@@ -552,7 +566,7 @@ export default function IntegrationsPage() {
             {/* The open row right below already carries the title; say it only when it is closed. */}
             {activeKey !== primaryKey ? <h2 className="text-[20px] font-semibold text-[var(--ink)]">{t(recommendation.title)}</h2> : null}
             <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{t(recommendation.why)}</p>
-          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 2 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p>}
+          </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 3 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p>}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
             <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : recommendation ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>

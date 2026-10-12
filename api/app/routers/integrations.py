@@ -17,10 +17,10 @@ from app.security import (
     decrypt_secret,
     encrypt_secret,
 )
-from app.services import ga4, ga4_readiness, google_login, meta, meta_readiness
+from app.services import ga4, ga4_readiness, google_login, meta, meta_readiness, tiktok, tiktok_data
 from app.services.jsonutil import dumps, loads
 from app.services.netguard import UnsafeUrlError, assert_public_url
-from app.routers import meta_connections
+from app.routers import meta_connections, tiktok_connections
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
 
@@ -32,8 +32,10 @@ def _public_integration(item: Integration) -> dict:
         "status": item.status,
         "external_id": item.external_id,
         "display_name": item.display_name,
-        "connected": item.status == "connected" and bool(item.access_token_enc) and (item.provider != "ga4" or bool(item.external_id)),
-        "source_readiness": ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item) if item.provider == "meta" else None,
+        "connected": item.status == "connected" and bool(item.access_token_enc) and (item.provider not in {"ga4", "tiktok"} or bool(item.external_id)),
+        "source_readiness": ga4_readiness.public_state(item) if item.provider == "ga4" else meta_readiness.public_state(item) if item.provider == "meta" else tiktok_data.public_state(item) if item.provider == "tiktok" else None,
+        "tiktok_data": tiktok_data.public_data(item) if item.provider == "tiktok" else None,
+        "connection_attempt": extra.get("connection_attempt") if item.provider == "tiktok" else None,
         "properties": extra.get("properties"),
         "pages": extra.get("pages"),
         # What Google actually granted on this connection. Search Console lives on the
@@ -81,6 +83,7 @@ def list_integrations(business: Business = Depends(get_business)) -> dict:
     return {
         "ga4_ready": ga4.ga4_configured(),
         "meta_ready": meta.meta_configured(),
+        "tiktok_ready": tiktok.configured_for(business.owner.email),
         "integrations": [_public_integration(item) for item in business.integrations],
         "webhooks": [
             {"id": hook.id, "url": hook.url, "events": hook.events, "created_at": hook.created_at.isoformat()}
@@ -199,6 +202,7 @@ def ga4_read(business: Business = Depends(get_business), db: Session = Depends(g
 
 
 router.include_router(meta_connections.router)
+router.include_router(tiktok_connections.router)
 
 
 @router.post("/meta/account")
@@ -256,7 +260,7 @@ def delete_integration(
     business: Business = Depends(get_business),
     db: Session = Depends(get_db),
 ) -> dict:
-    if provider not in ("ga4", "meta"):
+    if provider not in ("ga4", "meta", "tiktok"):
         raise HTTPException(status_code=400, detail="אין חיבור כזה")
     item = (
         db.query(Integration)
@@ -264,6 +268,8 @@ def delete_integration(
         .first()
     )
     if item:
+        if provider == "tiktok":
+            return {"ok": True, "remote_revoked": tiktok_data.disconnect(db, item)}
         db.delete(item)
         db.commit()
     if provider == "ga4":

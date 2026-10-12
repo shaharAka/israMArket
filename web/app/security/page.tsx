@@ -136,6 +136,11 @@ export default function SecurityPage() {
             <Rows rows={GOOGLE_SCOPES} />
             <LegalSubhead>פייסבוק ואינסטגרם</LegalSubhead>
             <Rows rows={META_SCOPES} />
+            <LegalSubhead>טיקטוק</LegalSubhead>
+            <Rows rows={[
+              { title: "לזהות את חשבון הטיקטוק שבחרתם", body: "כשמחברים את טיקטוק, נקרא את השם והמזהה של החשבון שבחרתם, בקריאה בלבד.", code: "user.info.basic" },
+              { title: "לראות את הסרטונים הציבוריים שלכם", body: "כותרות, קישורים, תאריכי פרסום ומספרי צפיות, לייקים, תגובות ושיתופים. אלה מספרים מצטברים לכל סרטון, לא פניות או רכישות. לא מבקשים הרשאת פרסום.", code: "video.list" },
+            ]} />
           </LegalMore>
         </Section>
 

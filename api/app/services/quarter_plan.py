@@ -108,7 +108,7 @@ INTEGRATIONS: dict[str, dict] = {
     "facebook_insights": {"name_he": "הנתונים של עמוד הפייסבוק", "site": False, "social": "facebook",
                           "what_he": "כמה אנשים ראו כל פוסט, הגיבו ושיתפו"},
     "tiktok_business": {"name_he": "הנתונים של הטיקטוק", "site": False, "social": "tiktok",
-                        "what_he": "צפיות, כמה צפו עד הסוף ומאיפה הגיעו"},
+                        "what_he": "צפיות, לייקים, תגובות ושיתופים של הסרטונים הציבוריים"},
 }
 def _as_hypothesis(text: str) -> str:
     """'אנחנו מהמרים ש…' → 'אנחנו מניחים ש…': the plan tests hypotheses, it doesn't bet."""

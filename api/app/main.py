@@ -128,6 +128,26 @@ class RequestScopeMiddleware:
 
 
 app.add_middleware(RequestScopeMiddleware)
+
+
+class CallbackLogMiddleware:
+    """OAuth query values reach the handler, but not the server's access-log scope."""
+    PATHS = {"/auth/google/callback", "/integrations/ga4/callback",
+             "/integrations/meta/callback", "/integrations/tiktok/callback"}
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope.get("type") == "http" and scope.get("path") in self.PATHS:
+            application_scope = dict(scope)
+            scope["query_string"] = b""
+            await self.app(application_scope, receive, send)
+        else:
+            await self.app(scope, receive, send)
+
+
+app.add_middleware(CallbackLogMiddleware)
 # Every Gemini text call reports its tokens; this one records them per account.
 model_usage.install()
 
