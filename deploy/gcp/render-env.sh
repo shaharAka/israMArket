@@ -81,6 +81,16 @@ line() {
   printf "%s='%s'\n" "$key" "$value"
 }
 
+# Sandbox and production have distinct TikTok credentials. Never silently fall back
+# to production credentials for the tester-only environment. Do not source extra.env.
+tiktok_secret_prefix=tiktok
+if [[ -f "$EXTRA_FILE" ]]; then
+  tiktok_mode=$(sed -n 's/^TIKTOK_ACCESS_MODE=//p' "$EXTRA_FILE" | tail -n 1)
+  case "$tiktok_mode" in
+    sandbox|"'sandbox'"|'"sandbox"') tiktok_secret_prefix=tiktok-sandbox ;;
+  esac
+fi
+
 umask 077
 mkdir -p "$OUT_DIR"
 tmp=$(mktemp "$OUT_DIR/.app.env.XXXXXX")
@@ -113,8 +123,8 @@ trap 'rm -f "$tmp"' EXIT
   line GOOGLE_CLIENT_SECRET "$(secret google-client-secret optional)"
   line META_APP_ID "$(secret meta-app-id optional)"
   line META_APP_SECRET "$(secret meta-app-secret optional)"
-  line TIKTOK_CLIENT_KEY "$(secret tiktok-client-key optional)"
-  line TIKTOK_CLIENT_SECRET "$(secret tiktok-client-secret optional)"
+  line TIKTOK_CLIENT_KEY "$(secret "$tiktok_secret_prefix-client-key" optional)"
+  line TIKTOK_CLIENT_SECRET "$(secret "$tiktok_secret_prefix-client-secret" optional)"
   # PayPal subscription billing (docs/billing.md). Blank = "payment not open yet".
   # Non-secret companions go in $EXTRA_FILE: PAYPAL_ENV (sandbox|live), PAYPAL_PLAN_ID,
   # BILLING_ENFORCE (default false).

@@ -22,6 +22,8 @@ container gets them from there. The web and Caddy containers never see them.
 | `meta-app-secret` | `META_APP_SECRET` | no | Same page. |
 | `tiktok-client-key` | `TIKTOK_CLIENT_KEY` | no | Owner TikTok developer app, Login Kit/Display. Leave off until genuine sandbox access is verified. |
 | `tiktok-client-secret` | `TIKTOK_CLIENT_SECRET` | no | Same app; server only. See docs/tiktok-connector.md for the separate access/review gate. |
+| `tiktok-sandbox-client-key` | `TIKTOK_CLIENT_KEY` in sandbox mode | no | Separate credentials for the enrolled TikTok test accounts; selected automatically when TIKTOK_ACCESS_MODE=sandbox. |
+| `tiktok-sandbox-client-secret` | `TIKTOK_CLIENT_SECRET` in sandbox mode | no | Sandbox server secret. Never substitute production credentials for an unavailable sandbox secret. |
 | `meta-model-api-key` | `META_MODEL_API_KEY` | no | The Muse Spark experiment. It only has an effect if `POST_MODEL=muse-spark` is also set in `/etc/isramarket/extra.env` on the VM. |
 | `paypal-client-id` | `PAYPAL_CLIENT_ID` | no | developer.paypal.com > Apps & Credentials > the app (Sandbox or Live, matching `PAYPAL_ENV`) > Client ID. Public by design (the browser's PayPal buttons use it), kept here with its secret so they rotate together. |
 | `paypal-client-secret` | `PAYPAL_CLIENT_SECRET` | no | Same page > Secret. |

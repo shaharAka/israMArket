@@ -50,8 +50,20 @@ OAuth codes, grants or secrets are returned in URLs, logs or public integration 
 
 ## Operator setup and genuine QA gate
 
-No TikTok application credentials existed in the project's Secret Manager at this check.
-Inspect/create the owner's actual developer registration and associated app; account terms
+On 12 October 2026 the owner completed developer registration. The individual app and
+the "IsraMarket connector QA" sandbox exist. Production and sandbox credentials are
+stored separately in Secret Manager, with only the existing VM service identity added
+as a reader. Sandbox Login Kit, the two minimal scopes and the owned-domain callback
+have been saved. The current portal exposes `video.list` in Add scopes, rather than a
+separate Display API product tile. No target account or genuine read has passed yet.
+The production URL prefix `https://www.isramarket.co.il/` has been verified using the
+provider's public signature file (PR #201, deployed revision b8f0c83824e917aa63ac6756c277fb3bb1c9abfa).
+
+Production review still requires the real sandbox demonstration. The portal currently
+requires a demo video even when saving its production draft, so production setup remains
+unfinished until that recording exists; do not supply a simulator recording as proof.
+
+When preparing another environment, inspect the actual registration and associated app; account terms
 and any sensitive permission approval belong to the owner at the submission stage.
 Prepare app name IsraMarket, owned website, privacy/terms/deletion URLs and the callback
 above. Obtain the provider's sandbox users and products/scopes; do not claim approval.
@@ -59,6 +71,9 @@ above. Obtain the provider's sandbox users and products/scopes; do not claim app
 Store `tiktok-client-key` and `tiktok-client-secret` in Secret Manager and grant the existing
 VM service identity read access to those secrets. render-env.sh loads optional values;
 keys never belong in git, browser settings, customer forms or extra.env.
+Sandbox uses `tiktok-sandbox-client-key` and `tiktok-sandbox-client-secret` instead.
+render-env.sh chooses these when the configured mode is `sandbox`, with no fallback to
+production credentials if either sandbox secret is absent.
 
 Use `TIKTOK_ACCESS_MODE=sandbox` plus the explicit operator-managed
 `TIKTOK_SANDBOX_EMAILS` allowlist in extra.env for genuine enrolled testers only. Others
