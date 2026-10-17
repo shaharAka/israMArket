@@ -18,7 +18,7 @@ import styles from "./process-story.module.css";
 import "./lv2.css";
 import "./showcase.css";
 
-/** The audience line is information, never a hidden business-type selection. */
+/** One explicit role selection informs the examples and the signup route. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const t = useCopy();
   const { locale } = useLanguage();
@@ -56,24 +56,17 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
         <p className={styles.signupNote}><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></p>
       </div></section>
       <div id="story" className={`lv2-wrap ${styles.story}`}>
-        <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><span dir="ltr" aria-hidden="true">01—07</span></div>
+        <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><span dir="ltr" aria-hidden="true">01—{String(PROCESS_STORY.length).padStart(2, "0")}</span></div>
         {PROCESS_STORY.map((step, index) => <section key={step.id} id={step.id} className={styles.section} aria-labelledby={`process-${step.id}`}>
           <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">0{index + 1}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
             {step.id === "research" && <fieldset className={styles.roleSelector} aria-label={t("סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map(item => <button type="button" key={item.segment} aria-pressed={role === item.segment} onClick={() => selectRole(item.segment)}><Copy text={item.label} /></button>)}</div></fieldset>}
             <p className={styles.sectionBody}><Copy text={step.body} /></p>
             <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><Copy text="להתחיל חודש בחינם" /></Link>
+            {step.id === "trial" && <div id="price" className={styles.priceDetails}><strong><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></strong><span><Copy text={VAT_NOTE} /></span><p><Copy text="המנוי כולל תוכנית חודשית, תכנון קמפיין, כתיבה ועיצוב פוסטים וניתוח התוצאות. יצירת תמונות וסרטונים כפופה למכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p></div>}
           </div>
           <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />
         </section>)}
       </div>
-      <section id="price" className={styles.trial} aria-labelledby="process-trial"><div className={`lv2-wrap ${styles.trialInner}`}>
-        <span className={styles.sectionLabel}><Copy text="אפשר פשוט להתחיל" /></span>
-        <h2 id="process-trial"><Copy text="חודש ראשון חינם." /></h2>
-        <p><Copy text="להכיר את העסק, לבנות תוכנית ולהתחיל להכין את הקמפיין הראשון. הכול במקום אחד." /></p>
-        <Link href={start} className={`lv2-btn ${styles.start}`}><Copy text="להתחיל חודש בחינם" /></Link>
-        <p className={styles.signupNote}><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></p>
-        <div className={styles.priceDetails}><strong><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></strong><span><Copy text={VAT_NOTE} /></span><p><Copy text="המנוי כולל תוכנית חודשית, תכנון קמפיין, כתיבה ועיצוב פוסטים וניתוח התוצאות. יצירת תמונות וסרטונים כפופה למכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p></div>
-      </div></section>
       <section className={`lv2-wrap ${styles.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="עוד כמה דברים שכדאי לדעת" /></h2><div>
         <details><summary><Copy text="צריך לחבר הכול כדי להתחיל?" /></summary><p><Copy text="לא. מתחילים בשיחה ובמחקר על המידע הציבורי של העסק. אחרי ההרשמה, מוסיפים חיבורים לפי הצורך וממשיכים לבנות את התוכנית." /></p></details>
         <details><summary><Copy text="מי מפרסם את הפוסטים?" /></summary><p><Copy text="אנחנו מכינים את החומרים. לך נשאר לבדוק את התמונה והפרטים, לערוך אם צריך ולפרסם. שום דבר לא מתפרסם בלי החלטה שלך." /></p></details>

@@ -1,4 +1,4 @@
-.page { --process-wash: #f4f6f3; --process-warm: #f7f5f0; --process-line: #dce3db; --process-green: #49664c; }
+.page { --scene-violet: #dedbf9; --scene-violet-ink: #5b509c; --scene-mint: #c8e6d9; --scene-peach: #f5d6bd; --process-wash: #f4f6f3; --process-warm: #f7f5f0; --process-line: #dce3db; --process-green: #49664c; }
 .headerRow { justify-content: space-between; flex-wrap: nowrap !important; direction: rtl; }
 /* Utilities stay in the same physical slots when the content direction changes. */
 .page .header .headerActions { display: grid; grid-template-columns: 90px 170px 100px; gap: 16px; align-items: center; direction: ltr; margin: 0; }
@@ -74,84 +74,9 @@
 .hubRow { display: flex; gap: 6px; margin-top: 14px; font-size: 12px; line-height: 1.6; }
 .hubRow svg { color: var(--process-green); flex-shrink: 0; width: 14px; margin-top: 2px; }
 .connectionFoot { position: absolute; bottom: 50px; left: 8%; right: 8%; font-size: 13px; text-align: center; color: var(--ink-muted); direction: rtl; }
-.planSheet { position: absolute; inset: 30px 9% 38px; padding: 25px; background: var(--paper); border-radius: 16px; box-shadow: 0 20px 40px #14203a0c; }
-.sheetHeading { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.planSheet h3 { font-size: 21px; line-height: 1.4; font-weight: 500; margin-top: 16px; }
-.planAudience { font-size: 12px; line-height: 1.6; color: var(--ink-muted); margin: 8px 0 14px; }
-.planWeeks { display: grid; }
-.week { display: flex; gap: 12px; align-items: center; padding-block: 12px; border-top: 1px solid var(--rule); }
-.week > span { color: var(--ink-muted); font-size: 10px; white-space: nowrap; }
-.week > div { flex: 1; }
-.week strong { display: block; font-size: 13px; font-weight: 500; }
-.week small { display: block; font-size: 10px; line-height: 1.5; margin-top: 3px; color: var(--ink-muted); }
-.week i { color: var(--process-green); }
-.planPointer { bottom: 42px; inset-inline-end: 12%; }
-.goals { position: absolute; inset: 57px 12% 62px; }
-.goalOptions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
-.goalOptions > span { display: grid; place-items: center; min-height: 44px; padding: 8px; background: var(--paper); border: 1px solid transparent; border-radius: 10px; font-size: 14px; line-height: 1.5; text-align: center; }
-.goalOptions > .goalOption0 { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
-.goalChoice { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px; min-height: 78px; margin-top: 16px; background: var(--paper); border-radius: 12px; font-size: 18px; line-height: 1.5; }
-.goalNumbers { display: flex; align-items: center; gap: 20px; justify-content: space-between; margin-top: 35px; }
-.goalNumbers small { font-size: 12px; color: var(--ink-muted); }
-.goalNumbers strong { display: block; font-size: 53px; font-weight: 500; line-height: 1.3; letter-spacing: -.03em; }
-.goalNumbers > div:last-child strong { color: var(--primary); }
-.goalConnector { width: 20%; height: 1px; background: var(--rule-dark); }
-.goalTrack { height: 7px; background: var(--paper); border-radius: 99px; overflow: hidden; margin-top: 18px; }
-.goalTrack > span { display: block; height: 100%; width: 66%; border-radius: inherit; background: var(--primary); }
-.goalDefinition { display: flex; align-items: center; gap: 10px; font-size: 13px; line-height: 1.7; color: var(--ink-soft); margin-top: 24px; }
-.goalDefinition svg { flex-shrink: 0; }
-.goalPointer { top: 56px; inset-inline-end: 20%; }
-.campaign { position: absolute; inset: 0; }
-.campaignBrief { position: absolute; top: 28px; inset-inline: 8%; }
-.campaignBrief strong { display: block; font-size: 17px; font-weight: 500; margin-top: 5px; }
-.campaignBuild { position: absolute; inset: 112px 9% 60px; display: grid; gap: 12px; align-content: start; }
-.campaignBuild > div { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--paper); box-shadow: 0 6px 20px #14203a07; }
-.campaignBuild small { color: var(--ink-muted); font-size: 11px; display: block; margin-bottom: 3px; }
-.campaignBuild p { font-size: 14px; line-height: 1.5; }
-.campaignBuild > div > svg { flex-shrink: 0; width: 32px; height: 32px; margin-inline-start: auto; color: var(--ink-muted); }
-.visual:not([data-reduced="true"]) .campaignBuild > div { animation: buildRow 650ms ease both; }
-.campaignBuild > div:nth-child(2) { animation-delay: 650ms !important; }
-.campaignBuild > div:nth-child(3) { animation-delay: 1300ms !important; }
-.postFan { position: absolute; inset: 105px 7% 65px; max-width: 560px; margin-inline: auto; }
-.fanPost { position: absolute; width: 30%; transform-origin: center 80%; }
-.fan0 { left: 1%; top: 22px; transform: rotate(-4deg); z-index: 1; }
-.fan1 { left: 35%; top: 0; transform: rotate(0); z-index: 3; }
-.fan2 { right: 1%; top: 22px; transform: rotate(4deg); z-index: 2; }
-.fanPost > div { border-radius: 7px; overflow: hidden; box-shadow: 0 14px 32px #14203a20; }
-.postFan[data-specific="true"] { inset-inline: 5%; }
-.postFan[data-specific="true"] .fanPost { width: 36%; }
-.postFan[data-specific="true"] .fan0 { left: 0; transform: rotate(-7deg); }
-.postFan[data-specific="true"] .fan1 { left: 32%; }
-.postFan[data-specific="true"] .fan2 { right: 0; transform: rotate(7deg); }
 .clipPost { aspect-ratio: 4 / 5; background: var(--ink); }
 .clipPost video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .clipPost[data-software="true"] video { object-fit: contain; background: var(--paper); }
-.formatCard { min-height: 235px; padding: 17px 13px; background: var(--paper); }
-.format1 { background: #eef1f5; }
-.format2 { background: #e2e8e4; }
-.formatCard > .miniLabel { display: block; font-size: 9px; }
-.formatCard > svg { display: block; width: 76%; height: 70px; margin: 14px auto 10px; color: var(--ink-soft); }
-.formatCard > strong { display: block; font-size: 17px; font-weight: 500; }
-.formatLines { display: grid; gap: 5px; margin: 12px 0 16px; }
-.formatLines i { height: 4px; background: currentColor; opacity: .15; border-radius: 9px; }
-.formatLines i:last-child { width: 70%; }
-.formatReady { display: flex; align-items: center; gap: 4px; font-size: 9px; line-height: 1.5; color: var(--ink-muted); }
-.formatReady svg { flex-shrink: 0; width: 12px; color: var(--process-green); }
-.campaignFoot { position: absolute; inset-inline: 8%; bottom: 35px; color: var(--ink-muted); font-size: 12px; text-align: center; }
-.learning { position: absolute; inset: 0; }
-.reports { position: absolute; inset-inline: 8%; top: 30px; display: flex; gap: 10px; }
-.report { flex: 1; min-width: 0; padding: 13px; background: var(--paper); border-radius: 10px; box-shadow: 0 8px 26px #14203a08; }
-.report > span { font-size: 9px; font-weight: 500; color: var(--ink-muted); white-space: nowrap; }
-.report > svg { width: 100%; height: 50px; margin-block: 10px 2px; fill: none; stroke: var(--primary); stroke-width: 2; }
-.reportBars { height: 20px; display: flex; align-items: flex-end; gap: 5px; }
-.reportBars i { width: 12%; height: 40%; background: var(--primary-soft); }
-.reportBars i:nth-child(2n) { height: 80%; }
-.reportBars i:nth-child(3) { height: 65%; }
-.finding { position: absolute; inset-inline: 9%; bottom: 58px; top: 170px; padding: 22px; background: var(--paper); box-shadow: 0 14px 38px #14203a12; border-radius: 14px; }
-.finding h3 { font-size: 20px; font-weight: 500; line-height: 1.4; margin-top: 8px; }
-.nextAction { display: flex; align-items: center; gap: 10px; padding-top: 14px; margin-top: 14px; border-top: 1px solid var(--rule); }
-.nextAction p { font-size: 13px; line-height: 1.6; font-weight: 500; }
-.sourceLimit { font-size: 10px; line-height: 1.55; color: var(--ink-muted); margin-top: 10px; }
 .phone { position: absolute; width: 245px; height: 410px; top: 24px; left: 50%; transform: translateX(-50%); border: 6px solid var(--paper); border-radius: 32px; background: var(--paper); box-shadow: 0 16px 40px #14203a18, 0 0 0 1px #14203a09; overflow: hidden; }
 .phoneBar { height: 24px; display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; font-size: 9px; direction: ltr; }
 .phoneBar i { width: 32px; height: 8px; border-radius: 99px; background: var(--ink); }
@@ -192,22 +117,11 @@
 .visual:not([data-reduced="true"]) .researchPointer { animation: researchPointer 8s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .connectionLines { stroke: var(--primary); stroke-dasharray: 180; animation: connect 7s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .hubRow { animation: result 7s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .week { animation: weekAppear 7s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .week1 { animation-delay: .3s; }
-.visual:not([data-reduced="true"]) .week2 { animation-delay: .6s; }
-.visual:not([data-reduced="true"]) .week3 { animation-delay: .9s; }
 .visual:not([data-reduced="true"]) .planPointer { animation: planPointer 7s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .goalTrack > span { animation: goalProgress 7s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .goalPointer { animation: click 7s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .fanPost { animation: fanAppear 650ms ease both; }
-.visual:not([data-reduced="true"]) .fan1 { animation-delay: .25s; }
-.visual:not([data-reduced="true"]) .fan2 { animation-delay: .5s; }
-.visual:not([data-reduced="true"]) .finding { animation: finding 8s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .report { animation: reports 8s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .phoneScreens { animation: phoneScroll 10s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .phonePointer { animation: phoneSwipe 10s ease-in-out infinite; }
 .visual[data-playing="false"] *, .visual[data-playing="false"] *::before, .visual[data-playing="false"] *::after { animation-play-state: paused !important; }
-.visual[data-playing="false"] .campaignBuild > div { animation: none; opacity: 1; transform: none; }
 .visual[data-reduced="true"] .pointer { display: none; }
 @keyframes scan { 0%, 8% { opacity: 0; transform: translateY(0); } 15% { opacity: .6; } 36% { opacity: .6; transform: translateY(150px); } 44%, 100% { opacity: 0; transform: translateY(150px); } }
 @keyframes appear { 0%, 12% { opacity: 0; transform: translateY(14px); } 25%, 92% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; } }
@@ -236,7 +150,6 @@
   .section { gap: 28px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
   .visual { height: 430px; }
   .sectionBody { font-size: 16px; }
-  .planSheet { inset-inline: 6%; padding: 20px; }
   .provider { flex-direction: column; gap: 6px; text-align: center; }
 }
 @media (max-width: 700px) {
@@ -273,37 +186,6 @@
   .connectedHub { width: 51%; padding: 22px 13px; }
   .hubRow { font-size: 10px; gap: 4px; }
   .connectionFoot { font-size: 11px; bottom: 44px; }
-  .planSheet { inset: 27px 6% 34px; padding: 20px; }
-  .planSheet h3 { font-size: 19px; }
-  .planAudience { font-size: 11px; }
-  .week { padding-block: 8px; gap: 9px; }
-  .week strong { font-size: 12px; }
-  .week small { font-size: 9px; }
-  .week > span { font-size: 9px; }
-  .goals { inset: 45px 10% 50px; }
-  .goalOptions { gap: 8px; }
-  .goalOptions > span { font-size: 12px; min-height: 40px; }
-  .goalNumbers { margin-top: 24px; }
-  .goalDefinition { font-size: 12px; }
-  .campaignBrief strong { font-size: 15px; }
-  .campaignBuild { inset: 103px 6% 58px; gap: 10px; }
-  .campaignBuild > div { padding: 12px; gap: 10px; }
-  .campaignBuild p { font-size: 12px; }
-  .postFan { inset: 103px 5% 80px; }
-  .formatCard { min-height: 211px; padding: 13px 10px; }
-  .formatCard > .miniLabel { font-size: 8px; }
-  .formatCard > svg { height: 57px; margin-block: 12px 8px; }
-  .formatCard > strong { font-size: 15px; }
-  .formatReady { font-size: 8px; }
-  .campaignFoot { font-size: 11px; bottom: 48px; }
-  .reports { inset-inline: 6%; gap: 8px; }
-  .report { padding: 10px; }
-  .report > span { font-size: 8px; }
-  .finding { inset-inline: 6%; top: 140px; bottom: 42px; padding: 16px; }
-  .finding h3 { font-size: 17px; }
-  .nextAction { margin-top: 12px; padding-top: 12px; }
-  .nextAction p { font-size: 12px; }
-  .sourceLimit { font-size: 9px; }
   .phone { top: 16px; height: 380px; width: 235px; }
   .trial { margin-top: 12px; padding-block: 54px; }
   .trialInner > p:not(.signupNote) { font-size: 17px; }
@@ -312,3 +194,245 @@
   .faq h2 { font-size: 25px; max-width: none; }
   .faq summary { font-size: 16px; }
 }
+/* Explanatory artwork uses a small illustration palette; the surrounding UI stays neutral. */
+.interview .answer { background: var(--scene-violet); }
+.researchResult .check { background: var(--scene-mint); }
+.connectedHub { box-shadow: 10px 14px 0 var(--scene-violet); }
+.connectionLines { stroke: var(--scene-violet-ink) !important; }
+.monthPlan { position: absolute; inset: 28px 7% 35px; padding: 22px; background: var(--paper); border-radius: 18px; box-shadow: 10px 12px 0 var(--scene-violet); }
+.monthHeading { display: flex; align-items: center; gap: 12px; }
+.calendarBadge { display: grid; place-items: center; width: 46px; height: 46px; background: var(--scene-violet); color: var(--scene-violet-ink); border-radius: 12px; flex-shrink: 0; }
+.calendarBadge svg { width: 30px; height: 30px; }
+.monthHeading h3 { font-size: 18px; line-height: 1.35; font-weight: 500; margin-top: 3px; }
+.calendarWeeks { display: grid; gap: 13px; margin-top: 20px; }
+.calendarWeek { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: center; gap: 12px; }
+.calendarWeek small { display: block; font-size: 10px; color: var(--ink-muted); }
+.calendarWeek strong { display: block; font-size: 12px; line-height: 1.4; font-weight: 500; margin-top: 3px; }
+.calendarSlots { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.calendarSlots > span { aspect-ratio: 1; border-radius: 6px; background: var(--soft); display: grid; place-items: center; }
+.calendarSlots > span[data-filled="true"] { background: var(--scene-violet); color: var(--scene-violet-ink); }
+.calendarSlots > span[data-filled="true"][data-kind="video"] { background: var(--scene-peach); color: var(--ink-soft); }
+.calendarSlots > span[data-filled="true"][data-kind="results"] { background: var(--scene-mint); color: var(--process-green); }
+.calendarSlots svg { width: 80%; height: 80%; }
+.calendarLegend { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; font-size: 9px; color: var(--ink-muted); }
+.calendarLegend > span { display: flex; gap: 4px; align-items: center; }
+.calendarLegend i { width: 8px; height: 8px; border-radius: 2px; background: var(--scene-violet); }
+.calendarLegend > span:nth-child(2) i { background: var(--scene-peach); }
+.calendarLegend > span:nth-child(3) i { background: var(--scene-mint); }
+.planPointer { bottom: 68px; inset-inline-end: 22%; }
+.goals { position: absolute; inset: 28px 10% 45px; }
+.targetScene { position: relative; height: 230px; }
+.targetRings { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; display: grid; place-items: center; }
+.targetRings > i { position: absolute; border: 18px solid var(--scene-violet); border-radius: 50%; inset: 0; }
+.targetRings > i:nth-child(2) { inset: 34px; border-width: 16px; }
+.targetRings > i:nth-child(3) { inset: 68px; background: var(--scene-violet-ink); border: 0; }
+.targetRings > span { position: relative; z-index: 2; color: var(--paper); }
+.targetRings > span svg { width: 32px; height: 32px; }
+.outcomeOrbit { position: absolute; left: calc(50% + 48px); top: 4px; width: 86px; height: 86px; padding: 15px; border-radius: 20px; background: var(--scene-peach); color: var(--ink-soft); box-shadow: 0 8px 20px #14203a0a; transform: rotate(9deg); }
+.outcomeOrbit > svg { width: 100%; height: 100%; }
+.targetSpark, .targetSparkSmall { position: absolute; font-size: 45px; line-height: 1; color: var(--scene-violet-ink); left: 12%; top: 40px; }
+.targetSparkSmall { top: 175px; left: 80%; font-size: 24px; color: var(--process-green); }
+.goalChoice { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 17px 20px; background: var(--paper); box-shadow: 0 10px 30px #14203a0a; border-radius: 14px; }
+.goalChoice small { display: block; font-size: 11px; color: var(--ink-muted); margin-bottom: 5px; }
+.goalChoice strong { font-size: 18px; line-height: 1.4; font-weight: 500; }
+.goalChoice .check { background: var(--scene-mint); }
+.goalDefinition { margin-top: 14px; font-size: 12px; line-height: 1.6; text-align: center; color: var(--ink-muted); }
+.goalPointer { top: 290px; inset-inline-end: 20%; }
+.campaignBoard { position: absolute; inset: 24px 5% 30px; border-radius: 16px; background: var(--paper); padding: 18px; box-shadow: 8px 10px 0 var(--scene-mint); }
+.boardHeading { display: flex; align-items: center; gap: 12px; min-height: 32px; }
+.boardHeading strong { font-size: 13px; font-weight: 500; }
+.boardMonth { margin-inline-start: auto; color: var(--ink-muted); }
+.boardMonth svg { width: 23px; height: 23px; }
+.weekTimeline { display: grid; grid-template-columns: repeat(4, 1fr); margin-block: 15px 18px; }
+.weekTimeline button { position: relative; min-height: 44px; font-size: 12px; color: var(--ink-muted); cursor: pointer; padding-bottom: 13px; }
+.weekTimeline button::after { content: ""; position: absolute; bottom: 5px; height: 2px; inset-inline: 0; background: var(--rule); }
+.weekTimeline i { position: absolute; bottom: 1px; left: calc(50% - 5px); width: 10px; height: 10px; border-radius: 50%; background: var(--rule-dark); z-index: 1; }
+.weekTimeline button[aria-pressed="true"] { color: var(--ink); font-weight: 600; }
+.weekTimeline button[aria-pressed="true"] i { background: var(--scene-violet-ink); box-shadow: 0 0 0 5px var(--scene-violet); }
+.weekTimeline button:focus-visible { outline: 2px solid var(--primary); border-radius: 6px; outline-offset: 2px; }
+.weekWorkspace { position: relative; display: grid; grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); gap: 16px; align-items: start; }
+.weekPurpose { padding-top: 10px; }
+.weekPurpose small { font-size: 10px; color: var(--ink-muted); }
+.weekPurpose h3 { font-size: 21px; line-height: 1.35; font-weight: 500; margin-top: 8px; text-wrap: balance; }
+.weekOutcome { display: flex; align-items: flex-start; gap: 5px; font-size: 11px; line-height: 1.6; margin-top: 20px; color: var(--ink-soft); }
+.weekOutcome svg { flex-shrink: 0; width: 13px; margin-top: 2px; color: var(--process-green); }
+.weekMaterials { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.timelinePost { min-width: 0; }
+.timelinePost > span { display: block; font-size: 10px; color: var(--ink-muted); margin-top: 7px; }
+.timelineArtwork, .timelinePost .clipPost { border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 5; box-shadow: 0 4px 14px #14203a10; }
+.timelineArtwork > div { width: 100%; }
+.genericArtwork { height: 100%; background: var(--scene-violet); color: var(--scene-violet-ink); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; font-size: 15px; }
+.genericArtwork svg { width: 65%; }
+.boardStatus { display: flex; align-items: center; gap: 6px; position: absolute; inset-inline: 18px; bottom: 16px; font-size: 10px; color: var(--ink-muted); }
+.boardStatus svg { width: 14px; color: var(--process-green); }
+.timelinePointer { bottom: 20%; inset-inline-end: 18%; }
+.learning { position: absolute; inset: 0; }
+.reports { position: absolute; inset-inline: 7%; top: 30px; display: flex; gap: 10px; }
+.report { flex: 1; min-width: 0; padding: 13px; background: var(--paper); border-radius: 12px; box-shadow: 0 8px 26px #14203a08; }
+.report:nth-child(1) { background: var(--scene-peach); }
+.report:nth-child(2) { background: var(--scene-violet); }
+.report:nth-child(3) { background: var(--scene-mint); }
+.report > span { font-size: 9px; font-weight: 500; color: var(--ink-soft); white-space: nowrap; }
+.report > svg { width: 100%; height: 42px; margin-block: 10px 2px; fill: none; stroke: var(--ink-soft); stroke-width: 2; }
+.reportBars { height: 16px; display: flex; align-items: flex-end; gap: 5px; }
+.reportBars i { width: 12%; height: 40%; background: var(--ink); opacity: .2; }
+.reportBars i:nth-child(2n) { height: 80%; }
+.reportBars i:nth-child(3) { height: 65%; }
+.learningFlow { position: absolute; inset-inline: 20%; width: 60%; height: 50px; top: 146px; stroke: var(--scene-violet-ink); stroke-width: 2; stroke-dasharray: 6 5; }
+.learningDecision { position: absolute; inset-inline: 9%; top: 190px; display: flex; align-items: center; gap: 12px; padding: 16px; border-radius: 14px; background: var(--paper); box-shadow: 0 10px 30px #14203a0a; }
+.learningDecision small, .learningNext small { font-size: 10px; color: var(--ink-muted); }
+.learningDecision h3 { font-size: 17px; line-height: 1.4; font-weight: 500; margin-top: 3px; }
+.learningNext { position: absolute; inset-inline: 9%; top: 290px; display: flex; gap: 12px; align-items: center; background: var(--paper); border-radius: 12px; padding: 10px; box-shadow: 6px 7px 0 var(--scene-mint); }
+.nextThumbnail { position: relative; display: grid; place-items: center; width: 62px; height: 66px; flex-shrink: 0; overflow: hidden; border-radius: 6px; background: var(--scene-violet); color: var(--scene-violet-ink); }
+.nextThumbnail img { object-fit: cover; }
+.nextThumbnail > svg { width: 44px; height: 44px; }
+.learningNext p { font-size: 13px; font-weight: 500; line-height: 1.55; margin-top: 3px; }
+.learningNext > .check { margin-inline-start: auto; width: 23px; height: 23px; }
+.learningSource { position: absolute; inset-inline: 9%; bottom: 24px; font-size: 10px; line-height: 1.6; color: var(--ink-muted); }
+.dataScene { position: absolute; inset: 0; }
+.overview { position: absolute; inset: 32px 9% 68px; padding: 22px; border-radius: 18px; background: var(--paper); box-shadow: -10px 12px 0 var(--scene-peach); }
+.overview h3 { font-size: 19px; font-weight: 500; margin-top: 4px; }
+.overviewChart { position: relative; height: 106px; margin-block: 16px; overflow: hidden; }
+.overviewChart > div { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-around; }
+.overviewChart i { height: 1px; background: var(--rule); }
+.overviewChart svg { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--scene-violet-ink); stroke-width: 2; }
+.overviewChart .chartArea { fill: var(--scene-violet); opacity: .6; stroke: none; }
+.overviewSources { display: grid; gap: 12px; }
+.overviewSources > div { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+.overviewSources > div > span:not(:global(.lv2-provider-logo)) { font-size: 12px; line-height: 1.4; }
+.overviewSources :global(.lv2-provider-logo) { flex-shrink: 0; }
+.overviewSources :global(.lv2-provider-logo) img { width: 18px; height: 18px; }
+.overviewBars { display: flex; align-items: end; gap: 4px; margin-inline-start: auto; height: 24px; flex-shrink: 0; }
+.overviewBars i { width: 7px; height: 35%; background: var(--scene-violet); border-radius: 2px; }
+.overviewBars i:nth-child(2n) { height: 75%; }
+.overviewBars i:last-child { height: 100%; background: var(--scene-violet-ink); }
+.sourceChip { position: absolute; inset-inline: 12%; bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; line-height: 1.5; color: var(--ink-soft); }
+.sourceChip svg { flex-shrink: 0; width: 16px; color: var(--process-green); }
+.trialScene { position: absolute; inset: 0; }
+.freeMonth { position: absolute; inset: 28px 18% 80px; padding: 24px; background: var(--paper); border-radius: 20px; box-shadow: 10px 12px 0 var(--scene-violet); }
+.freeMonth > .miniLabel { display: block; text-align: center; }
+.freeMonth > strong { display: block; text-align: center; font-size: 45px; line-height: 1.3; font-weight: 500; color: var(--scene-violet-ink); }
+.trialCalendar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; margin-top: 16px; }
+.trialCalendar > span { aspect-ratio: 1; display: grid; place-items: center; background: var(--soft); border-radius: 4px; }
+.trialCalendar > span:nth-child(-n+7) { background: var(--scene-mint); color: var(--process-green); }
+.trialCalendar svg { width: 75%; height: 75%; }
+.trialActivities { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 20px; }
+.trialActivities > span { display: grid; place-items: center; width: 50px; height: 50px; background: var(--scene-peach); color: var(--ink-soft); border-radius: 12px; transform: rotate(-6deg); }
+.trialActivities > span:nth-child(2) { background: var(--scene-violet); transform: rotate(3deg); }
+.trialActivities > span:last-child { background: var(--scene-mint); transform: rotate(10deg); }
+.trialActivities svg { width: 38px; height: 38px; }
+.trialChoice { position: absolute; inset-inline: 16%; bottom: 23px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px; background: var(--paper); border-radius: 12px; font-size: 14px; line-height: 1.5; }
+.section .priceDetails { margin: 24px 0 0; padding-top: 20px; }
+.section .priceDetails p { font-size: 12px; }
+/* Build → choose → publish: motion changes objects, rather than fading whole pages away. */
+.visual:not([data-reduced="true"]) .calendarSlots > [data-filled="true"] { animation: placeMaterial 6s ease-in-out infinite; animation-delay: calc(var(--week) * .4s); }
+.visual:not([data-reduced="true"]) .outcomeOrbit { animation: outcomeFloat 6s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .targetRings > i:first-child { animation: targetPulse 6s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .timelineArtwork { animation: buildRow 600ms ease both; }
+.visual:not([data-reduced="true"]) .timelinePointer { animation: timelineClick 6s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .report > svg > path, .visual:not([data-reduced="true"]) .overviewChart path:not(.chartArea) { stroke-dasharray: 1; animation: chartDraw 7s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .learningFlow { animation: flowData 6s linear infinite; }
+.visual:not([data-reduced="true"]) .learningNext { animation: applyLearning 7s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .overviewBars i { animation: barGrow 7s ease-in-out infinite; transform-origin: bottom; }
+.visual:not([data-reduced="true"]) .trialCalendar svg { animation: checkDays 8s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .trialActivities > span { animation: outcomeFloat 8s ease-in-out infinite; }
+@keyframes placeMaterial { 0% { opacity: .3; translate: 0 -9px; scale: .92; } 20%, 88% { opacity: 1; translate: 0; scale: 1; } 100% { opacity: .3; translate: 0 -9px; scale: .92; } }
+@keyframes outcomeFloat { 0%, 100% { translate: 0 0; } 50% { translate: -8px 12px; } }
+@keyframes targetPulse { 0%, 75%, 100% { scale: 1; opacity: 1; } 40% { scale: 1.08; opacity: .6; } }
+@keyframes timelineClick { 0%, 15% { opacity: 0; translate: 15px 20px; } 28%, 36% { opacity: 1; translate: 0; scale: 1; } 40% { opacity: 1; scale: .8; } 48%, 100% { opacity: 0; } }
+@keyframes chartDraw { 0% { stroke-dashoffset: 1; } 55%, 95% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+@keyframes flowData { to { stroke-dashoffset: -66; } }
+@keyframes applyLearning { 0%, 15%, 100% { translate: 0 6px; } 40%, 85% { translate: 0 -4px; } }
+@keyframes barGrow { 0%, 100% { scale: 1 .5; } 60%, 85% { scale: 1 1; } }
+@keyframes checkDays { 0%, 10% { scale: .6; opacity: .3; } 35%, 90% { scale: 1; opacity: 1; } 100% { scale: .6; opacity: .3; } }
+@media (max-width: 1000px) {
+  .monthPlan { inset-inline: 6%; padding: 18px; }
+  .calendarWeeks { gap: 15px; }
+  .calendarWeek { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); }
+  .calendarWeek strong { font-size: 11px; }
+  .campaignBoard { inset-inline: 5%; padding: 14px; }
+  .boardHeading { flex-wrap: wrap; gap: 4px 10px; }
+  .boardHeading > .miniLabel { width: 100%; }
+  .boardMonth { position: absolute; top: 18px; inset-inline-end: 14px; }
+  .weekTimeline { margin-block: 8px 12px; }
+  .weekWorkspace { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .weekPurpose { padding-top: 0; }
+  .weekPurpose h3 { font-size: 17px; margin-top: 4px; }
+  .weekOutcome { display: none; }
+  .weekMaterials { max-width: 240px; width: 100%; gap: 10px; }
+  .weekPurpose > small { display: none; }
+  .timelinePost .clipPost, .timelineArtwork { max-height: 158px; }
+  .boardStatus { bottom: 13px; font-size: 9px; }
+  .reports { inset-inline: 6%; gap: 8px; }
+  .report { padding: 10px; }
+  .report > span { font-size: 8px; }
+  .learningFlow { top: 137px; height: 40px; }
+  .learningDecision { top: 175px; inset-inline: 6%; padding: 13px; }
+  .learningDecision h3 { font-size: 15px; }
+  .learningNext { top: 273px; inset-inline: 6%; gap: 9px; }
+  .learningNext p { font-size: 11px; }
+  .learningNext > .check { display: none; }
+  .learningSource { inset-inline: 6%; bottom: 12px; font-size: 9px; }
+  .nextThumbnail { width: 48px; height: 52px; }
+  .overview { inset-inline: 7%; padding: 18px; bottom: 66px; }
+  .overviewSources > div { gap: 7px; }
+  .overviewSources > div > span:not(:global(.lv2-provider-logo)) { font-size: 11px; }
+  .overviewBars { gap: 3px; }
+  .overviewBars i { width: 5px; }
+  .overview h3 { font-size: 17px; }
+  .sourceChip { font-size: 11px; bottom: 27px; }
+  .freeMonth { inset-inline: 13%; padding: 20px; }
+  .trialChoice { inset-inline: 12%; bottom: 20px; font-size: 12px; }
+}
+@media (max-width: 700px) {
+  .monthHeading h3 { font-size: 16px; }
+  .calendarBadge { width: 36px; height: 36px; }
+  .calendarWeeks { margin-top: 22px; }
+  .calendarLegend { margin-top: 22px; gap: 8px; }
+  .goals { inset: 25px 8% 40px; }
+  .targetScene { height: 216px; }
+  .goalChoice { padding: 14px; }
+  .goalChoice strong { font-size: 16px; }
+  .goalDefinition { font-size: 11px; }
+  .goalPointer { top: 275px; }
+  .goalChoice .check { width: 25px; height: 25px; }
+  .targetSpark { left: 1%; }
+  .outcomeOrbit { left: calc(50% + 35px); width: 74px; height: 74px; }
+  .calendarSlots { gap: 3px; }
+  .weekMaterials { margin-inline: auto; }
+  .campaignBoard { inset-block: 20px 25px; }
+  .overviewChart { height: 90px; margin-block: 12px; }
+  .overviewSources { gap: 10px; }
+  .trialActivities { gap: 10px; }
+  .trialActivities > span { width: 44px; height: 44px; }
+  .trialActivities svg { width: 32px; height: 32px; }
+}
+
+/* Findings and actions share a flowing layout, including longer translations. */
+.learningInsights { position: absolute; inset: 190px 9% 22px; display: flex; flex-direction: column; gap: 12px; }
+.learningInsights .learningDecision, .learningInsights .learningNext, .learningInsights .learningSource { position: relative; inset: auto; }
+.learningInsights .learningSource { margin-top: 2px; }
+@media (max-width: 1000px) {
+  .learningInsights { inset: 163px 6% 14px; gap: 10px; }
+  .learningInsights .learningDecision { padding: 10px; gap: 8px; }
+  .learningDecision h3 { font-size: 14px; }
+  .learningInsights .learningNext { padding: 8px; gap: 8px; }
+  .learningNext p { font-size: 11px; line-height: 1.45; }
+  .learningInsights .learningSource { font-size: 9px; line-height: 1.45; }
+  .learningNext small, .learningDecision small { font-size: 9px; }
+  .learningNext .nextThumbnail { width: 42px; height: 48px; }
+  .learningFlow { top: 132px; height: 31px; }
+}
+
+.calendarWeeks { height: 220px; gap: 8px; grid-template-rows: repeat(4, minmax(0, 1fr)); }
+.calendarSlots > span { max-height: 46px; }
+@media (max-width: 1000px) {
+  .calendarWeeks { height: 206px; gap: 6px; margin-top: 16px; }
+  .monthHeading h3 { font-size: 14px; }
+  .calendarLegend { margin-top: 14px; }
+  .weekMaterials { max-width: 210px; }
+  .weekPurpose h3 { font-size: 15px; }
+  .weekWorkspace { gap: 10px; }
+}
+
+.visual[data-playing="false"] .timelineArtwork { animation: none; opacity: 1; transform: none; }
