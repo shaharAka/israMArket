@@ -592,7 +592,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 811,
+        "line": 825,
         "kind": "literal"
       }
     ]
@@ -614,7 +614,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 283,
+        "line": 289,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -704,7 +704,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 629,
+        "line": 643,
         "kind": "literal"
       }
     ]
@@ -1831,6 +1831,16 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 274,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 139,
+        "kind": "jsx"
+      },
+      {
         "file": "web/components/integrations/PendingLinks.tsx",
         "line": 11,
         "kind": "literal"
@@ -1886,7 +1896,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1298,
+        "line": 1330,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -1928,7 +1938,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 701,
+        "line": 715,
         "kind": "literal"
       }
     ]
@@ -2495,7 +2505,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1180,
+        "line": 1212,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -2976,18 +2986,6 @@
       }
     ]
   },
-  "m_0622d2c75eace181": {
-    "source": "צפיות, כמה צפו עד הסוף ומאיפה הגיעו",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/quarter_plan.py",
-        "line": 111,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_0626159f8603c45a": {
     "source": "כמה שמרו את הפוסט כדי לחזור אליו.",
     "language": "he",
@@ -3066,7 +3064,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 343,
+        "line": 349,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -3297,7 +3295,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 742,
+        "line": 756,
         "kind": "literal"
       }
     ]
@@ -3423,7 +3421,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1778,
+        "line": 1824,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -3737,7 +3735,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1776,
+        "line": 1822,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4401,7 +4399,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1270,
+        "line": 1302,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4549,7 +4547,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 339,
+        "line": 345,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4617,12 +4615,17 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 165,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 326,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 458,
         "kind": "literal"
       },
       {
@@ -4675,13 +4678,13 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 191,
+        "line": 197,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 422,
+        "line": 428,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4807,7 +4810,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1843,
+        "line": 1892,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4862,7 +4865,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1284,
+        "line": 1316,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5252,7 +5255,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -5443,7 +5446,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 248,
+        "line": 253,
         "kind": "jsx"
       }
     ]
@@ -5792,6 +5795,23 @@
       }
     ]
   },
+  "m_0c89cb6acb222f7f": {
+    "source": "לחבר את הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 109,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_0c8faf27a69270f7": {
     "source": "לא הצלחנו לבדוק את הקישור. אפשר לתקן אותו בחיבורים בהמשך.",
     "language": "he",
@@ -5809,7 +5829,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 382,
+        "line": 396,
         "kind": "literal"
       },
       {
@@ -5835,7 +5855,7 @@
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 45,
+        "line": 53,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5858,7 +5878,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1342,
+        "line": 1374,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5998,7 +6018,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 887,
+        "line": 901,
         "kind": "literal"
       },
       {
@@ -6126,7 +6146,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1420,
+        "line": 1452,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6318,7 +6338,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1711,
+        "line": 1757,
         "kind": "template",
         "purpose": "validation"
       }
@@ -6420,7 +6440,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 221,
+        "line": 225,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -6489,7 +6509,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 275,
+        "line": 289,
         "kind": "literal",
         "purpose": "display"
       }
@@ -6650,7 +6670,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -6731,7 +6751,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 270,
+        "line": 276,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6777,7 +6797,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1268,
+        "line": 1300,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -6801,7 +6821,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 572,
         "kind": "literal"
       },
       {
@@ -7213,7 +7233,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -7403,7 +7423,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 809,
         "kind": "literal"
       }
     ]
@@ -7502,6 +7522,11 @@
     "source": "צריך לחדש גישה",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 22,
@@ -7811,7 +7836,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 240,
+        "line": 249,
         "kind": "literal"
       }
     ]
@@ -7974,7 +7999,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -8273,7 +8298,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 41,
+        "line": 49,
         "kind": "template",
         "purpose": "copy"
       }
@@ -8590,6 +8615,17 @@
       }
     ]
   },
+  "m_1283aa221af72faa": {
+    "source": "לא הצלחנו להשלים את החיבור לטיקטוק. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_128844493ac4e245": {
     "source": "תגובה לפעולה",
     "language": "he",
@@ -8778,7 +8814,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1116,
+        "line": 1148,
         "kind": "template",
         "purpose": "copy"
       }
@@ -8921,7 +8957,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 241,
+        "line": 246,
         "kind": "literal",
         "purpose": "display"
       },
@@ -9157,7 +9193,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 390,
+        "line": 396,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -9249,7 +9285,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -9445,7 +9481,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 551,
+        "line": 565,
         "kind": "literal"
       },
       {
@@ -9679,7 +9715,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1843,
+        "line": 1892,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10142,7 +10178,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 204,
+        "line": 210,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10217,7 +10253,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 581,
+        "line": 595,
         "kind": "literal",
         "purpose": "display"
       }
@@ -10332,7 +10368,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 463,
+        "line": 477,
         "kind": "literal"
       }
     ]
@@ -10366,7 +10402,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -10531,25 +10567,25 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1117,
+        "line": 1149,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1083,
+        "line": 1115,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1110,
+        "line": 1142,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1094,
+        "line": 1126,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10577,7 +10613,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 278,
+        "line": 284,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10997,7 +11033,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 326,
+        "line": 332,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -11047,7 +11083,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -11602,7 +11638,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 197,
+        "line": 202,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11647,7 +11683,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -12244,7 +12280,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 170,
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -12941,7 +12977,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1273,
+        "line": 1305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -13481,6 +13517,18 @@
         "file": "web/lib/api.ts",
         "line": 1300,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_1cf0935e5727cfee": {
+    "source": "קראנו חלק מנתוני הסרטונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -14044,7 +14092,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 828,
+        "line": 842,
         "kind": "literal"
       }
     ]
@@ -14242,7 +14290,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 569,
         "kind": "literal"
       }
     ]
@@ -14265,7 +14313,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 767,
+        "line": 781,
         "kind": "literal"
       }
     ]
@@ -14559,7 +14607,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 312,
+        "line": 318,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -14571,7 +14619,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 228,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -14696,7 +14744,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 886,
+        "line": 900,
         "kind": "literal"
       },
       {
@@ -14853,7 +14901,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 233,
+        "line": 238,
         "kind": "jsx"
       },
       {
@@ -14926,12 +14974,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 307,
+        "line": 321,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 712,
+        "line": 726,
         "kind": "literal"
       },
       {
@@ -15064,7 +15112,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1266,
+        "line": 1298,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -15310,7 +15358,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1407,
+        "line": 1439,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -15401,7 +15449,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 799,
+        "line": 813,
         "kind": "literal"
       }
     ]
@@ -15509,7 +15557,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -15686,6 +15734,17 @@
       }
     ]
   },
+  "m_216592490772df32": {
+    "source": "סרטון ללא כותרת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 100,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_21662f2963280cd0": {
     "source": "מארז חג מוכן לאירוח",
     "language": "he",
@@ -15703,8 +15762,20 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_21702fb3392677f5": {
+    "source": "חיבור לטיקטוק בבדיקה מוגבלת",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -15906,7 +15977,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 537,
+        "line": 551,
         "kind": "literal"
       }
     ]
@@ -16138,7 +16209,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 69,
+        "line": 77,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -16374,7 +16445,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 205,
+        "line": 211,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -16386,7 +16457,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16475,6 +16546,23 @@
       }
     ]
   },
+  "m_2377fdb863361d94": {
+    "source": "נשאר לקרוא את נתוני הסרטונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 95,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 18,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_2379a4f9a64bdc9d": {
     "source": "חומוס",
     "language": "he",
@@ -16556,7 +16644,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1294,
+        "line": 1326,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -17088,7 +17176,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 606,
+        "line": 620,
         "kind": "literal"
       }
     ]
@@ -17601,7 +17689,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 569,
         "kind": "literal"
       }
     ]
@@ -17968,7 +18056,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18218,7 +18306,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18403,7 +18491,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18415,7 +18503,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -18624,7 +18712,7 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 243,
+        "line": 263,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -18636,7 +18724,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -18725,7 +18813,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1441,
+        "line": 1487,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19189,7 +19277,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -20113,7 +20201,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -20417,7 +20505,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -20514,12 +20602,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 307,
+        "line": 321,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 713,
+        "line": 727,
         "kind": "literal"
       },
       {
@@ -21022,7 +21110,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 247,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -21072,7 +21160,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1341,
+        "line": 1373,
         "kind": "template",
         "purpose": "copy"
       }
@@ -21561,17 +21649,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -21662,7 +21750,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 188,
+        "line": 194,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -21674,7 +21762,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 189,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -22006,7 +22094,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 176,
+        "line": 179,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -22365,7 +22453,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 435,
+        "line": 441,
         "kind": "template",
         "purpose": "copy"
       }
@@ -22600,6 +22688,18 @@
       }
     ]
   },
+  "m_30b0c0807beb4228": {
+    "source": "לא הצלחנו לקרוא את הסרטונים. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 24,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_30b2231e71827dfc": {
     "source": "טיוטה זו כבר נשמרה. פתחו אותה כדי לערוך את הטקסט.",
     "language": "he",
@@ -22825,7 +22925,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 832,
+        "line": 846,
         "kind": "literal"
       }
     ]
@@ -23082,7 +23182,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 299,
+        "line": 305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -23540,7 +23640,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 273,
+        "line": 279,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -23856,7 +23956,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1441,
+        "line": 1487,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -23994,7 +24094,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1298,
+        "line": 1330,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -24157,6 +24257,22 @@
       }
     ]
   },
+  "m_3395d363ca846b0a": {
+    "source": "נלמד מהסרטונים של העסק כדי לדייק את הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 21,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_33a1622ab051686b": {
     "source": "הבנו: {arg_0}. כל לקוח חדש שווה כ-{arg_1} ₪ בקנייה.",
     "language": "he",
@@ -24174,7 +24290,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 42,
+        "line": 50,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -24315,7 +24431,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 319,
+        "line": 333,
         "kind": "literal"
       }
     ]
@@ -24543,7 +24659,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1505,
+        "line": 1551,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -24719,7 +24835,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1109,
+        "line": 1141,
         "kind": "template",
         "purpose": "copy"
       }
@@ -25571,7 +25687,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 377,
+        "line": 383,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25620,7 +25736,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 330,
+        "line": 336,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -25950,7 +26066,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -26043,7 +26159,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -26217,7 +26333,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 20,
+        "line": 22,
         "kind": "literal",
         "purpose": "display"
       }
@@ -26340,7 +26456,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 401,
+        "line": 415,
         "kind": "literal"
       }
     ]
@@ -26704,6 +26820,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_391ef94c8a3bef22": {
+    "source": "מצטבר מאז פרסום כל סרטון · נקרא ב־",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -27098,7 +27225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -27125,7 +27252,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 325,
+        "line": 331,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -27220,7 +27347,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 405,
+        "line": 411,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -27387,7 +27514,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1631,
+        "line": 1677,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -28153,7 +28280,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 188,
+        "line": 193,
         "kind": "literal",
         "purpose": "display"
       }
@@ -28347,7 +28474,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 745,
+        "line": 759,
         "kind": "literal"
       }
     ]
@@ -28631,6 +28758,17 @@
       }
     ]
   },
+  "m_3e1bc1d65fe46e25": {
+    "source": "החיבור הזה כבר לא בתוקף. לחצו שוב על חיבור הטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 33,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3e3f33508d33b08e": {
     "source": "איך זה נעשה, מי עושה את זה",
     "language": "he",
@@ -28805,7 +28943,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 262,
+        "line": 267,
         "kind": "jsx"
       },
       {
@@ -28832,7 +28970,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 171,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -28955,7 +29093,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29043,7 +29181,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 355,
+        "line": 361,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29306,7 +29444,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 510,
+        "line": 524,
         "kind": "literal"
       }
     ]
@@ -29416,7 +29554,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 375,
+        "line": 381,
         "kind": "template",
         "purpose": "copy"
       }
@@ -29771,7 +29909,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1385,
+        "line": 1417,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -29799,7 +29937,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 857,
+        "line": 871,
         "kind": "literal"
       }
     ]
@@ -29862,7 +30000,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 418,
+        "line": 432,
         "kind": "literal"
       }
     ]
@@ -29935,6 +30073,22 @@
       }
     ]
   },
+  "m_41034810d9352e8f": {
+    "source": "קוראים את נתוני הסרטונים…",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 84,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 91,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_410fef4c054681e0": {
     "source": "אפשר גם תמונה אחרת.",
     "language": "he",
@@ -29963,7 +30117,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -30643,7 +30797,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1771,
+        "line": 1817,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -30820,7 +30974,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 326,
         "kind": "literal"
       },
       {
@@ -30878,7 +31032,7 @@
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 43,
+        "line": 51,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -30907,7 +31061,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 159,
+        "line": 164,
         "kind": "jsx"
       }
     ]
@@ -31157,7 +31311,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -31397,7 +31551,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 428,
+        "line": 442,
         "kind": "literal"
       }
     ]
@@ -31883,7 +32037,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -32185,7 +32339,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 436,
+        "line": 442,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -32409,7 +32563,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -32448,7 +32602,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 353,
+        "line": 359,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -32598,6 +32752,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 24,
         "kind": "literal"
@@ -32637,7 +32796,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1207,
+        "line": 1239,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -32951,6 +33110,17 @@
       }
     ]
   },
+  "m_47b35eedd939eced": {
+    "source": "כן, לקרוא את הסרטונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_47beae922679ecba": {
     "source": "העבודה מקרוב",
     "language": "he",
@@ -33050,7 +33220,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -33086,6 +33256,12 @@
         "file": "web/components/instagram/sources.ts",
         "line": 51,
         "kind": "template"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1089,
+        "kind": "template",
+        "purpose": "copy"
       }
     ]
   },
@@ -33331,7 +33507,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 434,
+        "line": 440,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -33355,17 +33531,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 33,
         "kind": "literal"
       },
       {
@@ -33376,6 +33547,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 89,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 96,
         "kind": "literal"
       },
       {
@@ -33481,7 +33657,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1242,
+        "line": 1274,
         "kind": "template",
         "purpose": "copy"
       }
@@ -33542,7 +33718,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1752,
+        "line": 1798,
         "kind": "template",
         "purpose": "copy"
       }
@@ -33554,17 +33730,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -33678,7 +33854,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 454,
+        "line": 468,
         "kind": "literal"
       }
     ]
@@ -33700,7 +33876,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 207,
+        "line": 212,
         "kind": "jsx"
       },
       {
@@ -33901,7 +34077,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 197,
+        "line": 203,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -34876,7 +35052,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -34898,7 +35074,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 850,
+        "line": 864,
         "kind": "literal"
       }
     ]
@@ -35037,7 +35213,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 452,
+        "line": 466,
         "kind": "literal"
       }
     ]
@@ -35059,7 +35235,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 469,
+        "line": 483,
         "kind": "literal"
       }
     ]
@@ -35199,7 +35375,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 29,
+        "line": 31,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35835,6 +36011,18 @@
       }
     ]
   },
+  "m_4e218a9b2aa53098": {
+    "source": "הסרטון בטיקטוק \"{arg_0}\" ({arg_1}): ",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1093,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_4e26af29aa1b32a0": {
     "source": "הכיתוב הועתק.",
     "language": "he",
@@ -35880,7 +36068,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 21,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35954,7 +36142,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1104,
+        "line": 1136,
         "kind": "template",
         "purpose": "copy"
       }
@@ -36061,7 +36249,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 418,
+        "line": 424,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36100,7 +36288,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 70,
+        "line": 78,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36169,7 +36357,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 386,
+        "line": 400,
         "kind": "literal"
       }
     ]
@@ -36304,7 +36492,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 408,
+        "line": 414,
         "kind": "template",
         "purpose": "copy"
       }
@@ -36316,7 +36504,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 235,
+        "line": 240,
         "kind": "jsx"
       }
     ]
@@ -36327,7 +36515,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 420,
+        "line": 434,
         "kind": "literal"
       }
     ]
@@ -36446,7 +36634,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 315,
+        "line": 321,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -36591,7 +36779,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 171,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -36640,7 +36828,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36813,7 +37001,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 426,
+        "line": 440,
         "kind": "jsx"
       }
     ]
@@ -36995,7 +37183,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 48,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -37215,6 +37403,29 @@
       }
     ]
   },
+  "m_518899efcb887166": {
+    "source": "החיבור לטיקטוק עדיין לא זמין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 110,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 28,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_518adf7ac1539244": {
     "source": "לנתק",
     "language": "he",
@@ -37226,12 +37437,17 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 366,
+        "line": 380,
         "kind": "literal"
       },
       {
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 208,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -37242,7 +37458,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -37409,7 +37625,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -37506,7 +37722,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 148,
+        "line": 153,
         "kind": "jsx"
       }
     ]
@@ -37798,7 +38014,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1521,
+        "line": 1567,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -37822,7 +38038,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1194,
+        "line": 1226,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -37834,7 +38050,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 257,
+        "line": 262,
         "kind": "jsx"
       }
     ]
@@ -37955,7 +38171,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 207,
+        "line": 213,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38082,6 +38298,17 @@
       {
         "file": "web/components/design/FlowCanvas.tsx",
         "line": 99,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_53966ac6d75ac278": {
+    "source": "צפיות בסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -38282,7 +38509,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1414,
+        "line": 1446,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38306,7 +38533,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 314,
+        "line": 320,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -38318,7 +38545,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 193,
+        "line": 198,
         "kind": "literal"
       }
     ]
@@ -38861,6 +39088,18 @@
       }
     ]
   },
+  "m_554723dd83c436f1": {
+    "source": "מספר הצפיות לא התקבל",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1089,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_55472d3b6d3e4dbd": {
     "source": "בלי נתוני שימוש, לא נציג יעד מספרי. נתחיל למדוד ונעדכן את התוכנית.",
     "language": "he",
@@ -39242,7 +39481,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1443,
+        "line": 1489,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -39507,7 +39746,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1835,
+        "line": 1884,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -39593,7 +39832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -39714,6 +39953,18 @@
         "file": "web/components/MonthAhead.tsx",
         "line": 131,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_572c5fd05f0d90b3": {
+    "source": "נתוני הסרטונים עודכנו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 19,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -40217,7 +40468,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 244,
+        "line": 250,
         "kind": "template",
         "purpose": "copy"
       }
@@ -40304,7 +40555,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1436,
+        "line": 1482,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -40454,7 +40705,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 192,
+        "line": 197,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40738,7 +40989,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 88,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -40776,6 +41027,11 @@
         "purpose": "display"
       },
       {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 104,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/api.ts",
         "line": 1000,
         "kind": "literal"
@@ -40788,6 +41044,12 @@
       {
         "file": "api/app/services/instagram_signal.py",
         "line": 650,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1090,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -41357,7 +41619,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 895,
+        "line": 909,
         "kind": "literal"
       },
       {
@@ -41462,7 +41724,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -41549,6 +41811,11 @@
     "source": "עוד אין פעילות",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 21,
@@ -41963,7 +42230,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 489,
+        "line": 503,
         "kind": "literal"
       }
     ]
@@ -42050,7 +42317,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -42178,7 +42445,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -42224,7 +42491,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -42449,7 +42716,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 268,
+        "line": 274,
         "kind": "template",
         "purpose": "copy"
       }
@@ -42802,7 +43069,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 555,
+        "line": 569,
         "kind": "literal"
       }
     ]
@@ -42995,7 +43262,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 199,
+        "line": 205,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43201,7 +43468,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 15,
+        "line": 16,
         "kind": "literal"
       }
     ]
@@ -43224,7 +43491,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43499,7 +43766,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 150,
+        "line": 153,
         "kind": "template",
         "purpose": "copy"
       }
@@ -43975,7 +44242,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -44348,7 +44615,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 393,
+        "line": 399,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44473,7 +44740,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -44671,7 +44938,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 145,
+        "line": 150,
         "kind": "jsx"
       }
     ]
@@ -44699,7 +44966,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 296,
+        "line": 302,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44824,7 +45091,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 328,
+        "line": 334,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44880,7 +45147,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1838,
+        "line": 1887,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -44903,7 +45170,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -45271,7 +45538,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 317,
+        "line": 323,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -45327,7 +45594,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -45378,7 +45645,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1378,
+        "line": 1410,
         "kind": "template",
         "purpose": "copy"
       }
@@ -45711,7 +45978,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 359,
+        "line": 365,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -45756,7 +46023,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 301,
         "kind": "literal"
       }
     ]
@@ -45910,7 +46177,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 301,
         "kind": "literal"
       },
       {
@@ -45932,7 +46199,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1278,
+        "line": 1310,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -46126,7 +46393,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 411,
+        "line": 425,
         "kind": "literal"
       }
     ]
@@ -46288,6 +46555,18 @@
       }
     ]
   },
+  "m_65b50a93658f99a1": {
+    "source": "צפיות, לייקים, תגובות ושיתופים של הסרטונים הציבוריים",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/quarter_plan.py",
+        "line": 111,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_65b7014ddc6cee8a": {
     "source": "הטקסט שכתבתם לתמיכה",
     "language": "he",
@@ -46409,7 +46688,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 774,
+        "line": 788,
         "kind": "literal"
       }
     ]
@@ -46523,7 +46802,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 884,
+        "line": 898,
         "kind": "literal"
       }
     ]
@@ -46595,7 +46874,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 836,
         "kind": "literal"
       }
     ]
@@ -46634,7 +46913,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 870,
+        "line": 884,
         "kind": "literal"
       }
     ]
@@ -47476,7 +47755,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 206,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -47580,6 +47859,18 @@
       }
     ]
   },
+  "m_686f2a1b60164d84": {
+    "source": "הסרטון הציבורי האחרון שנקרא מהטיקטוק שלכם פורסם ב־{arg_0}: \"{arg_1}\".",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1467,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_68745fbfb2dd9cb3": {
     "source": "הוספנו את מועד ההזמנה בתחילת הטקסט, כמו בפוסט הקודם שהביא יותר לחיצות.",
     "language": "he",
@@ -47595,6 +47886,11 @@
     "source": "יש נתונים חלקיים",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 23,
@@ -47629,7 +47925,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 360,
+        "line": 366,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -47675,7 +47971,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 836,
         "kind": "literal"
       }
     ]
@@ -48159,7 +48455,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1711,
+        "line": 1757,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -48402,7 +48698,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 437,
+        "line": 443,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48476,6 +48772,23 @@
       }
     ]
   },
+  "m_6a812257d91a7953": {
+    "source": "לעדכן את נתוני הסרטונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 91,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_6a85de5074de2016": {
     "source": "רגוע ופתוח, כמו נשימה ארוכה בבוקר.",
     "language": "he",
@@ -48493,7 +48806,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -48529,12 +48842,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 795,
+        "line": 809,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 868,
+        "line": 882,
         "kind": "literal"
       }
     ]
@@ -48626,7 +48939,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -48681,7 +48994,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -48799,7 +49112,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1284,
+        "line": 1316,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -48811,7 +49124,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49253,7 +49566,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 461,
+        "line": 475,
         "kind": "literal"
       }
     ]
@@ -49375,7 +49688,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 626,
+        "line": 640,
         "kind": "literal"
       }
     ]
@@ -49647,6 +49960,18 @@
       }
     ]
   },
+  "m_6d908342d2391303": {
+    "source": "לזהות את חשבון הטיקטוק שבחרתם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_6d966b731c6adaf1": {
     "source": "מה זה משנה:",
     "language": "he",
@@ -49887,7 +50212,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1092,
+        "line": 1124,
         "kind": "template",
         "purpose": "copy"
       }
@@ -50177,7 +50502,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 297,
+        "line": 311,
         "kind": "literal"
       }
     ]
@@ -50366,7 +50691,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 293,
+        "line": 307,
         "kind": "literal"
       }
     ]
@@ -50530,7 +50855,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1831,
+        "line": 1880,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -50936,7 +51261,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50960,7 +51285,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 504,
+        "line": 518,
         "kind": "literal"
       }
     ]
@@ -51080,7 +51405,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 535,
+        "line": 549,
         "kind": "literal"
       }
     ]
@@ -51434,7 +51759,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 353,
+        "line": 359,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -51491,12 +51816,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 57,
+        "line": 64,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -51507,7 +51832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51541,7 +51866,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -51960,7 +52285,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       }
@@ -52248,7 +52573,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 44,
+        "line": 52,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -52260,7 +52585,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 168,
+        "line": 171,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -53066,7 +53391,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1821,
+        "line": 1870,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -53140,7 +53465,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1534,
+        "line": 1580,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -53355,7 +53680,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 413,
+        "line": 427,
         "kind": "literal"
       }
     ]
@@ -53404,10 +53729,26 @@
       }
     ]
   },
+  "m_7519b6f63e9fe2da": {
+    "source": "החיבור אצלנו נותק. כדי להסיר גם את ההרשאה בטיקטוק, פתחו את הגדרות האפליקציות המחוברות בטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 79,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_751f1820fd30c180": {
     "source": "יש נתונים",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 21,
@@ -53684,7 +54025,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 557,
+        "line": 571,
         "kind": "literal"
       }
     ]
@@ -53954,7 +54295,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 361,
+        "line": 367,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54120,7 +54461,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 450,
+        "line": 464,
         "kind": "literal"
       }
     ]
@@ -54230,7 +54571,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 203,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -54561,7 +54902,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 342,
+        "line": 348,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54596,7 +54937,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 837,
+        "line": 851,
         "kind": "literal"
       }
     ]
@@ -54849,7 +55190,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1162,
+        "line": 1194,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54983,7 +55324,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55460,12 +55801,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5717,
+        "line": 5732,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5718,
+        "line": 5733,
         "kind": "literal"
       },
       {
@@ -55648,7 +55989,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 456,
+        "line": 470,
         "kind": "literal"
       }
     ]
@@ -55698,7 +56039,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 370,
+        "line": 376,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -55733,7 +56074,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -55867,7 +56208,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 572,
         "kind": "literal"
       },
       {
@@ -56106,8 +56447,19 @@
         "purpose": "display"
       },
       {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 103,
+        "kind": "literal"
+      },
+      {
         "file": "api/app/services/instagram_signal.py",
         "line": 652,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1090,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56266,7 +56618,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1169,
+        "line": 1201,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56329,7 +56681,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 280,
+        "line": 286,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56526,7 +56878,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 421,
+        "line": 427,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -56618,7 +56970,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 742,
+        "line": 756,
         "kind": "literal"
       }
     ]
@@ -57400,7 +57752,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 298,
+        "line": 304,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58104,7 +58456,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 394,
+        "line": 400,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -58192,7 +58544,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -58244,6 +58596,17 @@
       {
         "file": "web/components/TargetRanker.tsx",
         "line": 204,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_807e167dc3d65de5": {
+    "source": "לפתוח את החיבורים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
         "kind": "literal"
       }
     ]
@@ -58930,7 +59293,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 279,
         "kind": "literal"
       }
     ]
@@ -59134,7 +59497,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 196,
+        "line": 202,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -59243,7 +59606,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 717,
+        "line": 731,
         "kind": "literal"
       }
     ]
@@ -59254,7 +59617,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1445,
+        "line": 1491,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -59311,7 +59674,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 231,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -59601,7 +59964,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -59723,7 +60086,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 260,
+        "line": 266,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -60586,7 +60949,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1412,
+        "line": 1444,
         "kind": "template",
         "purpose": "copy"
       }
@@ -60621,7 +60984,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 458,
+        "line": 472,
         "kind": "literal"
       }
     ]
@@ -60939,12 +61302,12 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 231,
+        "line": 236,
         "kind": "jsx"
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 244,
+        "line": 249,
         "kind": "jsx"
       }
     ]
@@ -61455,7 +61818,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 859,
         "kind": "literal"
       }
     ]
@@ -61677,7 +62040,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1360,
+        "line": 1392,
         "kind": "template",
         "purpose": "copy"
       }
@@ -61700,7 +62063,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -62247,12 +62610,17 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 165,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 326,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 458,
         "kind": "literal"
       }
     ]
@@ -62329,7 +62697,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 409,
+        "line": 415,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62852,7 +63220,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1298,
+        "line": 1330,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -62888,7 +63256,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -62991,7 +63359,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63335,7 +63703,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1361,
+        "line": 1393,
         "kind": "template",
         "purpose": "copy"
       }
@@ -63643,7 +64011,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 340,
+        "line": 346,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -63864,7 +64232,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 805,
+        "line": 819,
         "kind": "literal"
       }
     ]
@@ -64138,7 +64506,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1296,
+        "line": 1328,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -64534,7 +64902,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 203,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -65052,7 +65420,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65097,7 +65465,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1081,
+        "line": 1113,
         "kind": "template",
         "purpose": "copy"
       }
@@ -65192,7 +65560,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -65378,7 +65746,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65765,7 +66133,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1370,
+        "line": 1402,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65863,7 +66231,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 29,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -66082,7 +66450,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 392,
+        "line": 398,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -66119,6 +66487,30 @@
         "file": "web/app/promotion/page.tsx",
         "line": 715,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_91669c43679f4342": {
+    "source": "reconnect",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/tiktok.py",
+        "line": 114,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 88,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 91,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -66221,7 +66613,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1274,
+        "line": 1306,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -66250,7 +66642,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1264,
+        "line": 1296,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -66726,12 +67118,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 279,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 307,
+        "line": 321,
         "kind": "literal"
       }
     ]
@@ -67204,7 +67596,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 406,
+        "line": 420,
         "kind": "literal"
       }
     ]
@@ -67241,6 +67633,21 @@
       {
         "file": "web/components/integrations/MetaAdsSummary.tsx",
         "line": 17,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 102,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 103,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 104,
         "kind": "literal"
       },
       {
@@ -68468,7 +68875,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 472,
+        "line": 486,
         "kind": "literal"
       }
     ]
@@ -68954,7 +69361,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -69140,7 +69547,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 110,
+        "line": 113,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -69343,7 +69750,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 613,
+        "line": 627,
         "kind": "literal"
       }
     ]
@@ -69399,7 +69806,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 287,
+        "line": 301,
         "kind": "literal"
       },
       {
@@ -69591,7 +69998,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 182,
+        "line": 187,
         "kind": "literal",
         "purpose": "display"
       }
@@ -69857,7 +70264,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 458,
         "kind": "literal"
       },
       {
@@ -70048,7 +70455,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1526,
+        "line": 1572,
         "kind": "template",
         "purpose": "copy"
       },
@@ -70331,7 +70738,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1531,
+        "line": 1577,
         "kind": "template",
         "purpose": "copy"
       }
@@ -70388,7 +70795,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 558,
+        "line": 572,
         "kind": "literal"
       }
     ]
@@ -70415,7 +70822,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -70617,7 +71024,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -70708,13 +71115,13 @@
     "references": [
       {
         "file": "api/app/main.py",
-        "line": 265,
+        "line": 285,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/main.py",
-        "line": 273,
+        "line": 293,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -71143,7 +71550,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1244,
+        "line": 1276,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -71649,7 +72056,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 183,
+        "line": 188,
         "kind": "literal"
       }
     ]
@@ -71951,7 +72358,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 175,
+        "line": 180,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72007,6 +72414,11 @@
     "source": "נשאר לבחור חשבון",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 163,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 23,
@@ -72191,7 +72603,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 845,
+        "line": 859,
         "kind": "literal"
       }
     ]
@@ -72704,7 +73116,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 897,
+        "line": 911,
         "kind": "literal"
       },
       {
@@ -72840,7 +73252,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -73377,7 +73789,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 295,
+        "line": 309,
         "kind": "literal"
       }
     ]
@@ -73681,7 +74093,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -73719,7 +74131,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1559,
+        "line": 1605,
         "kind": "literal",
         "purpose": "generation-instruction"
       }
@@ -74093,13 +74505,25 @@
       }
     ]
   },
+  "m_a39c27916c198356": {
+    "source": "לא נמצאו סרטונים ציבוריים בחשבון הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_a39fd532fe6e522e": {
     "source": "לעזרה ולדיווח על תקלה",
     "language": "he",
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -74110,7 +74534,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 219,
+        "line": 223,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -74348,6 +74772,17 @@
         "line": 132,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a4478b9a703e4571": {
+    "source": "לבחור חשבון אחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 86,
+        "kind": "literal"
       }
     ]
   },
@@ -75380,7 +75815,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1510,
+        "line": 1556,
         "kind": "template",
         "purpose": "copy"
       }
@@ -75765,7 +76200,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1823,
+        "line": 1872,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -75932,6 +76367,17 @@
         "line": 298,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_a7c921f435d4ae44": {
+    "source": "כותרות, קישורים, תאריכי פרסום ומספרי צפיות, לייקים, תגובות ושיתופים. אלה מספרים מצטברים לכל סרטון, לא פניות או רכישות. לא מבקשים הרשאת פרסום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 142,
+        "kind": "literal"
       }
     ]
   },
@@ -76354,7 +76800,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 474,
+        "line": 488,
         "kind": "literal"
       }
     ]
@@ -77007,6 +77453,18 @@
       }
     ]
   },
+  "m_aa6285183765dbc0": {
+    "source": "נתוני הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 40,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_aa6771e4657bf4ad": {
     "source": "תשובה קצרה על {arg_0}. לשאלה שלכם, שלחו הודעה.",
     "language": "he",
@@ -77392,7 +77850,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 346,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -77655,7 +78113,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -78032,7 +78490,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 265,
+        "line": 279,
         "kind": "literal"
       },
       {
@@ -78187,7 +78645,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -78336,19 +78794,19 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1154,
+        "line": 1186,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1172,
+        "line": 1204,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1183,
+        "line": 1215,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78553,7 +79011,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1273,
+        "line": 1305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78613,7 +79071,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -78706,8 +79164,25 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 792,
+        "line": 806,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_adf56404f331bc9e": {
+    "source": "זה חשבון הטיקטוק של העסק?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 81,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 17,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -78785,7 +79260,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 364,
+        "line": 378,
         "kind": "literal"
       }
     ]
@@ -78885,7 +79360,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1408,
+        "line": 1440,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -79802,7 +80277,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -79976,7 +80451,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal"
       }
     ]
@@ -79987,7 +80462,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1624,
+        "line": 1670,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80203,7 +80678,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1273,
+        "line": 1305,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80507,7 +80982,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 279,
+        "line": 285,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80840,7 +81315,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81092,7 +81567,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1505,
+        "line": 1551,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -81445,7 +81920,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81615,7 +82090,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 376,
+        "line": 382,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -81963,7 +82438,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1405,
+        "line": 1437,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82181,7 +82656,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 346,
+        "line": 360,
         "kind": "literal"
       }
     ]
@@ -82570,7 +83045,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 374,
+        "line": 380,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -84008,7 +84483,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 386,
+        "line": 400,
         "kind": "literal"
       }
     ]
@@ -84589,7 +85064,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -84661,6 +85136,11 @@
     "source": "הקריאה לא הושלמה",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 22,
@@ -84838,7 +85318,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 184,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -85022,7 +85502,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 745,
+        "line": 759,
         "kind": "literal"
       }
     ]
@@ -85404,18 +85884,6 @@
       }
     ]
   },
-  "m_bd2b563a98644426": {
-    "source": ". בפייסבוק ובטיקטוק אנחנו לא רואים פעילות (אין חיבור).",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/research.py",
-        "line": 1421,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_bd2cc4b712ee0656": {
     "source": "אחרי שתחברו את נתוני החיפוש של גוגל, נראה לכם באילו חיפושים האתר שלכם כבר מופיע, עם כניסות ומיקום. בלי לנחש כמה מחפשים.",
     "language": "he",
@@ -85484,7 +85952,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 329,
+        "line": 343,
         "kind": "literal"
       }
     ]
@@ -85528,7 +85996,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85591,6 +86059,24 @@
         "file": "web/app/login/page.tsx",
         "line": 115,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_bd927c72ecae816b": {
+    "source": "TikTok Display API (הסרטונים שלכם)",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1468,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1095,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -86393,7 +86879,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1361,
+        "line": 1393,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86567,7 +87053,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -86697,7 +87183,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -86766,7 +87252,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1428,
+        "line": 1474,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -86875,7 +87361,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 489,
+        "line": 503,
         "kind": "literal"
       },
       {
@@ -87701,7 +88187,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 297,
+        "line": 303,
         "kind": "template",
         "purpose": "copy"
       }
@@ -87888,7 +88374,7 @@
       },
       {
         "file": "api/app/routers/setup.py",
-        "line": 189,
+        "line": 195,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -87935,6 +88421,24 @@
         "file": "web/lib/flowScreens.ts",
         "line": 14,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_c25c4592a144be5b": {
+    "source": "החשבון השתנה. בדקו את החשבון שמוצג ונסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 135,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 138,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -88176,6 +88680,18 @@
         "line": 714,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_c2cd194640bced33": {
+    "source": "חברו קודם את הטיקטוק של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 132,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -88994,7 +89510,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 894,
+        "line": 908,
         "kind": "literal"
       },
       {
@@ -89129,7 +89645,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1209,
+        "line": 1241,
         "kind": "template",
         "purpose": "copy"
       }
@@ -89769,6 +90285,18 @@
       }
     ]
   },
+  "m_c64f8148fac489c0": {
+    "source": "לראות את הסרטונים הציבוריים שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 142,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_c65666ec3c848f5a": {
     "source": "קצת שובב",
     "language": "he",
@@ -89803,7 +90331,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 355,
+        "line": 369,
         "kind": "literal"
       }
     ]
@@ -89827,6 +90355,18 @@
         "file": "web/lib/businessFields.ts",
         "line": 189,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_c67ead7faaa668b9": {
+    "source": "נלמד אילו סרטונים מושכים צפיות ותגובות, כדי לדייק את הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/plan_connections.py",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -89993,13 +90533,13 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1422,
+        "line": 1454,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1429,
+        "line": 1475,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -90052,6 +90592,23 @@
         "line": 108,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_c70be95b10ebc70f": {
+    "source": "הגישה לסרטונים לא אושרה. חברו שוב ואשרו אותה בטיקטוק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 35,
+        "kind": "literal"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 22,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -90617,7 +91174,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 444,
+        "line": 458,
         "kind": "literal"
       }
     ]
@@ -90652,6 +91209,17 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 936,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_c867836d7d044f96": {
+    "source": "נלמד אילו סרטונים מושכים צפיות ותגובות, ונשתמש בזה לתכנון הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -91188,7 +91756,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 598,
+        "line": 612,
         "kind": "literal"
       }
     ]
@@ -91222,7 +91790,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -91787,7 +92355,7 @@
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 73,
+        "line": 81,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -91962,7 +92530,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -92078,7 +92646,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92217,7 +92785,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 467,
+        "line": 481,
         "kind": "literal"
       }
     ]
@@ -92385,13 +92953,13 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1385,
+        "line": 1417,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1437,
+        "line": 1483,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -92621,7 +93189,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -92676,7 +93244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -92893,13 +93461,13 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 23,
+        "line": 25,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 45,
+        "line": 53,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -93380,7 +93948,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1213,
+        "line": 1245,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -93602,7 +94170,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 251,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -93717,7 +94285,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1149,
+        "line": 1181,
         "kind": "template",
         "purpose": "copy"
       }
@@ -94139,7 +94707,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1326,
+        "line": 1358,
         "kind": "template",
         "purpose": "copy"
       }
@@ -94230,7 +94798,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 234,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -94465,7 +95033,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 159,
+        "line": 164,
         "kind": "jsx"
       }
     ]
@@ -94693,7 +95261,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 327,
+        "line": 333,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -94731,6 +95299,24 @@
         "file": "web/app/admin/page.tsx",
         "line": 704,
         "kind": "template"
+      }
+    ]
+  },
+  "m_d1c2a3f29091a2c1": {
+    "source": "החיבור השתנה. בדקו את החשבון ונסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 141,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 153,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -95315,7 +95901,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -95501,7 +96087,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1298,
+        "line": 1330,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -95569,7 +96155,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionRecommendation.ts",
-        "line": 16,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -95736,7 +96322,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 591,
+        "line": 605,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -95766,6 +96352,18 @@
       {
         "file": "api/app/services/post_rewrite.py",
         "line": 78,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_d3b035ffcc727337": {
+    "source": "צריך לחבר שוב את הטיקטוק כדי לעדכן את הנתונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 23,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -95816,7 +96414,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 407,
+        "line": 413,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -95873,7 +96471,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95885,7 +96483,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 219,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -95969,12 +96567,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 885,
+        "line": 899,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 896,
+        "line": 910,
         "kind": "literal"
       },
       {
@@ -96416,7 +97014,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 404,
+        "line": 418,
         "kind": "literal"
       }
     ]
@@ -96703,7 +97301,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 575,
+        "line": 589,
         "kind": "literal"
       }
     ]
@@ -96786,7 +97384,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -97016,6 +97614,18 @@
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 113,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_d5f631a3220ccb00": {
+    "source": "בחרו קודם את חשבון הטיקטוק של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/routers/tiktok_connections.py",
+        "line": 151,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -97397,7 +98007,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1443,
+        "line": 1489,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97442,7 +98052,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 433,
+        "line": 447,
         "kind": "literal"
       }
     ]
@@ -97476,7 +98086,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97528,6 +98138,12 @@
       {
         "file": "api/app/services/instagram_signal.py",
         "line": 651,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/research.py",
+        "line": 1090,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97595,7 +98211,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1370,
+        "line": 1402,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97939,18 +98555,6 @@
       }
     ]
   },
-  "m_d8128b1148a90c77": {
-    "source": "נשתמש בנתונים שסונכרנו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/research.py",
-        "line": 1838,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_d81c5db8bd1bef4d": {
     "source": "לחם תום · DNA ופוסטים מגרסה 1",
     "language": "he",
@@ -98019,7 +98623,7 @@
       },
       {
         "file": "web/app/security/page.tsx",
-        "line": 246,
+        "line": 251,
         "kind": "jsx"
       },
       {
@@ -98452,7 +99056,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 155,
+        "line": 160,
         "kind": "jsx"
       }
     ]
@@ -98693,7 +99297,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 724,
+        "line": 738,
         "kind": "literal"
       }
     ]
@@ -98781,7 +99385,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 431,
+        "line": 445,
         "kind": "literal"
       }
     ]
@@ -99041,7 +99645,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 332,
+        "line": 346,
         "kind": "literal"
       }
     ]
@@ -99125,7 +99729,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 49,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -99369,7 +99973,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1825,
+        "line": 1874,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -99414,7 +100018,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 221,
+        "line": 226,
         "kind": "jsx"
       }
     ]
@@ -99627,7 +100231,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 312,
+        "line": 326,
         "kind": "literal"
       },
       {
@@ -99810,7 +100414,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1505,
+        "line": 1551,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -99935,7 +100539,7 @@
       },
       {
         "file": "api/app/services/research.py",
-        "line": 1298,
+        "line": 1330,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -100088,7 +100692,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1337,
+        "line": 1369,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100428,7 +101032,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 190,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -100580,7 +101184,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 176,
+        "line": 181,
         "kind": "literal"
       }
     ]
@@ -100640,7 +101244,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100674,7 +101278,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -100801,7 +101405,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1140,
+        "line": 1172,
         "kind": "template",
         "purpose": "copy"
       }
@@ -100830,7 +101434,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 52,
+        "line": 60,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -100899,7 +101503,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 874,
+        "line": 888,
         "kind": "literal"
       }
     ]
@@ -100933,7 +101537,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -100955,7 +101559,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 225,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -101032,7 +101636,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 168,
+        "line": 173,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101133,7 +101737,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1780,
+        "line": 1826,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -101628,7 +102232,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 72,
+        "line": 80,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -101652,7 +102256,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -101898,6 +102502,18 @@
       {
         "file": "api/app/services/google_cost.py",
         "line": 775,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_e044f9df7e8229d7": {
+    "source": ". אלה מספרים מצטברים מאז הפרסום, נכון לקריאה האחרונה; אין כאן מדידת פניות או מכירות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1094,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -102419,7 +103035,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 313,
+        "line": 319,
         "kind": "template",
         "purpose": "copy"
       }
@@ -102487,7 +103103,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 509,
+        "line": 523,
         "kind": "literal"
       }
     ]
@@ -102560,7 +103176,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 316,
+        "line": 322,
         "kind": "template",
         "purpose": "copy"
       }
@@ -102583,7 +103199,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 55,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -102634,7 +103250,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 271,
+        "line": 277,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -102701,7 +103317,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 260,
+        "line": 264,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -102850,7 +103466,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 463,
+        "line": 477,
         "kind": "literal"
       }
     ]
@@ -102993,7 +103609,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1505,
+        "line": 1551,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -103171,7 +103787,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 861,
+        "line": 875,
         "kind": "literal"
       },
       {
@@ -103398,7 +104014,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -103731,6 +104347,18 @@
       }
     ]
   },
+  "m_e46edb9a18b0c9c9": {
+    "source": "נשתמש בנתונים שנקראו מהחשבונות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/research.py",
+        "line": 1887,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_e48bb22b868d279a": {
     "source": "הנחיית כיוון: כרטיס הודעה עם כיתוב ברור (has_overlay=true). כותרת קצרה שהמסר שלה עובר מיד.",
     "language": "he",
@@ -104057,7 +104685,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 408,
+        "line": 414,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -104081,7 +104709,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1295,
+        "line": 1327,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -104710,7 +105338,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -104721,7 +105349,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -104915,7 +105543,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 329,
+        "line": 335,
         "kind": "template",
         "purpose": "copy"
       }
@@ -105573,7 +106201,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 61,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105649,7 +106277,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 176,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -105969,7 +106597,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 872,
+        "line": 886,
         "kind": "literal"
       }
     ]
@@ -106018,7 +106646,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 231,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -106364,6 +106992,17 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 672,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ea1a0f840d423b34": {
+    "source": "כשהחיבור זמין לחשבון שלכם, אפשר לבחור את הטיקטוק של העסק ולקרוא צפיות, תגובות ושיתופים של הסרטונים. הנתונים מצטרפים למחקר ולתכנון הפוסטים הבאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
         "kind": "literal"
       }
     ]
@@ -106957,7 +107596,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -107141,7 +107780,7 @@
     "references": [
       {
         "file": "api/app/services/plan_connections.py",
-        "line": 73,
+        "line": 81,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -107223,7 +107862,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -107641,12 +108280,12 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 745,
+        "line": 759,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 832,
+        "line": 846,
         "kind": "literal"
       },
       {
@@ -108036,7 +108675,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -108125,7 +108764,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 601,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -108186,6 +108825,17 @@
       {
         "file": "web/components/posts/CampaignBrief.tsx",
         "line": 26,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_ed4c296d2c361542": {
+    "source": "לא הצלחנו לעדכן את החיבור לטיקטוק. נסו שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -108274,7 +108924,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 91,
+        "line": 92,
         "kind": "literal"
       }
     ]
@@ -108558,7 +109208,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 362,
+        "line": 368,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -108727,7 +109377,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 773,
+        "line": 787,
         "kind": "literal"
       }
     ]
@@ -108946,7 +109596,7 @@
     "references": [
       {
         "file": "api/app/routers/trial.py",
-        "line": 432,
+        "line": 438,
         "kind": "template",
         "purpose": "copy"
       }
@@ -109608,7 +110258,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 198,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -109715,7 +110365,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1370,
+        "line": 1402,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -109833,7 +110483,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1832,
+        "line": 1881,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -110217,7 +110867,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1181,
+        "line": 1213,
         "kind": "template",
         "purpose": "copy"
       }
@@ -110256,7 +110906,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 420,
+        "line": 426,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -110407,7 +111057,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 268,
+        "line": 282,
         "kind": "literal"
       },
       {
@@ -110582,7 +111232,7 @@
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 758,
+        "line": 772,
         "kind": "literal"
       },
       {
@@ -110734,6 +111384,17 @@
       {
         "file": "web/components/instagram/HandlesEditor.tsx",
         "line": 116,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f2b2545cf4e5a856": {
+    "source": "החיבור עדיין לא פתוח לכל המשתמשים. לא נמדדות כאן פניות או רכישות, ולא מפרסמים בשמכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
         "kind": "literal"
       }
     ]
@@ -111443,7 +112104,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 248,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -111742,7 +112403,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 408,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -111808,6 +112469,11 @@
     "source": "עוד לא נבדק",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 164,
+        "kind": "literal"
+      },
       {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 20,
@@ -112263,7 +112929,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -112549,7 +113215,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1350,
+        "line": 1382,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -112784,7 +113450,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -112948,7 +113614,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1340,
+        "line": 1372,
         "kind": "template",
         "purpose": "copy"
       }
@@ -112995,7 +113661,7 @@
     "references": [
       {
         "file": "api/app/routers/integrations.py",
-        "line": 196,
+        "line": 199,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -113321,6 +113987,18 @@
       }
     ]
   },
+  "m_f8461e390d1d2ba9": {
+    "source": "לאשר את חשבון הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionRecommendation.ts",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_f84c8285790ac6a7": {
     "source": "בחרו מה להגדיל מהרשימה.",
     "language": "he",
@@ -113357,6 +114035,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 81,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f8774edb976c177f": {
+    "source": "כשמחברים את טיקטוק, נקרא את השם והמזהה של החשבון שבחרתם, בקריאה בלבד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/security/page.tsx",
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -113623,7 +114312,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1416,
+        "line": 1448,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -113668,12 +114357,12 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 124,
+        "line": 123,
         "kind": "literal"
       },
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 151,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -113781,7 +114470,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 569,
+        "line": 583,
         "kind": "literal"
       }
     ]
@@ -113803,7 +114492,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 403,
+        "line": 417,
         "kind": "literal"
       }
     ]
@@ -113848,6 +114537,17 @@
       }
     ]
   },
+  "m_f990d36a76ece263": {
+    "source": "האישור בטיקטוק לא הושלם. אפשר לחבר שוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 32,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f9993df985f4822e": {
     "source": "דמי ניהול: 15%-20% מתקציב המדיה, או 2,000-8,000 ₪ בחודש. הקמה חד-פעמית: 1,500-4,000 ₪",
     "language": "he",
@@ -113865,7 +114565,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 320,
+        "line": 334,
         "kind": "literal"
       }
     ]
@@ -114059,7 +114759,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 212,
+        "line": 217,
         "kind": "jsx"
       }
     ]
@@ -114191,7 +114891,7 @@
       },
       {
         "file": "api/app/routers/trial.py",
-        "line": 267,
+        "line": 273,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -114491,6 +115191,17 @@
       }
     ]
   },
+  "m_faf07c5caf5ca08d": {
+    "source": "לחבר שוב את הטיקטוק",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/TikTokConnection.tsx",
+        "line": 91,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_faf8502522c3ec78": {
     "source": "כותרת ענקית מעל התמונה, כמו שער מגזין. להכרזות ולעדכונים.",
     "language": "he",
@@ -114666,7 +115377,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -114747,7 +115458,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 713,
+        "line": 727,
         "kind": "literal"
       }
     ]
@@ -114944,7 +115655,7 @@
     "references": [
       {
         "file": "api/app/services/research.py",
-        "line": 1362,
+        "line": 1394,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -115171,7 +115882,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -115771,7 +116482,7 @@
     "references": [
       {
         "file": "web/app/security/page.tsx",
-        "line": 202,
+        "line": 207,
         "kind": "literal",
         "purpose": "display"
       }
@@ -115827,7 +116538,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -115841,6 +116552,24 @@
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 119,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_fdeb33892d186762": {
+    "source": "permission",
+    "language": "en",
+    "references": [
+      {
+        "file": "api/app/services/tiktok.py",
+        "line": 85,
+        "kind": "literal",
+        "purpose": "validation"
+      },
+      {
+        "file": "api/app/services/tiktok_data.py",
+        "line": 103,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -116155,7 +116884,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 96,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -116188,7 +116917,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 822,
+        "line": 836,
         "kind": "literal"
       }
     ]
@@ -116404,7 +117133,7 @@
     "references": [
       {
         "file": "web/app/integrations/page.tsx",
-        "line": 213,
+        "line": 222,
         "kind": "literal"
       }
     ]

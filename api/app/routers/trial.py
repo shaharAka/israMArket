@@ -41,7 +41,7 @@ from app.deps import get_current_user
 from app.models import Business, User
 from app.routers.setup import newest_business
 from app.routers import foundations
-from app.services import ga4, hypotheses as hypothesis_review, journey, meta, plan_connections
+from app.services import ga4, hypotheses as hypothesis_review, journey, meta, plan_connections, tiktok
 from app.services.jsonutil import dumps, loads
 
 try:  # tzdata is not guaranteed on slim images; the day number only needs Israel's date.
@@ -231,6 +231,12 @@ def build_steps(
 
     # --- week 1 · measurement: without it there is no way to know anything works ------
     required = _plan_integration_keys(facts)
+    if plan_connections.needed(facts, "tiktok"):
+        connection = plan_connections.state(facts, "tiktok", available=bool(facts.business and tiktok.configured_for(facts.business.owner.email)))
+        read_at = journey.parse_time((facts.connection_states.get("tiktok", {}).get("readiness") or {}).get("last_success_at"))
+        steps.append(_step("tiktok", 1, connection["title"], connection["why"], 3,
+                           "/integrations#tiktok", connection["action"], connection["status"], read_at,
+                           connection["why"] if connection["status"] == "soon" else None))
     # The owner told us at /start where to find them, and it was neither Instagram nor
     # Facebook: connecting one cannot be the first thing asked (often the plan is to open
     # the page). The step stays in week 1, after the ones they can do today.
@@ -464,20 +470,28 @@ def hypotheses(facts: journey.Facts) -> list[dict]:
 
 def measurement(facts: journey.Facts, whatsapp_set: bool) -> dict:
     """Week 1's aha — "המדידה עובדת": what is connected, and whether real numbers came in."""
+    tiktok_available = bool(facts.business and tiktok.configured_for(facts.business.owner.email))
+    tiktok_source = plan_connections.state(facts, "tiktok", available=tiktok_available)
+    tiktok_numbers = bool(tiktok_source["status"] == "done" and
+                         facts.connection_states.get("tiktok", {}).get("has_numbers"))
     connected = [key for key, on in (
         ("instagram", "meta" in facts.connected),
         ("site", "ga4" in facts.connected),
         ("whatsapp", whatsapp_set),
+        ("tiktok", tiktok_available and "tiktok" in facts.connected),
     ) if on]
     sources = [plan_connections.state(facts, provider, available=available)
-               for provider, available in (("ga4", ga4.ga4_configured()), ("meta", meta.meta_configured()))
+               for provider, available in (("ga4", ga4.ga4_configured()), ("meta", meta.meta_configured()),
+                    ("tiktok", tiktok_available))
                if plan_connections.needed(facts, provider)]
     return {
         "connected": connected,
         "verified_sources": [source["title"] for source in sources if source["status"] == "done"],
         "pending_sources": [source["title"] for source in sources if source["status"] == "todo"],
-        "has_numbers": facts.first_snapshot_at is not None,
-        "first_numbers_at": _iso(facts.first_snapshot_at),
+        "has_numbers": facts.first_snapshot_at is not None or tiktok_numbers,
+        "first_numbers_at": _iso(facts.first_snapshot_at) or (
+            (facts.connection_states.get("tiktok", {}).get("readiness") or {}).get("last_success_at")
+            if tiktok_numbers else None),
         "baseline": foundations.baseline_filled(facts.baseline),
     }
 

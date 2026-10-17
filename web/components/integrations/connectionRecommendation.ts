@@ -1,6 +1,6 @@
 import type { Business, IntegrationsPayload, SetupPayload } from "@/lib/api";
 
-export type ConnectionKey = "website" | "whatsapp" | "ga4" | "meta";
+export type ConnectionKey = "website" | "whatsapp" | "ga4" | "meta" | "tiktok";
 export type ConnectionRecommendation = { key: ConnectionKey; title: string; why: string };
 
 /** The saved plan chooses the sources. A public link never counts as permission. */
@@ -10,6 +10,7 @@ export function connectionRecommendation(business: Business | null, setup: Setup
   const planned = business.quarter_plan?.integrations || [];
   const ga4 = data.integrations.find(item => item.provider === "ga4");
   const meta = data.integrations.find(item => item.provider === "meta");
+  const tiktok = data.integrations.find(item => item.provider === "tiktok");
   const googleNeeded = items.some(item => item.key === "google" && item.status !== "soon");
   const metaNeeded = items.some(item => item.key === "instagram" && item.status !== "soon");
   const metaTitle = items.find(item => item.key === "instagram")?.title || "נתוני הפרסום והפוסטים";
@@ -17,6 +18,7 @@ export function connectionRecommendation(business: Business | null, setup: Setup
   const metaWhy = planned.find(item => ["instagram_insights", "facebook_insights", "meta_business"].includes(item.key))?.why_he || "נלמד אילו פוסטים מעוררים עניין, כדי לדייק את הפוסט הבא בתוכנית.";
 
   // An unfinished consent return comes first, even after a subsequent plan change.
+  if (data.tiktok_ready && tiktok?.status === "select_account") return { key: "tiktok", title: "לאשר את חשבון הטיקטוק", why: "נלמד מהסרטונים של העסק כדי לדייק את הפוסטים הבאים." };
   if (ga4?.status === "select_property" && ga4.properties?.length) return { key: "ga4", title: "לבחור את האתר", why: googleWhy };
   if (["select_page", "select_assets"].includes(meta?.status || "")) return { key: "meta", title: "לבחור את הדף העסקי", why: metaWhy };
   if (googleNeeded && ga4?.external_id && ["unchecked", "reconnect", "unavailable"].includes(ga4.source_readiness?.status || "")) {
@@ -30,6 +32,7 @@ export function connectionRecommendation(business: Business | null, setup: Setup
   }
   for (const item of items) {
     if (item.done || item.status === "soon") continue;
+    if (item.key === "tiktok" && data.tiktok_ready) return { key: "tiktok", title: item.title, why: "נלמד מהסרטונים של העסק כדי לדייק את הפוסטים הבאים." };
     if (item.key === "google" && business.website_url && data.ga4_ready && ga4?.source_readiness?.status !== "reading") return { key: "ga4", title: item.title, why: googleWhy };
     if (item.key === "instagram" && data.meta_ready && meta?.source_readiness?.status !== "reading") return { key: "meta", title: item.title, why: metaWhy };
   }

@@ -21,7 +21,7 @@ Sources, and exactly what each one is today:
   next six weeks (`calendar_il`, computed locally), big shopping days up to ten weeks out
   as "prepare", and what the business planned / measured around the same event before.
 - ``own_results`` — the business's own synced Instagram posts, the GA4 / Meta
-  performance snapshots, and what happened to last month's plan. Only synced data; when
+  performance snapshots, confirmed TikTok public-video counts, and what happened to last month's plan. Only source data; when
   nothing is synced the finding says what is not measured.
 - ``presence`` — the business's own homepage (basics such as a WhatsApp link, a phone,
   opening hours, social links; changes since the last run), its stored social links and
@@ -55,7 +55,7 @@ from app.models import (
     ResearchRun,
     Strategy,
 )
-from app.services import cost_model, google_cost, instagram_signal, keywords, meta
+from app.services import cost_model, google_cost, instagram_signal, keywords, meta, tiktok, tiktok_data
 from app.services.calendar_il import israeli_events_for_month
 from app.services.gemini import strategy_json, text_model
 from app.services.hebrew_style import HEBREW_STYLE
@@ -1066,7 +1066,39 @@ def _account_fact_he(account: dict) -> tuple[str, str]:
 def gather_own_results(db: Session, business: Business, ctx: dict) -> tuple[list[dict], dict, dict]:
     out = _Findings("own_results", ctx["now"])
     measured = False
+    tiktok_measured = False
     needs: list[str] = []
+
+    # TikTok is an optional owned source. Read only a confirmed, authorised grant;
+    # lifetime video counts never become weekly reach, customers or purchases.
+    tk = tiktok_data.item_for(db, business.id)
+    if tk and tk.status == "connected" and tiktok.configured_for(business.owner.email):
+        if tiktok_data.read(db, tk, now=ctx["now"]):
+            tk = tiktok_data.item_for(db, business.id)
+            snap = tiktok_data.public_data(tk) if tk else {}
+            read_at = snap.get("checked_at") or ""
+            try:
+                fresh = timedelta(0) <= ctx["now"] - datetime.fromisoformat(read_at) <= timedelta(days=7)
+            except (TypeError, ValueError):
+                fresh = False
+            if fresh:
+                rows = [r for r in snap.get("videos", []) if any(r.get(k) is not None for k in ("view_count", "like_count", "comment_count", "share_count"))]
+                for row in sorted(rows, key=lambda r: r["view_count"] if r.get("view_count") is not None else -1, reverse=True)[:3]:
+                    measured = True
+                    tiktok_measured = True
+                    counts = [f"{row['view_count']} צפיות"] if row.get("view_count") is not None else ["מספר הצפיות לא התקבל"]
+                    for key, label in (("like_count", "לייקים"), ("comment_count", "תגובות"), ("share_count", "שיתופים")):
+                        if row.get(key) is not None:
+                            counts.append(f"{row[key]} {label}")
+                    finding = out.add("fact", f"הסרטון בטיקטוק \"{_short(row['title'], 90)}\" ({_d(row['posted_at'])}): "
+                        + ", ".join(counts) + ". אלה מספרים מצטברים מאז הפרסום, נכון לקריאה האחרונה; אין כאן מדידת פניות או מכירות.",
+                        origin="TikTok Display API (הסרטונים שלכם)", date_ref=row["posted_at"][:10],
+                        data={"media_id": row["id"], "url": row["url"], "metrics": {k: row.get(k) for k in
+                            ("view_count", "like_count", "comment_count", "share_count")}, "read_at": read_at,
+                            "measurement": "cumulative_public_video_counts", "sample_complete": snap.get("complete", False)})
+                    finding["observed_at"] = read_at
+            if not fresh or snap.get("source_readiness", {}).get("status") in {"reconnect", "permission", "unavailable"}:
+                needs.append("tiktok_connection")
 
     # Instagram: the business's own synced posts.
     synced = db.query(InstagramPost).filter(InstagramPost.business_id == business.id).count()
@@ -1283,7 +1315,7 @@ def gather_own_results(db: Session, business: Business, ctx: dict) -> tuple[list
             "ok" if not needs else "partial",
             "נתונים אמיתיים מהחשבונות המחוברים." + (" חלק מהמקורות עוד לא מחוברים." if needs else ""),
             needs=needs,
-            provider="Instagram Graph API + Google Analytics",
+            provider="Instagram Graph API + Google Analytics" + (" + TikTok Display API" if tiktok_measured else ""),
         )
     return out.items, status, {}
 
@@ -1418,11 +1450,25 @@ def gather_presence(db: Session, business: Business, ctx: dict) -> tuple[list[di
         out.add(
             "fact",
             "הרשתות שמצאנו: " + ", ".join(lines) + ". " + "; ".join(activity)
-            + ". בפייסבוק ובטיקטוק אנחנו לא רואים פעילות (אין חיבור).",
+            + ".",
             origin="פרטי העסק + עמוד הבית",
             data={"networks": networks, "instagram_connected": meta_connected, "last_instagram_post": (last_post or [""])[0] or ""},
         )
-    else:
+    tk = tiktok_data.item_for(db, business.id)
+    if tk and tk.status == "connected" and tiktok.configured_for(business.owner.email):
+        captured = tiktok_data.public_data(tk)
+        checked = captured.get("checked_at") or ""
+        try:
+            fresh = timedelta(0) <= ctx["now"] - datetime.fromisoformat(checked) <= timedelta(days=7)
+        except (ValueError, TypeError):
+            fresh = False
+        if fresh and captured.get("videos"):
+            latest = max(captured["videos"], key=lambda row: row["posted_at"])
+            finding = out.add("fact", f"הסרטון הציבורי האחרון שנקרא מהטיקטוק שלכם פורסם ב־{_d(latest['posted_at'])}: \"{_short(latest['title'], 90)}\".",
+                origin="TikTok Display API (הסרטונים שלכם)", date_ref=latest["posted_at"][:10],
+                data={"media_id": latest["id"], "url": latest["url"], "read_at": checked})
+            finding["observed_at"] = checked
+    if not networks:
         out.add(
             "absence",
             "לא מצאנו קישורים לרשתות חברתיות, לא בפרטי העסק ולא בעמוד הבית. " + "; ".join(activity) + ".",
@@ -1814,6 +1860,9 @@ def readiness(db: Session, business: Business) -> dict:
     if handles and not meta_connected:
         competitor_needs.append("instagram_connection")
     own_needs = ([] if meta_connected else ["instagram_connection"]) + ([] if ga4 else ["google_analytics"])
+    tk = tiktok_data.item_for(db, business.id)
+    tik_data = tiktok_data.public_data(tk) if tk and tk.status == "connected" else {}
+    tik_available = bool(tik_data.get("videos")) and tiktok.configured_for(business.owner.email)
     return {
         "competitors": _status(
             "ready" if (sites or (handles and meta_connected)) else ("not_connected" if handles else "empty"),
@@ -1834,8 +1883,8 @@ def readiness(db: Session, business: Business) -> dict:
         ),
         "calendar": _status("ready", "חגים, ימי זיכרון וימי קניות בשישה השבועות הקרובים."),
         "own_results": _status(
-            "ready" if (synced or snaps) else "not_connected",
-            "נשתמש בנתונים שסונכרנו." if (synced or snaps) else "עוד אין נתוני ביצוע. חברו את אינסטגרם ואת נתוני האתר.",
+            "ready" if (synced or snaps or tik_available) else "not_connected",
+            "נשתמש בנתונים שנקראו מהחשבונות שלכם." if (synced or snaps or tik_available) else "עוד אין נתוני ביצוע. חברו את אינסטגרם ואת נתוני האתר.",
             needs=own_needs,
         ),
         "presence": _status(

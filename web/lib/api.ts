@@ -4132,6 +4132,9 @@ export const endpoints = {
   calendar: (year: number, month: number) => api<CalendarPayload>(`/calendar?year=${year}&month=${month}`),
   integrations: (forceLive = false) => api<IntegrationsPayload>("/integrations", {}, forceLive),
   ga4Start: () => api<{ url: string }>("/integrations/ga4/start"),
+  tiktokStart: (locale: "he" | "en" | "ar" | "ru" = "he") => api<{ url: string }>(`/integrations/tiktok/start?lang=${locale}`),
+  tiktokAccount: (attempt: string) => api<{ ok: boolean }>("/integrations/tiktok/account", { method: "POST", body: JSON.stringify({ connection_attempt: attempt }) }),
+  tiktokRead: () => api<{ data: TikTokData }>("/integrations/tiktok/read", { method: "POST" }),
   metaStart: (ads = false, popup = false) => api<{ url: string; attempt: string }>(`/integrations/meta/start?ads=${ads}&popup=${popup}`),
   metaAssets: () => api<MetaAssets>("/integrations/meta/assets"),
   metaPixels: (account: string) => api<{ pixels: MetaPixel[]; error: MetaReadState | null }>(`/integrations/meta/pixels?ad_account_id=${encodeURIComponent(account)}`),
@@ -4142,8 +4145,8 @@ export const endpoints = {
   ga4Read: () => api<{ integration: IntegrationsPayload["integrations"][number] }>("/integrations/ga4/read", { method: "POST" }),
   metaAccount: (body: { page_id: string; instagram_id?: string; display_name?: string; ad_account_id?: string; pixel_id?: string }) =>
     api("/integrations/meta/account", { method: "POST", body: JSON.stringify(body) }),
-  disconnectIntegration: (provider: "ga4" | "meta") =>
-    api<{ ok: boolean }>(`/integrations/${provider}`, { method: "DELETE" }),
+  disconnectIntegration: (provider: "ga4" | "meta" | "tiktok") =>
+    api<{ ok: boolean; remote_revoked?: boolean }>(`/integrations/${provider}`, { method: "DELETE" }),
   createWebhook: (body: { url: string; events: string }) =>
     api<{ secret: string; id: number; url: string }>("/integrations/webhooks", {
       method: "POST",
@@ -5186,6 +5189,7 @@ export type MetaSourceReadiness = Omit<SourceReadiness, "status"> & {
 export type IntegrationsPayload = {
   ga4_ready: boolean;
   meta_ready: boolean;
+  tiktok_ready?: boolean;
   integrations: {
     provider: string;
     status: string;
@@ -5203,8 +5207,19 @@ export type IntegrationsPayload = {
     account_email?: string | null;
     account_mismatch?: boolean;
     account_note_he?: string | null;
+    connection_attempt?: string | null;
+    tiktok_data?: TikTokData | null;
   }[];
   webhooks: { id: number; url: string; events: string; created_at: string }[];
+};
+
+export type TikTokData = {
+  source_readiness: { status: string; note_he: string; checked_at?: string | null; last_success_at?: string | null };
+  profile: { display_name: string };
+  checked_at?: string | null;
+  complete: boolean;
+  measurement: "cumulative_public_video_counts";
+  videos: { id: string; title: string; description: string; posted_at: string; url: string; duration: number | null; view_count: number | null; like_count: number | null; comment_count: number | null; share_count: number | null }[];
 };
 
 export type MetaReadState = { status: string; note_he?: string };

@@ -38,6 +38,12 @@ class Settings(BaseSettings):
     oauth_redirect_base: str = ""
     meta_app_id: str = ""
     meta_app_secret: str = ""
+    # TikTok Login Kit/Display read access. Off until credentials and the relevant
+    # sandbox users or public review are verified; customers never supply app keys.
+    tiktok_client_key: str = ""
+    tiktok_client_secret: str = ""
+    tiktok_access_mode: Literal["off", "sandbox", "public"] = "off"
+    tiktok_sandbox_emails: str = ""
     # Graph API version for every Meta call (OAuth dialog included). v25.0 is supported
     # until July 2028 per Meta's version table; bump here, not in code.
     meta_graph_version: str = "v25.0"

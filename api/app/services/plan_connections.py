@@ -19,6 +19,8 @@ def keys(facts) -> set[str] | None:
 
 def needed(facts, provider: str) -> bool:
     required = keys(facts)
+    if provider == "tiktok":
+        return bool(required and "tiktok_business" in required)
     if required is None:
         return provider != "ga4" or facts.business is None or bool(facts.website)
     return bool(required & META_KEYS) if provider == "meta" else "ga4" in required
@@ -32,6 +34,12 @@ def _read(section: dict, statuses: set[str]) -> bool:
 def state(facts, provider: str, *, available: bool = True) -> dict:
     item = facts.connection_states.get(provider) or {}
     read = item.get("readiness") or {}
+    if provider == "tiktok":
+        done = bool(available and item.get("status") == "connected" and item.get("granted") and item.get("selected") and
+                    _read(read, {"ready", "partial", "empty"}))
+        return {"status": "done" if done else "todo" if available else "soon", "title": "נתוני הטיקטוק",
+                "why": "נלמד אילו סרטונים מושכים צפיות ותגובות, כדי לדייק את הפוסטים הבאים." if available or done else "החיבור לטיקטוק עדיין לא זמין.",
+                "action": "לעדכן את נתוני הסרטונים" if done else "לחבר את הטיקטוק"}
     if provider == "ga4":
         done = bool(item.get("status") == "connected" and item.get("granted") and item.get("selected") and
                     _read(read, {"ready", "empty"}))
