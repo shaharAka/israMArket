@@ -14,6 +14,9 @@ import { UIAction } from "@/components/design/Controls";
 import { GUIDES } from "@/components/help/guides";
 import { HowToFind } from "@/components/help/HowToFind";
 import { SendToHelper } from "@/components/help/SendToHelper";
+import { ConnectionJourneyCard } from "@/components/integrations/ConnectionJourneyCard";
+import { connectionJourney, type ConnectionJourney } from "@/components/integrations/connectionJourney";
+import { TrackingSetupGuide } from "@/components/integrations/TrackingSetupGuide";
 import { MetaConnection } from "@/components/integrations/MetaConnection";
 import { TikTokConnection } from "@/components/integrations/TikTokConnection";
 import { connectionRecommendation, type ConnectionKey } from "@/components/integrations/connectionRecommendation";
@@ -173,7 +176,9 @@ export default function IntegrationsPage() {
   const ga4NeedsSelection = ga4Item?.status === "select_property" && Boolean(ga4Item.properties?.length);
   const metaNeedsSelection = ["select_page", "select_assets"].includes(metaItem?.status || "");
 
-  async function handleStartGa4() {
+  async function handleStartGa4() { return startGa4(false); }
+  async function handleChooseGa4Account() { return startGa4(true); }
+  async function startGa4(chooseAccount: boolean) {
     setError("");
     setSuccessNote("");
     if (demo) {
@@ -187,7 +192,7 @@ export default function IntegrationsPage() {
       return;
     }
     try {
-      const { url } = await endpoints.ga4Start();
+      const { url } = await endpoints.ga4Start(chooseAccount);
       window.location.href = url;
     } catch (err) {
       setError(err instanceof Error ? err.message : t("לא הצלחנו להתחיל את החיבור לגוגל"));
@@ -271,8 +276,8 @@ export default function IntegrationsPage() {
 
   const connectionRows: Record<ConnectionKey, ReactNode> = {
     tiktok: (
-      <ConnectionSection source="tiktok" title={t("טיקטוק")} status={tiktokStatus} account={tiktokItem?.display_name} open={activeKey === "tiktok"} onOpen={setExpanded}>
-        <TikTokConnection item={tiktokItem} ready={Boolean(data?.tiktok_ready)} demo={demo} primary={primaryKey === "tiktok"} onChanged={() => reload(true)} />
+      <ConnectionSection source="tiktok" title={t("טיקטוק")} status={tiktokStatus} account={tiktokItem?.display_name} open={activeKey === "tiktok"} onOpen={setExpanded} journey={data ? connectionJourney("tiktok", tiktokItem, Boolean(data.tiktok_ready)) : undefined} primary={primaryKey === "tiktok"}>
+        <TikTokConnection item={tiktokItem} ready={Boolean(data?.tiktok_ready)} demo={demo} primary={primaryKey === "tiktok"} businessId={business?.id} onChanged={() => reload(true)} />
       </ConnectionSection>
     ),
     website: (
@@ -323,8 +328,8 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     ga4: (
-<ConnectionSection source="ga4" title={t("נתוני האתר")} status={ga4NeedsSelection ? t("נשאר לבחור אתר") : ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={ga4Item?.display_name?.replace(/\s*\(GA4\)\s*$/, "")} open={activeKey === "ga4"} onOpen={setExpanded}>
-          <section className={ROW_CARD}>
+<ConnectionSection source="ga4" title={t("נתוני האתר")} status={ga4NeedsSelection ? t("נשאר לבחור אתר") : ga4Item ? ga4Presentation.label : data && !data.ga4_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={ga4Item?.display_name?.replace(/\s*\(GA4\)\s*$/, "")} open={activeKey === "ga4"} onOpen={setExpanded} journey={data ? connectionJourney("ga4", ga4Item, Boolean(data.ga4_ready)) : undefined} primary={primaryKey === "ga4"}>
+          <section className="pt-1">
             <div className="pb-3">
               {/* "Signing in with Google is not measurement" is in the expand below. */}
               {ga4NeedsSelection ? (
@@ -360,6 +365,7 @@ export default function IntegrationsPage() {
                       {savingGa4 ? t("בודקים את הנתונים…") : t("זה האתר שלי")}
                     </Button>
                   </div>
+                  <button type="button" onClick={handleChooseGa4Account} className={`${TEXT_ACTION} mt-2`}><Copy text="האתר לא מופיע? לבחור חשבון גוגל אחר" /></button>
                 </div>
               ) : ga4HasSelection ? (
                 <>
@@ -374,7 +380,7 @@ export default function IntegrationsPage() {
                     </>
                   }
                 >
-                  {!(["reconnect", "no_properties"].includes(ga4State?.status || "")) ? <button type="button" onClick={handleStartGa4} className={TEXT_ACTION}>
+                  {!(["reconnect", "no_properties"].includes(ga4State?.status || "")) ? <button type="button" onClick={handleChooseGa4Account} className={TEXT_ACTION}>
                     <Copy text="להחליף חשבון" /></button> : null}
                   <button type="button" onClick={() => handleDisconnect("ga4")} className={QUIET_ACTION}>
                     <Copy text="לנתק" /></button>
@@ -382,7 +388,7 @@ export default function IntegrationsPage() {
                 {ga4State ? <SourceReadState state={ga4State} checking={savingGa4} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} /> : null}
                 </>
               ) : ga4Item?.source_readiness?.status === "no_properties" ? (
-                <SourceReadState state={ga4Item.source_readiness} onRetry={handleReadGa4} onReconnect={handleStartGa4} primary={primaryKey === "ga4"} />
+                <SourceReadState state={ga4Item.source_readiness} onRetry={handleReadGa4} onReconnect={handleChooseGa4Account} primary={primaryKey === "ga4"} />
               ) : (
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                   <Button
@@ -410,6 +416,8 @@ export default function IntegrationsPage() {
                 </p>
               ) : null}
               {ga4Connected ? null : <HowToFind topic="google_analytics" className="mt-1" />}
+              {(!ga4Connected || ga4State?.status === "empty") ? <TrackingSetupGuide provider="google" businessId={business?.id} onReturn={ga4HasSelection ? handleReadGa4 : handleStartGa4} returnLabel={ga4HasSelection ? t("לבדוק את נתוני האתר") : t("לחבר את חשבון הגוגל של האתר")} busy={savingGa4} /> : null}
+              <p className="mt-3 text-[13px] leading-6 text-[var(--ink-muted)]"><Copy text="כאן קוראים את נתוני האתר בגוגל. חיבור לדוחות של חשבון פרסום בגוגל עדיין לא זמין." /></p>
             </div>
 
             <RowDetails summary={t("מה זה נותן, ואיך משיגים גישה?")}>
@@ -455,10 +463,10 @@ export default function IntegrationsPage() {
           </ConnectionSection>
     ),
     meta: (
-<ConnectionSection source="meta" title={t("פייסבוק ואינסטגרם")} status={metaConnected ? sourcePresentation(metaItem?.source_readiness).label : metaNeedsSelection ? t("נשאר לבחור דף") : data && !data.meta_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded}>
-          <section className={ROW_CARD}>
+<ConnectionSection source="meta" title={t("פייסבוק ואינסטגרם")} status={metaConnected ? sourcePresentation(metaItem?.source_readiness).label : metaNeedsSelection ? t("נשאר לבחור דף") : data && !data.meta_ready ? t("עדיין לא זמין") : t("לא מחובר")} account={metaItem?.display_name} open={activeKey === "meta"} onOpen={setExpanded} journey={data ? connectionJourney("meta", metaItem, Boolean(data.meta_ready)) : undefined} primary={primaryKey === "meta"}>
+          <section className="pt-1">
             <div className="pb-3">
-              <MetaConnection primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
+              <MetaConnection businessId={business?.id} primary={primaryKey === "meta"} item={metaItem} ready={Boolean(data?.meta_ready)} demo={demo} website={business?.website_url || ""} onChanged={() => { setExpanded("meta"); return reload(true); }} onDisconnect={metaConnected ? () => handleDisconnect("meta") : undefined} />
             </div>
 
             <RowDetails summary={t("מה זה נותן, ומה אם האינסטגרם שלי פרטי?")}>
@@ -568,7 +576,7 @@ export default function IntegrationsPage() {
             <p className="max-w-[42em] text-[15px] leading-6 text-[var(--ink-soft)]">{t(recommendation.why)}</p>
           </> : <p className="text-[15px] leading-6 text-[var(--ink-soft)]">{unavailableCount === 3 ? t("החיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : unavailableCount ? t("חלק מהחיבורים עוד לא זמינים. התוכנית ממשיכה בלעדיהם.") : t("אפשר להמשיך בתוכנית. החיבורים זמינים כאן כשתצטרכו אותם.")}</p>}
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {recommendation && activeKey !== primaryKey ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
+            {recommendation && activeKey !== primaryKey && !["ga4", "meta", "tiktok"].includes(primaryKey || "") ? <UIAction onClick={() => setExpanded(primaryKey)}><Copy text="לפתוח את החיבור המומלץ" /></UIAction> : null}
             <Link href={business?.owner_context?.research_journey && !business.onboarding_complete ? "/start?phase=after" : "/strategy"} className={recommendation ? TEXT_ACTION : BACK_TO_PLAN}><Copy text={business?.owner_context?.research_journey && !business.onboarding_complete ? t("לחזור לשאלות על העסק") : recommendation ? t("להמשיך בתוכנית ולחבר אחר כך") : t("לחזור לתוכנית")} /></Link>
           </div>
         </div> : null}
@@ -653,10 +661,11 @@ export default function IntegrationsPage() {
   );
 }
 
-function ConnectionSection({ source, title, status, account, open, onOpen, children }: {
+function ConnectionSection({ source, title, status, account, open, onOpen, children, journey, primary }: {
   source: ConnectionKey; title: string; status: string; account?: string; open: boolean;
-  onOpen: (value: ConnectionKey | null) => void; children: ReactNode;
+  onOpen: (value: ConnectionKey | null) => void; children: ReactNode; journey?: ConnectionJourney; primary?: boolean;
 }) {
+  if (journey) return <ConnectionJourneyCard id={source} title={title} account={account} status={status} journey={journey} open={open} primary={primary} onOpen={() => onOpen(open ? null : source)}>{children}</ConnectionJourneyCard>;
   return <details id={source === "whatsapp" ? "whatsapp-connection" : source} open={open} className="group/connection scroll-mt-20 border-b border-[var(--rule)]" onToggle={event => {
     if (event.currentTarget.open !== open) onOpen(event.currentTarget.open ? source : null);
   }}>

@@ -4131,7 +4131,7 @@ export const endpoints = {
   studio: () => api<StudioOverviewPayload>("/strategy/studio"),
   calendar: (year: number, month: number) => api<CalendarPayload>(`/calendar?year=${year}&month=${month}`),
   integrations: (forceLive = false) => api<IntegrationsPayload>("/integrations", {}, forceLive),
-  ga4Start: () => api<{ url: string }>("/integrations/ga4/start"),
+  ga4Start: (chooseAccount = false) => api<{ url: string }>(`/integrations/ga4/start${chooseAccount ? "?choose_account=true" : ""}`),
   tiktokStart: (locale: "he" | "en" | "ar" | "ru" = "he") => api<{ url: string }>(`/integrations/tiktok/start?lang=${locale}`),
   tiktokAccount: (attempt: string) => api<{ ok: boolean }>("/integrations/tiktok/account", { method: "POST", body: JSON.stringify({ connection_attempt: attempt }) }),
   tiktokRead: () => api<{ data: TikTokData }>("/integrations/tiktok/read", { method: "POST" }),

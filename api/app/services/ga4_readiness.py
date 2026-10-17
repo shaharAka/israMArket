@@ -27,6 +27,8 @@ def tokens(item: Integration) -> tuple:
 
 
 def failure(exc: Exception) -> dict:
+    if isinstance(exc, ga4.Ga4AccessError) and exc.reason == "analytics_permission_missing":
+        return {"status": "reconnect", "note_he": "נשאר לאשר קריאה של נתוני האתר. בחיבור לגוגל, סמנו את ההרשאה לקריאת Google Analytics לפני שממשיכים."}
     reconnect = isinstance(exc, (RefreshError, PermissionDenied, Unauthenticated))
     status = getattr(exc, "readiness_status", None) or ("reconnect" if reconnect else "unavailable")
     return {"status": status, "note_he": NOTES[status]}
