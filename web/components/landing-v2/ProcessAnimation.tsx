@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { CardStage } from "@/components/CardCanvas";
 import { PlanBrief } from "@/components/design/PlanBrief";
@@ -78,7 +78,7 @@ function Plan({ role }: RoleProps) {
 function Goals({ role }: RoleProps) {
   const example = role ? PROCESS_EXAMPLES[role] : null;
   return <div className={styles.goals}>
-    <span className={styles.miniLabel}><Copy text="מה רוצים להשיג?" /></span>
+    <span className={styles.miniLabel}><Copy text="היעד של החודש" /></span>
     {example ? <div className={styles.goalChoice}><span><Copy text={example.outcome} /></span><span className={styles.check}><Check /></span></div> : <div className={styles.goalOptions}>{["פניות", "הזמנות", "הרשמות", "תרומות"].map((label, index) => <span key={label} className={styles[`goalOption${index}`]}><Copy text={label} /></span>)}</div>}
     <div className={styles.goalNumbers}><div><small><Copy text="נקודת ההתחלה" /></small><strong>12</strong></div><span className={styles.goalConnector} aria-hidden="true" /><div><small><Copy text="היעד לחודש" /></small><strong>18</strong></div></div>
     <div className={styles.goalTrack}><span /></div>
@@ -91,16 +91,26 @@ const FORMATS = [
   { kind: "text", label: "טקסט" }, { kind: "image", label: "תמונה" }, { kind: "video", label: "סרטון" },
 ] as const;
 
-function ClothingClip({ playing }: { playing: boolean }) {
+const CAMPAIGN_MEDIA = {
+  services: { src: "/showcase/designer-human-motion-ai.mp4", poster: "/showcase/designer-human-motion-poster.jpg", label: "בוחרים צבע באור של הבית" },
+  online_shop: { src: "/showcase/clothing-human-motion-ai.mp4", poster: "/showcase/clothing-linen-ai.png", label: "הגזרה והבד בתנועה" },
+  physical_shop: { src: "/showcase/bakery-human-motion-ai.mp4", poster: "/showcase/bakery-human-motion-poster.jpg", label: "קולעים חלה במאפייה" },
+  fundraising: { src: "/showcase/community-human-motion-ai.mp4", poster: "/showcase/community-human-motion-poster.jpg", label: "אורזים יחד מצרכים לקהילה" },
+} as const;
+
+function CampaignClip({ role, playing }: RoleProps & { playing: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const t = useCopy();
+  const { locale } = useLanguage();
+  const software = !role || role === "software";
+  const media = software ? { src: `/showcase/software-campaign-demo-${locale}.mp4`, poster: `/showcase/software-campaign-demo-${locale}.jpg`, label: "מהקמפיין לפוסט במערכת" } : CAMPAIGN_MEDIA[role];
   useEffect(() => {
     const element = video.current;
     if (!element) return;
     if (playing) void element.play().catch(() => { /* Native controls support manual playback. */ });
     else element.pause();
-  }, [playing]);
-  return <div className={styles.clipPost}><video ref={video} src="/showcase/clothing-human-motion-ai.mp4" poster="/showcase/clothing-linen-ai.png" muted loop playsInline preload="metadata" controls aria-label={t("הגזרה והבד בתנועה")} /></div>;
+  }, [playing, media.src]);
+  return <div className={styles.clipPost} data-software={software}><video ref={video} src={media.src} poster={media.poster} muted loop playsInline preload="metadata" controls aria-label={t(media.label)} /></div>;
 }
 
 function SpecificCampaign({ role, playing }: { role: ProcessRole; playing: boolean }) {
@@ -118,13 +128,39 @@ function SpecificCampaign({ role, playing }: { role: ProcessRole; playing: boole
   }));
   const selectedBrand: typeof brand = { ...brand, business_name: t(example.name), palette: [{ role: "primary", hex: example.color, name: "" }, { role: "background", hex: example.soft, name: "" }] };
   const dna = campaign.brand_dna ? { ...campaign.brand_dna, colors: { ink: example.color, paper: example.soft, accent: example.color } } : undefined;
-  return <div className={styles.postFan} data-specific="true">{posts.map((post, index) => <div key={post.uid} className={`${styles.fanPost} ${styles[`fan${index}`]}`}>{role === "online_shop" && index === 2 ? <ClothingClip playing={playing} /> : <CardStage post={post} brand={selectedBrand} dna={dna} businessName={t(example.name)} rounded={false} />}</div>)}</div>;
+  return <div className={styles.postFan} data-specific="true">{posts.map((post, index) => <div key={post.uid} className={`${styles.fanPost} ${styles[`fan${index}`]}`}>{index === 2 ? <CampaignClip role={role} playing={playing} /> : <CardStage post={post} brand={selectedBrand} dna={dna} businessName={t(example.name)} rounded={false} />}</div>)}</div>;
 }
 
-function Campaign({ role, playing }: RoleProps & { playing: boolean }) {
-  return <div className={styles.campaign}>
-    <div className={styles.campaignBrief}><span className={styles.miniLabel}><Copy text="מהתוכנית לחומרים" /></span><strong><Copy text="מסר אחד. כמה דרכים להעביר אותו." /></strong></div>
-    {role ? <SpecificCampaign role={role} playing={playing} /> : <div className={styles.postFan}>{FORMATS.map((format, index) => <div key={format.kind} className={`${styles.fanPost} ${styles[`fan${index}`]}`}><div className={`${styles.formatCard} ${styles[`format${index}`]}`}><span className={styles.miniLabel}><Copy text="לפי התוכנית שלך" /></span><FormatSymbol kind={format.kind} /><strong><Copy text={format.label} /></strong><div className={styles.formatLines}><i /><i /></div><span className={styles.formatReady}><Check /><Copy text="מוכן לבדיקה" /></span></div></div>)}</div>}
+/** Keep the remaining phase time when paused or offscreen, rather than restarting. */
+function useCampaignStage(playing: boolean) {
+  const [stage, setStage] = useState<"campaign" | "posts">("campaign");
+  const remaining = useRef(3500);
+  useEffect(() => {
+    if (!playing) return;
+    const started = performance.now();
+    let completed = false;
+    const timer = window.setTimeout(() => {
+      completed = true;
+      remaining.current = stage === "campaign" ? 9500 : 3500;
+      setStage(stage === "campaign" ? "posts" : "campaign");
+    }, remaining.current);
+    return () => { window.clearTimeout(timer); if (!completed) remaining.current = Math.max(0, remaining.current - (performance.now() - started)); };
+  }, [playing, stage]);
+  return stage;
+}
+
+function Campaign({ role, playing, reduced }: RoleProps & { playing: boolean; reduced: boolean }) {
+  const stage = useCampaignStage(playing);
+  const showPosts = reduced || stage === "posts";
+  const example = role ? PROCESS_EXAMPLES[role] : null;
+  const rows = [
+    { week: "שבוע 1", focus: example?.weeks[0] ?? "נותנים סיבה להכיר", format: "image" },
+    { week: "שבוע 2", focus: example?.weeks[1] ?? "מראים את הערך", format: "video" },
+    { week: "שבוע 3", focus: example?.weeks[2] ?? "מזמינים לעשות צעד", format: "text" },
+  ] as const;
+  return <div className={styles.campaign} data-campaign-stage={showPosts ? "posts" : "campaign"}>
+    <div className={styles.campaignBrief}><span className={styles.miniLabel}><Copy text={showPosts ? "החומרים מוכנים לבדיקה" : "בונים את הקמפיין"} /></span><strong><Copy text={showPosts ? "מסר אחד. כמה דרכים להעביר אותו." : example?.planTitle ?? "לכל פרסום יש תפקיד בקמפיין."} /></strong></div>
+    {showPosts ? role ? <SpecificCampaign role={role} playing={playing} /> : <div className={styles.postFan}>{FORMATS.map((format, index) => <div key={format.kind} className={`${styles.fanPost} ${styles[`fan${index}`]}`}>{index === 2 ? <CampaignClip role={null} playing={playing} /> : <div className={`${styles.formatCard} ${styles[`format${index}`]}`}><span className={styles.miniLabel}><Copy text="לפי התוכנית שלך" /></span><FormatSymbol kind={format.kind} /><strong><Copy text={format.label} /></strong><div className={styles.formatLines}><i /><i /></div><span className={styles.formatReady}><Check /><Copy text="מוכן לבדיקה" /></span></div>}</div>)}</div> : <div className={styles.campaignBuild}>{rows.map(row => <div key={row.week}><div><small><Copy text={row.week} /></small><p><Copy text={row.focus} /></p></div><FormatSymbol kind={row.format} /></div>)}</div>}
     <span className={styles.campaignFoot}><Copy text="המסר, הסגנון והתזמון נשארים מחוברים." /></span>
   </div>;
 }
@@ -161,7 +197,7 @@ export function ProcessAnimation({ step, role }: { step: ProcessStep; role: Proc
   const t = useCopy();
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
     <div className={styles.visualContent}>
-      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <Plan role={role} /> : step === "goals" ? <Goals role={role} /> : step === "campaign" ? <Campaign role={role} playing={playing} /> : step === "learning" ? <Learning role={role} /> : <Phone role={role} />}
+      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <Plan role={role} /> : step === "goals" ? <Goals role={role} /> : step === "campaign" ? <Campaign role={role} playing={playing} reduced={reduced} /> : step === "learning" ? <Learning role={role} /> : <Phone role={role} />}
     </div>
     <button type="button" className={styles.motionToggle} onClick={toggle} disabled={reduced} aria-label={t(paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")} aria-pressed={paused} title={t(reduced ? "התנועה כבויה לפי הגדרות המכשיר" : paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")}><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{paused || reduced ? <path d="m5 3 8 5-8 5Z" /> : <path d="M4 3h3v10H4zM10 3h3v10h-3z" />}</svg></button>
   </div>;

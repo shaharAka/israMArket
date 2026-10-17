@@ -52,7 +52,6 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
       <section className={styles.hero} aria-labelledby="process-title"><div className="lv2-wrap">
         <h1 id="process-title"><Copy text={PROCESS_HERO.title} /></h1>
         <p className={styles.heroBody}><Copy text={PROCESS_HERO.body} /></p>
-        <p className={styles.audience}><Copy text={PROCESS_HERO.audience} /></p>
         <Link href={start} className={`lv2-btn ${styles.start}`}><Copy text="להתחיל חודש בחינם" /></Link>
         <p className={styles.signupNote}><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></p>
       </div></section>
@@ -62,6 +61,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
           <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">0{index + 1}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
             {step.id === "research" && <fieldset className={styles.roleSelector} aria-label={t("סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map(item => <button type="button" key={item.segment} aria-pressed={role === item.segment} onClick={() => selectRole(item.segment)}><Copy text={item.label} /></button>)}</div></fieldset>}
             <p className={styles.sectionBody}><Copy text={step.body} /></p>
+            <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><Copy text="להתחיל חודש בחינם" /></Link>
           </div>
           <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />
         </section>)}

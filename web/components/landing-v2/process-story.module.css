@@ -1,12 +1,14 @@
 .page { --process-wash: #f4f6f3; --process-warm: #f7f5f0; --process-line: #dce3db; --process-green: #49664c; }
 .headerRow { justify-content: space-between; flex-wrap: nowrap !important; direction: rtl; }
 /* Utilities stay in the same physical slots when the content direction changes. */
-.page .header .headerActions { display: grid; grid-template-columns: 90px 100px 170px; gap: 16px; align-items: center; direction: ltr; margin: 0; }
-.headerActions > :global(.lv2-login) { justify-self: center; }
+.page .header .headerActions { display: grid; grid-template-columns: 90px 170px 100px; gap: 16px; align-items: center; direction: ltr; margin: 0; }
+.headerActions > :global(.product-utilities) { grid-column: 1; grid-row: 1; }
+.headerActions > :global(.lv2-login) { grid-column: 3; grid-row: 1; justify-self: center; }
+.headerActions > :global(.lv2-btn-quiet) { grid-column: 2; grid-row: 1; }
 .hero { padding-block: 94px 76px; text-align: center; }
 .hero h1 { font-size: clamp(38px, 5.5vw, 68px); font-weight: 600; line-height: 1.15; letter-spacing: -.035em; max-width: 960px; margin-inline: auto; text-wrap: balance; }
 .heroBody { max-width: 810px; margin: 26px auto 0; font-size: clamp(18px, 1.8vw, 22px); line-height: 1.8; color: var(--ink-soft); text-wrap: pretty; }
-.audience { margin: 24px auto 30px; font-size: 15px; line-height: 1.8; color: var(--ink-muted); }
+.heroBody + a.start { margin-top: 30px; }
 .page a.start { background: var(--action, var(--ink)); color: var(--paper); border-radius: 999px; box-shadow: none; min-height: 54px; padding-inline: 32px; }
 .page a.start:hover { background: var(--ink-soft); transform: translateY(-1px); }
 .signupNote { margin-top: 12px; font-size: 13px; line-height: 1.7; color: var(--ink-muted); }
@@ -20,6 +22,7 @@
 .sectionLabel > span { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
 .message h2 { max-width: 13em; font-size: clamp(30px, 3vw, 43px); font-weight: 500; letter-spacing: -.025em; line-height: 1.22; text-wrap: balance; }
 .sectionBody { max-width: 29em; font-size: 18px; line-height: 1.85; color: var(--ink-soft); margin-top: 24px; text-wrap: pretty; }
+.stepStart { margin-top: 26px; }
 .roleSelector { border: 0; padding: 0; min-width: 0; margin-top: 22px; }
 .roleChoices { display: flex; flex-wrap: wrap; gap: 8px; }
 .roleChoices button { min-height: 44px; border: 1px solid transparent; border-radius: 999px; padding: 10px 15px; background: var(--soft); color: var(--ink); font: inherit; font-size: 13px; line-height: 1.4; cursor: pointer; transition: background 180ms ease, border-color 180ms ease; }
@@ -65,7 +68,8 @@
 .connectionLines { position: absolute; width: 25%; height: 210px; left: 38%; fill: none; stroke: var(--process-line); stroke-width: 1.6; }
 .connectedHub { position: relative; z-index: 3; width: 49%; padding: 24px 17px; background: var(--paper); box-shadow: 0 12px 36px #14203a0a; border-radius: 16px; direction: rtl; text-align: start; }
 :global(html[dir="ltr"]) .connectedHub { direction: ltr; }
-.connectedHub > :global(.lv2-wordmark) { font-size: 20px; }
+.connectedHub > :global(.lv2-identity-symbol), .phoneBrand > :global(.lv2-identity-symbol) { display: none; }
+.connectedHub > :global(.lv2-identity-wordmark) { display: block; max-width: 150px; }
 .connectedHub > span { display: block; font-size: 11px; color: var(--ink-muted); margin: 8px 0 18px; }
 .hubRow { display: flex; gap: 6px; margin-top: 14px; font-size: 12px; line-height: 1.6; }
 .hubRow svg { color: var(--process-green); flex-shrink: 0; width: 14px; margin-top: 2px; }
@@ -100,7 +104,15 @@
 .campaign { position: absolute; inset: 0; }
 .campaignBrief { position: absolute; top: 28px; inset-inline: 8%; }
 .campaignBrief strong { display: block; font-size: 17px; font-weight: 500; margin-top: 5px; }
-.postFan { position: absolute; inset: 105px 7% 65px; }
+.campaignBuild { position: absolute; inset: 112px 9% 60px; display: grid; gap: 12px; align-content: start; }
+.campaignBuild > div { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 12px; background: var(--paper); box-shadow: 0 6px 20px #14203a07; }
+.campaignBuild small { color: var(--ink-muted); font-size: 11px; display: block; margin-bottom: 3px; }
+.campaignBuild p { font-size: 14px; line-height: 1.5; }
+.campaignBuild > div > svg { flex-shrink: 0; width: 32px; height: 32px; margin-inline-start: auto; color: var(--ink-muted); }
+.visual:not([data-reduced="true"]) .campaignBuild > div { animation: buildRow 650ms ease both; }
+.campaignBuild > div:nth-child(2) { animation-delay: 650ms !important; }
+.campaignBuild > div:nth-child(3) { animation-delay: 1300ms !important; }
+.postFan { position: absolute; inset: 105px 7% 65px; max-width: 560px; margin-inline: auto; }
 .fanPost { position: absolute; width: 30%; transform-origin: center 80%; }
 .fan0 { left: 1%; top: 22px; transform: rotate(-4deg); z-index: 1; }
 .fan1 { left: 35%; top: 0; transform: rotate(0); z-index: 3; }
@@ -113,6 +125,7 @@
 .postFan[data-specific="true"] .fan2 { right: 0; transform: rotate(7deg); }
 .clipPost { aspect-ratio: 4 / 5; background: var(--ink); }
 .clipPost video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.clipPost[data-software="true"] video { object-fit: contain; background: var(--paper); }
 .formatCard { min-height: 235px; padding: 17px 13px; background: var(--paper); }
 .format1 { background: #eef1f5; }
 .format2 { background: #e2e8e4; }
@@ -143,7 +156,7 @@
 .phoneBar { height: 24px; display: flex; align-items: center; justify-content: space-between; padding-inline: 16px; font-size: 9px; direction: ltr; }
 .phoneBar i { width: 32px; height: 8px; border-radius: 99px; background: var(--ink); }
 .phoneBrand { padding: 12px 18px; border-bottom: 1px solid var(--rule); }
-.phoneBrand :global(.lv2-wordmark) { font-size: 21px; }
+.phoneBrand > :global(.lv2-identity-wordmark) { display: block; max-width: 150px; }
 .phoneViewport { position: absolute; top: 72px; bottom: 17px; inset-inline: 6px; overflow: hidden; }
 .phoneContent { width: 350px; transform: scale(.63); transform-origin: top right; padding: 16px 8px; }
 :global(html[dir="ltr"]) .phoneContent { transform-origin: top left; }
@@ -186,7 +199,7 @@
 .visual:not([data-reduced="true"]) .planPointer { animation: planPointer 7s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .goalTrack > span { animation: goalProgress 7s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .goalPointer { animation: click 7s ease-in-out infinite; }
-.visual:not([data-reduced="true"]) .fanPost { animation: fanAppear 7s ease-in-out infinite; }
+.visual:not([data-reduced="true"]) .fanPost { animation: fanAppear 650ms ease both; }
 .visual:not([data-reduced="true"]) .fan1 { animation-delay: .25s; }
 .visual:not([data-reduced="true"]) .fan2 { animation-delay: .5s; }
 .visual:not([data-reduced="true"]) .finding { animation: finding 8s ease-in-out infinite; }
@@ -194,6 +207,7 @@
 .visual:not([data-reduced="true"]) .phoneScreens { animation: phoneScroll 10s ease-in-out infinite; }
 .visual:not([data-reduced="true"]) .phonePointer { animation: phoneSwipe 10s ease-in-out infinite; }
 .visual[data-playing="false"] *, .visual[data-playing="false"] *::before, .visual[data-playing="false"] *::after { animation-play-state: paused !important; }
+.visual[data-playing="false"] .campaignBuild > div { animation: none; opacity: 1; transform: none; }
 .visual[data-reduced="true"] .pointer { display: none; }
 @keyframes scan { 0%, 8% { opacity: 0; transform: translateY(0); } 15% { opacity: .6; } 36% { opacity: .6; transform: translateY(150px); } 44%, 100% { opacity: 0; transform: translateY(150px); } }
 @keyframes appear { 0%, 12% { opacity: 0; transform: translateY(14px); } 25%, 92% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; } }
@@ -204,12 +218,20 @@
 @keyframes planPointer { 0%, 15% { opacity: 0; transform: translateY(-110px); } 22% { opacity: 1; transform: translateY(-110px); } 54% { opacity: 1; transform: translateY(0); } 65%, 100% { opacity: 0; } }
 @keyframes goalProgress { 0%, 20% { transform: scaleX(.2); transform-origin: right; } 55%, 100% { transform: scaleX(1); transform-origin: right; } }
 @keyframes click { 0%, 6% { opacity: 0; transform: translate(18px, 15px); } 19%, 24% { opacity: 1; transform: translate(0); } 29% { opacity: 1; transform: scale(.8); } 40%, 100% { opacity: 0; transform: translateY(12px); } }
-@keyframes fanAppear { 0%, 10% { opacity: .55; translate: 0 18px; } 35%, 85% { opacity: 1; translate: 0 0; } 100% { opacity: .55; translate: 0 18px; } }
+@keyframes fanAppear { from { opacity: 0; translate: 0 18px; } to { opacity: 1; translate: 0 0; } }
+@keyframes buildRow { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes finding { 0%, 20% { opacity: 0; transform: translateY(60px) scale(.96); } 44%, 91% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; } }
 @keyframes reports { 0%, 10% { opacity: 1; transform: translateY(12px); } 20%, 30% { opacity: 1; transform: translateY(0); } 52%, 90% { opacity: .8; transform: translateY(-8px) scale(.96); } 100% { opacity: 1; transform: translateY(12px); } }
 @keyframes phoneScroll { 0%, 28% { transform: translateY(0); } 44%, 78% { transform: translateY(-470px); } 94%, 100% { transform: translateY(0); } }
 @keyframes phoneSwipe { 0%, 19% { opacity: 0; transform: translateY(0); } 26% { opacity: 1; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-120px); } 48%, 100% { opacity: 0; transform: translateY(-120px); } }
 @media (prefers-reduced-motion: reduce) { .visual *, .visual *::before, .visual *::after, .roleChoices button { animation: none !important; transition: none !important; } .pointer { display: none; } }
+/* Give the demonstration most of the feature row; scale its contents, not empty padding. */
+@media (min-width: 1001px) {
+  .page .story { max-width: 1600px; padding-inline: clamp(24px, 3vw, 48px); }
+  .section { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); column-gap: clamp(36px, 4vw, 72px); min-height: 650px; padding-block: 48px; }
+  .visual { height: 540px; }
+  .visualContent { inset: auto; top: 50%; left: 50%; width: calc(100% / 1.16); height: 450px; transform: translate(-50%, -50%) scale(1.16); }
+}
 @media (max-width: 1000px) and (min-width: 701px) {
   .section { gap: 28px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
   .visual { height: 430px; }
@@ -222,11 +244,10 @@
   .page .header .headerActions { grid-template-columns: 84px 70px; gap: 4px; }
   .headerActions :global(.product-language-control) select { width: 84px; padding-inline: 2px; font-size: 12px; }
   .page .header .headerActions > :global(.lv2-btn-quiet) { display: none; }
-  .page .header .headerActions > :global(.lv2-login) { display: inline-flex; font-size: 12px; }
+  .page .header .headerActions > :global(.lv2-login) { display: inline-flex; font-size: 12px; grid-column: 2; }
   .hero { padding-block: 50px 44px; }
   .hero h1 { font-size: clamp(34px, 8.6vw, 47px); line-height: 1.18; letter-spacing: -.03em; }
   .heroBody { font-size: 17px; line-height: 1.85; margin-top: 22px; }
-  .audience { font-size: 13px; margin-block: 22px; max-width: 28em; }
   .storyIntro { margin-bottom: 0; }
   .storyIntro h2 { font-size: 17px; }
   .section { grid-template-columns: minmax(0, 1fr); gap: 24px; min-height: 0; padding-block: 38px; }
@@ -250,7 +271,6 @@
   .provider { font-size: 9px; padding: 10px 8px; gap: 6px; }
   .provider :global(.lv2-provider-logo) img { max-width: 19px; max-height: 19px; }
   .connectedHub { width: 51%; padding: 22px 13px; }
-  .connectedHub > :global(.lv2-wordmark) { font-size: 16px; }
   .hubRow { font-size: 10px; gap: 4px; }
   .connectionFoot { font-size: 11px; bottom: 44px; }
   .planSheet { inset: 27px 6% 34px; padding: 20px; }
@@ -266,6 +286,9 @@
   .goalNumbers { margin-top: 24px; }
   .goalDefinition { font-size: 12px; }
   .campaignBrief strong { font-size: 15px; }
+  .campaignBuild { inset: 103px 6% 58px; gap: 10px; }
+  .campaignBuild > div { padding: 12px; gap: 10px; }
+  .campaignBuild p { font-size: 12px; }
   .postFan { inset: 103px 5% 80px; }
   .formatCard { min-height: 211px; padding: 13px 10px; }
   .formatCard > .miniLabel { font-size: 8px; }
