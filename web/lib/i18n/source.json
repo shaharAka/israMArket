@@ -2395,7 +2395,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 60,
+        "line": 61,
         "kind": "literal",
         "purpose": "display"
       }
@@ -2589,7 +2589,7 @@
       },
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 53,
+        "line": 54,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7605,7 +7605,7 @@
       },
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -9489,12 +9489,12 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 46,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -14284,7 +14284,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -26517,7 +26517,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       },
       {
@@ -33661,7 +33661,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 54,
+        "line": 55,
         "kind": "literal",
         "purpose": "display"
       }
@@ -41290,6 +41290,11 @@
         "file": "web/app/integrations/page.tsx",
         "line": 92,
         "kind": "literal"
+      },
+      {
+        "file": "web/app/integrations/page.tsx",
+        "line": 564,
+        "kind": "literal"
       }
     ]
   },
@@ -46114,6 +46119,17 @@
       }
     ]
   },
+  "m_64389020952953a7": {
+    "source": "לבחור חשבון גוגל אחר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/integrations/connectionJourney.ts",
+        "line": 35,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_643aa4703d81216d": {
     "source": ", המעקב נבדק",
     "language": "he",
@@ -48441,7 +48457,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 62,
+        "line": 63,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57374,7 +57390,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -62540,7 +62556,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -63117,7 +63133,7 @@
       },
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -65078,7 +65094,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -74339,7 +74355,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 56,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -75036,7 +75052,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 52,
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       }
@@ -82963,7 +82979,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 55,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95793,6 +95809,16 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 39,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/design/ConnectionGuidePreview.tsx",
+        "line": 41,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/integrations/SourceReadState.tsx",
         "line": 20,
         "kind": "literal"
@@ -95955,7 +95981,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 55,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -98028,7 +98054,7 @@
       },
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 51,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
@@ -111116,7 +111142,7 @@
     "references": [
       {
         "file": "web/components/integrations/connectionJourney.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]

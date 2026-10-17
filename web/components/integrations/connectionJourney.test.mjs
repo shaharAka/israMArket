@@ -12,6 +12,12 @@ test("consent alone advances to selection, not measured data", () => {
   assert.deepEqual(result.steps, ["done", "current", "waiting"]);
   assert.equal(result.usable, false);
 });
+test("an account without Analytics properties offers account recovery, not nonexistent sites", () => {
+  const result = journey("ga4", { ...item("no_properties"), status: "select_property", connected: false, external_id: "", properties: [] }, true);
+  assert.deepEqual(result.steps, ["done", "current", "waiting"]);
+  assert.equal(result.action, "לבחור חשבון גוגל אחר");
+  assert.equal(result.usable, false);
+});
 test("an empty successful read completes setup without claiming useful activity", () => {
   const result = journey("ga4", item("empty"), true);
   assert.deepEqual(result.steps, ["done", "done", "done"]);

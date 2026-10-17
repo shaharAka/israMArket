@@ -561,7 +561,7 @@ export default function IntegrationsPage() {
           </div>
         ) : null}
 
-        {successNote ? (
+        {successNote && !(successNote === "הגישה לגוגל אושרה. נשאר לבחור את האתר." && ga4State?.status === "no_properties") ? (
           <div className="mb-6 flex items-center gap-2.5 rounded-xl bg-[var(--good-soft)] px-4 py-3 text-[14px] font-medium leading-6 text-[color:var(--good)]">
             <IconCheck className="h-5 w-5 shrink-0" />
             <span>{t(successNote)}</span>

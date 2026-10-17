@@ -32,7 +32,8 @@ export function connectionJourney(provider: JourneyProvider, item: Item | undefi
   const current = renewing ? 0 : !permission ? 0 : !selected ? 1 : 2;
   const steps: JourneyStep[] = [0, 1, 2].map(index => read && !renewing || index < current ? "done" : index === current ? "current" : "waiting");
   const action = !available ? "לראות איך מכינים את החיבור" : renewing ? "לחדש את הגישה"
-    : !permission ? "לחבר את החשבון" : !selected ? provider === "ga4" ? "לבחור את האתר" : "לבחור את העסק"
+    : !permission ? "לחבר את החשבון" : provider === "ga4" && status === "no_properties" ? "לבחור חשבון גוגל אחר"
+    : !selected ? provider === "ga4" ? "לבחור את האתר" : "לבחור את העסק"
     : status === "partial" ? "להשלים את החיבור" : read ? "לראות את הנתונים וההגדרות" : "לבדוק את הנתונים";
   const state = (name?: string) => ({ status: READ_LABELS[name || "unchecked"] || READ_LABELS.unchecked,
     usable: name === "ready" || name === "partial" });
