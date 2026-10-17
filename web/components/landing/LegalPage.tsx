@@ -78,7 +78,7 @@ export function LegalPage({
   );
 }
 
-export function LegalSection({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+export function LegalSection({ id, title, children }: { id: string; title: ReactNode; children: ReactNode }) {
   return (
     <section id={id} aria-labelledby={`${id}-title`} className={styles.section}>
       <h2 id={`${id}-title`}>{title}</h2>

@@ -1,3 +1,5 @@
+import { Copy } from "@/components/language/LanguageProvider";
+import { AnalyticsSettings } from "@/components/analytics/SiteAnalytics";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BACKUP_NOTE, CONTACT_EMAIL, GEMINI_PAID_TIER, HOSTING_NOTE } from "@/lib/company";
@@ -114,12 +116,19 @@ export default function SecurityPage() {
             {/* web/lib/draft.ts: the /start draft lives in localStorage until signup. */}
             לפני ההרשמה, מה שאתם כותבים בשאלות הפתיחה נשמר רק בדפדפן שלכם.
             {" "}
-            {/* No analytics, ad pixel or tracking script anywhere in web/. */}
-            אין באתר שלנו כלי פרסום או מעקב, כמו פיקסל של פייסבוק. עוגיית התחברות זוכרת שהתחברתם, לשבוע.
+            {/* Website measurement waits for a separate opt-in; advertising storage stays denied. */}
+            עוגיית התחברות זוכרת שהתחברתם, לשבוע.
             {" "}
             {/* auth.google_start / meta_connections.start: short-lived, HttpOnly flow cookies. */}
             כשנכנסים עם גוגל או מחברים את פייסבוק, נשמרת גם עוגיית אבטחה זמנית, כדי לוודא שהאישור שחזר שייך לדפדפן שלכם.
           </p>
+        </Section>
+
+        <Section id="website-analytics" title={<Copy text="מדידה באתר שלנו" />}>
+          <p><Copy text="באישורכם בלבד, גוגל אנליטיקס מודד כניסות לעמודי האתר, התחלת היכרות ופתיחת חשבון. המדידה משתמשת בעוגיות וכוללת מידע טכני כמו סוג המכשיר ומקור הכניסה. איננו שולחים לגוגל שמות, אימיילים, תשובות מהראיון או תוכן של העסק. איננו מפעילים כלי פרסום." /></p>
+          <p><Copy text="אפשר לסרב ולהמשיך להשתמש באתר. את הבחירה ואת עוגיות המדידה שומרים עד 180 יום. אפשר לשנות את הבחירה כאן; סירוב מפסיק מדידה נוספת ומוחק את עוגיות המדידה בדפדפן. נתונים שכבר נשלחו לגוגל אינם נמחקים בעקבות שינוי הבחירה." /></p>
+          <p><a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noreferrer"><Copy text="איך גוגל משתמשת בנתונים מאתרים" /></a></p>
+          <AnalyticsSettings />
         </Section>
 
         <Section id="access" title={TITLE.access}>

@@ -60,8 +60,9 @@ class SessionCreationTest(unittest.TestCase):
 
     def test_google_signup_has_an_independent_session_generation(self):
         prior_id, prior_token = self.prior_account()
-        user = _google_user(self.db, {"email": "google@example.com", "sub": "synthetic-sub", "name": "Google"})
+        user, created = _google_user(self.db, {"email": "google@example.com", "sub": "synthetic-sub", "name": "Google"})
         self.assertEqual(user.id, prior_id)
+        self.assertTrue(created)
         self.assert_prior_session_refused(prior_token)
         self.client.cookies.set(COOKIE_NAME, create_access_token(user.id, user.session_epoch))
         self.assertEqual(self.client.get("/auth/me").status_code, 200)
@@ -72,6 +73,7 @@ class SessionCreationTest(unittest.TestCase):
         self.db.commit()
         self.client.cookies.set(COOKIE_NAME, create_access_token(user.id, user.session_epoch))
         self.assertEqual(self.client.get("/auth/me").status_code, 200)
-        linked = _google_user(self.db, {"email": user.email, "sub": "synthetic-existing", "name": "Existing"})
+        linked, created = _google_user(self.db, {"email": user.email, "sub": "synthetic-existing", "name": "Existing"})
+        self.assertFalse(created)
         self.assertEqual(linked.session_epoch, 0)
         self.assertEqual(self.client.get("/auth/me").status_code, 200)

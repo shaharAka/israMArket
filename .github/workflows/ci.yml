@@ -53,7 +53,7 @@ jobs:
       - name: Landing business-route handoff tests
         run: node scripts/test-landing-business-route.mjs && node scripts/test-research-replies.mjs
       - name: Finding value formatting
-        run: node scripts/test-finding-values.mjs
+        run: node scripts/test-finding-values.mjs && node scripts/test-site-analytics.mjs
       - name: Build
         run: npm run build
         env:

@@ -1,3 +1,4 @@
+import { consumeSignupEvent } from "./siteAnalytics";
 import { demoCampaign } from "./campaignDemo";
 import type { ContentLanguage } from "./content-language";
 import type { OnboardingDraft } from "./draft";
@@ -3968,7 +3969,7 @@ export async function api<T>(
 export const endpoints = {
   me: () => api<AuthUser>("/auth/me"),
   register: (body: { email: string; password: string; full_name?: string }) =>
-    api("/auth/register", { method: "POST", body: JSON.stringify(body) }),
+    api("/auth/register", { method: "POST", body: JSON.stringify(body) }).then(result => { try { consumeSignupEvent(); } catch { /* Measurement never changes signup success. */ } return result; }),
   login: (body: { email: string; password: string }) =>
     api("/auth/login", { method: "POST", body: JSON.stringify(body) }),
   enterDemo: async () => {
