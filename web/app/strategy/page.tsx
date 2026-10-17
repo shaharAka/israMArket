@@ -30,25 +30,10 @@ import { toast } from "@/lib/ui";
 import styles from "@/components/plan/month-plan.module.css";
 
 /**
- * התוכנית — the 3-month plan, the month and the quarter on one page.
- *
- * A business built at /start arrives here right after signup (Revision 5): the plan the
- * owner saw and shaped before the email is on the page at once, and the first month is
- * built from it underneath, stage by stage, while they read. So this page renders with no
- * month yet; the server builds it in the background (one job per business, whether or
- * not this page stays open) and the page only shows its progress (MonthBuildProgress).
- *
- * Once there is a month, it leads for a returning owner (it is what they act on) and the
- * 3-month plan follows as a reference, its later sections folded to one line each. On the
- * first visit the plan leads. The month itself leads with its answer (UI-RULES rule 2),
- * drawn as the plan sheet from the landing page: the hypothesis, how we will know, and what
- * we need from the owner (the page's one sun highlight); the four weeks are one calm list,
- * each row its own expand. The page keeps exactly one filled button, `השבוע בתוכנית`, in
- * its footer beside the calendar.
- *
- * The direction, intended audience and assumptions are editable at /strategy/edit.
- * The business inputs remain editable at /decisions. A business without a stored plan (built before Revision
- * 5) sees the month and the quarter as before.
+ * התוכנית מציגה קודם את המטרות שנבחרו, ואחריהן את העבודה לחודש הקרוב.
+ * חשבון חדש מגיע לכאן אחרי ההיכרות, החיבורים והמחקר; אין תוכנית לפני ההרשמה.
+ * הבנייה נשמרת בשרת ויכולה להמשיך גם כשהעמוד נסגר. טווח ארוך נשאר זמין לעיון.
+ * העריכה נשארת ב־/strategy/edit וב־/decisions; התוכן נשען על התוכנית השמורה.
  */
 
 const TONE = SECTIONS.strategy;
@@ -129,7 +114,7 @@ export default function StrategyPage() {
   const accent = TONE.accent;
   // The plan leads on the welcome visit and while there is no month; once there is a month
   // it leads for a returning owner (it is what they act on), the plan one tap away.
-  const range = planRange ?? (welcome || !strategy ? "quarter" : "month");
+  const range = planRange ?? (strategy ? "month" : "quarter");
 
   const planView = plan ? (
     <section aria-labelledby="quarter-plan-heading" className="space-y-6">
@@ -195,7 +180,6 @@ export default function StrategyPage() {
           <div className="space-y-10 pb-2">
             {actionOnTop ? (
               <div className="space-y-5">
-                <p className="text-[15px] leading-7 text-[color:var(--ink-soft)]"><Copy text="התוכנית שבניתם יחד איתנו שמורה, ומכאן נעבוד לפיה. אין צורך לחבר את כל הכלים כדי להתחיל." /></p>
                 {nextAction}
               </div>
             ) : null}
@@ -224,6 +208,7 @@ export default function StrategyPage() {
             {/* The page's one filled button, beside the calendar that belongs to the plan. */}
             <footer className="flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--rule)] pt-8">
               {actionOnTop ? null : nextAction}
+              {strategy ? <Link href="/campaign" className={TEXT_ACTION}><Copy text="לקמפיין של החודש" /></Link> : null}
               <Link href="/calendar" className={TEXT_ACTION}>
                 <IconCalendar className="h-[18px] w-[18px]" />
                 <Copy text="לוח התוכנית · פוסטים ומשימות" /></Link>

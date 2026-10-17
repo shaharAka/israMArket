@@ -65,7 +65,10 @@
 }
 
 .targetsGroup {
-  margin-top: 20px;
+  margin: 0 0 24px;
+  padding: 16px 20px 6px;
+  background: color-mix(in srgb, var(--journey-peach) 35%, var(--paper));
+  border-radius: 14px;
 }
 .targetsLabel { margin-bottom: 4px; font-size: 13px; font-weight: 500; color: var(--ink-muted); }
 

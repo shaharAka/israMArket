@@ -1192,6 +1192,14 @@ export default function PerformancePage() {
           ) : undefined}
         />
 
+              {planMeasure ? (
+                <p className="product-goal-context mb-6 text-[14px] leading-6 text-[color:var(--ink-soft)]">
+                  <Copy text="המטרה שבחרנו בתוכנית:" />{" "}<span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
+                  <Link href="/strategy" className="inline-flex min-h-11 items-center align-middle font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
+                    <Copy text="לתוכנית" /></Link>
+                </p>
+              ) : null}
+
         <ErrorNote message={t(error)} />
 
         {!hasProposal ? <div className="mb-8 empty:hidden">{checkIn}</div> : null}
@@ -1201,13 +1209,7 @@ export default function PerformancePage() {
             <div className="space-y-4">
               <SourceDataNotice payload={data} />
               {!hasProposal ? available ? <Answer payload={data} /> : !serviceResults?.enabled ? <NoSnapshotYet payload={data} postTaps={postTaps} /> : null : null}
-              {planMeasure ? (
-                <p className="text-[14px] leading-6 text-[color:var(--ink-soft)]">
-                  <Copy text="בתוכנית:" /><span className="font-semibold text-[color:var(--ink)]">{planMeasure}</span>.{" "}
-                  <Link href="/strategy" className="inline-flex min-h-11 items-center align-middle font-semibold text-[color:var(--primary)] hover:underline hover:underline-offset-4">
-                    <Copy text="לתוכנית" /></Link>
-                </p>
-              ) : null}
+
             </div>
             {available && !hasProposal && !serviceResults?.enabled ? <MeasurementGaps payload={data} /> : null}
             {hasProposal && recommendation ? <FindingCard payload={recommendation} primary={!serviceEditing} /> : null}

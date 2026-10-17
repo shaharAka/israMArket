@@ -29,11 +29,11 @@ export type DiscoveryResult = {
   assisted: boolean;
 };
 export const METRICS: Record<Segment, { key: NonNullable<ResearchJourney["metric"]>; label: string }[]> = {
-  online_shop: [{ key: "purchases", label: "רכישות שהושלמו באתר" }],
-  physical_shop: [{ key: "store_sales", label: "מכירות בחנות" }],
-  services: [{ key: "qualified_inquiries", label: "פניות שמתאימות לשירות שלי" }, { key: "booked_work", label: "פגישות או עבודות שנסגרו" }],
-  software: [{ key: "paid_accounts", label: "לקוחות משלמים" }, { key: "demos", label: "הדגמות עם לקוחות מתאימים" }, { key: "trials", label: "התנסויות במוצר" }],
-  fundraising: [{ key: "donations", label: "תרומות שהתקבלו" }, { key: "recurring_donors", label: "תורמים קבועים" }],
+  online_shop: [{ key: "purchases", label: "להגדיל את מספר הקניות באתר" }],
+  physical_shop: [{ key: "store_sales", label: "להגדיל את מספר הקניות בחנות" }],
+  services: [{ key: "qualified_inquiries", label: "לקבל יותר פניות מלקוחות מתאימים" }, { key: "booked_work", label: "לסגור יותר פגישות או עבודות" }],
+  software: [{ key: "paid_accounts", label: "להגדיל את מספר הלקוחות המשלמים" }, { key: "demos", label: "לקבוע יותר הדגמות עם לקוחות מתאימים" }, { key: "trials", label: "להגדיל את מספר ההתנסויות במוצר" }],
+  fundraising: [{ key: "donations", label: "להגדיל את מספר התרומות שמתקבלות" }, { key: "recurring_donors", label: "להגדיל את מספר התורמים הקבועים" }],
 };
 export function observationValid(value: Observation) {
   return value.status === "unknown" || (typeof value.lower === "number" && Number.isFinite(value.lower) && value.lower >= 0 && value.lower <= 1e9 && (value.unit !== "count" || Number.isInteger(value.lower)) && (value.status === "exact" || (typeof value.upper === "number" && Number.isFinite(value.upper) && value.upper >= value.lower && value.upper <= 1e9 && (value.unit !== "count" || Number.isInteger(value.upper)))));
