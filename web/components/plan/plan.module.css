@@ -373,3 +373,6 @@ details[open] > .foldHead .chevron {
     transition: none;
   }
 }
+
+/* The agreed outcome leads the direction, as in the product journey. */
+.sheet > .glance { padding-bottom: 24px; border-top: 0; border-bottom: 1px solid var(--rule); background: color-mix(in srgb, var(--journey-peach) 35%, var(--paper)); }

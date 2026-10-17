@@ -6,6 +6,7 @@ import { CardStage, cardSize } from "@/components/CardCanvas";
 import { CampaignBrief } from "./CampaignBrief";
 import { postDay, postWeek } from "./postMeta";
 import { CampaignWeek } from "./CampaignWeek";
+import { CampaignPurpose, PlannedCampaign } from "./CampaignPurpose";
 import { CampaignPostCard } from "./CampaignPostCard";
 import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { billingEndpoints, type MediaAllowance } from "@/lib/billing";
@@ -183,7 +184,8 @@ export function CampaignTimeline() {
     </header>
     {error ? <div className={styles.error} role="alert">{t(error)} <button onClick={() => void reload().catch(() => setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."))}>{t("לטעון שוב")}</button></div> : null}
     {!ready ? <p aria-live="polite">{t("פותחים את הקמפיין…")}</p> : null}
-    {ready && !posts.length && !error ? <div className={styles.empty}><p>{t("הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם.")}</p><Link href="/posts?create=1">{t("ליצור פוסט משלכם")}</Link></div> : null}
+    {ready && !error ? <CampaignPurpose strategy={strategy} /> : null}
+    {ready && !posts.length && !error ? <PlannedCampaign strategy={strategy} /> : null}
     {posts.length ? <>
       <p className={styles.intro}>{t("בחרו עד 3 טיוטות כדי להכין להן גרסה חדשה.")}</p>
       <div className={styles.timeline}>

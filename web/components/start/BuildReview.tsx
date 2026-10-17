@@ -15,13 +15,8 @@ export const REVIEW_PATHS: Record<Segment, ExamplePath> = {
   online_shop: "products", physical_shop: "products",
 };
 
-/** English content brief:
- * Purpose: review the facts the owner is giving us before creating the plan.
- * Message: Build the marketing plan for [business].
- * Content: their offer, audience, chosen outcome and optional stated media budget.
- * Action: Build my plan. This creates the plan structure; posts are a later action.
- * No generic process promises, success guarantees or repeated storage notices.
- * The source literals below are natural Hebrew adaptations of this brief.
+/** תכלית: לאשר את ההצעה, הקהל והמטרה שממנה תיבנה התוכנית.
+ * יצירת התוכנית היא הפעולה כאן; הכנת חומרי הקמפיין מגיעה אחריה.
  */
 export function BuildReview(props: StepProps & {
   mock: boolean; canStart: boolean; busy: boolean; onDone: () => void;
@@ -45,10 +40,11 @@ export function BuildReview(props: StepProps & {
       <dl className={styles.facts}>
         <div><dt><Copy text={journey.segment === "fundraising" ? "העשייה שלכם" : "מה אתם מציעים"} /></dt><dd dir="auto">{props.mock ? t(draft.offerings) : draft.offerings}</dd></div>
         {audiences ? <div><dt><Copy text="למי פונים" /></dt><dd dir="auto">{audiences}</dd></div> : null}
-        {chosen ? <div><dt><Copy text="מה רוצים להשיג" /></dt><dd><Copy text={chosen.label} /></dd></div> : null}
+        {chosen ? <div className={styles.goal}><dt><Copy text="מה רוצים להשיג" /></dt><dd><Copy text={chosen.label} /></dd></div> : null}
         {mediaBudget ? <div><dt><Copy text="תקציב פרסום חודשי" /></dt><dd><bdi>{mediaBudget}</bdi></dd></div> : null}
       </dl>
       <div className={styles.action}>
+        <p className={styles.nextOutcome}><Copy text="התוכנית תפרט מה לקדם בכל שבוע. אחריה נכין את הטקסטים והחומרים לקמפיין." /></p>
         {props.mock ? <PrimaryButton type="button" onClick={() => setPreview(true)}><Copy text="לראות את התוכנית" /></PrimaryButton>
           : <MonthBuildProgress canStart={props.canStart} onDone={props.onDone}
             idle={build => <PrimaryButton type="button" disabled={build.starting || props.busy}

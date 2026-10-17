@@ -4,6 +4,10 @@ import { Copy, useCopy } from "@/components/language/LanguageProvider";
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CampaignWeek } from "@/components/posts/CampaignWeek";
+import { CampaignPostCard } from "@/components/posts/CampaignPostCard";
+import { postWeek } from "@/components/posts/postMeta";
 import { useEffect, useState, type ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
 import { BillingReminder } from "@/components/billing/BillingReminder";
@@ -15,7 +19,6 @@ import { IconCamera } from "@/components/instagram/SourceLink";
 import { SetupChecklist } from "@/components/SetupChecklist";
 import { BidiText } from "@/components/start/ui";
 import { LIFECYCLE_LABEL, lifecycleOf, postDay, postHref } from "@/components/today/posts";
-import type { PostLifecycle } from "@/lib/api";
 import { ContactLink } from "@/components/trial/StepLink";
 import { allDoneText, minutesLabel, NextStepAction, TrialDay, TrialGuide } from "@/components/trial/TrialGuide";
 import { HypothesisStatus, WeeklyBrief } from "@/components/trial/WeeklyBrief";
@@ -30,7 +33,7 @@ import {
 } from "@/lib/api";
 import { formatNis, stageFor } from "@/lib/budget";
 import { IconArrowLeft, IconCheck, IconChevron, IconImage } from "@/lib/icons";
-import { foundationsDone, loadTrial, nextStep, useTrial, type TrialPayload } from "@/lib/trial";
+import { loadTrial, nextStep, useTrial, type TrialPayload } from "@/lib/trial";
 
 /** Which plan week today falls in, or null when today is outside the plan's month. */
 function currentWeekOf(strategy: StrategyPayload): number | null {
@@ -115,6 +118,7 @@ function FoldChevron({ group }: { group: "posts" | "more" }) {
  */
 export default function DashboardPage() {
   const t = useCopy();
+  const router = useRouter();
   const [business, setBusiness] = useState<Business | null>(null);
   const [strategy, setStrategy] = useState<StrategyPayload | null>(null);
   const [month, setMonth] = useState<MonthState>("loading");
@@ -172,7 +176,7 @@ export default function DashboardPage() {
   const shownWeek = currentWeek ?? nextPost?.week ?? posts[0]?.week ?? 1;
   const weekPosts = posts
     .map((post, index) => ({ post, index }))
-    .filter(({ post }) => post.week === shownWeek);
+    .filter(({ post }) => postWeek(post) === shownWeek);
 
   // The brief reads the stored ongoing plan; a business from before it falls back to the
   // month's hypothesis. Numbers are the owner's own (Revision 6), never invented.
@@ -196,7 +200,7 @@ export default function DashboardPage() {
       : allDoneText(trial, t)
     : strategy?.weekly_breakdown?.find((week) => week.week === shownWeek)?.what_user_does?.[0];
 
-  const postsOpen = posts.length > 0 && (!guided || (trial && foundationsDone(trial)));
+  const postsOpen = posts.length > 0;
 
   return (
     <AppShell>
@@ -249,6 +253,13 @@ export default function DashboardPage() {
           {/* 2. The weekly brief (Revision 8): the week's focus and what we learned. What
               needs a decision is the brief's step above. */}
           {guided && trial ? <WeeklyBrief trial={trial} strategy={strategy} business={business} /> : null}
+
+          {postsOpen && strategy ? <section aria-label={t("הקמפיין השבוע")}>
+            <CampaignWeek week={shownWeek} posts={weekPosts.map(item => item.post)} strategy={strategy}>
+              {weekPosts.length ? weekPosts.map(({ post, index }) => <CampaignPostCard key={post.uid || index} post={post} strategy={strategy} onChoose={() => router.push(postHref(index))} />) : <p className="text-sm text-[var(--ink-soft)]"><Copy text="אין פוסטים בשבוע הזה." /></p>}
+            </CampaignWeek>
+            <Link href="/campaign" className="inline-flex min-h-11 items-center text-sm font-medium text-[var(--primary)]"><Copy text="לקמפיין המלא" /></Link>
+          </section> : null}
 
           {/* 3. The free month: the day and the journey. Outside it, the next post is the ask. */}
           {guided && trial ? (
@@ -306,55 +317,6 @@ export default function DashboardPage() {
             ) : null}
           </section>
 
-          {/* Ready work is visible; availability still follows the existing plan state. */}
-          {postsOpen ? (
-            <div className="drawn-card overflow-hidden">
-              <div className="flex min-h-14 items-center gap-3 px-5 py-3 sm:px-6">
-                <span className="min-w-0 flex-1 text-[15px] font-semibold text-[color:var(--ink)]">
-                  {currentWeek ? t("פוסטים השבוע") : t("פוסטים לשבוע {arg_0}", { arg_0: shownWeek })} ·{" "}
-                  <span className="font-normal tabular-nums text-[color:var(--ink-soft)]">
-                    {approvedCount} <Copy text="מתוך" />{posts.length} <Copy text="אושרו" /></span>
-                </span>
-                {/* How far along the month is, beside the count it draws. */}
-                <span
-                  role="progressbar"
-                  aria-valuemin={0}
-                  aria-valuemax={posts.length}
-                  aria-valuenow={approvedCount}
-                  aria-label={t("פוסטים שאושרו החודש")}
-                  className="block h-1.5 w-12 shrink-0 overflow-hidden rounded-full bg-[var(--rule)] sm:w-20"
-                >
-                  <span
-                    className="block h-full rounded-full bg-[var(--primary)] transition-[width] duration-700 ease-out motion-reduce:transition-none"
-                    style={{ width: `${(approvedCount / posts.length) * 100}%` }}
-                  />
-                </span>
-              </div>
-              <section aria-labelledby="week-heading" className="border-t border-[var(--rule)]">
-                <h2 id="week-heading" className="sr-only">
-                  {currentWeek ? t("פוסטים השבוע") : t("פוסטים לשבוע {arg_0}", { arg_0: shownWeek })}
-                </h2>
-
-                {weekPosts.length ? (
-                  <ul className="divide-y divide-[var(--rule)]">
-                    {weekPosts.map(({ post, index }) => (
-                      <WeekRow key={index} post={post} index={index} />
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="px-5 py-4 text-[15px] text-[color:var(--ink-soft)] sm:px-6"><Copy text="אין פוסטים בשבוע הזה." /></p>
-                )}
-
-                <div className="border-t border-[var(--rule)] px-5 sm:px-6">
-                  <Link
-                    href="/posts"
-                    className="inline-flex min-h-12 items-center gap-1.5 text-sm font-semibold text-[color:var(--primary)] underline-offset-4 hover:underline"
-                  >
-                    <Copy text="כל הפוסטים" /></Link>
-                </div>
-              </section>
-            </div>
-          ) : null}
 
           <ContactLink className="pt-2 text-center" />
         </div>
@@ -458,38 +420,6 @@ function NextPostCard({ post, index, total }: { post: RoadmapPost; index: number
         <Copy text="לבדוק ולאשר" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1" />
       </Link>
     </section>
-  );
-}
-
-const STATE_STYLE: Record<PostLifecycle, string> = {
-  needs_owner: "text-[color:var(--ink)]",
-  ready: "text-[color:var(--ink-soft)]",
-  approved: "text-[color:var(--primary)]",
-  published: "text-[color:var(--good)]",
-  measured: "text-[color:var(--good)]",
-};
-
-/** One post of the week: day, title, status. The whole row is the link. */
-function WeekRow({ post, index }: { post: RoadmapPost; index: number }) {
-  const state = lifecycleOf(post);
-  return (
-    <li>
-      <Link
-        href={postHref(index)}
-        className="group flex min-h-16 items-center gap-3 px-5 py-3 transition-colors hover:bg-[var(--soft)] sm:px-6"
-      >
-        <span className="min-w-0 flex-1">
-          <span className="block truncate text-[15px] font-medium text-[color:var(--ink)]">{post.title}</span>
-          <span className="mt-0.5 block text-[13px] text-[color:var(--ink-muted)]">{postDay(post)}</span>
-        </span>
-        <span className={`flex shrink-0 items-center gap-1.5 text-[13px] font-medium ${STATE_STYLE[state]}`}>
-          {/* Words first, the dot second: the sun marks what waits on the owner. */}
-          <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${state === "needs_owner" || state === "ready" ? "bg-[var(--sun)]" : "bg-current"}`} />
-          {LIFECYCLE_LABEL[state]}
-        </span>
-        <IconChevron navigation className="h-4 w-4 shrink-0 text-[color:var(--ink-muted)] transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
-      </Link>
-    </li>
   );
 }
 
