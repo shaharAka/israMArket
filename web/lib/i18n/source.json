@@ -78141,18 +78141,6 @@
       }
     ]
   },
-  "m_abcb104c5783e399": {
-    "source": "AI שמכין לכם תוכנית שיווק ופוסטים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/content.ts",
-        "line": 20,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_abcb7398278d0914": {
     "source": "נתוני דוגמה: מטא מקבלת אירועים מהאתר.",
     "language": "he",
@@ -112439,6 +112427,18 @@
         "file": "web/lib/uxFlows.ts",
         "line": 84,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_f4fc343961231cb0": {
+    "source": "השיווק שלכם, מתכנון ועד פוסט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/content.ts",
+        "line": 20,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },

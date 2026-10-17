@@ -17,7 +17,7 @@ export const EXAMPLE = {
 
 /** The first screen: what it is, for whom, and what happens every week. */
 export const HERO = {
-  title: "AI שמכין לכם תוכנית שיווק ופוסטים.",
+  title: "השיווק שלכם, מתכנון ועד פוסט.",
   lead: "מערכת שלומדת את העסק והקהל, מכינה תמונות וטקסטים בסגנון שלכם, ומשפרת את התוכנית לפי התוצאות. אתם בודקים ומפרסמים.",
 };
 
