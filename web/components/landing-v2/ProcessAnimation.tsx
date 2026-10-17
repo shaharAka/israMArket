@@ -11,6 +11,7 @@ import type { ProcessStep } from "./processStory";
 import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import styles from "./process-story.module.css";
+import { ProcessSocialPost } from "./ProcessSocialPost";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { GoalsScene, PlanScene, LearningScene, DataScene, PhoneScene, TrialScene } from "./ProcessScenes";
 import { useProcessSequence } from "./useProcessSequence";
@@ -59,8 +60,8 @@ const PROVIDERS = [
 function Connections({ role }: RoleProps) {
   const { locale } = useLanguage();
   return <div className={styles.connections}>
-    <Link href={`/connections/tiktok?lang=${locale}`} className={`${styles.connectorHint} ${styles.connectorHintTop}`}><ProviderLogo provider="tiktok" size={22} /><span>TikTok</span></Link>
-    <Link href={`/connections/linkedin?lang=${locale}`} className={`${styles.connectorHint} ${styles.connectorHintBottom}`}><ProviderLogo provider="linkedin" size={22} /><span>LinkedIn</span></Link>
+    <Link href={`/connections/tiktok?lang=${locale}`} className={`${styles.connectorHint} ${styles.connectorHintTop}`}><ProviderLogo provider="tiktok" size={30} /><span>TikTok</span></Link>
+    <Link href={`/connections/linkedin?lang=${locale}`} className={`${styles.connectorHint} ${styles.connectorHintBottom}`}><ProviderLogo provider="linkedin" size={30} /><span>LinkedIn</span></Link>
     <div className={styles.providerColumn}>{PROVIDERS.map((item) => <Link href={`/connections/${item.provider}?lang=${locale}`} className={styles.provider} key={item.provider}><ProviderLogo provider={item.provider} size={30} /><span dir="ltr">{item.label}</span></Link>)}</div>
     <svg className={styles.connectionLines} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 18 C65 18 35 50 100 50 M0 50 H100 M0 82 C65 82 35 50 100 50" /></svg>
     <div className={styles.connectedHub}><BrandWordmark /><span><Copy text="התמונה של העסק" /></span><div className={styles.hubRow}><Check /><Copy text="מאיפה מגיעים לאתר" /></div><div className={styles.hubRow}><Check /><Copy text="אילו פוסטים מעניינים את הקהל" /></div><div className={styles.hubRow}><Check /><Copy text={role === "online_shop" ? "על מה לחצו לפני ההזמנה" : role === "physical_shop" ? "על מה לחצו כדי להזמין לאיסוף" : role === "fundraising" ? "על מה לחצו בדרך לעמוד התרומה" : role === "software" ? "על מה לחצו כדי להתחיל התנסות" : "על מה לחצו כדי לפנות"} /></div></div>
@@ -80,7 +81,7 @@ function CampaignClip({ role, playing }: RoleProps & { playing: boolean }) {
   const t = useCopy();
   const { locale } = useLanguage();
   const software = !role || role === "software";
-  const media = software ? { src: `/showcase/software-campaign-demo-${locale}.mp4`, poster: `/showcase/software-campaign-demo-${locale}.jpg`, label: "מהקמפיין לפוסט במערכת" } : CAMPAIGN_MEDIA[role];
+  const media = software ? { src: `/showcase/maslul-project-demo-${locale}.mp4`, poster: `/showcase/maslul-project-demo-${locale}.jpg`, label: "משימה עוברת בין שלבים בלוח הפרויקט של מסלול" } : CAMPAIGN_MEDIA[role];
   useEffect(() => {
     const element = video.current;
     if (!element) return;
@@ -104,8 +105,9 @@ function Campaign({ role, playing }: RoleProps & { playing: boolean }) {
     <div className={styles.weekWorkspace}>
       <aside className={styles.weekPurpose}><small><Copy text="המטרה של השבוע" /></small><h3><Copy text={weeks[index]} /></h3><span className={styles.weekOutcome}><Check /><Copy text={example?.outcome ?? "פניות מהקהל המתאים"} /></span></aside>
       <div className={styles.weekMaterials}>
-        <div className={styles.timelinePost} data-campaign-material={creative?.video || !role && index === 1 ? "video" : creative?.image ?? "generic"}><div className={styles.timelineArtwork} key={`${index}-main`}>{creative?.video || !role && index === 1 ? <CampaignClip role={role} playing={playing} /> : role ? <CampaignArtwork role={role} index={index} /> : <div className={styles.genericArtwork}><FormatSymbol kind={index === 3 ? "text" : "image"} /><span><Copy text={["הסגנון שלך", "הערך שלך", "ההזמנה שלך", "השיחה עם הקהל"][index]} /></span></div>}</div><span><Copy text={creative?.video || !role && index === 1 ? "סרטון" : "פוסט עם תמונה"} /></span></div>
-        <div className={styles.timelinePost}><div className={styles.timelineArtwork} key={`${index}-support`}>{role ? <CampaignArtwork role={role} index={index} support /> : <div className={styles.genericArtwork}><FormatSymbol kind="text" /><span><Copy text={weeks[index]} /></span></div>}</div><span><Copy text="פוסט עם מסר" /></span></div>
+        <ProcessSocialPost index={index} name={example?.name ?? "העסק שלך"} caption={creative?.caption ?? weeks[index]} video={Boolean(creative?.video || !role && index === 1)} material={creative?.image ?? "video"}>
+          {creative?.video || !role && index === 1 ? <CampaignClip role={role} playing={playing} /> : role ? <CampaignArtwork role={role} index={index} ratio="1:1" /> : <div className={styles.genericArtwork}><FormatSymbol kind={index === 3 ? "text" : "image"} /><span><Copy text={["הסגנון שלך", "הערך שלך", "ההזמנה שלך", "השיחה עם הקהל"][index]} /></span></div>}
+        </ProcessSocialPost>
       </div>
       <Pointer key={index} className={styles.timelinePointer} />
     </div>
@@ -119,7 +121,7 @@ export function ProcessAnimation({ step, role }: { step: ProcessStep; role: Proc
   const t = useCopy();
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
     <div className={styles.visualContent} onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
-      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <Campaign role={role} playing={playing} /> : step === "learning" ? <LearningScene playing={playing} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
+      {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <Campaign role={role} playing={playing} /> : step === "learning" ? <LearningScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
     </div>
     <button type="button" className={styles.motionToggle} onClick={toggle} disabled={reduced} aria-label={t(paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")} aria-pressed={paused} title={t(reduced ? "התנועה כבויה לפי הגדרות המכשיר" : paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")}><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{paused || reduced ? <path d="m5 3 8 5-8 5Z" /> : <path d="M4 3h3v10H4zM10 3h3v10h-3z" />}</svg></button>
   </div>;

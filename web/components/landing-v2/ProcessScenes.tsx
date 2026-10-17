@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { TRIAL_LABEL } from "@/lib/pricing";
 import { ProviderLogo } from "./ProviderLogo";
@@ -47,10 +47,28 @@ export function PlanScene({ role }: RoleProps) {
 }
 
 /** A concrete comparison, followed by its application. Clicks are kept distinct from purchases. */
-export function LearningScene({ playing }: {playing: boolean}) {
+export function LearningScene({ playing, reduced }: {playing: boolean; reduced: boolean}) {
   const {index} = useProcessSequence(LEARNING_TIMES, playing);
+  const elapsed = useRef(0);
+  const previousStage = useRef(index);
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    if (previousStage.current !== index) { elapsed.current = 0; previousStage.current = index; }
+    if (!playing) return;
+    let frame = 0;
+    let previousTime = performance.now();
+    const advance = (now: number) => {
+      elapsed.current += now - previousTime;
+      previousTime = now;
+      setProgress(Math.min(1, (index + Math.min(1, elapsed.current / LEARNING_TIMES[index])) / 2));
+      if (index < 2 && elapsed.current < LEARNING_TIMES[index]) frame = requestAnimationFrame(advance);
+    };
+    frame = requestAnimationFrame(advance);
+    return () => cancelAnimationFrame(frame);
+  }, [playing, index]);
+  const growth = reduced ? 1 : progress;
   return <div className={`${scene.scene} ${scene.learning}`} data-learning-stage={index}>
-    <div className={scene.comparison}>{[false,true].map(priced=><div key={String(priced)} className={scene.comparedPost} data-winner={priced}><small><Copy text={priced ? "עם מחיר" : "בלי מחיר"} /></small><div className={scene.comparedImage}><Image src="/showcase/bakery-challah-ai.png" fill sizes="220px" alt="" /><span><Copy text="חלות לשישי" /></span>{priced&&<strong dir="ltr">₪42</strong>}</div><div className={scene.clickCount}><span>{priced ? 76 : 34}</span><Copy text="לחיצות" /><i style={{"--click-width":priced ? "90%" : "40%"} as CSSProperties} /></div></div>)}</div>
+    <div className={scene.comparison}>{[false,true].map(priced=><div key={String(priced)} className={scene.comparedPost} data-winner={priced}><small><Copy text={priced ? "עם מחיר" : "בלי מחיר"} /></small><div className={scene.comparedImage}><Image src="/showcase/bakery-challah-ai.png" fill sizes="220px" alt="" /><span><Copy text="חלות לשישי" /></span>{priced&&<strong dir="ltr">₪42</strong>}</div><div className={scene.clickCount}><span>{Math.round((priced ? 76 : 34) * growth)}</span><Copy text="לחיצות" /><i style={{"--click-width":`${(priced ? 90 : 40) * growth}%`} as CSSProperties} /></div></div>)}</div>
     <p className={scene.comparisonContext}><Copy text="אותו קהל · חשיפה דומה" /></p>
     <div className={scene.learningRule}><Tick /><strong><Copy text="בהשוואה הזאת, הפוסט עם המחיר הביא יותר לחיצות" /></strong></div>
     <div className={scene.nextPosts}><div><small><Copy text="מכאן ממשיכים" /></small><strong><Copy text="מציגים את המחיר גם בפוסטים הבאים" /></strong></div><div className={scene.updatedPosts}>{[{image:"/showcase/bakery-friday-order-ai.jpg",price:42},{image:"/showcase/bakery-bread-choice-ai.jpg",price:32},{image:"/showcase/bakery-challah-ai.png",price:42}].map((post,i)=><div key={i}><Image src={post.image} fill sizes="90px" alt="" /><span dir="ltr">₪{post.price}</span><i><Tick /></i></div>)}</div></div>
