@@ -20,6 +20,12 @@
 .sectionLabel > span { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
 .message h2 { max-width: 13em; font-size: clamp(30px, 3vw, 43px); font-weight: 500; letter-spacing: -.025em; line-height: 1.22; text-wrap: balance; }
 .sectionBody { max-width: 29em; font-size: 18px; line-height: 1.85; color: var(--ink-soft); margin-top: 24px; text-wrap: pretty; }
+.roleSelector { border: 0; padding: 0; min-width: 0; margin-top: 22px; }
+.roleChoices { display: flex; flex-wrap: wrap; gap: 8px; }
+.roleChoices button { min-height: 44px; border: 1px solid transparent; border-radius: 999px; padding: 10px 15px; background: var(--soft); color: var(--ink); font: inherit; font-size: 13px; line-height: 1.4; cursor: pointer; transition: background 180ms ease, border-color 180ms ease; }
+.roleChoices button:hover { border-color: var(--rule-dark); }
+.roleChoices button[aria-pressed="true"] { background: var(--primary-soft); border-color: var(--primary); color: var(--primary); }
+.roleChoices button:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 .visual { height: 450px; border-radius: 32px; background: var(--process-wash); position: relative; min-width: 0; overflow: clip; container-type: inline-size; }
 .section:nth-of-type(2n) .visual { background: var(--process-warm); }
 .visualContent { position: absolute; inset: 0; }
@@ -36,9 +42,13 @@
 .browserBar span { margin-inline-start: 10px; }
 .webBody { position: relative; padding: 18px; }
 .webBody > strong { display: block; font-size: 20px; font-weight: 500; margin-top: 4px; }
-.webImage { position: relative; height: 130px; margin-top: 14px; border-radius: 5px; overflow: hidden; }
+.webImage { position: relative; height: 115px; margin-top: 14px; border-radius: 5px; overflow: hidden; }
 .webImage img { object-fit: cover; }
-.webPlaceholder { background: var(--primary-soft); height: 100%; display: grid; place-items: center; padding: 24px; }
+.profileSources { display: grid; gap: 11px; margin-top: 16px; }
+.profileSources > div { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5px 12px; align-items: center; }
+.profileSources span { grid-row: span 2; color: var(--ink-soft); font-size: 11px; line-height: 1.5; }
+.profileSources i { height: 5px; border-radius: 9px; background: var(--process-line); }
+.profileSources i:last-child { width: 70%; opacity: .6; }
 .scanLine { position: absolute; top: 50px; inset-inline: 10px; height: 2px; background: var(--primary); opacity: 0; box-shadow: 0 0 18px var(--primary); }
 .interview { position: absolute; width: 58%; inset-inline-end: 6%; top: 178px; padding: 20px; border-radius: 14px; box-shadow: 0 12px 38px #14203a14; background: var(--paper); }
 .interview > p { font-size: 17px; font-weight: 500; margin: 8px 0 12px; }
@@ -73,7 +83,10 @@
 .week i { color: var(--process-green); }
 .planPointer { bottom: 42px; inset-inline-end: 12%; }
 .goals { position: absolute; inset: 57px 12% 62px; }
-.goalChoice { display: flex; justify-content: space-between; align-items: center; padding: 18px; background: var(--paper); border-radius: 12px; box-shadow: 0 8px 24px #14203a0a; margin-top: 16px; font-size: 19px; font-weight: 500; }
+.goalOptions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 16px; }
+.goalOptions > span { display: grid; place-items: center; min-height: 44px; padding: 8px; background: var(--paper); border: 1px solid transparent; border-radius: 10px; font-size: 14px; line-height: 1.5; text-align: center; }
+.goalOptions > .goalOption0 { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.goalChoice { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px; min-height: 78px; margin-top: 16px; background: var(--paper); border-radius: 12px; font-size: 18px; line-height: 1.5; }
 .goalNumbers { display: flex; align-items: center; gap: 20px; justify-content: space-between; margin-top: 35px; }
 .goalNumbers small { font-size: 12px; color: var(--ink-muted); }
 .goalNumbers strong { display: block; font-size: 53px; font-weight: 500; line-height: 1.3; letter-spacing: -.03em; }
@@ -88,11 +101,29 @@
 .campaignBrief { position: absolute; top: 28px; inset-inline: 8%; }
 .campaignBrief strong { display: block; font-size: 17px; font-weight: 500; margin-top: 5px; }
 .postFan { position: absolute; inset: 105px 7% 65px; }
-.fanPost { position: absolute; width: 38%; transform-origin: center 80%; }
-.fan0 { left: 3%; top: 22px; transform: rotate(-9deg); z-index: 1; }
-.fan1 { left: 31%; top: 0; transform: rotate(0); z-index: 3; }
-.fan2 { right: 3%; top: 22px; transform: rotate(9deg); z-index: 2; }
+.fanPost { position: absolute; width: 30%; transform-origin: center 80%; }
+.fan0 { left: 1%; top: 22px; transform: rotate(-4deg); z-index: 1; }
+.fan1 { left: 35%; top: 0; transform: rotate(0); z-index: 3; }
+.fan2 { right: 1%; top: 22px; transform: rotate(4deg); z-index: 2; }
 .fanPost > div { border-radius: 7px; overflow: hidden; box-shadow: 0 14px 32px #14203a20; }
+.postFan[data-specific="true"] { inset-inline: 5%; }
+.postFan[data-specific="true"] .fanPost { width: 36%; }
+.postFan[data-specific="true"] .fan0 { left: 0; transform: rotate(-7deg); }
+.postFan[data-specific="true"] .fan1 { left: 32%; }
+.postFan[data-specific="true"] .fan2 { right: 0; transform: rotate(7deg); }
+.clipPost { aspect-ratio: 4 / 5; background: var(--ink); }
+.clipPost video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.formatCard { min-height: 235px; padding: 17px 13px; background: var(--paper); }
+.format1 { background: #eef1f5; }
+.format2 { background: #e2e8e4; }
+.formatCard > .miniLabel { display: block; font-size: 9px; }
+.formatCard > svg { display: block; width: 76%; height: 70px; margin: 14px auto 10px; color: var(--ink-soft); }
+.formatCard > strong { display: block; font-size: 17px; font-weight: 500; }
+.formatLines { display: grid; gap: 5px; margin: 12px 0 16px; }
+.formatLines i { height: 4px; background: currentColor; opacity: .15; border-radius: 9px; }
+.formatLines i:last-child { width: 70%; }
+.formatReady { display: flex; align-items: center; gap: 4px; font-size: 9px; line-height: 1.5; color: var(--ink-muted); }
+.formatReady svg { flex-shrink: 0; width: 12px; color: var(--process-green); }
 .campaignFoot { position: absolute; inset-inline: 8%; bottom: 35px; color: var(--ink-muted); font-size: 12px; text-align: center; }
 .learning { position: absolute; inset: 0; }
 .reports { position: absolute; inset-inline: 8%; top: 30px; display: flex; gap: 10px; }
@@ -117,6 +148,12 @@
 .phoneContent { width: 350px; transform: scale(.63); transform-origin: top right; padding: 16px 8px; }
 :global(html[dir="ltr"]) .phoneContent { transform-origin: top left; }
 .phonePlan { min-height: 470px; }
+.phoneMaterials { padding: 12px; }
+.phoneMaterials h3 { font-size: 23px; line-height: 1.5; font-weight: 500; margin-bottom: 24px; }
+.phoneMaterials > div { display: flex; align-items: center; gap: 20px; min-height: 94px; border-top: 1px solid var(--rule); font-size: 19px; }
+.phoneMaterials > div > svg:first-child { width: 64px; height: 56px; color: var(--ink-soft); }
+.phoneMaterials > div > span { flex: 1; }
+.phoneMaterials > div > svg:last-child { color: var(--process-green); }
 .phonePost { padding-inline: 7px; }
 .phonePointer { bottom: 55px; inset-inline-end: 27px; }
 .phoneHome { position: absolute; bottom: 6px; left: 35%; width: 30%; height: 3px; background: var(--ink); border-radius: 99px; }
@@ -172,7 +209,7 @@
 @keyframes reports { 0%, 10% { opacity: 1; transform: translateY(12px); } 20%, 30% { opacity: 1; transform: translateY(0); } 52%, 90% { opacity: .8; transform: translateY(-8px) scale(.96); } 100% { opacity: 1; transform: translateY(12px); } }
 @keyframes phoneScroll { 0%, 28% { transform: translateY(0); } 44%, 78% { transform: translateY(-470px); } 94%, 100% { transform: translateY(0); } }
 @keyframes phoneSwipe { 0%, 19% { opacity: 0; transform: translateY(0); } 26% { opacity: 1; transform: translateY(0); } 40% { opacity: 1; transform: translateY(-120px); } 48%, 100% { opacity: 0; transform: translateY(-120px); } }
-@media (prefers-reduced-motion: reduce) { .visual *, .visual *::before, .visual *::after { animation: none !important; transition: none !important; } .pointer { display: none; } }
+@media (prefers-reduced-motion: reduce) { .visual *, .visual *::before, .visual *::after, .roleChoices button { animation: none !important; transition: none !important; } .pointer { display: none; } }
 @media (max-width: 1000px) and (min-width: 701px) {
   .section { gap: 28px; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
   .visual { height: 430px; }
@@ -201,7 +238,8 @@
   .webPage { width: 65%; top: 30px; inset-inline-start: 5%; }
   .webBody { padding: 14px; }
   .webBody > strong { font-size: 18px; }
-  .webImage { height: 115px; }
+  .profileSources { gap: 8px; }
+  .profileSources span { font-size: 10px; }
   .interview { width: 70%; inset-inline-end: 5%; top: 122px; padding: 17px; }
   .interview > p { font-size: 15px; }
   .answer { font-size: 12px; }
@@ -223,16 +261,24 @@
   .week small { font-size: 9px; }
   .week > span { font-size: 9px; }
   .goals { inset: 45px 10% 50px; }
-  .goalChoice { font-size: 17px; }
+  .goalOptions { gap: 8px; }
+  .goalOptions > span { font-size: 12px; min-height: 40px; }
+  .goalNumbers { margin-top: 24px; }
   .goalDefinition { font-size: 12px; }
   .campaignBrief strong { font-size: 15px; }
   .postFan { inset: 103px 5% 80px; }
+  .formatCard { min-height: 211px; padding: 13px 10px; }
+  .formatCard > .miniLabel { font-size: 8px; }
+  .formatCard > svg { height: 57px; margin-block: 12px 8px; }
+  .formatCard > strong { font-size: 15px; }
+  .formatReady { font-size: 8px; }
   .campaignFoot { font-size: 11px; bottom: 48px; }
   .reports { inset-inline: 6%; gap: 8px; }
   .report { padding: 10px; }
   .report > span { font-size: 8px; }
-  .finding { inset-inline: 6%; top: 145px; bottom: 45px; padding: 18px; }
-  .finding h3 { font-size: 18px; }
+  .finding { inset-inline: 6%; top: 140px; bottom: 42px; padding: 16px; }
+  .finding h3 { font-size: 17px; }
+  .nextAction { margin-top: 12px; padding-top: 12px; }
   .nextAction p { font-size: 12px; }
   .sourceLimit { font-size: 9px; }
   .phone { top: 16px; height: 380px; width: 235px; }

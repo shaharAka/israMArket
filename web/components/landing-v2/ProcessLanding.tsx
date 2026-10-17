@@ -10,6 +10,7 @@ import { PRICE_ILS, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
 import { PROCESS_HERO, PROCESS_STORY } from "./processStory";
+import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
 import type { ExamplePath } from "./businessExamples";
 import type { IdentityDirection } from "./IdentityMark";
 import { artSerif, siteSerif, siteClean } from "./siteFonts";
@@ -21,17 +22,28 @@ import "./showcase.css";
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const t = useCopy();
   const { locale } = useLanguage();
-  const path = initialPath || "services";
-  const [segment, setSegment] = useState<string | null>(null);
+  const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
   useEffect(() => {
-    const read = () => setSegment(new URLSearchParams(window.location.search).get("segment"));
+    const read = () => {
+      const segment = new URLSearchParams(window.location.search).get("segment");
+      setRole(isProcessRole(segment) ? segment : defaultProcessRole(initialPath));
+    };
     const timer = window.setTimeout(read, 0);
     window.addEventListener("popstate", read);
     return () => { window.clearTimeout(timer); window.removeEventListener("popstate", read); };
-  }, []);
+  }, [initialPath]);
+  const selected = PROCESS_ROLES.find(item => item.segment === role);
+  const selectRole = (next: ProcessRole) => {
+    const choice = PROCESS_ROLES.find(item => item.segment === next)!;
+    setRole(next);
+    const url = new URL(window.location.href);
+    url.searchParams.set("model", choice.path);
+    url.searchParams.set("segment", next);
+    window.history.replaceState(window.history.state, "", url);
+  };
   // A generic homepage must not silently choose “service provider” for a new owner.
-  const start = `/start?lang=${locale}${initialPath ? `&model=${initialPath}` : ""}${segment ? `&segment=${encodeURIComponent(segment)}` : ""}`;
-  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={path} data-hero-type="modern">
+  const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
+  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern">
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
       <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text="להתחיל בחינם" /></Link></div>
@@ -47,8 +59,11 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
       <div id="story" className={`lv2-wrap ${styles.story}`}>
         <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><span dir="ltr" aria-hidden="true">01—07</span></div>
         {PROCESS_STORY.map((step, index) => <section key={step.id} id={step.id} className={styles.section} aria-labelledby={`process-${step.id}`}>
-          <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">0{index + 1}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2><p className={styles.sectionBody}><Copy text={step.body} /></p></div>
-          <ProcessAnimation step={step.id} path={path} />
+          <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">0{index + 1}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
+            {step.id === "research" && <fieldset className={styles.roleSelector} aria-label={t("סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map(item => <button type="button" key={item.segment} aria-pressed={role === item.segment} onClick={() => selectRole(item.segment)}><Copy text={item.label} /></button>)}</div></fieldset>}
+            <p className={styles.sectionBody}><Copy text={step.body} /></p>
+          </div>
+          <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />
         </section>)}
       </div>
       <section id="price" className={styles.trial} aria-labelledby="process-trial"><div className={`lv2-wrap ${styles.trialInner}`}>
