@@ -7,14 +7,15 @@ import { ErrorNote } from "@/components/AppShell";
 import { TEXT_ACTION } from "@/components/account/setupStyles";
 import { endpoints, type IntegrationsPayload } from "@/lib/api";
 import { LOCALE_META } from "@/lib/i18n/locales";
+import { TrackingSetupGuide } from "./TrackingSetupGuide";
 import { checkedDate } from "./SourceReadState";
 
 /** מטרה: לחבר את החשבון הנכון ולראות אילו סרטונים זוכים לתגובה.
  * מסר: נלמד מהסרטונים שלכם כדי לדייק את הפוסטים הבאים.
  * פעולה: לחבר, לאשר את החשבון, או לרענן נתונים — בהתאם למצב האמיתי.
  */
-export function TikTokConnection({ item, ready, demo, primary = false, onChanged }: {
-  item?: IntegrationsPayload["integrations"][number]; ready: boolean; demo: boolean; primary?: boolean;
+export function TikTokConnection({ item, ready, demo, primary = false, onChanged, businessId }: {
+  businessId?: number; item?: IntegrationsPayload["integrations"][number]; ready: boolean; demo: boolean; primary?: boolean;
   onChanged: () => Promise<void>;
 }) {
   const t = useCopy();
@@ -107,6 +108,7 @@ export function TikTokConnection({ item, ready, demo, primary = false, onChanged
         </ul>
       </> : null}
     </> : <UIAction variant={primary ? "primary" : "secondary"} disabled={!ready || busy || demo} onClick={() => act("connect")}><Copy text="לחבר את הטיקטוק" /></UIAction>}
+    <TrackingSetupGuide provider="tiktok" businessId={businessId} />
     {!ready ? <p className="text-[13px] text-[var(--ink-muted)]"><Copy text="החיבור לטיקטוק עדיין לא זמין." /></p> : null}
   </div>;
 }

@@ -30,8 +30,8 @@ from sqlalchemy.orm import sessionmaker
 from app.config import get_settings
 from app.db import Base, get_db
 from app.main import app
-from app.models import Business, User
-from app.security import COOKIE_NAME, hash_password
+from app.models import Business, Integration, User
+from app.security import COOKIE_NAME, hash_password, encrypt_secret
 from app.services import ga4, google_login, ratelimit
 
 WEB = "http://localhost:3000"
@@ -502,6 +502,15 @@ class GoogleLoginTest(unittest.TestCase):
         self.assertEqual(query["redirect_uri"], f"{WEB}/backend/integrations/ga4/callback")
         self.assertIn("analytics.readonly", query["scope"])
 
+    def test_missing_site_can_choose_a_different_google_account_without_changing_app_owner(self):
+        self._signed_in_with_business()
+        response = self.client.get("/integrations/ga4/start?choose_account=true")
+        self.assertEqual(response.status_code, 200)
+        query = parse_qs(urlsplit(response.json()["url"]).query)
+        self.assertEqual(query["prompt"], ["select_account consent"])
+        self.assertNotIn("login_hint", query)
+        self.assertEqual(self.client.get("/auth/me").json()["email"], "noa@bakery.example")
+
     def test_analytics_consent_hints_the_email_for_a_password_account(self):
         user_id = self.seed_password_user()
         db = self.Session()
@@ -551,6 +560,38 @@ class GoogleLoginTest(unittest.TestCase):
             response = self._ga4_callback(query, {})
         self.assertEqual(response.headers["location"], f"{WEB}/integrations?ga4=connected")
         self.assertIsNone(self._ga4_item()["account_email"])
+
+    def test_signin_only_consent_preserves_prior_connection_and_explains_missing_analytics(self):
+        business_id = self._signed_in_with_business()
+        query = self._ga4_start()
+        with mock.patch.object(get_settings(), "token_encryption_key", Fernet.generate_key().decode()):
+            db = self.Session()
+            prior = Integration(business_id=business_id, provider="ga4", status="connected",
+                                external_id="prior-property", display_name="Prior site",
+                                access_token_enc=encrypt_secret("prior-access"), refresh_token_enc=encrypt_secret("prior-refresh"))
+            db.add(prior); db.commit()
+            before = (prior.access_token_enc, prior.refresh_token_enc, prior.external_id)
+            db.close()
+            reply = httpx.Response(200, json={"access_token": "private-new-token", "refresh_token": "private-new-refresh",
+                                            "scope": "openid email", "expires_in": 3600})
+            with mock.patch.object(ga4.httpx, "post", return_value=reply), mock.patch.object(ga4, "list_properties") as listing, self.assertLogs("app.routers.integrations", level="WARNING") as logged:
+                response = self.client.get("/integrations/ga4/callback", params={"code": "private-code", "state": query["state"]}, follow_redirects=False)
+            listing.assert_not_called()
+            note = parse_qs(urlsplit(response.headers["location"]).query)["error"][0]
+            self.assertIn("Google Analytics", note)
+            self.assertIn("סמנו", note)
+            self.assertNotIn("private", " ".join(logged.output) + response.headers["location"])
+            db = self.Session()
+            saved = db.query(Integration).filter_by(business_id=business_id, provider="ga4").one()
+            self.assertEqual((saved.access_token_enc, saved.refresh_token_enc, saved.external_id), before)
+            db.close()
+
+    def test_analytics_consent_does_not_require_optional_search_console_permission(self):
+        self._signed_in_with_business()
+        query = self._ga4_start()
+        response = self._ga4_callback(query, {})
+        self.assertIn("ga4=connected", response.headers["location"])
+        self.assertNotIn("https://www.googleapis.com/auth/webmasters.readonly", self._ga4_item()["scopes"])
 
 
 if __name__ == "__main__":

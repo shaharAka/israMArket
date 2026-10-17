@@ -1,4 +1,5 @@
 import secrets
+import logging
 from datetime import datetime
 from urllib.parse import urlencode
 
@@ -23,6 +24,7 @@ from app.services.netguard import UnsafeUrlError, assert_public_url
 from app.routers import meta_connections, tiktok_connections
 
 router = APIRouter(prefix="/integrations", tags=["integrations"])
+logger = logging.getLogger(__name__)
 
 
 def _public_integration(item: Integration) -> dict:
@@ -93,12 +95,13 @@ def list_integrations(business: Business = Depends(get_business)) -> dict:
 
 
 @router.get("/ga4/start")
-def ga4_start(business: Business = Depends(get_business), user: User = Depends(get_current_user)) -> dict:
+def ga4_start(choose_account: bool = False, business: Business = Depends(get_business), user: User = Depends(get_current_user)) -> dict:
     try:
         # The account the owner signed in with: its Google id when linked, else the email.
         url = ga4.authorization_url(
             create_oauth_state(user.id, business.id, "ga4"),
             login_hint=user.google_sub or user.email,
+            choose_account=choose_account,
         )
     except RuntimeError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -112,8 +115,10 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
     if error:
         note = "האישור לגוגל לא הושלם. התוכנית נשמרה; אפשר לחבר שוב כשנוח לכם."
         return RedirectResponse(f"{dest}?{urlencode({'error': note})}")
+    stage = "state"
     try:
         claims = decode_oauth_state(state)
+        stage = "token_exchange"
         tokens = ga4.exchange_code(code)
         item = _upsert(db, claims["business_id"], "ga4")
         item.access_token_enc = encrypt_secret(tokens["access_token"])
@@ -122,6 +127,7 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         item.status = "select_property"
         item.external_id = ""
         item.display_name = ""
+        stage = "property_discovery"
         properties = ga4.list_properties(tokens["access_token"], tokens["refresh_token"], tokens["expires_at"])
         extra = {"properties": properties, "scopes": tokens.get("scopes") or []}
         mismatch = _note_google_account(db, claims["user_id"], tokens.get("id_token"), extra)
@@ -131,6 +137,9 @@ def ga4_callback(code: str = "", state: str = "", error: str = "", db: Session =
         _invalidate_promotion_cache(claims["business_id"])
     except Exception as exc:
         db.rollback()
+        # Closed diagnostic fields only: never exception text, URLs, codes or tokens.
+        logger.warning("google_connection_failed stage=%s exception_type=%s analytics_permission_missing=%s",
+                       stage, type(exc).__name__, isinstance(exc, ga4.Ga4AccessError) and exc.reason == "analytics_permission_missing")
         return RedirectResponse(f"{dest}?{urlencode({'error': ga4_readiness.failure(exc)['note_he']})}")
     suffix = "&ga4_account=other" if mismatch else ""
     return RedirectResponse(f"{dest}?ga4=connected{suffix}")
