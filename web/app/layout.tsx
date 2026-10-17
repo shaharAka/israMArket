@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Heebo, Inter, IBM_Plex_Sans_Arabic, Rubik } from "next/font/google";
 import { LanguageProvider } from "@/components/language/LanguageProvider";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
+import { SiteAnalytics } from "@/components/analytics/SiteAnalytics";
 import "./globals.css";
 
 const heebo = Heebo({
@@ -28,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // suppressHydrationWarning: the landing page marks <html> before the first paint
     // (data-lv2) so its animated start states never flash. Only affects this element.
     <html lang="he" dir="rtl" className={`${heebo.variable} ${rubik.variable} ${inter.variable} ${arabic.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full bg-paper text-ink"><LanguageProvider><ProductUtilities />{children}</LanguageProvider></body>
+      <body className="min-h-full bg-paper text-ink"><LanguageProvider><ProductUtilities />{children}<SiteAnalytics /></LanguageProvider></body>
     </html>
   );
 }
