@@ -11,7 +11,7 @@
 export const PRICE_ILS = 99;
 
 /** The free trial, as the owner reads it. */
-export const TRIAL_LABEL = "החודש הראשון חינם";
+export const TRIAL_LABEL = "חודש נסיון חינם";
 
 /**
  * OPEN DECISION (owner): does the price include VAT? Default: it does not.

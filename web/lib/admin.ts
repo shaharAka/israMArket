@@ -159,7 +159,7 @@ export function billingLabel(billing: AccountRow["billing"]): string {
   if (billing.exempt) return "חשבון חינם";
   switch (billing.state) {
     case "trial":
-      return billing.days_left === 1 ? "חודש חינם · יום אחרון" : `חודש חינם · עוד ${billing.days_left} ימים`;
+      return billing.days_left === 1 ? "חודש נסיון חינם · יום אחרון" : `חודש נסיון חינם · עוד ${billing.days_left} ימים`;
     case "trial_ended":
       return "החודש החינמי נגמר";
     case "active":
