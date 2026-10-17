@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-17-product-story", date: "2026-10-17",
+    title: "כך נבנה הקידום של העסק",
+    summary: "עמוד הבית מציג את ההיכרות עם העסק, החיבורים, התוכנית, היעדים, הקמפיין והמסקנות בשבעה חלקים עם המחשות. אפשר לראות גם איך התוכנית והפוסטים נראים בטלפון.",
+    detail: "",
+    href: "/#story", action: "לראות איך זה עובד",
+  },
+  {
     id: "2026-10-12-text-fallback", date: "2026-10-12",
     title: "מנוע גיבוי לכתיבה ולניתוח",
     summary: "GPT נשאר המנוע הראשי. כשהשירות לא זמין, Gemini מנסה להשלים את הכתיבה או הניתוח באותה שפה ועם אותו מידע על העסק.",
