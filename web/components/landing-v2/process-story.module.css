@@ -436,3 +436,9 @@
 }
 
 .visual[data-playing="false"] .timelineArtwork { animation: none; opacity: 1; transform: none; }
+.benefit { margin-top: 12px; font-size: 16px; line-height: 1.7; color: var(--ink); }
+.connectorHint { position: absolute; left: 6%; width: 38%; min-height: 50px; display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 12px; background: var(--paper); opacity: .48; font-size: 11px; color: var(--ink-soft); }
+.connectorHintTop { top: -13px; transform: rotate(-3deg); }
+.connectorHintBottom { bottom: -12px; transform: rotate(3deg); }
+.connectorHint :global(.lv2-provider-logo) img { width: 22px; height: 22px; }
+@media(max-width:700px) { .benefit { font-size: 14px; margin-top: 10px; } .connectorHint { font-size: 10px; left: 5%; width: 40%; gap: 7px; } }

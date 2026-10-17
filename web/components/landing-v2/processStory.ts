@@ -18,7 +18,7 @@ export const PROCESS_STORY = [
     // המטרה: הערך מהחיבור, בלי להעמיס את הוראות ההתקנה על דף הבית.
   },
   {
-    id: "goals", label: "הגדרת יעדים", title: "קודם מגדירים את המטרה.",
+    id: "goals", label: "הגדרת יעדים", title: "קודם מגדירים את המטרות.",
     body: "יותר חשיפה, יותר לקוחות, יותר תרומות או יותר פניות – המערכת עוזרת לבחור ולהגדיר את היעדים הנכונים עבורך.",
     // המטרה: להבדיל בין יעד העסק לבין צפיות ולייקים, בלי להבטיח תחזית.
   },
@@ -55,3 +55,10 @@ export const PROCESS_STORY = [
 ] as const;
 
 export type ProcessStep = (typeof PROCESS_STORY)[number]["id"];
+
+/** Short additions explain the owner's gain without replacing the reviewed message. */
+export const PROCESS_BENEFITS: Partial<Record<ProcessStep, string>> = {
+  plan: "לא צריך להחליט מחדש מה לפרסם בכל יום.",
+  campaign: "לך נשאר לבדוק, לאשר ולצאת לדרך.",
+  data: "בלי לעבור בין כמה מערכות כדי להבין מה קורה.",
+};

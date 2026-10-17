@@ -9,7 +9,7 @@ import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { PRICE_ILS, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
-import { PROCESS_HERO, PROCESS_STORY } from "./processStory";
+import { PROCESS_HERO, PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
 import type { ExamplePath } from "./businessExamples";
 import type { IdentityDirection } from "./IdentityMark";
@@ -18,7 +18,7 @@ import styles from "./process-story.module.css";
 import "./lv2.css";
 import "./showcase.css";
 
-/** One explicit role selection informs the examples and the signup route. */
+/** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const t = useCopy();
   const { locale } = useLanguage();
@@ -33,14 +33,6 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
     return () => { window.clearTimeout(timer); window.removeEventListener("popstate", read); };
   }, [initialPath]);
   const selected = PROCESS_ROLES.find(item => item.segment === role);
-  const selectRole = (next: ProcessRole) => {
-    const choice = PROCESS_ROLES.find(item => item.segment === next)!;
-    setRole(next);
-    const url = new URL(window.location.href);
-    url.searchParams.set("model", choice.path);
-    url.searchParams.set("segment", next);
-    window.history.replaceState(window.history.state, "", url);
-  };
   // A generic homepage must not silently choose “service provider” for a new owner.
   const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
   return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern">
@@ -57,15 +49,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
       </div></section>
       <div id="story" className={`lv2-wrap ${styles.story}`}>
         <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><span dir="ltr" aria-hidden="true">01—{String(PROCESS_STORY.length).padStart(2, "0")}</span></div>
-        {PROCESS_STORY.map((step, index) => <section key={step.id} id={step.id} className={styles.section} aria-labelledby={`process-${step.id}`}>
-          <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">0{index + 1}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
-            {step.id === "research" && <fieldset className={styles.roleSelector} aria-label={t("סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map(item => <button type="button" key={item.segment} aria-pressed={role === item.segment} onClick={() => selectRole(item.segment)}><Copy text={item.label} /></button>)}</div></fieldset>}
-            <p className={styles.sectionBody}><Copy text={step.body} /></p>
-            <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><Copy text="להתחיל חודש בחינם" /></Link>
-            {step.id === "trial" && <div id="price" className={styles.priceDetails}><strong><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></strong><span><Copy text={VAT_NOTE} /></span><p><Copy text="המנוי כולל תוכנית חודשית, תכנון קמפיין, כתיבה ועיצוב פוסטים וניתוח התוצאות. יצירת תמונות וסרטונים כפופה למכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p></div>}
-          </div>
-          <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />
-        </section>)}
+        {PROCESS_STORY.map((step, index) => <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
       </div>
       <section className={`lv2-wrap ${styles.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="עוד כמה דברים שכדאי לדעת" /></h2><div>
         <details><summary><Copy text="צריך לחבר הכול כדי להתחיל?" /></summary><p><Copy text="לא. מתחילים בשיחה ובמחקר על המידע הציבורי של העסק. אחרי ההרשמה, מוסיפים חיבורים לפי הצורך וממשיכים לבנות את התוכנית." /></p></details>
@@ -78,4 +62,22 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
     <footer className="lv2-foot"><div className="lv2-wrap lv2-foot-row"><span><Copy text="ישראמארקט" /></span><Link href={`/security?lang=${locale}`}><Copy text="אבטחה ופרטיות" /></Link><Link href={`/terms?lang=${locale}`}><Copy text="תנאי שימוש" /></Link></div></footer>
     <DeletedNotice />
   </div>;
+}
+
+const GOAL_ROLE_LABELS = ["יותר תרומות", "יותר מתנסים במוצר", "יותר פניות לשירות", "יותר קניות באתר", "יותר לקוחות בחנות"];
+function ProcessSection({ step, index, initialRole, start }: { step: typeof PROCESS_STORY[number]; index: number; initialRole: ProcessRole | null; start: string }) {
+  const t = useCopy();
+  const [role, selectRole] = useState<ProcessRole | null>(initialRole ?? (step.id === "campaign" ? "online_shop" : null));
+  const hasRoles = ["research", "goals", "plan", "campaign"].includes(step.id);
+  const benefit = PROCESS_BENEFITS[step.id];
+  return <section id={step.id} className={styles.section} aria-labelledby={`process-${step.id}`} data-animation-role={role ?? "all"}>
+    <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
+      {hasRoles && <fieldset className={styles.roleSelector} aria-label={t(step.id === "goals" ? "מטרות לפי סוג הפעילות" : "סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map((item,i) => <button type="button" key={item.segment} aria-pressed={role === item.segment} onMouseEnter={() => selectRole(item.segment)} onFocus={() => selectRole(item.segment)} onClick={() => selectRole(item.segment)}><Copy text={step.id === "goals" ? GOAL_ROLE_LABELS[i] : item.label} /></button>)}</div></fieldset>}
+      <p className={styles.sectionBody}><Copy text={step.body} /></p>
+      {benefit && <p className={styles.benefit}><Copy text={benefit} /></p>}
+      <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><Copy text="להתחיל חודש בחינם" /></Link>
+      {step.id === "trial" && <div id="price" className={styles.priceDetails}><strong><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></strong><span><Copy text={VAT_NOTE} /></span><p><Copy text="המנוי כולל תוכנית חודשית, תכנון קמפיין, כתיבה ועיצוב פוסטים וניתוח התוצאות. יצירת תמונות וסרטונים כפופה למכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p></div>}
+    </div>
+    <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />
+  </section>;
 }
