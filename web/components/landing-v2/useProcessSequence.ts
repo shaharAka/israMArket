@@ -18,5 +18,5 @@ export function useProcessSequence(durations: readonly number[], playing: boolea
     }, remaining.current);
     return () => { window.clearTimeout(timer); if (!completed && version === manualRevision.current) remaining.current = Math.max(0, remaining.current - (performance.now() - started)); };
   }, [playing, index, durations, revision]);
-  return { index, select: (next: number) => { manualRevision.current += 1; remaining.current = durations[next]; setIndex(next); setRevision(value => value + 1); } };
+  return { index, revision, select: (next: number) => { manualRevision.current += 1; remaining.current = durations[next]; setIndex(next); setRevision(value => value + 1); } };
 }

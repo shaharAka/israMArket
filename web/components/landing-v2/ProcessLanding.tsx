@@ -48,7 +48,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
         <p className={styles.signupNote}><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></p>
       </div></section>
       <div id="story" className={`lv2-wrap ${styles.story}`}>
-        <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><span dir="ltr" aria-hidden="true">01—{String(PROCESS_STORY.length).padStart(2, "0")}</span></div>
+        <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><p><Copy text="מהיכרות עם העסק שלך, לתוכנית, לקמפיין ולתוצאות." /></p></div>
         {PROCESS_STORY.map((step, index) => <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
       </div>
       <section className={`lv2-wrap ${styles.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="עוד כמה דברים שכדאי לדעת" /></h2><div>

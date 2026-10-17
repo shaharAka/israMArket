@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProviderLogo } from "./ProviderLogo";
@@ -14,7 +14,8 @@ import styles from "./process-story.module.css";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { GoalsScene, PlanScene, LearningScene, DataScene, PhoneScene, TrialScene } from "./ProcessScenes";
 import { useProcessSequence } from "./useProcessSequence";
-const CAMPAIGN_TIMES = [6000, 10000, 6000, 6000] as const;
+const CAMPAIGN_TIMES = [3200, 8500, 3200, 3200] as const;
+const SOFTWARE_CAMPAIGN_TIMES = [3200, 9500, 3200, 3200] as const;
 
 function Check() {
   return <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="m5 12 4 4L19 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -92,13 +93,14 @@ function CampaignClip({ role, playing }: RoleProps & { playing: boolean }) {
 // תכלית: לראות את השבוע, המטרה והחומרים יחד. זו תצוגה ציבורית; אין יצירה או שמירה.
 function Campaign({ role, playing }: RoleProps & { playing: boolean }) {
   const t = useCopy();
-  const { index, select } = useProcessSequence(CAMPAIGN_TIMES, playing);
+  const durations = role === "software" ? SOFTWARE_CAMPAIGN_TIMES : CAMPAIGN_TIMES;
+  const { index, select, revision } = useProcessSequence(durations, playing);
   const example = role ? PROCESS_EXAMPLES[role] : null;
   const weeks = example?.weeks ?? ["נותנים סיבה להכיר", "מראים את הערך", "מזמינים לעשות צעד", "לומדים וממשיכים"];
   const creative = role ? PROCESS_CAMPAIGNS[role][index] : null;
-  return <div className={styles.campaignBoard} data-campaign-week={index + 1}>
+  return <div className={styles.campaignBoard} data-campaign-week={index + 1} style={{ "--week-duration": `${durations[index]}ms` } as CSSProperties}>
     <header className={styles.boardHeading}><span className={styles.miniLabel}><Copy text="הקמפיין של החודש" /></span><strong><Copy text={example?.name ?? "העסק שלך"} /></strong><span className={styles.boardMonth} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="4" y="5" width="16" height="16" rx="3" /><path d="M4 10h16M8 2v6M16 2v6" /></svg></span></header>
-    <div className={styles.weekTimeline} role="group" aria-label={t("שבועות הקמפיין")}>{weeks.map((week, i) => <button key={week} type="button" aria-pressed={i === index} onClick={() => select(i)}><span><Copy text="שבוע {arg_0}" args={{arg_0:i + 1}} /></span><i aria-hidden="true" /></button>)}</div>
+    <div className={styles.weekTimeline} role="group" aria-label={t("שבועות הקמפיין")}>{weeks.map((week, i) => <button key={week} type="button" aria-pressed={i === index} onClick={() => select(i)}><span><Copy text="שבוע {arg_0}" args={{arg_0:i + 1}} /></span><i key={`${index}-${revision}`} aria-hidden="true" /></button>)}</div>
     <div className={styles.weekWorkspace}>
       <aside className={styles.weekPurpose}><small><Copy text="המטרה של השבוע" /></small><h3><Copy text={weeks[index]} /></h3><span className={styles.weekOutcome}><Check /><Copy text={example?.outcome ?? "פניות מהקהל המתאים"} /></span></aside>
       <div className={styles.weekMaterials}>
