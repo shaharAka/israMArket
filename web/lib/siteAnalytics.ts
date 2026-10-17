@@ -60,7 +60,7 @@ export function subscribeAnalytics(callback: () => void) {
 
 /** Only fixed marketing paths. No business names, post IDs, auth codes or query strings. */
 export function publicAnalyticsPath(path: string): string | null {
-  return ["/", "/start", "/signup", "/login", "/security", "/terms", "/integrations"].includes(path)
+  return ["/", "/start", "/signup", "/login", "/security", "/terms"].includes(path)
     || /^\/for\/(products|services|saas|nonprofit)$/.test(path)
     || /^\/connections\/(google-analytics|facebook-instagram|ads-pixel|whatsapp|google-business|linkedin|tiktok)$/.test(path) ? path : null;
 }

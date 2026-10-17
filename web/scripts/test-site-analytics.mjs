@@ -21,7 +21,7 @@ assert.equal(q.scripts.length,1);assert.equal(Object.prototype.toString.call(q.e
 assert.doesNotMatch(JSON.stringify(q.window.dataLayer),/private|secret|customer-id|post_uid|search\?q/,'Raw query and referrer content never enter the tag queue');
 q.api.trackWebsitePage('/');assert.equal(q.events().length,1,'Hydration and duplicate effects do not duplicate page views');
 q.api.trackWebsitePage('/signup');q.api.trackWebsitePage('/');assert.equal(q.events().length,3,'Actual public route changes are measured');assert.equal(q.scripts.length,1);
-for(const path of ['/dashboard','/posts','/design/hero','/preview','/admin','/reset/customer-token','/backend/auth/google/callback']){
+for(const path of ['/integrations','/dashboard','/posts','/design/hero','/preview','/admin','/reset/customer-token','/backend/auth/google/callback']){
  const c=review('https://www.isramarket.co.il'+path,'granted');c.api.trackWebsitePage(path);assert.equal(c.scripts.length,0,`No tag on ${path}`);assert.equal(c.api.publicAnalyticsPath(path),null);
 }
 for(const url of ['http://localhost:3130/','http://127.0.0.1:3130/','https://example.com/','https://www.isramarket.co.il/?mock=1','https://www.isramarket.co.il/start?phase=after','https://www.isramarket.co.il/?review_step=metrics','https://www.isramarket.co.il/?composition=workspace','https://www.isramarket.co.il/?internal=1']){
