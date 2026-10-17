@@ -1,0 +1,52 @@
+{
+  "created": "2026-10-17",
+  "purpose": "Distinct weekly artwork for the public campaign timeline",
+  "method": "Built-in image_gen; original fictional scenes. Text is applied by the actual CardStage renderer in the selected interface language.",
+  "assets": [
+    {
+      "name": "interior-consultation",
+      "file": "interior-consultation-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 editorial photograph for week 3 of an Israeli interior designer's marketing campaign, inviting homeowners to an initial consultation. A close overhead scene of two people's hands working together at a sunlit oak table: one hand slides a pencil floor-plan sketch toward the homeowner, another lays one muted sage fabric swatch beside a small real terracotta tile. A single glass of water catches the afternoon light. The composition is an off-centre diagonal, cropped close enough to feel personal, with believable paper grain and pencil marks that are not readable words. Premium documentary architectural magazine photography, warm off-white and sage, tactile natural materials, quiet lived-in atmosphere. This must feel like an individual creative direction, not stock-photo clutter or a template. No faces required. No logos, no readable text, no captions, no border, no watermarks, no before/after layout. Anatomically credible hands. Entire image is the photograph."
+    },
+    {
+      "name": "interior-finished-corner",
+      "file": "interior-finished-corner-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 architectural campaign photograph for an interior designer's week 4 community conversation. A beautifully resolved yet modest apartment reading corner: a low sculptural honey-oak chair with olive woven seat, sunlit cream plaster wall, an irregular small terracotta side table, one open book turned away so no text is readable, and strong late-afternoon window shadows crossing the wall and floor. A tiny soft blue ceramic vase provides an unexpected colour note. Frame from low height with generous quiet wall above, asymmetric diagonal shadows, no people, no expensive mansion aesthetic. Premium modern architectural editorial, detailed real material grain, restrained sage/terracotta/warm white palette. No captions, typography, logos, badges, borders, watermarks or split panels. One coherent photograph with a specific mood, not a generic furniture catalogue."
+    },
+    {
+      "name": "clothing-size-detail",
+      "file": "clothing-size-detail-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 editorial product photograph for an online everyday clothing shop's week 3 size-help post. A crisp tactile close crop of a cobalt-blue linen shirt laid flat on a warm sand-coloured worktable. A real yellow tailor's measuring tape lies straight across the chest seam, and one hand gently holds the fabric edge, clearly demonstrating how to compare the garment with a favourite shirt. The tape has plausible small tick marks, but no headline or large readable text. Beautiful raking morning light emphasises seam construction and linen weave; realistic slight creases, asymmetric composition with a fold occupying the lower third. Brand palette cobalt, natural linen, warm sand, one useful yellow accent from the tape. Premium independent fashion editorial, specific and informative, no stock-photo props, no mannequins, no floating objects, no collage, no border, no graphic overlays, no logos or watermarks. Anatomically credible hand."
+    },
+    {
+      "name": "clothing-weekend-look",
+      "file": "clothing-weekend-look-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 fashion editorial photograph for week 4 of a cobalt-blue everyday linen clothing brand campaign. A candid cropped-at-the-shoulders view of an adult woman wearing a slightly oversized cobalt linen shirt, sleeves casually rolled, paired with natural cream trousers, walking beside a warm pale stone city wall. The hem catches a natural breeze; one hand holds a small woven market bag with nothing branded. No face is shown, emphasis on the actual drape and texture of the garment, a lively diagonal stride and strong clean Mediterranean sunlight with one deep shadow. The photograph must look distinctly different from a studio clothing flat-lay: real street context, believable fabric movement, no runway glamour. Cobalt blue, sand, cream, warm stone. Premium independent fashion campaign. No text, logos, labels, borders, collages, fake interface or watermarks. Natural anatomy and clothing construction."
+    },
+    {
+      "name": "bakery-friday-order",
+      "file": "bakery-friday-order-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 documentary food photograph for week 3 of a neighbourhood bakery campaign inviting Friday pre-orders. A single rich golden braided challah, glistening naturally with tiny sesame seeds, half slipped into a clean unbranded kraft paper bag on a dark plum-coloured bakery counter. A baker's flour-dusted hand folds the top of a second empty bag in the softly out-of-focus background, not another hero bread. Low side-light from the shop window, close angle at counter height, luxurious crust detail and charming imperfect braid, plenty of dark negative space in the upper left. Warm gold and restrained plum paper/counter palette, specific small artisan bakery rather than rustic stock-photo abundance. One original editorial scene, no overhead board of props, no text, no numbers, no logos, no stickers, no packaging labels, no graphic border, no watermark. Credible hand and baking texture."
+    },
+    {
+      "name": "community-next-box",
+      "file": "community-next-box-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 respectful editorial photograph for week 3 of a local Israeli community nonprofit donation campaign. From a close three-quarter angle, a volunteer's hands gently place a sealed plain bag of rice and a jar of tomato sauce into one neat open cardboard grocery box. A few fresh courgettes, a small bunch of carrots and a plain unbranded packet of pasta are visible, showing concretely what practical support looks like. The box sits on a pale sage folding table in a bright simple community room. Only forearms and hands, no beneficiaries, no staged poverty or emotional manipulation. Natural side-light, tactile cardboard, thoughtful calm composition, sage green with warm red/ochre food accents, a diagonal box edge. Honest premium documentary photography, no excessive visual clutter, no impossible food shapes, no logos, readable text, labels, captions, hearts, badges, infographics, collage or watermarks. Anatomically credible hands."
+    },
+    {
+      "name": "software-owner-focus",
+      "file": "software-owner-focus-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 editorial campaign photograph for an approachable marketing software product's week 3 invitation to try it. A female small-business owner at an airy compact ceramics studio, seen over one shoulder as she takes a short break from packing a handmade cup to review her laptop. The laptop screen shows only soft unfocused neutral blocks, never a fake readable interface. A distinctive small cobalt-blue notebook and one finished blue-glazed ceramic cup connect the image's palette. A tidy real worktable, a partially folded kraft box, one tactile receipt-sized paper with no readable words. The central story is a real business owner with breathing room, not a stressed person surrounded by lists. Natural Mediterranean window light, off-centre composition, a candid pause, visibly handmade ceramics. Modern documentary commercial photography, cobalt, warm white, natural clay, minimal precise props. No text, logos, watermarks, collage, cartoon robots, floating UI, generic neon technology imagery or graphic border. Natural anatomy."
+    },
+    {
+      "name": "bakery-bread-choice",
+      "file": "bakery-bread-choice-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 editorial photograph for the fourth week of a neighbourhood bakery's campaign, asking customers which bread they would like next week. A bold, close overhead composition of two very different artisan loaves: a dark seeded rye loaf with a single cut slice revealing a dense rich crumb, and a pale round sourdough with an open airy cut face. Both lie asymmetrically on a warm light stone counter; a small fold of deep plum linen enters one corner. No challah, no braiding, no bags, no people, no baking tools. Distinct contrast in colour, crust and crumb texture makes the choice instantly understandable. Directional morning sunlight, tactile crumbs and a few scattered seeds, controlled negative space, sophisticated independent food-magazine photography, warm gold, cream and restrained deep plum palette. No written text, labels, logos, prices, packaging, borders, collage, or watermarks. Entire image is one coherent realistic photograph."
+    },
+    {
+      "name": "software-campaign-learning",
+      "file": "software-campaign-learning-ai.jpg",
+      "prompt": "Use case: ads-marketing. Asset: original portrait 4:5 editorial still-life photograph for a small-business marketing software campaign's week 4 post about learning from content results and choosing what to make next. A candid overhead desk scene in a ceramics studio: three small physical photographic prints from a blue-glazed handmade mug campaign lie in an asymmetric loose row on a warm oak tabletop. The photographs show unmistakably different compositions of the same cobalt ceramic mug (close glaze detail, cup in a person's hand, cup on a breakfast table). Next to them is a single cream paper with one simple hand-drawn blue upward line and a few small plain square check marks, absolutely no numbers or readable words, and a cobalt blue pencil. One natural human hand lightly points to the chosen breakfast-table print, making a clear visible choice from the results. Crop close; let the photographic prints be the focal point, not a cluttered desk. Warm natural daylight, realistic print paper, ceramic glaze and pencil textures, premium documentary commercial editorial, restrained cobalt, warm white, honey oak. No screens, fake app interface, robots, dashboards, captions, logos, chart numbers, readable text, borders, watermarks or collaged panels. One coherent photograph. Believable hand anatomy."
+    }
+  ]
+}

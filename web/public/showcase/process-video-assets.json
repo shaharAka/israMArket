@@ -1,0 +1,12 @@
+{
+  "created": "2026-10-17",
+  "purpose": "Business-specific campaign materials in the public seven-step product story",
+  "assets": [
+    {"file": "designer-human-motion-ai.mp4", "role": "services", "source": "Existing generated interior-designer paint demonstration", "model": "veo-3.1-fast-generate-preview", "seconds": 8},
+    {"file": "clothing-human-motion-ai.mp4", "role": "online_shop", "source": "Existing generated clothing demonstration", "seconds": 8},
+    {"file": "bakery-human-motion-ai.mp4", "role": "physical_shop", "source": "Generated from bakery-braiding-ai.png", "model": "veo-3.1-fast-generate-preview", "seconds": 8},
+    {"file": "community-human-motion-ai.mp4", "role": "fundraising", "source": "Generated from nonprofit-community-ai.png", "model": "veo-3.1-fast-generate-preview", "seconds": 8},
+    {"files": "software-campaign-demo-{he,en,ar,ru}.mp4", "role": "software", "source": "Actual CampaignProductPreview, CampaignWeek, CampaignPostCard, PostWorkspace and CampaignBrief components using the public software fixture; recorded week selection and opening a post, with a drawn cursor following those controls", "seconds": 9}
+  ],
+  "notes": "Generated people are fictional. No customer accounts or private customer information appear in these assets. Public copies are muted and optimized for website playback."
+}
