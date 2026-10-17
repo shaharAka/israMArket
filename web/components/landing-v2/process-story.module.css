@@ -74,7 +74,7 @@
 .connectedHub > span { display: block; font-size: 11px; color: var(--ink-muted); margin: 8px 0 18px; }
 .hubRow { display: flex; gap: 6px; margin-top: 14px; font-size: 12px; line-height: 1.6; }
 .hubRow svg { color: var(--process-green); flex-shrink: 0; width: 14px; margin-top: 2px; }
-.connectionFoot { position: absolute; bottom: 50px; left: 8%; right: 8%; font-size: 13px; text-align: center; color: var(--ink-muted); direction: rtl; }
+.connectionFoot { position: absolute; bottom: 14px; left: 8%; right: 8%; font-size: 13px; text-align: center; color: var(--ink-muted); direction: rtl; }
 .clipPost { aspect-ratio: 4 / 5; background: var(--ink); }
 .clipPost video { display: block; width: 100%; height: 100%; object-fit: cover; }
 .clipPost[data-software="true"] video { object-fit: contain; background: var(--paper); }
@@ -442,8 +442,89 @@
 
 .visual[data-playing="false"] .timelineArtwork { animation: none; opacity: 1; transform: none; }
 .benefit { margin-top: 12px; font-size: 16px; line-height: 1.7; color: var(--ink); }
-.connectorHint { position: absolute; left: 6%; width: 38%; min-height: 50px; display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 12px; background: var(--paper); opacity: .48; font-size: 11px; color: var(--ink-soft); }
-.connectorHintTop { top: -13px; transform: rotate(-3deg); }
-.connectorHintBottom { bottom: -12px; transform: rotate(3deg); }
-.connectorHint :global(.lv2-provider-logo) img { width: 22px; height: 22px; }
+.connectorHint { position: absolute; left: 6%; width: 38%; min-height: 50px; display: flex; align-items: center; gap: 10px; padding: 10px 13px; border-radius: 12px; background: var(--paper); opacity: 1; font-size: 13px; box-shadow: 0 4px 16px #14203a0a; z-index: 2; color: var(--ink-soft); }
+.connectorHintTop { top: 22px; }
+.connectorHintBottom { bottom: 42px; }
+.connectorHint :global(.lv2-provider-logo) img { width: 30px; height: 30px; }
 @media(max-width:700px) { .benefit { font-size: 14px; margin-top: 10px; } .connectorHint { font-size: 10px; left: 5%; width: 40%; gap: 7px; } }
+
+/* One recognizable social post per week, with space for its actual creative. */
+.weekMaterials { display: block; width: 100%; max-width: 280px; justify-self: center; }
+.socialPost { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; box-shadow: 0 6px 20px #14203a0c; }
+.socialHeader { display: flex; align-items: center; gap: 7px; padding: 8px 10px; min-width: 0; }
+.socialAvatar { flex-shrink: 0; width: 24px; height: 24px; overflow: hidden; }
+.socialAvatar :global(.lv2-provider-logo) img { max-width: 19px; }
+.socialHeader strong { min-width: 0; font-size: 11px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.socialPlatform { font-size: 9px; color: var(--ink-muted); margin-inline-start: auto; }
+.socialPost .timelineArtwork, .socialPost .clipPost { height: 222px; max-height: none; aspect-ratio: auto; border-radius: 0; box-shadow: none; }
+.socialPost .timelineArtwork { display: grid; place-items: center; overflow: hidden; }
+.socialPost .timelineArtwork > div { height: 100%; }
+.socialPost .timelineArtwork > div:not(.clipPost):not(.genericArtwork) { max-width: 178px; }
+.socialActions { display: flex; gap: 9px; align-items: center; padding: 7px 10px 0; }
+.socialActions svg { width: 15px; height: 15px; fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.socialActions svg:last-child { margin-inline-start: auto; }
+.socialCaption { font-size: 10px; line-height: 1.55; padding: 5px 10px 9px; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+@media (max-width: 1000px) {
+  .weekWorkspace { grid-template-columns: minmax(0, .65fr) minmax(0, 1.35fr); align-items: center; }
+  .weekMaterials { max-width: 250px; }
+  .socialPost .timelineArtwork, .socialPost .clipPost { height: 210px; max-height: none; }
+  .socialPost .timelineArtwork > div:not(.clipPost):not(.genericArtwork) { max-width: 168px; }
+  .socialPlatform { display: none; }
+  .connectorHintTop { top: 16px; }
+  .connectorHintBottom { bottom: 36px; }
+}
+
+.campaignBoard { inset: 12px 4%; padding: 12px; }
+.campaignBoard .weekTimeline { margin-block: 6px 10px; }
+.campaignBoard .weekTimeline button { min-height: 34px; }
+.campaignBoard .boardStatus { display: none; }
+.connections .providerColumn { gap: 16px; }
+@media (max-width: 700px) {
+  .socialPost .timelineArtwork, .socialPost .clipPost { height: 190px; }
+  .socialPost .timelineArtwork > div:not(.clipPost):not(.genericArtwork) { max-width: 152px; }
+}
+
+.weekMaterials { max-width: 222px; }
+.socialPost .timelineArtwork > div:not(.clipPost):not(.genericArtwork) { max-width: none; }
+.socialCaption { padding: 0; margin: 5px 10px 9px; }
+@media (max-width: 1000px) { .weekMaterials { max-width: 210px; } }
+@media (max-width: 700px) {
+  .weekMaterials { max-width: 190px; }
+  .socialPost .timelineArtwork > div:not(.clipPost):not(.genericArtwork) { max-width: none; }
+}
+
+@media (max-width: 700px) {
+  .connections .connectionFoot { bottom: 10px; font-size: 10px; }
+  .campaignBoard .boardHeading { flex-wrap: nowrap; min-height: 24px; gap: 6px; }
+  .campaignBoard .boardHeading > .miniLabel { width: auto; font-size: 9px; flex-shrink: 0; }
+  .campaignBoard .boardHeading strong { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .campaignBoard .boardMonth { display: none; }
+  .campaignBoard .weekTimeline { margin-block: 4px 8px; }
+  .campaignBoard .weekTimeline button { min-height: 30px; }
+  .socialHeader { padding: 5px 8px; }
+}
+
+/* Each network keeps its familiar feed or vertical-video structure. */
+.socialPost[data-social-platform="Facebook"] .socialActions,
+.socialPost[data-social-platform="LinkedIn"] .socialActions { justify-content: space-around; padding-top: 5px; }
+.socialPost[data-social-platform="Facebook"] .socialCaption,
+.socialPost[data-social-platform="LinkedIn"] .socialCaption { margin-block: 5px; }
+.networkLabels { display: flex; justify-content: space-around; font-size: 9px; color: var(--ink-muted); padding-bottom: 6px; }
+.socialPost[data-social-platform="TikTok"] { position: relative; width: 174px; max-width: 100%; height: 316px; margin-inline: auto; background: #121212; color: white; border-color: #121212; }
+.socialPost[data-social-platform="TikTok"] .socialHeader { position: absolute; inset: 0 0 auto; z-index: 2; color: white; background: linear-gradient(#0009,transparent); }
+.socialPost[data-social-platform="TikTok"] .socialAvatar { background: white; padding: 2px; border-radius: 5px; }
+.socialPost[data-social-platform="TikTok"] .timelineArtwork,
+.socialPost[data-social-platform="TikTok"] .clipPost { height: 100%; }
+.socialPost[data-social-platform="TikTok"] .socialActions { position: absolute; right: 2px; bottom: 74px; flex-direction: column; gap: 14px; padding: 0 5px; }
+.socialPost[data-social-platform="TikTok"] .socialActions svg { stroke: white; width: 20px; height: 20px; filter: drop-shadow(0 1px 2px #0008); }
+.socialPost[data-social-platform="TikTok"] .socialCaption { position: absolute; inset: auto 4px 25px; margin: 0; padding: 25px 8px 8px; background: linear-gradient(transparent,#000b); color: white; font-size: 10px; text-shadow: 0 1px 3px #000; -webkit-line-clamp: 3; }
+.socialPost[data-social-platform="TikTok"] .socialPlatform { color: white; }
+.socialPost[data-social-platform="LinkedIn"] { border-radius: 4px; }
+.socialPost[data-social-platform="LinkedIn"] .socialAvatar { border-radius: 2px; }
+@media (max-width: 700px) {
+ .socialPost[data-social-platform="TikTok"] { height: 294px; width: 165px; }
+ .socialPost[data-social-platform="Facebook"] .socialHeader,
+ .socialPost[data-social-platform="LinkedIn"] .socialHeader { padding-block: 3px; }
+ .socialPost[data-social-platform="Facebook"] .timelineArtwork,
+ .socialPost[data-social-platform="LinkedIn"] .timelineArtwork { height: 178px; }
+}

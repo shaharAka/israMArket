@@ -53,9 +53,9 @@
 .comparedImage > span { position: absolute; inset-inline: 10px; top: 9px; color: var(--paper); font-size: 15px; line-height: 1.3; font-weight: 600; text-shadow: 0 1px 5px #0009; }
 .comparedImage > strong { position: absolute; inset-inline-end: 8px; bottom: 8px; padding: 5px 9px; border-radius: 4px; background: var(--paper); font-size: 19px; font-weight: 600; }
 .clickCount { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 5px; font-size: 10px; padding-top: 7px; }
-.clickCount > span { font-size: 28px; line-height: 1.2; font-weight: 500; }
+.clickCount > span { font-size: 28px; line-height: 1.2; font-weight: 500; font-variant-numeric: tabular-nums; }
 .clickCount > i { display: block; flex-basis: 100%; height: 4px; background: var(--rule); border-radius: 99px; overflow: hidden; }
-.clickCount > i::after { content: ""; display: block; height: 100%; width: var(--click-width); background: var(--ink-muted); transition: width 1s ease; }
+.clickCount > i::after { content: ""; display: block; height: 100%; width: var(--click-width); background: var(--ink-muted); transition: none; }
 .comparedPost[data-winner="true"] .clickCount > i::after { background: var(--scene-violet-ink); }
 .comparedPost[data-winner="true"] { box-shadow: 0 0 0 2px var(--scene-violet), 0 6px 22px #14203a09; }
 .comparisonContext { font-size: 10px; line-height: 1.5; color: var(--ink-muted); margin-top: 9px; text-align: center; }
@@ -231,3 +231,7 @@
 
 }
 @media(prefers-reduced-motion:reduce) { .scene *, .phoneScene * { animation: none !important; transition: none !important; } .cursor { display: none; } }
+
+.learning[data-learning-stage="1"] .comparedPost[data-winner="true"] { transform: translateY(-3px) scale(1.025); }
+.comparedPost { transition: transform 600ms ease, box-shadow 600ms ease; }
+:global([data-reduced="true"]) .comparedPost { transition: none; }

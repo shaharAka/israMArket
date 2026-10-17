@@ -626,7 +626,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -883,7 +883,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 99,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -1169,6 +1169,18 @@
         "line": 717,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_026c10f0bac0cc92": {
+    "source": "מתחילים בפרויקט אחד, עם הצוות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -3160,6 +3172,17 @@
       }
     ]
   },
+  "m_0663eb2c667fc0cf": {
+    "source": "לביצוע, בעבודה, הושלם. רואים את ההתקדמות במקום אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_066674febba2ad21": {
     "source": "שלא תגיעו לדלת סגורה",
     "language": "he",
@@ -5037,7 +5060,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 71,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -6061,18 +6084,6 @@
       }
     ]
   },
-  "m_0cdd8b47ca666682": {
-    "source": "מהקמפיין לפוסט הבא, בתוך המערכת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 42,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_0ce4a0d0a14ec88c": {
     "source": "התבנית '{arg_0}' לא מהרשימה.",
     "language": "he",
@@ -6569,6 +6580,17 @@
       }
     ]
   },
+  "m_0dcf6802552ba184": {
+    "source": "להדגים מעבר של משימה בין שלבי העבודה ולהזמין להתנסות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 63,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0ddb0c799ef2b48a": {
     "source": "עדיין יש נתוני עניין בפוסט",
     "language": "he",
@@ -6735,17 +6757,6 @@
       }
     ]
   },
-  "m_0e23db0013f82d33": {
-    "source": "לכל שבוע בקמפיין יש מטרה ופוסטים משלו, עם תמונות וסרטון שמתאימים לסוג העסק. המחשות חדשות מציגות איך היעדים הופכים למשימות, איך לומדים מפוסטים ואיך מאשרים תוכן מהנייד. חודש הנסיון החינמי מוצג בשתי המחשות מתחלפות: מתחילים ומכינים תוכנית ופוסט ראשון.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_0e27ad3ef25f35b2": {
     "source": "Unsupported vision image type",
     "language": "en",
@@ -6898,6 +6909,17 @@
         "line": 101,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_0e634ef52e811edd": {
+    "source": "מה צריך לעשות? מי אחראי? ומה כבר הושלם? כך נראית התקדמות של משימה במסלול: הלוח מתעדכן, והצוות נשאר עם אותה תמונה של הפרויקט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -7676,18 +7698,6 @@
         "file": "web/components/posts/preparation/VoiceStep.tsx",
         "line": 113,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_100583478e2f9dda": {
-    "source": "השיווק מתקדם. אתם חוזרים לעסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -9679,6 +9689,17 @@
       }
     ]
   },
+  "m_14470d0d93c6809a": {
+    "source": "אהבתי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessSocialPost.tsx",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_144e78a8d13e0b27": {
     "source": "חומרי העסק",
     "language": "he",
@@ -9701,7 +9722,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       },
       {
@@ -9868,7 +9889,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -9923,7 +9944,18 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 69,
+        "line": 77,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_152c4f535fe59b10": {
+    "source": "משתפים הרגל עבודה מועיל ומקשרים אותו לערך של המוצר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -10047,12 +10079,17 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 42,
+        "line": 43,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 102,
+        "line": 103,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/ProcessAnimation.tsx",
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -10119,7 +10156,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 102,
+        "line": 103,
         "kind": "literal"
       }
     ]
@@ -10255,7 +10292,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -10368,17 +10405,6 @@
       {
         "file": "web/components/design/ResultsWorkshop.tsx",
         "line": 22,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_162793b33979e673": {
-    "source": "להגיע לבעלי עסקים שמתכננים את החודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
         "kind": "literal"
       }
     ]
@@ -11335,7 +11361,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -12267,7 +12293,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 99,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -12316,7 +12342,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 91,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -13049,7 +13075,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 64,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -13338,7 +13364,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 62,
+        "line": 63,
         "kind": "jsx"
       }
     ]
@@ -13349,13 +13375,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 55,
+        "line": 56,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 62,
+        "line": 80,
         "kind": "jsx"
       }
     ]
@@ -14546,11 +14572,6 @@
     "source": "יש לכם עסק לנהל. תנו לנו להכין את השיווק.",
     "language": "he",
     "references": [
-      {
-        "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
-        "kind": "literal"
-      },
       {
         "file": "web/components/landing-v2/productFixtures.ts",
         "line": 66,
@@ -15875,7 +15896,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 81,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -17759,6 +17780,17 @@
       }
     ]
   },
+  "m_24eecf9979561c78": {
+    "source": "שלושה פרטים שעוזרים לצוות להתקדם: מי אחראי למשימה, מתי היא צריכה להסתיים ומה הצעד הבא. במסלול הם נשארים ליד המשימה, גם כשהיא עוברת בין אנשים ושלבים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_24f3f58e1379ec7c": {
     "source": "מה הביא כל ערוץ, לפי הנתונים שחיברתם, מול היעד.",
     "language": "he",
@@ -18735,7 +18767,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -18950,7 +18982,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 56,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -19723,6 +19755,17 @@
       }
     ]
   },
+  "m_2934524a38a5657f": {
+    "source": "לא חייבים להעביר את כל העבודה ביום אחד. פתחו במסלול פרויקט אחד, הוסיפו את המשימות הקרובות והזמינו את חברי הצוות. מתחילים מהדבר הבא שאתם רוצים לקדם ביחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2940f80b2802dfbb": {
     "source": "product שמראה שילובים ומארזים, ו-offer של סף או מארז (בלי מחיר ובלי מוצר מסוים).",
     "language": "he",
@@ -19954,11 +19997,6 @@
       {
         "file": "web/components/AssetCard.tsx",
         "line": 37,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
         "kind": "literal"
       },
       {
@@ -20229,6 +20267,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1279,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2a8f74d8fcea06e7": {
+    "source": "הצוות לא צריך עוד כלי. הוא צריך לדעת מה קורה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -20558,7 +20607,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       },
       {
@@ -21582,6 +21631,18 @@
         "line": 36,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_2d135da962558973": {
+    "source": "משימה עוברת בין שלבים בלוח הפרויקט של מסלול",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessAnimation.tsx",
+        "line": 84,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -24641,17 +24702,6 @@
       }
     ]
   },
-  "m_3329d90c91684619": {
-    "source": "הזמנה להתנסות במוצר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_332c3c5e44d7cc3e": {
     "source": "ריסים",
     "language": "he",
@@ -24943,6 +24993,18 @@
         "line": 584,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_3373fdb14006109b": {
+    "source": "מי עושה מה, ומה כבר מתקדם?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 41,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -26468,6 +26530,17 @@
       }
     ]
   },
+  "m_36b4a2d477bad0ee": {
+    "source": "מתחילים מהקושי של צוות שמחפש עדכונים בכמה מקומות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_36ba2833315f2fa1": {
     "source": "לבחור",
     "language": "he",
@@ -26822,17 +26895,6 @@
         "line": 52,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_3742c2e88d073c29": {
-    "source": "פוסט עם מסר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 108,
-        "kind": "literal"
       }
     ]
   },
@@ -27275,7 +27337,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -27618,17 +27680,6 @@
         "file": "web/components/start/BusinessCard.tsx",
         "line": 282,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_394b72c0a2cad574": {
-    "source": "מזמינים להתנסות דרך מצב מוכר מיום העבודה של בעלת עסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal"
       }
     ]
   },
@@ -28226,7 +28277,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -28496,7 +28547,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -29446,7 +29497,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -29493,6 +29544,17 @@
         "line": 56,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_3dd709a9b069c6be": {
+    "source": "לכל משימה: אחראי, מועד והצעד הבא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 44,
+        "kind": "literal"
       }
     ]
   },
@@ -29694,7 +29756,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -30159,7 +30221,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -32930,7 +32992,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 62,
+        "line": 70,
         "kind": "literal"
       },
       {
@@ -33114,7 +33176,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 92,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -33335,6 +33397,17 @@
         "line": 72,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_45e2ced0f3c528f3": {
+    "source": "המשימות, האחריות והעדכונים של הצוות, בלוח משותף אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 64,
+        "kind": "literal"
       }
     ]
   },
@@ -33980,7 +34053,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -34339,7 +34412,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 55,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -35623,7 +35696,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -36249,6 +36322,17 @@
       }
     ]
   },
+  "m_4ca25f2606707b20": {
+    "source": "מנהלי צוותים רוצים לראות איך העבודה מתקדמת בלי לרדוף אחרי עדכונים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 62,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4ca3b4e8db3d595c": {
     "source": "להגדיל את התמיכה בפעילות לקראת החג",
     "language": "he",
@@ -36314,6 +36398,17 @@
         "line": 1797,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_4cd2f6c3fd082e3f": {
+    "source": "מראים את לוח הפרויקט ואת המעבר בין שלבי העבודה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -37782,6 +37877,17 @@
       }
     ]
   },
+  "m_4fe2645a811363cb": {
+    "source": "מסלול מרכזת את המשימות, האחריות והתאריכים בלוח אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 41,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4fe4437cb57ae395": {
     "source": "להתחיל שוב",
     "language": "he",
@@ -38288,7 +38394,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -39080,6 +39186,17 @@
       }
     ]
   },
+  "m_52f73944d7c83dae": {
+    "source": "בפוסט הבא: איך מעבירים משימה בין חברי הצוות בלי לאבד את ההקשר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 65,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5315b301393445da": {
     "source": "Instagram Graph API (המספרים של החשבון)",
     "language": "he",
@@ -39288,7 +39405,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -40311,7 +40428,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 103,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -40918,7 +41035,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 99,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -41594,6 +41711,17 @@
       }
     ]
   },
+  "m_587d69abbb5387e8": {
+    "source": "לכל שבוע בקמפיין יש מטרה ופוסט משלו, בתצוגות של פייסבוק, טיקטוק, אינסטגרם ולינקדאין. דוגמת התוכנה מציגה מוצר לניהול פרויקטים. המחשות חדשות מציגות איך היעדים הופכים למשימות, איך לומדים מפוסטים ואיך מאשרים תוכן מהנייד. חודש הנסיון החינמי מוצג בשתי המחשות מתחלפות: מתחילים ומכינים תוכנית ופוסט ראשון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_588f5ec68876e5c8": {
     "source": "סטרטאפ",
     "language": "he",
@@ -41964,6 +42092,17 @@
       {
         "file": "web/lib/goals.ts",
         "line": 549,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5994996c7eb3d180": {
+    "source": "מזמינים צוות להתחיל מהעבודה האמיתית שמחכה לו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -42774,7 +42913,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 72,
+        "line": 80,
         "kind": "literal"
       },
       {
@@ -42835,7 +42974,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 74,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -43518,7 +43657,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -43931,6 +44070,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5d6f6ccd0439360c": {
+    "source": "עוד ישיבת סטטוס, או תמונה ברורה של העבודה?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -45061,7 +45211,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 69,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -45911,7 +46061,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 54,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -46664,18 +46814,6 @@
       }
     ]
   },
-  "m_6358cda00cf40bff": {
-    "source": "יש עסק לנהל. מי מטפל בשיווק?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 41,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_635c8c485310fe25": {
     "source": "ערכת פרסום",
     "language": "he",
@@ -46834,7 +46972,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 105,
+        "line": 106,
         "kind": "literal"
       },
       {
@@ -46958,7 +47096,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -47566,6 +47704,18 @@
       }
     ]
   },
+  "m_652cf5f1f6495112": {
+    "source": "כך משימה עוברת מרעיון לביצוע.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 42,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_652f4e8d6b9b790b": {
     "source": "הדגמות עם לקוחות מתאימים",
     "language": "he",
@@ -47784,7 +47934,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 67,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -49065,7 +49215,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -49473,17 +49623,6 @@
       }
     ]
   },
-  "m_68ff68d9b3f2478b": {
-    "source": "תוכנית, קמפיין ותוכן במערכת אחת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processExamples.ts",
-        "line": 59,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6901090c56c31c0f": {
     "source": "אדום של חנות",
     "language": "he",
@@ -49677,7 +49816,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -49956,17 +50095,6 @@
       }
     ]
   },
-  "m_6a033e72b0183850": {
-    "source": "בלי כרטיס אשראי. בלי התחייבות להמשיך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6a0db28df69930e5": {
     "source": "Muse Image: the reply carried no image.",
     "language": "en",
@@ -50057,7 +50185,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 56,
+        "line": 57,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50265,7 +50393,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 86,
+        "line": 104,
         "kind": "literal"
       }
     ]
@@ -50787,7 +50915,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 71,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -51020,6 +51148,17 @@
       }
     ]
   },
+  "m_6cdee40a04be95d5": {
+    "source": "הפרויקט הבא שלכם יכול להיות מסודר יותר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6ce3ff72d30c01a4": {
     "source": "מה שסיפרתם בהתחלה:",
     "language": "he",
@@ -51093,7 +51232,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 124,
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -52083,7 +52222,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -53314,7 +53453,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -53642,7 +53781,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 64,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -53735,17 +53874,6 @@
       {
         "file": "web/components/landing-v2/postExamples.ts",
         "line": 73,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_71b5a06dced03f46": {
-    "source": "מחברים בין המוצר, התוצאות והתכנון לחודש הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 44,
         "kind": "literal"
       }
     ]
@@ -54333,6 +54461,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1918,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_72ab7041375df525": {
+    "source": "תוכנה לניהול פרויקטים לצוותים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 58,
         "kind": "literal"
       }
     ]
@@ -55293,6 +55432,17 @@
       }
     ]
   },
+  "m_755eb93e3f9b757b": {
+    "source": "מסלול · ניהול פרויקטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_755f020964375023": {
     "source": "לבקש מהם רשות ומשפט אחד",
     "language": "he",
@@ -55447,17 +55597,6 @@
         "line": 163,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_75db8d12bfed6ea6": {
-    "source": "תוכנית חודשית וחומרים שמתאימים לעסק, במקום אחד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 41,
-        "kind": "literal"
       }
     ]
   },
@@ -55925,6 +56064,17 @@
       }
     ]
   },
+  "m_76b533cc6c3b0de9": {
+    "source": "משימות, אחריות ותאריכים בלוח משותף אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_76b629b4f3e0be2c": {
     "source": "להשהות את החשבון",
     "language": "he",
@@ -56262,6 +56412,17 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 514,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_777dacb3b4294412": {
+    "source": "עדכון אחד בצ׳אט, משימה במייל ותאריך שאף אחד לא זוכר. במסלול כל משימה מקבלת אחראי, מועד ושלב עבודה, כדי שהצוות יראה מה מתקדם בלי עוד ישיבת סטטוס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -57112,6 +57273,17 @@
       }
     ]
   },
+  "m_796d6c5ba9093f95": {
+    "source": "סרטון: מעבירים משימה בין שלבים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_796db57fd25cef33": {
     "source": "בערך כמו {arg_0} ({arg_1})",
     "language": "he",
@@ -57362,6 +57534,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 206,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_79faa5598c9327eb": {
+    "source": "שיתוף",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessSocialPost.tsx",
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -58973,6 +59156,17 @@
       }
     ]
   },
+  "m_7d8dda05789310c6": {
+    "source": "לצוותים שרוצים לדעת מה מתקדם ומי אחראי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 67,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7d95e30d0686f80c": {
     "source": "חיבור פעיל אינו מאשר מה בדיוק נמדד באתר.",
     "language": "he",
@@ -59130,7 +59324,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 39,
+        "line": 40,
         "kind": "jsx"
       },
       {
@@ -60407,17 +60601,6 @@
       }
     ]
   },
-  "m_80bfa2fd28b621d1": {
-    "source": "סרטון: בונים קמפיין במערכת",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_80c2726d1b7964aa": {
     "source": "מה חדש",
     "language": "he",
@@ -61343,7 +61526,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -61711,7 +61894,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -61810,7 +61993,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -62440,6 +62623,18 @@
       {
         "file": "web/lib/businessModel.ts",
         "line": 141,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_84caef08e751ab66": {
+    "source": "עדכון טוב חוסך עוד שיחת סטטוס.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63140,7 +63335,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -64500,17 +64695,6 @@
       }
     ]
   },
-  "m_892c48d6865fad9b": {
-    "source": "חודש נסיון חינם לעסק שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_893e2fd49d0f84f0": {
     "source": "אנחנו",
     "language": "he",
@@ -65474,7 +65658,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 99,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -65915,7 +66099,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -66039,7 +66223,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 75,
+        "line": 76,
         "kind": "literal",
         "purpose": "display"
       }
@@ -66587,7 +66771,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -67402,7 +67586,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -67694,7 +67878,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 103,
+        "line": 104,
         "kind": "literal"
       },
       {
@@ -70023,6 +70207,17 @@
       }
     ]
   },
+  "m_94ab932cefb6d8fe": {
+    "source": "פוסט: מסיימים פרויקט לפני החג",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_94abfeb1115f54c8": {
     "source": "לפתוח מסך {arg_0}",
     "language": "he",
@@ -71711,7 +71906,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -72074,7 +72269,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 62,
+        "line": 80,
         "kind": "jsx"
       }
     ]
@@ -72343,17 +72538,6 @@
       }
     ]
   },
-  "m_99f871ce8a137f6f": {
-    "source": "כאן רואים איך המטרה של השבוע הופכת לחומרים שאפשר לעבוד איתם. בוחרים פוסט בקמפיין, בודקים את הטקסט והעיצוב ומדייקים את מה שצריך לפני הפרסום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 42,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_9a03fbc37c8e06d4": {
     "source": "שבוע {arg_0}: {arg_1}",
     "language": "he",
@@ -72444,7 +72628,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       },
       {
@@ -72950,6 +73134,17 @@
       }
     ]
   },
+  "m_9b7127b5cdb87b47": {
+    "source": "מרעיון למשימה שהושלמה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 71,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9b73938199eba24b": {
     "source": "קהל מומלץ לפי ההצעה, עם בחירה ותיקון של בעל העסק.",
     "language": "he",
@@ -73192,7 +73387,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 90,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -74859,7 +75054,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -75297,7 +75492,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -76036,7 +76231,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -77396,6 +77591,17 @@
       }
     ]
   },
+  "m_a55ed260a4dcc06a": {
+    "source": "להגיע לצוותים שמתכננים את העבודה לקראת החג",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a56160b23d7d8204": {
     "source": "להגדיל את המסכים",
     "language": "he",
@@ -77894,13 +78100,13 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 54,
+        "line": 55,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 62,
+        "line": 80,
         "kind": "jsx"
       }
     ]
@@ -77944,7 +78150,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 74,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -78437,7 +78643,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -78895,7 +79101,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85253,7 +85459,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -85589,7 +85795,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -85841,7 +86047,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 71,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -86693,17 +86899,6 @@
         "line": 46,
         "kind": "literal",
         "purpose": "validation"
-      }
-    ]
-  },
-  "m_b9b2fbc24521e7e8": {
-    "source": "התוכנית לא נשארת על הנייר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 42,
-        "kind": "literal"
       }
     ]
   },
@@ -87760,6 +87955,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 1186,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_bc5ec263fb461463": {
+    "source": "הזמנה להתנסות עם הצוות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processScenarios.ts",
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -89403,7 +89609,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 112,
+        "line": 114,
         "kind": "literal"
       }
     ]
@@ -91544,17 +91750,6 @@
       }
     ]
   },
-  "m_c405e948dc2014c4": {
-    "source": "אחרי הפרסום, העבודה ממשיכה. רואים מה משך התעניינות, בודקים אילו פעולות נמדדו ומשתמשים במסקנות כדי לדייק את התוכן ואת התוכנית לחודש הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 44,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c4072848fbfad06f": {
     "source": "מי המתחרים העיקריים שלכם?",
     "language": "he",
@@ -93517,17 +93712,6 @@
       }
     ]
   },
-  "m_c8745e383455319c": {
-    "source": "מה עבד הפעם? משם ממשיכים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 44,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c87be4d1bf9d77cf": {
     "source": "רכיבים",
     "language": "he",
@@ -94408,7 +94592,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -94553,11 +94737,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/processExamples.ts",
-        "line": 63,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/landing-v2/productFixtures.ts",
         "line": 68,
         "kind": "literal"
@@ -94612,7 +94791,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 56,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -95530,7 +95709,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 74,
+        "line": 75,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97143,17 +97322,6 @@
       }
     ]
   },
-  "m_d0325c393eb2d339": {
-    "source": "עוד שבוע עבר בלי פוסט?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 41,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d0438219207dc02c": {
     "source": "צריך לחבר את האינסטגרם כדי למדוד את זה.",
     "language": "he",
@@ -97500,17 +97668,6 @@
         "line": 179,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_d130eb652d5349f8": {
-    "source": "מראים את המוצר בפעולה, מהשבוע בקמפיין אל הפוסט.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 42,
-        "kind": "literal"
       }
     ]
   },
@@ -98274,7 +98431,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 71,
+        "line": 89,
         "kind": "literal"
       },
       {
@@ -98567,7 +98724,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 43,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -98831,7 +98988,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -99538,7 +99695,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 73,
+        "line": 74,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100549,6 +100706,17 @@
       }
     ]
   },
+  "m_d6f90544d5a9863e": {
+    "source": "מי עושה מה, ומה מתקדם השבוע?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 64,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d701c87e81366bc5": {
     "source": "20–26 בספטמבר · נתוני האתר ובדיקת העמוד",
     "language": "he",
@@ -100828,18 +100996,6 @@
       {
         "file": "web/components/start/StartFlow.tsx",
         "line": 510,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
-  "m_d7aada9135b1cdfa": {
-    "source": "מהקמפיין לפוסט במערכת",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 83,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101334,6 +101490,17 @@
       }
     ]
   },
+  "m_d88b2d87ff591c52": {
+    "source": "להראות לצוותים איך מרכזים משימות, אחריות ותאריכים במקום אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 60,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d894b797c1686e0d": {
     "source": "טוענים את הפניות…",
     "language": "he",
@@ -101400,7 +101567,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 53,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -101560,6 +101727,17 @@
         "file": "web/app/security/page.tsx",
         "line": 155,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_d90fa4f2d142199f": {
+    "source": "גוררים משימה. כל הצוות מתעדכן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 42,
+        "kind": "literal"
       }
     ]
   },
@@ -101766,7 +101944,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -101855,17 +102033,6 @@
       {
         "file": "web/app/strategy/edit/page.tsx",
         "line": 136,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_da0d328f0aaf1b9b": {
-    "source": "מתחילים מהקושי המוכר לבעלי עסקים שמקדמים בעצמם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 41,
         "kind": "literal"
       }
     ]
@@ -103158,7 +103325,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 47,
+        "line": 48,
         "kind": "literal"
       }
     ]
@@ -103683,17 +103850,6 @@
       }
     ]
   },
-  "m_dd823388df58d163": {
-    "source": "התוצאות עוזרות לדייק את התוכן ואת הצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 44,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_dd823b6f49cf295a": {
     "source": "חלות קלועות על שולחן מקומח, רגע אחרי שיצאו מהתנור, באור של בוקר.",
     "language": "he",
@@ -103712,7 +103868,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 63,
+        "line": 64,
         "kind": "jsx"
       }
     ]
@@ -103745,7 +103901,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -103807,7 +103963,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 60,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -105523,18 +105679,6 @@
       }
     ]
   },
-  "m_e0f32c36caf008c8": {
-    "source": "לא מתחילים מאפס בכל חודש.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 44,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_e0f50d5d9b7e40b4": {
     "source": "מתכננים את הקמפיין",
     "language": "he",
@@ -105757,17 +105901,6 @@
         "line": 404,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_e17d1ea49f63fb4c": {
-    "source": "רוצים לראות איך זה עובד עם העסק שלכם? מתחילים בהיכרות קצרה, ממשיכים לתוכנית ומכינים את החומרים הראשונים. יש לכם חודש נסיון חינם כדי לבדוק אם זה מתאים לכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal"
       }
     ]
   },
@@ -106776,7 +106909,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 72,
+        "line": 80,
         "kind": "literal"
       },
       {
@@ -106932,17 +107065,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 54,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_e449448273d1963c": {
-    "source": "בין הלקוחות, ההזמנות והעבודה עצמה, השיווק נדחה שוב. IsraMarket מכירה את העסק, בונה תוכנית ומכינה תוכן וקמפיינים, כדי שלא תצטרכו להתחיל מאפס בכל שבוע.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 41,
         "kind": "literal"
       }
     ]
@@ -107895,7 +108017,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 73,
+        "line": 81,
         "kind": "literal"
       },
       {
@@ -109146,7 +109268,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -109709,6 +109831,17 @@
       }
     ]
   },
+  "m_e9c689017757ae48": {
+    "source": "פחות לרדוף אחרי עדכונים. יותר לקדם את העבודה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e9cbdabbe6762187": {
     "source": "אפשר לשנות הכול אחר כך.",
     "language": "he",
@@ -109748,7 +109881,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 61,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -112263,17 +112396,6 @@
       }
     ]
   },
-  "m_ee5c13f7708c743e": {
-    "source": "לבעלי עסקים שמקדמים בעצמם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processExamples.ts",
-        "line": 59,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ee609cf680a9db11": {
     "source": "עוד לא בחרנו יעדים",
     "language": "he",
@@ -112574,7 +112696,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 71,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -114188,6 +114310,28 @@
       }
     ]
   },
+  "m_f284b123b8be7f47": {
+    "source": "למנהלי צוותים שמנהלים כמה פרויקטים במקביל.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processExamples.ts",
+        "line": 61,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f2900746b7c41dfb": {
+    "source": "תגובה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessSocialPost.tsx",
+        "line": 23,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f29151cfff30590d": {
     "source": "קישור לתמונה אחת ברשת.",
     "language": "he",
@@ -114492,7 +114636,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 64,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -115036,7 +115180,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processExamples.ts",
-        "line": 70,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -115930,6 +116074,17 @@
       }
     ]
   },
+  "m_f617b590fdf715ec": {
+    "source": "מוסיפים משימות, בוחרים אחראים ומתחילים לעבוד יחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f62021f25ed5a359": {
     "source": "הצעת מכשור, לא אירוע שכבר נשלח. ללא תוכן תשובות, אימיילים, קישורים פרטיים או נתוני לקוחות בתוך מאפייני האירוע.",
     "language": "he",
@@ -115988,17 +116143,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 1047,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f63dd3dc7ffe880c": {
-    "source": "מהמטרה של השבוע לפוסט שמוכן לבדיקה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 42,
         "kind": "literal"
       }
     ]
@@ -116194,7 +116338,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -116489,17 +116633,6 @@
       }
     ]
   },
-  "m_f718a8a647afd596": {
-    "source": "פוסט: שיווק בתקופת החגים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processScenarios.ts",
-        "line": 15,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f718d8e1e3d2eac2": {
     "source": "הפוסטים כבר כתובים",
     "language": "he",
@@ -116604,7 +116737,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 66,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -116966,17 +117099,6 @@
       {
         "file": "web/components/results/ServiceCheckIn.tsx",
         "line": 90,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f86c18edcfb38071": {
-    "source": "פוסט עם תמונה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 107,
         "kind": "literal"
       }
     ]
@@ -117496,7 +117618,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 105,
+        "line": 106,
         "kind": "literal"
       }
     ]
@@ -118377,7 +118499,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 48,
+        "line": 49,
         "kind": "literal"
       }
     ]
