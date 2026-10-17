@@ -50,12 +50,17 @@ OAuth codes, grants or secrets are returned in URLs, logs or public integration 
 
 ## Operator setup and genuine QA gate
 
-On 12 October 2026 the owner completed developer registration. The individual app and
-the "IsraMarket connector QA" sandbox exist. Production and sandbox credentials are
+On 12 October 2026 the owner completed developer registration. On 17 October the existing
+app was transferred into the owner's IsraMarket organization, and one owned profile was
+authorized and verified in the "IsraMarket connector QA" sandbox's Target users list.
+Production and sandbox credentials are
 stored separately in Secret Manager, with only the existing VM service identity added
 as a reader. Sandbox Login Kit, the two minimal scopes and the owned-domain callback
 have been saved. The current portal exposes `video.list` in Add scopes, rather than a
-separate Display API product tile. No target account or genuine read has passed yet.
+separate Display API product tile. Target enrollment is complete; the separate in-app
+data grant, genuine reads and lifecycle QA remain to be verified. The profile had no
+public videos at enrollment; an owner-authorized original showcase upload is awaiting
+TikTok moderation. Do not treat that upload as public or API-readable until verified.
 The production URL prefix `https://www.isramarket.co.il/` has been verified using the
 provider's public signature file (PR #201, deployed revision b8f0c83824e917aa63ac6756c277fb3bb1c9abfa).
 
