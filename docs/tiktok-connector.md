@@ -57,10 +57,15 @@ Production and sandbox credentials are
 stored separately in Secret Manager, with only the existing VM service identity added
 as a reader. Sandbox Login Kit, the two minimal scopes and the owned-domain callback
 have been saved. The current portal exposes `video.list` in Add scopes, rather than a
-separate Display API product tile. Target enrollment is complete; the separate in-app
-data grant, genuine reads and lifecycle QA remain to be verified. The profile had no
-public videos at enrollment; an owner-authorized original showcase upload is awaiting
-TikTok moderation. Do not treat that upload as public or API-readable until verified.
+separate Display API product tile. On 17 October the owner-authorized original showcase
+upload cleared moderation and became public. In the isolated QA customer workspace, the
+owner approved the separate minimal in-app data grant; callback, explicit account
+confirmation and a genuine Display API read passed on restricted revision `15a4339`.
+The customer UI and authenticated API both showed one video, ready/complete status,
+cumulative counts and the original read date. Provider identifiers and screenshots stay
+in private QA evidence. This proves the initial customer consent/read only: token refresh,
+refusal/partial scopes, disconnect/revoke/reconnect and remaining live-device checks are
+still open under #178. Public access remains disabled; PR #200 is still draft/unmerged.
 The production URL prefix `https://www.isramarket.co.il/` has been verified using the
 provider's public signature file (PR #201, deployed revision b8f0c83824e917aa63ac6756c277fb3bb1c9abfa).
 
