@@ -32,7 +32,7 @@ function writeSeenDone(keys: string[]) {
   }
 }
 
-export function minutesLabel(minutes: number, t: (text: string, args?: Record<string, string | number>) => string = text => text) {
+export function minutesLabel(minutes: number, t: (text: string, args?: Record<string, string | number>) => string = (text, args) => text.replace("{arg_0}", String(args?.arg_0 ?? "{arg_0}"))) {
   return minutes <= 1 ? t("דקה") : t("{arg_0} דק׳", { arg_0: minutes });
 }
 
@@ -55,8 +55,7 @@ export function TrialDay({ trial }: { trial: TrialPayload }) {
   return (
     <div className="flex items-center gap-3">
       <p className="text-sm font-medium text-[color:var(--ink-soft)]">
-        <Copy text="יום" /><span className="font-semibold tabular-nums text-[color:var(--ink)]">{trial.day}</span> <Copy text="מתוך" />{" "}
-        <span className="tabular-nums">{trial.days_total}</span> <Copy text="בחודש החינמי" /></p>
+        <Copy text="יום {arg_0} מתוך {arg_1} בחודש הנסיון" args={{arg_0: trial.day, arg_1: trial.days_total}} /></p>
       <span
         role="progressbar"
         aria-valuemin={1}
@@ -188,12 +187,13 @@ function NextStepCard({ step }: { step: TrialStep }) {
  * The next step's button — the page's one dark fill. A link to where the step is done,
  * or, for "להתחיל לכתוב את הפוסטים", the action itself.
  */
-export function NextStepAction({ step, className = "" }: { step: TrialStep; className?: string }) {
+export function NextStepAction({ step, className = "", showArrow = true }: { step: TrialStep; className?: string; showArrow?: boolean }) {
+  const t = useCopy();
   const buttonClass = `drawn-button group inline-flex min-h-12 w-full items-center justify-center gap-2 bg-[var(--primary)] px-6 text-[15px] font-semibold text-white disabled:opacity-60 sm:w-auto ${className}`;
   const label = (
     <>
-      {step.action_he}
-      <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1 motion-reduce:transition-none" />
+      {t(step.action_he)}
+      {showArrow ? <IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1 motion-reduce:transition-none" /> : null}
     </>
   );
   return step.key === "start_posts" ? (

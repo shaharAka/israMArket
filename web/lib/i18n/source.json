@@ -1074,17 +1074,6 @@
       }
     ]
   },
-  "m_023af73856e4354b": {
-    "source": "אושרו",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 278,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_024929c42bd17b8e": {
     "source": "בלי תור",
     "language": "he",
@@ -2590,6 +2579,11 @@
     "source": "התוצאות",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 79,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 632,
@@ -5270,6 +5264,11 @@
         "purpose": "display"
       },
       {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 79,
+        "kind": "literal"
+      },
+      {
         "file": "web/app/decisions/page.tsx",
         "line": 1212,
         "kind": "literal"
@@ -5391,7 +5390,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -6456,7 +6455,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -6872,7 +6871,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -7458,7 +7457,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -8252,7 +8251,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -9585,7 +9584,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -10800,7 +10799,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -11492,7 +11491,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -15076,17 +15075,6 @@
       }
     ]
   },
-  "m_1f51ad14d04e7938": {
-    "source": "הכי חשוב השבוע",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 464,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_1f5442ff689ca6e8": {
     "source": "לשמור את נקודת הפתיחה",
     "language": "he",
@@ -15197,6 +15185,17 @@
         "line": 105,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_1fa0c5a6d34e3c2b": {
+    "source": "לא הצלחנו לטעון את הקמפיין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 64,
+        "kind": "literal"
       }
     ]
   },
@@ -15401,6 +15400,11 @@
     "source": "החיבורים",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 79,
+        "kind": "literal"
+      },
       {
         "file": "web/app/data-deletion/page.tsx",
         "line": 59,
@@ -16081,7 +16085,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -16275,7 +16279,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -17002,7 +17006,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18322,17 +18326,6 @@
       }
     ]
   },
-  "m_2620f2dc9a29a43f": {
-    "source": "השבועות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 492,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_262105d2e37eb14a": {
     "source": "נציע קהל לפי הבעיה, תפקיד הקונה והשוק שסיפרתם עליהם.",
     "language": "he",
@@ -18662,7 +18655,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18956,7 +18949,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19164,7 +19157,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -19385,7 +19378,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -19971,7 +19964,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -20264,6 +20257,17 @@
       {
         "file": "web/components/landing-v2/processCampaigns.ts",
         "line": 44,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2a9ac75e4cdbc0c9": {
+    "source": "לנסות לטעון שוב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -20900,7 +20904,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21215,7 +21219,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -21638,7 +21642,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 257,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -21867,17 +21871,6 @@
       {
         "file": "web/app/signup/page.tsx",
         "line": 80,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_2d88f99fb7f110c3": {
-    "source": "הפוסטים של החודש עוד נכתבים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 361,
         "kind": "literal"
       }
     ]
@@ -22389,17 +22382,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -25509,17 +25502,6 @@
       }
     ]
   },
-  "m_34b2d0df44f14df9": {
-    "source": "יום",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/trial/TrialGuide.tsx",
-        "line": 58,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_34b339ae6b814197": {
     "source": "האנשים שמאחורי העסק בסביבת העבודה, בלי צילומי סטוק.",
     "language": "he",
@@ -25816,6 +25798,17 @@
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
         "line": 209,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_35665f51e8112cd8": {
+    "source": "ההיכרות, החיבורים, היעדים והתוכנית מסודרים לפי סדר העבודה. גם כשחסר חיבור, אפשר להמשיך לעבוד על תוכן שכבר הוכן. פוסט שאושר מופנה להכנה לפרסום, ופוסט שפורסם נשאר זמין למעקב אחר התוצאות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
         "kind": "literal"
       }
     ]
@@ -26467,11 +26460,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 420,
-        "kind": "literal"
-      },
-      {
         "file": "web/lib/trial.ts",
         "line": 535,
         "kind": "literal"
@@ -26528,7 +26516,7 @@
       },
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "literal"
       },
       {
@@ -26961,7 +26949,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -28049,7 +28037,18 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3a3d82e4a112a1ed": {
+    "source": "ממשיכים ללמוד מהתוצאות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -29021,6 +29020,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 69,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
         "line": 42,
         "kind": "literal"
@@ -29032,7 +29036,7 @@
       },
       {
         "file": "web/components/trial/TrialGuide.tsx",
-        "line": 177,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -29591,6 +29595,17 @@
       }
     ]
   },
+  "m_3e0499698b3527b3": {
+    "source": "הפוסט הבא מוכן לפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3e0840b23749eca1": {
     "source": "עוד מספרים",
     "language": "he",
@@ -29983,7 +29998,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30241,7 +30256,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -30293,6 +30308,17 @@
       {
         "file": "web/lib/businessFields.ts",
         "line": 177,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_3f746fa72400488b": {
+    "source": "לפתוח ולהכין לפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -30690,7 +30716,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 29,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -31048,7 +31074,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -32010,7 +32036,7 @@
     "references": [
       {
         "file": "web/components/trial/TrialGuide.tsx",
-        "line": 65,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -32023,17 +32049,6 @@
         "file": "web/app/security/page.tsx",
         "line": 159,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_430a25d97c23fbc6": {
-    "source": "כל הפוסטים של",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 278,
-        "kind": "literal"
       }
     ]
   },
@@ -32996,7 +33011,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -33560,7 +33575,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -34196,7 +34211,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -34265,7 +34280,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 35,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -34512,17 +34527,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 40,
         "kind": "literal"
       },
       {
@@ -34533,6 +34543,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 96,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 103,
         "kind": "literal"
       },
       {
@@ -34711,17 +34726,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 54,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 73,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -34931,7 +34946,7 @@
     "references": [
       {
         "file": "web/app/dashboard/page.tsx",
-        "line": 160,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -35012,17 +35027,6 @@
         "line": 869,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_4984126bf3eb9069": {
-    "source": "נעדכן כשיהיו נתונים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 465,
-        "kind": "literal"
       }
     ]
   },
@@ -36056,7 +36060,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 72,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -36719,6 +36723,17 @@
       }
     ]
   },
+  "m_4d441b38b3005e4f": {
+    "source": "לתוכנית המלאה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 68,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4d5768f69a20646f": {
     "source": "כל המספרים מאינסטגרם",
     "language": "he",
@@ -36983,17 +36998,6 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 55,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_4dcf97977728f9a7": {
-    "source": "לקמפיין המלא",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 261,
-        "kind": "literal"
       }
     ]
   },
@@ -37903,7 +37907,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38303,7 +38307,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 55,
+        "line": 62,
         "kind": "literal"
       }
     ]
@@ -38561,7 +38565,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -38728,7 +38732,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40978,7 +40982,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -41671,7 +41675,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -42939,7 +42943,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -43693,7 +43697,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -43739,7 +43743,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -44593,6 +44597,17 @@
         "line": 4,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_5e5e0e1c69332cb3": {
+    "source": "יום {arg_0} מתוך {arg_1} בחודש הנסיון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/trial/TrialGuide.tsx",
+        "line": 58,
+        "kind": "literal"
       }
     ]
   },
@@ -45568,7 +45583,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -46127,7 +46142,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -46141,17 +46156,6 @@
         "line": 155,
         "kind": "literal",
         "purpose": "display"
-      }
-    ]
-  },
-  "m_61e0c7655462fe99": {
-    "source": "(השבוע)",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 508,
-        "kind": "literal"
       }
     ]
   },
@@ -46187,17 +46191,6 @@
         "line": 719,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_61f9822a3a7a9814": {
-    "source": "כיוון החודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 475,
-        "kind": "literal"
       }
     ]
   },
@@ -46557,7 +46550,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -46942,7 +46935,7 @@
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 32,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -46986,7 +46979,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -47614,7 +47607,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -48417,17 +48410,6 @@
         "file": "web/components/design/ShorterPathPreview.tsx",
         "line": 60,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_669628825cdb19c2": {
-    "source": "עוד לא משכנו פוסטים מהאינסטגרם, אז אנחנו כותבים בלי לדעת מה כבר הצליח לכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 381,
-        "kind": "literal"
       }
     ]
   },
@@ -50201,6 +50183,17 @@
       }
     ]
   },
+  "m_6a4b94be7be00423": {
+    "source": "הפוסט הבא לבדיקה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 70,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6a4e2237bb0c0166": {
     "source": "לראות את הסיכום",
     "language": "he",
@@ -50303,7 +50296,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50447,7 +50440,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -50502,7 +50495,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -50643,7 +50636,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50841,6 +50834,17 @@
         "line": 11,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_6c03d271121c46c6": {
+    "source": "במסך השבוע רואים את מטרת הקמפיין, הפוסטים של השבוע והצעד הבא. כל פוסט נפתח ישירות בעורך; את שלבי ההכנה אפשר לראות במסך ההתקדמות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
       }
     ]
   },
@@ -52202,6 +52206,17 @@
       }
     ]
   },
+  "m_6ed46659e6cce985": {
+    "source": "המשך העבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 78,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_6ed5231dfb26c6ea": {
     "source": "החודש החינמי נגמר ב-{arg_0}. נשארו {arg_1} ימים.",
     "language": "he",
@@ -52861,7 +52876,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53405,12 +53420,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 64,
+        "line": 71,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -53421,7 +53436,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53466,7 +53481,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -53919,7 +53934,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57008,7 +57023,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57390,11 +57405,6 @@
     "source": "תקציב חודשי",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 470,
-        "kind": "literal"
-      },
       {
         "file": "web/app/decisions/page.tsx",
         "line": 732,
@@ -57780,7 +57790,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -58098,17 +58108,6 @@
         "line": 158,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_7b1c782277adf4e7": {
-    "source": "לא הצלחנו לטעון את הפוסטים של החודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 361,
-        "kind": "literal"
       }
     ]
   },
@@ -60314,7 +60313,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -61470,11 +61469,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/trial/TrialGuide.tsx",
-        "line": 59,
-        "kind": "literal"
-      },
-      {
         "file": "web/lib/admin.ts",
         "line": 152,
         "kind": "literal",
@@ -61783,7 +61777,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -61874,17 +61868,6 @@
         "file": "web/components/design/FlowBoard.tsx",
         "line": 120,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_830625f139c58bbc": {
-    "source": "לחבר את האינסטגרם, כדי שנכתוב לפי מה שכבר הצליח לכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 382,
-        "kind": "literal"
       }
     ]
   },
@@ -63749,7 +63732,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 28,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -63903,7 +63886,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63996,17 +63979,6 @@
       {
         "file": "web/components/design/PlanBrief.tsx",
         "line": 25,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_878f2c35d0580f3a": {
-    "source": "ממשיכים לעקוב אחרי התוצאות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 284,
         "kind": "literal"
       }
     ]
@@ -64209,7 +64181,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 33,
+        "line": 29,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 34,
         "kind": "literal"
       },
       {
@@ -65227,7 +65204,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -66656,7 +66633,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 26,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -67207,17 +67184,6 @@
       }
     ]
   },
-  "m_8ecbdff30b8dd0c2": {
-    "source": "לא הצלחנו לטעון את החודש. נסו לרענן את העמוד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 334,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_8ecc532faba71f10": {
     "source": "מודעות ו-Pixel",
     "language": "he",
@@ -67384,7 +67350,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67748,7 +67714,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67898,12 +67864,12 @@
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 26,
+        "line": 29,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 28,
+        "line": 31,
         "kind": "literal"
       },
       {
@@ -71435,7 +71401,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -72947,7 +72913,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -72960,6 +72926,18 @@
         "file": "web/lib/draft.ts",
         "line": 1085,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_9afa77fcb26a9455": {
+    "source": "השבוע שלכם, במקום אחד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -73121,7 +73099,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 29,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -73149,7 +73127,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -73323,17 +73301,6 @@
       {
         "file": "web/components/help/guides.ts",
         "line": 195,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_9c0195d4dccd5413": {
-    "source": "· פוסט",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 412,
         "kind": "literal"
       }
     ]
@@ -75472,7 +75439,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -76357,7 +76324,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -76786,7 +76753,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -76911,17 +76878,6 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 1244,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_a3eba50806347fe0": {
-    "source": "כרגע כלום. נפנה אליכם רק כשנצטרך משהו שאין בנתונים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 462,
         "kind": "literal"
       }
     ]
@@ -80435,7 +80391,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80956,7 +80912,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -81406,7 +81362,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -82606,7 +82562,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -82780,7 +82736,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 81,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -83644,7 +83600,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84080,6 +84036,17 @@
       }
     ]
   },
+  "m_b36fb450a04186aa": {
+    "source": "עוד אין פוסטים לשבוע הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 75,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b37a23e57357b9d7": {
     "source": "לשמור לפני ההזמנה הבאה",
     "language": "he",
@@ -84249,7 +84216,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 70,
+        "line": 77,
         "kind": "literal",
         "purpose": "display"
       }
@@ -87423,7 +87390,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 37,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -87500,7 +87467,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -88502,7 +88469,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -89580,7 +89547,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -89733,7 +89700,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -90397,11 +90364,6 @@
     "source": "לתוכנית",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 338,
-        "kind": "literal"
-      },
       {
         "file": "web/app/performance/page.tsx",
         "line": 1044,
@@ -91268,6 +91230,17 @@
         "file": "web/components/start/StepQuarter.tsx",
         "line": 195,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_c2daecfd5de581c8": {
+    "source": "לקמפיין השבוע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 61,
+        "kind": "literal"
       }
     ]
   },
@@ -94391,7 +94364,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -95147,7 +95120,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -95263,7 +95236,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95830,7 +95803,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -95885,7 +95858,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -97246,17 +97219,6 @@
       }
     ]
   },
-  "m_cfc4153e42ddf1c6": {
-    "source": "עוד על החודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 456,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_cfcb3505f40b7327": {
     "source": "קריאת האתר לקחה יותר מדי זמן.",
     "language": "he",
@@ -98603,7 +98565,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -99183,7 +99145,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -100098,7 +100060,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -100821,7 +100783,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101959,17 +101921,6 @@
       }
     ]
   },
-  "m_d956d1c94a392ba8": {
-    "source": "אין פוסטים בשבוע הזה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 259,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d95a53f3ea472704": {
     "source": "מאפייה · יפו",
     "language": "he",
@@ -102150,6 +102101,17 @@
       {
         "file": "web/components/posts/preparation/VoiceStep.tsx",
         "line": 50,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d9fbc0bd06d15b5e": {
+    "source": "לפתוח את השבוע שלי",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 12,
         "kind": "literal"
       }
     ]
@@ -102581,7 +102543,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 56,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -103697,7 +103659,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -104173,7 +104135,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104207,7 +104169,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -104477,7 +104439,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -105178,6 +105140,17 @@
       }
     ]
   },
+  "m_dfcaf25a3281f8ff": {
+    "source": "לבדוק את הפוסט",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 72,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_dfcd2d3169ebd930": {
     "source": "מכניסים לפוסט…",
     "language": "he",
@@ -105219,7 +105192,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -106162,7 +106135,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 62,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -106982,7 +106955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -108325,7 +108298,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -108347,7 +108320,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -109244,7 +109217,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 68,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109970,7 +109943,7 @@
       },
       {
         "file": "web/components/trial/TrialGuide.tsx",
-        "line": 145,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -110721,7 +110694,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -110799,11 +110772,6 @@
     "source": "עוד מכינים את הפוסטים של החודש.",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 334,
-        "kind": "literal"
-      },
       {
         "file": "web/components/PostEditor.tsx",
         "line": 410,
@@ -110987,7 +110955,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -111806,7 +111774,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -112559,17 +112527,6 @@
       {
         "file": "web/components/integrations/MetaConnection.tsx",
         "line": 224,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_ee609cf680a9db11": {
-    "source": "עוד לא בחרנו יעדים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 468,
         "kind": "literal"
       }
     ]
@@ -113569,6 +113526,17 @@
       }
     ]
   },
+  "m_f0669894c29fe841": {
+    "source": "לראות את שאר הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 75,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f06c5ff6d935d6d6": {
     "source": "מה שהלקוח כתב לנו",
     "language": "he",
@@ -113830,11 +113798,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 412,
-        "kind": "literal"
-      },
-      {
         "file": "web/components/start/BusinessCard.tsx",
         "line": 196,
         "kind": "jsx"
@@ -113846,12 +113809,7 @@
       },
       {
         "file": "web/components/trial/TrialGuide.tsx",
-        "line": 58,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/trial/TrialGuide.tsx",
-        "line": 145,
+        "line": 144,
         "kind": "literal"
       },
       {
@@ -114512,6 +114470,17 @@
       {
         "file": "web/components/billing/PayPalSubscribe.tsx",
         "line": 78,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f29b8ee754d78260": {
+    "source": "המטרה של הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -115264,17 +115233,6 @@
       }
     ]
   },
-  "m_f42b5efc57d2bd83": {
-    "source": "צריך מכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 461,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f43a25c72ca91468": {
     "source": "באוכל, מה שנראה טוב בתמונה נמכר. נתחיל מהמוצר עצמו.",
     "language": "he",
@@ -115539,7 +115497,7 @@
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 36,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -116139,7 +116097,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -116693,7 +116651,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -117609,6 +117567,17 @@
       }
     ]
   },
+  "m_f93016807aa7f65b": {
+    "source": "לראות מה עבד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 72,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f949d4a7790df59f": {
     "source": "לא סומן",
     "language": "he",
@@ -117753,6 +117722,17 @@
         "line": 680,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_f9899bed1d53dfe5": {
+    "source": "הקמפיין המלא",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 79,
+        "kind": "literal"
       }
     ]
   },
@@ -118618,7 +118598,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -118741,11 +118721,6 @@
     "source": "השבוע",
     "language": "he",
     "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 76,
-        "kind": "literal"
-      },
       {
         "file": "web/app/preview/page.tsx",
         "line": 15,
@@ -119145,7 +119120,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -119429,7 +119404,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -119633,17 +119608,6 @@
       }
     ]
   },
-  "m_fd4f0017f2ba906c": {
-    "source": "יעד העבודה העיקרי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/dashboard/page.tsx",
-        "line": 467,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_fd4f47a21219c5ea": {
     "source": "רוב הקונים חוזרים.",
     "language": "he",
@@ -119824,7 +119788,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120163,7 +120127,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 110,
         "kind": "literal"
       }
     ]
@@ -120761,6 +120725,22 @@
       {
         "file": "web/app/promotion/page.tsx",
         "line": 652,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_fff298113b721f85": {
+    "source": "ההתקדמות בתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 59,
+        "kind": "literal"
+      },
+      {
+        "file": "web/app/dashboard/page.tsx",
+        "line": 80,
         "kind": "literal"
       }
     ]
