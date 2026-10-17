@@ -20,6 +20,6 @@ export function ProcessSocialPost({index,name,caption,video,material,children}:{
     <div className={styles.timelineArtwork}>{children}</div>
     <div className={styles.socialActions} aria-hidden="true"><svg viewBox="0 0 24 24">{channel==="Facebook"||channel==="LinkedIn"?<Like/>:<Heart/>}</svg><svg viewBox="0 0 24 24"><Comment/></svg><svg viewBox="0 0 24 24"><Share/></svg>{channel==="Instagram"&&<svg viewBox="0 0 24 24"><path d="M5 3h14v18l-7-4-7 4V3Z"/></svg>}</div>
     {!textFirst&&<p className={styles.socialCaption}><Copy text={caption}/></p>}
-    {!vertical&&(channel==="Facebook"||channel==="LinkedIn")&&<div className={styles.networkLabels} aria-hidden="true"><Copy text="אהבתי"/><Copy text="תגובה"/><Copy text="שיתוף"/></div>}
+    {!vertical&&(channel==="Facebook"||channel==="LinkedIn")&&<div className={styles.networkLabels} aria-hidden="true"><span><Copy text="אהבתי"/></span><span><Copy text="תגובה"/></span><span><Copy text="שיתוף"/></span></div>}
   </article>;
 }
