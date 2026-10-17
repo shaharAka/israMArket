@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { TRIAL_LABEL } from "@/lib/pricing";
 import { useEffect, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
@@ -38,14 +39,14 @@ function HeroStudy({ initialPath = "services", heroVariant = "workspace", heroTy
   return <div className={`lv2 lv2-site ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={initialPath} data-hero-type={heroTypeface}>
     <header className="lv2-nav"><div className="lv2-wrap lv2-nav-row">
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
-      <div className="lv2-nav-end"><ProductUtilities inline /><Link href="/login" className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text="להתחיל בחינם" /></Link></div>
+      <div className="lv2-nav-end"><ProductUtilities inline /><Link href="/login" className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>
     </div></header>
     <main><section className="lv2-hero" aria-labelledby="lv2-title"><div className="lv2-wrap lv2-hero-grid">
       <div className="lv2-hero-text">
         <h1 id="lv2-title" className="lv2-display"><Copy text={HERO.title} /></h1>
         <p className="lv2-lead"><Copy text={PERSONA_PAGES[initialPath].body} /></p>
         <BusinessRoleSelector path={initialPath} segment={segment ?? (initialPath === "products" ? "online_shop" : undefined)} onSelect={setSegment} hrefFor={(key, selected) => `/design/hero?persona=${key}&composition=${heroVariant}&type=${heroTypeface}&lang=${locale}&segment=${selected}`} />
-        <div className="lv2-hero-cta"><Link href={start} className="lv2-btn"><Copy text="להתחיל חודש בחינם" /></Link></div>
+        <div className="lv2-hero-cta"><Link href={start} className="lv2-btn"><Copy text={TRIAL_LABEL} /></Link></div>
         <p className="lv2-fine"><Copy text="בלי כרטיס אשראי. אתם בודקים ומפרסמים." /></p>
       </div>
       {heroVariant === "workspace" ? <HeroWorkspace key={initialPath} path={initialPath} /> : <HeroProduct key={initialPath} path={initialPath} />}

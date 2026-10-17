@@ -114,11 +114,11 @@
 .replayApproval > svg { width: 20px; height: 20px; }
 .trial { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 28px 7% 32px; }
 .freeOffer { width: 100%; padding: 15px 24px; background: var(--paper); box-shadow: 6px 6px 0 var(--scene-violet); border-radius: 16px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-.freeOffer > div { flex-shrink: 0; }
+.freeOffer > div { flex: 1; min-width: 0; }
 .freeOffer strong { display: block; width: fit-content; font-size: 60px; line-height: 1.05; font-weight: 500; letter-spacing: -.04em; color: var(--scene-violet-ink); }
-.freeOffer > p { font-size: 15px; line-height: 1.6; max-width: 145px; color: var(--ink-soft); }
+.freeOffer > p { flex: 1; min-width: 0; font-size: 15px; line-height: 1.6; max-width: 145px; color: var(--ink-soft); }
 .trialStory { width: 100%; flex: 1; min-height: 0; animation: trialReveal 450ms ease both; }
-.trialStart, .trialWorking, .trialDecision { height: 100%; display: flex; align-items: center; justify-content: center; }
+.trialStart, .trialWorking { height: 100%; display: flex; align-items: center; justify-content: center; }
 .trialStart { flex-direction: column; gap: 21px; text-align: center; padding: 15px; }
 .trialStart :global(.lv2-identity-symbol) { display: none; }
 .trialStart :global(.lv2-identity-wordmark) { width: 157px; }
@@ -133,14 +133,6 @@
 .trialPreparation > div > span { width: 23px; height: 23px; flex-shrink: 0; padding: 3px; border-radius: 50%; background: var(--scene-mint); color: var(--process-green); }
 .trialPreparation svg { width: 100%; height: 100%; }
 .trialPost { width: 145px; flex-shrink: 0; border-radius: 9px; overflow: hidden; box-shadow: 0 9px 25px #14203a18; animation: trialPost 1200ms ease both; }
-.trialDecision { flex-direction: column; gap: 15px; }
-.trialDecisionIcon { display: grid; place-items: center; width: 46px; height: 46px; color: var(--process-green); border-radius: 50%; background: var(--scene-mint); }
-.trialDecisionIcon svg { width: 27px; height: 27px; }
-.choiceHeading { font-size: 19px; line-height: 1.5; font-weight: 500; }
-.trialOptions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); width: 100%; gap: 12px; }
-.trialOptions > div { min-height: 78px; padding: 15px 12px; text-align: center; border: 1px solid var(--rule-dark); background: var(--paper); border-radius: 12px; }
-.trialOptions strong { display: block; font-size: 15px; line-height: 1.4; font-weight: 500; }
-.trialOptions span { display: block; font-size: 11px; line-height: 1.5; color: var(--ink-muted); margin-top: 5px; }
 .trialProgress { display: flex; width: 76px; gap: 5px; height: 4px; flex-shrink: 0; }
 .trialProgress > span { flex: 1; background: var(--rule-dark); border-radius: 99px; }
 .trialProgress > span[data-active="true"] { background: var(--scene-violet-ink); }
@@ -229,17 +221,13 @@
   .trial { padding: 23px 6% 27px; gap: 17px; }
   .freeOffer { padding: 12px 17px; gap: 10px; }
   .freeOffer strong { font-size: 51px; }
-  .freeOffer > p { font-size: 12px; max-width: 120px; }
+  .freeOffer > p { flex: 1; min-width: 0; font-size: 12px; max-width: 120px; }
   .trialStart { gap: 17px; }
   .trialStart > strong, .trialPreparation > strong { font-size: 14px; }
   .trialStartAction { font-size: 12px; padding: 12px 22px; }
   .trialWorking { gap: 13px; }
   .trialPreparation > div { font-size: 10px; gap: 6px; }
   .trialPost { width: 112px; }
-  .choiceHeading { font-size: 16px; }
-  .trialOptions { gap: 9px; }
-  .trialOptions > div { padding: 13px 9px; min-height: 72px; }
-  .trialOptions strong { font-size: 12px; }
-  .trialOptions span { font-size: 10px; }
+
 }
 @media(prefers-reduced-motion:reduce) { .scene *, .phoneScene * { animation: none !important; transition: none !important; } .cursor { display: none; } }

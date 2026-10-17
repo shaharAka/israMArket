@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
-import { PRICE_ILS } from "@/lib/pricing";
+import { TRIAL_LABEL } from "@/lib/pricing";
 import { ProviderLogo } from "./ProviderLogo";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { BrandWordmark } from "./BrandWordmark";
@@ -16,7 +16,7 @@ type RoleProps = { role: ProcessRole | null };
 const GOAL_TIMES = [2600,2600,2600] as const;
 const LEARNING_TIMES = [2800,2800,4000] as const;
 const PHONE_TIMES = [4200,3200] as const;
-const TRIAL_TIMES = [2800,3600,3800] as const;
+const TRIAL_TIMES = [2800,4200] as const;
 function Tick() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>; }
 function Cursor({ className = "" }: { className?: string }) { return <svg className={`${scene.cursor} ${className}`} viewBox="0 0 32 38" fill="none" aria-hidden="true"><path d="M4 3v27l7-7 6 11 6-3-6-11h10L4 3Z" fill="var(--paper)" stroke="var(--ink)" strokeWidth="2" strokeLinejoin="round" /></svg>; }
 function Loop() { return <svg viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M25 11a10 10 0 0 0-17-2L5 12m0-7v7h7M7 21a10 10 0 0 0 17 2l3-3m0 7v-7h-7" /></svg>; }
@@ -71,36 +71,29 @@ export function PhoneScene({ role, playing }: RoleProps & {playing:boolean}) {
   return <div className={scene.phoneScene}><div className={scene.approvalPhone} data-approved={index===1}><div className={scene.phoneStatus}><span>9:41</span><i/></div><div className={scene.phoneLogo}><BrandWordmark/></div><header><Copy text="הפוסט הבא שלך"/></header><div className={scene.phonePost}><CampaignArtwork role={role??"online_shop"} index={2}/></div><div className={scene.approvalState}>{index===1?<><span><Tick/></span><strong><Copy text="מאושר ומוכן לפרסום"/></strong></>:<><small><Copy text="הכול נראה טוב?"/></small><button type="button" onClick={()=>select(1)}><Copy text="לאשר את הפוסט"/></button></>}</div><Cursor className={scene.approvalCursor}/><span className={scene.phoneHome}/></div><button type="button" className={scene.replayApproval} onClick={()=>select(0)} aria-label={t("להציג שוב את אישור הפוסט")}><Loop/></button></div>;
 }
 
-/** The free month stays visible while the local scene demonstrates trying and deciding. */
+/** The free trial offer stays visible while start and plan/content scenes alternate. */
 export function TrialScene({ playing, reduced }: { playing: boolean; reduced: boolean }) {
   const { index } = useProcessSequence(TRIAL_TIMES, playing);
-  const stage = reduced ? 2 : index;
+  const stage = reduced ? 1 : index;
   return <div className={`${scene.scene} ${scene.trial}`} data-trial-stage={stage}>
     <div className={scene.freeOffer}>
-      <div><span className={scene.eyebrow}><Copy text="חודש ראשון" /></span><strong dir="ltr">₪0</strong></div>
+      <div><span className={scene.eyebrow}><Copy text={TRIAL_LABEL} /></span><strong dir="ltr">₪0</strong></div>
       <p><Copy text="זמן להכיר, לנסות ולהחליט" /></p>
     </div>
     <div className={scene.trialStory} key={stage}>
       {stage === 0 ? <div className={scene.trialStart}>
         <BrandWordmark />
         <strong><Copy text="בואו נראה מה אפשר לעשות בשבילך" /></strong>
-        <div className={scene.trialStartAction}><Copy text="מתחילים בחינם" /><Cursor className={scene.trialCursor} /></div>
-      </div> : stage === 1 ? <div className={scene.trialWorking}>
+        <div className={scene.trialStartAction}><Copy text={TRIAL_LABEL} /><Cursor className={scene.trialCursor} /></div>
+      </div> : <div className={scene.trialWorking}>
         <div className={scene.trialPreparation}>
-          <strong><Copy text="כבר מתחילים לראות מה אפשר לעשות" /></strong>
+          <strong><Copy text="התוכנית שלך מוכנה. מתחילים ליצור את הפוסטים." /></strong>
           <div><span><Tick /></span><Copy text="התוכנית לחודש הקרוב" /></div>
           <div><span><Tick /></span><Copy text="הפוסט הראשון שלך" /></div>
         </div>
         <div className={scene.trialPost}><CampaignArtwork role="online_shop" index={0} /></div>
-      </div> : <div className={scene.trialDecision}>
-        <span className={scene.trialDecisionIcon}><Tick /></span>
-        <strong className={scene.choiceHeading}><Copy text="אחר כך, הבחירה שלך" /></strong>
-        <div className={scene.trialOptions}>
-          <div><strong><Copy text="להמשיך במנוי" /></strong><span><Copy text="{arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></span></div>
-          <div><strong><Copy text="לעצור כאן" /></strong><span><Copy text="בלי התחייבות להמשיך" /></span></div>
-        </div>
       </div>}
     </div>
-    <div className={scene.trialProgress} aria-hidden="true">{[0,1,2].map(i => <span key={i} data-active={stage === i} data-complete={stage > i} />)}</div>
+    <div className={scene.trialProgress} aria-hidden="true">{[0,1].map(i => <span key={i} data-active={stage === i} data-complete={stage > i} />)}</div>
   </div>;
 }

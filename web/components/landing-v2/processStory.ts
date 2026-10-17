@@ -1,3 +1,5 @@
+import { TRIAL_LABEL } from "@/lib/pricing";
+
 /** Hebrew-first message map. Each section explains one outcome, then shows it.
  * Public illustrations only; no saved customer records or provider calls.
  */
@@ -48,8 +50,8 @@ export const PROCESS_STORY = [
     // המטרה: להראות את המערכת האמיתית בטלפון; לא להבטיח אפליקציה בחנות.
   },
   {
-    id: "trial", label: "חודש ראשון חינם", title: "מתחילים בחינם. ממשיכים רק אם מתאים.",
-    body: "חודש ראשון ללא עלות וללא התחייבות, כדי שתוכלו להכיר את המערכת ולהחליט בקצב שלכם.",
+    id: "trial", label: TRIAL_LABEL, title: "חודש נסיון חינם. ממשיכים רק אם מתאים.",
+    body: "חודש נסיון חינם, ללא התחייבות, כדי שתוכלו להכיר את המערכת ולהחליט בקצב שלכם.",
     // המטרה: להמחיש חודש היכרות ובחירה בסופו, בלי להציג חיוב אוטומטי.
   },
 ] as const;

@@ -277,7 +277,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 62,
+        "line": 64,
         "kind": "literal"
       }
     ]
@@ -1962,17 +1962,6 @@
       {
         "file": "web/app/integrations/page.tsx",
         "line": 701,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_03c90578c79eab81": {
-    "source": "בלי התחייבות להמשיך",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 100,
         "kind": "literal"
       }
     ]
@@ -4039,7 +4028,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 63,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -5801,7 +5790,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 47,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -6743,6 +6732,17 @@
         "line": 218,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_0e23db0013f82d33": {
+    "source": "לכל שבוע בקמפיין יש מטרה ופוסטים משלו, עם תמונות וסרטון שמתאימים לסוג העסק. המחשות חדשות מציגות איך היעדים הופכים למשימות, איך לומדים מפוסטים ואיך מאשרים תוכן מהנייד. חודש הנסיון החינמי מוצג בשתי המחשות מתחלפות: מתחילים ומכינים תוכנית ופוסט ראשון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -9354,7 +9354,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 31,
+        "line": 33,
         "kind": "literal",
         "purpose": "display"
       }
@@ -13661,7 +13661,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 21,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16823,7 +16823,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 42,
+        "line": 44,
         "kind": "literal"
       }
     ]
@@ -21484,7 +21484,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 36,
+        "line": 38,
         "kind": "literal",
         "purpose": "display"
       }
@@ -24337,7 +24337,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 12,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -27242,7 +27242,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 49,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -30022,7 +30022,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 41,
+        "line": 43,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30738,7 +30738,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 26,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33321,7 +33321,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 32,
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -35922,17 +35922,6 @@
       }
     ]
   },
-  "m_4bcf7fc934f3d516": {
-    "source": "רוצים לראות איך זה עובד עם העסק שלכם? מתחילים בהיכרות קצרה, ממשיכים לתוכנית ומכינים את החומרים הראשונים. החודש הראשון בחינם, כדי שתוכלו לבדוק אם זה מתאים לכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_4bdbc1685aff2548": {
     "source": "כמה אפשר להשקיע בשיווק בחודש?",
     "language": "he",
@@ -37883,7 +37872,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 11,
+        "line": 13,
         "kind": "literal",
         "purpose": "display"
       }
@@ -43958,17 +43947,6 @@
       }
     ]
   },
-  "m_5d750553690595c2": {
-    "source": "אחר כך, הבחירה שלך",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 97,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_5d75b9b407310100": {
     "source": "לחיצות להתחלת התנסות",
     "language": "he",
@@ -44769,6 +44747,17 @@
       }
     ]
   },
+  "m_5ee3cbb71425b821": {
+    "source": "חודש נסיון חינם · יום אחרון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/admin.ts",
+        "line": 162,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_5ee46760cdef4049": {
     "source": "ככה זה התחיל",
     "language": "he",
@@ -44844,17 +44833,6 @@
       {
         "file": "web/components/landing-v2/processScenarios.ts",
         "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_5f0cc4eb5da8a6ce": {
-    "source": "החודש הראשון חינם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/pricing.ts",
-        "line": 14,
         "kind": "literal"
       }
     ]
@@ -45900,6 +45878,17 @@
       {
         "file": "web/components/motion/catalog.ts",
         "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_616c88ddfef89aa5": {
+    "source": "חודש נסיון חינם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/pricing.ts",
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -47577,17 +47566,6 @@
       }
     ]
   },
-  "m_6529e92d33b60759": {
-    "source": "חודש ראשון",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 80,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_652f4e8d6b9b790b": {
     "source": "הדגמות עם לקוחות מתאימים",
     "language": "he",
@@ -49042,17 +49020,6 @@
       {
         "file": "web/app/strategy/edit/page.tsx",
         "line": 140,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_681288de968f89e7": {
-    "source": "כבר מתחילים לראות מה אפשר לעשות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 90,
         "kind": "literal"
       }
     ]
@@ -51075,22 +51042,6 @@
       }
     ]
   },
-  "m_6cf02c3b54595a63": {
-    "source": "להתחיל בחינם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 41,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 41,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6cf26a0ea06ba782": {
     "source": "שמירה אחת",
     "language": "he",
@@ -51965,7 +51916,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 6,
+        "line": 8,
         "kind": "literal"
       }
     ]
@@ -53589,7 +53540,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 26,
+        "line": 28,
         "kind": "literal",
         "purpose": "display"
       }
@@ -55574,17 +55525,6 @@
       {
         "file": "web/components/start/steps.tsx",
         "line": 293,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_75fddd91f79060e0": {
-    "source": "חודש ראשון כדי לראות איך זה עובד בשבילכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processCampaigns.ts",
-        "line": 43,
         "kind": "literal"
       }
     ]
@@ -64560,6 +64500,17 @@
       }
     ]
   },
+  "m_892c48d6865fad9b": {
+    "source": "חודש נסיון חינם לעסק שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_893e2fd49d0f84f0": {
     "source": "אנחנו",
     "language": "he",
@@ -66568,7 +66519,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 46,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67609,17 +67560,6 @@
       }
     ]
   },
-  "m_900e91cba23db327": {
-    "source": "מתחילים בחינם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 87,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_901867f065f6e74e": {
     "source": "הם אוספים השראה חודשים לפני שהם פונים.",
     "language": "he",
@@ -67694,17 +67634,6 @@
         "line": 583,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_902ce514a1c78393": {
-    "source": "{arg_0} ₪ לחודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 99,
-        "kind": "literal"
       }
     ]
   },
@@ -69433,17 +69362,6 @@
       }
     ]
   },
-  "m_93c67ba5be7cf343": {
-    "source": "לכל שבוע בקמפיין יש מטרה ופוסטים משלו, עם תמונות וסרטון שמתאימים לסוג העסק. המחשות חדשות מציגות איך היעדים הופכים למשימות, איך לומדים מפוסטים ואיך מאשרים תוכן מהנייד. החודש החינמי מוצג ברצף שמתחיל בניסיון ומסתיים בבחירה אם להמשיך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/releases.ts",
-        "line": 11,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_93c7156846484d61": {
     "source": "בערך חצי דקה. אפשר להשאיר את המסך פתוח.",
     "language": "he",
@@ -69503,17 +69421,6 @@
         "line": 638,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_93e168133cfd9df1": {
-    "source": "חודש חינם · יום אחרון",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/admin.ts",
-        "line": 162,
-        "kind": "literal"
       }
     ]
   },
@@ -71034,7 +70941,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 16,
+        "line": 18,
         "kind": "literal",
         "purpose": "display"
       }
@@ -72077,7 +71984,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 21,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73279,6 +73186,17 @@
       }
     ]
   },
+  "m_9c3daae224998da5": {
+    "source": "התוכנית שלך מוכנה. מתחילים ליצור את הפוסטים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/ProcessScenes.tsx",
+        "line": 90,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9c43467a2656f136": {
     "source": "כמה אתם מפרסמים ב{arg_0}",
     "language": "he",
@@ -73429,7 +73347,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 11,
+        "line": 13,
         "kind": "literal",
         "purpose": "display"
       }
@@ -74148,7 +74066,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 41,
+        "line": 43,
         "kind": "literal",
         "purpose": "display"
       }
@@ -74959,18 +74877,6 @@
         "file": "web/components/PublishPanel.tsx",
         "line": 369,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_a03bd6b4ceaf3a8b": {
-    "source": "חודש ראשון חינם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processStory.ts",
-        "line": 51,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -79944,27 +79850,6 @@
       }
     ]
   },
-  "m_ab067564be4e0310": {
-    "source": "להתחיל חודש בחינם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/Landing.tsx",
-        "line": 48,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 47,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 78,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_ab08ee5525a419f1": {
     "source": "ייתכן שפרטי המארז יעזרו לבחור. הנתונים אינם מוכיחים שחוסר במידע מונע הזמנות.",
     "language": "he",
@@ -80190,7 +80075,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 16,
+        "line": 18,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84367,17 +84252,6 @@
       }
     ]
   },
-  "m_b4656afbdfdf986f": {
-    "source": "לעצור כאן",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 100,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_b4685ab345a8f0e0": {
     "source": "סיום בשניות",
     "language": "he",
@@ -87579,7 +87453,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 46,
+        "line": 48,
         "kind": "literal",
         "purpose": "display"
       }
@@ -88409,7 +88283,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 61,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -88470,7 +88344,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 37,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -88827,17 +88701,6 @@
         "file": "web/components/start/steps.tsx",
         "line": 826,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_be6c7b11ae602969": {
-    "source": "חודש חינם · עוד {arg_0} ימים",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/admin.ts",
-        "line": 162,
-        "kind": "template"
       }
     ]
   },
@@ -89365,7 +89228,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 17,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -89449,6 +89312,18 @@
       {
         "file": "web/lib/businessModel.ts",
         "line": 142,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_bfa97e9bf0da8c94": {
+    "source": "חודש נסיון חינם. ממשיכים רק אם מתאים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processStory.ts",
+        "line": 53,
         "kind": "literal",
         "purpose": "display"
       }
@@ -90728,18 +90603,6 @@
         "file": "web/lib/api.ts",
         "line": 1613,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_c2172aebfe8d56d8": {
-    "source": "מתחילים בחינם. ממשיכים רק אם מתאים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processStory.ts",
-        "line": 51,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -94164,7 +94027,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 41,
+        "line": 42,
         "kind": "literal"
       },
       {
@@ -95319,7 +95182,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 36,
+        "line": 38,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95747,17 +95610,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 98,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_cc44ff45c0c1fc02": {
-    "source": "חודש ראשון ללא עלות וללא התחייבות, כדי שתוכלו להכיר את המערכת ולהחליט בקצב שלכם.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processStory.ts",
-        "line": 52,
         "kind": "literal"
       }
     ]
@@ -105067,7 +104919,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 5,
+        "line": 7,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105897,6 +105749,17 @@
       }
     ]
   },
+  "m_e17d1ea49f63fb4c": {
+    "source": "רוצים לראות איך זה עובד עם העסק שלכם? מתחילים בהיכרות קצרה, ממשיכים לתוכנית ומכינים את החומרים הראשונים. יש לכם חודש נסיון חינם כדי לבדוק אם זה מתאים לכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processCampaigns.ts",
+        "line": 43,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e17dd97c94822d90": {
     "source": "העסק:",
     "language": "he",
@@ -106308,7 +106171,7 @@
       },
       {
         "file": "web/components/landing-v2/Landing.tsx",
-        "line": 40,
+        "line": 41,
         "kind": "literal"
       },
       {
@@ -107643,6 +107506,17 @@
       }
     ]
   },
+  "m_e58682823c6e8f79": {
+    "source": "חודש נסיון חינם · עוד {arg_0} ימים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/admin.ts",
+        "line": 162,
+        "kind": "template"
+      }
+    ]
+  },
   "m_e588ddeb3d2ee0fe": {
     "source": "העסק שלכם",
     "language": "he",
@@ -108441,7 +108315,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 22,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -109023,17 +108897,6 @@
       }
     ]
   },
-  "m_e84bd3b3e36fbc2a": {
-    "source": "להמשיך במנוי",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessScenes.tsx",
-        "line": 99,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_e8517d6f5e88cec2": {
     "source": "אם זה יותר מדי, יורדים לקצב נמוך יותר. קבוע עדיף על הרבה ואז שקט.",
     "language": "he",
@@ -109297,6 +109160,17 @@
         "line": 99,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_e89c400f1461611c": {
+    "source": "חודש נסיון חינם, ללא התחייבות, כדי שתוכלו להכיר את המערכת ולהחליט בקצב שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processStory.ts",
+        "line": 54,
+        "kind": "literal"
       }
     ]
   },
@@ -113309,7 +113183,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 31,
+        "line": 33,
         "kind": "literal",
         "purpose": "display"
       }
@@ -119770,7 +119644,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/processStory.ts",
-        "line": 27,
+        "line": 29,
         "kind": "literal"
       }
     ]

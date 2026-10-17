@@ -113,7 +113,7 @@ function BillingBody({
     return (
       <div className={PLAN_CARD}>
         <p className="text-[17px] font-semibold leading-7 tracking-[-0.01em] text-[color:var(--ink)]">
-          {TRIAL_LABEL}<Copy text=". אחר כך" />{price}
+          <Copy text={TRIAL_LABEL} /><Copy text=". אחר כך" />{price}
         </p>
         <SetupNotice title={t("התשלום עוד לא פתוח")}><Copy text="החודש החינמי ממשיך כרגיל. לא נבקש תשלום לפני שהוא ייפתח כאן." /></SetupNotice>
       </div>
