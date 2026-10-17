@@ -12,6 +12,7 @@ import { useFeatureCycle } from "./useFeatureCycle";
 import type { ProcessStep } from "./processStory";
 import { PROCESS_EXAMPLES, PROCESS_ROLES, type ProcessRole } from "./processExamples";
 import { productFixtures } from "./productFixtures";
+import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import styles from "./process-story.module.css";
 
 function Check() {
@@ -117,16 +118,25 @@ function CampaignClip({ role, playing }: RoleProps & { playing: boolean }) {
   return <div className={styles.clipPost} data-software={software}><video ref={video} src={media.src} poster={media.poster} muted loop playsInline preload="metadata" controls aria-label={t(media.label)} /></div>;
 }
 
-function CampaignArtwork({ role, index }: { role: ProcessRole; index: number }) {
+function CampaignArtwork({ role, index, support = false }: { role: ProcessRole; index: number; support?: boolean }) {
   const t = useCopy();
   const { locale } = useLanguage();
   const example = PROCESS_EXAMPLES[role];
+  const creative = PROCESS_CAMPAIGNS[role][index];
   const path = PROCESS_ROLES.find(item => item.segment === role)!.path;
   const { campaign, brand } = productFixtures(path, t, locale);
-  const title = [example.draft, example.invitation, example.process][index % 3];
-  const post = { ...campaign.roadmap.posts[index % campaign.roadmap.posts.length], title: t(title), overlay_headline: index % 3 === 0 ? "" : t(title), caption: t(example.caption), cta: t(example.action), image_url: index % 3 === 1 ? undefined : example.image, content_language: locale };
-  const selectedBrand: typeof brand = { ...brand, business_name: t(example.name), palette: [{ role: "primary", hex: example.color, name: "" }, { role: "background", hex: example.soft, name: "" }] };
-  const dna = campaign.brand_dna ? { ...campaign.brand_dna, colors: { ink: example.color, paper: example.soft, accent: example.color } } : undefined;
+  const headline = support ? creative.headline : creative.title;
+  const typeOnly = support;
+  const framed = !support && index === 2;
+  const post = { ...campaign.roadmap.posts[0], uid: `public-${role}-week${index + 1}-${support ? "support" : "main"}`, week: index + 1,
+    title: t(headline), overlay_headline: typeOnly || framed ? t(headline) : "", overlay_sub: support ? t(creative.detail) : "",
+    caption: t(creative.detail), cta: t(example.action), image_url: support ? undefined : creative.image, has_overlay: typeOnly || framed,
+    design: { composition: typeOnly ? "type_led" : framed ? "inset_frame" : "full_bleed", text_mode: typeOnly ? "type_led" : framed ? "headline" : "photo_only", text_position: support ? ["top", "center", "center", "bottom"][index] : "top" }, content_language: locale,
+  };
+  const inverse = support && index === 2;
+  const colors = { ink: inverse ? example.soft : example.color, paper: inverse ? example.color : example.soft, accent: inverse ? example.soft : example.color };
+  const selectedBrand: typeof brand = { ...brand, business_name: t(example.name), palette: [{ role: "primary", hex: colors.ink, name: "" }, { role: "background", hex: colors.paper, name: "" }] };
+  const dna = campaign.brand_dna ? { ...campaign.brand_dna, colors, type: role === "online_shop" ? { ...campaign.brand_dna.type, display: "heebo" as const, display_weight: 600 as const } : campaign.brand_dna.type } : undefined;
   return <CardStage post={post} brand={selectedBrand} dna={dna} businessName={t(example.name)} rounded={false} />;
 }
 
@@ -142,12 +152,13 @@ function useSceneIndex(count: number, playing: boolean) {
     const version = manualRevision.current;
     let completed = false;
     const timer = window.setTimeout(() => {
-      completed = true; remaining.current = 6000;
-      setIndex(previous => (previous + 1) % count);
+      const next = (index + 1) % count;
+      completed = true; remaining.current = next === 1 ? 10000 : 6000;
+      setIndex(next);
     }, remaining.current);
     return () => { window.clearTimeout(timer); if (!completed && version === manualRevision.current) remaining.current = Math.max(0, remaining.current - (performance.now() - started)); };
   }, [playing, index, count, revision]);
-  return { index, select: (next: number) => { manualRevision.current += 1; remaining.current = 6000; setIndex(next); setRevision(value => value + 1); } };
+  return { index, select: (next: number) => { manualRevision.current += 1; remaining.current = next === 1 ? 10000 : 6000; setIndex(next); setRevision(value => value + 1); } };
 }
 
 // תכלית: לראות את השבוע, המטרה והחומרים יחד. זו תצוגה ציבורית; אין יצירה או שמירה.
@@ -156,12 +167,16 @@ function Campaign({ role, playing }: RoleProps & { playing: boolean }) {
   const { index, select } = useSceneIndex(4, playing);
   const example = role ? PROCESS_EXAMPLES[role] : null;
   const weeks = example?.weeks ?? ["נותנים סיבה להכיר", "מראים את הערך", "מזמינים לעשות צעד", "לומדים וממשיכים"];
+  const creative = role ? PROCESS_CAMPAIGNS[role][index] : null;
   return <div className={styles.campaignBoard} data-campaign-week={index + 1}>
     <header className={styles.boardHeading}><span className={styles.miniLabel}><Copy text="הקמפיין של החודש" /></span><strong><Copy text={example?.name ?? "העסק שלך"} /></strong><span className={styles.boardMonth} aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="4" y="5" width="16" height="16" rx="3" /><path d="M4 10h16M8 2v6M16 2v6" /></svg></span></header>
     <div className={styles.weekTimeline} role="group" aria-label={t("שבועות הקמפיין")}>{weeks.map((week, i) => <button key={week} type="button" aria-pressed={i === index} onClick={() => select(i)}><span><Copy text="שבוע {arg_0}" args={{arg_0:i + 1}} /></span><i aria-hidden="true" /></button>)}</div>
     <div className={styles.weekWorkspace}>
       <aside className={styles.weekPurpose}><small><Copy text="המטרה של השבוע" /></small><h3><Copy text={weeks[index]} /></h3><span className={styles.weekOutcome}><Check /><Copy text={example?.outcome ?? "פניות מהקהל המתאים"} /></span></aside>
-      <div className={styles.weekMaterials}><div className={styles.timelinePost}><div className={styles.timelineArtwork} key={index}>{role ? <CampaignArtwork role={role} index={index} /> : <div className={styles.genericArtwork}><FormatSymbol kind="image" /><span><Copy text="הסגנון שלך" /></span></div>}</div><span><Copy text={index % 3 === 1 ? "פוסט עם מסר" : "פוסט עם תמונה"} /></span></div><div className={styles.timelinePost}><CampaignClip role={role} playing={playing} /><span><Copy text="סרטון" /></span></div></div>
+      <div className={styles.weekMaterials}>
+        <div className={styles.timelinePost} data-campaign-material={creative?.video || !role && index === 1 ? "video" : creative?.image ?? "generic"}><div className={styles.timelineArtwork} key={`${index}-main`}>{creative?.video || !role && index === 1 ? <CampaignClip role={role} playing={playing} /> : role ? <CampaignArtwork role={role} index={index} /> : <div className={styles.genericArtwork}><FormatSymbol kind={index === 3 ? "text" : "image"} /><span><Copy text={["הסגנון שלך", "הערך שלך", "ההזמנה שלך", "השיחה עם הקהל"][index]} /></span></div>}</div><span><Copy text={creative?.video || !role && index === 1 ? "סרטון" : "פוסט עם תמונה"} /></span></div>
+        <div className={styles.timelinePost}><div className={styles.timelineArtwork} key={`${index}-support`}>{role ? <CampaignArtwork role={role} index={index} support /> : <div className={styles.genericArtwork}><FormatSymbol kind="text" /><span><Copy text={weeks[index]} /></span></div>}</div><span><Copy text="פוסט עם מסר" /></span></div>
+      </div>
       <Pointer key={index} className={styles.timelinePointer} />
     </div>
     <div className={styles.boardStatus}><Check /><Copy text="החומרים מחכים לאישור שלך" /></div>
@@ -214,7 +229,7 @@ export function ProcessAnimation({ step, role }: { step: ProcessStep; role: Proc
   const { ref, playing, reduced, paused, toggle, setFocused } = useFeatureCycle(1);
   const t = useCopy();
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
-    <div className={styles.visualContent} onFocusCapture={() => setFocused(true)} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
+    <div className={styles.visualContent} onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
       {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <Plan role={role} /> : step === "goals" ? <Goals role={role} /> : step === "campaign" ? <Campaign role={role} playing={playing} /> : step === "learning" ? <Learning role={role} /> : step === "data" ? <DataOverview role={role} /> : step === "trial" ? <Trial /> : <Phone role={role} />}
     </div>
     <button type="button" className={styles.motionToggle} onClick={toggle} disabled={reduced} aria-label={t(paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")} aria-pressed={paused} title={t(reduced ? "התנועה כבויה לפי הגדרות המכשיר" : paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")}><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{paused || reduced ? <path d="m5 3 8 5-8 5Z" /> : <path d="M4 3h3v10H4zM10 3h3v10h-3z" />}</svg></button>
