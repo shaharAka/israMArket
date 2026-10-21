@@ -67,6 +67,17 @@ def _set_cookie(response: Response, user: User, method: str = METHOD_PASSWORD) -
     )
 
 
+def _signup_event(response: Response, request: Request, method: str) -> None:
+    """Short-lived, non-identifying receipt. Only a consenting new signup gets one.
+
+    This is not a session credential. The website consumes it once; no user ID,
+    email, provider token or business answer is included.
+    """
+    if request.cookies.get("isramarket_analytics") == "granted":
+        response.set_cookie("isramarket_signup_event", method, max_age=600, path="/",
+                            secure=_cookie_secure(), httponly=False, samesite="lax")
+
+
 @router.post("/register", response_model=UserOut)
 def register(
     body: RegisterRequest,
@@ -89,6 +100,7 @@ def register(
     db.commit()
     db.refresh(user)
     _set_cookie(response, user, METHOD_PASSWORD)
+    _signup_event(response, request, "email")
     return _user_out(request, user)
 
 
@@ -155,15 +167,16 @@ def google_start(request: Request, next: str = "", back: str = "") -> RedirectRe
     return response
 
 
-def _google_user(db: Session, identity: dict) -> User:
+def _google_user(db: Session, identity: dict) -> tuple[User, bool]:
     """The account for a verified Google identity: by Google id, then by email (linking
     it), else a new account with no password. Raises GoogleLoginError("conflict") when the
-    email already belongs to an account linked to a different Google account."""
+    email already belongs to an account linked to a different Google account. The boolean
+    records an actual insertion, including the concurrent-signup conflict path."""
     user = db.query(User).filter(User.google_sub == identity["sub"]).first()
     if user:
         if user.suspended_at is not None:
             raise google_login.GoogleLoginError("account_suspended")
-        return user
+        return user, False
     user = db.query(User).filter(User.email == identity["email"]).first()
     if user:
         if user.google_sub and user.google_sub != identity["sub"]:
@@ -182,7 +195,7 @@ def _google_user(db: Session, identity: dict) -> User:
         if not (user.full_name or "").strip() and identity["name"]:
             user.full_name = identity["name"]
         db.commit()
-        return user
+        return user, False
     user = User(
         email=identity["email"],
         session_epoch=initial_session_epoch(),
@@ -201,9 +214,9 @@ def _google_user(db: Session, identity: dict) -> User:
         existing = db.query(User).filter(User.google_sub == identity["sub"]).first()
         if not existing:
             raise google_login.GoogleLoginError("failed") from exc
-        return existing
+        return existing, False
     db.refresh(user)
-    return user
+    return user, True
 
 
 @router.get("/google/callback")
@@ -246,12 +259,14 @@ def google_callback(
             raise google_login.GoogleLoginError("expired")
         raw = google_login.exchange_code(code, flow["v"])
         identity = google_login.verify_id_token(raw, flow["n"])
-        user = _google_user(db, identity)
+        user, created = _google_user(db, identity)
     except google_login.GoogleLoginError as exc:
         return fail(exc.code)
     response = RedirectResponse(f"{web}{next_path}", status_code=303)
     response.delete_cookie(google_login.FLOW_COOKIE, path="/")
     _set_cookie(response, user, METHOD_GOOGLE)
+    if created:
+        _signup_event(response, request, "google")
     return response
 
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { trackInterviewStart } from "@/lib/siteAnalytics";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ApiError, api, endpoints, exitDemo, isDemo } from "@/lib/api";
@@ -53,6 +54,7 @@ export function ResearchJourney() {
   function update(fn: (f: FlowState) => FlowState) {
     // Keep the ref current synchronously: typing and clicking Next may share a render.
     const current = latest.current; if (!current) return;
+    if (!mockRef.current && current.draft.research_journey?.phase === "before") trackInterviewStart();
     const next = fn(current); latest.current = next; if (!mockRef.current) saveFlow(next); setFlow(next);
   }
   function setDraft(patch: Partial<OnboardingDraft>) { update(f => ({ ...f, draft: { ...f.draft, ...patch } })); }

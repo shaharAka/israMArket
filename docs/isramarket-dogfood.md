@@ -94,9 +94,10 @@ After the first review, two follow-up briefs:
 
 ## Instrumentation needed before useful evaluation
 
-The site's root layout currently has no GA measurement tag. Connecting a customer GA4
+The dedicated consent-aware website collector is documented in `docs/website-analytics.md`
+and tracked through deployment and Google receipt in #211. Connecting a customer GA4
 property reads its data; it does not install tracking on this website. The general
-measurement contract is in `docs/user-flows.md`.
+measurement contract is in `docs/user-flows.md`. Historical visits cannot be recovered.
 
 Required pilot evidence:
 

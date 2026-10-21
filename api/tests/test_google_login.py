@@ -157,6 +157,31 @@ class GoogleLoginTest(unittest.TestCase):
         self.assertTrue(response.headers["location"].startswith(f"{WEB}/signup?"))
         self.assertEqual(self.error_of(response), "misconfigured")
 
+    def test_analytics_receipt_only_for_consented_new_google_account(self):
+        self.client.cookies.set("isramarket_analytics", "granted")
+        first = self.callback(self.start())
+        receipts = [c for c in first.headers.get_list("set-cookie") if c.startswith("isramarket_signup_event=")]
+        self.assertEqual(len(receipts), 1)
+        self.assertIn("=google;", receipts[0])
+        self.assertIn("Max-Age=600", receipts[0])
+        self.assertNotIn("google-sub", receipts[0])
+        again = self.callback(self.start())
+        self.assertFalse(any(c.startswith("isramarket_signup_event=") for c in again.headers.get_list("set-cookie")))
+
+    def test_analytics_email_receipt_requires_consent_and_success(self):
+        body = {"email": "first@example.com", "password": PASSWORD}
+        first = self.client.post("/auth/register", json=body)
+        self.assertEqual(first.status_code, 200, first.text)
+        self.assertFalse(any(c.startswith("isramarket_signup_event=") for c in first.headers.get_list("set-cookie")))
+        self.client.cookies.set("isramarket_analytics", "granted")
+        duplicate = self.client.post("/auth/register", json=body)
+        self.assertEqual(duplicate.status_code, 409)
+        self.assertFalse(any(c.startswith("isramarket_signup_event=") for c in duplicate.headers.get_list("set-cookie")))
+        second = self.client.post("/auth/register", json={**body, "email": "second@example.com"})
+        receipt = [c for c in second.headers.get_list("set-cookie") if c.startswith("isramarket_signup_event=")]
+        self.assertEqual(len(receipt), 1)
+        self.assertIn("=email;", receipt[0])
+
     # ---- callback: the happy paths --------------------------------------------------
 
     def test_new_user_is_created_signed_in_and_sent_to_next(self):
