@@ -97,3 +97,21 @@
   .week[data-campaign-preview="true"] .cards { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
   .week[data-campaign-preview="true"] .thumbnail > div { max-width: 108px; }
 }
+
+/* A little of the website's colour, attached to actual goals and weekly work. */
+.purpose { background: color-mix(in srgb, var(--journey-peach) 35%, var(--paper)); padding: 20px 24px; border-radius: 18px; margin-bottom: 28px; }
+.purpose h2 { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-bottom: 10px; }
+.purpose li { font-size: 16px; line-height: 1.65; }
+.purpose li + li { margin-top: 7px; }
+.purpose a { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); font-size: 13px; margin-top: 6px; }
+.weekBrief { background: color-mix(in srgb, var(--journey-mint) 30%, var(--paper)); padding: 18px; border-radius: 16px; }
+.preparation { padding-block: 12px; }
+.preparation h2 { font-size: 21px; font-weight: 500; line-height: 1.5; margin-bottom: 20px; }
+.preparation ol { margin-bottom: 24px; background: var(--paper); border-radius: 18px; box-shadow: var(--shadow-card); padding-inline: 20px; }
+.preparation li { display: grid; grid-template-columns: 70px minmax(0,1fr); gap: 16px; padding-block: 18px; }
+.preparation li + li { border-top: 1px solid var(--rule); }
+.preparation li > span { font-size: 13px; color: var(--ink-muted); }
+.preparation li strong { font-size: 16px; font-weight: 500; line-height: 1.5; }
+.preparation li p { margin-top: 7px; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
+.preparation > a.primary { display: flex; justify-content: center; align-items: center; width: fit-content; }
+@media(max-width:580px) { .purpose { padding: 18px; } .preparation li { grid-template-columns: 1fr; gap: 6px; } }

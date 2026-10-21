@@ -1,5 +1,8 @@
 .facts {
-  border-top: 1px solid var(--rule);
+  background: var(--paper);
+  box-shadow: var(--shadow-card);
+  border-radius: 18px;
+  overflow: hidden;
 }
 
 .facts > div {
@@ -7,16 +10,18 @@
   grid-template-columns: 160px minmax(0, 1fr);
   align-items: baseline;
   gap: 12px 24px;
-  padding: 20px 0;
+  padding: 20px;
   border-bottom: 1px solid var(--rule);
   font-size: 16px;
   line-height: 1.6;
 }
 
+.facts > div.goal { background: color-mix(in srgb, var(--journey-peach) 38%, var(--paper)); }
 .facts dt { color: var(--ink-soft); }
 .facts dd { color: var(--ink); overflow-wrap: anywhere; }
-.action { margin-top: 12px; }
+.action { margin-top: 20px; }
+.nextOutcome { margin-bottom: 20px; font-size: 14px; line-height: 1.7; color: var(--ink-soft); }
 
 @media (max-width: 560px) {
-  .facts > div { grid-template-columns: 1fr; gap: 4px; padding: 16px 0; }
+  .facts > div { grid-template-columns: 1fr; gap: 4px; padding: 16px; }
 }

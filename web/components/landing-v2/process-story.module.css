@@ -1,4 +1,4 @@
-.page { --scene-violet: #dedbf9; --scene-violet-ink: #5b509c; --scene-mint: #c8e6d9; --scene-peach: #f5d6bd; --process-wash: #f4f6f3; --process-warm: #f7f5f0; --process-line: #dce3db; --process-green: #49664c; }
+.page { --scene-violet: var(--journey-lilac); --scene-violet-ink: var(--journey-lilac-ink); --scene-mint: var(--journey-mint); --scene-peach: var(--journey-peach); --process-wash: var(--journey-wash); --process-warm: var(--journey-warm); --process-line: #dce3db; --process-green: var(--journey-mint-ink); }
 .headerRow { justify-content: space-between; flex-wrap: nowrap !important; direction: rtl; }
 /* Utilities stay in the same physical slots when the content direction changes. */
 .page .header .headerActions { display: grid; grid-template-columns: 90px 170px 100px; gap: 16px; align-items: center; direction: ltr; margin: 0; }

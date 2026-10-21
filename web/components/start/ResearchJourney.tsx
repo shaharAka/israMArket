@@ -18,14 +18,17 @@ import { HowToFind } from "@/components/help/HowToFind";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { IdentityMark } from "@/components/landing-v2/IdentityMark";
 import { BuildReview, REVIEW_PATHS } from "./BuildReview";
+import { JourneyChapters } from "./JourneyChapters";
+import { ConnectionPreparation } from "./ConnectionPreparation";
+import { interviewSteps, interviewChapter } from "@/lib/productJourney";
 import { BUSINESS_EXAMPLES } from "@/components/landing-v2/businessExamples";
 import { inferField } from "@/lib/businessFields";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import styles from "./start.module.css";
 import form from "./form.module.css";
+import journeyStyles from "./journey.module.css";
 
-const BEFORE = ["name", "offer", "different", "audiences", "links", "discovery", "signup"];
-function sequence(j: Journey) { return j.phase === "before" ? BEFORE : [...(j.segment === "software" ? ["software_offer", "software"] : []), "sources", "connections", "metrics", "detail", "build"]; }
+const sequence = interviewSteps;
 function initialJourney(segment: Segment): Journey { return { version: 1, segment, phase: "before", step: "name", replies: [], observations: [] }; }
 function selectSegment(flow: FlowState, segment: Segment): FlowState {
   const choice = BUSINESS_SEGMENTS.find(item => item.key === segment)!;
@@ -136,7 +139,7 @@ export function ResearchJourney() {
 
   if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
-  const common: StepProps = { flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
+  const common: StepProps = { flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "לבחור אילו כלים לחבר", connections: "לראות מה למדנו על העסק", detail: "לבחור מה רוצים להשיג", metrics: "לבדוק את הפרטים ולבנות תוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
     const next = { ...current, step, seen: [...new Set([...current.seen, j.step])], draft: { ...current.draft, research_journey: { ...j, step } } };
@@ -163,14 +166,14 @@ export function ResearchJourney() {
     case "software_offer": screen = <StepSoftwareOffer {...common} />; break;
     case "software": screen = <StepSoftware {...common} />; break;
     case "sources": screen = <StepShell {...common} title={journey.segment === "fundraising" ? "איך אנשים מגיעים לעשייה שלכם?" : "איך לקוחות מוצאים אתכם היום?"} why="" primary="להמשיך לחיבורים" primaryDisabled={busy} onPrimary={() => void advance()}><ServiceClientSources flow={flow} setDraft={setDraft} /></StepShell>; break;
-    case "connections": screen = <StepShell {...common} title="נחבר את המידע שכבר יש לכם" why="החיבורים עוזרים לראות מה מביא רכישות, פניות או תרומות. תוכלו לחזור לכאן אחרי אישור החיבור; התשובות נשמרות בחשבון." primary="להמשיך למה שנמדוד" primaryDisabled={busy} onPrimary={() => void advance()}><Link href="/integrations" className="inline-flex min-h-11 items-center font-semibold text-[var(--primary)]"><Copy text="לבחור ולחבר את הכלים שלי" /></Link><p><Copy text="אפשר להמשיך גם בלי חיבור. נציין מה עוד לא נמדד, ונשלים בהמשך." /></p></StepShell>; break;
+    case "connections": screen = <StepShell {...common} title="מחברים את כלי הקידום שלכם." why="" primary="להמשיך למחקר" primaryDisabled={busy} onPrimary={() => void advance()} actionNote={<p className="text-sm text-[var(--ink-muted)]"><Copy text="אין חיבור כרגע? אפשר להוסיף בהמשך." /></p>}><ConnectionPreparation mock={mock} /></StepShell>; break;
     case "metrics": screen = <MetricsStep {...common} onChange={patchJourney} />; break;
     case "build": screen = <BuildReview {...common} mock={mock} busy={busy} canStart={signedIn && !busy}
-      onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} />; break;
+      onDone={() => { void clearSavedFlow(); router.replace("/strategy?welcome=1"); }} />; break;
   }
-  return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
+  return <div className={`start-blue ${styles.flow}`} data-product-stage={interviewChapter(journey.step)}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
     <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
-      <div className="mb-7 flex gap-1" aria-label={t("התקדמות בהיכרות")} role="progressbar" aria-valuenow={Math.max(1, index + 1)} aria-valuemin={1} aria-valuemax={steps.length}>{steps.map((step, i) => <span key={step} className={`h-1 flex-1 ${i <= index ? "bg-[var(--primary)]" : "bg-[var(--rule)]"}`} />)}</div>
+      <JourneyChapters step={journey.step} />
       <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;
@@ -202,7 +205,7 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     // This screen runs one bounded research request per entry, never on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <StepShell {...props} title={props.after ? "מה למדנו על העסק שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
+  return <StepShell {...props} title={props.after ? "מה למדנו על העסק שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך למטרות" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
     {loading ? <p role="status"><Copy text="קוראים את המידע ומכינים שאלה להיכרות…" /></p> : null}
     {error ? <p role="status">{error}</p> : null}
     {result?.facts?.length ? <section className="space-y-3 border-b border-[var(--rule)] pb-5"><h2 className="font-semibold"><Copy text="מה למדנו על העסק שלכם" /></h2>{result.facts.map((fact, i) => <blockquote key={i} className="border-s-2 border-[var(--rule)] ps-3 text-sm"><p>{fact.quote}</p><a className="text-xs underline" href={fact.url} target="_blank" rel="noopener noreferrer"><Copy text="למקור" /></a></blockquote>)}</section> : null}
@@ -223,7 +226,7 @@ function MetricsStep(props: StepProps & { onChange: (patch: Partial<Journey>) =>
   const [error, setError] = useState("");
   function change(index: number, value: Observation) { props.onChange({ metric, observations: observations(values.map((x, i) => i === index ? value : x)) }); }
   return <StepShell {...props} title="מה ייחשב הצלחה בשבילכם?" why="" primary="להמשיך" onPrimary={() => { if (!values.every(observationValid)) { setError("הזינו מספרים חיוביים או אפס. כמות צריכה להיות מספר שלם, ובטווח המספר השני צריך להיות גדול מהראשון או שווה לו."); return; } props.onChange({ metric, observations: observations(values) }); props.next(); }}>
-    <fieldset><legend className="sr-only"><Copy text="התוצאה שהכי חשובה לכם כרגע" /></legend><div className="flex flex-wrap gap-2">{choices.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={metric === item.key} onClick={() => props.onChange({ metric: item.key, observations: j.observations.filter(x => x.key !== "outcomes") })}><Copy text={item.label} /></button>)}</div></fieldset>
+    <fieldset className={journeyStyles.goals}><legend className="sr-only"><Copy text="התוצאה שהכי חשובה לכם כרגע" /></legend><div className="flex flex-wrap gap-2">{choices.map(item => <button key={item.key} type="button" className={form.chip} aria-pressed={metric === item.key} onClick={() => props.onChange({ metric: item.key, observations: j.observations.filter(x => x.key !== "outcomes") })}><Copy text={item.label} /></button>)}</div></fieldset>
     <TextInput id="campaign-location" label="באיזה אזור או מדינה תרצו לפרסם?" placeholder="למשל: חיפה והסביבה, כל ישראל או ארצות הברית" value={props.flow.draft.city ?? ""} onChange={city => props.setDraft({ city })} maxLength={80} />
     {values.map((value, i) => <fieldset key={value.key} className="space-y-3 border-t border-[var(--rule)] pt-5"><legend className={form.label}><Copy text={i === 0 ? baselineLabel : "כמה תרצו להשקיע בפרסום בחודש?"} /></legend>
       <div className="flex flex-wrap gap-2">{[{ key: "unknown", label: "לא יודעים כרגע" }, { key: "exact", label: "יש לי מספר" }, { key: "range", label: "יש לי טווח" }].map(option => <button key={option.key} type="button" className={form.chip} aria-pressed={value.status === option.key} onClick={() => change(i, { ...value, status: option.key as Observation["status"], lower: null, upper: null })}><Copy text={option.label} /></button>)}</div>

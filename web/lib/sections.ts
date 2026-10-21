@@ -36,6 +36,7 @@ export const SECTIONS: Record<SectionKey, SectionIdentity> = {
   },
   strategy: {
     ...ACCENT,
+    surface: "color-mix(in srgb, var(--journey-lilac) 45%, var(--paper))",
     eyebrow: "התוכנית החודשית",
     purpose: "מה עושים החודש, שבוע אחר שבוע",
   },
@@ -51,6 +52,7 @@ export const SECTIONS: Record<SectionKey, SectionIdentity> = {
   },
   assets: {
     ...ACCENT,
+    surface: "color-mix(in srgb, var(--journey-mint) 40%, var(--paper))",
     eyebrow: "התמונות שלי",
     purpose: "התמונות והסרטונים שלכם, עם תיאור ותגיות שאנחנו כותבים בשבילכם",
   },

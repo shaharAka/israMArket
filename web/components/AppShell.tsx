@@ -17,6 +17,7 @@ import { UIAction } from "@/components/design/Controls";
 import { productPaletteVariables, useDesignPalette } from "@/components/design/palette";
 import { ToastHost } from "@/lib/ui";
 import { signInUrl } from "@/lib/authNavigation";
+import { productStage } from "@/lib/productJourney";
 
 type Tab = {
   href: string;
@@ -192,7 +193,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div style={demo && palette.id !== "blue-sun" ? productPaletteVariables(palette) : undefined} data-palette={demo ? palette.id : "blue-sun"} className="app-blue flex min-h-screen flex-col overflow-x-clip bg-[var(--canvas)] text-[color:var(--ink)] md:flex-row">
+    <div style={demo && palette.id !== "blue-sun" ? productPaletteVariables(palette) : undefined} data-palette={demo ? palette.id : "blue-sun"} data-product-stage={productStage(pathname) ?? undefined} className="app-blue flex min-h-screen flex-col overflow-x-clip bg-[var(--canvas)] text-[color:var(--ink)] md:flex-row">
       <header className="sticky top-0 z-40 flex min-h-14 items-center justify-between gap-2 border-b border-[var(--rule)] bg-white pt-[env(safe-area-inset-top)] pr-[max(0.5rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))] md:hidden">
         {back ? (
           <Link

@@ -119,11 +119,11 @@ export function QuarterPlanView({
       {/* The conclusion first: the strategy in one line, then the plan at a glance, as one
           sheet. */}
       <div className={styles.sheet}>
+        <Glance plan={plan} months={months} />
         <Section id="strategy" index={1} busy={isBusy("strategy")} mode={mode}>
           <StrategyBlock plan={plan} insights={insights} audienceSlot={slots.audience} directionTitle={directionTitle} />
         </Section>
 
-        <Glance plan={plan} months={months} />
       </div>
       {mode === "start" && <section className={styles.firstStep} aria-label={t("הצעד הראשון בתוכנית")}><p><Copy text="הצעד הראשון" /></p><h3><Copy text="לבדוק מה כבר יש לכם לפוסט הראשון." /></h3><span><Copy text="נחבר את המדידה הזמינה, נכין פוסט לאישור ולפרסום ונלמד מהתוצאות." /></span></section>}
 

@@ -36,6 +36,14 @@
   --shadow-card: 0 0 0 1px rgba(20, 32, 58, 0.06), 0 1px 2px rgba(20, 32, 58, 0.04), 0 10px 28px -18px rgba(20, 32, 58, 0.22);
   --shadow-pop: 0 0 0 1px rgba(20, 32, 58, 0.06), 0 6px 16px -6px rgba(20, 32, 58, 0.2), 0 30px 60px -30px rgba(20, 32, 58, 0.3);
   --focus-ring: rgba(40, 83, 199, 0.18);
+  /* Informational colour from the product story; actions and status keep their own tokens. */
+  --journey-lilac: #dedbf9;
+  --journey-lilac-ink: #5b509c;
+  --journey-mint: #c8e6d9;
+  --journey-mint-ink: #49664c;
+  --journey-peach: #f5d6bd;
+  --journey-wash: #f4f6f3;
+  --journey-warm: #f7f5f0;
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -455,3 +463,6 @@ a {
 .journey-progress span { flex: 1; height: 4px; border-radius: 2px; background: var(--rule); }
 .journey-progress span[data-complete="true"] { background: var(--primary); }
 .product-wordmark { font-family: var(--font-inter),sans-serif; font-weight: 750; font-size: 24px; letter-spacing: -.055em; line-height: 1; color: var(--ink); }
+
+/* One informational tint for the agreed goal, separate from actions and read states. */
+.product-goal-context { padding: 16px 20px; border-radius: 16px; background: color-mix(in srgb, var(--journey-peach) 35%, var(--paper)); }

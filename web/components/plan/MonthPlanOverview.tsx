@@ -38,23 +38,8 @@ export function MonthPlanOverview({ strategy, currentWeek, nextAction, weekActio
           one thing we need from the owner. */}
       <section className={styles.sheet} aria-labelledby={`${id}-hypothesis`}>
         <div className={styles.sheetBody}>
-          <p className="flex items-center gap-2 text-[13px] font-semibold text-[color:var(--ink-muted)]">
-            <IconFlag className="h-4 w-4" />
-            {t("מה ננסה ב{arg_0}", { arg_0: strategy.month_name_he })}
-          </p>
-          <h2 id={`${id}-hypothesis`} className={styles.hypothesis}>
-            {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
-          </h2>
-          {monthState ? (
-            <HypothesisStatusLine
-              className="mt-2"
-              status={monthState.status}
-              statusHe={monthState.status_he}
-              evidence={monthEvidence}
-            />
-          ) : null}
           {shownTargets.length ? <div className={styles.targetsGroup}>
-            <p className={styles.targetsLabel}><Copy text="איך נדע שזה עובד" /></p>
+            <p className={styles.targetsLabel}><Copy text="המטרות לחודש הקרוב" /></p>
             <ul className={styles.targets}>
               {shownTargets.map((target, index) => {
                 const state = targetStates[index];
@@ -77,6 +62,22 @@ export function MonthPlanOverview({ strategy, currentWeek, nextAction, weekActio
               })}
             </ul>
           </div> : null}
+          <p className="flex items-center gap-2 text-[13px] font-semibold text-[color:var(--ink-muted)]">
+            <IconFlag className="h-4 w-4" />
+            {t("איך נתקדם ב{arg_0}", { arg_0: strategy.month_name_he })}
+          </p>
+          <h2 id={`${id}-hypothesis`} className={styles.hypothesis}>
+            {monthly?.hypothesis || strategy.usp.growth_hypothesis || strategy.usp.usp}
+          </h2>
+          {monthState ? (
+            <HypothesisStatusLine
+              className="mt-2"
+              status={monthState.status}
+              statusHe={monthState.status_he}
+              evidence={monthEvidence}
+            />
+          ) : null}
+
         </div>
         {nextAction ? <div className={styles.ask}>
           <IconBell className={styles.askIcon} />
