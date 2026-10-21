@@ -166,6 +166,9 @@ def generate(db, business, post, dna, instruction, request_key, source_data=None
               + json.dumps({"brief":brief, "title":post.get("title"), "scene":post.get("scene_description"),
                             "brand": {k: (dna or {}).get(k) for k in ("direction","photo","colors")},
                             "owner_request":instruction}, ensure_ascii=False))[:6000]
+    if not source_data and post.get("creative_direction"):
+        from app.services.creative_director import video_prompt
+        prompt += video_prompt(post)
     inputs = [{"type":"text","text":prompt}]
     config = {"max_output_tokens": MAX_OUTPUT_TOKENS, "video_config": {"task": "text_to_video"}}
     response_format = {"type": "video", "aspect_ratio": "9:16", "resolution": "720p"}

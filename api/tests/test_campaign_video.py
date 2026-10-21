@@ -107,7 +107,7 @@ class VideoTest(unittest.TestCase):
         value = "data:image/png;base64,"+base64.b64encode(self.overlay()).decode()
         self.assertTrue(video.clean_overlay(value).startswith(b"\x89PNG"))
 
-    def run_provider(self, payload=None, error=None, status=200):
+    def run_provider(self, payload=None, error=None, status=200, post=None):
         business = SimpleNamespace(id=1)
         response = SimpleNamespace(status_code=status, json=lambda: payload)
         client = mock.MagicMock(); client.__enter__.return_value.post.return_value = response
@@ -117,10 +117,22 @@ class VideoTest(unittest.TestCase):
              mock.patch.object(video.media_allowances,"settle") as settle, \
              mock.patch.object(video,"finish_bytes",side_effect=lambda data,**kw:data):
             try:
-                result=video.generate(None,business,{"title":"Verified product"},None,"Quiet scene","request-1")
+                result=video.generate(None,business,post or {"title":"Verified product"},None,"Quiet scene","request-1")
                 exc=None
             except HTTPException as e: result=None; exc=e
             return result,exc,client,reserve,settle
+
+    def test_director_script_is_sent_inside_the_single_capped_video_request(self):
+        from _creative_fixtures import direction
+        payload={"status":"completed","steps":[{"type":"model_output","content":[
+            {"type":"video","data":base64.b64encode(b"clip").decode()}]}]}
+        result,exc,client,reserve,settle=self.run_provider(payload, post={
+            "title":"Verified product", "creative_direction":direction(duration=5)})
+        self.assertIsNone(exc)
+        body=client.__enter__.return_value.post.call_args.kwargs["json"]
+        self.assertIn("ידיים מבצעות", body["input"][-1]["text"])
+        self.assertIn("CREATIVE DIRECTOR SHOT PLAN", body["input"][-1]["text"])
+        reserve.assert_called_once(); client.__enter__.return_value.post.assert_called_once()
 
     def test_one_bounded_submission_selects_only_completed_model_output(self):
         payload={"id":"response","status":"completed","steps":[

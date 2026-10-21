@@ -131,7 +131,7 @@ class ContentLanguageTest(unittest.TestCase):
         self.assertIn('Every new post must use en', writer.call_args.args[0])
 
     def test_designer_keeps_overlay_language(self):
-        with patch.object(designer, 'strategy_json', return_value=dumps({'scene_description': 'a kitchen', 'has_overlay': True, 'overlay_headline': 'Room for your routine'})) as writer:
+        with patch.object(designer, 'strategy_json', return_value=dumps({'scene_description': 'a kitchen', 'has_overlay': True, 'overlay_headline': 'Room for your routine', 'direction': __import__('_creative_fixtures').direction(mode='headline')})) as writer:
             creative = designer.plan_post_design(post(), {}, {})
         self.assertIn('English', writer.call_args.kwargs['system'])
         self.assertEqual(creative['overlay_headline'], 'Room for your routine')

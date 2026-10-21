@@ -14,7 +14,7 @@ from datetime import datetime, timedelta
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app.models import Business, CampaignRevision, Strategy, User
+from app.models import Asset, Business, CampaignRevision, Strategy, User
 from app.services import billing, connected_posts, creative_brief, design_dna, media_allowances, model_usage, post_rewrite
 from app.services.jsonutil import dumps, loads
 from app.services.strategy_writes import lock_and_refresh
@@ -22,7 +22,7 @@ from app.services.strategy_writes import lock_and_refresh
 # No scheduling, approval, publication, measurement or content-language fields here.
 FIELDS = (*post_rewrite.TEXT_FIELDS, "overlay_headline", "overlay_sub", "overlay_badge", "has_overlay",
           "outlet_captions", "design", "image_url", "image_source", "image_asset_id", "image_action",
-          "image_source_url", "format", "video_url", "video_asset_id", "video_raw_asset_id", "video_source", "video_overlay_png", "scene_description", "image_prompt", "creative_concept", "visual_style")
+          "image_source_url", "format", "video_url", "video_asset_id", "video_raw_asset_id", "video_source", "video_overlay_png", "scene_description", "image_prompt", "creative_concept", "visual_style", "creative_direction", "design_creative")
 
 
 def snapshot(post):
@@ -182,6 +182,23 @@ def propose(db, business, strategy, post, kind, instruction, request_key, option
             source_asset, path = video.own_asset(db, business, raw_asset_id)
             source_data = video.finish_bytes(path.read_bytes(), start=options.get("start",0), end=options.get("end"),
                                             max_duration=5 if kind == "video_edit" else 30)
+        if kind == "video":
+            from app.services.designer import plan_post_design
+            from app.services.creative_director import apply_layout
+            target["format"] = "reel"
+            creative = plan_post_design(target, brand, routes._biz_dict(business, strategy),
+                                        custom_prompt=instruction, dna=dna, duration=5)
+            # Existing editable/burned copy remains the owner's. This operation
+            # directs footage; a caption/overlay revision is a separate explicit action.
+            apply_layout(target, creative)
+            target.update(creative_concept=creative["creative_concept"],
+                          scene_description=creative["scene_description"], design_creative=creative)
+            selected = creative["direction"]["asset_ids"]
+            if selected:
+                ref = db.query(Asset).filter_by(
+                    id=selected[0], business_id=business.id, kind="image").first()
+                if ref:
+                    target["image_url"] = video.image_public_url(business.id, ref.filename)
         if kind != "finish":
             source_data = video.generate(db, business, target, dna, instruction, request_key, source_data=source_data)
             raw = video.store(db, business_id, revision_id, source_data, target.get("title", ""))

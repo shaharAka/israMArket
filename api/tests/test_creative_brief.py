@@ -4,7 +4,7 @@ import _test_env  # noqa: F401
 import unittest
 
 from _dna_fixtures import DnaTestCase
-from app.models import Audience, Strategy
+from app.models import Asset, Audience, Strategy
 from app.services.creative_brief import for_post, prompt_context
 from app.services.images import visual_message
 
@@ -40,6 +40,14 @@ class BriefTest(DnaTestCase, unittest.TestCase):
     def test_a_foreign_or_unassigned_audience_is_not_substituted(self):
         for key in (self.foreign.id, None, 99999):
             self.assertIsNone(self.brief(audience_id=key)["audience"])
+
+    def test_asset_context_is_tenant_scoped_metadata_without_credentials_or_remote_reads(self):
+        own = Asset(business_id=self.business.id, filename="own.jpg", kind="image", source="upload", description="Own material")
+        foreign = Asset(business_id=self.other.id, filename="other.jpg", kind="image", description="Other tenant")
+        self.db.add_all([own, foreign]); self.db.commit()
+        assets = self.brief()["assets"]
+        self.assertEqual([item["id"] for item in assets], [own.id])
+        self.assertNotIn("filename", assets[0]); self.assertNotIn("source_url", assets[0])
 
     def test_learning_without_measured_attribution_is_not_a_result(self):
         brief = self.brief(learning="This worked brilliantly", results={"value": 100})

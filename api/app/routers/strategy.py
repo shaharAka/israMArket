@@ -383,6 +383,14 @@ def _produce_post_image(
         return ""
 
     def pick():
+        # The director can prefer only a candidate already gathered for this tenant.
+        # Subject matching still decides whether it is usable; never fetch model URLs.
+        selected = (post.get("creative_direction") or {}).get("asset_ids") or []
+        preferred = [candidate for candidate in candidates if candidate.asset_id in selected]
+        if preferred:
+            picked = photo_choice.choose(preferred, post, used, index)
+            if picked:
+                return picked
         return photo_choice.choose(candidates, post, used, index)
 
     if preference == "real":
@@ -684,6 +692,7 @@ def design_post_endpoint(
             vibe=body.vibe,
             custom_prompt=body.custom_prompt,
             generate_image=body.generate_image,
+            lock_layout=bool(body.composition),
             image_provider=provide,
             dna=dna,
         )
