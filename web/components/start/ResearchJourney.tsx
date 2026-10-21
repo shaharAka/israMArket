@@ -162,7 +162,7 @@ export function ResearchJourney() {
       {(["website", "instagram", "facebook"] as const).map(key => <div key={key}><TextInput id={`public-${key}`} label={{ website: "אתר העסק", instagram: "פרופיל האינסטגרם של העסק", facebook: "עמוד הפייסבוק של העסק" }[key]} value={flow.draft.links[key] ?? ""} onChange={value => setDraft({ links: { ...latest.current!.draft.links, [key]: value } })} dir="ltr" maxLength={300} /><HowToFind topic={key} /></div>)}
     </StepShell>; break;
     case "discovery": case "detail": screen = <DiscoveryStep {...common} mock={mock} after={journey.phase === "after"} onReplies={replies => patchJourney({ replies: mergeResearchReplies(journey.replies, replies) })} />; break;
-    case "signup": screen = <StepSave {...common} researchOnly loggedIn={signedIn || mock} saving={busy} saveError={error} onSave={enterAccount} />; break;
+    case "signup": screen = <StepSave {...common} researchOnly preview={mock} loggedIn={signedIn} saving={busy} saveError={error} onSave={enterAccount} />; break;
     case "software_offer": screen = <StepSoftwareOffer {...common} />; break;
     case "software": screen = <StepSoftware {...common} />; break;
     case "sources": screen = <StepShell {...common} title={journey.segment === "fundraising" ? "איך אנשים מגיעים לעשייה שלכם?" : "איך לקוחות מוצאים אתכם היום?"} why="" primary="להמשיך לחיבורים" primaryDisabled={busy} onPrimary={() => void advance()}><ServiceClientSources flow={flow} setDraft={setDraft} /></StepShell>; break;
@@ -173,7 +173,7 @@ export function ResearchJourney() {
   }
   return <div className={`start-blue ${styles.flow}`} data-product-stage={interviewChapter(journey.step)}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
     <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
-      <JourneyChapters step={journey.step} />
+      <JourneyChapters journey={journey} />
       <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;

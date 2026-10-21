@@ -18,4 +18,23 @@ for(const segment of ['services','online_shop','physical_shop','software','fundr
 }
 assert.equal(exports.interviewChapter('metrics'),'goals');
 assert.equal(exports.interviewChapter('build'),'plan');
+for (const segment of ['online_shop','physical_shop','services','software','fundraising']) {
+ const before = Array.from(exports.interviewSteps({phase:'before',segment}));
+ for (const [index,step] of before.entries()) {
+  const progress=exports.interviewChapterProgress({phase:'before',segment,step});
+  assert.equal(progress.current,index+1);
+  assert.equal(progress.total,before.length,'Signup remains part of this actual phase, not the whole interview');
+ }
+ const after = Array.from(exports.interviewSteps({phase:'after',segment}));
+ for (const step of after) {
+  const chapter=exports.interviewChapter(step);
+  const siblings=after.filter(value=>exports.interviewChapter(value)===chapter);
+  const progress=exports.interviewChapterProgress({phase:'after',segment,step});
+  assert.equal(progress.current,siblings.indexOf(step)+1);
+  assert.equal(progress.total,siblings.length);
+ }
+ assert.equal(exports.interviewChapterProgress({phase:'after',segment,step:'signup'}),null,'Do not show invented progress for an invalid/resumed phase');
+}
+assert.equal(exports.interviewChapterProgress({phase:'after',segment:'software',step:'sources'}).total,3);
+assert.equal(exports.interviewChapterProgress({phase:'after',segment:'services',step:'sources'}).total,1);
 console.log('Five business routes retain signup boundary and resume destinations; research precedes goals and plan.');
