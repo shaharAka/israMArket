@@ -1025,6 +1025,11 @@
         "file": "web/components/landing-v2/CampaignProductPreview.tsx",
         "line": 26,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 223,
+        "kind": "literal"
       }
     ]
   },
@@ -2659,7 +2664,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 85,
+        "line": 89,
         "kind": "literal"
       }
     ]
@@ -2939,12 +2944,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 71,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 185,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -3547,7 +3552,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 209,
+        "line": 244,
         "kind": "literal"
       }
     ]
@@ -4094,6 +4099,18 @@
         "line": 184,
         "kind": "literal",
         "purpose": "logic-reference"
+      }
+    ]
+  },
+  "m_0841450c32b60db1": {
+    "source": "מהקמפיין ישר לפוסט שצריך אתכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -5401,7 +5418,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -6273,7 +6290,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -6477,7 +6494,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 33,
+        "line": 40,
         "kind": "literal"
       }
     ]
@@ -6893,7 +6910,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -7479,7 +7496,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -8262,7 +8279,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -8982,6 +8999,17 @@
       }
     ]
   },
+  "m_12abe6b0ea9e308e": {
+    "source": "עוקבים אחרי התוצאות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 216,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_12b2530f10e964a6": {
     "source": "יש קלישאה אסורה: \"{arg_0}\". פתח בפרט אמיתי על המוצר.",
     "language": "he",
@@ -9595,7 +9623,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -9767,7 +9795,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -10810,7 +10838,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 235,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -11502,7 +11530,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -13775,7 +13803,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -16085,7 +16113,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -16279,7 +16307,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -17006,7 +17034,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17871,7 +17899,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 217,
+        "line": 252,
         "kind": "literal"
       }
     ]
@@ -18655,7 +18683,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18757,7 +18785,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 243,
+        "line": 278,
         "kind": "literal"
       },
       {
@@ -18949,7 +18977,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19157,7 +19185,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -19378,7 +19406,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 92,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -19964,7 +19992,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 12,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -20467,7 +20500,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -20915,7 +20948,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21230,7 +21263,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 234,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -22393,17 +22426,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -24155,6 +24188,17 @@
       }
     ]
   },
+  "m_3224b160c29faf6c": {
+    "source": "אפשר לבחור עד 3 טיוטות לגרסה חדשה, לחזור לתצוגת הקמפיין ולפתוח שוב את הבחירה. גרסה שכבר נוצרה נשארת זמינה לבדיקה, בלי להתחיל יצירה נוספת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3226a0bf9590ace5": {
     "source": "לראות את ההמשך במפה",
     "language": "he",
@@ -25803,12 +25847,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 205,
+        "line": 240,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 209,
+        "line": 244,
         "kind": "literal"
       }
     ]
@@ -25819,7 +25863,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -26896,6 +26940,17 @@
       }
     ]
   },
+  "m_375207aa465f5ced": {
+    "source": "כל פוסט בקמפיין נפתח בעורך. בראש המסך רואים מה כדאי לבדוק או להכין לפרסום, ושינוי של כמה טיוטות מתחיל בבחירה נפרדת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_375708ee31407999": {
     "source": "עומק שדה רדוד",
     "language": "he",
@@ -26971,7 +27026,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -28059,7 +28114,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -28296,7 +28351,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 182,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -28477,7 +28532,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 219,
+        "line": 217,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 254,
         "kind": "literal"
       }
     ]
@@ -28912,7 +28972,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -30042,7 +30102,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30228,7 +30288,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 221,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -30300,7 +30360,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -30363,6 +30423,11 @@
       {
         "file": "web/app/dashboard/page.tsx",
         "line": 72,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -31118,7 +31183,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -32661,7 +32726,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 174,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -33055,7 +33120,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -33619,7 +33684,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -34255,7 +34320,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -34571,17 +34636,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/releases.ts",
         "line": 54,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 103,
+        "line": 61,
         "kind": "literal"
       },
       {
@@ -34592,6 +34652,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 117,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 124,
         "kind": "literal"
       },
       {
@@ -34770,17 +34835,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 40,
+        "line": 47,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -35373,7 +35438,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -36104,7 +36169,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal"
       }
     ]
@@ -37951,7 +38016,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 233,
+        "line": 240,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38250,7 +38315,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 181,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -38351,7 +38416,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 76,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -38374,7 +38439,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -38609,7 +38674,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -38776,7 +38841,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -40620,7 +40685,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -40704,7 +40769,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -40891,7 +40956,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 202,
+        "line": 222,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 237,
         "kind": "literal"
       }
     ]
@@ -41048,7 +41118,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 227,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -41741,7 +41811,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -43020,7 +43090,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -43774,7 +43844,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 228,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -43820,7 +43890,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 75,
+        "line": 82,
         "kind": "literal"
       }
     ]
@@ -43953,7 +44023,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 175,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -45394,12 +45464,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -45671,7 +45741,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -46230,7 +46300,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -46638,7 +46708,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -47067,7 +47137,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -50395,7 +50465,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50539,7 +50609,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -50594,7 +50664,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -50735,7 +50805,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 226,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50942,7 +51012,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -52975,7 +53045,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53261,7 +53331,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53531,12 +53601,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 85,
+        "line": 92,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -53547,7 +53617,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 65,
+        "line": 72,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53592,7 +53662,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -54045,7 +54115,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 74,
+        "line": 81,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57145,7 +57215,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57209,7 +57279,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57924,7 +57994,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -59824,7 +59894,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 230,
+        "line": 265,
         "kind": "literal"
       }
     ]
@@ -60061,7 +60131,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 231,
+        "line": 266,
         "kind": "literal"
       }
     ]
@@ -60084,7 +60154,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 190,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -60458,7 +60528,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -61938,7 +62008,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -63195,12 +63265,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -64036,7 +64106,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 245,
+        "line": 282,
         "kind": "literal"
       }
     ]
@@ -64047,7 +64117,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65365,7 +65435,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 58,
+        "line": 65,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65720,7 +65790,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 258,
         "kind": "literal"
       }
     ]
@@ -67511,7 +67581,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67875,7 +67945,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -69659,7 +69729,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 230,
+        "line": 265,
         "kind": "literal"
       }
     ]
@@ -70512,7 +70582,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 185,
+        "line": 210,
         "kind": "literal"
       },
       {
@@ -71584,7 +71654,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -72096,6 +72166,17 @@
       }
     ]
   },
+  "m_984bfd6f22ba6799": {
+    "source": "לבדוק את הגרסה החדשה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 219,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_98537ea95388abc7": {
     "source": "לשאול בהודעה",
     "language": "he",
@@ -72387,7 +72468,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -73107,7 +73188,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -73129,7 +73210,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -73321,7 +73402,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 229,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -75633,7 +75714,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -76305,6 +76386,17 @@
       }
     ]
   },
+  "m_a22f7d682d89b390": {
+    "source": "הגרסה החדשה של הפוסטים שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 216,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a248d6fa7f4de49c": {
     "source": "נעים להכיר. אלה האנשים שעושים את זה כל יום.",
     "language": "he",
@@ -76518,7 +76610,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -76947,7 +77039,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 236,
+        "line": 243,
         "kind": "literal"
       }
     ]
@@ -78512,7 +78604,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 203,
+        "line": 238,
         "kind": "literal"
       }
     ]
@@ -79004,12 +79096,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -80227,7 +80319,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 148,
+        "line": 173,
         "kind": "literal"
       },
       {
@@ -80596,7 +80688,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -81090,12 +81182,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -81117,7 +81209,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -81567,7 +81659,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -81705,7 +81797,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 233,
+        "line": 268,
         "kind": "literal"
       }
     ]
@@ -82778,7 +82870,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -82885,7 +82977,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 179,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -82952,7 +83044,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -83753,6 +83845,17 @@
       }
     ]
   },
+  "m_b254a08c80cc3f0c": {
+    "source": "לעקוב אחרי ההכנה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 219,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b261f783d29ce4a5": {
     "source": "משלמים",
     "language": "he",
@@ -83816,7 +83919,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84432,9 +84535,20 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 91,
+        "line": 98,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_b3bf35a839e8ec3c": {
+    "source": "לראות מה נמדד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 219,
+        "kind": "literal"
       }
     ]
   },
@@ -84713,7 +84827,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 235,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -86219,7 +86333,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 161,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -86741,7 +86855,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -87455,7 +87569,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 241,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -87694,7 +87808,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 66,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -88178,7 +88292,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 220,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -88696,7 +88810,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -89774,7 +89888,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -89927,7 +90041,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -90376,7 +90490,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 245,
+        "line": 282,
         "kind": "literal"
       }
     ]
@@ -92064,7 +92178,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 233,
+        "line": 268,
         "kind": "literal"
       }
     ]
@@ -92946,7 +93060,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 165,
+        "line": 190,
         "kind": "literal"
       }
     ]
@@ -93798,7 +93912,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 234,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -94591,7 +94705,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -94856,7 +94970,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -95358,7 +95472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -95474,7 +95588,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96041,7 +96155,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -96096,7 +96210,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 59,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -98803,7 +98917,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -98955,7 +99069,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 215,
+        "line": 217,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 250,
         "kind": "literal"
       }
     ]
@@ -99394,7 +99513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -99600,7 +99719,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -100320,7 +100439,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -100514,7 +100633,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 242,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -100746,7 +100865,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 178,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -101054,7 +101173,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -102382,7 +102501,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -102814,7 +102933,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -103371,7 +103490,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -104406,7 +104525,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104440,7 +104559,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -104710,7 +104829,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -105419,6 +105538,11 @@
         "file": "web/app/dashboard/page.tsx",
         "line": 72,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 219,
+        "kind": "literal"
       }
     ]
   },
@@ -105463,7 +105587,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -105669,7 +105793,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 274,
         "kind": "literal"
       },
       {
@@ -106406,7 +106530,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 83,
+        "line": 90,
         "kind": "literal"
       }
     ]
@@ -106880,7 +107004,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 274,
         "kind": "literal"
       },
       {
@@ -107073,7 +107197,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 220,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -107226,7 +107350,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal"
       }
     ]
@@ -107441,7 +107565,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 216,
+        "line": 251,
         "kind": "literal"
       }
     ]
@@ -107509,7 +107633,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -108591,7 +108715,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -108613,7 +108737,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -109340,6 +109464,17 @@
       }
     ]
   },
+  "m_e810fc2a32f058c4": {
+    "source": "הפעולה הבאה בקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 215,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e813d43c06142974": {
     "source": "עדיין לא נבחר",
     "language": "he",
@@ -109510,7 +109645,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 82,
+        "line": 89,
         "kind": "literal",
         "purpose": "display"
       }
@@ -110668,7 +110803,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 186,
+        "line": 211,
         "kind": "literal"
       }
     ]
@@ -110827,7 +110962,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 211,
+        "line": 246,
         "kind": "literal"
       }
     ]
@@ -110935,6 +111070,17 @@
       }
     ]
   },
+  "m_eb2a74f9b5f086d3": {
+    "source": "לשנות כמה פוסטים יחד",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 223,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_eb2f5a601af894d5": {
     "source": "כבר מכירים אתכם ויכולים לחזור או להמליץ.",
     "language": "he",
@@ -110987,7 +111133,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -111248,7 +111394,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -111641,7 +111787,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 229,
+        "line": 264,
         "kind": "literal"
       }
     ]
@@ -112078,7 +112224,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 67,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -113577,12 +113723,12 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 21,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -113803,7 +113949,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 180,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -116401,7 +116547,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -116833,7 +116979,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 236,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -116867,7 +117013,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 227,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -116977,7 +117123,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -118669,7 +118815,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 137,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -118924,7 +119070,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -119374,7 +119520,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 222,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -119446,7 +119592,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -119730,7 +119876,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120114,7 +120260,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120425,7 +120571,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 274,
         "kind": "literal"
       },
       {
@@ -120453,7 +120599,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       }
     ]
