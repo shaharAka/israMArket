@@ -1,8 +1,10 @@
-.chapters { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; margin-bottom: 32px; }
+.chapterHeader { margin-bottom: 32px; }
+.chapters { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
 .chapters li { min-width: 0; display: flex; flex-direction: column; gap: 9px; color: var(--ink-muted); font-size: 13px; line-height: 1.5; }
-.chapters li > span { height: 4px; border-radius: 99px; background: var(--rule); }
+.chapters li > span { height: 4px; border-radius: 99px; background: var(--rule); overflow: hidden; }
 .chapters li[aria-current="step"] { color: var(--ink); font-weight: 600; }
-.chapters li[aria-current="step"] > span { background: var(--journey-lilac-ink); }
+.chapters li[aria-current="step"] > span > i { display: block; block-size: 100%; background: var(--journey-lilac-ink); }
+.chapterCount { margin-top: 10px; color: var(--ink-muted); font-size: 13px; line-height: 1.5; }
 .chapters li[data-passed="true"] > span { background: var(--journey-lilac); }
 .connections { background: var(--paper); border-radius: 18px; box-shadow: var(--shadow-card); padding-inline: 20px; }
 .connections > div { display: flex; align-items: start; gap: 14px; padding-block: 22px; }
@@ -12,7 +14,7 @@
 .connections p { margin-top: 5px; font-size: 14px; line-height: 1.6; color: var(--ink-soft); }
 .connections > div > div > span { display: block; margin-top: 7px; font-size: 12px; line-height: 1.5; color: var(--ink-muted); }
 .connections a { display: inline-flex; min-height: 44px; align-items: center; font-size: 13px; color: var(--primary); }
-@media(max-width:560px) { .chapters { gap: 8px; margin-bottom: 24px; } .chapters li { font-size: 12px; } }
+@media(max-width:560px) { .chapterHeader { margin-bottom: 24px; } .chapters { gap: 8px; } .chapters li { font-size: 12px; } }
 
 .goals { padding: 20px; border-radius: 18px; background: color-mix(in srgb, var(--journey-peach) 38%, var(--paper)); }
 .goals button { max-width: 100%; text-align: start; }

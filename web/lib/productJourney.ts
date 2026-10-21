@@ -22,6 +22,14 @@ export function interviewChapter(step: string): typeof SETUP_CHAPTERS[number]["k
   return "research";
 }
 
+/** Count the actual route's screens in the active chapter, never a time estimate. */
+export function interviewChapterProgress(journey: Pick<ResearchJourney, "phase" | "segment" | "step">) {
+  const chapter = interviewChapter(journey.step);
+  const steps = interviewSteps(journey).filter(step => interviewChapter(step) === chapter);
+  const at = steps.indexOf(journey.step);
+  return at < 0 ? null : { current: at + 1, total: steps.length };
+}
+
 /** Only visual context: this never gates a route or implies a provider grant is ready. */
 export function productStage(path: string): ProductStage | null {
   if (["/business", "/brand", "/decisions"].some(route => path === route || path.startsWith(`${route}/`))) return "research";

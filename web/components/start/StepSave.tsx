@@ -20,6 +20,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 export function StepSave(
   props: StepProps & {
     researchOnly?: boolean;
+    preview?: boolean;
     loggedIn: boolean;
     saving: boolean;
     saveError: string;
@@ -45,6 +46,8 @@ export function StepSave(
       setError("הסיסמה צריכה לפחות 8 תווים.");
       return;
     }
+    // Review fixtures must never register an account or write a customer draft.
+    if (props.preview) { await onSave(); return; }
     setPending(true);
     try {
       await endpoints.register({
@@ -91,15 +94,16 @@ export function StepSave(
     <StepShell
       {...props}
       title={researchOnly ? "מכאן נבנה את השיווק שלכם" : "נשמור את התוכנית"}
-      why={researchOnly ? "כבר התחלנו להכיר את העסק. אחרי פתיחת החשבון נעמיק בשאלות ובמחקר, נחבר את הכלים שלכם ונבנה תוכנית שממנה ניצור פוסטים. אין צורך לחבר הכול כדי להתקדם." : props.flow.draft.business_model === "saas" ? "התוכנית מחכה לכם בפנים. נבחר נושא וחומר אמיתי מהמוצר, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה." : props.flow.draft.business_model === "services" ? "התוכנית מחכה לכם בפנים. נבחר שירות או דוגמה מעבודה, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה." : "התוכנית מחכה לכם בפנים. נבחר מה להבליט ותמונות של העסק, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה."}
+      why={researchOnly ? "אחרי פתיחת החשבון נשלים את המחקר והחיבורים, נגדיר מטרות ונבנה תוכנית. ממנה ניצור פוסטים לאישורכם." : props.flow.draft.business_model === "saas" ? "התוכנית מחכה לכם בפנים. נבחר נושא וחומר אמיתי מהמוצר, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה." : props.flow.draft.business_model === "services" ? "התוכנית מחכה לכם בפנים. נבחר שירות או דוגמה מעבודה, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה." : "התוכנית מחכה לכם בפנים. נבחר מה להבליט ותמונות של העסק, נכין פוסטים לאישורכם ונחבר את המדידה הזמינה."}
       primary={busy ? (saving ? savingLabel : "פותחים חשבון…") : researchOnly ? "לפתוח חשבון ולהמשיך" : "לפתוח חשבון ולהיכנס לתוכנית"}
       primaryDisabled={busy}
       onPrimary={() => void submit()}
     >
+      {researchOnly && props.flow.draft.business_name ? <p className="border-b border-[var(--rule)] pb-4 text-sm leading-relaxed"><strong className="font-medium">{props.flow.draft.business_name}</strong><span className="mt-1 block text-[var(--ink-soft)]">{props.flow.draft.offerings}</span></p> : null}
       {/* The draft is already in this browser (saveFlow on every answer). Google sends the
           owner back to /start?resume=save, and the interview saves it from there with the same
           from-draft call as the email path below. */}
-      <GoogleButton next="/start?resume=save" back="/start" disabled={busy} />
+      <GoogleButton next="/start?resume=save" back="/start" disabled={busy || props.preview} />
       <OrDivider />
       <TextInput
         id="signup-email"
