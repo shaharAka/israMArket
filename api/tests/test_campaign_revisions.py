@@ -65,6 +65,25 @@ class CampaignTest(unittest.TestCase):
             self.assertEqual(self.db.query(CampaignRevision).count(), 0)
             self.fake.assert_not_called()
 
+    def test_video_proposal_directs_before_generation_and_retains_the_plan_for_keep(self):
+        from types import SimpleNamespace
+        from app.services import campaign_video as video, designer
+        from test_creative_director import creative
+        self.producer.stop()
+        value = creative(duration=5)
+        value["direction"].update(version=1, channel="instagram", duration_seconds=5)
+        with mock.patch.object(designer, "plan_post_design", return_value=value) as plan, \
+             mock.patch.object(video, "generate", return_value=b"clip") as generate, \
+             mock.patch.object(video, "finish_bytes", return_value=b"clip"), \
+             mock.patch.object(video, "store", return_value=SimpleNamespace(id=77, filename="clip.mp4")):
+            proposal = revisions.propose(self.db, self.biz, self.plan, self.posts()[0], "video", "פעולה אמיתית", "campaign:job:one")
+        plan.assert_called_once(); generate.assert_called_once()
+        self.assertEqual(plan.call_args.kwargs["duration"], 5)
+        self.assertIn("shots", generate.call_args.args[2]["creative_direction"])
+        self.assertIn("creative_direction", revisions.snapshot(proposal))
+        self.assertEqual(proposal["caption"], "הנוסח הקודם")
+        self.assertEqual(proposal["content_language"], "ru")
+
     def test_stage_keep_undo_preserves_other_posts_language_and_measurements(self):
         before = copy.deepcopy(self.posts()); result = self.create(["one", "two"])
         self.assertEqual(result.status_code, 202, result.text); rid = result.json()["id"]

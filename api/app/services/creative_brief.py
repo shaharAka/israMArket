@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 
-from app.models import Audience
+from app.models import Asset, Audience
 from app.services.jsonutil import loads
 from app.services.hebrew_style import HEBREW_STYLE
 
@@ -36,7 +36,21 @@ def for_post(post: dict, business, strategy, db) -> dict:
         learning = _text(post.get("learning"))
         if learning:
             learning_source = "measured_post"
+    assets = []
+    if db is not None:
+        assets = [{"id": item.id, "kind": item.kind, "source": item.source,
+                   "description": _text(item.description, 400), "width": item.width, "height": item.height}
+                  for item in db.query(Asset).filter_by(business_id=business.id)
+                  .order_by(Asset.id.desc()).limit(16).all()]
+    peers = [item for item in roadmap.get("posts", []) if isinstance(item, dict)
+             and item.get("uid") != post.get("uid")][:12]
+    campaign = [{"week": item.get("week"), "title": _text(item.get("title"), 160),
+                 "concept": _text(item.get("creative_concept"), 300),
+                 "scene": _text(item.get("scene_description"), 300),
+                 "composition": (item.get("design") or {}).get("composition"),
+                 "asset_id": item.get("image_asset_id")} for item in peers]
     return {
+        "assets": assets, "campaign_context": campaign,
         "goal": _text(plan.get("goal") or post.get("goal_fit")
                       or (roadmap.get("monthly_horizon_plan") or {}).get("hypothesis")),
         "audience": audience_context,

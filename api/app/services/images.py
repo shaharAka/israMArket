@@ -232,7 +232,7 @@ def build_image_prompt(post: dict, brand: dict, business: dict, dna: dict | None
     field = _field_key(business)
     photo = "\n".join(_photo_lines(dna, brand))
     return f"""
-Create one finished photograph for an Israeli small business's Instagram post.
+Create one finished photograph for this business's social post on {post.get('channel') or post.get('primary_outlet') or 'its chosen platform'}.
 It must look like a real photograph taken for this business: not a website screenshot,
 not a UI mockup, not a stock-library image, not an advert.
 

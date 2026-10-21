@@ -41,7 +41,9 @@ BRAND = {
     "palette": [],
 }
 PHOTO_DESIGN = {"composition": "full_bleed", "crop": "4:5", "text_position": "bottom", "text_mode": "headline"}
-CREATIVE = {"creative_concept": "c", "visual_style": "v", "scene_description": "a loaf on the counter",
+from _creative_fixtures import direction, fake_plan
+
+CREATIVE = {"direction": direction(), "creative_concept": "c", "visual_style": "v", "scene_description": "a loaf on the counter",
             "has_overlay": False, "overlay_headline": "", "overlay_sub": "", "overlay_badge": ""}
 
 
@@ -146,7 +148,7 @@ class ImageJobTestCase(unittest.TestCase):
             patcher = mock.patch.object(target, name, side_effect=AssertionError(f"unexpected {name} call"))
             patcher.start()
             self.addCleanup(patcher.stop)
-        designer = mock.patch("app.services.designer.strategy_json", return_value=json.dumps(CREATIVE))
+        designer = mock.patch("app.services.designer.strategy_json", side_effect=fake_plan)
         designer.start()
         self.addCleanup(designer.stop)
 

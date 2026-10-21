@@ -827,18 +827,6 @@
       }
     ]
   },
-  "m_01b83186fd6fbe76": {
-    "source": "הכרטיס הזה בנוי מטקסט על צבע המותג, בלי צילום. scene_description יכול להיות קצר.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 102,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_01b903ae1eb4fec6": {
     "source": "התשובות נשמרות בדפדפן. חשבון עדיין לא נדרש.",
     "language": "he",
@@ -1843,7 +1831,7 @@
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 289,
+        "line": 306,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -2713,7 +2701,7 @@
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 316,
+        "line": 333,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -4316,6 +4304,18 @@
       }
     ]
   },
+  "m_0904c249aaf88db2": {
+    "source": "תסריט הסרטון אינו רציף.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 178,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_092266f53d3dffcf": {
     "source": "לבנות את החודש סביב מה שביקשתם: \"{arg_0}\".",
     "language": "he",
@@ -5609,6 +5609,18 @@
     "references": [
       {
         "file": "api/app/services/software_site.py",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_0b96907b9ecefd45": {
+    "source": "פעולה אנושית או הדגמה כבר בפתיחה, התפתחות וסיום. לא תמונה עם זום ולא מודעת מצגת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
         "line": 23,
         "kind": "literal",
         "purpose": "copy"
@@ -8537,6 +8549,18 @@
       }
     ]
   },
+  "m_11eeae8a5f2ea9f2": {
+    "source": "הכותרת כוללת מחיר או הנחה שלא נמסרו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 168,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_11ef7856e8fe9897": {
     "source": "נתוני האתר יעזרו לבדוק את היעד: {arg_0}.",
     "language": "he",
@@ -9949,6 +9973,18 @@
       }
     ]
   },
+  "m_152566bf49c9b6fb": {
+    "source": "נבחר צילום נקי אבל התקבל כיתוב.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 170,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_152c4f535fe59b10": {
     "source": "משתפים הרגל עבודה מועיל ומקשרים אותו לערך של המוצר.",
     "language": "he",
@@ -10211,18 +10247,6 @@
         "file": "api/app/services/google_cost.py",
         "line": 277,
         "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
-  "m_15cdeae8cfd96bdf": {
-    "source": "הקומפוזיציה של הכרטיס: {arg_0}. מה הצילום חייב להשאיר: {arg_1}",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 104,
-        "kind": "template",
         "purpose": "copy"
       }
     ]
@@ -10933,6 +10957,18 @@
       }
     ]
   },
+  "m_17604a97804673ce": {
+    "source": "תובנה מקצועית או הדגמה ספציפית, עיצוב מאופק וקריא. לא להמציא תוצאות, ציטוטי לקוחות או מסכי מוצר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 24,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_17646ffaf7002bde": {
     "source": "מחיר לקליק בתחום",
     "language": "he",
@@ -11178,7 +11214,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 856,
+        "line": 865,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -12420,7 +12456,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 784,
+        "line": 793,
         "kind": "template",
         "purpose": "validation"
       }
@@ -13119,7 +13155,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 558,
+        "line": 566,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -17643,7 +17679,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 230,
+        "line": 233,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -19534,7 +19570,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1380,
+        "line": 1389,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -22686,18 +22722,6 @@
       }
     ]
   },
-  "m_2f469682f7b5ed01": {
-    "source": "\nבקשה מיוחדת מהמשתמש לגבי האסתטיקה או הסצנה: {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 96,
-        "kind": "template",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_2f4a568bcd9413bb": {
     "source": "שבוע 4 (22–30 בספטמבר)",
     "language": "he",
@@ -23551,7 +23575,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1019,
+        "line": 1028,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -23963,7 +23987,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1339,
+        "line": 1348,
         "kind": "template",
         "purpose": "copy"
       }
@@ -31328,7 +31352,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 264,
+        "line": 281,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -34863,7 +34887,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 693,
+        "line": 702,
         "kind": "template",
         "purpose": "validation"
       }
@@ -45657,7 +45681,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1347,
+        "line": 1356,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -45851,7 +45875,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 484,
+        "line": 492,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -46262,7 +46286,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 549,
+        "line": 557,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -49066,7 +49090,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_video.py",
-        "line": 203,
+        "line": 206,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -49257,7 +49281,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 980,
+        "line": 989,
         "kind": "template",
         "purpose": "validation"
       }
@@ -49593,6 +49617,18 @@
         "file": "web/lib/draft.ts",
         "line": 1114,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_68dab93af3497e9f": {
+    "source": "מסר ברור בתוך הפיד, סיבה קונקרטית להתעניין והקשר מקומי כשיש לו בסיס. בלי חיקוי של ריל טרנדי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 22,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -52821,7 +52857,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 210,
+        "line": 227,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -53062,18 +53098,6 @@
       }
     ]
   },
-  "m_7040e1900476ec34": {
-    "source": "הנחיית כיוון מבוקשת: {arg_0}",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 93,
-        "kind": "template",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_7041d6af646b870b": {
     "source": "איך מוצאים את החשבון הנכון?",
     "language": "he",
@@ -53154,7 +53178,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 721,
+        "line": 730,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -54479,7 +54503,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1356,
+        "line": 1365,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -61637,7 +61661,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 296,
+        "line": 313,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -62491,18 +62515,6 @@
         "file": "web/lib/draft.ts",
         "line": 324,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_845fa35f98b4b3ac": {
-    "source": "- התחושה: {arg_0}\n- העולם: {arg_1}\n- הצילום: {arg_2}\n- הטקסט: {arg_3}\n- אף פעם: {arg_4}\n",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 54,
-        "kind": "template",
-        "purpose": "copy"
       }
     ]
   },
@@ -64405,7 +64417,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1348,
+        "line": 1357,
         "kind": "template",
         "purpose": "copy"
       }
@@ -64899,6 +64911,18 @@
         "line": 212,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_899dd8d572648e7d": {
+    "source": "הכיתוב אינו תואם לפריסה שנבחרה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 161,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -66273,6 +66297,18 @@
       }
     ]
   },
+  "m_8cab79fc51273766": {
+    "source": "הכותרת ארוכה מדי לפוסט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 166,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_8cb373ea8eeddfc5": {
     "source": "כתבו במשפט קצר מה אתם מוכרים או עושים.",
     "language": "he",
@@ -66350,6 +66386,18 @@
         "line": 126,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8cde4d157178dc2b": {
+    "source": "היצירה מפנה לחומר שלא נמסר לתכנון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 173,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -68755,6 +68803,18 @@
       }
     ]
   },
+  "m_918bcb90c0eb1ef2": {
+    "source": "חסרה החלטה על כיתוב הפוסט.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 159,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_91920bd1e8f0822a": {
     "source": "המחקר נמשך. אפשר להמשיך ולחזור לשאלה בהמשך.",
     "language": "he",
@@ -68989,7 +69049,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1359,
+        "line": 1368,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -73520,18 +73580,6 @@
       }
     ]
   },
-  "m_9c4ac94a70d71bd9": {
-    "source": "הנחיית כיוון: צילום אותנטי עם כיתוב קצר בלבד (has_overlay=true). רוב הפריים נשאר לצילום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 89,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_9c5424c82c18d603": {
     "source": "תצוגה בלבד · בלי שינוי בחשבון",
     "language": "he",
@@ -74566,6 +74614,18 @@
         "file": "web/app/dev/dna/DnaQa.tsx",
         "line": 29,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_9e3bb826fad04edd": {
+    "source": "רעיון ויזואלי שמובן במבט, פתיחה חזקה לריל, וכיתוב שמוסיף הקשר במקום לחזור על התמונה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 21,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -78492,7 +78552,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1358,
+        "line": 1367,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80239,7 +80299,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1369,
+        "line": 1378,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -81588,7 +81648,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1136,
+        "line": 1145,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -82105,7 +82165,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1349,
+        "line": 1358,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83039,7 +83099,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1340,
+        "line": 1349,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83938,6 +83998,18 @@
         "file": "web/lib/api.ts",
         "line": 991,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b307ce6809d8e70b": {
+    "source": "הקומפוזיציה אינה מתאימה לסגנון ולפורמט שנבחרו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 154,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -87928,6 +88000,18 @@
       }
     ]
   },
+  "m_bc0bd4e342380fbe": {
+    "source": "לא התקבל תכנון יצירה מלא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 150,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_bc0cc379a0a4af72": {
     "source": "איך נראית משמרת כשהעיר בחופש",
     "language": "he",
@@ -91369,7 +91453,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 516,
+        "line": 524,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -93554,7 +93638,7 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 255,
+        "line": 272,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -94893,13 +94977,13 @@
     "references": [
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 280,
+        "line": 297,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/services/campaign_revisions.py",
-        "line": 283,
+        "line": 300,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -96080,6 +96164,18 @@
       }
     ]
   },
+  "m_ccc85a6e8aed31ca": {
+    "source": "תסריט הסרטון אינו מתאים לאורך שנבחר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 181,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_ccc8e785f585e77c": {
     "source": "לא נוצרה תמונה. אפשר ליצור תמונה חדשה או לבחור אחת מהתמונות שלכם.",
     "language": "he",
@@ -96612,7 +96708,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1348,
+        "line": 1357,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -98884,18 +98980,6 @@
       }
     ]
   },
-  "m_d36a6099d2e465ee": {
-    "source": "הנחיית כיוון: תמונת גיבור נקייה לחלוטין. בלי כיתוב בכלל (has_overlay=false). כל הכוח בצילום עצמו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 85,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_d373b5004a7e0645": {
     "source": "נבדוק מאיפה מגיעים אנשים לאתר ומה הם עושים בו, כדי לדייק את התוכנית.",
     "language": "he",
@@ -99245,7 +99329,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1359,
+        "line": 1368,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -99524,7 +99608,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 650,
+        "line": 658,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -102355,6 +102439,18 @@
       }
     ]
   },
+  "m_da6b0bf598dfb870": {
+    "source": "פריסת הפוסט אינה נתמכת בעורך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 157,
+        "kind": "literal",
+        "purpose": "validation"
+      }
+    ]
+  },
   "m_da6d98e8608ad413": {
     "source": "סטודיו שקד",
     "language": "he",
@@ -102692,61 +102788,61 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 420,
+        "line": 428,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 591,
+        "line": 599,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 645,
+        "line": 653,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 727,
+        "line": 736,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 767,
+        "line": 776,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 833,
+        "line": 842,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 920,
+        "line": 929,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1065,
+        "line": 1074,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1101,
+        "line": 1110,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1131,
+        "line": 1140,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -103664,18 +103760,6 @@
         "file": "web/components/design/ConnectionWorkshop.tsx",
         "line": 138,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_dcbcb023e00de7a2": {
-    "source": "סגנון הצילום באתר: {arg_0}\nסגנון ויזואלי: {arg_1}",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 47,
-        "kind": "template",
-        "purpose": "copy"
       }
     ]
   },
@@ -107330,18 +107414,6 @@
       }
     ]
   },
-  "m_e48bb22b868d279a": {
-    "source": "הנחיית כיוון: כרטיס הודעה עם כיתוב ברור (has_overlay=true). כותרת קצרה שהמסר שלה עובר מיד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 87,
-        "kind": "literal",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_e493b946ef77afd1": {
     "source": "בלי מידע על מקורות הלקוחות",
     "language": "he",
@@ -108149,7 +108221,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1338,
+        "line": 1347,
         "kind": "template",
         "purpose": "copy"
       }
@@ -111552,18 +111624,6 @@
       }
     ]
   },
-  "m_eca1cc9c3b009fbc": {
-    "source": "- גרייד צבע: {arg_0}\n- אור: {arg_1}\n- זווית מצלמה: {arg_2}\n- רקע: {arg_3}\n- אביזרים ששייכים לעסק הזה: {arg_4}\n- אף פעם: {arg_5}",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 61,
-        "kind": "template",
-        "purpose": "copy"
-      }
-    ]
-  },
   "m_eca2face7133b80f": {
     "source": "מילים עם מספרים אמיתיים מגוגל",
     "language": "he",
@@ -114212,6 +114272,18 @@
         "file": "web/lib/api.ts",
         "line": 648,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_f2049be10f9d5e91": {
+    "source": "תכנון תמונה אינו כולל תסריט סרטון.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/creative_director.py",
+        "line": 183,
+        "kind": "literal",
+        "purpose": "validation"
       }
     ]
   },
@@ -116937,13 +117009,13 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1170,
+        "line": 1179,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1282,
+        "line": 1291,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -117628,18 +117700,6 @@
         "file": "web/components/decisions/OwnerAnswers.tsx",
         "line": 61,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_f9541a6afa342949": {
-    "source": "לא הצלחנו לעצב את הפוסט. נסו שוב.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 177,
-        "kind": "literal",
-        "purpose": "validation"
       }
     ]
   },
@@ -118886,18 +118946,6 @@
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 23,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_fbdc260800e5fd2e": {
-    "source": "הנחיית כיוון: כותרת גדולה ומודרנית (has_overlay=true) על אזור שקט בצילום.",
-    "language": "he",
-    "references": [
-      {
-        "file": "api/app/services/designer.py",
-        "line": 91,
-        "kind": "literal",
-        "purpose": "copy"
       }
     ]
   },

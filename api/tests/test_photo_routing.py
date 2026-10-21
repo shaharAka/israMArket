@@ -345,7 +345,7 @@ class EndpointTest(DnaTestCase, unittest.TestCase):
         self.assertEqual(self.usage(), [])
 
     def test_the_design_endpoint_uses_the_real_photo_too(self):
-        creative = {"creative_concept": "c", "visual_style": "v", "scene_description": "a challah on the counter",
+        creative = {"direction": __import__("_creative_fixtures").direction("circle_crop", "headline"), "creative_concept": "c", "visual_style": "v", "scene_description": "a challah on the counter",
                     "has_overlay": True, "overlay_headline": "חלות לשישי", "overlay_badge": "שישי"}
         with mock.patch("app.services.designer.strategy_json", return_value=json.dumps(creative)) as designer, \
                 mock.patch.object(muse_image, "edit", return_value=(png_bytes(4, 5), "image/png")):
