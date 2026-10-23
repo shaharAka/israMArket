@@ -56,7 +56,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 408,
+        "line": 482,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -509,12 +509,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1499,
+        "line": 1501,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1530,
+        "line": 1532,
         "kind": "literal"
       }
     ]
@@ -760,7 +760,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 167,
+        "line": 168,
         "kind": "literal"
       }
     ]
@@ -1006,7 +1006,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 318,
+        "line": 319,
         "kind": "literal"
       }
     ]
@@ -1101,7 +1101,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3383,
+        "line": 3386,
         "kind": "literal"
       }
     ]
@@ -1371,17 +1371,17 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
+        "line": 154,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 230,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ui.tsx",
-        "line": 145,
+        "line": 147,
         "kind": "literal"
       },
       {
@@ -1442,7 +1442,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1112,
+        "line": 1114,
         "kind": "literal"
       }
     ]
@@ -1767,7 +1767,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 233,
+        "line": 234,
         "kind": "literal",
         "purpose": "display"
       }
@@ -1877,6 +1877,11 @@
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 37,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 20,
         "kind": "literal"
       },
       {
@@ -2071,7 +2076,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 393,
+        "line": 403,
         "kind": "literal"
       }
     ]
@@ -2082,17 +2087,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1565,
+        "line": 1567,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1667,
+        "line": 1669,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1802,
+        "line": 1804,
         "kind": "literal"
       }
     ]
@@ -2441,7 +2446,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 146,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -2545,7 +2550,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 367,
+        "line": 368,
         "kind": "literal"
       }
     ]
@@ -2556,7 +2561,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 363,
+        "line": 373,
         "kind": "literal"
       }
     ]
@@ -2641,7 +2646,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 85,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -2690,7 +2695,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1395,
+        "line": 1397,
         "kind": "literal"
       }
     ]
@@ -2846,7 +2851,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 327,
+        "line": 328,
         "kind": "literal",
         "purpose": "display"
       },
@@ -2921,12 +2926,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 71,
+        "line": 79,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 185,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -2937,7 +2942,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3382,
+        "line": 3385,
         "kind": "literal"
       }
     ]
@@ -3296,7 +3301,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 442,
+        "line": 443,
         "kind": "literal"
       }
     ]
@@ -3307,7 +3312,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 158,
+        "line": 159,
         "kind": "jsx"
       }
     ]
@@ -3540,7 +3545,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 209,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -3613,7 +3618,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 191,
+        "line": 192,
         "kind": "literal"
       },
       {
@@ -4078,7 +4083,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 473,
+        "line": 557,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -4136,6 +4141,22 @@
       }
     ]
   },
+  "m_086ada1646bda76b": {
+    "source": "כיוון לעריכה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignDirection.tsx",
+        "line": 14,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignDirection.tsx",
+        "line": 15,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_08762a052959a9eb": {
     "source": "המחיר",
     "language": "he",
@@ -4157,6 +4178,17 @@
         "line": 265,
         "kind": "template",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_087c1255a96b26f5": {
+    "source": "ליצור סרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 265,
+        "kind": "literal"
       }
     ]
   },
@@ -4727,6 +4759,17 @@
       }
     ]
   },
+  "m_09aa08aa6ac76fd2": {
+    "source": "תארו שירות אחד שאתם נותנים ולמי הוא מתאים. למשל: עיצוב דירות למשפחות לפני שיפוץ.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 16,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_09ac8102390fb9a1": {
     "source": "אין נתונים",
     "language": "he",
@@ -4898,7 +4941,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 177,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -4945,7 +4988,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 837,
+        "line": 839,
         "kind": "literal"
       }
     ]
@@ -5098,7 +5141,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
+        "line": 211,
         "kind": "literal"
       }
     ]
@@ -5383,7 +5426,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -5394,7 +5437,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 167,
+        "line": 168,
         "kind": "literal"
       }
     ]
@@ -5427,7 +5470,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 136,
+        "line": 143,
         "kind": "literal"
       }
     ]
@@ -5505,7 +5548,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 508,
+        "line": 593,
         "kind": "template",
         "purpose": "copy"
       }
@@ -5528,7 +5571,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1685,
+        "line": 1687,
         "kind": "literal"
       }
     ]
@@ -5539,7 +5582,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 352,
+        "line": 379,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -5860,7 +5903,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3478,
+        "line": 3481,
         "kind": "literal"
       }
     ]
@@ -5995,7 +6038,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 60,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -6006,7 +6049,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 24,
+        "line": 30,
         "kind": "literal"
       }
     ]
@@ -6293,7 +6336,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 10,
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -6497,7 +6540,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 19,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -6639,6 +6682,17 @@
       }
     ]
   },
+  "m_0dd8ada44f913380": {
+    "source": "חדדו את המסר לקהל של הפוסט. הבליטו את ההזמנה לפעולה הקיימת, בלי להוסיף פרטים, ושמרו על הסגנון של העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignDirection.tsx",
+        "line": 13,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0ddb0c799ef2b48a": {
     "source": "עדיין יש נתוני עניין בפוסט",
     "language": "he",
@@ -6707,7 +6761,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1477,
+        "line": 1479,
         "kind": "literal"
       }
     ]
@@ -6913,7 +6967,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 166,
+        "line": 173,
         "kind": "literal"
       }
     ]
@@ -7254,7 +7308,7 @@
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 346,
+        "line": 349,
         "kind": "template"
       },
       {
@@ -7487,7 +7541,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 199,
+        "line": 206,
         "kind": "literal"
       }
     ]
@@ -7509,7 +7563,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3645,
+        "line": 3648,
         "kind": "template"
       },
       {
@@ -7722,7 +7776,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 676,
+        "line": 678,
         "kind": "literal"
       }
     ]
@@ -7733,7 +7787,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1030,
+        "line": 1032,
         "kind": "literal"
       }
     ]
@@ -7755,7 +7809,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 815,
+        "line": 816,
         "kind": "literal",
         "purpose": "display"
       }
@@ -7778,7 +7832,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 667,
+        "line": 668,
         "kind": "literal"
       }
     ]
@@ -8041,7 +8095,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1253,
+        "line": 1255,
         "kind": "literal"
       }
     ]
@@ -8281,7 +8335,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 109,
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -8320,7 +8374,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 378,
+        "line": 406,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -8434,7 +8488,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 356,
+        "line": 383,
         "kind": "template",
         "purpose": "copy"
       }
@@ -8485,6 +8539,17 @@
       {
         "file": "web/components/landing-v2/personaPages.ts",
         "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_11b676f41d62339e": {
+    "source": "להשתמש בכיוון הזה לפוסט הזה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignDirection.tsx",
+        "line": 17,
         "kind": "literal"
       }
     ]
@@ -8679,6 +8744,18 @@
         "line": 47,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 431,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 432,
+        "kind": "literal",
+        "purpose": "logic-reference"
       }
     ]
   },
@@ -8755,7 +8832,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 234,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -9435,7 +9512,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1030,
+        "line": 1032,
         "kind": "literal"
       }
     ]
@@ -9472,17 +9549,6 @@
         "line": 28,
         "kind": "literal",
         "purpose": "validation"
-      }
-    ]
-  },
-  "m_13aacedb40f46d15": {
-    "source": "{arg_0} פוסטים בתוכנית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 27,
-        "kind": "literal"
       }
     ]
   },
@@ -9556,7 +9622,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 174,
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -9636,7 +9702,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 164,
+        "line": 171,
         "kind": "literal"
       }
     ]
@@ -9692,7 +9758,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1585,
+        "line": 1587,
         "kind": "literal"
       }
     ]
@@ -9808,7 +9874,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 279,
         "kind": "literal"
       }
     ]
@@ -9825,7 +9891,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 507,
+        "line": 592,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -10426,7 +10492,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1600,
+        "line": 1602,
         "kind": "literal"
       }
     ]
@@ -10510,7 +10576,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 749,
+        "line": 751,
         "kind": "literal"
       }
     ]
@@ -10532,7 +10598,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 94,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -10658,7 +10724,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 175,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -10806,7 +10872,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1874,
+        "line": 1876,
         "kind": "literal"
       }
     ]
@@ -10869,7 +10935,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 221,
+        "line": 228,
         "kind": "literal"
       }
     ]
@@ -10880,7 +10946,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1112,
+        "line": 1114,
         "kind": "literal"
       }
     ]
@@ -11086,6 +11152,17 @@
       }
     ]
   },
+  "m_1773cb5bc8eb544f": {
+    "source": "ספרו קניות, לא מבקרים בחנות. דוח הקופה של החודש האחרון יכול לעזור למצוא את המספר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 52,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_17791c4ee20e757c": {
     "source": "חשבון פרטי יהפוך לציבורי. השמות בעברית באפליקציה יכולים להיות מעט שונים.",
     "language": "he",
@@ -11250,7 +11327,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 856,
+        "line": 863,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -11284,7 +11361,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 120,
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -11386,7 +11463,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 231,
+        "line": 232,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11467,7 +11544,7 @@
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 72,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -11539,7 +11616,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 444,
+        "line": 445,
         "kind": "literal"
       }
     ]
@@ -11550,7 +11627,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 187,
+        "line": 194,
         "kind": "literal"
       }
     ]
@@ -11667,7 +11744,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       },
       {
@@ -12217,7 +12294,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 670,
+        "line": 672,
         "kind": "literal"
       }
     ]
@@ -12475,7 +12552,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 784,
+        "line": 791,
         "kind": "template",
         "purpose": "validation"
       }
@@ -12617,22 +12694,22 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3196,
+        "line": 3199,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3579,
+        "line": 3582,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3590,
+        "line": 3593,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3617,
+        "line": 3620,
         "kind": "literal"
       },
       {
@@ -12640,6 +12717,17 @@
         "line": 34,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_1a4d945bb6be2989": {
+    "source": "מה לומדים מהקמפיין?",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 216,
+        "kind": "literal"
       }
     ]
   },
@@ -12706,7 +12794,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1470,
+        "line": 1472,
         "kind": "literal"
       }
     ]
@@ -13016,7 +13104,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3393,
+        "line": 3396,
         "kind": "literal"
       }
     ]
@@ -13226,7 +13314,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -13286,12 +13374,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       },
       {
@@ -13318,7 +13406,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1214,
+        "line": 1216,
         "kind": "literal"
       }
     ]
@@ -13497,7 +13585,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 70,
+        "line": 71,
         "kind": "literal",
         "purpose": "display"
       },
@@ -13630,7 +13718,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1617,
+        "line": 1619,
         "kind": "literal"
       }
     ]
@@ -13719,7 +13807,17 @@
       },
       {
         "file": "web/lib/api.ts",
+        "line": 2215,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/api.ts",
         "line": 2218,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/api.ts",
+        "line": 2219,
         "kind": "literal"
       },
       {
@@ -13754,7 +13852,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1926,
+        "line": 1928,
         "kind": "literal"
       }
     ]
@@ -13833,7 +13931,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 280,
         "kind": "literal"
       }
     ]
@@ -13900,7 +13998,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1955,
+        "line": 1957,
         "kind": "literal"
       }
     ]
@@ -13939,16 +14037,6 @@
       {
         "file": "web/components/plan/HypothesisStatusLine.tsx",
         "line": 47,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/api.ts",
-        "line": 2215,
-        "kind": "literal"
-      },
-      {
-        "file": "web/lib/api.ts",
-        "line": 2219,
         "kind": "literal"
       },
       {
@@ -14120,7 +14208,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3259,
+        "line": 3262,
         "kind": "template"
       }
     ]
@@ -14381,7 +14469,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1127,
+        "line": 1129,
         "kind": "literal"
       }
     ]
@@ -14442,7 +14530,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 52,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       },
@@ -15014,7 +15102,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1757,
+        "line": 1759,
         "kind": "literal"
       }
     ]
@@ -15285,7 +15373,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 472,
+        "line": 556,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -15347,7 +15435,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 440,
+        "line": 441,
         "kind": "literal",
         "purpose": "display"
       }
@@ -15711,7 +15799,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 696,
+        "line": 698,
         "kind": "literal"
       }
     ]
@@ -15755,7 +15843,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 641,
+        "line": 642,
         "kind": "literal"
       }
     ]
@@ -16007,6 +16095,17 @@
       }
     ]
   },
+  "m_20e4fc6f925f548e": {
+    "source": "קהל שקל לזהות יעזור לדייק בהמשך. למשל: בעלי דירות לפני שיפוץ, במקום ״כולם״.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_20f090ce2c5a6689": {
     "source": "לחזור לשבוע",
     "language": "he",
@@ -16108,7 +16207,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3459,
+        "line": 3462,
         "kind": "literal",
         "purpose": "display"
       }
@@ -16166,7 +16265,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 108,
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -16360,7 +16459,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 124,
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -16654,7 +16753,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1217,
+        "line": 1219,
         "kind": "literal"
       }
     ]
@@ -16705,6 +16804,17 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 157,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2246807be126d729": {
+    "source": "לא הוגדר תקציב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -17076,7 +17186,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 177,
+        "line": 184,
         "kind": "literal",
         "purpose": "display"
       }
@@ -17297,17 +17407,6 @@
       }
     ]
   },
-  "m_23bfa25ccab01a74": {
-    "source": "לכל שבוע מטרה. בחרו פוסט כדי לבדוק, לערוך או להכין גרסה חדשה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 190,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_23c07ff123e8ee08": {
     "source": "חסרים כותרת, hook או caption.",
     "language": "he",
@@ -17409,7 +17508,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 630,
+        "line": 632,
         "kind": "literal"
       }
     ]
@@ -17488,7 +17587,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 526,
+        "line": 528,
         "kind": "literal"
       }
     ]
@@ -17564,6 +17663,18 @@
         "file": "web/lib/dna/samples.ts",
         "line": 206,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_243a848a9d2289a7": {
+    "source": "ב-28 הימים האחרונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 435,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -17714,7 +17825,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 2012,
+        "line": 2014,
         "kind": "literal"
       }
     ]
@@ -17772,6 +17883,17 @@
       {
         "file": "web/app/strategy/page.tsx",
         "line": 279,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_24a33a8f76e757f4": {
+    "source": "מזמינים עד חמישי ב־18:00 ואוספים בשישי.\nבגטים, פוקצ׳ה עם עגבניות צלויות, ומארז משפחתי שמספיק לכל הסוכה. דפדפו לראות מה יש בכל אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/api.ts",
+        "line": 1099,
         "kind": "literal"
       }
     ]
@@ -17907,7 +18029,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 210,
+        "line": 211,
         "kind": "literal"
       }
     ]
@@ -17963,7 +18085,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 217,
+        "line": 253,
         "kind": "literal"
       }
     ]
@@ -17997,7 +18119,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1322,
+        "line": 1324,
         "kind": "literal"
       }
     ]
@@ -18188,7 +18310,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3811,
+        "line": 3814,
         "kind": "literal"
       }
     ]
@@ -18747,7 +18869,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 37,
+        "line": 44,
         "kind": "literal",
         "purpose": "display"
       }
@@ -18838,7 +18960,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 243,
+        "line": 283,
         "kind": "literal"
       },
       {
@@ -19041,7 +19163,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 205,
+        "line": 212,
         "kind": "literal",
         "purpose": "display"
       }
@@ -19096,7 +19218,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 374,
+        "line": 402,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19249,7 +19371,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 39,
+        "line": 46,
         "kind": "literal"
       }
     ]
@@ -19380,7 +19502,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 231,
         "kind": "literal"
       }
     ]
@@ -19402,7 +19524,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3707,
+        "line": 3710,
         "kind": "literal"
       }
     ]
@@ -19424,7 +19546,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3386,
+        "line": 3389,
         "kind": "literal"
       }
     ]
@@ -19470,7 +19592,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 78,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -19515,7 +19637,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 146,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -19605,7 +19727,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1380,
+        "line": 1387,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -19617,12 +19739,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -19730,7 +19852,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1134,
+        "line": 1136,
         "kind": "literal"
       }
     ]
@@ -19972,12 +20094,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1667,
+        "line": 1669,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1802,
+        "line": 1804,
         "kind": "literal"
       }
     ]
@@ -20061,7 +20183,12 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 47,
+        "line": 12,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -20073,6 +20200,11 @@
       {
         "file": "web/components/AssetCard.tsx",
         "line": 37,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 262,
         "kind": "literal"
       },
       {
@@ -20201,7 +20333,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 346,
+        "line": 356,
         "kind": "literal"
       }
     ]
@@ -20461,7 +20593,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 619,
+        "line": 620,
         "kind": "jsx"
       }
     ]
@@ -20688,7 +20820,7 @@
       },
       {
         "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 22,
+        "line": 35,
         "kind": "literal"
       },
       {
@@ -20916,7 +21048,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3368,
+        "line": 3371,
         "kind": "literal"
       }
     ]
@@ -20960,7 +21092,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1617,
+        "line": 1619,
         "kind": "literal"
       }
     ]
@@ -20995,7 +21127,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 93,
+        "line": 100,
         "kind": "literal",
         "purpose": "display"
       }
@@ -21100,7 +21232,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 448,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -21122,12 +21254,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1703,
+        "line": 1705,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1789,
+        "line": 1791,
         "kind": "literal"
       }
     ]
@@ -21138,7 +21270,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1052,
+        "line": 1054,
         "kind": "literal"
       }
     ]
@@ -21195,7 +21327,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 488,
+        "line": 490,
         "kind": "literal"
       }
     ]
@@ -21310,7 +21442,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 220,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -21557,7 +21689,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 826,
+        "line": 827,
         "kind": "literal"
       }
     ]
@@ -21659,6 +21791,17 @@
       }
     ]
   },
+  "m_2cfebb9e5e5a2611": {
+    "source": "התקציב מופיע בתוכנית המלאה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 34,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2d02652a8a362dee": {
     "source": "עוד פוסט אחד",
     "language": "he",
@@ -21687,7 +21830,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3723,
+        "line": 3726,
         "kind": "literal"
       }
     ]
@@ -22060,6 +22203,12 @@
         "line": 65,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 435,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -22348,6 +22497,17 @@
       }
     ]
   },
+  "m_2e6dcf43608eaa59": {
+    "source": "לשנות את התוכן בסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 265,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_2e700dbb4f5cb03e": {
     "source": "אווירה משפחתית",
     "language": "he",
@@ -22410,7 +22570,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3797,
+        "line": 3800,
         "kind": "literal",
         "purpose": "display"
       }
@@ -22461,17 +22621,17 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 131,
+        "line": 138,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 159,
+        "line": 166,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 201,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -22607,7 +22767,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 188,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -22693,7 +22853,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 28,
+        "line": 23,
         "kind": "literal"
       }
     ]
@@ -22851,7 +23011,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -22885,6 +23045,17 @@
       {
         "file": "web/components/landing-v2/BusinessScreenPreview.tsx",
         "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_2f7e57928ca942a1": {
+    "source": "הפרידו בין פניות לבין עבודות שנסגרו. ספרו את התוצאה שבחרתם, לפי היומן או רשימת הלקוחות שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -22935,12 +23106,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 210,
         "kind": "literal"
       },
       {
@@ -23046,7 +23217,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1465,
+        "line": 1467,
         "kind": "literal"
       }
     ]
@@ -23108,7 +23279,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 395,
+        "line": 405,
         "kind": "literal"
       }
     ]
@@ -23175,7 +23346,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 585,
+        "line": 586,
         "kind": "literal"
       }
     ]
@@ -23528,7 +23699,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3119,
+        "line": 3122,
         "kind": "literal"
       },
       {
@@ -23620,7 +23791,7 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1019,
+        "line": 1026,
         "kind": "literal",
         "purpose": "logic-reference"
       },
@@ -24027,12 +24198,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3450,
+        "line": 3453,
         "kind": "template"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1339,
+        "line": 1346,
         "kind": "template",
         "purpose": "copy"
       }
@@ -24722,7 +24893,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1926,
+        "line": 1928,
         "kind": "literal"
       }
     ]
@@ -24778,7 +24949,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -24800,7 +24971,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1427,
+        "line": 1429,
         "kind": "literal"
       }
     ]
@@ -24865,6 +25036,11 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 85,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 20,
         "kind": "literal"
       },
       {
@@ -25493,6 +25669,18 @@
       }
     ]
   },
+  "m_34717c9a95ee9c00": {
+    "source": "הרכישות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 431,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_34793595a94d1606": {
     "source": "תזכורת לפני יום הולדת או חג מחזירה אותם.",
     "language": "he",
@@ -25826,7 +26014,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -25903,12 +26091,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 205,
+        "line": 240,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 209,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -26103,7 +26291,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 231,
+        "line": 232,
         "kind": "literal",
         "purpose": "display"
       }
@@ -26195,7 +26383,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3381,
+        "line": 3384,
         "kind": "literal"
       }
     ]
@@ -26565,6 +26753,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 218,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/trial.ts",
         "line": 535,
         "kind": "literal"
@@ -26616,12 +26809,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1220,
+        "line": 1222,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       },
       {
@@ -27054,7 +27247,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 123,
+        "line": 130,
         "kind": "literal"
       }
     ]
@@ -27362,7 +27555,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1521,
+        "line": 1523,
         "kind": "literal"
       }
     ]
@@ -27662,7 +27855,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 234,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -27673,7 +27866,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 200,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -27758,7 +27951,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1820,
+        "line": 1822,
         "kind": "literal"
       }
     ]
@@ -27808,6 +28001,18 @@
       }
     ]
   },
+  "m_39763b7e34918bec": {
+    "source": "{arg_0} עצמן עדיין לא נמדדו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 432,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_397a10e1b16cf57c": {
     "source": "רשמנו. ניקח את זה בחשבון בתוכנית.",
     "language": "he",
@@ -27833,6 +28038,17 @@
         "line": 665,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_39811b2f700973bf": {
+    "source": "ציינו מה אפשר למצוא אצלכם ואיפה. למשל: מאפייה בחיפה עם לחמי מחמצת ואיסוף בבוקר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 18,
+        "kind": "literal"
       }
     ]
   },
@@ -27864,7 +28080,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 175,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -28067,7 +28283,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3762,
+        "line": 3765,
         "kind": "literal"
       }
     ]
@@ -28164,7 +28380,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 102,
+        "line": 109,
         "kind": "literal"
       }
     ]
@@ -28175,7 +28391,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 613,
+        "line": 615,
         "kind": "literal"
       }
     ]
@@ -28379,7 +28595,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 182,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -28560,7 +28776,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 219,
+        "line": 255,
         "kind": "literal"
       }
     ]
@@ -28616,7 +28832,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 421,
+        "line": 422,
         "kind": "literal"
       }
     ]
@@ -28677,7 +28893,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3677,
+        "line": 3680,
         "kind": "template"
       },
       {
@@ -28752,6 +28968,17 @@
       }
     ]
   },
+  "m_3bc7fc17e2250899": {
+    "source": "ספרו איזו משימה המוצר פותר ולמי. למשל: מערכת לתיאום תורים עבור מרפאות קטנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 19,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_3bd09f230738d651": {
     "source": "אפשר לפתוח את דף העסק ב-Safari, ולבחור שיתוף ואז העתקה. אין צורך להעביר סיסמה.",
     "language": "he",
@@ -28812,7 +29039,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3744,
+        "line": 3747,
         "kind": "literal"
       }
     ]
@@ -28880,7 +29107,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 74,
+        "line": 76,
         "kind": "literal"
       },
       {
@@ -29114,7 +29341,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 717,
+        "line": 718,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29570,7 +29797,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 834,
+        "line": 835,
         "kind": "literal",
         "purpose": "display"
       }
@@ -29676,7 +29903,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 581,
+        "line": 582,
         "kind": "literal"
       }
     ]
@@ -29722,7 +29949,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1906,
+        "line": 1908,
         "kind": "literal"
       }
     ]
@@ -30062,7 +30289,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 375,
+        "line": 403,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -30108,7 +30335,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 135,
+        "line": 142,
         "kind": "literal",
         "purpose": "display"
       }
@@ -30232,12 +30459,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 210,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 212,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -30294,7 +30521,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 221,
+        "line": 257,
         "kind": "literal"
       }
     ]
@@ -30322,7 +30549,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -30377,7 +30604,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 17,
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -30465,7 +30692,7 @@
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 29,
+        "line": 24,
         "kind": "literal"
       },
       {
@@ -30676,7 +30903,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 232,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -30825,8 +31052,13 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 223,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -30854,7 +31086,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -31110,6 +31342,17 @@
       }
     ]
   },
+  "m_40d4735f8e23e2a5": {
+    "source": "בחרו את הדרכים שכבר מביאות אליכם אנשים, גם אם אלה המלצות מפה לאוזן ולא פרסום בתשלום.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 33,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_40d966e14a106a95": {
     "source": "ספורט",
     "language": "he",
@@ -31162,7 +31405,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1932,
+        "line": 1934,
         "kind": "literal"
       }
     ]
@@ -31195,7 +31438,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 122,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -31233,7 +31476,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -31402,6 +31645,11 @@
       {
         "file": "web/components/landing-v2/connectionExamples.ts",
         "line": 28,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 20,
         "kind": "literal"
       },
       {
@@ -31615,7 +31863,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1048,
+        "line": 1050,
         "kind": "literal"
       }
     ]
@@ -31648,7 +31896,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 364,
+        "line": 391,
         "kind": "template",
         "purpose": "copy"
       }
@@ -31671,7 +31919,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 161,
+        "line": 162,
         "kind": "jsx"
       }
     ]
@@ -31743,7 +31991,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -31827,7 +32075,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 177,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -32324,7 +32572,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 230,
         "kind": "literal",
         "purpose": "display"
       },
@@ -32787,7 +33035,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 174,
+        "line": 196,
         "kind": "literal"
       }
     ]
@@ -32900,7 +33148,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3850,
+        "line": 3853,
         "kind": "template"
       }
     ]
@@ -32979,7 +33227,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 600,
+        "line": 601,
         "kind": "literal",
         "purpose": "display"
       },
@@ -33097,7 +33345,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1789,
+        "line": 1791,
         "kind": "literal"
       }
     ]
@@ -33192,7 +33440,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 180,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -33337,7 +33585,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1250,
+        "line": 1252,
         "kind": "literal"
       }
     ]
@@ -33677,7 +33925,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 404,
+        "line": 405,
         "kind": "literal",
         "purpose": "display"
       }
@@ -33756,7 +34004,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 116,
+        "line": 123,
         "kind": "literal"
       }
     ]
@@ -34043,17 +34291,17 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 273,
+        "line": 283,
         "kind": "literal"
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 398,
+        "line": 408,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 188,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -34397,7 +34645,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 157,
+        "line": 164,
         "kind": "literal"
       }
     ]
@@ -34466,7 +34714,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 35,
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -34712,8 +34960,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/lib/releases.ts",
-        "line": 33,
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 218,
         "kind": "literal"
       },
       {
@@ -34723,7 +34971,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 89,
+        "line": 47,
         "kind": "literal"
       },
       {
@@ -34734,6 +34982,11 @@
       {
         "file": "web/lib/releases.ts",
         "line": 103,
+        "kind": "literal"
+      },
+      {
+        "file": "web/lib/releases.ts",
+        "line": 110,
         "kind": "literal"
       },
       {
@@ -34912,17 +35165,17 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 26,
+        "line": 33,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 54,
+        "line": 61,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 80,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -34991,7 +35244,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 693,
+        "line": 700,
         "kind": "template",
         "purpose": "validation"
       }
@@ -35514,7 +35767,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 233,
+        "line": 234,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35526,7 +35779,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 280,
         "kind": "literal"
       }
     ]
@@ -35595,7 +35848,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 124,
+        "line": 125,
         "kind": "literal"
       }
     ]
@@ -35986,7 +36239,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1973,
+        "line": 1975,
         "kind": "literal"
       },
       {
@@ -36257,7 +36510,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 79,
+        "line": 86,
         "kind": "literal"
       }
     ]
@@ -36340,7 +36593,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -36625,7 +36878,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -36636,7 +36889,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1045,
+        "line": 1047,
         "kind": "literal"
       }
     ]
@@ -36647,7 +36900,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1253,
+        "line": 1255,
         "kind": "literal"
       }
     ]
@@ -36664,7 +36917,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 479,
+        "line": 480,
         "kind": "literal",
         "purpose": "display"
       }
@@ -36926,7 +37179,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 25,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -37226,7 +37479,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 785,
+        "line": 786,
         "kind": "literal"
       }
     ]
@@ -37340,7 +37593,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 399,
+        "line": 409,
         "kind": "literal"
       }
     ]
@@ -37555,7 +37808,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1771,
+        "line": 1773,
         "kind": "literal"
       }
     ]
@@ -37698,12 +37951,12 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 711,
+        "line": 712,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 733,
+        "line": 734,
         "kind": "literal"
       },
       {
@@ -38105,7 +38358,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 219,
+        "line": 226,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38404,7 +38657,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 181,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -38415,7 +38668,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1356,
+        "line": 1358,
         "kind": "literal"
       }
     ]
@@ -38437,7 +38690,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 710,
+        "line": 711,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38505,7 +38758,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 62,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -38528,7 +38781,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 280,
         "kind": "literal"
       }
     ]
@@ -38763,7 +39016,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 143,
+        "line": 150,
         "kind": "literal"
       }
     ]
@@ -38774,7 +39027,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3673,
+        "line": 3676,
         "kind": "literal"
       },
       {
@@ -38852,7 +39105,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -38868,7 +39121,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 51,
+        "line": 50,
         "kind": "literal",
         "purpose": "display"
       },
@@ -38930,7 +39183,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 191,
+        "line": 198,
         "kind": "literal",
         "purpose": "display"
       }
@@ -39133,13 +39386,24 @@
       }
     ]
   },
+  "m_52552134298837e6": {
+    "source": "ספרו הזמנות שהושלמו, לא כניסות לאתר או מוצרים שנוספו לסל. אם המספר לא מולכם, אפשר לבחור טווח.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 46,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_526e8a9db48bb992": {
     "source": "ל־{arg_0}",
     "language": "he",
     "references": [
       {
         "file": "web/components/start/ui.tsx",
-        "line": 346,
+        "line": 349,
         "kind": "template"
       },
       {
@@ -39330,7 +39594,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 128,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -39410,12 +39674,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 32,
+        "line": 28,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 33,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -39556,7 +39820,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 270,
+        "line": 280,
         "kind": "literal"
       }
     ]
@@ -39819,7 +40083,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 937,
+        "line": 939,
         "kind": "literal"
       }
     ]
@@ -39894,42 +40158,42 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3151,
+        "line": 3154,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3172,
+        "line": 3175,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3193,
+        "line": 3196,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3214,
+        "line": 3217,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3232,
+        "line": 3235,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3268,
+        "line": 3271,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3335,
+        "line": 3338,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3419,
+        "line": 3422,
         "kind": "literal"
       }
     ]
@@ -39957,7 +40221,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1250,
+        "line": 1252,
         "kind": "literal"
       }
     ]
@@ -40145,7 +40409,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 596,
+        "line": 598,
         "kind": "literal"
       }
     ]
@@ -40595,13 +40859,24 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 167,
+        "line": 168,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/lib/uxFlows.ts",
         "line": 106,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_55a359d757b656b7": {
+    "source": "שבועות הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -40769,7 +41044,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -40853,7 +41128,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -41040,7 +41315,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 202,
+        "line": 237,
         "kind": "literal"
       }
     ]
@@ -41123,7 +41398,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 155,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -41134,7 +41409,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 338,
+        "line": 365,
         "kind": "template",
         "purpose": "copy"
       }
@@ -41197,7 +41472,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 213,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -41419,17 +41694,6 @@
         "line": 99,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_575d70a482364ff9": {
-    "source": "איך נבדוק התקדמות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 22,
-        "kind": "literal"
       }
     ]
   },
@@ -41660,7 +41924,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 249,
+        "line": 259,
         "kind": "literal"
       }
     ]
@@ -41890,7 +42154,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 18,
+        "line": 25,
         "kind": "literal"
       }
     ]
@@ -41981,7 +42245,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3798,
+        "line": 3801,
         "kind": "literal"
       },
       {
@@ -42056,7 +42320,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1594,
+        "line": 1596,
         "kind": "literal"
       }
     ]
@@ -42943,7 +43207,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 278,
+        "line": 288,
         "kind": "literal"
       }
     ]
@@ -43037,7 +43301,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 670,
+        "line": 671,
         "kind": "literal"
       }
     ]
@@ -43070,7 +43334,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 640,
+        "line": 641,
         "kind": "literal"
       }
     ]
@@ -43169,7 +43433,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 87,
+        "line": 94,
         "kind": "literal"
       }
     ]
@@ -43269,7 +43533,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 303,
+        "line": 323,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -43322,7 +43586,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 692,
+        "line": 694,
         "kind": "literal"
       }
     ]
@@ -43595,7 +43859,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 835,
+        "line": 837,
         "kind": "literal"
       }
     ]
@@ -43912,7 +44176,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 214,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -43958,7 +44222,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 61,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -44102,7 +44366,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 175,
+        "line": 197,
         "kind": "literal"
       }
     ]
@@ -44163,7 +44427,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1742,
+        "line": 1744,
         "kind": "literal"
       },
       {
@@ -44406,7 +44670,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3369,
+        "line": 3372,
         "kind": "literal"
       }
     ]
@@ -44418,6 +44682,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 51,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_5dbb51a411084cc9": {
+    "source": "המטרות של החודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -44747,7 +45022,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1757,
+        "line": 1759,
         "kind": "literal"
       }
     ]
@@ -44856,7 +45131,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3777,
+        "line": 3780,
         "kind": "literal"
       }
     ]
@@ -44902,7 +45177,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1703,
+        "line": 1705,
         "kind": "literal"
       }
     ]
@@ -45222,7 +45497,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 528,
+        "line": 530,
         "kind": "literal"
       }
     ]
@@ -45384,7 +45659,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1086,
+        "line": 1088,
         "kind": "literal"
       },
       {
@@ -45457,7 +45732,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3715,
+        "line": 3718,
         "kind": "literal"
       }
     ]
@@ -45468,7 +45743,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 443,
+        "line": 527,
         "kind": "template",
         "purpose": "copy"
       }
@@ -45538,12 +45813,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -45797,13 +46067,13 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3458,
+        "line": 3461,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1347,
+        "line": 1354,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -45815,7 +46085,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 24,
+        "line": 31,
         "kind": "literal"
       }
     ]
@@ -46110,7 +46380,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 575,
+        "line": 577,
         "kind": "literal"
       }
     ]
@@ -46145,6 +46415,18 @@
       {
         "file": "api/app/services/research.py",
         "line": 805,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
+  "m_614273e5f278fd38": {
+    "source": "{arg_0} ב-28 הימים האחרונים. {arg_1}",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 452,
         "kind": "template",
         "purpose": "copy"
       }
@@ -46296,7 +46578,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 638,
+        "line": 639,
         "kind": "literal"
       },
       {
@@ -46374,7 +46656,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 192,
+        "line": 199,
         "kind": "literal"
       }
     ]
@@ -46770,7 +47052,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 361,
+        "line": 362,
         "kind": "literal"
       }
     ]
@@ -46804,7 +47086,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 194,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -47184,7 +47466,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 32,
+        "line": 33,
         "kind": "literal"
       }
     ]
@@ -47228,7 +47510,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 145,
+        "line": 152,
         "kind": "literal"
       }
     ]
@@ -47760,7 +48042,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 449,
+        "line": 450,
         "kind": "literal"
       }
     ]
@@ -47776,7 +48058,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 784,
+        "line": 785,
         "kind": "literal"
       }
     ]
@@ -47833,7 +48115,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -48474,7 +48756,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 411,
+        "line": 421,
         "kind": "literal"
       }
     ]
@@ -48752,6 +49034,17 @@
       }
     ]
   },
+  "m_66b093c6383036d0": {
+    "source": "מה יישמנו כאן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignBrief.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_66bb425df9faed68": {
     "source": "איך מוחקים את המידע",
     "language": "he",
@@ -48802,7 +49095,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 634,
+        "line": 747,
         "kind": "template",
         "purpose": "copy"
       }
@@ -48820,6 +49113,17 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 1228,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_66d16c4c9518e47f": {
+    "source": "הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/posts/page.tsx",
+        "line": 237,
         "kind": "literal"
       }
     ]
@@ -48922,7 +49226,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1364,
+        "line": 1366,
         "kind": "literal"
       }
     ]
@@ -49297,7 +49601,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 728,
+        "line": 729,
         "kind": "literal",
         "purpose": "display"
       }
@@ -49309,7 +49613,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1511,
+        "line": 1513,
         "kind": "literal"
       }
     ]
@@ -49386,7 +49690,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 980,
+        "line": 987,
         "kind": "template",
         "purpose": "validation"
       }
@@ -50188,7 +50492,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1034,
+        "line": 1036,
         "kind": "literal"
       }
     ]
@@ -50379,7 +50683,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 401,
+        "line": 402,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50534,7 +50838,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 128,
+        "line": 135,
         "kind": "literal",
         "purpose": "display"
       }
@@ -50678,7 +50982,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 207,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -50733,7 +51037,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 206,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -50766,7 +51070,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 630,
+        "line": 632,
         "kind": "literal"
       }
     ]
@@ -50851,7 +51155,7 @@
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 27,
+        "line": 22,
         "kind": "literal"
       },
       {
@@ -50879,7 +51183,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 212,
+        "line": 219,
         "kind": "literal",
         "purpose": "display"
       }
@@ -51534,7 +51838,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 504,
+        "line": 589,
         "kind": "template",
         "purpose": "copy"
       }
@@ -51569,7 +51873,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 212,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -51591,7 +51895,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1069,
+        "line": 1071,
         "kind": "literal"
       }
     ]
@@ -51655,7 +51959,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 335,
+        "line": 362,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -51702,7 +52006,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 555,
+        "line": 556,
         "kind": "literal"
       }
     ]
@@ -52271,6 +52575,18 @@
       }
     ]
   },
+  "m_6e8e45b50e5cf0d0": {
+    "source": "{arg_0} פעולות חשובות באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 447,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_6e953449bff92b1c": {
     "source": "הפוסט הזה לא נמצא בפוסטים שבחרתם.",
     "language": "he",
@@ -52361,7 +52677,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1210,
+        "line": 1212,
         "kind": "literal"
       }
     ]
@@ -52445,7 +52761,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1161,
+        "line": 1163,
         "kind": "literal"
       }
     ]
@@ -52580,6 +52896,17 @@
         "line": 17,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_6ef657f5cae1d4b5": {
+    "source": "להכין לפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 218,
+        "kind": "literal"
       }
     ]
   },
@@ -52979,7 +53306,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 233,
+        "line": 234,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53059,7 +53386,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 198,
+        "line": 205,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53257,27 +53584,27 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3174,
+        "line": 3177,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3824,
+        "line": 3827,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3836,
+        "line": 3839,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3843,
+        "line": 3846,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 721,
+        "line": 728,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -53357,7 +53684,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 9,
+        "line": 16,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53504,7 +53831,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 491,
+        "line": 493,
         "kind": "literal"
       }
     ]
@@ -53627,12 +53954,12 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 71,
+        "line": 78,
         "kind": "literal"
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 117,
+        "line": 124,
         "kind": "literal"
       }
     ]
@@ -53643,7 +53970,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 51,
+        "line": 58,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53688,7 +54015,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 151,
+        "line": 158,
         "kind": "literal"
       }
     ]
@@ -54141,7 +54468,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 60,
+        "line": 67,
         "kind": "literal",
         "purpose": "display"
       }
@@ -54153,7 +54480,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 211,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -54237,7 +54564,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3468,
+        "line": 3471,
         "kind": "literal"
       }
     ]
@@ -54539,7 +54866,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 509,
+        "line": 594,
         "kind": "template",
         "purpose": "copy"
       }
@@ -54608,13 +54935,13 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3467,
+        "line": 3470,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1356,
+        "line": 1363,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -54899,7 +55226,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 747,
+        "line": 749,
         "kind": "literal"
       }
     ]
@@ -54910,7 +55237,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3811,
+        "line": 3814,
         "kind": "literal"
       }
     ]
@@ -55167,7 +55494,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 98,
+        "line": 99,
         "kind": "literal"
       }
     ]
@@ -55489,7 +55816,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 97,
+        "line": 98,
         "kind": "literal"
       }
     ]
@@ -55500,7 +55827,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 295,
+        "line": 296,
         "kind": "literal"
       }
     ]
@@ -55558,7 +55885,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1273,
+        "line": 1275,
         "kind": "literal"
       }
     ]
@@ -55898,7 +56225,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 293,
+        "line": 294,
         "kind": "literal"
       }
     ]
@@ -56022,7 +56349,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 727,
+        "line": 729,
         "kind": "literal"
       }
     ]
@@ -56191,7 +56518,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 741,
+        "line": 742,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56361,6 +56688,17 @@
       }
     ]
   },
+  "m_76df272c0337bd70": {
+    "source": "בקמפיין רואים את מטרות החודש, התקציב המתוכנן ומה נבדוק. עוברים בין השבועות, עובדים על הפוסטים וחוזרים מהעורך לאותו שבוע.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_76e16f08b40b888b": {
     "source": "העדפות מדידה",
     "language": "he",
@@ -56476,7 +56814,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 764,
+        "line": 765,
         "kind": "literal",
         "purpose": "display"
       }
@@ -56769,7 +57107,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 792,
+        "line": 793,
         "kind": "literal"
       }
     ]
@@ -56933,7 +57271,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 146,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -57263,7 +57601,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 170,
+        "line": 177,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57287,7 +57625,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 77,
+        "line": 79,
         "kind": "literal"
       },
       {
@@ -57343,7 +57681,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 580,
+        "line": 581,
         "kind": "literal",
         "purpose": "display"
       }
@@ -57366,17 +57704,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 940,
+        "line": 942,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1034,
+        "line": 1036,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1781,
+        "line": 1783,
         "kind": "literal"
       }
     ]
@@ -57751,12 +58089,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5718,
+        "line": 5723,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 5719,
+        "line": 5724,
         "kind": "literal"
       },
       {
@@ -58035,7 +58373,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 150,
+        "line": 157,
         "kind": "literal"
       }
     ]
@@ -58048,6 +58386,18 @@
         "file": "web/components/integrations/PixelSetupGuide.tsx",
         "line": 18,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_7a8736d7a4ea7c8a": {
+    "source": "כניסות|ביקורים|מבקרים",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 419,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -58101,18 +58451,18 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 463,
+        "line": 464,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3798,
+        "line": 3801,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3811,
+        "line": 3814,
         "kind": "literal"
       }
     ]
@@ -58135,7 +58485,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3377,
+        "line": 3380,
         "kind": "literal"
       }
     ]
@@ -58716,7 +59066,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -58913,7 +59263,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 155,
+        "line": 156,
         "kind": "literal"
       }
     ]
@@ -58982,7 +59332,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1487,
+        "line": 1489,
         "kind": "literal"
       }
     ]
@@ -59558,7 +59908,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -59599,6 +59949,18 @@
         "file": "web/components/landing-v2/ProviderLogo.tsx",
         "line": 5,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_7dd611350f964e81": {
+    "source": "מספר הלקוחות עדיין לא נמדד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 432,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -59830,7 +60192,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 96,
+        "line": 97,
         "kind": "literal"
       }
     ]
@@ -59958,7 +60320,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 230,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -60151,7 +60513,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3114,
+        "line": 3117,
         "kind": "literal"
       }
     ]
@@ -60162,7 +60524,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 673,
+        "line": 675,
         "kind": "literal"
       }
     ]
@@ -60184,7 +60546,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 231,
+        "line": 271,
         "kind": "literal"
       }
     ]
@@ -60263,7 +60625,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 135,
+        "line": 138,
         "kind": "literal"
       }
     ]
@@ -60570,7 +60932,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 165,
+        "line": 172,
         "kind": "literal"
       }
     ]
@@ -60693,7 +61055,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1081,
+        "line": 1083,
         "kind": "literal"
       }
     ]
@@ -60720,7 +61082,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 473,
+        "line": 557,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -60969,7 +61331,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1440,
+        "line": 1442,
         "kind": "literal"
       }
     ]
@@ -61056,7 +61418,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 234,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -61614,7 +61976,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1299,
+        "line": 1301,
         "kind": "literal"
       }
     ]
@@ -61817,7 +62179,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 714,
+        "line": 715,
         "kind": "jsx"
       }
     ]
@@ -61874,7 +62236,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1270,
+        "line": 1272,
         "kind": "literal"
       }
     ]
@@ -62017,7 +62379,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 158,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -62073,7 +62435,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 582,
+        "line": 583,
         "kind": "literal"
       }
     ]
@@ -62300,6 +62662,17 @@
       }
     ]
   },
+  "m_8380302e990c9715": {
+    "source": "הגרסה שבעבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 212,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_838818771fcb0f6d": {
     "source": "שם המשתמש מופיע מתחת לתמונה, עם @ בהתחלה.",
     "language": "he",
@@ -62430,7 +62803,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 377,
+        "line": 405,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -62733,7 +63106,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 687,
+        "line": 688,
         "kind": "jsx"
       }
     ]
@@ -62977,6 +63350,17 @@
       {
         "file": "web/components/start/StepSoftware.tsx",
         "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_84e938ca95436e57": {
+    "source": "לבדיקה ולאישור בעורך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -63321,12 +63705,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -63390,7 +63769,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 214,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -63462,7 +63841,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 352,
+        "line": 379,
         "kind": "template",
         "purpose": "copy"
       }
@@ -63525,7 +63904,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3371,
+        "line": 3374,
         "kind": "literal"
       }
     ]
@@ -63558,7 +63937,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -63609,6 +63988,18 @@
       }
     ]
   },
+  "m_862d8a7e868cd190": {
+    "source": "אירוע רכישה אחד שדווח באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 325,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_862fd2c536a28f1f": {
     "source": "לבחור 4 מוצרים לחודש",
     "language": "he",
@@ -63656,6 +64047,17 @@
         "line": 169,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_8638e8ce53079b7a": {
+    "source": "ציינו מה אתם מוכרים ולמי. למשל: בגדי תינוקות מכותנה, עם משלוח עד הבית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 17,
+        "kind": "literal"
       }
     ]
   },
@@ -63850,13 +64252,24 @@
       }
     ]
   },
+  "m_868e7b3a64cf7f2f": {
+    "source": "הפוסט הבא שמחכה לכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 216,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_86977c277011d05f": {
     "source": "במשפט: מי הם",
     "language": "he",
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 336,
+        "line": 337,
         "kind": "literal",
         "purpose": "display"
       }
@@ -63928,7 +64341,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3389,
+        "line": 3392,
         "kind": "literal"
       }
     ]
@@ -64030,7 +64443,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 28,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -64173,7 +64586,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 245,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -64184,7 +64597,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 114,
+        "line": 121,
         "kind": "literal",
         "purpose": "display"
       }
@@ -64490,7 +64903,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 33,
+        "line": 35,
         "kind": "literal"
       },
       {
@@ -64518,7 +64931,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -64574,7 +64987,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 667,
+        "line": 668,
         "kind": "template"
       }
     ]
@@ -64596,7 +65009,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1348,
+        "line": 1355,
         "kind": "template",
         "purpose": "copy"
       }
@@ -65274,7 +65687,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 406,
+        "line": 480,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -65299,6 +65712,11 @@
       {
         "file": "web/components/landing-v2/content.ts",
         "line": 84,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 20,
         "kind": "literal"
       },
       {
@@ -65508,7 +65926,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 44,
+        "line": 51,
         "kind": "literal",
         "purpose": "display"
       }
@@ -65678,7 +66096,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1622,
+        "line": 1624,
         "kind": "literal"
       },
       {
@@ -65807,7 +66225,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 431,
+        "line": 433,
         "kind": "literal"
       }
     ]
@@ -65863,7 +66281,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 260,
         "kind": "literal"
       }
     ]
@@ -66246,7 +66664,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -66357,7 +66775,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3548,
+        "line": 3551,
         "kind": "template"
       }
     ]
@@ -66459,7 +66877,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 128,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -66757,6 +67175,17 @@
       }
     ]
   },
+  "m_8d6602daa9d1419a": {
+    "source": "נבדוק את התוצאות כדי לבחור מה לשפר בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 217,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8d6822ddf3c9dbc6": {
     "source": "לענות על אחת בכל שבוע",
     "language": "he",
@@ -66840,7 +67269,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1568,
+        "line": 1570,
         "kind": "literal"
       },
       {
@@ -66925,7 +67354,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -67027,7 +67456,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1378,
+        "line": 1380,
         "kind": "literal"
       }
     ]
@@ -67180,7 +67609,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3767,
+        "line": 3770,
         "kind": "literal"
       }
     ]
@@ -67203,7 +67632,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       }
     ]
@@ -67247,7 +67676,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 476,
+        "line": 478,
         "kind": "literal"
       }
     ]
@@ -67380,7 +67809,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 479,
+        "line": 481,
         "kind": "literal"
       }
     ]
@@ -67653,7 +68082,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 156,
+        "line": 163,
         "kind": "literal",
         "purpose": "display"
       }
@@ -67820,12 +68249,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3895,
+        "line": 3898,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3898,
+        "line": 3901,
         "kind": "literal"
       },
       {
@@ -67888,7 +68317,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 350,
+        "line": 351,
         "kind": "literal"
       }
     ]
@@ -68017,7 +68446,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 149,
+        "line": 156,
         "kind": "literal",
         "purpose": "display"
       }
@@ -68118,7 +68547,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 210,
+        "line": 211,
         "kind": "literal"
       }
     ]
@@ -68161,13 +68590,18 @@
         "kind": "literal"
       },
       {
-        "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 26,
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 222,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 28,
+        "line": 27,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignWeek.tsx",
+        "line": 29,
         "kind": "literal"
       },
       {
@@ -68345,7 +68779,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 854,
+        "line": 856,
         "kind": "literal"
       },
       {
@@ -68546,7 +68980,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 175,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -68730,7 +69164,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 812,
+        "line": 813,
         "kind": "literal"
       }
     ]
@@ -68753,7 +69187,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 245,
+        "line": 255,
         "kind": "literal",
         "purpose": "display"
       },
@@ -69168,7 +69602,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 729,
+        "line": 730,
         "kind": "literal"
       }
     ]
@@ -69179,12 +69613,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3469,
+        "line": 3472,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1359,
+        "line": 1366,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -69207,7 +69641,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 204,
+        "line": 205,
         "kind": "literal"
       }
     ]
@@ -69260,6 +69694,17 @@
         "line": 1161,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_9257ec317ae2cca2": {
+    "source": "לעבוד על הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/strategy/page.tsx",
+        "line": 151,
+        "kind": "literal"
       }
     ]
   },
@@ -69528,6 +69973,17 @@
       }
     ]
   },
+  "m_92de5653fe9fa90c": {
+    "source": "ללא שבוע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 222,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_92e3f875e752553c": {
     "source": "ריל|סרטון|וידאו",
     "language": "he",
@@ -69791,7 +70247,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 230,
+        "line": 270,
         "kind": "literal"
       }
     ]
@@ -69892,7 +70348,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1366,
+        "line": 1368,
         "kind": "literal"
       }
     ]
@@ -70165,7 +70621,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1292,
+        "line": 1294,
         "kind": "literal"
       }
     ]
@@ -70228,7 +70684,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1530,
+        "line": 1532,
         "kind": "literal"
       },
       {
@@ -70564,7 +71020,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3849,
+        "line": 3852,
         "kind": "template"
       }
     ]
@@ -70644,7 +71100,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 185,
+        "line": 207,
         "kind": "literal"
       },
       {
@@ -70949,17 +71405,6 @@
       }
     ]
   },
-  "m_95c6ba374bf35120": {
-    "source": "לתוצאות הקמפיין",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 27,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_95cddccbfbe260aa": {
     "source": "מפרסמים באופן קבוע",
     "language": "he",
@@ -70978,7 +71423,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1050,
+        "line": 1052,
         "kind": "literal"
       }
     ]
@@ -71212,7 +71657,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 121,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -71732,7 +72177,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 94,
+        "line": 101,
         "kind": "literal"
       }
     ]
@@ -72172,7 +72617,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1879,
+        "line": 1881,
         "kind": "literal"
       }
     ]
@@ -72216,7 +72661,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 411,
+        "line": 485,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -72557,7 +73002,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1668,
+        "line": 1670,
         "kind": "literal"
       }
     ]
@@ -72950,7 +73395,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 119,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -73013,6 +73458,17 @@
         "file": "web/components/TargetRanker.tsx",
         "line": 191,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_9a5d4e21e60d2d6c": {
+    "source": "לתוצאות ולהוצאה בפועל",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 41,
+        "kind": "literal"
       }
     ]
   },
@@ -73176,7 +73632,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3489,
+        "line": 3492,
         "kind": "literal"
       }
     ]
@@ -73271,7 +73727,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 200,
+        "line": 207,
         "kind": "literal"
       }
     ]
@@ -73305,7 +73761,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 692,
+        "line": 694,
         "kind": "literal"
       }
     ]
@@ -73444,8 +73900,13 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 223,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 29,
+        "line": 30,
         "kind": "literal"
       },
       {
@@ -73473,7 +73934,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 215,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -73555,6 +74016,17 @@
         "line": 1162,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_9b93caca36127136": {
+    "source": "ספרו תרומות או תורמים לפי המדד שבחרתם, ולא לחיצות על קישור התרומה. אפשר להיעזר בדוח החודשי של מערכת התרומות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 48,
+        "kind": "literal"
       }
     ]
   },
@@ -73668,7 +74140,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 936,
+        "line": 938,
         "kind": "literal"
       }
     ]
@@ -73758,7 +74230,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 675,
+        "line": 676,
         "kind": "template",
         "purpose": "display"
       }
@@ -73828,7 +74300,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 672,
+        "line": 674,
         "kind": "literal"
       }
     ]
@@ -73956,7 +74428,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 792,
+        "line": 793,
         "kind": "literal"
       }
     ]
@@ -74605,7 +75077,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 160,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -74824,6 +75296,17 @@
       }
     ]
   },
+  "m_9e3c740df8213b3e": {
+    "source": "הוסיפו קישור לעמוד העסקי עצמו, לא לפוסט בודד. כך נוכל להכיר גם את התוכן וגם את הסגנון שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 30,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9e4195653535e11f": {
     "source": "טוענים הצעות…",
     "language": "he",
@@ -74841,7 +75324,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 152,
+        "line": 153,
         "kind": "literal"
       }
     ]
@@ -74966,7 +75449,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1052,
+        "line": 1054,
         "kind": "literal"
       }
     ]
@@ -74977,7 +75460,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 160,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -75187,7 +75670,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3395,
+        "line": 3398,
         "kind": "literal"
       }
     ]
@@ -75383,7 +75866,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3798,
+        "line": 3801,
         "kind": "literal"
       }
     ]
@@ -75394,7 +75877,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 425,
+        "line": 426,
         "kind": "literal"
       }
     ]
@@ -75605,7 +76088,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 293,
+        "line": 294,
         "kind": "literal"
       },
       {
@@ -75756,7 +76239,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1026,
         "kind": "literal"
       }
     ]
@@ -75813,7 +76296,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 115,
+        "line": 122,
         "kind": "literal"
       }
     ]
@@ -75948,7 +76431,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 587,
+        "line": 589,
         "kind": "literal"
       }
     ]
@@ -75959,7 +76442,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 354,
+        "line": 381,
         "kind": "template",
         "purpose": "copy"
       }
@@ -76040,7 +76523,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1329,
+        "line": 1331,
         "kind": "literal"
       },
       {
@@ -76135,13 +76618,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
+        "line": 154,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
+        "line": 155,
         "kind": "literal"
       },
       {
@@ -76151,7 +76634,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 119,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -76235,7 +76718,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 119,
+        "line": 120,
         "kind": "literal"
       }
     ]
@@ -76484,6 +76967,18 @@
       }
     ]
   },
+  "m_a218754843dd77e9": {
+    "source": "לחיצות|הקלקות|פניות|פנייה",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 419,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_a21a33de97a8563d": {
     "source": "1 מתוך 10",
     "language": "he",
@@ -76698,7 +77193,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 31,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -76956,7 +77451,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       },
       {
@@ -77045,7 +77540,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3913,
+        "line": 3916,
         "kind": "template"
       }
     ]
@@ -77127,7 +77622,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 222,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -77201,7 +77696,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 785,
+        "line": 786,
         "kind": "literal"
       }
     ]
@@ -77358,7 +77853,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 804,
+        "line": 805,
         "kind": "template"
       }
     ]
@@ -77478,7 +77973,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1534,
+        "line": 1536,
         "kind": "literal"
       }
     ]
@@ -77568,7 +78063,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1025,
+        "line": 1027,
         "kind": "literal"
       }
     ]
@@ -77951,7 +78446,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 293,
+        "line": 294,
         "kind": "literal"
       }
     ]
@@ -78362,7 +78857,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 409,
+        "line": 410,
         "kind": "literal",
         "purpose": "display"
       }
@@ -78709,7 +79204,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 203,
+        "line": 238,
         "kind": "literal"
       }
     ]
@@ -78748,7 +79243,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 160,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -78770,7 +79265,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1358,
+        "line": 1365,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -78850,7 +79345,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3554,
+        "line": 3557,
         "kind": "literal"
       }
     ]
@@ -79054,7 +79549,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 199,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -79195,18 +79690,29 @@
       }
     ]
   },
+  "m_a84fdf95cb90a5bd": {
+    "source": "בחרו את השלב שחשוב לכם לקדם: התנסות, הדגמה או תשלום. ספרו רק את מי שהגיע לשלב הזה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 50,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a8594755fb2c9fab": {
     "source": "הנוסח",
     "language": "he",
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -79434,7 +79940,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1568,
+        "line": 1570,
         "kind": "literal"
       }
     ]
@@ -79760,6 +80266,17 @@
       }
     ]
   },
+  "m_a96fd1dc84ec8f6d": {
+    "source": "תארו מה הלקוח מצליח לעשות בעזרת המוצר, ולא רק אילו תכונות יש בו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 42,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_a980822c16507db0": {
     "source": "מוחקים מתי שרוצים",
     "language": "he",
@@ -79807,7 +80324,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 251,
+        "line": 261,
         "kind": "literal"
       }
     ]
@@ -79937,6 +80454,17 @@
         "line": 172,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a9e9ae568e653f34": {
+    "source": "מוכן להכנה לפרסום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 216,
+        "kind": "literal"
       }
     ]
   },
@@ -80092,7 +80620,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 804,
+        "line": 805,
         "kind": "literal"
       }
     ]
@@ -80313,7 +80841,7 @@
     "references": [
       {
         "file": "web/components/AppShell.tsx",
-        "line": 48,
+        "line": 40,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80354,7 +80882,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 173,
+        "line": 174,
         "kind": "literal"
       },
       {
@@ -80411,7 +80939,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 148,
+        "line": 170,
         "kind": "literal"
       },
       {
@@ -80426,7 +80954,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 146,
+        "line": 147,
         "kind": "literal"
       }
     ]
@@ -80516,7 +81044,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1369,
+        "line": 1376,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -80703,9 +81231,20 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 441,
+        "line": 525,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_ab9844e9586f3a84": {
+    "source": "לעריכת התקציב",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 34,
+        "kind": "literal"
       }
     ]
   },
@@ -80780,7 +81319,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 184,
+        "line": 191,
         "kind": "literal",
         "purpose": "display"
       }
@@ -80959,7 +81498,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 936,
+        "line": 938,
         "kind": "literal"
       }
     ]
@@ -81111,7 +81650,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1095,
+        "line": 1097,
         "kind": "literal"
       }
     ]
@@ -81167,7 +81706,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -81192,6 +81731,17 @@
         "line": 128,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_ac811391be555a60": {
+    "source": "96 לחיצות לוואטסאפ החודש. מספר ההזמנות שהושלמו לא נמדד כאן.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/api.ts",
+        "line": 2212,
+        "kind": "literal"
       }
     ]
   },
@@ -81230,7 +81780,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1060,
+        "line": 1062,
         "kind": "literal"
       },
       {
@@ -81274,12 +81824,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 22,
         "kind": "literal"
       }
     ]
@@ -81301,7 +81846,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 25,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -81739,7 +82284,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 101,
+        "line": 108,
         "kind": "literal"
       }
     ]
@@ -81855,17 +82400,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 658,
+        "line": 660,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3875,
+        "line": 3878,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1136,
+        "line": 1143,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -81877,7 +82422,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 233,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -81945,7 +82490,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 267,
+        "line": 277,
         "kind": "literal"
       }
     ]
@@ -82052,7 +82597,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 234,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -82377,12 +82922,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3460,
+        "line": 3463,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1349,
+        "line": 1356,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -82576,7 +83121,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3346,
+        "line": 3349,
         "kind": "literal"
       },
       {
@@ -82780,7 +83325,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -82961,7 +83506,7 @@
       },
       {
         "file": "web/lib/releases.ts",
-        "line": 208,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -83028,7 +83573,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 95,
+        "line": 96,
         "kind": "literal"
       }
     ]
@@ -83068,7 +83613,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 179,
+        "line": 201,
         "kind": "literal"
       }
     ]
@@ -83135,7 +83680,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 88,
+        "line": 95,
         "kind": "literal"
       }
     ]
@@ -83243,7 +83788,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3375,
+        "line": 3378,
         "kind": "literal"
       }
     ]
@@ -83311,12 +83856,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3451,
+        "line": 3454,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1340,
+        "line": 1347,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -83331,17 +83876,6 @@
         "line": 338,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_b13d798f01a7b11d": {
-    "source": "96 לחיצות לוואטסאפ החודש, מול יעד של 120.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/lib/api.ts",
-        "line": 2212,
-        "kind": "literal"
       }
     ]
   },
@@ -83795,7 +84329,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3776,
+        "line": 3779,
         "kind": "template"
       }
     ]
@@ -83874,7 +84408,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 526,
+        "line": 528,
         "kind": "literal"
       }
     ]
@@ -83999,7 +84533,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 100,
+        "line": 107,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84156,7 +84690,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 632,
+        "line": 634,
         "kind": "literal"
       }
     ]
@@ -84190,7 +84724,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 598,
+        "line": 600,
         "kind": "literal"
       }
     ]
@@ -84229,7 +84763,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 415,
+        "line": 416,
         "kind": "literal"
       }
     ]
@@ -84604,7 +85138,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 77,
+        "line": 84,
         "kind": "literal",
         "purpose": "display"
       }
@@ -84831,17 +85365,17 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1020,
+        "line": 1022,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1152,
+        "line": 1154,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1193,
+        "line": 1195,
         "kind": "literal"
       }
     ]
@@ -84885,7 +85419,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 235,
+        "line": 275,
         "kind": "literal"
       }
     ]
@@ -85305,7 +85839,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 719,
+        "line": 720,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85328,7 +85862,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3374,
+        "line": 3377,
         "kind": "literal"
       }
     ]
@@ -85339,7 +85873,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 437,
+        "line": 521,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -85441,7 +85975,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -85486,7 +86020,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85785,7 +86319,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 152,
+        "line": 153,
         "kind": "literal"
       }
     ]
@@ -85858,7 +86392,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 191,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -85940,6 +86474,18 @@
         "file": "web/components/landing-v2/processCampaigns.ts",
         "line": 25,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_b6a41ee1c8c4b3b0": {
+    "source": "ההזמנות עצמן עדיין לא נמדדו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 442,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -86056,12 +86602,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1666,
+        "line": 1668,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1764,
+        "line": 1766,
         "kind": "literal"
       }
     ]
@@ -86391,7 +86937,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 161,
+        "line": 183,
         "kind": "literal"
       }
     ]
@@ -86514,7 +87060,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 270,
+        "line": 280,
         "kind": "literal"
       },
       {
@@ -86534,7 +87080,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1968,
+        "line": 248,
         "kind": "literal"
       },
       {
@@ -86655,7 +87201,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1712,
+        "line": 1714,
         "kind": "literal"
       }
     ]
@@ -86768,24 +87314,13 @@
       }
     ]
   },
-  "m_b8369989ed8de90a": {
-    "source": "המטרה של החודש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignOverview.tsx",
-        "line": 22,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_b83e1441d4ea9589": {
     "source": "הקישור לפוסט",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1668,
+        "line": 1670,
         "kind": "literal"
       },
       {
@@ -86935,7 +87470,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 278,
         "kind": "literal"
       }
     ]
@@ -86969,7 +87504,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 252,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -86991,7 +87526,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 937,
+        "line": 939,
         "kind": "literal"
       }
     ]
@@ -87206,6 +87741,17 @@
       {
         "file": "web/app/decisions/page.tsx",
         "line": 894,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_b9351eca4e543b6f": {
+    "source": "תקציב שיווק מתוכנן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 34,
         "kind": "literal"
       }
     ]
@@ -87642,7 +88188,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 241,
+        "line": 281,
         "kind": "literal"
       }
     ]
@@ -87804,7 +88350,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -87881,7 +88427,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 52,
+        "line": 59,
         "kind": "literal"
       }
     ]
@@ -88000,7 +88546,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -88011,7 +88557,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 716,
+        "line": 718,
         "kind": "literal"
       }
     ]
@@ -88108,7 +88654,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 376,
+        "line": 404,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -88176,7 +88722,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 930,
+        "line": 932,
         "kind": "literal"
       }
     ]
@@ -88302,13 +88848,13 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 452,
+        "line": 536,
         "kind": "template",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 486,
+        "line": 570,
         "kind": "template",
         "purpose": "copy"
       }
@@ -88364,7 +88910,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 220,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -88460,7 +89006,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1312,
+        "line": 1314,
         "kind": "literal"
       }
     ]
@@ -88499,7 +89045,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -88870,7 +89416,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 107,
+        "line": 114,
         "kind": "literal",
         "purpose": "display"
       }
@@ -89091,7 +89637,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 569,
+        "line": 570,
         "kind": "literal"
       }
     ]
@@ -89325,7 +89871,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1847,
+        "line": 1849,
         "kind": "literal"
       },
       {
@@ -89347,7 +89893,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 826,
+        "line": 827,
         "kind": "literal"
       }
     ]
@@ -89431,12 +89977,12 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3709,
+        "line": 3712,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3720,
+        "line": 3723,
         "kind": "literal"
       }
     ]
@@ -89810,13 +90356,25 @@
       }
     ]
   },
+  "m_bf5764cda18db372": {
+    "source": "ההזמנות",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 431,
+        "kind": "literal",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_bf5b8075664efecd": {
     "source": "לא הצלחנו לטעון את הקהלים",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 367,
+        "line": 369,
         "kind": "literal"
       }
     ]
@@ -89910,7 +90468,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 185,
+        "line": 192,
         "kind": "literal"
       }
     ]
@@ -90052,7 +90610,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 172,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -90196,7 +90754,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1092,
+        "line": 1094,
         "kind": "literal"
       }
     ]
@@ -90251,7 +90809,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 71,
+        "line": 72,
         "kind": "literal"
       }
     ]
@@ -90354,7 +90912,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 435,
+        "line": 437,
         "kind": "literal"
       }
     ]
@@ -90448,6 +91006,17 @@
       }
     ]
   },
+  "m_c0802aa8e1882d6b": {
+    "source": "טיפ קטן",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 64,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c08d0505bea938b1": {
     "source": "סיכום האתר זמין, אבל חלק מהפירוט לא התקבל. ההצעה משתמשת רק בנתונים שנקראו; ננסה להשלים את הפירוט ברענון הבא.",
     "language": "he",
@@ -90500,7 +91069,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 245,
+        "line": 285,
         "kind": "literal"
       }
     ]
@@ -90604,12 +91173,12 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1667,
+        "line": 1669,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1802,
+        "line": 1804,
         "kind": "literal"
       }
     ]
@@ -90771,7 +91340,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 72,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -90904,7 +91473,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 835,
+        "line": 837,
         "kind": "literal"
       }
     ]
@@ -90916,6 +91485,18 @@
       {
         "file": "web/app/design/results/page.tsx",
         "line": 5,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
+  "m_c1b50c6cd89efc34": {
+    "source": "הקמפיין במרכז העבודה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 9,
         "kind": "literal",
         "purpose": "display"
       }
@@ -90950,7 +91531,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1588,
+        "line": 1590,
         "kind": "literal"
       }
     ]
@@ -91006,7 +91587,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 482,
+        "line": 484,
         "kind": "literal"
       }
     ]
@@ -91288,7 +91869,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 613,
+        "line": 614,
         "kind": "jsx"
       }
     ]
@@ -91612,7 +92193,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3392,
+        "line": 3395,
         "kind": "literal"
       }
     ]
@@ -92165,7 +92746,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 188,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -92176,7 +92757,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 784,
+        "line": 785,
         "kind": "literal"
       }
     ]
@@ -92187,7 +92768,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1072,
+        "line": 1074,
         "kind": "literal"
       }
     ]
@@ -92209,7 +92790,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 233,
+        "line": 273,
         "kind": "literal"
       }
     ]
@@ -92267,7 +92848,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3338,
+        "line": 3341,
         "kind": "literal"
       },
       {
@@ -92539,7 +93120,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3547,
+        "line": 3550,
         "kind": "template"
       }
     ]
@@ -93091,7 +93672,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -93102,7 +93683,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 165,
+        "line": 187,
         "kind": "literal"
       }
     ]
@@ -93361,7 +93942,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 304,
+        "line": 326,
         "kind": "template",
         "purpose": "copy"
       },
@@ -93548,7 +94129,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -93647,7 +94228,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 472,
+        "line": 556,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -93721,7 +94302,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 447,
+        "line": 449,
         "kind": "literal"
       }
     ]
@@ -93965,7 +94546,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 234,
+        "line": 274,
         "kind": "literal"
       }
     ]
@@ -94757,7 +95338,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 32,
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -94897,7 +95478,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -95022,7 +95603,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 12,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -95524,7 +96105,18 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 171,
+        "line": 178,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_cab40040c1eab837": {
+    "source": "{arg_0} מתוך {arg_1} פוסטים פורסמו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 41,
         "kind": "literal"
       }
     ]
@@ -95573,7 +96165,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 293,
+        "line": 294,
         "kind": "literal"
       }
     ]
@@ -95640,7 +96232,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 23,
+        "line": 30,
         "kind": "literal",
         "purpose": "display"
       }
@@ -95701,7 +96293,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3394,
+        "line": 3397,
         "kind": "literal"
       }
     ]
@@ -95734,7 +96326,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 167,
+        "line": 168,
         "kind": "literal"
       }
     ]
@@ -95745,7 +96337,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -96195,7 +96787,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1984,
+        "line": 1986,
         "kind": "literal"
       }
     ]
@@ -96206,7 +96798,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 152,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -96228,7 +96820,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 441,
+        "line": 442,
         "kind": "literal"
       }
     ]
@@ -96261,7 +96853,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 45,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -96284,7 +96876,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 352,
+        "line": 379,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96393,7 +96985,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 485,
+        "line": 487,
         "kind": "literal"
       }
     ]
@@ -96908,7 +97500,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 543,
+        "line": 545,
         "kind": "literal"
       }
     ]
@@ -96919,7 +97511,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1348,
+        "line": 1355,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -96931,7 +97523,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 198,
+        "line": 199,
         "kind": "literal",
         "purpose": "display"
       }
@@ -96943,7 +97535,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 723,
+        "line": 725,
         "kind": "literal"
       }
     ]
@@ -97005,12 +97597,12 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 711,
+        "line": 712,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 730,
+        "line": 731,
         "kind": "literal"
       }
     ]
@@ -97136,7 +97728,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 340,
+        "line": 367,
         "kind": "template",
         "purpose": "copy"
       }
@@ -97226,6 +97818,18 @@
       }
     ]
   },
+  "m_ceafd734855513b2": {
+    "source": "{arg_0} אירועי רכישה שדווחו באתר",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 325,
+        "kind": "template",
+        "purpose": "copy"
+      }
+    ]
+  },
   "m_ced36b1c2039c6c8": {
     "source": "לשמור את הטיוטה",
     "language": "he",
@@ -97254,7 +97858,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 463,
+        "line": 547,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97266,7 +97870,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 256,
+        "line": 266,
         "kind": "literal",
         "purpose": "display"
       }
@@ -97312,7 +97916,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 303,
+        "line": 323,
         "kind": "template",
         "purpose": "copy"
       }
@@ -97359,7 +97963,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 304,
+        "line": 326,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97484,7 +98088,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1453,
+        "line": 1455,
         "kind": "literal"
       }
     ]
@@ -97570,7 +98174,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 833,
+        "line": 834,
         "kind": "jsx"
       }
     ]
@@ -97768,7 +98372,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3777,
+        "line": 3780,
         "kind": "literal"
       }
     ]
@@ -97779,7 +98383,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 410,
+        "line": 484,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -97870,7 +98474,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1099,
+        "line": 1101,
         "kind": "literal"
       }
     ]
@@ -98453,7 +99057,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 710,
+        "line": 711,
         "kind": "literal"
       }
     ]
@@ -98680,7 +99284,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 579,
+        "line": 581,
         "kind": "literal"
       }
     ]
@@ -98691,7 +99295,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3753,
+        "line": 3756,
         "kind": "literal"
       }
     ]
@@ -98702,7 +99306,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 175,
+        "line": 176,
         "kind": "literal"
       }
     ]
@@ -98714,6 +99318,17 @@
       {
         "file": "web/components/landing-v2/PostArtwork.tsx",
         "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d2893ee4a3cfd9d4": {
+    "source": "חשבו על סיבה שבגללה בוחרים דווקא בכם: התמחות מסוימת, שירות אישי או מוצר שקשה למצוא במקום אחר.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 24,
         "kind": "literal"
       }
     ]
@@ -98966,7 +99581,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 186,
+        "line": 193,
         "kind": "literal"
       }
     ]
@@ -98994,7 +99609,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 343,
+        "line": 370,
         "kind": "template",
         "purpose": "copy"
       }
@@ -99067,7 +99682,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 137,
+        "line": 138,
         "kind": "literal"
       },
       {
@@ -99118,7 +99733,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 215,
+        "line": 213,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 251,
         "kind": "literal"
       }
     ]
@@ -99142,6 +99762,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 680,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d33d6504df7811df": {
+    "source": "לערוך סרטון קיים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 265,
         "kind": "literal"
       }
     ]
@@ -99422,7 +100053,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3339,
+        "line": 3342,
         "kind": "literal"
       },
       {
@@ -99546,7 +100177,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 30,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -99569,12 +100200,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3469,
+        "line": 3472,
         "kind": "literal"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1359,
+        "line": 1366,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -99752,7 +100383,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 11,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -99853,7 +100484,7 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 650,
+        "line": 657,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -100022,7 +100653,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1312,
+        "line": 1314,
         "kind": "literal"
       }
     ]
@@ -100123,7 +100754,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3387,
+        "line": 3390,
         "kind": "literal"
       }
     ]
@@ -100399,7 +101030,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -100460,7 +101091,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 137,
+        "line": 144,
         "kind": "literal"
       }
     ]
@@ -100654,7 +101285,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 242,
+        "line": 282,
         "kind": "literal"
       }
     ]
@@ -100667,6 +101298,24 @@
         "file": "web/components/help/guides.ts",
         "line": 285,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_d5dbd13a3d6d2042": {
+    "source": "הפעולות החשובות שנמדדו באתר אינן מספר ההזמנות. ההזמנות עצמן עדיין לא נמדדו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 348,
+        "kind": "literal",
+        "purpose": "copy"
+      },
+      {
+        "file": "api/app/services/hypotheses.py",
+        "line": 681,
+        "kind": "literal",
+        "purpose": "copy"
       }
     ]
   },
@@ -100886,7 +101535,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 178,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -100983,6 +101632,17 @@
       {
         "file": "web/lib/quarterPlanMock.ts",
         "line": 489,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d69621db6445b07d": {
+    "source": "ספרו למי אתם עוזרים ומה התרומה מאפשרת. למשל: חונכות שבועית לילדים שצריכים עזרה בלימודים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -101127,7 +101787,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 978,
+        "line": 980,
         "kind": "literal"
       }
     ]
@@ -101172,7 +101832,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 121,
+        "line": 128,
         "kind": "literal",
         "purpose": "display"
       }
@@ -101607,7 +102267,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -101640,7 +102300,7 @@
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 282,
+        "line": 292,
         "kind": "literal"
       }
     ]
@@ -101961,7 +102621,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 335,
+        "line": 362,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -102039,7 +102699,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3545,
+        "line": 3548,
         "kind": "template"
       }
     ]
@@ -102076,7 +102736,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 807,
+        "line": 808,
         "kind": "literal",
         "purpose": "display"
       }
@@ -102581,7 +103241,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 216,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -102936,7 +103596,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 63,
+        "line": 70,
         "kind": "literal"
       }
     ]
@@ -103015,12 +103675,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3873,
+        "line": 3876,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3890,
+        "line": 3893,
         "kind": "literal"
       },
       {
@@ -103037,55 +103697,55 @@
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 591,
+        "line": 598,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 645,
+        "line": 652,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 727,
+        "line": 734,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 767,
+        "line": 774,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 833,
+        "line": 840,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 920,
+        "line": 927,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1065,
+        "line": 1072,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1101,
+        "line": 1108,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1131,
+        "line": 1138,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -103493,7 +104153,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -103532,7 +104192,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 167,
+        "line": 168,
         "kind": "literal"
       },
       {
@@ -103610,7 +104270,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 812,
+        "line": 813,
         "kind": "literal"
       }
     ]
@@ -103688,6 +104348,11 @@
       {
         "file": "web/components/integrations/PendingLinks.tsx",
         "line": 11,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/posts/CampaignPostCard.tsx",
+        "line": 20,
         "kind": "literal"
       },
       {
@@ -104057,7 +104722,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignPostCard.tsx",
-        "line": 30,
+        "line": 32,
         "kind": "literal"
       }
     ]
@@ -104260,7 +104925,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3120,
+        "line": 3123,
         "kind": "literal"
       }
     ]
@@ -104327,7 +104992,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 75,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -104544,7 +105209,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 86,
+        "line": 93,
         "kind": "literal",
         "purpose": "display"
       }
@@ -104578,7 +105243,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 144,
+        "line": 151,
         "kind": "literal"
       }
     ]
@@ -104740,6 +105405,17 @@
       }
     ]
   },
+  "m_de56b35c70bc89be": {
+    "source": "הצעד הבא בקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 215,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_de59c2d852bc9b65": {
     "source": "המסלול הראשי צריך להתחיל בערך של התוכנית; לצמצם מסלול הרשמה כפול.",
     "language": "he",
@@ -104837,7 +105513,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 129,
+        "line": 136,
         "kind": "literal"
       }
     ]
@@ -105293,7 +105969,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 475,
+        "line": 559,
         "kind": "template",
         "purpose": "copy"
       }
@@ -105375,6 +106051,17 @@
       {
         "file": "web/components/landing-v2/ConnectionDetail.tsx",
         "line": 20,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_df821d0bb5176da3": {
+    "source": "מה מנסים השבוע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignWeek.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -105533,7 +106220,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1160,
+        "line": 1162,
         "kind": "literal"
       }
     ]
@@ -105568,7 +106255,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 193,
+        "line": 200,
         "kind": "literal"
       }
     ]
@@ -105774,7 +106461,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 279,
         "kind": "literal"
       },
       {
@@ -105796,7 +106483,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 334,
+        "line": 361,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -106307,7 +106994,7 @@
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 42,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -106341,7 +107028,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1922,
+        "line": 1924,
         "kind": "literal"
       }
     ]
@@ -106538,7 +107225,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 69,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -106759,7 +107446,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 582,
+        "line": 583,
         "kind": "literal"
       }
     ]
@@ -106867,12 +107554,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 172,
+        "line": 173,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 179,
+        "line": 180,
         "kind": "literal"
       },
       {
@@ -107012,7 +107699,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 279,
         "kind": "literal"
       },
       {
@@ -107136,7 +107823,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1399,
+        "line": 1401,
         "kind": "literal"
       }
     ]
@@ -107205,7 +107892,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 220,
+        "line": 256,
         "kind": "literal"
       }
     ]
@@ -107312,6 +107999,17 @@
       }
     ]
   },
+  "m_e33a15c7bfeb8b14": {
+    "source": "טיפ לשאלה הזו",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 58,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e36b52a458370bc1": {
     "source": "נכון כשיש מקום, ורוב הפניות כבר נסגרות.",
     "language": "he",
@@ -107358,7 +108056,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 46,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -107392,7 +108090,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 294,
+        "line": 295,
         "kind": "literal"
       }
     ]
@@ -107518,7 +108216,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 224,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -107562,7 +108260,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 216,
+        "line": 252,
         "kind": "literal"
       }
     ]
@@ -107630,7 +108328,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 280,
         "kind": "literal"
       }
     ]
@@ -107841,7 +108539,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 188,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -108102,7 +108800,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 507,
+        "line": 592,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -108176,7 +108874,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 207,
+        "line": 208,
         "kind": "literal",
         "purpose": "display"
       }
@@ -108189,6 +108887,17 @@
       {
         "file": "web/lib/draft.ts",
         "line": 1174,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e5793ca8dc8cc095": {
+    "source": "מה נבדוק החודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -108326,13 +109035,24 @@
       }
     ]
   },
+  "m_e5a73d82abf071c4": {
+    "source": "טיפים קצרים מלווים את שאלות ההיכרות. האתר והמסכים הפנימיים קיבלו עיצוב חם וברור יותר. בקמפיין מפרידים בין תוצאות שנמדדו לבין שינויים שמנסים; לחיצות אינן נספרות כהזמנות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/lib/releases.ts",
+        "line": 11,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e5a7d6ae4e74b734": {
     "source": "נשארו",
     "language": "he",
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1534,
+        "line": 1536,
         "kind": "literal"
       }
     ]
@@ -108454,7 +109174,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 747,
+        "line": 749,
         "kind": "literal"
       }
     ]
@@ -108487,7 +109207,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 210,
         "kind": "literal"
       },
       {
@@ -108532,12 +109252,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3449,
+        "line": 3452,
         "kind": "template"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1338,
+        "line": 1345,
         "kind": "template",
         "purpose": "copy"
       }
@@ -108560,7 +109280,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 721,
+        "line": 723,
         "kind": "literal"
       }
     ]
@@ -108706,6 +109426,17 @@
       }
     ]
   },
+  "m_e66b2789bce667ff": {
+    "source": "הגרסה החדשה מחכה לבדיקה שלכם",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 213,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e66cc8e06488e63d": {
     "source": "בחרו איך מגיעים לקוחות, או סמנו שלא בטוחים.",
     "language": "he",
@@ -108735,7 +109466,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 95,
+        "line": 102,
         "kind": "literal"
       }
     ]
@@ -108757,7 +109488,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 138,
+        "line": 145,
         "kind": "literal"
       }
     ]
@@ -109267,6 +109998,17 @@
       }
     ]
   },
+  "m_e79b04f6cc97cb7d": {
+    "source": "המדדים של הפוסטים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 39,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e7b37ca710002ced": {
     "source": "בז׳",
     "language": "he",
@@ -109285,7 +110027,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 445,
+        "line": 529,
         "kind": "template",
         "purpose": "copy"
       }
@@ -109433,7 +110175,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 294,
+        "line": 295,
         "kind": "literal"
       }
     ]
@@ -109545,6 +110287,17 @@
       }
     ]
   },
+  "m_e8272570baed2006": {
+    "source": "כדאי להתחיל מהערוץ שבו אתם פעילים היום. בחיבור Google, בחרו את החשבון שמנהל את נתוני העסק.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_e82c4a2ac139b4fe": {
     "source": "טיפ, הסבר או תשובה לשאלה שלקוחות שואלים",
     "language": "he",
@@ -109585,7 +110338,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1685,
+        "line": 1687,
         "kind": "literal"
       },
       {
@@ -109653,7 +110406,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 68,
+        "line": 75,
         "kind": "literal",
         "purpose": "display"
       }
@@ -109687,13 +110440,13 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 469,
+        "line": 553,
         "kind": "literal",
         "purpose": "copy"
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 465,
+        "line": 549,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -110283,7 +111036,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1732,
+        "line": 1734,
         "kind": "literal",
         "purpose": "display"
       },
@@ -110508,13 +111261,13 @@
       }
     ]
   },
-  "m_ea1a96f91d2d4f59": {
-    "source": "מה לוקחים כשאוכלים בחוץ שבוע שלם?\nבגטים, פוקצ׳ה עם עגבניות צלויות, ומארז משפחתי שמספיק לכל הסוכה. דפדפו לראות מה יש בכל אחד.",
+  "m_ea15489ffbc2547a": {
+    "source": "אם יש כמה מסלולים, התחילו במוצר או במסלול שהכי חשוב לכם לקדם כרגע.",
     "language": "he",
     "references": [
       {
-        "file": "web/lib/api.ts",
-        "line": 1099,
+        "file": "web/components/start/OnboardingTip.tsx",
+        "line": 39,
         "kind": "literal"
       }
     ]
@@ -110602,7 +111355,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3658,
+        "line": 3661,
         "kind": "template"
       }
     ]
@@ -110789,7 +111542,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 186,
+        "line": 208,
         "kind": "literal"
       }
     ]
@@ -110822,7 +111575,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1960,
+        "line": 1962,
         "kind": "literal"
       }
     ]
@@ -110936,7 +111689,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 505,
+        "line": 590,
         "kind": "template",
         "purpose": "copy"
       }
@@ -110948,7 +111701,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 211,
+        "line": 247,
         "kind": "literal"
       }
     ]
@@ -111050,7 +111803,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3810,
+        "line": 3813,
         "kind": "literal",
         "purpose": "display"
       }
@@ -111108,7 +111861,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 179,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -111193,7 +111946,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 410,
+        "line": 412,
         "kind": "literal"
       },
       {
@@ -111374,7 +112127,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 38,
+        "line": 45,
         "kind": "literal"
       }
     ]
@@ -111570,7 +112323,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1117,
+        "line": 1119,
         "kind": "literal"
       }
     ]
@@ -111756,7 +112509,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 229,
+        "line": 269,
         "kind": "literal"
       }
     ]
@@ -111832,17 +112585,17 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1427,
+        "line": 1429,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1628,
+        "line": 1630,
         "kind": "literal"
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1742,
+        "line": 1744,
         "kind": "literal"
       },
       {
@@ -112052,12 +112805,12 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 203,
+        "line": 204,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 301,
+        "line": 302,
         "kind": "literal"
       }
     ]
@@ -112182,7 +112935,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 53,
+        "line": 60,
         "kind": "literal"
       }
     ]
@@ -112214,7 +112967,7 @@
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3370,
+        "line": 3373,
         "kind": "literal"
       }
     ]
@@ -112287,6 +113040,17 @@
       }
     ]
   },
+  "m_ed3cf56515d45bd5": {
+    "source": "לחזור לגרסה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 214,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ed3d19211669fba2": {
     "source": "{arg_0} תגובות",
     "language": "he",
@@ -112347,7 +113111,7 @@
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 26,
+        "line": 21,
         "kind": "literal"
       }
     ]
@@ -112688,7 +113452,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -112910,7 +113674,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 213,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -113029,12 +113793,12 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 83,
+        "line": 84,
         "kind": "literal"
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 804,
+        "line": 805,
         "kind": "literal"
       },
       {
@@ -113186,7 +113950,7 @@
       },
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 331,
+        "line": 358,
         "kind": "literal",
         "purpose": "copy"
       },
@@ -113300,7 +114064,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 786,
+        "line": 787,
         "kind": "literal"
       }
     ]
@@ -113713,12 +114477,12 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 20,
+        "line": 22,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 262,
         "kind": "literal"
       }
     ]
@@ -113939,7 +114703,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 180,
+        "line": 202,
         "kind": "literal"
       }
     ]
@@ -114157,7 +114921,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3388,
+        "line": 3391,
         "kind": "literal"
       }
     ]
@@ -114201,7 +114965,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1775,
+        "line": 1777,
         "kind": "literal"
       },
       {
@@ -114394,7 +115158,7 @@
     "references": [
       {
         "file": "api/app/services/hypotheses.py",
-        "line": 461,
+        "line": 545,
         "kind": "literal",
         "purpose": "copy"
       }
@@ -114507,7 +115271,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 756,
+        "line": 757,
         "kind": "literal",
         "purpose": "display"
       }
@@ -114630,7 +115394,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 627,
+        "line": 628,
         "kind": "literal",
         "purpose": "display"
       }
@@ -114688,7 +115452,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 654,
+        "line": 656,
         "kind": "literal"
       }
     ]
@@ -114804,7 +115568,7 @@
       },
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1435,
+        "line": 1437,
         "kind": "literal"
       },
       {
@@ -115166,7 +115930,7 @@
       },
       {
         "file": "web/app/posts/page.tsx",
-        "line": 167,
+        "line": 170,
         "kind": "literal"
       }
     ]
@@ -115189,7 +115953,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 140,
+        "line": 141,
         "kind": "literal"
       }
     ]
@@ -115465,7 +116229,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1041,
+        "line": 1043,
         "kind": "literal"
       }
     ]
@@ -115476,12 +116240,12 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3846,
+        "line": 3849,
         "kind": "literal"
       },
       {
         "file": "web/lib/api.ts",
-        "line": 3850,
+        "line": 3853,
         "kind": "literal"
       }
     ]
@@ -115870,7 +116634,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3357,
+        "line": 3360,
         "kind": "literal"
       },
       {
@@ -115948,12 +116712,12 @@
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
-        "line": 29,
+        "line": 24,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignWeek.tsx",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -116429,7 +117193,7 @@
       },
       {
         "file": "web/components/start/steps.tsx",
-        "line": 630,
+        "line": 631,
         "kind": "literal",
         "purpose": "display"
       }
@@ -116441,7 +117205,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3380,
+        "line": 3383,
         "kind": "literal"
       }
     ]
@@ -116532,7 +117296,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 178,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -116942,7 +117706,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 236,
+        "line": 276,
         "kind": "literal"
       }
     ]
@@ -116976,7 +117740,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 227,
+        "line": 267,
         "kind": "literal"
       }
     ]
@@ -117086,7 +117850,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 142,
+        "line": 149,
         "kind": "literal",
         "purpose": "display"
       }
@@ -117331,13 +118095,13 @@
     "references": [
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1170,
+        "line": 1177,
         "kind": "literal",
         "purpose": "validation"
       },
       {
         "file": "api/app/routers/strategy.py",
-        "line": 1282,
+        "line": 1289,
         "kind": "literal",
         "purpose": "validation"
       }
@@ -117418,7 +118182,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1173,
+        "line": 1175,
         "kind": "literal"
       }
     ]
@@ -117970,7 +118734,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3376,
+        "line": 3379,
         "kind": "literal"
       }
     ]
@@ -117983,6 +118747,17 @@
         "file": "web/components/motion/MotionGallery.tsx",
         "line": 112,
         "kind": "jsx"
+      }
+    ]
+  },
+  "m_f90e534ba2789ccd": {
+    "source": "נחדד את המסר סביב הפעולה ״{arg_0}״, עם הפרטים והסגנון שכבר בחרתם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignDirection.tsx",
+        "line": 16,
+        "kind": "literal"
       }
     ]
   },
@@ -118428,7 +119203,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 167,
+        "line": 170,
         "kind": "literal"
       }
     ]
@@ -118746,7 +119521,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 137,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -119001,7 +119776,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 173,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -119038,6 +119813,17 @@
         "line": 190,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_fb6d331f0e519ecb": {
+    "source": "העבודה על הסרטון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 264,
+        "kind": "literal"
       }
     ]
   },
@@ -119136,7 +119922,7 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 40,
+        "line": 52,
         "kind": "literal",
         "purpose": "display"
       },
@@ -119444,7 +120230,7 @@
     "references": [
       {
         "file": "web/app/posts/page.tsx",
-        "line": 346,
+        "line": 356,
         "kind": "literal"
       }
     ]
@@ -119455,7 +120241,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 222,
+        "line": 258,
         "kind": "literal"
       }
     ]
@@ -119538,7 +120324,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 130,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -119665,7 +120451,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 214,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -119777,7 +120563,7 @@
     "references": [
       {
         "file": "web/lib/api.ts",
-        "line": 3644,
+        "line": 3647,
         "kind": "template"
       }
     ]
@@ -119822,7 +120608,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 16,
+        "line": 23,
         "kind": "literal",
         "purpose": "display"
       }
@@ -119903,17 +120689,6 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 68,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_fd0d3380424c1dc0": {
-    "source": "השבוע בתוכנית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/strategy/page.tsx",
-        "line": 151,
         "kind": "literal"
       }
     ]
@@ -120217,7 +120992,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 163,
+        "line": 170,
         "kind": "literal",
         "purpose": "display"
       }
@@ -120385,7 +121160,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1725,
+        "line": 1727,
         "kind": "literal"
       },
       {
@@ -120436,7 +121211,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1960,
+        "line": 1962,
         "kind": "literal"
       },
       {
@@ -120517,7 +121292,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 279,
         "kind": "literal"
       },
       {
@@ -120545,7 +121320,7 @@
     "references": [
       {
         "file": "web/lib/releases.ts",
-        "line": 110,
+        "line": 117,
         "kind": "literal"
       }
     ]
@@ -120657,7 +121432,7 @@
     "references": [
       {
         "file": "web/components/PostEditor.tsx",
-        "line": 1024,
+        "line": 1026,
         "kind": "literal"
       }
     ]
@@ -120713,7 +121488,7 @@
     "references": [
       {
         "file": "web/components/start/steps.tsx",
-        "line": 305,
+        "line": 306,
         "kind": "literal"
       }
     ]

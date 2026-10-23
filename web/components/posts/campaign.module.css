@@ -99,15 +99,15 @@
 }
 
 /* A campaign opens with its real plan, then the weekly work. */
-.overview {background:var(--paper);border-radius:18px;padding:24px 28px;margin-bottom:28px}
+.overview {background:var(--paper);border-radius:18px;padding:24px 28px;margin-bottom:28px;box-shadow:var(--shadow-card)}
 .overview>header,.overview>footer {display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;color:var(--ink-muted)}
-.overview a {color:var(--primary);min-height:36px;display:inline-flex;align-items:center}
+.overview a {color:var(--primary);min-height:44px;display:inline-flex;align-items:center}
 .overview dl {display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:28px;padding:16px 0 24px}
 .overview dt {font-size:12px;color:var(--ink-muted);margin-bottom:10px}
 .overview dd {font-size:15px;line-height:1.65;color:var(--ink)}
 .overview dd p+p {margin-top:5px}
 .overview>footer {border-top:1px solid var(--rule);padding-top:12px}
-.week {background:var(--paper);border:0;border-radius:20px;padding:24px 28px 32px;margin-bottom:24px}
+.week {background:var(--paper);border:0;border-radius:20px;padding:24px 28px 32px;margin-bottom:24px;box-shadow:var(--shadow-card)}
 .marker {display:none}
 .weekHeading {padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:24px}
 .weekBrief {background:var(--soft);border-radius:14px;padding:20px}
@@ -120,9 +120,43 @@
 @media(max-width:700px){
  .overview dl{grid-template-columns:1fr 1fr;gap:16px 18px;padding-block:12px 18px}
  .overview dl>div:first-child{grid-column:1/-1}
- .overview dl>div:first-child dd p:not(:first-child){display:none}
  .overview dl>div:not(:first-child) dd p{display:inline;font-size:13px}
  .overview dl>div:not(:first-child) dd p+p{margin:0}
  .overview dl>div:not(:first-child) dd p:not(:last-child)::after{content:' · '}
  .overview dt{margin-bottom:6px}
 }
+
+/* The month remains navigable while the selected week is the working surface. */
+.period {display:block;margin-top:2px;font-variant-numeric:tabular-nums}
+.monthTest {display:grid;grid-template-columns:1.5fr 1fr;gap:28px;padding:0 0 20px;font-size:14px;line-height:1.65}
+.monthTest h2 {font-size:12px;color:var(--ink-muted);margin-bottom:6px}
+.monthTest .assessment {font-size:13px;color:var(--ink-soft);margin-top:8px}
+.nextTask {display:flex;align-items:center;justify-content:space-between;gap:24px;padding:20px 0 24px}
+.nextTask h2 {font-size:17px;font-weight:600;margin-bottom:4px}
+.nextTask p {font-size:14px;color:var(--ink-soft);line-height:1.6}
+.nextTask .textAction {flex-shrink:0}
+.weekNav {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:24px}
+.weekNav button {min-height:68px;text-align:start;padding:12px 16px;border-radius:12px;background:transparent;cursor:pointer;box-shadow:inset 0 -1px var(--rule-dark);transition:background 160ms,box-shadow 160ms}
+.weekNav strong,.weekNav span {display:block}
+.weekNav strong {font-size:14px;font-weight:600}
+.weekNav span {font-size:12px;color:var(--ink-muted);margin-top:4px}
+.weekNav button[aria-pressed=true] {background:var(--paper);box-shadow:var(--shadow-card);color:var(--primary)}
+.weekNav button:focus-visible {outline:2px solid var(--primary);outline-offset:3px}
+.studio {background:var(--paper);padding:28px;border:0;border-radius:16px;box-shadow:var(--shadow-card);margin-bottom:28px;scroll-margin-top:80px}
+.studioHeading {grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.studioHeading h2 {font-size:19px;font-weight:600}
+.studioHeading a {font-size:14px;color:var(--primary);min-height:44px;display:inline-flex;align-items:center}
+.direction {background:var(--sage-soft);border-radius:12px;padding:16px;margin-bottom:20px}
+.direction h3 {font-size:14px;font-weight:600;color:var(--sage-dark);margin-bottom:5px}
+.direction p {font-size:14px;line-height:1.65;color:var(--ink-soft)}
+.direction button {display:inline-flex;align-items:center;min-height:44px;font-size:13px;font-weight:600;color:var(--sage-dark);cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+.videoModes {display:flex;flex-wrap:wrap;gap:8px;margin-block:0 16px}
+.videoModes button {padding:8px 12px;min-height:44px;border:1px solid var(--rule-dark);border-radius:8px;font-size:13px;cursor:pointer}
+.videoModes button[aria-pressed=true]{background:var(--primary-soft);color:var(--primary);border-color:var(--primary)}
+@media(max-width:700px){.monthTest{grid-template-columns:1fr;gap:16px}.nextTask{gap:12px;align-items:start}.nextTask h2{font-size:16px}.weekNav{gap:6px}.weekNav button{padding:10px 8px}.weekNav strong{font-size:13px}.weekNav span{font-size:11px}.studio{padding:20px 16px;gap:24px}.studioHeading{flex-wrap:wrap}}
+
+.channels {font-size:12px;font-weight:600;color:var(--ink-soft)}
+
+.primary {box-shadow:var(--shadow-button)}
+.primary:disabled {box-shadow:none}
+@media(max-width:700px){.selectionBar{bottom:calc(80px + env(safe-area-inset-bottom))}.choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.choices button{padding-inline:4px;font-size:13px}}

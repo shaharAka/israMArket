@@ -56,7 +56,7 @@ export function StepLink({
       {/* The step by its name, as Today's readiness stages call it (not by its week). */}
       <span>
         <Copy text="הצעד הבא:" />{t(step.title_he)}
-        {step.status === "todo" ? ` · ${minutesLabel(step.minutes)}` : ""}
+        {step.status === "todo" ? ` · ${minutesLabel(step.minutes, t)}` : ""}
       </span>
       <IconArrowLeft className="h-3.5 w-3.5 shrink-0" />
     </Link>

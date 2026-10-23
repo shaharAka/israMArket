@@ -54,6 +54,8 @@ jobs:
         run: node scripts/test-landing-business-route.mjs && node scripts/test-research-replies.mjs
       - name: Finding value formatting
         run: node scripts/test-finding-values.mjs && node scripts/test-site-analytics.mjs
+      - name: Campaign evidence, navigation and duration labels
+        run: node scripts/test-campaign-workspace.mjs && node scripts/test-trial-minutes.mjs
       - name: Build
         run: npm run build
         env:

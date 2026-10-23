@@ -127,3 +127,14 @@ by 6.8. Pausing froze the view and manual week/post navigation remained usable. 
 renderer’s painted width matched its stage in the zoomed walkthrough and the unscaled
 local customer campaign. The website capture was refreshed after this fix. Provider quotas
 and activation are unchanged; no new paid Gemini/provider calls were made.
+
+
+## 24 October: campaign as the working surface
+
+The campaign is first in the product navigation and the default destination for returning password/Google sign-ins. Setup routing and explicit return destinations remain intact. `/strategy/posts/workspace` includes the stored publish brief bound to its exact business/month; no provider request is made to display it. Quick-post-only workspaces omit the monthly brief. The campaign labels the marketing budget as planned and links actual expenditure/results separately.
+
+The working week starts with the next pending post; other weeks remain directly selectable. The chosen week's creative workbench follows immediately. Full-editor handoffs carry `from=campaign`, `week` and the returning post UID, and return to that context. Up to three drafts may still be revised together across weeks: selecting a revision item changes the visible week, restoring a pending batch overrides a stale week URL, and a persistent return action keeps pending work reachable. Keep/discard/undo and protected-post rules are unchanged. No automatic publishing or advertising execution was introduced.
+
+Four primary creative choices precede video-specific operations. A fact-based editing direction may fill a single draft's instruction; it does not claim to be a newly generated strategic recommendation. The endpoint continues to supply the real brand and marketing brief at generation. Applied draft changes are separate from observed learning. Numeric goals stay visible on mobile, and floating actions clear the bottom navigation. Onboarding now has contextual tips; working surfaces and primary controls use the shared soft depth tokens.
+
+The accompanying hypothesis safety fix prevents clicks/visits from being compared numerically with order goals, including old stored proxy verdicts. Generic GA4 key events are not verified orders. Tests cover missing/zero data, source attribution, business/month budget isolation, quick-post isolation, cross-week revisions and return navigation. No new paid generation was needed for this review.

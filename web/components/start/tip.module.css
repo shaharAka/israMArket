@@ -1,0 +1,6 @@
+.tip {display:flex;align-items:flex-start;gap:13px;padding:16px 18px;margin:0;background:var(--sage-soft);border-radius:14px;color:var(--ink)}
+.tip strong {display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--sage-dark)}
+.tip p {font-size:14px;line-height:1.65;max-width:58ch;color:var(--ink-soft);margin:0}
+.icon {display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:12px;background:var(--paper);color:var(--sage-dark);box-shadow:0 2px 3px -1px #20594418,0 6px 12px -6px #20594430}
+.icon svg {width:23px;height:23px}
+@media(max-width:600px){.tip{gap:11px;padding:14px;margin-bottom:0}.tip p{font-size:14px}}

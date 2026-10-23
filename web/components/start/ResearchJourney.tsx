@@ -13,6 +13,7 @@ import { StepSoftware } from "./StepSoftware";
 import { ServiceClientSources } from "./BusinessRoute";
 import { StepSave } from "./StepSave";
 import { StepShell, TextInput } from "./ui";
+import { OnboardingTip } from "./OnboardingTip";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { HowToFind } from "@/components/help/HowToFind";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
@@ -137,7 +138,7 @@ export function ResearchJourney() {
   if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
   const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
-  const common: StepProps = { flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
+  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
     const next = { ...current, step, seen: [...new Set([...current.seen, j.step])], draft: { ...current.draft, research_journey: { ...j, step } } };

@@ -4,18 +4,13 @@ import Link from "next/link";
 import type { RoadmapPost } from "@/lib/api";
 import type { BrandDna } from "@/lib/dna/library";
 import { useCopy } from "@/components/language/LanguageProvider";
+import { briefLearning } from "@/lib/campaignEvidence";
 import { metricLabel } from "@/lib/postLifecycle";
 
 // Purpose: make creative work serve a person, a marketing objective and a customer
 // action. Main message: the look belongs to your brand; the content serves your plan.
 // Show learning only when actually supplied; otherwise name the measurement to test.
-export function briefLearning(post: RoadmapPost): string | null | undefined {
-  const measured = Boolean(post.results?.matched_by?.length && (
-    (post.results.observations && Object.keys(post.results.observations).length) ||
-    ((post.published_at || post.published_url) && post.results.updated_at && typeof post.results.value === "number")
-  ));
-  return post.informed_by_note || (measured ? post.learning : null);
-}
+export { briefLearning } from "@/lib/campaignEvidence";
 
 export function CampaignBrief({ post, audience, dna }: { post: RoadmapPost; audience: string; dna: BrandDna | null }) {
   const t = useCopy();
@@ -27,6 +22,7 @@ export function CampaignBrief({ post, audience, dna }: { post: RoadmapPost; audi
     [t("המטרה"), goal],
     [t("הפעולה"), post.cta],
     [t(learning ? "מה למדנו" : "מה נבדוק"), learning || t(measure)],
+    [t("מה יישמנו כאן"), post.informed_by_note],
   ].filter(([, value]) => value?.trim());
   if (!rows.length && !dna) return null;
   return <section aria-label={t("הפוסט בתוכנית")} className="mb-5">

@@ -1,12 +1,12 @@
 # Public landing: Signal / Punch
 
-Selected by Shahar on 24 October 2026. This applies to the current process landing page. It replaces the earlier neutral/blue public treatment; the signed-in component library is a subsequent rollout.
+Selected by Shahar on 24 October 2026. This applies to the current process landing page. It replaces the earlier neutral/blue public treatment; the signed-in component library uses the same palette in its calmer Operate mode.
 
 - Punch orange `#ff7957`, graphite `#20221c`, warm white `#fff9f3`, peach `#ffb89b`. Darkened terracotta is used for readable text links and focus. Provider logos and customer artwork keep their own colors.
 - Self-hosted Secular One for Hebrew display headings (SIL OFL, license in `public/fonts/signal/OFL.txt`). Existing Rubik body and English/Arabic/Russian locale fonts remain.
 - Large graphic typography, generous space, rectangular actions, broad visual stages and restrained entry motion. Keep the approved hero message and the nine-step journey.
 - The hero explains a complete promotion system. Do not replace it with a portfolio reel or an asset-generation pitch.
-- Campaign demonstration: one goal and audience stay visible while the view moves through monthly plan, channel adaptations of one creative concept, measurement of the business outcome and learning that changes the next plan. Navigation is manual or automatic, with a short 2.8–4.5 second rhythm; no publishing or generation occurs here.
+- Campaign demonstration: one goal and audience stay visible while the view moves through monthly plan, channel adaptations of one creative concept, measurement of the business outcome and learning that changes the next plan. Navigation is manual or automatic, with stage holds of 2.8, 4.5, 4.0 and 4.2 seconds; no publishing or generation occurs here.
 - Measurements shown in this new scene describe what to measure, without fabricated performance counts. Real customer numbers require actual connected data.
 - Demonstrations respect visibility, reduced motion and keyboard focus. Visible pause controls are removed at the owner’s request; direct stage selection remains available and must show a complete view.
 - Every chapter, including campaign, keeps right-hand copy and left-hand illustration in Hebrew, with locale direction preserved. The campaign workspace fills its visual column; on phones text and illustration stack.

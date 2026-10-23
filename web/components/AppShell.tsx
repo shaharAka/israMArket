@@ -37,7 +37,7 @@ type Tab = {
  * campaign is its own workspace for the sequence and coordinated creative revisions.
  */
 export const TABS: Tab[] = [
-  { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
+  { href: "/campaign", label: "קמפיין", icon: IconMegaphone, owns: ["/campaign"] },
   {
     href: "/strategy",
     label: "מטרות ותוכנית",
@@ -45,11 +45,11 @@ export const TABS: Tab[] = [
     // `/baseline`: the plan's starting numbers, the week-1 measurement step (Revision 8).
     owns: ["/strategy", "/plan", "/decisions", "/calendar", "/promotion", "/instagram", "/baseline"],
   },
-  { href: "/campaign", label: "קמפיין", icon: IconMegaphone, owns: ["/campaign"] },
   // The week-2 raw materials the posts are written from: photos, the products to feature
   // and the style check (Revision 8).
   { href: "/posts", label: "פוסטים", icon: IconImage, owns: ["/posts", "/assets", "/featured", "/voice"] },
   { href: "/performance", label: "תוצאות", icon: IconChart, owns: ["/performance", "/recommendations"] },
+  { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
 ];
 
 // `/security` is public (the landing links to it) and has no shell.
@@ -203,7 +203,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <span><Copy text={back.label} /></span>
           </Link>
         ) : (
-          <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
+          <Link href={inSetup ? setupHref : "/campaign"} className="flex min-h-11 min-w-0 items-center gap-2 px-2">
             {businessName ? <BusinessLogo src={businessLogo} name={businessName} color={businessColor} className="h-7 w-7 shrink-0" /> : <span className="product-wordmark !text-[16px]" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>}
             {/* The owner's business, not ours: "ישראמארקט / לחם …" truncated the one
                 word they would recognise. */}
@@ -241,7 +241,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div>
           {/* Keep the compact updates utility beside the identity, away from account actions. */}
           <div className="flex items-center justify-between gap-2 px-5 pt-5 pb-2">
-            <Link href={inSetup ? setupHref : "/dashboard"} className="flex min-w-0 items-center gap-3">
+            <Link href={inSetup ? setupHref : "/campaign"} className="flex min-w-0 items-center gap-3">
               <div className="min-w-0">
                 <span className="product-wordmark block" dir="ltr"><IdentityMark direction="open" /><span className="sr-only">isramarket</span></span>
                 <span className="block text-xs text-[color:var(--ink-muted)]"><Copy text="שיווק לעסקים קטנים" /></span>

@@ -58,7 +58,7 @@ export default function LoginPage() {
       } else {
         // A failed business read is not a failed password. The app can retry that read.
         const { business } = await endpoints.business().catch(() => ({ business: undefined }));
-        router.replace(business === undefined ? withInterfaceLanguage("/dashboard", locale) : signInDestination(null, business, locale));
+        router.replace(business === undefined ? withInterfaceLanguage("/campaign", locale) : signInDestination(null, business, locale));
       }
     } catch (err) {
       if (err instanceof ApiError && err.code === "account_suspended") {
@@ -87,7 +87,7 @@ export default function LoginPage() {
         </div>
       ) : null}
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
-      <GoogleButton next={withInterfaceLanguage(returnPath ?? "/dashboard", locale)} back={withInterfaceLanguage(returnPath ? `/login?${new URLSearchParams({ next: returnPath })}` : "/login", locale)} disabled={pending} />
+      <GoogleButton next={withInterfaceLanguage(returnPath ?? "/campaign", locale)} back={withInterfaceLanguage(returnPath ? `/login?${new URLSearchParams({ next: returnPath })}` : "/login", locale)} disabled={pending} />
       <div className="my-5">
         <OrDivider />
       </div>

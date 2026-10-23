@@ -11,7 +11,7 @@ import { ProcessSocialPost } from "./ProcessSocialPost";
 import { useProcessSequence } from "./useProcessSequence";
 import styles from "./campaign-system.module.css";
 
-const DURATIONS = [2800, 4500, 3000, 3200] as const;
+const DURATIONS = [2800, 4500, 4000, 4200] as const;
 const STAGES = ["התוכנית", "החומרים", "המדידה", "הצעד הבא"];
 const METRICS: Record<ProcessRole, readonly string[]> = {
   online_shop: ["כניסות לעמוד המוצר", "הוספות לסל", "הזמנות שהושלמו"],

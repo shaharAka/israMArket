@@ -245,6 +245,7 @@ export function PostEditor({
   onStrategyUpdated,
   onNavigate,
   onClose,
+  closeLabel = "הפוסטים",
   imagesWaiting,
 }: {
   posts: RoadmapPost[];
@@ -258,6 +259,7 @@ export function PostEditor({
   onNavigate?: (index: number) => void;
   /** Back to the month's feed. */
   onClose?: () => void;
+  closeLabel?: string;
   /** The uids of the posts whose image the server's image job is making (lib/useImageJob). */
   imagesWaiting?: string[];
 }) {
@@ -1965,7 +1967,7 @@ export function PostEditor({
                 className={`${ui.link} ${ui.linkQuiet} group -ms-1 shrink-0 px-1 text-[13px]`}
               >
                 <IconArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5" />
-                <Copy text="הפוסטים" />
+                <Copy text={closeLabel} />
         </button>
             ) : null}
             {week ? (

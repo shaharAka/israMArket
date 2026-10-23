@@ -45,6 +45,7 @@ export type StepProps = {
   editLinks?: () => void;
   reflection: string | null;
   notice?: React.ReactNode;
+  tip?: React.ReactNode;
   focus: boolean;
   direction: "fwd" | "back";
 };
