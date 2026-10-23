@@ -159,4 +159,4 @@
 
 .primary {box-shadow:var(--shadow-button)}
 .primary:disabled {box-shadow:none}
-@media(max-width:700px){.selectionBar{bottom:calc(80px + env(safe-area-inset-bottom))}.choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.choices button{padding-inline:4px;font-size:13px}}
+@media(max-width:700px){.selectionBar{bottom:calc(80px + env(safe-area-inset-bottom))}.choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.choices button{padding-inline:4px;font-size:13px}}
