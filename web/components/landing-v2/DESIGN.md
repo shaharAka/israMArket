@@ -6,9 +6,9 @@ Selected by Shahar on 24 October 2026. This applies to the current process landi
 - Self-hosted Secular One for Hebrew display headings (SIL OFL, license in `public/fonts/signal/OFL.txt`). Existing Rubik body and English/Arabic/Russian locale fonts remain.
 - Large graphic typography, generous space, rectangular actions, broad visual stages and restrained entry motion. Keep the approved hero message and the nine-step journey.
 - The hero explains a complete promotion system. Do not replace it with a portfolio reel or an asset-generation pitch.
-- Campaign demonstration: one goal and audience stay visible while the view moves through monthly plan, channel adaptations of one creative concept, measurement of the business outcome and learning that changes the next plan. Navigation is manual or automatic; no publishing or generation occurs here.
+- Campaign demonstration: one goal and audience stay visible while the view moves through monthly plan, channel adaptations of one creative concept, measurement of the business outcome and learning that changes the next plan. Navigation is manual or automatic, with a short 2.8–4.5 second rhythm; no publishing or generation occurs here.
 - Measurements shown in this new scene describe what to measure, without fabricated performance counts. Real customer numbers require actual connected data.
-- All scene playback respects visibility, reduced motion, keyboard focus and the pause control. Manual selection while paused must show a complete view.
+- Demonstrations respect visibility, reduced motion and keyboard focus. Visible pause controls are removed at the owner’s request; direct stage selection remains available and must show a complete view.
 - Every chapter, including campaign, keeps right-hand copy and left-hand illustration in Hebrew, with locale direction preserved. The campaign workspace fills its visual column; on phones text and illustration stack.
 
 Implementation: `ProcessLanding.tsx`, `process-story.module.css`, `CampaignSystemScene.tsx`, `campaign-system.module.css`. The standalone studies remain available separately for reference.

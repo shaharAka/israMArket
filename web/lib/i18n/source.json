@@ -485,7 +485,7 @@
       },
       {
         "file": "web/components/design/foundations.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal",
         "purpose": "display"
       }
@@ -653,7 +653,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/PlanCycleHero.tsx",
-        "line": 132,
+        "line": 129,
         "kind": "literal"
       }
     ]
@@ -760,7 +760,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       }
     ]
@@ -1371,12 +1371,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 152,
+        "line": 153,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 225,
+        "line": 229,
         "kind": "literal"
       },
       {
@@ -1767,7 +1767,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -2641,7 +2641,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 84,
+        "line": 85,
         "kind": "literal"
       }
     ]
@@ -2921,12 +2921,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 70,
+        "line": 71,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       }
     ]
@@ -2938,17 +2938,6 @@
       {
         "file": "web/lib/api.ts",
         "line": 3382,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_05cda86c4c3cb1a3": {
-    "source": "בכל הערוצים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 84,
         "kind": "literal"
       }
     ]
@@ -3551,7 +3540,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 207,
+        "line": 209,
         "kind": "literal"
       }
     ]
@@ -3624,7 +3613,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 187,
+        "line": 191,
         "kind": "literal"
       },
       {
@@ -4178,6 +4167,17 @@
       {
         "file": "web/app/strategy/page.tsx",
         "line": 168,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_0892f306355114a7": {
+    "source": "מותאם לכל ערוץ.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -4892,6 +4892,17 @@
       }
     ]
   },
+  "m_09f53f9e1765770d": {
+    "source": "צעד {arg_0} מתוך {arg_1}",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 177,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_09fa11584ce9b083": {
     "source": "השירות לא השיב בזמן. אפשר לנסות שוב.",
     "language": "he",
@@ -5087,7 +5098,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 206,
+        "line": 210,
         "kind": "literal"
       }
     ]
@@ -5286,7 +5297,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 16,
+        "line": 13,
         "kind": "literal"
       },
       {
@@ -5296,9 +5307,8 @@
       },
       {
         "file": "web/components/AppShell.tsx",
-        "line": 43,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 328,
+        "kind": "literal"
       },
       {
         "file": "web/components/design/ComponentWorkshop.tsx",
@@ -5373,7 +5383,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -5384,7 +5394,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       }
     ]
@@ -5990,6 +6000,17 @@
       }
     ]
   },
+  "m_0c9b70f88e133aa4": {
+    "source": "הקמפיין כחלק מהתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 24,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_0caa10318f5b4f4f": {
     "source": "לחבר את נתוני האתר",
     "language": "he",
@@ -6048,22 +6069,6 @@
         "line": 1342,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_0cc0cd2cf6b0bfc1": {
-    "source": "לראות את הפוסט בתנועה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 80,
-        "kind": "literal"
       }
     ]
   },
@@ -6840,7 +6845,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -7812,6 +7817,17 @@
       }
     ]
   },
+  "m_101b6e31477adf80": {
+    "source": "לומדים מה עובד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 87,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_101cda57849ae473": {
     "source": "בחרו **Business** (עסק) או **Creator** (יוצר תוכן), ואז **Next**. שניהם מתאימים לנו.",
     "language": "he",
@@ -8739,7 +8755,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -9459,6 +9475,17 @@
       }
     ]
   },
+  "m_13aacedb40f46d15": {
+    "source": "{arg_0} פוסטים בתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 27,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_13bd70293d404ac0": {
     "source": "מחקר",
     "language": "he",
@@ -9520,6 +9547,17 @@
         "line": 40,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_13da2e2c4c2d758c": {
+    "source": "מהיכרות לתוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 174,
+        "kind": "literal"
       }
     ]
   },
@@ -9770,7 +9808,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       }
     ]
@@ -9844,6 +9882,18 @@
         "file": "web/app/account/page.tsx",
         "line": 70,
         "kind": "literal"
+      }
+    ]
+  },
+  "m_14b2d61cc7c746fe": {
+    "source": "רקע חם, דיו כהה ודגש כתום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/foundations.ts",
+        "line": 17,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -10308,22 +10358,6 @@
       }
     ]
   },
-  "m_15e4b5598d6af1e9": {
-    "source": "להפעיל את ההמחשה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 69,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 93,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_15e8dcb676e7c375": {
     "source": "לקבל הצעה לתוכנית",
     "language": "he",
@@ -10615,6 +10649,17 @@
         "line": 259,
         "kind": "template",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_169ce0b2dd71dbf1": {
+    "source": "מחברים מידע",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 175,
+        "kind": "literal"
       }
     ]
   },
@@ -11341,7 +11386,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 227,
+        "line": 231,
         "kind": "literal",
         "purpose": "display"
       }
@@ -11379,22 +11424,6 @@
         "line": 1000,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_1812ffccac8ccc79": {
-    "source": "להשהות את ההמחשה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 69,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 93,
-        "kind": "literal"
       }
     ]
   },
@@ -11638,7 +11667,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       },
       {
@@ -13257,12 +13286,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 165,
+        "line": 166,
         "kind": "literal"
       },
       {
@@ -13804,7 +13833,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -14407,6 +14436,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/app/preview/page.tsx",
+        "line": 16,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/AppShell.tsx",
         "line": 52,
         "kind": "literal",
@@ -14991,7 +15025,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 18,
+        "line": 15,
         "kind": "literal"
       }
     ]
@@ -15620,7 +15654,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 87,
+        "line": 84,
         "kind": "jsx"
       }
     ]
@@ -17263,6 +17297,17 @@
       }
     ]
   },
+  "m_23bfa25ccab01a74": {
+    "source": "לכל שבוע מטרה. בחרו פוסט כדי לבדוק, לערוך או להכין גרסה חדשה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 190,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_23c07ff123e8ee08": {
     "source": "חסרים כותרת, hook או caption.",
     "language": "he",
@@ -17851,7 +17896,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 17,
+        "line": 14,
         "kind": "literal"
       }
     ]
@@ -17918,7 +17963,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 215,
+        "line": 217,
         "kind": "literal"
       }
     ]
@@ -18362,17 +18407,6 @@
       }
     ]
   },
-  "m_261b589dc15fcb39": {
-    "source": "להמשיך את המעבר בין התכונות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 67,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_2620f2dc9a29a43f": {
     "source": "השבועות",
     "language": "he",
@@ -18804,7 +18838,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 241,
+        "line": 243,
         "kind": "literal"
       },
       {
@@ -18939,7 +18973,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 37,
+        "line": 38,
         "kind": "literal"
       }
     ]
@@ -19346,7 +19380,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 226,
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -19583,12 +19617,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 209,
         "kind": "literal"
       }
     ]
@@ -20020,6 +20054,11 @@
     "source": "לפתוח את הקמפיין",
     "language": "he",
     "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 40,
+        "kind": "literal"
+      },
       {
         "file": "web/lib/releases.ts",
         "line": 47,
@@ -20648,6 +20687,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 22,
+        "kind": "literal"
+      },
+      {
         "file": "web/components/start/BuildReview.tsx",
         "line": 47,
         "kind": "literal"
@@ -20883,7 +20927,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 83,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -21559,7 +21603,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 18,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -22501,7 +22545,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 17,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -22563,7 +22607,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 186,
+        "line": 188,
         "kind": "literal"
       }
     ]
@@ -22807,7 +22851,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -22891,12 +22935,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 209,
         "kind": "literal"
       },
       {
@@ -24541,17 +24585,6 @@
       }
     ]
   },
-  "m_32d762bc06fb87c0": {
-    "source": "להפעיל את ההדגמה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 54,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_32dc9f963ef129e5": {
     "source": "קרם",
     "language": "he",
@@ -24620,7 +24653,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 34,
+        "line": 31,
         "kind": "jsx"
       },
       {
@@ -24745,7 +24778,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -24936,17 +24969,6 @@
         "line": 66,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_3360bd8fa255371b": {
-    "source": "התוצאות חוזרות לתוכנית.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 88,
-        "kind": "literal"
       }
     ]
   },
@@ -25804,7 +25826,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -25837,7 +25859,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 15,
+        "line": 12,
         "kind": "literal"
       }
     ]
@@ -25881,12 +25903,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 203,
+        "line": 205,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 207,
+        "line": 209,
         "kind": "literal"
       }
     ]
@@ -26081,7 +26103,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 227,
+        "line": 231,
         "kind": "literal",
         "purpose": "display"
       }
@@ -27154,17 +27176,6 @@
       }
     ]
   },
-  "m_379b756ea978ab40": {
-    "source": "מסר אחד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 84,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_379de2547a1b9768": {
     "source": "משימה ליום הזה",
     "language": "he",
@@ -27651,7 +27662,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -27843,6 +27854,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 755,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_39a8fc3177364d76": {
+    "source": "בונים תוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -28357,7 +28379,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 181,
+        "line": 182,
         "kind": "literal"
       }
     ]
@@ -28538,7 +28560,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 217,
+        "line": 219,
         "kind": "literal"
       }
     ]
@@ -30210,12 +30232,12 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 209,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 208,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -30272,7 +30294,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 219,
+        "line": 221,
         "kind": "literal"
       }
     ]
@@ -30300,7 +30322,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -30654,7 +30676,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 228,
+        "line": 232,
         "kind": "literal"
       }
     ]
@@ -31055,6 +31077,17 @@
       }
     ]
   },
+  "m_40c6f8f83ef14559": {
+    "source": "קמפיין אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 84,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_40c726f25646fed8": {
     "source": "2. האתר עוד לא מחובר לגוגל בכלל?",
     "language": "he",
@@ -31200,7 +31233,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -31710,7 +31743,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -31794,7 +31827,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 173,
+        "line": 177,
         "kind": "literal"
       }
     ]
@@ -32291,7 +32324,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 225,
+        "line": 229,
         "kind": "literal",
         "purpose": "display"
       },
@@ -32575,7 +32608,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 87,
+        "line": 84,
         "kind": "literal"
       },
       {
@@ -32754,7 +32787,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 173,
+        "line": 174,
         "kind": "literal"
       }
     ]
@@ -32925,6 +32958,17 @@
       {
         "file": "web/components/landing-v2/personaPages.ts",
         "line": 10,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_44b1fd9a7f0029a5": {
+    "source": "יודעים מה לפרסם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -34009,7 +34053,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 186,
+        "line": 188,
         "kind": "literal"
       }
     ]
@@ -35470,7 +35514,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -35482,7 +35526,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -35692,7 +35736,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 19,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -36296,7 +36340,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 225,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -36581,7 +36625,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -36876,6 +36920,17 @@
       }
     ]
   },
+  "m_4d441b38b3005e4f": {
+    "source": "לתוכנית המלאה",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 25,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_4d5768f69a20646f": {
     "source": "כל המספרים מאינסטגרם",
     "language": "he",
@@ -37071,17 +37126,6 @@
       {
         "file": "web/components/AppShell.tsx",
         "line": 291,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_4daff3e58af729da": {
-    "source": "הדוכן נותן תחושה של עסק אמיתי. השמש מוסיפה חום, עולה מאחוריו ומובילה את הרגעים הקטנים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/foundations.ts",
-        "line": 35,
         "kind": "literal"
       }
     ]
@@ -38360,7 +38404,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 180,
+        "line": 181,
         "kind": "literal"
       }
     ]
@@ -38484,7 +38528,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -38808,7 +38852,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -40551,7 +40595,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal",
         "purpose": "display"
       },
@@ -40725,7 +40769,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 236,
+        "line": 238,
         "kind": "literal"
       }
     ]
@@ -40809,7 +40853,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -40996,7 +41040,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 200,
+        "line": 202,
         "kind": "literal"
       }
     ]
@@ -41079,7 +41123,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -41375,6 +41419,17 @@
         "line": 99,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_575d70a482364ff9": {
+    "source": "איך נבדוק התקדמות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 22,
+        "kind": "literal"
       }
     ]
   },
@@ -43813,7 +43868,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 18,
+        "line": 19,
         "kind": "literal",
         "purpose": "display"
       }
@@ -44047,7 +44102,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 174,
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -45284,11 +45339,6 @@
     "language": "he",
     "references": [
       {
-        "file": "web/app/preview/page.tsx",
-        "line": 46,
-        "kind": "literal"
-      },
-      {
         "file": "web/app/recommendations/page.tsx",
         "line": 45,
         "kind": "literal"
@@ -45488,12 +45538,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -46083,7 +46133,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 34,
+        "line": 35,
         "kind": "literal"
       }
     ]
@@ -47212,17 +47262,6 @@
       }
     ]
   },
-  "m_63c099f9ff17622d": {
-    "source": "ליווי לאורך הדרך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 40,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_63c797e9ca1ee7fa": {
     "source": "בעמוד הבית שלכם לא השתנו מבצעים, מחירים או כותרות מאז {arg_0}.",
     "language": "he",
@@ -47655,18 +47694,6 @@
         "line": 105,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_64ce184584f80042": {
-    "source": "ישראמארקט · תצוגת כחול ושמש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/layout.tsx",
-        "line": 2,
-        "kind": "literal",
-        "purpose": "display"
       }
     ]
   },
@@ -49128,17 +49155,6 @@
       }
     ]
   },
-  "m_676eaf418379cd41": {
-    "source": "לעצור את המעבר בין התכונות",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/FeatureWalkthrough.tsx",
-        "line": 67,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_67728ad9e72bb71d": {
     "source": "לפי הבעיה שסיפרתם: {arg_0}",
     "language": "he",
@@ -49830,7 +49846,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       }
     ]
@@ -51432,17 +51448,6 @@
       }
     ]
   },
-  "m_6d0078f898744cf2": {
-    "source": "התנועה כבויה לפי הגדרות המכשיר",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/ProcessAnimation.tsx",
-        "line": 69,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6d0a038c82f5d3a9": {
     "source": "הכתובת נמחקה",
     "language": "he",
@@ -51564,7 +51569,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 208,
+        "line": 212,
         "kind": "literal"
       }
     ]
@@ -51826,17 +51831,6 @@
       }
     ]
   },
-  "m_6dc52bfb2c46d046": {
-    "source": "מטרה אחת.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 74,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_6dc75992b3bcf9d6": {
     "source": "להוסיף משימה",
     "language": "he",
@@ -51916,7 +51910,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 16,
+        "line": 13,
         "kind": "literal"
       }
     ]
@@ -52408,17 +52402,6 @@
         "file": "web/components/PublishPanel.tsx",
         "line": 494,
         "kind": "literal"
-      }
-    ]
-  },
-  "m_6ecc9e713ca1ec04": {
-    "source": "לבחור ולראות את הספרייה בצבעים האלה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/PalettePicker.tsx",
-        "line": 9,
-        "kind": "jsx"
       }
     ]
   },
@@ -52996,7 +52979,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 229,
+        "line": 233,
         "kind": "literal",
         "purpose": "display"
       }
@@ -53157,7 +53140,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       },
       {
@@ -53353,6 +53336,18 @@
         "line": 31,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_7089288fa25aa81b": {
+    "source": "מטרות ותוכנית",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/AppShell.tsx",
+        "line": 43,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -55596,7 +55591,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 26,
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -56410,6 +56405,17 @@
         "line": 1097,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_76ed6f3d0aed46ba": {
+    "source": "מה נמדד, מה למדנו ומה כדאי לשנות בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 16,
+        "kind": "literal"
       }
     ]
   },
@@ -58907,7 +58913,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 154,
+        "line": 155,
         "kind": "literal"
       }
     ]
@@ -59497,17 +59503,6 @@
       }
     ]
   },
-  "m_7dae4317310ba459": {
-    "source": "רואים מה עובד.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 87,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_7db83efa97c5df38": {
     "source": "נשווה את הערוץ לתוכנית ולתוצאות של העסק לפני שנמליץ להשקיע בו. מפתחות וסיסמאות נשארים במערכות המאובטחות, ולא שולחים אותם בהודעת תמיכה.",
     "language": "he",
@@ -59563,7 +59558,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -59880,7 +59875,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 82,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -59963,7 +59958,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 228,
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -60189,7 +60184,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 229,
+        "line": 231,
         "kind": "literal"
       }
     ]
@@ -60203,17 +60198,6 @@
         "line": 79,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_7f5bf92d9df823f9": {
-    "source": "בחרו עד 3 טיוטות כדי להכין להן גרסה חדשה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 188,
-        "kind": "literal"
       }
     ]
   },
@@ -61072,7 +61056,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -61398,7 +61382,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 78,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -62480,6 +62464,18 @@
       }
     ]
   },
+  "m_83db4463e4282444": {
+    "source": "ישראמארקט · תצוגת המוצר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/layout.tsx",
+        "line": 2,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_83e5f9ddf1c39cfe": {
     "source": "לנסות שליחה",
     "language": "he",
@@ -63325,12 +63321,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -63394,7 +63390,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 210,
+        "line": 214,
         "kind": "literal"
       }
     ]
@@ -64177,7 +64173,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 243,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -65867,7 +65863,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 221,
+        "line": 223,
         "kind": "literal"
       }
     ]
@@ -66570,6 +66566,17 @@
       }
     ]
   },
+  "m_8cfb91305fc876fe": {
+    "source": "מהיכרות עם העסק, לקמפיין שעובד בשבילו.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 36,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_8cfcc2a653cf70a0": {
     "source": "פלאיירים ושילוט",
     "language": "he",
@@ -67196,7 +67203,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 165,
+        "line": 166,
         "kind": "literal"
       }
     ]
@@ -68327,7 +68334,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 20,
+        "line": 19,
         "kind": "literal"
       },
       {
@@ -68536,6 +68543,11 @@
         "line": 32,
         "kind": "literal",
         "purpose": "display"
+      },
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 175,
+        "kind": "literal"
       }
     ]
   },
@@ -69195,7 +69207,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 200,
+        "line": 204,
         "kind": "literal"
       }
     ]
@@ -69779,7 +69791,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 228,
+        "line": 230,
         "kind": "literal"
       }
     ]
@@ -70111,7 +70123,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 17,
+        "line": 18,
         "kind": "literal",
         "purpose": "display"
       }
@@ -70249,7 +70261,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 41,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -70632,7 +70644,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 184,
+        "line": 185,
         "kind": "literal"
       },
       {
@@ -70933,6 +70945,17 @@
       {
         "file": "web/components/help/guides.ts",
         "line": 141,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_95c6ba374bf35120": {
+    "source": "לתוצאות הקמפיין",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 27,
         "kind": "literal"
       }
     ]
@@ -71918,7 +71941,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 49,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -72481,6 +72504,17 @@
         "line": 23,
         "kind": "literal",
         "purpose": "display"
+      }
+    ]
+  },
+  "m_98f48a9f60e12400": {
+    "source": "מקורות המידע והשלב הבא בכל חיבור.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 17,
+        "kind": "literal"
       }
     ]
   },
@@ -73971,7 +74005,7 @@
       },
       {
         "file": "web/components/design/foundations.ts",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       },
       {
@@ -74217,7 +74251,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 19,
+        "line": 18,
         "kind": "literal"
       }
     ]
@@ -74532,6 +74566,17 @@
       }
     ]
   },
+  "m_9dd38e26cc12c7be": {
+    "source": "בוחרים מטרה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 74,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_9dd5e939a943851d": {
     "source": "כך נמדוד כל פוסט מהיום הראשון, ונכתוב לפי מה שכבר הצליח לכם.",
     "language": "he",
@@ -74560,7 +74605,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -74932,7 +74977,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -75195,6 +75240,17 @@
         "line": 163,
         "kind": "literal",
         "purpose": "validation"
+      }
+    ]
+  },
+  "m_9f95968e8fd617ce": {
+    "source": "התוצאות מראות מה כדאי לעשות בהמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 88,
+        "kind": "literal"
       }
     ]
   },
@@ -76079,13 +76135,13 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 152,
+        "line": 153,
         "kind": "literal",
         "purpose": "display"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
+        "line": 154,
         "kind": "literal"
       },
       {
@@ -76193,6 +76249,17 @@
         "line": 161,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_a18a37d19d5c5d24": {
+    "source": "בונים סביבה קמפיין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 74,
+        "kind": "literal"
       }
     ]
   },
@@ -76889,7 +76956,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 165,
+        "line": 166,
         "kind": "literal"
       },
       {
@@ -78642,7 +78709,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 201,
+        "line": 203,
         "kind": "literal"
       }
     ]
@@ -78681,7 +78748,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 159,
+        "line": 160,
         "kind": "literal"
       }
     ]
@@ -79134,12 +79201,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -80287,7 +80354,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 172,
+        "line": 173,
         "kind": "literal"
       },
       {
@@ -80344,7 +80411,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 147,
+        "line": 148,
         "kind": "literal"
       },
       {
@@ -80359,7 +80426,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 145,
+        "line": 146,
         "kind": "literal"
       }
     ]
@@ -80869,7 +80936,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 64,
+        "line": 61,
         "kind": "literal"
       }
     ]
@@ -81100,7 +81167,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -81207,12 +81274,12 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -81580,7 +81647,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 18,
+        "line": 15,
         "kind": "literal"
       },
       {
@@ -81810,7 +81877,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 231,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -81985,7 +82052,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 230,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -82713,7 +82780,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -83001,7 +83068,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 178,
+        "line": 179,
         "kind": "literal"
       }
     ]
@@ -84818,7 +84885,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 233,
+        "line": 235,
         "kind": "literal"
       }
     ]
@@ -85374,7 +85441,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -85419,7 +85486,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
+        "line": 159,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85502,17 +85569,6 @@
       {
         "file": "web/components/landing-v2/processExamples.ts",
         "line": 40,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_b5e02a0ad6ec6989": {
-    "source": "משפרים את ההמשך.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 87,
         "kind": "literal"
       }
     ]
@@ -85802,7 +85858,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 187,
+        "line": 191,
         "kind": "literal"
       }
     ]
@@ -86335,7 +86391,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 160,
+        "line": 161,
         "kind": "literal"
       }
     ]
@@ -86463,7 +86519,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 17,
+        "line": 14,
         "kind": "literal"
       },
       {
@@ -86483,7 +86539,7 @@
       },
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 86,
+        "line": 83,
         "kind": "literal"
       },
       {
@@ -86712,6 +86768,17 @@
       }
     ]
   },
+  "m_b8369989ed8de90a": {
+    "source": "המטרה של החודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignOverview.tsx",
+        "line": 22,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b83e1441d4ea9589": {
     "source": "הקישור לפוסט",
     "language": "he",
@@ -86868,7 +86935,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 236,
+        "line": 238,
         "kind": "literal"
       }
     ]
@@ -87575,7 +87642,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 239,
+        "line": 241,
         "kind": "literal"
       }
     ]
@@ -87933,7 +88000,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -88297,7 +88364,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 218,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -88432,7 +88499,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -88876,17 +88943,6 @@
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 63,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_bd9f7fa5ff6e0e3b": {
-    "source": "שמש",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/foundations.ts",
-        "line": 27,
         "kind": "literal"
       }
     ]
@@ -89595,22 +89651,6 @@
       }
     ]
   },
-  "m_bf1c135877acf4cb": {
-    "source": "לעצור את ההדגמה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/PlanCycleHero.tsx",
-        "line": 132,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 54,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_bf1d73eff765fd7c": {
     "source": "לקראת סוף השבוע",
     "language": "he",
@@ -89821,17 +89861,6 @@
       {
         "file": "web/components/landing-v2/processStory.ts",
         "line": 19,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_bf80a11a68ca1a22": {
-    "source": "צבעי העסק נשארים בפוסטים עצמם. בחירת הצבעים כאן משנה רק את הממשק בדמו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 57,
         "kind": "literal"
       }
     ]
@@ -90205,6 +90234,11 @@
         "kind": "literal"
       },
       {
+        "file": "web/app/preview/page.tsx",
+        "line": 17,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/support.ts",
         "line": 16,
         "kind": "literal"
@@ -90466,7 +90500,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 243,
+        "line": 245,
         "kind": "literal"
       }
     ]
@@ -90961,7 +90995,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 49,
+        "line": 43,
         "kind": "literal"
       }
     ]
@@ -91187,17 +91221,6 @@
       }
     ]
   },
-  "m_c21c0f831782593a": {
-    "source": "מהתוכנית לצעד הבא.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 39,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_c21cb1c8298c2023": {
     "source": "יותר הזמנות מראש למאפייה.",
     "language": "he",
@@ -91395,7 +91418,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 90,
+        "line": 87,
         "kind": "literal"
       },
       {
@@ -91734,6 +91757,17 @@
       }
     ]
   },
+  "m_c31b657c2c0defa1": {
+    "source": "דגש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/foundations.ts",
+        "line": 28,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c32236484ed59b9b": {
     "source": "למסכים האחרים",
     "language": "he",
@@ -91971,7 +92005,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 34,
+        "line": 35,
         "kind": "literal",
         "purpose": "display"
       }
@@ -92125,6 +92159,17 @@
       }
     ]
   },
+  "m_c40348337b7d218b": {
+    "source": "להכין את פוסטי החודש",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 188,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c4072848fbfad06f": {
     "source": "מי המתחרים העיקריים שלכם?",
     "language": "he",
@@ -92164,7 +92209,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 231,
+        "line": 233,
         "kind": "literal"
       }
     ]
@@ -93046,7 +93091,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -93057,7 +93102,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 164,
+        "line": 165,
         "kind": "literal"
       }
     ]
@@ -93267,17 +93312,6 @@
       {
         "file": "web/components/posts/preparation/VoiceStep.tsx",
         "line": 166,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_c68ecb8d5fb709f1": {
-    "source": "כל השיווק סביבה.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 74,
         "kind": "literal"
       }
     ]
@@ -93514,7 +93548,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -93931,7 +93965,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 232,
+        "line": 234,
         "kind": "literal"
       }
     ]
@@ -94672,18 +94706,6 @@
       }
     ]
   },
-  "m_c9599c323258364f": {
-    "source": "שמש ובית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/foundations.ts",
-        "line": 35,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_c972fe22b653887b": {
     "source": "נותנים רעיון לשילוב יומיומי ומזמינים את הקהל לשתף.",
     "language": "he",
@@ -94875,7 +94897,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -95712,7 +95734,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       }
     ]
@@ -95723,7 +95745,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -98227,17 +98249,6 @@
       }
     ]
   },
-  "m_d194f0e454bcdef8": {
-    "source": "איפה ומתי.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 80,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d196aa082920e1ac": {
     "source": "אותיות לטקסט",
     "language": "he",
@@ -98443,6 +98454,17 @@
       {
         "file": "web/components/start/steps.tsx",
         "line": 710,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d202034084979af0": {
+    "source": "Signal / Punch הוא הכיוון שנבחר; השאר נשמרו להשוואה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/PalettePicker.tsx",
+        "line": 11,
         "kind": "literal"
       }
     ]
@@ -98670,6 +98692,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 3753,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d282c9097b8f6ece": {
+    "source": "מגדירים מטרות",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/start/ResearchJourney.tsx",
+        "line": 175,
         "kind": "literal"
       }
     ]
@@ -99085,7 +99118,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 213,
+        "line": 215,
         "kind": "literal"
       }
     ]
@@ -99860,17 +99893,6 @@
       }
     ]
   },
-  "m_d4979946500f14c0": {
-    "source": "מה עושים.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 80,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_d49b4791858a4fdd": {
     "source": "המידע לא למכירה",
     "language": "he",
@@ -100377,7 +100399,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 158,
+        "line": 159,
         "kind": "literal"
       }
     ]
@@ -100632,7 +100654,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 240,
+        "line": 242,
         "kind": "literal"
       }
     ]
@@ -100864,7 +100886,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 177,
+        "line": 178,
         "kind": "literal"
       }
     ]
@@ -101207,6 +101229,17 @@
       {
         "file": "web/app/strategy/page.tsx",
         "line": 293,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d72eef35a5cd6b88": {
+    "source": "משפרים את הקמפיין.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -101574,7 +101607,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -102610,6 +102643,17 @@
       }
     ]
   },
+  "m_da58f36cdf14f66e": {
+    "source": "תצוגת המוצר",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/app/preview/page.tsx",
+        "line": 32,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_da61a75c3d8a9bd6": {
     "source": "אם יש סוכה, לצלם 10 שניות של השולחן",
     "language": "he",
@@ -103236,7 +103280,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal"
       }
     ]
@@ -103449,7 +103493,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -103488,7 +103532,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 166,
+        "line": 167,
         "kind": "literal"
       },
       {
@@ -103991,7 +104035,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 25,
+        "line": 26,
         "kind": "literal"
       }
     ]
@@ -104390,6 +104434,17 @@
       }
     ]
   },
+  "m_ddc15bb7b06c6e41": {
+    "source": "וגם מתי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 80,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_ddc720bb9fb2c959": {
     "source": "פייסבוק ואינסטגרם לא מחוברים, ולכן אין לנו גישה לדפים שלכם.",
     "language": "he",
@@ -104545,7 +104600,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 19,
+        "line": 20,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105030,12 +105085,12 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 24,
+        "line": 25,
         "kind": "literal"
       },
       {
         "file": "web/components/design/foundations.ts",
-        "line": 36,
+        "line": 37,
         "kind": "literal",
         "purpose": "display"
       }
@@ -105719,7 +105774,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       },
       {
@@ -106659,7 +106714,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProductFeatureShowcase.tsx",
-        "line": 79,
+        "line": 76,
         "kind": "literal"
       }
     ]
@@ -106812,12 +106867,12 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 171,
+        "line": 172,
         "kind": "literal"
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 175,
+        "line": 179,
         "kind": "literal"
       },
       {
@@ -106957,7 +107012,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       },
       {
@@ -107150,7 +107205,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 218,
+        "line": 220,
         "kind": "literal"
       }
     ]
@@ -107463,7 +107518,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 220,
+        "line": 224,
         "kind": "literal"
       }
     ]
@@ -107507,7 +107562,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 214,
+        "line": 216,
         "kind": "literal"
       }
     ]
@@ -107575,7 +107630,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 238,
+        "line": 240,
         "kind": "literal"
       }
     ]
@@ -107776,6 +107831,17 @@
       {
         "file": "web/components/landing-v2/processCampaigns.ts",
         "line": 17,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e4c8dd60ae15ba44": {
+    "source": "מכינים את הפוסטים לפי המטרות והתוכנית שלכם.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/posts/CampaignTimeline.tsx",
+        "line": 188,
         "kind": "literal"
       }
     ]
@@ -108421,7 +108487,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 205,
+        "line": 209,
         "kind": "literal"
       },
       {
@@ -110723,7 +110789,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 185,
+        "line": 186,
         "kind": "literal"
       }
     ]
@@ -110882,7 +110948,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 209,
+        "line": 211,
         "kind": "literal"
       }
     ]
@@ -111690,7 +111756,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 227,
+        "line": 229,
         "kind": "literal"
       }
     ]
@@ -111859,17 +111925,6 @@
       {
         "file": "web/components/results/FindingCard.tsx",
         "line": 88,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_ec9f78b54aa2ad78": {
-    "source": "תוכנית לעסק.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 40,
         "kind": "literal"
       }
     ]
@@ -112633,7 +112688,7 @@
       },
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 153,
+        "line": 154,
         "kind": "literal"
       }
     ]
@@ -112855,7 +112910,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 209,
+        "line": 213,
         "kind": "literal"
       }
     ]
@@ -113658,12 +113713,12 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 19,
+        "line": 20,
         "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 223,
+        "line": 225,
         "kind": "literal"
       }
     ]
@@ -113884,7 +113939,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 179,
+        "line": 180,
         "kind": "literal"
       }
     ]
@@ -114497,7 +114552,7 @@
     "references": [
       {
         "file": "web/components/design/foundations.ts",
-        "line": 27,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -115134,7 +115189,7 @@
     "references": [
       {
         "file": "web/components/start/ResearchJourney.tsx",
-        "line": 139,
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -115529,6 +115584,18 @@
       }
     ]
   },
+  "m_f409244dac0f4639": {
+    "source": "צבע שמכוון",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/foundations.ts",
+        "line": 36,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_f409efba869b75f7": {
     "source": "מלחיצה להתנסות. מה באמת מתקדם?",
     "language": "he",
@@ -115735,17 +115802,6 @@
       {
         "file": "web/components/trial/Welcome.tsx",
         "line": 204,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f4821ef61fd74ff4": {
-    "source": "· תצוגה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 35,
         "kind": "literal"
       }
     ]
@@ -116231,22 +116287,6 @@
       {
         "file": "web/app/performance/page.tsx",
         "line": 1190,
-        "kind": "literal"
-      }
-    ]
-  },
-  "m_f5702bbd8fae951e": {
-    "source": "לעצור את התנועה",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 79,
-        "kind": "literal"
-      },
-      {
-        "file": "web/components/landing-v2/CampaignPostExamples.tsx",
-        "line": 80,
         "kind": "literal"
       }
     ]
@@ -116902,7 +116942,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 234,
+        "line": 236,
         "kind": "literal"
       }
     ]
@@ -116936,7 +116976,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 225,
+        "line": 227,
         "kind": "literal"
       }
     ]
@@ -117476,17 +117516,6 @@
       }
     ]
   },
-  "m_f7d4d3d1360d5e9f": {
-    "source": "התקדמות בתוכנית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/app/preview/page.tsx",
-        "line": 43,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_f7de860a46e82905": {
     "source": "בערך 2 דקות",
     "language": "he",
@@ -117787,7 +117816,7 @@
     "references": [
       {
         "file": "web/app/preview/page.tsx",
-        "line": 20,
+        "line": 19,
         "kind": "literal"
       }
     ]
@@ -117873,6 +117902,17 @@
       {
         "file": "web/lib/api.ts",
         "line": 2109,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_f8e33c033432f383": {
+    "source": "רקע חם נותן מקום לתוכן. דגש כתום מסמן את הבחירה ואת הצעד הבא.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/design/foundations.ts",
+        "line": 36,
         "kind": "literal"
       }
     ]
@@ -118706,7 +118746,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 136,
+        "line": 137,
         "kind": "literal"
       }
     ]
@@ -119091,7 +119131,7 @@
       },
       {
         "file": "web/app/preview/page.tsx",
-        "line": 15,
+        "line": 12,
         "kind": "literal"
       },
       {
@@ -119147,9 +119187,8 @@
     "references": [
       {
         "file": "web/components/design/PalettePicker.tsx",
-        "line": 9,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 11,
+        "kind": "literal"
       }
     ]
   },
@@ -119416,7 +119455,7 @@
     "references": [
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 220,
+        "line": 222,
         "kind": "literal"
       }
     ]
@@ -120380,17 +120419,6 @@
       }
     ]
   },
-  "m_fe6d4f10da51e06d": {
-    "source": "שלושה כיוונים לשמש ולבית",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/design/PalettePicker.tsx",
-        "line": 9,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_fe73f336719965d6": {
     "source": "הבצק תופח, התנור לוהט. מוזמנים לקפה ומאפה חם כל הבוקר.",
     "language": "he",
@@ -120489,7 +120517,7 @@
       },
       {
         "file": "web/components/posts/CampaignTimeline.tsx",
-        "line": 237,
+        "line": 239,
         "kind": "literal"
       },
       {

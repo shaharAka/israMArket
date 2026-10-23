@@ -65,3 +65,6 @@
 .root[data-playing=false] .word:hover {transform:none}
 .root[data-playing=false] .panel:hover .calendar {transform:rotate(-5deg)}
 @media(min-width:701px){.panel:first-child{padding-inline-start:calc(clamp(20px,2.4vw,38px) + 20px)}.panel:last-child{padding-inline-end:calc(clamp(20px,2.4vw,38px) + 20px)}}
+
+.plan h2{font-size:clamp(24px,2.4vw,34px)}.learning h2{font-size:clamp(24px,2.5vw,36px)}
+@media(max-width:700px){.plan h2{font-size:24px}.learning h2{font-size:25px}}

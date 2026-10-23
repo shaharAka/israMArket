@@ -19,7 +19,7 @@ export function FeatureWalkthrough({ path, examples }: { path: ExamplePath; exam
   const counts = [3, 2, reels.length ? 2 : 1, 2];
   // Let the eight-second human-motion clip play through; other views need no long idle hold.
   const duration = group === 2 ? 9000 : group === 1 ? 6500 : 5000;
-  const { ref: cycleRef, index: activeIndex, select, restart, paused, reduced, playing, toggle, setFocused } = useFeatureCycle(counts[group], duration);
+  const { ref: cycleRef, index: activeIndex, select, restart, playing, setFocused } = useFeatureCycle(counts[group], duration);
   const t = useCopy();
   const business = BUSINESS_EXAMPLES[path];
   useEffect(() => {
@@ -64,7 +64,6 @@ export function FeatureWalkthrough({ path, examples }: { path: ExamplePath; exam
             <h3 id={`feature-title-${tone}`}><Copy text={titles[segment]} /></h3><p><Copy text={bodies[segment]} /></p>
             <div className={styles.featureChoices} role="group" aria-label={t("לבחור יכולת לראות")}>
               {labels[segment].map((label, feature) => <button key={label} aria-pressed={(group === segment ? index : 0) === feature} onClick={() => show(segment, feature)}><Copy text={label} />{playing && group === segment && index === feature && counts[segment] > 1 ? <PlaybackProgress cycle={`${group}-${index}-${restart}`} duration={duration} /> : null}</button>)}
-              {counts[segment] > 1 && !reduced && <button onClick={toggle} aria-label={t(paused ? "להמשיך את המעבר בין התכונות" : "לעצור את המעבר בין התכונות")} title={t(paused ? "להמשיך את המעבר בין התכונות" : "לעצור את המעבר בין התכונות")}><span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span></button>}
             </div>
           </div>
           <div className={`${styles.productStage} ${styles.mobileStage}`} data-tone={tone}>{display(segment, group === segment ? index : 0)}</div>

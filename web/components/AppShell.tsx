@@ -40,7 +40,7 @@ export const TABS: Tab[] = [
   { href: "/dashboard", label: "השבוע", icon: IconHome, owns: ["/dashboard"] },
   {
     href: "/strategy",
-    label: "התוכנית",
+    label: "מטרות ותוכנית",
     icon: IconStore,
     // `/baseline`: the plan's starting numbers, the week-1 measurement step (Revision 8).
     owns: ["/strategy", "/plan", "/decisions", "/calendar", "/promotion", "/instagram", "/baseline"],
@@ -192,7 +192,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div style={demo && palette.id !== "blue-sun" ? productPaletteVariables(palette) : undefined} data-palette={demo ? palette.id : "blue-sun"} className="app-blue flex min-h-screen flex-col overflow-x-clip bg-[var(--canvas)] text-[color:var(--ink)] md:flex-row">
+    <div style={demo ? productPaletteVariables(palette) : undefined} data-design="signal-punch" data-palette={demo ? palette.id : "signal-punch"} className="app-blue flex min-h-screen flex-col overflow-x-clip bg-[var(--canvas)] text-[color:var(--ink)] md:flex-row">
       <header className="sticky top-0 z-40 flex min-h-14 items-center justify-between gap-2 border-b border-[var(--rule)] bg-white pt-[env(safe-area-inset-top)] pr-[max(0.5rem,env(safe-area-inset-right))] pl-[max(0.75rem,env(safe-area-inset-left))] md:hidden">
         {back ? (
           <Link
@@ -325,7 +325,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="nav-icon h-[22px] w-[22px]" />
                 </span>
-                <span><Copy text={tab.label} /></span>
+                <span><Copy text={tab.href === "/strategy" ? "התוכנית" : tab.label} /></span>
               </Link>
             );
           })}

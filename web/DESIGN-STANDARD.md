@@ -97,3 +97,9 @@ Essential work stays visible: plan direction, measurement, content and schedule;
 tasks and ready posts; a finding's proposed change and how to evaluate it. Optional evidence,
 budget detail and other weeks may sit one level down. Do not stack disclosures to reach the
 next action. Keep customer wording, figures, missing-data states and owner approval intact.
+
+## 24 October: Signal / Punch product foundation
+
+The selected public direction now supplies the onboarding, account and signed-in chrome through `components/design/product-theme.css`, with calm Operate behavior. This supersedes the earlier blue/sun palette and decorative progress identity. Use warm neutral canvases, white working surfaces, graphite text/actions, dark terracotta links/focus and soft Punch selection. Jade is reserved for meaningful success/connected states; the public Punch + Jade comparison is not a selected product replacement. Hebrew page titles use self-hosted Secular One at moderate size; body copy stays Rubik and other locale fonts remain unchanged. Controls have 8–12px corners. Customer artwork retains its own brand.
+
+The working sequence is discovery → connections → goals → plan → campaign materials → results/next decision. Public discovery stops at signup; goals and connected research precede plan creation. Campaign starts with saved goals, audience and measures, followed by the weekly timeline, approval and editing. Never populate these with landing fixtures. Findings must have measured attribution before they are presented as learning. Demo data is confined to the existing explicit demo.

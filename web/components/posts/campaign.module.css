@@ -97,3 +97,32 @@
   .week[data-campaign-preview="true"] .cards { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
   .week[data-campaign-preview="true"] .thumbnail > div { max-width: 108px; }
 }
+
+/* A campaign opens with its real plan, then the weekly work. */
+.overview {background:var(--paper);border-radius:18px;padding:24px 28px;margin-bottom:28px}
+.overview>header,.overview>footer {display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:12px;color:var(--ink-muted)}
+.overview a {color:var(--primary);min-height:36px;display:inline-flex;align-items:center}
+.overview dl {display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:28px;padding:16px 0 24px}
+.overview dt {font-size:12px;color:var(--ink-muted);margin-bottom:10px}
+.overview dd {font-size:15px;line-height:1.65;color:var(--ink)}
+.overview dd p+p {margin-top:5px}
+.overview>footer {border-top:1px solid var(--rule);padding-top:12px}
+.week {background:var(--paper);border:0;border-radius:20px;padding:24px 28px 32px;margin-bottom:24px}
+.marker {display:none}
+.weekHeading {padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:24px}
+.weekBrief {background:var(--soft);border-radius:14px;padding:20px}
+.weekBrief h3 {font-size:19px;line-height:1.45}
+.card {border:1px solid var(--rule);box-shadow:none;border-radius:14px}
+.selectionBar {background:var(--ink);color:var(--paper);border:0;box-shadow:0 10px 30px -15px #20221c55}
+.selectionBar .primary {background:var(--sun);color:var(--ink);border-radius:8px}
+.primary {border-radius:8px}
+@media(max-width:700px){.overview{padding:20px}.overview dl{grid-template-columns:1fr;gap:18px;padding-top:12px}.overview dd{font-size:14px}.week{padding:20px 16px}.weekBrief{padding:16px}.weekHeading{margin-bottom:20px}}
+@media(max-width:700px){
+ .overview dl{grid-template-columns:1fr 1fr;gap:16px 18px;padding-block:12px 18px}
+ .overview dl>div:first-child{grid-column:1/-1}
+ .overview dl>div:first-child dd p:not(:first-child){display:none}
+ .overview dl>div:not(:first-child) dd p{display:inline;font-size:13px}
+ .overview dl>div:not(:first-child) dd p+p{margin:0}
+ .overview dl>div:not(:first-child) dd p:not(:last-child)::after{content:' · '}
+ .overview dt{margin-bottom:6px}
+}

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CardStage, cardSize } from "@/components/CardCanvas";
+import { CampaignOverview } from "./CampaignOverview";
 import { CampaignBrief } from "./CampaignBrief";
 import { postDay, postWeek } from "./postMeta";
 import { CampaignWeek } from "./CampaignWeek";
@@ -183,9 +184,10 @@ export function CampaignTimeline() {
     </header>
     {error ? <div className={styles.error} role="alert">{t(error)} <button onClick={() => void reload().catch(() => setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."))}>{t("לטעון שוב")}</button></div> : null}
     {!ready ? <p aria-live="polite">{t("פותחים את הקמפיין…")}</p> : null}
-    {ready && !posts.length && !error ? <div className={styles.empty}><p>{t("הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם.")}</p><Link href="/posts?create=1">{t("ליצור פוסט משלכם")}</Link></div> : null}
+    {ready && strategy ? <CampaignOverview strategy={strategy}/> : null}
+    {ready && !posts.length && !error ? <div className={styles.empty}><p>{t(strategy?.post_workspace_only ? "הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם." : "מכינים את הפוסטים לפי המטרות והתוכנית שלכם.")}</p><Link href={strategy?.post_workspace_only ? "/posts?create=1" : "/strategy"}>{t(strategy?.post_workspace_only ? "ליצור פוסט משלכם" : "להכין את פוסטי החודש")}</Link></div> : null}
     {posts.length ? <>
-      <p className={styles.intro}>{t("בחרו עד 3 טיוטות כדי להכין להן גרסה חדשה.")}</p>
+      <p className={styles.intro}>{t("לכל שבוע מטרה. בחרו פוסט כדי לבדוק, לערוך או להכין גרסה חדשה.")}</p>
       <div className={styles.timeline}>
         {weeks.map(week => <CampaignWeek key={week} week={week} posts={posts.filter(post => postWeek(post) === week)} strategy={strategy}>
           {posts.map((post, index) => ({ post, index })).filter(({ post }) => postWeek(post) === week)

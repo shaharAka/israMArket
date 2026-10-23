@@ -26,7 +26,7 @@ const MEDIA = {
 function Arrow() { return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6" /></svg>; }
 
 export function SignalHero({ start, role }: { start: string; role: ProcessRole | null }) {
-  const { ref, playing, paused, reduced, toggle, setFocused } = useFeatureCycle(1);
+  const { ref, playing, reduced, setFocused } = useFeatureCycle(1);
   const [focus, setFocus] = useState<number | null>(null);
   const video = useRef<HTMLVideoElement>(null);
   const t = useCopy();
@@ -71,25 +71,25 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
     <div className={styles.panorama} data-panorama onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
       <div className={styles.track}>
         <Link href="#goals" className={`${styles.panel} ${styles.goal}`} {...panel(0)}>
-          <h2><Copy text="מטרה אחת." /><br /><Copy text="כל השיווק סביבה." /></h2>
+          <h2><Copy text="בוחרים מטרה." /><br /><Copy text="בונים סביבה קמפיין." /></h2>
           <div className={styles.orbit} aria-hidden="true"><span><Copy text="הקהל" /></span><span><Copy text="הייחוד" /></span><span><Copy text="הנתונים" /></span><svg viewBox="0 0 280 130" fill="none"><path d="M30 10C30 90 140 30 140 120M140 10V120M250 10C250 90 140 30 140 120" /></svg></div>
           <p className={styles.goalOutcome}><Copy text={PROCESS_GOALS[exampleRole][0]} /></p><span className={styles.open}><Arrow /></span>
         </Link>
         <Link href="#plan" className={`${styles.panel} ${styles.plan}`} {...panel(1)}>
           <div className={styles.calendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text={example.name} /></span></header><div className={styles.calendarDays} aria-hidden="true">{Array.from({length:20},(_,i)=><i key={i}>{i+1}</i>)}</div><div className={styles.calendarTasks}>{schedule.tasks.map((task,i)=><span key={task} style={{ gridRow:i+1 }}><Copy text={task} /></span>)}</div><div className={styles.tracking}><i /><Copy text="לומדים כל הזמן" /></div></div>
-          <h2><Copy text="מה עושים." /><br /><Copy text="איפה ומתי." /></h2><span className={styles.open}><Arrow /></span>
+          <h2><Copy text="יודעים מה לפרסם." /><br /><Copy text="וגם מתי." /></h2><span className={styles.open}><Arrow /></span>
         </Link>
         <Link href="#campaign" className={`${styles.panel} ${styles.campaign}`} {...panel(2)}>
           <video ref={video} src={src} poster={poster} muted loop playsInline preload="metadata" aria-label={t("סרטון מתוך הקמפיין")} />
-          <span className={styles.business}><Copy text={example.name} /></span><h2><Copy text="מסר אחד." /><br /><Copy text="בכל הערוצים." /></h2><div className={styles.networks}>{["instagram","facebook",exampleRole === "software" ? "linkedin" : "tiktok"].map(name=><span key={name}><Image src={`/connectors/${name}.svg`} alt={name} width={22} height={22} /></span>)}</div><span className={styles.open}><Arrow /></span>
+          <span className={styles.business}><Copy text={example.name} /></span><h2><Copy text="קמפיין אחד." /><br /><Copy text="מותאם לכל ערוץ." /></h2><div className={styles.networks}>{["instagram","facebook",exampleRole === "software" ? "linkedin" : "tiktok"].map(name=><span key={name}><Image src={`/connectors/${name}.svg`} alt={name} width={22} height={22} /></span>)}</div><span className={styles.open}><Arrow /></span>
         </Link>
         <Link href="#learning" className={`${styles.panel} ${styles.learning}`} {...panel(3)}>
-          <h2><Copy text="רואים מה עובד." /><br /><Copy text="משפרים את ההמשך." /></h2>
-          <div className={styles.evidence}><div><Image src="/connectors/googleanalytics.svg" alt="Google Analytics" width={30} height={30}/><Image src="/connectors/meta.svg" alt="Meta" width={34} height={28}/></div><svg viewBox="0 0 280 160" fill="none" aria-hidden="true"><path className={styles.flow} d="M40 5V36Q40 54 60 54H220Q240 54 240 74V105Q240 124 218 124H65"/><path d="m78 111-14 13 14 13"/><circle className={styles.point} r="5"/></svg><strong><Copy text="התוצאות חוזרות לתוכנית." /></strong></div><span className={styles.open}><Arrow /></span>
+          <h2><Copy text="לומדים מה עובד." /><br /><Copy text="משפרים את הקמפיין." /></h2>
+          <div className={styles.evidence}><div><Image src="/connectors/googleanalytics.svg" alt="Google Analytics" width={30} height={30}/><Image src="/connectors/meta.svg" alt="Meta" width={34} height={28}/></div><svg viewBox="0 0 280 160" fill="none" aria-hidden="true"><path className={styles.flow} d="M40 5V36Q40 54 60 54H220Q240 54 240 74V105Q240 124 218 124H65"/><path d="m78 111-14 13 14 13"/><circle className={styles.point} r="5"/></svg><strong><Copy text="התוצאות מראות מה כדאי לעשות בהמשך." /></strong></div><span className={styles.open}><Arrow /></span>
         </Link>
       </div>
       <span className={styles.lens} aria-hidden="true"><Arrow /></span>
     </div>
-    <div className={styles.controls}><p><Copy text="מהמטרה ועד לתוצאה" /></p><button type="button" onClick={toggle} disabled={reduced} aria-label={t(paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")} aria-pressed={paused}><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">{paused || reduced ? <path d="m7 4 9 6-9 6Z"/> : <path d="M7 5v10M13 5v10"/>}</svg></button></div>
+    <div className={styles.controls}><p><Copy text="מהמטרה ועד לתוצאה" /></p></div>
   </div></section>;
 }

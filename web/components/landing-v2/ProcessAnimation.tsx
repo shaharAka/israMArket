@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
+import { Copy, useLanguage } from "@/components/language/LanguageProvider";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProviderLogo } from "./ProviderLogo";
 import { useFeatureCycle } from "./useFeatureCycle";
@@ -60,12 +60,10 @@ function Connections({ role }: RoleProps) {
 
 /** Each section owns its scenario; the frame owns visibility, reduced motion and pause. */
 export function ProcessAnimation({ step, role }: { step: ProcessStep; role: ProcessRole | null }) {
-  const { ref, playing, reduced, paused, toggle, setFocused } = useFeatureCycle(1);
-  const t = useCopy();
+  const { ref, playing, reduced, setFocused } = useFeatureCycle(1);
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
     <div className={styles.visualContent} onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
       {step === "research" ? <Research role={role} /> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <CampaignSystemScene role={role} playing={playing} /> : step === "learning" ? <LearningScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
     </div>
-    <button type="button" className={styles.motionToggle} onClick={toggle} disabled={reduced} aria-label={t(paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")} aria-pressed={paused} title={t(reduced ? "התנועה כבויה לפי הגדרות המכשיר" : paused ? "להפעיל את ההמחשה" : "להשהות את ההמחשה")}><svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{paused || reduced ? <path d="m5 3 8 5-8 5Z" /> : <path d="M4 3h3v10H4zM10 3h3v10h-3z" />}</svg></button>
   </div>;
 }

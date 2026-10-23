@@ -12,11 +12,11 @@ export function PostArtwork({ item, artRef, playing = false, beat = 0, screensho
   useEffect(() => {
     const element = video.current;
     if (!element) return;
-    if (playing) void element.play().catch(() => { /* Native controls remain usable if autoplay is blocked. */ });
+    if (playing) void element.play().catch(() => { });
     else element.pause();
   }, [playing, item.video]);
   return <figure ref={artRef} className={`campaign-art campaign-art--${item.key}`} data-playing={playing} data-beat={beat} style={item.colors ? { "--art-paper": item.colors.paper, "--art-ink": item.colors.ink, "--art-accent": item.colors.accent ?? item.colors.ink } as CSSProperties : undefined}>
-    {item.image ? <div className="campaign-photo">{item.video ? <video ref={video} src={item.video} poster={item.image} muted loop playsInline preload="metadata" controls aria-label={item.alt ?? item.kind} /> : <Image src={item.image} alt={item.alt ?? ""} fill sizes="(max-width: 700px) 90vw, 380px" />}{item.video && item.motion && playing ? <span className="campaign-beat">{item.motion[beat]}</span> : null}</div> : null}
+    {item.image ? <div className="campaign-photo">{item.video ? <video ref={video} src={item.video} poster={item.image} muted loop playsInline preload="metadata" aria-label={item.alt ?? item.kind} /> : <Image src={item.image} alt={item.alt ?? ""} fill sizes="(max-width: 700px) 90vw, 380px" />}{item.video && item.motion && playing ? <span className="campaign-beat">{item.motion[beat]}</span> : null}</div> : null}
     <span className="campaign-business">{item.business}</span>
     <h3>{item.headline}</h3>
     {item.key === "interior" ? <div className="campaign-light-notes"><span><Copy text="בבוקר" /></span><span><Copy text="בערב" /></span><span><Copy text="באור של הבית" /></span></div> : null}

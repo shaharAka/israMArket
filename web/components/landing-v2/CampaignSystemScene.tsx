@@ -11,7 +11,7 @@ import { ProcessSocialPost } from "./ProcessSocialPost";
 import { useProcessSequence } from "./useProcessSequence";
 import styles from "./campaign-system.module.css";
 
-const DURATIONS = [4500, 8500, 5000, 4500] as const;
+const DURATIONS = [2800, 4500, 3000, 3200] as const;
 const STAGES = ["התוכנית", "החומרים", "המדידה", "הצעד הבא"];
 const METRICS: Record<ProcessRole, readonly string[]> = {
   online_shop: ["כניסות לעמוד המוצר", "הוספות לסל", "הזמנות שהושלמו"],
@@ -35,7 +35,7 @@ function CampaignFilm({ role, playing }: { role: ProcessRole; playing: boolean }
   const ref = useRef<HTMLVideoElement>(null);
   const [src, poster] = role === "software" ? [`/showcase/maslul-project-demo-${locale}.mp4`, `/showcase/maslul-project-demo-${locale}.jpg`] : CLIPS[role];
   useEffect(() => { const video = ref.current; if (!video) return; if (playing) void video.play().catch(() => {}); else video.pause(); }, [playing, src]);
-  return <video ref={ref} src={src} poster={poster} muted loop playsInline preload="metadata" controls aria-label={t("סרטון מתוך הקמפיין")} />;
+  return <video ref={ref} src={src} poster={poster} muted loop playsInline preload="metadata" aria-label={t("סרטון מתוך הקמפיין")} />;
 }
 
 /** Public campaign walkthrough: one goal, a monthly plan, coordinated channels and feedback.

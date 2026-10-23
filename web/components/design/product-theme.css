@@ -1,0 +1,20 @@
+/* Signal / Punch in Operate mode: calm surfaces, readable copy and purposeful color. */
+@font-face {font-family:SignalHebrew;src:url('/fonts/signal/SecularOne.ttf') format('truetype');font-weight:400;font-display:swap}
+:where(.app-blue,.start-blue,.auth-blue) {
+ --canvas:#f7f5ef;--paper:#fff;--soft:#f4eee5;--ink:#20221c;--ink-soft:#49463f;--ink-muted:#716357;--ink-faint:#8d8073;
+ --rule:#e7ddd1;--rule-dark:#cdbca9;--action:#20221c;--action-hover:#3c4035;--primary:#a13c25;--primary-dark:#80321f;--primary-soft:#ffe2d3;
+ --sage:#e8f1e9;--sage-dark:#205944;--sage-soft:#f2f7f2;--sand:#fff0d8;--sand-rule:#ebd3ae;--sand-dark:#76521c;
+ --good:#205944;--good-soft:#e8f1e9;--good-rule:#bdd6c3;--sun:#ff7957;--sun-edge:#a13c25;
+ --shadow-card:0 5px 20px -12px #20221c25;--shadow-pop:0 15px 40px -15px #20221c40;--focus-ring:#a13c2524;
+}
+.app-blue>aside {background:#fff9f3;border-color:var(--rule)}
+.app-blue .nav-item[aria-current=page] {background:var(--primary-soft);color:var(--ink)}
+.app-blue .app-main {padding-block:40px;max-width:1200px}
+html[lang=he] :where(.app-blue .app-main,.start-blue,.auth-blue) h1 {font-family:SignalHebrew,var(--font-ui),sans-serif;font-weight:400;letter-spacing:-.02em}
+:where(.app-blue,.start-blue,.auth-blue) :is(.drawn-button,button[data-variant=primary]) {border-radius:8px}
+.app-blue .paper,.app-blue .drawn-card {box-shadow:none;border:1px solid var(--rule);border-radius:16px}
+.app-blue .product-wordmark {color:var(--ink)}
+.start-blue.start-blue {background:var(--canvas)}
+.start-blue>header {background:#fff9f3}
+.start-blue>main {background:var(--paper);border-radius:24px;margin-block:32px;box-shadow:none;padding:32px}
+@media(max-width:767px){.app-blue .app-main{padding-block:24px}.start-blue>main{border-radius:0;margin-block:0;padding:24px 20px;background:transparent}}
