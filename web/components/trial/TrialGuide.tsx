@@ -32,7 +32,7 @@ function writeSeenDone(keys: string[]) {
   }
 }
 
-export function minutesLabel(minutes: number, t: (text: string, args?: Record<string, string | number>) => string = text => text) {
+export function minutesLabel(minutes: number, t: ReturnType<typeof useCopy>) {
   return minutes <= 1 ? t("דקה") : t("{arg_0} דק׳", { arg_0: minutes });
 }
 

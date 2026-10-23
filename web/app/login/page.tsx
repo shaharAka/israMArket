@@ -1,6 +1,6 @@
 "use client";
 
-import { ProductWordmark } from "@/components/landing-v2/ProductWordmark";
+import { AuthCard, Field } from "@/components/account/AuthFields";
 
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 
@@ -14,7 +14,6 @@ import { ApiError, endpoints } from "@/lib/api";
 import { CONTACT_EMAIL } from "@/lib/company";
 import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { safeReturnPath, signInDestination, withInterfaceLanguage } from "@/lib/authNavigation";
-import form from "@/components/start/form.module.css";
 import auth from "./auth.module.css";
 
 export default function LoginPage() {
@@ -59,7 +58,7 @@ export default function LoginPage() {
       } else {
         // A failed business read is not a failed password. The app can retry that read.
         const { business } = await endpoints.business().catch(() => ({ business: undefined }));
-        router.replace(business === undefined ? withInterfaceLanguage("/dashboard", locale) : signInDestination(null, business, locale));
+        router.replace(business === undefined ? withInterfaceLanguage("/campaign", locale) : signInDestination(null, business, locale));
       }
     } catch (err) {
       if (err instanceof ApiError && err.code === "account_suspended") {
@@ -88,7 +87,7 @@ export default function LoginPage() {
         </div>
       ) : null}
       {/* AppShell sends an account with no business on to /start or /onboarding. */}
-      <GoogleButton next={withInterfaceLanguage(returnPath ?? "/dashboard", locale)} back={withInterfaceLanguage(returnPath ? `/login?${new URLSearchParams({ next: returnPath })}` : "/login", locale)} disabled={pending} />
+      <GoogleButton next={withInterfaceLanguage(returnPath ?? "/campaign", locale)} back={withInterfaceLanguage(returnPath ? `/login?${new URLSearchParams({ next: returnPath })}` : "/login", locale)} disabled={pending} />
       <div className="my-5">
         <OrDivider />
       </div>
@@ -120,63 +119,5 @@ export default function LoginPage() {
         <Link href="/signup"><Copy text="לפתוח חשבון" /></Link>
       </p>
     </AuthCard>
-  );
-}
-
-export function AuthCard({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
-  const t = useCopy();
-  return (
-    <div className={`auth-blue ${auth.page}`}>
-      <header className={auth.bar}>
-        <div className={auth.barRow}>
-          <Link href="/" className={auth.brand} aria-label={t("ישראמארקט, לעמוד הבית")}>
-            <ProductWordmark />
-          </Link>
-        </div>
-      </header>
-      <main className={auth.main}>
-        <div className={auth.card}>
-          <h1 className={auth.title}>{title}</h1>
-          {children}
-        </div>
-      </main>
-    </div>
-  );
-}
-
-export function Field({
-  name,
-  label,
-  type = "text",
-  placeholder,
-  defaultValue,
-  dir,
-  autoComplete,
-}: {
-  name: string;
-  label: string;
-  type?: string;
-  placeholder?: string;
-  defaultValue?: string;
-  /** "ltr" for an email or a password: typed left to right, so it should read that way. */
-  dir?: "ltr" | "rtl";
-  autoComplete?: string;
-}) {
-  const t = useCopy();
-  return (
-    <label className="block">
-      <span className={form.label}>{t(label)}</span>
-      {/* 16px on phones: iOS zooms the page into any field smaller than that (form.input). */}
-      <input
-        name={name}
-        type={type}
-        placeholder={placeholder ? t(placeholder) : placeholder}
-        defaultValue={defaultValue}
-        dir={dir}
-        autoComplete={autoComplete}
-        required
-        className={`${form.input} ${dir === "ltr" ? "text-left" : ""}`}
-      />
-    </label>
   );
 }

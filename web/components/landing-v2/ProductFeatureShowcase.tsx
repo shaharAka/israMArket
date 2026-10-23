@@ -36,7 +36,7 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, initi
   const buttons = useRef<(HTMLButtonElement | null)[]>([]);
   const [screen, setScreen] = useState<ProductScreen>(initialScreen ?? (presentation === "hero" ? "research" : "plan"));
   const [postIndex, setPostIndex] = useState<number | null>(initialPost ?? 0);
-  const { frame, viewport, scale, wide, setWide, cursor, playing, requested, reduced, hold, release, toggle } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero" || animate, presentation === "hero");
+  const { frame, viewport, scale, wide, setWide, cursor, playing, hold, release } = useProductPlayback(presentation !== "full", screen, setScreen, setPostIndex, presentation === "hero" || animate, presentation === "hero");
   const business = BUSINESS_EXAMPLES[path];
   const { plan, posts, brand } = productFixtures(path, t, locale);
   const post = postIndex === null ? null : posts[postIndex];
@@ -50,10 +50,7 @@ export function ProductFeatureShowcase({ path, initialScreen, initialPost, initi
         <Copy text={item.label} />{playing && screen === item.key ? <PlaybackProgress cycle={screen} duration={PRODUCT_HOLD_MS} /> : null}
       </button>)}
     </div>
-    {presentation === "hero" && !reduced ? <button type="button" className={styles.playback} data-playback-control
-      onClick={toggle} aria-label={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")} title={t(requested ? "לעצור את ההדגמה" : "להפעיל את ההדגמה")}>
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">{requested ? <path d="M3 2h3v12H3zm7 0h3v12h-3z" /> : <path d="m4 2 10 6-10 6z" />}</svg>
-    </button> : null}
+
     </div>);
   return <div className={styles.showcase} data-presentation={presentation} data-playing={playing} data-wide={wide}
     onFocusCapture={event => { if (event.target.matches(":focus-visible") && (event.target as HTMLElement).closest('[data-active="true"]')) hold(); }}

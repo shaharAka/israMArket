@@ -1096,7 +1096,7 @@ const POSTS: RoadmapPost[] = [
     title: "לחם לסוכה ולפיקניק",
     angle: "אירוח בסוכה ובפארק",
     hook: "מה לוקחים כשאוכלים בחוץ שבוע שלם",
-    caption: "מה לוקחים כשאוכלים בחוץ שבוע שלם?\nבגטים, פוקצ׳ה עם עגבניות צלויות, ומארז משפחתי שמספיק לכל הסוכה. דפדפו לראות מה יש בכל אחד.",
+    caption: "מזמינים עד חמישי ב־18:00 ואוספים בשישי.\nבגטים, פוקצ׳ה עם עגבניות צלויות, ומארז משפחתי שמספיק לכל הסוכה. דפדפו לראות מה יש בכל אחד.",
     cta: "מארז סוכות בוואטסאפ",
     calendar_tie: "סוכות",
     goal_fit: "מכירות לחול המועד",
@@ -2209,14 +2209,14 @@ const DEMO_ASSUMPTIONS = [
 function demoHypothesisReview(): HypothesisReview {
   const monthly = DEMO_STRATEGY.monthly_horizon_plan;
   const targets = monthly?.targets ?? [];
-  const whatsapp = "96 לחיצות לוואטסאפ החודש, מול יעד של 120.";
+  const whatsapp = "96 לחיצות לוואטסאפ החודש. מספר ההזמנות שהושלמו לא נמדד כאן.";
   const items: HypothesisReviewItem[] = [];
   if (monthly?.hypothesis) {
-    items.push({ key: "month", kind: "month", text_he: monthly.hypothesis, if_wrong_he: "", status: "on_track", status_he: "בדרך", evidence_he: whatsapp });
+    items.push({ key: "month", kind: "month", text_he: monthly.hypothesis, if_wrong_he: "", status: "measuring", status_he: "בבדיקה", evidence_he: whatsapp });
   }
   const targetStates: Pick<HypothesisReviewItem, "status" | "status_he" | "evidence_he">[] = [
     { status: "measuring", status_he: "בבדיקה", evidence_he: "את זה אנחנו לא רואים במספרים. נשאל אתכם בסיכום החודש." },
-    { status: "on_track", status_he: "בדרך", evidence_he: whatsapp },
+    { status: "measuring", status_he: "בבדיקה", evidence_he: whatsapp },
     { status: "changed", status_he: "השתנה", evidence_he: "היעד השתנה, אז מתחילים למדוד אותו מחדש." },
   ];
   targets.forEach((text, index) => {
@@ -3109,7 +3109,10 @@ async function demoResolve<T>(path: string, options: RequestInit = {}): Promise<
     }
     return { business_id: DEMO_BUSINESS.id, strategy_id: DEMO_STRATEGY.id, available: true, blocked: false, version, revision, saved_at: demoPlanSavedAt, fields } as T;
   }
-  if (path === "/strategy/current" || path === "/strategy/posts/workspace") { await ensureDemoPlan(); return cloneDemoStrategy() as T; }
+  if (path === "/strategy/current" || path === "/strategy/posts/workspace") {
+    await ensureDemoPlan();
+    return { ...cloneDemoStrategy(), ...(path === "/strategy/posts/workspace" ? { campaign_brief: demoCampaignBrief() } : {}) } as T;
+  }
   if (path === "/strategy/next-month" && method === "POST") {
     throw new ApiError("בדמו עובדים על חודש אחד. בחשבון אמיתי נבנה את החודש הבא לפי מה שאושר ומה שנמדד.", 400);
   }
@@ -5032,6 +5035,8 @@ export type PlanEditPayload = {
 };
 
 export type StrategyPayload = {
+  /** Saved operating context for the same business/month as the workspace. */
+  campaign_brief?: PublishBrief;
   post_workspace_only?: boolean;
   business_name?: string | null;
   id: number;

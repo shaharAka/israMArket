@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { QuickPost, type QuickPostDraft } from "@/components/posts/QuickPost";
 import { FirstPosts } from "@/components/posts/FirstPosts";
@@ -11,7 +11,7 @@ import { PostEditor } from "@/components/PostEditor";
 import { RecommendationReview } from "@/components/results/RecommendationReview";
 import { CalendarView } from "@/components/posts/CalendarView";
 import { PostFeed } from "@/components/posts/PostFeed";
-import { isDone, nextPendingIndex } from "@/components/posts/postMeta";
+import { isDone, nextPendingIndex, postWeek } from "@/components/posts/postMeta";
 import { ownerNeedsOf } from "@/lib/postLifecycle";
 import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import ui from "@/components/posts/chrome.module.css";
@@ -60,6 +60,8 @@ function go(query: string, mode: "push" | "replace") {
   const next = new URLSearchParams(query);
   const language = new URLSearchParams(window.location.search).get("lang");
   if (language) next.set("lang", language);
+  const current=new URLSearchParams(window.location.search);
+  if(current.get("from")==="campaign"){next.set("from","campaign");if(current.has("week"))next.set("week",current.get("week")!);}
   const url = next.size ? `/posts?${next}` : "/posts";
   if (mode === "push") window.history.pushState(null, "", url);
   else window.history.replaceState(null, "", url);
@@ -85,6 +87,7 @@ function PostsWorkspace() {
   const [quickDraft, setQuickDraft] = useState<QuickPostDraft | null>(null);
   const { locale } = useLanguage();
   const params = useSearchParams();
+  const router = useRouter();
   const location = readLocation(params);
   const reviewing = params.has("recommendation");
   const reviewPlan = params.get("plan");
@@ -186,6 +189,12 @@ function PostsWorkspace() {
   }
 
   function closeEditor() {
+    if(params.get("from")==="campaign"){
+      const post=posts[openIndex ?? 0];
+      const query=new URLSearchParams({week:String(post ? postWeek(post) : 0),lang:locale});
+      if(post?.uid)query.set("focus",post.uid);
+      router.push(`/campaign?${query}`);return;
+    }
     if (openedHere.current) {
       openedHere.current = false;
       window.history.back();
@@ -225,6 +234,7 @@ function PostsWorkspace() {
           onStrategyUpdated={setStrategy}
           onNavigate={moveEditor}
           onClose={closeEditor}
+          closeLabel={params.get("from")==="campaign" ? "הקמפיין" : undefined}
           imagesWaiting={imageJob?.waiting}
         />
       </div>

@@ -18,12 +18,12 @@ Rules decide the status and every number, here, deterministically:
   that has it and beat the median of the others is a win. 2+ posts with it and 1+ without
   are needed; a share of 60% or more supports it, 40% or less is against, between is mixed.
 * A target with a number is counted where we can see it: WhatsApp taps this month (every
-  tracked link), the site's visits and orders and Instagram's reach and followers from the
+  tracked link), site visits, named purchase events and Instagram's reach and followers from the
   latest refresh, the saves of this month's posts. Against the month's pace: reached ->
   confirmed, at least 80% of the pace -> on track, below it -> not yet (in the first week:
-  measuring, "מוקדם לדעת"). A count that only stands for the target (taps for orders) is at
-  most on track: we never confirm orders we did not see. What we cannot see (sales in the
-  shop, a list's size, questions at the counter) stays measuring, and says so.
+  measuring, "מוקדם לדעת"). A count in different units (taps for orders) stays measuring:
+  we show the taps, but never compare their pace with an order target. What we cannot see
+  (sales in the shop, a list's size, questions at the counter) stays measuring, and says so.
 * The month hypothesis follows its measurable targets.
 
 The cheap model (`gemini-3.5-flash-lite`, `lite_json`) may only re-phrase a line, with the
@@ -251,7 +251,27 @@ class Evidence:
         meta = loads(snap.meta_json, {}) if snap else {}
         overview = (ga4 or {}).get("overview") if isinstance((ga4 or {}).get("overview"), dict) else {}
         self.sessions = cp._number(overview.get("sessions"))
-        self.conversions = cp._number(overview.get("conversions"))
+        # GA4's historical `conversions` key is the total of configured key events,
+        # not verified orders. Even a named purchase row counts reported events.
+        self.important_actions = cp._number(overview.get("conversions"))
+        self.conversions = None
+        self.purchase_events = None
+        events = (ga4 or {}).get("events")
+        reads = (ga4 or {}).get("report_reads") or {}
+        events_read = reads.get("events") or {} if isinstance(reads, dict) else {}
+        events_read = events_read if isinstance(events_read, dict) else {}
+        if isinstance(events, list) and events_read.get("status") != "unavailable":
+            for event in events[:30]:
+                if not isinstance(event, dict) or event.get("eventName") != "purchase":
+                    continue
+                raw = event.get("eventCount")
+                try:
+                    count = float(raw) if not isinstance(raw, bool) else -1
+                except (TypeError, ValueError):
+                    continue
+                if count >= 0 and count.is_integer():
+                    self.purchase_events = int(count)
+                    break  # eventName rows are unique; never sum duplicate reports.
         digest = account_digest((meta or {}).get("account")) or {}
         self.followers = cp._number(digest.get("followers_count"))
         self.reach = cp._number((digest.get("values") or {}).get("reach"))
@@ -301,6 +321,8 @@ def _count_he(metric: str, value: int) -> str:
         return cp.count_he(metric, value)
     if metric == "conversions":
         return "הזמנה אחת באתר" if int(value) == 1 else f"{int(value):,} הזמנות באתר"
+    if metric == "purchase_events":
+        return "אירוע רכישה אחד שדווח באתר" if int(value) == 1 else f"{int(value):,} אירועי רכישה שדווחו באתר"
     return "עוקב אחד" if int(value) == 1 else f"{int(value):,} עוקבים"
 
 
@@ -320,6 +342,11 @@ def compare(evidence: Evidence, parsed: dict, closed: bool = False) -> dict:
         counted = [m for m in counted if m in RESULT_KEY]
         metric = max(set(counted), key=counted.count) if counted else None
     facts = {"rule": "compare", "trait": trait_key, "against": against_key, "metric": metric}
+    if metric == "conversions":
+        # Per-post `conversions` also comes from GA4 key events, via UTM rows.
+        # It cannot establish a comparison of completed orders between posts.
+        return {"status": "measuring", "template": "הפעולות החשובות שנמדדו באתר אינן מספר ההזמנות. ההזמנות עצמן עדיין לא נמדדו.",
+                "facts": {**facts, "proxy": True}}
     pool = []
     if metric:
         pool = [(r, _value(r["view"], metric)) for r in evidence.records]
@@ -368,6 +395,7 @@ def compare(evidence: Evidence, parsed: dict, closed: bool = False) -> dict:
 _NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?")
 _UNSEEN = re.compile(r"רשימ|נמכר|מכירות|בחנות|בקופה|שאלות|תורים|תור(?![א-ת])|נזרק|זורקים|מלאי|ממוצע|הכנסות|רווח|מועדון|מנויים")
 _SITE_ORDERS = re.compile(r"(?:הזמנות|רכישות|מכירות|קניות)\s+(?:ב|מה)אתר|(?:הזמנות|רכישות)\s+אונליין")
+_PURCHASE_EVENTS = re.compile(r"אירוע(?:י)?\s+רכיש(?:ה|ות)(?:\s+שדווחו)?\s+(?:ב|מה)אתר")
 _PROXY_NOUN = re.compile(r"הזמנ|מכיר|קני|רכיש|לקוח")
 _LESS = re.compile(r"(?<![א-ת])פחות(?![א-ת])")
 TARGET_SOURCES: list[tuple[str, str]] = [
@@ -381,7 +409,53 @@ TARGET_SOURCES: list[tuple[str, str]] = [
 CUMULATIVE = frozenset({"whatsapp_clicks", "saves"})
 
 
+def _is_proxy_target(text: str, source: str | None) -> bool:
+    if source not in ("whatsapp_clicks", "site_visits") or not _PROXY_NOUN.search(text):
+        return False
+    # The target may explicitly count clicks/visits that lead to orders. In that case
+    # orders are context, not the unit being compared with the target's number.
+    number = _NUMBER.search(text)
+    unit = text[number.end():] if number else text
+    pattern = r"לחיצות|הקלקות|פניות|פנייה" if source == "whatsapp_clicks" else r"כניסות|ביקורים|מבקרים"
+    measured = re.search(pattern, unit)
+    outcome = _PROXY_NOUN.search(unit)
+    return measured is None or (outcome is not None and outcome.start() < measured.start())
+
+
+def _proxy_result(source: str, value: int | None, text: str, facts: dict) -> dict:
+    """Report the observed unit without inferring an unmeasured business outcome."""
+    if source == "conversions":
+        observed = facts.get("observed_source", "important_actions")
+        return _unmeasured_orders(value if observed == "important_actions" else None,
+                                  value if observed == "purchase_events" else None, facts)
+    outcome = "הלקוחות" if "לקוח" in text else "הרכישות" if re.search(r"רכיש|קני", text) else "ההזמנות"
+    missing = f"{outcome} עצמן עדיין לא נמדדו." if outcome != "הלקוחות" else "מספר הלקוחות עדיין לא נמדד."
+    line = missing
+    if value is not None:
+        when = "החודש" if source in CUMULATIVE else "ב-28 הימים האחרונים"
+        line = f"{_count_he(source, value)} {when}. {missing}"
+        facts = {**facts, "value": value}
+    return {"status": "measuring", "template": line, "facts": {**facts, "proxy": True}}
+
+
+def _unmeasured_orders(important_actions: int | None, purchase_events: int | None, facts: dict) -> dict:
+    line = "ההזמנות עצמן עדיין לא נמדדו."
+    if purchase_events is not None:
+        context = _count_he("purchase_events", purchase_events)
+        facts = {**facts, "value": purchase_events, "observed_source": "purchase_events"}
+    elif important_actions is not None:
+        context = f"{important_actions:,} פעולות חשובות באתר"
+        facts = {**facts, "value": important_actions, "observed_source": "important_actions"}
+    else:
+        context = ""
+    if context:
+        line = f"{context} ב-28 הימים האחרונים. {line}"
+    return {"status": "measuring", "template": line, "facts": {**facts, "proxy": True}}
+
+
 def target_source(text: str) -> str | None:
+    if _PURCHASE_EVENTS.search(text):
+        return "purchase_events"
     if _SITE_ORDERS.search(text):
         return "conversions"
     if _UNSEEN.search(text):
@@ -404,7 +478,7 @@ def _target_number(text: str) -> tuple[int | None, bool]:
 def _missing_source(evidence: Evidence, source: str) -> str:
     if source == "whatsapp_clicks":
         return "צריך את קישור הוואטסאפ שלנו כדי לספור פניות. מכינים אותו בעמוד החיבורים."
-    if source in ("site_visits", "conversions"):
+    if source in ("site_visits", "conversions", "purchase_events"):
         return PENDING_HE if evidence.ga4_connected else "צריך לחבר את נתוני האתר כדי למדוד את זה."
     if source in ("reach", "followers"):
         return PENDING_HE if evidence.meta_connected else "צריך לחבר את האינסטגרם כדי למדוד את זה."
@@ -418,9 +492,18 @@ def target(evidence: Evidence, text: str, closed: bool = False) -> dict:
     facts = {"rule": "target", "source": source, "number": number, "percent": percent}
     if source is None:
         return {"status": "measuring", "template": UNSEEN_HE, "facts": facts}
+    if source == "conversions":
+        return _unmeasured_orders(getattr(evidence, "important_actions", None),
+                                  getattr(evidence, "purchase_events", None), facts)
     less = bool(_LESS.search(text))  # "70% פחות שאלות"; "לפחות 120" is at least
-    proxy = source in ("whatsapp_clicks", "site_visits") and bool(_PROXY_NOUN.search(text))
+    proxy = _is_proxy_target(text, source)
     facts["proxy"] = proxy
+    if proxy:
+        value = evidence.whatsapp_month if source == "whatsapp_clicks" else evidence.sessions
+        result = _proxy_result(source, value, text, facts)
+        if value is None:
+            result["template"] = f"{_missing_source(evidence, source)} {result['template']}"
+        return result
     if percent or number is None:
         return _change_target(evidence, source, number, less, closed, facts)
     value = {
@@ -428,6 +511,7 @@ def target(evidence: Evidence, text: str, closed: bool = False) -> dict:
         "saves": evidence.month_saves(),
         "site_visits": evidence.sessions,
         "conversions": evidence.conversions,
+        "purchase_events": getattr(evidence, "purchase_events", None),
         "reach": evidence.reach,
         "followers": evidence.followers,
     }[source]
@@ -445,7 +529,7 @@ def target(evidence: Evidence, text: str, closed: bool = False) -> dict:
         line = f"{count} ב-28 הימים האחרונים, מול יעד של {number:,}."
     reached = value <= number if less else value >= number
     if reached:
-        return {"status": "on_track" if proxy else "confirmed", "template": line, "facts": facts}
+        return {"status": "confirmed", "template": line, "facts": facts}
     if closed:
         return {"status": "not_yet", "template": line, "facts": facts}
     if evidence.elapsed < 0.25:
@@ -498,7 +582,8 @@ def month_hypothesis(evidence: Evidence, text: str, target_results: list[dict], 
         good = sum(1 for result in measurable if result["status"] in ("on_track", "confirmed"))
         bad = len(measurable) - good
         m = len(measurable)
-        facts = {"rule": "targets", "good": good, "bad": bad, "m": m}
+        facts = {"rule": "targets", "good": good, "bad": bad, "m": m,
+                 "from": [result["facts"] for result in measurable]}
         if good > bad:
             if all(result["status"] == "confirmed" for result in measurable):
                 return {"status": "confirmed", "template": f"כל {m} היעדים שמודדים הושגו.", "facts": facts}
@@ -507,6 +592,13 @@ def month_hypothesis(evidence: Evidence, text: str, target_results: list[dict], 
             word = "לא הושגו" if closed else "מתחת לקצב"
             return {"status": "not_yet", "template": f"{bad} מתוך {m} היעדים שמודדים {word}.", "facts": facts}
         return {"status": "measuring", "template": f"התוצאות עוד מעורבות: {good} מתוך {m} היעדים בדרך.", "facts": facts}
+    # Proxy observations cannot become evidence for the order hypothesis through a
+    # second path (a trait comparison inferred from those same clicks).
+    proxies = [result for result in target_results if result["facts"].get("proxy")]
+    if proxies:
+        first = proxies[0]
+        return {"status": "measuring", "template": first["template"],
+                "facts": {"rule": "targets", "from": [first["facts"]]}}
     parsed = parse(text)
     if parsed["trait"] and not (parsed["trait"] == "whatsapp" and parsed["metric"] in (None, "whatsapp_clicks")):
         result = compare(evidence, parsed, closed)
@@ -569,13 +661,34 @@ def review_view(review: dict | None, core: dict | None, quarter_plan: dict | Non
     closed = bool(review.get("closed"))
     stored = {item.get("key"): item for item in review.get("items") or [] if isinstance(item, dict)}
     legacy = _legacy(stored_profile)
+    current = current_items(core, quarter_plan)
+    proxies = {item["key"]: target_source(item["text_he"]) for item in current
+               if item["kind"] == "target" and (target_source(item["text_he"]) == "conversions"
+               or _is_proxy_target(item["text_he"], target_source(item["text_he"])))}
     items = []
-    for item in current_items(core, quarter_plan):
+    for item in current:
         previous = stored.get(item["key"])
         grammar = _grammar(item["kind"])
         if previous and _clean(previous.get("text_he"), 400) == item["text_he"]:
             status = previous.get("status") if previous.get("status") in STATUSES else "measuring"
             evidence = _clean(previous.get("evidence_he"), 240)
+            facts = previous.get("facts") or {}
+            if status != "changed" and item["key"] in proxies:
+                result = _proxy_result(proxies[item["key"]], cp._number(facts.get("value")), item["text_he"], facts)
+                status, evidence = result["status"], result["template"]
+            elif status != "changed" and item["kind"] in ("month", "assumption") and parse(item["text_he"])["metric"] == "conversions" and facts.get("rule") != "targets":
+                status = "measuring"
+                evidence = "הפעולות החשובות שנמדדו באתר אינן מספר ההזמנות. ההזמנות עצמן עדיין לא נמדדו."
+            elif status != "changed" and item["kind"] == "month" and proxies:
+                # Old aggregated reviews did not retain which targets supported the
+                # verdict. Suppress that verdict until a refresh evaluates safe units.
+                sources = facts.get("from") or []
+                if not sources or any(source.get("proxy") or source.get("source") == "conversions" for source in sources):
+                    key, source = next(iter(proxies.items()))
+                    target_item = next(target for target in current if target["key"] == key)
+                    target_facts = (stored.get(key) or {}).get("facts") or {}
+                    result = _proxy_result(source, cp._number(target_facts.get("value")), target_item["text_he"], target_facts)
+                    status, evidence = result["status"], result["template"]
         elif previous:
             status, evidence = "changed", CHANGED_HE[grammar]
         elif item["key"] in legacy:

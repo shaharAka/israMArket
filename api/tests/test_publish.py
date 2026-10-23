@@ -505,6 +505,24 @@ class PublishTestCase(unittest.TestCase):
 
     # --- 4. the campaign brief ----------------------------------------------------
 
+    def test_workspace_brief_is_bound_to_the_same_business_and_month(self):
+        response = self.client.get("/strategy/posts/workspace")
+        self.assertEqual(response.status_code, 200)
+        workspace = response.json()
+        brief = workspace["campaign_brief"]
+        self.assertEqual(workspace["id"], self.strategy.id)
+        self.assertEqual((brief["year"], brief["month"]), (workspace["year"], workspace["month"]))
+        self.assertEqual(brief["budget"]["monthly_budget_ils"], 2500)
+        self.assertEqual(brief["business_name"], self.business.name)
+        self.assertNotIn("פוסט סודי של המתחרה", str(brief))
+
+    def test_workspace_missing_budget_is_not_fabricated(self):
+        self.strategy.roadmap_json = dumps({"roadmap": {"posts": self.owner_posts}})
+        self.business.monthly_budget_ils = 0
+        self.db.commit()
+        workspace = self.client.get("/strategy/posts/workspace").json()
+        self.assertIsNone(workspace["campaign_brief"]["budget"])
+
     def test_the_brief_carries_the_budget_and_allocation_of_the_stored_plan(self):
         brief = self.client.get("/publish/brief").json()
         text = brief["text"]

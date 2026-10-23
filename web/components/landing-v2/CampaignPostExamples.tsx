@@ -70,14 +70,10 @@ export function CampaignPostExamples({
   );
 }
 
-function CampaignArtwork({ item, galleryOnly, screenshot }: { item: CampaignExample; galleryOnly: boolean; screenshot?: { src: string; alt: string } }) {
-  const { ref: cycleRef, index: activeIndex, paused, reduced, playing, toggle } = useFeatureCycle(item.motion?.length ?? 1, 3000);
-  const t = useCopy();
+function CampaignArtwork({ item, screenshot }: { item: CampaignExample; galleryOnly: boolean; screenshot?: { src: string; alt: string } }) {
+  const { ref: cycleRef, index: activeIndex, playing } = useFeatureCycle(item.motion?.length ?? 1, 3000);
   return <div ref={cycleRef} className="campaign-player">
     <PostArtwork item={item} playing={Boolean(item.video && playing)} beat={activeIndex} screenshot={screenshot} />
-    {item.video && !reduced ? <button type="button" className={galleryOnly ? "campaign-play" : "campaign-read"}
-      aria-label={t(paused ? "לראות את הפוסט בתנועה" : "לעצור את התנועה")} onClick={toggle}>
-      {galleryOnly ? <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span> : t(paused ? "לראות את הפוסט בתנועה" : "לעצור את התנועה")}
-    </button> : null}
+
   </div>;
 }

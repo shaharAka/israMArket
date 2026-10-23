@@ -126,10 +126,7 @@ export function PlanCycleHero() {
 
         <div className="lv2-cycle-footer">
           <p><Copy text="לומדים, מפרסמים ומשפרים את התוכנית." /></p>
-          {motion ? <button type="button" onClick={() => {
-            if (running) setPlaying(false);
-            else { setStage(0); setPlaying(true); }
-          }}><Copy text={running ? "לעצור את ההדגמה" : "לראות מהתחלה"} /></button> : null}
+          {motion && !running ? <button type="button" onClick={() => { setStage(0); setPlaying(true); }}><Copy text="לראות מהתחלה" /></button> : null}
         </div>
       </div>
     </div>

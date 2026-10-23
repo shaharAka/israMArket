@@ -241,7 +241,7 @@ export default function DashboardPage() {
               baseline={baselineText ? <BidiText text={baselineText} /> : undefined}
               ownerAction={ownerAction || undefined}
               ownerWhy={step?.why_he}
-              ownerMeta={step ? minutesLabel(step.minutes) : undefined}
+              ownerMeta={step ? minutesLabel(step.minutes, t) : undefined}
               action={step ? <NextStepAction step={step} /> : undefined}
             />
           ) : null}

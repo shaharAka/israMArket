@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { Button, ErrorNote } from "@/components/AppShell";
 import { ApiError, api } from "@/lib/api";
-import { AuthCard, Field } from "../../login/page";
+import { AuthCard, Field } from "@/components/account/AuthFields";
 import auth from "../../login/auth.module.css";
 
 type Check = { valid: false } | { valid: true; email_hint: string; expires_at: string };

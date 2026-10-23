@@ -13,6 +13,7 @@ import { StepSoftware } from "./StepSoftware";
 import { ServiceClientSources } from "./BusinessRoute";
 import { StepSave } from "./StepSave";
 import { StepShell, TextInput } from "./ui";
+import { OnboardingTip } from "./OnboardingTip";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { HowToFind } from "@/components/help/HowToFind";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
@@ -136,7 +137,8 @@ export function ResearchJourney() {
 
   if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
-  const common: StepProps = { flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
+  const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
+  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
     const next = { ...current, step, seen: [...new Set([...current.seen, j.step])], draft: { ...current.draft, research_journey: { ...j, step } } };
@@ -170,7 +172,10 @@ export function ResearchJourney() {
   }
   return <div className={`start-blue ${styles.flow}`}><header className="border-b border-[var(--rule)]"><div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between gap-3 px-5 py-4"><Link href="/" aria-label={t("ישראמארקט")} className="product-wordmark !text-[22px]" dir="ltr"><IdentityMark /></Link><ProductUtilities inline /></div></header>
     <main className="mx-auto w-full max-w-[760px] px-5 py-6 sm:py-10" aria-busy={busy}>{index > 0 ? <button type="button" disabled={busy} onClick={() => void move(steps[index - 1], true)} className="mb-4 min-h-11 text-sm"><Copy text="חזרה" /></button> : null}
-      <div className="mb-7 flex gap-1" aria-label={t("התקדמות בהיכרות")} role="progressbar" aria-valuenow={Math.max(1, index + 1)} aria-valuemin={1} aria-valuemax={steps.length}>{steps.map((step, i) => <span key={step} className={`h-1 flex-1 ${i <= index ? "bg-[var(--primary)]" : "bg-[var(--rule)]"}`} />)}</div>
+      <ol className={styles.journeyStages} aria-label={t("מהיכרות לתוכנית")}>
+        {["מכירים את העסק", "מחברים מידע", "מגדירים מטרות", "בונים תוכנית"].map((label,i)=><li key={label} aria-current={stage===i?"step":undefined} data-complete={i<stage}><i aria-hidden="true"/><span><Copy text={label}/></span></li>)}
+      </ol>
+      <div className={styles.questionProgress} role="progressbar" aria-label={t("התקדמות בהיכרות")} aria-valuenow={Math.max(1,index+1)} aria-valuemin={1} aria-valuemax={steps.length}><span><Copy text="צעד {arg_0} מתוך {arg_1}" args={{arg_0:index+1,arg_1:steps.length}}/></span><i style={{width:`${Math.max(1,index+1)/steps.length*100}%`}}/></div>
       <div key={journey.step}>{screen}</div>
       <span className="sr-only" lang={locale}>{t("ישראמארקט")}</span>
     </main></div>;

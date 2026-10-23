@@ -147,8 +147,8 @@ export default function StrategyPage() {
       <NextStepAction step={firstAction} />
     </div>
   ) : strategy ? (
-    <Link href="/dashboard" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
-      <Copy text="השבוע בתוכנית" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
+    <Link href="/campaign" className="drawn-button group inline-flex min-h-12 items-center gap-2 bg-[var(--primary)] px-6 text-[15px] text-white hover:bg-[var(--primary-dark)]">
+      <Copy text="לעבוד על הקמפיין" /><IconArrowLeft className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 motion-reduce:transition-none" />
     </Link>
   ) : null;
   // Right after signup the one action leads, under the title, not two screens down.

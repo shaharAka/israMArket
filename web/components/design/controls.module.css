@@ -1,7 +1,7 @@
 /* All primitives work inside DesignScope and in the product's blue chrome. */
-.button { display:inline-flex; min-height:46px; justify-content:center; align-items:center; gap:9px; padding:11px 20px; border:1px solid transparent; border-radius:12px; font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; color:var(--im-paper,var(--paper)); background:var(--action); box-shadow:none; transition:background 180ms ease,transform 200ms cubic-bezier(.2,.7,.2,1),border-color 180ms ease,box-shadow 200ms ease; }
+.button { display:inline-flex; min-height:46px; justify-content:center; align-items:center; gap:9px; padding:11px 20px; border:1px solid transparent; border-radius:8px; font:inherit; font-size:14.5px; font-weight:600; cursor:pointer; color:var(--im-paper,var(--paper)); background:var(--action); box-shadow:var(--shadow-button,none); transition:background 180ms ease,transform 200ms cubic-bezier(.2,.7,.2,1),border-color 180ms ease,box-shadow 200ms ease; }
 .button:hover:not(:disabled) { filter:brightness(.96); }
-.button:active:not(:disabled) { transform:translateY(1px) scale(.985); }
+.button:active:not(:disabled) { transform:translateY(1px) scale(.985); box-shadow:none; }
 .button[data-variant="secondary"] { background:var(--im-paper,var(--paper)); border-color:var(--im-rule,var(--rule-dark)); color:var(--im-ink,var(--ink)); box-shadow:0 1px 2px rgba(20,32,58,.05); }
 .button[data-variant="text"] { background:transparent; color:var(--im-primary,var(--primary)); padding-inline:4px; box-shadow:none; }
 .button[data-variant="danger"] { background:var(--im-paper,var(--paper)); color:var(--danger,#a53527); border-color:var(--danger-rule,#dcaa9f); box-shadow:none; }

@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CardStage, cardSize } from "@/components/CardCanvas";
+import { CampaignOverview } from "./CampaignOverview";
 import { CampaignBrief } from "./CampaignBrief";
+import { CampaignDirection } from "./CampaignDirection";
+import { lifecycleOf, ownerNeedsOf } from "@/lib/postLifecycle";
 import { postDay, postWeek } from "./postMeta";
 import { CampaignWeek } from "./CampaignWeek";
 import { CampaignPostCard } from "./CampaignPostCard";
 import { useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { billingEndpoints, type MediaAllowance } from "@/lib/billing";
 import { campaignEndpoints, protectedPost, supportsLayout, type CampaignRevision, type RevisionKind, type VideoOptions } from "@/lib/campaign";
-import { endpoints, type RoadmapPost, type StrategyPayload, type Asset } from "@/lib/api";
+import { ApiError, endpoints, type RoadmapPost, type StrategyPayload, type Asset } from "@/lib/api";
 import { downloadCardPng, renderCardPng } from "@/lib/cardExport";
 import { LOCALE_META } from "@/lib/i18n/locales";
 import { CampaignVideoOverlay, CampaignVideoPreview } from "./CampaignVideo";
@@ -32,6 +35,7 @@ export function CampaignTimeline() {
   const [history, setHistory] = useState<CampaignRevision[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [active, setActive] = useState("");
+  const [viewWeek, setViewWeek] = useState<number | null>(null);
   const [instruction, setInstruction] = useState("");
   const [kind, setKind] = useState<RevisionKind>("text");
   const [revision, setRevision] = useState<CampaignRevision | null>(null);
@@ -57,7 +61,7 @@ export function CampaignTimeline() {
     ]);
     setStrategy(plan); setAllowance(limits); setHistory(versions.revisions);
     const pending = versions.revisions.find(r => r.state === "working" || r.state === "ready" || r.state === "failed");
-    if (pending) { setRevision(pending); setActive(pending.items[0]?.uid || ""); }
+    if (pending) { setRevision(pending); setActive(pending.items[0]?.uid || ""); const post=plan.roadmap.posts.find(post=>post.uid===pending.items[0]?.uid); if(post)setViewWeek(postWeek(post)); }
     setReady(true);
   }
   useEffect(() => { let live = true;
@@ -66,8 +70,13 @@ export function CampaignTimeline() {
         if (!live) return;
         setStrategy(plan); setAllowance(limits); setHistory(versions.revisions); setReady(true);
         const pending = versions.revisions.find(r => ["working", "ready", "failed"].includes(r.state));
-        if (pending) { setRevision(pending); setActive(pending.items[0]?.uid || ""); }
-      }).catch(() => { if (live) { setReady(true); setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."); } });
+        if (pending) { setRevision(pending); setActive(pending.items[0]?.uid || ""); const post=plan.roadmap.posts.find(post=>post.uid===pending.items[0]?.uid); if(post)setViewWeek(postWeek(post)); }
+        const query=new URLSearchParams(window.location.search);
+        const week=Number(query.get("week"));
+        if(!pending && query.has("week") && Number.isInteger(week) && plan.roadmap.posts.some(post=>postWeek(post)===week))setViewWeek(week);
+        const focused=plan.roadmap.posts.find(post=>post.uid===query.get("focus"));
+        if(focused && !pending){setActive(focused.uid!);if(!protectedPost(focused))setSelected([focused.uid!]);}
+      }).catch(error => { if (live) { setReady(true); if(!(error instanceof ApiError && error.status===404))setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."); } });
     return () => { live = false; };
   }, []);
   useEffect(() => {
@@ -100,6 +109,9 @@ export function CampaignTimeline() {
   const proposed = item?.proposal;
   const displayed = proposed && !showOriginal && ["ready", "failed"].includes(revision?.state || "") ? proposed : current;
   const weeks = [...new Set(posts.map(postWeek))].sort((a,b) => a - b);
+  const nextPost = [...posts].sort((a,b)=>(postDay(a)||"9999").localeCompare(postDay(b)||"9999")).find(post=>["needs_owner","ready"].includes(lifecycleOf(post)))
+    || posts.find(post=>lifecycleOf(post)==="approved");
+  const visibleWeek = viewWeek ?? (current ? postWeek(current) : nextPost ? postWeek(nextPost) : weeks[0]);
   const changing = busy || revision?.state === "working";
   const reviewing = revision?.state === "ready" || revision?.state === "failed";
   const videoKind = kind === "video" || kind === "video_edit" || kind === "finish";
@@ -113,10 +125,21 @@ export function CampaignTimeline() {
     (kind === "layout" && layoutAvailable) || kind === "finish" || (kind === "text" ? Boolean(instruction.trim()) : kind === "image" ?
       Boolean(allowance?.images.generation_available && selected.length <= allowance.images.remaining) :
       Boolean(allowance?.videos.generation_available && allowance.videos.remaining > 0 && (kind !== "video_edit" || instruction.trim()))));
+  function showRevisionItem(uid: string) {
+    setActive(uid);setShowOriginal(false);
+    const post=posts.find(post=>post.uid===uid);if(post)setViewWeek(postWeek(post));
+    requestAnimationFrame(()=>panel.current?.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"}));
+  }
+  function selectWeek(week: number) {
+    setViewWeek(week);
+    const url=new URL(window.location.href);url.searchParams.set("week",String(week));url.searchParams.delete("focus");
+    window.history.replaceState(window.history.state,"",url.pathname+url.search);
+  }
   function choose(post: RoadmapPost) {
     if (!post.uid) return;
     setActive(post.uid); setShowOriginal(false); setAssetId(undefined); setStart(0); setEnd(undefined); setOverlayHeadline(post.overlay_headline || post.overlay_text || "");
-    if (protectedPost(post)) { requestAnimationFrame(() => panel.current?.scrollIntoView({ behavior: "smooth", block: "start" })); return; }
+    requestAnimationFrame(() => panel.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" }));
+    if (protectedPost(post)) return;
     if (reviewing || changing) return;
     if (!supportsLayout(post) && kind === "layout") setKind("text");
     setSelected(old => old.includes(post.uid!) ? old.filter(uid => uid !== post.uid) : old.length < 3 ? [...old, post.uid!] : old);
@@ -130,7 +153,7 @@ export function CampaignTimeline() {
         submission.current = { key, id: crypto.randomUUID().replaceAll("-", ""), options };
       }
       const next = await campaignEndpoints.create(selected, kind, instruction, submission.current.id, submission.current.options);
-      setRevision(next); setActive(selected[0]); setShowOriginal(false);
+      setRevision(next); setActive(selected[0]); setViewWeek(postWeek(posts.find(post=>post.uid===selected[0])!)); setShowOriginal(false);
       setHistory(old => [next, ...old.filter(r => r.id !== next.id)]);
       billingEndpoints.mediaAllowance().then(setAllowance).catch(() => {});
     } catch (e) { setError(e instanceof Error ? e.message : "לא הצלחנו להכין את הגרסה. נסו שוב."); }
@@ -140,10 +163,10 @@ export function CampaignTimeline() {
     setBusy(true); setError("");
     try {
       const result = await campaignEndpoints.choose(row.id, action);
-      if (result.strategy) setStrategy(result.strategy);
+      if (result.strategy) setStrategy(previous=>({ ...result.strategy!, campaign_brief: previous?.campaign_brief }));
       endpoints.assets().then(r => setAssets(r.assets.filter(a => a.kind === "video" && !a.url.endsWith(".svg")))).catch(() => {});
       setHistory(old => old.map(r => r.id === row.id ? result.revision : r));
-      setRevision(null); setSelected([]); setShowOriginal(false); submission.current = null;
+      setRevision(null); setSelected([]); setActive(""); setShowOriginal(false); submission.current = null;
     } catch (e) { setError(e instanceof Error ? e.message : "לא הצלחנו לשמור. נסו שוב."); }
     finally { setBusy(false); }
   }
@@ -183,24 +206,39 @@ export function CampaignTimeline() {
     </header>
     {error ? <div className={styles.error} role="alert">{t(error)} <button onClick={() => void reload().catch(() => setError("לא הצלחנו לפתוח את הפוסטים. נסו לטעון שוב."))}>{t("לטעון שוב")}</button></div> : null}
     {!ready ? <p aria-live="polite">{t("פותחים את הקמפיין…")}</p> : null}
-    {ready && !posts.length && !error ? <div className={styles.empty}><p>{t("הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם.")}</p><Link href="/posts?create=1">{t("ליצור פוסט משלכם")}</Link></div> : null}
+    {ready && strategy ? <CampaignOverview strategy={strategy}/> : null}
+    {ready && !posts.length && !error ? <div className={styles.empty}><p>{t(strategy?.post_workspace_only ? "הפוסטים שתכינו יופיעו כאן לפי השבוע שלהם." : "מכינים את הפוסטים לפי המטרות והתוכנית שלכם.")}</p><Link href={strategy?.post_workspace_only ? "/posts?create=1" : "/strategy"}>{t(strategy?.post_workspace_only ? "ליצור פוסט משלכם" : "להכין את פוסטי החודש")}</Link></div> : null}
     {posts.length ? <>
-      <p className={styles.intro}>{t("בחרו עד 3 טיוטות כדי להכין להן גרסה חדשה.")}</p>
+      {(reviewing || changing) && revision ? <section className={styles.nextTask} aria-label={t("הגרסה שבעבודה")}>
+        <div><h2>{t(changing ? "מכינים את הגרסה החדשה…" : "הגרסה החדשה מחכה לבדיקה שלכם")}</h2><p dir="auto">{revision.items.map(item=>item.original.title).join(" · ")}</p></div>
+        <button type="button" className={styles.textAction} onClick={()=>showRevisionItem(revision.items[0]?.uid || "")}>{t("לחזור לגרסה")}</button>
+      </section> : <section className={styles.nextTask} aria-label={t("הצעד הבא בקמפיין")}>
+        <div><h2>{t(nextPost ? lifecycleOf(nextPost)==="approved" ? "מוכן להכנה לפרסום" : "הפוסט הבא שמחכה לכם" : "מה לומדים מהקמפיין?")}</h2>
+          <p dir="auto">{nextPost ? `${nextPost.title}${ownerNeedsOf(nextPost)[0]?.text ? ` · ${ownerNeedsOf(nextPost)[0].text}` : ""}` : t("נבדוק את התוצאות כדי לבחור מה לשפר בהמשך.")}</p></div>
+        <Link className={styles.textAction} href={nextPost ? `/posts?post=${posts.indexOf(nextPost)}&from=campaign&week=${postWeek(nextPost)}` : "/performance"}>{t(nextPost ? lifecycleOf(nextPost)==="approved" ? "להכין לפרסום" : "לבדוק ולאשר" : "לראות תוצאות")}</Link>
+      </section>}
+      <nav className={styles.weekNav} aria-label={t("שבועות הקמפיין")}>
+        {weeks.map(week=><button key={week} type="button" aria-pressed={visibleWeek===week} onClick={()=>selectWeek(week)}>
+          <strong>{week ? t("שבוע {arg_0}",{arg_0:week}) : t("ללא שבוע")}</strong>
+          <span>{posts.filter(post=>postWeek(post)===week).length===1 ? t("פוסט אחד") : t("{arg_0} פוסטים",{arg_0:posts.filter(post=>postWeek(post)===week).length})}</span>
+        </button>)}
+      </nav>
       <div className={styles.timeline}>
-        {weeks.map(week => <CampaignWeek key={week} week={week} posts={posts.filter(post => postWeek(post) === week)} strategy={strategy}>
+        {weeks.filter(week=>week===visibleWeek).map(week => <CampaignWeek key={week} week={week} posts={posts.filter(post => postWeek(post) === week)} strategy={strategy}>
           {posts.map((post, index) => ({ post, index })).filter(({ post }) => postWeek(post) === week)
             .sort((a, b) => (postDay(a.post) || "9999").localeCompare(postDay(b.post) || "9999"))
             .map(({ post, index }) => <CampaignPostCard key={post.uid || index} post={post} strategy={strategy!}
               selected={selected.includes(post.uid || "")}
               disabled={!protectedPost(post) && !selected.includes(post.uid || "") && selected.length >= 3 && !reviewing}
-              onChoose={() => choose(post)} editorHref={`/posts?post=${index}`} />)}
+              onChoose={() => choose(post)} editorHref={`/posts?post=${index}&from=campaign&week=${week}`} />)}
         </CampaignWeek>)}
       </div>
       {selected.length > 0 && !panelVisible && !reviewing && !changing ? <div className={styles.selectionBar}>
         <span>{t("{arg_0} מתוך 3 פוסטים נבחרו", { arg_0: selected.length })}</span>
-        <button className={styles.primary} onClick={() => { setActive(selected[0]); panel.current?.scrollIntoView({ behavior: "smooth", block: "start" }); }}>{t("לעבוד על הפוסטים שבחרתם")}</button>
+        <button className={styles.primary} onClick={() => { setActive(selected[0]); setViewWeek(postWeek(posts.find(post=>post.uid===selected[0])!)); requestAnimationFrame(()=>panel.current?.scrollIntoView({ behavior: "smooth", block: "start" })); }}>{t("לעבוד על הפוסטים שבחרתם")}</button>
       </div> : null}
-      {displayed ? <section ref={panel} className={styles.studio} aria-label={t("הגרסה החדשה")}>
+      {displayed && current && postWeek(current)===visibleWeek ? <section ref={panel} className={styles.studio} aria-label={t("הגרסה החדשה")}>
+        <header className={styles.studioHeading}><h2 dir="auto">{displayed.title}</h2><Link href={`/posts?post=${currentIndex}&from=campaign&week=${visibleWeek}`}>{t("לבדיקה ולאישור בעורך")}</Link></header>
         <div className={styles.previewColumn}>
           <div className={styles.preview}>{footage && overlayPost ? <CampaignVideoPreview url={footage} post={overlayPost} dna={dna} brand={strategy?.brand_language || undefined} businessName={strategy?.business_name || ""} /> : displayed.video_url ? <video src={displayed.video_url} controls playsInline preload="metadata" aria-label={displayed.title} /> : <CardStage post={displayed} brand={strategy?.brand_language} dna={dna} businessName={strategy?.business_name || ""} canvasRef={canvas} photoSizes="400px" />}</div>
           <div className={styles.exportOverlay} aria-hidden="true"><CampaignVideoOverlay ref={overlay} post={overlayPost || displayed} dna={dna} brand={strategy?.brand_language || undefined} businessName={strategy?.business_name || ""} /></div>
@@ -213,15 +251,19 @@ export function CampaignTimeline() {
           {changing ? <p role="status">{t("מכינים את הגרסה החדשה…")}</p> : reviewing && revision ? <div className={styles.decision}>
             <h2>{t("איך נראית הגרסה החדשה?")}</h2>
             <p>{t("עברו על הפוסטים שבחרתם לפני השמירה.")}</p>
-            {revision.items.map(i => <button key={i.uid} aria-pressed={active === i.uid} onClick={() => { setActive(i.uid); setShowOriginal(false); }}>{i.original.title}{i.error ? ` · ${t(i.error)}` : ""}</button>)}
+            {revision.items.map(i => <button key={i.uid} aria-pressed={active === i.uid} onClick={() => showRevisionItem(i.uid)}>{i.original.title}{i.error ? ` · ${t(i.error)}` : ""}</button>)}
             {revision.state === "failed" ? <p role="alert">{t(revision.error || "לא כל הגרסאות הושלמו. הפוסטים הקודמים נשארו שמורים.")}</p> : null}
             {revision.items.some(i => i.state === "ready") ? <button disabled={busy} className={styles.primary} onClick={() => void decide(revision, "keep")}>{t(revision.state === "ready" ? "לשמור את הגרסה החדשה" : "לשמור רק את הגרסאות שהושלמו")}</button> : null}
             <button disabled={busy} className={styles.textAction} onClick={() => void decide(revision, "discard")}>{t("להשאיר את הגרסה הקודמת")}</button>
-          </div> : protectedPost(current) ? <Link href={`/posts?post=${currentIndex}`} className={styles.textAction}>{t("לצפות בפוסט שאושר")}</Link> : <form className={styles.form} onSubmit={e => { e.preventDefault(); if (mayCreate) void create(); }}>
+          </div> : protectedPost(current) ? <Link href={`/posts?post=${currentIndex}&from=campaign&week=${visibleWeek}`} className={styles.textAction}>{t("לצפות בפוסט שאושר")}</Link> : <form className={styles.form} onSubmit={e => { e.preventDefault(); if (mayCreate) void create(); }}>
+            <CampaignDirection post={current} onUse={value=>{setKind("text");setSelected([active]);setInstruction(value);}} />
             <h2>{t("מה תרצו לשנות?")}</h2>
             <div className={styles.choices}>
-              {([ ["text", "הנוסח"], ...(layoutAvailable ? [["layout", "העיצוב"] as const] : []), ["image", "התמונה"], ["video", "סרטון חדש"], ["finish", "סרטון שיש לכם"], ...(current.video_url ? [["video_edit", "שינוי בסרטון"] as const] : []) ] as const).map(([value,label]) => <button key={value} type="button" aria-pressed={kind === value} onClick={() => setKind(value)}>{t(label)}</button>)}
+              {([ ["text", "הנוסח"], ...(layoutAvailable ? [["layout", "העיצוב"] as const] : []), ["image", "התמונה"], ["video", "סרטון"] ] as const).map(([value,label]) => <button key={value} type="button" aria-pressed={value==="video" ? videoKind : kind === value} onClick={() => setKind(value)}>{t(label)}</button>)}
             </div>
+            {videoKind ? <div className={styles.videoModes} role="group" aria-label={t("העבודה על הסרטון")}>
+              {([ ["video","ליצור סרטון"], ["finish","לערוך סרטון קיים"], ...(current.video_url ? [["video_edit","לשנות את התוכן בסרטון"] as const] : []) ] as const).map(([value,label])=><button key={value} type="button" aria-pressed={kind===value} onClick={()=>setKind(value)}>{t(label)}</button>)}
+            </div> : null}
             {videoKind && selected.length > 1 ? <p>{t("כדי להכין סרטון, בחרו פוסט אחד.")}</p> : null}
             {kind === "finish" || kind === "video_edit" ? <div className={styles.videoOptions}>
               <label htmlFor="campaign-video">{t("בחירת סרטון")}</label><select id="campaign-video" value={assetId || ""} onChange={e => setAssetId(Number(e.target.value) || undefined)}>

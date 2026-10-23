@@ -26,13 +26,13 @@ test('support return works without a business; absent return resumes the correct
   assert.equal(signInDestination('/support', null, 'en'), '/support?lang=en');
   assert.equal(signInDestination(null, null, 'en'), '/start?lang=en');
   assert.equal(signInDestination(null, { onboarding_complete: false }, 'he'), '/onboarding?lang=he');
-  assert.equal(signInDestination(null, { onboarding_complete: false, quarter_plan: { strategy: 'saved' } }, 'ar'), '/dashboard?lang=ar');
+  assert.equal(signInDestination(null, { onboarding_complete: false, quarter_plan: { strategy: 'saved' } }, 'ar'), '/campaign?lang=ar');
 });
 
 test('untrusted redirects cannot leave the site, invoke the API, or loop through auth', () => {
   for (const value of [null, '', 'javascript:alert(1)', 'https://evil.example', '//evil.example', '/\\evil.example', '/%5cevil.example', '/%2fevil.example', '/%0alogin', '/backend/auth/google/start', '/%62ackend/auth/google/start', '/a/../backend', '/a/../login', '/login?next=/support', '/signup', '/reset/token', '/bad%url', '/a b', '/'+ 'x'.repeat(513)]) {
     assert.equal(safeReturnPath(value), null, String(value));
-    assert.equal(signInDestination(value, { onboarding_complete: true }, 'en'), '/dashboard?lang=en');
+    assert.equal(signInDestination(value, { onboarding_complete: true }, 'en'), '/campaign?lang=en');
   }
   assert.equal(safeReturnPath('/integrations?next=https%3A%2F%2Fexample.com'), '/integrations?next=https%3A%2F%2Fexample.com');
   assert.equal(safeReturnPath('/strategy#quarter'), '/strategy#quarter');

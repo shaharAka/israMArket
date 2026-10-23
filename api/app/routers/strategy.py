@@ -561,7 +561,14 @@ def current_strategy(business: Business = Depends(get_business), db: Session = D
 
 @router.get("/strategy/posts/workspace")
 def posts_workspace(business: Business = Depends(get_business), db: Session = Depends(get_db)) -> dict:
-    return serialize_strategy(_active_strategy(db, business), business)
+    strategy = _active_strategy(db, business)
+    result = serialize_strategy(strategy, business)
+    if not quick_posts.workspace_only(strategy):
+        # Bind the operating brief to this exact business/month. No generation or
+        # external analytics read is needed to display saved budget and channels.
+        from app.services.publish import campaign_brief
+        result["campaign_brief"] = campaign_brief(db, business, strategy)
+    return result
 
 
 @router.post("/strategy/posts/create")

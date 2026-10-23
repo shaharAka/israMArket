@@ -23,6 +23,7 @@ export function CampaignWeek({ week, posts, strategy, children, preview = false 
   const goals = unique(posts.map(post => post.plan_link?.goal || post.goal_fit)).filter(goal => goal !== focus);
   const measures = unique(breakdown?.metrics_target?.length ? breakdown.metrics_target : posts.map(metricLabel));
   const learning = unique(posts.map(briefLearning));
+  const applied = unique(posts.map(post => post.informed_by_note));
   return <section className={styles.week} data-campaign-preview={preview} aria-label={week ? t("שבוע {arg_0}", { arg_0: week }) : t("פוסטים ללא שבוע בתוכנית")}>
     <header className={styles.weekHeading}><span className={styles.marker} aria-hidden="true" />
       <h2>{week ? t("שבוע {arg_0}", { arg_0: week }) : t("פוסטים נוספים")}</h2>
@@ -35,6 +36,7 @@ export function CampaignWeek({ week, posts, strategy, children, preview = false 
           {goals.length ? <div><dt>{t("מקדמים השבוע")}</dt><dd>{goals.map(goal => <p key={goal} dir="auto">{goal}</p>)}</dd></div> : null}
           {measures.length ? <div><dt>{t("מה נבדוק")}</dt><dd>{measures.map(measure => <p key={measure} dir="auto">{t(measure)}</p>)}</dd></div> : null}
           {learning.length ? <div><dt>{t("מה כבר למדנו")}</dt><dd>{learning.map(finding => <p key={finding} dir="auto">{finding}</p>)}</dd></div> : null}
+          {applied.length ? <div><dt>{t("מה מנסים השבוע")}</dt><dd>{applied.map(note => <p key={note} dir="auto">{note}</p>)}</dd></div> : null}
         </dl>
       </aside>
       <div className={styles.cards}>{children}</div>

@@ -19,7 +19,7 @@ export function withInterfaceLanguage(path: string, locale: string): string {
 }
 
 export function signInUrl(returnPath: string, locale: string): string {
-  const next = withInterfaceLanguage(safeReturnPath(returnPath) ?? "/dashboard", locale);
+  const next = withInterfaceLanguage(safeReturnPath(returnPath) ?? "/campaign", locale);
   // A fast 401 can arrive before the interface language has finished mounting.
   const explicit = new URL(next, "https://isramarket.invalid").searchParams.get("lang");
   const language = explicit && ["he", "en", "ar", "ru"].includes(explicit) ? explicit : locale;
@@ -29,5 +29,5 @@ export function signInUrl(returnPath: string, locale: string): string {
 export function signInDestination(requested: string | null, business: { onboarding_complete?: boolean; quarter_plan?: unknown } | null, locale: string): string {
   // Every destination checks its own access/setup requirements. Support must remain
   // reachable even before a business exists; no API read is required to return there.
-  return withInterfaceLanguage(safeReturnPath(requested) ?? (!business ? "/start" : business.onboarding_complete || business.quarter_plan ? "/dashboard" : "/onboarding"), locale);
+  return withInterfaceLanguage(safeReturnPath(requested) ?? (!business ? "/start" : business.onboarding_complete || business.quarter_plan ? "/campaign" : "/onboarding"), locale);
 }

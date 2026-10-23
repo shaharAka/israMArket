@@ -83,7 +83,7 @@ existing warning tokens remain for warnings only. Business artwork and vendor lo
 their colors. Use the selected direction 02 custom full-name lettering in one color.
 Public feature sections pair a concise benefit with a large product view. They reuse the
 same presentation components as the app; public fixtures never cause customer writes.
-Autoplay is limited to the user-requested hero, feature and reel demonstrations, with manual pause, reduced
+Autoplay is limited to the user-requested hero, feature and reel demonstrations, with direct stage selection, reduced
 motion and visibility guards. Other product interactions follow the user.
 
 
@@ -97,3 +97,18 @@ Essential work stays visible: plan direction, measurement, content and schedule;
 tasks and ready posts; a finding's proposed change and how to evaluate it. Optional evidence,
 budget detail and other weeks may sit one level down. Do not stack disclosures to reach the
 next action. Keep customer wording, figures, missing-data states and owner approval intact.
+
+## 24 October: Signal / Punch product foundation
+
+The selected public direction now supplies the onboarding, account and signed-in chrome through `components/design/product-theme.css`, with calm Operate behavior. This supersedes the earlier blue/sun palette and decorative progress identity. Use warm neutral canvases, white working surfaces, graphite text/actions, dark terracotta links/focus and soft Punch selection. Jade is reserved for meaningful success/connected states; the public Punch + Jade comparison is not a selected product replacement. Hebrew page titles use self-hosted Secular One at moderate size; body copy stays Rubik and other locale fonts remain unchanged. Controls have 8–12px corners. Customer artwork retains its own brand.
+
+The working sequence is discovery → connections → goals → plan → campaign materials → results/next decision. Public discovery stops at signup; goals and connected research precede plan creation. Campaign starts with saved goals, audience and measures, followed by the weekly timeline, approval and editing. Never populate these with landing fixtures. Findings must have measured attribution before they are presented as learning. Demo data is confined to the existing explicit demo.
+
+
+### Campaign operation and depth
+
+The campaign is the returning owner's main destination. Its opening brief shows saved monthly goals, dates, planned marketing budget, audience and hypothesis; never label allocated budget as actual spend. Keep every displayed goal visible on mobile. The next owner task leads into the existing review/approval workflow. A week rail keeps the month reachable while one week and its editor form the working surface. Editor handoffs preserve the originating week; pending revision batches remain reachable across weeks.
+
+Observed learning requires a published post and a finite, attributed measurement with a read date. A change applied to a draft is labelled separately. Proxy clicks or generic important website actions do not establish completed orders or pace toward an order target. The campaign offers an editable, fact-based creative starting point and sends the existing full brand/marketing brief to generation only on an explicit submission. Media limits and approval safeguards remain.
+
+Use the shared two-layer soft elevation tokens for primary work surfaces and contact shadows for primary controls. Keep nested rows and customer artwork flat; do not add glowing outlines or decorative 3D objects. Preserve mobile bottom-navigation clearance and reduced-motion behavior. Onboarding tips offer one concrete example or measurement instruction for the current question, rather than generic process reassurance.

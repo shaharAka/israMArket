@@ -17,13 +17,15 @@ export function CampaignPostCard({ post, strategy, selected = false, disabled = 
   const t = useCopy();
   const { locale } = useLanguage();
   const day = postDay(post);
+  const channelLabels: Record<string,string>={instagram:t("אינסטגרם"),facebook:t("פייסבוק"),whatsapp:t("וואטסאפ"),tiktok:t("טיקטוק"),linkedin:t("לינקדאין")};
+  const channels=[...new Set([post.channel || post.primary_outlet,...(post.outlets || [])].filter((channel):channel is string=>Boolean(channel)))].map(channel=>channelLabels[channel]).filter(Boolean);
   const date = day ? new Date(`${day}T12:00:00`).toLocaleDateString(LOCALE_META[locale].formatLocale, { day: "numeric", month: "short" }) : post.date_hint?.trim() || t("מועד לבחירה");
   return <article className={styles.card} data-active={selected}>
     <button type="button" aria-pressed={selected} disabled={disabled} className={styles.select} onClick={onChoose} data-campaign-post>
       <span className={styles.thumbnail} data-vertical={post.format === "reel" || post.format === "story"}>
         {post.video_url ? <video src={post.video_url} muted playsInline preload="metadata" aria-label={post.title} /> : <CardStage post={post} brand={strategy.brand_language} dna={strategy.brand_dna} businessName={strategy.business_name || ""} quietPlaceholder photoSizes="240px" />}
       </span>
-      <span className={styles.cardBody}><span className={styles.date}>{date} · {t(LIFECYCLE_LABEL[lifecycleOf(post)])}</span>
+      <span className={styles.cardBody}>{channels.length ? <span className={styles.channels}>{channels.join(" · ")}</span> : null}<span className={styles.date}>{date} · {t(LIFECYCLE_LABEL[lifecycleOf(post)])}</span>
         <strong dir="auto">{post.title}</strong>
         {post.plan_link?.goal || post.goal_fit ? <span dir="auto" data-post-goal>{post.plan_link?.goal || post.goal_fit}</span> : null}
         {post.cta ? <span dir="auto">{post.cta}</span> : null}

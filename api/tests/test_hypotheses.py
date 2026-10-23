@@ -134,8 +134,14 @@ class HypothesisTestCase(unittest.TestCase):
             self.db.add(WhatsappClick(business_id=self.business.id, link_id=link.id, day=day, ua_family="ios", count=count))
         self.db.commit()
 
-    def snapshot(self, sessions=None, followers=None):
+    def snapshot(self, sessions=None, followers=None, conversions=None, events=None, events_status=None):
         ga4 = {"overview": {"sessions": str(sessions)}} if sessions is not None else {}
+        if conversions is not None:
+            ga4.setdefault("overview", {})["conversions"] = str(conversions)
+        if events is not None:
+            ga4["events"] = events
+        if events_status is not None:
+            ga4["report_reads"] = {"events": {"status": events_status}}
         meta = {"account": {"followers_count": followers, "windows": {}}} if followers is not None else {}
         self.db.add(PerformanceSnapshot(business_id=self.business.id, period_start="", period_end="",
                                         ga4_json=dumps(ga4), meta_json=dumps(meta), diagnostic_json="{}"))
@@ -171,6 +177,7 @@ class ParseTest(unittest.TestCase):
         cases = {
             WHATSAPP_TARGET: "whatsapp_clicks",
             "50 הזמנות באתר": "conversions",
+            "50 אירועי רכישה שדווחו באתר": "purchase_events",
             "2,000 כניסות לאתר": "site_visits",
             "1,000 עוקבים באינסטגרם": "followers",
             UNSEEN_TARGET: None,
@@ -265,7 +272,7 @@ class AssumptionStatusTest(HypothesisTestCase):
 
 class TargetStatusTest(HypothesisTestCase):
     def test_whatsapp_against_the_months_pace(self):
-        strategy = self.month([measured("p1", 3)], plan=core([WHATSAPP_TARGET, "130 פניות בוואטסאפ"]))
+        strategy = self.month([measured("p1", 3)], plan=core(["120 לחיצות לוואטסאפ", "130 פניות בוואטסאפ"]))
         self.assertEqual(self.refresh(strategy)["target:0"]["evidence_he"],
                          "צריך את קישור הוואטסאפ שלנו כדי לספור פניות. מכינים אותו בעמוד החיבורים.")
         self.clicks(70, "2026-09-12")
@@ -286,7 +293,9 @@ class TargetStatusTest(HypothesisTestCase):
         strategy = self.month([measured("p1", 3)], plan=core([WHATSAPP_TARGET, "130 פניות בוואטסאפ"]))
         self.clicks(130, "2026-09-08")
         items = self.refresh(strategy, day=20)
-        self.assertEqual(items["target:0"]["status"], "on_track")  # 130 taps, the target is orders
+        self.assertEqual(items["target:0"]["status"], "measuring")
+        self.assertEqual(items["target:0"]["evidence_he"],
+                         "130 לחיצות לוואטסאפ החודש. ההזמנות עצמן עדיין לא נמדדו.")
         self.assertEqual(items["target:1"]["status"], "confirmed")  # 130 taps, the target is taps
         self.assertEqual(self.view(strategy)["target:1"]["status_he"], "הושג")
 
@@ -307,13 +316,182 @@ class TargetStatusTest(HypothesisTestCase):
                          "50% יותר פניות בוואטסאפ מאשר באותם ימים בחודש הקודם, מול יעד של 30%.")
 
     def test_the_month_hypothesis_follows_its_measurable_targets(self):
-        strategy = self.month([measured("p1", 3)], plan=core([UNSEEN_TARGET, WHATSAPP_TARGET]))
+        strategy = self.month([measured("p1", 3)], plan=core([UNSEEN_TARGET, "120 לחיצות לוואטסאפ"]))
         self.assertEqual(self.refresh(strategy)["month"]["status"], "measuring")
         self.clicks(70, "2026-09-12")
         month = self.refresh(strategy, day=20)["month"]
         self.assertEqual(month["status"], "on_track")
         self.assertEqual(month["evidence_he"], "70 לחיצות לוואטסאפ החודש, מול יעד של 120.")
         self.assertEqual(self.view(strategy)["month"]["status_he"], "בדרך")
+
+    def test_order_targets_never_compare_proxy_counts_with_order_pace(self):
+        for count in (0, 1, 70, 120, 130):
+            for day, closed in ((5, False), (20, False), (29, False), (30, True)):
+                with self.subTest(count=count, day=day, closed=closed):
+                    evidence = SimpleNamespace(whatsapp_month=count, elapsed=day / 30)
+                    result = hy.target(evidence, WHATSAPP_TARGET, closed)
+                    self.assertEqual(result["status"], "measuring")
+                    self.assertEqual(result["facts"]["value"], count)
+                    self.assertIn("ההזמנות עצמן עדיין לא נמדדו", result["template"])
+                    self.assertNotIn("מול יעד", result["template"])
+
+    def test_percentage_and_unnumbered_order_targets_do_not_infer_from_click_growth(self):
+        evidence = SimpleNamespace(whatsapp_month=150, whatsapp_so_far=150, whatsapp_before=10, elapsed=1)
+        for text in ("30% יותר הזמנות בוואטסאפ", "יותר הזמנות בוואטסאפ", "30% פחות הזמנות בוואטסאפ"):
+            for closed in (False, True):
+                with self.subTest(text=text, closed=closed):
+                    result = hy.target(evidence, text, closed)
+                    self.assertEqual(result["status"], "measuring")
+                    self.assertEqual(result["template"], "150 לחיצות לוואטסאפ החודש. ההזמנות עצמן עדיין לא נמדדו.")
+                    self.assertNotIn("change", result["facts"])
+
+    def test_site_visits_do_not_establish_customer_target_progress(self):
+        result = hy.target(SimpleNamespace(sessions=500), "120 לקוחות באתר", closed=True)
+        self.assertEqual(result["status"], "measuring")
+        self.assertEqual(result["template"], "500 כניסות לאתר ב-28 הימים האחרונים. מספר הלקוחות עדיין לא נמדד.")
+
+    def test_explicit_click_units_remain_comparable_when_orders_are_context(self):
+        evidence = SimpleNamespace(whatsapp_month=130, published_this_month=True, month_saves=lambda: None,
+                                   sessions=None, conversions=None, reach=None, followers=None)
+        for text in ("120 לחיצות לוואטסאפ להזמנות מראש", "120 מהלחיצות לוואטסאפ לצורך הזמנות",
+                     "לעודד הזמנות עם 120 לחיצות לוואטסאפ"):
+            with self.subTest(text=text):
+                result = hy.target(evidence, text)
+                self.assertEqual(result["status"], "confirmed")
+                self.assertFalse(result["facts"]["proxy"])
+
+    def test_generic_site_key_events_do_not_confirm_orders(self):
+        strategy = self.month([], plan=core(["120 הזמנות באתר"]))
+        self.snapshot(conversions=130)
+        result = self.refresh(strategy)["target:0"]
+        self.assertEqual(result["status"], "measuring")
+        self.assertEqual(result["evidence_he"], "130 פעולות חשובות באתר ב-28 הימים האחרונים. ההזמנות עצמן עדיין לא נמדדו.")
+        self.assertTrue(result["facts"]["proxy"])
+        self.assertEqual(result["facts"]["observed_source"], "important_actions")
+
+    def test_named_purchase_event_target_uses_only_its_event_count(self):
+        strategy = self.month([], plan=core(["120 אירועי רכישה שדווחו באתר"]))
+        self.snapshot(conversions=999, events=[{"eventName": "purchase", "eventCount": "130", "conversions": "120"}])
+        result = self.refresh(strategy)["target:0"]
+        self.assertEqual(result["status"], "confirmed")
+        self.assertEqual(result["facts"]["source"], "purchase_events")
+        self.assertEqual(result["facts"]["value"], 130)
+        self.assertEqual(result["evidence_he"], "130 אירועי רכישה שדווחו באתר ב-28 הימים האחרונים, מול יעד של 120.")
+
+    def test_reported_purchase_events_are_context_not_verified_orders(self):
+        strategy = self.month([], plan=core(["120 הזמנות באתר"]))
+        self.snapshot(conversions=999, events=[{"eventName": "purchase", "eventCount": "130"}])
+        result = self.refresh(strategy, closing=True)["target:0"]
+        self.assertEqual(result["status"], "measuring")
+        self.assertEqual(result["facts"]["observed_source"], "purchase_events")
+        self.assertEqual(result["evidence_he"], "130 אירועי רכישה שדווחו באתר ב-28 הימים האחרונים. ההזמנות עצמן עדיין לא נמדדו.")
+
+    def test_missing_or_unavailable_purchase_event_count_is_unknown(self):
+        strategy = self.month([], plan=core(["120 אירועי רכישה שדווחו באתר"]))
+        for rows, status in (([{"eventName": "add_to_cart", "eventCount": "999"}], "available"),
+                             ([{"eventName": "purchase", "eventCount": "999"}], "unavailable")):
+            with self.subTest(status=status):
+                self.snapshot(conversions=999, events=rows, events_status=status)
+                result = self.refresh(strategy)["target:0"]
+                self.assertEqual(result["status"], "measuring")
+                self.assertNotIn("value", result["facts"])
+
+    def test_purchase_event_zero_and_invalid_values_and_duplicate_rows(self):
+        strategy = self.month([], plan=core(["120 אירועי רכישה שדווחו באתר"]))
+        for raw in (True, -2, "NaN", "Infinity", "2.5", None):
+            with self.subTest(raw=raw):
+                self.snapshot(events=[{"eventName": "purchase", "eventCount": raw}])
+                evidence = hy.Evidence(self.db, self.business, strategy, today=date(*FIXED, 20))
+                self.assertIsNone(evidence.purchase_events)
+        self.snapshot(events=[{"eventName": "purchase", "eventCount": "0"}, {"eventName": "purchase", "eventCount": "999"}])
+        evidence = hy.Evidence(self.db, self.business, strategy, today=date(*FIXED, 20))
+        self.assertEqual(evidence.purchase_events, 0)
+
+    def test_post_key_event_comparisons_do_not_establish_order_hypotheses(self):
+        self.plan(ORDERS_BET)
+        posts = [measured("a", 30, metric="conversions", mix="offer"),
+                 measured("b", 40, metric="conversions", mix="offer"), measured("c", 1, metric="conversions")]
+        strategy = self.month(posts)
+        for closed in (False, True):
+            result = self.refresh(strategy, closing=closed)["assumption:0"]
+            self.assertEqual(result["status"], "measuring")
+            self.assertIn("הפעולות החשובות", result["evidence_he"])
+
+    def test_legacy_key_event_order_and_month_verdicts_are_scrubbed_on_read(self):
+        text = "120 הזמנות באתר"
+        facts = {"rule": "target", "source": "conversions", "proxy": False, "value": 130, "number": 120}
+        for status in ("confirmed", "on_track", "not_yet"):
+            review = {"items": [
+                {"key": "target:0", "text_he": text, "status": status, "facts": facts, "evidence_he": "130 הזמנות באתר"},
+                {"key": "month", "text_he": MONTH_HYPOTHESIS, "status": status,
+                 "facts": {"rule": "targets", "from": [facts]}, "evidence_he": "130 הזמנות באתר"},
+            ]}
+            with self.subTest(status=status):
+                for item in hy.review_view(review, core([text]), None)["items"]:
+                    self.assertEqual(item["status"], "measuring")
+                    self.assertEqual(item["evidence_he"], "130 פעולות חשובות באתר ב-28 הימים האחרונים. ההזמנות עצמן עדיין לא נמדדו.")
+
+    def test_legacy_post_order_comparison_verdict_is_scrubbed_on_read(self):
+        review = {"items": [{"key": "assumption:0", "text_he": ORDERS_BET, "status": "confirmed",
+                             "facts": {"rule": "compare", "metric": "conversions"}, "evidence_he": "יותר הזמנות באתר"}]}
+        quarter = {"assumptions": [{"bet_he": ORDERS_BET}]}
+        item = next(item for item in hy.review_view(review, core(), quarter)["items"] if item["key"] == "assumption:0")
+        self.assertEqual(item["status"], "measuring")
+        self.assertIn("הפעולות החשובות", item["evidence_he"])
+
+    def test_proxy_only_month_stays_measuring_without_trait_fallback(self):
+        strategy = self.month([measured("p1", 3)], plan=core([UNSEEN_TARGET, WHATSAPP_TARGET]))
+        self.clicks(130, "2026-09-12")
+        with mock.patch.object(hy, "compare", return_value={"status": "confirmed"}) as compare:
+            items = self.refresh(strategy, closing=True)
+        compare.assert_not_called()
+        self.assertEqual(items["month"]["status"], "measuring")
+        self.assertEqual(items["month"]["evidence_he"], items["target:1"]["evidence_he"])
+        self.assertIn("130 לחיצות", items["month"]["evidence_he"])
+
+    def test_reading_a_stored_proxy_verdict_is_safe_before_refresh(self):
+        plan = core([WHATSAPP_TARGET])
+        for status in ("on_track", "confirmed", "not_yet", "measuring"):
+            facts = {"rule": "target", "source": "whatsapp_clicks", "proxy": True, "value": 96, "number": 120}
+            review = {"closed": True, "items": [
+                {"key": "target:0", "text_he": WHATSAPP_TARGET, "status": status,
+                 "facts": facts, "evidence_he": "96 לחיצות לוואטסאפ החודש, מול יעד של 120."},
+                {"key": "month", "text_he": MONTH_HYPOTHESIS, "status": status,
+                 "facts": {"rule": "targets", "from": [facts]}, "evidence_he": "היעד הושג"},
+            ]}
+            with self.subTest(status=status):
+                for item in hy.review_view(review, plan, None)["items"]:
+                    self.assertEqual(item["status"], "measuring")
+                    self.assertEqual(item["evidence_he"], "96 לחיצות לוואטסאפ החודש. ההזמנות עצמן עדיין לא נמדדו.")
+
+    def test_stored_month_verdict_from_matching_units_is_preserved(self):
+        plan = core([WHATSAPP_TARGET, "120 לחיצות לוואטסאפ"])
+        review = {"items": [{"key": "month", "text_he": MONTH_HYPOTHESIS, "status": "confirmed",
+                             "facts": {"rule": "targets", "from": [{"proxy": False, "source": "whatsapp_clicks"}]},
+                             "evidence_he": "130 לחיצות לוואטסאפ החודש, מול יעד של 120."}]}
+        month = hy.review_view(review, plan, None)["items"][0]
+        self.assertEqual(month["status"], "confirmed")
+
+    def test_safe_aggregate_verdict_survives_read_guard_beside_a_proxy_target(self):
+        plan = core([WHATSAPP_TARGET, "120 לחיצות לוואטסאפ", "100 כניסות לאתר"])
+        results = [
+            {"status": "measuring", "template": "ההזמנות עצמן עדיין לא נמדדו.", "facts": {"proxy": True}},
+            {"status": "confirmed", "template": "130 לחיצות לוואטסאפ.", "facts": {"proxy": False, "source": "whatsapp_clicks"}},
+            {"status": "confirmed", "template": "200 כניסות לאתר.", "facts": {"proxy": False, "source": "site_visits"}},
+        ]
+        result = hy.month_hypothesis(None, MONTH_HYPOTHESIS, results)
+        self.assertEqual(result["status"], "confirmed")
+        review = {"items": [{"key": "month", "text_he": MONTH_HYPOTHESIS, "evidence_he": result["template"], **result}]}
+        self.assertEqual(hy.review_view(review, plan, None)["items"][0]["status"], "confirmed")
+
+    def test_legacy_aggregate_with_unknown_proxy_contribution_requires_refresh(self):
+        plan = core([WHATSAPP_TARGET])
+        review = {"items": [{"key": "month", "text_he": MONTH_HYPOTHESIS, "status": "confirmed",
+                             "facts": {"rule": "targets", "good": 2, "bad": 0, "m": 2},
+                             "evidence_he": "כל 2 היעדים שמודדים הושגו."}]}
+        month = hy.review_view(review, plan, None)["items"][0]
+        self.assertEqual(month["status"], "measuring")
+        self.assertEqual(month["evidence_he"], "ההזמנות עצמן עדיין לא נמדדו.")
 
 
 # --- the phrasing and its guard -----------------------------------------------------------------

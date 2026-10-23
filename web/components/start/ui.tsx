@@ -94,6 +94,7 @@ export function StepShell({
   why,
   reflection,
   notice,
+  tip,
   children,
   primary,
   nextLabel,
@@ -118,6 +119,7 @@ export function StepShell({
   reassure?: string;
   reflection?: string | null;
   notice?: React.ReactNode;
+  tip?: React.ReactNode;
   children: React.ReactNode;
   primary: string;
   /** Destination supplied by the actual route, including skipped questions. */
@@ -162,6 +164,7 @@ export function StepShell({
         {why ? <p className={styles.why}>{t(why)}</p> : null}
         <Reflection text={reflection ?? null} />
       </div>
+      {tip}
       <div className={styles.answer}>{children}</div>
       <div
         className={`${styles.actions} ${stickyAction ? styles.sticky : ""} ${stickyAction && stickyDesktop ? styles.stickyDesktop : ""}`}
