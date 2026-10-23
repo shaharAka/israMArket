@@ -2948,7 +2948,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 131,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -4210,7 +4210,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -5209,7 +5209,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -5675,7 +5675,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -10319,7 +10319,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 140,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -11393,7 +11393,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 140,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -12368,7 +12368,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 126,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -16464,7 +16464,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 60,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -24790,7 +24790,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -24945,7 +24945,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 135,
+        "line": 88,
         "kind": "literal"
       }
     ]
@@ -27171,7 +27171,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 131,
+        "line": 84,
         "kind": "literal"
       }
     ]
@@ -32268,7 +32268,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 140,
+        "line": 93,
         "kind": "literal"
       }
     ]
@@ -37832,7 +37832,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 135,
+        "line": 88,
         "kind": "literal",
         "purpose": "display"
       }
@@ -38326,7 +38326,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -41294,7 +41294,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -50739,7 +50739,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 77,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -51564,7 +51564,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 52,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -51843,7 +51843,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 121,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -55239,7 +55239,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -59525,7 +59525,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 134,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -61238,7 +61238,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -63301,7 +63301,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -70926,7 +70926,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 122,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -74667,7 +74667,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 60,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -75338,7 +75338,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 54,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -75779,7 +75779,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 77,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -76497,7 +76497,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 49,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -78471,7 +78471,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 135,
+        "line": 88,
         "kind": "literal",
         "purpose": "display"
       }
@@ -85545,7 +85545,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 134,
+        "line": 87,
         "kind": "literal"
       }
     ]
@@ -86593,7 +86593,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 73,
+        "line": 71,
         "kind": "literal"
       },
       {
@@ -87041,7 +87041,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 126,
+        "line": 79,
         "kind": "literal"
       }
     ]
@@ -88566,7 +88566,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 65,
+        "line": 63,
         "kind": "literal"
       }
     ]
@@ -89280,7 +89280,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -91741,7 +91741,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 122,
+        "line": 75,
         "kind": "literal"
       }
     ]
@@ -92062,7 +92062,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 116,
+        "line": 69,
         "kind": "literal"
       }
     ]
@@ -93079,7 +93079,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 115,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -93321,7 +93321,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 121,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -93344,7 +93344,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 73,
+        "line": 71,
         "kind": "literal"
       }
     ]
@@ -94701,7 +94701,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 44,
+        "line": 42,
         "kind": "literal"
       },
       {
@@ -98277,7 +98277,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 127,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -99910,7 +99910,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 127,
+        "line": 80,
         "kind": "literal"
       }
     ]
@@ -101839,7 +101839,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 54,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -105847,7 +105847,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 130,
+        "line": 83,
         "kind": "literal"
       }
     ]
@@ -106841,12 +106841,12 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 43,
+        "line": 41,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 60,
+        "line": 58,
         "kind": "literal"
       },
       {
@@ -109115,7 +109115,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 115,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -112331,7 +112331,7 @@
       },
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 122,
+        "line": 75,
         "kind": "literal"
       },
       {
@@ -117582,7 +117582,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/SignalHero.tsx",
-        "line": 115,
+        "line": 68,
         "kind": "literal"
       }
     ]
@@ -120111,7 +120111,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 49,
+        "line": 47,
         "kind": "literal"
       }
     ]
@@ -120889,7 +120889,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "line": 55,
         "kind": "literal"
       }
     ]

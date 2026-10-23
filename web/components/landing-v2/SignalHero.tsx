@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Fragment, useEffect, useRef, useState, type RefObject } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { TRIAL_LABEL } from "@/lib/pricing";
 import { PROCESS_HERO } from "./processStory";
@@ -15,53 +15,6 @@ import styles from "./signal-hero.module.css";
 export function ReactiveWords({ text }: { text: string }) {
   const t = useCopy();
   return t(text).split(" ").map((word, i) => <Fragment key={i}><span className={styles.word}>{word}</span>{" "}</Fragment>);
-}
-
-/** Scroll changes the shared canvas, without intercepting scrolling or moving controls. */
-export function useJourneySurface(ref: RefObject<HTMLDivElement | null>) {
-  useEffect(() => {
-    const page = ref.current;
-    if (!page) return;
-    const sections = [...page.querySelectorAll<HTMLElement>("[data-step]")];
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)");
-    const colors: Record<string, [string, string, string]> = {
-      hero: ["#ff7957", "#20221c", "#49352d"], research: ["#fff9f3", "#20221c", "#665b50"],
-      connections: ["#20221c", "#fff9f3", "#dfc7b4"], goals: ["#ff7957", "#20221c", "#49352d"],
-      plan: ["#fff9f3", "#20221c", "#665b50"], campaign: ["#fff9f3", "#20221c", "#665b50"],
-      learning: ["#ffb89b", "#20221c", "#49352d"], data: ["#20221c", "#fff9f3", "#dfc7b4"],
-      mobile: ["#fff9f3", "#20221c", "#665b50"], trial: ["#ff7957", "#20221c", "#49352d"],
-    };
-    let frame = 0;
-    function update() {
-      frame = 0;
-      if (!page) return;
-      const center = innerHeight * .48;
-      let active = page.querySelector("#process-title")!.getBoundingClientRect().top > -innerHeight * .2 ? "hero" : "research";
-      for (const section of sections) {
-        const box = section.getBoundingClientRect();
-        if (box.top <= center && box.bottom > center) { active = section.dataset.step!; break; }
-      }
-      const last = sections.at(-1)?.getBoundingClientRect();
-      if (last && last.bottom < center) active = "research";
-      const [background, ink, muted] = colors[active];
-      page.dataset.journey = active;
-      const tone = background === "#20221c" ? "dark" : "light";
-      page.dataset.surfaceCut = String(Boolean(page.dataset.journeyTone && page.dataset.journeyTone !== tone));
-      page.dataset.journeyTone = tone;
-      page.style.setProperty("--journey-bg", background);
-      page.style.setProperty("--journey-ink", ink);
-      page.style.setProperty("--journey-muted", muted);
-      for (const section of sections) {
-        const box = section.getBoundingClientRect();
-        // One small physical response as a scene enters; the content is always visible.
-        const entering = reduce.matches ? 0 : Math.max(0, Math.min(1, (box.top - innerHeight * .3) / innerHeight));
-        section.style.setProperty("--scene-enter", String(entering));
-      }
-    }
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
-    update(); window.addEventListener("scroll", schedule, { passive: true }); window.addEventListener("resize", schedule); reduce.addEventListener("change", schedule);
-    return () => { cancelAnimationFrame(frame); window.removeEventListener("scroll", schedule); window.removeEventListener("resize", schedule); reduce.removeEventListener("change", schedule); };
-  }, [ref]);
 }
 
 const MEDIA = {

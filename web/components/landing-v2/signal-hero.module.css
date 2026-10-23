@@ -1,6 +1,5 @@
 .hero { background:#ff7957; color:#20221c; overflow:clip; }
-.root { --hero-x:0px; --hero-y:0px; --hero-lean:0deg; background:#ff7957; transition:background-color .65s; }
-.root[data-focus="1"] {background:#ffb89b}.root[data-focus="3"] {background:#ffd5bd}
+.root { --hero-x:0px; --hero-y:0px; --hero-lean:0deg; background:#ff7957; }
 .copy { display:grid; grid-template-columns:1.5fr 1fr; align-items:center; gap:8vw; max-width:1600px; margin:auto; padding:64px clamp(24px,4vw,64px) 58px; }
 .copy h1 { font-size:clamp(54px,6.4vw,104px); line-height:1.05; letter-spacing:-.035em; font-weight:700; max-width:13ch; text-wrap:balance; }
 :global(html[lang=he]) .copy h1 { font-family:SignalHebrew,var(--font-site-clean),sans-serif; font-weight:400; }

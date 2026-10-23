@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
@@ -9,7 +9,7 @@ import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
-import { SignalHero, ReactiveWords, useJourneySurface } from "./SignalHero";
+import { SignalHero, ReactiveWords } from "./SignalHero";
 import { PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
 import type { ExamplePath } from "./businessExamples";
@@ -21,8 +21,6 @@ import "./showcase.css";
 
 /** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
-  const page = useRef<HTMLDivElement>(null);
-  useJourneySurface(page);
   const t = useCopy();
   const { locale } = useLanguage();
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
@@ -38,7 +36,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   const selected = PROCESS_ROLES.find(item => item.segment === role);
   // A generic homepage must not silently choose “service provider” for a new owner.
   const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
-  return <div ref={page} className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch">
+  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch">
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
       <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>

@@ -244,4 +244,3 @@
 :global([data-design=signal-punch]) .readableData {background:transparent;box-shadow:none;border-radius:0}
 :global([data-design=signal-punch]) .learningRule {border-radius:0;background:#ff7957}
 :global([data-design=signal-punch]) .comparedPost {box-shadow:none;border-radius:3px}
-:global([data-design=signal-punch][data-journey=data]) .readableData {--ink:#fff9f3;--ink-soft:#dfc7b4;--ink-muted:#dfc7b4;--rule:#fff9f340;color:#fff9f3}
