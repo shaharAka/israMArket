@@ -2942,6 +2942,17 @@
       }
     ]
   },
+  "m_05cda86c4c3cb1a3": {
+    "source": "בכל הערוצים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 131,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_05d28f02b3a7ae12": {
     "source": "הם צריכים טעימה קטנה לפני שהם נרשמים.",
     "language": "he",
@@ -4199,7 +4210,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -5198,7 +5209,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -5664,7 +5675,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -10305,6 +10316,11 @@
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
         "line": 69,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 140,
+        "kind": "literal"
       }
     ]
   },
@@ -11374,6 +11390,11 @@
         "file": "web/components/landing-v2/ProcessAnimation.tsx",
         "line": 69,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 140,
+        "kind": "literal"
       }
     ]
   },
@@ -12343,6 +12364,11 @@
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 109,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -16438,7 +16464,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 60,
         "kind": "literal"
       },
       {
@@ -24764,7 +24790,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -24910,6 +24936,17 @@
         "line": 66,
         "kind": "literal",
         "purpose": "copy"
+      }
+    ]
+  },
+  "m_3360bd8fa255371b": {
+    "source": "התוצאות חוזרות לתוכנית.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 135,
+        "kind": "literal"
       }
     ]
   },
@@ -27124,6 +27161,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 57,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_379b756ea978ab40": {
+    "source": "מסר אחד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 131,
         "kind": "literal"
       }
     ]
@@ -32216,6 +32264,11 @@
       {
         "file": "web/components/landing-v2/CampaignSystemScene.tsx",
         "line": 53,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 140,
         "kind": "literal"
       }
     ]
@@ -37773,6 +37826,18 @@
       }
     ]
   },
+  "m_4f749de7c24fe967": {
+    "source": "Meta",
+    "language": "en",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 135,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_4f754d6f163b2316": {
     "source": "ביקורת",
     "language": "he",
@@ -38261,7 +38326,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -41229,7 +41294,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -50674,7 +50739,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 79,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -51499,7 +51564,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 54,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -51768,6 +51833,17 @@
       {
         "file": "web/app/security/page.tsx",
         "line": 90,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_6dc52bfb2c46d046": {
+    "source": "מטרה אחת.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 121,
         "kind": "literal"
       }
     ]
@@ -55163,7 +55239,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -59443,6 +59519,17 @@
       }
     ]
   },
+  "m_7dae4317310ba459": {
+    "source": "רואים מה עובד.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 134,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_7db83efa97c5df38": {
     "source": "נשווה את הערוץ לתוכנית ולתוצאות של העסק לפני שנמליץ להשקיע בו. מפתחות וסיסמאות נשארים במערכות המאובטחות, ולא שולחים אותם בהודעת תמיכה.",
     "language": "he",
@@ -61151,7 +61238,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -63214,7 +63301,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -70838,6 +70925,11 @@
     "language": "he",
     "references": [
       {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 122,
+        "kind": "literal"
+      },
+      {
         "file": "web/lib/uxFlows.ts",
         "line": 47,
         "kind": "literal"
@@ -74575,7 +74667,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 60,
         "kind": "literal"
       },
       {
@@ -75246,7 +75338,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -75687,7 +75779,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 79,
+        "line": 77,
         "kind": "literal"
       }
     ]
@@ -76405,7 +76497,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 51,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -78376,6 +78468,12 @@
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 80,
         "kind": "jsx"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 135,
+        "kind": "literal",
+        "purpose": "display"
       }
     ]
   },
@@ -85441,6 +85539,17 @@
       }
     ]
   },
+  "m_b5e02a0ad6ec6989": {
+    "source": "משפרים את ההמשך.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 134,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_b5e2272289f38580": {
     "source": "עוד לא נמדד",
     "language": "he",
@@ -86484,7 +86593,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 75,
+        "line": 73,
         "kind": "literal"
       },
       {
@@ -86928,6 +87037,11 @@
       {
         "file": "web/components/landing-v2/ProcessScenes.tsx",
         "line": 45,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 126,
         "kind": "literal"
       }
     ]
@@ -88452,7 +88566,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 67,
+        "line": 65,
         "kind": "literal"
       }
     ]
@@ -89166,7 +89280,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 57,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -91621,6 +91735,17 @@
       }
     ]
   },
+  "m_c314bb5c5f9947f8": {
+    "source": "הנתונים",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 122,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c315576ed86e4894": {
     "source": "חומרים טבעיים",
     "language": "he",
@@ -91936,8 +92061,8 @@
     "language": "he",
     "references": [
       {
-        "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 48,
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 116,
         "kind": "literal"
       }
     ]
@@ -92948,6 +93073,17 @@
       }
     ]
   },
+  "m_c5e66838252dae15": {
+    "source": "שעושה בשבילך",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 115,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c5f2d757057083fd": {
     "source": "כמה הזמנות הושלמו באתר ב-30 הימים האחרונים?",
     "language": "he",
@@ -93179,6 +93315,17 @@
       }
     ]
   },
+  "m_c68ecb8d5fb709f1": {
+    "source": "כל השיווק סביבה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 121,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_c6936d238a676af0": {
     "source": "לא הצלחנו לכתוב את הפוסטים לדוגמה כרגע. נסו שוב בעוד דקה.",
     "language": "he",
@@ -93197,7 +93344,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 75,
+        "line": 73,
         "kind": "literal"
       }
     ]
@@ -94554,7 +94701,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 41,
+        "line": 44,
         "kind": "literal"
       },
       {
@@ -98124,6 +98271,17 @@
       }
     ]
   },
+  "m_d194f0e454bcdef8": {
+    "source": "איפה ומתי.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 127,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_d196aa082920e1ac": {
     "source": "אותיות לטקסט",
     "language": "he",
@@ -99742,6 +99900,17 @@
       {
         "file": "web/components/posts/QuickPost.tsx",
         "line": 81,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_d4979946500f14c0": {
+    "source": "מה עושים.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 127,
         "kind": "literal"
       }
     ]
@@ -101670,7 +101839,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 56,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -105675,6 +105844,11 @@
         "file": "web/components/landing-v2/CampaignSystemScene.tsx",
         "line": 38,
         "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 130,
+        "kind": "literal"
       }
     ]
   },
@@ -106667,12 +106841,12 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 40,
+        "line": 43,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 62,
+        "line": 60,
         "kind": "literal"
       },
       {
@@ -108931,6 +109105,17 @@
       {
         "file": "web/lib/uxFlows.ts",
         "line": 18,
+        "kind": "literal"
+      }
+    ]
+  },
+  "m_e76786e44b6b5ee3": {
+    "source": "את העבודה.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 115,
         "kind": "literal"
       }
     ]
@@ -112142,6 +112327,11 @@
       {
         "file": "web/app/strategy/edit/page.tsx",
         "line": 127,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 122,
         "kind": "literal"
       },
       {
@@ -117386,6 +117576,17 @@
       }
     ]
   },
+  "m_f7fb92b342b7ef19": {
+    "source": "מערכת הקידום",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/SignalHero.tsx",
+        "line": 115,
+        "kind": "literal"
+      }
+    ]
+  },
   "m_f8086e85facd14c3": {
     "source": "אפשר להוסיף עד {arg_0} חשבונות אינסטגרם.",
     "language": "he",
@@ -119910,7 +120111,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 51,
+        "line": 49,
         "kind": "literal"
       }
     ]
@@ -120688,7 +120889,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 59,
+        "line": 57,
         "kind": "literal"
       }
     ]

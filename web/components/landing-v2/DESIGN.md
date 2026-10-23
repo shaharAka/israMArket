@@ -12,3 +12,6 @@ Selected by Shahar on 24 October 2026. This applies to the current process landi
 - The campaign uses the full available width; on phones its content stacks. Other sections retain right-hand copy and left-hand animation in Hebrew, with locale direction preserved.
 
 Implementation: `ProcessLanding.tsx`, `process-story.module.css`, `CampaignSystemScene.tsx`, `campaign-system.module.css`. The standalone studies remain available separately for reference.
+
+## Interaction refinement — 24 October
+Restore Signal’s edge-to-edge responsive panorama beneath the hero, with spring-driven headline movement, expanding media and a pointer-following link affordance. Its content represents goals, planning, coordinated campaign assets and feedback, rather than a collection of standalone reels. The same cream/orange/graphite palette becomes a scroll-responsive shared canvas through the journey. Remove decorative outer frames; retain only meaningful interface objects. Headline words can highlight under the pointer. Opposite foregrounds cut with their canvas to preserve contrast; reduced motion disables physical effects and automatic demonstrations.

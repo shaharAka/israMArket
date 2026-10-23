@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
@@ -9,7 +9,8 @@ import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
-import { PROCESS_HERO, PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
+import { SignalHero, ReactiveWords, useJourneySurface } from "./SignalHero";
+import { PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
 import type { ExamplePath } from "./businessExamples";
 import type { IdentityDirection } from "./IdentityMark";
@@ -20,6 +21,8 @@ import "./showcase.css";
 
 /** The arrival route informs signup. Hover previews are owned by each section. */
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
+  const page = useRef<HTMLDivElement>(null);
+  useJourneySurface(page);
   const t = useCopy();
   const { locale } = useLanguage();
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
@@ -35,18 +38,13 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   const selected = PROCESS_ROLES.find(item => item.segment === role);
   // A generic homepage must not silently choose “service provider” for a new owner.
   const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
-  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch">
+  return <div ref={page} className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch">
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
       <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>
     </div></header>
     <main>
-      <section className={styles.hero} aria-labelledby="process-title"><div className={`lv2-wrap ${styles.heroLayout}`}>
-        <h1 id="process-title"><Copy text={PROCESS_HERO.title} /></h1>
-        <div className={styles.heroSupport}><p className={styles.heroBody}><Copy text={PROCESS_HERO.body} /></p>
-        <Link href={start} className={`lv2-btn ${styles.start}`}><Copy text={TRIAL_LABEL} /></Link>
-        <p className={styles.signupNote}><Copy text="בלי כרטיס אשראי. בלי התחייבות." /></p></div>
-      </div></section>
+      <SignalHero start={start} role={role} />
       <div id="story" className={`lv2-wrap ${styles.story}`}>
         <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><p><Copy text="מהיכרות עם העסק שלך, לתוכנית, לקמפיין ולתוצאות." /></p></div>
         {PROCESS_STORY.map((step, index) => <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
@@ -71,7 +69,7 @@ function ProcessSection({ step, index, initialRole, start }: { step: typeof PROC
   const hasRoles = ["research", "goals", "plan", "campaign"].includes(step.id);
   const benefit = PROCESS_BENEFITS[step.id];
   return <section id={step.id} className={styles.section} data-step={step.id} aria-labelledby={`process-${step.id}`} data-animation-role={role ?? "all"}>
-    <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><Copy text={step.title} /></h2>
+    <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><ReactiveWords text={step.title} /></h2>
       {hasRoles && <fieldset className={styles.roleSelector} aria-label={t(step.id === "goals" ? "מטרות לפי סוג הפעילות" : "סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map((item,i) => <button type="button" key={item.segment} aria-pressed={role === item.segment} onMouseEnter={() => selectRole(item.segment)} onFocus={() => selectRole(item.segment)} onClick={() => selectRole(item.segment)}><Copy text={step.id === "goals" ? GOAL_ROLE_LABELS[i] : item.label} /></button>)}</div></fieldset>}
       <p className={styles.sectionBody}><Copy text={step.body} /></p>
       {benefit && <p className={styles.benefit}><Copy text={benefit} /></p>}

@@ -235,3 +235,13 @@
 .learning[data-learning-stage="1"] .comparedPost[data-winner="true"] { transform: translateY(-3px) scale(1.025); }
 .comparedPost { transition: transform 600ms ease, box-shadow 600ms ease; }
 :global([data-reduced="true"]) .comparedPost { transition: none; }
+
+/* Signal's open stage retains functional objects but removes repeated containers. */
+:global([data-design=signal-punch]) .goalList button {background:transparent;box-shadow:none;border-radius:0;border:0;border-bottom:1px solid var(--rule-dark);padding-inline:0}
+:global([data-design=signal-punch]) .goalList button[aria-pressed=true] {background:#ffb89b;padding-inline:14px;border-color:transparent}
+:global([data-design=signal-punch]) .goalSymbol {background:transparent!important;border-radius:0}
+:global([data-design=signal-punch]) .rawSources>div {box-shadow:none;border-radius:3px}
+:global([data-design=signal-punch]) .readableData {background:transparent;box-shadow:none;border-radius:0}
+:global([data-design=signal-punch]) .learningRule {border-radius:0;background:#ff7957}
+:global([data-design=signal-punch]) .comparedPost {box-shadow:none;border-radius:3px}
+:global([data-design=signal-punch][data-journey=data]) .readableData {--ink:#fff9f3;--ink-soft:#dfc7b4;--ink-muted:#dfc7b4;--rule:#fff9f340;color:#fff9f3}
