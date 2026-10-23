@@ -4210,7 +4210,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -5209,7 +5209,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 51,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -5675,7 +5675,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -16464,7 +16464,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 61,
         "kind": "literal"
       },
       {
@@ -24790,7 +24790,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -26942,17 +26942,6 @@
         "line": 52,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_3750f5de059f0a58": {
-    "source": "מזהים איפה יש עניין, איפה נעצרים ומה כדאי לשנות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignSystemScene.tsx",
-        "line": 60,
-        "kind": "literal"
       }
     ]
   },
@@ -38326,7 +38315,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 54,
+        "line": 57,
         "kind": "literal"
       }
     ]
@@ -41294,7 +41283,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -50739,7 +50728,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 75,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -51564,7 +51553,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 50,
+        "line": 53,
         "kind": "literal"
       }
     ]
@@ -55239,7 +55228,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -55542,17 +55531,6 @@
         "line": 1000,
         "kind": "literal",
         "purpose": "copy"
-      }
-    ]
-  },
-  "m_74a10d6ff452bf89": {
-    "source": "לכל שבוע תפקיד בקמפיין, ולכל ערוץ התוכן שמתאים לו.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignSystemScene.tsx",
-        "line": 57,
-        "kind": "literal"
       }
     ]
   },
@@ -61238,7 +61216,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 51,
+        "line": 54,
         "kind": "literal"
       }
     ]
@@ -63301,7 +63279,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -69463,17 +69441,6 @@
       }
     ]
   },
-  "m_92b81a14bf835e9f": {
-    "source": "איזה תוכן קירב אותנו למטרה?",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignSystemScene.tsx",
-        "line": 60,
-        "kind": "literal"
-      }
-    ]
-  },
   "m_92ba832cf9aed1e7": {
     "source": "תיירות ונופש",
     "language": "he",
@@ -74667,7 +74634,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 61,
         "kind": "literal"
       },
       {
@@ -75338,7 +75305,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 52,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -75779,7 +75746,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 75,
+        "line": 78,
         "kind": "literal"
       }
     ]
@@ -76497,7 +76464,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 47,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -86593,7 +86560,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 71,
+        "line": 74,
         "kind": "literal"
       },
       {
@@ -87737,17 +87704,6 @@
       }
     ]
   },
-  "m_bad57ef7837c8e6b": {
-    "source": "Instagram",
-    "language": "en",
-    "references": [
-      {
-        "file": "web/components/landing-v2/CampaignSystemScene.tsx",
-        "line": 57,
-        "kind": "jsx"
-      }
-    ]
-  },
   "m_bad5ca6faf3e1951": {
     "source": "עוד לא. מתחילים מכאן.",
     "language": "he",
@@ -88566,7 +88522,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 63,
+        "line": 66,
         "kind": "literal"
       }
     ]
@@ -89280,7 +89236,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 53,
+        "line": 56,
         "kind": "literal"
       }
     ]
@@ -93344,7 +93300,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 71,
+        "line": 74,
         "kind": "literal"
       }
     ]
@@ -94701,7 +94657,7 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 42,
+        "line": 45,
         "kind": "literal"
       },
       {
@@ -101839,7 +101795,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 52,
+        "line": 55,
         "kind": "literal"
       }
     ]
@@ -106841,12 +106797,12 @@
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 41,
+        "line": 44,
         "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 58,
+        "line": 61,
         "kind": "literal"
       },
       {
@@ -120111,7 +120067,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 47,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -120889,7 +120845,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/ProcessLanding.tsx",
-        "line": 55,
+        "line": 58,
         "kind": "literal"
       }
     ]

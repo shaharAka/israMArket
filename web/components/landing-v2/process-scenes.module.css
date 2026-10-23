@@ -244,3 +244,17 @@
 :global([data-design=signal-punch]) .readableData {background:transparent;box-shadow:none;border-radius:0}
 :global([data-design=signal-punch]) .learningRule {border-radius:0;background:#ff7957}
 :global([data-design=signal-punch]) .comparedPost {box-shadow:none;border-radius:3px}
+
+/* A phone has a physical frame and a separate screen, with familiar proportions. */
+.approvalPhone {top:8px;height:490px;width:242px;border:7px solid #20221c;border-radius:40px;padding:0;background:#20221c;box-shadow:0 18px 32px #20221c20;overflow:visible}
+.approvalPhone:before {content:'';position:absolute;top:7px;left:50%;transform:translateX(-50%);height:17px;width:62px;background:#20221c;border-radius:20px;z-index:3}
+.approvalPhone:after {content:'';position:absolute;top:105px;right:-9px;width:3px;height:43px;background:#20221c;border-radius:2px}
+.phoneScreen {height:100%;position:relative;overflow:hidden;border-radius:32px;background:#fff;padding:9px 13px 20px;color:#20221c}
+.phoneStatus {height:20px;margin-bottom:18px;font-size:9px;font-weight:600;padding-inline:3px}.phoneStatus>svg{width:36px;height:12px}
+.phoneLogo {height:25px;padding:0}.phoneLogo :global(.lv2-identity-wordmark){width:108px}.phoneLogo svg{max-width:108px;max-height:20px}
+.approvalPhone header {font-size:13px;font-weight:500;padding-block:12px 10px}
+.phonePost {width:100%;height:244px;border-radius:10px;overflow:hidden}.phonePost>div{height:100%}
+.approvalState {padding-top:10px;min-height:69px;gap:6px}.approvalState button{width:100%;border-radius:8px;font-size:12px;background:var(--action,var(--ink));min-height:40px}.approvalState small{font-size:10px}
+.phoneHome{height:4px;bottom:7px;background:#20221c;left:34%;width:32%}.approvalCursor{bottom:30px;inset-inline-end:28px}
+:global([data-palette=punch-jade]) .goalList button[aria-pressed=true]{background:#d9efe1}
+:global([data-palette=punch-jade]) .learningRule{background:#bdf5d4}

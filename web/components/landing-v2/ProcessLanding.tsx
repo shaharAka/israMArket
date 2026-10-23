@@ -23,10 +23,13 @@ import "./showcase.css";
 export function ProcessLanding({ initialPath, identity }: { initialPath?: ExamplePath; identity?: IdentityDirection }) {
   const t = useCopy();
   const { locale } = useLanguage();
+  const [palette, setPalette] = useState("punch");
   const [role, setRole] = useState<ProcessRole | null>(() => defaultProcessRole(initialPath));
   useEffect(() => {
     const read = () => {
-      const segment = new URLSearchParams(window.location.search).get("segment");
+      const params = new URLSearchParams(window.location.search);
+      const segment = params.get("segment");
+      setPalette(params.get("palette") === "punch-jade" ? "punch-jade" : "punch");
       setRole(isProcessRole(segment) ? segment : defaultProcessRole(initialPath));
     };
     const timer = window.setTimeout(read, 0);
@@ -36,7 +39,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   const selected = PROCESS_ROLES.find(item => item.segment === role);
   // A generic homepage must not silently choose “service provider” for a new owner.
   const start = `/start?lang=${locale}${selected ? `&model=${selected.path}&segment=${selected.segment}` : ""}`;
-  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch">
+  return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
       <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>
