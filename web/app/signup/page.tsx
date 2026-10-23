@@ -12,7 +12,7 @@ import { googleErrorFromLocation } from "@/lib/googleAuth";
 import { AFTER_SAVE, clearSavedFlow, hasSavableDraft, loadFlow, saveFlowToAccount, type FlowState } from "@/lib/draft";
 import { loadPreview, siteFromLocation, type SitePreview } from "@/components/onboarding/preview";
 import { Swatches } from "@/components/onboarding/SitePreviewView";
-import { AuthCard, Field } from "../login/page";
+import { AuthCard, Field } from "@/components/account/AuthFields";
 import auth from "../login/auth.module.css";
 
 export default function SignupPage() {
