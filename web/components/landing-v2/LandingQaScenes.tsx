@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { PROCESS_EXAMPLES, type ProcessRole } from "./processExamples";
-import { PROCESS_GOALS } from "./processScenarios";
 import { PROCESS_CAMPAIGNS } from "./processCampaigns";
 import { CampaignArtwork } from "./ProcessCampaignArtwork";
 import { ProcessSocialPost } from "./ProcessSocialPost";
@@ -11,7 +10,7 @@ import { useProcessSequence } from "./useProcessSequence";
 import styles from "./qa-scenes.module.css";
 
 const FORM_TIMES=[2200,2400,2400,1700] as const;
-const BRIEF_TIMES=[3800,3400] as const;
+const BRIEF_TIMES=[900,4200] as const;
 const GROWTH_TIMES=[2400,2600,3000] as const;
 const CLIPS={services:["designer-human-motion-ai.mp4","designer-human-motion-poster.jpg"],online_shop:["kefel-fitting-room-campaign.mp4","kefel-fitting-room-poster.jpg"],physical_shop:["bakery-human-motion-ai.mp4","bakery-human-motion-poster.jpg"],fundraising:["community-human-motion-ai.mp4","community-human-motion-poster.jpg"]} as const;
 export function TargetIcon(){return <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="23" cy="25" r="18"/><circle cx="23" cy="25" r="11"/><circle cx="23" cy="25" r="4"/><path d="m23 25 17-17m-1-5v7h7"/></svg>;}
@@ -29,9 +28,14 @@ export function QuestionnaireScene({role,playing,reduced=false}:{role:ProcessRol
   const questions=[{q:"מה אתם מציעים?",a:example.kind},{q:role==="fundraising"?"מי האנשים שתרצו לצרף לעשייה?":"למי זה מתאים?",a:example.audienceSummary},{q:"מה מייחד אתכם?",a:example.answer}];
   return <div className={styles.questionnaire} data-form-stage={active}><header><span>isramarket</span><strong><Copy text="קודם מכירים אתכם"/></strong></header><div className={styles.formFields}>{questions.map((item,i)=><div key={item.q} data-filled={active>=i} data-active={active===i}><label><Copy text={item.q}/></label><div className={styles.answer}><span><Copy text={item.a}/></span>{active===i&&<i aria-hidden="true"/>}{active>i&&<Check/>}</div></div>)}</div><footer><Check/><Copy text="הפעילות, הקהל ומה שמייחד אתכם — הבסיס לתוכנית שלכם."/></footer></div>;
 }
-export function HeroBriefScene({role,playing}:{role:ProcessRole;playing:boolean}){
-  const {index}=useProcessSequence(BRIEF_TIMES,playing);const example=PROCESS_EXAMPLES[role];
-  return <div className={styles.brief} data-brief-stage={index}><div className={styles.briefInputs}>{[{label:"המטרה",value:PROCESS_GOALS[role][0]},{label:"הקהל",value:example.audienceSummary},{label:"מה מייחד אתכם",value:example.answer}].map(row=><div key={row.label}><small><Copy text={row.label}/></small><p><Copy text={row.value}/></p></div>)}</div><div className={styles.briefResult}><span><Copy text="הקמפיין שנבנה בשבילכם"/></span><strong><Copy text={example.name}/></strong><div>{[0,1,2].map(i=><div key={i}><CampaignArtwork role={role} index={i} support={i===1} ratio="4:5"/></div>)}</div></div></div>;
+/** Three inputs converge into coordinated campaign material; the layout never changes height. */
+export function HeroBriefScene({role,playing,reduced=false}:{role:ProcessRole;playing:boolean;reduced?:boolean}){
+  const {index}=useProcessSequence(BRIEF_TIMES,playing);const active=reduced?1:index;
+  return <div className={styles.brief} data-brief-stage={active}>
+    <div className={styles.briefInputs}>{["המטרה","הקהל","מה מייחד אתכם"].map(label=><div key={label}><small><Copy text={label}/></small></div>)}</div>
+    <svg className={styles.briefConnector} viewBox="0 0 300 42" preserveAspectRatio="none" fill="none" aria-hidden="true"><g className={styles.briefConnectorBase}><path d="M50 1v10q0 9 10 9h80q10 0 10 10v11M150 1v40M250 1v10q0 9-10 9h-80q-10 0-10 10v11"/></g><g className={styles.briefConnectorDraw}><path pathLength="1" d="M50 1v10q0 9 10 9h80q10 0 10 10v11"/><path pathLength="1" d="M150 1v40"/><path pathLength="1" d="M250 1v10q0 9-10 9h-80q-10 0-10 10v11"/></g></svg>
+    <div className={styles.briefResult}><span><Copy text="הקמפיין שלכם"/></span><div>{[0,1,2].map(i=><div key={i}><CampaignArtwork role={role} index={i} support={i===1} ratio="4:5"/></div>)}</div></div>
+  </div>;
 }
 export function CampaignMaterialsScene({role:requested,playing,compact=false}:{role:ProcessRole|null;playing:boolean;compact?:boolean}){
   const t=useCopy();const role=requested??"online_shop",example=PROCESS_EXAMPLES[role];const channels=role==="software"?[2,0,3]:[2,0,1];

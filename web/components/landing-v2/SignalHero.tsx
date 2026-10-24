@@ -64,7 +64,7 @@ export function SignalHero({ start, role }: { start: string; role: ProcessRole |
       <div className={styles.track}>
         <Link href="#goals" className={`${styles.panel} ${styles.goal}`} {...panel(0)}>
           <h2><Copy text="בוחרים מטרה." /><br /><Copy text="בונים סביבה קמפיין." /></h2>
-          <HeroBriefScene role={exampleRole} playing={playing}/><span className={styles.open}><Arrow/></span>
+          <HeroBriefScene role={exampleRole} playing={playing} reduced={reduced}/><span className={styles.open}><Arrow/></span>
         </Link>
         <Link href="#plan" className={`${styles.panel} ${styles.plan}`} {...panel(1)}>
           <div className={styles.calendar}><header><strong><Copy text="התוכנית לחודש הקרוב" /></strong><span><Copy text={example.name} /></span></header><div className={styles.calendarDays} aria-hidden="true">{Array.from({length:20},(_,i)=><i key={i}>{i+1}</i>)}</div><div className={styles.calendarTasks}>{schedule.tasks.map((task,i)=><span key={task} style={{ gridRow:i+1 }}><Copy text={task} /></span>)}</div><div className={styles.tracking}><i /><Copy text="לומדים כל הזמן" /></div></div>

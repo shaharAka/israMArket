@@ -73,5 +73,8 @@
 /* A film is contained in its social post, never spread behind the whole panel. */
 .campaign video,.campaign:hover video{position:static;inset:auto;z-index:auto;transform:none}
 @media(max-width:700px){.learning{padding-inline:14px}.learning h2{font-size:22px}}
-@media(min-width:701px){.panorama{height:460px}}
-@media(max-width:700px){.panel{height:440px}}
+@media(min-width:701px){.panorama{height:390px}}
+@media(max-width:700px){.panel{height:350px}}
+
+.goal>h2,.learning>h2{max-width:none}.goal>h2{font-size:clamp(24px,2.15vw,31px)}.learning>h2{font-size:clamp(24px,2.15vw,31px)}
+@media(max-width:700px){.goal>h2,.learning>h2{font-size:22px}.campaign>h2{font-size:21px}}

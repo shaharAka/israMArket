@@ -626,7 +626,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -5072,9 +5072,8 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 34,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 35,
+        "kind": "literal"
       },
       {
         "file": "web/components/start/BusinessCard.tsx",
@@ -11160,7 +11159,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -13820,18 +13819,6 @@
       }
     ]
   },
-  "m_1c68a13c8fbdfd0e": {
-    "source": "קודם מגדירים את המטרות.",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/processStory.ts",
-        "line": 23,
-        "kind": "literal",
-        "purpose": "display"
-      }
-    ]
-  },
   "m_1c6cfe6d023024ec": {
     "source": "נספור {arg_0} בעדכון הנתונים הבא.",
     "language": "he",
@@ -16243,7 +16230,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -23086,7 +23073,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -24897,7 +24884,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "jsx"
       },
       {
@@ -27032,7 +27019,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 38,
+        "line": 42,
         "kind": "literal"
       }
     ]
@@ -31935,7 +31922,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -35181,7 +35168,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 47,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -39971,7 +39958,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -42249,7 +42236,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 47,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -44406,6 +44393,11 @@
       {
         "file": "web/components/landing-v2/CampaignProductPreview.tsx",
         "line": 31,
+        "kind": "literal"
+      },
+      {
+        "file": "web/components/landing-v2/LandingQaScenes.tsx",
+        "line": 37,
         "kind": "literal"
       },
       {
@@ -49712,7 +49704,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 47,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -51155,9 +51147,8 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 34,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 35,
+        "kind": "literal"
       },
       {
         "file": "web/components/landing-v2/PlanSheet.tsx",
@@ -55687,7 +55678,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 47,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -64491,17 +64482,6 @@
         "file": "web/components/design/FlowBoard.tsx",
         "line": 119,
         "kind": "jsx"
-      }
-    ]
-  },
-  "m_870171b0480a3af3": {
-    "source": "הקמפיין שנבנה בשבילכם",
-    "language": "he",
-    "references": [
-      {
-        "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 34,
-        "kind": "literal"
       }
     ]
   },
@@ -75222,7 +75202,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "line": 28,
         "kind": "literal"
       },
       {
@@ -81501,7 +81481,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -88836,7 +88816,7 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       },
       {
@@ -90337,7 +90317,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 47,
+        "line": 51,
         "kind": "literal"
       }
     ]
@@ -90868,7 +90848,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "line": 28,
         "kind": "literal"
       },
       {
@@ -97383,7 +97363,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -100101,6 +100081,18 @@
       }
     ]
   },
+  "m_d3c4579cb96cfcec": {
+    "source": "מגדירים את המטרות.",
+    "language": "he",
+    "references": [
+      {
+        "file": "web/components/landing-v2/processStory.ts",
+        "line": 23,
+        "kind": "literal",
+        "purpose": "display"
+      }
+    ]
+  },
   "m_d3d9717ac70e695c": {
     "source": "לבדוק את התוצאות מול נקודת הפתיחה",
     "language": "he",
@@ -102642,7 +102634,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -113026,7 +113018,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -113143,9 +113135,8 @@
       },
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 34,
-        "kind": "literal",
-        "purpose": "display"
+        "line": 35,
+        "kind": "literal"
       },
       {
         "file": "web/components/posts/CampaignBrief.tsx",
@@ -113512,7 +113503,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 29,
+        "line": 28,
         "kind": "literal"
       }
     ]
@@ -114079,7 +114070,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 46,
+        "line": 50,
         "kind": "literal"
       }
     ]
@@ -116525,7 +116516,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]
@@ -119901,7 +119892,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 30,
+        "line": 29,
         "kind": "literal"
       }
     ]
@@ -121974,7 +121965,7 @@
     "references": [
       {
         "file": "web/components/landing-v2/LandingQaScenes.tsx",
-        "line": 48,
+        "line": 52,
         "kind": "literal"
       }
     ]

@@ -620,3 +620,8 @@
 .page .section[data-step=research] .visual,.page .section[data-step=learning] .visual { height:600px; }
 .page .section[data-step=research] .visualContent,.page .section[data-step=learning] .visualContent { inset:0;width:auto;height:auto;transform:none; }
 @media(max-width:700px){.page .section[data-step=research] .visual{height:620px}.page .section[data-step=learning] .visual{height:600px}}
+
+/* Clear chapter boundaries, with quiet fixed surfaces rather than scrolling color effects. */
+.page .storyIntro{display:block;text-align:center}.page .storyIntro h2{margin-inline:auto}.page .storyIntro>p{max-width:60ch;margin:12px auto 0}
+.page .section[data-step=plan]{background:#faf7ef}.page .section[data-step=campaign]{background:#f7dfce;min-height:0}
+.page .section[data-step=campaign] .visual{height:auto;align-self:center}.page .section[data-step=campaign] .visualContent{position:relative;inset:auto;width:100%;height:auto;transform:none}
