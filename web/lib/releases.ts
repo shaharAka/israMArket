@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-25-landing-interview-demo", date: "2026-10-25",
+    title: "ברור שזו הדגמה",
+    summary: "שאלות ההיכרות בעמוד הבית מוצגות עכשיו כדוגמה עם תשובות מוכנות, בלי שדות שנראים פתוחים למילוי.",
+    detail: "אפשר לצפות בהיכרות עם העסק לדוגמה ולבחור סוג פעילות. את הפרטים שלכם ממלאים כשלוחצים להתחיל.",
+    href: "/#research", action: "לצפות בהדגמה",
+  },
+  {
     id: "2026-10-24-research-creative-result-reveals", date: "2026-10-24",
     title: "רואים כשהתוצאה מוכנה",
     summary: "ממצאי המחקר, תמונות וסרטונים חדשים מופיעים במעבר קצר כשהם מוכנים.",
