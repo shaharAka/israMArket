@@ -13,6 +13,7 @@ import { StepSoftware } from "./StepSoftware";
 import { ConnectionsStep } from "./ConnectionsStep";
 import { StepSave } from "./StepSave";
 import { StepShell, TextInput } from "./ui";
+import { ResearchResult } from "@/components/feedback/ResultReveal";
 import { OnboardingTip } from "./OnboardingTip";
 import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvider";
 import { HowToFind } from "@/components/help/HowToFind";
@@ -213,15 +214,16 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return <StepShell {...props} title={props.after ? "מה עוד חשוב לדעת על הפעילות שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "", source_url: q.url ?? "" }))); props.next(); }}>
-    {loading ? <p role="status"><Copy text="קוראים את המידע ומכינים שאלה להיכרות…" /></p> : null}
+    <ResearchResult pending={loading} label={t("קוראים את המידע ומכינים שאלה להיכרות…")}>
     {error ? <p role="status">{error}</p> : null}
     {result?.facts?.length ? <section className="space-y-4"><h2 className="font-semibold"><Copy text="מה למדנו עליכם" /></h2>{result.facts.map((fact, i) => {
       const correction = props.flow.draft.research_journey?.corrections?.find(c => c.original === fact.quote && c.source_url === fact.url);
       const key = `${fact.url}-${i}`;
-      return <div key={key} className="border-b border-[var(--rule)] pb-4"><p className="text-base leading-7">{correction?.corrected || fact.quote}</p>
+      return <div key={key} className="border-b border-[var(--rule)] pb-4"><p data-research-fact className="text-base leading-7">{correction?.corrected || fact.quote}</p>
         {editingFact === key ? <div className="mt-3 space-y-3"><TextInput id={`fact-${i}`} label="מה המידע הנכון?" value={correction?.corrected ?? fact.quote} maxLength={600} onChange={corrected => props.update(f => ({...f,draft:{...f.draft,research_journey:{...f.draft.research_journey!,corrections:[...(f.draft.research_journey?.corrections??[]).filter(c=>c.original!==fact.quote || c.source_url!==fact.url),{original:fact.quote,source_url:fact.url,corrected}]}}}))}/><button type="button" className="min-h-11 text-sm font-semibold text-[var(--primary)]" onClick={()=>setEditingFact(null)}><Copy text="לשמור את התיקון"/></button></div> : <button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>setEditingFact(key)}><Copy text="לתקן את המידע"/></button>}
       </div>;
     })}</section> : null}
+    </ResearchResult>
     {result?.sources.length ? <section><h2 className="mb-2 text-sm font-semibold"><Copy text="המקורות שבדקנו"/></h2><ul className="divide-y divide-[var(--rule)]">{result.sources.map((source,i)=><li key={`${source.url}-${i}`} className="flex flex-wrap items-center justify-between gap-2 py-2"><div className="min-w-0 flex-1 text-sm"><bdi className="block break-all">{source.url}</bdi><span className="text-xs text-[var(--ink-muted)]"><Copy text={source.status==="read"?"נקרא":source.status==="not_read"?"קישור שנשמר":"לא נקרא"}/></span></div><button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>{
       const sameHost=(url:string)=>{try{return new URL(url).hostname.replace(/^www\./,"")===new URL(source.url).hostname.replace(/^www\./,"");}catch{return url===source.url;}};
       const removedSources=result.sources.filter(s=>sameHost(s.url));

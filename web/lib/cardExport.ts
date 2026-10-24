@@ -16,6 +16,7 @@
  *    carries an empty box or fails outright.
  */
 
+import { settleArtworkReveal } from "@/lib/artworkReveal";
 import { toPng } from "html-to-image";
 
 function slug(value: string): string {
@@ -90,6 +91,7 @@ async function prepareLogos(node: HTMLElement): Promise<() => void> {
  * so scaling it again would resample the artwork.
  */
 export async function renderCardPng(node: HTMLElement, { width, height }: { width: number; height: number }): Promise<string> {
+  settleArtworkReveal(node);
   await document.fonts?.ready;
   const restore = await prepareLogos(node);
   try {
