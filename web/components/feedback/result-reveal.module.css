@@ -1,0 +1,10 @@
+.research,.artwork{position:relative;min-width:0;--ascii-accent:var(--im-primary,var(--primary));--ascii-surface:var(--paper);--ascii-glyph:var(--ink)}
+.loading{color:var(--ink-soft);width:100%;min-width:0}
+.loading>span{display:block;color:var(--im-primary,var(--primary));font-size:14px;line-height:1.7;opacity:.72}
+.loading p{margin-top:12px;font-size:14px;line-height:1.5}
+.research>.loading{padding-block:20px}
+.artwork>video{max-width:100%}
+.pending{position:absolute;inset-inline:12px;bottom:12px;padding:12px 16px;background:var(--paper);border-radius:12px;box-shadow:0 6px 18px rgb(32 34 28 / .1);pointer-events:none}
+.pending .loading p{margin-top:6px;font-size:13px}
+.pending .loading>span{font-size:10px;line-height:1.2}
+@media(prefers-reduced-motion:reduce){.research,.artwork,.loading{animation:none!important}}

@@ -25,6 +25,7 @@ import { DesignOptions, type DesignChoice } from "@/components/dna/DesignOptions
 import { useBrandDna } from "@/lib/dna/useBrandDna";
 import { PublishPanel } from "@/components/PublishPanel";
 import { BottomSheet, useIsDesktop } from "@/components/posts/BottomSheet";
+import { ArtworkResult, ResultLoading } from "@/components/feedback/ResultReveal";
 import { PostWorkspace, PostPreview, PostActionPanel } from "@/components/posts/PostWorkspace";
 import { InspirationLine } from "@/components/posts/InspirationLine";
 import { CampaignBrief, briefLearning } from "@/components/posts/CampaignBrief";
@@ -934,9 +935,10 @@ export function PostEditor({
     if (!currentPost.image_url && !photoFree) {
       return (
         <div style={{ aspectRatio: `${previewSize.w} / ${previewSize.h}` }} className={editorStyles.placeholder}>
+          {isPreparingImage || uploadingPhoto || jobPreparing ? <ResultLoading label={t("מכינים את התמונה…")} artwork /> : <>
           <PhotoPlaceholder />
-          <h3>{isPreparingImage || uploadingPhoto || jobPreparing ? t("מכינים את התמונה…") : t("כאן נכנסת תמונה מהעסק")}</h3>
-          <p>{isPreparingImage || uploadingPhoto || jobPreparing ? t("התצוגה תתעדכן כשהתמונה מוכנה.") : t("צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל.")}</p>
+          <h3>{t("כאן נכנסת תמונה מהעסק")}</h3>
+          <p>{t("צילום ברור של המוצר, המקום או האנשים שלכם. עדיף באור טבעי, בלי כיתוב מעל.")}</p></>}
           {imageError && <p role="alert">{t(imageError)}</p>}
           <button type="button" disabled={imageLocked} onClick={openLibrary}>
             <Copy text="לבחור מהתמונות שלי" /><IconArrowLeft className="h-4 w-4" />
@@ -999,7 +1001,7 @@ export function PostEditor({
       (linkOptional ? 92 : 0) +
       (hasPrimary ? 72 : 0) +
       64;
-    return <PostPreview facebook={channel === "facebook"} caption={captionLine} media={renderMediaSlot()}
+    return <PostPreview facebook={channel === "facebook"} caption={captionLine} media={<ArtworkResult scope={currentPost.uid || String(selectedIndex)} source={currentPost.video_url || currentPost.image_url || ""} pending={isPreparingImage || uploadingPhoto || jobPreparing} hasPreview={Boolean(currentPost.video_url || currentPost.image_url)} label={t("מכינים את התמונה…")}>{renderMediaSlot()}</ArtworkResult>}
       style={{ ["--reserve-phone" as string]: `${reservePhone}px`,
         width: `min(100%, max(${previewSize.w / previewSize.h < 0.7 ? 164 : 176}px, calc((100dvh - var(--reserve)) * ${previewSize.w / previewSize.h})))`,
       }} />;

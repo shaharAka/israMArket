@@ -5,6 +5,13 @@
 // Message: connect Instagram, paste the Story link, and see the count with its read date.
 export const RELEASES = [
   {
+    id: "2026-10-24-research-creative-result-reveals", date: "2026-10-24",
+    title: "רואים כשהתוצאה מוכנה",
+    summary: "ממצאי המחקר, תמונות וסרטונים חדשים מופיעים במעבר קצר כשהם מוכנים.",
+    detail: "הגרסה השמורה נשארת מולכם בזמן היצירה. בעמוד הבית אפשר לחזור על חשיפת חומרי הקמפיין בריחוף או בלחיצה.",
+    href: "/#campaign", action: "לצפות בקמפיין",
+  },
+  {
     id: "2026-10-24-campaign-artwork-reveal", date: "2026-10-24",
     title: "הקמפיין מתגלה בתמונה אחת",
     summary: "חומרי הקמפיין בעמוד הבית נחשפים בתנועה קצרה כשמגיעים אליהם, ואז נשארים גלויים.",

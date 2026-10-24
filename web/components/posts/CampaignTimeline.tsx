@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { CardStage, cardSize } from "@/components/CardCanvas";
+import { ArtworkResult } from "@/components/feedback/ResultReveal";
 import { CampaignOverview } from "./CampaignOverview";
 import { CampaignBrief } from "./CampaignBrief";
 import { CampaignDirection } from "./CampaignDirection";
@@ -240,7 +241,7 @@ export function CampaignTimeline() {
       {displayed && current && postWeek(current)===visibleWeek ? <section ref={panel} className={styles.studio} aria-label={t("הגרסה החדשה")}>
         <header className={styles.studioHeading}><h2 dir="auto">{displayed.title}</h2><Link href={`/posts?post=${currentIndex}&from=campaign&week=${visibleWeek}`}>{t("לבדיקה ולאישור בעורך")}</Link></header>
         <div className={styles.previewColumn}>
-          <div className={styles.preview}>{footage && overlayPost ? <CampaignVideoPreview url={footage} post={overlayPost} dna={dna} brand={strategy?.brand_language || undefined} businessName={strategy?.business_name || ""} /> : displayed.video_url ? <video src={displayed.video_url} controls playsInline preload="metadata" aria-label={displayed.title} /> : <CardStage post={displayed} brand={strategy?.brand_language} dna={dna} businessName={strategy?.business_name || ""} canvasRef={canvas} photoSizes="400px" />}</div>
+          <div className={styles.preview}><ArtworkResult scope={`${active}:${showOriginal ? "original" : "result"}`} source={footage || displayed.video_url || displayed.image_url || ""} pending={revision?.state === "working" && revision.items.some(item => item.uid === active) && ["image", "video", "video_edit", "finish"].includes(revision.kind)} label={t("מכינים את הגרסה החדשה…")}>{footage && overlayPost ? <CampaignVideoPreview url={footage} post={overlayPost} dna={dna} brand={strategy?.brand_language || undefined} businessName={strategy?.business_name || ""} /> : displayed.video_url ? <video src={displayed.video_url} controls playsInline preload="metadata" aria-label={displayed.title} /> : <CardStage post={displayed} brand={strategy?.brand_language} dna={dna} businessName={strategy?.business_name || ""} canvasRef={canvas} photoSizes="400px" />}</ArtworkResult></div>
           <div className={styles.exportOverlay} aria-hidden="true"><CampaignVideoOverlay ref={overlay} post={overlayPost || displayed} dna={dna} brand={strategy?.brand_language || undefined} businessName={strategy?.business_name || ""} /></div>
           {proposed && reviewing ? <div className={styles.compare}><button aria-pressed={!showOriginal} onClick={() => setShowOriginal(false)}>{t("הגרסה החדשה")}</button><button aria-pressed={showOriginal} onClick={() => setShowOriginal(true)}>{t("הגרסה הקודמת")}</button></div> : null}
           <p className={styles.caption} dir="auto">{displayed.caption}</p>

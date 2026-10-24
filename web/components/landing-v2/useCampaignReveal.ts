@@ -1,91 +1,43 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { AsciiRevealController } from "ascii-reveal/core";
+import { revealArtwork } from "@/lib/artworkReveal";
 
-/** A single media-only reveal. The real layout and all copy stay in place. */
+/** Let visitors see the artwork settle; revisit or hover intentionally to replay. */
 export function useCampaignReveal(enabled: boolean, playing: boolean, identity: string) {
   const ref = useRef<HTMLDivElement>(null);
-  const revealed = useRef(new Set<string>());
-
   useEffect(() => {
     const root = ref.current;
-    if (!root || !enabled || !playing || revealed.current.has(identity)) return;
+    if (!root || !enabled || !playing) return;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (motion.matches) return;
-    const abort = new AbortController();
-    let controller: AsciiRevealController | undefined;
-    let finishTimer: ReturnType<typeof setTimeout> | undefined;
-    let mediaTimer: ReturnType<typeof setTimeout> | undefined;
-    let frame = 0;
-    let visibility: IntersectionObserver | undefined;
-
-    const finish = () => {
-      controller?.destroy();
-      controller = undefined;
-      clearTimeout(finishTimer);
-      if (revealed.current.has(identity)) root.dataset.campaignReveal = "complete";
+    let run: AbortController | undefined;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let inView = false;
+    let seen = false;
+    let busy = false;
+    const play = () => {
+      if (!inView || busy || document.hidden || motion.matches) return;
+      busy = true; seen = true; run = new AbortController();
+      void revealArtwork(root, run.signal, "[data-campaign-media] img, [data-campaign-media] video").finally(() => { busy = false; });
     };
-
-    async function reveal() {
-      try {
-        // Wait for the artwork itself, rather than playing while only the chapter edge is visible.
-        await new Promise<void>(resolve => {
-          visibility = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting && entry.intersectionRatio >= .35) {
-              visibility?.disconnect();
-              resolve();
-            }
-          }, { threshold: .35 });
-          visibility.observe(root!);
-        });
-        if (abort.signal.aborted) return;
-        // Load this optional effect only when its artwork enters the viewport.
-        const { createAsciiReveal, presets } = await import("ascii-reveal/core");
-        if (abort.signal.aborted) return;
-        await new Promise<void>(resolve => {
-          frame = requestAnimationFrame(() => {
-            frame = requestAnimationFrame(() => resolve());
-          });
-        });
-        if (abort.signal.aborted) return;
-        const media = Array.from(root!.querySelectorAll<HTMLImageElement | HTMLVideoElement>("[data-campaign-media] img, [data-campaign-media] video"));
-        if (!media.length) return;
-        const ready = (element: HTMLImageElement | HTMLVideoElement) => element instanceof HTMLImageElement
-          ? element.complete && element.naturalWidth > 0
-          : element.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
-        const wait = media.map(element => ready(element) ? Promise.resolve() : new Promise<void>(resolve => {
-          for (const event of ["load", "loadeddata", "error"]) element.addEventListener(event, () => resolve(), { once: true, signal: abort.signal });
-        }));
-        // Slow or unavailable media never holds back the actual page.
-        await Promise.race([Promise.all(wait), new Promise<void>(resolve => { mediaTimer = setTimeout(resolve, 900); })]);
-        clearTimeout(mediaTimer);
-        if (abort.signal.aborted || motion.matches || document.hidden || !media.every(ready)) return;
-        controller = createAsciiReveal(root!, {
-          preset: { ...presets.dither, color: "accent" },
-          selector: "[data-campaign-media] img, [data-campaign-media] video",
-          duration: "cinematic", speed: 1.6, origin: "center", lazy: false, fallback: true,
-        });
-        revealed.current.add(identity);
-        root!.dataset.campaignReveal = "playing";
-        // Also restore content if the browser interrupts the animation clock.
-        finishTimer = setTimeout(finish, 1800);
-        await controller.reveal();
-        finish();
-      } catch {
-        // The artwork is the fallback; a failed enhancement cannot hide it.
-        finish();
-      }
-    }
-    void reveal();
+    const visibility = new IntersectionObserver(([entry]) => {
+      inView = entry.isIntersecting && entry.intersectionRatio >= .6;
+      clearTimeout(timer);
+      if (inView && !seen) timer = setTimeout(play, 180);
+      if (!entry.isIntersecting) { seen = false; run?.abort(); }
+    }, { threshold: [0, .6] });
+    const replay = (event: PointerEvent) => {
+      if ((event.type === "pointerenter" && event.pointerType !== "touch") || event.type === "pointerdown" && event.pointerType === "touch") play();
+    };
+    visibility.observe(root);
+    root.addEventListener("pointerenter", replay);
+    root.addEventListener("click", play);
+    root.addEventListener("pointerdown", replay);
     return () => {
-      abort.abort();
-      visibility?.disconnect();
-      cancelAnimationFrame(frame);
-      clearTimeout(mediaTimer);
-      finish();
+      clearTimeout(timer); visibility.disconnect(); run?.abort();
+      root.removeEventListener("pointerenter", replay); root.removeEventListener("pointerdown", replay); root.removeEventListener("click", play);
     };
   }, [enabled, playing, identity]);
-
   return ref;
 }
