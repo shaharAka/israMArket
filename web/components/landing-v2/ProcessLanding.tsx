@@ -9,6 +9,7 @@ import { DeletedNotice } from "@/components/landing/DeletedNotice";
 import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
+import { CampaignProcessSection } from "./CampaignProcessSection";
 import { SignalHero, ReactiveWords } from "./SignalHero";
 import { PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
@@ -48,7 +49,9 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
       <SignalHero start={start} role={role} />
       <div id="story" className={`lv2-wrap ${styles.story}`}>
         <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><p><Copy text="מהיכרות עם העסק שלך, לתוכנית, לקמפיין ולתוצאות." /></p></div>
-        {PROCESS_STORY.map((step, index) => <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
+        {PROCESS_STORY.map((step, index) => step.id === "campaign"
+          ? <CampaignProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} role={role} start={start} />
+          : <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
       </div>
       <section className={`lv2-wrap ${styles.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="עוד כמה דברים שכדאי לדעת" /></h2><div>
         <details><summary><Copy text="צריך לחבר הכול כדי להתחיל?" /></summary><p><Copy text="לא. מתחילים בשיחה ובמחקר על המידע הציבורי של העסק. אחרי ההרשמה, מוסיפים חיבורים לפי הצורך וממשיכים לבנות את התוכנית." /></p></details>
@@ -64,10 +67,10 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
 }
 
 const GOAL_ROLE_LABELS = ["יותר תרומות", "יותר מתנסים במוצר", "יותר פניות לשירות", "יותר קניות באתר", "יותר לקוחות בחנות"];
-function ProcessSection({ step, index, initialRole, start }: { step: typeof PROCESS_STORY[number]; index: number; initialRole: ProcessRole | null; start: string }) {
+function ProcessSection({ step, index, initialRole, start }: { step: Exclude<typeof PROCESS_STORY[number], { id: "campaign" }>; index: number; initialRole: ProcessRole | null; start: string }) {
   const t = useCopy();
-  const [role, selectRole] = useState<ProcessRole | null>(initialRole ?? (step.id === "campaign" ? "online_shop" : null));
-  const hasRoles = ["research", "goals", "plan", "campaign"].includes(step.id);
+  const [role, selectRole] = useState<ProcessRole | null>(initialRole);
+  const hasRoles = ["research", "goals", "plan"].includes(step.id);
   const benefit = PROCESS_BENEFITS[step.id];
   return <section id={step.id} className={styles.section} data-step={step.id} aria-labelledby={`process-${step.id}`} data-animation-role={role ?? "all"}>
     <div className={styles.message}><p className={styles.sectionLabel}><span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span><Copy text={step.label} /></p><h2 id={`process-${step.id}`}><ReactiveWords text={step.title} /></h2>
