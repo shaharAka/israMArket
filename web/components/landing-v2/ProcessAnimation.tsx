@@ -42,7 +42,7 @@ export function ProcessAnimation({ step, role }: { step: ProcessStep; role: Proc
   const { ref, playing, reduced, setFocused } = useFeatureCycle(1);
   return <div ref={ref} className={styles.visual} data-playing={playing} data-reduced={reduced} data-process-visual={step}>
     <div className={styles.visualContent} onFocusCapture={event => setFocused(event.target.matches(":focus-visible"))} onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setFocused(false); }}>
-      {step === "research" ? <QuestionnaireScene role={role} playing={playing}/> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <CampaignMaterialsScene role={role} playing={playing}/> : step === "learning" ? <CampaignGrowthScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
+      {step === "research" ? <QuestionnaireScene role={role} playing={playing} reduced={reduced}/> : step === "connections" ? <Connections role={role} /> : step === "plan" ? <PlanScene role={role} /> : step === "goals" ? <GoalsScene role={role} playing={playing} /> : step === "campaign" ? <CampaignMaterialsScene role={role} playing={playing}/> : step === "learning" ? <CampaignGrowthScene playing={playing} reduced={reduced} /> : step === "data" ? <DataScene /> : step === "trial" ? <TrialScene playing={playing} reduced={reduced} /> : <PhoneScene role={role} playing={playing} />}
     </div>
   </div>;
 }

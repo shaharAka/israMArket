@@ -24,10 +24,10 @@ export function CampaignClip({role,playing,detail=false}:{role:ProcessRole;playi
   return <video ref={ref} src={`/showcase/${path}`} poster={`/showcase/${poster}`} muted loop playsInline preload="metadata" data-software={role==="software"}/>;
 }
 /** A real-looking interview form: labels stay put as the three example answers appear. */
-export function QuestionnaireScene({role,playing}:{role:ProcessRole|null;playing:boolean}){
-  const {index}=useProcessSequence(FORM_TIMES,playing);const example=PROCESS_EXAMPLES[role??"services"];
+export function QuestionnaireScene({role,playing,reduced=false}:{role:ProcessRole|null;playing:boolean;reduced?:boolean}){
+  const {index}=useProcessSequence(FORM_TIMES,playing);const active=reduced?3:index;const example=PROCESS_EXAMPLES[role??"services"];
   const questions=[{q:"מה אתם מציעים?",a:example.kind},{q:role==="fundraising"?"מי האנשים שתרצו לצרף לעשייה?":"למי זה מתאים?",a:example.audienceSummary},{q:"מה מייחד אתכם?",a:example.answer}];
-  return <div className={styles.questionnaire} data-form-stage={index}><header><span>isramarket</span><strong><Copy text="קודם מכירים אתכם"/></strong></header><div className={styles.formFields}>{questions.map((item,i)=><div key={item.q} data-filled={index>=i} data-active={index===i}><label><Copy text={item.q}/></label><div className={styles.answer}><span><Copy text={item.a}/></span>{index===i&&<i aria-hidden="true"/>}{index>i&&<Check/>}</div></div>)}</div><footer><Check/><Copy text="הפעילות, הקהל ומה שמייחד אתכם — הבסיס לתוכנית שלכם."/></footer></div>;
+  return <div className={styles.questionnaire} data-form-stage={active}><header><span>isramarket</span><strong><Copy text="קודם מכירים אתכם"/></strong></header><div className={styles.formFields}>{questions.map((item,i)=><div key={item.q} data-filled={active>=i} data-active={active===i}><label><Copy text={item.q}/></label><div className={styles.answer}><span><Copy text={item.a}/></span>{active===i&&<i aria-hidden="true"/>}{active>i&&<Check/>}</div></div>)}</div><footer><Check/><Copy text="הפעילות, הקהל ומה שמייחד אתכם — הבסיס לתוכנית שלכם."/></footer></div>;
 }
 export function HeroBriefScene({role,playing}:{role:ProcessRole;playing:boolean}){
   const {index}=useProcessSequence(BRIEF_TIMES,playing);const example=PROCESS_EXAMPLES[role];
