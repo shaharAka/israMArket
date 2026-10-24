@@ -49,6 +49,7 @@ export function BusinessRoute({ flow, update, onSelect }: Pick<StepProps, "flow"
 
 export function ServiceClientSources({ flow, setDraft }: Pick<StepProps, "flow" | "setDraft">) {
   const value = flow.draft.client_sources;
+  const nonprofit = flow.draft.research_journey?.segment === "fundraising";
   function set(patch: Partial<ClientSources>) {
     setDraft({ client_sources: { status: "unknown", channels: [], ...value, ...patch } });
   }
@@ -59,7 +60,7 @@ export function ServiceClientSources({ flow, setDraft }: Pick<StepProps, "flow" 
   return (
     <div className="space-y-5">
       <fieldset>
-        <legend className={`${form.label} !mb-2`}><Copy text="איך לקוחות מוצאים אתכם היום? אפשר לבחור כמה." /></legend>
+        <legend className={`${form.label} !mb-2`}><Copy text={nonprofit?"איך אנשים מכירים את העשייה שלכם? אפשר לבחור כמה.":"איך לקוחות מוצאים אתכם היום? אפשר לבחור כמה."} /></legend>
         <div className="divide-y divide-[var(--rule)]">
           {CLIENT_SOURCE_OPTIONS.map((source) => (
             <label key={source.key} className="flex min-h-11 cursor-pointer items-center gap-3 py-2 text-[15px] text-[color:var(--ink)]">
@@ -74,14 +75,14 @@ export function ServiceClientSources({ flow, setDraft }: Pick<StepProps, "flow" 
             <button key={option.key} type="button" aria-pressed={value?.status === option.key}
               onClick={() => set({ status: option.key, channels: [], main_channel: null })}
               className={`${form.option} !min-h-11 !px-3 !py-2 !text-[13px]`}>
-              <Copy text={option.label} />
+              <Copy text={nonprofit&&option.key==="starting"?"עדיין לא הצטרפו תומכים":option.label} />
             </button>
           ))}
         </div>
       </fieldset>
       {value?.channels && value.channels.length > 1 ? (
         <div>
-          <label htmlFor="client-main-source" className={form.label}><Copy text="מה מביא את רוב הלקוחות? (לא חובה)" /></label>
+          <label htmlFor="client-main-source" className={form.label}><Copy text={nonprofit?"מאיפה מגיעים רוב התומכים? (לא חובה)":"מה מביא את רוב הלקוחות? (לא חובה)"} /></label>
           <select id="client-main-source" className={form.input} value={value.main_channel ?? ""}
             onChange={(event) => set({ main_channel: event.target.value ? event.target.value as ClientSource : null })}>
             <option value=""><Copy text="לא בטוחים / אין מקור עיקרי" /></option>

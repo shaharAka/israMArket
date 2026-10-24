@@ -136,7 +136,7 @@ export const PORTFOLIO_QUESTION: DiagnosticQuestion = {
 export const BRAND_OWNER_QUESTION: DiagnosticQuestion = {
   field: "brand_owner",
   title: "מי הפנים של העסק: אתם או שם הסטודיו?",
-  note: "בשירותים אנשים קונים מאדם. זה משנה מה נשים בחזית.",
+  note: "נשתמש בשם ובסגנון שבהם מכירים אתכם.",
   options: [
     { key: "personal", title: "אני", desc: "הלקוחות מכירים אותי בשם" },
     { key: "studio", title: "שם הסטודיו", desc: "לעסק יש שם משלו, נפרד ממני" },

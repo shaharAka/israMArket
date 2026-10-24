@@ -6,10 +6,10 @@ import { Copy, useCopy, useLanguage } from "@/components/language/LanguageProvid
 import { ProductUtilities } from "@/components/language/ProductUtilities";
 import { PriceAnswer, CancellationAnswer } from "@/components/language/PricingAnswers";
 import { DeletedNotice } from "@/components/landing/DeletedNotice";
-import { PRICE_ILS, TRIAL_LABEL, VAT_NOTE } from "@/lib/pricing";
+import { PRICE_ILS, VAT_NOTE } from "@/lib/pricing";
 import { BrandWordmark } from "./BrandWordmark";
 import { ProcessAnimation } from "./ProcessAnimation";
-import { CampaignProcessSection } from "./CampaignProcessSection";
+import { TrialCtaLabel } from "./TrialCtaLabel";
 import { SignalHero, ReactiveWords } from "./SignalHero";
 import { PROCESS_STORY, PROCESS_BENEFITS } from "./processStory";
 import { PROCESS_ROLES, defaultProcessRole, isProcessRole, type ProcessRole } from "./processExamples";
@@ -43,15 +43,13 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
   return <div className={`lv2 lv2-site ${styles.page} ${siteClean.variable} ${artSerif.variable} ${siteSerif.variable}`} data-business={selected?.path ?? "all"} data-process-role={role ?? "all"} data-hero-type="modern" data-design="signal-punch" data-palette={palette}>
     <header className={`lv2-nav ${styles.header}`}><div className={`lv2-wrap lv2-nav-row ${styles.headerRow}`}>
       <Link href="/" className="lv2-brand" aria-label={t("ישראמארקט")}><BrandWordmark direction={identity} /></Link>
-      <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><Copy text={TRIAL_LABEL} /></Link></div>
+      <div className={`lv2-nav-end ${styles.headerActions}`}><ProductUtilities inline /><Link href={`/login?lang=${locale}`} className="lv2-login"><Copy text="להיכנס" /></Link><Link href={start} className="lv2-btn-quiet"><TrialCtaLabel /></Link></div>
     </div></header>
     <main>
       <SignalHero start={start} role={role} />
       <div id="story" className={`lv2-wrap ${styles.story}`}>
         <div className={styles.storyIntro}><h2><Copy text="ככה זה עובד" /></h2><p><Copy text="מהיכרות עם העסק שלך, לתוכנית, לקמפיין ולתוצאות." /></p></div>
-        {PROCESS_STORY.map((step, index) => step.id === "campaign"
-          ? <CampaignProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} role={role} start={start} />
-          : <ProcessSection key={`${step.id}-${role ?? "all"}`} step={step} index={index} initialRole={role} start={start} />)}
+        {PROCESS_STORY.map((step,index)=><ProcessSection key={`${step.id}-${role??"all"}`} step={step} index={index} initialRole={role} start={start}/>)}
       </div>
       <section className={`lv2-wrap ${styles.faq}`} aria-labelledby="process-questions"><h2 id="process-questions"><Copy text="עוד כמה דברים שכדאי לדעת" /></h2><div>
         <details><summary><Copy text="צריך לחבר הכול כדי להתחיל?" /></summary><p><Copy text="לא. מתחילים בשיחה ובמחקר על המידע הציבורי של העסק. אחרי ההרשמה, מוסיפים חיבורים לפי הצורך וממשיכים לבנות את התוכנית." /></p></details>
@@ -67,7 +65,7 @@ export function ProcessLanding({ initialPath, identity }: { initialPath?: Exampl
 }
 
 const GOAL_ROLE_LABELS = ["יותר תרומות", "יותר מתנסים במוצר", "יותר פניות לשירות", "יותר קניות באתר", "יותר לקוחות בחנות"];
-function ProcessSection({ step, index, initialRole, start }: { step: Exclude<typeof PROCESS_STORY[number], { id: "campaign" }>; index: number; initialRole: ProcessRole | null; start: string }) {
+function ProcessSection({ step, index, initialRole, start }: { step: typeof PROCESS_STORY[number]; index: number; initialRole: ProcessRole | null; start: string }) {
   const t = useCopy();
   const [role, selectRole] = useState<ProcessRole | null>(initialRole);
   const hasRoles = ["research", "goals", "plan"].includes(step.id);
@@ -77,7 +75,7 @@ function ProcessSection({ step, index, initialRole, start }: { step: Exclude<typ
       {hasRoles && <fieldset className={styles.roleSelector} aria-label={t(step.id === "goals" ? "מטרות לפי סוג הפעילות" : "סוג העסק")}><div className={styles.roleChoices}>{PROCESS_ROLES.map((item,i) => <button type="button" key={item.segment} aria-pressed={role === item.segment} onMouseEnter={() => selectRole(item.segment)} onFocus={() => selectRole(item.segment)} onClick={() => selectRole(item.segment)}><Copy text={step.id === "goals" ? GOAL_ROLE_LABELS[i] : item.label} /></button>)}</div></fieldset>}
       <p className={styles.sectionBody}><Copy text={step.body} /></p>
       {benefit && <p className={styles.benefit}><Copy text={benefit} /></p>}
-      <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><Copy text={TRIAL_LABEL} /></Link>
+      <Link href={start} className={`lv2-btn ${styles.start} ${styles.stepStart}`}><TrialCtaLabel /></Link>
       {step.id === "trial" && <div id="price" className={styles.priceDetails}><strong><Copy text="אחר כך: {arg_0} ₪ לחודש" args={{ arg_0: PRICE_ILS }} /></strong><span><Copy text={VAT_NOTE} /></span><p><Copy text="המנוי כולל תוכנית חודשית, תכנון קמפיין, כתיבה ועיצוב פוסטים וניתוח התוצאות. יצירת תמונות וסרטונים כפופה למכסת המנוי. תקציב הפרסום ברשתות משולם בנפרד." /></p></div>}
     </div>
     <ProcessAnimation key={`${step.id}-${role ?? "all"}`} step={step.id} role={role} />

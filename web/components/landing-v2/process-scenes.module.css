@@ -258,3 +258,13 @@
 .phoneHome{height:4px;bottom:7px;background:#20221c;left:34%;width:32%}.approvalCursor{bottom:30px;inset-inline-end:28px}
 :global([data-palette=punch-jade]) .goalList button[aria-pressed=true]{background:#d9efe1}
 :global([data-palette=punch-jade]) .learningRule{background:#bdf5d4}
+/* Professional target selection: restrained emphasis, stable rows and a recognisable target. */
+:global([data-design=signal-punch]) .goals{padding:28px 5%;gap:20px}
+:global([data-design=signal-punch]) .goalList{gap:0;background:#fff;border-radius:14px;overflow:hidden;padding:8px 20px;box-shadow:0 14px 36px #20221c09}
+:global([data-design=signal-punch]) .goalList button{padding:18px 0;border-bottom:1px solid var(--rule);position:relative;transition:color .2s ease,background-color .2s ease}
+:global([data-design=signal-punch]) .goalList button:last-child{border-bottom:0}
+:global([data-design=signal-punch]) .goalList button[aria-pressed=true]{background:transparent;color:var(--primary);padding-inline:0;border-color:var(--rule)}
+:global([data-design=signal-punch]) .goalSymbol{width:42px;height:42px;color:var(--ink-muted)}
+:global([data-design=signal-punch]) .goalList button[aria-pressed=true] .goalSymbol{color:var(--primary)}
+:global([data-design=signal-punch]) .goalTick{color:var(--primary)}
+:global([data-design=signal-punch]) .goalMeaning svg{color:var(--primary)}

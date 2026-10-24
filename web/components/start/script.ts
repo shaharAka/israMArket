@@ -174,7 +174,7 @@ export function reflectionAfter(step: StepId, flow: FlowState): string | null {
     }
     case "different":
       return d.differentiator?.trim()
-        ? `זה מה שנשים בחזית: ${quoted(d.differentiator)}`
+        ? `זה מה שמייחד אתכם: ${quoted(d.differentiator)}`
         : "בסדר גמור. לרוב זה מסתתר במה שלקוחות מספרים עליכם, ונמצא את זה יחד.";
     case "audiences": {
       const names = d.audiences.map((a) => a.name.trim()).filter(Boolean);

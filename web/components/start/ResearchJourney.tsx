@@ -10,7 +10,7 @@ import { mergeResearchReplies, BUSINESS_SEGMENTS, METRICS, observationValid, typ
 import { StepName, StepDifferent, StepAudiences, type StepProps } from "./steps";
 import { StepSoftwareOffer } from "./StepSoftwareOffer";
 import { StepSoftware } from "./StepSoftware";
-import { ServiceClientSources } from "./BusinessRoute";
+import { ConnectionsStep } from "./ConnectionsStep";
 import { StepSave } from "./StepSave";
 import { StepShell, TextInput } from "./ui";
 import { OnboardingTip } from "./OnboardingTip";
@@ -26,7 +26,7 @@ import styles from "./start.module.css";
 import form from "./form.module.css";
 
 const BEFORE = ["name", "offer", "different", "audiences", "links", "discovery", "signup"];
-function sequence(j: Journey) { return j.phase === "before" ? BEFORE : [...(j.segment === "software" ? ["software_offer", "software"] : []), "sources", "connections", "metrics", "detail", "build"]; }
+function sequence(j: Journey) { return j.phase === "before" ? BEFORE : [...(j.segment === "software" ? ["software_offer", "software"] : []), "connections", "metrics", "detail", "build"]; }
 function initialJourney(segment: Segment): Journey { return { version: 1, segment, phase: "before", step: "name", replies: [], observations: [] }; }
 function selectSegment(flow: FlowState, segment: Segment): FlowState {
   const choice = BUSINESS_SEGMENTS.find(item => item.key === segment)!;
@@ -66,7 +66,7 @@ export function ResearchJourney() {
     const current = latest.current; if (!current) return;
     setBusy(true); setError("");
     const j = current.draft.research_journey!;
-    const next = { ...current, draft: { ...current.draft, research_journey: { ...j, phase: "after" as const, step: j.segment === "software" ? "software_offer" : "sources" } } };
+    const next = { ...current, draft: { ...current.draft, research_journey: { ...j, phase: "after" as const, step: j.segment === "software" ? "software_offer" : "connections" } } };
     try {
       if (!mock) { const owner = await endpoints.me(); next.researchOwnerId = owner.id; await persist(next); } setSignedIn(true); update(() => next); window.scrollTo({ top: 0 });
     } catch (err) {
@@ -85,7 +85,8 @@ export function ResearchJourney() {
     // Old browser drafts retain owner answers, but no old plan or numerical assumptions cross this gate.
     if (!saved.draft.research_journey) { loaded.draft.research_journey!.step = loaded.draft.business_name ? "offer" : "name"; loaded.modelConfirmed = Boolean(requested || saved.modelConfirmed); }
     if (params.get("site") && !loaded.draft.links.website) loaded.draft.links.website = params.get("site")!;
-        const reviewStep = params.get("review_step");
+        const requestedReview = params.get("review_step");
+    const reviewStep = requestedReview === "sources" ? "connections" : requestedReview;
     if (preview && reviewStep) {
       const example = BUSINESS_EXAMPLES[REVIEW_PATHS[segment]];
       // Review-only fixture: the preview uses the same business as its plan view.
@@ -104,6 +105,7 @@ export function ResearchJourney() {
       loaded.draft.research_journey!.phase = params.get("phase") === "after" ? "after" : "before";
       if (sequence(loaded.draft.research_journey!).includes(reviewStep)) loaded.draft.research_journey!.step = reviewStep;
     }
+    if (loaded.draft.research_journey?.step === "sources") loaded.draft.research_journey.step = "connections";
     latest.current = loaded; setFlow(loaded); if (!preview) saveFlow(loaded);
     const googleError = googleErrorFromLocation(); if (googleError) setError(googleError);
     if (preview) return;
@@ -117,6 +119,7 @@ export function ResearchJourney() {
         // Local edits win only for this same incomplete workspace; another account's draft cannot overwrite it.
         const same = local.researchOwnerId === owner.id && local.draft.research_journey?.phase === "after" && local.draft.business_name === stored.answers.business_name;
         const recovered = same ? local : { ...emptyFlow(), researchOwnerId: owner.id, modelConfirmed: true, draft: { ...stored.answers, links: { ...stored.answers.links, ...Object.fromEntries(Object.entries(response.business?.owner_context?.pending_links ?? {}).map(([key, pending]) => [key, pending.url])) }, research_journey: { ...stored, answers: undefined } as Journey } };
+        if (recovered.draft.research_journey?.step === "sources") recovered.draft.research_journey.step = "connections";
         latest.current = recovered; setFlow(recovered); saveFlow(recovered);
       } else if (params.get("resume") === "save") { await enterAccount(); }
       if (params.has("resume")) { params.delete("resume"); window.history.replaceState(null, "", `${window.location.pathname}?${params}`); }
@@ -138,7 +141,7 @@ export function ResearchJourney() {
   if (!flow) return <p className="p-8"><Copy text="טוענים…" /></p>;
   const journey = flow.draft.research_journey!; const steps = sequence(journey); const index = steps.indexOf(journey.step);
   const stage = journey.phase === "before" ? 0 : journey.step === "build" ? 3 : ["metrics", "detail"].includes(journey.step) ? 2 : 1;
-  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
+  const common: StepProps = { tip: <OnboardingTip journey={journey} />, flow, update, setDraft, next: () => void advance(), reflection: null, focus: true, direction, nextLabel: ({ name: "לספר על העסק", offer: "לספר מה מייחד אתכם", different: journey.segment === "fundraising" ? "מי יתמוך בעשייה שלכם?" : "מי הלקוחות שלכם?", audiences: "להוסיף אתר ופרופילים", discovery: "להמשיך לפתיחת החשבון", software_offer: "מה המוצר פותר?", software: "איך לקוחות מוצאים אתכם?", sources: "להמשיך לחיבורים", connections: "מה ייחשב הצלחה?", metrics: "עוד שאלה קצרה", detail: "להמשיך לבניית התוכנית" } as Record<string, string>)[journey.step], notice: error ? <p role="alert" className={form.error}>{error}</p> : undefined };
   async function move(step: string, back = false) {
     const current = latest.current!; const j = current.draft.research_journey!;
     const next = { ...current, step, seen: [...new Set([...current.seen, j.step])], draft: { ...current.draft, research_journey: { ...j, step } } };
@@ -164,8 +167,7 @@ export function ResearchJourney() {
     case "signup": screen = <StepSave {...common} researchOnly loggedIn={signedIn || mock} saving={busy} saveError={error} onSave={enterAccount} />; break;
     case "software_offer": screen = <StepSoftwareOffer {...common} />; break;
     case "software": screen = <StepSoftware {...common} />; break;
-    case "sources": screen = <StepShell {...common} title={journey.segment === "fundraising" ? "איך אנשים מגיעים לעשייה שלכם?" : "איך לקוחות מוצאים אתכם היום?"} why="" primary="להמשיך לחיבורים" primaryDisabled={busy} onPrimary={() => void advance()}><ServiceClientSources flow={flow} setDraft={setDraft} /></StepShell>; break;
-    case "connections": screen = <StepShell {...common} title="נחבר את המידע שכבר יש לכם" why="החיבורים עוזרים לראות מה מביא רכישות, פניות או תרומות. תוכלו לחזור לכאן אחרי אישור החיבור; התשובות נשמרות בחשבון." primary="להמשיך למה שנמדוד" primaryDisabled={busy} onPrimary={() => void advance()}><Link href="/integrations" className="inline-flex min-h-11 items-center font-semibold text-[var(--primary)]"><Copy text="לבחור ולחבר את הכלים שלי" /></Link><p><Copy text="אפשר להמשיך גם בלי חיבור. נציין מה עוד לא נמדד, ונשלים בהמשך." /></p></StepShell>; break;
+    case "connections": screen = <ConnectionsStep {...common} mock={mock} busy={busy} />; break;
     case "metrics": screen = <MetricsStep {...common} onChange={patchJourney} />; break;
     case "build": screen = <BuildReview {...common} mock={mock} busy={busy} canStart={signedIn && !busy}
       onDone={() => { void clearSavedFlow(); router.replace("/strategy"); }} />; break;
@@ -181,15 +183,18 @@ export function ResearchJourney() {
     </main></div>;
 }
 
-function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onReplies: (replies: { question: string; answer: string }[]) => void }) {
+function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onReplies: (replies: Journey["replies"]) => void }) {
   const [result, setResult] = useState<DiscoveryResult | null>(null); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
   const [answers, setAnswers] = useState<string[]>([]);
+  const [editingFact, setEditingFact] = useState<string | null>(null);
   const t = useCopy(); const { locale } = useLanguage();
   useEffect(() => {
     let live = true;
     async function read() {
       if (props.mock) {
-        setResult({ sources: [], assisted: true, questions: [{ question: props.after ? t("מה הכי חשוב להסביר על ההצעה שלכם לפני שמישהו מחליט?") : t("מה חשוב שאנשים יבינו על מה שאתם עושים?"), quote: "", source: "answers" }] });
+        const exampleUrl = "https://example.org/about";
+        const removed=props.flow.draft.research_journey?.excluded_sources?.some(url=>url.includes("example.org"));
+        setResult({ sources: removed?[]:[{kind:"website",url:exampleUrl,status:"read"}], facts:removed?[]:[{quote:props.flow.draft.offerings,url:exampleUrl}], assisted: true, questions: [{ question: props.flow.draft.research_journey?.segment === "fundraising" ? t("איזה שינוי תעזור התרומה לקדם?") : props.after ? t("מה הכי חשוב להסביר על ההצעה שלכם לפני שמישהו מחליט?") : t("מה חשוב שאנשים יבינו על מה שאתם עושים?"), quote: "", source: "answers" }] });
         setAnswers([""]); return;
       }
       // Independent checks share one wait; the brand API applies its own URL guards.
@@ -207,11 +212,24 @@ function DiscoveryStep(props: StepProps & { after: boolean; mock: boolean; onRep
     // This screen runs one bounded research request per entry, never on every keystroke.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  return <StepShell {...props} title={props.after ? "מה למדנו על העסק שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "" }))); props.next(); }}>
+  return <StepShell {...props} title={props.after ? "מה עוד חשוב לדעת על הפעילות שלכם" : "בואו נוודא שהבנו אתכם"} why="" primary={props.after ? "להמשיך לבניית התוכנית" : "להמשיך לפתיחת החשבון"} onPrimary={() => { props.onReplies((result?.questions ?? []).map((q, i) => ({ question: q.question, answer: answers[i] ?? "", source_url: q.url ?? "" }))); props.next(); }}>
     {loading ? <p role="status"><Copy text="קוראים את המידע ומכינים שאלה להיכרות…" /></p> : null}
     {error ? <p role="status">{error}</p> : null}
-    {result?.facts?.length ? <section className="space-y-3 border-b border-[var(--rule)] pb-5"><h2 className="font-semibold"><Copy text="מה למדנו על העסק שלכם" /></h2>{result.facts.map((fact, i) => <blockquote key={i} className="border-s-2 border-[var(--rule)] ps-3 text-sm"><p>{fact.quote}</p><a className="text-xs underline" href={fact.url} target="_blank" rel="noopener noreferrer"><Copy text="למקור" /></a></blockquote>)}</section> : null}
-    {result?.sources.length ? <details className="text-sm text-[var(--ink-muted)]"><summary className="cursor-pointer"><Copy text="המידע שעליו הסתמכנו" /></summary><ul className="mt-3 space-y-2">{result.sources.map((source, i) => <li key={`${source.url}-${i}`}><bdi>{source.url}</bdi> · <Copy text={source.status === "read" ? "נקרא" : source.status === "not_read" ? "הקישור נשמר. תוכן הפרופיל עדיין לא נקרא." : source.status === "limited" || source.status === "blocked" ? "הקריאה מוגבלת. אפשר להמשיך בלי המידע הזה." : "לא הצלחנו לקרוא. נמשיך עם התשובות שלכם."} /></li>)}</ul></details> : null}
+    {result?.facts?.length ? <section className="space-y-4"><h2 className="font-semibold"><Copy text="מה למדנו עליכם" /></h2>{result.facts.map((fact, i) => {
+      const correction = props.flow.draft.research_journey?.corrections?.find(c => c.original === fact.quote && c.source_url === fact.url);
+      const key = `${fact.url}-${i}`;
+      return <div key={key} className="border-b border-[var(--rule)] pb-4"><p className="text-base leading-7">{correction?.corrected || fact.quote}</p>
+        {editingFact === key ? <div className="mt-3 space-y-3"><TextInput id={`fact-${i}`} label="מה המידע הנכון?" value={correction?.corrected ?? fact.quote} maxLength={600} onChange={corrected => props.update(f => ({...f,draft:{...f.draft,research_journey:{...f.draft.research_journey!,corrections:[...(f.draft.research_journey?.corrections??[]).filter(c=>c.original!==fact.quote || c.source_url!==fact.url),{original:fact.quote,source_url:fact.url,corrected}]}}}))}/><button type="button" className="min-h-11 text-sm font-semibold text-[var(--primary)]" onClick={()=>setEditingFact(null)}><Copy text="לשמור את התיקון"/></button></div> : <button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>setEditingFact(key)}><Copy text="לתקן את המידע"/></button>}
+      </div>;
+    })}</section> : null}
+    {result?.sources.length ? <section><h2 className="mb-2 text-sm font-semibold"><Copy text="המקורות שבדקנו"/></h2><ul className="divide-y divide-[var(--rule)]">{result.sources.map((source,i)=><li key={`${source.url}-${i}`} className="flex flex-wrap items-center justify-between gap-2 py-2"><div className="min-w-0 flex-1 text-sm"><bdi className="block break-all">{source.url}</bdi><span className="text-xs text-[var(--ink-muted)]"><Copy text={source.status==="read"?"נקרא":source.status==="not_read"?"קישור שנשמר":"לא נקרא"}/></span></div><button type="button" className="min-h-11 text-sm text-[var(--primary)]" onClick={()=>{
+      const sameHost=(url:string)=>{try{return new URL(url).hostname.replace(/^www\./,"")===new URL(source.url).hostname.replace(/^www\./,"");}catch{return url===source.url;}};
+      const removedSources=result.sources.filter(s=>sameHost(s.url));
+      const removedQuestions=new Set(result.questions.filter(q=>q.url&&sameHost(q.url)).map(q=>q.question));
+      props.update(f=>{const links={...f.draft.links};for(const key of Object.keys(links) as LinkKey[])if(sameHost(links[key]??"")||key===source.kind)delete links[key];return {...f,brandScan:null,draft:{...f.draft,links,research_journey:{...f.draft.research_journey!,excluded_sources:[...new Set([...(f.draft.research_journey?.excluded_sources??[]),...removedSources.map(s=>s.url)])],corrections:(f.draft.research_journey?.corrections??[]).filter(c=>!sameHost(c.source_url)),replies:(f.draft.research_journey?.replies??[]).filter(r=>!removedQuestions.has(r.question)&&!sameHost(r.source_url??""))}}};});
+      setAnswers(values=>values.filter((_,at)=>!removedQuestions.has(result.questions[at].question)));
+      setResult({...result,sources:result.sources.filter(s=>!sameHost(s.url)),facts:result.facts?.filter(f=>!sameHost(f.url)),questions:result.questions.filter(q=>!q.url||!sameHost(q.url))});
+    }}><Copy text="לא להשתמש במקור הזה"/></button></li>)}</ul></section>:null}
     {result && !result.assisted ? <p className="text-sm text-[var(--ink-muted)]"><Copy text="המחקר המותאם לא זמין כרגע. אפשר להמשיך בהיכרות ולהשלים אותו בחשבון." /></p> : null}
     <p className="border-b border-[var(--rule)] pb-4">{props.flow.draft.business_name} · {props.flow.draft.offerings}</p>
     {result?.questions.map((q, i) => <div key={i}>{q.quote ? <blockquote className="border-s-2 border-[var(--rule)] ps-3 text-sm">{q.quote}</blockquote> : null}<TextInput id={`research-answer-${i}`} label={q.question} value={answers[i] ?? ""} onChange={answer => setAnswers(list => list.map((old, at) => at === i ? answer : old))} maxLength={600} /></div>)}

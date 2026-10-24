@@ -1,7 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="-6 3.5 96 96">
-  <style>
-    path { fill: #192a35; }
-    @media (prefers-color-scheme: dark) { path { fill: #ffffff; } }
-  </style>
-  <path d="M0 25H13V32C17 26 22 23 29 23C37 23 43 27 46 34C50 27 57 23 65 23C77 23 84 31 84 45V80H71V47C71 39 68 35 62 35C54 35 50 41 50 49V80H37V47C37 39 34 35 28 35C19 35 13 41 13 51V80H0Z" fill-rule="evenodd"/>
+  <rect x="-6" y="3.5" width="96" height="96" rx="18" fill="#ffb89b"/>
+  <path fill="#111111" d="M0 25H13V32C17 26 22 23 29 23C37 23 43 27 46 34C50 27 57 23 65 23C77 23 84 31 84 45V80H71V47C71 39 68 35 62 35C54 35 50 41 50 49V80H37V47C37 39 34 35 28 35C19 35 13 41 13 51V80H0Z" fill-rule="evenodd"/>
 </svg>
